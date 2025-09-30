@@ -737,9 +737,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Ini merupakan versi beta. Harap laporkan bug $1"
-  },
   "betaMetamaskVersion": {
     "message": "Versi MetaMask Beta"
   },
@@ -3762,9 +3759,6 @@
   "noSnaps": {
     "message": "Belum ada snap yang diinstal."
   },
-  "noThanks": {
-    "message": "Tidak, terima kasih"
-  },
   "noWebcamFound": {
     "message": "Webcam komputer Anda tidak ditemukan. Harap coba lagi."
   },
@@ -4042,45 +4036,11 @@
   "onboardingImportWallet": {
     "message": "Saya sudah memiliki dompet"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Saya setuju"
-  },
   "onboardingMetametricsDescription": {
     "message": "Kami ingin mengumpulkan data penggunaan dan diagnostik dasar untuk meningkatkan MetaMask. Data tersebut akan selalu:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Kami akan memberi tahu Anda jika kami berencana menggunakan data ini untuk keperluan lain. Anda dapat meninjau $1 kami setiap saat (kami tidak akan pernah menjual data yang Anda berikan di sini).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Kebijakan Privasi"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Klik dan view pada aplikasi disimpan, tetapi detail lainnya (seperti alamat publik Anda) tidak.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Pribadi:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Kami menggunakan alamat IP Anda untuk sementara guna mendeteksi lokasi umum (seperti negara atau wilayah Anda), tetapi alamat tersebut tidak pernah disimpan.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Umum:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Anda memutuskan jika Anda ingin membagikan atau menghapus data penggunaan melalui pengaturan setiap saat.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Opsional:"
-  },
   "onboardingMetametricsTitle": {
     "message": "Bantu kami meningkatkan MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Kami akan menggunakan data ini untuk mempelajari cara Anda berinteraksi dengan komunikasi pemasaran. Kami mungkin akan membagikan berita yang relevan (seperti fitur produk)."
   },
   "onboardingOptionIcon": {
     "message": "Ikon $1",
@@ -4124,14 +4084,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Hapus semua"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Sembunyikan semua"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Tambahkan spasi di antara setiap kata dan pastikan tidak ada yang melihat."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Tampilkan semua"
   },
   "onekey": {
     "message": "OneKey"
@@ -4747,9 +4701,6 @@
   "recipientAddressPlaceholderNew": {
     "message": "Masukkan alamat publik (0x) atau nama domain"
   },
-  "recommendedGasLabel": {
-    "message": "Direkomendasikan"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Cadangkan sekarang"
   },
@@ -5050,18 +5001,8 @@
   "secureWallet": {
     "message": "Amankan dompet"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Mulai"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Ingatkan saya nanti"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Ini adalah satu-satunya cara untuk memulihkan dompet Anda apabila terkunci dari aplikasi atau mendapatkan perangkat baru."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Jangan ambil risiko kehilangan dana. Lindungi dompet Anda dengan menyimpan $1 di tempat yang tepercaya.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Keamanan"
@@ -5140,9 +5081,6 @@
   },
   "seeDetails": {
     "message": "Lihat detailnya"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Amankan dompet Anda"
   },
   "seedPhraseReq": {
     "message": "Frasa Pemulihan Rahasia berisi 12, 15, 18, 21, atau 24 kata"
@@ -5448,18 +5386,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Lewati keamanan akun?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Jika kehilangan Frasa Pemulihan Rahasia ini, Anda tidak akan dapat mengakses dompet ini."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Amankan sekarang"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Lewati"
   },
   "skipDeepLinkInterstitial": {
     "message": "Jangan tampilkan layar interstisial saat membuka deep link"
@@ -5827,9 +5753,6 @@
   "spendingCaps": {
     "message": "Batas penggunaan"
   },
-  "srpDesignImageAlt": {
-    "message": "Gambar brankas SRP"
-  },
   "srpDetailsDescription": {
     "message": "Frasa Pemulihan Rahasia, yang juga disebut seed phrase atau mnemonik, merupakan serangkaian kata yang memungkinkan Anda untuk mengakses dan mengendalikan dompet kripto. Untuk memindahkan dompet Anda ke MetaMask, Anda memerlukan frasa ini."
   },
@@ -6046,10 +5969,6 @@
   "step2LedgerWalletMsg": {
     "message": "Pasang Ledger Anda langsung ke komputer dan buka. Lalu, buka aplikasi Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Langkah $1 dari $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Masih menerima pesan ini?"

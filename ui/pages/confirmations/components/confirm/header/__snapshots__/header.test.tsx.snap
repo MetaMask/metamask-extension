@@ -173,11 +173,11 @@ exports[`Header should match snapshot with token transfer confirmation initiated
         style="mask-image: url('./images/icons/arrow-left.svg');"
       />
     </button>
-    <h3
-      class="mm-box mm-text mm-text--heading-md mm-box--color-inherit"
+    <h4
+      class="mm-box mm-text mm-text--heading-sm mm-box--color-inherit"
     >
       Review
-    </h3>
+    </h4>
     <div
       class="mm-box mm-box--margin-right-1 mm-box--background-color-transparent mm-box--rounded-md"
     >

@@ -173,7 +173,7 @@
     "message": "Activity"
   },
   "activityEmptyDescription": {
-    "message": "Nothing to see yet. Check the explorer for more recent activity."
+    "message": "Nothing to see yet. Swap your first token today."
   },
   "activityLog": {
     "message": "Activity log"
@@ -788,9 +788,6 @@
   },
   "beta": {
     "message": "Beta"
-  },
-  "betaHeaderText": {
-    "message": "This is a beta version. Please report bugs $1"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
@@ -1619,7 +1616,7 @@
     "message": "Unlocks MetaMask on this device only."
   },
   "createPasswordDetailsSocial": {
-    "message": "If you lose this password, you’ll lose access to your wallet on all devices. Store it somewhere safe, "
+    "message": "Losing this password means losing wallet access on all devices, "
   },
   "createPasswordDetailsSocialReset": {
     "message": "MetaMask can't reset it."
@@ -2020,9 +2017,6 @@
   },
   "discover": {
     "message": "Discover"
-  },
-  "discoverNFTs": {
-    "message": "Discover NFTs"
   },
   "discoverSnaps": {
     "message": "Discover Snaps",
@@ -3981,6 +3975,9 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, and most hardware wallets, will not work with your current browser version."
   },
+  "noMMFeeSwapping": {
+    "message": "No MM fee swapping into $1."
+  },
   "noNetworksAvailable": {
     "message": "No networks available"
   },
@@ -3995,9 +3992,6 @@
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
-  },
-  "noThanks": {
-    "message": "No thanks"
   },
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
@@ -4288,45 +4282,26 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Terms of Use"
   },
-  "onboardingMetametricsAgree": {
-    "message": "I agree"
+  "onboardingMetametricCheckboxDescriptionOne": {
+    "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored."
+  },
+  "onboardingMetametricCheckboxDescriptionTwo": {
+    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+  },
+  "onboardingMetametricCheckboxTitleOne": {
+    "message": "Gather basic usage data"
+  },
+  "onboardingMetametricCheckboxTitleTwo": {
+    "message": "Product updates"
+  },
+  "onboardingMetametricsContinue": {
+    "message": "Continue"
   },
   "onboardingMetametricsDescription": {
-    "message": "We'd like to gather basic usage and diagnostics data to improve MetaMask. It will always be:"
-  },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "We’ll let you know if we plan to use this data for other purposes. You can review our $1 any time (we never sell the data you provide here).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Privacy Policy"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Clicks and views on the app are stored, but other details (like your public address) are not.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Private:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 We temporarily use your IP address to detect a general location (like your country or region), but it's never stored.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "General:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 You decide if you want to share or delete your usage data via settings any time.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Optional:"
+    "message": "We’d like to request these permissions. You can opt out or delete your usage data at any time."
   },
   "onboardingMetametricsTitle": {
     "message": "Help us improve MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
   "onboardingOptionIcon": {
     "message": "$1 icon",
@@ -4370,14 +4345,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Clear all"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Hide all"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Add a space between each word and make sure no one is watching."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Show all"
   },
   "onekey": {
     "message": "OneKey"
@@ -4459,7 +4428,7 @@
     "message": "Must be at least 8 characters"
   },
   "passwordTermsWarning": {
-    "message": "If I forget this password, MetaMask can’t reset it for me."
+    "message": "If I lose this password, MetaMask can’t reset it."
   },
   "passwordTermsWarningSocial": {
     "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
@@ -5057,9 +5026,6 @@
   "recipientPlaceholder": {
     "message": "Enter or paste a valid address"
   },
-  "recommendedGasLabel": {
-    "message": "Recommended"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Back up now"
   },
@@ -5384,18 +5350,8 @@
   "secureWallet": {
     "message": "Secure wallet"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Get started"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Remind me later"
-  },
-  "secureWalletWalletRecover": {
-    "message": "It’s the only way to recover your wallet if you get locked out of the app or get a new device."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Don’t risk losing your funds. Protect your wallet by saving your $1 in a place you trust.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Security"
@@ -5480,9 +5436,6 @@
   },
   "seeDetails": {
     "message": "See details"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Secure your wallet"
   },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
@@ -5756,12 +5709,12 @@
   "shieldTxMembershipCancel": {
     "message": "Cancel membership"
   },
+  "shieldTxMembershipCancelNotification": {
+    "message": "Your membership will be cancelled on $1.",
+    "description": "The $1 is the date"
+  },
   "shieldTxMembershipErrorAddFunds": {
     "message": "Add funds"
-  },
-  "shieldTxMembershipErrorEnding": {
-    "message": "Your membership is ending on $1. Keep benefits active by renewing.",
-    "description": "The $1 is the date"
   },
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Insufficient funds for your April 18 renewal. Keep access active by adding funds.",
@@ -5774,11 +5727,14 @@
   "shieldTxMembershipErrorPaused": {
     "message": "Membership paused due to insufficient funds. Coverage will resume after payment update."
   },
-  "shieldTxMembershipErrorPausedTooltip": {
+  "shieldTxMembershipErrorPausedCardTooltip": {
+    "message": "Your payment was declined. Please update your payment method to continue your coverage."
+  },
+  "shieldTxMembershipErrorPausedCryptoTooltip": {
     "message": "Insufficient token balance in your wallet. Top up to resume coverage."
   },
-  "shieldTxMembershipErrorRenew": {
-    "message": "Renew membership"
+  "shieldTxMembershipErrorUpdateCard": {
+    "message": "Update card details"
   },
   "shieldTxMembershipErrorUpdatePayment": {
     "message": "Update payment"
@@ -5794,6 +5750,9 @@
   },
   "shieldTxMembershipPaused": {
     "message": "Paused"
+  },
+  "shieldTxMembershipRenew": {
+    "message": "Renew membership"
   },
   "shieldTxMembershipResubscribe": {
     "message": "Restart membership"
@@ -5961,6 +5920,9 @@
   "singleNetwork": {
     "message": "1 network"
   },
+  "sites": {
+    "message": "Sites"
+  },
   "siweIssued": {
     "message": "Issued"
   },
@@ -5975,18 +5937,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Skip account security?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "If you lose this Secret Recovery Phrase, you won’t be able to access this wallet."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Secure now"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Skip"
   },
   "skipDeepLinkInterstitial": {
     "message": "Don't show interstitial screen when opening deep links"
@@ -6360,9 +6310,6 @@
   "spendingCaps": {
     "message": "Spending caps"
   },
-  "srpDesignImageAlt": {
-    "message": "SRP vault image"
-  },
   "srpDetailsDescription": {
     "message": "A Secret Recovery Phrase, also called a seed phrase or mnemonic, is a set of words that lets you access and control your crypto wallet. To move your wallet to MetaMask, you need this phrase."
   },
@@ -6579,10 +6526,6 @@
   "step2LedgerWalletMsg": {
     "message": "Plug your Ledger directly into your computer, then  unlock it and open the Ethereum app.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Step $1 of $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Still getting this message?"
@@ -7038,6 +6981,9 @@
     "message": "Confirmed by $1 sources. Verify on $2.",
     "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
   },
+  "swapTokens": {
+    "message": "Swap tokens"
+  },
   "swapTooManyDecimalsError": {
     "message": "$1 allows up to $2 decimals",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -7210,6 +7156,9 @@
   },
   "tokenSymbol": {
     "message": "Token symbol"
+  },
+  "tokenTransfer": {
+    "message": "Token transfer"
   },
   "tokens": {
     "message": "Tokens"

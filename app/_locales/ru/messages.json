@@ -737,9 +737,6 @@
   "beta": {
     "message": "Бета-версия"
   },
-  "betaHeaderText": {
-    "message": "Это бета-версия. Пожалуйста, сообщайте об ошибках $1"
-  },
   "betaMetamaskVersion": {
     "message": "Бета-версия MetaMask"
   },
@@ -3762,9 +3759,6 @@
   "noSnaps": {
     "message": "Snaps не установлены."
   },
-  "noThanks": {
-    "message": "Нет, спасибо"
-  },
   "noWebcamFound": {
     "message": "Веб-камера вашего компьютера не найдена. Попробуйте еще раз."
   },
@@ -4042,45 +4036,11 @@
   "onboardingImportWallet": {
     "message": "У меня есть существующий кошелек"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Я согласен(-на)"
-  },
   "onboardingMetametricsDescription": {
     "message": "Мы хотели бы собрать основные данные об использовании и диагностике для улучшения MetaMask. Это всегда будет:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Мы сообщим вам, если решим использовать эти данные для других целей. Вы можете просмотреть нашу $1 в любое время (мы никогда не продаем данные, которые вы здесь предоставляете).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Политикой конфиденциальности"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Клики и просмотры в приложении сохраняются, но другие данные (например, ваш публичный адрес) — нет.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Приватными:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Мы временно используем ваш IP-адрес для определения общего местоположения (например, вашей страны или региона), но он никогда не сохраняется.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Общедоступными:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Вы можете в любое время решить, хотите ли вы поделиться своими данными об использовании или удалить их в настройках.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Необязательными:"
-  },
   "onboardingMetametricsTitle": {
     "message": "Помогите нам улучшить MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Мы будем использовать эти данные, чтобы узнать, как вы взаимодействуете с нашими маркетинговыми сообщениями. Мы можем отправлять соответствующие новости (например, об особенностях продукта)."
   },
   "onboardingOptionIcon": {
     "message": "Значок $1",
@@ -4124,14 +4084,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Очистить все"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Скрыть все"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Добавьте пробелы между всеми словами и убедитесь, что никто не видит."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Показать все"
   },
   "onekey": {
     "message": "OneKey"
@@ -4747,9 +4701,6 @@
   "recipientAddressPlaceholderNew": {
     "message": "Введите публичный адрес (0x) или имя домена"
   },
-  "recommendedGasLabel": {
-    "message": "Рекомендовано"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Создать резервную копию сейчас"
   },
@@ -5050,18 +5001,8 @@
   "secureWallet": {
     "message": "Безопасный кошелек"
   },
-  "secureWalletGetStartedButton": {
-    "message": "С чего начать"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Напомнить мне позже"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Это единственный способ восстановить кошелек, если вы заблокируете доступ к приложению или приобретете новое устройство."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Не рискуйте потерять свои средства. Защитите кошелек, сохранив $1 в надежном месте.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Безопасность"
@@ -5140,9 +5081,6 @@
   },
   "seeDetails": {
     "message": "См. подробности"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Защитите свой кошелек"
   },
   "seedPhraseReq": {
     "message": "Секретные фразы для восстановления содержат 12, 15, 18, 21 или 24 слова"
@@ -5448,18 +5386,6 @@
   },
   "siweURI": {
     "message": "URL-адрес"
-  },
-  "skipAccountSecurity": {
-    "message": "Пропустить безопасность счета?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Если вы потеряете эту секретную фразу для восстановления, вы не сможете получить доступ к этому кошельку."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Защитить сейчас"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Пропустить"
   },
   "skipDeepLinkInterstitial": {
     "message": "Не показывать промежуточный экран при открытии диплинков"
@@ -5827,9 +5753,6 @@
   "spendingCaps": {
     "message": "Лимиты расходов"
   },
-  "srpDesignImageAlt": {
-    "message": "Изображение хранилища секретной фразы для восстановления"
-  },
   "srpDetailsDescription": {
     "message": "Секретная фраза для восстановления, также называемая сид-фразой или мнемонической фразой, представляет собой набор слов, который позволяет вам получать доступ к вашему криптокошельку и управлять им. Чтобы переместить кошелек в MetaMask, вам нужна эта фраза."
   },
@@ -6046,10 +5969,6 @@
   "step2LedgerWalletMsg": {
     "message": "Подключите Ledger напрямую к компьютеру, разблокируйте его и откройте приложение Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Шаг $1 из $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Все еще получаете это сообщение?"
