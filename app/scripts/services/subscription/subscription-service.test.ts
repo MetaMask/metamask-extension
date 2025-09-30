@@ -1,9 +1,13 @@
 import { Messenger } from '@metamask/base-controller';
-import { SubscriptionService } from './subscription-service';
+import {
+  PRODUCT_TYPES,
+  RECURRING_INTERVALS,
+} from '@metamask/subscription-controller';
+import browser from 'webextension-polyfill';
 import ExtensionPlatform from '../../platforms/extension';
 import { ENVIRONMENT } from '../../../../development/build/constants';
-import { PRODUCT_TYPES, RECURRING_INTERVALS } from '@metamask/subscription-controller';
 import { WebAuthenticator } from '../oauth/types';
+import { SubscriptionService } from './subscription-service';
 import { SubscriptionServiceAction } from './types';
 
 jest.mock('../../platforms/extension');
@@ -38,17 +42,24 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
     const mockStartShieldSubscriptionWithCard = jest.fn().mockResolvedValue({
       checkoutSessionUrl: mockCheckoutSessionUrl,
     });
-    rootMessenger.registerActionHandler('SubscriptionController:startShieldSubscriptionWithCard', mockStartShieldSubscriptionWithCard);
-    const mockGetSubscriptions = jest.fn();
-    rootMessenger.registerActionHandler('SubscriptionController:getSubscriptions', mockGetSubscriptions);
-
-    const messenger = rootMessenger.getRestricted(
-      {
-        name: 'SubscriptionService',
-        allowedActions: ['SubscriptionController:startShieldSubscriptionWithCard', 'SubscriptionController:getSubscriptions'],
-        allowedEvents: [],
-      },
+    rootMessenger.registerActionHandler(
+      'SubscriptionController:startShieldSubscriptionWithCard',
+      mockStartShieldSubscriptionWithCard,
     );
+    const mockGetSubscriptions = jest.fn();
+    rootMessenger.registerActionHandler(
+      'SubscriptionController:getSubscriptions',
+      mockGetSubscriptions,
+    );
+
+    const messenger = rootMessenger.getRestricted({
+      name: 'SubscriptionService',
+      allowedActions: [
+        'SubscriptionController:startShieldSubscriptionWithCard',
+        'SubscriptionController:getSubscriptions',
+      ],
+      allowedEvents: [],
+    });
 
     const mockPlatform = new ExtensionPlatform();
 
@@ -60,15 +71,21 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
     const mockOpenTab = jest.spyOn(mockPlatform, 'openTab');
     mockOpenTab.mockResolvedValue({
       id: 1,
-    } as any);
-    const mockAddTabUpdatedListener = jest.spyOn(mockPlatform, 'addTabUpdatedListener');
+    } as browser.Tabs.Tab);
+    const mockAddTabUpdatedListener = jest.spyOn(
+      mockPlatform,
+      'addTabUpdatedListener',
+    );
     mockAddTabUpdatedListener.mockImplementation(async (fn) => {
       await new Promise((r) => setTimeout(r, 200));
       await fn(1, {
         url: MOCK_REDIRECT_URI,
       });
     });
-    const mockAddTabRemovedListener = jest.spyOn(mockPlatform, 'addTabRemovedListener');
+    const mockAddTabRemovedListener = jest.spyOn(
+      mockPlatform,
+      'addTabRemovedListener',
+    );
     mockAddTabRemovedListener.mockImplementation(async (fn) => {
       await new Promise((r) => setTimeout(r, 500));
       await fn(1);
