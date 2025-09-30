@@ -4121,14 +4121,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Hapus semua"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Sembunyikan semua"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Tambahkan spasi di antara setiap kata dan pastikan tidak ada yang melihat."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Tampilkan semua"
   },
   "onekey": {
     "message": "OneKey"
@@ -5044,18 +5038,8 @@
   "secureWallet": {
     "message": "Amankan dompet"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Mulai"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Ingatkan saya nanti"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Ini adalah satu-satunya cara untuk memulihkan dompet Anda apabila terkunci dari aplikasi atau mendapatkan perangkat baru."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Jangan ambil risiko kehilangan dana. Lindungi dompet Anda dengan menyimpan $1 di tempat yang tepercaya.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Keamanan"
@@ -5134,9 +5118,6 @@
   },
   "seeDetails": {
     "message": "Lihat detailnya"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Amankan dompet Anda"
   },
   "seedPhraseReq": {
     "message": "Frasa Pemulihan Rahasia berisi 12, 15, 18, 21, atau 24 kata"
@@ -5442,18 +5423,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Lewati keamanan akun?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Jika kehilangan Frasa Pemulihan Rahasia ini, Anda tidak akan dapat mengakses dompet ini."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Amankan sekarang"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Lewati"
   },
   "skipDeepLinkInterstitial": {
     "message": "Jangan tampilkan layar interstisial saat membuka deep link"
@@ -5821,9 +5790,6 @@
   "spendingCaps": {
     "message": "Batas penggunaan"
   },
-  "srpDesignImageAlt": {
-    "message": "Gambar brankas SRP"
-  },
   "srpDetailsDescription": {
     "message": "Frasa Pemulihan Rahasia, yang juga disebut seed phrase atau mnemonik, merupakan serangkaian kata yang memungkinkan Anda untuk mengakses dan mengendalikan dompet kripto. Untuk memindahkan dompet Anda ke MetaMask, Anda memerlukan frasa ini."
   },
@@ -6040,10 +6006,6 @@
   "step2LedgerWalletMsg": {
     "message": "Pasang Ledger Anda langsung ke komputer dan buka. Lalu, buka aplikasi Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Langkah $1 dari $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Masih menerima pesan ini?"

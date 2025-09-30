@@ -173,7 +173,7 @@
     "message": "Activity"
   },
   "activityEmptyDescription": {
-    "message": "Nothing to see yet. Check the explorer for more recent activity."
+    "message": "Nothing to see yet. Swap your first token today."
   },
   "activityLog": {
     "message": "Activity log"
@@ -2017,9 +2017,6 @@
   },
   "discover": {
     "message": "Discover"
-  },
-  "discoverNFTs": {
-    "message": "Discover NFTs"
   },
   "discoverSnaps": {
     "message": "Discover Snaps",
@@ -4370,14 +4367,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Clear all"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Hide all"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Add a space between each word and make sure no one is watching."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Show all"
   },
   "onekey": {
     "message": "OneKey"
@@ -5381,18 +5372,8 @@
   "secureWallet": {
     "message": "Secure wallet"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Get started"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Remind me later"
-  },
-  "secureWalletWalletRecover": {
-    "message": "It’s the only way to recover your wallet if you get locked out of the app or get a new device."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Don’t risk losing your funds. Protect your wallet by saving your $1 in a place you trust.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Security"
@@ -5477,9 +5458,6 @@
   },
   "seeDetails": {
     "message": "See details"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Secure your wallet"
   },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
@@ -5753,12 +5731,12 @@
   "shieldTxMembershipCancel": {
     "message": "Cancel membership"
   },
+  "shieldTxMembershipCancelNotification": {
+    "message": "Your membership will be cancelled on $1.",
+    "description": "The $1 is the date"
+  },
   "shieldTxMembershipErrorAddFunds": {
     "message": "Add funds"
-  },
-  "shieldTxMembershipErrorEnding": {
-    "message": "Your membership is ending on $1. Keep benefits active by renewing.",
-    "description": "The $1 is the date"
   },
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Insufficient funds for your April 18 renewal. Keep access active by adding funds.",
@@ -5771,11 +5749,14 @@
   "shieldTxMembershipErrorPaused": {
     "message": "Membership paused due to insufficient funds. Coverage will resume after payment update."
   },
-  "shieldTxMembershipErrorPausedTooltip": {
+  "shieldTxMembershipErrorPausedCardTooltip": {
+    "message": "Your payment was declined. Please update your payment method to continue your coverage."
+  },
+  "shieldTxMembershipErrorPausedCryptoTooltip": {
     "message": "Insufficient token balance in your wallet. Top up to resume coverage."
   },
-  "shieldTxMembershipErrorRenew": {
-    "message": "Renew membership"
+  "shieldTxMembershipErrorUpdateCard": {
+    "message": "Update card details"
   },
   "shieldTxMembershipErrorUpdatePayment": {
     "message": "Update payment"
@@ -5791,6 +5772,9 @@
   },
   "shieldTxMembershipPaused": {
     "message": "Paused"
+  },
+  "shieldTxMembershipRenew": {
+    "message": "Renew membership"
   },
   "shieldTxMembershipResubscribe": {
     "message": "Restart membership"
@@ -5958,6 +5942,9 @@
   "singleNetwork": {
     "message": "1 network"
   },
+  "sites": {
+    "message": "Sites"
+  },
   "siweIssued": {
     "message": "Issued"
   },
@@ -5972,18 +5959,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Skip account security?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "If you lose this Secret Recovery Phrase, you won’t be able to access this wallet."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Secure now"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Skip"
   },
   "skipDeepLinkInterstitial": {
     "message": "Don't show interstitial screen when opening deep links"
@@ -6357,9 +6332,6 @@
   "spendingCaps": {
     "message": "Spending caps"
   },
-  "srpDesignImageAlt": {
-    "message": "SRP vault image"
-  },
   "srpDetailsDescription": {
     "message": "A Secret Recovery Phrase, also called a seed phrase or mnemonic, is a set of words that lets you access and control your crypto wallet. To move your wallet to MetaMask, you need this phrase."
   },
@@ -6576,10 +6548,6 @@
   "step2LedgerWalletMsg": {
     "message": "Plug your Ledger directly into your computer, then  unlock it and open the Ethereum app.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Step $1 of $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Still getting this message?"
@@ -7035,6 +7003,9 @@
     "message": "Confirmed by $1 sources. Verify on $2.",
     "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
   },
+  "swapTokens": {
+    "message": "Swap tokens"
+  },
   "swapTooManyDecimalsError": {
     "message": "$1 allows up to $2 decimals",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -7207,6 +7178,9 @@
   },
   "tokenSymbol": {
     "message": "Token symbol"
+  },
+  "tokenTransfer": {
+    "message": "Token transfer"
   },
   "tokens": {
     "message": "Tokens"

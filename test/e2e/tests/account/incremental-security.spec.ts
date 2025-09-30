@@ -88,7 +88,6 @@ describe('Incremental Security', function (this: Suite) {
 
         // backup reminder is displayed and it directs user to the backup SRP page
         await homePage.goToBackupSRPPage();
-        await secureWalletPage.checkPageIsLoaded();
 
         // reveal and confirm the Secret Recovery Phrase on backup SRP page
         await secureWalletPage.revealAndConfirmSRP(WALLET_PASSWORD);

@@ -4,6 +4,7 @@ import { waitFor } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { setDefaultHomeActiveTabName } from '../../../../store/actions';
 import * as SendUtils from '../../utils/send';
 import * as MultichainTransactionUtils from '../../utils/multichain-snaps';
 import * as SendContext from '../../context/send';
@@ -18,6 +19,11 @@ const mockHistory = {
   goBack: jest.fn(),
   push: jest.fn(),
 };
+
+jest.mock('../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../store/actions'),
+  setDefaultHomeActiveTabName: jest.fn(),
+}));
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -39,6 +45,17 @@ function renderHook() {
 }
 
 describe('useSendQueryParams', () => {
+  const mockSetDefaultHomeActiveTabName = jest.mocked(
+    setDefaultHomeActiveTabName,
+  );
+
+  beforeEach(() => {
+    mockSetDefaultHomeActiveTabName.mockImplementation(
+      () => () =>
+        ({}) as unknown as ReturnType<typeof setDefaultHomeActiveTabName>,
+    );
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -85,7 +102,7 @@ describe('useSendQueryParams', () => {
     });
   });
 
-  it('handleSubmit is able to submit non-evm send', () => {
+  it('handleSubmit is able to submit non-evm send', async () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       asset: SOLANA_ASSET,
       from: MOCK_ADDRESS_3,
@@ -100,6 +117,10 @@ describe('useSendQueryParams', () => {
     const result = renderHook();
     result.handleSubmit(MOCK_ADDRESS_4);
 
-    expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockSetDefaultHomeActiveTabName).toHaveBeenCalledWith('activity');
+      expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
+      expect(mockHistory.push).toHaveBeenCalledWith('/');
+    });
   });
 });

@@ -4121,14 +4121,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Очистить все"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Скрыть все"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Добавьте пробелы между всеми словами и убедитесь, что никто не видит."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Показать все"
   },
   "onekey": {
     "message": "OneKey"
@@ -5044,18 +5038,8 @@
   "secureWallet": {
     "message": "Безопасный кошелек"
   },
-  "secureWalletGetStartedButton": {
-    "message": "С чего начать"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Напомнить мне позже"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Это единственный способ восстановить кошелек, если вы заблокируете доступ к приложению или приобретете новое устройство."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Не рискуйте потерять свои средства. Защитите кошелек, сохранив $1 в надежном месте.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Безопасность"
@@ -5134,9 +5118,6 @@
   },
   "seeDetails": {
     "message": "См. подробности"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Защитите свой кошелек"
   },
   "seedPhraseReq": {
     "message": "Секретные фразы для восстановления содержат 12, 15, 18, 21 или 24 слова"
@@ -5442,18 +5423,6 @@
   },
   "siweURI": {
     "message": "URL-адрес"
-  },
-  "skipAccountSecurity": {
-    "message": "Пропустить безопасность счета?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Если вы потеряете эту секретную фразу для восстановления, вы не сможете получить доступ к этому кошельку."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Защитить сейчас"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Пропустить"
   },
   "skipDeepLinkInterstitial": {
     "message": "Не показывать промежуточный экран при открытии диплинков"
@@ -5821,9 +5790,6 @@
   "spendingCaps": {
     "message": "Лимиты расходов"
   },
-  "srpDesignImageAlt": {
-    "message": "Изображение хранилища секретной фразы для восстановления"
-  },
   "srpDetailsDescription": {
     "message": "Секретная фраза для восстановления, также называемая сид-фразой или мнемонической фразой, представляет собой набор слов, который позволяет вам получать доступ к вашему криптокошельку и управлять им. Чтобы переместить кошелек в MetaMask, вам нужна эта фраза."
   },
@@ -6040,10 +6006,6 @@
   "step2LedgerWalletMsg": {
     "message": "Подключите Ledger напрямую к компьютеру, разблокируйте его и откройте приложение Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Шаг $1 из $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Все еще получаете это сообщение?"

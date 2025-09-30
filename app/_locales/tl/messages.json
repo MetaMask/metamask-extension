@@ -4091,14 +4091,8 @@
   "onboardingSrpInputClearAll": {
     "message": "I-clear lahat"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Itago lahat"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Magdagdag ng espasyo sa bawat salita at tiyakin na walang nanonood."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Ipakita lahat"
   },
   "onekey": {
     "message": "OneKey"
@@ -5006,18 +5000,8 @@
   "secureWallet": {
     "message": "Secure Wallet"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Magsimula"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Paalalahanan ako mamaya"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Ito ang tanging paraan para mabawi ang iyong wallet kapag na-lock out ka sa app o nagkaroon ng bagong device."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Huwag ipagsapalaran na mawala ang mga pondo mo. Protektahan ang iyong wallet sa pamamagitan ng pag-save ng iyong $1 sa isang lugar na pinagkakatiwalaan mo.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Seguridad"
@@ -5096,9 +5080,6 @@
   },
   "seeDetails": {
     "message": "Tingnan ang mga detalye"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "I-secure ang wallet mo"
   },
   "seedPhraseReq": {
     "message": "Ang mga Lihim na Parirala sa Pagbawi ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
@@ -5404,18 +5385,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Laktawan ang Account Security?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Kung mawawala mo ang Lihim na Parirala sa Pagbawi na ito, hindi mo na maa-access ang wallet na ito."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "I-secure ngayon"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Laktawan"
   },
   "skipDeepLinkInterstitial": {
     "message": "Huwag ipakita ang interstitial screen kapag binubuksan ang mga deep link"
@@ -5774,9 +5743,6 @@
   "spendingCaps": {
     "message": "Mga limitasyon sa paggastos"
   },
-  "srpDesignImageAlt": {
-    "message": "Larawan ng SRP vault"
-  },
   "srpDetailsDescription": {
     "message": "Ang Lihim na Parirala sa Pagbawi (Secret Recovery Phrase), na tinatawag ding pariralang binhi o mnemonic, ay isang pangkat ng mga salita na nagpapahintulot sa iyo na i-access at kontrolin ang iyong crypto wallet. Para mailipat ang iyong wallet sa MetaMask, kailangan mo ang pariralang ito."
   },
@@ -5993,10 +5959,6 @@
   "step2LedgerWalletMsg": {
     "message": "Direktang ikonekta ang iyong Ledger sa iyong computer, pagkatapos ay i-unlock ito at buksan ang Ethereum app.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Hakbang $1 ng $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Nakukuha pa rin ang mensaheng ito?"
