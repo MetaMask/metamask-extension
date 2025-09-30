@@ -33,13 +33,8 @@ export const ReviewGatorPermissionsPage = () => {
     const networkNameKey = extractNetworkName(evmNetworks, chainId as Hex);
     const networkName = t(networkNameKey);
 
-    // If the translation key doesn't exist (returns the same key) or it's the unknown network case,
-    // fall back to the full network name
-    if (
-      !networkName ||
-      networkName === networkNameKey ||
-      networkNameKey === 'unknownNetworkForGatorPermissions'
-    ) {
+    // If the translation key doesn't exist (returns the same key), fall back to the full network name
+    if (!networkName || networkName === networkNameKey) {
       return extractNetworkName(evmNetworks, chainId as Hex, true);
     }
 
