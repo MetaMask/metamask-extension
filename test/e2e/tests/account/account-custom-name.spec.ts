@@ -27,20 +27,31 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         // Change account label for existing account and verify edited account label
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
-        await accountListPage.openAccountDetailsModal('Account 1');
 
-        const accountDetailsModal = new AccountDetailsModal(driver);
-        await accountDetailsModal.checkPageIsLoaded();
-        await accountDetailsModal.changeAccountLabel(newAccountLabel);
-        await headerNavbar.checkAccountLabel(newAccountLabel);
+        await accountListPage.openMultichainAccountMenu({
+          accountLabel: 'Account 1',
+        });
+
+        await accountListPage.clickMultichainAccountMenuItem('Rename');
+        await accountListPage.changeMultichainAccountLabel(newAccountLabel);
+
+        await accountListPage.closeMultichainAccountsPage();
 
         // Add new account with custom label and verify new added account label
         await headerNavbar.openAccountMenu();
-        await accountListPage.checkPageIsLoaded();
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-          accountName: anotherAccountLabel,
+        await accountListPage.addMultichainAccount();
+
+        // Rename the new account
+        await accountListPage.openMultichainAccountMenu({
+          accountLabel: 'Account 2',
         });
+        await accountListPage.clickMultichainAccountMenuItem('Rename');
+        await accountListPage.changeMultichainAccountLabel(anotherAccountLabel);
+
+        // switch to the new account
+        await accountListPage.switchToAccount(anotherAccountLabel);
+
+        // Verify the new account label
         await headerNavbar.checkAccountLabel(anotherAccountLabel);
 
         // Switch back to the first account and verify first custom account persists
@@ -49,6 +60,7 @@ describe('Account Custom Name Persistence', function (this: Suite) {
         await accountListPage.checkAccountDisplayedInAccountList(
           newAccountLabel,
         );
+
         await accountListPage.switchToAccount(newAccountLabel);
 
         // Lock and unlock wallet
