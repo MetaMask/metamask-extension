@@ -38,9 +38,10 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
   const remoteFeatureFlagState = initMessenger.call(
     'RemoteFeatureFlagController:getState',
   );
-  const FEATURE_FLAG_NAME = 'accountApiBalances';
-  const featureFlagForAccountApiBalances =
-    remoteFeatureFlagState?.remoteFeatureFlags?.[FEATURE_FLAG_NAME] ?? [];
+  // const featureFlagForAccountApiBalances =
+  //   remoteFeatureFlagState?.remoteFeatureFlags?.['accountApiBalances'] ?? [];
+
+  const featureFlagForAccountApiBalances = ['0x1', '0x38', '0xe708'];
 
   const controller = new AccountTrackerController({
     state: { accounts: {} },
@@ -60,11 +61,8 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
         ? config.rpcUrl
         : config.type;
     },
-    // Account API configuration
-    useAccountApi: false, // Can be enabled via feature flag
-    allowExternalServices: () =>
-      initMessenger.call('PreferencesController:getState').useExternalServices,
-    useAccountApiBalances: featureFlagForAccountApiBalances,
+    // Account API configuration - chain IDs supported by feature flag
+    useAccountApiBalances: featureFlagForAccountApiBalances as string[],
   });
 
   return {

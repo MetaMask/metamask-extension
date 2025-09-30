@@ -78,8 +78,6 @@ type AccountApiBalanceResponse = {
 };
 
 type AccountApiConfig = {
-  useAccountApi?: boolean;
-  allowExternalServices?: () => boolean;
   useAccountApiBalances?: string[];
 };
 
@@ -255,10 +253,6 @@ export default class AccountTrackerController extends BaseController<
 
   #selectedAccount: InternalAccount;
 
-  #useAccountApi: boolean;
-
-  #allowExternalServices: () => boolean;
-
   #useAccountApiBalances: string[];
 
   // Account API base URL (using v4 multiaccount endpoint)
@@ -290,9 +284,6 @@ export default class AccountTrackerController extends BaseController<
     this.#getNetworkIdentifier = options.getNetworkIdentifier;
 
     // Initialize account API configuration
-    this.#useAccountApi = options.useAccountApi ?? false;
-    this.#allowExternalServices =
-      options.allowExternalServices ?? (() => false);
     this.#useAccountApiBalances = options.useAccountApiBalances ?? [];
 
     // subscribe to account removal
@@ -747,10 +738,14 @@ export default class AccountTrackerController extends BaseController<
       addresses = [selectedAddress];
     }
 
-    // Try multichain API first if enabled and we have multiple accounts
+    // Try multichain API first if we have supported chains and multiple accounts
+    const { useExternalServices: allowExternalServices } =
+      this.messagingSystem.call('PreferencesController:getState');
+
+    const hasAccountApiChains = this.#useAccountApiBalances.length > 0;
     if (
-      this.#useAccountApi &&
-      this.#allowExternalServices() &&
+      hasAccountApiChains &&
+      allowExternalServices &&
       useMultiAccountBalanceChecker
     ) {
       try {
@@ -811,9 +806,14 @@ export default class AccountTrackerController extends BaseController<
       addresses = [selectedAddress];
     }
 
-    // Try account API first if enabled (single chain request)
+    // Try account API first if chain is supported by feature flag
     let accountApiSuccess = false;
-    if (this.#useAccountApi && this.#allowExternalServices()) {
+    const { useExternalServices } = this.messagingSystem.call(
+      'PreferencesController:getState',
+    );
+    const isChainSupported = this.#useAccountApiBalances.includes(chainId);
+
+    if (isChainSupported && useExternalServices) {
       try {
         accountApiSuccess = await this.#updateAccountsViaApi(
           addresses,
@@ -1097,17 +1097,18 @@ export default class AccountTrackerController extends BaseController<
     chainIds: Hex[],
   ): Promise<AccountApiBalanceResponse | null> {
     try {
-      // Check if external services are allowed and account API is enabled
-      if (!this.#allowExternalServices() || !this.#useAccountApi) {
+      // Check if external services are allowed
+      const { useExternalServices } = this.messagingSystem.call(
+        'PreferencesController:getState',
+      );
+      if (!useExternalServices) {
         return null;
       }
 
-      // Convert chain IDs to decimal and filter by feature flag support
+      // Filter chain IDs by feature flag support (hex format), then convert to decimal for API
       const supportedChainIds = chainIds
-        .map((chainId) => parseInt(chainId, 16).toString())
-        .filter((chainIdDecimal) =>
-          this.#useAccountApiBalances.includes(chainIdDecimal),
-        );
+        .filter((chainId) => this.#useAccountApiBalances.includes(chainId))
+        .map((chainId) => parseInt(chainId, 16).toString());
 
       if (supportedChainIds.length === 0) {
         return null;
