@@ -731,10 +731,6 @@
   "betaTerms": {
     "message": "Mga tuntunin sa paggamit ng Beta"
   },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
-  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -3288,10 +3284,6 @@
   },
   "metrics": {
     "message": "Metrics"
-  },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "i-verify ang mga detalye ng network",
@@ -6738,10 +6730,6 @@
   },
   "transferRequest": {
     "message": "Kahilingan na paglilipat"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Nagkakaproblema kami sa pagkonekta ng iyong Ledger. $1",

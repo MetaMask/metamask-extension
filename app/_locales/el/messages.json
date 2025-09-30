@@ -743,10 +743,6 @@
   "betaTerms": {
     "message": "Όροι Χρήσης της Δοκιμαστικής Έκδοσης"
   },
-  "billionAbbreviation": {
-    "message": "Δ",
-    "description": "Shortened form of 'billion'"
-  },
   "blockExplorerAccountAction": {
     "message": "Λογαριασμός",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -3318,10 +3314,6 @@
   },
   "metrics": {
     "message": "Μετρήσεις"
-  },
-  "millionAbbreviation": {
-    "message": "Ε",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "επαλήθευση των στοιχείων του δικτύου",
@@ -6785,10 +6777,6 @@
   },
   "transferRequest": {
     "message": "Αίτημα μεταφοράς"
-  },
-  "trillionAbbreviation": {
-    "message": "Τ",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Έχουμε πρόβλημα με τη σύνδεσή σας στο Ledger. $1",

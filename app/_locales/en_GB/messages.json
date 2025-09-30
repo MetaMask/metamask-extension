@@ -795,10 +795,6 @@
   "betaTerms": {
     "message": "Beta Terms of use"
   },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
-  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -3469,10 +3465,6 @@
   },
   "metrics": {
     "message": "Metrics"
-  },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
   },
   "minimumReceivedExplanation": {
     "message": "The minimum you'll get if the price changes while your transaction processes, based on your slippage setting. The estimate comes from liquidity providers, so the final amount may differ."
@@ -7333,10 +7325,6 @@
   },
   "transferRequest": {
     "message": "Transfer request"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",

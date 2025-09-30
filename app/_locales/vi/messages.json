@@ -743,10 +743,6 @@
   "betaTerms": {
     "message": "Điều khoản sử dụng phiên bản Beta"
   },
-  "billionAbbreviation": {
-    "message": "Tỷ",
-    "description": "Shortened form of 'billion'"
-  },
   "blockExplorerAccountAction": {
     "message": "Tài khoản",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -3318,10 +3314,6 @@
   },
   "metrics": {
     "message": "Chỉ số"
-  },
-  "millionAbbreviation": {
-    "message": "Triệu",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "xác minh thông tin về mạng",
@@ -6785,10 +6777,6 @@
   },
   "transferRequest": {
     "message": "Yêu cầu chuyển tiền"
-  },
-  "trillionAbbreviation": {
-    "message": "Nghìn Tỷ",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Chúng tôi đang gặp sự cố khi kết nối với Ledger của bạn. $1",

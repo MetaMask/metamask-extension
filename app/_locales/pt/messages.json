@@ -731,10 +731,6 @@
   "betaTerms": {
     "message": "Termos de uso do Beta"
   },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
-  },
   "blockExplorerAccountAction": {
     "message": "Conta",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -3288,10 +3284,6 @@
   },
   "metrics": {
     "message": "Métricas"
-  },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "verifique os detalhes da rede",
@@ -6738,10 +6730,6 @@
   },
   "transferRequest": {
     "message": "Solicitação de transferência"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Estamos com problemas para conectar o seu Ledger. $1",

@@ -743,10 +743,6 @@
   "betaTerms": {
     "message": "बीटा के इस्तेमाल की शर्तें"
   },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
-  },
   "blockExplorerAccountAction": {
     "message": "अकाउंट",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -3318,10 +3314,6 @@
   },
   "metrics": {
     "message": "मेट्रिक्स"
-  },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "नेटवर्क विवरण वेरीफ़ाई करें",
@@ -6785,10 +6777,6 @@
   },
   "transferRequest": {
     "message": "अनुरोध ट्रांसफर करें"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "हमें आपके Ledger को जोड़ने में समस्या आ रही है। $1",
