@@ -15,10 +15,10 @@ export const extractNetworkName = (
   isFullNetworkName = false,
 ) => {
   const network = networks[chainId];
-  if (network?.name && network?.name !== '') {
+  if (network?.name && network?.name.trim() !== '') {
     return isFullNetworkName
       ? network.name
-      : `networkName${network.name.split(' ')[0]}`;
+      : `networkName${network.name.trim().split(' ')[0]}`;
   }
   return 'unknownNetworkForGatorPermissions';
 };

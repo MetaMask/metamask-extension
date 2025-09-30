@@ -54,6 +54,24 @@ describe('extractNetworkName', () => {
       const result = extractNetworkName(mockNetworks, '0x89', false);
       expect(result).toBe('networkNamePolygon');
     });
+
+    it('should handle network names with leading/trailing whitespace correctly', () => {
+      const networksWithWhitespace: Record<
+        `0x${string}`,
+        NetworkConfiguration
+      > = {
+        '0x1': {
+          chainId: '0x1',
+          name: '  Ethereum Mainnet  ',
+          blockExplorerUrls: [],
+          nativeCurrency: 'ETH',
+          defaultRpcEndpointIndex: 0,
+          rpcEndpoints: [],
+        },
+      };
+      const result = extractNetworkName(networksWithWhitespace, '0x1', false);
+      expect(result).toBe('networkNameEthereum');
+    });
   });
 
   describe('when network exists but has empty name', () => {
@@ -70,6 +88,40 @@ describe('extractNetworkName', () => {
 
     it('should return unknownNetworkForGatorPermissions for empty string name', () => {
       const result = extractNetworkName(networksWithEmptyName, '0x1', true);
+      expect(result).toBe('unknownNetworkForGatorPermissions');
+    });
+  });
+
+  describe('when network exists but has whitespace-only name', () => {
+    const networksWithWhitespaceName: Record<
+      `0x${string}`,
+      NetworkConfiguration
+    > = {
+      '0x1': {
+        chainId: '0x1',
+        name: '   ',
+        blockExplorerUrls: [],
+        nativeCurrency: 'ETH',
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [],
+      },
+    };
+
+    it('should return unknownNetworkForGatorPermissions for whitespace-only name', () => {
+      const result = extractNetworkName(
+        networksWithWhitespaceName,
+        '0x1',
+        true,
+      );
+      expect(result).toBe('unknownNetworkForGatorPermissions');
+    });
+
+    it('should return unknownNetworkForGatorPermissions for whitespace-only name when isFullNetworkName is false', () => {
+      const result = extractNetworkName(
+        networksWithWhitespaceName,
+        '0x1',
+        false,
+      );
       expect(result).toBe('unknownNetworkForGatorPermissions');
     });
   });
