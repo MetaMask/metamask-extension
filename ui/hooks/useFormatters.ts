@@ -34,7 +34,11 @@ function formatCompact(
   formatNumber: (value: Value, options?: Intl.NumberFormatOptions) => string,
   value: Value,
 ) {
-  return formatNumber(value, { notation: 'compact' });
+  return formatNumber(value, {
+    notation: 'compact',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
 export function useFormatters() {
