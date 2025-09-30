@@ -20,6 +20,7 @@ import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOrigin
 import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
 import { useAddressTrustSignalAlerts } from './alerts/useAddressTrustSignalAlerts';
 import { useOriginTrustSignalAlerts } from './alerts/useOriginTrustSignalAlerts';
+import { useSpenderAlerts } from './alerts/useSpenderAlerts';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -86,6 +87,7 @@ export default function useConfirmationAlerts(): Alert[] {
   const networkAndOriginSwitchingAlerts = useNetworkAndOriginSwitchingAlerts();
   const addressTrustSignalAlerts = useAddressTrustSignalAlerts();
   const originTrustSignalAlerts = useOriginTrustSignalAlerts();
+  const spenderAlerts = useSpenderAlerts();
 
   return useMemo(
     () => [
@@ -97,6 +99,7 @@ export default function useConfirmationAlerts(): Alert[] {
       ...networkAndOriginSwitchingAlerts,
       ...addressTrustSignalAlerts,
       ...originTrustSignalAlerts,
+      ...spenderAlerts,
     ],
     [
       blockaidAlerts,
@@ -107,6 +110,7 @@ export default function useConfirmationAlerts(): Alert[] {
       networkAndOriginSwitchingAlerts,
       addressTrustSignalAlerts,
       originTrustSignalAlerts,
+      spenderAlerts,
     ],
   );
 }

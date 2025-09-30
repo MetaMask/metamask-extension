@@ -881,7 +881,7 @@ describe('trust-signals-util', () => {
 
       parseApprovalTransactionDataMock.mockReturnValue({
         name: 'approve',
-        spender: '', // Empty string is falsy
+        spender: undefined, // Undefined spender is falsy
         amountOrTokenId: undefined,
         isApproveAll: false,
         isRevokeAll: false,

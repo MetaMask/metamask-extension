@@ -410,7 +410,7 @@ describe('createTrustSignalsMiddleware', () => {
       beforeEach(() => {
         parseApprovalTransactionDataMock.mockReturnValue({
           name: 'approve',
-          spender: TEST_ADDRESSES.SPENDER,
+          spender: TEST_ADDRESSES.SPENDER as `0x${string}`,
           amountOrTokenId: undefined,
           isApproveAll: false,
           isRevokeAll: false,
@@ -885,7 +885,8 @@ describe('createTrustSignalsMiddleware', () => {
           createMiddleware();
 
         const permitDataWithoutSpender = createPermitTypedData();
-        delete permitDataWithoutSpender.message.spender;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        delete (permitDataWithoutSpender.message as any).spender;
 
         const req = createMockRequest(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
           TEST_ADDRESSES.FROM,
@@ -956,7 +957,8 @@ describe('createTrustSignalsMiddleware', () => {
           createMiddleware();
 
         const permitDataWithoutPrimaryType = createPermitTypedData();
-        delete permitDataWithoutPrimaryType.primaryType;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        delete (permitDataWithoutPrimaryType as any).primaryType;
 
         const req = createMockRequest(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
           TEST_ADDRESSES.FROM,
