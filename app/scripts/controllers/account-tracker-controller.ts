@@ -41,6 +41,10 @@ import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feat
 import { LOCALHOST_RPC_URL } from '../../../shared/constants/network';
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
 import { previousValueComparator } from '../lib/util';
+import {
+  fetchAccountBalancesInBatches,
+  type AccountApiBalanceResponse,
+} from '../lib/batch-utils';
 import type {
   OnboardingControllerGetStateAction,
   OnboardingControllerStateChangeEvent,
@@ -50,31 +54,15 @@ import { PreferencesControllerGetStateAction } from './preferences-controller';
 // Unique name for the controller
 const controllerName = 'AccountTrackerController';
 
+// Maximum number of accounts per Account API request to avoid API limits
+const ACCOUNT_API_BATCH_SIZE = 50;
+
 export type StakedBalance = string;
 
 type Account = {
   address: string;
   balance: string | null;
   stakedBalance?: StakedBalance;
-};
-
-type AccountApiBalanceResponse = {
-  balances: Record<
-    string,
-    Record<
-      string,
-      {
-        balance: string;
-        token: {
-          address: string;
-          symbol: string;
-          decimals: number;
-          name: string;
-          type: 'native' | 'erc20';
-        };
-      }
-    >
-  >;
 };
 
 type AccountApiConfig = {
@@ -1084,8 +1072,9 @@ export default class AccountTrackerController extends BaseController<
 
   /**
    * Fetches account balances from the account API service (v4 multiaccount endpoint)
-   * Supports multichain and multiAccount requests in a single API call
+   * Supports multichain and multiAccount requests with automatic batching
    * Uses CAIP format for addresses: eip155:0:0x...
+   * Batches requests to maximum of 50 accounts per API call to avoid API limits
    *
    * @private
    * @param addresses - Array of account addresses (hex format, will be converted to CAIP)
@@ -1114,30 +1103,17 @@ export default class AccountTrackerController extends BaseController<
         return null;
       }
 
-      // Build the v4 API URL with multichain and multiAccount query parameters
-      // Convert addresses to CAIP format: eip155:0:0x...
-      const accountAddressesParam = addresses
-        .map((address) => `eip155:0:${address}`)
-        .join(',');
-      const networksParam = supportedChainIds.join(',');
-      const url = `${this.#accountApiBaseUrl}/v4/multiaccount/balances?networks=${networksParam}&accountAddresses=${accountAddressesParam}`;
-
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
+      // Use batch utility to process addresses in parallel using Promise.all
+      return await fetchAccountBalancesInBatches({
+        addresses,
+        supportedChainIds,
+        accountApiBaseUrl: this.#accountApiBaseUrl,
+        batchSize: ACCOUNT_API_BATCH_SIZE,
+        logger: {
+          warn: (message: string) => log.warn(message),
+          debug: (message: string) => log.debug(message),
         },
       });
-
-      if (!response.ok) {
-        log.warn(
-          `Account API request failed with status ${response.status}: ${response.statusText}`,
-        );
-        return null;
-      }
-
-      const data = (await response.json()) as AccountApiBalanceResponse;
-      return data;
     } catch (error) {
       log.warn('Failed to fetch balances from account API:', error);
       return null;
