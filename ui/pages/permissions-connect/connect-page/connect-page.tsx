@@ -23,10 +23,6 @@ import {
 
 import { isEqual } from 'lodash';
 import { Tooltip } from 'react-tippy';
-import {
-  BoxBackgroundColor,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPermissions,
@@ -548,16 +544,17 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       >
         <Tabs
           onTabClick={() => null}
-          backgroundColor={BoxBackgroundColor.Transparent}
-          justifyContent={BoxJustifyContent.Center}
+          backgroundColor={BackgroundColor.transparent}
+          justifyContent={JustifyContent.center}
           defaultActiveTabKey="accounts"
           tabListProps={{
-            backgroundColor: BoxBackgroundColor.Transparent,
+            backgroundColor: BackgroundColor.transparent,
           }}
         >
           <Tab
             name={t('accounts')}
             tabKey="accounts"
+            width={BlockSize.Full}
             data-testid="accounts-tab"
           >
             <Box marginTop={4}>
@@ -657,6 +654,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
           <Tab
             name={t('permissions')}
             tabKey="permissions"
+            width={BlockSize.Full}
             data-testid="permissions-tab"
             disabled={
               promptToCreateSolanaAccount &&

@@ -1,8 +1,11 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { withFixtures } from '../../helpers';
+import {
+  logInWithBalanceValidation,
+  openActionMenuAndStartSendFlow,
+  withFixtures,
+} from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
@@ -147,7 +150,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
           active: true,
           networkId: 1,
           chainId: 1,
-          chainName: 'Ethereum',
+          chainName: 'Ethereum Mainnet',
           nativeCurrency: {
             name: 'Ether',
             symbol: 'ETH',
@@ -204,7 +207,7 @@ describe('Swap-Send ETH', function () {
             .withNetworkControllerOnMainnet()
             .withEnabledNetworks({
               eip155: {
-                '0x1': true, // Ethereum
+                '0x1': true, // Ethereum Mainnet
               },
             })
             .withPreferencesControllerSmartTransactionsOptedOut()
@@ -243,7 +246,7 @@ describe('Swap-Send ETH', function () {
         },
         async ({ driver }) => {
           const swapSendPage = new SwapSendPage(driver);
-          await loginWithBalanceValidation(driver);
+          await logInWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -251,7 +254,7 @@ describe('Swap-Send ETH', function () {
           await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
           // START SWAP AND SEND FLOW
-          await homePage.startSendFlow();
+          await openActionMenuAndStartSendFlow(driver);
 
           await swapSendPage.fillRecipientAddressInput(DEFAULT_FIXTURE_ACCOUNT);
           await swapSendPage.fillAmountInput('1');

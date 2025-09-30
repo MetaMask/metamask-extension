@@ -1,10 +1,4 @@
 import React from 'react';
-import { Hex } from '@metamask/utils';
-
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  CHAIN_ID_TOKEN_IMAGE_MAP,
-} from '../../../../../../shared/constants/network';
 import {
   AvatarToken,
   AvatarNetwork,
@@ -14,6 +8,8 @@ import {
   Box,
   Text,
 } from '../../../../../components/component-library';
+
+import { Asset, NFT_STANDARDS } from '../../../types/send';
 import {
   TextColor,
   TextVariant,
@@ -22,14 +18,10 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../../../helpers/constants/design-system';
-import { Asset, NFT_STANDARDS } from '../../../types/send';
-import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
-import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 
 const NFTHero = ({ asset }: { asset: Asset }) => {
   const nftData = asset;
   const { collection, name, image } = nftData;
-  const nftItemSrc = useNftImageUrl(image as string);
 
   return (
     <Box
@@ -57,7 +49,7 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
         {image || collection?.imageUrl ? (
           <Box
             as="img"
-            src={nftItemSrc || (collection?.imageUrl as string)}
+            src={image || (collection?.imageUrl as string)}
             alt={name}
             style={{
               width: 80,
@@ -85,20 +77,8 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
 };
 
 const TokenHero = ({ asset }: { asset: Asset }) => {
-  const chainNetworkNameAndImageMap = useChainNetworkNameAndImageMap();
-
-  const { chainId, image, symbol, isNative, networkImage, networkName } =
-    asset ?? {};
-
-  const nativeTokenImage = isNative
-    ? (CHAIN_ID_TOKEN_IMAGE_MAP[
-        chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-      ] ?? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId as Hex])
-    : undefined;
-
-  const chainNetworkNameAndImage = chainNetworkNameAndImageMap.get(
-    chainId as Hex,
-  );
+  const tokenData = asset;
+  const { chainId, image, symbol } = tokenData;
 
   return (
     <Box
@@ -113,16 +93,16 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
         badge={
           chainId ? (
             <AvatarNetwork
-              size={AvatarNetworkSize.Sm}
-              name={networkName || chainNetworkNameAndImage?.networkName || ''}
-              src={networkImage || chainNetworkNameAndImage?.networkImage}
+              size={AvatarNetworkSize.Xs}
+              name={tokenData.networkName ?? ''}
+              src={tokenData.networkImage}
             />
           ) : null
         }
       >
         <AvatarToken
           size={AvatarTokenSize.Xl}
-          src={image || nativeTokenImage}
+          src={image}
           name={symbol}
           showHalo={false}
         />
@@ -132,7 +112,7 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
         color={TextColor.textDefault}
         marginLeft={2}
       >
-        {symbol}
+        {asset.symbol}
       </Text>
     </Box>
   );

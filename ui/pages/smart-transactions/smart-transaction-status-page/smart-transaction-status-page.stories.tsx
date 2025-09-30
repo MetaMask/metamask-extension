@@ -5,7 +5,6 @@ import SmartTransactionStatusPage from './smart-transaction-status-page';
 import { Meta, StoryObj } from '@storybook/react';
 import { SimulationData } from '@metamask/transaction-controller';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import mockState from '../../../../test/data/mock-state.json';
 
 // Mock data
 const CHAIN_ID_MOCK = '0x1';
@@ -28,7 +27,6 @@ const TX_MOCK = {
 
 const storeMock = configureStore({
   metamask: {
-    ...mockState.metamask,
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: false,
     },

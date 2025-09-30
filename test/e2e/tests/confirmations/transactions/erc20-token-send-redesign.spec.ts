@@ -139,7 +139,7 @@ async function createWalletInitiatedTransactionAndAssertDetails(
   await sendToPage.fillAmount('1');
 
   await sendToPage.clickAssetPickerButton();
-  await sendToPage.chooseTokenToSend('TST');
+  await sendToPage.clickSecondTokenListButton();
   await sendToPage.goToNextScreen();
 
   const tokenTransferTransactionConfirmation =

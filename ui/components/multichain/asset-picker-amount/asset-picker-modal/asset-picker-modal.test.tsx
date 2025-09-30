@@ -252,7 +252,8 @@ describe('AssetPickerModal', () => {
     );
 
     fireEvent.click(screen.getByText('nfts'));
-    expect(screen.getByTestId('nft-tab-empty-state')).toBeInTheDocument();
+    expect(screen.getByText('noNFTs')).toBeInTheDocument();
+    expect(screen.getByText('learnMoreUpperCase')).toBeInTheDocument();
   });
 
   it('filters tokens based on search query', () => {
@@ -391,7 +392,7 @@ describe('AssetPickerModal', () => {
     expect(modalTitle).toBeInTheDocument();
 
     expect(getAllByRole('img')).toHaveLength(2);
-    const modalContent = getByText('Ethereum');
+    const modalContent = getByText('Ethereum Mainnet');
     expect(modalContent).toBeInTheDocument();
   });
 

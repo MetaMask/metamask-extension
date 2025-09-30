@@ -1,6 +1,6 @@
 [
   {
-    "name": "Ethereum",
+    "name": "Ethereum Mainnet",
     "chain": "ETH",
     "icon": "ethereum",
     "rpc": [

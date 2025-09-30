@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import isEqual from 'lodash/isEqual';
-import { isCrossChain } from '@metamask/bridge-controller';
 
 import {
   isHardwareWallet,
@@ -82,9 +81,6 @@ export default function AwaitingSignatures() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isSwap =
-    fromChain && !isCrossChain(fromChain.chainId, toChain?.chainId);
-
   return (
     <div className="awaiting-bridge-signatures">
       <Box
@@ -107,7 +103,7 @@ export default function AwaitingSignatures() {
             {t('swapConfirmWithHwWallet')}
           </Text>
         )}
-        {needsTwoConfirmations && activeQuote && (
+        {needsTwoConfirmations && (
           <>
             <Text variant={TextVariant.bodyMdBold} marginTop={2}>
               {t('bridgeConfirmTwoTransactions')}
@@ -122,16 +118,26 @@ export default function AwaitingSignatures() {
                 >
                   1
                 </AvatarBase>
-                {t(
-                  isSwap
-                    ? 'unifiedSwapAllowSwappingOf'
-                    : 'bridgeAllowSwappingOf',
-                  [
-                    activeQuote.sentAmount?.amount,
-                    fromToken?.symbol,
-                    fromChain?.name,
-                  ],
-                )}
+                {/* <BridgeStepIcon stepNumber={1} /> */}
+                {t('bridgeAllowSwappingOf', [
+                  <Text
+                    as="span"
+                    variant={TextVariant.bodyMd}
+                    key="allowAmount"
+                  >
+                    {fromAmount}
+                  </Text>,
+                  <Text as="span" variant={TextVariant.bodyMd} key="allowToken">
+                    {fromToken?.symbol}
+                  </Text>,
+                  <Text
+                    as="span"
+                    variant={TextVariant.bodyMd}
+                    key="allowNetwork"
+                  >
+                    {fromChain?.name}
+                  </Text>,
+                ])}
               </li>
               <li>
                 <AvatarBase
@@ -142,10 +148,16 @@ export default function AwaitingSignatures() {
                 >
                   2
                 </AvatarBase>
-                {t(isSwap ? 'unifiedSwapFromTo' : 'bridgeFromTo', [
-                  fromAmount,
-                  fromToken?.symbol,
-                  isSwap ? toToken?.symbol : toChain?.name,
+                {t('bridgeFromTo', [
+                  <Text as="span" variant={TextVariant.bodyMd} key="fromAmount">
+                    {fromAmount}
+                  </Text>,
+                  <Text as="span" variant={TextVariant.bodyMd} key="fromToken">
+                    {fromToken?.symbol}
+                  </Text>,
+                  <Text as="span" variant={TextVariant.bodyMd} key="toNetwork">
+                    {toChain?.name}
+                  </Text>,
                 ])}
               </li>
             </ul>

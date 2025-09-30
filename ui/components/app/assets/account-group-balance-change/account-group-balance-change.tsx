@@ -5,8 +5,6 @@ import {
   Display,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { useFormatters } from '../../../../helpers/formatters';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
 import { Box, SensitiveText } from '../../../component-library';
 import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
@@ -20,13 +18,11 @@ const balanceAmountSpanStyle = { whiteSpace: 'pre' } as const;
 const AccountGroupBalanceChangeComponent: React.FC<
   AccountGroupBalanceChangeProps
 > = ({ period }) => {
-  const { privacyMode, color, amountChange, percentChange } =
+  const { privacyMode, color, displayAmountChange, displayPercentChange } =
     useAccountGroupBalanceDisplay(period);
-  const { formatCurrency, formatPercentWithMinThreshold } = useFormatters();
-  const currency = useSelector(getCurrentCurrency);
 
   return (
-    <Box display={Display.Flex} gap={1}>
+    <Box display={Display.Flex}>
       <SensitiveText
         variant={TextVariant.bodyMdMedium}
         color={color}
@@ -36,7 +32,7 @@ const AccountGroupBalanceChangeComponent: React.FC<
         ellipsis
         length="10"
       >
-        {formatCurrency(amountChange, currency, { signDisplay: 'always' })}
+        {displayAmountChange}
       </SensitiveText>
       <SensitiveText
         variant={TextVariant.bodyMdMedium}
@@ -46,7 +42,8 @@ const AccountGroupBalanceChangeComponent: React.FC<
         ellipsis
         length="10"
       >
-        {`(${formatPercentWithMinThreshold(percentChange, { signDisplay: 'always' })})`}
+        {' '}
+        {displayPercentChange}
       </SensitiveText>
     </Box>
   );

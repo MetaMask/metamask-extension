@@ -195,10 +195,11 @@ describe('DeFiDetailsPage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('Lend, borrow, and trade, right in your wallet.'),
+        screen.getByText('We may not support your protocol yet.'),
       ).toBeInTheDocument();
-      expect(screen.getByText('Explore DeFi')).toBeInTheDocument();
-      expect(screen.getByTestId('defi-tab-empty-state')).toBeInTheDocument();
+      expect(
+        screen.getByText("Can't find what you're looking for?"),
+      ).toBeInTheDocument();
     });
   });
 });

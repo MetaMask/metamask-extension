@@ -6,6 +6,14 @@ import configureStore from '../../../store/store';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainSrpBackup } from './multichain-srp-backup';
 
+const mockHistoryPush = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockHistoryPush,
+  }),
+}));
+
 const srpBackupRowTestId = 'multichain-srp-backup';
 const srpQuizHeaderTestId = 'srp-quiz-header';
 
@@ -50,8 +58,7 @@ describe('MultichainSrpBackup', () => {
   });
 
   it('navigates to SRP review route when shouldShowBackupReminder is true', () => {
-    const { history } = renderComponent({ shouldShowBackupReminder: true });
-    const mockHistoryPush = jest.spyOn(history, 'push');
+    renderComponent({ shouldShowBackupReminder: true });
 
     fireEvent.click(screen.getByTestId(srpBackupRowTestId));
 
@@ -61,11 +68,10 @@ describe('MultichainSrpBackup', () => {
   });
 
   it('opens SRP quiz modal when shouldShowBackupReminder is false', async () => {
-    const { history } = renderComponent({
+    renderComponent({
       shouldShowBackupReminder: false,
       keyringId: 'test-keyring-id',
     });
-    const mockHistoryPush = jest.spyOn(history, 'push');
 
     fireEvent.click(screen.getByTestId(srpBackupRowTestId));
 

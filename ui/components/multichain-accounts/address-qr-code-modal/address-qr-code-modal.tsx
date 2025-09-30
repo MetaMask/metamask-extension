@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import qrCode from 'qrcode-generator';
-import { CaipChainId } from '@metamask/utils';
 import {
   Text,
   TextVariant,
@@ -29,7 +28,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getBlockExplorerInfo } from '../../../helpers/utils/multichain/getBlockExplorerInfo';
 
 // Constants for QR code generation
 const QR_CODE_TYPE_NUMBER = 4;
@@ -50,7 +48,6 @@ export type AddressQRCodeModalProps = Omit<
   address: string;
   accountName: string;
   networkName: string;
-  chainId: CaipChainId;
   networkImageSrc?: string | undefined;
 };
 
@@ -60,7 +57,6 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
   address,
   accountName,
   networkName,
-  chainId,
   networkImageSrc,
 }) => {
   const t = useI18nContext();
@@ -92,24 +88,47 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
     handleCopy(address);
   }, [address, handleCopy]);
 
-  // Get block explorer info from network configuration
-  const explorerInfo = getBlockExplorerInfo(
-    t as (key: string, ...args: string[]) => string,
-    address,
-    { networkName, chainId },
-  );
+  // TODO: Move this out into a utility or selector
+  // Centralized explorer configuration
+  const explorerInfo = useMemo(() => {
+    const networkNameLower = networkName.toLowerCase();
+
+    if (networkNameLower.includes('ethereum')) {
+      return {
+        url: 'https://etherscan.io',
+        name: 'Etherscan',
+        buttonText: t('viewAddressOnExplorer', ['Etherscan']),
+      };
+    }
+
+    if (networkNameLower.includes('solana')) {
+      return {
+        url: 'https://solscan.io',
+        name: 'Solscan',
+        buttonText: t('viewAddressOnExplorer', ['Solscan']),
+      };
+    }
+
+    if (networkNameLower.includes('bitcoin')) {
+      return {
+        url: 'https://blockstream.info',
+        name: 'Blockstream',
+        buttonText: t('viewAddressOnExplorer', ['Blockstream']),
+      };
+    }
+
+    // Return null if no valid explorer found - button won't be shown
+    return null;
+  }, [networkName, t]);
 
   const handleExplorerNavigation = useCallback(() => {
     if (!explorerInfo) {
       return;
     }
 
-    openBlockExplorer(
-      explorerInfo.addressUrl,
-      'Address QR Code Modal',
-      trackEvent,
-    );
-  }, [explorerInfo, trackEvent]);
+    const addressLink = `${explorerInfo.url}/address/${address}`;
+    openBlockExplorer(addressLink, 'Address QR Code Modal', trackEvent);
+  }, [address, explorerInfo, trackEvent]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

@@ -9,15 +9,7 @@ import {
 } from '@metamask/network-controller';
 import { CaipChainId } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
-import {
-  AVALANCHE_DISPLAY_NAME,
-  BNB_DISPLAY_NAME,
-  LINEA_SEPOLIA_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-  MAX_SAFE_CHAIN_ID,
-  POLYGON_DISPLAY_NAME,
-  SEPOLIA_DISPLAY_NAME,
-} from '../constants/network';
+import { MAX_SAFE_CHAIN_ID } from '../constants/network';
 import {
   isSafeChainId,
   isPrefixedFormattedHexString,
@@ -184,7 +176,7 @@ describe('network utils', () => {
       },
       [EthScope.Mainnet]: {
         chainId: EthScope.Mainnet,
-        name: MAINNET_DISPLAY_NAME,
+        name: 'Ethereum Mainnet',
         nativeCurrency: 'ETH',
         blockExplorerUrls: ['https://etherscan.io'],
         defaultBlockExplorerUrlIndex: 0,
@@ -192,7 +184,7 @@ describe('network utils', () => {
       },
       [EthScope.Testnet]: {
         chainId: EthScope.Testnet,
-        name: SEPOLIA_DISPLAY_NAME,
+        name: 'Sepolia',
         nativeCurrency: 'SepoliaETH',
         blockExplorerUrls: ['https://sepolia.etherscan.io'],
         defaultBlockExplorerUrlIndex: 0,
@@ -229,7 +221,7 @@ describe('network utils', () => {
         },
         {
           chainId: EthScope.Mainnet,
-          name: MAINNET_DISPLAY_NAME,
+          name: 'Ethereum Mainnet',
           nativeCurrency: 'ETH',
           blockExplorerUrls: ['https://etherscan.io'],
           defaultBlockExplorerUrlIndex: 0,
@@ -237,7 +229,7 @@ describe('network utils', () => {
         },
         {
           chainId: EthScope.Testnet,
-          name: SEPOLIA_DISPLAY_NAME,
+          name: 'Sepolia',
           nativeCurrency: 'SepoliaETH',
           blockExplorerUrls: ['https://sepolia.etherscan.io'],
           defaultBlockExplorerUrlIndex: 0,
@@ -255,7 +247,7 @@ describe('network utils', () => {
       ).toStrictEqual([
         {
           chainId: EthScope.Mainnet,
-          name: MAINNET_DISPLAY_NAME,
+          name: 'Ethereum Mainnet',
           nativeCurrency: 'ETH',
           blockExplorerUrls: ['https://etherscan.io'],
           defaultBlockExplorerUrlIndex: 0,
@@ -263,7 +255,7 @@ describe('network utils', () => {
         },
         {
           chainId: EthScope.Testnet,
-          name: SEPOLIA_DISPLAY_NAME,
+          name: 'Sepolia',
           nativeCurrency: 'SepoliaETH',
           blockExplorerUrls: ['https://sepolia.etherscan.io'],
           defaultBlockExplorerUrlIndex: 0,
@@ -289,7 +281,7 @@ describe('network utils', () => {
     const evmNetworks: Record<string, NetworkConfiguration> = {
       '0x1': {
         chainId: '0x1',
-        name: MAINNET_DISPLAY_NAME,
+        name: 'Ethereum Mainnet',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -304,7 +296,7 @@ describe('network utils', () => {
       },
       '0x38': {
         chainId: '0x38',
-        name: BNB_DISPLAY_NAME,
+        name: 'Binance Smart Chain Mainnet',
         nativeCurrency: 'BNB',
         rpcEndpoints: [
           {
@@ -319,7 +311,7 @@ describe('network utils', () => {
       },
       '0x89': {
         chainId: '0x89',
-        name: POLYGON_DISPLAY_NAME,
+        name: 'Polygon Mainnet',
         nativeCurrency: 'MATIC',
         rpcEndpoints: [
           {
@@ -334,7 +326,7 @@ describe('network utils', () => {
       },
       '0xa86a': {
         chainId: '0xa86a',
-        name: AVALANCHE_DISPLAY_NAME,
+        name: 'Avalanche Mainnet',
         nativeCurrency: 'AVAX',
         rpcEndpoints: [
           {
@@ -387,11 +379,11 @@ describe('network utils', () => {
       };
       const sepolia = {
         chainId: toEvmCaipChainId(ChainId.sepolia),
-        name: SEPOLIA_DISPLAY_NAME,
+        name: 'Sepolia',
       };
       const lineaSepolia = {
         chainId: toEvmCaipChainId(ChainId['linea-sepolia']),
-        name: LINEA_SEPOLIA_DISPLAY_NAME,
+        name: 'Linea Sepolia',
       };
 
       const networks = [

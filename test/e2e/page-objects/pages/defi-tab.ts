@@ -53,7 +53,7 @@ class DeFiTab {
 
   private readonly errorMessage = '[data-testid="defi-tab-error-message"]';
 
-  private readonly noPositionsMessage = '[data-testid="defi-tab-empty-state"]';
+  private readonly noPositionsMessage = '[data-testid="defi-tab-no-positions"]';
 
   constructor(driver: Driver) {
     this.driver = driver;

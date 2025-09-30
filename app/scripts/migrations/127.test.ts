@@ -1,9 +1,3 @@
-import {
-  LINEA_MAINNET_DISPLAY_NAME,
-  LINEA_SEPOLIA_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-  SEPOLIA_DISPLAY_NAME,
-} from '../../../shared/constants/network';
 import { migrate, version } from './127';
 
 const oldVersion = 126;
@@ -1204,7 +1198,7 @@ function defaultPostMigrationState() {
         defaultRpcEndpointIndex: 0,
         blockExplorerUrls: ['https://etherscan.io'],
         defaultBlockExplorerUrlIndex: 0,
-        name: MAINNET_DISPLAY_NAME,
+        name: 'Ethereum Mainnet',
         nativeCurrency: 'ETH',
       },
       '0xaa36a7': {
@@ -1219,7 +1213,7 @@ function defaultPostMigrationState() {
         defaultRpcEndpointIndex: 0,
         blockExplorerUrls: ['https://sepolia.etherscan.io'],
         defaultBlockExplorerUrlIndex: 0,
-        name: SEPOLIA_DISPLAY_NAME,
+        name: 'Sepolia',
         nativeCurrency: 'SepoliaETH',
       },
       '0xe705': {
@@ -1234,7 +1228,7 @@ function defaultPostMigrationState() {
         defaultRpcEndpointIndex: 0,
         blockExplorerUrls: ['https://sepolia.lineascan.build'],
         defaultBlockExplorerUrlIndex: 0,
-        name: LINEA_SEPOLIA_DISPLAY_NAME,
+        name: 'Linea Sepolia',
         nativeCurrency: 'LineaETH',
       },
       '0xe708': {
@@ -1249,7 +1243,7 @@ function defaultPostMigrationState() {
         defaultRpcEndpointIndex: 0,
         blockExplorerUrls: ['https://lineascan.build'],
         defaultBlockExplorerUrlIndex: 0,
-        name: LINEA_MAINNET_DISPLAY_NAME,
+        name: 'Linea Mainnet',
         nativeCurrency: 'ETH',
       },
     },

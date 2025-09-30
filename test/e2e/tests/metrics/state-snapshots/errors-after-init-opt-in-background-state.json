@@ -6,8 +6,6 @@
   "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
   "AccountTreeController": {
     "accountTree": "object",
-    "isAccountTreeSyncingInProgress": "boolean",
-    "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object"
   },
@@ -43,7 +41,6 @@
     "showPermissionsTour": true,
     "showNetworkBanner": true,
     "showAccountBanner": true,
-    "productTour": "accountIcon",
     "trezorModel": null,
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
@@ -51,7 +48,6 @@
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-    "hasShownMultichainAccountsIntroModal": "boolean",
     "surveyLinkLastClickedOrClosed": "object",
     "showDownloadMobileAppSlide": "boolean",
     "slides": "object",
@@ -69,7 +65,8 @@
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
-    "snapsInstallPrivacyWarningShown": true
+    "snapsInstallPrivacyWarningShown": true,
+    "productTour": "accountIcon"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -276,8 +273,7 @@
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
     "showIncomingTransactions": "object",
-    "manageInstitutionalWallets": "boolean",
-    "referrals": "object"
+    "manageInstitutionalWallets": "boolean"
   },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
@@ -319,7 +315,6 @@
     "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
-  "SubscriptionController": "object",
   "SwapsController": {
     "swapsState": {
       "quotes": "object",
@@ -374,6 +369,9 @@
     "isBackupAndSyncUpdateLoading": "boolean",
     "isAccountSyncingEnabled": true,
     "isContactSyncingEnabled": true,
-    "isContactSyncingInProgress": "boolean"
+    "isContactSyncingInProgress": "boolean",
+    "hasAccountSyncingSyncedAtLeastOnce": "boolean",
+    "isAccountSyncingReadyToBeDispatched": "boolean",
+    "isAccountSyncingInProgress": "boolean"
   }
 }

@@ -20,9 +20,8 @@ import { createDeepEqualSelector } from '../../../shared/modules/selectors/util'
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
-  getEnabledNetworks,
   getIsSolanaTestnetSupportEnabled,
-  getIsBitcoinTestnetSupportEnabled,
+  getEnabledNetworks,
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
 
@@ -104,13 +103,11 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
     (state: MultichainNetworkConfigurationsByChainIdState) =>
       state.metamask.multichainNetworkConfigurationsByChainId,
     getIsNonEvmNetworksEnabled,
-    getIsSolanaTestnetSupportEnabled,
-    getIsBitcoinTestnetSupportEnabled,
+    (state) => getIsSolanaTestnetSupportEnabled(state),
     (
       multichainNetworkConfigurationsByChainId,
       isNonEvmNetworksEnabled,
       isSolanaTestnetSupportEnabled,
-      isBitcoinTestnetSupportEnabled,
     ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,
@@ -123,9 +120,6 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
       if (bitcoinEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
           multichainNetworkConfigurationsByChainId[BtcScope.Mainnet];
-      }
-
-      if (bitcoinEnabled && isBitcoinTestnetSupportEnabled) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Testnet] =
           multichainNetworkConfigurationsByChainId[BtcScope.Testnet];
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Signet] =
@@ -138,6 +132,9 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
       }
 
       if (solanaEnabled && isSolanaTestnetSupportEnabled) {
+        // TODO: Uncomment this when we want to support testnet
+        // filteredNonEvmNetworkConfigurationsByChainId[SolScope.Testnet] =
+        //   multichainNetworkConfigurationsByChainId[SolScope.Testnet];
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] =
           multichainNetworkConfigurationsByChainId[SolScope.Devnet];
       }

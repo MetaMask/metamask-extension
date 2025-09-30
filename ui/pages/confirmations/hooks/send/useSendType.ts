@@ -1,5 +1,5 @@
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import { isNativeAddress, isSolanaChainId } from '@metamask/bridge-controller';
 import { useMemo } from 'react';
 
 import { useSendContext } from '../../context/send';
@@ -20,7 +20,7 @@ export const useSendType = () => {
     () => (chainId ? isSolanaChainId(chainId) : undefined),
     [chainId],
   );
-  const assetIsNative = asset ? asset?.isNative === true : undefined;
+  const assetIsNative = asset ? isNativeAddress(address) : undefined;
 
   return useMemo(
     () => ({

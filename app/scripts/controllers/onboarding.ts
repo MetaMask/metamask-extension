@@ -43,28 +43,20 @@ const defaultTransientState = {
  */
 const controllerMetadata = {
   seedPhraseBackedUp: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
   firstTimeFlowType: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
   completedOnboarding: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
   onboardingTabs: {
-    includeInStateLogs: true,
     persist: false,
     anonymous: false,
-    usedInUi: true,
   },
 };
 
@@ -137,9 +129,7 @@ export default class OnboardingController extends BaseController<
     state,
   }: {
     messenger: OnboardingControllerMessenger;
-    state:
-      | Partial<Omit<OnboardingControllerState, 'onboardingTabs'>>
-      | undefined;
+    state: Partial<Omit<OnboardingControllerState, 'onboardingTabs'>>;
   }) {
     super({
       messenger,

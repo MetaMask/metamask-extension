@@ -172,9 +172,6 @@
   "activity": {
     "message": "Activity"
   },
-  "activityEmptyDescription": {
-    "message": "Nothing to see yet. Check the explorer for more recent activity."
-  },
   "activityLog": {
     "message": "Activity log"
   },
@@ -951,9 +948,6 @@
   "bridgeNetCost": {
     "message": "Net cost"
   },
-  "bridgeNoMMFee": {
-    "message": "No MM fee"
-  },
   "bridgePriceImpact": {
     "message": "Price impact"
   },
@@ -1138,10 +1132,6 @@
   "cancelled": {
     "message": "Cancelled"
   },
-  "carouselAllCaughtUp": {
-    "message": "You're all caught up!",
-    "description": "Message shown in carousel when all promotional slides have been dismissed"
-  },
   "chainId": {
     "message": "Chain ID"
   },
@@ -1209,10 +1199,6 @@
   },
   "closeExtension": {
     "message": "Close extension"
-  },
-  "closeSlide": {
-    "message": "Close $1",
-    "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
   "closeWindowAnytime": {
     "message": "You may close this window anytime."
@@ -1507,7 +1493,7 @@
     "message": "Connecting to Linea Goerli test network"
   },
   "connectingToLineaMainnet": {
-    "message": "Connecting to Linea"
+    "message": "Connecting to Linea Mainnet"
   },
   "connectingToLineaSepolia": {
     "message": "Connecting to Linea Sepolia test network"
@@ -1830,14 +1816,6 @@
   "deepLink_Error404Title": {
     "message": "This page doesn't exist"
   },
-  "deepLink_Error404_CTA": {
-    "message": "$1 and we'll take you to the right place.",
-    "description": "$1 is a link with the text found in `deepLink_Error404_CTA_LinkText`"
-  },
-  "deepLink_Error404_CTA_LinkText": {
-    "message": "Update to the latest version of MetaMask",
-    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
-  },
   "deepLink_ErrorMissingUrl": {
     "message": "No url to navigate to was provided."
   },
@@ -1886,9 +1864,6 @@
   },
   "defi": {
     "message": "DeFi"
-  },
-  "defiEmptyDescription": {
-    "message": "Lend, borrow, and trade, right in your wallet."
   },
   "defiTabErrorContent": {
     "message": "Try visiting again later."
@@ -2020,9 +1995,6 @@
   },
   "discover": {
     "message": "Discover"
-  },
-  "discoverNFTs": {
-    "message": "Discover NFTs"
   },
   "discoverSnaps": {
     "message": "Discover Snaps",
@@ -2467,9 +2439,6 @@
   "experimental": {
     "message": "Experimental"
   },
-  "exploreDefi": {
-    "message": "Explore DeFi"
-  },
   "exploreweb3": {
     "message": "Explore web3"
   },
@@ -2727,9 +2696,6 @@
   "hexData": {
     "message": "Hex data"
   },
-  "hexDataPlaceholder": {
-    "message": "Enter hex data (optional)"
-  },
   "hiddenAccounts": {
     "message": "Hidden accounts"
   },
@@ -2825,18 +2791,6 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot"
-  },
-  "hyperliquidReferralCheckboxLabel": {
-    "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralSubtitle": {
-    "message": "Save up to 4% on trades with a MetaMask referral code.",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"
@@ -3282,7 +3236,7 @@
     "message": "Linea Goerli test network"
   },
   "lineaMainnet": {
-    "message": "Linea"
+    "message": "Linea Mainnet"
   },
   "lineaSepolia": {
     "message": "Linea Sepolia test network"
@@ -3533,34 +3487,6 @@
     "message": "Address copied",
     "description": "Message displayed when the multichain account address is copied to clipboard"
   },
-  "multichainAccountIntroLearnMore": {
-    "message": "Learn more",
-    "description": "Button text to learn more about multichain accounts"
-  },
-  "multichainAccountIntroSameAddressDescription": {
-    "message": "We've merged your accounts, so keep using MetaMask the same as before. Your funds are safe and unchanged.",
-    "description": "Description explaining that accounts have been merged"
-  },
-  "multichainAccountIntroSameAddressTitle": {
-    "message": "Same address, more networks",
-    "description": "Title for the second section of the multichain account intro modal"
-  },
-  "multichainAccountIntroSettingUp": {
-    "message": "Setting up your accounts...",
-    "description": "Loading text shown while setting up multichain accounts"
-  },
-  "multichainAccountIntroViewAccounts": {
-    "message": "View accounts",
-    "description": "Button text to view accounts from the intro modal"
-  },
-  "multichainAccountIntroWhatDescription": {
-    "message": "One account, addresses on all the networks MetaMask supports. So now you can use Ethereum, Solana, and more without switching accounts.",
-    "description": "Description explaining what multichain accounts are"
-  },
-  "multichainAccountIntroWhatTitle": {
-    "message": "What are multichain accounts?",
-    "description": "Title for the first section of the multichain account intro modal"
-  },
   "multichainAccountPrivateKeyCopied": {
     "message": "Private key copied",
     "description": "Message displayed when the multichain account private key is copied to clipboard"
@@ -3716,13 +3642,6 @@
   "network": {
     "message": "Network"
   },
-  "networkAddress": {
-    "message": "1 network address"
-  },
-  "networkAddresses": {
-    "message": "$1 network addresses",
-    "description": "$1 is the number of accounts"
-  },
   "networkChanged": {
     "message": "Network changed"
   },
@@ -3782,7 +3701,7 @@
     "message": "Linea"
   },
   "networkNameOpMainnet": {
-    "message": "OP"
+    "message": "OP Mainnet"
   },
   "networkNamePolygon": {
     "message": "Polygon"
@@ -3934,9 +3853,6 @@
   "nftDisclaimer": {
     "message": "Disclaimer: MetaMask pulls the media file from the source url. This url sometimes gets changed by the marketplace on which the NFT was minted."
   },
-  "nftEmptyDescription": {
-    "message": "There's a world of NFTs out there. Start your collection today."
-  },
   "nftOptions": {
     "message": "NFT Options"
   },
@@ -3966,6 +3882,9 @@
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
+  "noActivity": {
+    "message": "No activity yet"
+  },
   "noConnectedAccountTitle": {
     "message": "MetaMask isn’t connected to this site"
   },
@@ -3975,11 +3894,17 @@
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
+  "noDeFiPositions": {
+    "message": "Can't find what you're looking for?"
+  },
   "noDomainResolution": {
     "message": "No resolution for domain provided."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps, and most hardware wallets, will not work with your current browser version."
+  },
+  "noNFTs": {
+    "message": "No NFTs yet"
   },
   "noNetworksAvailable": {
     "message": "No networks available"
@@ -4001,6 +3926,9 @@
   },
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
+  },
+  "noTransactions": {
+    "message": "You have no transactions"
   },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
@@ -4829,9 +4757,6 @@
   "primaryType": {
     "message": "Primary type"
   },
-  "priority": {
-    "message": "Priority"
-  },
   "priorityFee": {
     "message": "Priority fee"
   },
@@ -4882,6 +4807,9 @@
   },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
+  },
+  "protocolNotSupported": {
+    "message": "We may not support your protocol yet."
   },
   "provide": {
     "message": "Provide"
@@ -5053,9 +4981,6 @@
   },
   "recipientEditAriaLabel": {
     "message": "Edit recipient"
-  },
-  "recipientPlaceholder": {
-    "message": "Enter or paste a valid address"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
@@ -5652,69 +5577,8 @@
   "shieldEntryModalSupport": {
     "message": "Priority customer support"
   },
-  "shieldPlanAnnual": {
-    "message": "Annual"
-  },
-  "shieldPlanAnnualPrice": {
-    "message": "$1/year",
-    "description": "The $1 is the price of the annual plan"
-  },
-  "shieldPlanAutoRenew": {
-    "message": "Auto renews for $1 until canceled",
-    "description": "The $1 is the price of the monthly plan"
-  },
-  "shieldPlanCard": {
-    "message": "Card"
-  },
-  "shieldPlanDetails": {
-    "message": "Plan details"
-  },
-  "shieldPlanDetails1": {
-    "message": "No charge now, try free for 14 days"
-  },
-  "shieldPlanDetails2": {
-    "message": "Pre-approve membership (default 1 year), with fees charged only on a monthly basis"
-  },
-  "shieldPlanDetails2Card": {
-    "message": "Plan auto-renews at the end of the term"
-  },
-  "shieldPlanDetails3": {
-    "message": "Secures your assets from risky transactions"
-  },
-  "shieldPlanMonthly": {
-    "message": "Monthly"
-  },
-  "shieldPlanMonthlyPrice": {
-    "message": "$1/month",
-    "description": "The $1 is the price of the monthly plan"
-  },
-  "shieldPlanNoFunds": {
-    "message": "No available funds"
-  },
-  "shieldPlanPayWith": {
-    "message": "Pay with"
-  },
-  "shieldPlanPayWithCard": {
-    "message": "Pay with card"
-  },
-  "shieldPlanPayWithToken": {
-    "message": "Pay with $1",
-    "description": "The $1 is token"
-  },
-  "shieldPlanPaymentTitle": {
-    "message": "Change payment method"
-  },
-  "shieldPlanSave": {
-    "message": "Save 16%"
-  },
-  "shieldPlanSelectToken": {
-    "message": "Select a token"
-  },
-  "shieldPlanTitle": {
-    "message": "Choose your plan"
-  },
   "shieldTx": {
-    "message": "Transaction Shield"
+    "message": "MetaMask Shield"
   },
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
@@ -5756,33 +5620,6 @@
   "shieldTxMembershipCancel": {
     "message": "Cancel membership"
   },
-  "shieldTxMembershipErrorAddFunds": {
-    "message": "Add funds"
-  },
-  "shieldTxMembershipErrorEnding": {
-    "message": "Your membership is ending on $1. Keep benefits active by renewing.",
-    "description": "The $1 is the date"
-  },
-  "shieldTxMembershipErrorInsufficientFunds": {
-    "message": "Insufficient funds for your April 18 renewal. Keep access active by adding funds.",
-    "description": "The $1 is the date"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Insufficient $1",
-    "description": "The $1 is the token symbol"
-  },
-  "shieldTxMembershipErrorPaused": {
-    "message": "Membership paused due to insufficient funds. Coverage will resume after payment update."
-  },
-  "shieldTxMembershipErrorPausedTooltip": {
-    "message": "Insufficient token balance in your wallet. Top up to resume coverage."
-  },
-  "shieldTxMembershipErrorRenew": {
-    "message": "Renew membership"
-  },
-  "shieldTxMembershipErrorUpdatePayment": {
-    "message": "Update payment"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Free trial"
   },
@@ -5792,11 +5629,8 @@
   "shieldTxMembershipInactive": {
     "message": "Inactive membership"
   },
-  "shieldTxMembershipPaused": {
-    "message": "Paused"
-  },
   "shieldTxMembershipResubscribe": {
-    "message": "Restart membership"
+    "message": "Resubscribe"
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"
@@ -7051,9 +6885,6 @@
   "swapUnknown": {
     "message": "Unknown"
   },
-  "swapValidationInsufficientGasMessage": {
-    "message": "You don't have enough $1 to pay the gas fee for this swap. Enter a smaller amount or buy more $1."
-  },
   "swapZeroSlippage": {
     "message": "0% Slippage"
   },
@@ -7427,13 +7258,6 @@
   },
   "unexpectedBehavior": {
     "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
-  },
-  "unifiedSwapAllowSwappingOf": {
-    "message": "Allow exact access to $1 $2 on $3 for swapping"
-  },
-  "unifiedSwapFromTo": {
-    "message": "Swap $1 $2 to $3",
-    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
   "units": {
     "message": "units"

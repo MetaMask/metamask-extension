@@ -9,16 +9,7 @@ const {
 } = require('@metamask/preferences-controller');
 const { mockNetworkStateOld } = require('../stub/networks');
 
-const {
-  ARBITRUM_DISPLAY_NAME,
-  AVALANCHE_DISPLAY_NAME,
-  BNB_DISPLAY_NAME,
-  CHAIN_IDS,
-  LOCALHOST_DISPLAY_NAME,
-  OPTIMISM_DISPLAY_NAME,
-  POLYGON_DISPLAY_NAME,
-  ZK_SYNC_ERA_DISPLAY_NAME,
-} = require('../../shared/constants/network');
+const { CHAIN_IDS } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   DAPP_URL,
@@ -47,13 +38,12 @@ function onboardingFixture() {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
-        hasShownMultichainAccountsIntroModal: true,
       },
       NetworkController: {
         ...mockNetworkStateOld({
           id: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
-          nickname: LOCALHOST_DISPLAY_NAME,
+          nickname: 'Localhost 8545',
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           blockExplorerUrl: undefined,
@@ -327,7 +317,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.BSC,
-          nickname: BNB_DISPLAY_NAME,
+          nickname: 'Binance Chain',
           rpcPrefs: {},
           rpcUrl: 'https://bsc-dataseed.binance.org',
           ticker: 'BNB',
@@ -359,7 +349,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.LINEA_MAINNET,
-          nickname: LOCALHOST_DISPLAY_NAME,
+          nickname: 'Localhost 8545',
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
@@ -375,7 +365,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.OPTIMISM,
-          nickname: LOCALHOST_DISPLAY_NAME,
+          nickname: 'Localhost 8545',
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -391,7 +381,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.POLYGON,
-          nickname: POLYGON_DISPLAY_NAME,
+          nickname: 'Polygon Mainnet',
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -1952,7 +1942,7 @@ class FixtureBuilder {
       networkConfigurations: {
         'op-mainnet': {
           chainId: CHAIN_IDS.OPTIMISM,
-          nickname: OPTIMISM_DISPLAY_NAME,
+          nickname: 'OP Mainnet',
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.optimism.io',
           ticker: 'ETH',
@@ -1960,7 +1950,7 @@ class FixtureBuilder {
         },
         'polygon-mainnet': {
           chainId: CHAIN_IDS.POLYGON,
-          nickname: POLYGON_DISPLAY_NAME,
+          nickname: 'Polygon Mainnet',
           rpcPrefs: {},
           rpcUrl: 'https://polygon-rpc.com',
           ticker: 'MATIC',
@@ -1968,7 +1958,7 @@ class FixtureBuilder {
         },
         'arbitrum-one': {
           chainId: CHAIN_IDS.ARBITRUM,
-          nickname: ARBITRUM_DISPLAY_NAME,
+          nickname: 'Arbitrum One',
           rpcPrefs: {},
           rpcUrl: 'https://arb1.arbitrum.io/rpc',
           ticker: 'ETH',
@@ -1976,7 +1966,7 @@ class FixtureBuilder {
         },
         'avalanche-mainnet': {
           chainId: CHAIN_IDS.AVALANCHE,
-          nickname: AVALANCHE_DISPLAY_NAME,
+          nickname: 'Avalanche Network C-Chain',
           rpcPrefs: {},
           rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
           ticker: 'AVAX',
@@ -1984,7 +1974,7 @@ class FixtureBuilder {
         },
         'bnb-mainnet': {
           chainId: CHAIN_IDS.BSC,
-          nickname: BNB_DISPLAY_NAME,
+          nickname: 'BNB Chain',
           rpcPrefs: {},
           rpcUrl: 'https://bsc-dataseed.binance.org',
           ticker: 'BNB',
@@ -1992,7 +1982,7 @@ class FixtureBuilder {
         },
         'zksync-mainnet': {
           chainId: CHAIN_IDS.ZKSYNC_ERA,
-          nickname: ZK_SYNC_ERA_DISPLAY_NAME,
+          nickname: 'zkSync Era',
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.era.zksync.io',
           ticker: 'ETH',
@@ -2089,15 +2079,19 @@ class FixtureBuilder {
 
   withBackupAndSyncSettings(options = {}) {
     const {
-      isBackupAndSyncEnabled = true,
+      isProfileSyncingEnabled = true,
       isAccountSyncingEnabled = true,
-      isBackupAndSyncUpdateLoading = false,
+      isProfileSyncingUpdateLoading = false,
+      isAccountSyncingUpdateLoading = false,
+      hasAccountSyncingSyncedAtLeastOnce = false,
     } = options;
 
     merge(this.fixture.data.UserStorageController, {
-      isBackupAndSyncEnabled,
+      isProfileSyncingEnabled,
       isAccountSyncingEnabled,
-      isBackupAndSyncUpdateLoading,
+      isProfileSyncingUpdateLoading,
+      isAccountSyncingUpdateLoading,
+      hasAccountSyncingSyncedAtLeastOnce,
     });
     return this;
   }

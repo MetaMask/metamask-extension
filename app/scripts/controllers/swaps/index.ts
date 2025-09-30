@@ -77,10 +77,8 @@ type Network = {
 
 const metadata: StateMetadata<SwapsControllerState> = {
   swapsState: {
-    includeInStateLogs: true,
     persist: false,
     anonymous: false,
-    usedInUi: true,
   },
 };
 
@@ -134,10 +132,7 @@ export default class SwapsController extends BaseController<
     [aggId: string]: Quote;
   }> = defaultFetchTradesInfo;
 
-  constructor(
-    opts: SwapsControllerOptions,
-    state: Partial<SwapsControllerState> | undefined,
-  ) {
+  constructor(opts: SwapsControllerOptions, state: SwapsControllerState) {
     super({
       name: controllerName,
       metadata,

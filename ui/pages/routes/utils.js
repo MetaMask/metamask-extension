@@ -27,7 +27,6 @@ import {
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
-  SHIELD_PLAN_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
 } from '../../helpers/constants/routes';
 
@@ -284,17 +283,6 @@ export function hideAppHeader(props) {
       exact: false,
     }),
   );
-
-  const isShieldPlanPage = Boolean(
-    matchPath(location.pathname, {
-      path: SHIELD_PLAN_ROUTE,
-      exact: false,
-    }),
-  );
-
-  if (isShieldPlanPage) {
-    return true;
-  }
 
   return (
     isHandlingPermissionsRequest ||

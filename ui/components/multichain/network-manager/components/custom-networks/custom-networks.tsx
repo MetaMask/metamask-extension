@@ -86,19 +86,12 @@ export const CustomNetworks = React.memo(() => {
   // Renders a network in the network list
   const generateMultichainNetworkListItem = useCallback(
     (network: MultichainNetworkConfiguration) => {
-      const convertedChainId = network.isEvm
-        ? convertCaipToHexChainId(network.chainId)
-        : // keep CAIP for non‑EVM
-          network.chainId;
-
-      const isEnabled = Boolean(enabledNetworksByNamespace[convertedChainId]);
+      const hexChainId = convertCaipToHexChainId(network.chainId);
+      const isEnabled = Object.keys(enabledNetworksByNamespace).includes(
+        hexChainId,
+      );
 
       const { onDelete, onEdit, onRpcSelect } = getItemCallbacks(network);
-
-      const rpcEndpoint =
-        network.isEvm && hasMultiRpcOptions(network)
-          ? getRpcDataByChainId(network.chainId, evmNetworks).defaultRpcEndpoint
-          : undefined;
 
       return (
         <NetworkListItem
@@ -107,7 +100,12 @@ export const CustomNetworks = React.memo(() => {
           name={network.name}
           iconSrc={getNetworkIcon(network)}
           iconSize={AvatarNetworkSize.Md}
-          rpcEndpoint={rpcEndpoint}
+          rpcEndpoint={
+            hasMultiRpcOptions(network)
+              ? getRpcDataByChainId(network.chainId, evmNetworks)
+                  .defaultRpcEndpoint
+              : undefined
+          }
           onClick={() => handleNetworkClick(network.chainId)}
           onDeleteClick={onDelete}
           onEditClick={onEdit}
@@ -164,7 +162,7 @@ export const CustomNetworks = React.memo(() => {
   const renderedTestNetworks = useMemo(() => {
     const filteredTestNetworks = orderedTestNetworks.filter((network) => {
       // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected) {
+      if (isEvmNetworkSelected || isMultichainAccountsFeatureEnabled) {
         return network.isEvm;
       }
       // If non-EVM network is selected, only show non-EVM networks
@@ -178,6 +176,7 @@ export const CustomNetworks = React.memo(() => {
     orderedTestNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
+    isMultichainAccountsFeatureEnabled,
   ]);
 
   // Memoize the padding value to prevent unnecessary re-renders

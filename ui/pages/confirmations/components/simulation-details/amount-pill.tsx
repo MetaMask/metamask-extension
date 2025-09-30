@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { Box, Text } from '../../../../components/component-library';
 import {
   AlignItems,
+  BackgroundColor,
   BorderRadius,
   Display,
   FlexDirection,
@@ -39,6 +40,8 @@ export const AmountPill: React.FC<{
 }> = ({ asset, amount, isApproval, isAllApproval, isUnlimitedApproval }) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
+
+  const backgroundColor = getBackgroundColour({ amount, isApproval });
   const color = getColor({ amount, isApproval });
 
   const amountParts: string[] = [];
@@ -86,9 +89,11 @@ export const AmountPill: React.FC<{
       data-testid="simulation-details-amount-pill"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
+      backgroundColor={backgroundColor}
       alignItems={AlignItems.center}
       borderRadius={BorderRadius.pill}
       style={{
+        padding: '0px 8px',
         flexShrink: 1,
         flexBasis: 'auto',
         minWidth: 0,
@@ -108,6 +113,22 @@ export const AmountPill: React.FC<{
     </Box>
   );
 };
+
+function getBackgroundColour({
+  amount,
+  isApproval,
+}: {
+  amount: BigNumber;
+  isApproval?: boolean;
+}) {
+  if (isApproval) {
+    return BackgroundColor.backgroundMuted;
+  }
+
+  return amount.isNegative()
+    ? BackgroundColor.errorMuted
+    : BackgroundColor.successMuted;
+}
 
 function getColor({
   amount,

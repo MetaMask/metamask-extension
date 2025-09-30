@@ -13,6 +13,10 @@
     }
   }
 
+  &__label {
+    font-weight: 600;
+  }
+
   &__value-container {
     min-width: 0;
     flex: 1;
@@ -21,5 +25,6 @@
 
   &__value {
     max-width: 150px;
+    font-weight: 600;
   }
 }

@@ -28,7 +28,6 @@ const render = (
 describe('ConfirmInfoRowAddress', () => {
   it('renders appropriately with PetNames enabled', () => {
     const { container } = render({
-      ...mockState,
       metamask: {
         ...mockState.metamask,
         preferences: {

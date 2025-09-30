@@ -2,13 +2,7 @@ import { AccountsControllerState } from '@metamask/accounts-controller';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { CaipChainId } from '@metamask/utils';
 import mockState from '../../../test/data/mock-state.json';
-import {
-  ARBITRUM_DISPLAY_NAME,
-  BNB_DISPLAY_NAME,
-  CAIP_FORMATTED_EVM_TEST_CHAINS,
-  GOERLI_DISPLAY_NAME,
-  POLYGON_DISPLAY_NAME,
-} from '../../constants/network';
+import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../constants/network';
 import {
   getNonTestNetworks,
   getNetworksByScopes,
@@ -100,7 +94,7 @@ describe('Network Selectors', () => {
           caipChainId: 'eip155:5',
           chainId: '0x5',
           defaultRpcEndpointIndex: 0,
-          name: GOERLI_DISPLAY_NAME,
+          name: 'Goerli',
           nativeCurrency: 'ETH',
           rpcEndpoints: [
             {
@@ -118,7 +112,7 @@ describe('Network Selectors', () => {
           defaultBlockExplorerUrlIndex: 0,
           defaultRpcEndpointIndex: 0,
           lastUpdatedAt: 1738689643708,
-          name: BNB_DISPLAY_NAME,
+          name: 'Binance Smart Chain',
           nativeCurrency: 'BNB',
           rpcEndpoints: [
             {
@@ -135,7 +129,7 @@ describe('Network Selectors', () => {
           defaultBlockExplorerUrlIndex: 0,
           defaultRpcEndpointIndex: 0,
           lastUpdatedAt: 1738689655105,
-          name: POLYGON_DISPLAY_NAME,
+          name: 'Polygon Mainnet',
           nativeCurrency: 'POL',
           rpcEndpoints: [
             {
@@ -152,7 +146,7 @@ describe('Network Selectors', () => {
           defaultBlockExplorerUrlIndex: 0,
           defaultRpcEndpointIndex: 0,
           lastUpdatedAt: 1738689624782,
-          name: ARBITRUM_DISPLAY_NAME,
+          name: 'Arbitrum One',
           nativeCurrency: 'ETH',
           rpcEndpoints: [
             {
@@ -235,19 +229,19 @@ describe('Network Selectors', () => {
         },
         {
           chainId: '0x5',
-          name: GOERLI_DISPLAY_NAME,
+          name: 'Goerli',
         },
         {
           chainId: '0x38',
-          name: BNB_DISPLAY_NAME,
+          name: 'Binance Smart Chain',
         },
         {
           chainId: '0x89',
-          name: POLYGON_DISPLAY_NAME,
+          name: 'Polygon Mainnet',
         },
         {
           chainId: '0xa4b1',
-          name: ARBITRUM_DISPLAY_NAME,
+          name: 'Arbitrum One',
         },
         {
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',

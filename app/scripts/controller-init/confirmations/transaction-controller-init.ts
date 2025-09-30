@@ -1,25 +1,22 @@
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import {
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
-  SavedGasFees,
   TransactionController,
   TransactionControllerMessenger,
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { Hex } from '@metamask/utils';
-import { trace } from '../../../../shared/lib/trace';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
-import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
-import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
 import {
   SmartTransactionHookMessenger,
-  publishBatchHook,
-  publishHook,
+  publishSmartTransactionHook,
+  publishBatchSmartTransactionHook,
 } from '../../lib/smart-transaction/smart-transactions';
-import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
+import { trace } from '../../../../shared/lib/trace';
+
 import {
   handlePostTransactionBalanceUpdate,
   handleTransactionAdded,
@@ -30,13 +27,16 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
 } from '../../lib/transaction/metrics';
-import { ControllerFlatState } from '../controller-list';
-import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
 import {
   ControllerInitFunction,
   ControllerInitRequest,
   ControllerInitResult,
 } from '../types';
+import { TransactionControllerInitMessenger } from '../messengers/transaction-controller-messenger';
+import { ControllerFlatState } from '../controller-list';
+import { TransactionMetricsRequest } from '../../../../shared/types/metametrics';
+import { EnforceSimulationHook } from '../../lib/transaction/hooks/enforce-simulation-hook';
+import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -47,6 +47,7 @@ export const TransactionControllerInit: ControllerInitFunction<
     controllerMessenger,
     initMessenger,
     getFlatState,
+    getGlobalChainId,
     getPermittedAccounts,
     getTransactionMetricsRequest,
     updateAccountBalanceForTransactionNetwork,
@@ -77,10 +78,10 @@ export const TransactionControllerInit: ControllerInitFunction<
     getNetworkState: () => networkController().state,
     // @ts-expect-error Controller type does not support undefined return value
     getPermittedAccounts,
-    getSavedGasFees: (chainId) => {
-      return preferencesController().state.advancedGasFee[
-        chainId
-      ] as unknown as SavedGasFees | undefined;
+    // @ts-expect-error Preferences controller uses Record rather than specific type
+    getSavedGasFees: () => {
+      const globalChainId = getGlobalChainId();
+      return preferencesController().state.advancedGasFee[globalChainId];
     },
     getSimulationConfig: async (url) => {
       const getToken = () =>
@@ -150,7 +151,7 @@ export const TransactionControllerInit: ControllerInitFunction<
       },
       // @ts-expect-error Controller type does not support undefined return value
       publish: (transactionMeta, signedTx) =>
-        publishHook({
+        publishSmartTransactionHook({
           flatState: getFlatState(),
           initMessenger,
           signedTx,
@@ -159,7 +160,7 @@ export const TransactionControllerInit: ControllerInitFunction<
           transactionMeta,
         }),
       publishBatch: async (_request: PublishBatchHookRequest) =>
-        await publishBatchHook({
+        await publishBatchSmartTransactionHook({
           transactionController: controller,
           smartTransactionsController: smartTransactionsController(),
           hookControllerMessenger:

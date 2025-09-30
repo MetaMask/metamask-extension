@@ -17,11 +17,7 @@ import type {
   ShowSuccess,
   StartFlow,
 } from '@metamask/approval-controller';
-import {
-  GetSnap,
-  HandleSnapRequest,
-  IsMinimumPlatformVersion,
-} from '@metamask/snaps-controllers';
+import { GetSnap, HandleSnapRequest } from '@metamask/snaps-controllers';
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
@@ -43,8 +39,7 @@ export type SnapKeyringBuilderAllowActions =
   | AccountsControllerListMultichainAccountsAction
   | HandleSnapRequest
   | GetSnap
-  | PreferencesControllerGetStateAction
-  | IsMinimumPlatformVersion;
+  | PreferencesControllerGetStateAction;
 
 export type SnapKeyringBuilderMessenger = RestrictedMessenger<
   'SnapKeyring',

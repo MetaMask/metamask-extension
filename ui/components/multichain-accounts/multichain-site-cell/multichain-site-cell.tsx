@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { CaipChainId } from '@metamask/utils';
 import { AccountGroupId } from '@metamask/account-api';
 import { AvatarAccountSize } from '@metamask/design-system-react';
@@ -82,16 +82,6 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
     });
   };
 
-  const accountMessageConnectedState = useMemo(() => {
-    return selectedAccountGroupIds.length === 1
-      ? t('connectedWithAccountName', [
-          supportedAccountGroups.find(
-            (account) => account.id === selectedAccountGroupIds[0],
-          )?.metadata.name || '',
-        ])
-      : t('connectedWithAccount', [selectedAccountGroupIds.length]);
-  }, [selectedAccountGroupIds, supportedAccountGroups, t]);
-
   return (
     <>
       <Box
@@ -103,7 +93,9 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
         <SiteCellConnectionListItem
           title={t('accountsPermissionsTitle')}
           iconName={IconName.Eye}
-          connectedMessage={accountMessageConnectedState}
+          connectedMessage={t('requestingFor', [
+            selectedAccountGroupIds.length,
+          ])}
           unconnectedMessage={t('requestingFor', [
             selectedAccountGroupIds.length,
           ])}
@@ -117,7 +109,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
                 address={
                   supportedAccountGroups.find(
                     (account) => account.id === selectedAccountGroupIds[0],
-                  )?.id || ''
+                  )?.accounts[0].address || ''
                 }
                 size={AvatarAccountSize.Xs}
               />
@@ -134,7 +126,9 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           title={t('permission_walletSwitchEthereumChain')}
           iconName={IconName.Global}
           connectedMessage={t('connectedWithNetwork', [selectedChainIdsLength])}
-          unconnectedMessage={t('requestingFor')}
+          unconnectedMessage={t('requestingForNetwork', [
+            selectedChainIdsLength,
+          ])}
           isConnectFlow={isConnectFlow}
           onClick={handleOpenNetworksModal}
           paddingTopValue={2}

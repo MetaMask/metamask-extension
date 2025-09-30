@@ -12,8 +12,11 @@ describe('Bridge tests', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // Add Arbitrum
-        await searchAndSwitchToNetworkFromGlobalMenuFlow(driver, 'Arbitrum');
+        // Add Arbitrum One
+        await searchAndSwitchToNetworkFromGlobalMenuFlow(
+          driver,
+          'Arbitrum One',
+        );
 
         await bridgeTransaction(
           driver,
@@ -34,7 +37,7 @@ describe('Bridge tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'ETH',
             fromChain: 'Linea',
-            toChain: 'Arbitrum',
+            toChain: 'Arbitrum One',
           },
           2,
         );
@@ -46,7 +49,7 @@ describe('Bridge tests', function (this: Suite) {
             tokenFrom: 'DAI',
             tokenTo: 'DAI',
             fromChain: 'Linea',
-            toChain: 'Arbitrum',
+            toChain: 'Arbitrum One',
           },
           4,
         );

@@ -1,9 +1,6 @@
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import TestDapp from '../../../page-objects/pages/test-dapp';
-import { Anvil } from '../../../seeder/anvil';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import { Driver } from '../../../webdriver/driver';
@@ -12,6 +9,7 @@ import {
   assertChangedSpendingCap,
   editSpendingCap,
   mocked4BytesIncreaseAllowance,
+  openDAppWithContract,
   TestSuiteArguments,
 } from './shared';
 
@@ -33,16 +31,11 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 2 transaction (EIP1559) with a small spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForEIP1559Tx(this),
-        async ({
-          driver,
-          contractRegistry,
-          localNodes,
-        }: TestSuiteArguments) => {
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
             '3',
             contractRegistry,
-            localNodes,
           );
         },
       );
@@ -51,16 +44,11 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 0 transaction (Legacy) with a large spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForLegacyTx(this),
-        async ({
-          driver,
-          contractRegistry,
-          localNodes,
-        }: TestSuiteArguments) => {
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
             '3000',
             contractRegistry,
-            localNodes,
           );
         },
       );
@@ -69,16 +57,11 @@ describe('Confirmation Redesign ERC20 Increase Allowance', function () {
     it('Sends a type 2 transaction (EIP1559) with a large spending cap', async function () {
       await withFixtures(
         generateFixtureOptionsForEIP1559Tx(this),
-        async ({
-          driver,
-          contractRegistry,
-          localNodes,
-        }: TestSuiteArguments) => {
+        async ({ driver, contractRegistry }: TestSuiteArguments) => {
           await createAndAssertIncreaseAllowanceSubmission(
             driver,
             '3000',
             contractRegistry,
-            localNodes,
           );
         },
       );
@@ -117,15 +100,8 @@ async function createAndAssertIncreaseAllowanceSubmission(
   driver: Driver,
   newSpendingCap: string,
   contractRegistry?: ContractAddressRegistry,
-  localNodes?: Anvil[],
 ) {
-  const contractAddress = await contractRegistry?.getContractAddress(
-    SMART_CONTRACTS.HST,
-  );
-  await loginWithBalanceValidation(driver, localNodes?.[0]);
-  const testDapp = new TestDapp(driver);
-  await testDapp.openTestDappPage({ contractAddress });
-  await testDapp.checkPageIsLoaded();
+  await openDAppWithContract(driver, contractRegistry, SMART_CONTRACTS.HST);
 
   await createERC20IncreaseAllowanceTransaction(driver);
 

@@ -1,29 +1,17 @@
-import {
-  ARBITRUM_DISPLAY_NAME,
-  AVALANCHE_DISPLAY_NAME,
-  BASE_DISPLAY_NAME,
-  BNB_DISPLAY_NAME,
-  CELO_DISPLAY_NAME,
-  LINEA_MAINNET_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-  OPTIMISM_DISPLAY_NAME,
-  POLYGON_DISPLAY_NAME,
-  ZK_SYNC_ERA_DISPLAY_NAME,
-} from '../../../shared/constants/network';
 import { AggregatorNetwork } from './types';
 
 export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 1,
-    chainName: MAINNET_DISPLAY_NAME,
+    chainName: 'Ethereum Mainnet',
     shortName: 'Ethereum',
     nativeTokenSupported: true,
   },
   {
     active: true,
     chainId: 10,
-    chainName: OPTIMISM_DISPLAY_NAME,
+    chainName: 'Optimism Mainnet',
     shortName: 'Optimism',
     nativeTokenSupported: true,
   },
@@ -37,7 +25,7 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 56,
-    chainName: BNB_DISPLAY_NAME,
+    chainName: 'BNB Chain Mainnet',
     shortName: 'BNB Chain',
     nativeTokenSupported: true,
   },
@@ -51,7 +39,7 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 137,
-    chainName: POLYGON_DISPLAY_NAME,
+    chainName: 'Polygon Mainnet',
     shortName: 'Polygon',
     nativeTokenSupported: true,
   },
@@ -65,7 +53,7 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 324,
-    chainName: ZK_SYNC_ERA_DISPLAY_NAME,
+    chainName: 'zkSync Era Mainnet',
     shortName: 'zkSync Era',
     nativeTokenSupported: true,
   },
@@ -93,35 +81,35 @@ export const defaultBuyableChains: AggregatorNetwork[] = [
   {
     active: true,
     chainId: 8453,
-    chainName: BASE_DISPLAY_NAME,
+    chainName: 'Base Mainnet',
     shortName: 'Base',
     nativeTokenSupported: true,
   },
   {
     active: true,
     chainId: 42161,
-    chainName: ARBITRUM_DISPLAY_NAME,
+    chainName: 'Arbitrum Mainnet',
     shortName: 'Arbitrum',
     nativeTokenSupported: true,
   },
   {
     active: true,
     chainId: 42220,
-    chainName: CELO_DISPLAY_NAME,
+    chainName: 'Celo Mainnet',
     shortName: 'Celo',
     nativeTokenSupported: false,
   },
   {
     active: true,
     chainId: 43114,
-    chainName: AVALANCHE_DISPLAY_NAME,
+    chainName: 'Avalanche C-Chain Mainnet',
     shortName: 'Avalanche C-Chain',
     nativeTokenSupported: true,
   },
   {
     active: true,
     chainId: 59144,
-    chainName: LINEA_MAINNET_DISPLAY_NAME,
+    chainName: 'Linea',
     shortName: 'Linea',
     nativeTokenSupported: true,
   },

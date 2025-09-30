@@ -1,5 +1,4 @@
 import React from 'react';
-import { Subscription } from '@metamask/subscription-controller';
 import {
   Modal,
   ModalBody,
@@ -14,18 +13,15 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getShortDateFormatterV2 } from '../../asset/util';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function CancelMembershipModal({
   onConfirm,
   onClose,
-  subscription,
 }: {
   onConfirm: () => void;
   onClose: () => void;
-  subscription: Subscription;
 }) {
   const t = useI18nContext();
 
@@ -47,9 +43,7 @@ export default function CancelMembershipModal({
                 variant={TextVariant.bodyMdMedium}
                 as="span"
               >
-                {getShortDateFormatterV2().format(
-                  new Date(subscription.currentPeriodEnd),
-                )}
+                Apr 18, 2024
               </Text>,
             ])}
           </Text>

@@ -16,15 +16,6 @@ import PrepareBridgePage, {
   useEnableMissingNetwork,
 } from './prepare-bridge-page';
 
-// Mock the bridge hooks
-jest.mock('../hooks/useGasIncluded7702', () => ({
-  useGasIncluded7702: jest.fn().mockReturnValue(false),
-}));
-
-jest.mock('../hooks/useIsSendBundleSupported', () => ({
-  useIsSendBundleSupported: jest.fn().mockReturnValue(false),
-}));
-
 describe('PrepareBridgePage', () => {
   beforeAll(() => {
     const { provider } = createTestProviderTools({
@@ -156,7 +147,7 @@ describe('PrepareBridgePage', () => {
     expect(container).toMatchSnapshot();
 
     expect(getByRole('button', { name: /ETH/u })).toBeInTheDocument();
-    expect(getByRole('button', { name: /mUSD/u })).toBeInTheDocument();
+    expect(getByRole('button', { name: /USDC/u })).toBeInTheDocument();
 
     expect(getByTestId('from-amount')).toBeInTheDocument();
     expect(getByTestId('from-amount').closest('input')).not.toBeDisabled();

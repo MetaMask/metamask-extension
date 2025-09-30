@@ -36,7 +36,6 @@ import {
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -122,7 +121,7 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   } else if (selector === getTokenExchangeRates) {
     return opts.tokenExchangeRates ?? {};
   } else if (selector === getCurrentNetwork) {
-    return { nickname: 'Ethereum' };
+    return { nickname: 'Ethereum Mainnet' };
   } else if (selector === getPreferences) {
     return opts.preferences ?? {};
   } else if (selector === getShouldShowFiat) {
@@ -131,8 +130,6 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     return opts.tokens ?? [];
   } else if (selector === selectBridgeHistoryForAccount) {
     return opts.bridgeHistory ?? {};
-  } else if (selector === getAccountTree) {
-    return opts.accountTree ?? { wallets: {} };
   } else if (selector === getSelectedInternalAccount) {
     return opts.selectedInternalAccount ?? { address: '0xDefaultAddress' };
   } else if (selector === getNames) {

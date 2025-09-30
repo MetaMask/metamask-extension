@@ -714,8 +714,7 @@ export const selectBalanceForAllWallets = createSelector(
     enabledNetworkMap,
   ) =>
     calculateBalanceForAllWallets(
-      // TODO: fix this by ensuring @metamask/assets-controllers has proper types
-      accountTreeState as AccountTreeControllerState,
+      accountTreeState,
       accountsState,
       tokenBalancesState,
       tokenRatesState,
@@ -759,8 +758,7 @@ export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
       enabledNetworkMap,
     ): BalanceChangeResult =>
       calculateBalanceChangeForAllWallets(
-        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
-        accountTreeState as AccountTreeControllerState,
+        accountTreeState,
         accountsState,
         tokenBalancesState,
         tokenRatesState,
@@ -816,8 +814,7 @@ export const selectBalanceChangeByAccountGroup = (
       enabledNetworkMap,
     ): BalanceChangeResult =>
       calculateBalanceChangeForAccountGroup(
-        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
-        accountTreeState as AccountTreeControllerState,
+        accountTreeState,
         accountsState,
         tokenBalancesState,
         tokenRatesState,
@@ -877,8 +874,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
         return null;
       }
       return calculateBalanceChangeForAccountGroup(
-        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
-        accountTreeState as AccountTreeControllerState,
+        accountTreeState,
         accountsState,
         tokenBalancesState,
         tokenRatesState,

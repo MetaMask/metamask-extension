@@ -65,6 +65,7 @@ const UPDATE_DELAY = 1000 * 2; // 2 Seconds
 
 export type NameDetailsProps = {
   onClose: () => void;
+  sourcePriority?: string[];
   type: NameType;
   value: string;
   variation: string;
@@ -228,7 +229,6 @@ export default function NameDetails({
     name: displayName,
     hasPetname: hasSavedPetname,
     displayState,
-    subtitle,
   } = useDisplayName({
     value,
     type,
@@ -380,15 +380,8 @@ export default function NameDetails({
         <ModalContent>
           <ModalHeader onClose={handleClose}>{title}</ModalHeader>
           <ModalBody className="name-details__modal-body">
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-              marginBottom={4}
-              marginTop={2}
-              style={{
-                textAlign: 'center',
-              }}
+            <div
+              style={{ textAlign: 'center', marginBottom: 16, marginTop: 8 }}
             >
               <NameDisplay
                 value={value}
@@ -396,17 +389,7 @@ export default function NameDetails({
                 variation={variation}
                 showFullName
               />
-              {subtitle && (
-                <Text
-                  as="span"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
-                  style={{ marginLeft: 4 }}
-                >
-                  {subtitle}
-                </Text>
-              )}
-            </Box>
+            </div>
             <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
               {instructions}
             </Text>

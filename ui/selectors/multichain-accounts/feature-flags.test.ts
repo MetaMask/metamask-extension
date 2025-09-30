@@ -1,8 +1,6 @@
 import { type RemoteFeatureFlagsState } from '../remote-feature-flags';
 import {
   type MultichainAccountsFeatureFlag,
-  STATE_1_FLAG,
-  STATE_2_FLAG,
   getIsMultichainAccountsState1Enabled,
   getIsMultichainAccountsState2Enabled,
 } from './feature-flags';
@@ -15,7 +13,6 @@ type TestState = RemoteFeatureFlagsState & {
   metamask: {
     remoteFeatureFlags: {
       enableMultichainAccounts: MultichainAccountsFeatureFlag;
-      enableMultichainAccountsState2: MultichainAccountsFeatureFlag;
     };
   };
 };
@@ -39,14 +36,12 @@ const state2Mock: MultichainAccountsFeatureFlag = {
 };
 
 const getMockState = (
-  multichainAccountsState1Mock: MultichainAccountsFeatureFlag,
-  multichainAccountsState2Mock: MultichainAccountsFeatureFlag,
+  multichainAccountsFeatureFlagMock: MultichainAccountsFeatureFlag,
 ): TestState =>
   Object.freeze({
     metamask: {
       remoteFeatureFlags: {
-        [STATE_1_FLAG]: multichainAccountsState1Mock,
-        [STATE_2_FLAG]: multichainAccountsState2Mock,
+        enableMultichainAccounts: multichainAccountsFeatureFlagMock,
       },
     },
   });
@@ -57,56 +52,42 @@ describe('Multichain Accounts Feature Flags', () => {
   });
 
   describe('getIsMultichainAccountsState1Enabled', () => {
-    it('returns false for disabled state 1', () => {
+    it('returns false for disabled state', () => {
       expect(
-        getIsMultichainAccountsState1Enabled(
-          getMockState(disabledStateMock, disabledStateMock),
-        ),
+        getIsMultichainAccountsState1Enabled(getMockState(disabledStateMock)),
       ).toBe(false);
     });
 
-    it('returns true for state 1 when flag values are correct', () => {
+    it('returns true for state 1', () => {
       expect(
-        getIsMultichainAccountsState1Enabled(
-          getMockState(state1Mock, disabledStateMock),
-        ),
+        getIsMultichainAccountsState1Enabled(getMockState(state1Mock)),
       ).toBe(true);
     });
 
-    it('returns false as the default value', () => {
+    it('returns true for state 2', () => {
       expect(
-        getIsMultichainAccountsState1Enabled(
-          // @ts-expect-error - overriding value in case of fetch failure
-          getMockState(undefined, disabledStateMock),
-        ),
-      ).toBe(false);
+        getIsMultichainAccountsState1Enabled(getMockState(state2Mock)),
+      ).toBe(true);
     });
   });
 
   describe('getIsMultichainAccountsState2Enabled', () => {
     it('returns false for disabled state', () => {
       expect(
-        getIsMultichainAccountsState2Enabled(
-          getMockState(disabledStateMock, disabledStateMock),
-        ),
+        getIsMultichainAccountsState2Enabled(getMockState(disabledStateMock)),
+      ).toBe(false);
+    });
+
+    it('returns false for state 1', () => {
+      expect(
+        getIsMultichainAccountsState2Enabled(getMockState(state1Mock)),
       ).toBe(false);
     });
 
     it('returns true for state 2', () => {
       expect(
-        getIsMultichainAccountsState2Enabled(
-          getMockState(disabledStateMock, state2Mock),
-        ),
+        getIsMultichainAccountsState2Enabled(getMockState(state2Mock)),
       ).toBe(true);
-    });
-
-    it('returns false as the default value', () => {
-      expect(
-        getIsMultichainAccountsState2Enabled(
-          // @ts-expect-error - overriding value in case of fetch failure
-          getMockState(disabledStateMock, undefined),
-        ),
-      ).toBe(false);
     });
   });
 });

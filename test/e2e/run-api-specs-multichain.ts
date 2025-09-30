@@ -20,8 +20,13 @@ import {
 } from './api-specs/helpers';
 
 import FixtureBuilder from './fixture-builder';
-import { withFixtures, unlockWallet } from './helpers';
-import { ACCOUNT_1, DAPP_URL } from './constants';
+import {
+  withFixtures,
+  openDapp,
+  unlockWallet,
+  DAPP_URL,
+  ACCOUNT_1,
+} from './helpers';
 import transformOpenRPCDocument from './api-specs/transform';
 import { MultichainAuthorizationConfirmationErrors } from './api-specs/MultichainAuthorizationConfirmationErrors';
 import { ConfirmationsRejectRule } from './api-specs/ConfirmationRejectionRule';
@@ -116,7 +121,7 @@ async function main() {
       await driver.navigate(PAGES.HOME);
 
       // Open Dapp
-      await driver.openNewPage(DAPP_URL);
+      await openDapp(driver, undefined, DAPP_URL);
 
       const getSession = doc.methods.find(
         (m) => (m as MethodObject).name === 'wallet_getSession',
@@ -194,7 +199,7 @@ async function main() {
       await driver.navigate(PAGES.HOME);
 
       // Open Dapp
-      await driver.openNewPage(DAPP_URL);
+      await openDapp(driver, undefined, DAPP_URL);
 
       const results = await testCoverage({
         openrpcDocument: MetaMaskOpenRPCDocument as OpenrpcDocument,

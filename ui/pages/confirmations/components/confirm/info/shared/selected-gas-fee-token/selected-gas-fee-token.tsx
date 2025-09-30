@@ -71,11 +71,7 @@ export function SelectedGasFeeToken() {
       <Box
         data-testid="selected-gas-fee-token"
         onClick={handleClick}
-        backgroundColor={
-          hasGasFeeTokens
-            ? BackgroundColor.backgroundAlternative
-            : BackgroundColor.transparent
-        }
+        backgroundColor={BackgroundColor.backgroundAlternative}
         borderRadius={BorderRadius.pill}
         display={Display.InlineFlex}
         alignItems={AlignItems.center}
@@ -84,7 +80,6 @@ export function SelectedGasFeeToken() {
         style={{
           cursor: hasGasFeeTokens ? 'pointer' : 'default',
           paddingInlineEnd: '6px',
-          padding: hasGasFeeTokens ? '4px 8px' : '0px',
         }}
       >
         <GasFeeTokenIcon

@@ -5,8 +5,12 @@ const {
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
 
-const { withFixtures } = require('../../helpers');
-const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
+const {
+  withFixtures,
+  openDapp,
+  locateAccountBalanceDOM,
+  WINDOW_TITLES,
+} = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   loginWithBalanceValidation,
@@ -80,7 +84,7 @@ describe('Navigate transactions', function () {
         );
 
         // add transaction
-        await driver.openNewPage(DAPP_URL);
+        await openDapp(driver);
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -161,9 +165,7 @@ describe('Navigate transactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.waitForSelector(
-          '[data-testid="eth-overview__primary-currency"]',
-        );
+        await locateAccountBalanceDOM(driver);
       },
     );
   });

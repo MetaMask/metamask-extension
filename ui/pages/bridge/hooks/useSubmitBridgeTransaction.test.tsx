@@ -53,7 +53,7 @@ jest.mock('../../../../shared/modules/selectors/networks', () => {
         chainId: '0x1',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Ethereum',
+        name: 'Ethereum Mainnet',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -68,7 +68,7 @@ jest.mock('../../../../shared/modules/selectors/networks', () => {
         chainId: '0xa4b1',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Arbitrum',
+        name: 'Arbitrum One',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {

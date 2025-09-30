@@ -614,12 +614,6 @@ export function doesUserHaveALedgerAccount(state) {
   });
 }
 
-/**
- * Select the current fiat currency code (ISO 4217 like 'USD').
- *
- * @param {object} state - Redux state
- * @returns {string} The current fiat currency code
- */
 export function getCurrentCurrency(state) {
   return state.metamask.currentCurrency;
 }

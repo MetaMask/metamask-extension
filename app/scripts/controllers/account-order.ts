@@ -1,8 +1,4 @@
-import {
-  BaseController,
-  RestrictedMessenger,
-  StateMetadata,
-} from '@metamask/base-controller';
+import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 
 // Unique name for the controller
 const controllerName = 'AccountOrderController';
@@ -51,18 +47,14 @@ const defaultState = {
 };
 
 // Metadata for the controller state
-const metadata: StateMetadata<AccountOrderControllerState> = {
+const metadata = {
   pinnedAccountList: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
   hiddenAccountList: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
 };
 

@@ -4,10 +4,7 @@ import { useMemo } from 'react';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Asset } from '../../types/send';
-import {
-  fromTokenMinUnitsNumeric,
-  isValidPositiveNumericString,
-} from '../../utils/send';
+import { fromTokenMinUnitsNumeric, isDecimal } from '../../utils/send';
 import { useSendContext } from '../../context/send';
 import { useBalance } from './useBalance';
 
@@ -46,7 +43,7 @@ export const useAmountValidation = () => {
     if (value === undefined || value === null || value === '') {
       return undefined;
     }
-    if (!isValidPositiveNumericString(value)) {
+    if (!isDecimal(value) || Number(value) < 0) {
       return t('invalidValue');
     }
     if (asset?.standard === ERC1155) {

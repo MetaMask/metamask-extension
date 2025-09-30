@@ -29,9 +29,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         // Ensure that accounts within the wallets are displayed
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
-        // FIXME: Account index are scoped per wallet now, so we have now easy way
-        // to check for "Wallet 2" accounts.
-        // await accountListPage.checkMultichainAccountNameDisplayed('Account 2');
+        await accountListPage.checkMultichainAccountNameDisplayed('Account 2');
       },
     );
   });
@@ -54,9 +52,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         // Ensure that accounts within the wallets are displayed
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
-        await accountListPage.checkMultichainAccountNameDisplayed(
-          'Ledger Account 1',
-        );
+        await accountListPage.checkMultichainAccountNameDisplayed('Ledger 1');
       },
     );
   });

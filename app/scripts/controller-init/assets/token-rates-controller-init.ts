@@ -3,11 +3,7 @@ import {
   TokenRatesController,
 } from '@metamask/assets-controllers';
 import { ControllerInitFunction } from '../types';
-import {
-  TokenRatesControllerMessenger,
-  TokenRatesControllerInitMessenger,
-} from '../messengers/assets';
-import { previousValueComparator } from '../../lib/util';
+import { TokenRatesControllerMessenger } from '../messengers/assets';
 
 /**
  * Initialize the Token Rates controller.
@@ -19,33 +15,17 @@ import { previousValueComparator } from '../../lib/util';
  */
 export const TokenRatesControllerInit: ControllerInitFunction<
   TokenRatesController,
-  TokenRatesControllerMessenger,
-  TokenRatesControllerInitMessenger
+  TokenRatesControllerMessenger
 > = (request) => {
-  const { controllerMessenger, initMessenger, persistedState } = request;
-  const preferencesState = initMessenger.call('PreferencesController:getState');
+  const { controllerMessenger, getController, persistedState } = request;
+  const preferencesController = () => getController('PreferencesController');
 
   const controller = new TokenRatesController({
     messenger: controllerMessenger,
     state: persistedState.TokenRatesController,
     tokenPricesService: new CodefiTokenPricesServiceV2(),
-    disabled: !preferencesState.useCurrencyRateCheck,
+    disabled: !preferencesController().state?.useCurrencyRateCheck,
   });
-
-  initMessenger.subscribe(
-    'PreferencesController:stateChange',
-    previousValueComparator((prevState, currState) => {
-      const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
-      const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
-      if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-        controller.enable();
-      } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-        controller.disable();
-      }
-
-      return true;
-    }, preferencesState),
-  );
 
   return {
     controller,

@@ -144,16 +144,7 @@ describe('Deep Link', function () {
           if (isInvalidRoute) {
             console.log('Getting error text for invalid route');
             const text = await deepLink.getDescriptionText();
-            assert.equal(
-              text,
-              `We can't find the page you are looking for.${
-                isSigned
-                  ? `
-Update to the latest version of MetaMask
-and we'll take you to the right place.`
-                  : ''
-              }`,
-            );
+            assert.equal(text, "We can't find the page you are looking for.");
           }
 
           console.log('Clicking continue button');

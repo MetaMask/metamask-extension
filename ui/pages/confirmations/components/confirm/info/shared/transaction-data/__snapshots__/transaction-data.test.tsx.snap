@@ -124,13 +124,13 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+            class="mm-box mm-box--display-flex"
           >
             <div
               class="name name__clickable name__missing"
             >
               <span
-                class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/question.svg');"
               />
               <p
@@ -180,13 +180,13 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+            class="mm-box mm-box--display-flex"
           >
             <div
               class="name name__clickable name__missing"
             >
               <span
-                class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/question.svg');"
               />
               <p
@@ -466,13 +466,13 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                class="mm-box mm-box--display-flex"
               >
                 <div
                   class="name name__clickable name__missing"
                 >
                   <span
-                    class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                   <p
@@ -630,13 +630,13 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                class="mm-box mm-box--display-flex"
               >
                 <div
                   class="name name__clickable name__missing"
                 >
                   <span
-                    class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                   <p
@@ -779,13 +779,13 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box mm-box--display-flex"
                 >
                   <div
                     class="name name__clickable name__missing"
                   >
                     <span
-                      class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
@@ -810,13 +810,13 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box mm-box--display-flex"
                 >
                   <div
                     class="name name__clickable name__missing"
                   >
                     <span
-                      class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
@@ -841,13 +841,13 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box mm-box--display-flex"
                 >
                   <div
                     class="name name__clickable name__missing"
                   >
                     <span
-                      class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
@@ -1006,13 +1006,13 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                class="mm-box mm-box--display-flex"
               >
                 <div
                   class="name name__clickable name__missing"
                 >
                   <span
-                    class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                   <p
@@ -1062,13 +1062,13 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                class="mm-box mm-box--display-flex"
               >
                 <div
                   class="name name__clickable name__missing"
                 >
                   <span
-                    class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                   <p
@@ -1226,13 +1226,13 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                class="mm-box mm-box--display-flex"
               >
                 <div
                   class="name name__clickable name__missing"
                 >
                   <span
-                    class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                   <p
@@ -1282,13 +1282,13 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                class="mm-box mm-box--display-flex"
               >
                 <div
                   class="name name__clickable name__missing"
                 >
                   <span
-                    class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                    class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/question.svg');"
                   />
                   <p
@@ -1505,13 +1505,13 @@ exports[`TransactionData renders decoded data with no names 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+            class="mm-box mm-box--display-flex"
           >
             <div
               class="name name__clickable name__missing"
             >
               <span
-                class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/question.svg');"
               />
               <p
@@ -1697,13 +1697,13 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+            class="mm-box mm-box--display-flex"
           >
             <div
               class="name name__clickable name__missing"
             >
               <span
-                class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/question.svg');"
               />
               <p
@@ -1867,13 +1867,13 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box mm-box--display-flex"
                 >
                   <div
                     class="name name__clickable name__missing"
                   >
                     <span
-                      class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
@@ -2097,13 +2097,13 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box mm-box--display-flex"
                 >
                   <div
                     class="name name__clickable name__missing"
                   >
                     <span
-                      class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
@@ -2327,13 +2327,13 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+                  class="mm-box mm-box--display-flex"
                 >
                   <div
                     class="name name__clickable name__missing"
                   >
                     <span
-                      class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                      class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                     <p
@@ -2520,13 +2520,13 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+              class="mm-box mm-box--display-flex"
             >
               <div
                 class="name name__clickable name__missing"
               >
                 <span
-                  class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
                 <p

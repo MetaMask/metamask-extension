@@ -193,14 +193,18 @@ export default function Notifications() {
           <Tabs
             defaultActiveTabKey={activeTab}
             onTabClick={(tab: string) => setActiveTab(tab as TAB_KEYS)}
-            tabListProps={{ className: 'px-4' }}
+            tabsClassName="notifications__tabs"
           >
             <Tab
+              activeClassName="notifications__tab--active"
+              className="notifications__tab"
               data-testid={TAB_KEYS.ALL}
               name={t('all')}
               tabKey={TAB_KEYS.ALL}
             />
             <Tab
+              activeClassName="notifications__tab--active"
+              className="notifications__tab"
               data-testid={TAB_KEYS.WALLET}
               name={
                 <Box
@@ -216,6 +220,8 @@ export default function Notifications() {
               tabKey={TAB_KEYS.WALLET}
             ></Tab>
             <Tab
+              activeClassName="notifications__tab--active"
+              className="notifications__tab"
               data-testid={TAB_KEYS.WEB3}
               name={t('web3')}
               tabKey={TAB_KEYS.WEB3}

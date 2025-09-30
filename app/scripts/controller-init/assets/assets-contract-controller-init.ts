@@ -1,27 +1,22 @@
 import { AssetsContractController } from '@metamask/assets-controllers';
 import { ControllerInitFunction } from '../types';
-import {
-  AssetsContractControllerInitMessenger,
-  AssetsContractControllerMessenger,
-} from '../messengers/assets';
-import { getGlobalChainId } from '../init-utils';
+import { AssetsContractControllerMessenger } from '../messengers/assets/assets-contract-controller-messenger';
 
 /**
  * Initialize the AssetsContractController.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
- * @param request.initMessenger - The messenger to use for initialization.
+ * @param request.getGlobalChainId - The function to get the global chain id.
  * @returns The initialized controller.
  */
 export const AssetsContractControllerInit: ControllerInitFunction<
   AssetsContractController,
-  AssetsContractControllerMessenger,
-  AssetsContractControllerInitMessenger
-> = ({ controllerMessenger, initMessenger }) => {
+  AssetsContractControllerMessenger
+> = ({ controllerMessenger, getGlobalChainId }) => {
   const controller = new AssetsContractController({
     messenger: controllerMessenger,
-    chainId: getGlobalChainId(initMessenger),
+    chainId: getGlobalChainId(),
   });
 
   return {

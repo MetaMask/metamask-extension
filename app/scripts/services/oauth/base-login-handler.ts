@@ -23,12 +23,7 @@ export abstract class BaseLoginHandler {
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  protected readonly AUTH_SERVER_REVOKE_PATH = '/api/v2/oauth/revoke';
-
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  protected readonly AUTH_SERVER_RENEW_REFRESH_PATH =
-    '/api/v2/oauth/renew_refresh_token';
+  protected readonly AUTH_SERVER_REVOKE_PATH = '/api/v1/oauth/revoke';
 
   constructor(options: LoginHandlerOptions) {
     this.options = options;
@@ -117,11 +112,18 @@ export abstract class BaseLoginHandler {
   }
 
   /**
-   * Revoke the refresh (revoke token is linked to refresh token) token.
+   * Revoke the refresh token.
    *
    * @param revokeToken - The revoke token from the Web3Auth Authentication Server.
    */
-  async revokeRefreshToken(revokeToken: string): Promise<void> {
+  async revokeRefreshToken(revokeToken: string): Promise<{
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    refresh_token: string;
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    revoke_token: string;
+  }> {
     const requestData = {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -141,44 +143,6 @@ export abstract class BaseLoginHandler {
 
     if (!res.ok) {
       throw new Error('Failed to revoke refresh token');
-    }
-  }
-
-  /**
-   * Renew the refresh token.
-   *
-   * @param revokeToken - The revoke token from the Web3Auth Authentication Server.
-   * @returns The new refresh token and revoke token.
-   */
-  async renewRefreshToken(revokeToken: string): Promise<{
-    /** new refresh token */
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    refresh_token: string;
-    /** new revoke token */
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    revoke_token: string;
-  }> {
-    const requestData = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      revoke_token: revokeToken,
-    };
-
-    const res = await fetch(
-      `${this.options.authServerUrl}${this.AUTH_SERVER_RENEW_REFRESH_PATH}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      },
-    );
-
-    if (!res.ok) {
-      throw new Error('Failed to renew refresh token');
     }
 
     const data = await res.json();

@@ -699,7 +699,7 @@ describe('Selectors', () => {
         },
       };
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
-      expect(currentNetwork.nickname).toBe('Ethereum');
+      expect(currentNetwork.nickname).toBe('Ethereum Mainnet');
     });
   });
 

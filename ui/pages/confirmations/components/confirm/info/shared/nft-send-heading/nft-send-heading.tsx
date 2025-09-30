@@ -23,7 +23,6 @@ import {
 } from '../../../../../../../helpers/utils/nfts';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
-import { useNftImageUrl } from '../../../../../hooks/useNftImageUrl';
 import { ellipsify } from '../../../../../send-legacy/send.utils';
 import useFetchNftDetailsFromTokenURI from '../../../../../../../hooks/useFetchNftDetailsFromTokenURI';
 
@@ -73,14 +72,13 @@ const NFTSendHeading = () => {
   const currentChain = networkConfigurations[chainId];
   const tokenIdDisplay =
     assetTokenId && `#${generateTokenIdDisplay(assetTokenId)}`;
-  const nftItemSrc = useNftImageUrl(tokenImage || imageFromTokenURI);
 
   const TokenImage = (
     <Box style={{ width: '48px' }}>
       <NftItem
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        src={nftItemSrc}
+        src={tokenImage || imageFromTokenURI}
         alt={nftImageAlt}
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

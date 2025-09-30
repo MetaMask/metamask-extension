@@ -112,7 +112,9 @@ export const Recipient = () => {
   );
 
   useEffect(() => {
-    updateToResolved(recipientResolvedLookup);
+    if (recipientResolvedLookup) {
+      updateToResolved(recipientResolvedLookup);
+    }
   }, [recipientResolvedLookup, updateToResolved]);
 
   const hasRecipients = recipients.length > 0;
@@ -136,7 +138,7 @@ export const Recipient = () => {
           data-testid="open-recipient-modal-btn"
           iconName={IconName.Book}
           onClick={openRecipientModal}
-          size={ButtonIconSize.Md}
+          size={ButtonIconSize.Sm}
         />
       );
     }
@@ -156,7 +158,11 @@ export const Recipient = () => {
         error={Boolean(recipientError)}
         startAccessory={
           matchingRecipient ? (
-            <Box alignItems={AlignItems.center} display={Display.Flex}>
+            <Box
+              alignItems={AlignItems.center}
+              display={Display.Flex}
+              paddingLeft={2}
+            >
               <PreferredAvatar
                 address={matchingRecipient.address}
                 size={AvatarAccountSize.Sm}
@@ -167,7 +173,6 @@ export const Recipient = () => {
         endAccessory={renderEndAccessory()}
         onChange={(e) => onToChange(e.target.value)}
         onBlur={captureMetrics}
-        placeholder={t('recipientPlaceholder')}
         ref={recipientInputRef}
         value={localValue}
         width={BlockSize.Full}

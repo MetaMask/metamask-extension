@@ -1,6 +1,10 @@
 const { strict: assert } = require('assert');
-const { withFixtures, unlockWallet } = require('../../helpers');
-const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
+const {
+  withFixtures,
+  unlockWallet,
+  openDapp,
+  getWindowHandles,
+} = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('PPOM Settings', function () {
@@ -29,9 +33,10 @@ describe('PPOM Settings', function () {
           '[data-testid="settings-toggle-security-alert-blockaid"] .toggle-button > div',
         );
 
-        await driver.openNewPage(DAPP_URL);
+        await openDapp(driver);
         await driver.clickElement('#maliciousPermit');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const windowHandles = await getWindowHandles(driver, 3);
+        await driver.switchToWindow(windowHandles.popup);
 
         const blockaidResponseTitle =
           '[data-testid="security-provider-banner-alert"]';
@@ -55,9 +60,10 @@ describe('PPOM Settings', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await driver.openNewPage(DAPP_URL);
+        await openDapp(driver);
         await driver.clickElement('#maliciousPermit');
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const windowHandles = await getWindowHandles(driver, 3);
+        await driver.switchToWindow(windowHandles.popup);
 
         const blockaidResponseTitle =
           '[data-testid="security-provider-banner-alert"]';

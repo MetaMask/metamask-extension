@@ -1,7 +1,12 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
-const { unlockWallet, withFixtures } = require('../../helpers');
-const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
+
+const {
+  WINDOW_TITLES,
+  openDapp,
+  unlockWallet,
+  withFixtures,
+} = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
@@ -260,7 +265,7 @@ describe('PPOM Blockaid Alert - Set Approval to All', function () {
 
       async ({ driver }) => {
         await unlockWallet(driver);
-        await driver.openNewPage(DAPP_URL);
+        await openDapp(driver);
 
         const expectedTitle = 'This is a deceptive request';
         const expectedDescription =

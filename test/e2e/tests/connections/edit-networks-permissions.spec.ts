@@ -39,7 +39,9 @@ describe('Edit Networks Permissions', function () {
         await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
 
         // Disconnect Mainnet
-        await sitePermissionPage.editPermissionsForNetwork(['Ethereum']);
+        await sitePermissionPage.editPermissionsForNetwork([
+          'Ethereum Mainnet',
+        ]);
 
         // Default Chains Connected: Ethereum, Linea, Base
         await sitePermissionPage.checkConnectedNetworksNumber(3);

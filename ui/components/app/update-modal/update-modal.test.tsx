@@ -16,7 +16,7 @@ const initialState = {
         blockExplorerUrls: [],
         chainId: '0x1',
         defaultRpcEndpointIndex: 0,
-        name: 'Ethereum',
+        name: 'Ethereum Mainnet',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {

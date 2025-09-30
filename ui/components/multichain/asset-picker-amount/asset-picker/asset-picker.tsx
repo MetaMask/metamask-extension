@@ -75,7 +75,6 @@ export type AssetPickerProps = {
   action?: 'send' | 'receive';
   isMultiselectEnabled?: boolean;
   autoFocus?: boolean;
-  isDestinationToken?: boolean;
   networkProps?: Pick<
     React.ComponentProps<typeof AssetPickerModalNetwork>,
     | 'network'
@@ -111,7 +110,6 @@ export function AssetPicker({
   isTokenListLoading = false,
   isMultiselectEnabled = false,
   autoFocus = true,
-  isDestinationToken = false,
 }: AssetPickerProps) {
   const t = useI18nContext();
 
@@ -217,7 +215,6 @@ export function AssetPicker({
         isOpen={showAssetPickerModal}
         onClose={() => setShowAssetPickerModal(false)}
         asset={asset}
-        isDestinationToken={isDestinationToken}
         onAssetChange={(
           token:
             | AssetWithDisplayData<ERC20Asset>

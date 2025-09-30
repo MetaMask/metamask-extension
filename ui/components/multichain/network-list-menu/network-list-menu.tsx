@@ -48,7 +48,6 @@ import {
   addPermittedChain,
   setTokenNetworkFilter,
   detectNfts,
-  setEnabledNetworks,
 } from '../../../store/actions';
 import {
   FEATURED_RPCS,
@@ -402,12 +401,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     if (hasAnyAccountsInNetwork(chainId)) {
       dispatch(toggleNetworkMenu());
       dispatch(setActiveNetwork(chainId));
-
-      const { namespace } = parseCaipChainId(chainId);
-      const current = Object.keys(enabledNetworksByNamespace);
-      const next = Array.from(new Set([...current, chainId]));
-      dispatch(setEnabledNetworks(next, namespace as KnownCaipNamespace));
-
       return;
     }
 

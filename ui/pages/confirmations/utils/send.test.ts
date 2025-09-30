@@ -12,6 +12,7 @@ import {
   fromTokenMinimalUnits,
   toTokenMinimalUnit,
   formatToFixedDecimals,
+  isDecimal,
   convertedCurrency,
   navigateToSendRoute,
   getLayer1GasFees,
@@ -19,7 +20,6 @@ import {
   removeAdditionalDecimalPlaces,
   getFractionLength,
   addLeadingZeroIfNeeded,
-  isValidPositiveNumericString,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -70,10 +70,6 @@ describe('Send - utils', () => {
       expect(formatToFixedDecimals('1', 4)).toEqual('1');
       expect(formatToFixedDecimals('1.01010101', 4)).toEqual('1.0101');
     });
-    it('return trailing zeros if trimTrailingZerosEnabled is true', () => {
-      expect(formatToFixedDecimals('1', 4, false)).toEqual('1.0000');
-      expect(formatToFixedDecimals('1.01', 4, false)).toEqual('1.0100');
-    });
   });
 
   describe('prepareEVMTransaction', () => {
@@ -86,25 +82,6 @@ describe('Send - utils', () => {
         }),
       ).toStrictEqual({
         data: '0x',
-        from: '0x123',
-        to: '0x456',
-        value: '0x56bc75e2d63100000',
-      });
-    });
-
-    it('prepares transaction for native token with hex data', () => {
-      expect(
-        prepareEVMTransaction(
-          EVM_NATIVE_ASSET,
-          {
-            from: '0x123',
-            to: '0x456',
-            value: '0x64',
-          },
-          '0x5',
-        ),
-      ).toStrictEqual({
-        data: '0x5',
         from: '0x123',
         to: '0x456',
         value: '0x56bc75e2d63100000',
@@ -196,14 +173,14 @@ describe('Send - utils', () => {
     });
   });
 
-  describe('isValidPositiveNumericString', () => {
+  describe('isDecimal', () => {
     it('return true for decimal values and false otherwise', () => {
-      expect(isValidPositiveNumericString('10')).toBe(true);
-      expect(isValidPositiveNumericString('10.01')).toBe(true);
-      expect(isValidPositiveNumericString('.01')).toBe(true);
-      expect(isValidPositiveNumericString('-0.01')).toBe(false);
-      expect(isValidPositiveNumericString('abc')).toBe(false);
-      expect(isValidPositiveNumericString(' ')).toBe(false);
+      expect(isDecimal('10')).toBe(true);
+      expect(isDecimal('10.01')).toBe(true);
+      expect(isDecimal('.01')).toBe(true);
+      expect(isDecimal('-0.01')).toBe(true);
+      expect(isDecimal('abc')).toBe(false);
+      expect(isDecimal(' ')).toBe(false);
     });
   });
 

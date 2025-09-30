@@ -2,13 +2,19 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { fireEvent } from '@testing-library/react';
 import { StatusTypes } from '@metamask/bridge-controller';
 import React from 'react';
+import * as reactRouterDom from 'react-router-dom';
 import configureStore from 'redux-mock-store';
 import mockUnifiedSwapTxGroup from '../../../../test/data/swap/mock-unified-swap-transaction-group.json';
 import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/jest';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import TransactionListItem from '.';
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: jest.fn(),
+}));
 
 jest.mock('../../../store/background-connection', () => ({
   ...jest.requireActual('../../../store/background-connection'),
@@ -89,7 +95,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OPTransaction 2 of 2-2 USDC',
+      '?Bridged to OP MainnetTransaction 2 of 2-2 USDC',
     );
   });
 
@@ -124,13 +130,19 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OPTransaction 2 of 2-2 USDC-USD 0.00',
+      '?Bridged to OP MainnetTransaction 2 of 2-2 USDC-USD 0.00',
     );
   });
 
   it('should render completed bridge tx summary', () => {
+    const mockPush = jest
+      .fn()
+      .mockImplementation((...args) => jest.fn(...args));
+    jest.spyOn(reactRouterDom, 'useHistory').mockReturnValue({
+      push: mockPush,
+    });
     const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
-    const { queryByTestId, getByTestId, history } = renderWithProvider(
+    const { queryByTestId, getByTestId } = renderWithProvider(
       <TransactionListItem
         transactionGroup={mockBridgeTxData.transactionGroup}
       />,
@@ -144,10 +156,9 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
         }),
       ),
     );
-    const mockPush = jest.spyOn(history, 'push');
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OPConfirmed-2 USDC',
+      '?Bridged to OP MainnetConfirmed-2 USDC',
     );
 
     fireEvent.click(getByTestId('activity-list-item'));
@@ -161,6 +172,12 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
   });
 
   it('should render failed bridge tx summary', () => {
+    const mockPush = jest
+      .fn()
+      .mockImplementation((...args) => jest.fn(...args));
+    jest.spyOn(reactRouterDom, 'useHistory').mockReturnValue({
+      push: mockPush,
+    });
     const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
     const failedTransactionGroup = {
       ...mockBridgeTxData.transactionGroup,
@@ -169,23 +186,21 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
         status: TransactionStatus.failed,
       },
     };
-    const { queryByTestId, getByTestId, getByText, history } =
-      renderWithProvider(
-        <TransactionListItem transactionGroup={failedTransactionGroup} />,
-        configureStore()(
-          createBridgeMockStore({
-            bridgeStatusStateOverrides: {
-              txHistory: {
-                [srcTxMetaId]: bridgeHistoryItem,
-              },
+    const { queryByTestId, getByTestId, getByText } = renderWithProvider(
+      <TransactionListItem transactionGroup={failedTransactionGroup} />,
+      configureStore()(
+        createBridgeMockStore({
+          bridgeStatusStateOverrides: {
+            txHistory: {
+              [srcTxMetaId]: bridgeHistoryItem,
             },
-          }),
-        ),
-      );
-    const mockPush = jest.spyOn(history, 'push');
+          },
+        }),
+      ),
+    );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OPFailed-2 USDC',
+      '?Bridged to OP MainnetFailed-2 USDC',
     );
     expect(getByText('Failed')).toBeInTheDocument();
 

@@ -1,7 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { merge } from 'lodash';
 
-import { DecodedPermission } from '@metamask/gator-permissions-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   Confirmation,
@@ -13,10 +12,7 @@ import { unapprovedPersonalSignMsg } from './personal_sign';
 import { genUnapprovedSetApprovalForAllConfirmation } from './set-approval-for-all';
 import { genUnapprovedApproveConfirmation } from './token-approve';
 import { genUnapprovedTokenTransferConfirmation } from './token-transfer';
-import {
-  unapprovedTypedSignMsgV4,
-  unapprovedTypedSignMsgV4WithPermission,
-} from './typed_sign';
+import { unapprovedTypedSignMsgV4 } from './typed_sign';
 
 type RootState = { metamask: Record<string, unknown> } & Record<
   string,
@@ -42,35 +38,6 @@ export const getMockTypedSignConfirmState = (
     },
     unapprovedTypedMessages: {
       [unapprovedTypedSignMsgV4.id]: unapprovedTypedSignMsgV4,
-    },
-  },
-});
-
-export const getMockTypedSignPermissionConfirmState = (
-  permission:
-    | DecodedPermission
-    | undefined = unapprovedTypedSignMsgV4WithPermission.decodedPermission,
-  args: RootState = { metamask: {} },
-) => ({
-  ...mockState,
-  ...args,
-  metamask: {
-    ...mockState.metamask,
-    ...args.metamask,
-    preferences: {
-      ...mockState.metamask.preferences,
-    },
-    pendingApprovals: {
-      [unapprovedTypedSignMsgV4.id]: {
-        id: unapprovedTypedSignMsgV4.id,
-        type: ApprovalType.EthSignTypedData,
-      },
-    },
-    unapprovedTypedMessages: {
-      [unapprovedTypedSignMsgV4.id]: {
-        ...unapprovedTypedSignMsgV4WithPermission,
-        decodedPermission: permission,
-      },
     },
   },
 });

@@ -60,7 +60,6 @@ type AssetListProps = {
     React.ComponentProps<typeof TokenListItem>,
     'isTitleNetworkName' | 'isTitleHidden'
   >;
-  isDestinationToken?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -73,7 +72,6 @@ export default function AssetList({
   network,
   isTokenListLoading = false,
   assetItemProps = {},
-  isDestinationToken = false,
 }: AssetListProps) {
   const t = useI18nContext();
 
@@ -201,7 +199,6 @@ export default function AssetList({
                       ...assetItemProps,
                       nativeCurrencySymbol,
                     }}
-                    isDestinationToken={isDestinationToken}
                   />
                 )}
               </Box>

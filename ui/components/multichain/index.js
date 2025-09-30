@@ -51,10 +51,5 @@ export { PermissionDetailsModal } from './permission-details-modal';
 export { ReceiveModal } from './receive-modal';
 export { EditNetworksModal } from './edit-networks-modal';
 export { EditAccountsModal } from './edit-accounts-modal';
-export {
-  Carousel,
-  CarouselWithEmptyState,
-  StackCard,
-  StackCardEmpty,
-} from './carousel';
+export { Carousel } from './carousel';
 export { SelectSrp, SrpList } from './multi-srp';

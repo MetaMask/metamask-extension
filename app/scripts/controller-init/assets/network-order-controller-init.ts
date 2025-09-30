@@ -26,7 +26,6 @@ const generateDefaultNetworkOrderControllerState =
           },
           [KnownCaipNamespace.Solana]: {
             [SolScope.Mainnet]: true,
-            [SolScope.Devnet]: true,
           },
         },
       };
@@ -40,7 +39,6 @@ const generateDefaultNetworkOrderControllerState =
         },
         [KnownCaipNamespace.Solana]: {
           [SolScope.Mainnet]: true,
-          [SolScope.Devnet]: true,
         },
       },
     };

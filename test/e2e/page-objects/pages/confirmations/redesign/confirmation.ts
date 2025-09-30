@@ -23,7 +23,10 @@ class Confirmation {
 
   private headerAccountDetailsButton: RawLocator;
 
-  private inlineAlertButton = '[data-testid="inline-alert"]';
+  private inlineAlertButton = {
+    css: '[data-testid="inline-alert"]',
+    text: 'Alert',
+  };
 
   private nameSelector = '.name';
 
@@ -96,10 +99,6 @@ class Confirmation {
     await this.driver.clickElementAndWaitForWindowToClose(
       this.footerConfirmButton,
     );
-  }
-
-  async clickFooterConfirmButtonAndWaitToDisappear() {
-    await this.driver.clickElementAndWaitToDisappear(this.footerConfirmButton);
   }
 
   async clickFooterCancelButtonAndAndWaitForWindowToClose() {
