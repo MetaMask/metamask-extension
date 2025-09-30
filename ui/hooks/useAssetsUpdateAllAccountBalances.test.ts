@@ -1,8 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector, useDispatch } from 'react-redux';
-import { useAssetsUpdateAllAccountBalances } from './useAssetsUpdateAllAccountBalances';
 import { updateBalancesFoAccounts } from '../store/actions';
 import { getEnabledChainIds } from '../selectors';
+import { useAssetsUpdateAllAccountBalances } from './useAssetsUpdateAllAccountBalances';
 
 // Mock dependencies
 jest.mock('react-redux', () => ({
@@ -24,9 +24,6 @@ const mockUpdateBalancesFoAccounts =
   updateBalancesFoAccounts as jest.MockedFunction<
     typeof updateBalancesFoAccounts
   >;
-const mockGetEnabledChainIds = getEnabledChainIds as jest.MockedFunction<
-  typeof getEnabledChainIds
->;
 
 describe('useAssetsUpdateAllAccountBalances', () => {
   let mockDispatch: jest.Mock;
@@ -38,8 +35,8 @@ describe('useAssetsUpdateAllAccountBalances', () => {
       Promise.resolve() as Promise<void>,
     );
 
-    // Mock console.error to avoid cluttering test output
-    jest.spyOn(console, 'error').mockImplementation(() => {});
+    // Mock console.warn to avoid cluttering test output
+    jest.spyOn(console, 'warn').mockImplementation(() => ({}));
   });
 
   afterEach(() => {
@@ -219,7 +216,7 @@ describe('useAssetsUpdateAllAccountBalances', () => {
     // Call updateBalances manually and expect it to handle error gracefully
     await expect(result.current.updateBalances()).resolves.not.toThrow();
 
-    expect(console.error).toHaveBeenCalledWith(
+    expect(console.warn).toHaveBeenCalledWith(
       'Error updating balances state for all accounts',
       mockError,
     );
@@ -247,7 +244,7 @@ describe('useAssetsUpdateAllAccountBalances', () => {
     // Wait for async operation to complete
     await new Promise((resolve) => setTimeout(resolve, 0));
 
-    expect(console.error).toHaveBeenCalledWith(
+    expect(console.warn).toHaveBeenCalledWith(
       'Error updating balances state for all accounts',
       mockError,
     );
