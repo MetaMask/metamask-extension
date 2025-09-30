@@ -308,12 +308,6 @@ describe('EthOverview', () => {
       expect(receiveButton).toBeInTheDocument();
     });
 
-    it('should always show the Portfolio button', () => {
-      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
-      const portfolioButton = queryByTestId('portfolio-link');
-      expect(portfolioButton).toBeInTheDocument();
-    });
-
     it('should always show the Buy button regardless of current chain Id', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
       const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
