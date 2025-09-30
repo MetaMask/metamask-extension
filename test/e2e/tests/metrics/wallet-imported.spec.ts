@@ -9,6 +9,8 @@ describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
     const eventsToMock = [
       'App Opened',
+      'App Installed',
+      'App Installed',
       'Wallet Imported',
       'Wallet Setup Completed',
     ];
@@ -53,6 +55,12 @@ describe('Wallet Created Events - Imported Account', function () {
         const thirdEvent = events.find(
           (e: { event: string }) => e.event === eventsToMock[2],
         );
+        const fourthEvent = events.find(
+          (e: { event: string }) => e.event === eventsToMock[3],
+        );
+        const fifthEvent = events.find(
+          (e: { event: string }) => e.event === eventsToMock[4],
+        );
 
         assert.deepStrictEqual(firstEvent.properties, {
           category: 'App',
@@ -66,6 +74,28 @@ describe('Wallet Created Events - Imported Account', function () {
         });
 
         assert.deepStrictEqual(secondEvent.properties, {
+          category: 'App',
+          locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: '0x1',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: 'background',
+        });
+
+        assert.deepStrictEqual(thirdEvent.properties, {
+          category: 'App',
+          locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: '0x1',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: 'background',
+        });
+
+        assert.deepStrictEqual(fourthEvent.properties, {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           biometrics_enabled: false,
@@ -79,16 +109,30 @@ describe('Wallet Created Events - Imported Account', function () {
           environment_type: 'fullscreen',
         });
 
-        assert.deepStrictEqual(thirdEvent.properties, {
+        assert.deepStrictEqual(fifthEvent.properties, {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'imported',
+          category: 'Onboarding',
+          locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: '0x1',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: 'fullscreen',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           wallet_setup_type: 'import',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           new_wallet: false,
+        });
+
+        assert.deepStrictEqual(fourthEvent.properties, {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'imported',
+          biometrics_enabled: false,
           category: 'Onboarding',
           locale: 'en',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

@@ -1969,9 +1969,11 @@ class FixtureBuilder {
   }
 
   build() {
-    this.fixture.meta = {
-      version: FIXTURE_STATE_METADATA_VERSION,
-    };
+    if (!this.fixture.meta) {
+      this.fixture.meta = {
+        version: FIXTURE_STATE_METADATA_VERSION,
+      };
+    }
     return this.fixture;
   }
 }
