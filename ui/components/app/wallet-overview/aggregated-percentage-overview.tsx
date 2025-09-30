@@ -37,11 +37,7 @@ type MarketDataDetails = {
   pricePercentChange1d: number;
 };
 
-export const AggregatedPercentageOverview = ({
-  portfolioButton,
-}: {
-  portfolioButton: () => JSX.Element | null;
-}) => {
+export const AggregatedPercentageOverview = () => {
   const tokensMarketData: Record<string, MarketDataDetails> =
     useSelector(getTokensMarketData);
   const { formatCurrencyCompact } = useFormatters();
@@ -148,13 +144,11 @@ export const AggregatedPercentageOverview = ({
           {formattedPercentChange}
         </SensitiveText>
       </Box>
-      {portfolioButton()}
     </Skeleton>
   );
 };
 
 export const AggregatedMultichainPercentageOverview = ({
-  portfolioButton,
   privacyMode = false,
 }: {
   portfolioButton: () => JSX.Element | null;
@@ -240,7 +234,6 @@ export const AggregatedMultichainPercentageOverview = ({
           {localizedPercentChange})
         </SensitiveText>
       </Box>
-      {portfolioButton()}
     </Skeleton>
   );
 };

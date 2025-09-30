@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext } from 'react';
 import classnames from 'classnames';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
@@ -239,11 +239,9 @@ export const CoinOverview = ({
       <Box className="wallet-overview__currency-wrapper">
         {isTokenNetworkFilterEqualCurrentNetwork ? (
           <AggregatedPercentageOverview
-            portfolioButton={renderPortfolioButton}
           />
         ) : (
           <AggregatedPercentageOverviewCrossChains
-            portfolioButton={renderPortfolioButton}
           />
         )}
       </Box>
