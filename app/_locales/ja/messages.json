@@ -5000,18 +5000,8 @@
   "secureWallet": {
     "message": "安全なウォレット"
   },
-  "secureWalletGetStartedButton": {
-    "message": "開始"
-  },
   "secureWalletRemindLaterButton": {
     "message": "後で通知する"
-  },
-  "secureWalletWalletRecover": {
-    "message": "これは、アプリにログインできなくなったり、新しいデバイスに変えたりした場合に、ウォレットを復元する唯一の手段となります。"
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "資金を失うリスクを回避しましょう。$1を信頼できる場所に保管して、ウォレットを保護しましょう。",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "セキュリティ"
@@ -5090,9 +5080,6 @@
   },
   "seeDetails": {
     "message": "詳細を表示"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "ウォレットの保護"
   },
   "seedPhraseReq": {
     "message": "シークレットリカバリーフレーズは、12、15、18、21、24語で構成されます"
@@ -5398,18 +5385,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "アカウントのセキュリティをスキップしますか？"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "このシークレットリカバリーフレーズを忘れた場合、このウォレットにアクセスできなくなります。"
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "今すぐセキュリティを高める"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "スキップ"
   },
   "skipDeepLinkInterstitial": {
     "message": "ディープリンクを開く際にインタースティシャル画面を表示しない"
@@ -5768,9 +5743,6 @@
   "spendingCaps": {
     "message": "使用上限"
   },
-  "srpDesignImageAlt": {
-    "message": "SRPヴォールトの画像"
-  },
   "srpDetailsDescription": {
     "message": "シークレットリカバリーフレーズとは、暗号資産ウォレットへのアクセスや管理を可能にする一連の単語のことで、シードフレーズまたはニーモニックとも呼ばれます。お持ちのウォレットをMetaMaskに移行するには、このフレーズが必要です。"
   },
@@ -5987,10 +5959,6 @@
   "step2LedgerWalletMsg": {
     "message": "コンピューターにLedgerを直接接続します。Ledgerのロックを解除し、イーサリアムアプリを開きます。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "ステップ$1/$2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "まだこのメッセージが表示されますか？"
