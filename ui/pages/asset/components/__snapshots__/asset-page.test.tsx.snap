@@ -1410,7 +1410,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
                 data-testid="asset-market-cap"
               >
-                56088.00
+                $56.09K
               </p>
             </div>
           </div>
