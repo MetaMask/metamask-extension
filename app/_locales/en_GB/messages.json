@@ -5751,12 +5751,12 @@
   "shieldTxMembershipCancel": {
     "message": "Cancel membership"
   },
+  "shieldTxMembershipCancelNotification": {
+    "message": "Your membership will be cancelled on $1.",
+    "description": "The $1 is the date"
+  },
   "shieldTxMembershipErrorAddFunds": {
     "message": "Add funds"
-  },
-  "shieldTxMembershipErrorEnding": {
-    "message": "Your membership is ending on $1. Keep benefits active by renewing.",
-    "description": "The $1 is the date"
   },
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Insufficient funds for your April 18 renewal. Keep access active by adding funds.",
@@ -5769,11 +5769,14 @@
   "shieldTxMembershipErrorPaused": {
     "message": "Membership paused due to insufficient funds. Coverage will resume after payment update."
   },
-  "shieldTxMembershipErrorPausedTooltip": {
+  "shieldTxMembershipErrorPausedCardTooltip": {
+    "message": "Your payment was declined. Please update your payment method to continue your coverage."
+  },
+  "shieldTxMembershipErrorPausedCryptoTooltip": {
     "message": "Insufficient token balance in your wallet. Top up to resume coverage."
   },
-  "shieldTxMembershipErrorRenew": {
-    "message": "Renew membership"
+  "shieldTxMembershipErrorUpdateCard": {
+    "message": "Update card details"
   },
   "shieldTxMembershipErrorUpdatePayment": {
     "message": "Update payment"
@@ -5789,6 +5792,9 @@
   },
   "shieldTxMembershipPaused": {
     "message": "Paused"
+  },
+  "shieldTxMembershipRenew": {
+    "message": "Renew membership"
   },
   "shieldTxMembershipResubscribe": {
     "message": "Restart membership"
