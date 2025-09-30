@@ -205,7 +205,6 @@ describe('ERC721 setApprovalForAll - Revoke Confirmation', () => {
       'confirmation__simulation_section',
     );
     expect(simulationSection).toBeInTheDocument();
-    console.log(simulationSection);
 
     const withinSimulationSection = within(simulationSection);
 
