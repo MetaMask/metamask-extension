@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { CaipChainId } from '@metamask/utils';
@@ -203,7 +203,6 @@ export const CoinOverview = ({
 
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
 
-
   const dispatch = useDispatch();
 
   const { privacyMode, showNativeTokenAsMainBalance } =
@@ -218,10 +217,6 @@ export const CoinOverview = ({
   const tokensMarketData = useSelector(getTokensMarketData);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
-  );
-
-  const anyEnabledNetworksAreAvailable = useSelector(
-    selectAnyEnabledNetworksAreAvailable,
   );
 
   const handleSensitiveToggle = () => {
