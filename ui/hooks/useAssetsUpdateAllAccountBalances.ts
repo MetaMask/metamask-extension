@@ -40,7 +40,7 @@ export const useAssetsUpdateAllAccountBalances = (): {
         await dispatch(updateBalancesFoAccounts(enabledChainIds, true));
       }
     } catch (error) {
-      console.error('Error updating balances state for all accounts', error);
+      console.warn('Error updating balances state for all accounts', error);
     }
   }, [enabledChainIds, dispatch]);
 
