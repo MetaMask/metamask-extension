@@ -131,8 +131,9 @@ export const MultichainEditAccountsPage: React.FC<
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Header
-        paddingTop={8}
-        paddingBottom={0}
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Md}
@@ -142,9 +143,6 @@ export const MultichainEditAccountsPage: React.FC<
             data-testid="back-button"
           />
         }
-        textProps={{
-          variant: TextVariant.headingSm,
-        }}
       >
         {title ?? t('editAccounts')}
       </Header>
