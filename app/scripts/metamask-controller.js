@@ -604,6 +604,7 @@ export default class MetamaskController extends EventEmitter {
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
+      allowedEvents: ['TransactionController:stateChange'],
     });
 
     this.phishingController = new PhishingController({
@@ -4422,7 +4423,7 @@ export default class MetamaskController extends EventEmitter {
       // Once we have our first HD keyring available, we re-create the internal list of
       // accounts (they should be up-to-date already, but we still run `updateAccounts` as
       // there are some account migration happening in that function).
-      this.accountsController.updateAccounts();
+      await this.accountsController.updateAccounts();
       // Then we can build the initial tree.
       this.accountTreeController.init();
 
@@ -5774,6 +5775,16 @@ export default class MetamaskController extends EventEmitter {
 
     if (shouldShowApproval) {
       try {
+        // Track referral viewed event
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.ReferralViewed,
+          category: MetaMetricsEventCategory.Referrals,
+          properties: {
+            url: HYPERLIQUID_ORIGIN,
+            trigger_type: triggerType,
+          },
+        });
+
         const approvalResponse = await this.approvalController.add({
           origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
@@ -5797,6 +5808,15 @@ export default class MetamaskController extends EventEmitter {
             activePermittedAccount,
           );
         }
+
+        // Track referral confirm button clicked event
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.ReferralConfirmButtonClicked,
+          category: MetaMetricsEventCategory.Referrals,
+          properties: {
+            opt_in: Boolean(approvalResponse?.approved),
+          },
+        });
       } catch (error) {
         // Do nothing if the user rejects the request
         if (error.code === errorCodes.provider.userRejectedRequest) {
