@@ -492,7 +492,7 @@ describe('AssetPage', () => {
 
     // Verify market data is rendered
     const marketCapElement = queryByTestId('asset-market-cap');
-    expect(marketCapElement).toHaveTextContent('56K');
+    expect(marketCapElement).toHaveTextContent('$56.09K');
 
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
     dynamicImages.forEach((img) => {
