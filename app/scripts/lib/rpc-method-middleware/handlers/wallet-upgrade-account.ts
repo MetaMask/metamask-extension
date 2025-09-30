@@ -44,7 +44,7 @@ export const upgradeAccountHandler = {
   hookNames: {
     upgradeAccount: true,
     getCurrentChainId: true,
-    getNetworkConfigurationByChainId: true,
+    isAtomicBatchSupported: true,
   },
 };
 
@@ -66,7 +66,7 @@ async function upgradeAccountImplementation(
   {
     upgradeAccount,
     getCurrentChainId,
-    getNetworkConfigurationByChainId,
+    isAtomicBatchSupported,
   }: {
     upgradeAccount: (
       address: string,
@@ -74,9 +74,16 @@ async function upgradeAccountImplementation(
       chainId?: number,
     ) => Promise<{ transactionHash: string; delegatedTo: string }>;
     getCurrentChainId: () => number;
-    getNetworkConfigurationByChainId: (chainId: string) => {
-      upgradeContractAddress?: string;
-    } | null;
+    isAtomicBatchSupported: (request: {
+      address: string;
+      chainIds: string[];
+    }) => Promise<
+      {
+        chainId: string;
+        isSupported: boolean;
+        upgradeContractAddress?: string;
+      }[]
+    >;
   },
 ) {
   const { params, origin } = req;
@@ -114,11 +121,21 @@ async function upgradeAccountImplementation(
   const targetChainId = chainId ?? getCurrentChainId();
 
   try {
-    // Get the network configuration for the target chain
+    // Get the EIP7702 network configuration for the target chain
     const hexChainId = toHex(targetChainId);
-    const networkConfig = getNetworkConfigurationByChainId(hexChainId);
+    const atomicBatchSupport = await isAtomicBatchSupported({
+      address: account,
+      chainIds: [hexChainId],
+    });
 
-    if (!networkConfig?.upgradeContractAddress) {
+    const atomicBatchChainSupport = atomicBatchSupport.find(
+      (result) => result.chainId.toLowerCase() === hexChainId.toLowerCase(),
+    );
+
+    if (
+      !atomicBatchChainSupport?.isSupported ||
+      !atomicBatchChainSupport?.upgradeContractAddress
+    ) {
       return end(
         rpcErrors.invalidParams({
           message: `Account upgrade not supported on chain ID ${targetChainId}`,
@@ -126,7 +143,7 @@ async function upgradeAccountImplementation(
       );
     }
 
-    const { upgradeContractAddress } = networkConfig;
+    const { upgradeContractAddress } = atomicBatchChainSupport;
 
     // Perform the upgrade using existing EIP-7702 functionality
     const result = await upgradeAccount(

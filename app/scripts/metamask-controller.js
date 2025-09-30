@@ -6861,6 +6861,9 @@ export default class MetamaskController extends EventEmitter {
       upgradeAccount: this.upgradeAccount.bind(this),
       getCurrentChainId: this.getCurrentChainId.bind(this),
       getCode: this.getCode.bind(this),
+      isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+        this.txController,
+      ),
     };
   }
 
@@ -8895,14 +8898,21 @@ export default class MetamaskController extends EventEmitter {
       toHex(chainId),
     );
 
-    // Use shared EIP-7702 utility
+    // Use shared EIP-7702 utility with controller's addTransaction method
     return createEIP7702UpgradeTransaction(
       {
         address,
         upgradeContractAddress,
         networkClientId,
       },
-      this.addTransactionAndRouteToConfirmationPage.bind(this),
+      async (transactionParams, options) => {
+        const transactionMeta = await this.addTransaction(transactionParams, {
+          ...options,
+          origin: 'metamask',
+          requireApproval: true,
+        });
+        return transactionMeta;
+      },
     );
   }
 

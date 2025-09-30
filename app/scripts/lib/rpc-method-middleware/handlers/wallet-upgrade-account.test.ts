@@ -18,13 +18,22 @@ const createUpgradeHandler = () => {
   const next = jest.fn();
   const upgradeAccount = jest.fn();
   const getCurrentChainId = jest.fn().mockReturnValue(1);
-  const getNetworkConfigurationByChainId = jest
+  const isAtomicBatchSupported = jest
     .fn()
-    .mockImplementation((chainId) => {
-      if (chainId === '0x1' || chainId === '0xaa36a7') {
-        return { upgradeContractAddress: UPGRADE_CONTRACT };
-      }
-      return null;
+    .mockImplementation(async ({ chainIds }: { chainIds: string[] }) => {
+      return chainIds.map((chainId: string) => {
+        if (chainId === '0x1' || chainId === '0xaa36a7') {
+          return {
+            chainId,
+            isSupported: true,
+            upgradeContractAddress: UPGRADE_CONTRACT,
+          };
+        }
+        return {
+          chainId,
+          isSupported: false,
+        };
+      });
     });
 
   const response = { result: null, id: 1, jsonrpc: '2.0' as const };
@@ -32,7 +41,7 @@ const createUpgradeHandler = () => {
     upgradeAccountHandler.implementation(request, response, next, end, {
       upgradeAccount,
       getCurrentChainId,
-      getNetworkConfigurationByChainId,
+      isAtomicBatchSupported,
     });
 
   return {
@@ -40,7 +49,7 @@ const createUpgradeHandler = () => {
     next,
     upgradeAccount,
     getCurrentChainId,
-    getNetworkConfigurationByChainId,
+    isAtomicBatchSupported,
     response,
     handler,
   };
@@ -227,9 +236,9 @@ describe('upgradeAccountHandler', () => {
   });
 
   it('rejects unsupported chain ID', async () => {
-    const { end, upgradeAccount, getNetworkConfigurationByChainId, handler } =
+    const { end, upgradeAccount, isAtomicBatchSupported, handler } =
       createUpgradeHandler();
-    getNetworkConfigurationByChainId.mockReturnValue(null);
+    isAtomicBatchSupported.mockResolvedValue([]);
 
     await handler({
       id: 1,
@@ -248,9 +257,14 @@ describe('upgradeAccountHandler', () => {
   });
 
   it('rejects network config without upgrade contract', async () => {
-    const { end, upgradeAccount, getNetworkConfigurationByChainId, handler } =
+    const { end, upgradeAccount, isAtomicBatchSupported, handler } =
       createUpgradeHandler();
-    getNetworkConfigurationByChainId.mockReturnValue({});
+    isAtomicBatchSupported.mockResolvedValue([
+      {
+        chainId: '0x1',
+        isSupported: false,
+      },
+    ]);
 
     await handler({
       id: 1,
