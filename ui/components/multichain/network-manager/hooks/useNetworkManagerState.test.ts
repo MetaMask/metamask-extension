@@ -1,8 +1,7 @@
+import { SolScope } from '@metamask/keyring-api';
+import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors';
 import { useNetworkManagerInitialTab } from './useNetworkManagerState';
-
-import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers';
-import { SolScope } from '@metamask/keyring-api';
 
 jest.mock('../../../../selectors', () => ({
   ...jest.requireActual('../../../../selectors'),
