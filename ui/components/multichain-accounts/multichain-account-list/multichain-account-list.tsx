@@ -63,7 +63,7 @@ export const MultichainAccountList = ({
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,
   );
-  const { formatCurrency } = useFormatters();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const allBalances = useSelector(selectBalanceForAllWallets);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
@@ -175,7 +175,7 @@ export const MultichainAccountList = ({
                 <MultichainAccountCell
                   accountId={groupId as AccountGroupId}
                   accountName={groupData.metadata.name}
-                  balance={formatCurrency(balance, currency)}
+                  balance={formatCurrencyWithMinThreshold(balance, currency)}
                   selected={selectedAccountGroupsSet.has(
                     groupId as AccountGroupId,
                   )}
@@ -239,7 +239,7 @@ export const MultichainAccountList = ({
     isInSearchMode,
     displayWalletHeader,
     allBalances,
-    formatCurrency,
+    formatCurrencyWithMinThreshold,
     selectedAccountGroupsSet,
     showAccountCheckbox,
     handleAccountRenameAction,

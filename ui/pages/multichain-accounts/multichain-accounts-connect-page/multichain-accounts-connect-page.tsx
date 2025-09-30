@@ -132,7 +132,7 @@ export const MultichainAccountsConnectPage: React.FC<
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
     MultichainAccountsConnectPageMode.Summary,
   );
-  const { formatCurrency } = useFormatters();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const allBalances = useSelector(selectBalanceForAllWallets);
   const wallets = allBalances?.wallets;
 
@@ -477,13 +477,13 @@ export const MultichainAccountsConnectPage: React.FC<
         <MultichainAccountCell
           accountId={accountGroupId}
           accountName={accountGroup?.metadata.name || 'Unknown Account'}
-          balance={formatCurrency(balance, currency)}
+          balance={formatCurrencyWithMinThreshold(balance, currency)}
           key={accountGroupId}
           walletName={accountGroup?.walletName}
         />
       );
     },
-    [supportedAccountGroups, wallets, formatCurrency],
+    [supportedAccountGroups, wallets, formatCurrencyWithMinThreshold],
   );
 
   return pageMode === MultichainAccountsConnectPageMode.Summary ? (
