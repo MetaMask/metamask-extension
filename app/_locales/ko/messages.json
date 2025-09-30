@@ -740,10 +740,6 @@
   "betaTerms": {
     "message": "베타 이용약관"
   },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
-  },
   "blockExplorerAccountAction": {
     "message": "계정",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -3315,10 +3311,6 @@
   },
   "metrics": {
     "message": "메트릭"
-  },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "네트워크 세부 정보 검증",
@@ -6713,10 +6705,6 @@
   },
   "transferRequest": {
     "message": "전송 요청"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Ledger 연결에 오류가 발생했습니다. $1",

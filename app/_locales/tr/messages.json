@@ -728,10 +728,6 @@
   "betaTerms": {
     "message": "Beta Kullanım koşulları"
   },
-  "billionAbbreviation": {
-    "message": "MR",
-    "description": "Shortened form of 'billion'"
-  },
   "blockExplorerAccountAction": {
     "message": "Hesap",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -3285,10 +3281,6 @@
   },
   "metrics": {
     "message": "Metrikler"
-  },
-  "millionAbbreviation": {
-    "message": "MN",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "ağ bilgilerini doğrula",
@@ -6666,10 +6658,6 @@
   },
   "transferRequest": {
     "message": "Transfer talebi"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Ledger'ınıza bağlanırken sorun yaşıyoruz. $1",

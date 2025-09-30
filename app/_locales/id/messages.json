@@ -740,10 +740,6 @@
   "betaTerms": {
     "message": "Ketentuan penggunaan Beta"
   },
-  "billionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'billion'"
-  },
   "blockExplorerAccountAction": {
     "message": "Akun",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -3315,10 +3311,6 @@
   },
   "metrics": {
     "message": "Metrik"
-  },
-  "millionAbbreviation": {
-    "message": "Jt",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "verifikasi detail jaringan",
@@ -6713,10 +6705,6 @@
   },
   "transferRequest": {
     "message": "Permintaan transfer"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Kami mengalami masalah saat menghubungkan Ledger Anda. $1",
