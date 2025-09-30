@@ -40,6 +40,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
           class="mm-checkbox__input-wrapper"
         >
           <input
+            checked=""
             class="mm-box mm-checkbox__input mm-checkbox__input--checked mm-box--margin-0 mm-box--margin-right-2 mm-box--display-flex mm-box--background-color-primary-default mm-box--rounded-sm mm-box--border-color-primary-default mm-box--border-width-2 box--border-style-solid"
             id="metametrics-opt-in"
             title="metametrics-opt-in"
@@ -152,6 +153,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
           class="mm-checkbox__input-wrapper"
         >
           <input
+            checked=""
             class="mm-box mm-checkbox__input mm-checkbox__input--checked mm-box--margin-0 mm-box--margin-right-2 mm-box--display-flex mm-box--background-color-primary-default mm-box--rounded-sm mm-box--border-color-primary-default mm-box--border-width-2 box--border-style-solid"
             id="metametrics-opt-in"
             title="metametrics-opt-in"

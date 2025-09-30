@@ -69,7 +69,7 @@ export default function OnboardingMetametrics() {
   const [
     isParticipateInMetaMetricsChecked,
     setIsParticipateInMetaMetricsChecked,
-  ] = useState(false);
+  ] = useState(true);
   const [
     isDataCollectionForMarketingChecked,
     setIsDataCollectionForMarketingChecked,
@@ -79,12 +79,7 @@ export default function OnboardingMetametrics() {
   const marketingCheckboxRef = useRef(null);
 
   useEffect(() => {
-    if (!participateInMetaMetricsSet) {
-      setIsParticipateInMetaMetricsChecked(true);
-      return;
-    }
-
-    if (participateInMetaMetrics) {
+    if (participateInMetaMetricsSet) {
       setIsParticipateInMetaMetricsChecked(participateInMetaMetrics);
     }
     if (dataCollectionForMarketing) {
@@ -131,8 +126,8 @@ export default function OnboardingMetametrics() {
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.AnalyticsPreferenceSelected,
           properties: {
-            is_metrics_opted_in: Boolean(participateInMetaMetrics),
-            has_marketing_consent: Boolean(dataCollectionForMarketing),
+            is_metrics_opted_in: true,
+            has_marketing_consent: Boolean(isDataCollectionForMarketingChecked),
             location: 'onboarding_metametrics',
           },
         });
