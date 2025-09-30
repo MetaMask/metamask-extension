@@ -107,7 +107,7 @@ describe('NetworkConnectionBanner', () => {
           bannerType: 'degraded',
           eventName:
             MetaMetricsEventName.NetworkConnectionBannerUpdateRpcClicked,
-          networkClientId: '0x1',
+          networkClientId: 'mainnet',
         });
       });
     });
@@ -180,7 +180,7 @@ describe('NetworkConnectionBanner', () => {
           bannerType: 'unavailable',
           eventName:
             MetaMetricsEventName.NetworkConnectionBannerUpdateRpcClicked,
-          networkClientId: '0x1',
+          networkClientId: 'mainnet',
         });
       });
     });

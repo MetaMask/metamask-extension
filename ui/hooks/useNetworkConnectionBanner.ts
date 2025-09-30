@@ -1,7 +1,6 @@
 import { useEffect, useCallback, useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Hex, hexToNumber } from '@metamask/utils';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { selectFirstUnavailableEvmNetwork } from '../selectors/multichain/networks';
 import { getNetworkConnectionBanner } from '../selectors/selectors';
 import { updateNetworkConnectionBanner } from '../store/actions';
