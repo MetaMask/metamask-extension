@@ -17,16 +17,7 @@ import { MOCK_META_METRICS_ID } from '../../constants';
  */
 async function mockSegment(mockServer: Mockttp) {
   return [
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Wallet Setup Started' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
+    // Wallet Setup Started event is omitted because of the onboarding fixture eventsBeforeMetricsOptIn
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
