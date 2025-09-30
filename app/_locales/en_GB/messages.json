@@ -173,7 +173,7 @@
     "message": "Activity"
   },
   "activityEmptyDescription": {
-    "message": "Nothing to see yet. Check the explorer for more recent activity."
+    "message": "Nothing to see yet. Swap your first token today."
   },
   "activityLog": {
     "message": "Activity log"
@@ -2017,9 +2017,6 @@
   },
   "discover": {
     "message": "Discover"
-  },
-  "discoverNFTs": {
-    "message": "Discover NFTs"
   },
   "discoverSnaps": {
     "message": "Discover Snaps",
@@ -5930,6 +5927,9 @@
   "singleNetwork": {
     "message": "1 network"
   },
+  "sites": {
+    "message": "Sites"
+  },
   "siweIssued": {
     "message": "Issued"
   },
@@ -7007,6 +7007,9 @@
     "message": "Confirmed by $1 sources. Verify on $2.",
     "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
   },
+  "swapTokens": {
+    "message": "Swap tokens"
+  },
   "swapTooManyDecimalsError": {
     "message": "$1 allows up to $2 decimals",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -7179,6 +7182,9 @@
   },
   "tokenSymbol": {
     "message": "Token symbol"
+  },
+  "tokenTransfer": {
+    "message": "Token transfer"
   },
   "tokens": {
     "message": "Tokens"
