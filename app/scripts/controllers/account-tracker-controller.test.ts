@@ -39,6 +39,26 @@ const ETHERS_CONTRACT_BALANCES_ETH_CALL_RETURN =
 const EXPECTED_CONTRACT_BALANCE_1 = '0x038d7ea4c68006';
 const EXPECTED_CONTRACT_BALANCE_2 = '0x0186a0';
 
+// Mock Account API response
+const MOCK_ACCOUNT_API_RESPONSE = {
+  balances: {
+    '1': {
+      '0x0000000000000000000000000000000000000000': {
+        balance: '1000000000000000000',
+        token: {
+          address: '0x0000000000000000000000000000000000000000',
+          symbol: 'ETH',
+          decimals: 18,
+          name: 'Ethereum',
+          type: 'native' as const,
+        },
+      },
+    },
+  },
+};
+
+const ACCOUNT_API_SUCCESS_BALANCE = '0xde0b6b3a7640000'; // 1 ETH in hex
+
 const mockAccounts = {
   [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: INITIAL_BALANCE_1 },
   [VALID_ADDRESS_TWO]: {
@@ -65,8 +85,10 @@ function buildMockBlockTracker({ shouldStubListeners = true } = {}) {
 type WithControllerOptions = {
   completedOnboarding?: boolean;
   useMultiAccountBalanceChecker?: boolean;
+  useExternalServices?: boolean;
   getNetworkClientById?: jest.Mock;
   getSelectedAccount?: jest.Mock;
+  useAccountApiBalances?: string[];
 } & Partial<AccountTrackerControllerOptions>;
 
 type WithControllerCallback<ReturnValue> = ({
@@ -92,8 +114,10 @@ async function withController<ReturnValue>(
   const {
     completedOnboarding = false,
     useMultiAccountBalanceChecker = false,
+    useExternalServices = false,
     getNetworkClientById,
     getSelectedAccount,
+    useAccountApiBalances = ['0x1'],
     ...accountTrackerOptions
   } = rest;
   const { provider } = createTestProviderTools({
@@ -175,6 +199,7 @@ async function withController<ReturnValue>(
 
   const getPreferencesControllerState = jest.fn().mockReturnValue({
     useMultiAccountBalanceChecker,
+    useExternalServices,
   });
   messenger.registerActionHandler(
     'PreferencesController:getState',
@@ -186,6 +211,7 @@ async function withController<ReturnValue>(
     provider: provider as Provider,
     blockTracker: blockTrackerStub as unknown as BlockTracker,
     getNetworkIdentifier: jest.fn(),
+    useAccountApiBalances,
     messenger: messenger.getRestricted({
       name: 'AccountTrackerController',
       allowedActions: [
@@ -1151,6 +1177,403 @@ describe('AccountTrackerController', () => {
           });
         },
       );
+    });
+  });
+
+  describe('Account API', () => {
+    let fetchMock: jest.MockedFunction<typeof global.fetch>;
+
+    beforeEach(() => {
+      fetchMock = jest.fn();
+      global.fetch = fetchMock;
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    describe('with Account API enabled and supported chain', () => {
+      it('should use Account API when conditions are met', async () => {
+        fetchMock.mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(MOCK_ACCOUNT_API_RESPONSE),
+        } as Response);
+
+        await withController(
+          {
+            completedOnboarding: true,
+            useMultiAccountBalanceChecker: true,
+            useExternalServices: true,
+            useAccountApiBalances: ['0x1'],
+            state: {
+              accounts: {
+                [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
+              },
+            },
+            getNetworkClientById: jest.fn().mockReturnValue({
+              configuration: { chainId: '0x1' },
+              provider: {} as Provider,
+            }),
+          },
+          async ({ controller }) => {
+            await controller.updateAccounts();
+
+            expect(fetchMock).toHaveBeenCalledWith(
+              expect.stringContaining(
+                'https://accounts.api.cx.metamask.io/v4/multiaccount/balances',
+              ),
+              expect.objectContaining({
+                method: 'GET',
+                headers: { Accept: 'application/json' },
+              }),
+            );
+
+            expect(
+              controller.state.accountsByChainId['0x1'][VALID_ADDRESS],
+            ).toStrictEqual({
+              address: VALID_ADDRESS,
+              balance: ACCOUNT_API_SUCCESS_BALANCE,
+            });
+          },
+        );
+      });
+
+      it('should construct correct API URL with multiple addresses', async () => {
+        fetchMock.mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(MOCK_ACCOUNT_API_RESPONSE),
+        } as Response);
+
+        await withController(
+          {
+            completedOnboarding: true,
+            useMultiAccountBalanceChecker: true,
+            useExternalServices: true,
+            useAccountApiBalances: ['0x1'],
+            state: {
+              accounts: {
+                [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
+                [VALID_ADDRESS_TWO]: {
+                  address: VALID_ADDRESS_TWO,
+                  balance: '0x0',
+                },
+              },
+            },
+            getNetworkClientById: jest.fn().mockReturnValue({
+              configuration: { chainId: '0x1' },
+              provider: {} as Provider,
+            }),
+          },
+          async ({ controller }) => {
+            await controller.updateAccounts();
+
+            expect(fetchMock).toHaveBeenCalledWith(
+              expect.stringContaining('networks=1'),
+              expect.any(Object),
+            );
+            expect(fetchMock).toHaveBeenCalledWith(
+              expect.stringContaining(
+                `accountAddresses=eip155:0:${VALID_ADDRESS},eip155:0:${VALID_ADDRESS_TWO}`,
+              ),
+              expect.any(Object),
+            );
+          },
+        );
+      });
+
+      it('should fallback to RPC when Account API returns non-ok response', async () => {
+        fetchMock.mockResolvedValueOnce({
+          ok: false,
+          status: 500,
+          statusText: 'Internal Server Error',
+        } as Response);
+
+        await withController(
+          {
+            completedOnboarding: true,
+            useMultiAccountBalanceChecker: true,
+            useExternalServices: true,
+            useAccountApiBalances: ['0x1'],
+            state: {
+              accounts: {
+                [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
+              },
+            },
+            getNetworkClientById: jest.fn().mockReturnValue({
+              configuration: { chainId: '0x1' },
+              provider: {} as Provider,
+            }),
+          },
+          async ({ controller }) => {
+            await controller.updateAccounts();
+
+            expect(fetchMock).toHaveBeenCalled();
+            // Should update balance via RPC fallback
+            expect(
+              controller.state.accountsByChainId['0x1'][VALID_ADDRESS],
+            ).toStrictEqual({
+              address: VALID_ADDRESS,
+              balance: UPDATE_BALANCE,
+            });
+          },
+        );
+      });
+
+      it('should fallback to RPC when Account API throws error', async () => {
+        fetchMock.mockRejectedValueOnce(new Error('Network error'));
+
+        await withController(
+          {
+            completedOnboarding: true,
+            useMultiAccountBalanceChecker: true,
+            useExternalServices: true,
+            useAccountApiBalances: ['0x1'],
+            state: {
+              accounts: {
+                [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
+              },
+            },
+            getNetworkClientById: jest.fn().mockReturnValue({
+              configuration: { chainId: '0x1' },
+              provider: {} as Provider,
+            }),
+          },
+          async ({ controller }) => {
+            await controller.updateAccounts();
+
+            expect(fetchMock).toHaveBeenCalled();
+            // Should update balance via RPC fallback
+            expect(
+              controller.state.accountsByChainId['0x1'][VALID_ADDRESS],
+            ).toStrictEqual({
+              address: VALID_ADDRESS,
+              balance: UPDATE_BALANCE,
+            });
+          },
+        );
+      });
+    });
+
+    describe('with Account API conditions not met', () => {
+      it('should not call Account API when external services disabled', async () => {
+        await withController(
+          {
+            completedOnboarding: true,
+            useMultiAccountBalanceChecker: true,
+            useExternalServices: false, // disabled
+            useAccountApiBalances: ['0x1'],
+            state: {
+              accounts: {
+                [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
+              },
+            },
+            getNetworkClientById: jest.fn().mockReturnValue({
+              configuration: { chainId: '0x1' },
+              provider: {} as Provider,
+            }),
+          },
+          async ({ controller }) => {
+            await controller.updateAccounts();
+
+            expect(fetchMock).not.toHaveBeenCalled();
+            // Should update balance via RPC
+            expect(
+              controller.state.accountsByChainId['0x1'][VALID_ADDRESS],
+            ).toStrictEqual({
+              address: VALID_ADDRESS,
+              balance: UPDATE_BALANCE,
+            });
+          },
+        );
+      });
+
+      it('should not call Account API when chain not supported', async () => {
+        await withController(
+          {
+            completedOnboarding: true,
+            useMultiAccountBalanceChecker: true,
+            useExternalServices: true,
+            useAccountApiBalances: ['0x1'], // Only Ethereum supported
+            state: {
+              accounts: {
+                [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
+              },
+            },
+            getNetworkClientById: jest.fn().mockReturnValue({
+              configuration: { chainId: '0x89' }, // Polygon not supported
+              provider: {} as Provider,
+            }),
+          },
+          async ({ controller }) => {
+            await controller.updateAccounts();
+
+            expect(fetchMock).not.toHaveBeenCalled();
+            // Should update balance via RPC fallback
+            expect(
+              controller.state.accountsByChainId['0x89'][VALID_ADDRESS],
+            ).toStrictEqual({
+              address: VALID_ADDRESS,
+              balance: UPDATE_BALANCE,
+            });
+          },
+        );
+      });
+
+      it('should not call Account API when multi-account checker disabled', async () => {
+        await withController(
+          {
+            completedOnboarding: true,
+            useMultiAccountBalanceChecker: false, // disabled
+            useExternalServices: true,
+            useAccountApiBalances: ['0x1'],
+            state: {
+              accounts: {
+                [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
+              },
+            },
+            getNetworkClientById: jest.fn().mockReturnValue({
+              configuration: { chainId: '0x1' },
+              provider: {} as Provider,
+            }),
+          },
+          async ({ controller }) => {
+            await controller.updateAccounts();
+
+            expect(fetchMock).not.toHaveBeenCalled();
+            // Should update balance via RPC
+            expect(controller.state.accounts[VALID_ADDRESS]).toStrictEqual({
+              address: VALID_ADDRESS,
+              balance: UPDATE_BALANCE,
+            });
+          },
+        );
+      });
+    });
+
+    describe('updateAccountsAllActiveNetworks with Account API', () => {
+      it('should use multichain Account API for all active networks', async () => {
+        const multiChainResponse = {
+          balances: {
+            '1': {
+              '0x0000000000000000000000000000000000000000': {
+                balance: '1000000000000000000',
+                token: {
+                  address: '0x0000000000000000000000000000000000000000',
+                  symbol: 'ETH',
+                  decimals: 18,
+                  name: 'Ethereum',
+                  type: 'native' as const,
+                },
+              },
+            },
+            '56': {
+              '0x0000000000000000000000000000000000000000': {
+                balance: '2000000000000000000',
+                token: {
+                  address: '0x0000000000000000000000000000000000000000',
+                  symbol: 'BNB',
+                  decimals: 18,
+                  name: 'BNB',
+                  type: 'native' as const,
+                },
+              },
+            },
+          },
+        };
+
+        fetchMock.mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(multiChainResponse),
+        } as Response);
+
+        const getNetworkClientByIdMock = jest
+          .fn()
+          .mockImplementation((networkClientId) => {
+            switch (networkClientId) {
+              case 'bsc':
+                return {
+                  configuration: { chainId: '0x38' },
+                  provider: {} as Provider,
+                  blockTracker: buildMockBlockTracker(),
+                };
+              default:
+                return {
+                  configuration: { chainId: '0x1' },
+                  provider: {} as Provider,
+                  blockTracker: buildMockBlockTracker(),
+                };
+            }
+          });
+
+        await withController(
+          {
+            completedOnboarding: true,
+            useMultiAccountBalanceChecker: true,
+            useExternalServices: true,
+            useAccountApiBalances: ['0x1', '0x38'], // Ethereum and BSC
+            state: {
+              accounts: {
+                [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
+              },
+            },
+            getNetworkClientById: getNetworkClientByIdMock,
+          },
+          async ({ controller }) => {
+            // Start polling for BSC to make it an active network
+            controller.startPollingByNetworkClientId('bsc');
+
+            await controller.updateAccountsAllActiveNetworks();
+
+            expect(fetchMock).toHaveBeenCalledWith(
+              expect.stringContaining('networks=1,56'),
+              expect.any(Object),
+            );
+
+            // Should update both chains
+            expect(
+              controller.state.accountsByChainId['0x1'][VALID_ADDRESS],
+            ).toStrictEqual({
+              address: VALID_ADDRESS,
+              balance: ACCOUNT_API_SUCCESS_BALANCE, // 1 ETH
+            });
+            expect(
+              controller.state.accountsByChainId['0x38'][VALID_ADDRESS],
+            ).toStrictEqual({
+              address: VALID_ADDRESS,
+              balance: '0x1bc16d674ec80000', // 2 BNB
+            });
+
+            controller.stopAllPolling();
+          },
+        );
+      });
+    });
+
+    describe('Account API configuration', () => {
+      it('should support multiple chains configured via feature flag', async () => {
+        await withController(
+          {
+            completedOnboarding: true,
+            useMultiAccountBalanceChecker: true,
+            useExternalServices: true,
+            useAccountApiBalances: ['0x1', '0x38', '0xe708'],
+            state: {
+              accounts: {
+                [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
+              },
+            },
+          },
+          ({ controller }) => {
+            // Test that the controller is properly initialized with Account API configuration
+            // We verify this indirectly by checking the controller is created successfully
+            expect(controller).toBeDefined();
+            expect(controller.state).toBeDefined();
+            expect(controller.state.accounts).toStrictEqual({
+              [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
+            });
+          },
+        );
+      });
     });
   });
 

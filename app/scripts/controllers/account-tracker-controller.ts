@@ -789,9 +789,8 @@ export default class AccountTrackerController extends BaseController<
 
     const { chainId, provider, identifier } =
       this.#getCorrectNetworkClient(networkClientId);
-    const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
-      'PreferencesController:getState',
-    );
+    const { useMultiAccountBalanceChecker, useExternalServices } =
+      this.messagingSystem.call('PreferencesController:getState');
 
     let addresses = [];
     if (useMultiAccountBalanceChecker) {
@@ -808,12 +807,13 @@ export default class AccountTrackerController extends BaseController<
 
     // Try account API first if chain is supported by feature flag
     let accountApiSuccess = false;
-    const { useExternalServices } = this.messagingSystem.call(
-      'PreferencesController:getState',
-    );
     const isChainSupported = this.#useAccountApiBalances.includes(chainId);
 
-    if (isChainSupported && useExternalServices) {
+    if (
+      isChainSupported &&
+      useExternalServices &&
+      useMultiAccountBalanceChecker
+    ) {
       try {
         accountApiSuccess = await this.#updateAccountsViaApi(
           addresses,
