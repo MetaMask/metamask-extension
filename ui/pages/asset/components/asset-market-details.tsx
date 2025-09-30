@@ -44,7 +44,7 @@ export const AssetMarketDetails = ({
   const evmMarketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
   const nonEvmConversionRates = useSelector(getAssetsRates);
-  const { formatNumber } = useFormatters();
+  const { formatCompact } = useFormatters();
 
   const isEvm = isEvmChainId(asset.chainId);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
@@ -137,21 +137,21 @@ export const AssetMarketDetails = ({
               variant={TextVariant.bodyMdMedium}
               data-testid="asset-market-cap"
             >
-              {formatNumber(marketCap, { notation: 'compact' })}
+              {formatCompact(marketCap)}
             </Text>,
           )}
         {totalVolume > 0 &&
           renderRow(
             t('totalVolume'),
             <Text variant={TextVariant.bodyMdMedium}>
-              {formatNumber(totalVolume, { notation: 'compact' })}
+              {formatCompact(totalVolume)}
             </Text>,
           )}
         {circulatingSupply > 0 &&
           renderRow(
             t('circulatingSupply'),
             <Text variant={TextVariant.bodyMdMedium}>
-              {formatNumber(circulatingSupply, { notation: 'compact' })}
+              {formatCompact(circulatingSupply)}
             </Text>,
           )}
         {allTimeHigh > 0 &&
