@@ -1,5 +1,7 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
+import { Button } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -23,7 +25,8 @@ import {
   Text,
 } from '../../../../component-library';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors';
+import { extractNetworkName } from '../helper';
 
 type PermissionGroupListItemProps = {
   /**
@@ -37,7 +40,7 @@ type PermissionGroupListItemProps = {
   text: string;
 
   /**
-   * The function to call when the connection is clicked
+   * The function to call when the permission group item is clicked
    */
   onClick: () => void;
 };
@@ -48,82 +51,109 @@ export const PermissionGroupListItem = ({
 }: PermissionGroupListItemProps) => {
   const t = useI18nContext();
   const networkImageUrl = getImageForChainId(chainId);
+  const [, evmNetworks] = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
+
   const getNetworkNameForChainId = () => {
-    const networkName =
-      NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
-    return networkName ? t(networkName) : t('privateNetwork');
+    const networkNameKey = extractNetworkName(evmNetworks, chainId);
+    const networkName = t(networkNameKey);
+
+    // If the translation key doesn't exist (returns the same key) or it's the unknown network case,
+    // fall back to the full network name
+    if (
+      !networkName ||
+      networkName === networkNameKey ||
+      networkNameKey === 'unknownNetworkForGatorPermissions'
+    ) {
+      return extractNetworkName(evmNetworks, chainId, true);
+    }
+
+    return networkName;
   };
 
   return (
     <Box
       data-testid="permission-group-list-item"
-      as="button"
+      width={BlockSize.Full}
+      backgroundColor={BackgroundColor.backgroundDefault}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.baseline}
-      width={BlockSize.Full}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      onClick={onClick}
       padding={4}
       gap={4}
-      className="multichain-permission-group-list-item"
     >
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        style={{ alignSelf: 'center' }}
+      <Button
+        onClick={onClick}
+        style={{
+          width: '100%',
+          backgroundColor: 'transparent',
+          border: 'none',
+          padding: 0,
+        }}
       >
-        <AvatarNetwork
-          data-testid="permission-group-list-item__avatar-network"
-          src={networkImageUrl}
-          name={chainId}
-          size={AvatarNetworkSize.Md}
-          style={{ borderRadius: '50%' }}
-        />
-      </Box>
-
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        width={BlockSize.FiveTwelfths}
-        style={{ alignSelf: 'center', flexGrow: '1' }}
-      >
-        <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Left} ellipsis>
-          {getNetworkNameForChainId()}
-        </Text>
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          style={{ alignSelf: 'center' }}
+          marginRight={2}
+        >
+          <AvatarNetwork
+            data-testid="permission-group-list-item__avatar-network"
+            src={networkImageUrl}
+            name={chainId}
+            size={AvatarNetworkSize.Lg}
+            style={{ borderRadius: '50%' }}
+          />
+        </Box>
 
         <Box
           display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
-          gap={1}
+          flexDirection={FlexDirection.Column}
+          width={BlockSize.FiveTwelfths}
+          style={{ alignSelf: 'center', flexGrow: '1' }}
         >
           <Text
-            as="span"
-            width={BlockSize.Max}
-            color={TextColor.textAlternative}
             variant={TextVariant.bodyMd}
+            textAlign={TextAlign.Left}
+            ellipsis
           >
-            {text}
+            {getNetworkNameForChainId()}
           </Text>
-        </Box>
-      </Box>
 
-      <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.flexEnd}
-        alignItems={AlignItems.center}
-        style={{ flex: '1', alignSelf: 'center' }}
-        gap={2}
-      >
-        <Icon
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            gap={1}
+          >
+            <Text
+              as="span"
+              width={BlockSize.Max}
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyMd}
+            >
+              {text}
+            </Text>
+          </Box>
+        </Box>
+
+        <Box
           display={Display.Flex}
-          name={IconName.ArrowRight}
-          color={IconColor.iconDefault}
-          size={IconSize.Sm}
-          backgroundColor={BackgroundColor.backgroundDefault}
-        />
-      </Box>
+          justifyContent={JustifyContent.flexEnd}
+          alignItems={AlignItems.center}
+          style={{ flex: '1', alignSelf: 'center' }}
+          gap={2}
+        >
+          <Icon
+            display={Display.Flex}
+            name={IconName.ArrowRight}
+            color={IconColor.iconDefault}
+            size={IconSize.Sm}
+            backgroundColor={BackgroundColor.backgroundDefault}
+          />
+        </Box>
+      </Button>
     </Box>
   );
 };

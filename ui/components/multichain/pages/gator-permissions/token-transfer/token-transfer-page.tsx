@@ -39,7 +39,6 @@ export const TokenTransferPage = () => {
   const permissionGroupDetails = useSelector((state: AppState) =>
     getPermissionGroupDetails(state, 'token-transfer'),
   );
-
   const handlePermissionGroupItemClick = (chainId: Hex) => {
     history.push(`${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/token-transfer`);
   };
@@ -60,7 +59,6 @@ export const TokenTransferPage = () => {
         />
       );
     });
-
 
   return (
     <Page

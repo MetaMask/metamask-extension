@@ -11,7 +11,6 @@ import {
 } from '@metamask/gator-permissions-controller';
 import { Hex } from '@metamask/utils';
 
-
 export type AppState = {
   metamask: GatorPermissionsControllerState;
 };

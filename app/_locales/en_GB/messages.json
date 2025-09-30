@@ -7401,6 +7401,10 @@
   "unknownCollection": {
     "message": "Unnamed collection"
   },
+  "unknownNetworkForGatorPermissions": {
+    "message": "Unknown network",
+    "description": "Displayed on places like Gator permissions when regular name is not available."
+  },
   "unknownNetworkForKeyEntropy": {
     "message": "Unknown network",
     "description": "Displayed on places like Snap install warning when regular name is not available."

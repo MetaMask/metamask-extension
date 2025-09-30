@@ -1,5 +1,7 @@
 import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { Header, Page } from '../../page';
 import {
   ButtonIcon,
@@ -14,16 +16,34 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { NETWORK_TO_NAME_MAP } from '../../../../../../shared/constants/network';
+import { extractNetworkName } from '../helper';
+import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors';
 
 export const ReviewGatorPermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const { chainId } = useParams();
+  const [, evmNetworks] = useSelector(
+    getMultichainNetworkConfigurationsByChainId,
+  );
   const getNetworkNameForChainId = () => {
-    const networkName =
-      NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP];
-    return networkName ? t(networkName) : t('privateNetwork');
+    if (!chainId) {
+      return t('unknownNetworkForGatorPermissions');
+    }
+    const networkNameKey = extractNetworkName(evmNetworks, chainId as Hex);
+    const networkName = t(networkNameKey);
+
+    // If the translation key doesn't exist (returns the same key) or it's the unknown network case,
+    // fall back to the full network name
+    if (
+      !networkName ||
+      networkName === networkNameKey ||
+      networkNameKey === 'unknownNetworkForGatorPermissions'
+    ) {
+      return extractNetworkName(evmNetworks, chainId as Hex, true);
+    }
+
+    return networkName;
   };
 
   return (
