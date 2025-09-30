@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { ApprovalType } from '@metamask/controller-utils';
 import { useDispatch } from 'react-redux';
 import { AddNetworkFields } from '@metamask/network-controller';
-import type { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
@@ -19,14 +17,11 @@ import {
   Popover,
   PopoverPosition,
 } from '../../../component-library';
-import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
 import {
-  ENVIRONMENT_TYPE_POPUP,
-  ORIGIN_METAMASK,
-} from '../../../../../shared/constants/app';
-import {
-  requestUserApproval,
+  setEnabledNetworks,
   toggleNetworkMenu,
+  addNetwork,
 } from '../../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -43,7 +38,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { enableSingleNetwork } from '../../../../store/controller-actions/network-order-controller';
 
 const PopularNetworkList = ({
   searchAddNetworkResults,
@@ -133,7 +127,7 @@ const PopularNetworkList = ({
         </Box>
       </Box>
     );
-  }, [searchAddNetworkResults, referenceElement, isOpen]);
+  }, [searchAddNetworkResults, referenceElement, isOpen, t]);
 
   return (
     <Box className="new-network-list__networks-container">
@@ -192,42 +186,12 @@ const PopularNetworkList = ({
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
-                  const requestResult = (await dispatch(
-                    requestUserApproval({
-                      origin: ORIGIN_METAMASK,
-                      type: ApprovalType.AddEthereumChain,
-                      requestData: {
-                        chainId: network.chainId,
-                        rpcUrl:
-                          network.rpcEndpoints[network.defaultRpcEndpointIndex]
-                            .url,
-                        failoverRpcUrls:
-                          network.rpcEndpoints[network.defaultRpcEndpointIndex]
-                            .failoverUrls,
-                        ticker: network.nativeCurrency,
-                        rpcPrefs: {
-                          blockExplorerUrl:
-                            network.defaultBlockExplorerUrlIndex === undefined
-                              ? undefined
-                              : network.blockExplorerUrls[
-                                  network.defaultBlockExplorerUrlIndex
-                                ],
-                        },
-                        imageUrl:
-                          CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                            network.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                          ],
-                        chainName: network.name,
-                        referrer: ORIGIN_METAMASK,
-                        source: MetaMetricsNetworkEventSource.NewAddNetworkFlow,
-                      },
-                    }),
-                  )) as unknown as { chainId: Hex } | null;
 
-                  // Only switch chains if user confirms request to change network.
-                  if (requestResult) {
-                    await dispatch(enableSingleNetwork(requestResult.chainId));
-                  }
+                  // First add the network to user's configuration
+                  await dispatch(addNetwork(network));
+
+                  // Then enable it in the network list
+                  await dispatch(setEnabledNetworks(network.chainId));
                 }}
               >
                 {t('add')}

@@ -6,27 +6,27 @@ import { IndexedDBPPOMStorage } from '../../lib/ppom/indexed-db-backend';
 import * as PPOMModule from '../../lib/ppom/ppom';
 import { ControllerInitFunction } from '../types';
 import { PPOMControllerInitMessenger } from '../messengers/ppom-controller-messenger';
+import { getGlobalChainId } from '../init-utils';
 
 export const PPOMControllerInit: ControllerInitFunction<
   PPOMController,
   PPOMControllerMessenger,
   PPOMControllerInitMessenger
 > = (request) => {
-  const {
-    controllerMessenger,
-    initMessenger,
-    getController,
-    getGlobalChainId,
-    getProvider,
-    persistedState,
-  } = request;
+  const { controllerMessenger, initMessenger, getController, persistedState } =
+    request;
 
   const preferencesController = () => getController('PreferencesController');
+
+  const { provider } =
+    initMessenger.call('NetworkController:getSelectedNetworkClient') ?? {};
 
   const controller = new PPOMController({
     messenger: controllerMessenger,
     storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
-    provider: getProvider(),
+    // @ts-expect-error: PPOMController expects `provider` to be defined, but it
+    // can be `undefined` here.
+    provider,
     ppomProvider: {
       // @ts-expect-error Controller and PPOM wrapper have different argument types in `new` and `validateJsonRpc`
       PPOM: PPOMModule.PPOM,
@@ -34,7 +34,7 @@ export const PPOMControllerInit: ControllerInitFunction<
     },
     // @ts-expect-error State type is not `Partial` in controller.
     state: persistedState.PPOMController,
-    chainId: getGlobalChainId(),
+    chainId: getGlobalChainId(initMessenger),
     securityAlertsEnabled: preferencesController().state.securityAlertsEnabled,
     // @ts-expect-error `onPreferencesChange` type signature is incorrect in `PPOMController`
     onPreferencesChange: initMessenger.subscribe.bind(

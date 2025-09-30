@@ -737,9 +737,6 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Đây là một phiên bản beta. Vui lòng báo cáo lỗi $1"
-  },
   "betaMetamaskVersion": {
     "message": "Phiên bản MetaMask Beta"
   },
@@ -3732,9 +3729,6 @@
   "noAccountsFound": {
     "message": "Không tìm thấy tài khoản nào cho cụm từ tìm kiếm đã đưa ra"
   },
-  "noActivity": {
-    "message": "Chưa có hoạt động nào"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask không được kết nối với trang web này"
   },
@@ -3744,17 +3738,11 @@
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
   },
-  "noDeFiPositions": {
-    "message": "Không tìm thấy điều bạn đang tìm kiếm?"
-  },
   "noDomainResolution": {
     "message": "Không có nội dung phân giải cho tên miền được cung cấp."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snap và hầu hết các ví cứng sẽ không hoạt động với phiên bản trình duyệt hiện tại của bạn."
-  },
-  "noNFTs": {
-    "message": "Chưa có NFT"
   },
   "noNetworksAvailable": {
     "message": "Không có mạng nào khả dụng"
@@ -3773,9 +3761,6 @@
   },
   "noThanks": {
     "message": "Không, cảm ơn"
-  },
-  "noTransactions": {
-    "message": "Bạn không có giao dịch nào"
   },
   "noWebcamFound": {
     "message": "Không tìm thấy webcam trên máy tính của bạn. Vui lòng thử lại."
@@ -4136,14 +4121,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Xóa tất cả"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Ẩn tất cả"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Thêm dấu cách giữa mỗi từ và đảm bảo không có ai đang nhìn."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Hiển thị tất cả"
   },
   "onekey": {
     "message": "OneKey"
@@ -4642,9 +4621,6 @@
   "proposedApprovalLimit": {
     "message": "Giới hạn chấp thuận đề xuất"
   },
-  "protocolNotSupported": {
-    "message": "Chúng tôi có thể chưa hỗ trợ giao thức của bạn."
-  },
   "provide": {
     "message": "Cung cấp"
   },
@@ -4761,9 +4737,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Nhập địa chỉ công khai (0x) hoặc tên miền"
-  },
-  "recommendedGasLabel": {
-    "message": "Được đề xuất"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Sao lưu ngay"
