@@ -34,6 +34,14 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
     'Block tracker is required to initialize AccountTrackerController.',
   );
 
+  // Get feature flag for account API balances
+  const remoteFeatureFlagState = initMessenger.call(
+    'RemoteFeatureFlagController:getState',
+  );
+  const FEATURE_FLAG_NAME = 'accountApiBalances';
+  const featureFlagForAccountApiBalances =
+    remoteFeatureFlagState?.remoteFeatureFlags?.[FEATURE_FLAG_NAME] ?? [];
+
   const controller = new AccountTrackerController({
     state: { accounts: {} },
     messenger: controllerMessenger,
@@ -52,6 +60,11 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
         ? config.rpcUrl
         : config.type;
     },
+    // Account API configuration
+    useAccountApi: false, // Can be enabled via feature flag
+    allowExternalServices: () =>
+      initMessenger.call('PreferencesController:getState').useExternalServices,
+    useAccountApiBalances: featureFlagForAccountApiBalances,
   });
 
   return {

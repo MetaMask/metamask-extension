@@ -418,7 +418,7 @@ async function mockAccountsTransactions(mockServer: Mockttp) {
 async function mockAccountsBalances(mockServer: Mockttp) {
   return await mockServer
     .forGet(
-      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/accounts\/.*\/balances/u,
+      /^https:\/\/accounts\.api\.cx\.metamask\.io\/v4\/multiaccount\/balances/u,
     )
     .thenCallback(() => {
       return {
@@ -444,6 +444,18 @@ async function mockAccountsBalances(mockServer: Mockttp) {
                   decimals: 18,
                   name: 'Dai Stablecoin',
                   type: 'erc20',
+                },
+              },
+            },
+            '137': {
+              '0x0000000000000000000000000000000000000000': {
+                balance: '50000000000000000000',
+                token: {
+                  address: '0x0000000000000000000000000000000000000000',
+                  symbol: 'MATIC',
+                  decimals: 18,
+                  name: 'Polygon',
+                  type: 'native',
                 },
               },
             },

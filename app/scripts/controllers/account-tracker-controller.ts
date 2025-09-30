@@ -36,6 +36,7 @@ import {
 } from '@metamask/accounts-controller';
 import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
 import { LOCALHOST_RPC_URL } from '../../../shared/constants/network';
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
@@ -55,6 +56,31 @@ type Account = {
   address: string;
   balance: string | null;
   stakedBalance?: StakedBalance;
+};
+
+type AccountApiBalanceResponse = {
+  balances: Record<
+    string,
+    Record<
+      string,
+      {
+        balance: string;
+        token: {
+          address: string;
+          symbol: string;
+          decimals: number;
+          name: string;
+          type: 'native' | 'erc20';
+        };
+      }
+    >
+  >;
+};
+
+type AccountApiConfig = {
+  useAccountApi?: boolean;
+  allowExternalServices?: () => boolean;
+  useAccountApiBalances?: string[];
 };
 
 /**
@@ -172,7 +198,8 @@ export type AllowedActions =
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
-  | PreferencesControllerGetStateAction;
+  | PreferencesControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -199,7 +226,7 @@ export type AccountTrackerControllerOptions = {
   provider: Provider;
   blockTracker: BlockTracker;
   getNetworkIdentifier: (config?: NetworkClientConfiguration) => string;
-};
+} & AccountApiConfig;
 
 /**
  * This module is responsible for tracking any number of accounts and caching their current balances & transaction
@@ -228,6 +255,15 @@ export default class AccountTrackerController extends BaseController<
 
   #selectedAccount: InternalAccount;
 
+  #useAccountApi: boolean;
+
+  #allowExternalServices: () => boolean;
+
+  #useAccountApiBalances: string[];
+
+  // Account API base URL (using v4 multiaccount endpoint)
+  #accountApiBaseUrl = 'https://accounts.api.cx.metamask.io';
+
   /**
    * @param options - Options for initializing the controller
    * @param options.state - Initial controller state.
@@ -252,6 +288,12 @@ export default class AccountTrackerController extends BaseController<
     this.#blockTracker = options.blockTracker;
 
     this.#getNetworkIdentifier = options.getNetworkIdentifier;
+
+    // Initialize account API configuration
+    this.#useAccountApi = options.useAccountApi ?? false;
+    this.#allowExternalServices =
+      options.allowExternalServices ?? (() => false);
+    this.#useAccountApiBalances = options.useAccountApiBalances ?? [];
 
     // subscribe to account removal
     this.messagingSystem.subscribe(
@@ -680,9 +722,54 @@ export default class AccountTrackerController extends BaseController<
   /**
    * Updates accounts for the globally selected network
    * and all networks that are currently being polled.
-   *
+   * Uses v4 multiaccount API when possible for efficiency.
    */
   async updateAccountsAllActiveNetworks(): Promise<void> {
+    const { completedOnboarding } = this.messagingSystem.call(
+      'OnboardingController:getState',
+    );
+    if (!completedOnboarding) {
+      return;
+    }
+
+    const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+      'PreferencesController:getState',
+    );
+
+    let addresses = [];
+    if (useMultiAccountBalanceChecker) {
+      const { accounts } = this.state;
+      addresses = Object.keys(accounts);
+    } else {
+      const selectedAddress = this.messagingSystem.call(
+        'AccountsController:getSelectedAccount',
+      ).address;
+      addresses = [selectedAddress];
+    }
+
+    // Try multichain API first if enabled and we have multiple accounts
+    if (
+      this.#useAccountApi &&
+      this.#allowExternalServices() &&
+      useMultiAccountBalanceChecker
+    ) {
+      try {
+        const success = await this.#updateAccountsAllChainsViaApi(addresses);
+        if (success) {
+          log.debug(
+            'Successfully updated all accounts via multiaccount API v4',
+          );
+          return;
+        }
+      } catch (error) {
+        log.warn(
+          'Multiaccount API failed, falling back to individual requests:',
+          error,
+        );
+      }
+    }
+
+    // Fallback to individual network requests
     await this.updateAccounts();
     await Promise.all(
       Array.from(this.#pollingTokenSets).map(([networkClientId]) => {
@@ -724,6 +811,29 @@ export default class AccountTrackerController extends BaseController<
       addresses = [selectedAddress];
     }
 
+    // Try account API first if enabled (single chain request)
+    let accountApiSuccess = false;
+    if (this.#useAccountApi && this.#allowExternalServices()) {
+      try {
+        accountApiSuccess = await this.#updateAccountsViaApi(
+          addresses,
+          chainId,
+        );
+        if (accountApiSuccess) {
+          log.debug(
+            `Successfully updated balances via multiaccount API v4 for chain ${chainId}`,
+          );
+          return;
+        }
+      } catch (error) {
+        log.warn(
+          'Account API failed, falling back to RPC/balance checker:',
+          error,
+        );
+      }
+    }
+
+    // Fallback to existing methods if account API wasn't successful
     const rpcUrl = 'http://127.0.0.1:8545';
     if (
       identifier === LOCALHOST_RPC_URL ||
@@ -970,6 +1080,191 @@ export default class AccountTrackerController extends BaseController<
         }
       });
     });
+  }
+
+  /**
+   * Fetches account balances from the account API service (v4 multiaccount endpoint)
+   * Supports multichain and multiAccount requests in a single API call
+   * Uses CAIP format for addresses: eip155:0:0x...
+   *
+   * @private
+   * @param addresses - Array of account addresses (hex format, will be converted to CAIP)
+   * @param chainIds - Array of chain IDs to fetch balances for
+   * @returns Promise resolving to account balance data or null if failed
+   */
+  async #fetchAccountBalancesFromApi(
+    addresses: string[],
+    chainIds: Hex[],
+  ): Promise<AccountApiBalanceResponse | null> {
+    try {
+      // Check if external services are allowed and account API is enabled
+      if (!this.#allowExternalServices() || !this.#useAccountApi) {
+        return null;
+      }
+
+      // Convert chain IDs to decimal and filter by feature flag support
+      const supportedChainIds = chainIds
+        .map((chainId) => parseInt(chainId, 16).toString())
+        .filter((chainIdDecimal) =>
+          this.#useAccountApiBalances.includes(chainIdDecimal),
+        );
+
+      if (supportedChainIds.length === 0) {
+        return null;
+      }
+
+      // Build the v4 API URL with multichain and multiAccount query parameters
+      // Convert addresses to CAIP format: eip155:0:0x...
+      const accountAddressesParam = addresses
+        .map((address) => `eip155:0:${address}`)
+        .join(',');
+      const networksParam = supportedChainIds.join(',');
+      const url = `${this.#accountApiBaseUrl}/v4/multiaccount/balances?networks=${networksParam}&accountAddresses=${accountAddressesParam}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        log.warn(
+          `Account API request failed with status ${response.status}: ${response.statusText}`,
+        );
+        return null;
+      }
+
+      const data = (await response.json()) as AccountApiBalanceResponse;
+      return data;
+    } catch (error) {
+      log.warn('Failed to fetch balances from account API:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Updates account balances using data from the account API (v4 multiaccount)
+   *
+   * @private
+   * @param addresses - Array of account addresses
+   * @param chainIds - Array of chain IDs to fetch balances for
+   * @returns Promise resolving to true if successful, false otherwise
+   */
+  async #updateAccountsViaApiMultichain(
+    addresses: string[],
+    chainIds: Hex[],
+  ): Promise<boolean> {
+    try {
+      const apiData = await this.#fetchAccountBalancesFromApi(
+        addresses,
+        chainIds,
+      );
+
+      if (!apiData?.balances) {
+        return false;
+      }
+
+      // Process multichain data and update state for all chains
+      this.update((state) => {
+        chainIds.forEach((chainId) => {
+          const chainIdDecimal = parseInt(chainId, 16).toString();
+          const accounts = this.#getAccountsForChainId(chainId);
+          const newAccounts: AccountTrackerControllerState['accounts'] = {};
+
+          // Initialize all accounts with null balance first
+          Object.keys(accounts).forEach((address) => {
+            if (!addresses.includes(address)) {
+              newAccounts[address] = { address, balance: null };
+            }
+          });
+
+          // Update with API data if available for this chain
+          addresses.forEach((address) => {
+            const chainBalances = apiData.balances[chainIdDecimal];
+
+            if (chainBalances) {
+              // Look for native token balance (address 0x0000...)
+              const nativeTokenAddress =
+                '0x0000000000000000000000000000000000000000';
+              const nativeBalance = chainBalances[nativeTokenAddress];
+
+              if (nativeBalance?.token.type === 'native') {
+                newAccounts[address] = {
+                  address,
+                  balance: `0x${BigInt(nativeBalance.balance).toString(16)}`,
+                };
+              } else {
+                // Fallback to zero balance if no native balance found
+                newAccounts[address] = { address, balance: '0x0' };
+              }
+            } else {
+              newAccounts[address] = { address, balance: '0x0' };
+            }
+          });
+
+          // Update state for this chain
+          if (chainId === this.#getCurrentChainId()) {
+            state.accounts = newAccounts;
+          }
+          state.accountsByChainId[chainId] = newAccounts;
+        });
+      });
+
+      return true;
+    } catch (error) {
+      log.warn('Failed to update accounts via multiaccount API:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Updates account balances using data from the account API (single chain)
+   * Fallback method for single-chain requests
+   *
+   * @private
+   * @param addresses - Array of account addresses
+   * @param chainId - The chain ID
+   * @returns Promise resolving to true if successful, false otherwise
+   */
+  async #updateAccountsViaApi(
+    addresses: string[],
+    chainId: Hex,
+  ): Promise<boolean> {
+    return this.#updateAccountsViaApiMultichain(addresses, [chainId]);
+  }
+
+  /**
+   * Updates account balances for all active networks using v4 multiaccount API
+   *
+   * @private
+   * @param addresses - Array of account addresses
+   * @returns Promise resolving to true if successful, false otherwise
+   */
+  async #updateAccountsAllChainsViaApi(addresses: string[]): Promise<boolean> {
+    try {
+      // Get all active chain IDs from pollingTokenSets and current chain
+      const activeChainIds = new Set<Hex>();
+      activeChainIds.add(this.#getCurrentChainId());
+
+      // Add chain IDs from all actively polled networks
+      this.#pollingTokenSets.forEach((_tokenSet, networkClientId) => {
+        const { chainId } = this.#getCorrectNetworkClient(networkClientId);
+        activeChainIds.add(chainId);
+      });
+
+      const chainIdsArray = Array.from(activeChainIds);
+      return await this.#updateAccountsViaApiMultichain(
+        addresses,
+        chainIdsArray,
+      );
+    } catch (error) {
+      log.warn(
+        'Failed to update accounts for all chains via multiaccount API:',
+        error,
+      );
+      return false;
+    }
   }
 
   _registerMessageHandlers() {
