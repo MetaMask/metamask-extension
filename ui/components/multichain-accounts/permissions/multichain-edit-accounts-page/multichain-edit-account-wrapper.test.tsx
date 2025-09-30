@@ -251,6 +251,9 @@ describe('MultichainEditAccountsPageWrapper', () => {
       connectedAccountGroups: [createMockAccountGroups()[0]], // 1 connected account group
       supportedAccountGroups: createMockAccountGroups(), // 2 supported account groups
       existingConnectedCaipAccountIds: [],
+      connectedAccountGroupWithRequested: [createMockAccountGroups()[0]],
+      caipAccountIdsOfConnectedAndRequestedAccountGroups: [],
+      selectedAndRequestedAccountGroups: createMockAccountGroups(),
     });
   });
 
@@ -315,6 +318,9 @@ describe('MultichainEditAccountsPageWrapper', () => {
       connectedAccountGroups: [],
       supportedAccountGroups: createMockAccountGroups(),
       existingConnectedCaipAccountIds: [],
+      connectedAccountGroupWithRequested: [],
+      caipAccountIdsOfConnectedAndRequestedAccountGroups: [],
+      selectedAndRequestedAccountGroups: createMockAccountGroups(),
     });
 
     renderComponent();
@@ -336,6 +342,9 @@ describe('MultichainEditAccountsPageWrapper', () => {
       connectedAccountGroups: [createMockAccountGroups()[0]],
       supportedAccountGroups: [],
       existingConnectedCaipAccountIds: [],
+      connectedAccountGroupWithRequested: [createMockAccountGroups()[0]],
+      caipAccountIdsOfConnectedAndRequestedAccountGroups: [],
+      selectedAndRequestedAccountGroups: [],
     });
 
     renderComponent();
@@ -387,6 +396,9 @@ describe('MultichainEditAccountsPageWrapper', () => {
       connectedAccountGroups: createMockAccountGroups(), // Both groups connected
       supportedAccountGroups: createMockAccountGroups(),
       existingConnectedCaipAccountIds: [],
+      connectedAccountGroupWithRequested: createMockAccountGroups(),
+      caipAccountIdsOfConnectedAndRequestedAccountGroups: [],
+      selectedAndRequestedAccountGroups: createMockAccountGroups(),
     });
 
     renderComponent();
