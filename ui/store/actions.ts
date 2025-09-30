@@ -484,7 +484,7 @@ export function restoreSocialBackupAndGetSeedPhrase(
   };
 }
 
-export function syncSeedPhrases(): ThunkAction<
+export function syncSecretDataWithSocialLogin(): ThunkAction<
   void,
   MetaMaskReduxState,
   unknown,
@@ -492,11 +492,11 @@ export function syncSeedPhrases(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('syncSeedPhrases');
+      await submitRequestToBackground('syncSecretDataWithSocialLogin');
       dispatch(hideWarning());
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
-      log.error('[syncSeedPhrases] error', error);
+      log.error('[syncSecretDataWithSocialLogin] error', error);
       dispatch(displayWarning(error.message));
       throw error;
     }

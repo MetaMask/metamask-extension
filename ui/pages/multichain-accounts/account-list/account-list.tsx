@@ -38,11 +38,14 @@ import {
   Text,
   Box,
 } from '../../../components/component-library';
+import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 import { filterWalletsByGroupName } from './utils';
 
 export const AccountList = () => {
   const t = useI18nContext();
   const history = useHistory();
+  // sync SRPs list when menu opens
+  useSyncSRPs();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
