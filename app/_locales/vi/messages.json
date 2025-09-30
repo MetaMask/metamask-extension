@@ -5038,18 +5038,8 @@
   "secureWallet": {
     "message": "Ví an toàn"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Bắt đầu"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Nhắc tôi sau"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Đây là cách duy nhất để khôi phục ví nếu bạn bị khóa ứng dụng hoặc đổi thiết bị mới."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Đừng mạo hiểm mất tiền của bạn. Hãy bảo vệ ví bằng cách lưu $1 ở nơi bạn tin tưởng.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Bảo mật"
@@ -5128,9 +5118,6 @@
   },
   "seeDetails": {
     "message": "Xem chi tiết"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Bảo mật cho ví của bạn"
   },
   "seedPhraseReq": {
     "message": "Cụm từ khôi phục bí mật gồm 12, 15, 18, 21 hoặc 24 từ"
@@ -5436,18 +5423,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Bỏ qua bảo mật tài khoản?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Nếu bạn làm mất Cụm từ khôi phục bí mật này, bạn sẽ không thể truy cập ví này."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Bảo mật ngay"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Bỏ qua"
   },
   "skipDeepLinkInterstitial": {
     "message": "Không hiển thị màn hình xen giữa khi mở liên kết sâu"
@@ -5815,9 +5790,6 @@
   "spendingCaps": {
     "message": "Hạn mức chi tiêu"
   },
-  "srpDesignImageAlt": {
-    "message": "Ảnh kho lưu trữ Cụm từ khôi phục bí mật"
-  },
   "srpDetailsDescription": {
     "message": "Cụm từ khôi phục bí mật, còn được gọi là cụm từ khôi phục hoặc thông tin gợi nhớ, là một tập hợp các từ cho phép bạn truy cập và kiểm soát ví tiền mã hóa của mình. Để chuyển ví sang MetaMask, bạn cần cụm từ này."
   },
@@ -6034,10 +6006,6 @@
   "step2LedgerWalletMsg": {
     "message": "Cắm trực tiếp Ledger vào máy tính của bạn, sau đó mở khóa và mở ứng dụng Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Bước $1/$2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Vẫn nhận được thông báo này?"
