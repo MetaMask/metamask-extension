@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
 import {
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
@@ -12,6 +11,7 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getCurrentKeyring,
@@ -84,7 +84,7 @@ export default function OnboardingWelcome() {
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
-        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
+        navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
     } else if (isUserAuthenticatedWithSocialLogin) {
       if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {

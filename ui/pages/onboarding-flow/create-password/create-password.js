@@ -20,7 +20,7 @@ import {
   ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -126,7 +126,7 @@ export default function CreatePassword({
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
-        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
+        navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
     } else if (
       firstTimeFlowType === FirstTimeFlowType.import &&
@@ -257,7 +257,7 @@ export default function CreatePassword({
       }
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
     } else {
-      navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
+      navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
     }
   };
 

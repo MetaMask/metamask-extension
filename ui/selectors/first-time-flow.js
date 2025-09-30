@@ -7,7 +7,7 @@ import {
   ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../helpers/constants/routes';
 
 /**
@@ -69,7 +69,7 @@ export function getFirstTimeFlowTypeRouteAfterMetaMetricsOptIn(state) {
   } else if (firstTimeFlowType === FirstTimeFlowType.import) {
     return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.restore) {
-    return ONBOARDING_SECURE_YOUR_WALLET_ROUTE;
+    return ONBOARDING_REVIEW_SRP_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
     return ONBOARDING_COMPLETION_ROUTE;
   } else if (firstTimeFlowType === FirstTimeFlowType.socialImport) {

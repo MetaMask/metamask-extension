@@ -5038,18 +5038,8 @@
   "secureWallet": {
     "message": "安全钱包"
   },
-  "secureWalletGetStartedButton": {
-    "message": "开始使用"
-  },
   "secureWalletRemindLaterButton": {
     "message": "稍后提醒我"
-  },
-  "secureWalletWalletRecover": {
-    "message": "如果您无法登录应用程序或更换新设备，这是恢复钱包的唯一方法。"
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "不要冒损失资金的风险。把 $1 储存在您信任的地方，以保护您的钱包。",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "安全"
@@ -5128,9 +5118,6 @@
   },
   "seeDetails": {
     "message": "查看详情"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "保护您的钱包安全"
   },
   "seedPhraseReq": {
     "message": "私钥助记词包含 12、15、18、21 或 24 个字词"
@@ -5436,18 +5423,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "跳过账户安全？"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "如果您丢失此私钥助记词，将无法访问该钱包。"
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "立即获取"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "跳过"
   },
   "skipDeepLinkInterstitial": {
     "message": "打开深度链接时不显示插页式屏幕"
@@ -5815,9 +5790,6 @@
   "spendingCaps": {
     "message": "支出上限"
   },
-  "srpDesignImageAlt": {
-    "message": "私钥助记词保管库图像"
-  },
   "srpDetailsDescription": {
     "message": "私钥助记词（又称助记词）是一组用于访问和控制加密货币钱包的关键词。若需将钱包迁移至 MetaMask，您必须提供该助记词。"
   },
@@ -6034,10 +6006,6 @@
   "step2LedgerWalletMsg": {
     "message": "将您的 Ledger 直接插入电脑，然后解锁并打开以太坊应用程序。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "第 $1 步，共 $2 步",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "仍然收到此消息？"
