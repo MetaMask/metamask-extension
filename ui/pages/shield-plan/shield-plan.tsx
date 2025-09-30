@@ -287,6 +287,7 @@ const ShieldPlan = () => {
               display={Display.Grid}
               gap={2}
               marginBottom={4}
+              paddingTop={2}
               className="shield-plan-page__plans"
             >
               {plans.map((plan) => (
