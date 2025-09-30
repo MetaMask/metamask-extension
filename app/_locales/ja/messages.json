@@ -5960,10 +5960,6 @@
     "message": "コンピューターにLedgerを直接接続します。Ledgerのロックを解除し、イーサリアムアプリを開きます。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
-  "stepOf": {
-    "message": "ステップ$1/$2",
-    "description": "$1 current step, $2 total steps"
-  },
   "stillGettingMessage": {
     "message": "まだこのメッセージが表示されますか？"
   },

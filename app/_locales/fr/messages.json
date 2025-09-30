@@ -5960,10 +5960,6 @@
     "message": "Connectez votre portefeuille directement à votre ordinateur. Déverrouillez votre Ledger et ouvrez l’application Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
-  "stepOf": {
-    "message": "Étape $1 sur $2",
-    "description": "$1 current step, $2 total steps"
-  },
   "stillGettingMessage": {
     "message": "Vous recevez toujours ce message ?"
   },

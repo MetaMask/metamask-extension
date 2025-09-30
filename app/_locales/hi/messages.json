@@ -6007,10 +6007,6 @@
     "message": "अपने Ledger को सीधे अपने कंप्यूटर में प्लग करें, फिर इसे अनलॉक करें और Ethereum ऐप खोलें।",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
-  "stepOf": {
-    "message": "$2 में से चरण $1",
-    "description": "$1 current step, $2 total steps"
-  },
   "stillGettingMessage": {
     "message": "अभी भी यह मैसेज मिल रहा है?"
   },

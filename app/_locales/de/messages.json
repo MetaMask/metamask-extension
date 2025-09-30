@@ -6007,10 +6007,6 @@
     "message": "Schließen Sie Ihre Ledger-Wallet direkt an Ihren Computer an, entsperren Sie sie und öffnen Sie die Ethereum-App.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
-  "stepOf": {
-    "message": "Schritt $1 von $2",
-    "description": "$1 current step, $2 total steps"
-  },
   "stillGettingMessage": {
     "message": "Erhalten Sie diese Meldung immer noch?"
   },

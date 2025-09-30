@@ -6007,10 +6007,6 @@
     "message": "Συνδέστε το Ledger απευθείας στον υπολογιστή σας, στη συνέχεια ξεκλειδώστε το και ανοίξτε την εφαρμογή Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
-  "stepOf": {
-    "message": "Βήμα $1 από $2",
-    "description": "$1 current step, $2 total steps"
-  },
   "stillGettingMessage": {
     "message": "Ακόμα λαμβάνετε αυτό το μήνυμα;"
   },

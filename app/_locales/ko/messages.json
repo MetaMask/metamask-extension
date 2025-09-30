@@ -6007,10 +6007,6 @@
     "message": "지갑을 컴퓨터에 바로 연결하고 잠금 해제한 후 이더리움 앱을 여세요..",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
-  "stepOf": {
-    "message": "$1단계/$2단계",
-    "description": "$1 current step, $2 total steps"
-  },
   "stillGettingMessage": {
     "message": "아직 이 메시지가 표시되시나요?"
   },

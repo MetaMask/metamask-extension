@@ -6007,10 +6007,6 @@
     "message": "将您的 Ledger 直接插入电脑，然后解锁并打开以太坊应用程序。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
-  "stepOf": {
-    "message": "第 $1 步，共 $2 步",
-    "description": "$1 current step, $2 total steps"
-  },
   "stillGettingMessage": {
     "message": "仍然收到此消息？"
   },

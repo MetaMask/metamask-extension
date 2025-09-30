@@ -6007,10 +6007,6 @@
     "message": "Подключите Ledger напрямую к компьютеру, разблокируйте его и откройте приложение Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
-  "stepOf": {
-    "message": "Шаг $1 из $2",
-    "description": "$1 current step, $2 total steps"
-  },
   "stillGettingMessage": {
     "message": "Все еще получаете это сообщение?"
   },

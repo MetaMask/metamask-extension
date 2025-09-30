@@ -6007,10 +6007,6 @@
     "message": "Pasang Ledger Anda langsung ke komputer dan buka. Lalu, buka aplikasi Ethereum.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
-  "stepOf": {
-    "message": "Langkah $1 dari $2",
-    "description": "$1 current step, $2 total steps"
-  },
   "stillGettingMessage": {
     "message": "Masih menerima pesan ini?"
   },
