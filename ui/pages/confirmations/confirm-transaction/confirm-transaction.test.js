@@ -192,7 +192,7 @@ describe('Confirmation Transaction Page', () => {
     });
 
     describe('when unapproved transactions exist or a sendTo recipient exists', () => {
-      it('should not call history.replace(mostRecentOverviewPage)', () => {
+      it('should not call useNavigate(mostRecentOverviewPage)', () => {
         const mockStore = configureMockStore(middleware)(mockState);
         renderWithProvider(<ConfirmTransaction />, mockStore);
         expect(mockUseNavigate).not.toHaveBeenCalled();

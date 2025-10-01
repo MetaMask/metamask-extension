@@ -60,7 +60,7 @@ describe('AddWalletPage', () => {
     expect(screen.getByTestId(backButtonTestId)).toBeInTheDocument();
   });
 
-  it('calls history.goBack when back button is clicked', () => {
+  it('calls useNavigate when back button is clicked', () => {
     renderComponent();
 
     const backButton = screen.getByTestId(backButtonTestId);

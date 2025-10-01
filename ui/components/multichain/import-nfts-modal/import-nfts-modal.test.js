@@ -275,7 +275,7 @@ describe('ImportNftsModal', () => {
     const cancelButton = getByText('Cancel');
     fireEvent.click(cancelButton);
 
-    // Verify both onClose and history.push are called
+    // Verify both onClose and useNavigate are called
     expect(onClose).toHaveBeenCalled();
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
@@ -286,7 +286,7 @@ describe('ImportNftsModal', () => {
 
     fireEvent.click(document.querySelector('button[aria-label="Close"]'));
 
-    // Verify both onClose and history.push are called
+    // Verify both onClose and useNavigate are called
     expect(onClose).toHaveBeenCalled();
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });

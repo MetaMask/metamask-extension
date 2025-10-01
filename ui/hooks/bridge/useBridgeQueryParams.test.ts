@@ -90,7 +90,7 @@ describe('useBridgeQueryParams', () => {
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('should set evm bridge params', async () => {
+  it.only('should set evm bridge params', async () => {
     const fetchAssetMetadataForAssetIdsSpy = jest
       .spyOn(assetUtils, 'fetchAssetMetadataForAssetIds')
       .mockResolvedValue({

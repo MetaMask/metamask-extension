@@ -53,7 +53,7 @@ describe('useNavigateSendPage', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
-  it('calls history.goBack when goToPreviousPage is called on "Asset" page', () => {
+  it('calls useNavigate when goToPreviousPage is called on "Asset" page', () => {
     const result = renderHook();
     result.goToPreviousPage();
     expect(mockUseNavigate).toHaveBeenCalledWith(-1);

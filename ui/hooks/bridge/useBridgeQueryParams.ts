@@ -318,5 +318,12 @@ export const useBridgeQueryParams = () => {
         }),
       );
     }
-  }, [parsedFromAssetId, selectedAccount, fromToken, fromChain, searchParams]);
+  }, [
+    dispatch,
+    parsedFromAssetId,
+    selectedAccount,
+    fromToken,
+    fromChain,
+    searchParams,
+  ]);
 };

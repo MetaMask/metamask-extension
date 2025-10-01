@@ -24,8 +24,8 @@ export function useCurrentAsset() {
   const match = matchPath(
     {
       path: `${ASSET_ROUTE}/:asset`,
-      exact: true,
-      strict: true,
+      end: true,
+      caseSensitive: true,
     },
     location.pathname,
   );

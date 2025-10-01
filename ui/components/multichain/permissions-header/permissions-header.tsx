@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   AlignItems,
   BackgroundColor,
@@ -31,6 +32,7 @@ export const PermissionsHeader = ({
   connectedSubjectsMetadata?: { name: string; iconUrl: string };
 }) => {
   const t = useI18nContext();
+  const navigate = useNavigate();
 
   return (
     <Header
@@ -45,7 +47,7 @@ export const PermissionsHeader = ({
           iconName={IconName.ArrowLeft}
           className="connections-header__start-accessory"
           color={IconColor.iconDefault}
-          onClick={() => history.goBack()}
+          onClick={() => navigate(-1)}
           data-testid="back-button"
         />
       }

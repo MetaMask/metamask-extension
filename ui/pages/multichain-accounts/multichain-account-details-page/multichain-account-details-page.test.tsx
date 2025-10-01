@@ -79,7 +79,7 @@ describe('MultichainAccountDetailsPage', () => {
     expect(screen.getByText(/10 addresses/iu)).toBeInTheDocument();
   });
 
-  it('calls history.goBack when back button is clicked', () => {
+  it('calls useNavigate when back button is clicked', () => {
     renderComponent();
 
     const backButton = screen.getByTestId(backButtonTestId);
@@ -88,7 +88,7 @@ describe('MultichainAccountDetailsPage', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
-  it('calls history.push with wallet route when wallet row is clicked', () => {
+  it('calls useNavigate with wallet route when wallet row is clicked', () => {
     renderComponent();
 
     const walletRow = screen.getByTestId(accountDetailsRowWalletTestId);
