@@ -26,8 +26,8 @@ import { NativeTokenStreamDetails } from './typed-sign-permission/native-token-s
 import { Erc20TokenPeriodicDetails } from './typed-sign-permission/erc20-token-periodic-details';
 import { Erc20TokenStreamDetails } from './typed-sign-permission/erc20-token-stream-details';
 import {
-  getErc20TokenDetails,
-  getNativeTokenLabel,
+  useErc20TokenDetails,
+  useNativeTokenLabel,
 } from './typed-sign-permission/typed-sign-permission-util';
 import { NativeTokenPeriodicDetails } from './typed-sign-permission/native-token-periodic-details';
 
@@ -58,7 +58,7 @@ const TypedSignPermissionInfo: React.FC = () => {
       const permission =
         decodedPermission.permission as NativeTokenPeriodicPermission;
 
-      tokenLabel = getNativeTokenLabel(decodedPermission.chainId);
+      tokenLabel = useNativeTokenLabel(decodedPermission.chainId);
 
       permissionDetail = (
         <NativeTokenPeriodicDetails permission={permission} expiry={expiry} />
@@ -70,7 +70,7 @@ const TypedSignPermissionInfo: React.FC = () => {
       const permission =
         decodedPermission.permission as NativeTokenStreamPermission;
 
-      tokenLabel = getNativeTokenLabel(decodedPermission.chainId);
+      tokenLabel = useNativeTokenLabel(decodedPermission.chainId);
 
       permissionDetail = (
         <NativeTokenStreamDetails permission={permission} expiry={expiry} />
@@ -82,7 +82,7 @@ const TypedSignPermissionInfo: React.FC = () => {
       const permission =
         decodedPermission.permission as Erc20TokenPeriodicPermission;
 
-      const { label, decimals } = getErc20TokenDetails({
+      const { label, decimals } = useErc20TokenDetails({
         tokenAddress: permission.data.tokenAddress,
         chainId: decodedPermission.chainId,
       });
@@ -103,7 +103,7 @@ const TypedSignPermissionInfo: React.FC = () => {
       const permission =
         decodedPermission.permission as Erc20TokenStreamPermission;
 
-      const { label, decimals } = getErc20TokenDetails({
+      const { label, decimals } = useErc20TokenDetails({
         tokenAddress: permission.data.tokenAddress,
         chainId: decodedPermission.chainId,
       });
