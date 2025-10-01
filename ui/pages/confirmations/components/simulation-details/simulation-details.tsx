@@ -463,30 +463,48 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const incoming = balanceChanges.filter((bc) => !bc.amount.isNegative());
 
   // Determine the appropriate heading text based on transaction status
-  const getOutgoingHeadingText = () => {
+  const getHeadingText = (translationKeys: {
+    default: string;
+    inProgress: string;
+    completed: string;
+  }) => {
     const { status } = transaction;
 
     // If we have Smart Transaction status, use it as priority
     // This fixes the delay issue between Smart Transaction and regular transaction status updates
     if (smartTransactionStatus === 'success') {
-      return t('simulationDetailsOutgoingHeadingSent');
+      return t(translationKeys.completed);
     } else if (smartTransactionStatus === 'pending') {
-      return t('simulationDetailsOutgoingHeadingSending');
+      return t(translationKeys.inProgress);
     }
 
     // Fallback to regular transaction status
     if (status === TransactionStatus.confirmed) {
-      return t('simulationDetailsOutgoingHeadingSent');
+      return t(translationKeys.completed);
     } else if (
       status === TransactionStatus.submitted ||
       status === TransactionStatus.signed ||
       status === TransactionStatus.approved
     ) {
-      return t('simulationDetailsOutgoingHeadingSending');
+      return t(translationKeys.inProgress);
     }
     // Default for confirmation flows and other statuses (unapproved, failed, etc.)
-    return t('simulationDetailsOutgoingHeading');
+    return t(translationKeys.default);
   };
+
+  const getOutgoingHeadingText = () =>
+    getHeadingText({
+      default: 'simulationDetailsOutgoingHeading',
+      inProgress: 'simulationDetailsOutgoingHeadingSending',
+      completed: 'simulationDetailsOutgoingHeadingSent',
+    });
+
+  const getIncomingHeadingText = () =>
+    getHeadingText({
+      default: 'simulationDetailsIncomingHeading',
+      inProgress: 'simulationDetailsIncomingHeadingReceiving',
+      completed: 'simulationDetailsIncomingHeadingReceived',
+    });
 
   return (
     <SimulationDetailsLayout
@@ -511,7 +529,7 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           testId="simulation-rows-outgoing"
         />
         <BalanceChangeList
-          heading={t('simulationDetailsIncomingHeading')}
+          heading={getIncomingHeadingText()}
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
         />

@@ -265,6 +265,93 @@ describe('SimulationDetails', () => {
     );
   });
 
+  it('uses correct heading text for incoming balance changes based on transaction status', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: BALANCE_CHANGES_MOCK,
+    });
+
+    // Clear previous calls to focus on incoming balance changes
+    jest.clearAllMocks();
+
+    // Test confirmed status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.confirmed,
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: "You've received",
+        balanceChanges: [BALANCE_CHANGES_MOCK[1]],
+      }),
+      {},
+    );
+
+    jest.clearAllMocks();
+
+    // Test submitted status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.submitted,
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: "You're receiving",
+        balanceChanges: [BALANCE_CHANGES_MOCK[1]],
+      }),
+      {},
+    );
+
+    jest.clearAllMocks();
+
+    // Test default (unapproved status)
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.unapproved,
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: 'You receive',
+        balanceChanges: [BALANCE_CHANGES_MOCK[1]],
+      }),
+      {},
+    );
+  });
+
+  it('prioritizes Smart Transaction status over regular transaction status for incoming balance changes', () => {
+    (useBalanceChanges as jest.Mock).mockReturnValue({
+      pending: false,
+      value: BALANCE_CHANGES_MOCK,
+    });
+
+    jest.clearAllMocks();
+
+    // Test: Smart Transaction success should override submitted transaction status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.submitted,
+      smartTransactionStatus: 'success',
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: "You've received", // Should show "You've received" due to Smart Transaction success
+        balanceChanges: [BALANCE_CHANGES_MOCK[1]],
+      }),
+      {},
+    );
+
+    jest.clearAllMocks();
+
+    // Test: Smart Transaction pending should override unapproved transaction status
+    renderSimulationDetails({}, false, [], {
+      status: TransactionStatus.unapproved,
+      smartTransactionStatus: 'pending',
+    });
+    expect(BalanceChangeList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        heading: "You're receiving", // Should show "You're receiving" due to Smart Transaction pending
+        balanceChanges: [BALANCE_CHANGES_MOCK[1]],
+      }),
+      {},
+    );
+  });
+
   it('does not render any UI elements when metricsOnly is true', () => {
     const { container } = renderSimulationDetails({}, true);
     expect(container).toBeEmptyDOMElement();
