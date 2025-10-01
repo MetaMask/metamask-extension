@@ -169,7 +169,7 @@ async function withFixtures(options, testSuite) {
     usePaymaster,
     ethConversionInUsd,
     monConversionInUsd,
-    manifestFlags,
+    manifestFlags = {},
     solanaWebSocketSpecificMocks = [],
   } = options;
 
@@ -177,12 +177,12 @@ async function withFixtures(options, testSuite) {
   // always add the multichain accounts feature flag
   manifestFlags.remoteFeatureFlags = manifestFlags.remoteFeatureFlags || {};
   manifestFlags.remoteFeatureFlags.enableMultichainAccounts = {
-    enabled: true,
+    enabled: false,
     featureVersion: null,
     minimumVersion: null,
   };
   manifestFlags.remoteFeatureFlags.enableMultichainAccountsState2 = {
-    enabled: true,
+    enabled: false,
     featureVersion: null,
     minimumVersion: null,
   };
