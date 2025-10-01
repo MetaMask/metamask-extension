@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   type BridgeAsset,
-  ChainId,
   formatChainIdToCaip,
   type GenericQuoteRequest,
   getNativeAssetForChainId,
@@ -32,11 +31,7 @@ import {
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
-import {
-  ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
-  AllowedBridgeChainIds,
-} from '../../../shared/constants/bridge';
+import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { getLastSelectedChainId } from '../../ducks/bridge/selectors';
 import { getMultichainProviderConfig } from '../../selectors/multichain';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -61,40 +56,27 @@ const useBridging = () => {
       },
       isSwap = false,
     ) => {
-      let srcAssetIdToUse = srcToken
-        ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
-        : undefined;
-
-      const isBridgeToken =
+      // If srcToken is a bridge token, use its assetId
+      let srcAssetIdToUse =
         srcToken?.chainId &&
-        ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP.includes(
-          formatChainIdToCaip(srcToken.chainId),
-        );
+        ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(srcToken.chainId)
+          ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
+          : undefined;
 
-      const chainIdToUse = srcToken?.chainId ?? lastSelectedChainId;
-      const isBridgeChain = [
-        ...ALLOWED_BRIDGE_CHAIN_IDS,
-        ...ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
-        ...Object.values(ChainId),
-      ].includes(chainIdToUse as AllowedBridgeChainIds);
-
-      // TODO remove this after fromChain is moved to bridge redux store
-      // if lastSelectedChainId is not active and a srcToken is not specified
-      // set the srcAssetId to the native asset for the chain so the bridge experience
+      // If srcToken is not specified and the lastSelectedChainId is not active
+      // set the srcAssetId to a supported bridge native asset so the bridge experience
       // sets correct defaults: srctoken.chainId > lastSelectedId > MAINNET
+      const isBridgeChain =
+        ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(lastSelectedChainId);
       if (
         !srcToken &&
-        (chainIdToUse !== providerConfig?.chainId || !isBridgeChain)
+        (lastSelectedChainId !== providerConfig?.chainId || !isBridgeChain)
       ) {
         // When a testnet or any unsupported network is selected in the network filter
         // use MAINNET as a fallback
         srcAssetIdToUse = getNativeAssetForChainId(
-          isBridgeChain ? chainIdToUse : CHAIN_IDS.MAINNET,
+          isBridgeChain ? lastSelectedChainId : CHAIN_IDS.MAINNET,
         )?.assetId;
-      }
-
-      if (!(isBridgeChain || isBridgeToken || srcAssetIdToUse)) {
-        return;
       }
 
       trace({
@@ -114,7 +96,7 @@ const useBridging = () => {
           text: isSwap ? 'Swap' : 'Bridge',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: chainIdToUse,
+          chain_id: srcToken?.chainId ?? lastSelectedChainId,
         },
       });
       dispatch(

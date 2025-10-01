@@ -71,6 +71,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
+  ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   ALLOWED_BRIDGE_CHAIN_IDS,
   ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
   type AllowedBridgeChainIds,
@@ -154,10 +155,7 @@ const CoinButtons = ({
     : hexChainOrAssetId;
 
   const isBridgeChain = chainIdToUse
-    ? [
-        ...ALLOWED_BRIDGE_CHAIN_IDS,
-        ...ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
-      ].includes(chainIdToUse as AllowedBridgeChainIds)
+    ? ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
     : false;
 
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
