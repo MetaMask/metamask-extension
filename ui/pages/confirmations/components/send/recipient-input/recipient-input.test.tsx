@@ -8,37 +8,14 @@ import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRec
 import { useSendContext } from '../../../context/send';
 import { useRecipients } from '../../../hooks/send/useRecipients';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
-import { Recipient } from './recipient';
+import { RecipientInput } from './recipient-input';
 
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../hooks/send/metrics/useRecipientSelectionMetrics');
 jest.mock('../../../context/send');
 jest.mock('../../../hooks/send/useRecipients');
-jest.mock('../recipient-list', () => ({
-  RecipientList: ({
-    hideModal,
-    onToChange,
-  }: {
-    hideModal: () => void;
-    onToChange: (address: string) => void;
-  }) => {
-    return (
-      <div data-testid="recipient-list">
-        <button onClick={hideModal}>Close Modal</button>
-        <button
-          onClick={() =>
-            onToChange('0x1234567890abcdef1234567890abcdef12345678')
-          }
-          data-testid="select-recipient-btn"
-        >
-          Select Recipient
-        </button>
-      </div>
-    );
-  },
-}));
 
-describe('Recipient', () => {
+describe('RecipientInput', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
   const mockUseRecipientSelectionMetrics = jest.mocked(
     useRecipientSelectionMetrics,
@@ -67,7 +44,7 @@ describe('Recipient', () => {
 
   const renderComponent = (args = {}) => {
     return renderWithProvider(
-      <Recipient
+      <RecipientInput
         recipientValidationResult={
           {
             recipientConfusableCharacters: [],
@@ -76,6 +53,8 @@ describe('Recipient', () => {
             recipientResolvedLookup: undefined,
           } as unknown as ReturnType<typeof useRecipientValidation>
         }
+        openRecipientModal={() => undefined}
+        recipientInputRef={null as unknown as React.RefObject<HTMLInputElement>}
         {...args}
       />,
       mockStore,
@@ -104,18 +83,9 @@ describe('Recipient', () => {
     jest.clearAllMocks();
   });
 
-  it('renders text field with label', () => {
-    const { getByText, getByRole } = renderComponent();
-
-    expect(getByText('TO')).toBeInTheDocument();
+  it('renders text field', () => {
+    const { getByRole } = renderComponent();
     expect(getByRole('textbox')).toBeInTheDocument();
-  });
-
-  it('renders recipient modal button when recipients exist', () => {
-    mockUseRecipients.mockReturnValue(mockRecipients);
-    const { getByTestId } = renderComponent();
-
-    expect(getByTestId('open-recipient-modal-btn')).toBeInTheDocument();
   });
 
   it('calls updateTo when input value changes', () => {
@@ -123,7 +93,6 @@ describe('Recipient', () => {
     const input = getByRole('textbox');
 
     fireEvent.change(input, { target: { value: '0x1234567890abcdef' } });
-
     expect(mockUpdateTo).toHaveBeenCalledWith('0x1234567890abcdef');
   });
 
@@ -140,46 +109,15 @@ describe('Recipient', () => {
     expect(input.value).toBe('0x1234567890abcdef');
   });
 
-  it('opens recipient modal when button is clicked', () => {
+  it('calls openRecipientModal when address book icon clicked', () => {
+    const mockOpenRecipientModal = jest.fn();
     mockUseRecipients.mockReturnValue(mockRecipients);
-    const { getByTestId, queryByText } = renderComponent();
-
-    expect(queryByText('SELECTRECIPIENT')).not.toBeInTheDocument();
+    const { getByTestId } = renderComponent({
+      openRecipientModal: mockOpenRecipientModal,
+    });
 
     fireEvent.click(getByTestId('open-recipient-modal-btn'));
-
-    expect(queryByText('SELECTRECIPIENT')).toBeInTheDocument();
-  });
-
-  it('closes recipient modal when close button is clicked', () => {
-    mockUseRecipients.mockReturnValue(mockRecipients);
-    const { getByTestId, queryByText } = renderComponent();
-
-    fireEvent.click(getByTestId('open-recipient-modal-btn'));
-    expect(queryByText('SELECTRECIPIENT')).toBeInTheDocument();
-
-    fireEvent.click(getByTestId('close-recipient-modal-btn'));
-    expect(queryByText('SELECTRECIPIENT')).not.toBeInTheDocument();
-  });
-
-  it('renders recipient list in modal when open', () => {
-    mockUseRecipients.mockReturnValue(mockRecipients);
-    const { getByTestId } = renderComponent();
-
-    fireEvent.click(getByTestId('open-recipient-modal-btn'));
-
-    expect(getByTestId('recipient-list')).toBeInTheDocument();
-  });
-
-  it('closes modal when recipient list hide callback is called', () => {
-    mockUseRecipients.mockReturnValue(mockRecipients);
-    const { getByTestId, getByText, queryByText } = renderComponent();
-
-    fireEvent.click(getByTestId('open-recipient-modal-btn'));
-    expect(queryByText('SELECTRECIPIENT')).toBeInTheDocument();
-
-    fireEvent.click(getByText('Close Modal'));
-    expect(queryByText('SELECTRECIPIENT')).not.toBeInTheDocument();
+    expect(mockOpenRecipientModal).toHaveBeenCalled();
   });
 
   it('captures metrics on input blur when to value exists', () => {
@@ -195,20 +133,6 @@ describe('Recipient', () => {
     fireEvent.blur(input);
 
     expect(mockCaptureRecipientSelected).toHaveBeenCalledTimes(1);
-  });
-
-  it('blurs input when opening modal', () => {
-    mockUseRecipients.mockReturnValue(mockRecipients);
-    const { getByTestId, getByRole } = renderComponent();
-    const input = getByRole('textbox');
-    const button = getByTestId('open-recipient-modal-btn');
-
-    input.focus();
-    expect(document.activeElement).toBe(input);
-
-    fireEvent.click(button);
-
-    expect(document.activeElement).not.toBe(input);
   });
 
   it('renders clear button when to has no error', () => {
@@ -243,26 +167,5 @@ describe('Recipient', () => {
     fireEvent.click(getByTestId('clear-recipient-btn'));
 
     expect(mockUpdateTo).toHaveBeenCalledWith('');
-  });
-
-  it('does not render modal button when no recipients exist', () => {
-    mockUseRecipients.mockReturnValue([]);
-    const { queryByTestId } = renderComponent();
-
-    expect(queryByTestId('open-recipient-modal-btn')).not.toBeInTheDocument();
-  });
-
-  describe('metrics', () => {
-    it('calls updateTo when recipient is selected from modal', () => {
-      mockUseRecipients.mockReturnValue(mockRecipients);
-      const { getByTestId } = renderComponent();
-
-      fireEvent.click(getByTestId('open-recipient-modal-btn'));
-      fireEvent.click(getByTestId('select-recipient-btn'));
-
-      expect(mockUpdateTo).toHaveBeenCalledWith(
-        '0x1234567890abcdef1234567890abcdef12345678',
-      );
-    });
   });
 });
