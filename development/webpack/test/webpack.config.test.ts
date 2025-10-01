@@ -93,6 +93,7 @@ ${Object.entries(env)
     assert.strictEqual(typeof fallback['react-devtools-core'], 'boolean');
     assert.strictEqual(typeof fallback['remote-redux-devtools'], 'boolean');
     assert.strictEqual(options.optimization.minimize, false);
+    assert.strictEqual(options.optimization.sideEffects, false);
     assert.strictEqual(options.optimization.providedExports, false);
     assert.strictEqual(options.optimization.removeAvailableModules, false);
     assert.strictEqual(options.optimization.usedExports, false);
