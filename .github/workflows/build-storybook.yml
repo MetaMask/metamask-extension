@@ -9,7 +9,7 @@ on:
 jobs:
   build-storybook:
     name: Build storybook
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
