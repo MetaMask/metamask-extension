@@ -6,6 +6,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
+import { mockLegacySendFeatureFlag } from '../send/common';
 
 async function mockSwapQuotes(mockServer: MockttpServer) {
   return [
@@ -192,6 +193,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
           },
         },
       })),
+    mockLegacySendFeatureFlag(mockServer),
   ];
 }
 

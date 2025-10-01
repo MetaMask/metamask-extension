@@ -5,6 +5,7 @@ const {
 } = require('../../page-objects/flows/login.flow');
 const { withFixtures, WINDOW_TITLES, DAPP_URL } = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
+const { mockLegacySendFeatureFlag } = require('../send/common');
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -21,6 +22,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
+          testSpecificMock: mockLegacySendFeatureFlag,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -94,6 +96,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
+          testSpecificMock: mockLegacySendFeatureFlag,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -145,6 +148,7 @@ describe('Send ETH', function () {
           fixtures: new FixtureBuilder().build(),
           smartContract,
           title: this.test.fullTitle(),
+          testSpecificMock: mockLegacySendFeatureFlag,
         },
         async ({ driver, contractRegistry, localNodes }) => {
           const contractAddress =
@@ -194,6 +198,7 @@ describe('Send ETH', function () {
         {
           fixtures: new FixtureBuilder().build(),
           title: this.test.fullTitle(),
+          testSpecificMock: mockLegacySendFeatureFlag,
         },
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -231,6 +236,7 @@ describe('Send ETH', function () {
             localNodeOptions: {
               hardfork: 'muirGlacier',
             },
+            testSpecificMock: mockLegacySendFeatureFlag,
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
@@ -311,6 +317,7 @@ describe('Send ETH', function () {
               .withPreferencesController(PREFERENCES_STATE_MOCK)
               .build(),
             title: this.test.fullTitle(),
+            testSpecificMock: mockLegacySendFeatureFlag,
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
@@ -415,6 +422,7 @@ describe('Send ETH', function () {
               .withPreferencesControllerPetnamesDisabled()
               .build(),
             title: this.test.fullTitle(),
+            testSpecificMock: mockLegacySendFeatureFlag,
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);

@@ -6,6 +6,7 @@ import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
 import type { Quote } from '../../../../ui/ducks/send/swap-and-send-utils';
+import { mockLegacySendFeatureFlag } from '../send/common';
 import { SWAP_SEND_QUOTES_RESPONSE_ETH_TST } from './mocks/eth-data';
 
 export const NATIVE_TOKEN_SYMBOL = 'ETH';
@@ -284,6 +285,7 @@ export const mockSwapsApi =
           json: quotes,
         };
       });
+    mockLegacySendFeatureFlag(mockServer);
   };
 
 export const getSwapSendFixtures = (
