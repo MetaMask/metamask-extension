@@ -78,12 +78,14 @@ async function confirmTx(): Promise<number> {
       const homePage = new HomePage(driver);
       await homePage.startSendFlow();
 
+      await driver.clickElement({ text: 'Ethereum' });
+
       await driver.fill(
-        'input[placeholder="Enter public address (0x) or domain name"]',
+        'input[placeholder="Enter or paste a valid address"]',
         '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
 
-      await driver.fill('.unit-input__input', '1');
+      await driver.fill('input[placeholder="0"]', '1');
 
       await driver.waitForSelector({ text: 'Continue', tag: 'button' });
       await driver.clickElement({ text: 'Continue', tag: 'button' });
