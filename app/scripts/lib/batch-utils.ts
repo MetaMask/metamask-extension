@@ -95,8 +95,8 @@ export async function processInBatches<TItem, TResult>(
       `Successfully processed ${successfulResults.length}/${batches.length} batches`,
     );
 
-    // Merge results if a merge function is provided, otherwise return the first result
-    if (mergeResults && successfulResults.length > 0) {
+    // Merge results if a merge function is provided and we have multiple results
+    if (mergeResults && successfulResults.length > 1) {
       return mergeResults(successfulResults);
     }
 
