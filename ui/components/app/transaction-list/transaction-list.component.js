@@ -653,7 +653,7 @@ export default function TransactionList({
                   (dateGroup) => (
                     <Fragment key={dateGroup.date}>
                       <Text
-                        paddingTop={4}
+                        paddingTop={3}
                         paddingInline={4}
                         variant={TextVariant.bodyMdMedium}
                         color={TextColor.textAlternative}

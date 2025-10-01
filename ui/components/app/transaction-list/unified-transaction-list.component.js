@@ -743,7 +743,7 @@ export default function UnifiedTransactionList({
               .map((dateGroup) => (
                 <Fragment key={dateGroup.date}>
                   <Text
-                    paddingTop={3}
+                    paddingTop={4}
                     paddingInline={4}
                     variant={TextVariant.bodyMdMedium}
                     color={TextColor.textAlternative}
