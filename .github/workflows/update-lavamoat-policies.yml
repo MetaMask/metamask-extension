@@ -175,7 +175,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Update LavaMoat webpack policy
         run: yarn webpack --env production --no-cache --generatePolicy
