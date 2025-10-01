@@ -13,16 +13,13 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
   Modal,
-  ModalContent,
   ModalBody,
+  ModalContent,
   ModalFooter,
+  ModalHeader,
   ModalOverlay,
   Text,
-  ModalHeader,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { LottieAnimation } from '../../../../component-library/lottie-animation';
@@ -61,12 +58,12 @@ export const MultichainAccountIntroModal: React.FC<MultichainAccountIntroModalPr
                 alignItems={AlignItems.center}
                 justifyContent={JustifyContent.center}
                 marginBottom={4}
-                gap={3}
               >
                 <MemoizedLottieAnimation
                   path="images/animations/multichain-accounts/MM_MultichainAccounts_Polycon-and-network_Lottie.json"
                   loop
                   autoplay
+                  className="multichain-accounts-intro-modal__lottie-animation"
                 />
               </Box>
               <Box
