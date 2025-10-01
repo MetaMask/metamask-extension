@@ -46,9 +46,6 @@ export const lavamoatPlugin = (args: Args) =>
               exceptions: ['browser', 'chrome', 'btoa'],
             },
           },
-          staticShims: [
-            join(rootDir, 'app/scripts/contentscript-global-proto-repair.js'),
-          ],
         };
       } else if (chunk.name === 'runtime') {
         return {
