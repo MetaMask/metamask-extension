@@ -64,8 +64,8 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
+          is-high-risk-environment: true
+          skip-allow-scripts: false
           yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Post nightly builds notification
