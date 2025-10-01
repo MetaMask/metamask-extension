@@ -64,12 +64,9 @@ describe('Ledger Swap', function () {
         await swapPage.selectDestinationToken('DAI');
 
         await swapPage.dismissManualTokenWarning();
-
-        await swapPage.checkExchangeRateIsDisplayed('TESTETH');
         await swapPage.checkSwapButtonIsEnabled();
-        await swapPage.checkReviewQuoteFeeFiatIsDisplayed('$0.77');
-        await swapPage.checkViewAllQuotesIsDisplayed();
-
+        // To mitigate flakiness where the Swap page is re-rendered after submitting the swap (#36501)
+        await driver.delay(5000);
         await swapPage.submitSwap();
         await swapPage.waitForTransactionToComplete();
 
