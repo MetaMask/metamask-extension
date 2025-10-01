@@ -6,7 +6,7 @@ start().catch(console.error);
 
 const benchmarkPlatforms = ['chrome', 'firefox'];
 const buildTypes = ['browserify', 'webpack'];
-const benchmarkTypes = ['pageload', 'powerUser'];
+const pageTypes = ['standardHome', 'powerUserHome'];
 
 type BenchmarkResults = Record<
   (typeof benchmarkPlatforms)[number],
@@ -178,8 +178,9 @@ async function start(): Promise<void> {
   for (const platform of benchmarkPlatforms) {
     benchmarkResults[platform] = {};
     for (const buildType of buildTypes) {
-      for (const benchmarkType of benchmarkTypes) {
-        const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-${benchmarkType}.json`;
+      benchmarkResults[platform][buildType] = {};
+      for (const page of pageTypes) {
+        const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-${page}.json`;
         console.log(`Fetching benchmark results from ${benchmarkUrl}`);
         try {
           const benchmarkResponse = await fetch(benchmarkUrl);
@@ -189,8 +190,7 @@ async function start(): Promise<void> {
             );
           }
           const benchmark = await benchmarkResponse.json();
-          benchmarkResults[platform][buildType][benchmarkType] =
-            benchmark[benchmarkType];
+          benchmarkResults[platform][buildType][page] = benchmark[page];
         } catch (error) {
           console.error(
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
@@ -204,7 +204,7 @@ async function start(): Promise<void> {
 
   const summaryPlatform = benchmarkPlatforms[0];
   const summaryBuildType = buildTypes[0];
-  const summaryPage = 'home';
+  const summaryPage = pageTypes[0];
   let commentBody = artifactsBody;
   if (benchmarkResults[summaryPlatform][summaryBuildType]) {
     try {
@@ -263,13 +263,15 @@ async function start(): Promise<void> {
             for (const metric of allMetrics) {
               let metricData = `<td>${metric}</td>`;
               for (const measure of allMeasures) {
-                metricData += `<td align="right">${Math.round(
-                  parseFloat(
-                    benchmarkResults[platform][buildType][page][measure][
-                      metric
-                    ],
-                  ),
-                )}</td>`;
+                const _m =
+                  benchmarkResults[platform][buildType][page][measure][metric];
+
+                const _number = Math.round(parseFloat(_m));
+
+                // If a number is missing, e.g. firstPaint for Firefox, show a dash instead
+                const output = isNaN(_number) ? '-' : _number;
+
+                metricData += `<td align="right">${output}</td>`;
               }
               metricRows.push(metricData);
             }
