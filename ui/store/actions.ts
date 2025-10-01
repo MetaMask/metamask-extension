@@ -65,12 +65,12 @@ import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
   BillingPortalResponse,
+  GetCryptoApproveTransactionRequest,
+  PaymentType,
   PricingResponse,
-  ProductPrice,
   ProductType,
   RecurringInterval,
   Subscription,
-  TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
@@ -371,10 +371,9 @@ export function getSubscriptionPricing(): ThunkAction<
  * @param params.tokenPaymentInfo - The token payment info.
  * @returns The subscription crypto approval amount.
  */
-export async function getSubscriptionCryptoApprovalAmount(params: {
-  price: ProductPrice;
-  tokenPaymentInfo: TokenPaymentInfo;
-}): Promise<string> {
+export async function getSubscriptionCryptoApprovalAmount(
+  params: GetCryptoApproveTransactionRequest,
+): Promise<string> {
   return await submitRequestToBackground<string>(
     'getSubscriptionCryptoApprovalAmount',
     [params],
@@ -399,6 +398,22 @@ export function startSubscriptionWithCard(params: {
     const currentTab = await global.platform.currentTab();
     const subscriptions = await submitRequestToBackground<Subscription[]>(
       'startSubscriptionWithCard',
+      [params, currentTab?.id],
+    );
+
+    return subscriptions;
+  };
+}
+
+export function updateSubscriptionCardPaymentMethod(params: {
+  paymentType: Extract<PaymentType, 'card'>;
+  subscriptionId: string;
+  recurringInterval: RecurringInterval;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const currentTab = await global.platform.currentTab();
+    const subscriptions = await submitRequestToBackground(
+      'updateSubscriptionCardPaymentMethod',
       [params, currentTab?.id],
     );
 
@@ -2701,7 +2716,9 @@ export function setShowSupportDataConsentModal(show: boolean) {
 }
 
 export function clearProductTour() {
-  return submitRequestToBackground('setProductTour', ['']);
+  return async () => {
+    return submitRequestToBackground('setProductTour', ['']);
+  };
 }
 export function addToken(
   {
@@ -5785,6 +5802,15 @@ export async function tokenBalancesStopPollingByPollingToken(
   await removePollingTokenFromAppState(pollingToken);
 }
 
+export async function updateBalancesFoAccounts(
+  chainIds: string[],
+  queryAllAccounts: boolean,
+): Promise<void> {
+  await submitRequestToBackground('updateBalances', [
+    { chainIds, queryAllAccounts },
+  ]);
+}
+
 /**
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
@@ -6444,6 +6470,16 @@ export async function getNetworkConfigurationByNetworkClientId(
     console.error(error);
   }
   return networkConfiguration;
+}
+
+/**
+ * Gathers metadata (primarily connectivity status) about the globally selected
+ * network as well as each enabled network and persists it to state.
+ */
+export function lookupSelectedNetworks() {
+  return async () => {
+    await submitRequestToBackground('lookupSelectedNetworks');
+  };
 }
 
 export function updateProposedNames(
