@@ -349,8 +349,12 @@ export const selectFirstUnavailableEvmNetwork = createSelector(
         const rpcEndpoint = rpcEndpoints[defaultRpcEndpointIndex];
 
         if (rpcEndpoint) {
-          const status = networksMetadata[rpcEndpoint.networkClientId]?.status;
-          if (status !== NetworkStatus.Available) {
+          const metadata = networksMetadata[rpcEndpoint.networkClientId];
+
+          if (
+            metadata !== undefined &&
+            metadata.status !== NetworkStatus.Available
+          ) {
             return {
               networkName: name,
               networkClientId: rpcEndpoint.networkClientId,
