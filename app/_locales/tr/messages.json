@@ -1394,9 +1394,6 @@
   "connectingTo": {
     "message": "Şuna bağlanılıyor: $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "'$1' aşamalı olarak devre dışı bırakılıyor ve çalışmayabilir. Başka bir ağ deneyin."
-  },
   "connectingToGoerli": {
     "message": "Goerli Test Ağına Bağlanıyor"
   },
@@ -1559,9 +1556,6 @@
   "currentNetwork": {
     "message": "Mevcut ağ",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "Bu ağ için mevcut rpc url artık kullanılmıyor."
   },
   "currentTitle": {
     "message": "Mevcut:"
@@ -3556,10 +3550,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Son 72 saate göre gaz ücretleri $1.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "$1 ağına bağlanamıyoruz",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "Ağ URL adresi"
@@ -6406,9 +6396,6 @@
   },
   "switchNetwork": {
     "message": "Ağı değiştir"
-  },
-  "switchNetworks": {
-    "message": "Ağ değiştir"
   },
   "switchToNetwork": {
     "message": "$1 ağına geçin",

@@ -1418,9 +1418,6 @@
   "connectingTo": {
     "message": "$1 से कनेक्ट किया जा रहा है"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "'$1' को चरणबद्ध तरीके से हटाया जा रहा है और हो सकता है कि यह काम न करे। कोई और नेटवर्क इस्तेमाल करके देखें।"
-  },
   "connectingToGoerli": {
     "message": "Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
@@ -1583,9 +1580,6 @@
   "currentNetwork": {
     "message": "वर्तमान नेटवर्क",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "इस नेटवर्क के लिए वर्तमान rpc url को हटा दिया गया है।"
   },
   "currentTitle": {
     "message": "मौजूदा:"
@@ -3586,10 +3580,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "पिछले 72 घंटों के सापेक्ष गैस फ़ीस $1 है।",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "हम $1 से कनेक्ट नहीं कर सकते",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "नेटवर्क URL"
@@ -6452,9 +6442,6 @@
     "message": "इनपुट करेंसी को स्विच करें"
   },
   "switchNetwork": {
-    "message": "नेटवर्क स्विच करें"
-  },
-  "switchNetworks": {
     "message": "नेटवर्क स्विच करें"
   },
   "switchToNetwork": {
