@@ -42,7 +42,7 @@ export const ConfusableRecipientName = ({
       findAllIndexesOfConfusable(to, confusable),
     );
 
-    let splits = [];
+    const splits = [];
     let prevIndex = 0;
     for (const confusableSlice of confusableList) {
       if (prevIndex !== confusableSlice.index) {

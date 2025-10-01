@@ -1409,9 +1409,6 @@
   "confusableZeroWidthUnicode": {
     "message": "Zero-width character found."
   },
-  "confusingDomain": {
-    "message": "We have detected a confusable character in the name. Check the name to avoid a potential scam."
-  },
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
   },

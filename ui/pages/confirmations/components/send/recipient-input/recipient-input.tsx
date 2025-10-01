@@ -82,7 +82,7 @@ export const RecipientInput = ({
     return addressIsValid
       ? shortenAddress(recipientResolvedLookup ?? to)
       : undefined;
-  }, [recipientResolvedLookup, to]);
+  }, [recipientError, recipientResolvedLookup, toAddressValidated, to]);
 
   const recipientName = useMemo(() => {
     const matchingRecipient = recipients.find(
