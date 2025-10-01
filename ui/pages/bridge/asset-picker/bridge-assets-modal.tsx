@@ -1,5 +1,6 @@
 import React, {
   useState,
+  useMemo,
   useCallback,
   useEffect,
 } from 'react';
@@ -66,8 +67,8 @@ export const BridgeAssetsModal = ({ isOpen, onClose, onSelectAsset }: BridgeAsse
     }
   }, []);
 
-  const debouncedSearchCallback = useCallback(
-    debounce(fetchAssets, 300), [],
+  const debouncedSearchCallback = useMemo(
+    () => debounce(fetchAssets, 300), [],
   );
 
   const closeModal = () => {

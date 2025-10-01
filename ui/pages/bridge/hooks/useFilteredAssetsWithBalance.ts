@@ -11,6 +11,7 @@ export const useFilteredAssetsWithBalance = (network: string | null, searchQuery
     assetId: formatAddressToAssetId(asset.address, asset.chainId)?.toLowerCase(),
     name: (asset as any).name || (asset as any).title || asset.symbol,
     symbol: asset.symbol,
+    image: asset.image,
     decimals: asset.decimals,
     chainId: asset.chainId,
     balance: asset.string,

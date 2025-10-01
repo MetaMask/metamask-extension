@@ -2,6 +2,7 @@ import { toEvmCaipChainId } from "@metamask/multichain-network-controller";
 import { MultichainNetwork } from "@metamask/multichain-transactions-controller";
 import { CaipAssetId, CaipChainId, Hex, isCaipChainId, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
 import { CHAIN_IDS } from "../../../../shared/constants/network";
+import { getAssetImageUrl } from "../../../../shared/lib/asset-utils";
 
 export const SUPPORTED_NETWORKS = [CHAIN_IDS.MAINNET, CHAIN_IDS.BSC, CHAIN_IDS.POLYGON, CHAIN_IDS.OPTIMISM, CHAIN_IDS.BASE, CHAIN_IDS.LINEA_MAINNET, CHAIN_IDS.ARBITRUM, CHAIN_IDS.AVALANCHE, CHAIN_IDS.ZKSYNC_ERA, CHAIN_IDS.SEI, MultichainNetwork.Solana];
 export interface Asset {
@@ -10,6 +11,7 @@ export interface Asset {
   symbol: string;
   decimals: number;
   chainId: string;
+  image?: string;
   price?: string;
   aggregatedUsdVolume?: string;
   marketCap?: string;
@@ -38,8 +40,11 @@ function stringifyChainIds(chainIds: string[]) {
 function transformAsset(asset: Omit<Asset, 'chainId'>): Asset {
   const { chainId } = parseCaipAssetType(asset.assetId as CaipAssetId);
   const { namespace, reference } = parseCaipChainId(chainId as CaipChainId);
+  const tokenImage = getAssetImageUrl(asset.assetId, chainId as CaipChainId);
+
   return {
     ...asset,
+    image: tokenImage,
     chainId: chainId === MultichainNetwork.Solana ? `${namespace}:${reference}` : `0x${parseInt(reference).toString(16)}`,
   }
 }

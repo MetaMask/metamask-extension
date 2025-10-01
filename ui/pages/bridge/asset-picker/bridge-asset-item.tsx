@@ -3,7 +3,6 @@ import { Box, Text, AvatarToken, AvatarTokenSize, AvatarNetworkSize, AvatarNetwo
 import { Column, Row } from '../layout';
 import {
   AlignItems,
-  BackgroundColor,
   BorderRadius,
   FontWeight,
   JustifyContent,
@@ -12,9 +11,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Asset } from '../utils/assets-service';
 import { getAssetImageUrl } from '../../../../shared/lib/asset-utils';
-import { CaipAssetId, CaipChainId, parseCaipAssetType, parseCaipChainId } from '@metamask/utils';
+import { CaipChainId } from '@metamask/utils';
 import { getImageForChainId } from '../../confirmations/utils/network';
-import { getNetworkIcon } from '../../../../shared/modules/network.utils';
 
 interface AssetItemProps {
   asset: Asset;
@@ -45,7 +43,7 @@ export const AssetItem = ({ asset, onClick }: AssetItemProps) => {
         <Row alignItems={AlignItems.center} gap={3} style={{ display: 'flex', flexShrink: 0 }}>
           <Box style={{ position: 'relative', display: 'flex' }}>
             <AvatarToken
-              src={tokenImage}
+              src={asset.image}
               name={asset.symbol}
               size={AvatarTokenSize.Md}
             />
