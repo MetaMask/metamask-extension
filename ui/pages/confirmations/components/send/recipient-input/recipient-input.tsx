@@ -122,7 +122,6 @@ export const RecipientInput = ({
                 />
               ) : (
                 <Text variant={TextVariant.bodyMd}>
-                  {' '}
                   (recipientName ?? resolvedAddress)
                 </Text>
               )}
