@@ -362,7 +362,7 @@ export const ACALA_DISPLAY_NAME = 'Acala';
 export const ACALA_TESTNET_DISPLAY_NAME = 'Acala Testnet';
 export const KARURA_DISPLAY_NAME = 'Karura';
 export const HEMI_DISPLAY_NAME = 'Hemi';
-export const PLASMA_DISPLAY_NAME = 'Plasma Mainnet';
+export const PLASMA_DISPLAY_NAME = 'Plasma';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
