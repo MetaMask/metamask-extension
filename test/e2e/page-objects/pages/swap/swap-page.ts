@@ -51,8 +51,10 @@ class SwapPage {
   private readonly destinationTokenButton =
     '[data-testid="prepare-swap-page-swap-to"]';
 
-  private readonly exchangeRate =
-    '[data-testid="exchange-rate-display-base-symbol"]';
+  private readonly exchangeRateBaseSymbol = (symbol: string) => ({
+    testId: 'exchange-rate-display-base-symbol',
+    text: symbol,
+  });
 
   private readonly fromToText =
     '[data-testid="multichain-token-list-button"] p';
@@ -81,6 +83,11 @@ class SwapPage {
 
   private readonly reviewFromAmount = '[data-testid="from-amount"]';
 
+  private readonly reviewQuoteFeeFiat = (amount: string) => ({
+    testId: 'review-quote-gas-fee-in-fiat',
+    text: amount,
+  });
+
   private readonly submitSwapButton = '[data-testid="bridge-cta-button"]';
 
   private readonly transactionStatusHeader =
@@ -99,12 +106,17 @@ class SwapPage {
 
   private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
 
+  private readonly viewAllQuotes = {
+    tag: 'button',
+    text: 'view all quotes',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async checkExchangeRate(): Promise<void> {
-    await this.driver.waitForSelector(this.exchangeRate);
+  async checkExchangeRateIsDisplayed(symbol: string): Promise<void> {
+    await this.driver.waitForSelector(this.exchangeRateBaseSymbol(symbol));
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -118,6 +130,14 @@ class SwapPage {
       throw e;
     }
     console.log('Swap page is loaded');
+  }
+
+  async checkReviewQuoteFeeFiatIsDisplayed(amount: string): Promise<void> {
+    await this.driver.waitForSelector(this.reviewQuoteFeeFiat(amount));
+  }
+
+  async checkViewAllQuotesIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.viewAllQuotes);
   }
 
   async clickOnMoreQuotes(): Promise<void> {

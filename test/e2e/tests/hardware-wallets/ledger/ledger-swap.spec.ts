@@ -62,13 +62,14 @@ describe('Ledger Swap', function () {
 
         await swapPage.enterSwapAmount('2');
         await swapPage.selectDestinationToken('DAI');
-        await driver.delay(5000);
 
         await swapPage.dismissManualTokenWarning();
 
-        await swapPage.checkExchangeRate();
+        await swapPage.checkExchangeRateIsDisplayed('TESTETH');
         await swapPage.checkSwapButtonIsEnabled();
-        await driver.delay(5000);
+        await swapPage.checkReviewQuoteFeeFiatIsDisplayed('$0.77');
+        await swapPage.checkViewAllQuotesIsDisplayed();
+
         await swapPage.submitSwap();
         await swapPage.waitForTransactionToComplete();
 
