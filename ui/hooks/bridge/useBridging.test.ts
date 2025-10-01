@@ -1,6 +1,6 @@
 import { toChecksumAddress } from 'ethereumjs-util';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
-import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -41,13 +41,37 @@ describe('useBridging', () => {
     it.each([
       [
         '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
-        ETH_SWAPS_TOKEN_OBJECT,
+        getNativeAssetForChainId(CHAIN_IDS.MAINNET),
         'Home',
         false,
       ],
       [
         '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
-        ETH_SWAPS_TOKEN_OBJECT,
+        getNativeAssetForChainId(CHAIN_IDS.MAINNET),
+        MetaMetricsSwapsEventSource.TokenView,
+        false,
+      ],
+      [
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/slip44:60',
+        getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
+        MetaMetricsSwapsEventSource.TokenView,
+        false,
+      ],
+      [
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
+        {
+          ...getNativeAssetForChainId(CHAIN_IDS.MAINNET),
+          chainId: 1,
+        },
+        MetaMetricsSwapsEventSource.TokenView,
+        false,
+      ],
+      [
+        '/cross-chain/swaps/prepare-swap-page?',
+        {
+          ...getNativeAssetForChainId(CHAIN_IDS.MAINNET),
+          chainId: 243,
+        },
         MetaMetricsSwapsEventSource.TokenView,
         false,
       ],
@@ -94,6 +118,11 @@ describe('useBridging', () => {
                 },
               },
             },
+            enabledNetworkMap: {
+              eip155: {
+                '1': true,
+              },
+            },
             internalAccounts: {
               selectedAccount: '0xabc',
               accounts: { '0xabc': { metadata: { keyring: {} } } },
@@ -115,7 +144,7 @@ describe('useBridging', () => {
     it.each([
       [
         '/',
-        '/cross-chain/swaps/prepare-swap-page?&swaps=true',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60&swaps=true',
         undefined,
         'Home',
         true,
@@ -123,7 +152,7 @@ describe('useBridging', () => {
       [
         '/asset/0xa/',
         '/cross-chain/swaps/prepare-swap-page?from=eip155:10/slip44:60&swaps=true',
-        ETH_SWAPS_TOKEN_OBJECT,
+        getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
         MetaMetricsSwapsEventSource.TokenView,
         true,
       ],
@@ -157,7 +186,7 @@ describe('useBridging', () => {
         const { result, history } = renderUseBridging({
           metamask: {
             useExternalServices: true,
-            ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
+            ...mockNetworkState({ chainId: CHAIN_IDS.BSC }),
             metaMetricsId: MOCK_METAMETRICS_ID,
             remoteFeatureFlags: {
               bridgeConfig: {
@@ -182,6 +211,11 @@ describe('useBridging', () => {
                     isActiveDest: true,
                   },
                 },
+              },
+            },
+            enabledNetworkMap: {
+              eip155: {
+                '10': true,
               },
             },
             internalAccounts: {

@@ -116,6 +116,12 @@ export const createBridgeMockStore = ({
         { chainId: CHAIN_IDS.MAINNET },
         { chainId: CHAIN_IDS.LINEA_MAINNET },
       ),
+      enabledNetworkMap: {
+        eip155: {
+          [1]: true,
+          [59144]: true,
+        },
+      },
       multichainNetworkConfigurationsByChainId:
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: 'eip155:1',
