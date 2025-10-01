@@ -1,16 +1,19 @@
 import { Messenger } from '@metamask/base-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { cloneDeep } from 'lodash';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { WALLET_PASSWORD } from '../../../test/e2e/constants';
 import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
+import { normalizeSafeAddress } from '../lib/multichain/address';
 import { withAddressBook } from './with-address-book';
 import { FIXTURES_APP_STATE } from './with-app-state';
 import { withConfirmedTransactions } from './with-confirmed-transactions';
 import { FIXTURES_ERC20_TOKENS } from './with-erc20-tokens';
-import { FIXTURES_NETWORKS } from './with-networks';
+import { ALL_POPULAR_NETWORKS, FIXTURES_NETWORKS } from './with-networks';
 import { FIXTURES_PREFERENCES } from './with-preferences';
 import { withUnreadNotifications } from './with-unread-notifications';
 
@@ -47,7 +50,8 @@ export async function generateWalletState(withState, fromTest) {
     )
     .withPreferencesController(generatePreferencesControllerState(accounts))
     .withTokensController(generateTokensControllerState(accounts[0]))
-    .withTransactionController(generateTransactionControllerState(accounts[0]));
+    .withTransactionController(generateTransactionControllerState(accounts[0]))
+    .withEnabledNetworks(ALL_POPULAR_NETWORKS);
 
   return fixtureBuilder;
 }
@@ -289,13 +293,28 @@ function generatePreferencesControllerState(accounts) {
 function generateTokensControllerState(account) {
   console.log('Generating TokensController state');
 
-  const tokens = FIXTURES_ERC20_TOKENS;
   if (FIXTURES_CONFIG.withErc20Tokens) {
-    // Update `myAccount` key for the account address
-    for (const network of Object.values(tokens.allTokens)) {
-      network[account] = network.myAccount;
-      delete network.myAccount;
+    // Must cloneDeep to avoid a crash with the benchmarks and browserLoads > 1
+    const tokens = cloneDeep(FIXTURES_ERC20_TOKENS);
+
+    for (const [chainId, data] of Object.entries(tokens.allTokens)) {
+      const chainIdDec = hexToDecimal(chainId);
+
+      // Add automatic token images if missing
+      for (const token of data.myAccount) {
+        if (!token.image) {
+          token.image = `https://static.cx.metamask.io/api/v1/tokenIcons/${chainIdDec}/${token.address}.png`;
+        }
+
+        // Token addresses are only accepted in the checksum format
+        token.address = normalizeSafeAddress(token.address);
+      }
+
+      // Update `myAccount` key into the actual account address
+      data[account] = data.myAccount;
+      delete data.myAccount;
     }
+
     return tokens;
   }
   return {};

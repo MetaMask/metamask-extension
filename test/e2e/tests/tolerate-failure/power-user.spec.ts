@@ -1,19 +1,10 @@
 import { generateWalletState } from '../../../../app/scripts/fixtures/generate-wallet-state';
+import { WITH_STATE_POWER_USER } from '../../benchmarks/constants';
 import { withFixtures } from '../../helpers';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { Driver } from '../../webdriver/driver';
-
-const withState = {
-  withAccounts: 30,
-  withConfirmedTransactions: 40,
-  withContacts: 40,
-  withErc20Tokens: true,
-  withNetworks: true,
-  withPreferences: true,
-  withUnreadNotifications: 15,
-};
 
 describe('Power user persona', function () {
   it('loads the requested number of accounts', async function () {
@@ -26,7 +17,9 @@ describe('Power user persona', function () {
     await withFixtures(
       {
         title: this.test?.fullTitle(),
-        fixtures: (await generateWalletState(withState, true)).build(),
+        fixtures: (
+          await generateWalletState(WITH_STATE_POWER_USER, true)
+        ).build(),
         manifestFlags: {
           testing: {
             disableSync: true,
@@ -43,12 +36,12 @@ describe('Power user persona', function () {
         new HeaderNavbar(driver).openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkNumberOfAvailableAccounts(
-          withState.withAccounts,
+          WITH_STATE_POWER_USER.withAccounts,
         );
 
         // Confirm that the last account is displayed in the account list
         await accountListPage.checkAccountDisplayedInAccountList(
-          `Account ${withState.withAccounts}`,
+          `Account ${WITH_STATE_POWER_USER.withAccounts}`,
         );
       },
     );

@@ -1,11 +1,15 @@
 on:
   workflow_call:
+    secrets:
+      INFURA_PROJECT_ID:
+        required: true
 
 env:
   COMMANDS: |
     {
-      pageload: 'yarn tsx test/e2e/benchmark.mjs --out test-artifacts/benchmarks/benchmark-{0}-{1}-pageload.json --retries 2',
-      userActions: 'yarn tsx test/e2e/user-actions-benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
+      pageload: 'yarn tsx test/e2e/benchmarks/benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-pageload.json --retries 2',
+      powerUser: 'yarn tsx test/e2e/benchmarks/benchmark.ts --isPowerUser --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUser.json --retries 2',
+      userActions: 'yarn tsx test/e2e/benchmarks/user-actions-benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
     }
 
 jobs:
@@ -16,13 +20,14 @@ jobs:
       matrix:
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
-        testType: [pageload, userActions]
+        testType: [pageload, powerUser, userActions]
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
       HEADLESS: true
       ARTIFACT_NAME: build-test-${{ matrix.buildType }}
       OUTPUT_NAME: benchmark-${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.testType }}.json
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1

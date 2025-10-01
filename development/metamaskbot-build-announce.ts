@@ -6,6 +6,7 @@ start().catch(console.error);
 
 const benchmarkPlatforms = ['chrome', 'firefox'];
 const buildTypes = ['browserify', 'webpack'];
+const benchmarkTypes = ['pageload', 'powerUser'];
 
 type BenchmarkResults = Record<
   (typeof benchmarkPlatforms)[number],
@@ -177,22 +178,26 @@ async function start(): Promise<void> {
   for (const platform of benchmarkPlatforms) {
     benchmarkResults[platform] = {};
     for (const buildType of buildTypes) {
-      const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-pageload.json`;
-      try {
-        const benchmarkResponse = await fetch(benchmarkUrl);
-        if (!benchmarkResponse.ok) {
-          throw new Error(
-            `Failed to fetch benchmark data, status ${benchmarkResponse.statusText}`,
+      for (const benchmarkType of benchmarkTypes) {
+        const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-${benchmarkType}.json`;
+        console.log(`Fetching benchmark results from ${benchmarkUrl}`);
+        try {
+          const benchmarkResponse = await fetch(benchmarkUrl);
+          if (!benchmarkResponse.ok) {
+            throw new Error(
+              `Failed to fetch benchmark data, status ${benchmarkResponse.statusText}`,
+            );
+          }
+          const benchmark = await benchmarkResponse.json();
+          benchmarkResults[platform][buildType][benchmarkType] =
+            benchmark[benchmarkType];
+        } catch (error) {
+          console.error(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `Error encountered processing benchmark data for '${platform}': '${error}'`,
           );
         }
-        const benchmark = await benchmarkResponse.json();
-        benchmarkResults[platform][buildType] = benchmark;
-      } catch (error) {
-        console.error(
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          `Error encountered processing benchmark data for '${platform}': '${error}'`,
-        );
       }
     }
   }
