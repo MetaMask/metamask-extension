@@ -736,7 +736,7 @@ export default function Routes() {
     }
 
     return routes;
-  }, [autoLockTimeLimit, forgottenPassword, dispatch]);
+  }, [autoLockTimeLimit, dispatch, forgottenPassword, isSendRedesignEnabled]);
 
   const t = useI18nContext();
 

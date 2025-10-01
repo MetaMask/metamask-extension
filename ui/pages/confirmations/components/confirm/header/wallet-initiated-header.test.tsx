@@ -16,6 +16,11 @@ const render = (
   return renderWithConfirmContextProvider(<WalletInitiatedHeader />, store);
 };
 
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => jest.fn(),
+}));
+
 jest.mock('../../../hooks/useRedesignedSendFlow', () => ({
   useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
 }));

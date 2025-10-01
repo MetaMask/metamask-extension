@@ -30,7 +30,12 @@ export type TokenWithApprovalAmount = (
   | AssetWithDisplayData<ERC20Asset>
   | AssetWithDisplayData<NativeAsset>
 ) & {
-  approvalAmount: string;
+  approvalAmount: {
+    approveAmount: string;
+    chainId: Hex;
+    paymentAddress: Hex;
+    paymentTokenAddress: Hex;
+  };
 };
 
 export const useAvailableTokenBalances = (params: {
@@ -98,28 +103,33 @@ export const useAvailableTokenBalances = (params: {
     const getAvailableTokenBalances = async () => {
       const availableTokens: TokenWithApprovalAmount[] = [];
 
-      const cryptoApprovalAmounts = await Promise.all(
-        validTokenBalances.map((token) => {
-          const tokenPaymentInfo = paymentChainTokenMap?.[
-            token.chainId as Hex
-          ]?.find(
-            (t) => t.address.toLowerCase() === token.address.toLowerCase(),
-          );
-          if (!tokenPaymentInfo) {
-            log.error(
-              '[useAvailableTokenBalances] tokenPaymentInfo not found',
-              token,
+      let cryptoApprovalAmounts: (string | null)[] = [];
+      try {
+        cryptoApprovalAmounts = await Promise.all(
+          validTokenBalances.map((token) => {
+            const tokenPaymentInfo = paymentChainTokenMap?.[
+              token.chainId as Hex
+            ]?.find(
+              (t) => t.address.toLowerCase() === token.address.toLowerCase(),
             );
-            return null;
-          }
-          return getSubscriptionCryptoApprovalAmount({
-            chainId: token.chainId as Hex,
-            paymentTokenAddress: token.address as Hex,
-            productType,
-            interval: price.interval,
-          });
-        }),
-      );
+            if (!tokenPaymentInfo) {
+              log.error(
+                '[useAvailableTokenBalances] tokenPaymentInfo not found',
+                token,
+              );
+              return null;
+            }
+            return getSubscriptionCryptoApprovalAmount({
+              productType,
+              interval: price.interval,
+              chainId: token.chainId as Hex,
+              paymentTokenAddress: tokenPaymentInfo.address,
+            });
+          }),
+        );
+      } catch (error) {
+        log.error('[useAvailableTokenBalances] error', error);
+      }
 
       cryptoApprovalAmounts.forEach((amount, index) => {
         const token = validTokenBalances[index];
