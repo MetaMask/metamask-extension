@@ -208,17 +208,16 @@ class AccountListPage {
     tag: 'p',
   };
 
-  private readonly state2Enabled = { isMultichainAccountsState2Enabled: true };
-
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(options = this.state2Enabled): Promise<void> {
+  async checkPageIsLoaded(options?: {
+    isMultichainAccountsState2Enabled?: boolean;
+  }): Promise<void> {
     try {
-      const selectorsToWaitFor = options.isMultichainAccountsState2Enabled
+      const selectorsToWaitFor = options?.isMultichainAccountsState2Enabled
         ? [
-            this.addMultichainWalletButton,
             this.createMultichainAccountButton,
             this.multichainAccountOptionsMenuButton,
           ]
@@ -275,11 +274,11 @@ class AccountListPage {
   async addNewImportedAccount(
     privateKey: string,
     expectedErrorMessage?: string,
-    options = this.state2Enabled,
+    options?: { isMultichainAccountsState2Enabled?: boolean },
   ): Promise<void> {
     console.log(`Adding new imported account`);
 
-    if (options.isMultichainAccountsState2Enabled) {
+    if (options?.isMultichainAccountsState2Enabled) {
       await this.driver.clickElement(this.addMultichainWalletButton);
       await this.driver.clickElement(
         this.importAccountFromMultichainWalletModalButton,
@@ -981,7 +980,7 @@ class AccountListPage {
 
   async startImportSecretPhrase(
     srp: string,
-    options = this.state2Enabled,
+    options?: { isMultichainAccountsState2Enabled?: boolean },
   ): Promise<void> {
     console.log(`Importing ${srp.split(' ').length} word srp`);
 

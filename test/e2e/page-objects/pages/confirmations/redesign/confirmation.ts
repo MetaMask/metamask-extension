@@ -23,7 +23,10 @@ class Confirmation {
 
   private headerAccountDetailsButton: RawLocator;
 
-  private inlineAlertButton = '[data-testid="inline-alert"]';
+  private inlineAlertButton = {
+    css: '[data-testid="inline-alert"]',
+    text: 'Alert',
+  };
 
   private nameSelector = '.name';
 

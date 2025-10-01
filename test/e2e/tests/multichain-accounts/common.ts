@@ -62,7 +62,7 @@ export const mockMultichainAccountsFeatureFlagStateTwo = (
           {
             enableMultichainAccountsState2: {
               enabled: true,
-              featureVersion: '2',
+              featureVersion: null,
               minimumVersion: '12.19.0',
             },
           },

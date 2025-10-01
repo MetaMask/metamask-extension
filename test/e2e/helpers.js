@@ -173,6 +173,20 @@ async function withFixtures(options, testSuite) {
     solanaWebSocketSpecificMocks = [],
   } = options;
 
+  // FIXME: This has to have a better solution
+  // always add the multichain accounts feature flag
+  manifestFlags.remoteFeatureFlags = manifestFlags.remoteFeatureFlags || {};
+  manifestFlags.remoteFeatureFlags.enableMultichainAccounts = {
+    enabled: true,
+    featureVersion: null,
+    minimumVersion: null,
+  };
+  manifestFlags.remoteFeatureFlags.enableMultichainAccountsState2 = {
+    enabled: true,
+    featureVersion: null,
+    minimumVersion: null,
+  };
+
   // Normalize localNodeOptions
   const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
 

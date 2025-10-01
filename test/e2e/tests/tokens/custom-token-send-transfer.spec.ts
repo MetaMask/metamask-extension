@@ -61,7 +61,7 @@ describe('Transfer custom tokens', function () {
           );
 
           // edit gas fee
-          await tokenTransferRedesignedConfirmPage.editGasFeeLegacy(
+          await tokenTransferRedesignedConfirmPage.editGasFee(
             GAS_LIMIT,
             GAS_PRICE,
           );
@@ -115,7 +115,7 @@ describe('Transfer custom tokens', function () {
           );
 
           // edit gas fee
-          await tokenTransferRedesignedConfirmPage.editGasFeeLegacy(
+          await tokenTransferRedesignedConfirmPage.editGasFee(
             GAS_LIMIT,
             GAS_PRICE,
           );

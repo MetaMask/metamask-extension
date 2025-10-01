@@ -257,8 +257,8 @@ class HomePage {
    * @param symbol - The symbol of the currency or token. Defaults to 'ETH'.
    */
   async checkExpectedBalanceIsDisplayed(
-    expectedBalance: string = '0',
-    symbol: string = '$',
+    expectedBalance: string = '25',
+    symbol: string = 'ETH',
   ): Promise<void> {
     try {
       await this.driver.waitForSelector({
@@ -353,6 +353,7 @@ class HomePage {
     } else {
       expectedBalance = '25';
     }
+
     await this.checkExpectedBalanceIsDisplayed(expectedBalance);
   }
 
