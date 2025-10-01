@@ -119,7 +119,7 @@ export const Recipient = ({
           marginTop={1}
           variant={TextVariant.bodyXs}
         >
-          {`${t('resolutionProtocol')} ${resolutionProtocol ?? ''}`}
+          {t('resolutionProtocol', [resolutionProtocol ?? ''])}
         </Text>
       )}
       <Modal

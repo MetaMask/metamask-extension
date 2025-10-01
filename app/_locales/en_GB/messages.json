@@ -5211,7 +5211,8 @@
     "message": "Make sure you use the right Secret Recovery Phrase before you reset. This can’t be undone."
   },
   "resolutionProtocol": {
-    "message": "Address resolved via"
+    "message": "Address resolved via $1",
+    "description": "$1 is the protocol name."
   },
   "restartMetamask": {
     "message": "Restart MetaMask"
