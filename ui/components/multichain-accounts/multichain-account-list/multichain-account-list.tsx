@@ -146,7 +146,7 @@ export const MultichainAccountList = ({
 
     return Object.entries(wallets).reduce(
       (walletsAccumulator, [walletId, walletData]) => {
-        const walletName = walletData.metadata?.name;
+        const walletName = (walletData as any)?.metadata?.name;
 
         const walletHeader = (
           <Box
@@ -169,7 +169,7 @@ export const MultichainAccountList = ({
           </Box>
         );
 
-        const groupsItems = Object.entries(walletData.groups || {}).flatMap(
+        const groupsItems = Object.entries((walletData as any)?.groups || {}).flatMap(
           ([groupId, groupData]) => {
             // If prop is provided, attempt render balance. Otherwise do not render balance.
             const balanceText = formattedAccountGroupBalancesByWallet
@@ -187,7 +187,7 @@ export const MultichainAccountList = ({
               >
                 <MultichainAccountCell
                   accountId={groupId as AccountGroupId}
-                  accountName={groupData.metadata.name}
+                  accountName={groupData?.metadata?.name ?? groupId}
                   balance={balanceText ?? ''}
                   selected={selectedAccountGroupsSet.has(
                     groupId as AccountGroupId,
@@ -224,7 +224,7 @@ export const MultichainAccountList = ({
           },
         );
 
-        if (!isInSearchMode && walletData.type === AccountWalletType.Entropy) {
+        if (!isInSearchMode && (walletData as any)?.type === AccountWalletType.Entropy) {
           groupsItems.push(
             <AddMultichainAccount
               walletId={walletId as AccountWalletId}

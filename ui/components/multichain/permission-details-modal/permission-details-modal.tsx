@@ -89,8 +89,8 @@ export const PermissionDetailsModal = ({
               }
             />
             <Text variant={TextVariant.headingSm}>
-              {account.metadata.name
-                ? account.metadata.name
+              {account.metadata?.name
+                ? account.metadata?.name
                 : shortenAddress(account.address)}
             </Text>
           </Box>
