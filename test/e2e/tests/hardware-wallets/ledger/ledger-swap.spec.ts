@@ -56,16 +56,21 @@ describe('Ledger Swap', function () {
 
         const swapPage = new SwapPage(driver);
         await swapPage.checkPageIsLoaded();
+        await driver.delay(5000);
+
 
         //  Occasionally, source token is not set automatically in e2e tests for some reason, so we need to do it manually
         await swapPage.selectSourceToken('TESTETH');
 
         await swapPage.enterSwapAmount('2');
         await swapPage.selectDestinationToken('DAI');
+        await driver.delay(5000);
+
         await swapPage.dismissManualTokenWarning();
 
         await swapPage.checkExchangeRate();
         await swapPage.checkSwapButtonIsEnabled();
+        await driver.delay(5000);
         await swapPage.submitSwap();
         await swapPage.waitForTransactionToComplete();
 
