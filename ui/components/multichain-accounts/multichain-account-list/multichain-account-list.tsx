@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import {
   AccountGroupId,
@@ -24,7 +30,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { endTrace, trace } from '../../../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
@@ -37,16 +43,13 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
+import { selectBalanceForAllWallets } from '../../../selectors/assets';
+import { useFormatters } from '../../../hooks/useFormatters';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
   selectedAccountGroups: AccountGroupId[];
   handleAccountClick?: (accountGroupId: AccountGroupId) => void;
-  formattedAccountGroupBalancesByWallet?: Partial<{
-    [walletId: string]: Partial<{
-      [groupId: string]: string; // display balance
-    }>;
-  }>;
   isInSearchMode?: boolean;
   displayWalletHeader?: boolean;
   showAccountCheckbox?: boolean;
@@ -56,7 +59,6 @@ export const MultichainAccountList = ({
   wallets,
   selectedAccountGroups,
   handleAccountClick,
-  formattedAccountGroupBalancesByWallet,
   isInSearchMode = false,
   displayWalletHeader = true,
   showAccountCheckbox = false,
@@ -67,7 +69,13 @@ export const MultichainAccountList = ({
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,
   );
+  const { formatCurrencyWithMinThreshold } = useFormatters();
+  const allBalances = useSelector(selectBalanceForAllWallets);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.AccountList });
+  }, []);
 
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
     useState(false);
@@ -162,10 +170,9 @@ export const MultichainAccountList = ({
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
             // If prop is provided, attempt render balance. Otherwise do not render balance.
-            const balanceText = formattedAccountGroupBalancesByWallet
-              ? (formattedAccountGroupBalancesByWallet?.[walletId]?.[groupId] ??
-                undefined)
-              : '';
+            const account = allBalances?.wallets?.[walletId]?.groups?.[groupId];
+            const balance = account?.totalBalanceInUserCurrency ?? 0;
+            const currency = account?.userCurrency ?? '';
 
             // TODO: Implement logic for removable accounts
             const isRemovable = false;
@@ -178,7 +185,7 @@ export const MultichainAccountList = ({
                 <MultichainAccountCell
                   accountId={groupId as AccountGroupId}
                   accountName={groupData.metadata.name}
-                  balance={balanceText ?? ''}
+                  balance={formatCurrencyWithMinThreshold(balance, currency)}
                   selected={selectedAccountGroupsSet.has(
                     groupId as AccountGroupId,
                   )}
@@ -241,7 +248,8 @@ export const MultichainAccountList = ({
     history,
     isInSearchMode,
     displayWalletHeader,
-    formattedAccountGroupBalancesByWallet,
+    allBalances,
+    formatCurrencyWithMinThreshold,
     selectedAccountGroupsSet,
     showAccountCheckbox,
     handleAccountRenameAction,
