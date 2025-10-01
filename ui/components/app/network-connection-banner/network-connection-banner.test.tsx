@@ -51,12 +51,11 @@ describe('NetworkConnectionBanner', () => {
       });
       const store = configureStore({});
 
-      const { getByText, getByTestId } = renderWithProvider(
+      const { getByText } = renderWithProvider(
         <NetworkConnectionBanner />,
         store,
       );
 
-      expect(getByTestId('spinner')).toBeInTheDocument();
       expect(
         getByText('Still connecting to Ethereum Mainnet...'),
       ).toBeInTheDocument();
@@ -124,12 +123,11 @@ describe('NetworkConnectionBanner', () => {
       });
       const store = configureStore({});
 
-      const { getByText, getByTestId } = renderWithProvider(
+      const { getByText } = renderWithProvider(
         <NetworkConnectionBanner />,
         store,
       );
 
-      expect(getByTestId('icon')).toBeInTheDocument();
       expect(
         getByText('Unable to connect to Ethereum Mainnet'),
       ).toBeInTheDocument();

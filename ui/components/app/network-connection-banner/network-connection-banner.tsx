@@ -1,7 +1,6 @@
 import React, { SVGProps, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch } from 'react-redux';
-import { lightTheme, darkTheme } from '@metamask/design-tokens';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BannerBase,
@@ -16,67 +15,23 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { useNetworkConnectionBanner } from '../../../hooks/useNetworkConnectionBanner';
-import { useTheme } from '../../../hooks/useTheme';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { ThemeType } from '../../../../shared/constants/preferences';
 import { NetworkConnectionBanner as NetworkConnectionBannerType } from '../../../../shared/constants/app-state';
 
-type BannerIcon =
-  | {
-      type: 'spinner';
-      color: string;
-      verticalAdjustment: string;
-    }
-  | {
-      type: 'static';
-      color: IconColor;
-      name: IconName;
-      verticalAdjustment: string;
-    };
-
-const Spinner = ({
-  color,
-  size,
-  ...rest
-}: {
-  color: string;
-  size: number;
-} & SVGProps<SVGSVGElement>) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    {...rest}
-  >
-    {/* Draw an arc that covers 60% of the circle */}
-    <path
-      d="M 12 2 A 10 10 0 1 1 2 12"
-      stroke={color}
-      strokeWidth="2"
-      strokeLinecap="round"
-      fill="none"
-    >
-      <animateTransform
-        attributeName="transform"
-        type="rotate"
-        values="0 12 12;360 12 12"
-        dur="1.5s"
-        repeatCount="indefinite"
-      />
-    </path>
-  </svg>
-);
+type BannerIcon = {
+  color: IconColor;
+  name: IconName;
+  verticalAdjustment: string;
+  className?: string;
+};
 
 const getBannerContent = (
   networkConnectionBanner: Exclude<
     NetworkConnectionBannerType,
     { status: 'unknown' }
   >,
-  theme: ThemeType,
   t: ReturnType<typeof useI18nContext>,
 ): {
   message: string;
@@ -87,17 +42,14 @@ const getBannerContent = (
   const verticalAdjustment = '0.2rem';
 
   if (networkConnectionBanner.status === 'degraded') {
-    const warningColor =
-      theme === 'light'
-        ? lightTheme.colors.warning.default
-        : darkTheme.colors.warning.default;
     return {
       message: t('stillConnectingTo', [networkConnectionBanner.networkName]),
       backgroundColor: BackgroundColor.warningMuted,
       icon: {
-        type: 'spinner',
-        color: warningColor,
+        color: IconColor.warningDefault,
+        name: IconName.Loading,
         verticalAdjustment,
+        className: 'animate-spin',
       },
     };
   }
@@ -106,7 +58,6 @@ const getBannerContent = (
     message: t('unableToConnectTo', [networkConnectionBanner.networkName]),
     backgroundColor: BackgroundColor.errorMuted,
     icon: {
-      type: 'static',
       color: IconColor.errorDefault,
       name: IconName.Danger,
       verticalAdjustment,
@@ -116,7 +67,6 @@ const getBannerContent = (
 
 export const NetworkConnectionBanner = () => {
   const t = useI18nContext();
-  const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const networkConnectionBanner = useNetworkConnectionBanner();
@@ -146,7 +96,6 @@ export const NetworkConnectionBanner = () => {
 
   const { message, backgroundColor, icon } = getBannerContent(
     networkConnectionBanner,
-    theme,
     t,
   );
 
@@ -156,22 +105,14 @@ export const NetworkConnectionBanner = () => {
         className="network-connection-banner"
         backgroundColor={backgroundColor}
         startAccessory={
-          icon.type === 'spinner' ? (
-            <Spinner
-              color={icon.color}
-              size={16}
-              style={{ marginTop: icon.verticalAdjustment }}
-              data-testid="spinner"
-            />
-          ) : (
-            <Icon
-              name={icon.name}
-              size={IconSize.Sm}
-              color={icon.color}
-              style={{ marginTop: icon.verticalAdjustment }}
-              data-testid="icon"
-            />
-          )
+          <Icon
+            name={icon.name}
+            size={IconSize.Sm}
+            color={icon.color}
+            className={icon.className}
+            style={{ marginTop: icon.verticalAdjustment }}
+            data-testid="icon"
+          />
         }
         actionButtonLabel={t('updateRpc')}
         actionButtonOnClick={updateRpc}
