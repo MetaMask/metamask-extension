@@ -1,4 +1,4 @@
-import React, { SVGProps, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -30,7 +30,7 @@ type BannerIcon = {
 const getBannerContent = (
   networkConnectionBanner: Exclude<
     NetworkConnectionBannerType,
-    { status: 'unknown' }
+    { status: 'unknown' | 'available' }
   >,
   t: ReturnType<typeof useI18nContext>,
 ): {
@@ -88,39 +88,44 @@ export const NetworkConnectionBanner = () => {
   }, [networkConnectionBanner, dispatch, navigate]);
 
   if (
-    networkConnectionBanner.status === 'unknown' ||
-    networkConnectionBanner.status === 'available'
+    networkConnectionBanner.status === 'degraded' ||
+    networkConnectionBanner.status === 'unavailable'
   ) {
-    return null;
+    const { message, backgroundColor, icon } = getBannerContent(
+      networkConnectionBanner,
+      t,
+    );
+
+    return (
+      <Box
+        width={BlockSize.Full}
+        paddingLeft={4}
+        paddingRight={4}
+        paddingTop={4}
+      >
+        <BannerBase
+          className="network-connection-banner"
+          backgroundColor={backgroundColor}
+          startAccessory={
+            <Icon
+              name={icon.name}
+              size={IconSize.Sm}
+              color={icon.color}
+              className={icon.className}
+              style={{ marginTop: icon.verticalAdjustment }}
+              data-testid="icon"
+            />
+          }
+          actionButtonLabel={t('updateRpc')}
+          actionButtonOnClick={updateRpc}
+        >
+          {message}
+        </BannerBase>
+      </Box>
+    );
   }
 
-  const { message, backgroundColor, icon } = getBannerContent(
-    networkConnectionBanner,
-    t,
-  );
-
-  return (
-    <Box width={BlockSize.Full} paddingLeft={4} paddingRight={4} paddingTop={4}>
-      <BannerBase
-        className="network-connection-banner"
-        backgroundColor={backgroundColor}
-        startAccessory={
-          <Icon
-            name={icon.name}
-            size={IconSize.Sm}
-            color={icon.color}
-            className={icon.className}
-            style={{ marginTop: icon.verticalAdjustment }}
-            data-testid="icon"
-          />
-        }
-        actionButtonLabel={t('updateRpc')}
-        actionButtonOnClick={updateRpc}
-      >
-        {message}
-      </BannerBase>
-    </Box>
-  );
+  return null;
 };
 
 export default NetworkConnectionBanner;

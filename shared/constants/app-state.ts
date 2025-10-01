@@ -45,9 +45,9 @@ export enum PasswordChangeToastType {
 }
 
 export type NetworkConnectionBanner =
-  | { status: 'unknown' }
+  | { status: 'unknown' | 'available' }
   | {
-      status: 'degraded' | 'unavailable' | 'available';
+      status: 'degraded' | 'unavailable';
       networkName: string;
       networkClientId: NetworkClientId;
       chainId: Hex;

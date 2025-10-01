@@ -103,9 +103,6 @@ describe('useNetworkConnectionBanner', () => {
       mockSelectFirstUnavailableEvmNetwork.mockReturnValue(null);
       mockGetNetworkConnectionBanner.mockReturnValue({
         status: 'available',
-        networkName: 'Ethereum Mainnet',
-        networkClientId: 'mainnet',
-        chainId: '0x1',
       });
 
       renderHookWithProviderTyped(
@@ -205,9 +202,6 @@ describe('useNetworkConnectionBanner', () => {
         });
         mockGetNetworkConnectionBanner.mockReturnValue({
           status: 'available',
-          networkName: '',
-          networkClientId: '',
-          chainId: '0x0' as const,
         });
 
         renderHookWithProviderTyped(

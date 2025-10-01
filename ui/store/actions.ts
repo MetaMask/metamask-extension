@@ -165,6 +165,7 @@ import {
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
+import type { NetworkConnectionBanner } from '../../shared/constants/app-state';
 import * as actionConstants from './actionConstants';
 
 import {

@@ -205,9 +205,6 @@ describe('NetworkConnectionBanner', () => {
     it('does not render the banner', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'available',
-        networkName: 'Ethereum Mainnet',
-        networkClientId: 'mainnet',
-        chainId: '0x1',
         trackNetworkBannerEvent: jest.fn(),
       });
       const store = configureStore({});
