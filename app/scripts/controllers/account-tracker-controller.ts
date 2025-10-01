@@ -45,6 +45,7 @@ import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feat
 
 import { LOCALHOST_RPC_URL } from '../../../shared/constants/network';
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
+import { ACCOUNTS_PROD_API_BASE_URL } from '../../../shared/constants/accounts';
 import { previousValueComparator } from '../lib/util';
 import {
   fetchAccountBalancesInBatches,
@@ -55,7 +56,6 @@ import type {
   OnboardingControllerStateChangeEvent,
 } from './onboarding';
 import { PreferencesControllerGetStateAction } from './preferences-controller';
-import { ACCOUNTS_PROD_API_BASE_URL } from '../../../shared/constants/accounts';
 
 // Unique name for the controller
 const controllerName = 'AccountTrackerController';
