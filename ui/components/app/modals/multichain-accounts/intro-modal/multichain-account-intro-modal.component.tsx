@@ -34,11 +34,12 @@ export type MultichainAccountIntroModalProps = {
   isLoading?: boolean;
 };
 
+const MemoizedLottieAnimation = React.memo(LottieAnimation);
+
 export const MultichainAccountIntroModal: React.FC<MultichainAccountIntroModalProps> =
   React.memo(
     ({ isOpen, onViewAccounts, onLearnMore, onClose, isLoading = false }) => {
       const t = useI18nContext();
-      const MemoizedLottieAnimation = React.memo(LottieAnimation);
 
       return (
         <Modal
