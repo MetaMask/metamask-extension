@@ -1,7 +1,7 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA,
@@ -19,6 +19,7 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVEAL_SRP_ROUTE,
+  ONBOARDING_ROUTE,
 } from '../../helpers/constants/routes';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
@@ -28,6 +29,15 @@ import {
 import { mockNetworkState } from '../../../test/stub/networks';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import OnboardingFlow from './onboarding-flow';
+
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockUseNavigate,
+  useLocation: () => mockUseLocation(),
+}));
 
 jest.mock('../../store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
@@ -78,6 +88,20 @@ describe('Onboarding Flow', () => {
 
   const store = configureMockStore()(mockState);
 
+  beforeEach(() => {
+    mockUseLocation.mockReturnValue({
+      key: 'test-key',
+      pathname: ONBOARDING_ROUTE,
+      search: '',
+      hash: '',
+      state: null,
+    });
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('should route to the default route when completedOnboarding and seedPhraseBackedUp is true', () => {
     const completedOnboardingState = {
       metamask: {
@@ -110,13 +134,9 @@ describe('Onboarding Flow', () => {
       completedOnboardingState,
     );
 
-    const { history } = renderWithProvider(
-      <OnboardingFlow />,
-      completedOnboardingStore,
-      '/other',
-    );
+    renderWithProvider(<OnboardingFlow />, completedOnboardingStore, '/other');
 
-    expect(history.location.pathname).toStrictEqual(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   describe('Create Password', () => {
@@ -176,26 +196,23 @@ describe('Onboarding Flow', () => {
   });
 
   it('should redirect to reveal recovery phrase when going to review recovery phrase without srp', () => {
-    const { history } = renderWithProvider(
-      <OnboardingFlow />,
-      store,
-      ONBOARDING_REVIEW_SRP_ROUTE,
-    );
+    renderWithProvider(<OnboardingFlow />, store, ONBOARDING_REVIEW_SRP_ROUTE);
 
-    expect(history.location.pathname).toStrictEqual(
-      `${ONBOARDING_REVEAL_SRP_ROUTE}/`,
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      {
+        pathname: ONBOARDING_REVEAL_SRP_ROUTE,
+        search: '',
+      },
+      { replace: true },
     );
   });
 
   it('should redirect to reveal recovery phrase when going to confirm recovery phrase without srp', () => {
-    const { history } = renderWithProvider(
-      <OnboardingFlow />,
-      store,
-      ONBOARDING_CONFIRM_SRP_ROUTE,
-    );
+    renderWithProvider(<OnboardingFlow />, store, ONBOARDING_CONFIRM_SRP_ROUTE);
 
-    expect(history.location.pathname).toStrictEqual(
-      `${ONBOARDING_REVEAL_SRP_ROUTE}/`,
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      `${ONBOARDING_REVEAL_SRP_ROUTE}`,
+      { replace: true },
     );
   });
 
@@ -268,6 +285,13 @@ describe('Onboarding Flow', () => {
   });
 
   it('should render onboarding welcome screen', () => {
+    mockUseLocation.mockReturnValue({
+      key: 'test-key',
+      pathname: ONBOARDING_WELCOME_ROUTE,
+      search: '',
+      hash: '',
+      state: null,
+    });
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlow />,
       store,

@@ -43,9 +43,7 @@ import {
   getTokenExchangeRates,
   getTokenList,
   getUseExternalServices,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   hasCreatedSolanaAccount,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../../selectors';
 import { getRenderableTokenData } from '../../../../hooks/useTokensToSearch';
 import { getSwapsBlockedTokens } from '../../../../ducks/send';
@@ -223,12 +221,10 @@ export function AssetPickerModal({
   let needsSolanaAccount = false;
   let hasSolanaAccount = false;
 
-  ///: BEGIN:ONLY_INCLUDE_IF(solana-swaps)
   // Check if we need to show the Solana account creation UI when Solana is selected
   hasSolanaAccount = useSelector(hasCreatedSolanaAccount);
   needsSolanaAccount =
     !hasSolanaAccount && selectedNetwork.chainId === MultichainNetworks.SOLANA;
-  ///: END:ONLY_INCLUDE_IF
 
   // watches for needsSolanaAccount changes to show the Solana Account created toast
   useEffect(() => {

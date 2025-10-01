@@ -414,9 +414,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Hesabınızda ağ ücretlerini ödemek için yeterli $1 yok."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Gaz fiyatları yüksektir ve tahmin daha az kesindir."
-  },
   "alertMessageNoGasPrice": {
     "message": "Siz ücreti manuel olarak güncelleyene dek bu işleme devam edemiyoruz."
   },
@@ -461,9 +458,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Gereksiz izin"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Ağ meşgul"
   },
   "alertReasonNoGasPrice": {
     "message": "Ücret tahmini mevcut değil"

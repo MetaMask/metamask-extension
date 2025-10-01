@@ -426,9 +426,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "नेटवर्क फीस का भुगतान करने के लिए आपके अकाउंट में पर्याप्त $1 नहीं है।"
   },
-  "alertMessageNetworkBusy": {
-    "message": "गैस प्राइसें अधिक हैं और अनुमान कम सटीक हैं।"
-  },
   "alertMessageNoGasPrice": {
     "message": "जब तक आप शुल्क को मैन्युअल रूप से अपडेट नहीं करते, हम इस ट्रांसेक्शन को आगे नहीं बढ़ा सकते।"
   },
@@ -473,9 +470,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "अनावश्यक अनुमति"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "नेटवर्क व्यस्त है"
   },
   "alertReasonNoGasPrice": {
     "message": "शुल्क अनुमान अनुपलब्ध है"

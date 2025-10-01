@@ -3,13 +3,21 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AccountGroupId } from '@metamask/account-api';
 import { MultichainAddressRowsList } from './multichain-address-rows-list';
 
 const mockStore = configureStore([]);
 
-const accounts: InternalAccount[] = [
-  {
-    id: '1',
+const WALLET_ID_MOCK = 'entropy:01K437Z7EJ0VCMFDE9TQKRV60A';
+
+const GROUP_ID_MOCK = `${WALLET_ID_MOCK}/0`;
+
+const ACCOUNT_ONE_ID_MOCK = 'account-one-id';
+const ACCOUNT_TWO_ID_MOCK = 'account-two-id';
+
+const INTERNAL_ACCOUNTS_MOCK: Record<string, InternalAccount> = {
+  [ACCOUNT_ONE_ID_MOCK]: {
+    id: ACCOUNT_ONE_ID_MOCK,
     address: '0x1234567890abcdef1234567890abcdef12345678',
     metadata: {
       name: 'Ethereum Account',
@@ -19,10 +27,10 @@ const accounts: InternalAccount[] = [
     options: {},
     methods: [],
     type: 'eip155:eoa',
-    scopes: ['eip155:*'],
+    scopes: ['eip155:0'],
   },
-  {
-    id: '2',
+  [ACCOUNT_TWO_ID_MOCK]: {
+    id: ACCOUNT_TWO_ID_MOCK,
     address: 'DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy',
     metadata: {
       name: 'Solana Account',
@@ -32,20 +40,36 @@ const accounts: InternalAccount[] = [
     options: {},
     methods: [],
     type: 'solana:data-account',
-    scopes: ['solana:*'],
+    scopes: ['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
   },
-];
+};
+
+const ACCOUNT_TREE_MOCK = {
+  wallets: {
+    [WALLET_ID_MOCK]: {
+      type: 'entropy',
+      id: WALLET_ID_MOCK,
+      metadata: {},
+      groups: {
+        [GROUP_ID_MOCK]: {
+          type: 'multichain-account',
+          id: GROUP_ID_MOCK,
+          metadata: {},
+          accounts: [ACCOUNT_ONE_ID_MOCK, ACCOUNT_TWO_ID_MOCK],
+        },
+      },
+    },
+  },
+};
 
 const createMockState = () => ({
   metamask: {
     completedOnboarding: true,
     internalAccounts: {
-      accounts: {
-        '1': accounts[0],
-        '2': accounts[1],
-      },
-      selectedAccount: '1',
+      accounts: INTERNAL_ACCOUNTS_MOCK,
+      selectedAccount: ACCOUNT_ONE_ID_MOCK,
     },
+    accountTree: ACCOUNT_TREE_MOCK,
     // EVM network configurations
     networkConfigurationsByChainId: {
       '0x1': {
@@ -144,11 +168,11 @@ const createMockState = () => ({
   },
 });
 
-const renderComponent = (accountsList = accounts) => {
+const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
   const store = mockStore(createMockState());
   return render(
     <Provider store={store}>
-      <MultichainAddressRowsList accounts={accountsList} />
+      <MultichainAddressRowsList groupId={groupId} />
     </Provider>,
   );
 };
@@ -208,8 +232,8 @@ describe('MultichainAddressRowsList', () => {
     expect(searchInput).toHaveValue('');
   });
 
-  it('handles empty accounts list', () => {
-    renderComponent([]);
+  it('handles invalid group', () => {
+    renderComponent('invalid-group-id' as AccountGroupId);
 
     expect(
       screen.getByTestId('multichain-address-rows-list'),

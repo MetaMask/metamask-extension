@@ -15,6 +15,7 @@ export const GENERAL_ROUTE = '/settings/general';
 export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
+export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
 export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
 export const NETWORKS_ROUTE = '/settings/networks';
@@ -44,6 +45,7 @@ export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
 export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
   '/multichain-account-address-list';
+export const ADD_WALLET_PAGE_ROUTE = '/add-wallet-page';
 export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
   '/multichain-account-details';
 export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =

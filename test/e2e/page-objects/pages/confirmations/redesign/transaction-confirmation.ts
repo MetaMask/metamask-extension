@@ -153,6 +153,15 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  async checkNoAlertMessageIsDisplayed() {
+    console.log(
+      `Checking no alert message is displayed on transaction confirmation page.`,
+    );
+    await this.driver.assertElementNotPresent(this.alertBanner, {
+      waitAtLeastGuard: 1000,
+    });
+  }
+
   async clickAdvancedDetailsButton() {
     await this.driver.clickElement(this.advancedDetailsButton);
   }

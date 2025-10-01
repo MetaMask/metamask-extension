@@ -283,6 +283,7 @@
   },
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
+  "ShieldController": "object",
   "SignatureController": {
     "signatureRequests": "object",
     "unapprovedPersonalMsgs": "object",

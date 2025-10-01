@@ -414,9 +414,6 @@
   "alertMessageInsufficientBalanceWithNativeCurrency": {
     "message": "Vous n’avez pas assez de $1 sur votre compte pour payer les frais de réseau."
   },
-  "alertMessageNetworkBusy": {
-    "message": "Les prix du gaz sont élevés et les estimations sont moins précises."
-  },
   "alertMessageNoGasPrice": {
     "message": "Nous ne pouvons pas valider cette transaction tant que vous n’avez pas mis à jour manuellement les frais."
   },
@@ -461,9 +458,6 @@
   },
   "alertReasonMultipleApprovals": {
     "message": "Autorisation injustifiée"
-  },
-  "alertReasonNetworkBusy": {
-    "message": "Le réseau est occupé"
   },
   "alertReasonNoGasPrice": {
     "message": "Estimation des frais non disponible"
