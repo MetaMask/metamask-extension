@@ -52,4 +52,5 @@ export type RecipientValidationResult = {
   warning?: string;
   toAddressValidated?: string;
   loading?: boolean;
+  protocol?: string;
 };

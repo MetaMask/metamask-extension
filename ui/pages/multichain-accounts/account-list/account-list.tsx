@@ -26,9 +26,10 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useAllWalletAccountsBalances } from '../../../hooks/multichain-accounts/useAccountBalance';
-import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
+import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
+import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
+import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
   Box,
   Text,
@@ -41,8 +42,7 @@ import {
   Header,
   Page,
 } from '../../../components/multichain/pages/page';
-import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
-import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
+import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { filterWalletsByGroupName } from './utils';
 
 export const AccountList = () => {
@@ -51,7 +51,6 @@ export const AccountList = () => {
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
-  const formattedAccountGroupBalancesByWallet = useAllWalletAccountsBalances();
   const [searchPattern, setSearchPattern] = useState<string>('');
 
   const {
@@ -65,6 +64,9 @@ export const AccountList = () => {
     }
     return t('addWallet');
   }, [isAccountSyncingInProgress, accountOperationLoadingMessage, t]);
+  // Update balances for all accounts when component mounts
+  // This ensures all account balances are visible without requiring user interaction
+  useAssetsUpdateAllAccountBalances();
 
   const hasMultipleWallets = useMemo(
     () => Object.keys(wallets).length > 1,
@@ -100,7 +102,7 @@ export const AccountList = () => {
     <Page className="account-list-page">
       <Header
         textProps={{
-          variant: TextVariant.headingMd,
+          variant: TextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -146,9 +148,6 @@ export const AccountList = () => {
               selectedAccountGroups={[selectedAccountGroup]}
               isInSearchMode={Boolean(searchPattern)}
               displayWalletHeader={hasMultipleWallets}
-              formattedAccountGroupBalancesByWallet={
-                formattedAccountGroupBalancesByWallet
-              }
             />
           ) : (
             <Box
