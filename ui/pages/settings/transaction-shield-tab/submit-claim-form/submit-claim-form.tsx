@@ -300,13 +300,13 @@ const SubmitClaimForm = () => {
       <FileUploader
         id="upload-images-file-uploader"
         label={t('shieldClaimFileUploader')}
-        acceptInfo={t('shieldClaimFileUploaderMaxFileSize')}
+        acceptText={t('shieldClaimFileUploaderMaxFileSize')}
         helpText={t('shieldClaimFileUploaderHelpText')}
         helpTextProps={{
           'data-testid': 'shield-claim-file-uploader-help-text',
           color: TextColor.textAlternativeSoft,
         }}
-        maxFileSize={5}
+        maxFileSize={5 * 1024 * 1024}
         filesProps={{
           className: 'settings-page__content-item-col',
         }}
