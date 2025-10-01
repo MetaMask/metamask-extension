@@ -33,7 +33,7 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--padding-top-2 mm-box--padding-inline-4 mm-box--color-text-alternative"
         >
-          May 12
+          May 13
         </p>
         <div
           class="mm-box activity-list-item transaction-list-item mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
@@ -48,6 +48,7 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
             >
               <div
                 class="mm-box mm-badge-wrapper mm-box--display-block"
+                style="align-self: center;"
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
@@ -139,7 +140,7 @@ exports[`TransactionList renders TransactionList component with props hideNetwor
         <p
           class="mm-box mm-text mm-text--body-md mm-box--padding-top-2 mm-box--padding-inline-4 mm-box--color-text-alternative"
         >
-          May 12
+          May 13
         </p>
         <div
           class="mm-box activity-list-item transaction-list-item mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
@@ -154,6 +155,7 @@ exports[`TransactionList renders TransactionList component with props hideNetwor
             >
               <div
                 class="mm-box mm-badge-wrapper mm-box--display-block"
+                style="align-self: center;"
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
