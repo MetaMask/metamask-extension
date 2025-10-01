@@ -37,7 +37,7 @@ function isStablecoin(
   }
 
   const stablecoins = STABLECOINS_BY_CHAIN_ID[chainId];
-  if (!stablecoins || !tokenAddress) {
+  if (!stablecoins) {
     return false;
   }
 

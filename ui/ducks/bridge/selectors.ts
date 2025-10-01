@@ -704,12 +704,12 @@ export const getToTokenConversionRate = createDeepEqualSelector(
           Number(conversionRates?.[tokenAssetId]?.rate ?? null),
           nativeAssetRate,
         );
-        // Bitcoin doesn't have separate currency/USD rates in the rates object
-        // So we use the native asset rate for both
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
-          nativeAssetRate,
-          nativeAssetRate,
+          rates?.[toChain.nativeCurrency?.toLowerCase()]?.conversionRate ??
+            null,
+          rates?.[toChain.nativeCurrency?.toLowerCase()]?.usdConversionRate ??
+            null,
         );
       }
 

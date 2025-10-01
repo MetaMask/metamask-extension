@@ -24,7 +24,7 @@ export const useDestinationAccount = () => {
   const [isDestinationAccountPickerOpen, setIsDestinationAccountPickerOpen] =
     useState(false);
   const toChain = useSelector(getToChain);
-  const previousChainIdRef = useRef<string | undefined>(toChain?.chainId);
+  const previousChainIdRef = useRef<string | undefined>(undefined);
 
   // For bridges, use the appropriate account type for the destination chain
   const defaultInternalDestinationAccount = useSelector((state) =>
