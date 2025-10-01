@@ -8,6 +8,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
+import { mockLegacySendFeatureFlag } from '../send/common';
 
 describe('ENS', function (this: Suite) {
   const sampleAddress: string = '1111111111111111111111111111111111111111';
@@ -74,6 +75,8 @@ describe('ENS', function (this: Suite) {
         },
       ],
     ]);
+
+    mockLegacySendFeatureFlag(mockServer);
   }
 
   it('domain resolves to a correct address', async function () {
