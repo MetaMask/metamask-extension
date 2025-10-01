@@ -874,13 +874,12 @@ const MultichainTransactionListItem = ({
       rightContent={
         <Text
           className="activity-list-item__primary-currency"
-          color="text-default"
           data-testid="transaction-list-item-primary-currency"
+          color={TextColor.textDefault}
+          variant={TextVariant.bodyMdMedium}
           ellipsis
-          fontWeight="medium"
           textAlign="right"
           title="Primary Currency"
-          variant="body-lg-medium"
         >
           {amount} {unit}
         </Text>
