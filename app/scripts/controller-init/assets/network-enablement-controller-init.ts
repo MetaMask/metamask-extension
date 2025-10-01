@@ -20,7 +20,7 @@ import {
  */
 const generateEVMNetworkMap = (
   networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'],
-  enabledChainIds: string[] = [],
+  enabledChainIds: string[],
 ): Record<string, boolean> => {
   const networkMap: Record<string, boolean> = {};
 

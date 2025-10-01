@@ -1,11 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { UpdateNetworkFields } from '@metamask/network-controller';
-import {
-  hideModal,
-  setEnabledNetworks,
-  addNetwork,
-} from '../../../../store/actions';
+import { hideModal, addNetwork } from '../../../../store/actions';
 
 export const useAdditionalNetworkHandlers = () => {
   const dispatch = useDispatch();
