@@ -7363,7 +7363,7 @@
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
   "unableToConnectTo": {
-    "message": "Unable to connect to $1",
+    "message": "Unable to connect to $1.",
     "description": "Message shown when network connection fails. $1 is the network name."
   },
   "unapproved": {

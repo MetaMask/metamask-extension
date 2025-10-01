@@ -129,7 +129,7 @@ describe('NetworkConnectionBanner', () => {
       );
 
       expect(
-        getByText('Unable to connect to Ethereum Mainnet'),
+        getByText('Unable to connect to Ethereum Mainnet.'),
       ).toBeInTheDocument();
       expect(getByText('Update RPC')).toBeInTheDocument();
     });

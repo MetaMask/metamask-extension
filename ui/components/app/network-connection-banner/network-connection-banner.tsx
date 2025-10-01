@@ -46,9 +46,9 @@ const getBannerContent = (
   if (networkConnectionBanner.status === 'degraded') {
     return {
       message: t('stillConnectingTo', [networkConnectionBanner.networkName]),
-      backgroundColor: BackgroundColor.warningMuted,
+      backgroundColor: BackgroundColor.backgroundSection,
       icon: {
-        color: IconColor.warningDefault,
+        color: IconColor.iconDefault,
         name: IconName.Loading,
         verticalAdjustment,
         className: 'animate-spin',
@@ -120,14 +120,17 @@ export const NetworkConnectionBanner = () => {
           }
           actionButtonLabel={t('updateRpc')}
           actionButtonOnClick={updateRpc}
-          borderRadius={BorderRadius.SM}
+          borderRadius={BorderRadius.MD}
           childrenWrapperProps={{
-            variant: TextVariant.inherit,
+            variant: TextVariant.bodyXsMedium,
             style: {
               display: 'inline-block',
               verticalAlign: 'middle',
               paddingRight: '8px',
             },
+          }}
+          actionButtonProps={{
+            variant: TextVariant.bodyXsMedium,
           }}
         >
           {message}
