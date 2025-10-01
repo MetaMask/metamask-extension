@@ -3,7 +3,7 @@
 exports[`Permission List Item render renders correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-baseline mm-box--width-full mm-box--background-color-background-default"
+    class="gap-4 items-baseline p-4 bg-default"
     data-testid="permission-group-list-item"
   >
     <button
@@ -12,44 +12,48 @@ exports[`Permission List Item render renders correctly 1`] = `
       style="width: 100%; background-color: transparent; padding: 0px;"
     >
       <div
-        class="mm-box mm-box--margin-right-2 mm-box--display-flex mm-box--align-items-center"
-        style="align-self: center;"
+        class="items-start mr-2"
       >
         <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-[10px] h-10 w-10"
           data-testid="permission-group-list-item__avatar-network"
           style="border-radius: 50%;"
         >
-          0
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-5/12"
-        style="align-self: center; flex-grow: 1;"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
-        >
-          Goerli
-        </p>
-        <div
-          class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--align-items-center"
-        >
           <span
-            class="mm-box mm-text mm-text--body-md mm-box--width-max mm-box--color-text-alternative"
+            class="text-muted text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default uppercase"
           >
-            2 token permissions
+            0
           </span>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--justify-content-flex-end mm-box--align-items-center"
-        style="flex: 1; align-self: center;"
+        class="flex flex-col items-start justify-start"
+        style="flex-grow: 1;"
       >
-        <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-flex mm-box--color-icon-default mm-box--background-color-background-default"
-          style="mask-image: url('./images/icons/arrow-right.svg');"
-        />
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          Goerli
+        </p>
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          2 token permissions
+        </p>
+      </div>
+      <div
+        class="gap-2 items-end justify-end"
+      >
+        <svg
+          class="inline-block w-4 h-4 text-icon-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m8.887 22-1.775-1.775L15.337 12 7.112 3.775 8.887 2l10 10z"
+          />
+        </svg>
       </div>
     </button>
   </div>

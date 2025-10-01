@@ -19,12 +19,19 @@ exports[`Review Gator Permissions Page render renders correctly 1`] = `
         >
           <button
             aria-label="Back"
-            class="mm-box mm-button-icon mm-button-icon--size-sm connections-header__start-accessory mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default connections-header__start-accessory"
+            color="text-icon-default"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/arrow-left.svg');"
-            />
+            <svg
+              class="inline-block w-4 h-4 text-inherit"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m15.112 21.886-10-10 10-10 1.775 1.775-8.225 8.224 8.225 8.226z"
+              />
+            </svg>
           </button>
         </div>
         <div
@@ -33,12 +40,12 @@ exports[`Review Gator Permissions Page render renders correctly 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
-            <span
-              class="mm-box mm-text mm-text--heading-md mm-text--text-align-center mm-box--color-text-default"
+            <h3
+              class="text-default text-s-heading-md leading-s-heading-md tracking-s-heading-md md:text-l-heading-md md:leading-l-heading-md md:tracking-l-heading-md font-bold font-default text-center"
               data-testid="review-gator-permissions-page-title"
             >
               Unknown network
-            </span>
+            </h3>
           </p>
         </div>
       </div>

@@ -1,26 +1,22 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { Content, Header, Page } from '../../page';
 import {
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
   Text,
-} from '../../../../component-library';
-import {
-  IconColor,
-  BackgroundColor,
   TextAlign,
   TextVariant,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
+  BoxFlexDirection,
+  BoxJustifyContent,
   TextColor,
-} from '../../../../../helpers/constants/design-system';
+  IconColor,
+} from '@metamask/design-system-react';
+import { Content, Header, Page } from '../../page';
+import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   GATOR_PERMISSIONS,
@@ -35,12 +31,14 @@ import {
 export const TokenTransferPage = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const headerRef = useRef<HTMLSpanElement>(null);
+  const permissionGroupName = 'token-transfer';
   const permissionGroupDetails = useSelector((state: AppState) =>
-    getPermissionGroupDetails(state, 'token-transfer'),
+    getPermissionGroupDetails(state, permissionGroupName),
   );
   const handlePermissionGroupItemClick = (chainId: Hex) => {
-    history.push(`${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/token-transfer`);
+    history.push(
+      `${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/${permissionGroupName}`,
+    );
   };
 
   const renderPageContent = () =>
@@ -73,15 +71,14 @@ export const TokenTransferPage = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
-            color={IconColor.iconDefault}
+            color={IconColor.IconDefault}
             onClick={() => history.push(GATOR_PERMISSIONS)}
             size={ButtonIconSize.Sm}
           />
         }
       >
         <Text
-          as="span"
-          variant={TextVariant.headingMd}
+          variant={TextVariant.HeadingMd}
           textAlign={TextAlign.Center}
           data-testid="token-transfer-page-title"
         >
@@ -89,30 +86,22 @@ export const TokenTransferPage = () => {
         </Text>
       </Header>
       <Content padding={0}>
-        <Box ref={headerRef}></Box>
         {permissionGroupDetails.length > 0 ? (
           renderPageContent()
         ) : (
           <Box
             data-testid="no-connections"
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.center}
-            height={BlockSize.Full}
+            flexDirection={BoxFlexDirection.Column}
+            justifyContent={BoxJustifyContent.Center}
             gap={2}
             padding={4}
           >
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              textAlign={TextAlign.Center}
-            >
+            <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Center}>
               {t('permissionsPageEmptyContent')}
             </Text>
             <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              backgroundColor={BackgroundColor.backgroundDefault}
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
               textAlign={TextAlign.Center}
             >
               {t('permissionsPageEmptySubContent')}

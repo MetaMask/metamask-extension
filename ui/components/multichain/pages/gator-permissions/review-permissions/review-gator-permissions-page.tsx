@@ -2,19 +2,17 @@ import React from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
-import { Header, Page } from '../../page';
 import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
   Text,
-} from '../../../../component-library';
-import {
   IconColor,
-  BackgroundColor,
   TextAlign,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { Header, Page } from '../../page';
+import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { extractNetworkName } from '../helper';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors';
@@ -54,15 +52,14 @@ export const ReviewGatorPermissionsPage = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
-            color={IconColor.iconDefault}
+            color={IconColor.IconDefault}
             onClick={() => history.goBack()}
             size={ButtonIconSize.Sm}
           />
         }
       >
         <Text
-          as="span"
-          variant={TextVariant.headingMd}
+          variant={TextVariant.HeadingMd}
           textAlign={TextAlign.Center}
           data-testid="review-gator-permissions-page-title"
         >

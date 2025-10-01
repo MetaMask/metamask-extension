@@ -1,29 +1,24 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
-import { Button } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
+  Button,
+  BoxAlignItems,
+  BoxBackgroundColor,
   IconColor,
-  JustifyContent,
-  TextAlign,
+  BoxJustifyContent,
   TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
+  Box,
+  BoxFlexDirection,
   AvatarNetwork,
   AvatarNetworkSize,
-  Box,
   Icon,
   IconName,
   IconSize,
   Text,
-} from '../../../../component-library';
+  TextVariant,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors';
 import { extractNetworkName } from '../helper';
@@ -70,11 +65,8 @@ export const PermissionGroupListItem = ({
   return (
     <Box
       data-testid="permission-group-list-item"
-      width={BlockSize.Full}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.baseline}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      alignItems={BoxAlignItems.Baseline}
       padding={4}
       gap={4}
     >
@@ -87,12 +79,7 @@ export const PermissionGroupListItem = ({
           padding: 0,
         }}
       >
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          style={{ alignSelf: 'center' }}
-          marginRight={2}
-        >
+        <Box alignItems={BoxAlignItems.Start} marginRight={2}>
           <AvatarNetwork
             data-testid="permission-group-list-item__avatar-network"
             src={networkImageUrl}
@@ -103,49 +90,27 @@ export const PermissionGroupListItem = ({
         </Box>
 
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          width={BlockSize.FiveTwelfths}
-          style={{ alignSelf: 'center', flexGrow: '1' }}
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Start}
+          justifyContent={BoxJustifyContent.Start}
+          style={{ flexGrow: '1' }}
         >
-          <Text
-            variant={TextVariant.bodyMd}
-            textAlign={TextAlign.Left}
-            ellipsis
-          >
-            {getNetworkNameForChainId()}
-          </Text>
+          <Text variant={TextVariant.BodyMd}>{getNetworkNameForChainId()}</Text>
 
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-            gap={1}
-          >
-            <Text
-              as="span"
-              width={BlockSize.Max}
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMd}
-            >
-              {text}
-            </Text>
-          </Box>
+          <Text color={TextColor.TextAlternative} variant={TextVariant.BodyMd}>
+            {text}
+          </Text>
         </Box>
 
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.flexEnd}
-          alignItems={AlignItems.center}
-          style={{ flex: '1', alignSelf: 'center' }}
+          justifyContent={BoxJustifyContent.End}
+          alignItems={BoxAlignItems.End}
           gap={2}
         >
           <Icon
-            display={Display.Flex}
             name={IconName.ArrowRight}
-            color={IconColor.iconDefault}
+            color={IconColor.IconDefault}
             size={IconSize.Sm}
-            backgroundColor={BackgroundColor.backgroundDefault}
           />
         </Box>
       </Button>
