@@ -41,7 +41,6 @@ export type ConfirmInfoRowProps = {
   'data-testid'?: string;
   label: string;
   labelChildren?: React.ReactNode;
-  onClick?: () => void;
   style?: React.CSSProperties;
   tooltip?: string;
   tooltipIcon?: IconName;
@@ -91,7 +90,6 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   collapsed,
   tooltipIcon,
   tooltipIconColor,
-  onClick,
 }) => {
   const [expanded, setExpanded] = useState(!collapsed);
 
@@ -153,8 +151,6 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           alignItems={AlignItems.flexStart}
           color={color}
           paddingRight={contentPaddingRight || null}
-          onClick={onClick}
-          className={onClick && 'hoverable'}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>

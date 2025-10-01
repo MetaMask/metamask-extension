@@ -5,8 +5,13 @@ import { toHex } from '@metamask/controller-utils';
 import {
   AlignItems,
   Display,
+  FlexDirection,
   JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../../../hooks/useNftsCollections';
 import {
   getCurrentNetwork,
@@ -15,7 +20,12 @@ import {
   getNftIsStillFetchingIndication,
   getPreferences,
 } from '../../../../../selectors';
-import { Box } from '../../../../component-library';
+import {
+  Box,
+  ButtonLink,
+  ButtonLinkSize,
+  Text,
+} from '../../../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
@@ -29,10 +39,10 @@ import { useNfts } from '../../../../../hooks/useNfts';
 import { NFT } from '../../../../multichain/asset-picker-amount/asset-picker-modal/types';
 import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import NftGrid from '../nft-grid/nft-grid';
+import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import PulseLoader from '../../../../ui/pulse-loader';
-import { NftEmptyState } from '../nft-empty-state';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -41,6 +51,7 @@ export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const { privacyMode } = useSelector(getPreferences);
+  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
@@ -106,10 +117,10 @@ export default function NftsTab() {
         alignItems={AlignItems.center}
         display={Display.Flex}
         marginTop={4}
-        paddingTop={4}
-        paddingBottom={4}
       >
-        <PulseLoader />
+        <Box marginTop={4} marginBottom={4}>
+          <PulseLoader />
+        </Box>
       </Box>
     );
   }
@@ -135,7 +146,43 @@ export default function NftsTab() {
             />
           </Box>
         ) : (
-          <NftEmptyState className="mx-auto mt-5 mb-6" />
+          <>
+            <Box
+              padding={12}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+            >
+              <Box
+                paddingTop={6}
+                marginTop={12}
+                marginBottom={12}
+                display={Display.Flex}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+                flexDirection={FlexDirection.Column}
+                className="nfts-tab__link"
+              >
+                <Text
+                  color={TextColor.textAlternative}
+                  variant={TextVariant.bodyMdMedium}
+                  textAlign={TextAlign.Center}
+                >
+                  {t('noNFTs')}
+                </Text>
+                {
+                  <ButtonLink
+                    size={ButtonLinkSize.Md}
+                    href={ZENDESK_URLS.NFT_TOKENS}
+                    externalLink
+                  >
+                    {t('learnMoreUpperCase')}
+                  </ButtonLink>
+                }
+              </Box>
+            </Box>
+          </>
         )}
       </Box>
     </>

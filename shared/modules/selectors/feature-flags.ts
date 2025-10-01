@@ -1,4 +1,3 @@
-import { Hex } from '@metamask/utils';
 import { getNetworkNameByChainId } from '../feature-flags';
 import { ProviderConfigState, getCurrentChainId } from './networks';
 
@@ -25,25 +24,10 @@ export type SwapsFeatureFlags = {
   smartTransactions: SmartTransactionsFeatureFlag;
 };
 
-export type SmartTransactionNetwork = {
-  extensionActive?: boolean;
-  sentinelUrl?: string;
-  extensionReturnTxHashAsap?: boolean;
-  batchStatusPollingInterval?: number;
-};
-
-export type SmartTransactionsNetworks = {
-  [chainId: Hex]: SmartTransactionNetwork | undefined;
-  default?: SmartTransactionNetwork;
-};
-
 export type FeatureFlagsMetaMaskState = {
   metamask: {
     swapsState: {
       swapsFeatureFlags: SwapsFeatureFlags;
-    };
-    remoteFeatureFlags?: {
-      smartTransactionsNetworks?: SmartTransactionsNetworks;
     };
   };
 };
@@ -60,17 +44,10 @@ export function getFeatureFlagsByChainId(
   if (!featureFlags?.[networkName]) {
     return null;
   }
-  const smartTransactionsNetworks =
-    state.metamask.remoteFeatureFlags?.smartTransactionsNetworks;
-  const defaultConfig = smartTransactionsNetworks?.default;
-  const extensionReturnTxHashAsap =
-    defaultConfig?.extensionReturnTxHashAsap ?? false;
-
   return {
     smartTransactions: {
       ...featureFlags.smartTransactions,
       ...featureFlags[networkName].smartTransactions,
-      extensionReturnTxHashAsap,
     },
   };
 }

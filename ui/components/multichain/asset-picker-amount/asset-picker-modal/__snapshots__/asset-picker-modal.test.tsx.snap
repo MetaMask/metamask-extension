@@ -20,7 +20,6 @@ exports[`AssetPickerModal token filtering should fetch metadata for unlisted tok
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -49,7 +48,6 @@ exports[`AssetPickerModal token filtering should filter tokens by address 1`] = 
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -80,7 +78,6 @@ exports[`AssetPickerModal token filtering should filter tokens by address 2`] = 
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -111,7 +108,6 @@ exports[`AssetPickerModal token filtering should filter tokens by chain when mul
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -153,7 +149,6 @@ exports[`AssetPickerModal token filtering should filter tokens by symbol 1`] = `
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -184,7 +179,6 @@ exports[`AssetPickerModal token filtering should handle case-insensitive search 
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -215,7 +209,6 @@ exports[`AssetPickerModal token filtering should handle case-insensitive search 
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -246,7 +239,6 @@ exports[`AssetPickerModal token filtering should only show tokens with balances 
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -288,7 +280,6 @@ exports[`AssetPickerModal token filtering should only show tokens with balances 
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -330,7 +321,6 @@ exports[`AssetPickerModal token filtering should render all tokens from multiple
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -401,7 +391,6 @@ exports[`AssetPickerModal token filtering should render all tokens from single c
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -443,7 +432,6 @@ exports[`AssetPickerModal token filtering should respect MAX_UNOWNED_TOKENS_REND
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -514,7 +502,6 @@ exports[`AssetPickerModal token filtering should show all tokens when search que
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -545,7 +532,6 @@ exports[`AssetPickerModal token filtering should show all tokens when search que
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -622,7 +608,6 @@ exports[`AssetPickerModal token filtering should show selected token first when 
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {
@@ -699,7 +684,6 @@ exports[`AssetPickerModal token filtering should show selected token first when 
       "isTitleNetworkName": false,
     },
     "handleAssetChange": [Function],
-    "isDestinationToken": false,
     "isTokenDisabled": [Function],
     "isTokenListLoading": false,
     "network": {

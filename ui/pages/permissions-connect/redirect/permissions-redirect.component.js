@@ -120,7 +120,13 @@ export default function PermissionsRedirect({ subjectMetadata }) {
               marginLeft={2}
               disabled
               loading
-            />
+            >
+              <Icon
+                name={IconName.Loading}
+                size={IconSize.Lg}
+                color={IconColor.infoDefault}
+              />
+            </Button>
           </Box>
         </Box>
       </Box>

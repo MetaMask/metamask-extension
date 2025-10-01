@@ -10,6 +10,7 @@ import {
 } from '../../../../components/component-library';
 import {
   AlignItems,
+  BackgroundColor,
   BorderColor,
   BorderRadius,
   Display,
@@ -39,7 +40,11 @@ const NativeAssetPill: React.FC<{ chainId: Hex }> = ({ chainId }) => {
       flexDirection={FlexDirection.Row}
       borderRadius={BorderRadius.pill}
       alignItems={AlignItems.center}
+      backgroundColor={BackgroundColor.backgroundAlternative}
       gap={1}
+      style={{
+        padding: '1px 8px 1px 4px',
+      }}
     >
       <AvatarNetwork
         name={nativeCurrency}

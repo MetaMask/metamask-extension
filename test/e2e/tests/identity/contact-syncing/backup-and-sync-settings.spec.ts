@@ -43,9 +43,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           // Wait for the UI to be ready before opening settings
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
-            return (
-              uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true
-            );
+            return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
           }, 30000);
 
           await header.openSettingsPage();
@@ -213,9 +211,7 @@ describe('Contact Syncing - Backup and Sync Settings', function () {
           // Wait for the UI to be ready before opening settings
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
-            return (
-              uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true
-            );
+            return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
           }, 30000);
 
           await header.openSettingsPage();

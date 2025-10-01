@@ -35,7 +35,6 @@ describe('useConfirmationRecipientInfo', () => {
 
       expect(result.current.senderAddress).toBe(SenderAddress);
       expect(result.current.senderName).toBe(expectedAccount.metadata.name);
-      expect(result.current.walletName).toBe('Wallet 1');
     });
   });
 
@@ -61,9 +60,6 @@ describe('useConfirmationRecipientInfo', () => {
 
       expect(result.current.senderAddress).toBe(SenderAddress);
       expect(result.current.senderName).toBe('Account 1'); // Resolved from AccountGroup.metadata.name
-      expect(result.current.walletName).toBe('Wallet 1');
-      expect(result.current.isBIP44).toBe(true);
-      expect(result.current.hasMoreThanOneWallet).toBe(true);
     });
   });
 });

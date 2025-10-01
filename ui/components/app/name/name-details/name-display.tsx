@@ -44,7 +44,7 @@ const NameDisplay = memo(
           <Icon
             name={icon.name}
             className="name__icon"
-            size={IconSize.Sm}
+            size={IconSize.Md}
             color={icon.color}
           />
         );

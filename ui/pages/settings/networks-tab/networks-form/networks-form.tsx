@@ -7,7 +7,6 @@ import {
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString } from '@metamask/utils';
-import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -148,9 +147,6 @@ export const NetworksForm = ({
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedName = chainIdHex
       ? (NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
-        NETWORKS_BYPASSING_VALIDATION[
-          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
-        ]?.name ??
         safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name)
       : undefined;
 
@@ -178,15 +174,7 @@ export const NetworksForm = ({
           ?.nativeCurrency?.symbol)
       : undefined;
 
-    const isWhitelistedSymbol = chainIdHex
-      ? NETWORKS_BYPASSING_VALIDATION[
-          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
-        ]?.symbol?.toLowerCase() === ticker?.toLowerCase()
-      : false;
-
-    const mismatch =
-      expectedSymbol && expectedSymbol !== ticker && !isWhitelistedSymbol;
-
+    const mismatch = expectedSymbol && expectedSymbol !== ticker;
     setSuggestedTicker(mismatch ? expectedSymbol : undefined);
     setWarnings((state) => ({
       ...state,

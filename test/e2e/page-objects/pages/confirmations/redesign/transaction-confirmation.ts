@@ -1,5 +1,4 @@
 import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
 import { tEn } from '../../../../../lib/i18n-helpers';
 import { Driver } from '../../../../webdriver/driver';
 import { RawLocator } from '../../../common';
@@ -21,12 +20,6 @@ class TransactionConfirmation extends Confirmation {
   private advancedDetailsHexData: RawLocator;
 
   private alertBanner: RawLocator;
-
-  private customNonceButton: RawLocator;
-
-  private customNonceInput: RawLocator;
-
-  private customNonceSaveButton: RawLocator;
 
   private gasFeeFiatText: RawLocator;
 
@@ -69,12 +62,6 @@ class TransactionConfirmation extends Confirmation {
     this.advancedDetailsHexData =
       '[data-testid="advanced-details-transaction-hex"]';
     this.alertBanner = '[data-testid="confirm-banner-alert"]';
-    this.customNonceButton = '[data-testid="edit-nonce-icon"]';
-    this.customNonceInput = '[data-testid="custom-nonce-input"]';
-    this.customNonceSaveButton = {
-      tag: 'button',
-      text: 'Save',
-    };
     this.gasFeeCloseToastMessage =
       '.toasts-container__banner-base button[aria-label="Close"]';
     this.gasFeeFiatText = '[data-testid="native-currency"]';
@@ -86,9 +73,6 @@ class TransactionConfirmation extends Confirmation {
     this.transactionDetails =
       '[data-testid="confirmation__token-details-section"]';
   }
-
-  private readonly dappNumberConnected = (dappNumber: string) =>
-    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
 
   async checkWalletInitiatedHeadingTitle() {
     await this.driver.waitForSelector(this.walletInitiatedHeadingTitle);
@@ -182,14 +166,6 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.clickElement(this.advancedDetailsButton);
   }
 
-  async clickCustomNonceButton() {
-    await this.driver.clickElement(this.customNonceButton);
-  }
-
-  async clickCustomNonceSaveButton() {
-    await this.driver.clickElement(this.customNonceSaveButton);
-  }
-
   async clickGasFeeTokenPill() {
     await this.driver.clickElement(this.gasFeeTokenArrow);
   }
@@ -197,16 +173,6 @@ class TransactionConfirmation extends Confirmation {
   async closeGasFeeToastMessage() {
     // the toast message automatically disappears after some seconds, so we need to use clickElementSafe to prevent race conditions
     await this.driver.clickElementSafe(this.gasFeeCloseToastMessage, 5000);
-  }
-
-  async fillCustomNonce(nonce: string) {
-    await this.driver.fill(this.customNonceInput, nonce);
-  }
-
-  async setCustomNonce(nonce: string) {
-    await this.clickCustomNonceButton();
-    await this.fillCustomNonce(nonce);
-    await this.clickCustomNonceSaveButton();
   }
 
   async verifyAdvancedDetailsIsDisplayed(type: string) {
@@ -362,15 +328,6 @@ class TransactionConfirmation extends Confirmation {
       text: amount,
       tag: 'h2',
     });
-  }
-
-  /**
-   * Check the number of dapps connected
-   *
-   * @param numberOfDapps - The number of dapps connected
-   */
-  async checkNumberOfDappsConnected(numberOfDapps: string) {
-    await this.driver.waitForSelector(this.dappNumberConnected(numberOfDapps));
   }
 }
 

@@ -31,19 +31,8 @@ export type OAuthServiceGetNewRefreshTokenAction = {
 /**
  * Revoke the current refresh token and get a new refresh token.
  */
-export type OAuthServiceRevokeRefreshTokenAction = {
-  type: `${ServiceName}:revokeRefreshToken`;
-  handler: (options: {
-    connection: AuthConnection;
-    revokeToken: string;
-  }) => Promise<void>;
-};
-
-/**
- * Revoke the current refresh token and get a new refresh token.
- */
-export type OAuthServiceRenewRefreshTokenAction = {
-  type: `${ServiceName}:renewRefreshToken`;
+export type OAuthServiceRevokeAndGetNewRefreshTokenAction = {
+  type: `${ServiceName}:revokeAndGetNewRefreshToken`;
   handler: (options: {
     connection: AuthConnection;
     revokeToken: string;
@@ -56,8 +45,7 @@ export type OAuthServiceRenewRefreshTokenAction = {
 export type OAuthServiceAction =
   | OAuthServiceStartOAuthLoginAction
   | OAuthServiceGetNewRefreshTokenAction
-  | OAuthServiceRevokeRefreshTokenAction
-  | OAuthServiceRenewRefreshTokenAction
+  | OAuthServiceRevokeAndGetNewRefreshTokenAction
   | SeedlessOnboardingControllerGetStateAction;
 
 /**

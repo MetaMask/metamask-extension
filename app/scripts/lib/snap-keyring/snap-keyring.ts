@@ -29,9 +29,6 @@ import { showError, showSuccess } from './utils/showResult';
  * Builder type for the Snap keyring.
  */
 export type SnapKeyringBuilder = {
-  name: 'SnapKeyringBuilder';
-  state: null;
-
   (): SnapKeyring;
   type: typeof SnapKeyring.type;
 };
@@ -594,8 +591,9 @@ export function snapKeyringBuilder(
   messenger: SnapKeyringBuilderMessenger,
   helpers: SnapKeyringHelpers,
 ) {
-  const SnapKeyringBuilder = (() => {
+  const builder = (() => {
     return new SnapKeyring({
+      // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
       messenger,
       callbacks: new SnapKeyringImpl(messenger, helpers),
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
@@ -605,9 +603,7 @@ export function snapKeyringBuilder(
       ///: END:ONLY_INCLUDE_IF
     });
   }) as SnapKeyringBuilder;
+  builder.type = SnapKeyring.type;
 
-  SnapKeyringBuilder.state = null;
-  SnapKeyringBuilder.type = SnapKeyring.type;
-
-  return SnapKeyringBuilder;
+  return builder;
 }

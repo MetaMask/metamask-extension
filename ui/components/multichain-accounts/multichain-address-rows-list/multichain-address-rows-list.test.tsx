@@ -4,14 +4,8 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupId } from '@metamask/account-api';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MultichainAddressRowsList } from './multichain-address-rows-list';
 
-jest.mock('@metamask/bridge-controller', () => ({
-  formatChainIdToCaip: jest.fn(),
-}));
-
-const mockFormatChainIdToCaip = formatChainIdToCaip as jest.Mock;
 const mockStore = configureStore([]);
 
 const WALLET_ID_MOCK = 'entropy:01K437Z7EJ0VCMFDE9TQKRV60A';
@@ -80,7 +74,7 @@ const createMockState = () => ({
     networkConfigurationsByChainId: {
       '0x1': {
         chainId: '0x1',
-        name: 'Ethereum',
+        name: 'Ethereum Mainnet',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -94,7 +88,7 @@ const createMockState = () => ({
       },
       '0x89': {
         chainId: '0x89',
-        name: 'Polygon',
+        name: 'Polygon Mainnet',
         nativeCurrency: 'MATIC',
         rpcEndpoints: [
           {
@@ -108,7 +102,7 @@ const createMockState = () => ({
       },
       '0xa4b1': {
         chainId: '0xa4b1',
-        name: 'Arbitrum',
+        name: 'Arbitrum One',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -148,7 +142,7 @@ const createMockState = () => ({
     providerConfig: {
       chainId: '0x1',
       type: 'mainnet',
-      nickname: 'Ethereum',
+      nickname: 'Ethereum Mainnet',
     },
     // Multichain controller state
     isEvmSelected: true,
@@ -272,9 +266,6 @@ describe('MultichainAddressRowsList', () => {
   });
 
   it('passes onQrClick callback to child components', () => {
-    // Mock the formatChainIdToCaip function to return the expected CAIP format
-    mockFormatChainIdToCaip.mockReturnValue('eip155:1');
-
     const mockOnQrClick = jest.fn();
     renderComponent(GROUP_ID_MOCK, mockOnQrClick);
 
@@ -287,8 +278,7 @@ describe('MultichainAddressRowsList', () => {
     expect(mockOnQrClick).toHaveBeenCalledTimes(1);
     expect(mockOnQrClick).toHaveBeenCalledWith(
       '0x1234567890abcdef1234567890abcdef12345678',
-      'Ethereum',
-      'eip155:1',
+      'Ethereum Mainnet',
       './images/eth_logo.svg',
     );
   });

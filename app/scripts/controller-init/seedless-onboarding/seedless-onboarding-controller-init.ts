@@ -37,9 +37,7 @@ export const SeedlessOnboardingControllerInit: ControllerInitFunction<
     refreshJWTToken: (...args) =>
       initMessenger.call('OAuthService:getNewRefreshToken', ...args),
     revokeRefreshToken: (...args) =>
-      initMessenger.call('OAuthService:revokeRefreshToken', ...args),
-    renewRefreshToken: (...args) =>
-      initMessenger.call('OAuthService:renewRefreshToken', ...args),
+      initMessenger.call('OAuthService:revokeAndGetNewRefreshToken', ...args),
 
     encryptor: {
       decrypt: (key, encryptedData) => encryptor.decrypt(key, encryptedData),

@@ -276,7 +276,7 @@ describe('MultiRpc:', function (this: Suite) {
         // validate the network was successfully edited
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum One');
         await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog
@@ -353,7 +353,9 @@ describe('MultiRpc:', function (this: Suite) {
         await onboardingPrivacySettingsPage.navigateToGeneralSettings();
 
         // open edit network modal during onboarding and select the second rpc
-        await onboardingPrivacySettingsPage.openEditNetworkModal('Arbitrum');
+        await onboardingPrivacySettingsPage.openEditNetworkModal(
+          'Arbitrum One',
+        );
         const editNetworkModal = new AddEditNetworkModal(driver);
         await editNetworkModal.checkPageIsLoaded();
         await editNetworkModal.selectRPCInEditNetworkModal(
@@ -367,7 +369,7 @@ describe('MultiRpc:', function (this: Suite) {
         await onboardingCompletePage.completeOnboarding();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum One');
         await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog

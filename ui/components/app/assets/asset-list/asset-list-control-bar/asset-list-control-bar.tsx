@@ -8,12 +8,7 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import {
-  Hex,
-  isStrictHexString,
-  KnownCaipNamespace,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { Hex, isStrictHexString } from '@metamask/utils';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
@@ -26,7 +21,6 @@ import {
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
-  getSelectedMultichainNetworkChainId,
 } from '../../../../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
@@ -132,11 +126,6 @@ const AssetListControlBar = ({
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
   const [isImportNftPopoverOpen, setIsImportNftPopoverOpen] = useState(false);
-
-  const currentMultichainChainId = useSelector(
-    getSelectedMultichainNetworkChainId,
-  );
-  const { namespace } = parseCaipChainId(currentMultichainChainId);
 
   const allNetworkClientIds = useMemo(() => {
     return Object.keys(tokenNetworkFilter).flatMap((chainId) => {
@@ -317,14 +306,6 @@ const AssetListControlBar = ({
         : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
     }
 
-    if (
-      isGlobalNetworkSelectorRemoved &&
-      namespace !== KnownCaipNamespace.Eip155 &&
-      Object.keys(enabledNetworksByNamespace).length > 1
-    ) {
-      return currentMultichainNetwork.network.nickname ?? t('currentNetwork');
-    }
-
     // > 1 network selected, show "all networks"
     if (
       isGlobalNetworkSelectorRemoved &&
@@ -332,7 +313,6 @@ const AssetListControlBar = ({
     ) {
       return t('allNetworks');
     }
-
     if (
       isGlobalNetworkSelectorRemoved &&
       Object.keys(enabledNetworksByNamespace).length === 0
@@ -357,7 +337,6 @@ const AssetListControlBar = ({
     currentMultichainNetwork?.nickname,
     t,
     allNetworks,
-    namespace,
   ]);
 
   const networkButtonTextEnabledAccountState2 = useMemo(() => {
@@ -454,7 +433,7 @@ const AssetListControlBar = ({
               <AvatarNetwork
                 name={currentMultichainNetwork.nickname}
                 src={singleNetworkIconUrl}
-                size={AvatarNetworkSize.Xs}
+                size={AvatarNetworkSize.Sm}
                 borderWidth={0}
               />
             )}

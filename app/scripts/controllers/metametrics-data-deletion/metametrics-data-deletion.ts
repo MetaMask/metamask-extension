@@ -38,22 +38,16 @@ const getDefaultState = (): MetaMetricsDataDeletionState => {
 // Metadata for the controller state
 const metadata = {
   metaMetricsDataDeletionId: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
   metaMetricsDataDeletionTimestamp: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
   metaMetricsDataDeletionStatus: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
 };
 

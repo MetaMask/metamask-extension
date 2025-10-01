@@ -7,14 +7,18 @@ import { exitWithError } from '../../development/lib/exit-with-error';
 import { getFirstParentDirectoryThatExists, isWritable } from '../helpers/file';
 import { Driver } from './webdriver/driver';
 import FixtureBuilder from './fixture-builder';
-import { loginWithBalanceValidation } from './page-objects/flows/login.flow';
 import HomePage from './page-objects/pages/home/homepage';
 import BridgeQuotePage from './page-objects/pages/bridge/quote-page';
 import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
   MOCK_TOKENS_ETHEREUM,
 } from './tests/bridge/constants';
-import { unlockWallet, withFixtures } from './helpers';
+import {
+  logInWithBalanceValidation,
+  openActionMenuAndStartSendFlow,
+  unlockWallet,
+  withFixtures,
+} from './helpers';
 
 async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer
@@ -73,10 +77,9 @@ async function confirmTx(): Promise<number> {
       title: 'benchmark-userActions-confirmTx',
     },
     async ({ driver }: { driver: Driver }) => {
-      await loginWithBalanceValidation(driver);
+      await logInWithBalanceValidation(driver);
 
-      const homePage = new HomePage(driver);
-      await homePage.startSendFlow();
+      await openActionMenuAndStartSendFlow(driver);
 
       await driver.fill(
         'input[placeholder="Enter public address (0x) or domain name"]',
@@ -138,7 +141,7 @@ async function bridgeUserActions(): Promise<{
       },
     },
     async ({ driver }: { driver: Driver }) => {
-      await loginWithBalanceValidation(driver);
+      await logInWithBalanceValidation(driver);
       const homePage = new HomePage(driver);
       const quotePage = new BridgeQuotePage(driver);
 

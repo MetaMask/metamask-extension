@@ -42,10 +42,10 @@ describe('Linea Network Discover Button', function (this: Suite) {
         // Open network dropdown
         await switchToEditRPCViaGlobalMenuNetworks(driver);
 
-        // Search for Linea
+        // Search for Linea Mainnet
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.fillNetworkSearchInput('Linea');
+        await selectNetworkDialog.fillNetworkSearchInput('Linea Mainnet');
         await selectNetworkDialog.openNetworkListOptions('eip155:59144');
 
         // Verify Discover button is visible

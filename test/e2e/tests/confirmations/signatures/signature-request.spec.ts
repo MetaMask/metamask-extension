@@ -1,13 +1,15 @@
 import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
 
-import { withFixtures, unlockWallet } from '../../../helpers';
+import {
+  withFixtures,
+  openDapp,
+  unlockWallet,
+  WINDOW_TITLES,
+} from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
-import {
-  DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
-  WINDOW_TITLES,
-} from '../../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
 
 const signatureRequestType = {
   signTypedData: 'Sign Typed Data',
@@ -43,8 +45,7 @@ describe('Sign Typed Data Signature Request', function () {
           const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
           await unlockWallet(driver);
 
-          const testDapp = new TestDapp(driver);
-          await testDapp.openTestDappPage();
+          await openDapp(driver);
 
           // creates multiple sign typed data signature requests
           await triggerSignatureRequest(driver, data.type);
@@ -90,8 +91,7 @@ describe('Sign Typed Data Signature Request', function () {
           const confirmation = new SignTypedData(driver);
           await unlockWallet(driver);
 
-          const testDapp = new TestDapp(driver);
-          await testDapp.openTestDappPage();
+          await openDapp(driver);
 
           // creates multiple sign typed data signature requests
           await triggerSignatureRequest(driver, data.type);

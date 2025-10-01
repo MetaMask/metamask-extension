@@ -3,10 +3,11 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   deleteAccountSyncingDataFromUserStorage,
-  syncAccountTreeWithUserStorage,
+  syncInternalAccountsWithUserStorage,
 } from '../../../store/actions';
 import {
   selectIsAccountSyncingEnabled,
+  selectIsAccountSyncingReadyToBeDispatched,
   selectIsBackupAndSyncEnabled,
 } from '../../../selectors/identity/backup-and-sync';
 import { getUseExternalServices } from '../../../selectors';
@@ -23,6 +24,9 @@ import { selectIsSignedIn } from '../../../selectors/identity/authentication';
  * @returns a boolean if internally we can perform account syncing or not.
  */
 export const useShouldDispatchAccountSyncing = () => {
+  const isAccountSyncingReadyToBeDispatched = useSelector(
+    selectIsAccountSyncingReadyToBeDispatched,
+  );
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
   const isAccountSyncingEnabled = useSelector(selectIsAccountSyncingEnabled);
   const basicFunctionality: boolean | undefined = useSelector(
@@ -40,7 +44,8 @@ export const useShouldDispatchAccountSyncing = () => {
       isAccountSyncingEnabled &&
       isUnlocked &&
       isSignedIn &&
-      completedOnboarding,
+      completedOnboarding &&
+      isAccountSyncingReadyToBeDispatched,
   );
 
   return shouldDispatchAccountSyncing;
@@ -62,7 +67,7 @@ export const useAccountSyncing = () => {
       if (!shouldDispatchAccountSyncing) {
         return;
       }
-      dispatch(syncAccountTreeWithUserStorage());
+      dispatch(syncInternalAccountsWithUserStorage());
     } catch (e) {
       log.error(e);
     }

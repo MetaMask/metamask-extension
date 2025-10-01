@@ -64,6 +64,7 @@ export class ConfirmationsRejectRule implements Rule {
                 data: `data:image/png;base64,${screenshot}`,
               });
 
+              await this.driver.waitUntilXWindowHandles(3);
               await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
               await this.driver.findClickableElements({
@@ -77,7 +78,7 @@ export class ConfirmationsRejectRule implements Rule {
                 data: `data:image/png;base64,${screenshotTwo}`,
               });
 
-              await this.driver.clickElementAndWaitForWindowToClose({
+              await this.driver.clickElement({
                 text: 'Connect',
                 tag: 'button',
               });

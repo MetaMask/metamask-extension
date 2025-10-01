@@ -79,7 +79,7 @@ const createMockState = () => ({
     networkConfigurationsByChainId: {
       '0x1': {
         chainId: '0x1',
-        name: 'Ethereum',
+        name: 'Ethereum Mainnet',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -147,7 +147,7 @@ const createMockState = () => ({
     providerConfig: {
       chainId: '0x1',
       type: 'mainnet',
-      nickname: 'Ethereum',
+      nickname: 'Ethereum Mainnet',
     },
     // Multichain controller state
     isEvmSelected: true,

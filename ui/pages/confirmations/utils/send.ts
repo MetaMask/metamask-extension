@@ -5,6 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { addHexPrefix } from 'ethereumjs-util';
+import { isNativeAddress } from '@metamask/bridge-controller';
 import { useHistory } from 'react-router-dom';
 
 import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
@@ -96,12 +97,10 @@ export const toTokenMinimalUnit = (
 export function formatToFixedDecimals(
   value: string | undefined,
   decimalsToShow: string | number = 5,
-  trimTrailingZerosEnabled = true,
 ) {
-  if (!value || !isValidPositiveNumericString(value)) {
+  if (!value) {
     return '0';
   }
-
   const val = new Numeric(value, 10);
   if (val.isZero()) {
     return '0';
@@ -115,28 +114,18 @@ export function formatToFixedDecimals(
   }
 
   const strValueArr = val.toString().split('.');
-  const intPart = strValueArr[0];
-  let fracPart = strValueArr[1] ?? '';
-
-  if (fracPart.length > decimals) {
-    fracPart = fracPart.slice(0, decimals);
-  } else {
-    fracPart = fracPart.padEnd(decimals, '0');
+  if (!strValueArr[1]) {
+    return strValueArr[0];
   }
 
-  if (!fracPart) {
-    return intPart;
-  }
-
-  return trimTrailingZerosEnabled
-    ? trimTrailingZeros(`${intPart}.${fracPart}`)
-    : `${intPart}.${fracPart}`;
+  return trimTrailingZeros(
+    `${strValueArr[0]}.${strValueArr[1].slice(0, decimals)}`,
+  );
 }
 
 export const prepareEVMTransaction = (
   asset: Asset,
   transactionParams: TransactionParams,
-  hexData: Hex = '0x',
 ) => {
   const { from, to, value } = transactionParams;
   const trxnParams: TransactionParams = { from };
@@ -146,8 +135,8 @@ export const prepareEVMTransaction = (
     : fromTokenMinimalUnits(value ?? '0', asset.decimals);
 
   // Native token
-  if (asset.isNative) {
-    trxnParams.data = hexData;
+  if (isNativeAddress(asset.address)) {
+    trxnParams.data = '0x';
     trxnParams.to = to;
     trxnParams.value = tokenValue;
     return trxnParams;
@@ -193,22 +182,20 @@ export const submitEvmTransaction = async ({
   asset,
   chainId,
   from,
-  hexData,
   to,
   value,
 }: {
   asset: Asset;
   chainId: Hex;
   from: Hex;
-  hexData?: Hex;
   to: Hex;
   value: string;
 }) => {
-  const trxnParams = prepareEVMTransaction(asset, { from, to, value }, hexData);
+  const trxnParams = prepareEVMTransaction(asset, { from, to, value });
   const networkClientId = await findNetworkClientIdByChainId(chainId);
 
   let transactionType;
-  if (asset.isNative) {
+  if (isNativeAddress(asset.address ?? asset.assetId)) {
     transactionType = TransactionType.simpleSend;
   } else if (asset.standard === ERC20) {
     transactionType = TransactionType.tokenMethodTransfer;
@@ -244,19 +231,8 @@ export const getLayer1GasFees = async ({
   })) as Hex | undefined;
 };
 
-export function isValidPositiveNumericString(str: string) {
-  const decimalRegex = /^(\d+(\.\d+)?|\.\d+)$/u;
-
-  if (!decimalRegex.test(str)) {
-    return false;
-  }
-
-  try {
-    const num = new Numeric(str, 10);
-    return num.greaterThanOrEqualTo(new Numeric('0', 10));
-  } catch (err) {
-    return false;
-  }
+export function isDecimal(value: string) {
+  return Number.isFinite(parseFloat(value)) && !Number.isNaN(parseFloat(value));
 }
 
 export function convertedCurrency(
@@ -264,7 +240,7 @@ export function convertedCurrency(
   conversionRate?: number,
   decimals?: string | number,
 ) {
-  if (!isValidPositiveNumericString(value)) {
+  if (!isDecimal(value) || parseFloat(value) < 0) {
     return undefined;
   }
 

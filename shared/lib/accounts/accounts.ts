@@ -146,6 +146,7 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
 
     this.#client = new KeyringInternalSnapClient({
       snapId,
+      // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
       messenger: messenger.getRestricted({
         name: 'KeyringInternalSnapClient',
         allowedActions: ['SnapController:handleRequest'],

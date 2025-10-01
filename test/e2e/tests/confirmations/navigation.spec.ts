@@ -1,6 +1,6 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
-import { unlockWallet, WINDOW_TITLES } from '../../helpers';
+import { openDapp, unlockWallet, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -19,8 +19,7 @@ describe('Confirmation Navigation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const confirmation = new SignTypedData(driver);
         await unlockWallet(driver);
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
+        await openDapp(driver);
         await queueSignatures(driver);
 
         await verifySignTypedData(driver);
@@ -53,9 +52,7 @@ describe('Confirmation Navigation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const confirmation = new TransactionConfirmation(driver);
         await unlockWallet(driver);
-
-        const testDapp = new TestDapp(driver);
-        await testDapp.openTestDappPage();
+        await openDapp(driver);
         await queueSignaturesAndTransactions(driver);
 
         await verifySignTypedData(driver);
@@ -91,7 +88,7 @@ describe('Confirmation Navigation', function (this: Suite) {
         const confirmation = new SignTypedData(driver);
         const testDapp = new TestDapp(driver);
         await unlockWallet(driver);
-        await testDapp.openTestDappPage();
+        await openDapp(driver);
         await queueSignatures(driver);
 
         await confirmation.clickRejectAll();

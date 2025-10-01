@@ -1,7 +1,12 @@
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
-import { DAPP_URL, WINDOW_TITLES } from '../../constants';
+import {
+  openDapp,
+  openPopupWithActiveTabOrigin,
+  unlockWallet,
+  WINDOW_TITLES,
+  withFixtures,
+} from '../../helpers';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Mockttp } from '../../mock-e2e';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
@@ -9,6 +14,7 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { DAPP_URL } from '../../constants';
 
 describe('Deprecated networks', function (this: Suite) {
   it('User should not find goerli network when clicking on the network selector', async function () {
@@ -22,7 +28,7 @@ describe('Deprecated networks', function (this: Suite) {
         // Navigate to extension home screen
         await unlockWallet(driver);
         // Open the first dapp which starts on chain '0x539
-        await driver.openNewPage(DAPP_URL);
+        await openDapp(driver, undefined, DAPP_URL);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -35,16 +41,7 @@ describe('Deprecated networks', function (this: Suite) {
           tag: 'button',
         });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        await driver.openNewPage(
-          `${driver.extensionUrl}/popup.html?activeTabOrigin=${DAPP_URL}`,
-        );
-
-        // Resize the popup window after it's opened
-        await driver.driver
-          .manage()
-          .window()
-          .setRect({ width: 400, height: 600 });
-
+        await openPopupWithActiveTabOrigin(driver, DAPP_URL);
         await driver.clickElement('.multichain-connected-site-menu ');
         await driver.clickElement({
           text: 'Localhost 8545',

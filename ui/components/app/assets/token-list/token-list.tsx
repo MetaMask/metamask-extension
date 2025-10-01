@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { type CaipChainId, type Hex } from '@metamask/utils';
-import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
+import { type Hex } from '@metamask/utils';
 import TokenCell from '../token-cell';
 import {
   getChainIdsToPoll,
@@ -180,21 +179,15 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
   return (
     <>
-      {sortedFilteredTokens.map((token: TokenWithFiatAmount) => {
-        const isNonEvmTestnet = NON_EVM_TESTNET_IDS.includes(
-          token.chainId as CaipChainId,
-        );
-
-        return (
-          <TokenCell
-            key={`${token.chainId}-${token.symbol}-${token.address}`}
-            token={token}
-            privacyMode={privacyMode}
-            onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
-            safeChains={safeChains}
-          />
-        );
-      })}
+      {sortedFilteredTokens.map((token: TokenWithFiatAmount) => (
+        <TokenCell
+          key={`${token.chainId}-${token.symbol}-${token.address}`}
+          token={token}
+          privacyMode={privacyMode}
+          onClick={handleTokenClick(token)}
+          safeChains={safeChains}
+        />
+      ))}
     </>
   );
 }

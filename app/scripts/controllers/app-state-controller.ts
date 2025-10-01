@@ -14,10 +14,6 @@ import {
 import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
 import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import { Browser } from 'webextension-polyfill';
-import {
-  KeyringControllerGetStateAction,
-  KeyringControllerUnlockEvent,
-} from '@metamask/keyring-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -54,57 +50,56 @@ import type {
 } from './preferences-controller';
 
 export type AppStateControllerState = {
-  activeQrCodeScanRequest: QrScanRequest | null;
+  timeoutMinutes: number;
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
-  browserEnvironment: Record<string, string>;
   connectedStatusPopoverHasBeenShown: boolean;
-  // States used for displaying the changed network toast
-  currentExtensionPopupId: number;
-  currentPopupId?: number;
   defaultHomeActiveTabName: AccountOverviewTabKey | null;
-  enableEnforcedSimulations: boolean;
-  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
-  enforcedSimulationsSlippage: number;
-  enforcedSimulationsSlippageForTransactions: Record<string, number>;
+  browserEnvironment: Record<string, string>;
+  popupGasPollTokens: string[];
+  notificationGasPollTokens: string[];
   fullScreenGasPollTokens: string[];
+  recoveryPhraseReminderHasBeenShown: boolean;
+  recoveryPhraseReminderLastShown: number;
+  outdatedBrowserWarningLastShown: number | null;
+  nftsDetectionNoticeDismissed: boolean;
+  showTestnetMessageInDropdown: boolean;
+  showBetaHeader: boolean;
+  showPermissionsTour: boolean;
+  showNetworkBanner: boolean;
+  showAccountBanner: boolean;
+  productTour?: string;
+  showDownloadMobileAppSlide: boolean;
+  trezorModel: string | null;
+  currentPopupId?: number;
+  onboardingDate: number | null;
+  lastViewedUserSurvey: number | null;
+  isRampCardClosed: boolean;
+  newPrivacyPolicyToastClickedOrClosed: boolean | null;
+  newPrivacyPolicyToastShownDate: number | null;
   // This key is only used for checking if the user had set advancedGasFee
   // prior to Migration 92.3 where we split out the setting to support
   // multiple networks.
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  isRampCardClosed: boolean;
-  isUpdateAvailable: boolean;
-  lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
-  lastUpdatedAt: number | null;
-  lastViewedUserSurvey: number | null;
-  newPrivacyPolicyToastClickedOrClosed: boolean | null;
-  newPrivacyPolicyToastShownDate: number | null;
-  nftsDetectionNoticeDismissed: boolean;
+  activeQrCodeScanRequest: QrScanRequest | null;
   nftsDropdownState: Json;
-  notificationGasPollTokens: string[];
-  onboardingDate: number | null;
-  outdatedBrowserWarningLastShown: number | null;
-  popupGasPollTokens: string[];
-  productTour?: string;
-  recoveryPhraseReminderHasBeenShown: boolean;
-  recoveryPhraseReminderLastShown: number;
-  showAccountBanner: boolean;
-  showBetaHeader: boolean;
-  showDownloadMobileAppSlide: boolean;
-  showNetworkBanner: boolean;
-  showPermissionsTour: boolean;
-  showTestnetMessageInDropdown: boolean;
-  signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
-  slides: CarouselSlide[];
-  snapsInstallPrivacyWarningShown?: boolean;
   surveyLinkLastClickedOrClosed: number | null;
+  signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
+  // States used for displaying the changed network toast
+  currentExtensionPopupId: number;
+  lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   termsOfUseLastAgreed?: number;
+  snapsInstallPrivacyWarningShown?: boolean;
+  slides: CarouselSlide[];
   throttledOrigins: ThrottledOrigins;
-  timeoutMinutes: number;
-  trezorModel: string | null;
+  isUpdateAvailable: boolean;
   updateModalLastDismissedAt: number | null;
-  hasShownMultichainAccountsIntroModal: boolean;
+  lastUpdatedAt: number | null;
+  enableEnforcedSimulations: boolean;
+  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
+  enforcedSimulationsSlippage: number;
+  enforcedSimulationsSlippageForTransactions: Record<string, number>;
 };
 
 const controllerName = 'AppStateController';
@@ -117,11 +112,6 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
   AppStateControllerState
 >;
 
-export type AppStateControllerGetUnlockPromiseAction = {
-  type: 'AppStateController:getUnlockPromise';
-  handler: (shouldShowUnlockRequest: boolean) => Promise<void>;
-};
-
 export type AppStateControllerRequestQrCodeScanAction = {
   type: 'AppStateController:requestQrCodeScan';
   handler: (request: QrScanRequest) => Promise<SerializedUR>;
@@ -132,16 +122,14 @@ export type AppStateControllerRequestQrCodeScanAction = {
  */
 export type AppStateControllerActions =
   | AppStateControllerGetStateAction
-  | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction;
 
 /**
  * Actions that this controller is allowed to call.
  */
-export type AllowedActions =
+type AllowedActions =
   | AddApprovalRequest
   | AcceptRequest
-  | KeyringControllerGetStateAction
   | PreferencesControllerGetStateAction;
 
 /**
@@ -167,9 +155,7 @@ export type AppStateControllerEvents =
 /**
  * Events that this controller is allowed to subscribe.
  */
-export type AllowedEvents =
-  | KeyringControllerUnlockEvent
-  | PreferencesControllerStateChangeEvent;
+type AllowedEvents = PreferencesControllerStateChangeEvent;
 
 export type AppStateControllerMessenger = RestrictedMessenger<
   typeof controllerName,
@@ -195,6 +181,8 @@ type AppStateControllerInitState = Partial<
 >;
 
 export type AppStateControllerOptions = {
+  addUnlockListener: (callback: () => void) => void;
+  isUnlocked: () => boolean;
   state?: AppStateControllerInitState;
   onInactiveTimeout?: () => void;
   messenger: AppStateControllerMessenger;
@@ -202,337 +190,234 @@ export type AppStateControllerOptions = {
 };
 
 const getDefaultAppStateControllerState = (): AppStateControllerState => ({
-  activeQrCodeScanRequest: null,
-  browserEnvironment: {},
+  timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
   connectedStatusPopoverHasBeenShown: true,
   defaultHomeActiveTabName: null,
+  browserEnvironment: {},
+  popupGasPollTokens: [],
+  notificationGasPollTokens: [],
+  fullScreenGasPollTokens: [],
+  recoveryPhraseReminderHasBeenShown: false,
+  recoveryPhraseReminderLastShown: new Date().getTime(),
+  outdatedBrowserWarningLastShown: null,
+  nftsDetectionNoticeDismissed: false,
+  showTestnetMessageInDropdown: true,
+  showBetaHeader: isBeta(),
+  showPermissionsTour: true,
+  showNetworkBanner: true,
+  showAccountBanner: true,
+  productTour: 'accountIcon',
+  trezorModel: null,
+  onboardingDate: null,
+  lastViewedUserSurvey: null,
+  isRampCardClosed: false,
+  newPrivacyPolicyToastClickedOrClosed: null,
+  newPrivacyPolicyToastShownDate: null,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  hadAdvancedGasFeesSetPriorToMigration92_3: false,
+  surveyLinkLastClickedOrClosed: null,
+  showDownloadMobileAppSlide: true,
+  slides: [],
+  throttledOrigins: {},
+  isUpdateAvailable: false,
+  updateModalLastDismissedAt: null,
+  lastUpdatedAt: null,
   enableEnforcedSimulations: true,
   enableEnforcedSimulationsForTransactions: {},
   enforcedSimulationsSlippage: 10,
   enforcedSimulationsSlippageForTransactions: {},
-  fullScreenGasPollTokens: [],
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  hadAdvancedGasFeesSetPriorToMigration92_3: false,
-  isRampCardClosed: false,
-  isUpdateAvailable: false,
-  lastUpdatedAt: null,
-  lastViewedUserSurvey: null,
-  newPrivacyPolicyToastClickedOrClosed: null,
-  newPrivacyPolicyToastShownDate: null,
-  nftsDetectionNoticeDismissed: false,
-  notificationGasPollTokens: [],
-  onboardingDate: null,
-  outdatedBrowserWarningLastShown: null,
-  popupGasPollTokens: [],
-  productTour: 'accountIcon',
-  recoveryPhraseReminderHasBeenShown: false,
-  recoveryPhraseReminderLastShown: new Date().getTime(),
-  showAccountBanner: true,
-  showBetaHeader: isBeta(),
-  showDownloadMobileAppSlide: true,
-  showNetworkBanner: true,
-  showPermissionsTour: true,
-  showTestnetMessageInDropdown: true,
-  slides: [],
-  surveyLinkLastClickedOrClosed: null,
-  throttledOrigins: {},
-  timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
-  trezorModel: null,
-  updateModalLastDismissedAt: null,
-  hasShownMultichainAccountsIntroModal: false,
-
+  activeQrCodeScanRequest: null,
   ...getInitialStateOverrides(),
 });
 
-/**
- * Return initial state for properties that should overwrite persisted state.
- *
- * TODO: Stop persisting state that we want to override, so that we can remove this function.
- *
- * @returns Initial state for properties that should overwrite persisted state.
- */
 function getInitialStateOverrides() {
   return {
-    addressSecurityAlertResponses: {},
-    currentExtensionPopupId: 0,
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
+    addressSecurityAlertResponses: {},
+    currentExtensionPopupId: 0,
   };
 }
 
 const controllerMetadata = {
-  activeQrCodeScanRequest: {
-    includeInStateLogs: false,
-    persist: false,
-    anonymous: true,
-    usedInUi: true,
-  },
-  addressSecurityAlertResponses: {
-    includeInStateLogs: true,
-    persist: false,
-    anonymous: true,
-    usedInUi: true,
-  },
-  browserEnvironment: {
-    includeInStateLogs: true,
+  timeoutMinutes: {
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
   connectedStatusPopoverHasBeenShown: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: true,
-  },
-  currentExtensionPopupId: {
-    includeInStateLogs: true,
-    persist: false,
-    anonymous: true,
-    usedInUi: true,
-  },
-  currentPopupId: {
-    includeInStateLogs: true,
-    persist: false,
-    anonymous: true,
-    usedInUi: true,
   },
   defaultHomeActiveTabName: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
-  enableEnforcedSimulations: {
-    includeInStateLogs: true,
+  browserEnvironment: {
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
-  enableEnforcedSimulationsForTransactions: {
-    includeInStateLogs: true,
+  popupGasPollTokens: {
     persist: false,
     anonymous: true,
-    usedInUi: true,
   },
-  enforcedSimulationsSlippage: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  enforcedSimulationsSlippageForTransactions: {
-    includeInStateLogs: true,
+  notificationGasPollTokens: {
     persist: false,
     anonymous: true,
-    usedInUi: true,
   },
   fullScreenGasPollTokens: {
-    includeInStateLogs: true,
     persist: false,
     anonymous: true,
-    usedInUi: true,
+  },
+  recoveryPhraseReminderHasBeenShown: {
+    persist: true,
+    anonymous: true,
+  },
+  recoveryPhraseReminderLastShown: {
+    persist: true,
+    anonymous: true,
+  },
+  outdatedBrowserWarningLastShown: {
+    persist: true,
+    anonymous: true,
+  },
+  nftsDetectionNoticeDismissed: {
+    persist: true,
+    anonymous: true,
+  },
+  showTestnetMessageInDropdown: {
+    persist: true,
+    anonymous: true,
+  },
+  showBetaHeader: {
+    persist: true,
+    anonymous: true,
+  },
+  showPermissionsTour: {
+    persist: true,
+    anonymous: true,
+  },
+  showNetworkBanner: {
+    persist: true,
+    anonymous: true,
+  },
+  showAccountBanner: {
+    persist: true,
+    anonymous: true,
+  },
+  productTour: {
+    persist: true,
+    anonymous: true,
+  },
+  trezorModel: {
+    persist: true,
+    anonymous: true,
+  },
+  currentPopupId: {
+    persist: false,
+    anonymous: true,
+  },
+  onboardingDate: {
+    persist: true,
+    anonymous: true,
+  },
+  lastViewedUserSurvey: {
+    persist: true,
+    anonymous: true,
+  },
+  isRampCardClosed: {
+    persist: true,
+    anonymous: true,
+  },
+  newPrivacyPolicyToastClickedOrClosed: {
+    persist: true,
+    anonymous: true,
+  },
+  newPrivacyPolicyToastShownDate: {
+    persist: true,
+    anonymous: true,
   },
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: false,
   },
-  isRampCardClosed: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  isUpdateAvailable: {
-    includeInStateLogs: true,
+  activeQrCodeScanRequest: {
     persist: false,
     anonymous: true,
-    usedInUi: true,
-  },
-  lastInteractedConfirmationInfo: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  lastUpdatedAt: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  lastViewedUserSurvey: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  newPrivacyPolicyToastClickedOrClosed: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  newPrivacyPolicyToastShownDate: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  nftsDetectionNoticeDismissed: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: false,
   },
   nftsDropdownState: {
-    includeInStateLogs: true,
     persist: false,
     anonymous: true,
-    usedInUi: true,
-  },
-  notificationGasPollTokens: {
-    includeInStateLogs: true,
-    persist: false,
-    anonymous: true,
-    usedInUi: true,
-  },
-  onboardingDate: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  outdatedBrowserWarningLastShown: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  popupGasPollTokens: {
-    includeInStateLogs: true,
-    persist: false,
-    anonymous: true,
-    usedInUi: true,
-  },
-  productTour: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  recoveryPhraseReminderHasBeenShown: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  recoveryPhraseReminderLastShown: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  showAccountBanner: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  showBetaHeader: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  showDownloadMobileAppSlide: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  showNetworkBanner: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  showPermissionsTour: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  showTestnetMessageInDropdown: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: false,
-  },
-  signatureSecurityAlertResponses: {
-    includeInStateLogs: true,
-    persist: false,
-    anonymous: true,
-    usedInUi: true,
-  },
-  slides: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  snapsInstallPrivacyWarningShown: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
   },
   surveyLinkLastClickedOrClosed: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
-  termsOfUseLastAgreed: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  throttledOrigins: {
-    includeInStateLogs: true,
+  signatureSecurityAlertResponses: {
     persist: false,
     anonymous: true,
-    usedInUi: true,
   },
-  timeoutMinutes: {
-    includeInStateLogs: true,
+  addressSecurityAlertResponses: {
+    persist: false,
+    anonymous: true,
+  },
+  currentExtensionPopupId: {
+    persist: false,
+    anonymous: true,
+  },
+  lastInteractedConfirmationInfo: {
     persist: true,
     anonymous: true,
-    usedInUi: false,
   },
-  trezorModel: {
-    includeInStateLogs: true,
+  termsOfUseLastAgreed: {
     persist: true,
     anonymous: true,
-    usedInUi: false,
+  },
+  snapsInstallPrivacyWarningShown: {
+    persist: true,
+    anonymous: true,
+  },
+  showDownloadMobileAppSlide: {
+    persist: true,
+    anonymous: true,
+  },
+  slides: {
+    persist: true,
+    anonymous: true,
+  },
+  throttledOrigins: {
+    persist: false,
+    anonymous: true,
+  },
+  isUpdateAvailable: {
+    persist: false,
+    anonymous: true,
   },
   updateModalLastDismissedAt: {
-    includeInStateLogs: true,
     persist: true,
     anonymous: true,
-    usedInUi: true,
   },
-  hasShownMultichainAccountsIntroModal: {
+  lastUpdatedAt: {
     persist: true,
     anonymous: true,
-    usedInUi: true,
-    includeInStateLogs: true,
+  },
+  enableEnforcedSimulations: {
+    persist: true,
+    anonymous: true,
+  },
+  enableEnforcedSimulationsForTransactions: {
+    persist: false,
+    anonymous: true,
+  },
+  enforcedSimulationsSlippage: {
+    persist: true,
+    anonymous: true,
+  },
+  enforcedSimulationsSlippageForTransactions: {
+    persist: false,
+    anonymous: true,
   },
 };
 
@@ -547,6 +432,8 @@ export class AppStateController extends BaseController<
 
   #timer: NodeJS.Timeout | null;
 
+  isUnlocked: () => boolean;
+
   readonly waitingForUnlock: { resolve: () => void }[];
 
   #approvalRequestId: string | null;
@@ -556,6 +443,8 @@ export class AppStateController extends BaseController<
   constructor({
     state = {},
     messenger,
+    addUnlockListener,
+    isUnlocked,
     onInactiveTimeout,
     extension,
   }: AppStateControllerOptions) {
@@ -576,12 +465,9 @@ export class AppStateController extends BaseController<
     this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
 
+    this.isUnlocked = isUnlocked;
     this.waitingForUnlock = [];
-
-    messenger.subscribe(
-      'KeyringController:unlock',
-      this.#handleUnlock.bind(this),
-    );
+    addUnlockListener(this.#handleUnlock.bind(this));
 
     messenger.subscribe(
       'PreferencesController:stateChange',
@@ -602,11 +488,6 @@ export class AppStateController extends BaseController<
     }
 
     this.messagingSystem.registerActionHandler(
-      'AppStateController:getUnlockPromise',
-      this.getUnlockPromise.bind(this),
-    );
-
-    this.messagingSystem.registerActionHandler(
       'AppStateController:requestQrCodeScan',
       this.#requestQrCodeScan.bind(this),
     );
@@ -625,11 +506,7 @@ export class AppStateController extends BaseController<
    */
   getUnlockPromise(shouldShowUnlockRequest: boolean): Promise<void> {
     return new Promise((resolve) => {
-      const { isUnlocked } = this.messagingSystem.call(
-        'KeyringController:getState',
-      );
-
-      if (isUnlocked) {
+      if (this.isUnlocked()) {
         resolve();
       } else {
         this.#waitForUnlock(resolve, shouldShowUnlockRequest);
@@ -1058,17 +935,6 @@ export class AppStateController extends BaseController<
   setShowPermissionsTour(showPermissionsTour: boolean): void {
     this.update((state) => {
       state.showPermissionsTour = showPermissionsTour;
-    });
-  }
-
-  /**
-   * Sets whether the multichain intro modal has been shown to the user
-   *
-   * @param hasShown - Whether the modal has been shown
-   */
-  setHasShownMultichainAccountsIntroModal(hasShown: boolean): void {
-    this.update((state) => {
-      state.hasShownMultichainAccountsIntroModal = hasShown;
     });
   }
 

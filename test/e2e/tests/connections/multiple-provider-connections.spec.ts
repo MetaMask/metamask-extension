@@ -2,17 +2,11 @@
  * This test suite is for testing connecting to a dapp with different wallet providers (EVM and Solana).
  */
 import { SolScope } from '@metamask/keyring-api';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { connectToDapp, WINDOW_TITLES, withFixtures } from '../../helpers';
 import {
   DAPP_HOST_ADDRESS,
   DEFAULT_FIXTURE_ACCOUNT as EVM_ADDRESS_ONE,
 } from '../../constants';
-import {
-  BASE_DISPLAY_NAME,
-  LINEA_MAINNET_DISPLAY_NAME,
-  LOCALHOST_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-} from '../../../../shared/constants/network';
 import Homepage from '../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
@@ -307,7 +301,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          ['Solana', LOCALHOST_DISPLAY_NAME],
+          ['Solana', 'Localhost 8545'],
           [
             EVM_ACCOUNT_LABEL_ONE,
             EVM_ACCOUNT_LABEL_TWO,
@@ -335,7 +329,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();
 
-        await testDapp.connectAccount({});
+        await connectToDapp(driver);
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
@@ -352,12 +346,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          [
-            MAINNET_DISPLAY_NAME,
-            LINEA_MAINNET_DISPLAY_NAME,
-            BASE_DISPLAY_NAME,
-            'Solana',
-          ],
+          ['Ethereum Mainnet', 'Linea Mainnet', 'Base Mainnet', 'Solana'],
           [EVM_ACCOUNT_LABEL_ONE, SOLANA_ACCOUNT_LABEL_ONE],
         );
       },
@@ -421,12 +410,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          [
-            MAINNET_DISPLAY_NAME,
-            LINEA_MAINNET_DISPLAY_NAME,
-            BASE_DISPLAY_NAME,
-            'Solana',
-          ],
+          ['Ethereum Mainnet', 'Linea Mainnet', 'Base Mainnet', 'Solana'],
           [EVM_ACCOUNT_LABEL_TWO, SOLANA_ACCOUNT_LABEL_ONE],
         );
       },
@@ -480,7 +464,7 @@ describe('Multiple Standard Dapp Connections', function () {
         await checkAccountsAndNetworksDisplayed(
           driver,
           sitePermissionPage,
-          [MAINNET_DISPLAY_NAME, 'Solana'],
+          ['Ethereum Mainnet', 'Solana'],
           [EVM_ACCOUNT_LABEL_ONE, SOLANA_ACCOUNT_LABEL_ONE],
         );
       },

@@ -1,9 +1,8 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import configureStore from '../../../store/store';
 import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainAccountDetailsPage } from './multichain-account-details-page';
 
@@ -30,16 +29,6 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-const mockDispatch = jest.fn();
-
-jest.mock('react-redux', () => {
-  const actual = jest.requireActual('react-redux');
-  return {
-    ...actual,
-    useDispatch: () => mockDispatch,
-  };
-});
-
 const reactRouterDom = jest.requireMock('react-router-dom');
 
 describe('MultichainAccountDetailsPage', () => {
@@ -51,10 +40,14 @@ describe('MultichainAccountDetailsPage', () => {
     });
   });
 
-  const mockStore = configureMockStore([thunk])(mockState);
-
   const renderComponent = () => {
-    return renderWithProvider(<MultichainAccountDetailsPage />, mockStore);
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+      },
+    });
+
+    return renderWithProvider(<MultichainAccountDetailsPage />, store);
   };
 
   it('renders the page with account details sections', () => {
@@ -155,68 +148,5 @@ describe('MultichainAccountDetailsPage', () => {
     fireEvent.click(closeButton);
 
     expect(screen.queryByText(/rename/iu)).not.toBeInTheDocument();
-  });
-
-  it('opens account remove modal when remove account action button is clicked', () => {
-    reactRouterDom.useParams = () => ({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
-
-    renderComponent();
-
-    const removeAccountActionButton = screen.getByTestId(
-      'account-remove-action',
-    );
-    fireEvent.click(removeAccountActionButton);
-
-    expect(screen.getByText(/will be removed/iu)).toBeInTheDocument();
-  });
-
-  it('closes account remove modal when close button is clicked', () => {
-    reactRouterDom.useParams = () => ({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
-
-    renderComponent();
-
-    const removeAccountActionButton = screen.getByTestId(
-      'account-remove-action',
-    );
-    fireEvent.click(removeAccountActionButton);
-
-    expect(screen.getByText(/will be removed/iu)).toBeInTheDocument();
-
-    const closeButton = screen.getByLabelText('Close');
-    fireEvent.click(closeButton);
-
-    expect(screen.queryByText(/will be removed/iu)).not.toBeInTheDocument();
-  });
-
-  it('calls removeAccount action when remove account button is clicked', () => {
-    reactRouterDom.useParams = () => ({
-      id: 'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-    });
-
-    renderComponent();
-
-    const removeAccountActionButton = screen.getByTestId(
-      'account-remove-action',
-    );
-    fireEvent.click(removeAccountActionButton);
-
-    const removeButton = screen.getByText('Remove');
-    fireEvent.click(removeButton);
-
-    // Verify that dispatch was called with removeAccount action
-    expect(mockDispatch).toHaveBeenCalledTimes(2);
-
-    // First call should be the removeAccount thunk (AsyncFunction)
-    expect(mockDispatch).toHaveBeenNthCalledWith(1, expect.any(Function));
-
-    // Second call should be setAccountDetailsAddress action
-    expect(mockDispatch).toHaveBeenNthCalledWith(2, {
-      type: 'SET_ACCOUNT_DETAILS_ADDRESS',
-      payload: '',
-    });
   });
 });

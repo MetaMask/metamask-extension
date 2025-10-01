@@ -3702,6 +3702,9 @@
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
   },
+  "noActivity": {
+    "message": "Wala pang aktibidad"
+  },
   "noConnectedAccountTitle": {
     "message": "Ang MetaMask ay hindi nakakonekta sa site na ito"
   },
@@ -3711,11 +3714,17 @@
   "noConversionRateAvailable": {
     "message": "Hindi available ang rate ng palitan"
   },
+  "noDeFiPositions": {
+    "message": "Hindi makita ang hinahanap mo?"
+  },
   "noDomainResolution": {
     "message": "Walang resolusyon para sa ibinigay na domain."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Ang mga Snap, at karamihan sa mga hardware wallet, ay hindi gagana sa iyong kasalukuyang bersyon ng browser."
+  },
+  "noNFTs": {
+    "message": "Wala pang mga NFT"
   },
   "noNetworksAvailable": {
     "message": "Walang available na mga network"
@@ -3734,6 +3743,9 @@
   },
   "noThanks": {
     "message": "Salamat na lang"
+  },
+  "noTransactions": {
+    "message": "Wala kang transaksyon"
   },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukan ulit."
@@ -4595,6 +4607,9 @@
   },
   "proposedApprovalLimit": {
     "message": "Iminumungkahing Limitasyon sa Pag-apruba"
+  },
+  "protocolNotSupported": {
+    "message": "Maaaring hindi pa namin sinusuportahan ang iyong protocol."
   },
   "provide": {
     "message": "Ibigay"

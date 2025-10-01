@@ -4,19 +4,14 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
   getAccountTreeControllerMessenger,
-  getAccountTreeControllerInitMessenger,
   AccountTreeControllerMessenger,
-  AccountTreeControllerInitMessenger,
 } from '../messengers/accounts';
 import { AccountTreeControllerInit } from './account-tree-controller-init';
 
 jest.mock('@metamask/account-tree-controller');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
-    AccountTreeControllerMessenger,
-    AccountTreeControllerInitMessenger
-  >
+  ControllerInitRequest<AccountTreeControllerMessenger>
 > {
   const baseControllerMessenger = new Messenger();
 
@@ -25,9 +20,7 @@ function buildInitRequestMock(): jest.Mocked<
     controllerMessenger: getAccountTreeControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: getAccountTreeControllerInitMessenger(
-      baseControllerMessenger,
-    ),
+    initMessenger: undefined,
   };
 }
 
@@ -52,12 +45,6 @@ describe('AccountTreeControllerInit', () => {
     expect(accountTreeControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.AccountTreeController,
-      config: {
-        trace: expect.any(Function),
-        backupAndSync: {
-          onBackupAndSyncEvent: expect.any(Function),
-        },
-      },
     });
   });
 });

@@ -83,7 +83,7 @@ export const AccountList = () => {
     <Page className="account-list-page">
       <Header
         textProps={{
-          variant: TextVariant.headingMd,
+          variant: TextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -121,7 +121,6 @@ export const AccountList = () => {
           display={Display.Flex}
           height={BlockSize.Full}
           flexDirection={FlexDirection.Column}
-          className="multichain-account-menu-popover__list"
         >
           {hasFilteredWallets ? (
             <MultichainAccountList
@@ -157,9 +156,8 @@ export const AccountList = () => {
           size={ButtonSize.Lg}
           onClick={handleOpenAddWalletModal}
           isFullWidth
-          data-testid="account-list-add-wallet-button"
         >
-          <Text variant={TextVariant.bodyMdMedium}>{t('addWallet')}</Text>
+          {t('addWallet')}
         </Button>
       </Footer>
       <AddWalletModal

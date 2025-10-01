@@ -35,8 +35,6 @@ export const useTxAlerts = () => {
           accountAddress: account.address,
         }),
       );
-    } else {
-      dispatch(setTxAlerts(null));
     }
   }, [trade, fromChain?.chainId, account?.address]);
 };

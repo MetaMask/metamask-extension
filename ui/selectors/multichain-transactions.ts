@@ -11,20 +11,15 @@ import type {
 } from './multichain-accounts/account-tree.types';
 
 // Lightweight shape for nonEvmTransactions state map
-// accountId -> chainId -> TransactionStateEntry
 type NonEvmTransactionsMap = Record<
   string,
-  Record<
-    string,
-    { transactions?: Transaction[]; next?: string | null; lastUpdated?: number }
-  >
+  { transactions?: Transaction[]; next?: string | null; lastUpdated?: number }
 >;
 
 type RootState = MultichainState & MultichainAccountsState & DefaultRootState;
 
 export function getSelectedAccountGroupMultichainTransactions(
   state: RootState,
-  nonEvmChainIds?: string[],
 ): { transactions: Transaction[] } {
   const nonEvmTransactionsByAccount = (state as MultichainState).metamask
     .nonEvmTransactions as NonEvmTransactionsMap;
@@ -45,20 +40,10 @@ export function getSelectedAccountGroupMultichainTransactions(
     (account) => account.id,
   );
 
-  const transactions: Transaction[] = [];
-
-  if (selectedGroupAccountIds && selectedGroupAccountIds.length > 0) {
-    for (const accountId of selectedGroupAccountIds) {
-      const byChain = nonEvmTransactionsByAccount?.[accountId] ?? {};
-
-      for (const chainId of nonEvmChainIds ?? []) {
-        const entry = byChain?.[chainId];
-        if (entry?.transactions && Array.isArray(entry.transactions)) {
-          transactions.push(...entry.transactions);
-        }
-      }
-    }
-  }
+  const transactions =
+    selectedGroupAccountIds?.flatMap(
+      (accountId) => nonEvmTransactionsByAccount[accountId]?.transactions ?? [],
+    ) ?? [];
 
   return { transactions };
 }

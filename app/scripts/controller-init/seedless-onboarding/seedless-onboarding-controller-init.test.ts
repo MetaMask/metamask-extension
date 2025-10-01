@@ -76,7 +76,6 @@ describe('SeedlessOnboardingControllerInit', () => {
       passwordOutdatedCacheTTL: expect.any(Number),
       refreshJWTToken: expect.any(Function),
       revokeRefreshToken: expect.any(Function),
-      renewRefreshToken: expect.any(Function),
     });
   });
 });

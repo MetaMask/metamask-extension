@@ -119,7 +119,6 @@ type AssetPickerModalProps = {
   >;
   isTokenListLoading?: boolean;
   autoFocus: boolean;
-  isDestinationToken?: boolean;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
@@ -150,7 +149,6 @@ export function AssetPickerModal({
   isMultiselectEnabled,
   selectedChainIds,
   autoFocus,
-  isDestinationToken = false,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -702,7 +700,6 @@ export function AssetPickerModal({
                     isTitleNetworkName: false,
                     isTitleHidden: false,
                   }}
-                  isDestinationToken={isDestinationToken}
                 />
               </React.Fragment>
               <AssetPickerModalNftTab

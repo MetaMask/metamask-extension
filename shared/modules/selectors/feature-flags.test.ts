@@ -1,58 +1,50 @@
 import { RpcEndpointType } from '@metamask/network-controller';
-import { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../constants/network';
 // Import the module to spy on
 import * as featureFlags from '../feature-flags';
 import {
   getFeatureFlagsByChainId,
   type SwapsFeatureFlags,
-  type SmartTransactionsNetworks,
-  type FeatureFlagsMetaMaskState,
 } from './feature-flags';
 import { ProviderConfigState } from './networks';
 
-type MockState = ProviderConfigState &
-  FeatureFlagsMetaMaskState & {
-    metamask: {
-      networkConfigurationsByChainId: Record<
-        string,
-        {
-          chainId: string;
-          rpcEndpoints: {
-            networkClientId: string;
-            type: RpcEndpointType;
-            url: string;
-          }[];
-          blockExplorerUrls: string[];
-          defaultBlockExplorerUrlIndex: number;
-          name: string;
-          nativeCurrency: string;
-          defaultRpcEndpointIndex: number;
-        }
-      >;
-      selectedNetworkClientId: string;
-      networksMetadata: {
-        [clientId: string]: { status: string };
-      };
-      swapsState: {
-        swapsFeatureFlags: SwapsFeatureFlags;
-      };
-      remoteFeatureFlags?: {
-        smartTransactionsNetworks?: SmartTransactionsNetworks;
-      };
+type MockState = ProviderConfigState & {
+  metamask: {
+    networkConfigurationsByChainId: Record<
+      string,
+      {
+        chainId: string;
+        rpcEndpoints: {
+          networkClientId: string;
+          type: RpcEndpointType;
+          url: string;
+        }[];
+        blockExplorerUrls: string[];
+        defaultBlockExplorerUrlIndex: number;
+        name: string;
+        nativeCurrency: string;
+        defaultRpcEndpointIndex: number;
+      }
+    >;
+    selectedNetworkClientId: string;
+    networksMetadata: {
+      [clientId: string]: { status: string };
+    };
+    swapsState: {
+      swapsFeatureFlags: SwapsFeatureFlags;
     };
   };
+};
 
 describe('Feature Flags Selectors', () => {
-  const createMockState = (
-    chainId: Hex = CHAIN_IDS.MAINNET,
-    includeRemoteFlags = false,
-  ): MockState => {
-    const state: MockState = {
+  const createMockState = (chainId = CHAIN_IDS.MAINNET): MockState => {
+    // Use a simpler approach - explicit type cast for test purposes
+    return {
       metamask: {
+        // Network state for provider config
         networkConfigurationsByChainId: {
           [chainId]: {
-            chainId: chainId as Hex,
+            chainId,
             rpcEndpoints: [
               {
                 networkClientId: 'test-client-id',
@@ -71,6 +63,7 @@ describe('Feature Flags Selectors', () => {
         networksMetadata: {
           'test-client-id': { status: 'available' },
         },
+        // Swaps feature flags
         swapsState: {
           swapsFeatureFlags: {
             ethereum: {
@@ -79,6 +72,7 @@ describe('Feature Flags Selectors', () => {
               smartTransactions: {
                 expectedDeadline: 45,
                 maxDeadline: 150,
+                extensionReturnTxHashAsap: false,
               },
             },
             bsc: {
@@ -87,6 +81,7 @@ describe('Feature Flags Selectors', () => {
               smartTransactions: {
                 expectedDeadline: 60,
                 maxDeadline: 180,
+                extensionReturnTxHashAsap: true,
               },
             },
             smartTransactions: {
@@ -96,20 +91,8 @@ describe('Feature Flags Selectors', () => {
             },
           } as SwapsFeatureFlags,
         },
-        remoteFeatureFlags: includeRemoteFlags
-          ? {
-              smartTransactionsNetworks: {
-                default: {
-                  batchStatusPollingInterval: 1000,
-                  extensionActive: true,
-                  extensionReturnTxHashAsap: true,
-                },
-              },
-            }
-          : undefined,
       },
     };
-    return state;
   };
 
   describe('getFeatureFlagsByChainId', () => {
@@ -174,7 +157,7 @@ describe('Feature Flags Selectors', () => {
           mobileActive: true,
           expectedDeadline: 60,
           maxDeadline: 180,
-          extensionReturnTxHashAsap: false,
+          extensionReturnTxHashAsap: true,
         },
       });
     });
@@ -191,53 +174,6 @@ describe('Feature Flags Selectors', () => {
           maxDeadline: 150,
           extensionReturnTxHashAsap: false,
         },
-      });
-    });
-
-    describe('remote feature flags', () => {
-      it('uses extensionReturnTxHashAsap from remote flags when available', () => {
-        const state = createMockState(CHAIN_IDS.MAINNET, true);
-        const result = getFeatureFlagsByChainId(state);
-
-        expect(result).toStrictEqual({
-          smartTransactions: {
-            mobileActive: true,
-            extensionActive: true,
-            expectedDeadline: 45,
-            maxDeadline: 150,
-            extensionReturnTxHashAsap: true,
-          },
-        });
-      });
-
-      it('defaults to false when remote flags are not available', () => {
-        const state = createMockState(CHAIN_IDS.MAINNET, false);
-        const result = getFeatureFlagsByChainId(state);
-
-        expect(result).toStrictEqual({
-          smartTransactions: {
-            mobileActive: true,
-            extensionActive: true,
-            expectedDeadline: 45,
-            maxDeadline: 150,
-            extensionReturnTxHashAsap: false,
-          },
-        });
-      });
-
-      it('uses default remote flag value for all networks', () => {
-        const state = createMockState(CHAIN_IDS.BSC, true);
-        const result = getFeatureFlagsByChainId(state);
-
-        expect(result).toStrictEqual({
-          smartTransactions: {
-            extensionActive: true,
-            mobileActive: true,
-            expectedDeadline: 60,
-            maxDeadline: 180,
-            extensionReturnTxHashAsap: true,
-          },
-        });
       });
     });
   });

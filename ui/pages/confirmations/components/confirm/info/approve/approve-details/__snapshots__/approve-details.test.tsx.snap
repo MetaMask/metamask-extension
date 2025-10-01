@@ -44,13 +44,13 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box mm-box--display-flex"
         >
           <div
             class="name name__clickable name__missing"
           >
             <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
@@ -161,13 +161,13 @@ exports[`<ApproveDetails /> renders component for approve details for setApprova
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          class="mm-box mm-box--display-flex"
         >
           <div
             class="name name__clickable name__missing"
           >
             <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p

@@ -9,7 +9,7 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 ///: END:ONLY_INCLUDE_IF
-import { CHAIN_IDS, ChainId } from '../../../../shared/constants/network';
+import { ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -328,13 +328,11 @@ const CoinButtons = ({
 
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
+      await setCorrectChain();
       // Handle clicking from the wallet overview page
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
-        getNativeAssetForChainId(
-          location.pathname.split('/').filter(Boolean).at(-1) ??
-            CHAIN_IDS.MAINNET,
-        ),
+        getNativeAssetForChainId(chainId),
         isSwap,
       );
     },

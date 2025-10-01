@@ -1,8 +1,13 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixture-builder');
 
-const { unlockWallet, withFixtures } = require('../../helpers');
-const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
+const {
+  WINDOW_TITLES,
+  openDapp,
+  unlockWallet,
+  withFixtures,
+  switchToNotificationWindow,
+} = require('../../helpers');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
@@ -179,7 +184,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
       async ({ driver }) => {
         await unlockWallet(driver);
-        await driver.openNewPage(DAPP_URL);
+        await openDapp(driver);
 
         for (const config of testBenignConfigs) {
           const { btnSelector, logExpectedDetail, method, params } = config;
@@ -201,7 +206,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
           // Wait for confirmation pop-up
           await driver.delay(500);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await switchToNotificationWindow(driver, 3);
 
           const isPresent = await driver.isElementPresent(bannerAlertSelector);
           assert.equal(
@@ -241,7 +246,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
       async ({ driver }) => {
         await unlockWallet(driver);
-        await driver.openNewPage(DAPP_URL);
+        await openDapp(driver);
 
         for (const config of testMaliciousConfigs) {
           const { expectedDescription, expectedReason, btnSelector } = config;
@@ -253,7 +258,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
           // Wait for confirmation pop-up
           await driver.delay(500);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await switchToNotificationWindow(driver, 3);
 
           await driver.assertElementNotPresent('.loading-indicator');
 
@@ -299,7 +304,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
       async ({ driver }) => {
         await unlockWallet(driver);
-        await driver.openNewPage(DAPP_URL);
+        await openDapp(driver);
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousApprovalButton');
@@ -307,7 +312,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
 
         // Wait for confirmation pop-up
         await driver.delay(500);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await switchToNotificationWindow(driver, 3);
 
         const expectedTitle = 'Request may not be safe';
 

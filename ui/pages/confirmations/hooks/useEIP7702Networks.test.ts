@@ -11,7 +11,7 @@ const mockNetworkConfig = {
     chainId: '0x1',
     defaultBlockExplorerUrlIndex: 0,
     defaultRpcEndpointIndex: 0,
-    name: 'Ethereum',
+    name: 'Ethereum Mainnet',
     nativeCurrency: 'ETH',
     rpcEndpoints: [
       {

@@ -7,30 +7,10 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
-import { getIconSeedAddressesByAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
-import {
-  BNB_DISPLAY_NAME,
-  LINEA_MAINNET_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
-  POLYGON_DISPLAY_NAME,
-  ZK_SYNC_ERA_DISPLAY_NAME,
-} from '../../../../../shared/constants/network';
 import {
   MultichainSiteCellTooltip,
   MultichainSiteCellTooltipProps,
 } from './multichain-site-cell-tooltip';
-
-jest.mock('../../../../selectors/multichain-accounts/account-tree', () => ({
-  ...jest.requireActual(
-    '../../../../selectors/multichain-accounts/account-tree',
-  ),
-  getIconSeedAddressesByAccountGroups: jest.fn(),
-}));
-
-const mockGetIconSeedAddressesByAccountGroups =
-  getIconSeedAddressesByAccountGroups as jest.MockedFunction<
-    typeof getIconSeedAddressesByAccountGroups
-  >;
 
 describe('MultichainSiteCellTooltip', () => {
   const store = configureStore({
@@ -39,70 +19,46 @@ describe('MultichainSiteCellTooltip', () => {
     },
   });
 
-  beforeEach(() => {
-    mockGetIconSeedAddressesByAccountGroups.mockImplementation(
-      (_, accountGroups) => {
-        const seedAddresses: Record<string, string> = {};
-        accountGroups.forEach((group, index) => {
-          const addresses = [
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-            '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-            '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
-            '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
-            '0xb552685e3d2790efd64a175b00d51f02cdafee5d',
-          ];
-          seedAddresses[group.id] = addresses[index % addresses.length];
-        });
-        return seedAddresses;
-      },
-    );
-  });
-
   const mockAccountGroups = [
     {
-      id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+      id: 'keyring:HD Key Tree/0',
       metadata: {
-        name: 'Account 1',
+        name: 'Account 4',
         pinned: false,
         hidden: false,
       },
       accounts: [
         createMockInternalAccount({
-          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          name: 'Test Account',
-        }),
-        createMockInternalAccount({
-          address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-          name: 'Test Account 2',
+          address: '0x8F03351D53585a2616a7F3262Cc5439a5D1EA1Cd',
+          name: 'Account 4',
         }),
       ],
     },
     {
-      id: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0',
+      id: 'keyring:HD Key Tree/1',
       metadata: {
-        name: 'Account 2',
+        name: 'Account 5',
         pinned: false,
         hidden: false,
       },
       accounts: [
         createMockInternalAccount({
-          address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-          name: 'Test Account 1',
+          address: '0x28F6a7A59d37d1DE987616991fC35Ca9A72E0406',
+          name: 'Account 5',
         }),
       ],
     },
     {
-      id: 'snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+      id: 'keyring:HD Key Tree/2',
       metadata: {
-        name: 'Snap Account 1',
+        name: 'Account 6',
         pinned: false,
         hidden: false,
       },
       accounts: [
         createMockInternalAccount({
-          address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
-          name: 'Another Snap Account 1',
+          address: '0x632A13185e4974D5EA81c838Bfc48EB4C666157D',
+          name: 'Account 6',
         }),
       ],
     },
@@ -110,7 +66,7 @@ describe('MultichainSiteCellTooltip', () => {
 
   const mockNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] = [
     {
-      name: MAINNET_DISPLAY_NAME,
+      name: 'Ethereum Mainnet',
       chainId: '0x1',
       caipChainId: 'eip155:1' as CaipChainId,
       blockExplorerUrls: ['mock-mainnet-url'],
@@ -125,7 +81,7 @@ describe('MultichainSiteCellTooltip', () => {
       ],
     },
     {
-      name: ZK_SYNC_ERA_DISPLAY_NAME,
+      name: 'zkSync Era Mainnet',
       chainId: '0x144',
       caipChainId: 'eip155:324' as CaipChainId,
       blockExplorerUrls: ['mock-zksync-url'],
@@ -140,7 +96,7 @@ describe('MultichainSiteCellTooltip', () => {
       ],
     },
     {
-      name: BNB_DISPLAY_NAME,
+      name: 'Binance Smart Chain',
       chainId: '0x38',
       caipChainId: 'eip155:56' as CaipChainId,
       blockExplorerUrls: ['mock-bsc-url'],
@@ -155,7 +111,7 @@ describe('MultichainSiteCellTooltip', () => {
       ],
     },
     {
-      name: POLYGON_DISPLAY_NAME,
+      name: 'Polygon',
       chainId: '0x89',
       caipChainId: 'eip155:137' as CaipChainId,
       blockExplorerUrls: ['mock-polygon-url'],
@@ -170,7 +126,7 @@ describe('MultichainSiteCellTooltip', () => {
       ],
     },
     {
-      name: LINEA_MAINNET_DISPLAY_NAME,
+      name: 'Linea Mainnet',
       chainId: '0xe708',
       caipChainId: 'eip155:59144' as CaipChainId,
       blockExplorerUrls: ['mock-linea-url'],
@@ -208,7 +164,7 @@ describe('MultichainSiteCellTooltip', () => {
     );
 
     const accountAvatars = container.querySelectorAll(
-      '[data-testid^="avatar-"]:not([data-testid="avatar-group"])',
+      '[data-testid^="avatar-account-"]',
     );
     expect(accountAvatars.length).toBeGreaterThan(0);
   });
@@ -246,9 +202,8 @@ describe('MultichainSiteCellTooltip', () => {
   });
 
   it('shows overflow indicator for many accounts in avatar group', () => {
-    // Create 8 account groups to test overflow (limit is 4)
-    const manyAccountGroups = Array.from({ length: 8 }, (_, index) => ({
-      id: `test-group-${index}`,
+    const manyAccountGroups = Array.from({ length: 10 }, (_, index) => ({
+      id: `keyring:HD Key Tree/${index}`,
       metadata: {
         name: `Account ${index + 1}`,
         pinned: false,
@@ -256,7 +211,7 @@ describe('MultichainSiteCellTooltip', () => {
       },
       accounts: [
         createMockInternalAccount({
-          address: `0x${index.toString(16).padStart(40, '0')}`,
+          address: `0x${(index + 1).toString(16)}`,
           name: `Account ${index + 1}`,
         }),
       ],
@@ -273,15 +228,11 @@ describe('MultichainSiteCellTooltip', () => {
     const avatarGroup = getByTestId('avatar-group');
     expect(avatarGroup).toBeInTheDocument();
 
-    // Should show exactly 4 avatars (the limit)
+    // Accounts avatar group caps visible members at 4
     const visibleAccountAvatars = container.querySelectorAll(
-      '[data-testid^="avatar-"]:not([data-testid="avatar-group"])',
+      '[data-testid^="avatar-account-"]',
     );
     expect(visibleAccountAvatars.length).toBe(4);
-
-    // Should show overflow indicator (+4) since we have 8 groups but limit is 4
-    const overflowIndicator = container.querySelector('.mm-text--body-sm');
-    expect(overflowIndicator).toHaveTextContent('+4');
   });
 
   it('shows overflow indicator for many networks in avatar group', () => {
@@ -316,9 +267,8 @@ describe('MultichainSiteCellTooltip', () => {
   });
 
   it('shows avatar group overflow indicator for many accounts', () => {
-    // Create 6 account groups to test overflow (limit is 4)
     const manyAccountGroups = Array.from({ length: 6 }, (_, index) => ({
-      id: `test-group-overflow-${index}`,
+      id: `keyring:HD Key Tree/${index}`,
       metadata: {
         name: `Account ${index + 1}`,
         pinned: false,
@@ -326,7 +276,7 @@ describe('MultichainSiteCellTooltip', () => {
       },
       accounts: [
         createMockInternalAccount({
-          address: `0x${(index + 10).toString(16).padStart(40, '0')}`,
+          address: `0x${(index + 1).toString(16)}`,
           name: `Account ${index + 1}`,
         }),
       ],
@@ -343,15 +293,11 @@ describe('MultichainSiteCellTooltip', () => {
     const avatarGroup = getByTestId('avatar-group');
     expect(avatarGroup).toBeInTheDocument();
 
-    // Should show exactly 4 avatars (the limit)
+    // Accounts avatar group caps visible members at 4
     const visibleAccountAvatars = container.querySelectorAll(
-      '[data-testid^="avatar-"]:not([data-testid="avatar-group"])',
+      '[data-testid^="avatar-account-"]',
     );
     expect(visibleAccountAvatars.length).toBe(4);
-
-    // Should show overflow indicator (+2) since we have 6 groups but limit is 4
-    const overflowIndicator = container.querySelector('.mm-text--body-sm');
-    expect(overflowIndicator).toHaveTextContent('+2');
   });
 
   it('renders only account avatar group when no networks provided', () => {
@@ -397,7 +343,7 @@ describe('MultichainSiteCellTooltip', () => {
     );
 
     const accountAvatars = container.querySelectorAll(
-      '[data-testid^="avatar-"]:not([data-testid="avatar-group"])',
+      '[data-testid^="avatar-account-"]',
     );
     expect(accountAvatars.length).toBe(3);
   });
@@ -409,7 +355,7 @@ describe('MultichainSiteCellTooltip', () => {
     );
 
     const networkImages = container.querySelectorAll(
-      '[data-testid^="network-avatar-"]',
+      '.mm-avatar-token__token-image',
     );
     expect(networkImages.length).toBeGreaterThan(0);
   });

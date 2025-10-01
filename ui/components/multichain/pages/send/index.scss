@@ -42,6 +42,17 @@
   &__recipient {
     width: 100%;
 
+    .tabs__list {
+      font-size: design-system.$font-size-h6;
+      border-bottom: 0;
+      background-color: transparent;
+      position: relative;
+
+      .tab {
+        width: 50%;
+      }
+    }
+
     &__item {
       &__title-tooltip > * {
         display: inline;

@@ -17,10 +17,6 @@ jest.mock('../../../../../../store/actions', () => ({
   }),
 }));
 
-jest.mock('../../../simulation-details/useBalanceChanges', () => ({
-  useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
-}));
-
 jest.mock(
   '../../../../../../components/app/alert-system/contexts/alertMetricsContext',
   () => ({

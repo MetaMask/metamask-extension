@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
-import { withFixtures, unlockWallet, getCleanAppState } from '../../../helpers';
+import { withFixtures, getCleanAppState, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
@@ -22,6 +22,7 @@ type Contact = {
 type AppState = {
   metamask: {
     isContactSyncingEnabled: boolean;
+    hasAccountSyncingSyncedAtLeastOnce: boolean;
     addressBook?: Record<string, Record<string, Contact>>;
   };
 };
@@ -58,9 +59,7 @@ describe('Contact syncing - New User', function () {
         // Wait for the UI to be ready before opening settings
         await driver.wait(async () => {
           const uiState = await getCleanAppState(driver);
-          return (
-            uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true
-          );
+          return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
         }, 30000);
 
         // Set up test utilities

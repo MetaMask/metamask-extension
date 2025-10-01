@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ERC721 } from '@metamask/controller-utils';
+import React, { useCallback, useMemo, useState } from 'react';
+import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import {
   Box,
@@ -26,28 +26,19 @@ import { useCurrencyConversions } from '../../../hooks/send/useCurrencyConversio
 import { useMaxAmount } from '../../../hooks/send/useMaxAmount';
 import { useSendContext } from '../../../context/send';
 import { useSendType } from '../../../hooks/send/useSendType';
-import {
-  formatToFixedDecimals,
-  getFractionLength,
-  isValidPositiveNumericString,
-} from '../../../utils/send';
+import { getFractionLength } from '../../../utils/send';
 
-export const Amount = ({
-  setAmountValueError,
-}: {
-  setAmountValueError: (str?: string) => void;
-}) => {
+export const Amount = () => {
   const t = useI18nContext();
   const { asset, updateValue, value } = useSendContext();
   const [amount, setAmount] = useState(value ?? '');
-  const [amountValueError, setAmountValueErrorLocal] = useState<string>();
   const { balance } = useBalance();
   const [fiatMode, setFiatMode] = useState(false);
   const {
-    conversionSupportedForAsset,
     getFiatValue,
     getFiatDisplayValue,
     getNativeValue,
+    getNativeDisplayValue,
   } = useCurrencyConversions();
   const { getMaxAmount } = useMaxAmount();
   const { isNonEvmNativeSendType } = useSendType();
@@ -60,25 +51,10 @@ export const Amount = ({
   } = useAmountSelectionMetrics();
   const alternateDisplayValue = useMemo(
     () =>
-      fiatMode
-        ? `${formatToFixedDecimals(value, 5)} ${asset?.symbol}`
-        : getFiatDisplayValue(amount),
-    [amount, fiatMode, getFiatDisplayValue, value],
+      fiatMode ? getNativeDisplayValue(amount) : getFiatDisplayValue(amount),
+    [amount, fiatMode, getFiatDisplayValue, getNativeDisplayValue],
   );
   const { amountError } = useAmountValidation();
-
-  useEffect(() => {
-    let amtError: string | undefined;
-    if (amountError) {
-      amtError = amountError;
-    } else if (amount === undefined || amount === null || amount === '') {
-      amtError = undefined;
-    } else if (!isValidPositiveNumericString(amount)) {
-      amtError = t('invalidValue');
-    }
-    setAmountValueError(amtError);
-    setAmountValueErrorLocal(amtError);
-  }, [amount, amountError, setAmountValueError, setAmountValueErrorLocal, t]);
 
   const onChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,16 +74,13 @@ export const Amount = ({
 
   const toggleFiatMode = useCallback(() => {
     const newFiatMode = !fiatMode;
+    if (amount !== undefined) {
+      setAmount(newFiatMode ? getFiatValue(amount) : getNativeValue(amount));
+    }
     setFiatMode(newFiatMode);
     if (newFiatMode) {
-      if (amount !== undefined && isValidPositiveNumericString(amount)) {
-        setAmount(getFiatValue(amount));
-      }
       setAmountInputTypeFiat();
     } else {
-      if (!value || isValidPositiveNumericString(value)) {
-        setAmount(value ?? '');
-      }
       setAmountInputTypeToken();
     }
   }, [
@@ -119,24 +92,27 @@ export const Amount = ({
     setAmountInputTypeFiat,
     setAmountInputTypeToken,
     setFiatMode,
-    value,
   ]);
 
   const updateToMax = useCallback(() => {
     const maxValue = getMaxAmount() ?? '0';
-    setAmount(fiatMode ? getFiatValue(maxValue) : maxValue);
-    updateValue(maxValue, true);
+    updateValue(fiatMode ? getNativeValue(maxValue) : maxValue, true);
+    setAmount(maxValue);
     setAmountInputMethodPressedMax();
   }, [
     fiatMode,
-    getFiatValue,
     getMaxAmount,
+    getNativeValue,
     setAmount,
     setAmountInputMethodPressedMax,
     updateValue,
   ]);
 
-  if (asset?.standard === ERC721) {
+  const isERC1155 = asset?.standard === ERC1155;
+  const isERC721 = asset?.standard === ERC721;
+  const isTokenTransfer = asset && !isERC1155 && !isERC721;
+
+  if (isERC721) {
     return null;
   }
 
@@ -146,16 +122,14 @@ export const Amount = ({
         {t('amount')}
       </Text>
       <TextField
-        error={Boolean(amountValueError)}
+        error={Boolean(amountError)}
         onChange={onChange}
         onPaste={setAmountInputMethodPasted}
         onInput={setAmountInputMethodManual}
-        placeholder="0"
         value={amount}
         endAccessory={
-          <Box display={Display.Flex}>
-            <Text>{asset?.symbol}</Text>
-            {conversionSupportedForAsset && (
+          <div>
+            {isTokenTransfer && (
               <ButtonIcon
                 ariaLabel="toggle fiat mode"
                 iconName={IconName.SwapVertical}
@@ -164,7 +138,7 @@ export const Amount = ({
                 data-testid="toggle-fiat-mode"
               />
             )}
-          </Box>
+          </div>
         }
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
@@ -176,14 +150,11 @@ export const Amount = ({
       >
         <Text
           color={
-            amountValueError
-              ? TextColor.errorDefault
-              : TextColor.textAlternative
+            amountError ? TextColor.errorDefault : TextColor.textAlternative
           }
           variant={TextVariant.bodySm}
         >
-          {amountValueError ||
-            (conversionSupportedForAsset ? alternateDisplayValue : '')}
+          {isTokenTransfer ? amountError || `~${alternateDisplayValue}` : ''}
         </Text>
         <Box display={Display.Flex}>
           <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
@@ -191,7 +162,7 @@ export const Amount = ({
           </Text>
           {!isNonEvmNativeSendType && (
             <ButtonLink
-              marginLeft={2}
+              marginLeft={1}
               onClick={updateToMax}
               variant={TextVariant.bodySm}
             >

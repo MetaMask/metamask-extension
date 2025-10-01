@@ -5,13 +5,21 @@ import {
   TokensControllerMessenger,
   TokensControllerInitMessenger,
 } from './messengers';
-import { getGlobalChainId } from './init-utils';
 
 export const TokensControllerInit: ControllerInitFunction<
   TokensController,
   TokensControllerMessenger,
   TokensControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
+  // This replicates `#getGlobalChainId` in the `MetaMaskController`.
+  const networkState = initMessenger.call('NetworkController:getState');
+  const networkClientId = networkState.selectedNetworkClientId;
+
+  const { chainId } = initMessenger.call(
+    'NetworkController:getNetworkClientById',
+    networkClientId,
+  ).configuration;
+
   const { provider } =
     initMessenger.call('NetworkController:getSelectedNetworkClient') ?? {};
   assert(provider, 'Provider is required to initialize TokensController.');
@@ -20,7 +28,7 @@ export const TokensControllerInit: ControllerInitFunction<
     messenger: controllerMessenger,
     state: persistedState.TokensController,
     provider,
-    chainId: getGlobalChainId(initMessenger),
+    chainId,
   });
 
   return {

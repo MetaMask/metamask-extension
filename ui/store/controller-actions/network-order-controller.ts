@@ -32,57 +32,23 @@ export function enableAllPopularNetworks(): ThunkAction<
     const isMultichainState2Enabled =
       getIsMultichainAccountsState2Enabled(state);
 
-    // Choose the appropriate featured networks list based on the flag
+    // Choose the appropriate featured networks constant based on feature flag
     const featuredNetworkChainIds = isMultichainState2Enabled
       ? FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN
       : FEATURED_NETWORK_CHAIN_IDS;
 
-    // Fast lookup for configured chains
-    const configured = new Set(Object.keys(multichainNetworkConfigMap));
+    // Filter to get only available EVM networks
+    const availableEvmNetworks = featuredNetworkChainIds
+      .filter((chainId): chainId is Hex => isHexString(chainId as Hex))
+      .filter(
+        (chainId) => toEvmCaipChainId(chainId) in multichainNetworkConfigMap,
+      );
 
-    // Group chainIds by namespace in a single pass
-    // Example shape: { eip155: ['0x1','0x2105'], solana: ['solana:...'] }
-    const byNamespace: Partial<Record<KnownCaipNamespace, string[]>> = {};
-
-    for (const id of featuredNetworkChainIds) {
-      // EVM hex chainId (eip155)
-      if (isHexString(id as Hex)) {
-        const caip = toEvmCaipChainId(id as Hex); // e.g., 'eip155:1'
-        if (configured.has(caip)) {
-          const ns = KnownCaipNamespace.Eip155;
-          (byNamespace[ns] ??= []).push(id as Hex);
-        }
-        continue;
-      }
-
-      // Non-EVM CAIP chainId (e.g., 'solana:...')
-      if (isCaipChainId(id)) {
-        if (configured.has(id)) {
-          const { namespace } = parseCaipChainId(id as CaipChainId);
-          (byNamespace[namespace as KnownCaipNamespace] ??= []).push(
-            id as CaipChainId,
-          );
-        }
-      }
-    }
-
-    // Nothing to enable — exit early
-    if (Object.keys(byNamespace).length === 0) {
-      return;
-    }
-
-    // Enable per namespace
-    for (const [namespace, chainIds] of Object.entries(byNamespace)) {
-      const ns = namespace as KnownCaipNamespace;
-
-      // For multichain state, enable all namespaces including Solana
-      if (isMultichainState2Enabled) {
-        await dispatch(setEnabledNetworks(chainIds, ns));
-      }
-      // Enable EVM networks only when multichain is disabled
-      if (!isMultichainState2Enabled && ns === KnownCaipNamespace.Eip155) {
-        await dispatch(setEnabledNetworks(chainIds, ns));
-      }
+    // Enable all available EVM networks in a single call
+    if (availableEvmNetworks.length > 0) {
+      await dispatch(
+        setEnabledNetworks(availableEvmNetworks, KnownCaipNamespace.Eip155),
+      );
     }
   };
 }

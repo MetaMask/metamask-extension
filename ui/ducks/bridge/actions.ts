@@ -43,7 +43,6 @@ const {
   setSelectedQuote,
   setWasTxDeclined,
   setSlippage,
-  restoreQuoteRequestFromState,
 } = bridgeSlice.actions;
 
 export {
@@ -61,7 +60,6 @@ export {
   setSlippage,
   setTxAlerts,
   setEVMSrcNativeBalance,
-  restoreQuoteRequestFromState,
 };
 
 const callBridgeControllerMethod = (

@@ -9,7 +9,10 @@ class AssetPicker {
 
   private readonly nftTab = { css: 'button', text: 'NFTs' };
 
-  private readonly noNftInfo = '[data-testid="nft-tab-empty-state"]';
+  private readonly noNftInfo = {
+    text: 'No NFTs yet',
+    tag: 'p',
+  };
 
   private readonly searchInput =
     '[data-testid="asset-picker-modal-search-input"]';

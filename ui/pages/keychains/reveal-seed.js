@@ -215,11 +215,21 @@ export default function RevealSeedPage() {
             }
           }}
         >
-          <Tab name={t('revealSeedWordsText')} tabKey="text-seed">
+          <Tab
+            name={t('revealSeedWordsText')}
+            className="reveal-seed__tab"
+            activeClassName="reveal-seed__active-tab"
+            tabKey="text-seed"
+          >
             <Label marginTop={4}>{t('yourPrivateSeedPhrase')}</Label>
             <ExportTextContainer text={seedWords} onClickCopy={onClickCopy} />
           </Tab>
-          <Tab name={t('revealSeedWordsQR')} tabKey="qr-srp">
+          <Tab
+            name={t('revealSeedWordsQR')}
+            className="reveal-seed__tab"
+            activeClassName="reveal-seed__active-tab"
+            tabKey="qr-srp"
+          >
             <Box
               display={Display.Flex}
               justifyContent={JustifyContent.center}

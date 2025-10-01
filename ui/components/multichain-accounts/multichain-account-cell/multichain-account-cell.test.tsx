@@ -11,7 +11,7 @@ import {
 describe('MultichainAccountCell', () => {
   const store = configureStore(mockDefaultState);
   const defaultProps: MultichainAccountCellProps = {
-    accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+    accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
     accountName: 'Test Account',
     balance: '$2,400.00',
     endAccessory: <span data-testid="end-accessory">More</span>,
@@ -136,45 +136,5 @@ describe('MultichainAccountCell', () => {
 
     fireEvent.click(cellElement);
     expect(handleClick).toHaveBeenCalledTimes(1);
-  });
-
-  it('renders startAccessory when provided', () => {
-    const startAccessoryElement = (
-      <span data-testid="start-accessory">Start</span>
-    );
-
-    renderWithProvider(
-      <MultichainAccountCell
-        {...defaultProps}
-        startAccessory={startAccessoryElement}
-      />,
-      store,
-    );
-
-    expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
-    expect(screen.getByText('Start')).toBeInTheDocument();
-  });
-
-  it('hides selected icon when startAccessory is present', () => {
-    // Arrange
-    const startAccessoryElement = (
-      <span data-testid="start-accessory">Start</span>
-    );
-
-    renderWithProvider(
-      <MultichainAccountCell
-        {...defaultProps}
-        startAccessory={startAccessoryElement}
-        selected={true}
-      />,
-      store,
-    );
-
-    expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
-    expect(
-      screen.queryByTestId(
-        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
-      ),
-    ).not.toBeInTheDocument();
   });
 });

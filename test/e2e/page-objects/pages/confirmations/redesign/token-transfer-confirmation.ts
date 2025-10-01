@@ -26,11 +26,6 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
     text: tEn('transactionFlowNetwork') as string,
   };
 
-  private readonly networkTextElement = (networkText: string) => ({
-    css: 'p',
-    text: networkText,
-  });
-
   private readonly saveButton = { text: 'Save', tag: 'button' };
 
   constructor(driver: Driver) {
@@ -119,16 +114,6 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
       );
       throw e;
     }
-  }
-
-  /**
-   * Check if network text is displayed
-   *
-   * @param networkText - The expected network text to verify
-   */
-  async checkNetwork(networkText: string): Promise<void> {
-    console.log(`Checking for network text: ${networkText}`);
-    await this.driver.waitForSelector(this.networkTextElement(networkText));
   }
 }
 

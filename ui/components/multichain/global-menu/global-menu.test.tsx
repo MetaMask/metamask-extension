@@ -21,15 +21,6 @@ const render = (metamaskStateChanges = {}) => {
   );
 };
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  Link: ({
-    children,
-    ...props
-  }: React.PropsWithChildren<
-    React.AnchorHTMLAttributes<HTMLAnchorElement>
-  >) => <a {...props}>{children}</a>,
-}));
-
 const mockLockMetaMask = jest.fn();
 const mockSetAccountDetailsAddress = jest.fn();
 jest.mock('../../../store/actions', () => ({
@@ -51,7 +42,7 @@ describe('Global Menu', () => {
   it('disables the settings item when there is an active transaction', async () => {
     const { getByTestId } = render();
     await waitFor(() => {
-      expect(getByTestId('global-menu-settings')).not.toHaveAttribute('href');
+      expect(getByTestId('global-menu-settings')).toBeDisabled();
     });
   });
 
@@ -65,9 +56,7 @@ describe('Global Menu', () => {
   it('disables the connected sites item when there is an active transaction', async () => {
     const { getByTestId } = render();
     await waitFor(() => {
-      expect(getByTestId('global-menu-connected-sites')).not.toHaveAttribute(
-        'href',
-      );
+      expect(getByTestId('global-menu-connected-sites')).toBeDisabled();
     });
   });
 

@@ -8,9 +8,6 @@ class OnboardingMetricsPage {
   private readonly dataCollectionForMarketingCheckbox =
     '[data-testid="metametrics-data-collection-checkbox"]';
 
-  private readonly dataCollectionForMarketingCheckedState =
-    '.mm-checkbox__input--checked#metametrics-opt-in';
-
   private readonly metametricsMessage = {
     text: 'Help us improve MetaMask',
     tag: 'h2',
@@ -48,12 +45,6 @@ class OnboardingMetricsPage {
 
   async clickDataCollectionForMarketingCheckbox(): Promise<void> {
     await this.driver.clickElement(this.dataCollectionForMarketingCheckbox);
-  }
-
-  async validateDataCollectionForMarketingIsChecked(): Promise<void> {
-    await this.driver.waitForSelector(
-      this.dataCollectionForMarketingCheckedState,
-    );
   }
 }
 

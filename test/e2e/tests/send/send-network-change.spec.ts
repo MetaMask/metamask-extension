@@ -90,7 +90,7 @@ describe('Send Flow - Network Change', function (this: Suite) {
         const initialTokenCount = initialTokens.length;
 
         // Close asset picker modal by selecting first token
-        await sendTokenPage.chooseTokenToSend('ETH');
+        await sendTokenPage.clickFirstTokenListButton();
 
         // Go back to home to change network
         await sendTokenPage.clickSendFlowBackButton();
@@ -115,7 +115,7 @@ describe('Send Flow - Network Change', function (this: Suite) {
         );
 
         // Close asset picker
-        await sendTokenPage.chooseTokenToSend('ETH');
+        await sendTokenPage.clickFirstTokenListButton();
 
         console.log('Token list updated correctly for new network');
       },

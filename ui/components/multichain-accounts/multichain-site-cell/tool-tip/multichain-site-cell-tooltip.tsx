@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { Tooltip } from 'react-tippy';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
@@ -20,16 +19,11 @@ import {
 import { PreferredAvatar } from '../../../app/preferred-avatar';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-import {
-  AccountGroupWithInternalAccounts,
-  MultichainAccountsState,
-} from '../../../../selectors/multichain-accounts/account-tree.types';
+import { AvatarGroup } from '../../../multichain/avatar-group';
+import { AvatarType } from '../../../multichain/avatar-group/avatar-group.types';
+import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
-import {
-  MultichainAvatarGroup,
-  MultichainAvatarGroupType,
-} from '../avatar-group/multichain-avatar-group';
-import { getIconSeedAddressesByAccountGroups } from '../../../../selectors/multichain-accounts/account-tree';
+import { MultichainAccountAvatarGroup } from '../avatar-group/multichain-avatar-group';
 
 export type MultichainSiteCellTooltipProps = {
   accountGroups?: AccountGroupWithInternalAccounts[];
@@ -62,7 +56,7 @@ const TooltipContent = React.memo<TooltipContentProps>(
         return t('moreNetworks', [networks.length - TOOLTIP_LIMIT]);
       }
       return '';
-    }, [hasMoreAccounts, accountGroups, networks, t]);
+    }, [hasMoreAccounts, hasMoreNetworks, accountGroups, networks, t]);
 
     return (
       <Box
@@ -151,21 +145,15 @@ export const MultichainSiteCellTooltip =
   React.memo<MultichainSiteCellTooltipProps>(({ accountGroups, networks }) => {
     const t = useI18nContext();
 
-    const seedAddresses = useSelector((state: MultichainAccountsState) =>
-      getIconSeedAddressesByAccountGroups(state, accountGroups ?? []),
-    );
-
     const avatarAccountsData = useMemo(() => {
       return (
-        accountGroups
-          ?.map((accountGroup) => {
-            const avatarValue = seedAddresses[accountGroup.id];
-            return avatarValue ? { avatarValue } : null;
-          })
-          .filter((item): item is { avatarValue: string } => item !== null) ??
-        []
+        accountGroups?.map((accountGroup) => {
+          return {
+            avatarValue: accountGroup.accounts[0].address,
+          };
+        }) ?? []
       );
-    }, [accountGroups, seedAddresses]);
+    }, [accountGroups]);
 
     const avatarNetworksData = useMemo(
       () =>
@@ -197,17 +185,16 @@ export const MultichainSiteCellTooltip =
         theme="dark"
       >
         {hasAccountGroups && (
-          <MultichainAvatarGroup
-            type={MultichainAvatarGroupType.ACCOUNT}
+          <MultichainAccountAvatarGroup
             members={avatarAccountsData}
             limit={AVATAR_GROUP_LIMIT}
           />
         )}
         {hasNetworks && (
-          <MultichainAvatarGroup
-            type={MultichainAvatarGroupType.NETWORK}
+          <AvatarGroup
             members={avatarNetworksData}
             limit={AVATAR_GROUP_LIMIT}
+            avatarType={AvatarType.TOKEN}
           />
         )}
       </Tooltip>

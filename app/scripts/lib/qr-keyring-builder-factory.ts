@@ -2,7 +2,7 @@ import {
   QrKeyringBridge,
   QrKeyringScannerBridgeOptions,
 } from '@metamask/eth-qr-keyring';
-import { KeyringClass } from '@metamask/keyring-utils';
+import { Json, KeyringClass } from '@metamask/utils';
 
 /**
  * Get builder function for a QR-based keyring, that requires a bridge
@@ -14,7 +14,7 @@ import { KeyringClass } from '@metamask/keyring-utils';
  * @returns Returns a builder function for `Keyring` with a `type` property.
  */
 export function qrKeyringBuilderFactory(
-  Keyring: KeyringClass,
+  Keyring: KeyringClass<Json>,
   Bridge: new (hooks: QrKeyringScannerBridgeOptions) => QrKeyringBridge,
   bridgeHooks: QrKeyringScannerBridgeOptions,
 ) {

@@ -10,7 +10,7 @@ describe('netwotkHelper', () => {
       const chains = [
         {
           chainId: '1',
-          name: 'Ethereum',
+          name: 'Ethereum Mainnet',
           nativeCurrency: { symbol: 'ETH' },
         },
         {
@@ -35,7 +35,7 @@ describe('netwotkHelper', () => {
       const chains = [
         {
           chainId: '1',
-          name: 'Ethereum',
+          name: 'Ethereum Mainnet',
           nativeCurrency: { symbol: 'ETH' },
         },
         {

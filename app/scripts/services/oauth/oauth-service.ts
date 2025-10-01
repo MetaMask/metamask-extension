@@ -74,13 +74,8 @@ export default class OAuthService {
     );
 
     this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:revokeRefreshToken`,
-      this.revokeRefreshToken.bind(this),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:renewRefreshToken`,
-      this.renewRefreshToken.bind(this),
+      `${SERVICE_NAME}:revokeAndGetNewRefreshToken`,
+      this.revokeAndGetNewRefreshToken.bind(this),
     );
   }
 
@@ -134,14 +129,14 @@ export default class OAuthService {
   }
 
   /**
-   * Renew the refresh token - get a new refresh token and revoke token.
+   * Revoke the current refresh token and get a new refresh token.
    *
    * @param options - The options for the revoke and get new refresh token.
    * @param options.connection - The social login type to login with.
-   * @param options.revokeToken - The revoke token to authenticate the request.
+   * @param options.revokeToken - The revoke token to authenticate the revoke request.
    * @returns The new refresh token and revoke token.
    */
-  async renewRefreshToken(options: {
+  async revokeAndGetNewRefreshToken(options: {
     connection: AuthConnection;
     revokeToken: string;
   }): Promise<{ newRevokeToken: string; newRefreshToken: string }> {
@@ -152,25 +147,11 @@ export default class OAuthService {
       this.#webAuthenticator,
     );
 
-    const res = await loginHandler.renewRefreshToken(revokeToken);
+    const res = await loginHandler.revokeRefreshToken(revokeToken);
     return {
       newRefreshToken: res.refresh_token,
       newRevokeToken: res.revoke_token,
     };
-  }
-
-  async revokeRefreshToken(options: {
-    connection: AuthConnection;
-    revokeToken: string;
-  }): Promise<void> {
-    const { connection, revokeToken } = options;
-    const loginHandler = createLoginHandler(
-      connection,
-      this.#env,
-      this.#webAuthenticator,
-    );
-
-    await loginHandler.revokeRefreshToken(revokeToken);
   }
 
   /**

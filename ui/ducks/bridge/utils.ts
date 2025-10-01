@@ -266,7 +266,7 @@ const createBridgeTokenPayload = (
     name?: string;
     assetId?: string;
   },
-  chainId: ChainId | Hex | CaipChainId,
+  chainId: ChainId | Hex,
 ): TokenPayload['payload'] | null => {
   const { assetId, ...rest } = tokenData;
   return toBridgeToken({
@@ -276,10 +276,13 @@ const createBridgeTokenPayload = (
 };
 
 export const getDefaultToToken = (
-  targetChainId: CaipChainId,
-  fromToken: Pick<NonNullable<TokenPayload['payload']>, 'address'>,
+  { chainId: targetChainId }: NetworkConfiguration | AddNetworkFields,
+  fromToken: NonNullable<TokenPayload['payload']>,
 ) => {
-  const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[targetChainId];
+  const commonPair =
+    BRIDGE_CHAINID_COMMON_TOKEN_PAIR[
+      targetChainId as keyof typeof BRIDGE_CHAINID_COMMON_TOKEN_PAIR
+    ];
 
   if (commonPair) {
     // If source is native token, default to USDC on same chain

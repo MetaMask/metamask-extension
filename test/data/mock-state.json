@@ -77,8 +77,6 @@
     "isUpdateAvailable": false,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
-    "subscriptions": [],
-    "trialedProducts": [],
     "gasFeeEstimatesByChainId": {
       "0x5": {
         "gasEstimateType": "fee-market",
@@ -111,6 +109,7 @@
         }
       }
     },
+    "permissionHistory": {},
     "gasFeeEstimates": {
       "low": {
         "minWaitTimeEstimate": 180000,
@@ -492,7 +491,7 @@
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
         "lastUpdatedAt": 1738689643708,
-        "name": "BNB Chain",
+        "name": "Binance Smart Chain",
         "nativeCurrency": "BNB",
         "rpcEndpoints": [
           {
@@ -508,7 +507,7 @@
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
         "lastUpdatedAt": 1738689655105,
-        "name": "Polygon",
+        "name": "Polygon Mainnet",
         "nativeCurrency": "POL",
         "rpcEndpoints": [
           {
@@ -524,7 +523,7 @@
         "defaultBlockExplorerUrlIndex": 0,
         "defaultRpcEndpointIndex": 0,
         "lastUpdatedAt": 1738689624782,
-        "name": "Arbitrum",
+        "name": "Arbitrum One",
         "nativeCurrency": "ETH",
         "rpcEndpoints": [
           {
@@ -659,8 +658,6 @@
         }
       }
     },
-    "isAccountTreeSyncingInProgress": false,
-    "hasAccountTreeSyncingSyncedAtLeastOnce": false,
     "accountGroupsMetadata": {},
     "accountWalletsMetadata": {},
     "internalAccounts": {
@@ -2346,7 +2343,7 @@
       {
         "active": true,
         "chainId": 1,
-        "chainName": "Ethereum",
+        "chainName": "Ethereum Mainnet",
         "shortName": "Ethereum",
         "nativeTokenSupported": true
       },
@@ -2367,7 +2364,7 @@
       {
         "active": true,
         "chainId": 56,
-        "chainName": "BNB Chain",
+        "chainName": "BNB Chain Mainnet",
         "shortName": "BNB Chain",
         "nativeTokenSupported": true
       },
@@ -2381,7 +2378,7 @@
       {
         "active": true,
         "chainId": 137,
-        "chainName": "Polygon",
+        "chainName": "Polygon Mainnet",
         "shortName": "Polygon",
         "nativeTokenSupported": true
       },
@@ -2395,7 +2392,7 @@
       {
         "active": true,
         "chainId": 324,
-        "chainName": "zkSync Era",
+        "chainName": "zkSync Era Mainnet",
         "shortName": "zkSync Era",
         "nativeTokenSupported": true
       },
@@ -2423,7 +2420,7 @@
       {
         "active": true,
         "chainId": 8453,
-        "chainName": "Base",
+        "chainName": "Base Mainnet",
         "shortName": "Base",
         "nativeTokenSupported": true
       },

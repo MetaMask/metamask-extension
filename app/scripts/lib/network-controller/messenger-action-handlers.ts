@@ -6,7 +6,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
 import MetaMetricsController from '../../controllers/metametrics-controller';
-import { isPublicEndpointUrl, shouldCreateRpcServiceEvents } from './utils';
+import { shouldCreateRpcServiceEvents } from './utils';
 
 /**
  * Called when an endpoint is determined to be "unavailable". Creates a Segment
@@ -129,7 +129,9 @@ export function trackRpcEndpointEvent(
 ): void {
   if (
     !shouldCreateRpcServiceEvents({
+      endpointUrl,
       error,
+      infuraProjectId,
       metaMetricsId,
     })
   ) {
@@ -140,9 +142,7 @@ export function trackRpcEndpointEvent(
   /* eslint-disable @typescript-eslint/naming-convention */
   const properties = {
     chain_id_caip: `eip155:${hexToNumber(chainId)}`,
-    rpc_endpoint_url: isPublicEndpointUrl(endpointUrl, infuraProjectId)
-      ? onlyKeepHost(endpointUrl)
-      : 'custom',
+    rpc_endpoint_url: onlyKeepHost(endpointUrl),
     ...(isObject(error) &&
     'httpStatus' in error &&
     isValidJson(error.httpStatus)

@@ -1,11 +1,6 @@
-function splitDiffIntoBlocks(diff: string): string[] {
-  // Behaves like split('diff --git '), but anchored to line starts.
-  // Each block starts right after the token and includes the rest of the header line.
-  return diff.split(/^diff --git /gmu).slice(1);
-}
-
 function filterDiffByFilePath(diff: string, regex: RegExp): string {
-  const diffBlocks = splitDiffIntoBlocks(diff);
+  // split by `diff --git` and remove the first element which is empty
+  const diffBlocks = diff.split(`diff --git`).slice(1);
 
   const filteredDiff = diffBlocks
     .map((block) => block.trim())
@@ -39,7 +34,8 @@ function filterDiffByFilePath(diff: string, regex: RegExp): string {
 }
 
 function restrictedFilePresent(diff: string, regex: RegExp): boolean {
-  const diffBlocks = splitDiffIntoBlocks(diff);
+  // split by `diff --git` and remove the first element which is empty
+  const diffBlocks = diff.split(`diff --git`).slice(1);
   let jsOrJsxFilePresent = false;
   diffBlocks
     .map((block) => block.trim())
@@ -97,7 +93,8 @@ function filterDiffLineAdditions(diff: string): string {
 // @@ -0,0 +1 @@
 // +new line change as the new file is created
 function filterDiffFileCreations(diff: string): string {
-  const diffBlocks = splitDiffIntoBlocks(diff);
+  // split by `diff --git` and remove the first element which is empty
+  const diffBlocks = diff.split(`diff --git`).slice(1);
 
   const filteredDiff = diffBlocks
     .map((block) => block.trim())

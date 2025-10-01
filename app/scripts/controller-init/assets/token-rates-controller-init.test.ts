@@ -2,16 +2,11 @@ import {
   TokenRatesController,
   TokenRatesControllerMessenger,
 } from '@metamask/assets-controllers';
-import { ActionConstraint, Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { PreferencesController } from '@metamask/preferences-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
-import {
-  getTokenRatesControllerInitMessenger,
-  getTokenRatesControllerMessenger,
-  TokenRatesControllerInitMessenger,
-} from '../messengers/assets';
-import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { getTokenRatesControllerMessenger } from '../messengers/assets';
 import { TokenRatesControllerInit } from './token-rates-controller-init';
 
 jest.mock('@metamask/assets-controllers');
@@ -45,29 +40,16 @@ function buildControllerMock(
  * stubbed PreferencesController.
  */
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
-    TokenRatesControllerMessenger,
-    TokenRatesControllerInitMessenger
-  >
+  ControllerInitRequest<TokenRatesControllerMessenger>
 > {
-  const baseControllerMessenger = new Messenger<
-    PreferencesControllerGetStateAction | ActionConstraint,
-    never
-  >();
-
-  baseControllerMessenger.registerActionHandler(
-    'PreferencesController:getState',
-    jest.fn().mockReturnValue({ useCurrencyRateCheck: true }),
-  );
+  const baseControllerMessenger = new Messenger();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getTokenRatesControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: getTokenRatesControllerInitMessenger(
-      baseControllerMessenger,
-    ),
+    initMessenger: undefined,
   };
 
   // @ts-expect-error Incomplete mock, just includes properties used by code-under-test.

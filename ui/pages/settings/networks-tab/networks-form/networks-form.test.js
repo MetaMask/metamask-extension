@@ -91,7 +91,7 @@ describe('NetworkForm Component', () => {
       .get('/chains.json')
       .reply(200, [
         {
-          name: 'Polygon',
+          name: 'Polygon Mainnet',
           chain: 'Polygon',
           rpc: [
             'https://polygon-rpc.com/',
@@ -166,7 +166,7 @@ describe('NetworkForm Component', () => {
 
     expect(
       await screen.findByText(
-        'This Chain ID is currently used by the Ethereum network.',
+        'This Chain ID is currently used by the Ethereum Mainnet network.',
       ),
     ).toBeInTheDocument();
   });
@@ -223,7 +223,7 @@ describe('NetworkForm Component', () => {
 
     expect(
       await screen.findByText(
-        'This Chain ID is currently used by the Ethereum network.',
+        'This Chain ID is currently used by the Ethereum Mainnet network.',
       ),
     ).toBeInTheDocument();
 
@@ -413,7 +413,7 @@ describe('NetworkForm Component', () => {
       expect(addNetwork).toHaveBeenCalledTimes(1);
       expect(addNetwork).toHaveBeenCalledWith({
         chainId: '0x64',
-        name: 'Ethereum',
+        name: 'Ethereum Mainnet',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -439,7 +439,7 @@ describe('NetworkForm Component', () => {
       expect(updateNetwork).toHaveBeenCalledWith(
         {
           chainId: '0x64',
-          name: 'Ethereum',
+          name: 'Ethereum Mainnet',
           nativeCurrency: 'ETH',
           rpcEndpoints: [
             {

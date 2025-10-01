@@ -643,7 +643,7 @@ export enum EventTypes {
   TransactionFinalized = 'Transaction Finalized',
   SwapBridgeCompleted = 'Unified SwapBridge Completed',
   UnifiedSwapBridgeSubmitted = 'Unified SwapBridge Submitted',
-  SwapBridgeTokenSwitched = 'Unified SwapBridge Source Destination Switched',
+  SwapBridgeTokenSwitched = 'Unified SwapBridge Source Destination Flipped',
 }
 
 export const EXPECTED_EVENT_TYPES = Object.values(EventTypes);

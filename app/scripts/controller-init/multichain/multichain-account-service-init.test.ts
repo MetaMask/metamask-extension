@@ -1,42 +1,26 @@
 import { MultichainAccountService } from '@metamask/multichain-account-service';
-import { ActionConstraint, Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
-  getMultichainAccountServiceInitMessenger,
   getMultichainAccountServiceMessenger,
-  MultichainAccountServiceInitMessenger,
   MultichainAccountServiceMessenger,
 } from '../messengers/accounts';
-import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { MultichainAccountServiceInit } from './multichain-account-service-init';
 
 jest.mock('@metamask/multichain-account-service');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
-    MultichainAccountServiceMessenger,
-    MultichainAccountServiceInitMessenger
-  >
+  ControllerInitRequest<MultichainAccountServiceMessenger>
 > {
-  const baseControllerMessenger = new Messenger<
-    PreferencesControllerGetStateAction | ActionConstraint,
-    never
-  >();
-
-  baseControllerMessenger.registerActionHandler(
-    'PreferencesController:getState',
-    jest.fn().mockReturnValue({}),
-  );
+  const baseControllerMessenger = new Messenger();
 
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getMultichainAccountServiceMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: getMultichainAccountServiceInitMessenger(
-      baseControllerMessenger,
-    ),
+    initMessenger: undefined,
   };
 }
 

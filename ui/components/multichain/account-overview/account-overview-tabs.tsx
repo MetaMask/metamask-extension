@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -52,6 +52,14 @@ export const AccountOverviewTabs = ({
 
   useAssetListTokenDetection();
 
+  const tabProps = useMemo(
+    () => ({
+      activeClassName: 'account-overview__tab--active',
+      className: 'account-overview__tab',
+    }),
+    [],
+  );
+
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTabKey) => {
       onTabClick(tabName);
@@ -100,67 +108,71 @@ export const AccountOverviewTabs = ({
   const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
 
   return (
-    <Tabs<AccountOverviewTabKey>
-      defaultActiveTabKey={defaultHomeActiveTabName ?? undefined}
-      onTabClick={handleTabClick}
-      tabListProps={{
-        className: 'px-4',
-      }}
-    >
-      {showTokens && (
-        <Tab
-          name={t('tokens')}
-          tabKey={AccountOverviewTabKey.Tokens}
-          data-testid="account-overview__asset-tab"
-        >
-          <Box marginBottom={2}>
-            <AssetList
-              showTokensLinks={showTokensLinks ?? true}
-              onClickAsset={onClickAsset}
-              safeChains={safeChains}
-            />
-          </Box>
-        </Tab>
-      )}
-      {showDefi && (
-        <Tab
-          name={t('defi')}
-          tabKey={AccountOverviewTabKey.DeFi}
-          data-testid="account-overview__defi-tab"
-        >
-          <Box>
-            <DeFiTab
-              showTokensLinks={showTokensLinks ?? true}
-              onClickAsset={onClickDeFi}
-              safeChains={safeChains}
-            />
-          </Box>
-        </Tab>
-      )}
+    <Box style={{ flexGrow: '1' }}>
+      <Tabs
+        defaultActiveTabKey={defaultHomeActiveTabName}
+        onTabClick={handleTabClick}
+        tabsClassName="account-overview__tabs"
+      >
+        {showTokens && (
+          <Tab
+            name={t('tokens')}
+            tabKey="tokens"
+            data-testid="account-overview__asset-tab"
+            {...tabProps}
+          >
+            <Box marginBottom={2}>
+              <AssetList
+                showTokensLinks={showTokensLinks ?? true}
+                onClickAsset={onClickAsset}
+                safeChains={safeChains}
+              />
+            </Box>
+          </Tab>
+        )}
+        {showDefi && (
+          <Tab
+            name={t('defi')}
+            tabKey="defi"
+            data-testid="account-overview__defi-tab"
+            {...tabProps}
+          >
+            <Box>
+              <DeFiTab
+                showTokensLinks={showTokensLinks ?? true}
+                onClickAsset={onClickDeFi}
+                safeChains={safeChains}
+              />
+            </Box>
+          </Tab>
+        )}
 
-      {showNfts && (
-        <Tab
-          name={t('nfts')}
-          tabKey={AccountOverviewTabKey.Nfts}
-          data-testid="account-overview__nfts-tab"
-        >
-          <NftsTab />
-        </Tab>
-      )}
+        {showNfts && (
+          <Tab
+            name={t('nfts')}
+            tabKey="nfts"
+            data-testid="account-overview__nfts-tab"
+            {...tabProps}
+          >
+            <NftsTab />
+          </Tab>
+        )}
 
-      {showActivity && (
-        <Tab
-          name={t('activity')}
-          tabKey={AccountOverviewTabKey.Activity}
-          data-testid="account-overview__activity-tab"
-        >
-          {showUnifiedTransactionList ? (
-            <UnifiedTransactionList />
-          ) : (
-            <TransactionList />
-          )}
-        </Tab>
-      )}
-    </Tabs>
+        {showActivity && (
+          <Tab
+            name={t('activity')}
+            tabKey="activity"
+            data-testid="account-overview__activity-tab"
+            {...tabProps}
+          >
+            {showUnifiedTransactionList ? (
+              <UnifiedTransactionList />
+            ) : (
+              <TransactionList />
+            )}
+          </Tab>
+        )}
+      </Tabs>
+    </Box>
   );
 };
