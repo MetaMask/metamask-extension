@@ -24,16 +24,16 @@ export type EIP7702TransactionResult = {
  * Creates an EIP-7702 upgrade transaction.
  *
  * @param params - The transaction parameters
- * @param addTransactionAndRouteToConfirmationPage - Function to add transaction
+ * @param addTransactionAndWaitForPublish - Function to add transaction and wait for publish
  * @returns Promise with transaction result
  */
 export async function createEIP7702UpgradeTransaction(
   params: EIP7702TransactionParams,
-  addTransactionAndRouteToConfirmationPage: (
+  addTransactionAndWaitForPublish: (
     transactionParams: TransactionParams,
-    options?: {
+    options: {
       networkClientId: string;
-      sendFlowHistory?: { event: string; timestamp: number }[];
+      requireApproval?: boolean;
       type?: TransactionType;
     },
   ) => Promise<Record<string, unknown>>,
@@ -55,10 +55,11 @@ export async function createEIP7702UpgradeTransaction(
     type: TransactionEnvelopeType.setCode,
   };
 
-  const transactionMeta = await addTransactionAndRouteToConfirmationPage(
+  const transactionMeta = await addTransactionAndWaitForPublish(
     transactionParams,
     {
       networkClientId,
+      requireApproval: true,
       type: TransactionType.batch,
     },
   );
@@ -74,16 +75,16 @@ export async function createEIP7702UpgradeTransaction(
  * Creates an EIP-7702 downgrade transaction.
  *
  * @param params - The transaction parameters
- * @param addTransactionAndRouteToConfirmationPage - Function to add transaction
+ * @param addTransactionAndWaitForPublish - Function to add transaction and wait for publish
  * @returns Promise with transaction result
  */
 export async function createEIP7702DowngradeTransaction(
   params: EIP7702TransactionParams,
-  addTransactionAndRouteToConfirmationPage: (
+  addTransactionAndWaitForPublish: (
     transactionParams: TransactionParams,
-    options?: {
+    options: {
       networkClientId: string;
-      sendFlowHistory?: { event: string; timestamp: number }[];
+      requireApproval?: boolean;
       type?: TransactionType;
     },
   ) => Promise<Record<string, unknown>>,
@@ -101,10 +102,11 @@ export async function createEIP7702DowngradeTransaction(
     type: TransactionEnvelopeType.setCode,
   };
 
-  const transactionMeta = await addTransactionAndRouteToConfirmationPage(
+  const transactionMeta = await addTransactionAndWaitForPublish(
     transactionParams,
     {
       networkClientId,
+      requireApproval: true,
       type: TransactionType.revokeDelegation,
     },
   );
