@@ -10,3 +10,4 @@ updates:
     allow:
       - dependency-name: "@metamask/*"
     versioning-strategy: "lockfile-only"
+    
