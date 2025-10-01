@@ -55,6 +55,7 @@ import type {
   OnboardingControllerStateChangeEvent,
 } from './onboarding';
 import { PreferencesControllerGetStateAction } from './preferences-controller';
+import { ACCOUNTS_PROD_API_BASE_URL } from '../../../shared/constants/accounts';
 
 // Unique name for the controller
 const controllerName = 'AccountTrackerController';
@@ -68,10 +69,6 @@ type Account = {
   address: string;
   balance: string | null;
   stakedBalance?: StakedBalance;
-};
-
-type AccountApiConfig = {
-  useAccountApiBalances?: string[];
 };
 
 /**
@@ -217,7 +214,8 @@ export type AccountTrackerControllerOptions = {
   provider: Provider;
   blockTracker: BlockTracker;
   getNetworkIdentifier: (config?: NetworkClientConfiguration) => string;
-} & AccountApiConfig;
+  useAccountApiBalances?: string[];
+};
 
 /**
  * This module is responsible for tracking any number of accounts and caching their current balances & transaction
@@ -247,9 +245,6 @@ export default class AccountTrackerController extends BaseController<
   #selectedAccount: InternalAccount;
 
   #useAccountApiBalances: string[];
-
-  // Account API base URL (using v4 multiaccount endpoint)
-  #accountApiBaseUrl = 'https://accounts.api.cx.metamask.io';
 
   /**
    * @param options - Options for initializing the controller
@@ -1112,7 +1107,7 @@ export default class AccountTrackerController extends BaseController<
       return await fetchAccountBalancesInBatches({
         addresses,
         supportedChainIds,
-        accountApiBaseUrl: this.#accountApiBaseUrl,
+        accountApiBaseUrl: ACCOUNTS_PROD_API_BASE_URL,
         batchSize: ACCOUNT_API_BATCH_SIZE,
         logger: {
           warn: (message: string) => log.warn(message),
