@@ -117,6 +117,7 @@ describe('useEIP7702Account', () => {
         },
         {
           networkClientId: 'sepolia',
+          requireApproval: true,
           type: TransactionType.revokeDelegation,
         },
       );
@@ -189,6 +190,7 @@ describe('useEIP7702Account', () => {
         },
         {
           networkClientId: 'sepolia',
+          requireApproval: true,
           type: TransactionType.batch,
         },
       );
