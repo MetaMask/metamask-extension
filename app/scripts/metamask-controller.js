@@ -8906,11 +8906,14 @@ export default class MetamaskController extends EventEmitter {
         networkClientId,
       },
       async (transactionParams, options) => {
-        const transactionMeta = await this.txController.addTransaction(transactionParams, {
-          ...options,
-          origin: 'metamask',
-          requireApproval: true,
-        });
+        const transactionMeta = await this.txController.addTransaction(
+          transactionParams,
+          {
+            ...options,
+            origin: 'metamask',
+            requireApproval: true,
+          },
+        );
         return transactionMeta;
       },
     );

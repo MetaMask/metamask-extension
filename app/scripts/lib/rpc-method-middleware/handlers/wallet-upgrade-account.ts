@@ -81,6 +81,7 @@ async function upgradeAccountImplementation(
       {
         chainId: string;
         isSupported: boolean;
+        delegationAddress?: string;
         upgradeContractAddress?: string;
       }[]
     >;
@@ -132,10 +133,12 @@ async function upgradeAccountImplementation(
       (result) => result.chainId.toLowerCase() === hexChainId.toLowerCase(),
     );
 
-    if (
-      !atomicBatchChainSupport?.isSupported ||
-      !atomicBatchChainSupport?.upgradeContractAddress
-    ) {
+    const isChainSupported =
+      atomicBatchChainSupport &&
+      (!atomicBatchChainSupport.delegationAddress ||
+        atomicBatchChainSupport.isSupported);
+
+    if (!isChainSupported || !atomicBatchChainSupport?.upgradeContractAddress) {
       return end(
         rpcErrors.invalidParams({
           message: `Account upgrade not supported on chain ID ${targetChainId}`,
@@ -243,6 +246,18 @@ async function getAccountUpgradeStatusImplementation(
       return end(
         rpcErrors.invalidParams({
           message: `Network configuration invalid for chain ID ${targetChainId}`,
+        }),
+      );
+    }
+
+    // Validate that defaultRpcEndpointIndex is within bounds
+    if (
+      defaultRpcEndpointIndex < 0 ||
+      defaultRpcEndpointIndex >= rpcEndpoints.length
+    ) {
+      return end(
+        rpcErrors.invalidParams({
+          message: `Invalid RPC endpoint index for chain ID ${targetChainId}`,
         }),
       );
     }
