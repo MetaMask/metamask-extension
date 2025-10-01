@@ -425,6 +425,75 @@ describe('getAccountUpgradeStatusHandler', () => {
     );
   });
 
+  it('rejects invalid RPC endpoint index (negative)', async () => {
+    const { end, getNetworkConfigurationByChainId, handler } =
+      createStatusHandler();
+    getNetworkConfigurationByChainId.mockReturnValue({
+      rpcEndpoints: [{ networkClientId: 'mainnet-1' }],
+      defaultRpcEndpointIndex: -1,
+    });
+
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT, chainId: 1 }],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({
+        message: 'Network configuration invalid for chain ID 1',
+      }),
+    );
+  });
+
+  it('rejects invalid RPC endpoint index (out of bounds)', async () => {
+    const { end, getNetworkConfigurationByChainId, handler } =
+      createStatusHandler();
+    getNetworkConfigurationByChainId.mockReturnValue({
+      rpcEndpoints: [{ networkClientId: 'mainnet-1' }],
+      defaultRpcEndpointIndex: 5,
+    });
+
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT, chainId: 1 }],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({
+        message: 'Network configuration invalid for chain ID 1',
+      }),
+    );
+  });
+
+  it('rejects empty RPC endpoints array', async () => {
+    const { end, getNetworkConfigurationByChainId, handler } =
+      createStatusHandler();
+    getNetworkConfigurationByChainId.mockReturnValue({
+      rpcEndpoints: [],
+      defaultRpcEndpointIndex: 0,
+    });
+
+    await handler({
+      id: 1,
+      method: 'wallet_getAccountUpgradeStatus',
+      jsonrpc: '2.0',
+      origin: 'npm:@metamask/gator-permissions-snap',
+      params: [{ account: TEST_ACCOUNT, chainId: 1 }],
+    });
+
+    expect(end).toHaveBeenCalledWith(
+      rpcErrors.invalidParams({
+        message: 'Network configuration invalid for chain ID 1',
+      }),
+    );
+  });
+
   it('returns upgrade status for upgraded account', async () => {
     const { end, getCode, response, handler } = createStatusHandler();
     getCode.mockResolvedValue('0x1234567890abcdef');

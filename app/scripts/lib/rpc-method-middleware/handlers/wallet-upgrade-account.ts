@@ -242,22 +242,15 @@ async function getAccountUpgradeStatusImplementation(
     // Get the network client ID from the network configuration
     const { rpcEndpoints, defaultRpcEndpointIndex } = networkConfiguration;
 
-    if (!rpcEndpoints || defaultRpcEndpointIndex === undefined) {
-      return end(
-        rpcErrors.invalidParams({
-          message: `Network configuration invalid for chain ID ${targetChainId}`,
-        }),
-      );
-    }
-
-    // Validate that defaultRpcEndpointIndex is within bounds
     if (
+      !rpcEndpoints ||
+      defaultRpcEndpointIndex === undefined ||
       defaultRpcEndpointIndex < 0 ||
       defaultRpcEndpointIndex >= rpcEndpoints.length
     ) {
       return end(
         rpcErrors.invalidParams({
-          message: `Invalid RPC endpoint index for chain ID ${targetChainId}`,
+          message: `Network configuration invalid for chain ID ${targetChainId}`,
         }),
       );
     }
