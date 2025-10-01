@@ -62,7 +62,7 @@ export const useNetworkConnectionBanner =
     const clearTimers = useCallback(() => {
       clearDegradedTimer();
       clearUnavailableTimer();
-    }, []);
+    }, [clearDegradedTimer, clearUnavailableTimer]);
 
     const trackNetworkBannerEvent = useCallback(
       ({
@@ -153,7 +153,7 @@ export const useNetworkConnectionBanner =
     ]);
 
     const startDegradedTimer = useCallback(() => {
-      clearDegradedTimer();
+      clearUnavailableTimer();
 
       timersRef.current.degradedTimer = setTimeout(() => {
         if (firstUnavailableEvmNetwork) {
@@ -179,7 +179,7 @@ export const useNetworkConnectionBanner =
       trackNetworkBannerEvent,
       dispatch,
       startUnavailableTimer,
-      clearDegradedTimer,
+      clearUnavailableTimer,
     ]);
 
     // If the first unavailable network does not change but the status changes, start the degraded or unavailable timer
@@ -188,11 +188,14 @@ export const useNetworkConnectionBanner =
     useEffect(() => {
       if (firstUnavailableEvmNetwork) {
         if (networkConnectionBannerState.status === 'degraded') {
+          clearTimers();
           startUnavailableTimer();
         } else if (
           networkConnectionBannerState.status === 'unknown' ||
-          networkConnectionBannerState.status === 'available'
+          networkConnectionBannerState.status === 'available' ||
+          networkConnectionBannerState.status === 'unavailable'
         ) {
+          clearTimers();
           startDegradedTimer();
         }
       } else if (networkConnectionBannerState.status !== 'available') {
