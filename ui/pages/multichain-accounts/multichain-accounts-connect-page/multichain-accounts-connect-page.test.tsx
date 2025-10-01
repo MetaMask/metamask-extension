@@ -229,11 +229,18 @@ jest.mock('../../../selectors/multichain', () => ({
   getMultichainNetwork: jest.fn(() => ({
     chainId: 'eip155:1',
     nickname: 'Ethereum Mainnet',
-    isEvmNetwork: true,
-    network: {
-      type: 'mainnet',
-      chainId: '0x1',
-      ticker: 'ETH',
+    isAddressCompatible: () => true,
+    decimals: 18,
+    blockExplorerFormatUrls: {
+      url: 'https://mock.url',
+      address: 'https://mock.url/address/{address}',
+      transaction: 'https://mock.url/tx/{txId}',
+      isEvmNetwork: true,
+      network: {
+        type: 'mainnet',
+        chainId: '0x1',
+        ticker: 'ETH',
+      },
     },
   })),
 }));

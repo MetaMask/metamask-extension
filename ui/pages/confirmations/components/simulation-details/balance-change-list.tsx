@@ -5,6 +5,7 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import { useConfirmContext } from '../../context/confirm';
 import { BalanceChangeRow } from './balance-change-row';
 import { BalanceChange } from './types';
 import { TotalFiatDisplay } from './fiat-display';
@@ -27,6 +28,7 @@ export const BalanceChangeList: React.FC<{
   testId?: string;
   labelColor?: TextColor;
 }> = ({ heading, balanceChanges, testId, labelColor }) => {
+  const { currentConfirmation } = useConfirmContext();
   const sortedBalanceChanges = useMemo(() => {
     return sortBalanceChanges(balanceChanges);
   }, [balanceChanges]);
@@ -34,6 +36,10 @@ export const BalanceChangeList: React.FC<{
   const fiatAmounts = useMemo(() => {
     return sortedBalanceChanges.map((bc) => bc.fiatAmount);
   }, [sortedBalanceChanges]);
+
+  const hasIncomingTokens = useMemo(() => {
+    return balanceChanges.some((bc) => bc.amount && !bc.amount.isNegative());
+  }, [balanceChanges]);
 
   if (sortedBalanceChanges.length === 0) {
     return null; // Hide this component.
@@ -58,6 +64,9 @@ export const BalanceChangeList: React.FC<{
           <BalanceChangeRow
             key={index}
             label={index === 0 ? heading : undefined}
+            isFirstRow={index === 0}
+            hasIncomingTokens={hasIncomingTokens}
+            confirmationId={currentConfirmation?.id}
             balanceChange={balanceChange}
             showFiat={!showFiatTotal && !balanceChange.isUnlimitedApproval}
             labelColor={labelColor}

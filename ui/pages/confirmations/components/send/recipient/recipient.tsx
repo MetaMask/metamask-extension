@@ -31,14 +31,18 @@ import { useRecipients } from '../../../hooks/send/useRecipients';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { RecipientList } from '../recipient-list';
 
-export const Recipient = () => {
+export const Recipient = ({
+  recipientValidationResult,
+}: {
+  recipientValidationResult: ReturnType<typeof useRecipientValidation>;
+}) => {
   const {
     recipientConfusableCharacters,
     recipientError,
     recipientWarning,
     recipientResolvedLookup,
     toAddressValidated,
-  } = useRecipientValidation();
+  } = recipientValidationResult;
   const hasConfusableCharacters =
     recipientConfusableCharacters && recipientConfusableCharacters.length > 0;
   const t = useI18nContext();

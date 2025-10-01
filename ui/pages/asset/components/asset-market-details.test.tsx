@@ -24,7 +24,6 @@ jest.mock('../../../hooks/useMultichainSelector', () => ({
 
 jest.mock('../util', () => ({
   getPricePrecision: jest.fn(() => 2),
-  localizeLargeNumber: jest.fn((_t, value) => value.toLocaleString()),
 }));
 
 jest.mock('../../../helpers/utils/confirm-tx.util', () => ({
@@ -131,10 +130,11 @@ describe('AssetMarketDetails', () => {
     );
 
     // Market cap should be multiplied by exchange rate: 50,000 * 1,000 = 50,000,000
+    // And formatted as compact: $50.00M
     const marketCapElement = container.querySelector(
       '[data-testid="asset-market-cap"]',
     );
-    expect(marketCapElement).toHaveTextContent('50,000,000');
+    expect(marketCapElement).toHaveTextContent('$50.00M');
   });
 
   it('should NOT multiply circulating supply by exchange rate for EVM tokens', () => {
@@ -144,11 +144,12 @@ describe('AssetMarketDetails', () => {
 
     // Circulating supply should NOT be multiplied by exchange rate
     // It should remain as the original token count: 15,000,000,000
+    // And formatted as compact: 15.00B
     const circulatingSupplyRow = getByText('circulatingSupply').parentElement;
-    expect(circulatingSupplyRow).toHaveTextContent('15,000,000,000');
+    expect(circulatingSupplyRow).toHaveTextContent('15.00B');
 
     // Verify it's NOT the multiplied value (15B * 1000 = 15T)
-    expect(circulatingSupplyRow).not.toHaveTextContent('15,000,000,000,000');
+    expect(circulatingSupplyRow).not.toHaveTextContent('15000.00B');
   });
 
   it('should multiply allTimeHigh and allTimeLow by exchange rate for EVM tokens', () => {

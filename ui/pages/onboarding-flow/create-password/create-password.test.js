@@ -4,9 +4,9 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import initializedMockState from '../../../../test/data/mock-send-state.json';
 import {
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import CreatePassword from './create-password';
@@ -43,7 +43,7 @@ describe('Onboarding Create Password', () => {
 
       renderWithProvider(<CreatePassword />, mockStore);
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+        ONBOARDING_REVIEW_SRP_ROUTE,
         { replace: true },
       );
     });
@@ -316,7 +316,7 @@ describe('Onboarding Create Password', () => {
 
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(
-          ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+          ONBOARDING_REVIEW_SRP_ROUTE,
           {
             replace: true,
           },

@@ -52,7 +52,6 @@ describe('useRecipientValidation', () => {
       recipientError: undefined,
       recipientWarning: undefined,
       recipientResolvedLookup: undefined,
-      recipientValidationLoading: true,
       toAddressValidated: undefined,
     });
   });
@@ -77,7 +76,6 @@ describe('useRecipientValidation', () => {
         recipientConfusableCharacters: undefined,
         recipientError: 'invalidAddress',
         recipientResolvedLookup: undefined,
-        recipientValidationLoading: false,
         recipientWarning: undefined,
         toAddressValidated: '0x123',
       });
@@ -173,7 +171,6 @@ describe('useRecipientValidation', () => {
         recipientConfusableCharacters: undefined,
         recipientError: undefined,
         recipientResolvedLookup: undefined,
-        recipientValidationLoading: false,
         recipientWarning: undefined,
         toAddressValidated: '',
       });
@@ -194,7 +191,6 @@ describe('useRecipientValidation', () => {
         recipientConfusableCharacters: undefined,
         recipientError: undefined,
         recipientResolvedLookup: undefined,
-        recipientValidationLoading: false,
         recipientWarning: undefined,
         toAddressValidated: undefined,
       });
