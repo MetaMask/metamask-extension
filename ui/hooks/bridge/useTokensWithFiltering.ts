@@ -144,8 +144,9 @@ export const useTokensWithFiltering = (
       // Return native asset for Bitcoin chains
       const nativeAsset = getNativeAssetForChainId(chainId);
       if (nativeAsset) {
+        const key = nativeAsset.address ?? '';
         return {
-          [nativeAsset.address || '']: nativeAsset,
+          [key]: nativeAsset,
         };
       }
       return undefined;
@@ -354,7 +355,8 @@ export const useTokensWithFiltering = (
                 string: token.string ?? undefined,
                 image:
                   (token.image ||
-                    tokenList?.[token.address?.toLowerCase()]?.iconUrl) ??
+                    (token.address &&
+                      tokenList?.[token.address.toLowerCase()]?.iconUrl)) ??
                   getAssetImageUrl(
                     token.address,
                     formatChainIdToCaip(token.chainId),
@@ -371,7 +373,7 @@ export const useTokensWithFiltering = (
         for (const token_ of topTokens) {
           const matchedToken =
             tokenList?.[token_.address] ??
-            tokenList?.[token_.address?.toLowerCase()];
+            tokenList?.[token_.address.toLowerCase()];
           const token = buildTokenData(chainId, matchedToken);
           if (
             token &&

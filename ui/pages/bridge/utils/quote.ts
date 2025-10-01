@@ -3,6 +3,7 @@ import {
   type QuoteResponse,
   formatChainIdToCaip,
   isNativeAddress,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type {
   NetworkConfiguration,
@@ -12,7 +13,6 @@ import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { isNonEvmChain } from '../../../ducks/bridge/utils';
 
 export const formatTokenAmount = (
   locale: string,
@@ -70,7 +70,7 @@ export const isQuoteExpiredOrInvalid = ({
     isQuoteExpired &&
     (!insufficientBal ||
       // `insufficientBal` is always true for non-EVM chains (Solana, Bitcoin)
-      (fromChain && isNonEvmChain(fromChain.chainId)))
+      (fromChain && isNonEvmChainId(fromChain.chainId)))
   ) {
     return true;
   }
