@@ -82,6 +82,7 @@ import {
   getAllAccountGroups,
   getInternalAccountBySelectedAccountGroupAndCaip,
 } from '../../selectors/multichain-accounts/account-tree';
+import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
 
 import {
   exchangeRateFromMarketData,
@@ -188,10 +189,29 @@ export const getFromChains = createDeepEqualSelector(
   },
 );
 
+/**
+ * This matches the network filter in the activity and asset lists
+ */
+export const getLastSelectedChainId = createSelector(
+  [getAllEnabledNetworksForAllNamespaces],
+  (allEnabledNetworksForAllNamespaces) => {
+    return allEnabledNetworksForAllNamespaces[0];
+  },
+);
+
+// TODO remove providerConfig references
 export const getFromChain = createDeepEqualSelector(
-  [getMultichainProviderConfig, getFromChains],
-  (providerConfig, fromChains) => {
-    return fromChains.find(({ chainId }) => chainId === providerConfig.chainId);
+  [getLastSelectedChainId, getFromChains, getMultichainProviderConfig],
+  (lastSelectedChainId, fromChains, providerConfig) => {
+    // If the global network doesn't match the network filter, use the global network
+    // The useBridging and useBridgeQueryParams set the network prior to navigating to the bridge page
+    const chainIdToUse =
+      lastSelectedChainId &&
+      providerConfig?.chainId &&
+      lastSelectedChainId !== providerConfig.chainId
+        ? providerConfig.chainId
+        : lastSelectedChainId;
+    return fromChains.find(({ chainId }) => chainId === chainIdToUse);
   },
 );
 
