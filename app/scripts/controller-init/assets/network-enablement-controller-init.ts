@@ -6,24 +6,27 @@ import { NetworkState } from '@metamask/network-controller';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { NetworkEnablementControllerMessenger } from '../messengers/assets';
 import { ControllerInitFunction } from '../types';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  FEATURED_NETWORK_CHAIN_IDS,
+} from '../../../../shared/constants/network';
 
 /**
  * Generates a map of EVM chain IDs to their enabled status based on NetworkController state.
  *
  * @param networkConfigurationsByChainId - The network configurations from NetworkController
- * @param enabledChainId - The single chain ID that should be enabled
+ * @param enabledChainIds - Array of chain IDs that should be enabled
  * @returns Record mapping chain IDs to boolean enabled status
  */
 const generateEVMNetworkMap = (
   networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'],
-  enabledChainId?: string,
+  enabledChainIds: string[] = [],
 ): Record<string, boolean> => {
   const networkMap: Record<string, boolean> = {};
 
   // Add all available EVM networks from NetworkController with default disabled status
   Object.keys(networkConfigurationsByChainId).forEach((chainId) => {
-    networkMap[chainId] = chainId === enabledChainId;
+    networkMap[chainId] = enabledChainIds.includes(chainId);
   });
 
   return networkMap;
@@ -77,10 +80,9 @@ const generateDefaultNetworkEnablementControllerState = (
   if (process.env.IN_TEST) {
     return {
       enabledNetworkMap: {
-        eip155: generateEVMNetworkMap(
-          networkConfigurationsByChainId,
+        eip155: generateEVMNetworkMap(networkConfigurationsByChainId, [
           CHAIN_IDS.LOCALHOST,
-        ),
+        ]),
         ...multichainMaps,
       },
     };
@@ -90,10 +92,9 @@ const generateDefaultNetworkEnablementControllerState = (
   ) {
     return {
       enabledNetworkMap: {
-        eip155: generateEVMNetworkMap(
-          networkConfigurationsByChainId,
+        eip155: generateEVMNetworkMap(networkConfigurationsByChainId, [
           CHAIN_IDS.SEPOLIA,
-        ),
+        ]),
         ...multichainMaps,
       },
     };
@@ -103,7 +104,7 @@ const generateDefaultNetworkEnablementControllerState = (
     enabledNetworkMap: {
       eip155: generateEVMNetworkMap(
         networkConfigurationsByChainId,
-        CHAIN_IDS.MAINNET,
+        FEATURED_NETWORK_CHAIN_IDS,
       ),
       ...multichainMaps,
     },
