@@ -517,15 +517,14 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
         {staticRows.map((staticRow, index) => (
-          <>
+          <React.Fragment key={index}>
             <BalanceChangeList
-              key={index}
               heading={staticRow.label}
               balanceChanges={staticRow.balanceChanges}
               labelColor={getAlertTextColors(selectedAlertSeverity)}
             />
             <BalanceChangesAlert transactionId={transactionId} />
-          </>
+          </React.Fragment>
         ))}
         <BalanceChangeList
           heading={getOutgoingHeadingText()}
