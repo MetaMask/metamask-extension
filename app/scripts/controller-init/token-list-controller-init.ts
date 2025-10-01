@@ -6,21 +6,13 @@ import {
   TokenListControllerMessenger,
   TokenListControllerInitMessenger,
 } from './messengers';
+import { getGlobalChainId } from './init-utils';
 
 export const TokenListControllerInit: ControllerInitFunction<
   TokenListController,
   TokenListControllerMessenger,
   TokenListControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
-  // This replicates `#getGlobalChainId` in the `MetaMaskController`.
-  const networkState = initMessenger.call('NetworkController:getState');
-  const networkClientId = networkState.selectedNetworkClientId;
-
-  const { chainId } = initMessenger.call(
-    'NetworkController:getNetworkClientById',
-    networkClientId,
-  ).configuration;
-
   const preferencesControllerState = initMessenger.call(
     'PreferencesController:getState',
   );
@@ -46,7 +38,7 @@ export const TokenListControllerInit: ControllerInitFunction<
     preventPollingOnNetworkRestart: !isTokenListPollingRequired(
       preferencesControllerState,
     ),
-    chainId,
+    chainId: getGlobalChainId(initMessenger),
   });
 
   /**

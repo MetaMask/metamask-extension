@@ -8,7 +8,7 @@ import { Hex } from '@metamask/utils';
 import { useSearchParams } from 'react-router-dom-v5-compat';
 
 import {
-  getSelectedAccountCachedBalance,
+  getCrossChainMetaMaskCachedBalances,
   selectMaxValueModeForTransaction,
 } from '../../../../../../selectors';
 import {
@@ -41,7 +41,11 @@ export const useMaxValueRefresher = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const dispatch = useDispatch();
-  const { id: transactionId } = transactionMeta;
+  const {
+    chainId,
+    id: transactionId,
+    txParams: { from },
+  } = transactionMeta;
   const isMaxAmountMode = useSelector((state) =>
     selectMaxValueModeForTransaction(state, transactionMeta?.id),
   );
@@ -49,8 +53,10 @@ export const useMaxValueRefresher = () => {
   const [searchParams] = useSearchParams();
   const paramMaxValueMode = searchParams.get('maxValueMode') === 'true';
   const isMaxValueMode = isMaxAmountMode || paramMaxValueMode;
-
-  const balance = useSelector(getSelectedAccountCachedBalance);
+  const crossChainNativeBalances = useSelector(
+    getCrossChainMetaMaskCachedBalances,
+  ) as { [chainId: string]: { [from: string]: string } };
+  const balance = crossChainNativeBalances?.[chainId]?.[from] ?? HEX_ZERO;
   const { supportsEIP1559 } = useSupportsEIP1559(transactionMeta);
   const gas = (transactionMeta.txParams.gas as Hex) || HEX_ZERO;
   const gasPrice = (transactionMeta.txParams.gasPrice as Hex) || HEX_ZERO;

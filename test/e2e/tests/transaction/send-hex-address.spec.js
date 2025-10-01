@@ -1,7 +1,4 @@
-const {
-  withFixtures,
-  openActionMenuAndStartSendFlow,
-} = require('../../helpers');
+const { withFixtures } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 const {
@@ -25,7 +22,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await loginWithBalanceValidation(driver);
 
         // Send ETH
-        await openActionMenuAndStartSendFlow(driver);
+        await driver.clickElement('[data-testid="eth-overview-send"]');
         // Paste address without hex prefix
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or domain name"]',
@@ -69,7 +66,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await loginWithBalanceValidation(driver);
 
         // Send ETH
-        await openActionMenuAndStartSendFlow(driver);
+        await driver.clickElement('[data-testid="eth-overview-send"]');
         // Type address without hex prefix
         await driver.fill(
           'input[placeholder="Enter public address (0x) or domain name"]',

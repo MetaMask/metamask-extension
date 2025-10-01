@@ -103,14 +103,6 @@ describe('useSendTokens', () => {
     mockFormatter.mockReturnValue('$1,000.00');
   });
 
-  it('returns tokens with positive fiat balance', async () => {
-    const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
-
-    expect(result.current).toHaveLength(2);
-    expect(result.current[0].symbol).toBe('ETH');
-    expect(result.current[1].symbol).toBe('USDC');
-  });
-
   it('includes testnet assets with non-zero raw balance', async () => {
     const testNetAssetData = [
       {
@@ -283,7 +275,7 @@ describe('useSendTokens', () => {
       mockState,
     );
 
-    expect(result.current).toHaveLength(2);
+    expect(result.current).toHaveLength(3);
 
     const newAssetsData = [
       {

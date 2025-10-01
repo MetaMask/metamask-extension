@@ -62,6 +62,8 @@ import { SelectedNetworkController } from '@metamask/selected-network-controller
 import { BridgeController } from '@metamask/bridge-controller';
 import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { ApprovalController } from '@metamask/approval-controller';
+import { NetworkEnablementController } from '@metamask/network-enablement-controller';
+import { PermissionLogController } from '@metamask/permission-log-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -73,6 +75,7 @@ import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import AccountTrackerController from '../controllers/account-tracker-controller';
 import { AppStateController } from '../controllers/app-state-controller';
 import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
+import { SubscriptionService } from '../services/subscription/subscription-service';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -111,6 +114,7 @@ export type Controller =
       PermissionSpecificationConstraint,
       CaveatSpecificationConstraint
     >
+  | PermissionLogController
   | PPOMController
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
@@ -127,6 +131,7 @@ export type Controller =
   | SubscriptionController
   | SnapsNameProvider
   | SubjectMetadataController
+  | SubscriptionService
   | SwapsController
   | TokenBalancesController
   | TokenDetectionController
@@ -141,7 +146,8 @@ export type Controller =
   | AssetsContractController
   | AccountTreeController
   | WebSocketService
-  | MultichainAccountService;
+  | MultichainAccountService
+  | NetworkEnablementController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -177,6 +183,7 @@ export type ControllerFlatState = AccountsController['state'] &
     PermissionSpecificationConstraint,
     CaveatSpecificationConstraint
   >['state'] &
+  PermissionLogController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &
@@ -198,4 +205,5 @@ export type ControllerFlatState = AccountsController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
-  NftDetectionController['state'];
+  NftDetectionController['state'] &
+  NetworkEnablementController['state'];

@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import {
   AccountGroupId,
@@ -24,7 +30,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { endTrace, trace } from '../../../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
@@ -69,10 +75,17 @@ export const MultichainAccountList = ({
   );
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
+  useEffect(() => {
+    endTrace({ name: TraceName.AccountList });
+  }, []);
+
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
     useState(false);
 
   const [renameAccountGroupId, setRenameAccountGroupId] = useState(undefined);
+
+  const [openMenuAccountId, setOpenMenuAccountId] =
+    useState<AccountGroupId | null>(null);
 
   const handleAccountRenameActionModalClose = useCallback(() => {
     setIsAccountRenameModalOpen(false);
@@ -83,9 +96,17 @@ export const MultichainAccountList = ({
     (accountGroupId) => {
       setRenameAccountGroupId(accountGroupId);
       setIsAccountRenameModalOpen(true);
+      setOpenMenuAccountId(null);
     },
     [setIsAccountRenameModalOpen, setRenameAccountGroupId],
   );
+
+  const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
+    // If the same menu is clicked, close it, otherwise open the new one
+    setOpenMenuAccountId((current) =>
+      current === accountGroupId ? null : accountGroupId,
+    );
+  }, []);
 
   // Convert selectedAccountGroups array to Set for O(1) lookup
   const selectedAccountGroupsSet = useMemo(
@@ -191,6 +212,10 @@ export const MultichainAccountList = ({
                       accountGroupId={groupId as AccountGroupId}
                       isRemovable={isRemovable}
                       handleAccountRenameAction={handleAccountRenameAction}
+                      isOpen={openMenuAccountId === groupId}
+                      onToggle={() =>
+                        handleMenuToggle(groupId as AccountGroupId)
+                      }
                     />
                   }
                 />
@@ -230,6 +255,8 @@ export const MultichainAccountList = ({
     selectedAccountGroupsSet,
     showAccountCheckbox,
     handleAccountRenameAction,
+    handleMenuToggle,
+    openMenuAccountId,
   ]);
 
   return (

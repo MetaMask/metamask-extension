@@ -1,11 +1,9 @@
-import { Provider } from '@metamask/network-controller';
 import {
   ActionConstraint,
   Messenger,
   EventConstraint,
   RestrictedMessenger,
 } from '@metamask/base-controller';
-import { Hex } from '@metamask/utils';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
@@ -18,6 +16,7 @@ import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
 import { HardwareTransportBridgeClass } from '../lib/hardware-keyring-builder-factory';
+import ExtensionPlatform from '../platforms/extension';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -87,6 +86,11 @@ export type ControllerInitRequest<
   extension: Browser;
 
   /**
+   * Extension platform handler
+   */
+  platform: ExtensionPlatform;
+
+  /**
    * Retrieve a controller instance by name.
    * Throws an error if the controller is not yet initialized.
    *
@@ -105,13 +109,6 @@ export type ControllerInitRequest<
   getFlatState: () => ControllerFlatState;
 
   /**
-   * Retrieve the chain ID of the globally selected network.
-   *
-   * @deprecated Will be removed in the future pending multi-chain support.
-   */
-  getGlobalChainId(): Hex;
-
-  /**
    * Retrieve the permitted accounts for a given origin.
    *
    * @param origin - The origin for which to retrieve permitted accounts.
@@ -122,13 +119,6 @@ export type ControllerInitRequest<
     origin: string,
     options?: { suppressUnauthorizedError?: boolean },
   ): Promise<string[]>;
-
-  /**
-   * Retrieve the provider instance for the globally selected network.
-   *
-   * @deprecated Will be removed in the future pending multi-chain support.
-   */
-  getProvider: () => Provider;
 
   /**
    * Retrieve a transaction metrics request instance.
@@ -147,6 +137,11 @@ export type ControllerInitRequest<
     oneKey?: HardwareTransportBridgeClass;
     ledgerBridge?: HardwareTransportBridgeClass;
   };
+
+  /**
+   * The Infura project ID to use for the network controller.
+   */
+  infuraProjectId: string;
 
   /**
    * Function to update account balance for network of the transaction
