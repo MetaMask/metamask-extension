@@ -5218,7 +5218,7 @@
     "description": "Title for the banner warning users not to share their private key"
   },
   "revealSecretRecoveryPhrase": {
-    "message": "Secret Recovery Phrase"
+    "message": "Back up Secret Recovery Phrase"
   },
   "revealSeedWords": {
     "message": "Reveal Secret Recovery Phrase"
