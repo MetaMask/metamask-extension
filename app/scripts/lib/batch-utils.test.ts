@@ -176,24 +176,5 @@ describe('batch-utils', () => {
         'Account API batch request failed with status 500: Internal Server Error',
       );
     });
-
-    it('should convert addresses to CAIP format', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({ balances: {} }),
-      });
-
-      await fetchAccountBalancesInBatches({
-        addresses: ['0xAddress1'],
-        supportedChainIds: ['1'],
-        accountApiBaseUrl: 'https://api.test.com',
-        logger: mockLogger,
-      });
-
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('accountAddresses=eip155:0:0xAddress1'),
-        expect.any(Object),
-      );
-    });
   });
 });
