@@ -274,7 +274,6 @@ export default function ConfirmationPage({
     setInputStates((currentState) => ({ ...currentState, [key]: value }));
   };
   const [loading, setLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState();
 
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
@@ -461,7 +460,6 @@ export default function ConfirmationPage({
 
   const handleSubmitResult = (submitResult) => {
     if (submitResult?.length > 0) {
-      setLoadingText(templatedValues.submitText);
       setSubmitAlerts(submitResult);
       setLoading(true);
     } else {
@@ -596,7 +594,6 @@ export default function ConfirmationPage({
               onCancel={templatedValues.onCancel}
               submitText={templatedValues.submitText}
               cancelText={templatedValues.cancelText}
-              loadingText={loadingText || templatedValues.loadingText}
               loading={loading}
               submitAlerts={submitAlerts.map((alert, idx) => (
                 <Callout
