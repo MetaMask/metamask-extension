@@ -300,9 +300,6 @@
   "addingAccount": {
     "message": "Ajouter un compte"
   },
-  "addingCustomNetwork": {
-    "message": "Ajout de réseau"
-  },
   "additionalNetworks": {
     "message": "Réseaux supplémentaires"
   },
@@ -730,10 +727,6 @@
   },
   "betaTerms": {
     "message": "Conditions d’utilisation de la version bêta"
-  },
-  "billionAbbreviation": {
-    "message": "Mrd",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "Compte",
@@ -1401,9 +1394,6 @@
   "connectingTo": {
     "message": "Connexion à $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "Le réseau « $1 » sera bientôt abandonné et pourrait ne plus fonctionner. Essayez-en un autre."
-  },
   "connectingToGoerli": {
     "message": "Connexion au testnet Goerli"
   },
@@ -1566,9 +1556,6 @@
   "currentNetwork": {
     "message": "Réseau actuel",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "L’URL actuelle du RPC pour ce réseau a été dépréciée."
   },
   "currentTitle": {
     "message": "Actuel :"
@@ -3289,10 +3276,6 @@
   "metrics": {
     "message": "Indicateurs"
   },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
-  },
   "mismatchedChainLinkText": {
     "message": "vérifier les détails du réseau",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3567,10 +3550,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Le prix du carburant est de $1 au regard des 72 dernières heures.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Nous ne pouvons pas nous connecter à $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "URL du réseau"
@@ -6418,9 +6397,6 @@
   "switchNetwork": {
     "message": "Changer de réseau"
   },
-  "switchNetworks": {
-    "message": "Changer de réseau"
-  },
   "switchToNetwork": {
     "message": "Passer à $1",
     "description": "$1 represents the custom network that has previously been added"
@@ -6669,10 +6645,6 @@
   },
   "transferRequest": {
     "message": "Demande de transfert"
-  },
-  "trillionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Nous avons des difficultés à connecter votre Ledger. $1",

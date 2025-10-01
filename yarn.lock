@@ -6764,9 +6764,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@metamask/multichain-account-service@npm:1.2.0"
+"@metamask/multichain-account-service@npm:^1.4.0":
+  version: 1.4.0
+  resolution: "@metamask/multichain-account-service@npm:1.4.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^8.4.0"
@@ -6779,7 +6779,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.8.0"
+    "@metamask/utils": "npm:^11.8.1"
     async-mutex: "npm:^0.5.0"
   peerDependencies:
     "@metamask/account-api": ^0.12.0
@@ -6788,7 +6788,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/f220b864f1ad8b9709166b352c272f35b0c2bb8779603170e840e5daf85832f30fd8b65c97e43d48d041b6bbd0ba3a86ac596168f4bdc73bb48eccf8359b0c5a
+  checksum: 10/d5d3f8c6ddbaf05447009a351a1265ae0873f472dceecda6f6bd6be56c9987f3dfa5e6c26038d772aae0289c19086a61eeec7871f451c5e318b6d284447b7524
   languageName: node
   linkType: hard
 
@@ -32172,7 +32172,7 @@ __metadata:
     "@metamask/message-manager": "npm:^13.0.0"
     "@metamask/message-signing-snap": "npm:1.1.3"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:^1.2.0"
+    "@metamask/multichain-account-service": "npm:^1.4.0"
     "@metamask/multichain-api-client": "npm:^0.7.0"
     "@metamask/multichain-api-middleware": "npm:1.1.0"
     "@metamask/multichain-network-controller": "npm:^1.0.0"

@@ -38,6 +38,7 @@ import {
   Text,
   Box,
 } from '../../../components/component-library';
+import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { filterWalletsByGroupName } from './utils';
 
 export const AccountList = () => {
@@ -48,6 +49,10 @@ export const AccountList = () => {
   const { selectedAccountGroup } = accountTree;
   const formattedAccountGroupBalancesByWallet = useAllWalletAccountsBalances();
   const [searchPattern, setSearchPattern] = useState<string>('');
+
+  // Update balances for all accounts when component mounts
+  // This ensures all account balances are visible without requiring user interaction
+  useAssetsUpdateAllAccountBalances();
 
   const hasMultipleWallets = useMemo(
     () => Object.keys(wallets).length > 1,
