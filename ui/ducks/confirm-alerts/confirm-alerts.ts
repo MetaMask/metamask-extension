@@ -2,7 +2,11 @@ import { ReactNode } from 'react';
 import { SecurityProvider } from '../../../shared/constants/security-provider';
 import { Severity } from '../../helpers/constants/design-system';
 
-export type AlertSeverity = Severity.Danger | Severity.Warning | Severity.Info;
+export type AlertSeverity =
+  | Severity.Danger
+  | Severity.Info
+  | Severity.Success
+  | Severity.Warning;
 
 /**
  * A confirmable alert to be displayed in the UI.

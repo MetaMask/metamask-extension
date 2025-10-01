@@ -389,3 +389,25 @@ export const getNetworksByScopes = createSelector(
     );
   },
 );
+
+export const getNetworkClientIdByChainId = createSelector(
+  [
+    getNetworkConfigurationsByChainId,
+    (_state: NetworkConfigurationsByChainIdState, chainId: Hex) => chainId,
+  ],
+  (networkConfigurationsByChainId, chainId) => {
+    const configsByChainId = networkConfigurationsByChainId as Record<
+      Hex,
+      InternalNetworkConfiguration
+    >;
+    const network = configsByChainId?.[chainId];
+    if (!network) {
+      return undefined;
+    }
+
+    const defaultRpc =
+      network.rpcEndpoints?.[network.defaultRpcEndpointIndex] ??
+      network.rpcEndpoints[0];
+    return defaultRpc?.networkClientId;
+  },
+);
