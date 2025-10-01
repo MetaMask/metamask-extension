@@ -807,6 +807,7 @@ export default class AccountTrackerController extends BaseController<
           addresses,
           chainId,
         );
+        console.log('Account API success:', accountApiSuccess);
         if (accountApiSuccess) {
           log.debug(
             `Successfully updated balances via multiaccount API v4 for chain ${chainId}`,
@@ -814,6 +815,7 @@ export default class AccountTrackerController extends BaseController<
           return;
         }
       } catch (error) {
+        console.log('Account API error:', error);
         log.warn(
           'Account API failed, falling back to RPC/balance checker:',
           error,
@@ -1097,14 +1099,20 @@ export default class AccountTrackerController extends BaseController<
       // Filter chain IDs by feature flag support (hex format), then convert to decimal for API
       const supportedChainIds = chainIds
         .filter((chainId) => this.#useAccountApiBalances.includes(chainId))
-        .map((chainId) => parseInt(chainId, 16).toString());
+        .map((chainId) => chainId);
 
       if (supportedChainIds.length === 0) {
         return null;
       }
 
       // Use batch utility to process addresses in parallel using Promise.all
-      return await fetchAccountBalancesInBatches({
+      console.log(
+        'Fetching account balances from API for addresses:',
+        addresses,
+      );
+      console.log('Supported chain IDs:', supportedChainIds);
+
+      const result = await fetchAccountBalancesInBatches({
         addresses,
         supportedChainIds,
         accountApiBaseUrl: ACCOUNTS_PROD_API_BASE_URL,
@@ -1114,6 +1122,9 @@ export default class AccountTrackerController extends BaseController<
           debug: (message: string) => log.debug(message),
         },
       });
+
+      console.log('Account API result:', result);
+      return result;
     } catch (error) {
       log.warn('Failed to fetch balances from account API:', error);
       return null;
@@ -1158,6 +1169,9 @@ export default class AccountTrackerController extends BaseController<
         addresses.forEach((address) => {
           // Convert address to CAIP format for API lookup
           const caipAddress = toCaipAccountId('eip155', chainId, address);
+          console.log(
+            `Looking for CAIP address: ${caipAddress} for address: ${address}`,
+          );
 
           // Find the native token for this address in the API response
           let nativeToken = null;

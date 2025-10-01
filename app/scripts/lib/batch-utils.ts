@@ -1,3 +1,4 @@
+import { toCaipAccountId } from '@metamask/utils';
 import { chunk } from 'lodash';
 
 /**
@@ -101,7 +102,8 @@ export async function processInBatches<TItem, TResult>(
     }
 
     // If no merge function provided, return the first successful result
-    return successfulResults[0] || null;
+    const firstResult = successfulResults[0] || null;
+    return firstResult;
   } catch (error) {
     logger?.warn(`Batch processing failed: ${String(error)}`);
     return null;
@@ -165,9 +167,13 @@ export async function fetchAccountBalancesInBatches(
     items: addresses,
     batchSize,
     processBatch: async (addressBatch) => {
-      // Convert addresses to CAIP format: eip155:0:0x...
+      // Convert addresses to CAIP format: eip155:{chainId}:0x...
+      // Note: supportedChainIds are in decimal format, so we use the first one for CAIP
+      // since all addresses in a batch are for the same chain
+      const chainId = supportedChainIds[0];
+
       const accountAddressesParam = addressBatch
-        .map((address) => `eip155:0:${address}`)
+        .map((address) => toCaipAccountId('eip155', chainId, address))
         .join(',');
 
       const url = `${accountApiBaseUrl}/v4/multiaccount/balances?networks=${networksParam}&accountAddresses=${accountAddressesParam}`;
@@ -186,7 +192,8 @@ export async function fetchAccountBalancesInBatches(
         return null;
       }
 
-      return (await response.json()) as AccountApiBalanceResponse;
+      const jsonResponse = await response.json();
+      return jsonResponse as AccountApiBalanceResponse;
     },
     mergeResults: (results) => {
       // Merge all batch results into a single response
