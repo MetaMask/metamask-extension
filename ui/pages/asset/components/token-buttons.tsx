@@ -13,8 +13,6 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import {
-  getIsSwapsChain,
-  getIsBridgeChain,
   getCurrentKeyring,
   getNetworkConfigurationIdByChainId,
   getSelectedMultichainNetworkConfiguration,
@@ -54,6 +52,7 @@ import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hoo
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { Asset } from '../types/asset';
 import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
@@ -98,13 +97,8 @@ const TokenButtons = ({
     string,
     string
   >;
-  const isSwapsChain = useSelector((state) =>
-    getIsSwapsChain(state, currentChainId),
-  );
 
-  const isBridgeChain = useSelector((state) =>
-    getIsBridgeChain(state, currentChainId),
-  );
+  const isBridgeChain = ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(currentChainId);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
   const { openBridgeExperience } = useBridging();
@@ -360,7 +354,7 @@ const TokenButtons = ({
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
-        disabled={!(isSwapsChain && isExternalServicesEnabled)}
+        disabled={!(isBridgeChain && isExternalServicesEnabled)}
       />
 
       {!isUnifiedUIEnabled && !isTestnet && isBridgeChain && (
