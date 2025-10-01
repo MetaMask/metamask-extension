@@ -12,7 +12,9 @@ import {
 import {
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   IconColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useNetworkConnectionBanner } from '../../../hooks/useNetworkConnectionBanner';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
@@ -39,7 +41,7 @@ const getBannerContent = (
   icon: BannerIcon;
 } => {
   // Align the indicator with the text
-  const verticalAdjustment = '0.2rem';
+  const verticalAdjustment = '0.25em';
 
   if (networkConnectionBanner.status === 'degraded') {
     return {
@@ -118,6 +120,15 @@ export const NetworkConnectionBanner = () => {
           }
           actionButtonLabel={t('updateRpc')}
           actionButtonOnClick={updateRpc}
+          borderRadius={BorderRadius.SM}
+          childrenWrapperProps={{
+            variant: TextVariant.inherit,
+            style: {
+              display: 'inline-block',
+              verticalAlign: 'middle',
+              paddingRight: '8px',
+            },
+          }}
         >
           {message}
         </BannerBase>
