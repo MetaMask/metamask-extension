@@ -1418,9 +1418,6 @@
   "connectingTo": {
     "message": "Подключение к $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "«$1» постепенно выводится из эксплуатации и может не работать. Попробуйте другую сеть."
-  },
   "connectingToGoerli": {
     "message": "Подключение к тестовой сети Goerli..."
   },
@@ -1583,9 +1580,6 @@
   "currentNetwork": {
     "message": "Текущая сеть",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "Текущий URL rpc для этой сети устарел."
   },
   "currentTitle": {
     "message": "Текущий:"
@@ -3586,10 +3580,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Относительная плата за газ составляет $1 за последние 72 часа.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "Нам не удается подключиться к $1",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "URL сети"
@@ -6453,9 +6443,6 @@
   },
   "switchNetwork": {
     "message": "Сменить сеть"
-  },
-  "switchNetworks": {
-    "message": "Сменить сети"
   },
   "switchToNetwork": {
     "message": "Сменить на $1",

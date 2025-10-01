@@ -30,7 +30,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
-import { useAllWalletAccountsBalances } from '../../../hooks/multichain-accounts/useAccountBalance';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import {
   TextFieldSearch,
@@ -38,6 +37,7 @@ import {
   Text,
   Box,
 } from '../../../components/component-library';
+import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { filterWalletsByGroupName } from './utils';
 
 export const AccountList = () => {
@@ -46,8 +46,11 @@ export const AccountList = () => {
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
-  const formattedAccountGroupBalancesByWallet = useAllWalletAccountsBalances();
   const [searchPattern, setSearchPattern] = useState<string>('');
+
+  // Update balances for all accounts when component mounts
+  // This ensures all account balances are visible without requiring user interaction
+  useAssetsUpdateAllAccountBalances();
 
   const hasMultipleWallets = useMemo(
     () => Object.keys(wallets).length > 1,
@@ -129,9 +132,6 @@ export const AccountList = () => {
               selectedAccountGroups={[selectedAccountGroup]}
               isInSearchMode={Boolean(searchPattern)}
               displayWalletHeader={hasMultipleWallets}
-              formattedAccountGroupBalancesByWallet={
-                formattedAccountGroupBalancesByWallet
-              }
             />
           ) : (
             <Box

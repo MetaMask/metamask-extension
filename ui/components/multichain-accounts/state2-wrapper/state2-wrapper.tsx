@@ -22,3 +22,5 @@ export const State2Wrapper = React.memo<State2WrapperProps>((props) => {
     <State1Component {...restOfProps} />
   );
 });
+
+export default State2Wrapper;

@@ -17,7 +17,6 @@ import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
 import PermissionsConnect from '../permissions-connect';
 import Loading from '../../components/ui/loading-screen';
-import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
@@ -36,8 +35,6 @@ import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
-  CONNECTED_ROUTE,
-  CONNECTED_ACCOUNTS_ROUTE,
   DEFAULT_ROUTE,
   LOCK_ROUTE,
   NEW_ACCOUNT_ROUTE,
@@ -77,10 +74,7 @@ import {
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  getProviderConfig,
-  isNetworkLoading as getIsNetworkLoading,
-} from '../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
   getPreferences,
@@ -140,8 +134,6 @@ import { BasicConfigurationModal } from '../../components/app/basic-configuratio
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IF
 import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
-import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
-import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import { MultichainMetaFoxLogo } from '../../components/multichain/app-header/multichain-meta-fox-logo';
@@ -159,6 +151,8 @@ import { MultichainAccountDetails } from '../multichain-accounts/account-details
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
+import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
+import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
@@ -388,7 +382,6 @@ export default function RoutesComponent() {
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
   const account = useAppSelector(getSelectedInternalAccount);
-  const isNetworkLoading = useAppSelector(getIsNetworkLoading);
 
   const networkToAutomaticallySwitchTo = useAppSelector(
     getNetworkToAutomaticallySwitchTo,
@@ -711,6 +704,14 @@ export default function RoutesComponent() {
             element={<Authenticated component={MultichainAccountDetailsPage} />}
           />
           <Route
+            path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
+            element={<Authenticated component={SmartAccountPage} />}
+          />
+          <Route
+            path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:id`}
+            element={<Authenticated component={WalletDetailsPage} />}
+          />
+          <Route
             path={WALLET_DETAILS_ROUTE}
             element={<Authenticated component={WalletDetails} />}
           />
@@ -723,32 +724,12 @@ export default function RoutesComponent() {
             element={<Authenticated component={AddressQRCode} />}
           />
           <Route
-            path={`${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`}
-            element={<Authenticated component={SmartAccountPage} />}
-          />
-          <Route
-            path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
-            element={<Authenticated component={WalletDetailsPage} />}
-          />
-          <Route
-            path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id/address-qr-code`}
-            element={<Authenticated component={AddressQRCode} />}
-          />
-          <Route
             path={NONEVM_BALANCE_CHECK_ROUTE}
             element={<Authenticated component={NonEvmBalanceCheck} />}
           />
           <Route
             path={SHIELD_PLAN_ROUTE}
             element={<Authenticated component={ShieldPlan} />}
-          />
-          <Route
-            path={CONNECTED_ROUTE}
-            element={<Authenticated component={Home} />}
-          />
-          <Route
-            path={CONNECTED_ACCOUNTS_ROUTE}
-            element={<Authenticated component={Home} />}
           />
           <Route
             path={DEFAULT_ROUTE}
@@ -782,10 +763,9 @@ export default function RoutesComponent() {
     return <AccountDetails address={accountDetailsAddress} />;
   };
 
-  const loadMessage =
-    loadingMessage || isNetworkLoading
-      ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
-      : null;
+  const loadMessage = loadingMessage
+    ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
+    : null;
 
   const windowType = getEnvironmentType();
 
@@ -904,13 +884,6 @@ export default function RoutesComponent() {
 
       <Box className="main-container-wrapper">
         {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-        {!isLoading &&
-        isUnlocked &&
-        isNetworkLoading &&
-        completedOnboarding &&
-        !isShowingDeepLinkRoute ? (
-          <LoadingNetwork />
-        ) : null}
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts navigate={navigate} /> : null}

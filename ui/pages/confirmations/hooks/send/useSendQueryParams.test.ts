@@ -1,5 +1,5 @@
 import { DefaultRootState, useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router-dom-v5-compat';
+import { useSearchParams, SetURLSearchParams } from 'react-router-dom-v5-compat';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, MOCK_NFT1155 } from '../../../../../test/data/send/assets';
@@ -12,10 +12,7 @@ import { useSendQueryParams } from './useSendQueryParams';
 import { useSendNfts } from './useSendNfts';
 
 // Type for useSearchParams return value
-type UseSearchParamsReturn = [
-  URLSearchParams,
-  (params: URLSearchParams) => void,
-];
+type UseSearchParamsReturn = [URLSearchParams, SetURLSearchParams];
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
@@ -99,8 +96,8 @@ describe('useSendQueryParams', () => {
           return undefined;
         },
       } as URLSearchParams,
-      jest.fn(),
-    ] as UseSearchParamsReturn);
+      jest.fn() as SetURLSearchParams,
+    ]);
     renderHook();
     expect(mockUpdateAsset).toHaveBeenCalledWith(token);
   });
@@ -130,8 +127,8 @@ describe('useSendQueryParams', () => {
           return undefined;
         },
       } as URLSearchParams,
-      jest.fn(),
-    ] as UseSearchParamsReturn);
+      jest.fn() as SetURLSearchParams,
+    ]);
     renderHook();
     expect(mockUpdateAsset).toHaveBeenCalledWith(nft);
   });
@@ -185,8 +182,8 @@ describe('useSendQueryParams', () => {
           return undefined;
         },
       } as URLSearchParams,
-      jest.fn(),
-    ] as UseSearchParamsReturn);
+      jest.fn() as SetURLSearchParams,
+    ]);
     renderHook();
     expect(mockUpdateValue).toHaveBeenCalledWith('10', true);
   });
@@ -216,8 +213,8 @@ describe('useSendQueryParams', () => {
           return param === 'recipient' ? 'abc' : undefined;
         },
       } as URLSearchParams,
-      jest.fn(),
-    ] as UseSearchParamsReturn);
+      jest.fn() as SetURLSearchParams,
+    ]);
     renderHook();
     expect(mockUpdateTo).toHaveBeenCalledWith('abc');
   });
@@ -246,8 +243,9 @@ describe('useSendQueryParams', () => {
         get: (param: string) => {
           return param === 'hexData' ? '0x1' : undefined;
         },
-      },
-    ] as unknown as [URLSearchParams, SetURLSearchParams]);
+      } as URLSearchParams,
+      jest.fn() as SetURLSearchParams,
+    ]);
     renderHook();
     expect(mockUpdateHexData).toHaveBeenCalledWith('0x1');
   });

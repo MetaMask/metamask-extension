@@ -95,7 +95,9 @@ export const WalletInitiatedHeader = () => {
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
-      padding={3}
+      paddingInline={3}
+      paddingTop={4}
+      paddingBottom={4}
       style={{ zIndex: 2 }}
     >
       <ButtonIcon
