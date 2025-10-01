@@ -28,14 +28,14 @@ export const AddMultichainAccount = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const {
-    isAccountSyncingInProgress,
+    isAccountTreeSyncingInProgress,
     loadingMessage: accountOperationLoadingMessage,
   } = useAccountsOperationsLoadingStates();
 
-  const isLoadingState = isLoading || isAccountSyncingInProgress;
+  const isLoadingState = isLoading || isAccountTreeSyncingInProgress;
 
   const actionLabel = useMemo(() => {
-    if (isAccountSyncingInProgress) {
+    if (isAccountTreeSyncingInProgress) {
       return accountOperationLoadingMessage;
     }
 
@@ -47,7 +47,7 @@ export const AddMultichainAccount = ({
   }, [
     isLoadingState,
     accountOperationLoadingMessage,
-    isAccountSyncingInProgress,
+    isAccountTreeSyncingInProgress,
     t,
   ]);
 

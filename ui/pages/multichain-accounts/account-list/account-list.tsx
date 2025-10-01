@@ -54,16 +54,16 @@ export const AccountList = () => {
   const [searchPattern, setSearchPattern] = useState<string>('');
 
   const {
-    isAccountSyncingInProgress,
+    isAccountTreeSyncingInProgress,
     loadingMessage: accountOperationLoadingMessage,
   } = useAccountsOperationsLoadingStates();
 
   const addWalletButtonLabel = useMemo(() => {
-    if (isAccountSyncingInProgress) {
+    if (isAccountTreeSyncingInProgress) {
       return accountOperationLoadingMessage;
     }
     return t('addWallet');
-  }, [isAccountSyncingInProgress, accountOperationLoadingMessage, t]);
+  }, [isAccountTreeSyncingInProgress, accountOperationLoadingMessage, t]);
   // Update balances for all accounts when component mounts
   // This ensures all account balances are visible without requiring user interaction
   useAssetsUpdateAllAccountBalances();
@@ -172,12 +172,12 @@ export const AccountList = () => {
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
           onClick={handleOpenAddWalletModal}
-          isDisabled={isAccountSyncingInProgress}
+          isDisabled={isAccountTreeSyncingInProgress}
           isFullWidth
           data-testid="account-list-add-wallet-button"
         >
           <Box gap={2} display={Display.Flex} alignItems={AlignItems.center}>
-            {isAccountSyncingInProgress && (
+            {isAccountTreeSyncingInProgress && (
               <Icon
                 className="add-multichain-account__icon-box__icon-loading"
                 name={IconName.Loading}

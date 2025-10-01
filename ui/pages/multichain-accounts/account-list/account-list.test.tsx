@@ -27,7 +27,7 @@ const mockUseAccountsOperationsLoadingStates =
   >;
 
 mockUseAccountsOperationsLoadingStates.mockReturnValue({
-  isAccountSyncingInProgress: false,
+  isAccountTreeSyncingInProgress: false,
   areAnyOperationsLoading: false,
   loadingMessage: undefined,
 });
@@ -174,7 +174,7 @@ describe('AccountList', () => {
   describe('Loading States Integration', () => {
     it('shows syncing message when account syncing is in progress', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: true,
+        isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
         loadingMessage: 'Syncing...',
       });
@@ -186,7 +186,7 @@ describe('AccountList', () => {
 
     it('prioritizes syncing message over local loading', async () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: true,
+        isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
         loadingMessage: 'Syncing...',
       });
@@ -201,7 +201,7 @@ describe('AccountList', () => {
 
     it('shows spinner when any loading state is active', async () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: true,
+        isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
         loadingMessage: 'Syncing...',
       });
@@ -214,7 +214,7 @@ describe('AccountList', () => {
 
     it('shows default add wallet text when no loading states are active', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: false,
+        isAccountTreeSyncingInProgress: false,
         areAnyOperationsLoading: false,
         loadingMessage: '',
       });
@@ -226,7 +226,7 @@ describe('AccountList', () => {
     it('handles loading state transitions correctly', () => {
       // Start with no loading
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: false,
+        isAccountTreeSyncingInProgress: false,
         areAnyOperationsLoading: false,
         loadingMessage: undefined,
       });
@@ -237,7 +237,7 @@ describe('AccountList', () => {
 
       // Simulate account syncing starting
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: true,
+        isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
         loadingMessage: 'Syncing...',
       });
@@ -248,7 +248,7 @@ describe('AccountList', () => {
 
       // Simulate syncing completing
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: false,
+        isAccountTreeSyncingInProgress: false,
         areAnyOperationsLoading: false,
         loadingMessage: undefined,
       });

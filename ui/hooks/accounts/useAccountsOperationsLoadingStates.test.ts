@@ -13,7 +13,7 @@ describe('useAccountsOperationsLoadingStates', () => {
       () => useAccountsOperationsLoadingStates(),
       getState(true),
     );
-    expect(result.current.isAccountSyncingInProgress).toBe(true);
+    expect(result.current.isAccountTreeSyncingInProgress).toBe(true);
     expect(result.current.areAnyOperationsLoading).toBe(true);
     expect(result.current.loadingMessage).toBe('Syncing...');
   });
@@ -23,7 +23,7 @@ describe('useAccountsOperationsLoadingStates', () => {
       () => useAccountsOperationsLoadingStates(),
       getState(false),
     );
-    expect(result.current.isAccountSyncingInProgress).toBe(false);
+    expect(result.current.isAccountTreeSyncingInProgress).toBe(false);
     expect(result.current.areAnyOperationsLoading).toBe(false);
     expect(result.current.loadingMessage).toBeUndefined();
   });

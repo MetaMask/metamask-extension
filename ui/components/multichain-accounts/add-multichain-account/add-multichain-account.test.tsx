@@ -45,7 +45,7 @@ describe('AddMultichainAccount', () => {
   };
 
   mockUseAccountsOperationsLoadingStates.mockReturnValue({
-    isAccountSyncingInProgress: false,
+    isAccountTreeSyncingInProgress: false,
     areAnyOperationsLoading: false,
     loadingMessage: undefined,
   });
@@ -161,7 +161,7 @@ describe('AddMultichainAccount', () => {
     it('shows syncing message when account syncing is in progress', () => {
       const store = configureStore(initialState);
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: true,
+        isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
         loadingMessage: 'Syncing...',
       });
@@ -177,7 +177,7 @@ describe('AddMultichainAccount', () => {
     it('shows creating account message when local loading is active', async () => {
       const store = configureStore(initialState);
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: false,
+        isAccountTreeSyncingInProgress: false,
         areAnyOperationsLoading: false,
         loadingMessage: '',
       });
@@ -197,7 +197,7 @@ describe('AddMultichainAccount', () => {
     it('prioritizes syncing message over local loading', async () => {
       const store = configureStore(initialState);
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: true,
+        isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
         loadingMessage: 'Syncing...',
       });
@@ -216,7 +216,7 @@ describe('AddMultichainAccount', () => {
     it('shows spinner when any loading state is active', async () => {
       const store = configureStore(initialState);
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: true,
+        isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
         loadingMessage: 'Syncing...',
       });
@@ -232,7 +232,7 @@ describe('AddMultichainAccount', () => {
 
     it('shows default create account text when no loading states are active', () => {
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: false,
+        isAccountTreeSyncingInProgress: false,
         areAnyOperationsLoading: false,
         loadingMessage: '',
       });
@@ -249,7 +249,7 @@ describe('AddMultichainAccount', () => {
       const store = configureStore(initialState);
       // Start with no loading
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: false,
+        isAccountTreeSyncingInProgress: false,
         areAnyOperationsLoading: false,
         loadingMessage: undefined,
       });
@@ -263,7 +263,7 @@ describe('AddMultichainAccount', () => {
 
       // Simulate account syncing starting
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: true,
+        isAccountTreeSyncingInProgress: true,
         areAnyOperationsLoading: true,
         loadingMessage: 'Syncing...',
       });
@@ -274,7 +274,7 @@ describe('AddMultichainAccount', () => {
 
       // Simulate syncing completing
       mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountSyncingInProgress: false,
+        isAccountTreeSyncingInProgress: false,
         areAnyOperationsLoading: false,
         loadingMessage: undefined,
       });
