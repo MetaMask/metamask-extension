@@ -251,7 +251,13 @@ async function main(): Promise<void> {
         }),
   ) as unknown as { argv: BenchmarkArguments };
 
-  const { pages, browserLoads, pageLoads, out, retries, isPowerUser } = argv;
+  // eslint-disable-next-line prefer-const
+  let { pages, browserLoads, pageLoads, out, retries, isPowerUser } = argv;
+
+  if (out?.includes('webpack')) {
+    browserLoads = 3;
+    pageLoads = 3;
+  }
 
   const results = await profilePageLoad(
     pages,
