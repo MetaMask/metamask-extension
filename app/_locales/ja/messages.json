@@ -300,9 +300,6 @@
   "addingAccount": {
     "message": "アカウントの追加"
   },
-  "addingCustomNetwork": {
-    "message": "ネットワークを追加中"
-  },
   "additionalNetworks": {
     "message": "他のネットワーク"
   },
@@ -730,10 +727,6 @@
   },
   "betaTerms": {
     "message": "ベータ版利用規約"
-  },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "アカウント",
@@ -1401,9 +1394,6 @@
   "connectingTo": {
     "message": "$1に接続中"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "「$1」は段階的に廃止されており、機能しない可能性があります。別のネットワークをお試しください。"
-  },
   "connectingToGoerli": {
     "message": "Goerliテストネットワークに接続中"
   },
@@ -1566,9 +1556,6 @@
   "currentNetwork": {
     "message": "現在のネットワーク",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "このネットワークの現在のRPC URLは非推奨となりました。"
   },
   "currentTitle": {
     "message": "現在:"
@@ -3289,10 +3276,6 @@
   "metrics": {
     "message": "メトリクス"
   },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
-  },
   "mismatchedChainLinkText": {
     "message": "ネットワークの詳細の確認",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3568,10 +3551,6 @@
     "message": "ガス代は過去72時間と比較して$1です。",
     "description": "$1 is networks stability value - stable, low, high"
   },
-  "networkSwitchConnectionError": {
-    "message": "$1に接続できません",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "ネットワークURL"
   },
@@ -3728,9 +3707,6 @@
   },
   "noSnaps": {
     "message": "snapがインストールされていません"
-  },
-  "noThanks": {
-    "message": "結構です"
   },
   "noWebcamFound": {
     "message": "お使いのコンピューターのWebカメラが見つかりませんでした。もう一度お試しください。"
@@ -4009,45 +3985,11 @@
   "onboardingImportWallet": {
     "message": "既存のウォレットがあります"
   },
-  "onboardingMetametricsAgree": {
-    "message": "同意します"
-  },
   "onboardingMetametricsDescription": {
     "message": "MetaMaskの改善のため、基本的な利用状況や診断データの収集にご協力ください。収集される情報は常に次のように制限されます:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "このデータを他の目的で利用する場合は、事前にお知らせいたします。当社の$1はいつでもご確認いただけます（ここで提供されたデータを当社が販売することは絶対にありません）。",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "プライバシー ポリシー"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 アプリのクリック数や表示回数は保存されますが、その他の詳細 (ユーザーのパブリックアドレスなど) は保存されません。",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "非公開:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 大まかな位置情報（国や地域など）の検出にユーザーのIPアドレスが一時的に使用されますが、保存されることはありません。",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "一般:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 使用状況データを共有するか削除するかは、設定でいつでも指定できます。",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "任意:"
-  },
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "このデータは、ユーザーによる当社のマーケティングコミュニケーションとのインタラクションを把握するために使用されます。また、関連ニュースをお伝えする場合もあります (製品の機能など)。"
   },
   "onboardingOptionIcon": {
     "message": "$1アイコン",
@@ -5000,18 +4942,8 @@
   "secureWallet": {
     "message": "安全なウォレット"
   },
-  "secureWalletGetStartedButton": {
-    "message": "開始"
-  },
   "secureWalletRemindLaterButton": {
     "message": "後で通知する"
-  },
-  "secureWalletWalletRecover": {
-    "message": "これは、アプリにログインできなくなったり、新しいデバイスに変えたりした場合に、ウォレットを復元する唯一の手段となります。"
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "資金を失うリスクを回避しましょう。$1を信頼できる場所に保管して、ウォレットを保護しましょう。",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "セキュリティ"
@@ -5090,9 +5022,6 @@
   },
   "seeDetails": {
     "message": "詳細を表示"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "ウォレットの保護"
   },
   "seedPhraseReq": {
     "message": "シークレットリカバリーフレーズは、12、15、18、21、24語で構成されます"
@@ -5398,18 +5327,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "アカウントのセキュリティをスキップしますか？"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "このシークレットリカバリーフレーズを忘れた場合、このウォレットにアクセスできなくなります。"
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "今すぐセキュリティを高める"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "スキップ"
   },
   "skipDeepLinkInterstitial": {
     "message": "ディープリンクを開く際にインタースティシャル画面を表示しない"
@@ -5768,9 +5685,6 @@
   "spendingCaps": {
     "message": "使用上限"
   },
-  "srpDesignImageAlt": {
-    "message": "SRPヴォールトの画像"
-  },
   "srpDetailsDescription": {
     "message": "シークレットリカバリーフレーズとは、暗号資産ウォレットへのアクセスや管理を可能にする一連の単語のことで、シードフレーズまたはニーモニックとも呼ばれます。お持ちのウォレットをMetaMaskに移行するには、このフレーズが必要です。"
   },
@@ -5987,10 +5901,6 @@
   "step2LedgerWalletMsg": {
     "message": "コンピューターにLedgerを直接接続します。Ledgerのロックを解除し、イーサリアムアプリを開きます。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "ステップ$1/$2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "まだこのメッセージが表示されますか？"
@@ -6487,9 +6397,6 @@
   "switchNetwork": {
     "message": "ネットワークを切り替える"
   },
-  "switchNetworks": {
-    "message": "ネットワークを切り替える"
-  },
   "switchToNetwork": {
     "message": "$1に切り替える",
     "description": "$1 represents the custom network that has previously been added"
@@ -6738,10 +6645,6 @@
   },
   "transferRequest": {
     "message": "送金要求"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Ledgerの接続に問題が発生しました。$1",

@@ -228,7 +228,7 @@ const ShieldPlan = () => {
         }}
         startAccessory={
           <ButtonIcon
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={handleBack}
