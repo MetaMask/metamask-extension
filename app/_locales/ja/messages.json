@@ -300,9 +300,6 @@
   "addingAccount": {
     "message": "アカウントの追加"
   },
-  "addingCustomNetwork": {
-    "message": "ネットワークを追加中"
-  },
   "additionalNetworks": {
     "message": "他のネットワーク"
   },
@@ -730,10 +727,6 @@
   },
   "betaTerms": {
     "message": "ベータ版利用規約"
-  },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "アカウント",
@@ -3288,10 +3281,6 @@
   },
   "metrics": {
     "message": "メトリクス"
-  },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "ネットワークの詳細の確認",
@@ -6669,10 +6658,6 @@
   },
   "transferRequest": {
     "message": "送金要求"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Ledgerの接続に問題が発生しました。$1",

@@ -308,9 +308,6 @@
   "addingAccount": {
     "message": "Добавление счет..."
   },
-  "addingCustomNetwork": {
-    "message": "Добавление сети"
-  },
   "additionalNetworks": {
     "message": "Дополнительные сети"
   },
@@ -742,10 +739,6 @@
   },
   "betaTerms": {
     "message": "Условия использования бета-версии"
-  },
-  "billionAbbreviation": {
-    "message": "Б",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "Счет",
@@ -3318,10 +3311,6 @@
   },
   "metrics": {
     "message": "Показатели"
-  },
-  "millionAbbreviation": {
-    "message": "млн",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "проверить сведения о сети",
@@ -6716,10 +6705,6 @@
   },
   "transferRequest": {
     "message": "Запрос на перевод"
-  },
-  "trillionAbbreviation": {
-    "message": "трлн",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "У нас возникли проблемы с подключением вашего Ledger. $1",

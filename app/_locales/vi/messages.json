@@ -308,9 +308,6 @@
   "addingAccount": {
     "message": "Thêm tài khoản"
   },
-  "addingCustomNetwork": {
-    "message": "Thêm mạng"
-  },
   "additionalNetworks": {
     "message": "Mạng bổ sung"
   },
@@ -742,10 +739,6 @@
   },
   "betaTerms": {
     "message": "Điều khoản sử dụng phiên bản Beta"
-  },
-  "billionAbbreviation": {
-    "message": "Tỷ",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "Tài khoản",
@@ -3318,10 +3311,6 @@
   },
   "metrics": {
     "message": "Chỉ số"
-  },
-  "millionAbbreviation": {
-    "message": "Triệu",
-    "description": "Shortened form of 'million'"
   },
   "mismatchedChainLinkText": {
     "message": "xác minh thông tin về mạng",
@@ -6716,10 +6705,6 @@
   },
   "transferRequest": {
     "message": "Yêu cầu chuyển tiền"
-  },
-  "trillionAbbreviation": {
-    "message": "Nghìn Tỷ",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Chúng tôi đang gặp sự cố khi kết nối với Ledger của bạn. $1",
