@@ -52,7 +52,6 @@ describe('useRecipientValidation', () => {
       recipientError: undefined,
       recipientWarning: undefined,
       recipientResolvedLookup: undefined,
-      recipientValidationLoading: true,
       toAddressValidated: undefined,
     });
   });
@@ -77,38 +76,10 @@ describe('useRecipientValidation', () => {
         recipientConfusableCharacters: undefined,
         recipientError: 'invalidAddress',
         recipientResolvedLookup: undefined,
-        recipientValidationLoading: false,
         recipientWarning: undefined,
         toAddressValidated: '0x123',
       });
       expect(mockT).toHaveBeenCalledWith('invalidAddress');
-    });
-  });
-
-  it('translates warning messages', async () => {
-    mockUseSendContext.mockReturnValue({
-      asset: EVM_ASSET,
-      to: 'exаmple.eth',
-      chainId: '0x1',
-    } as unknown as ReturnType<typeof useSendContext>);
-
-    jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
-      validateName: () =>
-        Promise.resolve({
-          resolvedLookup: '0x123',
-          confusableCharacters: [
-            { point: 'а', similarTo: 'a' },
-            { point: 'е', similarTo: 'e' },
-          ],
-          warning: 'confusingDomain',
-        }),
-    });
-
-    const { result } = renderHook();
-
-    await waitFor(() => {
-      expect(result.current.recipientWarning).toEqual('confusingDomain');
-      expect(mockT).toHaveBeenLastCalledWith('confusingDomain');
     });
   });
 
@@ -120,7 +91,8 @@ describe('useRecipientValidation', () => {
     } as unknown as ReturnType<typeof useSendContext>);
 
     jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
-      validateName: () => Promise.resolve({ resolvedLookup: '0x123' }),
+      validateName: () =>
+        Promise.resolve({ resolvedLookup: '0x123', protocol: 'ens' }),
     });
 
     const { result } = renderHook();
@@ -145,7 +117,7 @@ describe('useRecipientValidation', () => {
             { point: 'а', similarTo: 'a' },
             { point: 'е', similarTo: 'e' },
           ],
-          warning: 'confusingDomain',
+          protocol: 'ens',
         }),
     });
 
@@ -173,7 +145,6 @@ describe('useRecipientValidation', () => {
         recipientConfusableCharacters: undefined,
         recipientError: undefined,
         recipientResolvedLookup: undefined,
-        recipientValidationLoading: false,
         recipientWarning: undefined,
         toAddressValidated: '',
       });
@@ -194,7 +165,6 @@ describe('useRecipientValidation', () => {
         recipientConfusableCharacters: undefined,
         recipientError: undefined,
         recipientResolvedLookup: undefined,
-        recipientValidationLoading: false,
         recipientWarning: undefined,
         toAddressValidated: undefined,
       });

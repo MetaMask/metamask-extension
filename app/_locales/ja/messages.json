@@ -1394,9 +1394,6 @@
   "connectingTo": {
     "message": "$1に接続中"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "「$1」は段階的に廃止されており、機能しない可能性があります。別のネットワークをお試しください。"
-  },
   "connectingToGoerli": {
     "message": "Goerliテストネットワークに接続中"
   },
@@ -1559,9 +1556,6 @@
   "currentNetwork": {
     "message": "現在のネットワーク",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "このネットワークの現在のRPC URLは非推奨となりました。"
   },
   "currentTitle": {
     "message": "現在:"
@@ -3556,10 +3550,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "ガス代は過去72時間と比較して$1です。",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "$1に接続できません",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "ネットワークURL"
@@ -6405,9 +6395,6 @@
     "message": "通貨の変更"
   },
   "switchNetwork": {
-    "message": "ネットワークを切り替える"
-  },
-  "switchNetworks": {
     "message": "ネットワークを切り替える"
   },
   "switchToNetwork": {
