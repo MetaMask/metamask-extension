@@ -11,6 +11,7 @@ import {
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
 import { getSubscriptionPricing } from '../../selectors/subscription';
 import {
   getSubscriptionCryptoApprovalAmount,
@@ -123,10 +124,16 @@ export const useAvailableTokenBalances = (params: {
 
       cryptoApprovalAmounts.forEach((amount, index) => {
         const token = validTokenBalances[index];
-        if (amount) {
+        const tokenHasEnoughBalance =
+          token.balance &&
+          amount &&
+          new BigNumber(token.balance)
+            .pow(token.decimals)
+            .gte(amount.approveAmount);
+        if (tokenHasEnoughBalance) {
           availableTokens.push({
             ...token,
-            approvalAmount: amount,
+            approvalAmount: amount.approveAmount,
             type: token.isNative ? AssetType.native : AssetType.token,
           } as TokenWithApprovalAmount);
         }
