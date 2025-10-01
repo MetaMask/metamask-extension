@@ -4,7 +4,8 @@ import {
   NativeTokenPeriodicPermission,
   NativeTokenStreamPermission,
 } from '@metamask/gator-permissions-controller';
-import { hexToBigInt } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
+import type { Hex } from '@metamask/utils';
 import React from 'react';
 import { isSnapId } from '@metamask/snaps-utils';
 
@@ -12,8 +13,10 @@ import { SignatureRequestType } from '../../../../types/confirm';
 import { useConfirmContext } from '../../../../context/confirm';
 import {
   ConfirmInfoRow,
+  ConfirmInfoRowAddress,
   ConfirmInfoRowDate,
-  ConfirmInfoRowDivider,
+  ConfirmInfoRowText,
+  ConfirmInfoRowTextTokenUnits,
 } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoRowUrl } from '../../../../../../components/app/confirm/info/row/url';
@@ -25,6 +28,11 @@ import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { ConfirmInfoRowCurrency } from '../../../../../../components/app/confirm/info/row/currency';
 import { DAY, WEEK } from '../../../../../../../shared/constants/time';
 
+import { selectNetworkConfigurationByChainId } from '../../../../../../selectors';
+import { useSelector } from 'react-redux';
+import { getTokenByAccountAndAddressAndChainId } from '../../../../../../selectors/assets';
+import { Skeleton } from '../../../../../../components/component-library/skeleton';
+
 /**
  * Formats a period duration in seconds to a human-readable string.
  * Converts common durations (daily, weekly) to readable labels, otherwise shows seconds.
@@ -32,16 +40,62 @@ import { DAY, WEEK } from '../../../../../../../shared/constants/time';
  * @param seconds - The duration in seconds to format
  * @returns A formatted string representing the duration (e.g., "Daily", "Weekly", "3600 seconds")
  */
-const formatPeriodDuration = (seconds: number) => {
-  // multiply by 1000 to convert to milliseconds
-  switch (seconds * 1000) {
-    case DAY:
-      return 'Daily';
-    case WEEK:
-      return 'Weekly';
-    default:
-      return `${seconds} seconds`;
+const formatPeriodDuration = (periodSeconds: number) => {
+  let periodMilliseconds = periodSeconds * 1000;
+
+  if (periodMilliseconds === WEEK) {
+    return 'Every week';
   }
+
+  if (periodMilliseconds === DAY) {
+    return 'Every day';
+  }
+
+  const periods: string[] = [];
+
+  if (periodMilliseconds > WEEK) {
+    const weekCount = Math.floor(periodMilliseconds / WEEK);
+    periods.push(`${weekCount} week${weekCount > 1 ? 's' : ''}`);
+    periodMilliseconds %= WEEK;
+  }
+
+  if (periodMilliseconds > DAY) {
+    const dayCount = Math.floor(periodMilliseconds / DAY);
+    periods.push(`${dayCount} day${dayCount > 1 ? 's' : ''}`);
+    periodMilliseconds %= DAY;
+  }
+  const MINUTE = 60 * 1000;
+  const HOUR = 60 * MINUTE;
+
+  if (periodMilliseconds > HOUR) {
+    const hourCount = Math.floor(periodMilliseconds / HOUR);
+    periods.push(`${hourCount} hour${hourCount > 1 ? 's' : ''}`);
+    periodMilliseconds %= HOUR;
+  }
+
+  if (periodMilliseconds > MINUTE) {
+    const minuteCount = Math.floor(periodMilliseconds / MINUTE);
+    periods.push(`${minuteCount} minute${minuteCount > 1 ? 's' : ''}`);
+    periodMilliseconds %= MINUTE;
+  }
+
+  if (periodMilliseconds > 0) {
+    const secondsCount = Math.floor(periodMilliseconds / 1000);
+    periods.push(`${secondsCount} second${secondsCount > 1 ? 's' : ''}`);
+    periodMilliseconds %= 1000;
+  }
+
+  const result = periods.reduce((acc, period, index) => {
+    // only add 'and' for the final period part, and only if there's more than one period
+    const isFirstPeriod = index === 0;
+    const hasAnd = !isFirstPeriod && index === periods.length - 1;
+
+    const separator = isFirstPeriod ? '' : hasAnd ? ' and ' : ', ';
+
+    return `${acc}${separator} ${period}`;
+  }, '');
+
+  return `Every ${result}`;
 };
 
 /**
@@ -53,39 +107,36 @@ const formatPeriodDuration = (seconds: number) => {
  * @param props.expiry - The expiration timestamp (null if no expiry)
  * @returns JSX element containing the native token periodic permission details
  */
-const NativeTokenPeriodDetails: React.FC<{
+const NativeTokenPeriodicDetails: React.FC<{
   permission: NativeTokenPeriodicPermission;
   expiry: number | null;
 }> = ({ permission, expiry }) => {
-  const periodAmount = hexToBigInt(permission.data.periodAmount);
-  const { periodDuration } = permission.data;
-
   if (!permission.data.startTime) {
     throw new Error('Start time is required');
   }
 
-  const { startTime } = permission.data;
+  const { startTime, periodAmount, periodDuration } = permission.data;
 
   return (
     <>
       <ConfirmInfoSection data-testid="native-token-periodic-details-section">
         <ConfirmInfoRow
-          label="Period amount"
+          label="Allowance amount"
           tooltip="The amount that can be spent per period"
         >
-          <ConfirmInfoRowCurrency value={periodAmount.toString(16)} />
+          <ConfirmInfoRowCurrency value={periodAmount} />
         </ConfirmInfoRow>
 
         <ConfirmInfoRow
-          label="Period duration"
-          tooltip="The length of time of the period"
+          label="Frequency"
+          tooltip="The frequency of the permission"
         >
           {formatPeriodDuration(periodDuration)}
         </ConfirmInfoRow>
 
         {startTime && (
           <ConfirmInfoRow
-            label="Start date"
+            label="Start"
             tooltip="The start date of the permission"
           >
             <ConfirmInfoRowDate unixTimestamp={startTime} />
@@ -94,7 +145,7 @@ const NativeTokenPeriodDetails: React.FC<{
 
         {expiry && (
           <ConfirmInfoRow
-            label="Expiration date"
+            label="Expiration"
             tooltip="The expiration date of the permission"
           >
             <ConfirmInfoRowDate unixTimestamp={expiry} />
@@ -118,20 +169,14 @@ const NativeTokenStreamDetails: React.FC<{
   permission: NativeTokenStreamPermission;
   expiry: number | null;
 }> = ({ permission, expiry }) => {
-  const initialAmount = permission.data.initialAmount
-    ? hexToBigInt(permission.data.initialAmount)
-    : null;
-  const maxAmount = permission.data.maxAmount
-    ? hexToBigInt(permission.data.maxAmount)
-    : null;
-  const amountPerSecond = hexToBigInt(permission.data.amountPerSecond);
-  const amountPerDay = (amountPerSecond * BigInt(DAY)) / 1000n; // DAY is in milliseconds
-
   if (!permission.data.startTime) {
     throw new Error('Start time is required');
   }
+  const { initialAmount, maxAmount, amountPerSecond, startTime } =
+    permission.data;
 
-  const { startTime } = permission.data;
+  const amountPerSecondBn = new BigNumber(amountPerSecond);
+  const amountPerDay = amountPerSecondBn.mul(DAY / 1000); // DAY is in milliseconds
 
   return (
     <>
@@ -141,7 +186,7 @@ const NativeTokenStreamDetails: React.FC<{
             label="Initial allowance"
             tooltip="The initial allowance of the permission"
           >
-            <ConfirmInfoRowCurrency value={initialAmount.toString(16)} />
+            <ConfirmInfoRowCurrency value={initialAmount} />
           </ConfirmInfoRow>
         )}
 
@@ -150,20 +195,17 @@ const NativeTokenStreamDetails: React.FC<{
             label="Max allowance"
             tooltip="The maximum allowance of the permission"
           >
-            <ConfirmInfoRowCurrency value={maxAmount.toString(16)} />
+            <ConfirmInfoRowCurrency value={maxAmount} />
           </ConfirmInfoRow>
         )}
 
-        <ConfirmInfoRow
-          label="Stream start date"
-          tooltip="The start date of the stream"
-        >
+        <ConfirmInfoRow label="Start" tooltip="The start date of the stream">
           <ConfirmInfoRowDate unixTimestamp={startTime} />
         </ConfirmInfoRow>
 
         {expiry && (
           <ConfirmInfoRow
-            label="Expiration date"
+            label="Expiration"
             tooltip="The expiration date of the permission"
           >
             <ConfirmInfoRowDate unixTimestamp={expiry} />
@@ -176,7 +218,7 @@ const NativeTokenStreamDetails: React.FC<{
           label="Stream rate"
           tooltip="The stream rate of the permission"
         >
-          <ConfirmInfoRowCurrency value={amountPerSecond.toString(16)} />
+          <ConfirmInfoRowCurrency value={amountPerSecond} />
         </ConfirmInfoRow>
         <ConfirmInfoRow
           label="Available per day"
@@ -198,47 +240,46 @@ const NativeTokenStreamDetails: React.FC<{
  * @param props.expiry - The expiration timestamp (null if no expiry)
  * @returns JSX element containing the ERC20 token periodic permission details
  */
-const Erc20TokenPeriodDetails: React.FC<{
+const Erc20TokenPeriodicDetails: React.FC<{
   permission: Erc20TokenPeriodicPermission;
   expiry: number | null;
-}> = ({ permission, expiry }) => {
-  const periodAmount = hexToBigInt(permission.data.periodAmount);
-  const { periodDuration } = permission.data;
-  const { tokenAddress } = permission.data;
+  decimals: number | undefined;
+}> = ({ permission, expiry, decimals }) => {
+  const periodAmountBn = new BigNumber(permission.data.periodAmount);
 
-  if (!permission.data.startTime) {
+  const { periodDuration, startTime } = permission.data;
+
+  if (!startTime) {
     throw new Error('Start time is required');
   }
-
-  const { startTime } = permission.data;
 
   return (
     <>
       <ConfirmInfoSection data-testid="erc20-token-periodic-details-section">
         <ConfirmInfoRow
-          label="Token address"
-          tooltip="The ERC20 token contract address"
-        >
-          {tokenAddress}
-        </ConfirmInfoRow>
-
-        <ConfirmInfoRow
-          label="Period amount"
+          label="Allowance amount"
           tooltip="The amount that can be spent per period"
         >
-          <ConfirmInfoRowCurrency value={periodAmount.toString(16)} />
+          {decimals !== undefined ? (
+            <ConfirmInfoRowTextTokenUnits
+              value={periodAmountBn}
+              decimals={decimals}
+            />
+          ) : (
+            <Skeleton width="50%" height={20} />
+          )}
         </ConfirmInfoRow>
 
         <ConfirmInfoRow
-          label="Period duration"
-          tooltip="The length of time of the period"
+          label="Frequency"
+          tooltip="The frequency of the permission"
         >
           {formatPeriodDuration(periodDuration)}
         </ConfirmInfoRow>
 
         {startTime && (
           <ConfirmInfoRow
-            label="Start date"
+            label="Start"
             tooltip="The start date of the permission"
           >
             <ConfirmInfoRowDate unixTimestamp={startTime} />
@@ -247,7 +288,7 @@ const Erc20TokenPeriodDetails: React.FC<{
 
         {expiry && (
           <ConfirmInfoRow
-            label="Expiration date"
+            label="Expiration"
             tooltip="The expiration date of the permission"
           >
             <ConfirmInfoRowDate unixTimestamp={expiry} />
@@ -269,17 +310,18 @@ const Erc20TokenPeriodDetails: React.FC<{
  */
 const Erc20TokenStreamDetails: React.FC<{
   permission: Erc20TokenStreamPermission;
+  decimals: number | undefined;
   expiry: number | null;
-}> = ({ permission, expiry }) => {
-  const initialAmount = permission.data.initialAmount
-    ? hexToBigInt(permission.data.initialAmount)
-    : null;
-  const maxAmount = permission.data.maxAmount
-    ? hexToBigInt(permission.data.maxAmount)
-    : null;
-  const amountPerSecond = hexToBigInt(permission.data.amountPerSecond);
-  const amountPerDay = (amountPerSecond * BigInt(DAY)) / 1000n; // DAY is in milliseconds
-  const { tokenAddress } = permission.data;
+}> = ({ permission, expiry, decimals }) => {
+  const initialAmount =
+    permission.data.initialAmount &&
+    new BigNumber(permission.data.initialAmount);
+
+  const maxAmount =
+    permission.data.maxAmount && new BigNumber(permission.data.maxAmount);
+
+  const amountPerSecond = new BigNumber(permission.data.amountPerSecond);
+  const amountPerDay = amountPerSecond.mul(DAY / 1000); // DAY is in milliseconds
 
   if (!permission.data.startTime) {
     throw new Error('Start time is required');
@@ -290,19 +332,19 @@ const Erc20TokenStreamDetails: React.FC<{
   return (
     <>
       <ConfirmInfoSection data-testid="erc20-token-stream-details-section">
-        <ConfirmInfoRow
-          label="Token address"
-          tooltip="The ERC20 token contract address"
-        >
-          {tokenAddress}
-        </ConfirmInfoRow>
-
         {initialAmount && (
           <ConfirmInfoRow
             label="Initial allowance"
             tooltip="The initial allowance of the permission"
           >
-            <ConfirmInfoRowCurrency value={initialAmount.toString(16)} />
+            {decimals !== undefined ? (
+              <ConfirmInfoRowTextTokenUnits
+                value={initialAmount as BigNumber}
+                decimals={decimals}
+              />
+            ) : (
+              <Skeleton width="50%" height={20} />
+            )}
           </ConfirmInfoRow>
         )}
 
@@ -311,12 +353,19 @@ const Erc20TokenStreamDetails: React.FC<{
             label="Max allowance"
             tooltip="The maximum allowance of the permission"
           >
-            <ConfirmInfoRowCurrency value={maxAmount.toString(16)} />
+            {decimals !== undefined ? (
+              <ConfirmInfoRowTextTokenUnits
+                value={maxAmount as BigNumber}
+                decimals={decimals}
+              />
+            ) : (
+              <Skeleton width="50%" height={20} />
+            )}
           </ConfirmInfoRow>
         )}
 
         <ConfirmInfoRow
-          label="Stream start date"
+          label="Stream start"
           tooltip="The start date of the stream"
         >
           <ConfirmInfoRowDate unixTimestamp={startTime} />
@@ -324,7 +373,7 @@ const Erc20TokenStreamDetails: React.FC<{
 
         {expiry && (
           <ConfirmInfoRow
-            label="Expiration date"
+            label="Expiration"
             tooltip="The expiration date of the permission"
           >
             <ConfirmInfoRowDate unixTimestamp={expiry} />
@@ -337,17 +386,64 @@ const Erc20TokenStreamDetails: React.FC<{
           label="Stream rate"
           tooltip="The stream rate of the permission"
         >
-          <ConfirmInfoRowCurrency value={amountPerSecond.toString(16)} />
+          {decimals !== undefined ? (
+            <ConfirmInfoRowTextTokenUnits
+              value={amountPerSecond}
+              decimals={decimals}
+            />
+          ) : (
+            <Skeleton width="50%" height={20} />
+          )}
         </ConfirmInfoRow>
         <ConfirmInfoRow
           label="Available per day"
           tooltip="The available amount per day"
         >
-          <ConfirmInfoRowCurrency value={amountPerDay.toString(16)} />
+          {decimals !== undefined ? (
+            <ConfirmInfoRowTextTokenUnits
+              value={amountPerDay}
+              decimals={decimals}
+            />
+          ) : (
+            <Skeleton width="50%" height={20} />
+          )}
         </ConfirmInfoRow>
       </ConfirmInfoSection>
     </>
   );
+};
+
+const getErc20TokenDetails = ({
+  tokenAddress,
+  chainId,
+}: {
+  tokenAddress: Hex;
+  chainId: Hex;
+}): {
+  label: string | undefined;
+  decimals: number | undefined;
+} => {
+  const token = useSelector((state) =>
+    getTokenByAccountAndAddressAndChainId(
+      state,
+      undefined, // Defaults to the selected account
+      tokenAddress,
+      chainId as Hex,
+    ),
+  );
+
+  return {
+    label: token?.name || token?.symbol,
+    decimals: token?.decimals,
+  };
+};
+
+const getNativeTokenLabel = (chainId: Hex): string => {
+  const { nativeCurrency: symbol, name } = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
+  return symbol || name;
 };
 
 /**
@@ -368,55 +464,86 @@ const TypedSignPermissionInfo: React.FC = () => {
   }
 
   let permissionDetail: React.ReactNode;
+  let tokenLabel: string | undefined;
   let permissionTitle: string;
 
   const { expiry } = decodedPermission;
 
   switch (decodedPermission.permission.type) {
-    case 'native-token-periodic':
-      permissionTitle = 'Native token periodic';
+    case 'native-token-periodic': {
+      permissionTitle = 'Native Token Subscription';
+
+      const permission =
+        decodedPermission.permission as NativeTokenPeriodicPermission;
+
+      tokenLabel = getNativeTokenLabel(decodedPermission.chainId);
+
       permissionDetail = (
-        <NativeTokenPeriodDetails
-          permission={
-            decodedPermission.permission as NativeTokenPeriodicPermission
-          }
+        <NativeTokenPeriodicDetails permission={permission} expiry={expiry} />
+      );
+
+      break;
+    }
+    case 'native-token-stream': {
+      permissionTitle = 'Native Token Stream';
+
+      const permission =
+        decodedPermission.permission as NativeTokenStreamPermission;
+
+      tokenLabel = getNativeTokenLabel(decodedPermission.chainId);
+
+      permissionDetail = (
+        <NativeTokenStreamDetails permission={permission} expiry={expiry} />
+      );
+
+      break;
+    }
+    case 'erc20-token-periodic': {
+      permissionTitle = 'Token Subscription';
+
+      const permission =
+        decodedPermission.permission as Erc20TokenPeriodicPermission;
+
+      const { label, decimals } = getErc20TokenDetails({
+        tokenAddress: permission.data.tokenAddress,
+        chainId: decodedPermission.chainId,
+      });
+
+      tokenLabel = label;
+
+      permissionDetail = (
+        <Erc20TokenPeriodicDetails
+          permission={permission}
           expiry={expiry}
+          decimals={decimals}
         />
       );
+
       break;
-    case 'native-token-stream':
-      permissionTitle = 'Native token stream';
-      permissionDetail = (
-        <NativeTokenStreamDetails
-          permission={
-            decodedPermission.permission as NativeTokenStreamPermission
-          }
-          expiry={expiry}
-        />
-      );
-      break;
-    case 'erc20-token-periodic':
-      permissionTitle = 'ERC20 token periodic';
-      permissionDetail = (
-        <Erc20TokenPeriodDetails
-          permission={
-            decodedPermission.permission as Erc20TokenPeriodicPermission
-          }
-          expiry={expiry}
-        />
-      );
-      break;
-    case 'erc20-token-stream':
-      permissionTitle = 'ERC20 token stream';
+    }
+    case 'erc20-token-stream': {
+      permissionTitle = 'Token Stream';
+
+      const permission =
+        decodedPermission.permission as Erc20TokenStreamPermission;
+
+      const { label, decimals } = getErc20TokenDetails({
+        tokenAddress: permission.data.tokenAddress,
+        chainId: decodedPermission.chainId,
+      });
+
+      tokenLabel = label;
+
       permissionDetail = (
         <Erc20TokenStreamDetails
-          permission={
-            decodedPermission.permission as Erc20TokenStreamPermission
-          }
+          permission={permission}
+          decimals={decimals}
           expiry={expiry}
         />
       );
+
       break;
+    }
     default:
       throw new Error('Invalid permission type');
   }
@@ -425,14 +552,19 @@ const TypedSignPermissionInfo: React.FC = () => {
     ? t('requestFromInfoSnap')
     : t('requestFromInfo');
 
+  const {
+    chainId,
+    permission: {
+      data: { tokenAddress },
+    },
+  } = decodedPermission;
+
+  tokenAddress;
+
+  // todo: add the permission title
   return (
     <>
       <ConfirmInfoSection data-testid="confirmation_permission-section">
-        <ConfirmInfoRow
-          label={permissionTitle}
-          tooltip="The type of permission being requested"
-        />
-        <ConfirmInfoRowDivider />
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.RequestFrom}
           ownerId={id}
@@ -441,13 +573,32 @@ const TypedSignPermissionInfo: React.FC = () => {
         >
           <ConfirmInfoRowUrl url={decodedPermission.origin} />
         </ConfirmInfoAlertRow>
+        <NetworkRow />
+
+        <ConfirmInfoRow
+          label="Token"
+          tooltip="The token that the permission is for"
+        >
+          {tokenLabel ? (
+            <ConfirmInfoRowText text={tokenLabel} />
+          ) : (
+            <ConfirmInfoRowAddress address={tokenAddress} chainId={chainId} />
+          )}
+        </ConfirmInfoRow>
+
+        {tokenLabel && tokenAddress && (
+          <ConfirmInfoRow label="">
+            <ConfirmInfoRowAddress address={tokenAddress} chainId={chainId} />
+          </ConfirmInfoRow>
+        )}
+      </ConfirmInfoSection>
+      <ConfirmInfoSection data-testid="confirmation_justification-section">
         <ConfirmInfoRow
           label="Justification"
           tooltip="The justification provided by the website for requesting this permission"
         >
           {decodedPermission.permission.justification}
         </ConfirmInfoRow>
-        <NetworkRow />
         <SigningInWithRow />
       </ConfirmInfoSection>
       {permissionDetail}
