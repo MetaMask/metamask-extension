@@ -3530,7 +3530,7 @@
     "description": "Button text to learn more about multichain accounts"
   },
   "multichainAccountIntroSameAddressDescription": {
-    "message": "We've merged your accounts, so keep using MetaMask the same as before. Your funds are safe and unchanged.",
+    "message": "We’ve grouped your accounts, so keep using MetaMask the same as before. Your funds are safe and unchanged.",
     "description": "Description explaining that accounts have been merged"
   },
   "multichainAccountIntroSameAddressTitle": {
