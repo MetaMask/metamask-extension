@@ -22,6 +22,7 @@ import {
   ModalFooter,
   ModalOverlay,
   Text,
+  ModalHeader,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { LottieAnimation } from '../../../../component-library/lottie-animation';
@@ -50,26 +51,10 @@ export const MultichainAccountIntroModal: React.FC<MultichainAccountIntroModalPr
         >
           <ModalOverlay />
           <ModalContent>
-            {/* Close button */}
-            <Box
-              display={Display.Flex}
-              width={BlockSize.Full}
-              justifyContent={JustifyContent.flexEnd}
-              marginBottom={3}
-              paddingTop={6}
-              paddingRight={6}
-            >
-              <Button
-                variant={ButtonVariant.Link}
-                size={ButtonSize.Sm}
-                onClick={onClose}
-                aria-label={t('close')}
-              >
-                <Icon name={IconName.Close} size={IconSize.Sm} />
-              </Button>
-            </Box>
-
-            <ModalBody paddingTop={0}>
+            <ModalHeader onClose={onClose}>
+              {t('multichainAccountsIntroductionModalTitle')}
+            </ModalHeader>
+            <ModalBody>
               <Box
                 display={Display.Flex}
                 flexDirection={FlexDirection.Column}
@@ -77,7 +62,6 @@ export const MultichainAccountIntroModal: React.FC<MultichainAccountIntroModalPr
                 justifyContent={JustifyContent.center}
                 marginBottom={4}
                 gap={3}
-                style={{ minHeight: '120px' }}
               >
                 <MemoizedLottieAnimation
                   path="images/animations/multichain-accounts/MM_MultichainAccounts_Polycon-and-network_Lottie.json"
