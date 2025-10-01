@@ -68,16 +68,12 @@ export default function OnboardingWelcome() {
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        if (isFireFox) {
-          navigate(
-            isParticipateInMetaMetricsSet
-              ? ONBOARDING_COMPLETION_ROUTE
-              : ONBOARDING_METAMETRICS,
-            { replace: true },
-          );
-        } else {
-          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
-        }
+        navigate(
+          isParticipateInMetaMetricsSet
+            ? ONBOARDING_COMPLETION_ROUTE
+            : ONBOARDING_METAMETRICS,
+          { replace: true },
+        );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {

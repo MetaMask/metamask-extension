@@ -38,7 +38,7 @@ describe('Metamask onboarding (with social login)', function () {
         await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
-        await onboardingCompletePage.clickCreateWalletDoneButton();
+        await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
