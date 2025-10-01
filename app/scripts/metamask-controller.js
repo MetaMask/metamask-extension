@@ -147,7 +147,6 @@ import { TokenStandard } from '../../shared/constants/transaction';
 import {
   CHAIN_IDS,
   CHAIN_SPEC_URL,
-  FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
 } from '../../shared/constants/network';
@@ -1183,51 +1182,6 @@ export default class MetamaskController extends EventEmitter {
         }
       },
     );
-
-    // this.controllerMessenger.subscribe(
-    //   'NetworkController:networkAdded',
-    //   (payload) => {
-    //     const chainId = payload?.chainId;
-    //     console.log('NetworkController:networkAdded ...........', payload);
-    //     if (!chainId) {
-    //       console.warn('[networkAdded] Missing chainId in payload:', payload);
-    //       return;
-    //     }
-
-    //     const eip155Map =
-    //       this.networkEnablementController?.state?.enabledNetworkMap?.eip155 ??
-    //       {};
-
-    //     console.log('eip155Map ...........', eip155Map);
-
-    //     // Count how many EVM networks are currently enabled
-    //     const enabledCount = Object.values(eip155Map).filter(Boolean).length;
-
-    //     console.log('enabledCount ...........', enabledCount);
-
-    //     const isPopular =
-    //       FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN.includes(chainId);
-
-    //     console.log('isPopular ...........', isPopular);
-
-    //     // If the added network is "popular":
-    //     //  - when we already have >1 enabled, flip on all popular networks
-    //     //  - otherwise just enable the newly added network
-    //     if (isPopular) {
-    //       if (enabledCount > 1) {
-    //         console.log('enableAllPopularNetworks ...........');
-    //         this.networkEnablementController.enableAllPopularNetworks();
-    //         return;
-    //       }
-    //       console.log('enableNetwork ...........', chainId);
-    //       this.networkEnablementController.enableNetwork(chainId);
-    //       return;
-    //     }
-
-    //     // Non-featured: just enable the newly added network
-    //     this.networkEnablementController.enableNetwork(chainId);
-    //   },
-    // );
 
     this.controllerMessenger.subscribe(
       `OnboardingController:stateChange`,
