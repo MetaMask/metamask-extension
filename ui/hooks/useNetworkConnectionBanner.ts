@@ -45,15 +45,23 @@ export const useNetworkConnectionBanner =
       unavailableTimer?: NodeJS.Timeout;
     }>({});
 
-    const clearTimers = useCallback(() => {
+    const clearDegradedTimer = useCallback(() => {
       if (timersRef.current.degradedTimer) {
         clearTimeout(timersRef.current.degradedTimer);
         timersRef.current.degradedTimer = undefined;
       }
+    }, []);
+
+    const clearUnavailableTimer = useCallback(() => {
       if (timersRef.current.unavailableTimer) {
         clearTimeout(timersRef.current.unavailableTimer);
         timersRef.current.unavailableTimer = undefined;
       }
+    }, []);
+
+    const clearTimers = useCallback(() => {
+      clearDegradedTimer();
+      clearUnavailableTimer();
     }, []);
 
     const trackNetworkBannerEvent = useCallback(
@@ -118,6 +126,8 @@ export const useNetworkConnectionBanner =
     );
 
     const startUnavailableTimer = useCallback(() => {
+      clearUnavailableTimer();
+
       timersRef.current.unavailableTimer = setTimeout(() => {
         if (firstUnavailableEvmNetwork) {
           trackNetworkBannerEvent({
@@ -135,9 +145,16 @@ export const useNetworkConnectionBanner =
           );
         }
       }, UNAVAILABLE_BANNER_TIMEOUT - DEGRADED_BANNER_TIMEOUT);
-    }, [firstUnavailableEvmNetwork, trackNetworkBannerEvent, dispatch]);
+    }, [
+      firstUnavailableEvmNetwork,
+      trackNetworkBannerEvent,
+      dispatch,
+      clearUnavailableTimer,
+    ]);
 
     const startDegradedTimer = useCallback(() => {
+      clearDegradedTimer();
+
       timersRef.current.degradedTimer = setTimeout(() => {
         if (firstUnavailableEvmNetwork) {
           trackNetworkBannerEvent({
@@ -162,11 +179,13 @@ export const useNetworkConnectionBanner =
       trackNetworkBannerEvent,
       dispatch,
       startUnavailableTimer,
+      clearDegradedTimer,
     ]);
 
-    useEffect(() => {
-      clearTimers();
+    // If the first unavailable network does not change but the status changes, start the degraded or unavailable timer
+    // If the first unavailable network changes, reset all timers and change the status
 
+    useEffect(() => {
       if (firstUnavailableEvmNetwork) {
         if (networkConnectionBannerState.status === 'degraded') {
           startUnavailableTimer();
