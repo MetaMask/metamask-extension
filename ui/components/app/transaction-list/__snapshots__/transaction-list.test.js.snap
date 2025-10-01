@@ -33,7 +33,7 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md mm-box--padding-top-2 mm-box--padding-inline-4 mm-box--color-text-alternative"
         >
-          May 13
+          May 12
         </p>
         <div
           class="mm-box activity-list-item transaction-list-item mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
@@ -140,7 +140,7 @@ exports[`TransactionList renders TransactionList component with props hideNetwor
         <p
           class="mm-box mm-text mm-text--body-md mm-box--padding-top-2 mm-box--padding-inline-4 mm-box--color-text-alternative"
         >
-          May 13
+          May 12
         </p>
         <div
           class="mm-box activity-list-item transaction-list-item mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
