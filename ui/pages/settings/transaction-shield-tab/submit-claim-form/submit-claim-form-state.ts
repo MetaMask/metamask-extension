@@ -4,7 +4,6 @@ export const useSubmitClaimFormState = () => {
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
-  const [lossAmount, setLossAmount] = useState<string>('');
   const [impactedWalletAddress, setImpactedWalletAddress] =
     useState<string>('');
   const [impactedTxHash, setImpactedTxHash] = useState<string>('');
@@ -19,8 +18,6 @@ export const useSubmitClaimFormState = () => {
     setLastName,
     email,
     setEmail,
-    lossAmount,
-    setLossAmount,
     impactedWalletAddress,
     setImpactedWalletAddress,
     impactedTxHash,
@@ -33,7 +30,6 @@ export const useSubmitClaimFormState = () => {
       setFirstName('');
       setLastName('');
       setEmail('');
-      setLossAmount('');
       setImpactedWalletAddress('');
       setImpactedTxHash('');
       setReimbursementWalletAddress('');

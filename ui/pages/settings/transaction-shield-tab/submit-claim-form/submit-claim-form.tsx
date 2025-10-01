@@ -24,14 +24,11 @@ import {
   Textarea,
   TextareaResize,
 } from '../../../../components/component-library/textarea';
-import { useSubmitClaimFormState } from './submit-claim-form-state';
 import { FileUploader } from '../../../../components/component-library/components-temp/file-uploader';
-import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../../shared/constants/app';
+import { useSubmitClaimFormState } from './submit-claim-form-state';
 
 const SubmitClaimForm = () => {
   const t = useI18nContext();
-  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const {
     firstName,
@@ -40,8 +37,6 @@ const SubmitClaimForm = () => {
     setLastName,
     email,
     setEmail,
-    lossAmount,
-    setLossAmount,
     impactedWalletAddress,
     setImpactedWalletAddress,
     impactedTxHash,
@@ -56,53 +51,45 @@ const SubmitClaimForm = () => {
     Record<string, { key: string; msg: string } | undefined>
   >({});
 
-  const validateAndSetEmail = useCallback(
-    (value: string) => {
-      const isEmailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/iu);
-      setErrors((state) => ({
-        ...state,
-        email: isEmailValid
-          ? undefined
-          : { key: 'email', msg: t('shieldClaimInvalidEmail') },
-      }));
-      setEmail(value);
-    },
-    [setEmail, t],
-  );
+  const validateEmail = useCallback(() => {
+    const isEmailValid = email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/iu);
+    setErrors((state) => ({
+      ...state,
+      email: isEmailValid
+        ? undefined
+        : { key: 'email', msg: t('shieldClaimInvalidEmail') },
+    }));
+  }, [t, email]);
 
-  const validateAndSetImpactedWalletAddress = useCallback(
-    (value: string) => {
-      const isImpactedWalletAddressValid = isValidHexAddress(value);
-      setErrors((state) => ({
-        ...state,
-        impactedWalletAddress: isImpactedWalletAddressValid
-          ? undefined
-          : {
-              key: 'impactedWalletAddress',
-              msg: t('shieldClaimInvalidImpactedWalletAddress'),
-            },
-      }));
-      setImpactedWalletAddress(value);
-    },
-    [setImpactedWalletAddress, t],
-  );
+  const validateImpactedWalletAddress = useCallback(() => {
+    const isImpactedWalletAddressValid = isValidHexAddress(
+      impactedWalletAddress,
+    );
+    setErrors((state) => ({
+      ...state,
+      impactedWalletAddress: isImpactedWalletAddressValid
+        ? undefined
+        : {
+            key: 'impactedWalletAddress',
+            msg: t('shieldClaimInvalidWalletAddress'),
+          },
+    }));
+  }, [impactedWalletAddress, t]);
 
-  const validateAndSetReimbursementWalletAddress = useCallback(
-    (value: string) => {
-      const isReimbursementWalletAddressValid = isValidHexAddress(value);
-      setErrors((state) => ({
-        ...state,
-        reimbursementWalletAddress: isReimbursementWalletAddressValid
-          ? undefined
-          : {
-              key: 'reimbursementWalletAddress',
-              msg: t('shieldClaimInvalidReimbursementWalletAddress'),
-            },
-      }));
-      setReimbursementWalletAddress(value);
-    },
-    [setReimbursementWalletAddress, t],
-  );
+  const validateReimbursementWalletAddress = useCallback(() => {
+    const isReimbursementWalletAddressValid = isValidHexAddress(
+      reimbursementWalletAddress,
+    );
+    setErrors((state) => ({
+      ...state,
+      reimbursementWalletAddress: isReimbursementWalletAddressValid
+        ? undefined
+        : {
+            key: 'reimbursementWalletAddress',
+            msg: t('shieldClaimInvalidWalletAddress'),
+          },
+    }));
+  }, [reimbursementWalletAddress, t]);
 
   const isInvalidData = useMemo(() => {
     return (
@@ -110,7 +97,6 @@ const SubmitClaimForm = () => {
       !firstName ||
       !lastName ||
       !email ||
-      !lossAmount ||
       !impactedWalletAddress ||
       !impactedTxHash ||
       !reimbursementWalletAddress ||
@@ -121,7 +107,6 @@ const SubmitClaimForm = () => {
     firstName,
     lastName,
     email,
-    lossAmount,
     impactedWalletAddress,
     impactedTxHash,
     reimbursementWalletAddress,
@@ -188,24 +173,10 @@ const SubmitClaimForm = () => {
         id="email"
         name="email"
         size={FormTextFieldSize.Lg}
-        onChange={(e) => validateAndSetEmail(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
+        onBlur={() => validateEmail()}
         value={email}
         error={Boolean(errors.email)}
-        required
-        width={BlockSize.Full}
-      />
-      <FormTextField
-        label={`${t('shieldClaimLossAmount')}*`}
-        placeholder="10,000 USDT"
-        helpText={t('shieldClaimLossAmountHelpText')}
-        helpTextProps={{
-          color: TextColor.textAlternativeSoft,
-        }}
-        id="loss-amount"
-        name="loss-amount"
-        size={FormTextFieldSize.Lg}
-        onChange={(e) => setLossAmount(e.target.value)}
-        value={lossAmount}
         required
         width={BlockSize.Full}
       />
@@ -227,7 +198,8 @@ const SubmitClaimForm = () => {
         id="impacted-wallet-address"
         name="impacted-wallet-address"
         size={FormTextFieldSize.Lg}
-        onChange={(e) => validateAndSetImpactedWalletAddress(e.target.value)}
+        onChange={(e) => setImpactedWalletAddress(e.target.value)}
+        onBlur={() => validateImpactedWalletAddress()}
         value={impactedWalletAddress}
         error={Boolean(errors.impactedWalletAddress)}
         required
@@ -273,9 +245,8 @@ const SubmitClaimForm = () => {
         id="reimbursement-wallet-address"
         name="reimbursement-wallet-address"
         size={FormTextFieldSize.Lg}
-        onChange={(e) =>
-          validateAndSetReimbursementWalletAddress(e.target.value)
-        }
+        onChange={(e) => setReimbursementWalletAddress(e.target.value)}
+        onBlur={() => validateReimbursementWalletAddress()}
         value={reimbursementWalletAddress}
         error={Boolean(errors.reimbursementWalletAddress)}
         required
@@ -295,6 +266,8 @@ const SubmitClaimForm = () => {
           rows={4}
           resize={TextareaResize.Vertical}
           borderRadius={BorderRadius.LG}
+          paddingTop={3}
+          paddingBottom={3}
         />
       </Box>
       <FileUploader

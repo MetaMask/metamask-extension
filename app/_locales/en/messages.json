@@ -5633,23 +5633,14 @@
   "shieldClaimInvalidEmail": {
     "message": "Invalid email"
   },
-  "shieldClaimInvalidImpactedWalletAddress": {
-    "message": "Invalid impacted wallet address"
-  },
-  "shieldClaimInvalidReimbursementWalletAddress": {
-    "message": "Invalid reimbursement wallet address"
+  "shieldClaimInvalidWalletAddress": {
+    "message": "Invalid wallet address"
   },
   "shieldClaimLastName": {
     "message": "Last Name"
   },
   "shieldClaimLastNamePlaceholder": {
     "message": "Enter your last name"
-  },
-  "shieldClaimLossAmount": {
-    "message": "Loss amount"
-  },
-  "shieldClaimLossAmountHelpText": {
-    "message": "Input your wallet balance during the incident (estimate)."
   },
   "shieldClaimReimbursementWalletAddress": {
     "message": "Reimbursement wallet address"
