@@ -25,7 +25,6 @@ export type BatchProcessOptions<TItem, TResult> = {
  *
  * @param options - Configuration options for batch processing
  * @returns Promise resolving to merged result or null if all batches failed
- *
  * @example
  * ```typescript
  * const addresses = ['0x1', '0x2', '0x3', ...];
@@ -71,7 +70,9 @@ export async function processInBatches<TItem, TResult>(
           }
           return result;
         } catch (error) {
-          logger?.warn(`Batch ${index + 1} failed with error: ${error}`);
+          logger?.warn(
+            `Batch ${index + 1} failed with error: ${String(error)}`,
+          );
           return null;
         }
       }),
@@ -102,7 +103,7 @@ export async function processInBatches<TItem, TResult>(
     // If no merge function provided, return the first successful result
     return successfulResults[0] || null;
   } catch (error) {
-    logger?.warn(`Batch processing failed: ${error}`);
+    logger?.warn(`Batch processing failed: ${String(error)}`);
     return null;
   }
 }
