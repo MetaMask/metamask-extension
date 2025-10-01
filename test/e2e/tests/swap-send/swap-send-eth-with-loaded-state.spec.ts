@@ -5,8 +5,8 @@ import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
-import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
 import { mockLegacySendFeatureFlag } from '../send/common';
+import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
 
 async function mockSwapQuotes(mockServer: MockttpServer) {
   return [

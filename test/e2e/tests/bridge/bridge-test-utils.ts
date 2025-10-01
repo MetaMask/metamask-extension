@@ -14,6 +14,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { mockSegment } from '../metrics/mocks/segment';
+import { mockLegacySendFeatureFlag } from '../send/common';
 import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
@@ -735,6 +736,7 @@ export const getBridgeFixtures = (
         await mockSwapTokensLinea(mockServer),
         await mockSwapTokensArbitrum(mockServer),
         await mockSwapAggregatorMetadataArbitrum(mockServer),
+        mockLegacySendFeatureFlag(mockServer),
       ];
 
       if (withMockedSegment) {
