@@ -19,6 +19,7 @@ import {
   getNetworkConfigurationIdByChainId,
   getSelectedMultichainNetworkConfiguration,
   getIsMultichainAccountsState2Enabled,
+  getUseExternalServices,
 } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
@@ -73,6 +74,7 @@ const TokenButtons = ({
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isEvm = isEvmChainId(token.chainId);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
@@ -358,7 +360,7 @@ const TokenButtons = ({
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
-        disabled={!isSwapsChain}
+        disabled={!(isSwapsChain && isExternalServicesEnabled)}
       />
 
       {!isUnifiedUIEnabled && !isTestnet && isBridgeChain && (

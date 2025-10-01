@@ -164,7 +164,10 @@ const CoinButtons = ({
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
     swapButton: [
-      { condition: !isSwapsChain, message: 'currentlyUnavailable' },
+      {
+        condition: !isExternalServicesEnabled,
+        message: 'currentlyUnavailable',
+      },
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
     bridgeButton: [
@@ -477,11 +480,7 @@ const CoinButtons = ({
       }
       <IconButton
         className={`${classPrefix}-overview__button`}
-        disabled={
-          (!isSwapsChain && !isUnifiedUIEnabled) ||
-          !isSigningEnabled ||
-          !isExternalServicesEnabled
-        }
+        disabled={!isSigningEnabled || !isExternalServicesEnabled}
         Icon={
           displayNewIconButtons ? (
             <Icon
