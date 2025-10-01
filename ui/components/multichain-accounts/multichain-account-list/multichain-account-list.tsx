@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import {
   AccountGroupId,
@@ -24,7 +30,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { endTrace, trace } from '../../../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
@@ -68,6 +74,10 @@ export const MultichainAccountList = ({
     getDefaultHomeActiveTabName,
   );
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.AccountList });
+  }, []);
 
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
     useState(false);
