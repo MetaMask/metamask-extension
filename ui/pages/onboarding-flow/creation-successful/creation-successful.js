@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
 import {
   Button,
@@ -33,19 +33,38 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
-  ONBOARDING_DOWNLOAD_APP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getSocialLoginType } from '../../../selectors';
+import {
+  getSocialLoginType,
+  getExternalServicesOnboardingToggleState,
+  getFirstTimeFlowType,
+} from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-
+import {
+  toggleExternalServices,
+  setCompletedOnboarding,
+} from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 
 export default function CreationSuccessful() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const { search } = useLocation();
   const isWalletReady = useSelector(getIsPrimarySeedPhraseBackedUp);
   const userSocialLoginType = useSelector(getSocialLoginType);
+  const externalServicesOnboardingToggleState = useSelector(
+    getExternalServicesOnboardingToggleState,
+  );
+  const trackEvent = useContext(MetaMetricsContext);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
 
@@ -124,13 +143,40 @@ export default function CreationSuccessful() {
     );
   }, [isWalletReady, isFromReminder]);
 
-  const onDone = useCallback(() => {
+  const onDone = useCallback(async () => {
+    if (isWalletReady) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.ExtensionPinned,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          wallet_setup_type:
+            firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
+        },
+      });
+    }
+
     if (isFromReminder) {
       navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
     }
-    navigate(ONBOARDING_DOWNLOAD_APP_ROUTE);
-  }, [navigate, isFromReminder, isFromSettingsSecurity]);
+    await dispatch(
+      toggleExternalServices(externalServicesOnboardingToggleState),
+    );
+    await dispatch(setCompletedOnboarding());
+    navigate(DEFAULT_ROUTE);
+  }, [
+    isWalletReady,
+    isFromReminder,
+    dispatch,
+    externalServicesOnboardingToggleState,
+    navigate,
+    trackEvent,
+    firstTimeFlowType,
+    isFromSettingsSecurity,
+  ]);
 
   return (
     <Box
