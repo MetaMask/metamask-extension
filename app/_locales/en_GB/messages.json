@@ -2061,7 +2061,7 @@
     "message": "down arrow"
   },
   "downloadAppDescription": {
-    "message": "Bring MetaMask with you everywhere you go with the mobile app. Plus, turn on Face ID so you always have access, even if you forget your password."
+    "message": "Bring MetaMask with you everywhere you go. Turn on Face ID so you always have access, even if you forget your password."
   },
   "downloadAppTitle": {
     "message": "Scan QR code and download the app"
@@ -4755,6 +4755,12 @@
   "pin": {
     "message": "Pin",
     "description": "Pin label used in multichain account menu"
+  },
+  "pinMetaMask": {
+    "message": "Pin the MetaMask extension"
+  },
+  "pinMetaMaskDescription": {
+    "message": "Click on $1 and then $2 to pin it."
   },
   "pinToTop": {
     "message": "Pin to top"
