@@ -51,6 +51,9 @@ class SwapPage {
   private readonly destinationTokenButton =
     '[data-testid="prepare-swap-page-swap-to"]';
 
+  private readonly exchangeRate =
+    '[data-testid="exchange-rate-display-base-symbol"]';
+
   private readonly fromToText =
     '[data-testid="multichain-token-list-button"] p';
 
@@ -96,13 +99,12 @@ class SwapPage {
 
   private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
 
-  private readonly viewInActivityButton = {
-    tag: 'button',
-    text: 'View in activity',
-  };
-
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkExchangeRate(): Promise<void> {
+    await this.driver.waitForSelector(this.exchangeRate);
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -143,10 +145,6 @@ class SwapPage {
 
   async closeQuotes(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(this.closeQuotesButton);
-  }
-
-  async clickViewInActivity(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(this.viewInActivityButton);
   }
 
   async enterSwapAmount(amount: string): Promise<void> {

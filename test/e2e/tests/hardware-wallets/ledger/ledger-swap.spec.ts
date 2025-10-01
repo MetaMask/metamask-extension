@@ -64,9 +64,10 @@ describe('Ledger Swap', function () {
         await swapPage.selectDestinationToken('DAI');
         await swapPage.dismissManualTokenWarning();
 
+        await swapPage.checkExchangeRate();
         await swapPage.checkSwapButtonIsEnabled();
         await swapPage.submitSwap();
-        await swapPage.clickViewInActivity();
+        await swapPage.waitForTransactionToComplete();
 
         await homePage.checkPageIsLoaded();
         // check activity list
