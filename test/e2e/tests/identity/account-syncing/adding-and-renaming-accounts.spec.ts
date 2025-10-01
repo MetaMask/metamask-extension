@@ -115,6 +115,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
+        multichainAccountsOverride: true,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -189,6 +190,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
+        multichainAccountsOverride: true,
       },
       async ({ driver }) => {
         // Go through onboarding again to ensure accounts and names are synced

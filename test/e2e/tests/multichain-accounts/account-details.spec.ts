@@ -28,6 +28,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
+          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
@@ -123,6 +124,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
+          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);

@@ -58,7 +58,7 @@ export async function withMultichainAccountsDesignEnabled(
       testSpecificMock,
       title,
       dapp: true,
-      multichainAccountsOverride: true,
+      multichainAccountsOverride: state === 2,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
       // State 2 uses unified account group balance (fiat) and may not equal '25 ETH'.

@@ -120,6 +120,7 @@ describe('Account syncing - Unsupported Account types', function () {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
+        multichainAccountsOverride: true,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
