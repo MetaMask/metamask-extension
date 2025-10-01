@@ -179,7 +179,10 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
         marginLeft={2}
       >
         <Text variant={TextVariant.bodyMdMedium}>
-          {formatCurrencyWithMinThreshold(fiat?.balance ?? 0, fiat?.currency)}
+          {formatCurrencyWithMinThreshold(
+            fiat?.balance ?? 0,
+            fiat?.currency || '',
+          )}
         </Text>
         <Text
           variant={TextVariant.bodySmMedium}
