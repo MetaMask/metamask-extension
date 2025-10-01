@@ -56,48 +56,24 @@ export const WidthHeight: Story = {
   ),
 };
 
-export const Children: Story = {
-  render: () => (
-    <Skeleton
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      gap={4}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      borderRadius={BorderRadius.LG}
-      padding={4}
-    >
-      <Skeleton height={32} width="100%" />
-      <Skeleton height={16} width="95%" />
-      <Skeleton height={16} width="95%" />
-    </Skeleton>
-  ),
-};
-
-export const HideChildren: Story = {
+export const IsLoading: Story = {
   args: {
     width: 'max-content',
-    hideChildren: true,
   },
-  render: function Render(args) {
-    const [isLoaded, setIsLoaded] = React.useState(false);
+  render: function IsLoadingStory(args) {
+    const [isLoading, setIsLoading] = React.useState(true);
     return (
       <Box>
         <Button
-          onClick={() => setIsLoaded(!isLoaded)}
+          onClick={() => setIsLoading(!isLoading)}
           variant={ButtonVariant.Secondary}
           marginBottom={4}
         >
           Toggle isLoading
         </Button>
-        {isLoaded ? (
-          <div>
-            <Text variant={TextVariant.headingMd}>Content to load</Text>
-          </div>
-        ) : (
-          <Skeleton {...args}>
-            <Text variant={TextVariant.headingMd}>Hidden placeholder text</Text>
-          </Skeleton>
-        )}
+        <Skeleton {...args} isLoading={isLoading}>
+          <Text variant={TextVariant.headingMd}>Content that loads</Text>
+        </Skeleton>
       </Box>
     );
   },

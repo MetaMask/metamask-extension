@@ -19,7 +19,7 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -125,7 +125,7 @@ export default function CreatePassword({
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
-        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
+        navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
     } else if (
       firstTimeFlowType === FirstTimeFlowType.import &&
@@ -256,7 +256,7 @@ export default function CreatePassword({
       }
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
-      navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
+      navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
     }
   };
 
@@ -273,13 +273,17 @@ export default function CreatePassword({
 
   const handleBackClick = async (event) => {
     event.preventDefault();
-    // reset onboarding flow
-    await dispatch(resetOnboarding());
-    await forceUpdateMetamaskState(dispatch);
 
-    firstTimeFlowType === FirstTimeFlowType.import
-      ? navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE, { replace: true })
-      : navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    if (firstTimeFlowType === FirstTimeFlowType.import) {
+      // for SRP import flow, we will just navigate back to the import SRP page
+      navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE, { replace: true });
+    } else {
+      // reset onboarding flow
+      await dispatch(resetOnboarding());
+      await forceUpdateMetamaskState(dispatch);
+
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    }
   };
 
   const handlePasswordSetupError = (error) => {
