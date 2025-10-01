@@ -192,7 +192,7 @@ async function profilePageLoad(
 
     const reportingPageName = isPowerUser
       ? `powerUser${capitalize(pageName)}`
-      : pageName;
+      : `standard${capitalize(pageName)}`;
 
     results[reportingPageName] = {
       mean: meanResult(result),
@@ -251,13 +251,7 @@ async function main(): Promise<void> {
         }),
   ) as unknown as { argv: BenchmarkArguments };
 
-  // eslint-disable-next-line prefer-const
-  let { pages, browserLoads, pageLoads, out, retries, isPowerUser } = argv;
-
-  if (out?.includes('webpack')) {
-    browserLoads = 3;
-    pageLoads = 3;
-  }
+  const { pages, browserLoads, pageLoads, out, retries, isPowerUser } = argv;
 
   const results = await profilePageLoad(
     pages,
