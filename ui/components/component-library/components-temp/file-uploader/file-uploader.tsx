@@ -74,6 +74,13 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
             return;
           }
 
+          // Check if file type is supported
+          // only happens on drag and drop since it does not check access prop
+          if (accept && !accept.includes(file.type)) {
+            setError(t('fileUploaderInvalidFileTypeError', [file.type]));
+            return;
+          }
+
           // Check file size if maxFileSize(in bytes) is specified
           if (maxFileSize && file.size > maxFileSize) {
             const fileSizeInMB = parseFloat(
