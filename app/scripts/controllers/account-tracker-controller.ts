@@ -22,7 +22,12 @@ import {
   NetworkControllerGetStateAction,
   Provider,
 } from '@metamask/network-controller';
-import { hasProperty, type Hex, type JsonRpcParams } from '@metamask/utils';
+import {
+  hasProperty,
+  toCaipAccountId,
+  type Hex,
+  type JsonRpcParams,
+} from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -1125,67 +1130,85 @@ export default class AccountTrackerController extends BaseController<
    *
    * @private
    * @param addresses - Array of account addresses
-   * @param chainIds - Array of chain IDs to fetch balances for
+   * @param chainId - Single chain ID to fetch balances for
    * @returns Promise resolving to true if successful, false otherwise
    */
   async #updateAccountsViaApiMultichain(
     addresses: string[],
-    chainIds: Hex[],
+    chainId: Hex,
   ): Promise<boolean> {
     try {
-      const apiData = await this.#fetchAccountBalancesFromApi(
-        addresses,
-        chainIds,
-      );
+      const apiData = await this.#fetchAccountBalancesFromApi(addresses, [
+        chainId,
+      ]);
 
       if (!apiData?.balances) {
         return false;
       }
 
-      // Process multichain data and update state for all chains
+      // Process API data and update state for the chain
       this.update((state) => {
-        chainIds.forEach((chainId) => {
-          const chainIdDecimal = parseInt(chainId, 16).toString();
-          const accounts = this.#getAccountsForChainId(chainId);
-          const newAccounts: AccountTrackerControllerState['accounts'] = {};
+        const accounts = this.#getAccountsForChainId(chainId);
+        const newAccounts: AccountTrackerControllerState['accounts'] = {};
 
-          // Initialize all accounts with null balance first
-          Object.keys(accounts).forEach((address) => {
-            if (!addresses.includes(address)) {
-              newAccounts[address] = { address, balance: null };
-            }
-          });
-
-          // Update with API data if available for this chain
-          addresses.forEach((address) => {
-            const chainBalances = apiData.balances[chainIdDecimal];
-
-            if (chainBalances) {
-              // Look for native token balance (address 0x0000...)
-              const nativeTokenAddress =
-                '0x0000000000000000000000000000000000000000';
-              const nativeBalance = chainBalances[nativeTokenAddress];
-
-              if (nativeBalance?.token.type === 'native') {
-                newAccounts[address] = {
-                  address,
-                  balance: `0x${BigInt(nativeBalance.balance).toString(16)}`,
-                };
-              } else {
-                // Fallback to zero balance if no native balance found
-                newAccounts[address] = { address, balance: '0x0' };
-              }
-            } else {
-              newAccounts[address] = { address, balance: '0x0' };
-            }
-          });
-
-          // Update state for this chain
-          if (chainId === this.#getCurrentChainId()) {
-            state.accounts = newAccounts;
+        // Initialize all accounts with null balance first
+        Object.keys(accounts).forEach((address) => {
+          if (!addresses.includes(address)) {
+            newAccounts[address] = { address, balance: null };
           }
-          state.accountsByChainId[chainId] = newAccounts;
         });
+
+        // Update with API data if available
+        // The API returns token objects indexed by numbers, not by chain ID
+        addresses.forEach((address) => {
+          // Convert address to CAIP format for API lookup
+          const caipAddress = toCaipAccountId('eip155', chainId, address);
+
+          // Find the native token for this address in the API response
+          let nativeToken = null;
+          for (const tokenKey in apiData.balances) {
+            if (
+              Object.prototype.hasOwnProperty.call(apiData.balances, tokenKey)
+            ) {
+              const token = apiData.balances[tokenKey];
+              if (
+                token.accountAddress === caipAddress &&
+                token.type === 'native' &&
+                token.address === '0x0000000000000000000000000000000000000000'
+              ) {
+                nativeToken = token;
+                break;
+              }
+            }
+          }
+
+          if (nativeToken) {
+            // Convert decimal balance to hex
+            const balanceInWei = BigInt(
+              Math.floor(
+                parseFloat(nativeToken.balance) *
+                  Math.pow(10, nativeToken.decimals),
+              ),
+            );
+            newAccounts[address] = {
+              address,
+              balance: `0x${balanceInWei.toString(16)}`,
+            };
+          } else {
+            // No API data for this address - keep existing balance or set to null
+            const existingAccount = accounts[address];
+            newAccounts[address] = existingAccount || {
+              address,
+              balance: null,
+            };
+          }
+        });
+
+        // Update state for this chain
+        if (chainId === this.#getCurrentChainId()) {
+          state.accounts = newAccounts;
+        }
+        state.accountsByChainId[chainId] = newAccounts;
       });
 
       return true;
@@ -1208,7 +1231,7 @@ export default class AccountTrackerController extends BaseController<
     addresses: string[],
     chainId: Hex,
   ): Promise<boolean> {
-    return this.#updateAccountsViaApiMultichain(addresses, [chainId]);
+    return this.#updateAccountsViaApiMultichain(addresses, chainId);
   }
 
   /**
@@ -1230,11 +1253,21 @@ export default class AccountTrackerController extends BaseController<
         activeChainIds.add(chainId);
       });
 
+      // Update each chain individually
       const chainIdsArray = Array.from(activeChainIds);
-      return await this.#updateAccountsViaApiMultichain(
-        addresses,
-        chainIdsArray,
-      );
+      let allSuccessful = true;
+
+      for (const chainId of chainIdsArray) {
+        const success = await this.#updateAccountsViaApiMultichain(
+          addresses,
+          chainId,
+        );
+        if (!success) {
+          allSuccessful = false;
+        }
+      }
+
+      return allSuccessful;
     } catch (error) {
       log.warn(
         'Failed to update accounts for all chains via multiaccount API:',

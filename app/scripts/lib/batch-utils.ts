@@ -116,19 +116,17 @@ export async function processInBatches<TItem, TResult>(
 export type AccountApiBalanceResponse = {
   balances: Record<
     string,
-    Record<
-      string,
-      {
-        balance: string;
-        token: {
-          address: string;
-          symbol: string;
-          decimals: number;
-          name: string;
-          type: 'native' | 'erc20';
-        };
-      }
-    >
+    {
+      object: string;
+      balance: string;
+      accountAddress: string;
+      type: 'native' | 'erc20';
+      address: string;
+      symbol: string;
+      name: string;
+      decimals: number;
+      chainId: number;
+    }
   >;
 };
 
@@ -197,7 +195,17 @@ export async function fetchAccountBalancesInBatches(
       results.forEach((batchResult) => {
         Object.keys(batchResult.balances).forEach((chainId) => {
           if (!mergedResponse.balances[chainId]) {
-            mergedResponse.balances[chainId] = {};
+            mergedResponse.balances[chainId] = {
+              object: '',
+              balance: '',
+              accountAddress: '',
+              type: 'native',
+              address: '',
+              symbol: '',
+              name: '',
+              decimals: 0,
+              chainId: 0,
+            };
           }
           Object.assign(
             mergedResponse.balances[chainId],
