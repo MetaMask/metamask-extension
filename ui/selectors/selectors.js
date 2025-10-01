@@ -1927,7 +1927,10 @@ export function getIsSwapsChain(state, overrideChainId) {
 }
 
 /**
- * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant
+ * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
+ * @param state - The Redux state
+ * @param overrideChainId - The chainId to check
+ * @returns {boolean} Whether the chainId is a bridge chain
  */
 export function getIsBridgeChain(state, overrideChainId) {
   const account = getSelectedInternalAccount(state);
