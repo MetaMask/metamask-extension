@@ -73,13 +73,14 @@ export function SelectedGasFeeToken() {
         onClick={handleClick}
         backgroundColor={
           hasGasFeeTokens
-            ? BackgroundColor.backgroundAlternative
+            ? BackgroundColor.backgroundMuted
             : BackgroundColor.transparent
         }
         borderRadius={BorderRadius.pill}
         display={Display.InlineFlex}
         alignItems={AlignItems.center}
         paddingInlineStart={1}
+        marginLeft={1}
         gap={1}
         style={{
           cursor: hasGasFeeTokens ? 'pointer' : 'default',

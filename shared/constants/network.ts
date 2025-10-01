@@ -204,6 +204,7 @@ export const CHAIN_IDS = {
   KARURA: '0x2ae',
   HEMI: '0xa867',
   PLASMA: '0x2611',
+  MONAD: '0x8f',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -1228,6 +1229,7 @@ export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<
   [CHAIN_IDS.SEI]: 'https://app.metamask.io/explore/networks/sei',
   [MultichainNetworks.SOLANA]:
     'https://app.metamask.io/explore/networks/solana',
+  [CHAIN_IDS.MONAD]: 'https://app.metamask.io/explore/networks/monad',
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';

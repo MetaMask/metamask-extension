@@ -66,20 +66,14 @@ export default function OnboardingWelcome() {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
-        firstTimeFlowType === FirstTimeFlowType.socialImport ||
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        if (isFireFox || firstTimeFlowType !== FirstTimeFlowType.socialImport) {
-          navigate(
-            isParticipateInMetaMetricsSet
-              ? ONBOARDING_COMPLETION_ROUTE
-              : ONBOARDING_METAMETRICS,
-            { replace: true },
-          );
-        } else {
-          // we don't display the metametrics screen for social login flows if the user is not on firefox
-          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
-        }
+        navigate(
+          isParticipateInMetaMetricsSet
+            ? ONBOARDING_COMPLETION_ROUTE
+            : ONBOARDING_METAMETRICS,
+          { replace: true },
+        );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {

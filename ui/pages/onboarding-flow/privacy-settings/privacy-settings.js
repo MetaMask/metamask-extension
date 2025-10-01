@@ -180,8 +180,7 @@ export default function PrivacySettings() {
         turnon_token_detection: turnOnTokenDetection,
       },
     });
-
-    navigate(ONBOARDING_COMPLETION_ROUTE);
+    navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
   };
 
   const handleIPFSChange = (url) => {
