@@ -57,7 +57,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 const {
   mockMultichainAccountsFeatureFlagDisabled,
-} = require('./tests/multichain-accounts/common');
+} = require('./tests/multichain-accounts/feature-flag-mocks');
 
 /**
  * Normalizes the localNodeOptions into a consistent format to handle different data structures.
@@ -173,7 +173,7 @@ async function withFixtures(options, testSuite) {
     usePaymaster,
     ethConversionInUsd,
     monConversionInUsd,
-    manifestFlags = {},
+    manifestFlags,
     solanaWebSocketSpecificMocks = [],
     multichainAccountsOverride = false,
   } = options;
