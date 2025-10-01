@@ -38,6 +38,7 @@ import {
   Text,
   Box,
 } from '../../../components/component-library';
+import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
 import { filterWalletsByGroupName } from './utils';
 
 export const AccountList = () => {
@@ -48,6 +49,10 @@ export const AccountList = () => {
   const { selectedAccountGroup } = accountTree;
   const formattedAccountGroupBalancesByWallet = useAllWalletAccountsBalances();
   const [searchPattern, setSearchPattern] = useState<string>('');
+
+  // Update balances for all accounts when component mounts
+  // This ensures all account balances are visible without requiring user interaction
+  useAssetsUpdateAllAccountBalances();
 
   const hasMultipleWallets = useMemo(
     () => Object.keys(wallets).length > 1,
@@ -83,7 +88,7 @@ export const AccountList = () => {
     <Page className="account-list-page">
       <Header
         textProps={{
-          variant: TextVariant.headingMd,
+          variant: TextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -121,6 +126,7 @@ export const AccountList = () => {
           display={Display.Flex}
           height={BlockSize.Full}
           flexDirection={FlexDirection.Column}
+          className="multichain-account-menu-popover__list"
         >
           {hasFilteredWallets ? (
             <MultichainAccountList
@@ -156,6 +162,7 @@ export const AccountList = () => {
           size={ButtonSize.Lg}
           onClick={handleOpenAddWalletModal}
           isFullWidth
+          data-testid="account-list-add-wallet-button"
         >
           <Text variant={TextVariant.bodyMdMedium}>{t('addWallet')}</Text>
         </Button>

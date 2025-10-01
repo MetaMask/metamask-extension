@@ -4,8 +4,14 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountGroupId } from '@metamask/account-api';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MultichainAddressRowsList } from './multichain-address-rows-list';
 
+jest.mock('@metamask/bridge-controller', () => ({
+  formatChainIdToCaip: jest.fn(),
+}));
+
+const mockFormatChainIdToCaip = formatChainIdToCaip as jest.Mock;
 const mockStore = configureStore([]);
 
 const WALLET_ID_MOCK = 'entropy:01K437Z7EJ0VCMFDE9TQKRV60A';
@@ -266,6 +272,9 @@ describe('MultichainAddressRowsList', () => {
   });
 
   it('passes onQrClick callback to child components', () => {
+    // Mock the formatChainIdToCaip function to return the expected CAIP format
+    mockFormatChainIdToCaip.mockReturnValue('eip155:1');
+
     const mockOnQrClick = jest.fn();
     renderComponent(GROUP_ID_MOCK, mockOnQrClick);
 
@@ -279,6 +288,7 @@ describe('MultichainAddressRowsList', () => {
     expect(mockOnQrClick).toHaveBeenCalledWith(
       '0x1234567890abcdef1234567890abcdef12345678',
       'Ethereum',
+      'eip155:1',
       './images/eth_logo.svg',
     );
   });

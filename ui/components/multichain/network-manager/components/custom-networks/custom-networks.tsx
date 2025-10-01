@@ -164,7 +164,7 @@ export const CustomNetworks = React.memo(() => {
   const renderedTestNetworks = useMemo(() => {
     const filteredTestNetworks = orderedTestNetworks.filter((network) => {
       // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected || isMultichainAccountsFeatureEnabled) {
+      if (isEvmNetworkSelected) {
         return network.isEvm;
       }
       // If non-EVM network is selected, only show non-EVM networks
@@ -178,7 +178,6 @@ export const CustomNetworks = React.memo(() => {
     orderedTestNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
-    isMultichainAccountsFeatureEnabled,
   ]);
 
   // Memoize the padding value to prevent unnecessary re-renders

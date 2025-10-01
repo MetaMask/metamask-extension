@@ -31,6 +31,7 @@ import { useAllWalletAccountsBalances } from '../../../../hooks/multichain-accou
 
 type MultichainEditAccountsPageProps = {
   title?: string;
+  confirmButtonText?: string;
   defaultSelectedAccountGroups: AccountGroupId[];
   supportedAccountGroups: AccountGroupWithInternalAccounts[];
   onSubmit: (accountGroups: AccountGroupId[]) => void;
@@ -41,6 +42,7 @@ export const MultichainEditAccountsPage: React.FC<
   MultichainEditAccountsPageProps
 > = ({
   title,
+  confirmButtonText,
   defaultSelectedAccountGroups,
   supportedAccountGroups,
   onSubmit,
@@ -129,8 +131,9 @@ export const MultichainEditAccountsPage: React.FC<
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Header
-        paddingTop={8}
-        paddingBottom={0}
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Md}
@@ -140,9 +143,6 @@ export const MultichainEditAccountsPage: React.FC<
             data-testid="back-button"
           />
         }
-        textProps={{
-          variant: TextVariant.headingSm,
-        }}
       >
         {title ?? t('editAccounts')}
       </Header>
@@ -170,7 +170,7 @@ export const MultichainEditAccountsPage: React.FC<
           size={ButtonSecondarySize.Lg}
           block
         >
-          {t('connect')}
+          {confirmButtonText ?? t('connect')}
         </ButtonSecondary>
       </Footer>
     </Page>

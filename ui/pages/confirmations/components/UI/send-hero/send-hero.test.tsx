@@ -168,7 +168,6 @@ describe('TokenHero', () => {
 
     const avatarNetwork = getByTestId('avatar-network');
     expect(avatarNetwork).toBeInTheDocument();
-    expect(avatarNetwork).toHaveAttribute('data-size', 'xs');
     expect(avatarNetwork).toHaveAttribute('data-name', mockAsset.networkName);
     expect(avatarNetwork).toHaveAttribute('data-src', mockAsset.networkImage);
   });
@@ -186,7 +185,6 @@ describe('TokenHero', () => {
 
     const avatarNetwork = getByTestId('avatar-network');
     expect(avatarNetwork).toBeInTheDocument();
-    expect(avatarNetwork).toHaveAttribute('data-size', 'xs');
     expect(avatarNetwork).toHaveAttribute('data-name', 'Polygon');
     expect(avatarNetwork).toHaveAttribute('data-src', './images/pol-token.svg');
   });

@@ -136,7 +136,7 @@ export const Recipient = () => {
           data-testid="open-recipient-modal-btn"
           iconName={IconName.Book}
           onClick={openRecipientModal}
-          size={ButtonIconSize.Sm}
+          size={ButtonIconSize.Md}
         />
       );
     }
@@ -156,14 +156,10 @@ export const Recipient = () => {
         error={Boolean(recipientError)}
         startAccessory={
           matchingRecipient ? (
-            <Box
-              alignItems={AlignItems.center}
-              display={Display.Flex}
-              paddingLeft={2}
-            >
+            <Box alignItems={AlignItems.center} display={Display.Flex}>
               <PreferredAvatar
                 address={matchingRecipient.address}
-                size={AvatarAccountSize.Sm}
+                size={AvatarAccountSize.Xs}
               />
             </Box>
           ) : null
@@ -171,10 +167,12 @@ export const Recipient = () => {
         endAccessory={renderEndAccessory()}
         onChange={(e) => onToChange(e.target.value)}
         onBlur={captureMetrics}
+        placeholder={t('recipientPlaceholder')}
         ref={recipientInputRef}
         value={localValue}
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
+        paddingRight={3}
       />
       {to === toAddressValidated && recipientError && (
         <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
@@ -216,7 +214,7 @@ export const Recipient = () => {
           >
             {t('selectRecipient')}
           </ModalHeader>
-          <ModalBody>
+          <ModalBody paddingRight={0} paddingLeft={0}>
             <RecipientList
               hideModal={closeRecipientModal}
               onToChange={onRecipientSelectedFromModal}

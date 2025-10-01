@@ -11,13 +11,13 @@ exports[`ConnectPage should render correctly 1`] = `
       data-testid="connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       >
         <div
           class="mm-box"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
               class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
@@ -70,7 +70,7 @@ exports[`ConnectPage should render correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
         style="overflow: auto;"
       >
         <div
@@ -131,7 +131,7 @@ exports[`ConnectPage should render correctly 1`] = `
                           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                         >
                           <div
-                            class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                            class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                           >
                             <div
                               class="flex [&>div]:!rounded-none"
@@ -183,7 +183,7 @@ exports[`ConnectPage should render correctly 1`] = `
                       class="mm-box mm-box--display-none mm-box--sm:display-flex"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"
@@ -432,13 +432,13 @@ exports[`ConnectPage should render with defaults from the requested permissions 
       data-testid="connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       >
         <div
           class="mm-box"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
               class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
@@ -491,7 +491,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
         style="overflow: auto;"
       >
         <div
@@ -552,7 +552,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
                         >
                           <div
-                            class="flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
+                            class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                           >
                             <div
                               class="flex [&>div]:!rounded-none"
@@ -604,7 +604,7 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                       class="mm-box mm-box--display-none mm-box--sm:display-flex"
                     >
                       <div
-                        class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                        class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
                         <div
                           class="flex [&>div]:!rounded-none"

@@ -14,11 +14,7 @@ import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
   MOCK_TOKENS_ETHEREUM,
 } from './tests/bridge/constants';
-import {
-  openActionMenuAndStartSendFlow,
-  unlockWallet,
-  withFixtures,
-} from './helpers';
+import { unlockWallet, withFixtures } from './helpers';
 
 async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer
@@ -79,7 +75,8 @@ async function confirmTx(): Promise<number> {
     async ({ driver }: { driver: Driver }) => {
       await loginWithBalanceValidation(driver);
 
-      await openActionMenuAndStartSendFlow(driver);
+      const homePage = new HomePage(driver);
+      await homePage.startSendFlow();
 
       await driver.fill(
         'input[placeholder="Enter public address (0x) or domain name"]',

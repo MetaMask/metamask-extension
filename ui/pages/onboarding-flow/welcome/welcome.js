@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
 import {
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
@@ -11,6 +10,7 @@ import {
   ONBOARDING_ACCOUNT_NOT_FOUND,
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_METAMETRICS,
+  ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getCurrentKeyring,
@@ -69,20 +69,21 @@ export default function OnboardingWelcome() {
         firstTimeFlowType === FirstTimeFlowType.socialImport ||
         firstTimeFlowType === FirstTimeFlowType.restore
       ) {
-        navigate(
-          isParticipateInMetaMetricsSet
-            ? ONBOARDING_COMPLETION_ROUTE
-            : ONBOARDING_METAMETRICS,
-          { replace: true },
-        );
-      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
-        if (isFireFox) {
-          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+        if (isFireFox || firstTimeFlowType !== FirstTimeFlowType.socialImport) {
+          navigate(
+            isParticipateInMetaMetricsSet
+              ? ONBOARDING_COMPLETION_ROUTE
+              : ONBOARDING_METAMETRICS,
+            { replace: true },
+          );
         } else {
-          navigate(ONBOARDING_METAMETRICS, { replace: true });
+          // we don't display the metametrics screen for social login flows if the user is not on firefox
+          navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
         }
+      } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
+        navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
       } else {
-        navigate(ONBOARDING_SECURE_YOUR_WALLET_ROUTE, { replace: true });
+        navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
     } else if (isUserAuthenticatedWithSocialLogin) {
       if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {

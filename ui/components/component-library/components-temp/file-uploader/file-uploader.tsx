@@ -36,11 +36,13 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
       id,
       label,
       labelProps,
-      fileUploaderProps,
+      dropAreaProps,
       accept,
-      acceptInfo,
+      acceptText,
+      multiple,
       maxFileSize,
       filesProps,
+      fileInputProps,
       onChange,
       ...props
     }: FileUploaderProps<C>,
@@ -51,9 +53,10 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
     const [error, setError] = useState<string | null>(null);
     const [isDragging, setIsDragging] = useState(false);
 
-    const addFiles = (newFiles: FileList) => {
+    const addFiles = (newFiles: FileList | File) => {
       setError(null);
-      if (!newFiles?.length) {
+      const isFileList = newFiles instanceof FileList;
+      if (!newFiles || (isFileList && !newFiles?.length)) {
         return;
       }
 
@@ -64,20 +67,38 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
       // Filter out duplicates and validate file size
       const validFiles: File[] = [];
 
-      Array.from(newFiles).forEach((file) => {
-        // Skip if duplicate
-        if (existingFileNames.has(file.name)) {
+      if (isFileList) {
+        Array.from(newFiles).forEach((file) => {
+          // Skip if duplicate
+          if (existingFileNames.has(file.name)) {
+            return;
+          }
+
+          // Check file size if maxFileSize(in bytes) is specified
+          if (maxFileSize && file.size > maxFileSize) {
+            const fileSizeInMB = parseFloat(
+              (maxFileSize / 1024 / 1024).toFixed(2),
+            );
+            setError(t('fileUploaderMaxFileSizeError', [fileSizeInMB]));
+            return;
+          }
+
+          validFiles.push(file);
+        });
+      } else {
+        if (existingFileNames.has(newFiles.name)) {
           return;
         }
 
-        // Check file size if maxFileSize is specified (in kilobytes)
-        if (maxFileSize && file.size > maxFileSize * 1024 * 1024) {
-          setError(t('fileUploaderMaxFileSizeError', [maxFileSize]));
+        if (maxFileSize && newFiles.size > maxFileSize) {
+          const fileSizeInMB = parseFloat(
+            (maxFileSize / 1024 / 1024).toFixed(2),
+          );
+          setError(t('fileUploaderMaxFileSizeError', [fileSizeInMB]));
           return;
         }
-
-        validFiles.push(file);
-      });
+        validFiles.push(newFiles);
+      }
 
       if (!validFiles.length) {
         return;
@@ -133,9 +154,6 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
         )}
         <Label
           htmlFor="file-uploader-input"
-          className={classnames('file-uploader-label', {
-            'file-uploader-label--dragging': isDragging,
-          })}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
@@ -155,7 +173,10 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
             setIsDragging(false);
           }}
           onDrop={onFileDrop}
-          {...fileUploaderProps}
+          {...dropAreaProps}
+          className={classnames('file-uploader-label', {
+            'file-uploader-label--dragging': isDragging,
+          })}
         >
           <Icon
             name={IconName.Upload}
@@ -169,12 +190,12 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
             >
               {t('fileUploaderDescription')}
             </Text>
-            {acceptInfo && (
+            {acceptText && (
               <Text
                 variant={TextVariant.bodySmMedium}
                 color={TextColor.textAlternativeSoft}
               >
-                {acceptInfo}
+                {acceptText}
               </Text>
             )}
           </Box>
@@ -182,12 +203,13 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
           <FileInput
             id="file-uploader-input"
             data-testid="file-uploader-input"
+            accept={accept ?? undefined}
+            multiple={multiple ?? undefined}
+            {...fileInputProps}
+            className={classnames('hidden', fileInputProps?.className ?? '')}
             onChange={onFileChange}
-            className="hidden"
-            multiple
             // don't save the value to the input field to allow reuploading the same file
             value={''}
-            accept={accept ?? undefined}
           />
         </Label>
         {(error || helpText) && (
