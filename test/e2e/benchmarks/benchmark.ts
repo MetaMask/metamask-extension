@@ -279,5 +279,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((error) => {
-  exitWithError(error);
+  console.log(error);
+  // exitWithError(error);
 });
