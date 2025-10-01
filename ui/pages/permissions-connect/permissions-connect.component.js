@@ -5,9 +5,16 @@ import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { SubjectType } from '@metamask/permission-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import {
+  getAllNamespacesFromCaip25CaveatValue,
+  getAllScopesFromCaip25CaveatValue,
   getEthAccounts,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
+import {
+  KnownCaipNamespace,
+  parseCaipAccountId,
+  parseCaipChainId,
+} from '@metamask/utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../app/scripts/lib/multichain/address';
@@ -16,6 +23,11 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
 import { Box } from '../../components/component-library';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
+import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapper/state2-wrapper';
+import { MultichainAccountsConnectPage } from '../multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page';
+import { supportsChainIds } from '../../hooks/useAccountGroupsForPermissions';
+import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../shared/lib/multichain/scope-utils';
+import { MultichainEditAccountsPageWrapper } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-account-wrapper';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 import SnapsConnect from './snaps/snaps-connect';
@@ -74,6 +86,12 @@ export default class PermissionConnect extends Component {
         addressLabel: PropTypes.string.isRequired,
         label: PropTypes.string.isRequired,
         balance: PropTypes.string.isRequired,
+      }),
+    ).isRequired,
+    accountGroups: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        accounts: PropTypes.arrayOf(PropTypes.object.isRequired),
       }),
     ).isRequired,
     currentAddress: PropTypes.string.isRequired,
@@ -268,6 +286,121 @@ export default class PermissionConnect extends Component {
     history.push(connectPath);
   }
 
+  renderSnapChooseAccountState1 = () => {
+    const {
+      accounts,
+      nativeCurrency,
+      showNewAccountModal,
+      newAccountNumber,
+      addressLastConnectedMap,
+      permissionsRequestId,
+      targetSubjectMetadata,
+    } = this.props;
+    const { selectedAccountAddresses } = this.state;
+
+    return (
+      <ChooseAccount
+        accounts={accounts}
+        nativeCurrency={nativeCurrency}
+        selectAccounts={(addresses) => this.selectAccounts(addresses)}
+        selectNewAccountViaModal={(handleAccountClick) => {
+          showNewAccountModal({
+            onCreateNewAccount: (address) => handleAccountClick(address),
+            newAccountNumber,
+          });
+        }}
+        addressLastConnectedMap={addressLastConnectedMap}
+        cancelPermissionsRequest={(requestId) =>
+          this.cancelPermissionsRequest(requestId)
+        }
+        permissionsRequestId={permissionsRequestId}
+        selectedAccountAddresses={selectedAccountAddresses}
+        targetSubjectMetadata={targetSubjectMetadata}
+      />
+    );
+  };
+
+  renderSnapChooseAccountState2 = () => {
+    const { permissionsRequestId, accountGroups, permissionsRequest } =
+      this.props;
+    const { t } = this.context;
+    const requestedCaip25CaveatValue = getCaip25CaveatValueFromPermissions(
+      permissionsRequest?.permissions,
+    );
+
+    const caipChainIdsToUse = [];
+
+    const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
+      requestedCaip25CaveatValue,
+    ).filter((chainId) => {
+      const { namespace } = parseCaipChainId(chainId);
+      return namespace !== KnownCaipNamespace.Wallet;
+    });
+    const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
+      requestedCaip25CaveatValue,
+    );
+
+    if (requestedCaipChainIds.length > 0) {
+      requestedCaipChainIds.forEach((chainId) => {
+        caipChainIdsToUse.push(chainId);
+      });
+    }
+
+    if (requestedNamespaces.includes(KnownCaipNamespace.Eip155)) {
+      caipChainIdsToUse.push(`${KnownCaipNamespace.Eip155}:0`);
+    }
+
+    return (
+      <MultichainEditAccountsPageWrapper
+        title={t('connectWithMetaMask')}
+        permissions={permissionsRequest?.permissions}
+        onSubmit={(accountGroupIds) => {
+          const filteredAccountGroups = accountGroups.filter(
+            (group) =>
+              accountGroupIds.includes(group.id) &&
+              supportsChainIds(group, caipChainIdsToUse),
+          );
+          const addresses = getCaip25AccountIdsFromAccountGroupAndScope(
+            filteredAccountGroups,
+            caipChainIdsToUse,
+          ).map(
+            (caip25AccountId) => parseCaipAccountId(caip25AccountId).address,
+          );
+          this.selectAccounts(new Set(addresses));
+        }}
+        onClose={() => this.cancelPermissionsRequest(permissionsRequestId)}
+      />
+    );
+  };
+
+  renderConnectPageState1 = () => {
+    const connectPageProps = {
+      rejectPermissionsRequest: (requestId) =>
+        this.cancelPermissionsRequest(requestId),
+      activeTabOrigin: this.state.origin,
+      request: this.props.permissionsRequest || {},
+      permissionsRequestId: this.props.permissionsRequestId,
+      approveConnection: this.approveConnection,
+      targetSubjectMetadata: this.props.targetSubjectMetadata,
+    };
+
+    return <ConnectPage {...connectPageProps} />;
+  };
+
+  renderConnectPageState2 = () => {
+    const connectPageProps = {
+      rejectPermissionsRequest: (requestId) =>
+        this.cancelPermissionsRequest(requestId),
+      activeTabOrigin: this.state.origin,
+      request: this.props.permissionsRequest || {},
+      permissionsRequestId: this.props.permissionsRequestId,
+      approveConnection: this.approveConnection,
+      targetSubjectMetadata: this.props.targetSubjectMetadata,
+    };
+
+    return <MultichainAccountsConnectPage {...connectPageProps} />;
+  };
+
   renderTopBar(permissionsRequestId) {
     const { targetSubjectMetadata } = this.state;
     const handleCancelFromHeader = () => {
@@ -301,11 +434,7 @@ export default class PermissionConnect extends Component {
   render() {
     const {
       accounts,
-      showNewAccountModal,
-      newAccountNumber,
-      nativeCurrency,
       permissionsRequest,
-      addressLastConnectedMap,
       permissionsRequestId,
       connectPath,
       confirmPermissionPath,
@@ -341,42 +470,22 @@ export default class PermissionConnect extends Component {
             <Route
               path={connectPath}
               exact
-              render={() =>
-                isRequestingSnap ? (
-                  <ChooseAccount
-                    accounts={accounts}
-                    nativeCurrency={nativeCurrency}
-                    selectAccounts={(addresses) =>
-                      this.selectAccounts(addresses)
-                    }
-                    selectNewAccountViaModal={(handleAccountClick) => {
-                      showNewAccountModal({
-                        onCreateNewAccount: (address) =>
-                          handleAccountClick(address),
-                        newAccountNumber,
-                      });
-                    }}
-                    addressLastConnectedMap={addressLastConnectedMap}
-                    cancelPermissionsRequest={(requestId) =>
-                      this.cancelPermissionsRequest(requestId)
-                    }
-                    permissionsRequestId={permissionsRequestId}
-                    selectedAccountAddresses={selectedAccountAddresses}
-                    targetSubjectMetadata={targetSubjectMetadata}
+              render={() => {
+                if (isRequestingSnap) {
+                  return (
+                    <State2Wrapper
+                      state1Component={this.renderSnapChooseAccountState1}
+                      state2Component={this.renderSnapChooseAccountState2}
+                    />
+                  );
+                }
+                return (
+                  <State2Wrapper
+                    state1Component={this.renderConnectPageState1}
+                    state2Component={this.renderConnectPageState2}
                   />
-                ) : (
-                  <ConnectPage
-                    rejectPermissionsRequest={(requestId) =>
-                      this.cancelPermissionsRequest(requestId)
-                    }
-                    activeTabOrigin={this.state.origin}
-                    request={permissionsRequest || {}}
-                    permissionsRequestId={permissionsRequestId}
-                    approveConnection={this.approveConnection}
-                    targetSubjectMetadata={targetSubjectMetadata}
-                  />
-                )
-              }
+                );
+              }}
             />
             <Route
               path={confirmPermissionPath}

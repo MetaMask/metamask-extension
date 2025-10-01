@@ -21,13 +21,6 @@ import { SignatureRequestType } from '../types/confirm';
 import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: jest.fn(),
-  }),
-}));
-
 jest.mock('../hooks/useAssetDetails', () => ({
   ...jest.requireActual('../hooks/useAssetDetails'),
   useAssetDetails: jest.fn().mockResolvedValue({

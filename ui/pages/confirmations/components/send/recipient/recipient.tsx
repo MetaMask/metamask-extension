@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState, useEffect } from 'react';
 
 import {
   Modal,
@@ -8,26 +8,48 @@ import {
   ModalBody,
   ModalContentSize,
   Text,
-  TextField,
   IconName,
   ButtonIcon,
   ButtonIconSize,
-  TextFieldSize,
+  HelpText,
+  HelpTextSeverity,
 } from '../../../../../components/component-library';
 import {
-  BlockSize,
+  TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
+import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useSendContext } from '../../../context/send';
+import { useRecipients } from '../../../hooks/send/useRecipients';
 import { RecipientList } from '../recipient-list';
+import { RecipientInput } from '../recipient-input';
 
-export const Recipient = ({ setTo }: { setTo: (to?: string) => void }) => {
+export const Recipient = ({
+  recipientValidationResult,
+}: {
+  recipientValidationResult: ReturnType<typeof useRecipientValidation>;
+}) => {
+  const {
+    recipientConfusableCharacters,
+    recipientError,
+    recipientWarning,
+    recipientResolvedLookup,
+    toAddressValidated,
+    resolutionProtocol,
+  } = recipientValidationResult;
+  const hasConfusableCharacters =
+    recipientConfusableCharacters && recipientConfusableCharacters.length > 0;
   const t = useI18nContext();
   const [isRecipientModalOpen, setIsRecipientModalOpen] = useState(false);
-  const { to, updateTo } = useSendContext();
-  const { captureRecipientSelected } = useRecipientSelectionMetrics();
+  const { to, updateTo, updateToResolved } = useSendContext();
+  const {
+    captureRecipientSelected,
+    setRecipientInputMethodSelectContact,
+    setRecipientInputMethodSelectAccount,
+  } = useRecipientSelectionMetrics();
+  const recipients = useRecipients();
   const recipientInputRef = useRef<HTMLInputElement>(null);
   const closeRecipientModal = useCallback(() => {
     setIsRecipientModalOpen(false);
@@ -38,44 +60,68 @@ export const Recipient = ({ setTo }: { setTo: (to?: string) => void }) => {
     setIsRecipientModalOpen(true);
   }, []);
 
-  const onChange = useCallback(
-    (e) => {
-      const toAddress = e.target.value;
-      setTo(toAddress);
-      updateTo(toAddress);
+  const onRecipientSelectedFromModal = useCallback(
+    (address: string) => {
+      const isRecipientContact = recipients.some(
+        (recipient) =>
+          recipient.address.toLowerCase() === address.toLowerCase() &&
+          recipient.contactName,
+      );
+      if (isRecipientContact) {
+        setRecipientInputMethodSelectContact();
+      } else {
+        setRecipientInputMethodSelectAccount();
+      }
+
+      updateTo(address);
+      captureRecipientSelected();
     },
-    [setTo, updateTo],
+    [
+      captureRecipientSelected,
+      recipients,
+      setRecipientInputMethodSelectContact,
+      setRecipientInputMethodSelectAccount,
+      updateTo,
+    ],
   );
 
-  const captureMetrics = useCallback(() => {
-    if (!to) {
-      return;
-    }
-    captureRecipientSelected();
-  }, [captureRecipientSelected, to]);
+  useEffect(() => {
+    updateToResolved(recipientResolvedLookup);
+  }, [recipientResolvedLookup, updateToResolved]);
 
   return (
     <>
       <Text variant={TextVariant.bodyMdMedium} paddingBottom={1}>
         {t('to')}
       </Text>
-      <TextField
-        endAccessory={
-          <ButtonIcon
-            ariaLabel="Open recipient modal"
-            data-testid="open-recipient-modal-btn"
-            iconName={IconName.Book}
-            onClick={openRecipientModal}
-            size={ButtonIconSize.Sm}
-          />
-        }
-        onChange={onChange}
-        onBlur={captureMetrics}
-        ref={recipientInputRef}
-        value={to}
-        width={BlockSize.Full}
-        size={TextFieldSize.Lg}
+      <RecipientInput
+        openRecipientModal={openRecipientModal}
+        recipientInputRef={recipientInputRef}
+        recipientValidationResult={recipientValidationResult}
       />
+      {to === toAddressValidated && recipientError && (
+        <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
+          {recipientError}
+        </HelpText>
+      )}
+      {to === toAddressValidated && recipientWarning && (
+        <HelpText severity={HelpTextSeverity.Warning} marginTop={1}>
+          {recipientWarning}
+          {hasConfusableCharacters &&
+            ` (${recipientConfusableCharacters
+              .map(({ point, similarTo }) => t('similarTo', [point, similarTo]))
+              .join(', ')})`}
+        </HelpText>
+      )}
+      {to === toAddressValidated && recipientResolvedLookup && (
+        <Text
+          color={TextColor.textAlternative}
+          marginTop={1}
+          variant={TextVariant.bodyXs}
+        >
+          {t('resolutionProtocol', [resolutionProtocol ?? ''])}
+        </Text>
+      )}
       <Modal
         isClosedOnEscapeKey={true}
         isClosedOnOutsideClick={true}
@@ -97,8 +143,11 @@ export const Recipient = ({ setTo }: { setTo: (to?: string) => void }) => {
           >
             {t('selectRecipient')}
           </ModalHeader>
-          <ModalBody>
-            <RecipientList hideModal={closeRecipientModal} />
+          <ModalBody paddingRight={0} paddingLeft={0}>
+            <RecipientList
+              hideModal={closeRecipientModal}
+              onToChange={onRecipientSelectedFromModal}
+            />
           </ModalBody>
         </ModalContent>
       </Modal>

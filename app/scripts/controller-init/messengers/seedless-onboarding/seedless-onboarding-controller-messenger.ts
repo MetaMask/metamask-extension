@@ -7,6 +7,11 @@ import {
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerStateChangeEvent,
 } from '@metamask/seedless-onboarding-controller';
+import {
+  OAuthServiceGetNewRefreshTokenAction,
+  OAuthServiceRevokeRefreshTokenAction,
+  OAuthServiceRenewRefreshTokenAction,
+} from '../../../services/oauth/types';
 
 type MessengerActions = SeedlessOnboardingControllerGetStateAction;
 
@@ -32,6 +37,37 @@ export function getSeedlessOnboardingControllerMessenger(
   return messenger.getRestricted({
     name: 'SeedlessOnboardingController',
     allowedActions: [],
-    allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
+    allowedEvents: [],
+  });
+}
+
+type InitActions =
+  | OAuthServiceGetNewRefreshTokenAction
+  | OAuthServiceRevokeRefreshTokenAction
+  | OAuthServiceRenewRefreshTokenAction;
+
+export type SeedlessOnboardingControllerInitMessenger = ReturnType<
+  typeof getSeedlessOnboardingControllerInitMessenger
+>;
+
+/**
+ * Get a restricted messenger for the seedless onboarding controller init. This
+ * is scoped to the actions and events that the seedless onboarding controller
+ * init is allowed to handle.
+ *
+ * @param messenger - The messenger to restrict.
+ * @returns The restricted messenger.
+ */
+export function getSeedlessOnboardingControllerInitMessenger(
+  messenger: Messenger<InitActions, never>,
+) {
+  return messenger.getRestricted({
+    name: 'SeedlessOnboardingControllerInit',
+    allowedEvents: [],
+    allowedActions: [
+      'OAuthService:getNewRefreshToken',
+      'OAuthService:revokeRefreshToken',
+      'OAuthService:renewRefreshToken',
+    ],
   });
 }

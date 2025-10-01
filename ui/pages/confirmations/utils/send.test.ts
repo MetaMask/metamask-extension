@@ -12,11 +12,14 @@ import {
   fromTokenMinimalUnits,
   toTokenMinimalUnit,
   formatToFixedDecimals,
-  isDecimal,
   convertedCurrency,
   navigateToSendRoute,
   getLayer1GasFees,
   trimTrailingZeros,
+  removeAdditionalDecimalPlaces,
+  getFractionLength,
+  addLeadingZeroIfNeeded,
+  isValidPositiveNumericString,
 } from './send';
 
 jest.mock('../../../store/actions', () => {
@@ -67,6 +70,10 @@ describe('Send - utils', () => {
       expect(formatToFixedDecimals('1', 4)).toEqual('1');
       expect(formatToFixedDecimals('1.01010101', 4)).toEqual('1.0101');
     });
+    it('return trailing zeros if trimTrailingZerosEnabled is true', () => {
+      expect(formatToFixedDecimals('1', 4, false)).toEqual('1.0000');
+      expect(formatToFixedDecimals('1.01', 4, false)).toEqual('1.0100');
+    });
   });
 
   describe('prepareEVMTransaction', () => {
@@ -79,6 +86,25 @@ describe('Send - utils', () => {
         }),
       ).toStrictEqual({
         data: '0x',
+        from: '0x123',
+        to: '0x456',
+        value: '0x56bc75e2d63100000',
+      });
+    });
+
+    it('prepares transaction for native token with hex data', () => {
+      expect(
+        prepareEVMTransaction(
+          EVM_NATIVE_ASSET,
+          {
+            from: '0x123',
+            to: '0x456',
+            value: '0x64',
+          },
+          '0x5',
+        ),
+      ).toStrictEqual({
+        data: '0x5',
         from: '0x123',
         to: '0x456',
         value: '0x56bc75e2d63100000',
@@ -160,33 +186,57 @@ describe('Send - utils', () => {
   describe('navigateToSendRoute', () => {
     it('call history.push with send route', () => {
       const mockHistoryPush = jest.fn();
-      navigateToSendRoute({
-        push: mockHistoryPush,
-      });
+      navigateToSendRoute(
+        {
+          push: mockHistoryPush,
+        },
+        false,
+      );
       expect(mockHistoryPush).toHaveBeenCalled();
     });
   });
 
-  describe('isDecimal', () => {
+  describe('isValidPositiveNumericString', () => {
     it('return true for decimal values and false otherwise', () => {
-      expect(isDecimal('10')).toBe(true);
-      expect(isDecimal('10.01')).toBe(true);
-      expect(isDecimal('.01')).toBe(true);
-      expect(isDecimal('-0.01')).toBe(true);
-      expect(isDecimal('abc')).toBe(false);
-      expect(isDecimal(' ')).toBe(false);
+      expect(isValidPositiveNumericString('10')).toBe(true);
+      expect(isValidPositiveNumericString('10.01')).toBe(true);
+      expect(isValidPositiveNumericString('.01')).toBe(true);
+      expect(isValidPositiveNumericString('-0.01')).toBe(false);
+      expect(isValidPositiveNumericString('abc')).toBe(false);
+      expect(isValidPositiveNumericString(' ')).toBe(false);
     });
   });
 
   describe('convertedCurrency', () => {
     it('return undefined for invalid input value', () => {
-      expect(convertedCurrency('abc', 15)).not.toBeDefined();
-      expect(convertedCurrency('-10', 15)).not.toBeDefined();
+      expect(convertedCurrency('abc', 15, 2)).not.toBeDefined();
+      expect(convertedCurrency('-10', 15, 4)).not.toBeDefined();
     });
 
     it('apply conversion rate to a currency', () => {
-      expect(convertedCurrency('10.100', 15)).toBe('151.5');
-      expect(convertedCurrency('250', 0.001)).toBe('0.25');
+      expect(convertedCurrency('10.100125', 15, 2)).toBe('151.5');
+      expect(convertedCurrency('10.111125', 15, 2)).toBe('151.66');
+      expect(convertedCurrency('250', 0.00001, 4)).toBe('0.0025');
+    });
+  });
+
+  describe('removeAdditionalDecimalPlaces', () => {
+    it('return undefined is value is not defined', () => {
+      expect(
+        removeAdditionalDecimalPlaces(undefined as unknown as string, 2),
+      ).not.toBeDefined();
+      expect(
+        removeAdditionalDecimalPlaces(null as unknown as string, 2),
+      ).not.toBeDefined();
+      expect(removeAdditionalDecimalPlaces('', 2)).not.toBeDefined();
+    });
+
+    it('remove additional decimal places', () => {
+      expect(removeAdditionalDecimalPlaces('100.12345', 0)).toEqual('100');
+      expect(removeAdditionalDecimalPlaces('100.12345', 2)).toEqual('100.12');
+      expect(removeAdditionalDecimalPlaces('100.12345', 8)).toEqual(
+        '100.12345',
+      );
     });
   });
 
@@ -202,6 +252,25 @@ describe('Send - utils', () => {
         chainId: '0x1',
         transactionParams: { from: '0x123', value: '0x56bc75e2d63100000' },
       });
+    });
+  });
+
+  describe('getFractionLength', () => {
+    it('return width of fractional part', () => {
+      expect(getFractionLength('.1')).toEqual(1);
+      expect(getFractionLength('0')).toEqual(0);
+      expect(getFractionLength('.0001')).toEqual(4);
+      expect(getFractionLength('0.075')).toEqual(3);
+    });
+  });
+
+  describe('addLeadingZeroIfNeeded', () => {
+    it('add zero to decimal value if needed', () => {
+      expect(addLeadingZeroIfNeeded(undefined)).toEqual(undefined);
+      expect(addLeadingZeroIfNeeded('')).toEqual('');
+      expect(addLeadingZeroIfNeeded('.001')).toEqual('0.001');
+      expect(addLeadingZeroIfNeeded('0.001')).toEqual('0.001');
+      expect(addLeadingZeroIfNeeded('100')).toEqual('100');
     });
   });
 });

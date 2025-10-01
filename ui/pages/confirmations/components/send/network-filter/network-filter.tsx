@@ -28,8 +28,9 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { NetworkListItem } from '../../../../../components/multichain';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../../shared/constants/bridge';
-import { getImageForChainId } from '../../../utils/network';
+import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
+import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
+import { AssetFilterMethod } from '../../../context/send-metrics';
 import { type Asset } from '../../../types/send';
 
 type NetworkFilterProps = {
@@ -48,6 +49,9 @@ export const NetworkFilter = ({
   const t = useI18nContext();
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
+  const { addAssetFilterMethod, removeAssetFilterMethod } =
+    useAssetSelectionMetrics();
+  const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
 
   // Extract and sort unique chain IDs by total fiat balance from tokens only
   const uniqueChainIds = useMemo(() => {
@@ -91,17 +95,19 @@ export const NetworkFilter = ({
       };
     }
 
-    const networkName =
-      NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-        selectedChainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-      ];
+    const networkName = chainNetworkNAmeAndImageMap.get(
+      selectedChainId as string,
+    )?.networkName;
+    const networkImage = chainNetworkNAmeAndImageMap.get(
+      selectedChainId as string,
+    )?.networkImage;
 
     return {
       displayName: networkName || `Chain ${selectedChainId}`,
-      displayIcon: getImageForChainId(selectedChainId),
+      displayIcon: networkImage || '',
       isAllNetworks: false,
     };
-  }, [selectedChainId]);
+  }, [selectedChainId, chainNetworkNAmeAndImageMap]);
 
   const handleNetworkFilterClick = useCallback(() => {
     setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
@@ -113,10 +119,21 @@ export const NetworkFilter = ({
 
   const handleNetworkSelection = useCallback(
     (chainId: string | null) => {
+      if (chainId === null) {
+        removeAssetFilterMethod(AssetFilterMethod.Network);
+      } else {
+        addAssetFilterMethod(AssetFilterMethod.Network);
+      }
+
       onChainIdChange?.(chainId);
       closePopover();
     },
-    [onChainIdChange, closePopover],
+    [
+      addAssetFilterMethod,
+      closePopover,
+      onChainIdChange,
+      removeAssetFilterMethod,
+    ],
   );
 
   return (
@@ -170,7 +187,7 @@ export const NetworkFilter = ({
           >
             {t('selectNetworkToFilter')}
           </ModalHeader>
-          <ModalBody>
+          <ModalBody paddingLeft={0} paddingRight={0}>
             <NetworkListItem
               name={t('allNetworks')}
               iconSrc={IconName.Global}
@@ -179,16 +196,18 @@ export const NetworkFilter = ({
               onClick={() => handleNetworkSelection(null)}
             />
             {uniqueChainIds.map((chainId) => {
-              const networkName =
-                NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                  chainId as keyof typeof NETWORK_TO_SHORT_NETWORK_NAME_MAP
-                ];
+              const networkName = chainNetworkNAmeAndImageMap.get(
+                chainId as string,
+              )?.networkName;
+              const networkImage = chainNetworkNAmeAndImageMap.get(
+                chainId as string,
+              )?.networkImage;
 
               return (
                 <NetworkListItem
                   key={chainId}
                   name={networkName || `Chain ${chainId}`}
-                  iconSrc={getImageForChainId(chainId)}
+                  iconSrc={networkImage || ''}
                   selected={selectedChainId === chainId}
                   onClick={() => handleNetworkSelection(chainId)}
                 />

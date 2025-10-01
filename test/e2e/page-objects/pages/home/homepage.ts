@@ -1,8 +1,9 @@
+import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
-import { getCleanAppState } from '../../../helpers';
 import HeaderNavbar from '../header-navbar';
+import { getCleanAppState } from '../../../helpers';
 
 class HomePage {
   protected driver: Driver;
@@ -103,6 +104,16 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+  }
+
+  async checkPageIsNotLoaded(): Promise<void> {
+    console.log('Check home page is not loaded');
+    await this.driver.assertElementNotPresent(this.activityTab, {
+      waitAtLeastGuard: 500,
+    });
+    await this.driver.assertElementNotPresent(this.tokensTab, {
+      waitAtLeastGuard: 500,
+    });
   }
 
   async closeSurveyToast(surveyName: string): Promise<void> {
@@ -290,7 +301,7 @@ class HomePage {
     console.log('Check if account syncing has synced at least once');
     await this.driver.wait(async () => {
       const uiState = await getCleanAppState(this.driver);
-      return uiState.metamask.hasAccountSyncingSyncedAtLeastOnce === true;
+      return uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true;
     }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
   }
 
@@ -344,6 +355,28 @@ class HomePage {
       expectedBalance = '25';
     }
     await this.checkExpectedBalanceIsDisplayed(expectedBalance);
+  }
+
+  async getSkeleton(): Promise<
+    WebElement & {
+      waitForElementState: (state: string, timeout: number) => Promise<void>;
+    }
+  > {
+    return (await this.driver.waitForSelector('.mm-skeleton', {
+      state: 'visible',
+      timeout: 100,
+      // The `waitForSelector` method returns the wrong type.
+      // We supply that type in the return type, and we don't need to restate it here.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    })) as any;
+  }
+
+  async waitForSkeletonToDisappear(
+    skeleton: WebElement & {
+      waitForElementState: (state: string, timeout: number) => Promise<void>;
+    },
+  ): Promise<void> {
+    await skeleton.waitForElementState('hidden', this.driver.timeout);
   }
 
   async checkNewSrpAddedToastIsDisplayed(srpNumber: number = 2): Promise<void> {

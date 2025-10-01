@@ -103,6 +103,13 @@ jest.mock('lodash', () => ({
   }),
 }));
 
+jest.mock(
+  '../../../../pages/confirmations/hooks/useRedesignedSendFlow',
+  () => ({
+    useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
+  }),
+);
+
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const useI18nContextMock = useI18nContext as jest.Mock;
@@ -245,8 +252,7 @@ describe('AssetPickerModal', () => {
     );
 
     fireEvent.click(screen.getByText('nfts'));
-    expect(screen.getByText('noNFTs')).toBeInTheDocument();
-    expect(screen.getByText('learnMoreUpperCase')).toBeInTheDocument();
+    expect(screen.getByTestId('nft-tab-empty-state')).toBeInTheDocument();
   });
 
   it('filters tokens based on search query', () => {
@@ -385,7 +391,7 @@ describe('AssetPickerModal', () => {
     expect(modalTitle).toBeInTheDocument();
 
     expect(getAllByRole('img')).toHaveLength(2);
-    const modalContent = getByText('Ethereum Mainnet');
+    const modalContent = getByText('Ethereum');
     expect(modalContent).toBeInTheDocument();
   });
 

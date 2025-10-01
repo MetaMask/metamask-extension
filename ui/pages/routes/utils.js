@@ -27,7 +27,10 @@ import {
   ACCOUNT_DETAILS_ROUTE,
   ACCOUNT_DETAILS_QR_CODE_ROUTE,
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
+  SHIELD_PLAN_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
+  GATOR_PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
 } from '../../helpers/constants/routes';
 
 export function isConfirmTransactionRoute(pathname) {
@@ -283,6 +286,39 @@ export function hideAppHeader(props) {
       exact: false,
     }),
   );
+
+  const isShieldPlanPage = Boolean(
+    matchPath(location.pathname, {
+      path: SHIELD_PLAN_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isShieldPlanPage) {
+    return true;
+  }
+
+  const isGatorPermissionsPage = Boolean(
+    matchPath(location.pathname, {
+      path: GATOR_PERMISSIONS,
+      exact: false,
+    }),
+  );
+
+  if (isGatorPermissionsPage) {
+    return true;
+  }
+
+  const isGatorPermissionsTokenTransferPage = Boolean(
+    matchPath(location.pathname, {
+      path: TOKEN_TRANSFER_ROUTE,
+      exact: false,
+    }),
+  );
+
+  if (isGatorPermissionsTokenTransferPage) {
+    return true;
+  }
 
   return (
     isHandlingPermissionsRequest ||

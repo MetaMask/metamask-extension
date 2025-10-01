@@ -1,12 +1,10 @@
 import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
 
 import { Recipient } from '../../UI/recipient';
 import {
   type Recipient as RecipientType,
   useRecipients,
 } from '../../../hooks/send/useRecipients';
-import { getUseBlockie } from '../../../../../selectors';
 import { Text } from '../../../../../components/component-library';
 import {
   TextColor,
@@ -14,7 +12,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useSendRecipientFilter } from '../../../hooks/send/useSendRecipientFilter';
-import { useSendContext } from '../../../context/send';
 import { RecipientFilterInput } from '../recipient-filter-input';
 
 const AccountsList = ({
@@ -24,8 +21,6 @@ const AccountsList = ({
   recipients: RecipientType[];
   handleSelectRecipient: (recipient: RecipientType) => void;
 }) => {
-  const useBlockie = useSelector(getUseBlockie);
-
   // Group recipients by wallet name
   const groupedByWallet = recipients.reduce(
     (acc, recipient) => {
@@ -45,8 +40,9 @@ const AccountsList = ({
         <React.Fragment key={walletName}>
           <Text
             color={TextColor.textAlternative}
-            paddingTop={4}
-            paddingBottom={4}
+            paddingInline={4}
+            paddingTop={2}
+            paddingBottom={2}
             variant={TextVariant.bodyMdMedium}
           >
             {walletName}
@@ -56,7 +52,6 @@ const AccountsList = ({
               isAccount
               key={recipient.address}
               recipient={recipient}
-              useBlockie={useBlockie}
               onClick={handleSelectRecipient}
             />
           ))}
@@ -73,7 +68,6 @@ const ContactsList = ({
   recipients: RecipientType[];
   handleSelectRecipient: (recipient: RecipientType) => void;
 }) => {
-  const useBlockie = useSelector(getUseBlockie);
   const t = useI18nContext();
 
   if (recipients.length === 0) {
@@ -84,8 +78,9 @@ const ContactsList = ({
     <>
       <Text
         color={TextColor.textAlternative}
-        paddingTop={4}
-        paddingBottom={4}
+        paddingInline={4}
+        paddingTop={2}
+        paddingBottom={2}
         variant={TextVariant.bodyMdMedium}
       >
         {t('contacts')}
@@ -94,7 +89,6 @@ const ContactsList = ({
         <Recipient
           key={recipient.address}
           recipient={recipient}
-          useBlockie={useBlockie}
           onClick={handleSelectRecipient}
         />
       ))}
@@ -102,10 +96,15 @@ const ContactsList = ({
   );
 };
 
-export const RecipientList = ({ hideModal }: { hideModal: () => void }) => {
+export const RecipientList = ({
+  hideModal,
+  onToChange,
+}: {
+  hideModal: () => void;
+  onToChange: (address: string) => void;
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const recipients = useRecipients();
-  const { updateTo } = useSendContext();
   const contactRecipients = recipients.filter(
     (recipient) => recipient.contactName,
   );
@@ -121,10 +120,10 @@ export const RecipientList = ({ hideModal }: { hideModal: () => void }) => {
 
   const handleSelectRecipient = useCallback(
     (recipient: RecipientType) => {
-      updateTo(recipient.address);
+      onToChange(recipient.address);
       hideModal();
     },
-    [hideModal, updateTo],
+    [hideModal, onToChange],
   );
 
   return (

@@ -40,8 +40,9 @@ import {
   getCurrentCurrency,
 } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
+import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { getSelectedInternalAccount } from './accounts';
-import { getMultichainBalances, getMultichainIsEvm } from './multichain';
+import { getMultichainBalances } from './multichain';
 import {
   getCurrencyRates,
   getCurrentNetwork,
@@ -54,6 +55,7 @@ import {
   getEnabledNetworks,
 } from './selectors';
 import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 
 export type AssetsState = {
   metamask: MultichainAssetsControllerState;
@@ -310,26 +312,37 @@ export const getMultiChainAssets = createDeepEqualSelector(
  */
 export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
   (state) => state,
-  (_state, account?: InternalAccount) => account,
+  (_state, account: InternalAccount | undefined) => account,
   (
     _state,
-    _account?: InternalAccount,
-    tokenAddress?: Hex | CaipAssetType | string,
+    _account: InternalAccount | undefined,
+    tokenAddress: Hex | CaipAssetType | string | undefined,
   ) => tokenAddress,
   (
     _state,
-    _account?: InternalAccount,
-    _tokenAddress?: Hex | CaipAssetType | string,
-    _chainId?: Hex | CaipChainId,
+    _account: InternalAccount | undefined,
+    _tokenAddress: Hex | CaipAssetType | string | undefined,
+    _chainId: Hex | CaipChainId,
   ) => _chainId,
   (
     state,
-    account?: InternalAccount,
-    tokenAddress?: Hex | CaipAssetType | string,
-    chainId?: Hex | CaipChainId,
+    account: InternalAccount | undefined,
+    tokenAddress: Hex | CaipAssetType | string | undefined,
+    chainId: Hex | CaipChainId,
   ) => {
-    const accountToUse = account ?? getSelectedInternalAccount(state);
-    const isEvm = getMultichainIsEvm(state, accountToUse);
+    const isEvm = isEvmChainId(chainId);
+    if (!tokenAddress && !isEvm) {
+      return null;
+    }
+
+    const accountToUse =
+      account ??
+      (isEvm
+        ? getSelectedInternalAccount(state)
+        : getInternalAccountBySelectedAccountGroupAndCaip(
+            state,
+            chainId as CaipChainId,
+          ));
 
     const assetsToSearch = isEvm
       ? (getSelectedAccountTokensAcrossChains(state) as Record<
@@ -701,7 +714,8 @@ export const selectBalanceForAllWallets = createSelector(
     enabledNetworkMap,
   ) =>
     calculateBalanceForAllWallets(
-      accountTreeState,
+      // TODO: fix this by ensuring @metamask/assets-controllers has proper types
+      accountTreeState as AccountTreeControllerState,
       accountsState,
       tokenBalancesState,
       tokenRatesState,
@@ -745,7 +759,8 @@ export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
       enabledNetworkMap,
     ): BalanceChangeResult =>
       calculateBalanceChangeForAllWallets(
-        accountTreeState,
+        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
+        accountTreeState as AccountTreeControllerState,
         accountsState,
         tokenBalancesState,
         tokenRatesState,
@@ -801,7 +816,8 @@ export const selectBalanceChangeByAccountGroup = (
       enabledNetworkMap,
     ): BalanceChangeResult =>
       calculateBalanceChangeForAccountGroup(
-        accountTreeState,
+        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
+        accountTreeState as AccountTreeControllerState,
         accountsState,
         tokenBalancesState,
         tokenRatesState,
@@ -861,7 +877,8 @@ export const selectBalanceChangeBySelectedAccountGroup = (
         return null;
       }
       return calculateBalanceChangeForAccountGroup(
-        accountTreeState,
+        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
+        accountTreeState as AccountTreeControllerState,
         accountsState,
         tokenBalancesState,
         tokenRatesState,

@@ -17,7 +17,7 @@ import {
   getEditedNetwork,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../selectors';
-import { hideModal } from '../../../store/actions';
+import { hideModal, setEditedNetwork } from '../../../store/actions';
 import {
   Modal,
   ModalContent,
@@ -29,7 +29,7 @@ import AddRpcUrlModal from '../network-list-menu/add-rpc-url-modal/add-rpc-url-m
 import { SelectRpcUrlModal } from '../network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
 import { AddNetwork } from './components/add-network';
 import { NetworkTabs } from './network-tabs';
-import { useNetworkManagerState } from './hooks/useNetworkManagerState';
+import { useNetworkManagerInitialTab } from './hooks/useNetworkManagerState';
 
 export const NetworkManager = () => {
   const dispatch = useDispatch();
@@ -37,7 +37,7 @@ export const NetworkManager = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { initialTab } = useNetworkManagerState();
+  const { initialTab } = useNetworkManagerInitialTab();
   const handleNewNetwork = () => {
     navigate('/add');
   };
@@ -119,6 +119,7 @@ export const NetworkManager = () => {
 
   const handleClose = () => {
     dispatch(hideModal());
+    dispatch(setEditedNetwork());
     navigate('/');
   };
 

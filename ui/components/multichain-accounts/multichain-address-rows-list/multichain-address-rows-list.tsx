@@ -1,6 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
+import { CaipChainId } from '@metamask/utils';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
@@ -18,6 +20,7 @@ import {
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../component-library';
+import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
 
@@ -32,6 +35,7 @@ export type MultichainAddressRowsListProps = {
   onQrClick: (
     address: string,
     networkName: string,
+    chainId: CaipChainId,
     networkImageSrc?: string,
   ) => void;
 };
@@ -42,6 +46,7 @@ export const MultichainAddressRowsList = ({
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [searchPattern, setSearchPattern] = React.useState<string>('');
+  const [, handleCopy] = useCopyToClipboard();
 
   const getAccountsSpreadByNetworkByGroupId = useSelector((state) =>
     getInternalAccountListSpreadByScopesByGroupId(state, groupId),
@@ -73,17 +78,41 @@ export const MultichainAddressRowsList = ({
     setSearchPattern('');
   };
 
+  const renderAddressItem = useCallback(
+    (
+      item: {
+        scope: CaipChainId;
+        account: InternalAccount;
+        networkName: string;
+      },
+      index: number,
+    ): React.JSX.Element => {
+      const handleCopyClick = () => {
+        handleCopy(item.account.address);
+      };
+
+      return (
+        <MultichainAddressRow
+          key={`${item.account.address}-${item.scope}-${index}`}
+          chainId={item.scope}
+          networkName={item.networkName}
+          address={item.account.address}
+          copyActionParams={{
+            message: t('multichainAccountAddressCopied'),
+            callback: handleCopyClick,
+          }}
+          qrActionParams={{
+            callback: onQrClick,
+          }}
+        />
+      );
+    },
+    [handleCopy, onQrClick, t],
+  );
+
   const renderedRows = useMemo(() => {
-    return filteredItems.map((item, index) => (
-      <MultichainAddressRow
-        key={`${item.account.address}-${item.scope}-${index}`}
-        chainId={item.scope}
-        networkName={item.networkName}
-        address={item.account.address}
-        onQrClick={onQrClick}
-      />
-    ));
-  }, [filteredItems, onQrClick]);
+    return filteredItems.map((item, index) => renderAddressItem(item, index));
+  }, [filteredItems, renderAddressItem]);
 
   return (
     <Box
@@ -91,18 +120,21 @@ export const MultichainAddressRowsList = ({
       flexDirection={FlexDirection.Column}
       data-testid="multichain-address-rows-list"
     >
-      <TextFieldSearch
-        size={TextFieldSearchSize.Lg}
-        placeholder={t('searchNetworks')}
-        value={searchPattern}
-        onChange={handleSearchChange}
-        clearButtonOnClick={handleClearSearch}
-        width={BlockSize.Full}
-        borderWidth={0}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        borderRadius={BorderRadius.LG}
-        data-testid="multichain-address-rows-list-search"
-      />
+      <Box paddingLeft={4} paddingRight={4}>
+        <TextFieldSearch
+          size={TextFieldSearchSize.Lg}
+          placeholder={t('searchNetworks')}
+          value={searchPattern}
+          onChange={handleSearchChange}
+          clearButtonOnClick={handleClearSearch}
+          width={BlockSize.Full}
+          borderWidth={0}
+          marginBottom={2}
+          backgroundColor={BackgroundColor.backgroundMuted}
+          borderRadius={BorderRadius.LG}
+          data-testid="multichain-address-rows-list-search"
+        />
+      </Box>
 
       <Box>
         {filteredItems.length > 0 ? (

@@ -4,6 +4,7 @@ import {
   NetworkControllerGetStateAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
+import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 
 type MessengerActions =
   | NetworkControllerGetNetworkClientByIdAction
@@ -25,5 +26,30 @@ export function getSmartTransactionsControllerMessenger(
       'NetworkController:getState',
     ],
     allowedEvents: ['NetworkController:stateChange'],
+  });
+}
+
+export type AllowedInitializationActions =
+  MetaMetricsControllerTrackEventAction;
+
+export type SmartTransactionsControllerInitMessenger = ReturnType<
+  typeof getSmartTransactionsControllerInitMessenger
+>;
+
+/**
+ * Get a restricted messenger for initializing the smart transactions controller.
+ * This is scoped to the actions that are allowed during controller
+ * initialization.
+ *
+ * @param messenger - The controller messenger to restrict.
+ * @returns The restricted controller messenger.
+ */
+export function getSmartTransactionsControllerInitMessenger(
+  messenger: Messenger<AllowedInitializationActions, never>,
+) {
+  return messenger.getRestricted({
+    name: 'SmartTransactionsControllerInit',
+    allowedActions: ['MetaMetricsController:trackEvent'],
+    allowedEvents: [],
   });
 }

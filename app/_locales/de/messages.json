@@ -308,9 +308,6 @@
   "addingAccount": {
     "message": "Konto hinzufügen"
   },
-  "addingCustomNetwork": {
-    "message": "Netzwerk wird hinzugefügt"
-  },
   "additionalNetworks": {
     "message": "Zusätzliche Netzwerke"
   },
@@ -737,18 +734,11 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Dies ist eine BETA-Version. Bitte melden Sie Fehler $1."
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask-Version"
   },
   "betaTerms": {
     "message": "Beta-Nutzungsbedingungen"
-  },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "Konto",
@@ -902,9 +892,6 @@
   "bridgePriceImpact": {
     "message": "Preisauswirkung"
   },
-  "bridgePriceImpactGaslessWarning": {
-    "message": "Die Preisauswirkung spiegelt wider, wie sich Ihre Swap-Order auf den Marktpreis des Assets auswirkt. Falls Sie nicht genügend Guthaben für die Gas-Gebühren haben, wird ein Teil Ihrer Ursprungstokens automatisch zur Deckung der Gebühren verwendet. Dies reduziert den Betrag, der geswappt wird. MetaMask hat keinen Einfluss auf die Preisauswirkung und kontrolliert sie nicht."
-  },
   "bridgePriceImpactNormalWarning": {
     "message": "Die Preisauswirkung spiegelt wider, wie sich Ihre Swap-Order auf den Marktpreis eines Assets auswirkt. Er hängt von der Trade-Größe und der verfügbaren Liquidität im Pool ab. MetaMask hat keinen Einfluss auf die Preisauswirkung und kontrolliert sie nicht."
   },
@@ -1053,8 +1040,8 @@
   "busy": {
     "message": "Ausgelastet"
   },
-  "buyAndSell": {
-    "message": "Kaufen/Verkaufen"
+  "buy": {
+    "message": "Kaufen"
   },
   "buyMoreAsset": {
     "message": "Mehr $1 kaufen",
@@ -1431,9 +1418,6 @@
   "connectingTo": {
     "message": "Verbindung mit $1 wird hergestellt"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "‚$1‘ wird eingestellt und funktioniert möglicherweise nicht mehr. Versuchen Sie ein anderes Netzwerk."
-  },
   "connectingToGoerli": {
     "message": "Verbindungsaufbau zum Goerli-Testnetzwerk"
   },
@@ -1596,9 +1580,6 @@
   "currentNetwork": {
     "message": "Aktuelles Netzwerk",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "Die aktuelle RPC-URL für dieses Netzwerk ist veraltet."
   },
   "currentTitle": {
     "message": "Aktuell:"
@@ -1862,9 +1843,6 @@
   },
   "destinationAccountPickerNoMatching": {
     "message": "Keine übereinstimmenden Konten gefunden"
-  },
-  "destinationAccountPickerReceiveAt": {
-    "message": "Empfangen am"
   },
   "destinationAccountPickerSearchPlaceholderToMainnet": {
     "message": "Empfangsadresse oder ENS"
@@ -2708,12 +2686,6 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "howQuotesWork": {
-    "message": "Funktionsweise von Angeboten"
-  },
-  "howQuotesWorkExplanation": {
-    "message": "Dieses Angebot hat die höchste Rendite von den von uns gesuchten Angeboten. Dieser Wert basiert auf dem Swap-Satz, der Bridging-Gebühren und eine MetaMask-Gebühr von $1 % einschließt, abzüglich der Gasgebühren. Die Gasgebühren hängen von der Auslastung des Netzwerks sowie der Komplexität der Transaktion ab."
-  },
   "id": {
     "message": "ID"
   },
@@ -2973,9 +2945,6 @@
   },
   "isSigningOrSubmitting": {
     "message": "Eine frühere Transaktion wird noch signiert oder eingereicht"
-  },
-  "jazzAndBlockies": {
-    "message": "Jazzicons und Blockies sind zwei verschiedene Arten von einzigartigen Symbolen, mit denen Sie ein Konto auf einen Blick erkennen können."
   },
   "jazzicons": {
     "message": "Jazzicons"
@@ -3337,10 +3306,6 @@
   "metrics": {
     "message": "Metriken"
   },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
-  },
   "mismatchedChainLinkText": {
     "message": "verifizieren Sie die Netzwerkdetails",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3383,15 +3348,6 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Sie fügen dieses Netzwerk zu MetaMask hinzu und geben dieser Website die Genehmigung, es zu nutzen."
-  },
-  "multichainQuoteCardBridgingLabel": {
-    "message": "Bridging"
-  },
-  "multichainQuoteCardQuoteLabel": {
-    "message": "Angebot"
-  },
-  "multichainQuoteCardTimeLabel": {
-    "message": "Zeit"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 möchte $2 Snaps verwenden",
@@ -3625,10 +3581,6 @@
     "message": "Die Gas-Gebühren betragen $1 bezogen auf die letzten 72 Stunden.",
     "description": "$1 is networks stability value - stable, low, high"
   },
-  "networkSwitchConnectionError": {
-    "message": "Wir können keine Verbindung zu $1 aufbauen.",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Netzwerk-URL"
   },
@@ -3756,9 +3708,6 @@
   "noAccountsFound": {
     "message": "Keine Konten für die angegebene Suchanfrage gefunden"
   },
-  "noActivity": {
-    "message": "Noch keine Aktivität"
-  },
   "noConnectedAccountTitle": {
     "message": "MetaMask ist nicht mit dieser Website verbunden"
   },
@@ -3768,17 +3717,11 @@
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
   },
-  "noDeFiPositions": {
-    "message": "Sie finden nicht, wonach Sie suchen?"
-  },
   "noDomainResolution": {
     "message": "Keine Auflösung für die Domain angegeben."
   },
   "noHardwareWalletOrSnapsSupport": {
     "message": "Snaps und die meisten Hardware-Wallets funktionieren nicht mit Ihrer aktuellen Browserversion."
-  },
-  "noNFTs": {
-    "message": "Noch keine NFTs"
   },
   "noNetworksAvailable": {
     "message": "Keine Netzwerke verfügbar"
@@ -3794,12 +3737,6 @@
   },
   "noSnaps": {
     "message": "Keine Snaps installiert"
-  },
-  "noThanks": {
-    "message": "Nein, danke!"
-  },
-  "noTransactions": {
-    "message": "Sie haben keine Transaktionen"
   },
   "noWebcamFound": {
     "message": "Die Webcam Ihres Computers wurde nicht gefunden. Bitte versuchen Sie es erneut."
@@ -4078,45 +4015,11 @@
   "onboardingImportWallet": {
     "message": "Ich habe eine bestehende Wallet"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Ich stimme zu"
-  },
   "onboardingMetametricsDescription": {
     "message": "Wir möchten grundlegende Nutzungs- und Diagnosedaten sammeln, um MetaMask zu verbessern. Dabei gilt immer:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Wir informieren Sie, wenn wir diese Daten für andere Zwecke verwenden möchten. Sie können unsere $1 jederzeit einsehen (wir verkaufen die von Ihnen hier bereitgestellten Daten niemals).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Datenschutzrichtlinie"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Klicks und Aufrufe in der App werden gespeichert, andere Details (wie Ihre öffentliche Adresse) jedoch nicht.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Privat:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Wir verwenden Ihre IP-Adresse vorübergehend, um einen allgemeinen Standort zu ermitteln (z. B. Ihr Land oder Ihre Region), aber er wird niemals gespeichert.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Allgemein:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Sie können jederzeit über die Einstellungen entscheiden, ob Sie Ihre Nutzungsdaten freigeben oder löschen möchten.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "Optional:"
-  },
   "onboardingMetametricsTitle": {
     "message": "Helfen Sie uns, MetaMask zu verbessern."
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Wir verwenden diese Daten, um zu erfahren, wie Sie mit unserer Marketingkommunikation umgehen. Wir können relevante Neuigkeiten (wie Produktmerkmale) teilen."
   },
   "onboardingOptionIcon": {
     "message": "$1-Symbol",
@@ -4160,14 +4063,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Alle löschen"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Alle verbergen"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Fügen Sie zwischen jedem Wort ein Leerzeichen ein und stellen Sie sicher, dass niemand zusieht."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Alle anzeigen"
   },
   "onekey": {
     "message": "OneKey"
@@ -4247,13 +4144,6 @@
   },
   "passwordNotLongEnough": {
     "message": "Passwort muss mindestens 8 Zeichen lang sein"
-  },
-  "passwordStrength": {
-    "message": "Passwortstärke: $1",
-    "description": "Return password strength to the user when user wants to create password."
-  },
-  "passwordStrengthDescription": {
-    "message": "Ein starkes Passwort kann die Sicherheit Ihrer Wallet erhöhen, falls Ihr Gerät gestohlen oder kompromittiert wird."
   },
   "passwordTermsWarning": {
     "message": "Wenn ich dieses Passwort vergesse, kann MetaMask es nicht für mich zurücksetzen."
@@ -4673,9 +4563,6 @@
   "proposedApprovalLimit": {
     "message": "Vorgeschlagenes Genehmigungslimit"
   },
-  "protocolNotSupported": {
-    "message": "Möglicherweise unterstützen wir Ihr Protokoll noch nicht."
-  },
   "provide": {
     "message": "Bereitstellen"
   },
@@ -4792,9 +4679,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Öffentliche Adresse (0x) oder Domainname eingeben"
-  },
-  "recommendedGasLabel": {
-    "message": "Empfohlen"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Jetzt sichern"
@@ -5096,18 +4980,8 @@
   "secureWallet": {
     "message": "Sichere Wallet"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Erste Schritte"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Später erneut erinnern"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Dies ist die einzige Möglichkeit, Ihre Wallet wiederherzustellen, wenn Sie aus der App ausgesperrt werden oder ein neues Gerät erhalten."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Riskieren Sie nicht, Ihr Geld zu verlieren. Schützen Sie Ihre Wallet, indem Sie Ihre $1 an einem Ort Ihres Vertrauens aufbewahren.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Sicherheit"
@@ -5186,9 +5060,6 @@
   },
   "seeDetails": {
     "message": "Details anzeigen"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Sichern Sie Ihre Wallet"
   },
   "seedPhraseReq": {
     "message": "Geheime Wiederherstellungsphrasen bestehen aus 12, 15, 18, 21 oder 24 Wörtern."
@@ -5494,18 +5365,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "Kontosicherheit überspringen?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Wenn Sie diese geheime Wiederherstellungsphrase verlieren, können Sie nicht mehr auf diese Wallet zugreifen."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Jetzt sichern"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Überspringen"
   },
   "skipDeepLinkInterstitial": {
     "message": "Beim Öffnen von Deeplinks keinen Zwischenbildschirm anzeigen"
@@ -5873,9 +5732,6 @@
   "spendingCaps": {
     "message": "Ausgabenobergrenzen"
   },
-  "srpDesignImageAlt": {
-    "message": "Bild einer Aufbewahrung für die geheime Wiederherstellungsphrase"
-  },
   "srpDetailsDescription": {
     "message": "Eine geheime Wiederherstellungsphrase, auch Seed-Phrase oder Mnemonik genannt, ist eine Reihe von Wörtern, die Ihnen den Zugriff auf Ihre Krypto-Wallet und deren Kontrolle ermöglichen. Um Ihre Wallet zu MetaMask zu verschieben, benötigen Sie diese Phrase."
   },
@@ -6092,10 +5948,6 @@
   "step2LedgerWalletMsg": {
     "message": "Schließen Sie Ihre Ledger-Wallet direkt an Ihren Computer an, entsperren Sie sie und öffnen Sie die Ethereum-App.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Schritt $1 von $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Erhalten Sie diese Meldung immer noch?"
@@ -6592,9 +6444,6 @@
   "switchNetwork": {
     "message": "Netzwerk wechseln"
   },
-  "switchNetworks": {
-    "message": "Netzwerk wechseln"
-  },
   "switchToNetwork": {
     "message": "Zu $1 wechseln",
     "description": "$1 represents the custom network that has previously been added"
@@ -6843,10 +6692,6 @@
   },
   "transferRequest": {
     "message": "Überweisungsanfrage"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Wir haben Probleme mit der Verbindung zu Ihrem Ledger. $1",
@@ -7205,9 +7050,6 @@
     "message": "Vorsicht vor $1.",
     "description": "$1 is a link with text that is provided by the 'securityMessageLinkForNetworks' key"
   },
-  "weak": {
-    "message": "Schwach"
-  },
   "web3": {
     "message": "Web3"
   },
@@ -7234,9 +7076,6 @@
   },
   "willApproveAmountForBridging": {
     "message": "Damit wird $1 für Bridging genehmigt."
-  },
-  "willApproveAmountForBridgingHardware": {
-    "message": "Sie werden zwei Transaktionen auf Ihrer Hardware-Wallet bestätigen müssen."
   },
   "willApproveAmountForSwapping": {
     "message": "Damit wird $1 für Swapping genehmigt."

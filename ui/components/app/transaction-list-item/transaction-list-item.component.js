@@ -250,7 +250,7 @@ function TransactionListItemInner({
     });
   }, [isUnapproved, history, id, trackEvent, category]);
 
-  const speedUpButton = useMemo(() => {
+  const isSpeedUpButtonVisible = useMemo(() => {
     if (
       !shouldShowSpeedUp ||
       !isPending ||
@@ -258,6 +258,14 @@ function TransactionListItemInner({
       isSigning ||
       isSubmitting
     ) {
+      return false;
+    }
+
+    return true;
+  }, [shouldShowSpeedUp, isUnapproved, isPending, isSigning, isSubmitting]);
+
+  const speedUpButton = useMemo(() => {
+    if (!isSpeedUpButtonVisible) {
       return null;
     }
 
@@ -272,12 +280,8 @@ function TransactionListItemInner({
       </Button>
     );
   }, [
-    shouldShowSpeedUp,
-    isUnapproved,
+    isSpeedUpButtonVisible,
     t,
-    isPending,
-    isSigning,
-    isSubmitting,
     hasCancelled,
     retryTransaction,
     cancelTransaction,
@@ -345,7 +349,7 @@ function TransactionListItemInner({
                 alignItems={AlignItems.center}
               >
                 <Text
-                  variant={TextVariant.bodyLgMedium}
+                  variant={TextVariant.bodyMdMedium}
                   fontWeight={FontWeight.Medium}
                   color={Color.textDefault}
                   title={primaryCurrency}
@@ -358,7 +362,7 @@ function TransactionListItemInner({
                 </Text>
               </Box>
               <Text
-                variant={TextVariant.bodyMd}
+                variant={TextVariant.bodySmMedium}
                 color={Color.textAlternative}
                 textAlign={TextAlign.Right}
                 data-testid="transaction-list-item-secondary-currency"
@@ -395,7 +399,7 @@ function TransactionListItemInner({
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
           // showRetry={showRetry}
-          showSpeedUp={shouldShowSpeedUp}
+          showSpeedUp={isSpeedUpButtonVisible}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           transactionStatus={() => (
