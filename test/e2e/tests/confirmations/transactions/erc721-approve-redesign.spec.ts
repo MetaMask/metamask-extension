@@ -5,6 +5,7 @@ import { Driver } from '../../../webdriver/driver';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
+import { mockLegacySendFeatureFlag } from '../../send/common';
 import { TestSuiteArguments, toggleAdvancedDetails } from './shared';
 
 const FixtureBuilder = require('../../../fixture-builder');
@@ -121,7 +122,7 @@ async function mocked4Bytes(mockServer: MockttpServer) {
 }
 
 async function mocks(server: MockttpServer) {
-  return [await mocked4Bytes(server)];
+  return [await mocked4Bytes(server), await mockLegacySendFeatureFlag(server)];
 }
 
 async function createMintTransaction(driver: Driver) {

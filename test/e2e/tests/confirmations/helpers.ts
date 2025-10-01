@@ -7,6 +7,7 @@ import { Driver } from '../../webdriver/driver';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockLegacySendFeatureFlag } from '../send/common';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -33,7 +34,13 @@ export function withTransactionEnvelopeTypeFixtures(
   ): Promise<MockedEndpoint[]> => {
     const baseMocks = mocks ? await mocks(mockServer) : [];
     const dialogSnapMocks = await mockDialogSnap(mockServer);
-    return [...baseMocks, ...[dialogSnapMocks]];
+    const legacySendFeatureFlagMocks =
+      await mockLegacySendFeatureFlag(mockServer);
+    return [
+      ...baseMocks,
+      ...[dialogSnapMocks],
+      ...[legacySendFeatureFlagMocks],
+    ];
   };
   return withFixtures(
     {

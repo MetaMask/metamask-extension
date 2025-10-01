@@ -10,6 +10,7 @@ import {
   TestSuiteArguments,
   toggleAdvancedDetails,
 } from './shared';
+import { mockLegacySendFeatureFlag } from '../../send/common';
 
 const { withFixtures } = require('../../../helpers');
 const FixtureBuilder = require('../../../fixture-builder');
@@ -94,7 +95,7 @@ describe('Confirmation Redesign ERC20 Approve Component', function () {
 });
 
 async function mocks(server: MockttpServer) {
-  return [await mocked4BytesApprove(server)];
+  return [await mocked4BytesApprove(server), mockLegacySendFeatureFlag(server)];
 }
 
 async function importTST(driver: Driver) {

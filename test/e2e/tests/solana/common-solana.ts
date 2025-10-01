@@ -11,6 +11,7 @@ import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import { mockLegacySendFeatureFlag } from '../send/common';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -1720,6 +1721,7 @@ export async function withSolanaAccountSnap(
             }
           }
         }
+        mockList.push(await mockLegacySendFeatureFlag(mockServer));
         return mockList;
       },
       ignoredConsoleErrors: [
