@@ -1388,6 +1388,9 @@
   "confirmTitleDescSign": {
     "message": "Review request details before you confirm."
   },
+  "confirmTitlePermission": {
+    "message": "Permission request"
+  },
   "confirmTitlePermitTokens": {
     "message": "Spending cap request"
   },
