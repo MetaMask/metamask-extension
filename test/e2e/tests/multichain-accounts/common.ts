@@ -62,7 +62,40 @@ export const mockMultichainAccountsFeatureFlagStateTwo = (
           {
             enableMultichainAccountsState2: {
               enabled: true,
-              featureVersion: null,
+              featureVersion: '2',
+              minimumVersion: '12.19.0',
+            },
+          },
+        ],
+      };
+    });
+
+export const mockMultichainAccountsFeatureFlagDisabled = (
+  mockServer: Mockttp,
+) =>
+  mockServer
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [
+          {
+            enableMultichainAccounts: {
+              enabled: false,
+              featureVersion: '0',
+              minimumVersion: '12.19.0',
+            },
+          },
+          {
+            enableMultichainAccountsState2: {
+              enabled: false,
+              featureVersion: '0',
               minimumVersion: '12.19.0',
             },
           },
@@ -106,6 +139,7 @@ export async function withMultichainAccountsDesignEnabled(
       testSpecificMock,
       title,
       dapp: true,
+      multichainAccountsOverride: true,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
       // State 2 uses unified account group balance (fiat) and may not equal '25 ETH'.

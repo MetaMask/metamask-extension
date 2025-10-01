@@ -831,6 +831,16 @@
   "remoteFeatureFlags": {
     "bridgeConfig": {
       "support": true
+    },
+    "enableMultichainAccounts": {
+      "enabled": false,
+      "featureVersion": null,
+      "minimumVersion": null
+    },
+    "enableMultichainAccountsState2": {
+      "enabled": false,
+      "featureVersion": null,
+      "minimumVersion": null
     }
   },
   "securityAlertsEnabled": true,

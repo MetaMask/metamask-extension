@@ -55,6 +55,10 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
+const {
+  mockMultichainAccountsFeatureFlagDisabled,
+} = require('./tests/multichain-accounts/common');
+
 /**
  * Normalizes the localNodeOptions into a consistent format to handle different data structures.
  * Case 1: A string: localNodeOptions = 'anvil'
@@ -171,21 +175,8 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags = {},
     solanaWebSocketSpecificMocks = [],
+    multichainAccountsOverride = false,
   } = options;
-
-  // FIXME: This has to have a better solution
-  // always add the multichain accounts feature flag
-  manifestFlags.remoteFeatureFlags = manifestFlags.remoteFeatureFlags || {};
-  manifestFlags.remoteFeatureFlags.enableMultichainAccounts = {
-    enabled: false,
-    featureVersion: null,
-    minimumVersion: null,
-  };
-  manifestFlags.remoteFeatureFlags.enableMultichainAccountsState2 = {
-    enabled: false,
-    featureVersion: null,
-    minimumVersion: null,
-  };
 
   // Normalize localNodeOptions
   const localNodeOptsNormalized = normalizeLocalNodeOptions(localNodeOptions);
@@ -324,6 +315,11 @@ async function withFixtures(options, testSuite) {
     webSocketServer = LocalWebSocketServer.getServerInstance();
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
+
+    // Apply multichain accounts feature flag disabled mock
+    if (!multichainAccountsOverride) {
+      await mockMultichainAccountsFeatureFlagDisabled(mockServer);
+    }
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough

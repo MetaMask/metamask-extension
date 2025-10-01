@@ -10,7 +10,6 @@ import {
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
-import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockInfuraAndAccountSync } from '../mocks';
 import { arrangeTestUtils } from './helpers';
 
@@ -33,7 +32,6 @@ describe('Account syncing - Accounts with Balances', function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const phase1MockSetup = (server: Mockttp) => {
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockInfuraAndAccountSync(server, userStorageMockttpController, {
         accountsToMockBalances: balancesAccounts,
       });
@@ -45,6 +43,7 @@ describe('Account syncing - Accounts with Balances', function () {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase1MockSetup,
+        multichainAccountsOverride: true,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -88,7 +87,6 @@ describe('Account syncing - Accounts with Balances', function () {
 
     // Phase 2: Fresh onboarding with balance mocking to discover additional accounts
     const phase2MockSetup = (server: Mockttp) => {
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockInfuraAndAccountSync(server, userStorageMockttpController, {
         accountsToMockBalances: balancesAccounts,
       });
@@ -99,6 +97,7 @@ describe('Account syncing - Accounts with Balances', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase2MockSetup,
+        multichainAccountsOverride: true,
       },
       async ({ driver }) => {
         // Complete onboarding flow from scratch

@@ -12,7 +12,6 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
-import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Unsupported Account types', function () {
@@ -43,7 +42,6 @@ describe('Account syncing - Unsupported Account types', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
@@ -53,6 +51,7 @@ describe('Account syncing - Unsupported Account types', function () {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
+        multichainAccountsOverride: true,
       },
       async ({ driver }) => {
         await unlockWallet(driver);

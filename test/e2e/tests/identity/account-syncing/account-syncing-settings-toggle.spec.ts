@@ -14,7 +14,6 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockIdentityServices } from '../mocks';
 import { arrangeTestUtils } from './helpers';
 
@@ -41,7 +40,6 @@ describe('Account syncing - Settings Toggle', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
@@ -51,6 +49,7 @@ describe('Account syncing - Settings Toggle', function () {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
+        multichainAccountsOverride: true,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
