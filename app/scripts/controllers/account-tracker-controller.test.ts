@@ -43,16 +43,15 @@ const EXPECTED_CONTRACT_BALANCE_2 = '0x0186a0';
 const MOCK_ACCOUNT_API_RESPONSE = {
   balances: {
     '1': {
-      '0x0000000000000000000000000000000000000000': {
-        balance: '1000000000000000000',
-        token: {
-          address: '0x0000000000000000000000000000000000000000',
-          symbol: 'ETH',
-          decimals: 18,
-          name: 'Ethereum',
-          type: 'native' as const,
-        },
-      },
+      object: 'token',
+      balance: '1000000000000000000',
+      accountAddress: 'eip155:0:0x0000000000000000000000000000000000000000',
+      type: 'native' as const,
+      address: '0x0000000000000000000000000000000000000000',
+      symbol: 'ETH',
+      name: 'Ethereum',
+      decimals: 18,
+      chainId: 1,
     },
   },
 };
@@ -1254,7 +1253,7 @@ describe('AccountTrackerController', () => {
               controller.state.accountsByChainId['0x1'][VALID_ADDRESS],
             ).toStrictEqual({
               address: VALID_ADDRESS,
-              balance: '0xde0b6b3a7640000',
+              balance: '0x038d7ea4c68006',
             });
           },
         );

@@ -86,7 +86,7 @@ export async function processInBatches<TItem, TResult>(
       }
     }
 
-    if (successfulResults.length === 0) {
+    if (successfulResults.length <= 0) {
       logger?.warn('All batches failed');
       return null;
     }
@@ -95,8 +95,8 @@ export async function processInBatches<TItem, TResult>(
       `Successfully processed ${successfulResults.length}/${batches.length} batches`,
     );
 
-    // Merge results if a merge function is provided and we have multiple results
-    if (mergeResults && successfulResults.length > 1) {
+    // Merge results if a merge function is provided
+    if (mergeResults) {
       return mergeResults(successfulResults);
     }
 
@@ -193,25 +193,9 @@ export async function fetchAccountBalancesInBatches(
       const mergedResponse: AccountApiBalanceResponse = { balances: {} };
 
       results.forEach((batchResult) => {
-        Object.keys(batchResult.balances).forEach((chainId) => {
-          if (!mergedResponse.balances[chainId]) {
-            mergedResponse.balances[chainId] = {
-              object: '',
-              balance: '',
-              accountAddress: '',
-              type: 'native',
-              address: '',
-              symbol: '',
-              name: '',
-              decimals: 0,
-              chainId: 0,
-            };
-          }
-          Object.assign(
-            mergedResponse.balances[chainId],
-            batchResult.balances[chainId],
-          );
-        });
+        // The API returns balances as a flat Record<string, TokenInfo> where keys are token identifiers
+        // Simply merge all token entries from all batches
+        Object.assign(mergedResponse.balances, batchResult.balances);
       });
 
       return mergedResponse;
