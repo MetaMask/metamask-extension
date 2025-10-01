@@ -358,7 +358,7 @@ class HomePage {
 
   async checkNewSrpAddedToastIsDisplayed(srpNumber: number = 2): Promise<void> {
     await this.driver.waitForSelector({
-      text: `Secret Recovery Phrase ${srpNumber} imported`,
+      text: `Wallet ${srpNumber} imported`,
     });
   }
 
