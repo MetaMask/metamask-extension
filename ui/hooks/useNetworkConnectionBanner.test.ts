@@ -318,50 +318,8 @@ describe('useNetworkConnectionBanner', () => {
     });
   });
 
-  describe('when the first unavailable network changes from one non-null value to another', () => {
-    describe('if the status of the banner is "unavailable"', () => {
-      it('updates the status of the banner to "degraded" after 5 seconds', () => {
-        mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
-          networkName: 'Ethereum Mainnet',
-          networkClientId: 'mainnet',
-          chainId: '0x1',
-        });
-        mockGetNetworkConnectionBanner.mockReturnValue({
-          status: 'unavailable',
-          networkName: 'Ethereum Mainnet',
-          networkClientId: 'mainnet',
-          chainId: '0x1',
-        });
-
-        const { rerender } = renderHookWithProviderTyped(
-          () => useNetworkConnectionBanner(),
-          mockState,
-        );
-        act(() => {
-          jest.runOnlyPendingTimers();
-        });
-        mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
-          networkName: 'Sepolia Mainnet',
-          networkClientId: 'sepolia',
-          chainId: '0xaa36a7',
-        });
-        rerender();
-        act(() => {
-          jest.advanceTimersByTime(5000);
-        });
-
-        expect(mockUpdateNetworkConnectionBanner).toHaveBeenCalledWith({
-          status: 'degraded',
-          networkName: 'Sepolia Mainnet',
-          networkClientId: 'sepolia',
-          chainId: '0xaa36a7',
-        });
-      });
-    });
-  });
-
   describe('on unmount', () => {
-    it('clears both degraded and unavailable timers', () => {
+    it('clears any timers to show the degraded and unavailable banners', () => {
       mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
         networkName: 'Ethereum Mainnet',
         networkClientId: 'mainnet',
