@@ -70,6 +70,11 @@ import {
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import {
+  ALLOWED_BRIDGE_CHAIN_IDS,
+  ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
+  type AllowedBridgeChainIds,
+} from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useRedesignedSendFlow } from '../../../pages/confirmations/hooks/useRedesignedSendFlow';
@@ -83,6 +88,7 @@ type CoinButtonsProps = {
   trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
+  /** @deprecated use bridge chain constants instead*/
   isBridgeChain: boolean;
   isBuyableChain: boolean;
   classPrefix?: string;
@@ -95,7 +101,6 @@ const CoinButtons = ({
   trackingLocation,
   isSwapsChain,
   isSigningEnabled,
-  isBridgeChain,
   isBuyableChain,
   classPrefix = 'coin',
 }: CoinButtonsProps) => {
@@ -137,6 +142,23 @@ const CoinButtons = ({
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
+
+  // Url could be solana assetId or the hex chainId
+  const urlSuffix = location.pathname.split('/').filter(Boolean).at(-1);
+  const hexChainOrAssetId = urlSuffix
+    ? decodeURIComponent(urlSuffix)
+    : undefined;
+
+  const chainIdToUse = isCaipAssetType(hexChainOrAssetId)
+    ? parseCaipAssetType(hexChainOrAssetId).chainId
+    : hexChainOrAssetId;
+
+  const isBridgeChain = chainIdToUse
+    ? [
+        ...ALLOWED_BRIDGE_CHAIN_IDS,
+        ...ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
+      ].includes(chainIdToUse as AllowedBridgeChainIds)
+    : false;
 
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
   // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
@@ -338,19 +360,11 @@ const CoinButtons = ({
     async (isSwap: boolean) => {
       // Handle clicking from the wallet overview page
 
-      // Url could be solana assetId or the hex chainId
-      const lastPartOfUrl = location.pathname.split('/').filter(Boolean).at(-1);
-      const hexChainOrAssetId = lastPartOfUrl
-        ? decodeURIComponent(lastPartOfUrl)
-        : CHAIN_IDS.MAINNET;
-
-      const chainIdToUse = isCaipAssetType(hexChainOrAssetId)
-        ? parseCaipAssetType(hexChainOrAssetId).chainId
-        : hexChainOrAssetId;
-
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
-        getNativeAssetForChainId(chainIdToUse),
+        isBridgeChain && chainIdToUse
+          ? getNativeAssetForChainId(chainIdToUse)
+          : undefined,
         isSwap,
       );
     },

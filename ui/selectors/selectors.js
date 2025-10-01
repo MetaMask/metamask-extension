@@ -1922,6 +1922,9 @@ export function getIsSwapsChain(state, overrideChainId) {
     : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
+/**
+ * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant
+ */
 export function getIsBridgeChain(state, overrideChainId) {
   const account = getSelectedInternalAccount(state);
   const { chainId: selectedMultiChainId, isEvmNetwork } = getMultichainNetwork(
