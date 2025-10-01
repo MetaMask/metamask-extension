@@ -1400,14 +1400,14 @@
   "confirmed": {
     "message": "Confirmed"
   },
+  "confusableCharacterTooltip": {
+    "message": "Make sure this address is correct. The letter $1 is confusable with $2."
+  },
   "confusableUnicode": {
     "message": "'$1' is similar to '$2'."
   },
   "confusableZeroWidthUnicode": {
     "message": "Zero-width character found."
-  },
-  "confusingDomain": {
-    "message": "We have detected a confusable character in the name. Check the name to avoid a potential scam."
   },
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
@@ -5841,9 +5841,6 @@
   },
   "signingWith": {
     "message": "Signing with"
-  },
-  "similarTo": {
-    "message": "$1 is similar to $2"
   },
   "simulationApproveHeading": {
     "message": "Withdraw"
