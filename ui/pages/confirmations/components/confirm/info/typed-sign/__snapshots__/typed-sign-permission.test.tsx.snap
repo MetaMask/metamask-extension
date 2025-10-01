@@ -8,46 +8,6 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            ERC20 token periodic
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-47"
-              class=""
-              data-original-title="The type of permission being requested"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
@@ -63,7 +23,7 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-48"
+              aria-describedby="tippy-tooltip-47"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -88,6 +48,98 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Token
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-48"
+              class=""
+              data-original-title="The token that the permission is for"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_justification-section"
+  >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
@@ -126,39 +178,6 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
         The reason for the permission
       </p>
     </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Network
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-      >
-        <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          style="border-width: 0px;"
-        >
-          G
-        </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        >
-          Goerli
-        </p>
-      </div>
-    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -177,49 +196,11 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Token address
+            Allowance amount
           </p>
           <div>
             <div
               aria-describedby="tippy-tooltip-50"
-              class=""
-              data-original-title="The ERC20 token contract address"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
-      >
-        0xA0b86a33E6441b8c4C8C0E4A8e4A8e4A8e4A8e4A
-      </p>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Period amount
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-51"
               class=""
               data-original-title="The amount that can be spent per period"
               data-tooltipped=""
@@ -235,26 +216,9 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -269,13 +233,13 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Period duration
+            Frequency
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-52"
+              aria-describedby="tippy-tooltip-51"
               class=""
-              data-original-title="The length of time of the period"
+              data-original-title="The frequency of the permission"
               data-tooltipped=""
               style="display: flex;"
               tabindex="0"
@@ -291,7 +255,7 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
       <p
         class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
       >
-        Weekly
+        Every week
       </p>
     </div>
     <div
@@ -307,11 +271,11 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start date
+            Start
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-53"
+              aria-describedby="tippy-tooltip-52"
               class=""
               data-original-title="The start date of the permission"
               data-tooltipped=""
@@ -350,11 +314,11 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Expiration date
+            Expiration
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-54"
+              aria-describedby="tippy-tooltip-53"
               class=""
               data-original-title="The expiration date of the permission"
               data-tooltipped=""
@@ -392,46 +356,6 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            ERC20 token periodic
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-55"
-              class=""
-              data-original-title="The type of permission being requested"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
@@ -447,7 +371,7 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-56"
+              aria-describedby="tippy-tooltip-54"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -471,44 +395,6 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           metamask.github.io
         </p>
       </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Justification
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-57"
-              class=""
-              data-original-title="The justification provided by the website for requesting this permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
-      >
-        The reason for the permission
-      </p>
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -543,6 +429,103 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Token
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-55"
+              class=""
+              data-original-title="The token that the permission is for"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_justification-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Justification
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-56"
+              class=""
+              data-original-title="The justification provided by the website for requesting this permission"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
+      >
+        The reason for the permission
+      </p>
+    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -561,49 +544,11 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Token address
+            Allowance amount
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-58"
-              class=""
-              data-original-title="The ERC20 token contract address"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
-      >
-        0xA0b86a33E6441b8c4C8C0E4A8e4A8e4A8e4A8e4A
-      </p>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Period amount
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-59"
+              aria-describedby="tippy-tooltip-57"
               class=""
               data-original-title="The amount that can be spent per period"
               data-tooltipped=""
@@ -619,26 +564,9 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -653,13 +581,13 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Period duration
+            Frequency
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-60"
+              aria-describedby="tippy-tooltip-58"
               class=""
-              data-original-title="The length of time of the period"
+              data-original-title="The frequency of the permission"
               data-tooltipped=""
               style="display: flex;"
               tabindex="0"
@@ -675,7 +603,7 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
       <p
         class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
       >
-        Weekly
+        Every week
       </p>
     </div>
     <div
@@ -691,11 +619,11 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start date
+            Start
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-61"
+              aria-describedby="tippy-tooltip-59"
               class=""
               data-original-title="The start date of the permission"
               data-tooltipped=""
@@ -733,46 +661,6 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            ERC20 token stream
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-62"
-              class=""
-              data-original-title="The type of permission being requested"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
@@ -788,7 +676,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-63"
+              aria-describedby="tippy-tooltip-60"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -812,44 +700,6 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           metamask.github.io
         </p>
       </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Justification
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-64"
-              class=""
-              data-original-title="The justification provided by the website for requesting this permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
-      >
-        The reason for the permission
-      </p>
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -884,6 +734,103 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Token
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-61"
+              class=""
+              data-original-title="The token that the permission is for"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_justification-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Justification
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-62"
+              class=""
+              data-original-title="The justification provided by the website for requesting this permission"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
+      >
+        The reason for the permission
+      </p>
+    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -902,49 +849,11 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Token address
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-65"
-              class=""
-              data-original-title="The ERC20 token contract address"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
-      >
-        0xA0b86a33E6441b8c4C8C0E4A8e4A8e4A8e4A8e4A
-      </p>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
             Initial allowance
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-66"
+              aria-describedby="tippy-tooltip-63"
               class=""
               data-original-title="The initial allowance of the permission"
               data-tooltipped=""
@@ -960,26 +869,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -998,7 +890,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-67"
+              aria-describedby="tippy-tooltip-64"
               class=""
               data-original-title="The maximum allowance of the permission"
               data-tooltipped=""
@@ -1014,26 +906,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1048,11 +923,11 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start date
+            Stream start
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-68"
+              aria-describedby="tippy-tooltip-65"
               class=""
               data-original-title="The start date of the stream"
               data-tooltipped=""
@@ -1091,11 +966,11 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Expiration date
+            Expiration
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-69"
+              aria-describedby="tippy-tooltip-66"
               class=""
               data-original-title="The expiration date of the permission"
               data-tooltipped=""
@@ -1143,7 +1018,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-70"
+              aria-describedby="tippy-tooltip-67"
               class=""
               data-original-title="The stream rate of the permission"
               data-tooltipped=""
@@ -1159,26 +1034,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1197,7 +1055,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-71"
+              aria-describedby="tippy-tooltip-68"
               class=""
               data-original-title="The available amount per day"
               data-tooltipped=""
@@ -1213,26 +1071,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
   </div>
 </div>
@@ -1246,46 +1087,6 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            ERC20 token stream
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-90"
-              class=""
-              data-original-title="The type of permission being requested"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
@@ -1301,7 +1102,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-91"
+              aria-describedby="tippy-tooltip-85"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -1325,44 +1126,6 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           metamask.github.io
         </p>
       </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Justification
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-92"
-              class=""
-              data-original-title="The justification provided by the website for requesting this permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
-      >
-        The reason for the permission
-      </p>
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1397,6 +1160,103 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Token
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-86"
+              class=""
+              data-original-title="The token that the permission is for"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_justification-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Justification
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-87"
+              class=""
+              data-original-title="The justification provided by the website for requesting this permission"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
+      >
+        The reason for the permission
+      </p>
+    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -1415,49 +1275,11 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Token address
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-93"
-              class=""
-              data-original-title="The ERC20 token contract address"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
-      >
-        0xA0b86a33E6441b8c4C8C0E4A8e4A8e4A8e4A8e4A
-      </p>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
             Initial allowance
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-94"
+              aria-describedby="tippy-tooltip-88"
               class=""
               data-original-title="The initial allowance of the permission"
               data-tooltipped=""
@@ -1473,26 +1295,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1511,7 +1316,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-95"
+              aria-describedby="tippy-tooltip-89"
               class=""
               data-original-title="The maximum allowance of the permission"
               data-tooltipped=""
@@ -1527,26 +1332,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1561,11 +1349,11 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start date
+            Stream start
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-96"
+              aria-describedby="tippy-tooltip-90"
               class=""
               data-original-title="The start date of the stream"
               data-tooltipped=""
@@ -1613,7 +1401,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-97"
+              aria-describedby="tippy-tooltip-91"
               class=""
               data-original-title="The stream rate of the permission"
               data-tooltipped=""
@@ -1629,26 +1417,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1667,7 +1438,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-98"
+              aria-describedby="tippy-tooltip-92"
               class=""
               data-original-title="The available amount per day"
               data-tooltipped=""
@@ -1683,26 +1454,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
   </div>
 </div>
@@ -1716,46 +1470,6 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            ERC20 token stream
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-72"
-              class=""
-              data-original-title="The type of permission being requested"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
@@ -1771,7 +1485,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-73"
+              aria-describedby="tippy-tooltip-69"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -1795,44 +1509,6 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           metamask.github.io
         </p>
       </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Justification
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-74"
-              class=""
-              data-original-title="The justification provided by the website for requesting this permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
-      >
-        The reason for the permission
-      </p>
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1867,10 +1543,64 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Token
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-70"
+              class=""
+              data-original-title="The token that the permission is for"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="erc20-token-stream-details-section"
+    data-testid="confirmation_justification-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1885,13 +1615,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Token address
+            Justification
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-75"
+              aria-describedby="tippy-tooltip-71"
               class=""
-              data-original-title="The ERC20 token contract address"
+              data-original-title="The justification provided by the website for requesting this permission"
               data-tooltipped=""
               style="display: flex;"
               tabindex="0"
@@ -1907,9 +1637,14 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
       <p
         class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
       >
-        0xA0b86a33E6441b8c4C8C0E4A8e4A8e4A8e4A8e4A
+        The reason for the permission
       </p>
     </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="erc20-token-stream-details-section"
+  >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
@@ -1927,7 +1662,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-76"
+              aria-describedby="tippy-tooltip-72"
               class=""
               data-original-title="The maximum allowance of the permission"
               data-tooltipped=""
@@ -1943,26 +1678,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1977,11 +1695,11 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start date
+            Stream start
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-77"
+              aria-describedby="tippy-tooltip-73"
               class=""
               data-original-title="The start date of the stream"
               data-tooltipped=""
@@ -2020,11 +1738,11 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Expiration date
+            Expiration
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-78"
+              aria-describedby="tippy-tooltip-74"
               class=""
               data-original-title="The expiration date of the permission"
               data-tooltipped=""
@@ -2072,7 +1790,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-79"
+              aria-describedby="tippy-tooltip-75"
               class=""
               data-original-title="The stream rate of the permission"
               data-tooltipped=""
@@ -2088,26 +1806,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -2126,7 +1827,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-80"
+              aria-describedby="tippy-tooltip-76"
               class=""
               data-original-title="The available amount per day"
               data-tooltipped=""
@@ -2142,26 +1843,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
   </div>
 </div>
@@ -2173,46 +1857,6 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_permission-section"
   >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            ERC20 token stream
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-81"
-              class=""
-              data-original-title="The type of permission being requested"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
@@ -2230,7 +1874,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-82"
+              aria-describedby="tippy-tooltip-77"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -2254,44 +1898,6 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           metamask.github.io
         </p>
       </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Justification
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-83"
-              class=""
-              data-original-title="The justification provided by the website for requesting this permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
-      >
-        The reason for the permission
-      </p>
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -2326,6 +1932,103 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Token
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-78"
+              class=""
+              data-original-title="The token that the permission is for"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_justification-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Justification
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-79"
+              class=""
+              data-original-title="The justification provided by the website for requesting this permission"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
+      >
+        The reason for the permission
+      </p>
+    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -2344,49 +2047,11 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Token address
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-84"
-              class=""
-              data-original-title="The ERC20 token contract address"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <p
-        class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
-      >
-        0xA0b86a33E6441b8c4C8C0E4A8e4A8e4A8e4A8e4A
-      </p>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
             Initial allowance
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-85"
+              aria-describedby="tippy-tooltip-80"
               class=""
               data-original-title="The initial allowance of the permission"
               data-tooltipped=""
@@ -2402,26 +2067,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -2436,11 +2084,11 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start date
+            Stream start
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-86"
+              aria-describedby="tippy-tooltip-81"
               class=""
               data-original-title="The start date of the stream"
               data-tooltipped=""
@@ -2479,11 +2127,11 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Expiration date
+            Expiration
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-87"
+              aria-describedby="tippy-tooltip-82"
               class=""
               data-original-title="The expiration date of the permission"
               data-tooltipped=""
@@ -2531,7 +2179,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-88"
+              aria-describedby="tippy-tooltip-83"
               class=""
               data-original-title="The stream rate of the permission"
               data-tooltipped=""
@@ -2547,26 +2195,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -2585,7 +2216,7 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-89"
+              aria-describedby="tippy-tooltip-84"
               class=""
               data-original-title="The available amount per day"
               data-tooltipped=""
@@ -2601,26 +2232,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
-      >
-        <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
-        >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
-          >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
-        </div>
-      </div>
+        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+        style="height: 20px; width: 50%;"
+      />
     </div>
   </div>
 </div>
@@ -2632,46 +2246,6 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_permission-section"
   >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Native token periodic
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-1"
-              class=""
-              data-original-title="The type of permission being requested"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
@@ -2689,7 +2263,7 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-2"
+              aria-describedby="tippy-tooltip-1"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -2714,6 +2288,87 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Token
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-2"
+              class=""
+              data-original-title="The token that the permission is for"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          ETH
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_justification-section"
+  >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
@@ -2752,39 +2407,6 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
         The reason for the permission
       </p>
     </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Network
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-      >
-        <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          style="border-width: 0px;"
-        >
-          G
-        </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        >
-          Goerli
-        </p>
-      </div>
-    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -2803,7 +2425,7 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Period amount
+            Allowance amount
           </p>
           <div>
             <div
@@ -2857,13 +2479,13 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Period duration
+            Frequency
           </p>
           <div>
             <div
               aria-describedby="tippy-tooltip-5"
               class=""
-              data-original-title="The length of time of the period"
+              data-original-title="The frequency of the permission"
               data-tooltipped=""
               style="display: flex;"
               tabindex="0"
@@ -2879,7 +2501,7 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
       <p
         class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
       >
-        Daily
+        Every day
       </p>
     </div>
     <div
@@ -2895,7 +2517,7 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start date
+            Start
           </p>
           <div>
             <div
@@ -2938,7 +2560,7 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Expiration date
+            Expiration
           </p>
           <div>
             <div
@@ -2980,46 +2602,6 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Native token periodic
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-8"
-              class=""
-              data-original-title="The type of permission being requested"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
@@ -3035,7 +2617,7 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-9"
+              aria-describedby="tippy-tooltip-8"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -3060,6 +2642,87 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Token
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-9"
+              class=""
+              data-original-title="The token that the permission is for"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          ETH
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_justification-section"
+  >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
@@ -3098,39 +2761,6 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
         The reason for the permission
       </p>
     </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Network
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-      >
-        <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          style="border-width: 0px;"
-        >
-          G
-        </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        >
-          Goerli
-        </p>
-      </div>
-    </div>
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -3149,7 +2779,7 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Period amount
+            Allowance amount
           </p>
           <div>
             <div
@@ -3203,13 +2833,13 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Period duration
+            Frequency
           </p>
           <div>
             <div
               aria-describedby="tippy-tooltip-12"
               class=""
-              data-original-title="The length of time of the period"
+              data-original-title="The frequency of the permission"
               data-tooltipped=""
               style="display: flex;"
               tabindex="0"
@@ -3225,7 +2855,7 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
       <p
         class="mm-box mm-text mm-text--body-md mm-box--margin-right-0 mm-box--color-inherit"
       >
-        Daily
+        Every day
       </p>
     </div>
     <div
@@ -3241,7 +2871,7 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start date
+            Start
           </p>
           <div>
             <div
@@ -3283,46 +2913,6 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Native token stream
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-14"
-              class=""
-              data-original-title="The type of permission being requested"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
@@ -3338,7 +2928,7 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-15"
+              aria-describedby="tippy-tooltip-14"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -3363,6 +2953,87 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Token
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-15"
+              class=""
+              data-original-title="The token that the permission is for"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          ETH
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_justification-section"
+  >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
@@ -3400,39 +3071,6 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
       >
         The reason for the permission
       </p>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Network
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-      >
-        <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          style="border-width: 0px;"
-        >
-          G
-        </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        >
-          Goerli
-        </p>
-      </div>
     </div>
   </div>
   <div
@@ -3560,7 +3198,7 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start date
+            Start
           </p>
           <div>
             <div
@@ -3603,7 +3241,7 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Expiration date
+            Expiration
           </p>
           <div>
             <div
@@ -3758,46 +3396,6 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Native token stream
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-39"
-              class=""
-              data-original-title="The type of permission being requested"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
@@ -3813,7 +3411,7 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-40"
+              aria-describedby="tippy-tooltip-39"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -3838,6 +3436,87 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Token
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-40"
+              class=""
+              data-original-title="The token that the permission is for"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          ETH
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_justification-section"
+  >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
@@ -3875,39 +3554,6 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
       >
         The reason for the permission
       </p>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Network
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-      >
-        <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          style="border-width: 0px;"
-        >
-          G
-        </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        >
-          Goerli
-        </p>
-      </div>
     </div>
   </div>
   <div
@@ -4035,7 +3681,7 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start date
+            Start
           </p>
           <div>
             <div
@@ -4190,46 +3836,6 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Native token stream
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-23"
-              class=""
-              data-original-title="The type of permission being requested"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
@@ -4245,7 +3851,7 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-24"
+              aria-describedby="tippy-tooltip-23"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -4270,6 +3876,87 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Token
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-24"
+              class=""
+              data-original-title="The token that the permission is for"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          ETH
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_justification-section"
+  >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
@@ -4307,39 +3994,6 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
       >
         The reason for the permission
       </p>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Network
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-      >
-        <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          style="border-width: 0px;"
-        >
-          G
-        </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        >
-          Goerli
-        </p>
-      </div>
     </div>
   </div>
   <div
@@ -4413,7 +4067,7 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start date
+            Start
           </p>
           <div>
             <div
@@ -4456,7 +4110,7 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Expiration date
+            Expiration
           </p>
           <div>
             <div
@@ -4611,46 +4265,6 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Native token stream
-          </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-31"
-              class=""
-              data-original-title="The type of permission being requested"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
@@ -4666,7 +4280,7 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-32"
+              aria-describedby="tippy-tooltip-31"
               class=""
               data-original-title="This is the site asking for your signature."
               data-tooltipped=""
@@ -4691,6 +4305,87 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Token
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-32"
+              class=""
+              data-original-title="The token that the permission is for"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+          style="white-space: pre-wrap;"
+        >
+          ETH
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_justification-section"
+  >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
@@ -4728,39 +4423,6 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
       >
         The reason for the permission
       </p>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Network
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-      >
-        <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-          style="border-width: 0px;"
-        >
-          G
-        </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-        >
-          Goerli
-        </p>
-      </div>
     </div>
   </div>
   <div
@@ -4834,7 +4496,7 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start date
+            Start
           </p>
           <div>
             <div
@@ -4877,7 +4539,7 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Expiration date
+            Expiration
           </p>
           <div>
             <div

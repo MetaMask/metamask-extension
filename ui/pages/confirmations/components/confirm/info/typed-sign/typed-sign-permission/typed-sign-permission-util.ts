@@ -5,6 +5,7 @@ import {
   MINUTE,
   HOUR,
   WEEK,
+  SECOND,
 } from '../../../../../../../../shared/constants/time';
 import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../../../selectors/assets';
@@ -17,7 +18,11 @@ import { getTokenByAccountAndAddressAndChainId } from '../../../../../../../sele
  * @returns A formatted string representing the duration (e.g., "Daily", "Weekly", "3600 seconds")
  */
 export const formatPeriodDuration = (periodSeconds: number) => {
-  let periodMilliseconds = periodSeconds * 1000;
+  if (periodSeconds === 0) {
+    throw new Error('Cannot format period duration of 0 seconds');
+  }
+
+  let periodMilliseconds = periodSeconds * SECOND;
 
   if (periodMilliseconds === WEEK) {
     return 'Every week';
@@ -27,36 +32,47 @@ export const formatPeriodDuration = (periodSeconds: number) => {
     return 'Every day';
   }
 
+  if (periodMilliseconds === HOUR) {
+    return 'Every hour';
+  }
+
+  if (periodMilliseconds === MINUTE) {
+    return 'Every minute';
+  }
+
+  if (periodMilliseconds === SECOND) {
+    return 'Every second';
+  }
+
   const periods: string[] = [];
 
-  if (periodMilliseconds > WEEK) {
+  if (periodMilliseconds >= WEEK) {
     const weekCount = Math.floor(periodMilliseconds / WEEK);
     periods.push(`${weekCount} week${weekCount > 1 ? 's' : ''}`);
     periodMilliseconds %= WEEK;
   }
 
-  if (periodMilliseconds > DAY) {
+  if (periodMilliseconds >= DAY) {
     const dayCount = Math.floor(periodMilliseconds / DAY);
     periods.push(`${dayCount} day${dayCount > 1 ? 's' : ''}`);
     periodMilliseconds %= DAY;
   }
 
-  if (periodMilliseconds > HOUR) {
+  if (periodMilliseconds >= HOUR) {
     const hourCount = Math.floor(periodMilliseconds / HOUR);
     periods.push(`${hourCount} hour${hourCount > 1 ? 's' : ''}`);
     periodMilliseconds %= HOUR;
   }
 
-  if (periodMilliseconds > MINUTE) {
+  if (periodMilliseconds >= MINUTE) {
     const minuteCount = Math.floor(periodMilliseconds / MINUTE);
     periods.push(`${minuteCount} minute${minuteCount > 1 ? 's' : ''}`);
     periodMilliseconds %= MINUTE;
   }
 
   if (periodMilliseconds > 0) {
-    const secondsCount = Math.floor(periodMilliseconds / 1000);
+    const secondsCount = Math.floor(periodMilliseconds / SECOND);
     periods.push(`${secondsCount} second${secondsCount > 1 ? 's' : ''}`);
-    periodMilliseconds %= 1000;
   }
 
   const result = periods.reduce((acc, period, index) => {
@@ -68,13 +84,24 @@ export const formatPeriodDuration = (periodSeconds: number) => {
 
     const separator = isFirstPeriod ? '' : separatorIfNeeded;
 
-    return `${acc}${separator} ${period}`;
+    return `${acc}${separator}${period}`;
   }, '');
 
   return `Every ${result}`;
 };
 
-export const getErc20TokenDetails = ({
+/**
+ * Retrieves ERC-20 token details (label and decimals) for a given token address and chain ID.
+ *
+ * Uses the Redux selector to fetch the token object from state. The label is determined by
+ * preferring the token's name, falling back to its symbol if the name is not available.
+ *
+ * @param params - An object containing:
+ * @param params.tokenAddress - The hexadecimal address of the ERC-20 token.
+ * @param params.chainId - The hexadecimal chain ID where the token resides.
+ * @returns the token details
+ */
+export const useErc20TokenDetails = ({
   tokenAddress,
   chainId,
 }: {
@@ -99,10 +126,18 @@ export const getErc20TokenDetails = ({
   };
 };
 
-export const getNativeTokenLabel = (chainId: Hex): string => {
-  const { nativeCurrency: symbol, name } = useSelector((state) =>
+/**
+ * Retrieves the native token label (symbol or name) for a given chain ID.
+ *
+ * Uses the Redux selector to fetch the network configuration from state.
+ *
+ * @param chainId - The hexadecimal chain ID.
+ * @returns The native token label (symbol or name), or undefined if not found.
+ */
+export const useNativeTokenLabel = (chainId: Hex): string => {
+  const config = useSelector((state) =>
     selectNetworkConfigurationByChainId(state, chainId),
   );
 
-  return symbol || name;
+  return config?.nativeCurrency ?? 'NATIVE';
 };
