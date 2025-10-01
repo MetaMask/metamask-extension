@@ -68,7 +68,7 @@ const TOOLTIP_ICONS = {
 };
 
 const TOOLTIP_ICON_COLORS = {
-  [ConfirmInfoRowVariant.Default]: Color.iconMuted,
+  [ConfirmInfoRowVariant.Default]: Color.iconAlternative,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
   [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
@@ -128,12 +128,12 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           <CopyIcon
             copyText={copyText ?? ''}
             style={{ right: isCollapsible ? 32 : 4 }}
-            color={IconColor.iconMuted}
+            color={IconColor.iconAlternative}
           />
         )}
         {isCollapsible && (
           <ButtonIcon
-            color={IconColor.iconMuted}
+            color={IconColor.iconAlternative}
             iconName={expanded ? IconName.Collapse : IconName.Expand}
             size={ButtonIconSize.Sm}
             style={{
