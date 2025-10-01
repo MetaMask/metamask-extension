@@ -1006,6 +1006,7 @@ export const getBridgeL2Fixtures = (
       await mockSwapAggregatorMetadataArbitrum(mockServer),
       await mockPriceSpotPrices(mockServer),
       await mockPriceSpotPricesV3(mockServer),
+      mockLegacySendFeatureFlag(mockServer),
     ],
     manifestFlags: {
       remoteFeatureFlags: {
