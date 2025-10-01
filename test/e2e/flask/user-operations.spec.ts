@@ -1,11 +1,5 @@
-import {
-  withFixtures,
-  unlockWallet,
-  sendTransaction,
-  WINDOW_TITLES,
-  convertETHToHexGwei,
-} from '../helpers';
 import FixtureBuilder from '../fixture-builder';
+import { withFixtures, unlockWallet, convertETHToHexGwei } from '../helpers';
 import {
   BUNDLER_URL,
   DAPP_URL,
@@ -23,6 +17,8 @@ import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import HomePage from '../page-objects/pages/home/homepage';
+import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import {
   setupCompleteERC4337Environment,
   confirmTransaction,
