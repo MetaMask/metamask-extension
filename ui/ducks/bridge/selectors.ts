@@ -258,22 +258,23 @@ export const getDefaultTokenPair = createDeepEqualSelector(
 );
 
 export const getFromToken = createSelector(
-  [(state: BridgeAppState) => state.bridge.fromToken, getFromChain],
-  (fromToken, fromChain) => {
-    if (!fromChain?.chainId) {
+  [
+    (state: BridgeAppState) => state.bridge.fromToken,
+    (state) => getFromChain(state)?.chainId,
+  ],
+  (fromToken, fromChainId) => {
+    if (!fromChainId) {
       return null;
     }
     if (fromToken?.address) {
       return fromToken;
     }
-    const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(
-      fromChain.chainId,
-    );
+    const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(fromChainId);
     const newToToken = toBridgeToken(nativeAsset);
     return newToToken
       ? {
           ...newToToken,
-          chainId: formatChainIdToCaip(fromChain.chainId),
+          chainId: formatChainIdToCaip(fromChainId),
         }
       : newToToken;
   },
