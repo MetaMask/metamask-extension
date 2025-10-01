@@ -273,6 +273,7 @@ const SubmitClaimForm = () => {
       <FileUploader
         id="upload-images-file-uploader"
         label={t('shieldClaimFileUploader')}
+        multiple
         acceptText={t('shieldClaimFileUploaderMaxFileSize')}
         helpText={t('shieldClaimFileUploaderHelpText')}
         helpTextProps={{
@@ -283,7 +284,7 @@ const SubmitClaimForm = () => {
         filesProps={{
           className: 'settings-page__content-item-col',
         }}
-        accept={['application/pdf', 'image/png', 'image/jpg'].join(',')}
+        accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
         onChange={(files) => {
           console.log('check: onChange', files);
         }}
