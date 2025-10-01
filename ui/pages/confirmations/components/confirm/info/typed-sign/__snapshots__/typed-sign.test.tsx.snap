@@ -198,6 +198,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
         >
           G
         </div>
@@ -550,6 +551,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
         >
           G
         </div>
@@ -734,6 +736,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
         >
           G
         </div>
@@ -1388,6 +1391,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
         >
           G
         </div>
@@ -1813,6 +1817,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
         >
           G
         </div>

@@ -154,6 +154,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
                 >
                   G
                 </div>
@@ -616,6 +617,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
                 >
                   <img
                     alt="Goerli logo"
@@ -1073,6 +1075,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
                 >
                   <img
                     alt="Goerli logo"
@@ -1409,6 +1412,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
                 >
                   G
                 </div>
@@ -2377,6 +2381,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
                 >
                   G
                 </div>
@@ -2703,6 +2708,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
                 >
                   G
                 </div>
@@ -2947,7 +2953,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                             class="name name__clickable name__recognized_unsaved"
                           >
                             <div
-                              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-sm h-4 w-4"
+                              class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                             >
                               <div
                                 class="flex [&>div]:!rounded-none"
@@ -3527,6 +3533,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
               >
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+                  style="border-width: 0px;"
                 >
                   <img
                     alt="Goerli logo"
