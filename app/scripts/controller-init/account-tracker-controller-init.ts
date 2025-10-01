@@ -41,8 +41,6 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
   const featureFlagForAccountApiBalances =
     remoteFeatureFlagState?.remoteFeatureFlags?.accountApiBalances ?? [];
 
-  // const featureFlagForAccountApiBalances = ['0x1', '0x38', '0xe708'];
-
   const controller = new AccountTrackerController({
     state: { accounts: {} },
     messenger: controllerMessenger,
