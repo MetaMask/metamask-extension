@@ -168,4 +168,27 @@ describe('RecipientInput', () => {
 
     expect(mockUpdateTo).toHaveBeenCalledWith('');
   });
+
+  it('display confusable characters when they exist', () => {
+    mockUseSendContext.mockReturnValue({
+      to: '0x1234567890abcdefghijkl',
+      updateTo: mockUpdateTo,
+      updateToResolved: jest.fn(),
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    const { getByText, queryByText } = renderComponent({
+      recipientValidationResult: {
+        toAddressValidated: '0x1234567890abcdefghijkl',
+        recipientConfusableCharacters: [
+          {
+            point: 'l',
+            similarTo: '1',
+          },
+        ],
+      },
+    });
+
+    expect(getByText('0x1234567890abcdefghijk')).toBeInTheDocument();
+    expect(queryByText('0x1234567890abcdefghijkl')).toBeNull();
+  });
 });
