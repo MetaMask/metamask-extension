@@ -51,11 +51,7 @@ const mockNFTERC1155Asset = {
   },
 };
 
-const store = createMockStore()({
-  localeMessages: {
-    currentLocale: 'en',
-  },
-});
+const store = createMockStore()();
 
 function render(ui: React.ReactElement) {
   return renderWithProvider(ui, store);
