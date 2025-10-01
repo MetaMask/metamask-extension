@@ -58,11 +58,6 @@ export const mockMultichainAccountsFeatureFlagDisabled = (
 ) =>
   mockServer
     .forGet(FEATURE_FLAGS_URL)
-    .withQuery({
-      client: 'extension',
-      distribution: 'main',
-      environment: 'dev',
-    })
     .thenCallback(() => {
       return {
         ok: true,
@@ -74,8 +69,13 @@ export const mockMultichainAccountsFeatureFlagDisabled = (
               featureVersion: '0',
               minimumVersion: '12.19.0',
             },
+            enableMultichainAccountsState2: {
+              enabled: false,
+              featureVersion: '0',
+              minimumVersion: '12.19.0',
+            },
           },
         ],
       };
-    }
-  );
+    });
+
