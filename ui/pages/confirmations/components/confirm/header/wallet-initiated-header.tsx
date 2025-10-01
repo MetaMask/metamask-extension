@@ -89,7 +89,9 @@ export const WalletInitiatedHeader = () => {
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
-      padding={3}
+      paddingInline={3}
+      paddingTop={4}
+      paddingBottom={4}
       style={{ zIndex: 2 }}
     >
       <ButtonIcon
@@ -102,7 +104,7 @@ export const WalletInitiatedHeader = () => {
         data-testid="wallet-initiated-header-back-button"
         color={IconColor.iconDefault}
       />
-      <Text variant={TextVariant.headingMd} color={TextColor.inherit}>
+      <Text variant={TextVariant.headingSm} color={TextColor.inherit}>
         {t('review')}
       </Text>
       <AdvancedDetailsButton />

@@ -30,11 +30,11 @@ export const AmountRecipient = () => {
   const { asset, toResolved } = useSendContext();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
-  const { recipientError } = useRecipientValidation();
+  const recipientValidationResult = useRecipientValidation();
 
   const hasError =
     Boolean(amountValueError) ||
-    Boolean(recipientError) ||
+    Boolean(recipientValidationResult.recipientError) ||
     Boolean(hexDataError);
   const isDisabled = hasError || !toResolved;
 
@@ -58,7 +58,7 @@ export const AmountRecipient = () => {
     >
       <Box>
         <SendHero asset={asset as Asset} />
-        <Recipient />
+        <Recipient recipientValidationResult={recipientValidationResult} />
         <Amount setAmountValueError={setAmountValueError} />
         <HexData setHexDataError={setHexDataError} />
       </Box>

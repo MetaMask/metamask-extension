@@ -5,6 +5,7 @@ import { NotificationServicesController } from '@metamask/notification-services-
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   IconName,
+  IconSize,
   ButtonIcon,
   ButtonIconSize,
   Box,
@@ -166,7 +167,7 @@ export default function Notifications() {
           <ButtonIcon
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             onClick={() => {
               navigate(DEFAULT_ROUTE);
             }}
@@ -177,7 +178,10 @@ export default function Notifications() {
           <ButtonIcon
             ariaLabel="Notifications Settings"
             iconName={IconName.Setting}
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
+            iconProps={{
+              size: IconSize.Lg,
+            }}
             onClick={() => {
               navigate(NOTIFICATIONS_SETTINGS_ROUTE);
             }}
