@@ -1512,7 +1512,6 @@ export const FEATURED_NETWORK_CHAIN_IDS = [
 
 export const FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN = [
   SolScope.Mainnet,
-  SolScope.Devnet,
   BtcScope.Mainnet,
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
