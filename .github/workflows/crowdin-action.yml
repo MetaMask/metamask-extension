@@ -3,13 +3,13 @@ name: Crowdin Action
 on:
   push:
     branches:
-      - main
+      - QYX20
   schedule:
     - cron: '0 */12 * * *'
 
 jobs:
   synchronize-with-crowdin:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
