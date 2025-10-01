@@ -31,14 +31,18 @@ import { useRecipients } from '../../../hooks/send/useRecipients';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { RecipientList } from '../recipient-list';
 
-export const Recipient = () => {
+export const Recipient = ({
+  recipientValidationResult,
+}: {
+  recipientValidationResult: ReturnType<typeof useRecipientValidation>;
+}) => {
   const {
     recipientConfusableCharacters,
     recipientError,
     recipientWarning,
     recipientResolvedLookup,
     toAddressValidated,
-  } = useRecipientValidation();
+  } = recipientValidationResult;
   const hasConfusableCharacters =
     recipientConfusableCharacters && recipientConfusableCharacters.length > 0;
   const t = useI18nContext();
@@ -159,7 +163,7 @@ export const Recipient = () => {
             <Box alignItems={AlignItems.center} display={Display.Flex}>
               <PreferredAvatar
                 address={matchingRecipient.address}
-                size={AvatarAccountSize.Sm}
+                size={AvatarAccountSize.Xs}
               />
             </Box>
           ) : null
@@ -172,6 +176,7 @@ export const Recipient = () => {
         value={localValue}
         width={BlockSize.Full}
         size={TextFieldSize.Lg}
+        paddingRight={3}
       />
       {to === toAddressValidated && recipientError && (
         <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
@@ -213,7 +218,7 @@ export const Recipient = () => {
           >
             {t('selectRecipient')}
           </ModalHeader>
-          <ModalBody>
+          <ModalBody paddingRight={0} paddingLeft={0}>
             <RecipientList
               hideModal={closeRecipientModal}
               onToChange={onRecipientSelectedFromModal}

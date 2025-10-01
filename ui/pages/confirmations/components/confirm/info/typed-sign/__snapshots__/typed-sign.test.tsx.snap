@@ -3,7 +3,7 @@
 exports[`TypedSignInfo correctly renders permit sign type 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__simulation_section"
   >
     <div
@@ -31,7 +31,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -127,7 +127,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_request-section"
   >
     <div
@@ -233,7 +233,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -275,7 +275,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -306,7 +306,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_message-section"
   >
     <div
@@ -315,7 +315,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
         <span
@@ -325,7 +325,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
       </button>
       <button
         aria-label="collapse-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="sectionCollapseButton"
         style="cursor: pointer; position: absolute; right: 8px;"
       >
@@ -355,7 +355,7 @@ exports[`TypedSignInfo correctly renders permit sign type 1`] = `
 exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__simulation_section"
   >
     <div
@@ -383,7 +383,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -479,7 +479,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_request-section"
   >
     <div
@@ -585,7 +585,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -627,7 +627,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -658,7 +658,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_message-section"
   >
     <div
@@ -667,7 +667,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
         <span
@@ -677,7 +677,7 @@ exports[`TypedSignInfo correctly renders permit sign type with no deadline 1`] =
       </button>
       <button
         aria-label="collapse-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="sectionCollapseButton"
         style="cursor: pointer; position: absolute; right: 8px;"
       >
@@ -709,7 +709,7 @@ exports[`TypedSignInfo does not render if required data is not present in the tr
 exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_request-section"
   >
     <div
@@ -769,7 +769,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -811,7 +811,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -842,7 +842,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_message-section"
   >
     <div
@@ -851,7 +851,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
@@ -1363,7 +1363,7 @@ exports[`TypedSignInfo renders origin for typed sign data request 1`] = `
 exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_request-section"
   >
     <div
@@ -1423,7 +1423,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1465,7 +1465,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1496,7 +1496,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_message-section"
   >
     <div
@@ -1505,7 +1505,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
@@ -1788,7 +1788,7 @@ exports[`TypedSignInfo should render message for typed sign v3 request 1`] = `
 exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_request-section"
   >
     <div
@@ -1848,7 +1848,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1890,7 +1890,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1921,7 +1921,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_message-section"
   >
     <div
@@ -1930,7 +1930,7 @@ exports[`TypedSignInfo should render message for typed sign v4 request 1`] = `
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span

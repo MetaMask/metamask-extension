@@ -3,7 +3,7 @@
 exports[`Info renders info section for approve request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__simulation_section"
   >
     <div
@@ -31,7 +31,7 @@ exports[`Info renders info section for approve request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -105,7 +105,7 @@ exports[`Info renders info section for approve request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__approve-details"
   >
     <div
@@ -134,7 +134,7 @@ exports[`Info renders info section for approve request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="confirmation__approve-spender-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -197,7 +197,7 @@ exports[`Info renders info section for approve request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="transaction-details-origin-row-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -217,7 +217,7 @@ exports[`Info renders info section for approve request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="gas-fee-section"
   >
     <div
@@ -226,7 +226,7 @@ exports[`Info renders info section for approve request 1`] = `
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="edit-gas-fees-row"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center; margin-bottom: 2px;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
@@ -249,7 +249,7 @@ exports[`Info renders info section for approve request 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                   data-testid="edit-gas-fees-row-tooltip"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
@@ -280,7 +280,7 @@ exports[`Info renders info section for approve request 1`] = `
             $0.08
           </p>
           <div
-            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
             data-testid="selected-gas-fee-token"
             style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
@@ -306,7 +306,7 @@ exports[`Info renders info section for approve request 1`] = `
         class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
           data-testid="gas-fee-token-fee"
         >
            
@@ -335,10 +335,10 @@ exports[`Info renders info section for approve request 1`] = `
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
+          class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-2 mm-box--color-text-alternative"
           >
             🦊 Market
           </p>
@@ -362,10 +362,10 @@ exports[`Info renders info section for approve request 1`] = `
 exports[`Info renders info section for contract interaction request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-0 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-0 mm-box--padding-bottom-0 mm-box--padding-inline-0 mm-box--background-color-background-section mm-box--rounded-lg"
   >
     <div
-      class="mm-box simulation-details-layout mm-box--padding-3 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--rounded-lg mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="mm-box simulation-details-layout mm-box--padding-top-1 mm-box--padding-bottom-2 mm-box--padding-inline-3 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--rounded-lg mm-box--border-color-transparent box--border-style-solid box--border-width-1"
       data-testid="simulation-details-layout"
     >
       <div
@@ -399,7 +399,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
                     tabindex="0"
                   >
                     <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                       style="mask-image: url('./images/icons/question.svg');"
                     />
                   </div>
@@ -417,7 +417,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="transaction-details-section"
   >
     <div
@@ -446,7 +446,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="transaction-details-origin-row-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -490,7 +490,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="transaction-details-recipient-row-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -522,7 +522,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="gas-fee-section"
   >
     <div
@@ -531,7 +531,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="edit-gas-fees-row"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center; margin-bottom: 2px;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
@@ -554,7 +554,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                   data-testid="edit-gas-fees-row-tooltip"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
@@ -585,7 +585,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
             $0.04
           </p>
           <div
-            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
             data-testid="selected-gas-fee-token"
             style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
@@ -611,7 +611,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
         class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
           data-testid="gas-fee-token-fee"
         >
            
@@ -640,10 +640,10 @@ exports[`Info renders info section for contract interaction request 1`] = `
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
+          class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-2 mm-box--color-text-alternative"
           >
             🦊 Market
           </p>
@@ -667,7 +667,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
 exports[`Info renders info section for personal sign request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -726,7 +726,7 @@ exports[`Info renders info section for personal sign request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -745,7 +745,7 @@ exports[`Info renders info section for personal sign request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -753,7 +753,7 @@ exports[`Info renders info section for personal sign request 1`] = `
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
         <span
@@ -763,7 +763,7 @@ exports[`Info renders info section for personal sign request 1`] = `
       </button>
       <button
         aria-label="collapse-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="sectionCollapseButton"
         style="cursor: pointer; position: absolute; right: 8px;"
       >
@@ -803,7 +803,7 @@ exports[`Info renders info section for personal sign request 1`] = `
 exports[`Info renders info section for setApprovalForAll request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__simulation_section"
   >
     <div
@@ -831,7 +831,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -905,7 +905,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__approve-details"
   >
     <div
@@ -934,7 +934,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="confirmation__approve-spender-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -997,7 +997,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="transaction-details-origin-row-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -1017,7 +1017,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="gas-fee-section"
   >
     <div
@@ -1026,7 +1026,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="edit-gas-fees-row"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center; margin-bottom: 2px;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
@@ -1049,7 +1049,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                   data-testid="edit-gas-fees-row-tooltip"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
@@ -1080,7 +1080,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             $0.08
           </p>
           <div
-            class="mm-box mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
+            class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
             data-testid="selected-gas-fee-token"
             style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
@@ -1106,7 +1106,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
         class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
           data-testid="gas-fee-token-fee"
         >
            
@@ -1135,10 +1135,10 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
+          class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-2 mm-box--color-text-alternative"
           >
             🦊 Market
           </p>
@@ -1162,7 +1162,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
 exports[`Info renders info section for typed sign request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_request-section"
   >
     <div
@@ -1222,7 +1222,7 @@ exports[`Info renders info section for typed sign request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1264,7 +1264,7 @@ exports[`Info renders info section for typed sign request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1295,7 +1295,7 @@ exports[`Info renders info section for typed sign request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_message-section"
   >
     <div
@@ -1304,7 +1304,7 @@ exports[`Info renders info section for typed sign request 1`] = `
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
@@ -1816,7 +1816,7 @@ exports[`Info renders info section for typed sign request 1`] = `
 exports[`Info renders info section for typed sign request with permission 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_permission-section"
   >
     <div
@@ -1844,7 +1844,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1884,7 +1884,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1926,7 +1926,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1961,6 +1961,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
       >
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
         >
           G
         </div>
@@ -1973,7 +1974,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-details-section"
   >
     <div
@@ -2001,7 +2002,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -2055,7 +2056,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -2109,7 +2110,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -2152,7 +2153,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -2172,7 +2173,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-stream-rate-section"
   >
     <div
@@ -2200,7 +2201,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -2254,7 +2255,7 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
