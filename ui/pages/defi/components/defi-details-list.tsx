@@ -80,7 +80,7 @@ const DefiDetailsList = React.memo(
         symbol: token.name,
         tokenFiatAmount: token.marketValue,
         image: getTokenAvatarUrl(token),
-        balance: token.marketValue?.toString() || '0',
+        balance: token.balance.toString(),
         secondary: token.balance,
         string: token.balance.toString(),
         decimals: 10,

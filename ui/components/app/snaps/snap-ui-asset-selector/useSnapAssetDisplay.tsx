@@ -12,7 +12,6 @@ import { getMemoizedInternalAccountByAddress } from '../../../../selectors';
 import { getMultiChainAssets } from '../../../../selectors/assets';
 import { TokenWithFiatAmount } from '../../assets/types';
 
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatWithThreshold } from '../../assets/util/formatWithThreshold';
 import {
@@ -67,7 +66,6 @@ export const useSnapAssetSelectorData = ({
 }: UseSnapAssetSelectorDataParams) => {
   const currentCurrency = useSelector(getMemoizedCurrentCurrency);
   const locale = useSelector(getIntlLocale);
-  const { formatTokenQuantity } = useFormatters();
   const parsedAccounts = addresses.map(parseCaipAccountId);
 
   const account = useSelector((state) =>
@@ -107,7 +105,7 @@ export const useSnapAssetSelectorData = ({
       icon: asset.image,
       symbol: asset.symbol,
       name: asset.title,
-      balance: formatTokenQuantity(Number(asset.balance ?? 0), asset.symbol),
+      balance: asset.balance ?? '',
       networkName,
       networkIcon: getImageForChainId(asset.chainId),
       fiat: formatFiatBalance(asset.secondary),

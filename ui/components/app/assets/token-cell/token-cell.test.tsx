@@ -235,7 +235,7 @@ describe('Token Cell', () => {
     const amountElement = getByTestId('multichain-token-list-item-value');
 
     expect(amountElement).toBeInTheDocument();
-    expect(amountElement.textContent).toBe('5,000,000 TEST');
+    expect(amountElement.textContent).toBe('5.00M TEST');
   });
 
   it('should show a scam warning if the native ticker does not match the expected ticker', async () => {
