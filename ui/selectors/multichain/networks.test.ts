@@ -11,7 +11,6 @@ import {
 } from '@metamask/utils';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 
-import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import { type NetworkState } from '../../../shared/modules/selectors/networks';
 import type { AccountsState } from '../accounts';
 import {
