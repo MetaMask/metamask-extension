@@ -14,12 +14,13 @@ import { useNonContractAddressAlerts } from './alerts/transactions/useNonContrac
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
 import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
+import { useAddressTrustSignalAlerts } from './alerts/useAddressTrustSignalAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
 import useConfirmationOriginAlerts from './alerts/useConfirmationOriginAlerts';
 import { useNetworkAndOriginSwitchingAlerts } from './alerts/useNetworkAndOriginSwitchingAlerts';
-import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
-import { useAddressTrustSignalAlerts } from './alerts/useAddressTrustSignalAlerts';
 import { useOriginTrustSignalAlerts } from './alerts/useOriginTrustSignalAlerts';
+import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
+import { useShieldCoverageAlert } from './alerts/useShieldCoverageAlert';
 import { useTokenTrustSignalAlerts } from './alerts/useTokenTrustSignalAlerts';
 
 function useSignatureAlerts(): Alert[] {
@@ -90,6 +91,7 @@ export default function useConfirmationAlerts(): Alert[] {
   const networkAndOriginSwitchingAlerts = useNetworkAndOriginSwitchingAlerts();
   const addressTrustSignalAlerts = useAddressTrustSignalAlerts();
   const originTrustSignalAlerts = useOriginTrustSignalAlerts();
+  const shieldCoverageAlert = useShieldCoverageAlert();
 
   return useMemo(
     () => [
@@ -101,6 +103,7 @@ export default function useConfirmationAlerts(): Alert[] {
       ...networkAndOriginSwitchingAlerts,
       ...addressTrustSignalAlerts,
       ...originTrustSignalAlerts,
+      ...shieldCoverageAlert,
     ],
     [
       blockaidAlerts,
@@ -111,6 +114,7 @@ export default function useConfirmationAlerts(): Alert[] {
       networkAndOriginSwitchingAlerts,
       addressTrustSignalAlerts,
       originTrustSignalAlerts,
+      shieldCoverageAlert,
     ],
   );
 }

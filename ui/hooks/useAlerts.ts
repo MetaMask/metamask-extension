@@ -47,7 +47,7 @@ const useAlerts = (ownerId: string) => {
     (alertKey: string, isConfirmed: boolean) => {
       dispatch(setAlertConfirmedAction(ownerId, alertKey, isConfirmed));
     },
-    [dispatch, setAlertConfirmedAction, ownerId],
+    [dispatch, ownerId],
   );
 
   const isAlertConfirmed = useCallback(
@@ -97,6 +97,7 @@ function sortAlertsBySeverity(alerts: Alert[]): Alert[] {
     [Severity.Danger]: 3,
     [Severity.Warning]: 2,
     [Severity.Info]: 1,
+    [Severity.Success]: 0,
   };
 
   return alerts.sort(
