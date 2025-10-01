@@ -314,7 +314,6 @@ function TransactionListItemInner({
                 backgroundColor={getTestNetworkBackgroundColor(chainId)}
               />
             }
-            style={{ alignSelf: 'center' }}
           >
             <TransactionIcon category={category} status={displayedStatusKey} />
           </BadgeWrapper>
