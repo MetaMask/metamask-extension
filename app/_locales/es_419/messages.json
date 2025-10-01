@@ -14,7 +14,7 @@
     "message": "Datos de transacción incongruentes. Compruebe los detalles."
   },
   "QRHardwarePubkeyAccountOutOfRange": {
-    "message": "No hay más cuentas. Para acceder a otra cuenta que no figura en la lista, vuelva a conectar su cartera de hardware y selecciónela."
+    "message": "No hay más cuentas. Para acceder a otra cuenta que no figura en la lista, vuelva a conectar su billetera de hardware y selecciónela."
   },
   "QRHardwareScanInstructions": {
     "message": "Coloque el código QR delante de la cámara. La pantalla está borrosa, pero no afectará la lectura."
@@ -23,13 +23,13 @@
     "message": "Rechazar"
   },
   "QRHardwareSignRequestDescription": {
-    "message": "Después de firmar con su cartera, haga clic en \"Obtener firma\" para recibir la firma"
+    "message": "Después de firmar con su billetera, haga clic en \"Obtener firma\" para recibir la firma"
   },
   "QRHardwareSignRequestGetSignature": {
     "message": "Obtener firma"
   },
   "QRHardwareSignRequestSubtitle": {
-    "message": "Escanee código QR con su cartera"
+    "message": "Escanee código QR con su billetera"
   },
   "QRHardwareSignRequestTitle": {
     "message": "Solicitar firma"
@@ -38,16 +38,16 @@
     "message": "Error"
   },
   "QRHardwareUnknownWalletQRCode": {
-    "message": "Código QR no válido. Escanee el QR sincronizado de la cartera de hardware."
+    "message": "Código QR no válido. Escanee el QR sincronizado de la billetera de hardware."
   },
   "QRHardwareWalletImporterTitle": {
     "message": "Escanear código QR"
   },
   "QRHardwareWalletSteps1Description": {
-    "message": "Conecte una cartera de hardware airgapped que se comunique por códigos QR. Las carteras de hardware con soporte oficial incluyen:"
+    "message": "Conecte una billetera de hardware airgapped que se comunique por códigos QR. Las billeteras de hardware con soporte oficial incluyen:"
   },
   "QRHardwareWalletSteps1Title": {
-    "message": "Cartera HW con QR"
+    "message": "billetera HW con QR"
   },
   "QRHardwareWalletSteps2Description": {
     "message": "Ngrave Zero"
@@ -92,11 +92,11 @@
     "message": "Iniciar sesión"
   },
   "accountAlreadyExistsLoginDescription": {
-    "message": "Ya existe una cartera con “$1”. ¿Deseas intentar iniciar sesión en su lugar?",
+    "message": "Ya existe una billetera con “$1”. ¿Deseas intentar iniciar sesión en su lugar?",
     "description": "$1 is the account email"
   },
   "accountAlreadyExistsTitle": {
-    "message": "La cartera ya existe"
+    "message": "La billetera ya existe"
   },
   "accountDetails": {
     "message": "Detalles de la cuenta"
@@ -130,14 +130,14 @@
     "description": "This is an error message shown when the user enters a new account name that is reserved for future use"
   },
   "accountNotFoundCreateOne": {
-    "message": "Sí, crear una nueva cartera"
+    "message": "Sí, crear una nueva billetera"
   },
   "accountNotFoundDescription": {
-    "message": "No pudimos encontrar una cartera para “$1”. ¿Deseas crear una nueva con este inicio de sesión?",
+    "message": "No pudimos encontrar una billetera para “$1”. ¿Deseas crear una nueva con este inicio de sesión?",
     "description": "$1 is the account email"
   },
   "accountNotFoundTitle": {
-    "message": "Cartera no encontrada"
+    "message": "billetera no encontrada"
   },
   "accountOptions": {
     "message": "Opciones de la cuenta"
@@ -185,7 +185,7 @@
     "message": "Agregar una red personalizada"
   },
   "addAHardwareWallet": {
-    "message": "Agregar una cartera de hardware"
+    "message": "Agregar una billetera de hardware"
   },
   "addANetwork": {
     "message": "Agregar una red"
@@ -204,7 +204,7 @@
     "description": "$1 is the network name, e.g. Bitcoin or Solana"
   },
   "addAccountOrWallet": {
-    "message": "Agregar cuenta o cartera"
+    "message": "Agregar cuenta o billetera"
   },
   "addAccountToMetaMask": {
     "message": "Agregar cuenta a MetaMask"
@@ -259,13 +259,13 @@
     "message": "Agregar amigos y direcciones de confianza"
   },
   "addHardwareWalletLabel": {
-    "message": "Cartera de hardware"
+    "message": "billetera de hardware"
   },
   "addIPFSGateway": {
     "message": "Agregar tu puerta de enlace IPFS preferida"
   },
   "addImportAccount": {
-    "message": "Agregar cuenta o cartera de hardware"
+    "message": "Agregar cuenta o billetera de hardware"
   },
   "addMemo": {
     "message": "Agregar nota"
@@ -326,7 +326,7 @@
     "message": "Agregar URL"
   },
   "addWallet": {
-    "message": "Agregar cartera"
+    "message": "Agregar billetera"
   },
   "addingAccount": {
     "message": "Agregando cuenta"
@@ -584,7 +584,7 @@
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
   "appDescription": {
-    "message": "Una cartera de Ethereum en el explorador",
+    "message": "Una billetera de Ethereum en el explorador",
     "description": "The description of the application"
   },
   "appName": {
@@ -649,7 +649,7 @@
     "message": "Activos"
   },
   "assetsDescription": {
-    "message": "Detecta automáticamente tokens en tu cartera, muestra NFTs y recibe actualizaciones agrupadas del saldo"
+    "message": "Detecta automáticamente tokens en tu billetera, muestra NFTs y recibe actualizaciones agrupadas del saldo"
   },
   "attemptToCancelSwapForFree": {
     "message": "Intentar cancelar el intercambio gratis"
@@ -670,7 +670,7 @@
     "message": "Detectar tokens automáticamente"
   },
   "autoDetectTokensDescription": {
-    "message": "Usamos APIs de terceros para detectar y mostrar nuevos tokens enviados a tu cartera. Desactiva esta opción si no quieres que la app obtenga datos automáticamente de esos servicios. $1",
+    "message": "Usamos APIs de terceros para detectar y mostrar nuevos tokens enviados a tu billetera. Desactiva esta opción si no quieres que la app obtenga datos automáticamente de esos servicios. $1",
     "description": "$1 is a link to a support article"
   },
   "autoLockTimeLimit": {
@@ -731,10 +731,10 @@
     "message": "Aprende cómo protegemos tu privacidad"
   },
   "backupApprovalInfo": {
-    "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a la cartera en otro dispositivo."
+    "message": "Este código secreto es necesario para que recupere la billetera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a la billetera en otro dispositivo."
   },
   "backupApprovalNotice": {
-    "message": "Cree una copia de seguridad del código de recuperación secreto para mantener protegidos sus fondos y su cartera."
+    "message": "Cree una copia de seguridad del código de recuperación secreto para mantener protegidos sus fondos y su billetera."
   },
   "backupKeyringSnapReminder": {
     "message": "Asegúrate de poder acceder por tu cuenta a cualquier cuenta creada por este Snap antes de eliminarlo"
@@ -908,7 +908,7 @@
     "message": "Calculando..."
   },
   "bridgeConfirmTwoTransactions": {
-    "message": "Necesitarás confirmar 2 transacciones en tu cartera de hardware:"
+    "message": "Necesitarás confirmar 2 transacciones en tu billetera de hardware:"
   },
   "bridgeCreateSolanaAccount": {
     "message": "Crear cuenta de Solana"
@@ -1167,14 +1167,14 @@
     "message": "Elige tu red"
   },
   "chooseYourNetworkDescription": {
-    "message": "Cuando usas nuestra configuración predeterminada, utilizamos Infura como nuestro proveedor predeterminado de llamadas a procedimiento remoto (RPC) para ofrecer el acceso más confiable y privado a datos de Ethereum que podemos. En algunos casos limitados, podemos usar otros proveedores RPC para brindar la mejor experiencia. Puedes elegir tu propio RPC, pero recuerda que cualquier RPC recibirá tu dirección IP y tu cartera de Ethereum para hacer transacciones. Para más información sobre cómo Infura maneja datos de cuentas EVM, lee nuestro $1, y para cuentas de Solana, $2.",
+    "message": "Cuando usas nuestra configuración predeterminada, utilizamos Infura como nuestro proveedor predeterminado de llamadas a procedimiento remoto (RPC) para ofrecer el acceso más confiable y privado a datos de Ethereum que podemos. En algunos casos limitados, podemos usar otros proveedores RPC para brindar la mejor experiencia. Puedes elegir tu propio RPC, pero recuerda que cualquier RPC recibirá tu dirección IP y tu billetera de Ethereum para hacer transacciones. Para más información sobre cómo Infura maneja datos de cuentas EVM, lee nuestro $1, y para cuentas de Solana, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chooseYourNetworkDescriptionCallToAction": {
     "message": "haz clic aquí"
   },
   "chromeRequiredForHardwareWallets": {
-    "message": "Debe usar MetaMask en Google Chrome para poder conectarse a su cartera de hardware."
+    "message": "Debe usar MetaMask en Google Chrome para poder conectarse a su billetera de hardware."
   },
   "circulatingSupply": {
     "message": "Suministro en circulación"
@@ -1189,7 +1189,7 @@
     "message": "Borrar datos de la pestaña de actividad"
   },
   "clearActivityDescription": {
-    "message": "Esto reinicia el nonce de la cuenta y borra los datos de la pestaña de actividad en tu cartera. Solo afectará la cuenta y la red actual. Tus saldos y transacciones entrantes no cambiarán."
+    "message": "Esto reinicia el nonce de la cuenta y borra los datos de la pestaña de actividad en tu billetera. Solo afectará la cuenta y la red actual. Tus saldos y transacciones entrantes no cambiarán."
   },
   "clearFilters": {
     "message": "Borrar filtros"
@@ -1532,7 +1532,7 @@
     "message": "Solicitud de conexión"
   },
   "connectionsRemovedModalDescription": {
-    "message": "Algunas conexiones (como monederos físicos y snaps) se eliminaron por inactividad en este dispositivo. Puede volver a agregarlas en cualquier momento en Configuración."
+    "message": "Algunas conexiones (como billeteras físicas y snaps) se eliminaron por inactividad en este dispositivo. Puede volver a agregarlas en cualquier momento en Configuración."
   },
   "connectionsRemovedModalTitle": {
     "message": "Conexiones eliminadas"
@@ -2029,10 +2029,10 @@
     "message": "Ignorar"
   },
   "dismissReminderDescriptionField": {
-    "message": "Activa esta opción para ignorar el recordatorio de respaldo de la frase de recuperación. Recomendamos respaldar tu frase secreta de recuperación para evitar la pérdida de fondos"
+    "message": "Activa esta opción para ignorar el recordatorio de copia de seguridad de la frase secreta de recuperación. Recomendamos respaldar tu frase secreta de recuperación para evitar la pérdida de fondos"
   },
   "dismissReminderField": {
-    "message": "Ignorar el recordatorio de respaldo de la frase de recuperación"
+    "message": "Ignorar el recordatorio de copia de seguridad de la frase secreta de recuperación"
   },
   "dismissSmartAccountSuggestionEnabledDescription": {
     "message": "Activa esto para no volver a ver la sugerencia \"Cambiar a cuenta inteligente\" en ninguna cuenta. Las cuentas inteligentes permiten transacciones más rápidas, menores tarifas de red y más flexibilidad en el pago."
@@ -2690,7 +2690,7 @@
     "message": "Hardware"
   },
   "hardwareWalletConnected": {
-    "message": "Cartera de hardware conectada"
+    "message": "billetera de hardware conectada"
   },
   "hardwareWalletLegacyDescription": {
     "message": "(antiguo)",
@@ -2709,13 +2709,13 @@
     "message": "haga clic aquí"
   },
   "hardwareWallets": {
-    "message": "Conectar una cartera de hardware"
+    "message": "Conectar una billetera de hardware"
   },
   "hardwareWalletsInfo": {
-    "message": "Las integraciones de carteras de hardware usan llamadas API a servidores externos, que pueden ver tu dirección IP y las direcciones de contratos inteligentes con las que interactúas."
+    "message": "Las integraciones de billeteras de hardware usan llamadas API a servidores externos, que pueden ver tu dirección IP y las direcciones de contratos inteligentes con las que interactúas."
   },
   "hardwareWalletsMsg": {
-    "message": "Seleccione una cartera de hardware que desee usar con MetaMask."
+    "message": "Seleccione una billetera de hardware que desee usar con MetaMask."
   },
   "here": {
     "message": "aquí",
@@ -2898,7 +2898,7 @@
     "message": "El ID de un NFT es un identificador único ya que no hay dos NFTs iguales. Nuevamente, en OpenSea este número está bajo 'Details'. Anótalo o cópialo al portapapeles."
   },
   "importNWordSRP": {
-    "message": "Tengo una frase de recuperación de $1 palabras",
+    "message": "Tengo una frase secreta de recuperación de $1 palabras",
     "description": "$1 is the number of words in the recovery phrase"
   },
   "importPrivateKey": {
@@ -3136,7 +3136,7 @@
     "message": "Dirección de contrato conocida."
   },
   "knownTokenWarning": {
-    "message": "Esta acción editará tokens que ya estén enumerados en la cartera y que se pueden usar para engañarte. Aprueba solo si estás seguro de que quieres cambiar lo que representan estos tokens."
+    "message": "Esta acción editará tokens que ya estén enumerados en la billetera y que se pueden usar para engañarte. Aprueba solo si estás seguro de que quieres cambiar lo que representan estos tokens."
   },
   "l1Fee": {
     "message": "Tarifa L1"
@@ -3233,7 +3233,7 @@
     "message": "Estamos teniendo problemas para conectar con Ledger. Consulta nuestro "
   },
   "ledgerFirefoxNotSupportedDescription2": {
-    "message": " sobre cómo conectar una cartera de hardware, luego inténtalo de nuevo."
+    "message": " sobre cómo conectar una billetera de hardware, luego inténtalo de nuevo."
   },
   "ledgerFirefoxNotSupportedDescription3": {
     "message": "Ledger ya no es compatible con Firefox, por lo que podrías necesitar usar otro navegador."
@@ -4024,7 +4024,7 @@
     "message": "No ocupado"
   },
   "notCurrentAccount": {
-    "message": "¿Esta es la cuenta correcta? No coincide con la cuenta seleccionada actualmente en la cartera"
+    "message": "¿Esta es la cuenta correcta? No coincide con la cuenta seleccionada actualmente en la billetera"
   },
   "notEnoughBalance": {
     "message": "Saldo insuficiente"
@@ -4161,11 +4161,11 @@
     "message": "Notificaciones"
   },
   "notificationsFeatureToggle": {
-    "message": "Habilitar notificaciones de la cartera",
+    "message": "Habilitar notificaciones de la billetera",
     "description": "Experimental feature title"
   },
   "notificationsFeatureToggleDescription": {
-    "message": "Esto habilita notificaciones de la cartera como envío/recepción de fondos o NFTs y anuncios de funciones.",
+    "message": "Esto habilita notificaciones de la billetera como envío/recepción de fondos o NFTs y anuncios de funciones.",
     "description": "Description of the experimental notifications feature"
   },
   "notificationsMarkAllAsRead": {
@@ -4187,7 +4187,7 @@
     "message": "Algo salió mal. Por favor, intenta de nuevo."
   },
   "notificationsSettingsPageAllowNotifications": {
-    "message": "Mantente informado sobre lo que sucede en tu cartera con notificaciones. Para usar notificaciones, usamos un perfil para sincronizar algunos ajustes en tus dispositivos. $1"
+    "message": "Mantente informado sobre lo que sucede en tu billetera con notificaciones. Para usar notificaciones, usamos un perfil para sincronizar algunos ajustes en tus dispositivos. $1"
   },
   "notificationsSettingsPageAllowNotificationsLink": {
     "message": "Aprende cómo protegemos tu privacidad al usar esta función."
@@ -4261,7 +4261,7 @@
     "message": "La URL de la puerta de enlace IPFS es válida"
   },
   "onboardingAdvancedPrivacyNetworkDescription": {
-    "message": "Cuando usas nuestra configuración predeterminada, utilizamos Infura como nuestro proveedor predeterminado de llamadas a procedimiento remoto (RPC) para ofrecer el acceso más confiable y privado posible a datos de Ethereum. En algunos casos limitados, podemos usar otros proveedores RPC para brindar la mejor experiencia. Puedes elegir tu propio RPC, pero recuerda que cualquier RPC recibirá tu dirección IP y tu cartera de Ethereum para realizar transacciones. Para más información sobre cómo Infura maneja datos de cuentas EVM, lee nuestro $1; para cuentas de Solana, $2."
+    "message": "Cuando usas nuestra configuración predeterminada, utilizamos Infura como nuestro proveedor predeterminado de llamadas a procedimiento remoto (RPC) para ofrecer el acceso más confiable y privado posible a datos de Ethereum. En algunos casos limitados, podemos usar otros proveedores RPC para brindar la mejor experiencia. Puedes elegir tu propio RPC, pero recuerda que cualquier RPC recibirá tu dirección IP y tu billetera de Ethereum para realizar transacciones. Para más información sobre cómo Infura maneja datos de cuentas EVM, lee nuestro $1; para cuentas de Solana, $2."
   },
   "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
     "message": "haz clic aquí"
@@ -4274,10 +4274,10 @@
     "description": "$1 is the type of login used Google, Apple, etc."
   },
   "onboardingCreateWallet": {
-    "message": "Crear una nueva cartera"
+    "message": "Crear una nueva billetera"
   },
   "onboardingImportWallet": {
-    "message": "Importar una cartera existente"
+    "message": "Importar una billetera existente"
   },
   "onboardingLoginFooter": {
     "message": "Al continuar, acepto los $1 y $2 de MetaMask"
@@ -4345,7 +4345,7 @@
     "message": "Ancla MetaMask en tu navegador para que sea accesible y las confirmaciones de transacciones se vean fácilmente."
   },
   "onboardingPinExtensionDescription2": {
-    "message": "Para abrir MetaMask haz clic en la extensión y accede a tu cartera con 1 clic."
+    "message": "Para abrir MetaMask haz clic en la extensión y accede a tu billetera con 1 clic."
   },
   "onboardingPinExtensionDescription3": {
     "message": "Haz clic en el ícono de la extensión del navegador para tener acceso instantáneo",
@@ -4462,7 +4462,7 @@
     "message": "Entiendo que MetaMask no puede recuperar esta contraseña. $1"
   },
   "passwordTermsWarningSocial": {
-    "message": "Si olvido esta contraseña, perderé acceso a mi cartera de forma permanente. MetaMask no puede restablecerla por mí."
+    "message": "Si olvido esta contraseña, perderé acceso a mi billetera de forma permanente. MetaMask no puede restablecerla por mí."
   },
   "passwordToggleHide": {
     "message": "Ocultar contraseña"
@@ -5103,7 +5103,7 @@
     "message": "Quitar cuenta"
   },
   "removeAccountDescription": {
-    "message": "Esta cuenta se quitará de la cartera. Antes de continuar, asegúrese de tener la frase secreta de recuperación original o la clave privada de esta cuenta importada. Puede importar o crear cuentas nuevamente en la lista desplegable de la cuenta. "
+    "message": "Esta cuenta se quitará de la billetera. Antes de continuar, asegúrese de tener la frase secreta de recuperación original o la clave privada de esta cuenta importada. Puede importar o crear cuentas nuevamente en la lista desplegable de la cuenta. "
   },
   "removeAccountModalBannerDescription": {
     "message": "Asegúrate de tener la Frase Secreta de Recuperación o la clave privada de esta cuenta antes de quitarla.",
@@ -5187,16 +5187,16 @@
     "message": "Restablecer"
   },
   "resetWallet": {
-    "message": "Restablecer tu cartera"
+    "message": "Restablecer tu billetera"
   },
   "resetWalletSubHeader": {
-    "message": "MetaMask no guarda una copia de tu contraseña. Si tienes problemas para desbloquear tu cuenta, necesitarás restablecer tu cartera. Puedes hacerlo proporcionando la Frase Secreta de Recuperación que usaste al configurar tu cartera."
+    "message": "MetaMask no guarda una copia de tu contraseña. Si tienes problemas para desbloquear tu cuenta, necesitarás restablecer tu billetera. Puedes hacerlo proporcionando la Frase Secreta de Recuperación que usaste al configurar tu billetera."
   },
   "resetWalletSubHeaderSocial": {
-    "message": "MetaMask no guarda una copia de tu contraseña. Si tienes problemas para desbloquear tu cuenta, deberás restablecer tu cartera. Si tienes una Frase Secreta de Recuperación, puedes usarla para borrar tu cartera actual de este dispositivo, junto con la lista de tus cuentas."
+    "message": "MetaMask no guarda una copia de tu contraseña. Si tienes problemas para desbloquear tu cuenta, deberás restablecer tu billetera. Si tienes una Frase Secreta de Recuperación, puedes usarla para borrar tu billetera actual de este dispositivo, junto con la lista de tus cuentas."
   },
   "resetWalletUsingSRP": {
-    "message": "Esta acción eliminará tu cartera actual y la Frase Secreta de Recuperación de este dispositivo, junto con la lista de cuentas que hayas configurado. Después de restablecer con una Frase Secreta de Recuperación, verás una lista de cuentas basada en la frase que uses para restablecer. Esta nueva lista incluirá automáticamente cuentas que tengan saldo. También podrás $1 creadas previamente. Las cuentas personalizadas que hayas importado deberán ser $2, y cualquier token personalizado que hayas agregado a una cuenta también deberá ser $3."
+    "message": "Esta acción eliminará tu billetera actual y la Frase Secreta de Recuperación de este dispositivo, junto con la lista de cuentas que hayas configurado. Después de restablecer con una Frase Secreta de Recuperación, verás una lista de cuentas basada en la frase que uses para restablecer. Esta nueva lista incluirá automáticamente cuentas que tengan saldo. También podrás $1 creadas previamente. Las cuentas personalizadas que hayas importado deberán ser $2, y cualquier token personalizado que hayas agregado a una cuenta también deberá ser $3."
   },
   "resetWalletUsingSRPSocial": {
     "message": "Después de restablecer con una Frase Secreta de Recuperación, verás una nueva lista de cuentas. Esta lista incluirá cuentas que tengan saldo. Puedes $1 que hiciste antes. Pero deberás volver a agregar cualquier $2 y $3 que hayas importado."
@@ -5269,10 +5269,10 @@
     "description": "$1 is text link with the message from 'revealSeedWordsNonCustodialWallet'"
   },
   "revealSeedWordsDescription3": {
-    "message": "acceso completo a tu cartera y fondos.\n"
+    "message": "acceso completo a tu billetera y fondos.\n"
   },
   "revealSeedWordsNonCustodialWallet": {
-    "message": "cartera no custodial"
+    "message": "billetera no custodial"
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -5379,7 +5379,7 @@
     "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
-    "message": "Cartera segura"
+    "message": "billetera segura"
   },
   "secureWalletGetStartedButton": {
     "message": "Comenzar"
@@ -5388,10 +5388,10 @@
     "message": "Recordar más tarde"
   },
   "secureWalletWalletRecover": {
-    "message": "Es la única manera de recuperar tu cartera si quedas bloqueado fuera de la app o si obtienes un nuevo dispositivo."
+    "message": "Es la única manera de recuperar tu billetera si quedas bloqueado fuera de la app o si obtienes un nuevo dispositivo."
   },
   "secureWalletWalletSaveSrp": {
-    "message": "No arriesgues perder tus fondos. Protege tu cartera guardando tu $1 en un lugar de confianza.",
+    "message": "No arriesgues perder tus fondos. Protege tu billetera guardando tu $1 en un lugar de confianza.",
     "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
@@ -5414,7 +5414,7 @@
     "message": "Cambiar contraseña"
   },
   "securityChangePasswordDescription": {
-    "message": "Elige una contraseña segura para desbloquear la app de MetaMask en tu dispositivo. Si pierdes esta contraseña, necesitarás tu Frase Secreta de Recuperación para volver a importar tu cartera."
+    "message": "Elige una contraseña segura para desbloquear la app de MetaMask en tu dispositivo. Si pierdes esta contraseña, necesitarás tu Frase Secreta de Recuperación para volver a importar tu billetera."
   },
   "securityChangePasswordTitle": {
     "message": "Contraseña"
@@ -5463,7 +5463,7 @@
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
   "securitySrpDescription": {
-    "message": "Respalda tu Frase Secreta de Recuperación para que nunca pierdas acceso a tu cartera. Asegúrate de guardarla en un lugar seguro al que solo tú tengas acceso y no olvides."
+    "message": "Respalda tu Frase Secreta de Recuperación para que nunca pierdas acceso a tu billetera. Asegúrate de guardarla en un lugar seguro al que solo tú tengas acceso y no olvides."
   },
   "securitySrpLabel": {
     "message": "FRASES SECRETAS DE RECUPERACIÓN"
@@ -5479,13 +5479,13 @@
     "message": "Ver detalles"
   },
   "seedPhraseIntroTitle": {
-    "message": "Proteger su cartera"
+    "message": "Proteger su billetera"
   },
   "seedPhraseReq": {
     "message": "Las frases secretas de recuperación contienen 12, 15, 18, 21 o 24 palabras"
   },
   "seedPhraseReviewDetails": {
-    "message": "Esta es tu $1. Escríbela en el orden correcto y mantenla segura. Si alguien tiene tu Frase Secreta de Recuperación, puede acceder a tu cartera. $2",
+    "message": "Esta es tu $1. Escríbela en el orden correcto y mantenla segura. Si alguien tiene tu Frase Secreta de Recuperación, puede acceder a tu billetera. $2",
     "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
   },
   "seedPhraseReviewDetails2": {
@@ -5714,7 +5714,7 @@
     "message": "Escudo de transacciones"
   },
   "shieldTxCancelDetails": {
-    "message": "Si cancelas, tu cartera y transacciones no estarán cubiertas a partir del $1.",
+    "message": "Si cancelas, tu billetera y transacciones no estarán cubiertas a partir del $1.",
     "description": "The $1 is the date subscription ends"
   },
   "shieldTxDetails1Description": {
@@ -5772,7 +5772,7 @@
     "message": "Membresía pausada por falta de fondos. La cobertura se reanudará después de actualizar el pago."
   },
   "shieldTxMembershipErrorPausedTooltip": {
-    "message": "Saldo de tokens insuficiente en tu cartera. Recarga para reanudar la cobertura."
+    "message": "Saldo de tokens insuficiente en tu billetera. Recarga para reanudar la cobertura."
   },
   "shieldTxMembershipErrorRenew": {
     "message": "Renovar membresía"
@@ -5862,7 +5862,7 @@
     "message": "Solicitud de firma"
   },
   "signature_decoding_bid_nft_tooltip": {
-    "message": "El NFT se reflejará en tu cartera cuando la oferta sea aceptada."
+    "message": "El NFT se reflejará en tu billetera cuando la oferta sea aceptada."
   },
   "signature_decoding_list_nft_tooltip": {
     "message": "Habrá cambios solo si alguien compra tus NFTs."
@@ -6361,7 +6361,7 @@
     "message": "Imagen de bóveda SRP"
   },
   "srpDetailsDescription": {
-    "message": "Una Frase Secreta de Recuperación, también llamada frase semilla o mnemónica, es un conjunto de palabras que te permite acceder y controlar tu cartera cripto. Para mover tu cartera a MetaMask, necesitas esta frase."
+    "message": "Una Frase Secreta de Recuperación, también llamada frase semilla o mnemónica, es un conjunto de palabras que te permite acceder y controlar tu billetera cripto. Para mover tu billetera a MetaMask, necesitas esta frase."
   },
   "srpDetailsOwnsAccessListItemOne": {
     "message": "Tomar todo tu dinero"
@@ -6553,7 +6553,7 @@
     "message": "Asegúrate de que tu Lattice1 esté listo para conectarse"
   },
   "step1LatticeWalletMsg": {
-    "message": "Puedes conectar MetaMask a tu dispositivo Lattice1 una vez que esté configurado y en línea. Desbloquea tu dispositivo y ten a mano el ID correspondiente. Para más información sobre el uso de carteras de hardware, $1",
+    "message": "Puedes conectar MetaMask a tu dispositivo Lattice1 una vez que esté configurado y en línea. Desbloquea tu dispositivo y ten a mano el ID correspondiente. Para más información sobre el uso de billeteras de hardware, $1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step1LedgerWallet": {
@@ -6564,17 +6564,17 @@
     "description": "$1 represents the `ledgerLiveApp` localization value"
   },
   "step1TrezorWallet": {
-    "message": "Conecta la cartera Trezor"
+    "message": "Conecta la billetera Trezor"
   },
   "step1TrezorWalletMsg": {
-    "message": "Conecta la cartera directamente al equipo. Para más información sobre el uso de tu dispositivo de cartera de hardware, $1",
+    "message": "Conecta la billetera directamente al equipo. Para más información sobre el uso de tu dispositivo de billetera de hardware, $1",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "step2LedgerWallet": {
-    "message": "Conecta la cartera Ledger"
+    "message": "Conecta la billetera Ledger"
   },
   "step2LedgerWalletMsg": {
-    "message": "Conecta la cartera directamente al equipo. Desbloquea tu Ledger y abre la app de Ethereum. Para más información sobre el uso de tu dispositivo de cartera de hardware, $1.",
+    "message": "Conecta la billetera directamente al equipo. Desbloquea tu Ledger y abre la app de Ethereum. Para más información sobre el uso de tu dispositivo de billetera de hardware, $1.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stepOf": {
@@ -6712,7 +6712,7 @@
     "message": "Estamos listos para mostrarte las últimas cotizaciones cuando quieras continuar"
   },
   "swapConfirmWithHwWallet": {
-    "message": "Confirmar con la cartera de hardware"
+    "message": "Confirmar con la billetera de hardware"
   },
   "swapContinueSwapping": {
     "message": "Continuar canjeando"
@@ -7000,7 +7000,7 @@
     "message": "Canjear a"
   },
   "swapToConfirmWithHwWallet": {
-    "message": "para confirmar con la cartera de hardware"
+    "message": "para confirmar con la billetera de hardware"
   },
   "swapTokenAddedManuallyDescription": {
     "message": "Verifica este token en $1 y asegúrate de que sea el token que deseas intercambiar.",
@@ -7148,7 +7148,7 @@
     "message": "Tiempo"
   },
   "tipsForUsingAWallet": {
-    "message": "Consejos para usar una cartera"
+    "message": "Consejos para usar una billetera"
   },
   "tipsForUsingAWalletDescription": {
     "message": "Agregar tokens desbloquea más formas de usar web3."
@@ -7343,7 +7343,7 @@
     "description": "$1 is a link to the wallet connection guide;"
   },
   "troubleConnectingToLedgerU2FOnFirefox2": {
-    "message": "Revisa nuestra guía de conexión de carteras de hardware e inténtalo de nuevo.",
+    "message": "Revisa nuestra guía de conexión de billeteras de hardware e inténtalo de nuevo.",
     "description": "$1 of the ledger wallet connection guide"
   },
   "troubleConnectingToLedgerU2FOnFirefoxLedgerSolution": {
@@ -7386,7 +7386,7 @@
     "message": "Hubo un error al crear las notificaciones. Inténtalo de nuevo más tarde."
   },
   "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Mantente al tanto de lo que ocurre en tu cartera con las notificaciones."
+    "message": "Mantente al tanto de lo que ocurre en tu billetera con las notificaciones."
   },
   "turnOnMetamaskNotificationsMessagePrivacyBold": {
     "message": "configuración de notificaciones."
@@ -7395,7 +7395,7 @@
     "message": "Aprende cómo protegemos tu privacidad al usar esta función."
   },
   "turnOnMetamaskNotificationsMessageSecond": {
-    "message": "Para usar las notificaciones de la cartera, usamos un perfil para sincronizar algunas configuraciones entre tus dispositivos. $1"
+    "message": "Para usar las notificaciones de la billetera, usamos un perfil para sincronizar algunas configuraciones entre tus dispositivos. $1"
   },
   "turnOnMetamaskNotificationsMessageThird": {
     "message": "Puedes desactivar las notificaciones en cualquier momento en la $1"
@@ -7491,7 +7491,7 @@
     "message": "Este sitio solicita actualizar la URL predeterminada de su red. Puede editar los valores predeterminados y la información de red en cualquier momento."
   },
   "updateInformation": {
-    "message": "Hemos hecho su cartera más segura, fluida y agregado nuevas funciones. Actualice ahora para mantenerse protegido y usar nuestras últimas mejoras."
+    "message": "Hemos hecho su billetera más segura, fluida y agregado nuevas funciones. Actualice ahora para mantenerse protegido y usar nuestras últimas mejoras."
   },
   "updateNetworkConfirmationTitle": {
     "message": "Actualizar $1",
@@ -7641,33 +7641,33 @@
     "message": "Visite nuestro sitio web"
   },
   "wallet": {
-    "message": "Cartera"
+    "message": "billetera"
   },
   "walletConnectionGuide": {
-    "message": "nuestra guía de conexión de la cartera de hardware"
+    "message": "nuestra guía de conexión de la billetera de hardware"
   },
   "walletDetails": {
-    "message": "Detalles de la cartera"
+    "message": "Detalles de la billetera"
   },
   "walletName": {
-    "message": "Nombre de la cartera"
+    "message": "Nombre de la billetera"
   },
   "walletNotFoundDescription": {
-    "message": "La cartera con ID $1 no se encontró.",
+    "message": "La billetera con ID $1 no se encontró.",
     "description": "$1 is the wallet ID"
   },
   "walletNotFoundTitle": {
-    "message": "Cartera no encontrada"
+    "message": "billetera no encontrada"
   },
   "walletReadyLearn": {
     "message": "$1 puede mantener esta frase segura para no perder acceso a su dinero.",
     "description": "$1 is the link to Learn how"
   },
   "walletReadyLearnRemind": {
-    "message": "Puede hacer una copia de seguridad de sus carteras o ver su frase secreta de recuperación en Configuración > Seguridad y contraseña."
+    "message": "Puede hacer una copia de seguridad de sus billeteras o ver su frase secreta de recuperación en Configuración > Seguridad y contraseña."
   },
   "walletReadyLoseSrp": {
-    "message": "Si pierde su frase secreta de recuperación, no podrá usar su cartera."
+    "message": "Si pierde su frase secreta de recuperación, no podrá usar su billetera."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Esta frase secreta de recuperación puede ayudarlo a recuperar acceso si olvida su contraseña o pierde acceso a su inicio de sesión."
@@ -7676,17 +7676,17 @@
     "message": "Si no respalda su frase secreta de recuperación, perderá acceso a sus fondos si queda bloqueado de la aplicación o si obtiene un nuevo dispositivo."
   },
   "walletReadySocialDetails1": {
-    "message": "Puede iniciar sesión en su cartera en cualquier momento con su cuenta $1 y contraseña.",
+    "message": "Puede iniciar sesión en su billetera en cualquier momento con su cuenta $1 y contraseña.",
     "description": "$1 is the social login type. e.g Google, Apple, etc."
   },
   "walletReadySocialDetails2": {
-    "message": "Si olvida su contraseña, no podrá acceder a su cartera."
+    "message": "Si olvida su contraseña, no podrá acceder a su billetera."
   },
   "wantToAddThisNetwork": {
     "message": "¿Desea agregar esta red?"
   },
   "wantsToAddThisAsset": {
-    "message": "Esto permite que el siguiente activo se agregue a su cartera."
+    "message": "Esto permite que el siguiente activo se agregue a su billetera."
   },
   "warning": {
     "message": "Advertencia"
@@ -7791,7 +7791,7 @@
     "message": "No pudimos cancelar su transacción antes de que se confirmara en la blockchain."
   },
   "yourWalletIsReady": {
-    "message": "¡Su cartera está lista!"
+    "message": "¡Su billetera está lista!"
   },
   "yourWalletIsReadyFromReminder": {
     "message": "¡Mantenga su frase secreta de recuperación segura!"
