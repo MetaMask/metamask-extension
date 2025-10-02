@@ -173,7 +173,9 @@ describe('FileUploader', () => {
     );
     const dropArea = getByRole('button');
     const input = getByTestId('file-uploader-input') as HTMLInputElement;
-    const mockClick = jest.spyOn(input, 'click').mockImplementation(() => {});
+    const mockClick = jest.spyOn(input, 'click').mockImplementation(() => {
+      // Mock implementation for testing keyboard navigation
+    });
 
     await userEvent.type(dropArea, '{Enter}');
 
@@ -187,7 +189,9 @@ describe('FileUploader', () => {
     );
     const dropArea = getByRole('button');
     const input = getByTestId('file-uploader-input') as HTMLInputElement;
-    const mockClick = jest.spyOn(input, 'click').mockImplementation(() => {});
+    const mockClick = jest.spyOn(input, 'click').mockImplementation(() => {
+      // Mock implementation for testing keyboard navigation
+    });
 
     await userEvent.type(dropArea, ' ');
 
