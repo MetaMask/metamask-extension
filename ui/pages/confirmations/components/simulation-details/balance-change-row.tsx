@@ -15,6 +15,8 @@ import {
   Text,
   IconName,
 } from '../../../../components/component-library';
+import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
+import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { AssetPill } from './asset-pill';
 import { AmountPill } from './amount-pill';
@@ -29,13 +31,27 @@ import { IndividualFiatDisplay } from './fiat-display';
  * @param props.showFiat
  * @param props.balanceChange
  * @param props.labelColor
+ * @param props.isFirstRow
+ * @param props.hasIncomingTokens
+ * @param props.confirmationId
  */
 export const BalanceChangeRow: React.FC<{
   label?: string;
   showFiat?: boolean;
   balanceChange: BalanceChange;
   labelColor?: TextColor;
-}> = ({ label, showFiat, balanceChange, labelColor }) => {
+  isFirstRow?: boolean;
+  hasIncomingTokens?: boolean;
+  confirmationId?: string;
+}> = ({
+  label,
+  showFiat,
+  balanceChange,
+  labelColor,
+  isFirstRow,
+  hasIncomingTokens,
+  confirmationId,
+}) => {
   const t = useI18nContext();
 
   const {
@@ -48,6 +64,36 @@ export const BalanceChangeRow: React.FC<{
     onEdit,
   } = balanceChange;
 
+  const renderLabel = () => {
+    if (!label) {
+      return null;
+    }
+
+    if (hasIncomingTokens && isFirstRow && confirmationId) {
+      return (
+        <ConfirmInfoAlertRow
+          alertKey={RowAlertKey.IncomingTokens}
+          ownerId={confirmationId}
+          label={label}
+          style={{
+            margin: 0,
+            padding: 0,
+          }}
+        />
+      );
+    }
+
+    return (
+      <Text
+        style={{ whiteSpace: 'nowrap' }}
+        color={labelColor}
+        variant={TextVariant.bodyMd}
+      >
+        {label}
+      </Text>
+    );
+  };
+
   return (
     <Box
       data-testid="simulation-details-balance-change-row"
@@ -57,15 +103,7 @@ export const BalanceChangeRow: React.FC<{
       gap={1}
       flexWrap={FlexWrap.Wrap}
     >
-      {label && (
-        <Text
-          style={{ whiteSpace: 'nowrap' }}
-          color={labelColor}
-          variant={TextVariant.bodyMd}
-        >
-          {label}
-        </Text>
-      )}
+      {renderLabel()}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}

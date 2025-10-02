@@ -118,10 +118,10 @@ describe('Wallet Created Events', function () {
           participateInMetaMetrics: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
-
-        console.log(`Events======: ${JSON.stringify(events)}`);
         assert.equal(events.length, 7);
+
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          assert.equal(events[0].event, 'Wallet Setup Started');
           assert.deepStrictEqual(events[0].properties, {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -268,6 +268,7 @@ describe('Wallet Created Events', function () {
         await createNewWalletWithSocialLoginOnboardingFlow(onboardingOptions);
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
+        await onboardingCompletePage.displayDownloadAppPageAndContinue();
         await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.completeOnboarding();

@@ -856,8 +856,6 @@
   "ui/components/ui/icon/sign-icon.component.js",
   "ui/components/ui/icon/sun-check-icon.component.js",
   "ui/components/ui/icon/swap-icon-for-list.component.js",
-  "ui/components/ui/identicon/blockieIdenticon/blockieIdenticon.component.js",
-  "ui/components/ui/identicon/blockieIdenticon/index.js",
   "ui/components/ui/identicon/identicon.component.js",
   "ui/components/ui/identicon/identicon.component.test.js",
   "ui/components/ui/identicon/identicon.container.js",

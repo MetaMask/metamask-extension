@@ -188,6 +188,7 @@
       }
     },
     "networkConfigurationsByChainId": "object",
+    "networkConnectionBanner": "object",
     "keyrings": "object",
     "selectedAddress": "string",
     "usePhishDetect": true,
@@ -316,6 +317,7 @@
     "allDeFiPositions": "object",
     "allDeFiPositionsCount": "object",
     "urlScanCache": "object",
+    "tokenScanCache": "object",
     "coverageResults": "object",
     "orderedTransactionHistory": "object",
     "accounts": "object",
