@@ -14,7 +14,7 @@ describe('Submit Claim Form', () => {
     const { getByTestId } = renderWithProvider(<SubmitClaimForm />);
 
     const emailInput = getByTestId('shield-claim-email-input');
-    fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
+    fireEvent.blur(emailInput, { target: { value: 'invalid-email' } });
 
     const errorMessage = getByTestId('shield-claim-help-text');
     expect(errorMessage).toHaveTextContent('Invalid email');
@@ -26,14 +26,14 @@ describe('Submit Claim Form', () => {
     const impactedWalletAddressInput = getByTestId(
       'shield-claim-impacted-wallet-address-input',
     );
-    fireEvent.change(impactedWalletAddressInput, {
+    fireEvent.blur(impactedWalletAddressInput, {
       target: { value: 'invalid-impacted-wallet-address' },
     });
 
     const errorMessage = getByTestId(
       'shield-claim-impacted-wallet-address-help-text',
     );
-    expect(errorMessage).toHaveTextContent('Invalid impacted wallet address');
+    expect(errorMessage).toHaveTextContent('Invalid wallet address');
   });
 
   it('should show error when reimbursement wallet address is invalid', () => {
@@ -42,16 +42,14 @@ describe('Submit Claim Form', () => {
     const reimbursementWalletAddressInput = getByTestId(
       'shield-claim-reimbursement-wallet-address-input',
     );
-    fireEvent.change(reimbursementWalletAddressInput, {
+    fireEvent.blur(reimbursementWalletAddressInput, {
       target: { value: 'invalid-reimbursement-wallet-address' },
     });
 
     const errorMessage = getByTestId(
       'shield-claim-reimbursement-wallet-address-help-text',
     );
-    expect(errorMessage).toHaveTextContent(
-      'Invalid reimbursement wallet address',
-    );
+    expect(errorMessage).toHaveTextContent('Invalid wallet address');
   });
 
   it('should disable submit button when there are errors', () => {
