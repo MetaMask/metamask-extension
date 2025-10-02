@@ -11,6 +11,7 @@ import {
   withMultichainAccountsDesignEnabled,
 } from './common';
 
+// eslint-disable-next-line
 describe.skip('Multichain Accounts - Multichain accounts list page', function (this: Suite) {
   it('displays basic wallets and accounts', async function () {
     await withMultichainAccountsDesignEnabled(
