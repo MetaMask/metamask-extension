@@ -63,20 +63,18 @@ const useBridging = () => {
           ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
           : undefined;
 
-      // If srcToken is not specified and the lastSelectedChainId is not active
-      // set the srcAssetId to a supported bridge native asset so the bridge experience
-      // sets correct defaults: srctoken.chainId > lastSelectedId > MAINNET
-      const isBridgeChain =
-        ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(lastSelectedChainId);
-      if (
-        !srcToken &&
-        (lastSelectedChainId !== providerConfig?.chainId || !isBridgeChain)
-      ) {
-        // When a testnet or any unsupported network is selected in the network filter
-        // use MAINNET as a fallback
-        srcAssetIdToUse = getNativeAssetForChainId(
-          isBridgeChain ? lastSelectedChainId : CHAIN_IDS.MAINNET,
-        )?.assetId;
+      /* If srcToken in a supported bridge chain is not specified and the lastSelectedChainId
+       * is not active, set the srcAssetId to a supported bridge native asset
+       * If an unsupported network is selected in the network filter, fall back to MAINNET
+       * default fromChain: srctoken.chainId > lastSelectedId > MAINNET
+       */
+      const targetChainId = ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(
+        lastSelectedChainId,
+      )
+        ? lastSelectedChainId
+        : CHAIN_IDS.MAINNET;
+      if (!srcAssetIdToUse && targetChainId !== providerConfig?.chainId) {
+        srcAssetIdToUse = getNativeAssetForChainId(targetChainId)?.assetId;
       }
 
       trace({
