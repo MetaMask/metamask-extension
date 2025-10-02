@@ -102,9 +102,7 @@ describe('Change wallet password', function () {
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();
-
           const shieldMockttpService = new ShieldMockttpService();
-          shieldMockttpService.setup(server);
 
           return Promise.all([
             oAuthMockttpService.setup(server, {

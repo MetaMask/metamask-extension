@@ -439,9 +439,6 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={usePhishDetect}
             onToggle={(value) => {
-              if (hasActiveShieldSubscription) {
-                return;
-              }
               setUsePhishDetect(!value);
             }}
             offLabel={t('off')}
@@ -1156,9 +1153,6 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={useTransactionSimulations}
             onToggle={(value) => {
-              if (hasActiveShieldSubscription) {
-                return;
-              }
               setUseTransactionSimulations(!value);
             }}
             offLabel={t('off')}
