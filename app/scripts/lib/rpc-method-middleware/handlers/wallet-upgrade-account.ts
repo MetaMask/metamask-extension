@@ -14,7 +14,7 @@ import { isAccountUpgraded } from '../../../../../shared/lib/eip7702-utils';
 import { isSnapPreinstalled } from '../../../../../shared/lib/snaps/snaps';
 // eslint-disable-next-line import/no-restricted-paths
 import { isFlask } from '../../../../../ui/helpers/utils/build-types';
-import { toHex } from '../../../../../shared/lib/delegation/utils';
+import { toHex } from '@metamask/controller-utils';
 
 export type UpgradeAccountParams = {
   account: string; // Address of the EOA to upgrade
