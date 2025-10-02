@@ -1918,7 +1918,7 @@ export function getSwapsDefaultToken(state, overrideChainId = null) {
 /**
  * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
  * @param state - The Redux state
- * @param overrideChainId - The chainId to check
+ * @param {string} [overrideChainId] - (Optional) The chainId to check
  * @returns {boolean} Whether the chainId is a swaps chain
  */
 export function getIsSwapsChain(state, overrideChainId) {
