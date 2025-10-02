@@ -14,7 +14,7 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 ///: END:ONLY_INCLUDE_IF
-import { CHAIN_IDS, ChainId } from '../../../../shared/constants/network';
+import { ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -70,12 +70,7 @@ import {
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import {
-  ALL_ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
-  type AllowedBridgeChainIds,
-} from '../../../../shared/constants/bridge';
+import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useRedesignedSendFlow } from '../../../pages/confirmations/hooks/useRedesignedSendFlow';
@@ -250,7 +245,7 @@ const CoinButtons = ({
   const { openBridgeExperience } = useBridging();
 
   const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
-    getIsUnifiedUIEnabled(state, chainId),
+    getIsUnifiedUIEnabled(state, chainIdToUse),
   );
 
   const setCorrectChain = useCallback(async () => {
@@ -519,7 +514,6 @@ const CoinButtons = ({
       {/* the bridge button is redundant if unified ui is enabled, testnet or non-bridge chain (unsupported) */}
       {isUnifiedUIEnabled ||
       isTestnet ||
-      !isBridgeChain ||
       isNonEvmAccountWithoutExternalServices ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
