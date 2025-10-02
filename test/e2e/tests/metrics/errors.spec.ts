@@ -12,7 +12,10 @@ import { withFixtures, sentryRegEx } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import LoginPage from '../../page-objects/pages/login-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 
 /**
  * Derive a UI state field from a background state field.
@@ -828,7 +831,7 @@ describe('Sentry errors', function () {
           },
         },
         async ({ driver, mockedEndpoint }) => {
-          await loginWithBalanceValidation(driver);
+          await loginWithoutBalanceValidation(driver);
 
           await driver.delay(2000);
 

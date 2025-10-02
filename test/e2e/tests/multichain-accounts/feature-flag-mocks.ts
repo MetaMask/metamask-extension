@@ -29,7 +29,9 @@ export const mockMultichainAccountsFeatureFlag = (mockServer: Mockttp) =>
 
 // Explicitly enable the state 1 and disable the state 2 flag
 
-export const mockMultichainAccountsFeatureFlagStateOne = (mockServer: Mockttp) =>
+export const mockMultichainAccountsFeatureFlagStateOne = (
+  mockServer: Mockttp,
+) =>
   mockServer
     .forGet(FEATURE_FLAGS_URL)
     .withQuery({

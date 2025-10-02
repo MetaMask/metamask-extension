@@ -3,10 +3,7 @@ import { Suite } from 'mocha';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import DevelopOptions from '../../page-objects/pages/developer-options-page';
@@ -27,9 +24,10 @@ describe('Remote feature flag', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
+        forceBip44Version: 2,
       },
       async ({ driver }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const uiState = await getCleanAppState(driver);
         assert.deepStrictEqual(
           uiState.metamask.remoteFeatureFlags,
@@ -46,6 +44,7 @@ describe('Remote feature flag', function (this: Suite) {
           .withUseBasicFunctionalityDisabled()
           .build(),
         title: this.test?.fullTitle(),
+        forceBip44Version: 2,
       },
       async ({ driver }: TestSuiteArguments) => {
         await loginWithoutBalanceValidation(driver);
@@ -68,9 +67,10 @@ describe('Remote feature flag', function (this: Suite) {
           remoteFeatureFlags: MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
         },
         title: this.test?.fullTitle(),
+        forceBip44Version: 2,
       },
       async ({ driver }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
