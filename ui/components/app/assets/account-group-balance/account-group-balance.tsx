@@ -33,7 +33,6 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
 }) => {
   const { privacyMode } = useSelector(getPreferences);
   const { formatCurrency } = useFormatters();
-  const t = useI18nContext();
 
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const fallbackCurrency = useSelector(getCurrentCurrency);

@@ -6,14 +6,8 @@ import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import {
-  Box,
-  ButtonLink,
-  IconName,
-} from '../../component-library';
-import {
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { Box, ButtonLink, IconName } from '../../component-library';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -163,25 +157,25 @@ export const LegacyAggregatedBalance = ({
       }
       marginBottom={1}
     >
-       <UserPreferencedCurrencyDisplay
-         style={{ display: 'contents' }}
-         account={account}
-         className={classnames(`${classPrefix}-overview__primary-balance`, {
-           [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
-         })}
-         data-testid={`${classPrefix}-overview__primary-currency`}
-         value={balanceToDisplay}
-         type={getCurrencyDisplayType()}
-         ethNumberOfDecimals={4}
-         hideTitle
-         shouldCheckShowNativeToken
-         isAggregatedFiatOverviewBalance={
-           !showNativeTokenAsMain && !isTestnet && shouldShowFiat
-         }
-         privacyMode={privacyMode}
-         onClick={handleSensitiveToggle}
-       />
-     </Skeleton>
+      <UserPreferencedCurrencyDisplay
+        style={{ display: 'contents' }}
+        account={account}
+        className={classnames(`${classPrefix}-overview__primary-balance`, {
+          [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
+        })}
+        data-testid={`${classPrefix}-overview__primary-currency`}
+        value={balanceToDisplay}
+        type={getCurrencyDisplayType()}
+        ethNumberOfDecimals={4}
+        hideTitle
+        shouldCheckShowNativeToken
+        isAggregatedFiatOverviewBalance={
+          !showNativeTokenAsMain && !isTestnet && shouldShowFiat
+        }
+        privacyMode={privacyMode}
+        onClick={handleSensitiveToggle}
+      />
+    </Skeleton>
   );
 };
 
