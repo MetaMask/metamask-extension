@@ -533,6 +533,7 @@ describe('Sentry errors', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
+          multichainOverride: true, // Prevent the multichain accounts state hack from altering the state which is being captured here
           manifestFlags: {
             sentry: { forceEnable: false },
           },
@@ -821,6 +822,7 @@ describe('Sentry errors', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: mockSentryTestError,
           ignoredConsoleErrors: ['TestError'],
+          multichainOverride: true, // Prevent the multichain accounts state hack from altering the state which is being captured here
           manifestFlags: {
             sentry: { forceEnable: false },
           },

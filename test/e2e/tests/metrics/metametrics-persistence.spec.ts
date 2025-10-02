@@ -5,10 +5,11 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { MOCK_META_METRICS_ID } from '../../constants';
 
 describe('MetaMetrics ID persistence', function () {
   it('MetaMetrics ID should persist when the user opts-out and then opts-in again of MetaMetrics collection', async function () {
-    const initialMetaMetricsId = 'test-metrics-id';
+    const initialMetaMetricsId = MOCK_META_METRICS_ID;
 
     await withFixtures(
       {

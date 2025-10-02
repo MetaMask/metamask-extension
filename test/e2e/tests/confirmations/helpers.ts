@@ -229,6 +229,18 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
           statusCode: 200,
           json: [
             {
+              // Also include disabled multichain accounts state
+              // because the multichain accounts state hack will override the eip7702 feature flag
+              enableMultichainAccounts: {
+                enabled: false,
+                featureVersion: '0',
+                minimumVersion: '12.19.0',
+              },
+              enableMultichainAccountsState2: {
+                enabled: false,
+                featureVersion: '0',
+                minimumVersion: '12.19.0',
+              },
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               confirmations_eip_7702: {
