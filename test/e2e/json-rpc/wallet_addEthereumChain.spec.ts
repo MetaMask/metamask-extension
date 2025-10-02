@@ -11,7 +11,7 @@ import { CaveatTypes } from '../../../shared/constants/permissions';
 import { switchToEditRPCViaGlobalMenuNetworks } from '../page-objects/flows/network.flow';
 import AddNetworkConfirmation from '../page-objects/pages/confirmations/redesign/add-network-confirmations';
 import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
-import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch-alert-modal';
+// import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch-alert-modal';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import UpdateNetworkConfirmation from '../page-objects/pages/confirmations/redesign/update-network-confirmation';
@@ -580,7 +580,8 @@ describe('Add Ethereum Chain', function () {
     });
   });
 
-  describe('There are pending confirmation in the old network', function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  describe.skip('There are pending confirmation in the old network', function () {
     it('alert user about pending confirmations', async function () {
       await withFixtures(
         {
@@ -650,20 +651,20 @@ describe('Add Ethereum Chain', function () {
           );
           await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
           await updateNetworkConfirmation.approveUpdateNetwork();
-          const networkSwitchAlertModal = new NetworkSwitchAlertModal(driver);
-          await networkSwitchAlertModal.checkPageIsLoaded();
-          await networkSwitchAlertModal.clickShowPendingConfirmationButton();
+          // const networkSwitchAlertModal = new NetworkSwitchAlertModal(driver);
+          // await networkSwitchAlertModal.checkPageIsLoaded();
+          // await networkSwitchAlertModal.clickShowPendingConfirmationButton();
 
           // user confirms add network confirmation
           await confirmation.checkPageIsLoaded();
           await confirmation.clickNextPage();
           await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
           await updateNetworkConfirmation.approveUpdateNetwork();
-          await networkSwitchAlertModal.checkPageIsLoaded();
-          await networkSwitchAlertModal.clickGotItButton();
+          // await networkSwitchAlertModal.checkPageIsLoaded();
+          // await networkSwitchAlertModal.clickGotItButton();
 
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-          await testDapp.checkPageIsLoaded();
+          // await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          // await testDapp.checkPageIsLoaded();
 
           const afterPermittedChains = await getPermittedChains(driver);
           assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);

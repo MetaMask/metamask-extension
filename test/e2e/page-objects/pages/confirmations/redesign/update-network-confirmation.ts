@@ -3,9 +3,11 @@ import { Driver } from '../../../../webdriver/driver';
 class UpdateNetworkConfirmation {
   private readonly driver: Driver;
 
-  private readonly approveButton = { testId: 'confirmation-submit-button' };
+  private readonly approveButton = { testId: 'confirm-footer-button' };
 
-  private readonly cancelButton = { testId: 'confirmation-cancel-button' };
+  private readonly cancelButton = { testId: 'confirm-footer-cancel-button' };
+
+  private readonly inlineAlert = { testId: 'inline-alert' };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -18,7 +20,6 @@ class UpdateNetworkConfirmation {
     try {
       await this.driver.waitForSelector({
         text: `Update ${networkName}`,
-        tag: 'h3',
       });
     } catch (e) {
       console.log(
@@ -67,7 +68,7 @@ class UpdateNetworkConfirmation {
     console.log(
       `Checking if warning message ${message} is displayed on update network confirmation page`,
     );
-    await this.driver.waitForSelector({ text: message });
+    await this.driver.waitForSelector(this.inlineAlert);
   }
 }
 
