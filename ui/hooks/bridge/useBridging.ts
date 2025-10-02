@@ -63,9 +63,12 @@ const useBridging = () => {
           ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
           : undefined;
 
-      /* If srcToken in a supported bridge chain is not specified and the lastSelectedChainId
-       * is not active, set the srcAssetId to a supported bridge native asset
+      /* If srcToken is not in a supported bridge chain, or is not specified
+       * and the selected network filter is not active, set the srcAssetId to
+       * a supported bridge native asset
+       *
        * If an unsupported network is selected in the network filter, fall back to MAINNET
+       *
        * default fromChain: srctoken.chainId > lastSelectedId > MAINNET
        */
       const targetChainId = ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(
