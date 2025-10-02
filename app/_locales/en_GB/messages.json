@@ -1325,6 +1325,9 @@
   "confirmRecoveryPhraseTitle": {
     "message": "Confirm your Secret Recovery Phrase"
   },
+  "confirmRecoveryPhraseTitleSettings": {
+    "message": "Confirm Secret Recovery Phrase"
+  },
   "confirmSimulationApprove": {
     "message": "You approve"
   },
@@ -5449,6 +5452,9 @@
   },
   "seedPhraseReviewTitle": {
     "message": "Save your Secret Recovery Phrase"
+  },
+  "seedPhraseReviewTitleSettings": {
+    "message": "Save Secret Recovery Phrase"
   },
   "select": {
     "message": "Select"
