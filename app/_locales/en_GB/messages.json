@@ -7364,7 +7364,7 @@
     "message": "Gas fees on the previous screen are split between these two transactions."
   },
   "swapGasFeesSponsored": {
-    "message": " Gas sponsored"
+    "message": "Paid by MetaMask"
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "The network fee for this swap is sponsored by MetaMask. This allows you to transact without needing native token on your account. Learn more"
