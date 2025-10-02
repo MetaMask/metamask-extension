@@ -257,7 +257,7 @@ const CoinButtons = ({
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
       {
-        event: MetaMetricsEventName.NavSendButtonClicked,
+        event: MetaMetricsEventName.SendStarted,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
