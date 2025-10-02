@@ -27,7 +27,7 @@ describe('View DeFi details', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        multichainAccountsOverride: true, // Prevent the multichain accounts FF hack from overriding the defi positions feature flag
+        forceBip44Version: 2, // Prevent the multichain accounts FF hack from overriding the defi positions feature flag
         testSpecificMock: mockDeFiPositionFeatureFlag,
       },
       async ({ driver }: { driver: Driver }) => {

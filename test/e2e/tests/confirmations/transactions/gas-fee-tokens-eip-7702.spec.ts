@@ -30,7 +30,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         manifestFlags: {
           testing: { disableSmartTransactionsOverride: true },
         },
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
         localNodeOptions: {
           hardfork: 'prague',
           loadState:
@@ -95,7 +95,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           .withPermissionControllerConnectedToTestDapp()
           .withNetworkControllerOnMainnet()
           .build(),
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
         localNodeOptions: {
           hardfork: 'prague',
           loadState:

@@ -57,6 +57,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 const {
   mockMultichainAccountsFeatureFlagDisabled,
+  mockMultichainAccountsFeatureFlagStateOne,
 } = require('./tests/multichain-accounts/feature-flag-mocks');
 
 /**
@@ -175,7 +176,7 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
-    multichainAccountsOverride = false,
+    forceBip44Version = 0,
   } = options;
 
   // Normalize localNodeOptions
@@ -316,9 +317,21 @@ async function withFixtures(options, testSuite) {
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
-    // Apply multichain accounts feature flag disabled mock
-    if (!multichainAccountsOverride) {
+    // The feature flag wrapper chooses state 2 by default
+    // but we want most tests to be able to run with state 0 (bip-44 disabled)
+    // So the default argument is 0
+    // and doing nothing here means we get state 2
+
+    if (forceBip44Version === 0) {
+      console.log('Applying multichain accounts feature flag disabled mock');
       await mockMultichainAccountsFeatureFlagDisabled(mockServer);
+    } else if (forceBip44Version === 1) {
+      console.log(
+        'Applying multichain accounts state 1 feature state 1 enabled mock',
+      );
+      await mockMultichainAccountsFeatureFlagStateOne(mockServer);
+    } else {
+      console.log('BIP-44 state 2 enabled');
     }
 
     // Decide between the regular setupMocking and the passThrough version

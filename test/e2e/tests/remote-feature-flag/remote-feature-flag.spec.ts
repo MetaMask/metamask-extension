@@ -3,7 +3,10 @@ import { Suite } from 'mocha';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import DevelopOptions from '../../page-objects/pages/developer-options-page';
@@ -45,7 +48,7 @@ describe('Remote feature flag', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
         const uiState = await getCleanAppState(driver);
         assert.deepStrictEqual(uiState.metamask.remoteFeatureFlags, {});
       },

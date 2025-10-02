@@ -44,7 +44,7 @@ describe('Account syncing - Accounts with Balances', function () {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase1MockSetup,
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -98,7 +98,7 @@ describe('Account syncing - Accounts with Balances', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase2MockSetup,
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
       },
       async ({ driver }) => {
         // Complete onboarding flow from scratch

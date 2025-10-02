@@ -51,7 +51,7 @@ describe('Account syncing - Unsupported Account types', function () {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -120,7 +120,7 @@ describe('Account syncing - Unsupported Account types', function () {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
       },
       async ({ driver }) => {
         await unlockWallet(driver);

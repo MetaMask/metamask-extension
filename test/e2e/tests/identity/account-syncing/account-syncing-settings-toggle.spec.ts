@@ -49,7 +49,7 @@ describe('Account syncing - Settings Toggle', function () {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -128,7 +128,7 @@ describe('Account syncing - Settings Toggle', function () {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
       },
       async ({ driver }) => {
         // Login to fresh app instance to test sync restoration

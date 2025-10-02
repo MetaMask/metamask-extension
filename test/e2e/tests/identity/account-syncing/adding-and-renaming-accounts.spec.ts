@@ -57,7 +57,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -115,7 +115,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         fixtures: new FixtureBuilder().withBackupAndSyncSettings().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
       },
       async ({ driver }) => {
         await unlockWallet(driver);
@@ -190,7 +190,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: sharedMockSetup,
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
       },
       async ({ driver }) => {
         // Go through onboarding again to ensure accounts and names are synced

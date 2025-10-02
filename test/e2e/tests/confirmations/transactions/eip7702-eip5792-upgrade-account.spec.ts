@@ -31,7 +31,7 @@ describe('Upgrade Account', function (this: Suite) {
           },
         ],
         testSpecificMock: mockEip7702FeatureFlag,
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
         title: this.test?.fullTitle(),
       },
       async ({
@@ -115,7 +115,7 @@ describe('Upgrade Account', function (this: Suite) {
           },
         ],
         testSpecificMock: mockEip7702FeatureFlag,
-        multichainAccountsOverride: true,
+        forceBip44Version: 2,
         title: this.test?.fullTitle(),
       },
       async ({

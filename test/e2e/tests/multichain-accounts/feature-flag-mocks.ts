@@ -27,6 +27,37 @@ export const mockMultichainAccountsFeatureFlag = (mockServer: Mockttp) =>
       };
     });
 
+// Explicitly enable the state 1 and disable the state 2 flag
+
+export const mockMultichainAccountsFeatureFlagStateOne = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [
+          {
+            enableMultichainAccounts: {
+              enabled: true,
+              featureVersion: '1',
+              minimumVersion: '12.19.0',
+            },
+            enableMultichainAccountsState2: {
+              enabled: false,
+              featureVersion: '0',
+              minimumVersion: '12.19.0',
+            },
+          },
+        ],
+      };
+    });
+
 export const mockMultichainAccountsFeatureFlagStateTwo = (
   mockServer: Mockttp,
 ) =>

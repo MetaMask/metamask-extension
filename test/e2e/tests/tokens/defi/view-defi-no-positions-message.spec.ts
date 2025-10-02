@@ -17,7 +17,7 @@ describe('Check DeFi empty state when no defi positions', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        multichainAccountsOverride: true, // Prevent the multichain accounts FF hack from overriding the defi positions feature flag
+        forceBip44Version: 2, // Prevent the multichain accounts FF hack from overriding the defi positions feature flag
         testSpecificMock: mockNoDeFiPositionFeatureFlag,
       },
       async ({ driver }: { driver: Driver }) => {
