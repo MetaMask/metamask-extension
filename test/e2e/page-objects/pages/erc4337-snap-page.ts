@@ -8,30 +8,15 @@ import { WINDOW_TITLES } from '../../helpers';
 class ERC4337SnapPage {
   private readonly driver: Driver;
 
-  // Selectors for snap configuration
-  private readonly chainSelect = '[data-testid="chain-select"]';
-
-  private readonly chainId1337 = '[data-testid="chain-id-1337"]';
+  // Selectors for snap configuration and account creation
+  private readonly addAccountButton = { text: 'Add account', tag: 'button' };
 
   private readonly bundlerUrlInput = '[data-testid="bundlerUrl"]';
 
-  private readonly entryPointInput = '[data-testid="entryPoint"]';
+  private readonly chainId1337 = '[data-testid="chain-id-1337"]';
 
-  private readonly simpleAccountFactoryInput =
-    '[data-testid="simpleAccountFactory"]';
+  private readonly chainSelect = '[data-testid="chain-select"]';
 
-  private readonly customVerifyingPaymasterAddressInput =
-    '[data-testid="customVerifyingPaymasterAddress"]';
-
-  private readonly customVerifyingPaymasterSKInput =
-    '[data-testid="customVerifyingPaymasterSK"]';
-
-  private readonly setChainConfigButton = {
-    text: 'Set Chain Config',
-    tag: 'button',
-  };
-
-  // Selectors for account creation
   private readonly createAccountButton = { text: 'Create account' };
 
   private readonly createAccountPrivateKeyInput = '#create-account-private-key';
@@ -43,15 +28,61 @@ class ERC4337SnapPage {
     tag: 'button',
   };
 
-  // Dialog selectors
   private readonly createButton = { text: 'Create', tag: 'button' };
 
-  private readonly addAccountButton = { text: 'Add account', tag: 'button' };
+  private readonly customVerifyingPaymasterAddressInput =
+    '[data-testid="customVerifyingPaymasterAddress"]';
+
+  private readonly customVerifyingPaymasterSKInput =
+    '[data-testid="customVerifyingPaymasterSK"]';
+
+  private readonly entryPointInput = '[data-testid="entryPoint"]';
 
   private readonly okButton = { text: 'Ok', tag: 'button' };
 
+  private readonly setChainConfigButton = {
+    text: 'Set Chain Config',
+    tag: 'button',
+  };
+
+  private readonly simpleAccountFactoryInput =
+    '[data-testid="simpleAccountFactory"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  /**
+   * Connects to the snap by clicking the connect button.
+   */
+  async connectToSnap(): Promise<void> {
+    console.log('Connecting to ERC-4337 snap');
+    await this.driver.clickElement('#connectButton');
+  }
+
+  /**
+   * Creates a new snap account with the provided private key and salt.
+   *
+   * @param privateKey - The private key for the account
+   * @param salt - The salt for account creation
+   */
+  async createSnapAccount(privateKey: string, salt: string): Promise<void> {
+    console.log('Creating snap account');
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
+
+    // Click create account and fill details
+    await this.driver.clickElement(this.createAccountButton);
+    await this.driver.fill(this.createAccountPrivateKeyInput, privateKey);
+    await this.driver.fill(this.createAccountSaltInput, salt);
+    await this.driver.clickElement(this.createAccountSubmitButton);
+
+    // Handle dialog confirmations
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+    await this.driver.clickElement(this.createButton);
+    await this.driver.clickElement(this.addAccountButton);
+    await this.driver.clickElement(this.okButton);
+
+    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
   }
 
   /**
@@ -62,14 +93,6 @@ class ERC4337SnapPage {
   async openSnapPage(snapUrl: string): Promise<void> {
     console.log('Opening ERC-4337 Account Abstraction Snap page');
     await this.driver.openNewPage(snapUrl);
-  }
-
-  /**
-   * Connects to the snap by clicking the connect button.
-   */
-  async connectToSnap(): Promise<void> {
-    console.log('Connecting to ERC-4337 snap');
-    await this.driver.clickElement('#connectButton');
   }
 
   /**
@@ -119,31 +142,6 @@ class ERC4337SnapPage {
     }
 
     await this.driver.clickElement(this.setChainConfigButton);
-  }
-
-  /**
-   * Creates a new snap account with the provided private key and salt.
-   *
-   * @param privateKey - The private key for the account
-   * @param salt - The salt for account creation
-   */
-  async createSnapAccount(privateKey: string, salt: string): Promise<void> {
-    console.log('Creating snap account');
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
-
-    // Click create account and fill details
-    await this.driver.clickElement(this.createAccountButton);
-    await this.driver.fill(this.createAccountPrivateKeyInput, privateKey);
-    await this.driver.fill(this.createAccountSaltInput, salt);
-    await this.driver.clickElement(this.createAccountSubmitButton);
-
-    // Handle dialog confirmations
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.clickElement(this.createButton);
-    await this.driver.clickElement(this.addAccountButton);
-    await this.driver.clickElement(this.okButton);
-
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.ERC4337Snap);
   }
 }
 

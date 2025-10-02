@@ -1,8 +1,9 @@
-import FixtureBuilder from '../fixture-builder';
 import { withFixtures, unlockWallet, convertETHToHexGwei } from '../helpers';
+import { createDappTransaction } from '../page-objects/flows/transaction';
+import { sendRedesignedTransactionWithSnapAccount } from '../page-objects/flows/send-transaction.flow';
+import FixtureBuilder from '../fixture-builder';
 import {
   BUNDLER_URL,
-  DAPP_URL,
   ENTRYPOINT,
   ERC_4337_ACCOUNT,
   ERC_4337_ACCOUNT_SALT,
@@ -17,8 +18,6 @@ import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import HomePage from '../page-objects/pages/home/homepage';
-import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import {
   setupCompleteERC4337Environment,
   confirmTransaction,
@@ -98,16 +97,13 @@ async function withAccountSnap(
 describe('User Operations', function () {
   it('from dApp transaction', async function () {
     await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
-      const transaction = {
+      await createDappTransaction(driver, {
         from: ERC_4337_ACCOUNT,
         to: LOCAL_NODE_ACCOUNT,
         value: convertETHToHexGwei(1),
         maxFeePerGas: '0x0',
         maxPriorityFeePerGas: '0x0',
-      };
-      await driver.openNewPage(
-        `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
-      );
+      });
 
       await confirmTransaction(driver);
     });
@@ -117,15 +113,12 @@ describe('User Operations', function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
-        const homePage = new HomePage(driver);
-        await homePage.startSendFlow();
-
-        const sendToPage = new SendTokenPage(driver);
-        await sendToPage.checkPageIsLoaded();
-        await sendToPage.fillRecipient(LOCAL_NODE_ACCOUNT);
-        await sendToPage.fillAmount('1');
-        await sendToPage.goToNextScreen();
-        await sendToPage.clickConfirmButton();
+        await sendRedesignedTransactionWithSnapAccount({
+          driver,
+          recipientAddress: LOCAL_NODE_ACCOUNT,
+          amount: '1',
+          isSyncFlow: true,
+        });
 
         await openConfirmedTransaction(driver);
         await validateTransactionDetailsWithReceipt(driver, bundlerServer);
@@ -161,16 +154,13 @@ describe('User Operations', function () {
         ],
       },
       async (driver, bundlerServer) => {
-        const transaction = {
+        await createDappTransaction(driver, {
           from: ERC_4337_ACCOUNT,
           to: LOCAL_NODE_ACCOUNT,
           value: convertETHToHexGwei(1),
           maxFeePerGas: '0x0',
           maxPriorityFeePerGas: '0x0',
-        };
-        await driver.openNewPage(
-          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
-        );
+        });
 
         await confirmTransaction(driver);
         await openConfirmedTransaction(driver);
