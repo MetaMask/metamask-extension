@@ -17,6 +17,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_DOWNLOAD_APP_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVIEW_SRP_ROUTE,
@@ -254,7 +255,7 @@ export default function CreatePassword({
         dispatch(setMarketingConsent(true));
         dispatch(setDataCollectionForMarketing(true));
       }
-      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+      navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
     }
