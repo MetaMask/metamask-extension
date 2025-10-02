@@ -151,6 +151,10 @@ import {
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
+/**
+ * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ */
+
 // Re-export this file so we don't have to update all references
 // TODO: Update all references
 export { getEnabledNetworks };
@@ -4032,3 +4036,11 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) => remoteFeatureFlags?.nonZeroUnusedApprovals ?? [],
 );
+
+/**
+ * @param {MetaMaskReduxState} state - The Redux state
+ * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
+ */
+export function getNetworkConnectionBanner(state) {
+  return state.metamask.networkConnectionBanner;
+}
