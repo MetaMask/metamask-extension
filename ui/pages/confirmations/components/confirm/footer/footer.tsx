@@ -31,6 +31,10 @@ import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEn
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import {
+  isAddEthereumChainType,
+  useAddEthereumChain,
+} from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import OriginThrottleModal from './origin-throttle-modal';
@@ -188,6 +192,7 @@ const CancelButton = ({
 const Footer = () => {
   const dispatch = useDispatch();
   const { onTransactionConfirm } = useTransactionConfirm();
+  const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
@@ -209,6 +214,7 @@ const Footer = () => {
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
+  const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
@@ -224,7 +230,9 @@ const Footer = () => {
       currentConfirmation?.type,
     );
 
-    if (isTransactionConfirmation) {
+    if (isAddEthereumChain) {
+      onAddEthereumChain();
+    } else if (isTransactionConfirmation) {
       onTransactionConfirm();
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
@@ -235,6 +243,8 @@ const Footer = () => {
     dispatch,
     onTransactionConfirm,
     resetTransactionState,
+    isAddEthereumChain,
+    onAddEthereumChain,
   ]);
 
   const handleFooterCancel = useCallback(() => {

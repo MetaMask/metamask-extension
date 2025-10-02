@@ -78,7 +78,9 @@ export const ConfirmInfoAlertRow = ({
   const confirmInfoRowProps = {
     ...rowProperties,
     style: { background: 'transparent', ...rowProperties.style },
-    color: getAlertTextColors(variant ?? selectedAlertSeverity),
+    color:
+      rowProperties?.color ??
+      getAlertTextColors(variant ?? selectedAlertSeverity),
     variant,
     onClick: onClickHandler,
     labelChildrenStyleOverride: rowProperties.labelChildren

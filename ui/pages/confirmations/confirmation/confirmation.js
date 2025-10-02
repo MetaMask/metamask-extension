@@ -58,7 +58,6 @@ import {
   getTemplateAlerts,
   getTemplateState,
 } from './templates';
-import { AddEthereumChainRenderer } from './renderers';
 
 const CONFIRMATION_TYPES_WITH_HEADER = ['result_success', 'result_error'];
 const SNAP_CUSTOM_UI_DIALOG = Object.values(DIALOG_APPROVAL_TYPES);
@@ -509,17 +508,6 @@ export default function ConfirmationPage({
       ? handleSubmit
       : null);
 
-  // type Renderer = 'snap' | 'addEthereumChain' | 'legacy';
-  let renderer = 'legacy';
-
-  if (isSnapCustomUIDialog) {
-    renderer = 'snap';
-  }
-
-  if (pendingConfirmation?.type === ApprovalType.AddEthereumChain) {
-    renderer = 'addEthereumChain';
-  }
-
   return (
     <ConfirmContextProvider>
       <TemplateAlertContextProvider
@@ -539,14 +527,7 @@ export default function ConfirmationPage({
               overflowY: 'auto',
             }}
           >
-            {renderer === 'addEthereumChain' && (
-              <AddEthereumChainRenderer
-                data={pendingConfirmation}
-                matchedChain={matchedChain}
-              />
-            )}
-
-            {renderer === 'snap' && (
+            {isSnapCustomUIDialog ? (
               <SnapUIRenderer
                 snapId={pendingConfirmation?.origin}
                 interfaceId={pendingConfirmation?.requestData.id}
@@ -561,12 +542,9 @@ export default function ConfirmationPage({
                 onCancel={handleSnapDialogCancel}
                 useFooter={isSnapDefaultDialog}
               />
-            )}
-
-            {renderer === 'legacy' && (
+            ) : (
               <MetaMaskTemplateRenderer sections={templatedValues.content} />
             )}
-
             {showWarningModal && (
               <ConfirmationWarningModal
                 onSubmit={async () => {
@@ -578,8 +556,7 @@ export default function ConfirmationPage({
               />
             )}
           </Box>
-
-          {renderer === 'legacy' && (
+          {!isSnapDefaultDialog && (
             <ConfirmationFooter
               alerts={
                 alertState[pendingConfirmation.id] &&
