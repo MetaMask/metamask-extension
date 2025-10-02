@@ -22,6 +22,7 @@ import {
   BannerAlertSeverity,
 } from '../../../components/component-library';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export const MultichainAccountPrivateKeyListPage = () => {
   const t = useI18nContext();
@@ -69,6 +70,10 @@ export const MultichainAccountPrivateKeyListPage = () => {
           paddingTop={2}
           paddingBottom={2}
           severity={BannerAlertSeverity.Danger}
+          actionButtonLabel={t('learnMore')}
+          actionButtonOnClick={() =>
+            window.open(ZENDESK_URLS.PRIVATE_KEY_GUIDE, '_blank')
+          }
         />
         <Box flexDirection={BoxFlexDirection.Column}>
           {decodedAccountGroupId ? (
