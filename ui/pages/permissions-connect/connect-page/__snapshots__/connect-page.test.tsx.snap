@@ -255,11 +255,13 @@ exports[`ConnectPage should render correctly 1`] = `
                               <span
                                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                                 data-testid="account-value-and-suffix"
+                                style="cursor: pointer; transition: color 0.2s ease;"
                               >
                                 966.988
                               </span>
                               <span
                                 class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                                style="cursor: pointer; transition: color 0.2s ease;"
                               >
                                 ETH
                               </span>
@@ -676,11 +678,13 @@ exports[`ConnectPage should render with defaults from the requested permissions 
                               <span
                                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                                 data-testid="account-value-and-suffix"
+                                style="cursor: pointer; transition: color 0.2s ease;"
                               >
                                 966.988
                               </span>
                               <span
                                 class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                                style="cursor: pointer; transition: color 0.2s ease;"
                               >
                                 ETH
                               </span>
