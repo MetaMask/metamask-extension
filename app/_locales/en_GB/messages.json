@@ -1400,14 +1400,14 @@
   "confirmed": {
     "message": "Confirmed"
   },
+  "confusableCharacterTooltip": {
+    "message": "Make sure this address is correct. The letter $1 is confusable with $2."
+  },
   "confusableUnicode": {
     "message": "'$1' is similar to '$2'."
   },
   "confusableZeroWidthUnicode": {
     "message": "Zero-width character found."
-  },
-  "confusingDomain": {
-    "message": "We have detected a confusable character in the name. Check the name to avoid a potential scam."
   },
   "confusingEnsDomain": {
     "message": "We have detected a confusable character in the ENS name. Check the ENS name to avoid a potential scam."
@@ -2948,7 +2948,7 @@
     "message": "Import a wallet or account"
   },
   "importWalletSuccess": {
-    "message": "Secret Recovery Phrase $1 imported",
+    "message": "Wallet $1 imported",
     "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
@@ -3530,7 +3530,7 @@
     "description": "Button text to learn more about multichain accounts"
   },
   "multichainAccountIntroSameAddressDescription": {
-    "message": "We've merged your accounts, so keep using MetaMask the same as before. Your funds are safe and unchanged.",
+    "message": "We’ve grouped your accounts, so keep using MetaMask the same as before. Your funds are safe and unchanged.",
     "description": "Description explaining that accounts have been merged"
   },
   "multichainAccountIntroSameAddressTitle": {
@@ -3546,7 +3546,7 @@
     "description": "Button text to view accounts from the intro modal"
   },
   "multichainAccountIntroWhatDescription": {
-    "message": "One account, addresses on all the networks MetaMask supports. So now you can use Ethereum, Solana, and more without switching accounts.",
+    "message": "A multichain account is an account with addresses on several networks, supported by MetaMask. So now you can use Ethereum, Solana, and more without switching accounts.",
     "description": "Description explaining what multichain accounts are"
   },
   "multichainAccountIntroWhatTitle": {
@@ -3556,6 +3556,10 @@
   "multichainAccountPrivateKeyCopied": {
     "message": "Private key copied",
     "description": "Message displayed when the multichain account private key is copied to clipboard"
+  },
+  "multichainAccountsIntroductionModalTitle": {
+    "message": "Introducing multichain accounts",
+    "description": "Title for the multichain accounts introduction modal."
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
@@ -5185,8 +5189,9 @@
   "resetWalletWarningSocial": {
     "message": "Make sure you use the right Secret Recovery Phrase before you reset. This can’t be undone."
   },
-  "resolvedLookup": {
-    "message": "Resolved address of the domain: $1"
+  "resolutionProtocol": {
+    "message": "Address resolved via $1",
+    "description": "$1 is the protocol name."
   },
   "restartMetamask": {
     "message": "Restart MetaMask"
@@ -5840,9 +5845,6 @@
   },
   "signingWith": {
     "message": "Signing with"
-  },
-  "similarTo": {
-    "message": "$1 is similar to $2"
   },
   "simulationApproveHeading": {
     "message": "Withdraw"
@@ -6527,6 +6529,10 @@
     "message": "Plug your Ledger directly into your computer, then  unlock it and open the Ethereum app.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stillConnectingTo": {
+    "message": "Still connecting to $1...",
+    "description": "Message shown when network connection is slow. $1 is the network name."
+  },
   "stillGettingMessage": {
     "message": "Still getting this message?"
   },
@@ -7047,6 +7053,9 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol must be 11 characters or fewer."
   },
+  "syncing": {
+    "message": "Syncing..."
+  },
   "tapToReveal": {
     "message": "Tap to reveal"
   },
@@ -7364,6 +7373,10 @@
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
   },
+  "unableToConnectTo": {
+    "message": "Unable to connect to $1.",
+    "description": "Message shown when network connection fails. $1 is the network name."
+  },
   "unapproved": {
     "message": "Unapproved"
   },
@@ -7447,6 +7460,10 @@
   },
   "updateRequest": {
     "message": "Update request"
+  },
+  "updateRpc": {
+    "message": "Update RPC",
+    "description": "Button text to update RPC endpoint"
   },
   "updateToTheLatestVersion": {
     "message": "Update to the latest version"
