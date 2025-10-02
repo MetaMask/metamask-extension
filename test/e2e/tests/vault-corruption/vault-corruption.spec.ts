@@ -84,6 +84,7 @@ describe('Vault Corruption', function () {
   function getConfig(title?: string) {
     return {
       title,
+      forceBip44Version: 0,
       ignoredConsoleErrors: [
         // expected error caused by breaking the database:
         'PersistenceError: Data error: storage.local does not contain vault data',
