@@ -488,7 +488,7 @@
     "message": "This token has been identified as malicious. Interacting with this token may result in a loss of funds."
   },
   "alertMessageTokenTrustSignalWarning": {
-    "message": "This token shows strong signs of malicious behaviour. Continuing may result in loss of funds."
+    "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds."
   },
   "alertModalAcknowledge": {
     "message": "I have acknowledged the risk and still want to proceed"
