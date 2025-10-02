@@ -1148,7 +1148,7 @@ export function setupController(
        *
        * @param {import("extension-port-stream").MessageTooLargeEventData} details
        */
-      const handleMessageTooLarge = function({ chunkSize }) {
+      const handleMessageTooLarge = function ({ chunkSize }) {
         /**
          * @type {MetamaskController}
          */
@@ -1158,7 +1158,7 @@ export function setupController(
           category: MetaMetricsEventCategory.PortStream,
           properties: { chunkSize },
         });
-      }
+      };
       portStream.on('message-too-large', handleMessageTooLarge);
 
       // communication with popup
