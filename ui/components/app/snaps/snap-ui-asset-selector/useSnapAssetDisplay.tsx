@@ -68,6 +68,7 @@ export const useSnapAssetSelectorData = ({
   const currentCurrency = useSelector(getMemoizedCurrentCurrency);
   const locale = useSelector(getIntlLocale);
   const { formatCurrencyWithMinThreshold } = useFormatters();
+
   const parsedAccounts = addresses.map(parseCaipAccountId);
 
   const account = useSelector((state) =>
