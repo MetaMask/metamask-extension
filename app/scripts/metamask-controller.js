@@ -196,6 +196,7 @@ import {
   TRANSFER_SINFLE_LOG_TOPIC_HASH,
 } from '../../shared/lib/transactions-controller-utils';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import { selectAllEnabledNetworkClientIds } from '../../shared/modules/selectors/multichain';
 import {
   trace,
   endTrace,
@@ -381,8 +382,10 @@ import { EnsControllerInit } from './controller-init/confirmations/ens-controlle
 import { NameControllerInit } from './controller-init/confirmations/name-controller-init';
 import { GasFeeControllerInit } from './controller-init/confirmations/gas-fee-controller-init';
 import { SelectedNetworkControllerInit } from './controller-init/selected-network-controller-init';
-import { SubscriptionControllerInit } from './controller-init/subscription';
-import { getIdentityAPI } from './services/oauth/web-authenticator-factory';
+import {
+  SubscriptionControllerInit,
+  SubscriptionServiceInit,
+} from './controller-init/subscription';
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
@@ -604,6 +607,7 @@ export default class MetamaskController extends EventEmitter {
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
+      allowedEvents: ['TransactionController:stateChange'],
     });
 
     this.phishingController = new PhishingController({
@@ -908,6 +912,7 @@ export default class MetamaskController extends EventEmitter {
       OAuthService: OAuthServiceInit,
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       SubscriptionController: SubscriptionControllerInit,
+      SubscriptionService: SubscriptionServiceInit,
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
       GatorPermissionsController: GatorPermissionsControllerInit,
@@ -996,6 +1001,7 @@ export default class MetamaskController extends EventEmitter {
     this.deFiPositionsController = controllersByName.DeFiPositionsController;
     this.accountTreeController = controllersByName.AccountTreeController;
     this.oauthService = controllersByName.OAuthService;
+    this.SubscriptionService = controllersByName.SubscriptionService;
     this.seedlessOnboardingController =
       controllersByName.SeedlessOnboardingController;
     this.subscriptionController = controllersByName.SubscriptionController;
@@ -1175,16 +1181,6 @@ export default class MetamaskController extends EventEmitter {
             this.networkEnablementController.enableNetwork('0x1');
           }
         }
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      'NetworkController:networkAdded',
-      (state) => {
-        this.networkEnablementController.enableNetworkInNamespace(
-          state.chainId,
-          KnownCaipNamespace.Eip155,
-        );
       },
     );
 
@@ -1597,11 +1593,26 @@ export default class MetamaskController extends EventEmitter {
   postOnboardingInitialization() {
     const { usePhishDetect } = this.preferencesController.state;
 
-    this.networkController.lookupNetwork();
-
     if (usePhishDetect) {
       this.phishingController.maybeUpdateState();
     }
+  }
+
+  /**
+   * Gathers metadata (primarily connectivity status) about the globally selected
+   * network as well as each enabled network and persists it to state.
+   */
+  async lookupSelectedNetworks() {
+    const enabledNetworkClientIds = selectAllEnabledNetworkClientIds(
+      this._getMetaMaskState(),
+    );
+
+    await Promise.allSettled([
+      this.networkController.lookupNetwork(),
+      ...enabledNetworkClientIds.map(async (networkClientId) => {
+        return await this.networkController.lookupNetwork(networkClientId);
+      }),
+    ]);
   }
 
   triggerNetworkrequests() {
@@ -2307,82 +2318,6 @@ export default class MetamaskController extends EventEmitter {
     return publicConfigStore;
   }
 
-  async startSubscriptionWithCard(
-    params,
-    /* current tab can be undefined if open from non tab context (e.g. popup, background) */
-    currentTabId,
-  ) {
-    const identityAPI = getIdentityAPI();
-    const redirectUrl = identityAPI.getRedirectURL();
-
-    const { checkoutSessionUrl } =
-      await this.subscriptionController.startShieldSubscriptionWithCard({
-        ...params,
-        successUrl: redirectUrl,
-      });
-
-    const checkoutTab = await this.platform.openTab({
-      url: checkoutSessionUrl,
-    });
-
-    // --- We will define our listeners here so we can reference them for cleanup ---
-    // eslint-disable-next-line prefer-const
-    let onTabUpdatedListener;
-    // eslint-disable-next-line prefer-const
-    let onTabRemovedListener;
-
-    await new Promise((resolve, reject) => {
-      let checkoutSucceeded = false;
-      const cleanupListeners = () => {
-        // Important: Remove both listeners to prevent memory leaks
-        if (onTabUpdatedListener) {
-          this.platform.removeTabUpdatedListener(onTabUpdatedListener);
-        }
-        if (onTabRemovedListener) {
-          this.platform.removeTabRemovedListener(onTabRemovedListener);
-        }
-      };
-
-      // Set up a listener to watch for navigation on that specific tab
-      onTabUpdatedListener = (tabId, changeInfo, _tab) => {
-        // We only care about updates to our specific checkout tab
-        if (tabId === checkoutTab.id && changeInfo.url) {
-          if (changeInfo.url.startsWith(redirectUrl)) {
-            // Payment was successful!
-            checkoutSucceeded = true;
-
-            // Clean up: close the tab
-            this.platform.closeTab(tabId);
-          }
-          // TODO: handle cancel url ?
-        }
-      };
-      this.platform.addTabUpdatedListener(onTabUpdatedListener);
-
-      // Set up a listener to watch for tab removal
-      onTabRemovedListener = (tabId) => {
-        if (tabId === checkoutTab.id) {
-          cleanupListeners();
-          if (checkoutSucceeded) {
-            resolve();
-          } else {
-            reject(new Error('Checkout failed'));
-          }
-        }
-      };
-      this.platform.addTabRemovedListener(onTabRemovedListener);
-    });
-
-    if (!currentTabId) {
-      // open extension browser shield settings if open from pop up (no current tab)
-      this.platform.openExtensionInBrowser('/settings/transaction-shield');
-    }
-
-    // fetch latest user subscriptions after checkout
-    const subscriptions = await this.subscriptionController.getSubscriptions();
-    return subscriptions;
-  }
-
   /**
    * Gets relevant state for the provider of an external origin.
    *
@@ -2700,7 +2635,14 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.getBillingPortalUrl.bind(
           this.subscriptionController,
         ),
-      startSubscriptionWithCard: this.startSubscriptionWithCard.bind(this),
+      startSubscriptionWithCard:
+        this.SubscriptionService.startSubscriptionWithCard.bind(
+          this.SubscriptionService,
+        ),
+      updateSubscriptionCardPaymentMethod:
+        this.SubscriptionService.updateSubscriptionCardPaymentMethod.bind(
+          this.SubscriptionService,
+        ),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -2870,10 +2812,6 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
-      getERC721AssetSymbol:
-        this.assetsContractController.getERC721AssetSymbol.bind(
-          this.assetsContractController,
-        ),
 
       // NftController
       addNft: nftController.addNft.bind(nftController),
@@ -3004,6 +2942,11 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setHasShownMultichainAccountsIntroModal.bind(
           appStateController,
         ),
+      updateNetworkConnectionBanner:
+        appStateController.updateNetworkConnectionBanner.bind(
+          appStateController,
+        ),
+
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -3430,6 +3373,11 @@ export default class MetamaskController extends EventEmitter {
         tokenBalancesController.stopPollingByPollingToken.bind(
           tokenBalancesController,
         ),
+
+      updateBalances: tokenBalancesController.updateBalances.bind(
+        tokenBalancesController,
+      ),
+
       deFiStartPolling: deFiPositionsController.startPolling.bind(
         deFiPositionsController,
       ),
@@ -3623,6 +3571,7 @@ export default class MetamaskController extends EventEmitter {
             this.txController,
           ),
         }),
+      lookupSelectedNetworks: this.lookupSelectedNetworks.bind(this),
     };
   }
 
@@ -4422,7 +4371,7 @@ export default class MetamaskController extends EventEmitter {
       // Once we have our first HD keyring available, we re-create the internal list of
       // accounts (they should be up-to-date already, but we still run `updateAccounts` as
       // there are some account migration happening in that function).
-      this.accountsController.updateAccounts();
+      await this.accountsController.updateAccounts();
       // Then we can build the initial tree.
       this.accountTreeController.init();
 
@@ -5774,6 +5723,16 @@ export default class MetamaskController extends EventEmitter {
 
     if (shouldShowApproval) {
       try {
+        // Track referral viewed event
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.ReferralViewed,
+          category: MetaMetricsEventCategory.Referrals,
+          properties: {
+            url: HYPERLIQUID_ORIGIN,
+            trigger_type: triggerType,
+          },
+        });
+
         const approvalResponse = await this.approvalController.add({
           origin: HYPERLIQUID_ORIGIN,
           type: HYPERLIQUID_APPROVAL_TYPE,
@@ -5797,6 +5756,15 @@ export default class MetamaskController extends EventEmitter {
             activePermittedAccount,
           );
         }
+
+        // Track referral confirm button clicked event
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.ReferralConfirmButtonClicked,
+          category: MetaMetricsEventCategory.Referrals,
+          properties: {
+            opt_in: Boolean(approvalResponse?.approved),
+          },
+        });
       } catch (error) {
         // Do nothing if the user rejects the request
         if (error.code === errorCodes.provider.userRejectedRequest) {
@@ -8283,22 +8251,26 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  setEnabledNetworks = (chainId) => {
+  setEnabledNetworks = async (chainId) => {
     try {
       this.networkEnablementController.enableNetwork(chainId);
     } catch (err) {
       log.error(err.message);
       throw err;
     }
+
+    await this.lookupSelectedNetworks();
   };
 
-  setEnabledAllPopularNetworks = () => {
+  setEnabledAllPopularNetworks = async () => {
     try {
       this.networkEnablementController.enableAllPopularNetworks();
     } catch (err) {
       log.error(err.message);
       throw err;
     }
+
+    await this.lookupSelectedNetworks();
   };
 
   updateHiddenAccountsList = (hiddenAccountList) => {
@@ -8883,6 +8855,7 @@ export default class MetamaskController extends EventEmitter {
     const initRequest = {
       encryptor: this.opts.encryptor,
       extension: this.extension,
+      platform: this.platform,
       getCronjobControllerStorageManager: () =>
         this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),

@@ -36,8 +36,9 @@ export type TokenWithApprovalAmount = (
 export const useAvailableTokenBalances = (params: {
   paymentChains?: ChainPaymentInfo[];
   price?: ProductPrice;
+  productType: ProductType;
 }): TokenWithApprovalAmount[] => {
-  const { paymentChains, price } = params;
+  const { paymentChains, price, productType } = params;
 
   const paymentChainIds = useMemo(
     () => paymentChains?.map((chain) => chain.chainId),
@@ -112,8 +113,10 @@ export const useAvailableTokenBalances = (params: {
             return null;
           }
           return getSubscriptionCryptoApprovalAmount({
-            price,
-            tokenPaymentInfo,
+            chainId: token.chainId as Hex,
+            paymentTokenAddress: token.address as Hex,
+            productType,
+            interval: price.interval,
           });
         }),
       );
@@ -133,7 +136,7 @@ export const useAvailableTokenBalances = (params: {
     };
 
     getAvailableTokenBalances();
-  }, [price, paymentChainTokenMap, validTokenBalances]);
+  }, [price, productType, paymentChainTokenMap, validTokenBalances]);
 
   return availableTokenBalances;
 };

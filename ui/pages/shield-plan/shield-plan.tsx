@@ -162,7 +162,7 @@ const ShieldPlan = () => {
   } = useSubscriptionPricing();
 
   const pricingPlans = useSubscriptionProductPlans(
-    'shield' as ProductType,
+    PRODUCT_TYPES.SHIELD,
     subscriptionPricing,
   );
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
@@ -177,6 +177,7 @@ const ShieldPlan = () => {
   const availableTokenBalances = useAvailableTokenBalances({
     paymentChains: cryptoPaymentMethod?.chains,
     price: selectedProductPrice,
+    productType: PRODUCT_TYPES.SHIELD,
   });
   const hasAvailableToken = availableTokenBalances.length > 0;
 
@@ -190,6 +191,13 @@ const ShieldPlan = () => {
   >(() => {
     return availableTokenBalances[0];
   });
+
+  // set selected token to the first available token if no token is selected
+  useEffect(() => {
+    if (!selectedToken) {
+      setSelectedToken(availableTokenBalances[0]);
+    }
+  }, [availableTokenBalances, selectedToken, setSelectedToken]);
 
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
@@ -271,7 +279,7 @@ const ShieldPlan = () => {
         }}
         startAccessory={
           <ButtonIcon
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={handleBack}
@@ -289,6 +297,7 @@ const ShieldPlan = () => {
               display={Display.Grid}
               gap={2}
               marginBottom={4}
+              paddingTop={2}
               className="shield-plan-page__plans"
             >
               {plans.map((plan) => (
@@ -425,7 +434,7 @@ const ShieldPlan = () => {
             <ShieldPaymentModal
               isOpen={showPaymentModal}
               onClose={() => setShowPaymentModal(false)}
-              selectedToken={selectedToken ?? undefined}
+              selectedToken={selectedToken}
               selectedPaymentMethod={selectedPaymentMethod}
               hasStableTokenWithBalance={hasAvailableToken}
               setSelectedPaymentMethod={setSelectedPaymentMethod}

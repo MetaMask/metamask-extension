@@ -93,16 +93,6 @@ export const createNewWalletWithSocialLoginOnboardingFlow = async ({
   await onboardingPasswordPage.checkPageIsLoaded();
 
   await onboardingPasswordPage.createWalletPassword(password);
-
-  // give a short delay to ensure that account synchronization is completed
-  await driver.delay(500);
-
-  // if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
-  //   await onboardingMetricsFlow(driver, {
-  //     participateInMetaMetrics: true,
-  //     dataCollectionForMarketing: true,
-  //   });
-  // }
 };
 
 /**
@@ -273,11 +263,18 @@ export async function onboardingMetricsFlow(
     await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
     await onboardingMetricsPage.validateDataCollectionForMarketingIsChecked();
   }
+
+  // The participate in MetaMetrics checkbox defaults to checked.
+  // - If opting in (true): do not click; just validate it's checked.
+  // - If opting out (false): click once to uncheck and validate it's unchecked.
   if (participateInMetaMetrics) {
-    await onboardingMetricsPage.clickIAgreeButton();
+    await onboardingMetricsPage.validateParticipateInMetaMetricsIsChecked();
   } else {
-    await onboardingMetricsPage.clickNoThanksButton();
+    await onboardingMetricsPage.clickParticipateInMetaMetricsCheckbox();
+    await onboardingMetricsPage.validateParticipateInMetaMetricsIsUnchecked();
   }
+
+  await onboardingMetricsPage.clickOnContinueButton();
 }
 
 /**
