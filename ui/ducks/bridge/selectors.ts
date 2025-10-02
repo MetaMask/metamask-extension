@@ -878,6 +878,7 @@ export const getHardwareWalletName = (state: BridgeAppState) => {
  * Returns true if Unified UI swaps are enabled for the chain.
  * Falls back to false when the chain is missing from feature-flags.
  *
+ * @deprecated should be true by default
  * @param _state - Redux state (unused placeholder for reselect signature)
  * @param chainId - ChainId in either hex (e.g. 0x1) or CAIP format (eip155:1).
  */
@@ -888,24 +889,17 @@ export const getIsUnifiedUIEnabled = createSelector(
   ],
   (bridgeFeatureFlags, chainId): boolean => {
     if (chainId === undefined || chainId === null) {
-      return false;
+      return true;
     }
 
     const caipChainId = formatChainIdToCaip(chainId);
 
-    // TODO remove this when bridge-controller's types are updated
     return bridgeFeatureFlags?.chains?.[caipChainId]
       ? Boolean(
-          'isSingleSwapBridgeButtonEnabled' in
-            bridgeFeatureFlags.chains[caipChainId]
-            ? (
-                bridgeFeatureFlags.chains[caipChainId] as unknown as {
-                  isSingleSwapBridgeButtonEnabled: boolean;
-                }
-              ).isSingleSwapBridgeButtonEnabled
-            : false,
+          bridgeFeatureFlags.chains[caipChainId]
+            .isSingleSwapBridgeButtonEnabled,
         )
-      : false;
+      : true;
   },
 );
 
