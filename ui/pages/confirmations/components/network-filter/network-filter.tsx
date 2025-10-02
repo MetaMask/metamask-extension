@@ -18,73 +18,45 @@ import {
   Icon,
   ButtonIconSize,
   ButtonIcon,
-} from '../../../../../components/component-library';
+  BoxProps,
+  ButtonBaseProps,
+  TextProps,
+  AvatarNetworkProps,
+} from '../../../../components/component-library';
 import {
   BackgroundColor,
   TextColor,
   Display,
   AlignItems,
   BorderColor,
-} from '../../../../../helpers/constants/design-system';
-import { NetworkListItem } from '../../../../../components/multichain';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
-import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
-import { AssetFilterMethod } from '../../../context/send-metrics';
-import { type Asset } from '../../../types/send';
+} from '../../../../helpers/constants/design-system';
+import { NetworkListItem } from '../../../../components/multichain';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useChainNetworkNameAndImageMap } from '../../hooks/useChainNetworkNameAndImage';
 
 type NetworkFilterProps = {
-  tokens: Asset[];
-  nfts: Asset[];
+  boxProps?: BoxProps<typeof Box>;
+  buttonBaseProps?: ButtonBaseProps<typeof ButtonBase>;
+  textProps?: TextProps<typeof Text>;
+  selectedAvatarProps?: Omit<AvatarNetworkProps<typeof AvatarNetwork>, 'name'>;
+  chainIds: string[];
   selectedChainId?: string | null;
   onChainIdChange?: (chainId: string | null) => void;
 };
 
 export const NetworkFilter = ({
-  tokens,
-  nfts,
+  boxProps = {},
+  buttonBaseProps = {},
+  textProps = {},
+  selectedAvatarProps = {},
+  chainIds,
   selectedChainId = null, // Default to "All networks"
   onChainIdChange,
 }: NetworkFilterProps) => {
   const t = useI18nContext();
   const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
     useState(false);
-  const { addAssetFilterMethod, removeAssetFilterMethod } =
-    useAssetSelectionMetrics();
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
-
-  // Extract and sort unique chain IDs by total fiat balance from tokens only
-  const uniqueChainIds = useMemo(() => {
-    const chainIds = new Set<string>();
-    const chainIdBalances = new Map<string, number>();
-
-    // Calculate total fiat balance for each chain from tokens only
-    tokens.forEach((token) => {
-      if (token.chainId) {
-        const chainId = String(token.chainId);
-        chainIds.add(chainId);
-
-        if (token.fiat?.balance) {
-          const currentTotal = chainIdBalances.get(chainId) || 0;
-          chainIdBalances.set(chainId, currentTotal + token.fiat.balance);
-        }
-      }
-    });
-
-    // Add chain IDs from NFTs but don't include their fiat balance in sorting
-    nfts.forEach((nft) => {
-      if (nft.chainId) {
-        chainIds.add(String(nft.chainId));
-      }
-    });
-
-    // Sort chain IDs by total fiat balance (descending - highest first)
-    return Array.from(chainIds).sort((chainIdA, chainIdB) => {
-      const balanceA = chainIdBalances.get(chainIdA) || 0;
-      const balanceB = chainIdBalances.get(chainIdB) || 0;
-      return balanceB - balanceA;
-    });
-  }, [tokens, nfts]);
 
   const { displayName, displayIcon, isAllNetworks } = useMemo(() => {
     if (selectedChainId === null) {
@@ -119,37 +91,25 @@ export const NetworkFilter = ({
 
   const handleNetworkSelection = useCallback(
     (chainId: string | null) => {
-      if (chainId === null) {
-        removeAssetFilterMethod(AssetFilterMethod.Network);
-      } else {
-        addAssetFilterMethod(AssetFilterMethod.Network);
-      }
-
       onChainIdChange?.(chainId);
       closePopover();
     },
-    [
-      addAssetFilterMethod,
-      closePopover,
-      onChainIdChange,
-      removeAssetFilterMethod,
-    ],
+    [closePopover, onChainIdChange],
   );
 
   return (
     <>
-      <Box marginLeft={4} marginBottom={2}>
+      <Box {...boxProps}>
         <ButtonBase
-          data-testid="send-network-filter-toggle"
+          data-testid="network-filter-toggle"
           onClick={handleNetworkFilterClick}
           size={ButtonBaseSize.Md}
           endIconName={IconName.ArrowDown}
           backgroundColor={BackgroundColor.backgroundDefault}
           color={TextColor.textDefault}
           borderColor={BorderColor.borderDefault}
-          marginBottom={2}
-          marginTop={2}
           ellipsis
+          {...buttonBaseProps}
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
             {isAllNetworks ? (
@@ -160,9 +120,12 @@ export const NetworkFilter = ({
                 src={displayIcon}
                 size={AvatarNetworkSize.Sm}
                 borderWidth={0}
+                {...selectedAvatarProps}
               />
             )}
-            <Text ellipsis>{displayName}</Text>
+            <Text ellipsis {...textProps}>
+              {displayName}
+            </Text>
           </Box>
         </ButtonBase>
       </Box>
@@ -195,7 +158,7 @@ export const NetworkFilter = ({
               selected={selectedChainId === null}
               onClick={() => handleNetworkSelection(null)}
             />
-            {uniqueChainIds.map((chainId) => {
+            {chainIds.map((chainId) => {
               const networkName = chainNetworkNAmeAndImageMap.get(
                 chainId as string,
               )?.networkName;
