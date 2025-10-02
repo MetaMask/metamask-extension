@@ -427,7 +427,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
 
     // If confirmation was skipped, do not start an approval flow to avoid loader UI.
     if (skipApprovalFlow) {
-      finalizeFn();
+      await finalizeFn();
       return;
     }
 
