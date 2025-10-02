@@ -128,7 +128,7 @@ export const useAvailableTokenBalances = (params: {
           token.balance &&
           amount &&
           new BigNumber(token.balance)
-            .pow(token.decimals)
+            .mul(10 ** token.decimals)
             .gte(amount.approveAmount);
         if (tokenHasEnoughBalance) {
           availableTokens.push({
