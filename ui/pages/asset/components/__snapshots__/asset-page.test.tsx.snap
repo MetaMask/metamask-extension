@@ -310,9 +310,7 @@ exports[`AssetPage should render a native asset 1`] = `
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
-                0
-                 
-                TEST
+                0 TEST
               </p>
             </div>
           </div>
@@ -738,9 +736,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
-                0
-                 
-                TEST
+                0 TEST
               </p>
             </div>
           </div>
@@ -1231,9 +1227,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
-                0
-                 
-                TEST
+                0 TEST
               </p>
             </div>
           </div>
