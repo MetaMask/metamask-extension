@@ -584,7 +584,7 @@ const PrepareBridgePage = ({
           height={BlockSize.Full}
           padding={4}
           gap={4}
-          backgroundColor={BackgroundColor.backgroundAlternativeSoft}
+          backgroundColor={BackgroundColor.backgroundDefault}
           style={{
             position: 'relative',
           }}
@@ -592,7 +592,7 @@ const PrepareBridgePage = ({
           <Box
             className="prepare-bridge-page__switch-tokens"
             display={Display.Flex}
-            backgroundColor={BackgroundColor.backgroundAlternativeSoft}
+            backgroundColor={BackgroundColor.backgroundSection}
             style={{
               position: 'absolute',
               top: '-20px',
@@ -619,8 +619,8 @@ const PrepareBridgePage = ({
               }}
               data-testid="switch-tokens"
               ariaLabel="switch-tokens"
-              iconName={IconName.Arrow2Down}
-              color={IconColor.iconAlternativeSoft}
+              iconName={IconName.SwapVertical}
+              color={IconColor.iconAlternative}
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
@@ -689,6 +689,14 @@ const PrepareBridgePage = ({
               }}
             />
           </Box>
+
+          <Box
+            paddingInline={4}
+            style={{
+              borderTop: '1px solid var(--color-border-muted)',
+              marginTop: '-16px',
+            }}
+          />
 
           <BridgeInputGroup
             header={getToInputHeader()}
@@ -821,7 +829,7 @@ const PrepareBridgePage = ({
       <Column
         paddingInline={4}
         gap={4}
-        backgroundColor={BackgroundColor.backgroundAlternativeSoft}
+        backgroundColor={BackgroundColor.backgroundDefault}
       >
         {isUsingHardwareWallet &&
           isTxSubmittable &&
