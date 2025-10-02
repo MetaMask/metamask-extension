@@ -110,8 +110,8 @@ describe('Bridge tests', function (this: Suite) {
          */
 
         assert(
-          swapBridgeInputChanged.length === 18,
-          'Should have 18 input change events',
+          swapBridgeInputChanged.length === 22,
+          'Should have 22 input change events',
         );
 
         const swapBridgeInputChangedKeys = new Set(

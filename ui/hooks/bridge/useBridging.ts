@@ -104,7 +104,7 @@ const useBridging = () => {
           location: location as never,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol_source: srcToken?.symbol ?? '',
+          token_symbol_source: srcToken?.symbol ?? 'ETH',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol_destination: '',
