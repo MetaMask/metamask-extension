@@ -7,11 +7,8 @@ import PropTypes from 'prop-types';
 import {
   BannerAlert,
   Box,
-  Button,
   ButtonIcon,
   ButtonPrimary,
-  ButtonSize,
-  ButtonVariant,
   HelpText,
   HelpTextSeverity,
   IconName,
@@ -38,20 +35,6 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
 
   const [showSelectDisableWarn, setShowDisableSelectWarn] = useState(false);
   const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard();
-
-  const renderPrivateKeyWarningDescription = () => (
-    <Text variant={TextVariant.bodySm}>
-      {t('privateKeyWarning')}{' '}
-      <Button
-        variant={ButtonVariant.Link}
-        size={ButtonSize.Inherit}
-        href={ZENDESK_URLS.PRIVATE_KEY_GUIDE}
-        externalLink
-      >
-        {t('learnMore')}
-      </Button>
-    </Text>
-  );
 
   return (
     <>
@@ -96,9 +79,15 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
           {t('lavaDomeCopyWarning')}
         </HelpText>
       )}
-      <BannerAlert severity={Severity.Danger} marginTop={4}>
-        {renderPrivateKeyWarningDescription()}
-      </BannerAlert>
+      <BannerAlert
+        severity={Severity.Danger}
+        marginTop={4}
+        description={t('privateKeyWarning')}
+        actionButtonLabel={t('learnMore')}
+        actionButtonOnClick={() =>
+          window.open(ZENDESK_URLS.PRIVATE_KEY_GUIDE, '_blank')
+        }
+      />
       <ButtonPrimary marginTop={6} onClick={onClose} block>
         {t('done')}
       </ButtonPrimary>

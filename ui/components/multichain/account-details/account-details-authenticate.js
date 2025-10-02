@@ -13,12 +13,8 @@ import { exportAccount, hideWarning } from '../../../store/actions';
 import {
   BannerAlert,
   Box,
-  Button,
   ButtonPrimary,
   ButtonSecondary,
-  ButtonSize,
-  ButtonVariant,
-  Text,
 } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 
@@ -58,20 +54,6 @@ export const AccountDetailsAuthenticate = ({
     [onSubmit],
   );
 
-  const renderPrivateKeyWarningDescription = () => (
-    <Text variant={TextVariant.bodySm}>
-      {t('privateKeyWarning')}{' '}
-      <Button
-        variant={ButtonVariant.Link}
-        size={ButtonSize.Inherit}
-        href={ZENDESK_URLS.PRIVATE_KEY_GUIDE}
-        externalLink
-      >
-        {t('learnMore')}
-      </Button>
-    </Text>
-  );
-
   return (
     <>
       <FormTextField
@@ -92,7 +74,11 @@ export const AccountDetailsAuthenticate = ({
       <BannerAlert
         marginTop={6}
         severity={Severity.Danger}
-        description={renderPrivateKeyWarningDescription()}
+        description={t('privateKeyWarning')}
+        actionButtonLabel={t('learnMore')}
+        actionButtonOnClick={() =>
+          window.open(ZENDESK_URLS.PRIVATE_KEY_GUIDE, '_blank')
+        }
       />
       <Box display={Display.Flex} marginTop={6} gap={2}>
         <ButtonSecondary onClick={onCancel} block>
