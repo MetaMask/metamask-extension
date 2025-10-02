@@ -76,9 +76,7 @@ type CoinButtonsProps = {
   account: InternalAccount;
   chainId: `0x${string}` | CaipChainId | number;
   trackingLocation: string;
-  isSwapsChain: boolean;
   isSigningEnabled: boolean;
-  isBridgeChain: boolean;
   isBuyableChain: boolean;
   classPrefix?: string;
   iconButtonClassName?: string;
@@ -88,9 +86,7 @@ const CoinButtons = ({
   account,
   chainId,
   trackingLocation,
-  isSwapsChain,
   isSigningEnabled,
-  isBridgeChain,
   isBuyableChain,
   classPrefix = 'coin',
 }: CoinButtonsProps) => {
@@ -119,11 +115,6 @@ const CoinButtons = ({
   const defaultSwapsToken = useSelector((state) =>
     getSwapsDefaultToken(state, chainId.toString()),
   );
-
-  // Pre-conditions
-  if (isSwapsChain && defaultSwapsToken === undefined) {
-    throw new Error('defaultSwapsToken is required');
-  }
 
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const handleSendNonEvm = useHandleSendNonEvm();
@@ -159,11 +150,9 @@ const CoinButtons = ({
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
     swapButton: [
-      { condition: !isSwapsChain, message: 'currentlyUnavailable' },
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
     bridgeButton: [
-      { condition: !isBridgeChain, message: 'currentlyUnavailable' },
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
   };
@@ -360,33 +349,30 @@ const CoinButtons = ({
 
     await setCorrectChain();
 
-    if (isSwapsChain) {
-      trackEvent({
-        event: MetaMetricsEventName.NavSwapButtonClicked,
-        category: MetaMetricsEventCategory.Swaps,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: 'ETH',
-          location: MetaMetricsSwapsEventSource.MainView,
-          text: 'Swap',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: chainId,
-        },
-      });
-      dispatch(setSwapsFromToken(defaultSwapsToken));
-      if (usingHardwareWallet) {
-        if (global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
-        }
-      } else {
-        history.push(PREPARE_SWAP_ROUTE);
+    trackEvent({
+      event: MetaMetricsEventName.NavSwapButtonClicked,
+      category: MetaMetricsEventCategory.Swaps,
+      properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        token_symbol: 'ETH',
+        location: MetaMetricsSwapsEventSource.MainView,
+        text: 'Swap',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: chainId,
+      },
+    });
+    dispatch(setSwapsFromToken(defaultSwapsToken));
+    if (usingHardwareWallet) {
+      if (global.platform.openExtensionInBrowser) {
+        global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
       }
+    } else {
+      history.push(PREPARE_SWAP_ROUTE);
     }
   }, [
     setCorrectChain,
-    isSwapsChain,
     chainId,
     isMultichainAccountsState2Enabled,
     multichainChainId,
@@ -464,11 +450,7 @@ const CoinButtons = ({
       }
       <IconButton
         className={`${classPrefix}-overview__button`}
-        disabled={
-          (!isSwapsChain && !isUnifiedUIEnabled) ||
-          !isSigningEnabled ||
-          !isExternalServicesEnabled
-        }
+        disabled={!isSigningEnabled || !isExternalServicesEnabled}
         Icon={
           displayNewIconButtons ? (
             <Icon
@@ -492,18 +474,13 @@ const CoinButtons = ({
           generateTooltip('swapButton', contents)
         }
       />
-      {/* the bridge button is redundant if unified ui is enabled, testnet or non-bridge chain (unsupported) */}
+      {/* the bridge button is redundant if unified ui is enabled, testnet or for non-EVM accounts without external services */}
       {isUnifiedUIEnabled ||
       isTestnet ||
-      !isBridgeChain ||
       isNonEvmAccountWithoutExternalServices ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
-          disabled={
-            !isBridgeChain ||
-            !isSigningEnabled ||
-            isNonEvmAccountWithoutExternalServices
-          }
+          disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
           data-testid={`${classPrefix}-overview-bridge`}
           Icon={
             displayNewIconButtons ? (

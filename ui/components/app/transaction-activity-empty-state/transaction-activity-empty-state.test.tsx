@@ -53,30 +53,6 @@ const createStateOverrides = (
   },
 });
 
-const createTestnetState = (): ReturnType<typeof createStateOverrides> =>
-  createStateOverrides({
-    useExternalServices: true,
-    selectedNetworkClientId: 'goerli',
-    networkConfigurationsByChainId: {
-      ...mockState.metamask.networkConfigurationsByChainId,
-      '0x5': {
-        // Goerli testnet - not in allowed swaps chains
-        chainId: '0x5',
-        name: 'Goerli',
-        nativeCurrency: 'ETH',
-        defaultRpcEndpointIndex: 0,
-        rpcEndpoints: [
-          {
-            type: 'infura',
-            url: 'https://goerli.infura.io/v3/test',
-            networkClientId: 'goerli',
-          },
-        ],
-        blockExplorerUrls: [],
-      },
-    },
-  });
-
 const createStateWithoutExternalServices = (): ReturnType<
   typeof createStateOverrides
 > =>
@@ -206,11 +182,6 @@ describe('TransactionActivityEmptyState', () => {
       ]
     >([
       [
-        'not a swaps chain',
-        { account: accountWithSigning },
-        createTestnetState(),
-      ],
-      [
         'external services are disabled',
         { account: accountWithSigning },
         createStateWithoutExternalServices(),
@@ -245,7 +216,7 @@ describe('TransactionActivityEmptyState', () => {
       expectSwapButtonState(true);
     });
 
-    it('enables swap button for Solana networks even when isSwapsChain is false', () => {
+    it('enables swap button for all networks when signing and external services are enabled', () => {
       jest
         .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
         .mockReturnValue({
@@ -255,9 +226,9 @@ describe('TransactionActivityEmptyState', () => {
       const props: Partial<TransactionActivityEmptyStateProps> = {
         account: accountWithSigning,
       };
-      const stateOverrides = createTestnetState();
+      const stateOverrides = createValidSwapState();
       renderComponent(props, stateOverrides);
-      expectSwapButtonState(true); // Should be enabled due to Solana logic
+      expectSwapButtonState(true);
     });
 
     it('calls openBridgeExperience when swap button is clicked', () => {

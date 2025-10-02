@@ -4,11 +4,7 @@ import { getMultichainSelectedAccountCachedBalance } from '../../../selectors/mu
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
-import {
-  getIsSwapsChain,
-  getIsBridgeChain,
-  getSelectedInternalAccount,
-} from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors';
 import { CoinOverview } from './coin-overview';
 
 type NonEvmOverviewProps = {
@@ -21,11 +17,6 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   const account = useSelector(getSelectedInternalAccount);
   const isNativeTokenBuyable = useSelector(getIsNativeTokenBuyable);
 
-  let isSwapsChain = false;
-  let isBridgeChain = false;
-  isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
-  isBridgeChain = useSelector((state) => getIsBridgeChain(state, chainId));
-
   return (
     <CoinOverview
       account={account}
@@ -35,8 +26,6 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
       className={className}
       chainId={chainId}
       isSigningEnabled={true}
-      isSwapsChain={isSwapsChain}
-      isBridgeChain={isBridgeChain}
       isBuyableChain={isNativeTokenBuyable}
     />
   );

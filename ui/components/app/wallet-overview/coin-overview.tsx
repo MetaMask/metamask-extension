@@ -77,9 +77,7 @@ export type CoinOverviewProps = {
   className?: string;
   classPrefix?: string;
   chainId: CaipChainId | Hex;
-  isBridgeChain: boolean;
   isBuyableChain: boolean;
-  isSwapsChain: boolean;
   isSigningEnabled: boolean;
 };
 
@@ -205,9 +203,7 @@ export const CoinOverview = ({
   className,
   classPrefix = 'coin',
   chainId,
-  isBridgeChain,
   isBuyableChain,
-  isSwapsChain,
   isSigningEnabled,
 }: CoinOverviewProps) => {
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
@@ -397,9 +393,7 @@ export const CoinOverview = ({
             account,
             trackingLocation: 'home',
             chainId,
-            isSwapsChain,
             isSigningEnabled,
-            isBridgeChain,
             isBuyableChain,
             classPrefix,
           }}

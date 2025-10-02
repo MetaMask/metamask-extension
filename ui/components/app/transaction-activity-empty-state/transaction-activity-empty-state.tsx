@@ -6,14 +6,10 @@ import { EthMethod } from '@metamask/keyring-api';
 import { TabEmptyState } from '../../ui/tab-empty-state';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTheme } from '../../../hooks/useTheme';
-import { getUseExternalServices, getIsSwapsChain } from '../../../selectors';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { getUseExternalServices } from '../../../selectors';
 import { MetaMetricsSwapsEventSource } from '../../../../shared/constants/metametrics';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { getMultichainNetwork } from '../../../selectors/multichain';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 export type TransactionActivityEmptyStateProps = {
   /**
@@ -35,13 +31,6 @@ export const TransactionActivityEmptyState: React.FC<
     account.methods.includes(EthMethod.SignTransaction) ||
     account.methods.includes(EthMethod.SignUserOperation);
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-  const chainId = useSelector(getCurrentChainId);
-  const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
-
-  const { chainId: multichainChainId } = useMultichainSelector(
-    getMultichainNetwork,
-    account,
-  );
 
   const { openBridgeExperience } = useBridging();
 
@@ -59,9 +48,7 @@ export const TransactionActivityEmptyState: React.FC<
   }, [openBridgeExperience]);
 
   // Determine if swap button should be enabled
-  const isSwapButtonEnabled =
-    multichainChainId === MultichainNetworks.SOLANA ||
-    (isSwapsChain && isSigningEnabled && isExternalServicesEnabled);
+  const isSwapButtonEnabled = isSigningEnabled && isExternalServicesEnabled;
 
   return (
     <TabEmptyState
