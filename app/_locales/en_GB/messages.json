@@ -2948,7 +2948,7 @@
     "message": "Import a wallet or account"
   },
   "importWalletSuccess": {
-    "message": "Secret Recovery Phrase $1 imported",
+    "message": "Wallet $1 imported",
     "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
@@ -3530,7 +3530,7 @@
     "description": "Button text to learn more about multichain accounts"
   },
   "multichainAccountIntroSameAddressDescription": {
-    "message": "We've merged your accounts, so keep using MetaMask the same as before. Your funds are safe and unchanged.",
+    "message": "We’ve grouped your accounts, so keep using MetaMask the same as before. Your funds are safe and unchanged.",
     "description": "Description explaining that accounts have been merged"
   },
   "multichainAccountIntroSameAddressTitle": {
@@ -3546,7 +3546,7 @@
     "description": "Button text to view accounts from the intro modal"
   },
   "multichainAccountIntroWhatDescription": {
-    "message": "One account, addresses on all the networks MetaMask supports. So now you can use Ethereum, Solana, and more without switching accounts.",
+    "message": "A multichain account is an account with addresses on several networks, supported by MetaMask. So now you can use Ethereum, Solana, and more without switching accounts.",
     "description": "Description explaining what multichain accounts are"
   },
   "multichainAccountIntroWhatTitle": {
@@ -3556,6 +3556,10 @@
   "multichainAccountPrivateKeyCopied": {
     "message": "Private key copied",
     "description": "Message displayed when the multichain account private key is copied to clipboard"
+  },
+  "multichainAccountsIntroductionModalTitle": {
+    "message": "Introducing multichain accounts",
+    "description": "Title for the multichain accounts introduction modal."
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
