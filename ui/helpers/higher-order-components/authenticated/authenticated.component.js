@@ -8,14 +8,13 @@ const OnboardingRoute = { pathname: ONBOARDING_ROUTE };
 export default function Authenticated({
   isUnlocked,
   completedOnboarding,
-  component: Component,
-  ...props
+  children,
 }) {
   const location = useLocation();
 
   switch (true) {
     case isUnlocked && completedOnboarding:
-      return <Component {...props} />;
+      return children;
     case !completedOnboarding:
       return <Navigate to={OnboardingRoute} replace />;
     default:
@@ -26,5 +25,5 @@ export default function Authenticated({
 Authenticated.propTypes = {
   isUnlocked: PropTypes.bool,
   completedOnboarding: PropTypes.bool,
-  component: PropTypes.elementType,
+  children: PropTypes.node,
 };

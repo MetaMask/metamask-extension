@@ -5,13 +5,9 @@ import { ONBOARDING_ROUTE } from '../../constants/routes';
 
 const onboardingRoute = { pathname: ONBOARDING_ROUTE };
 
-export default function Initialized({
-  component: Component,
-  completedOnboarding,
-  ...props
-}) {
+export default function Initialized({ children, completedOnboarding }) {
   return completedOnboarding ? (
-    <Component {...props} />
+    children
   ) : (
     <Navigate to={onboardingRoute} replace />
   );
@@ -19,7 +15,5 @@ export default function Initialized({
 
 Initialized.propTypes = {
   completedOnboarding: PropTypes.bool,
-  path: PropTypes.string,
-  component: PropTypes.elementType,
-  exact: PropTypes.bool,
+  children: PropTypes.node,
 };
