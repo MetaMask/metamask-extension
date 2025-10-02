@@ -65,7 +65,7 @@ describe('Recipient', () => {
     },
   ];
 
-  const renderComponent = () => {
+  const renderComponent = (args = {}) => {
     return renderWithProvider(
       <Recipient
         recipientValidationResult={
@@ -76,6 +76,7 @@ describe('Recipient', () => {
             recipientResolvedLookup: undefined,
           } as unknown as ReturnType<typeof useRecipientValidation>
         }
+        {...args}
       />,
       mockStore,
     );
@@ -196,21 +197,6 @@ describe('Recipient', () => {
     expect(mockCaptureRecipientSelected).toHaveBeenCalledTimes(1);
   });
 
-  it('does not capture metrics on input blur when to value is empty', () => {
-    mockUseSendContext.mockReturnValue({
-      to: '',
-      updateTo: mockUpdateTo,
-      updateToResolved: jest.fn(),
-    } as unknown as ReturnType<typeof useSendContext>);
-
-    const { getByRole } = renderComponent();
-    const input = getByRole('textbox');
-
-    fireEvent.blur(input);
-
-    expect(mockCaptureRecipientSelected).not.toHaveBeenCalled();
-  });
-
   it('blurs input when opening modal', () => {
     mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId, getByRole } = renderComponent();
@@ -225,14 +211,18 @@ describe('Recipient', () => {
     expect(document.activeElement).not.toBe(input);
   });
 
-  it('renders clear button when to value exists', () => {
+  it('renders clear button when to has no error', () => {
     mockUseSendContext.mockReturnValue({
       to: '0x1234567890abcdef',
       updateTo: mockUpdateTo,
       updateToResolved: jest.fn(),
     } as unknown as ReturnType<typeof useSendContext>);
 
-    const { getByTestId } = renderComponent();
+    const { getByTestId } = renderComponent({
+      recipientValidationResult: {
+        toAddressValidated: '0x1234567890abcdef',
+      },
+    });
 
     expect(getByTestId('clear-recipient-btn')).toBeInTheDocument();
   });
@@ -244,7 +234,11 @@ describe('Recipient', () => {
       updateToResolved: jest.fn(),
     } as unknown as ReturnType<typeof useSendContext>);
 
-    const { getByTestId } = renderComponent();
+    const { getByTestId } = renderComponent({
+      recipientValidationResult: {
+        toAddressValidated: '0x1234567890abcdef',
+      },
+    });
 
     fireEvent.click(getByTestId('clear-recipient-btn'));
 

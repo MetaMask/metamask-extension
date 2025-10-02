@@ -1185,16 +1185,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.controllerMessenger.subscribe(
-      'NetworkController:networkAdded',
-      (state) => {
-        this.networkEnablementController.enableNetworkInNamespace(
-          state.chainId,
-          KnownCaipNamespace.Eip155,
-        );
-      },
-    );
-
-    this.controllerMessenger.subscribe(
       `OnboardingController:stateChange`,
       previousValueComparator(async (prevState, currState) => {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
@@ -2822,10 +2812,6 @@ export default class MetamaskController extends EventEmitter {
         this.assetsContractController.getERC1155BalanceOf.bind(
           this.assetsContractController,
         ),
-      getERC721AssetSymbol:
-        this.assetsContractController.getERC721AssetSymbol.bind(
-          this.assetsContractController,
-        ),
 
       // NftController
       addNft: nftController.addNft.bind(nftController),
@@ -2956,6 +2942,11 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setHasShownMultichainAccountsIntroModal.bind(
           appStateController,
         ),
+      updateNetworkConnectionBanner:
+        appStateController.updateNetworkConnectionBanner.bind(
+          appStateController,
+        ),
+
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),

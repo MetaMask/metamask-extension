@@ -55,9 +55,7 @@ describe.skip('Multichain Accounts - Multichain accounts list page', function (t
         // Ensure that accounts within the wallets are displayed
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
-        await accountListPage.checkMultichainAccountNameDisplayed(
-          'Ledger Account 1',
-        );
+        await accountListPage.checkMultichainAccountNameDisplayed('Ledger 1');
       },
     );
   });
