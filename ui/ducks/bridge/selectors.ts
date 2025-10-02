@@ -55,7 +55,10 @@ import {
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
 } from '../../selectors/selectors';
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import {
+  ALL_ALLOWED_BRIDGE_CHAIN_IDS,
+  ALLOWED_BRIDGE_CHAIN_IDS,
+} from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
@@ -199,12 +202,13 @@ export const getLastSelectedChainId = createSelector(
   },
 );
 
+// This returns undefined if the selected chain is not supported by swap/bridge (i.e, testnets)
 // TODO remove providerConfig references
 export const getFromChain = createDeepEqualSelector(
   [getLastSelectedChainId, getFromChains, getMultichainProviderConfig],
   (lastSelectedChainId, fromChains, providerConfig) => {
+    // useBridgeQueryParams sets the global network when loading the page
     // If the global network doesn't match the network filter, use the global network
-    // The useBridging and useBridgeQueryParams set the network prior to navigating to the bridge page
     const chainIdToUse =
       lastSelectedChainId &&
       providerConfig?.chainId &&
@@ -889,6 +893,11 @@ export const getIsUnifiedUIEnabled = createSelector(
   ],
   (bridgeFeatureFlags, chainId): boolean => {
     if (chainId === undefined || chainId === null) {
+      return true;
+    }
+
+    // Show Unified UI for all other chains
+    if (!ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId)) {
       return true;
     }
 
