@@ -2,7 +2,7 @@ import React from 'react';
 import { FileUploader } from './file-uploader';
 
 export default {
-  title: 'Components/App/FileUploader',
+  title: 'Components/ComponentLibrary/FileUploader',
   component: FileUploader,
   argTypes: {
     label: {
@@ -26,7 +26,7 @@ export default {
     helpText: 'Upload files description',
     acceptText: 'List of accepted file types',
     multiple: true,
-    accept: ['image/jpeg', 'image/png', 'application/pdf'],
+    accept: 'image/jpeg, image/png, application/pdf',
   },
 };
 

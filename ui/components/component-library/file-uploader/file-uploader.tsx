@@ -14,13 +14,13 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { Box, PolymorphicRef } from '../../box';
-import type { BoxProps } from '../../box';
-import { Label } from '../../label';
-import { HelpText, HelpTextSeverity } from '../../help-text';
-import { ButtonIcon, Icon, IconName, IconSize, Text } from '../..';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+} from '../../../helpers/constants/design-system';
+import { Box, PolymorphicRef } from '../box';
+import type { BoxProps } from '../box';
+import { Label } from '../label';
+import { HelpText, HelpTextSeverity } from '../help-text';
+import { ButtonIcon, Icon, IconName, IconSize, Text } from '..';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   FileUploaderProps,
   FileUploaderComponent,
@@ -76,8 +76,10 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
 
           // Check if file type is supported
           // only happens on drag and drop since it does not check access prop
-          if (accept && !accept.includes(file.type)) {
-            setError(t('fileUploaderInvalidFileTypeError', [file.type]));
+          // remove whitespace from accept
+          const acceptArray = accept?.replace(/\s/g, '').split(',');
+          if (accept && acceptArray && !acceptArray.includes(file.type)) {
+            setError(t('fileUploaderInvalidFileTypeError'));
             return;
           }
 
