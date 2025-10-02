@@ -7,8 +7,11 @@ import PropTypes from 'prop-types';
 import {
   BannerAlert,
   Box,
+  Button,
   ButtonIcon,
   ButtonPrimary,
+  ButtonSize,
+  ButtonVariant,
   HelpText,
   HelpTextSeverity,
   IconName,
@@ -24,6 +27,7 @@ import {
   Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
@@ -34,6 +38,20 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
 
   const [showSelectDisableWarn, setShowDisableSelectWarn] = useState(false);
   const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard();
+
+  const renderPrivateKeyWarningDescription = () => (
+    <Text variant={TextVariant.bodySm}>
+      {t('privateKeyWarning')}{' '}
+      <Button
+        variant={ButtonVariant.Link}
+        size={ButtonSize.Inherit}
+        href={ZENDESK_URLS.PRIVATE_KEY_GUIDE}
+        externalLink
+      >
+        {t('learnMore')}
+      </Button>
+    </Text>
+  );
 
   return (
     <>
@@ -79,7 +97,7 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
         </HelpText>
       )}
       <BannerAlert severity={Severity.Danger} marginTop={4}>
-        <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
+        {renderPrivateKeyWarningDescription()}
       </BannerAlert>
       <ButtonPrimary marginTop={6} onClick={onClose} block>
         {t('done')}
