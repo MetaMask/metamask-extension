@@ -10,9 +10,7 @@ import {
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockInfuraAndAccountSync } from '../mocks';
 import { arrangeTestUtils } from './helpers';
 
