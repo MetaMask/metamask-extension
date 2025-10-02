@@ -77,7 +77,7 @@ describe('Account-watcher snap', function (this: Suite) {
           assert.equal(await homePage.checkIfSendButtonIsClickable(), false);
 
           // 'Bridge' button should be disabled
-          assert.equal(await homePage.checkIfBridgeButtonIsClickable(), false);
+          assert.equal(await homePage.checkIfSwapButtonIsClickable(), false);
         },
       );
     });
