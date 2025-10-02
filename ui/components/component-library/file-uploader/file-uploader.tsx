@@ -77,7 +77,7 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
           // Check if file type is supported
           // only happens on drag and drop since it does not check access prop
           // remove whitespace from accept
-          const acceptArray = accept?.replace(' ', '').split(',');
+          const acceptArray = accept?.replaceAll(' ', '').split(',');
           if (accept && acceptArray && !acceptArray.includes(file.type)) {
             setError(t('fileUploaderInvalidFileTypeError'));
             return;
