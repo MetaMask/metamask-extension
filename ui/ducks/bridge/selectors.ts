@@ -203,19 +203,16 @@ export const getLastSelectedChainId = createSelector(
 );
 
 // This returns undefined if the selected chain is not supported by swap/bridge (i.e, testnets)
-// TODO remove providerConfig references
 export const getFromChain = createDeepEqualSelector(
-  [getLastSelectedChainId, getFromChains, getMultichainProviderConfig],
-  (lastSelectedChainId, fromChains, providerConfig) => {
-    // useBridgeQueryParams sets the global network when loading the page
-    // If the global network doesn't match the network filter, use the global network
-    const chainIdToUse =
-      lastSelectedChainId &&
-      providerConfig?.chainId &&
-      lastSelectedChainId !== providerConfig.chainId
-        ? providerConfig.chainId
-        : lastSelectedChainId;
-    return fromChains.find(({ chainId }) => chainId === chainIdToUse);
+  [getFromChains, getMultichainProviderConfig],
+  (fromChains, providerConfig) => {
+    // When the page loads the global network always matches the network filter
+    // Because useBridging checks whether the lastSelectedNetwork matches the provider config
+    // Then useBridgeQueryParams sets the global network to lastSelectedNetwork as needed
+    // TODO remove providerConfig references and just use getLastSelectedChainId
+    return fromChains.find(
+      ({ chainId }) => chainId === providerConfig?.chainId,
+    );
   },
 );
 

@@ -56,10 +56,7 @@ import { Box, Icon, IconName, IconSize } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
-import {
-  getIsUnifiedUIEnabled,
-  type BridgeAppState,
-} from '../../../ducks/bridge/selectors';
+import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
 import { ReceiveModal } from '../../multichain/receive-modal';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
@@ -138,16 +135,6 @@ const CoinButtons = ({
   const location = useLocation();
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
-
-  // Determine the chainId to use in the Swap experience using the url
-  const urlSuffix = location.pathname.split('/').filter(Boolean).at(-1);
-  const hexChainOrAssetId = urlSuffix
-    ? decodeURIComponent(urlSuffix)
-    : undefined;
-
-  const chainIdToUse = isCaipAssetType(hexChainOrAssetId)
-    ? parseCaipAssetType(hexChainOrAssetId).chainId
-    : hexChainOrAssetId;
 
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
   // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
@@ -239,9 +226,7 @@ const CoinButtons = ({
 
   const { openBridgeExperience } = useBridging();
 
-  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
-    getIsUnifiedUIEnabled(state, chainIdToUse),
-  );
+  const isUnifiedUIEnabled = useSelector(getIsUnifiedUIEnabled);
 
   const setCorrectChain = useCallback(async () => {
     if (
@@ -346,6 +331,15 @@ const CoinButtons = ({
 
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
+      // Determine the chainId to use in the Swap experience using the url
+      const urlSuffix = location.pathname.split('/').filter(Boolean).at(-1);
+      const hexChainOrAssetId = urlSuffix
+        ? decodeURIComponent(urlSuffix)
+        : undefined;
+      const chainIdToUse = isCaipAssetType(hexChainOrAssetId)
+        ? parseCaipAssetType(hexChainOrAssetId).chainId
+        : hexChainOrAssetId;
+
       // Handle clicking from the wallet or native asset overview page
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
