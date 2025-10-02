@@ -11,7 +11,6 @@ import {
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
-import { BigNumber } from 'bignumber.js';
 import { getSubscriptionPricing } from '../../selectors/subscription';
 import {
   getSubscriptionCryptoApprovalAmount,
@@ -124,12 +123,18 @@ export const useAvailableTokenBalances = (params: {
 
       cryptoApprovalAmounts.forEach((amount, index) => {
         const token = validTokenBalances[index];
+        if (!token.balance) {
+          return;
+        }
+        // NOTE: we are using stable coin for subscription atm, so we need to scale the balance by the decimals
+        const scaledFactor = 10n ** 6n;
+        const scaledBalance =
+          BigInt(Math.round(Number(token.balance) * Number(scaledFactor))) /
+          scaledFactor;
         const tokenHasEnoughBalance =
-          token.balance &&
           amount &&
-          new BigNumber(token.balance)
-            .mul(10 ** token.decimals)
-            .gte(amount.approveAmount);
+          scaledBalance * BigInt(10 ** token.decimals) >=
+            BigInt(amount.approveAmount);
         if (tokenHasEnoughBalance) {
           availableTokens.push({
             ...token,
