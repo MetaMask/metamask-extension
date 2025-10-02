@@ -1971,11 +1971,13 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           <span
             class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
+            style="cursor: pointer; transition: color 0.2s ease;"
           >
             &lt;0.000001
           </span>
           <span
             class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+            style="cursor: pointer; transition: color 0.2s ease;"
           >
             ETH
           </span>
@@ -2025,11 +2027,13 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           <span
             class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
+            style="cursor: pointer; transition: color 0.2s ease;"
           >
             &lt;0.000001
           </span>
           <span
             class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+            style="cursor: pointer; transition: color 0.2s ease;"
           >
             ETH
           </span>
@@ -2170,11 +2174,13 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           <span
             class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
+            style="cursor: pointer; transition: color 0.2s ease;"
           >
             &lt;0.000001
           </span>
           <span
             class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+            style="cursor: pointer; transition: color 0.2s ease;"
           >
             ETH
           </span>
@@ -2224,11 +2230,13 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           <span
             class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
+            style="cursor: pointer; transition: color 0.2s ease;"
           >
             &lt;0.000001
           </span>
           <span
             class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+            style="cursor: pointer; transition: color 0.2s ease;"
           >
             ETH
           </span>
