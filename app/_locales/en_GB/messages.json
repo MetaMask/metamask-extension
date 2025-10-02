@@ -3604,7 +3604,7 @@
     "description": "Instruction text in name component modal when value is saved."
   },
   "nameInstructionsWarning": {
-    "message": "This has been identified as suspicious. If you trust this author, set a personal display name to identify it going forward.",
+    "message": "We can't verify this address. It may be new or unverified. Only continue if you trust the source.",
     "description": "Instruction text in name component modal when address has warning signals."
   },
   "nameLabel": {
