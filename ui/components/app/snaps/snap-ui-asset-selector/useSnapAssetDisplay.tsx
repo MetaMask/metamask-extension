@@ -109,7 +109,7 @@ export const useSnapAssetSelectorData = ({
       name: asset.title,
       balance: formatCurrencyWithMinThreshold(
         Number(asset.balance ?? 0),
-        currentCurrency,
+        asset.symbol,
       ),
       networkName,
       networkIcon: getImageForChainId(asset.chainId),
