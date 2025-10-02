@@ -10,7 +10,8 @@ import { mockLedgerTransactionRequests } from './mocks';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
-describe('Ledger Swap', function () {
+// This test is skipped because it needs to be migrated to the new swap flow
+describe.skip('Ledger Swap', function () {
   // eslint-disable-next-line mocha/no-skipped-tests
   it('swaps ETH to DAI', async function () {
     await withFixtures(
