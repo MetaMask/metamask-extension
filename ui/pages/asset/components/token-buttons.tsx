@@ -13,8 +13,6 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import {
-  getIsSwapsChain,
-  getIsBridgeChain,
   getCurrentKeyring,
   getNetworkConfigurationIdByChainId,
   getSelectedMultichainNetworkConfiguration,
@@ -96,13 +94,7 @@ const TokenButtons = ({
     string,
     string
   >;
-  const isSwapsChain = useSelector((state) =>
-    getIsSwapsChain(state, currentChainId),
-  );
 
-  const isBridgeChain = useSelector((state) =>
-    getIsBridgeChain(state, currentChainId),
-  );
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
   const { openBridgeExperience } = useBridging();
@@ -358,10 +350,10 @@ const TokenButtons = ({
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
-        disabled={!isSwapsChain}
+        disabled={false}
       />
 
-      {!isUnifiedUIEnabled && !isTestnet && isBridgeChain && (
+      {!isUnifiedUIEnabled && !isTestnet && (
         <IconButton
           className="token-overview__button"
           data-testid="token-overview-bridge"
@@ -374,7 +366,7 @@ const TokenButtons = ({
           }
           label={t('bridge')}
           onClick={() => handleBridgeOnClick(false)}
-          disabled={!isBridgeChain}
+          disabled={false}
         />
       )}
     </Box>

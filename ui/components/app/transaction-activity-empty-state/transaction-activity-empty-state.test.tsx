@@ -206,11 +206,6 @@ describe('TransactionActivityEmptyState', () => {
       ]
     >([
       [
-        'not a swaps chain',
-        { account: accountWithSigning },
-        createTestnetState(),
-      ],
-      [
         'external services are disabled',
         { account: accountWithSigning },
         createStateWithoutExternalServices(),
@@ -245,7 +240,7 @@ describe('TransactionActivityEmptyState', () => {
       expectSwapButtonState(true);
     });
 
-    it('enables swap button for Solana networks even when isSwapsChain is false', () => {
+    it('enables swap button for all networks when signing and external services are enabled', () => {
       jest
         .spyOn(useMultichainSelectorHook, 'useMultichainSelector')
         .mockReturnValue({
@@ -255,9 +250,9 @@ describe('TransactionActivityEmptyState', () => {
       const props: Partial<TransactionActivityEmptyStateProps> = {
         account: accountWithSigning,
       };
-      const stateOverrides = createTestnetState();
+      const stateOverrides = createValidSwapState();
       renderComponent(props, stateOverrides);
-      expectSwapButtonState(true); // Should be enabled due to Solana logic
+      expectSwapButtonState(true);
     });
 
     it('calls openBridgeExperience when swap button is clicked', () => {

@@ -56,9 +56,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import {
   getDataCollectionForMarketing,
-  getIsBridgeChain,
   getIsMultichainAccountsState2Enabled,
-  getIsSwapsChain,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getSelectedAccountNativeTokenCachedBalanceByChainId,
@@ -116,11 +114,6 @@ const AssetPage = ({
   const { chainId, type, symbol, name, image, decimals } = asset;
 
   const isNative = type === AssetType.native;
-
-  const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
-  const isBridgeChain = useSelector((state) =>
-    getIsBridgeChain(state, chainId),
-  );
 
   const isSigningEnabled =
     selectedAccount.methods.includes(EthMethod.SignTransaction) ||
@@ -355,8 +348,6 @@ const AssetPage = ({
               trackingLocation: 'asset-page',
               isBuyableChain,
               isSigningEnabled,
-              isSwapsChain,
-              isBridgeChain,
               chainId,
             }}
           />
