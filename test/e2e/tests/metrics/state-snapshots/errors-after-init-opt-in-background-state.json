@@ -293,10 +293,10 @@
         "minimumVersion": "12.19.0"
       },
       "enableMultichainAccountsState2": {
-         "enabled": false,
-         "featureVersion": "0",
-         "minimumVersion": "12.19.0"
-       }
+        "enabled": false,
+        "featureVersion": "0",
+        "minimumVersion": "12.19.0"
+      }
     },
     "cacheTimestamp": "number"
   },
