@@ -70,7 +70,7 @@ export const MultichainAccountPrivateKeyListPage = () => {
           paddingTop={2}
           paddingBottom={2}
           severity={BannerAlertSeverity.Danger}
-          actionButtonLabel={t('learnMore')}
+          actionButtonLabel={t('learnMoreUpperCase')}
           actionButtonOnClick={() =>
             window.open(ZENDESK_URLS.PRIVATE_KEY_GUIDE, '_blank')
           }
