@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
-import { exitWithError } from '../../../development/lib/exit-with-error';
+// import { exitWithError } from '../../../development/lib/exit-with-error';
 import { retry } from '../../../development/lib/retry';
 import {
   getFirstParentDirectoryThatExists,
