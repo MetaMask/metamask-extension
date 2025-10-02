@@ -317,9 +317,9 @@ async function withFixtures(options, testSuite) {
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
     // Apply multichain accounts feature flag disabled mock
-    //if (!multichainAccountsOverride) {
-    //  await mockMultichainAccountsFeatureFlagDisabled(mockServer);
-    //}
+    if (!multichainAccountsOverride) {
+      await mockMultichainAccountsFeatureFlagDisabled(mockServer);
+    }
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
