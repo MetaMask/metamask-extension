@@ -71,7 +71,7 @@ export const FileUploader = ({
 
       // Check file type
       if (accept) {
-        const acceptArray = accept.replaceAll(' ', '').split(',');
+        const acceptArray = accept?.replace(/\s/gu, '').split(',');
         if (!acceptArray.includes(file.type)) {
           return t('fileUploaderInvalidFileTypeError');
         }
@@ -242,8 +242,8 @@ export const FileUploader = ({
       {(error || helpText) && (
         <HelpText
           severity={error ? HelpTextSeverity.Danger : undefined}
-          {...helpTextProps}
           color={TextColorLegacy.textAlternative}
+          {...helpTextProps}
           className={twMerge('mt-1', helpTextProps?.className ?? '')}
         >
           {error || helpText}
@@ -266,7 +266,7 @@ export const FileUploader = ({
             >
               <Icon
                 name={
-                  file.type.includes('image') ? IconName.Image : IconName.File
+                  file.type?.includes('image') ? IconName.Image : IconName.File
                 }
                 size={IconSize.Md}
                 color={IconColor.IconAlternative}
