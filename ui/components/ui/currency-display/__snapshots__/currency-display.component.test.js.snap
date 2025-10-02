@@ -9,6 +9,7 @@ exports[`CurrencyDisplay Component should match default snapshot 1`] = `
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
       data-testid="account-value-and-suffix"
+      style="cursor: pointer; transition: color 0.2s ease;"
     >
       0
     </span>
@@ -25,6 +26,7 @@ exports[`CurrencyDisplay Component should render text with a className 1`] = `
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
       data-testid="account-value-and-suffix"
+      style="cursor: pointer; transition: color 0.2s ease;"
     >
       $123.45
     </span>
@@ -41,6 +43,7 @@ exports[`CurrencyDisplay Component should render text with a prefix 1`] = `
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
       data-testid="account-value-and-suffix"
+      style="cursor: pointer; transition: color 0.2s ease;"
     >
       -
       $123.45
@@ -58,6 +61,7 @@ exports[`CurrencyDisplay Component should render with title (tooltip) 1`] = `
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
       data-testid="account-value-and-suffix"
+      style="cursor: pointer; transition: color 0.2s ease;"
     >
       $123.45
     </span>
@@ -73,6 +77,7 @@ exports[`CurrencyDisplay Component should render without title (tooltip) 1`] = `
     <span
       class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
       data-testid="account-value-and-suffix"
+      style="cursor: pointer; transition: color 0.2s ease;"
     >
       ••••••
     </span>

@@ -8,15 +8,11 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import {
   Box,
-  ButtonIcon,
-  ButtonIconSize,
   ButtonLink,
   IconName,
 } from '../../component-library';
 import {
-  JustifyContent,
   TextVariant,
-  IconColor,
 } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -167,34 +163,25 @@ export const LegacyAggregatedBalance = ({
       }
       marginBottom={1}
     >
-      <UserPreferencedCurrencyDisplay
-        style={{ display: 'contents' }}
-        account={account}
-        className={classnames(`${classPrefix}-overview__primary-balance`, {
-          [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
-        })}
-        data-testid={`${classPrefix}-overview__primary-currency`}
-        value={balanceToDisplay}
-        type={getCurrencyDisplayType()}
-        ethNumberOfDecimals={4}
-        hideTitle
-        shouldCheckShowNativeToken
-        isAggregatedFiatOverviewBalance={
-          !showNativeTokenAsMain && !isTestnet && shouldShowFiat
-        }
-        privacyMode={privacyMode}
-      />
-      <ButtonIcon
-        color={IconColor.iconAlternative}
-        marginLeft={2}
-        size={ButtonIconSize.Md}
-        onClick={handleSensitiveToggle}
-        iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
-        justifyContent={JustifyContent.center}
-        ariaLabel="Sensitive toggle"
-        data-testid="sensitive-toggle"
-      />
-    </Skeleton>
+       <UserPreferencedCurrencyDisplay
+         style={{ display: 'contents' }}
+         account={account}
+         className={classnames(`${classPrefix}-overview__primary-balance`, {
+           [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
+         })}
+         data-testid={`${classPrefix}-overview__primary-currency`}
+         value={balanceToDisplay}
+         type={getCurrencyDisplayType()}
+         ethNumberOfDecimals={4}
+         hideTitle
+         shouldCheckShowNativeToken
+         isAggregatedFiatOverviewBalance={
+           !showNativeTokenAsMain && !isTestnet && shouldShowFiat
+         }
+         privacyMode={privacyMode}
+         onClick={handleSensitiveToggle}
+       />
+     </Skeleton>
   );
 };
 

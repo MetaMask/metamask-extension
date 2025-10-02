@@ -32,6 +32,7 @@ export default function CurrencyDisplay({
   suffixProps = {},
   isAggregatedFiatOverviewBalance = false,
   privacyMode = false,
+  onClick,
   ...props
 }) {
   const [title, parts] = useCurrencyDisplay(value, {
@@ -64,6 +65,17 @@ export default function CurrencyDisplay({
         variant={TextVariant.inherit}
         isHidden={privacyMode}
         data-testid="account-value-and-suffix"
+        onClick={onClick}
+        style={{
+          cursor: 'pointer',
+          transition: 'color 0.2s ease',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.color = 'var(--color-text-alternative)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.color = 'var(--color-text-default)';
+        }}
         {...textProps}
       >
         {parts.prefix}
@@ -80,6 +92,17 @@ export default function CurrencyDisplay({
           marginInlineStart={privacyMode ? 0 : 1}
           variant={TextVariant.inherit}
           isHidden={privacyMode}
+          onClick={onClick}
+          style={{
+            cursor: 'pointer',
+            transition: 'color 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = 'var(--color-text-alternative)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = 'var(--color-text-default)';
+          }}
           {...suffixProps}
         >
           {parts.suffix}
@@ -110,6 +133,7 @@ const CurrencyDisplayPropTypes = {
   suffixProps: PropTypes.object,
   isAggregatedFiatOverviewBalance: PropTypes.bool,
   privacyMode: PropTypes.bool,
+  onClick: PropTypes.func,
 };
 
 CurrencyDisplay.propTypes = CurrencyDisplayPropTypes;

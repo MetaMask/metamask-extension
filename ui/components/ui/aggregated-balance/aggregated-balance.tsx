@@ -6,15 +6,10 @@ import {
   AlignItems,
   Display,
   FlexWrap,
-  IconColor,
-  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
   SensitiveText,
 } from '../../component-library';
 import {
@@ -130,6 +125,17 @@ export const AggregatedBalance = ({
           variant={TextVariant.inherit}
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
+          onClick={handleSensitiveToggle}
+          style={{
+            cursor: 'pointer',
+            transition: 'color 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = 'var(--color-text-alternative)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = 'var(--color-text-default)';
+          }}
         >
           {showNativeTokenAsMain || !isNonEvmRatesAvailable || !shouldShowFiat
             ? formattedTokenDisplay
@@ -139,22 +145,22 @@ export const AggregatedBalance = ({
           marginInlineStart={privacyMode ? 0 : 1}
           variant={TextVariant.inherit}
           isHidden={privacyMode}
+          onClick={handleSensitiveToggle}
+          style={{
+            cursor: 'pointer',
+            transition: 'color 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = 'var(--color-text-alternative)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = 'var(--color-text-default)';
+          }}
         >
           {showNativeTokenAsMain || !isNonEvmRatesAvailable || !shouldShowFiat
             ? currentNetwork.network.ticker
             : currentCurrency.toUpperCase()}
         </SensitiveText>
-
-        <ButtonIcon
-          color={IconColor.iconAlternative}
-          marginLeft={2}
-          size={ButtonIconSize.Md}
-          onClick={handleSensitiveToggle}
-          iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
-          justifyContent={JustifyContent.center}
-          ariaLabel="Sensitive toggle"
-          data-testid="sensitive-toggle"
-        />
       </Box>
     </Skeleton>
   );
