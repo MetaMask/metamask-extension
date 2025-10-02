@@ -1,6 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck types are very broken
-/* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { render } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
