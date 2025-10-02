@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
-import { Box, Text } from '../../component-library';
+import { Box, SensitiveText, Text } from '../../component-library';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import {
   AlignItems,
@@ -25,6 +25,7 @@ export type MultichainAccountCellProps = {
   selected?: boolean;
   walletName?: string;
   disableHoverEffect?: boolean;
+  privacyMode?: boolean;
 };
 
 export const MultichainAccountCell = ({
@@ -37,6 +38,7 @@ export const MultichainAccountCell = ({
   selected = false,
   walletName,
   disableHoverEffect = false,
+  privacyMode = false,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
   const seedAddressIcon = useSelector((state) =>
@@ -128,7 +130,9 @@ export const MultichainAccountCell = ({
           variant={TextVariant.bodyMdMedium}
           marginRight={2}
         >
-          {balance}
+          <SensitiveText ellipsis isHidden={privacyMode}>
+            {balance}
+          </SensitiveText>
         </Text>
         <Box
           className="multichain-account-cell__end_accessory"
