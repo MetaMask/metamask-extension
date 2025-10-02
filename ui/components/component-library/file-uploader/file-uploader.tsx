@@ -39,7 +39,6 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
       dropAreaProps,
       accept,
       acceptText,
-      multiple,
       maxFileSize,
       filesProps,
       fileInputProps,
@@ -213,7 +212,7 @@ export const FileUploader: FileUploaderComponent = React.forwardRef(
             id="file-uploader-input"
             data-testid="file-uploader-input"
             accept={accept ?? undefined}
-            multiple={multiple ?? undefined}
+            multiple
             {...fileInputProps}
             className={classnames('hidden', fileInputProps?.className ?? '')}
             onChange={onFileChange}

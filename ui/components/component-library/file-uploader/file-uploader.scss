@@ -4,8 +4,7 @@
 
   &:hover,
   &--dragging {
-    background-color: var(--color-primary-muted);
+    background-color: var(--color-background-default-hover);
     border-style: solid;
-    border-color: var(--color-primary-default-hover);
   }
 }

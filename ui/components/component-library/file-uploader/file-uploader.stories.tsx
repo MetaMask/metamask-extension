@@ -14,9 +14,6 @@ export default {
     acceptText: {
       control: 'text',
     },
-    multiple: {
-      control: 'boolean',
-    },
     accept: {
       control: 'array',
     },
@@ -25,8 +22,7 @@ export default {
     label: 'Upload files',
     helpText: 'Upload files description',
     acceptText: 'List of accepted file types',
-    multiple: true,
-    accept: 'image/jpeg, image/png, application/pdf',
+    accept: 'image/jpeg,image/png,application/pdf',
   },
 };
 
