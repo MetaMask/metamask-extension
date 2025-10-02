@@ -23,9 +23,11 @@ export const useNameValidation = () => {
         }
 
         const resolvedLookup = resolutions[0]?.resolvedAddress;
+        const protocol = resolutions[0]?.protocol;
 
         return {
           resolvedLookup,
+          protocol,
           ...findConfusablesInRecipient(to),
         };
       }

@@ -32,6 +32,7 @@ jest.mock('../../../../hooks/useAccountGroupsForPermissions', () => ({
 }));
 
 jest.mock('../../../../store/actions', () => ({
+  forceUpdateMetamaskState: jest.fn(),
   hidePermittedNetworkToast: jest.fn(() => ({
     type: 'HIDE_PERMITTED_NETWORK_TOAST',
   })),
@@ -272,7 +273,7 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      expect(getByText('Connect with MetaMask')).toBeInTheDocument();
+      expect(getByText('Edit accounts')).toBeInTheDocument();
     });
 
     it('handles deselecting all accounts', async () => {

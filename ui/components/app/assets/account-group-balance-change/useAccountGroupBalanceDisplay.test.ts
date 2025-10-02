@@ -27,10 +27,10 @@ const mockDetermineBalanceColor = jest.mocked(determineBalanceColor);
 type MockVar = any;
 
 describe('useAccountGroupBalanceDisplay', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+  let mockBalanceChange: BalanceChangeResult;
 
-    const mockBalanceChange: BalanceChangeResult = {
+  beforeEach(() => {
+    mockBalanceChange = {
       amountChangeInUserCurrency: 100.5,
       percentChange: 5.25,
       period: '1d',
@@ -75,6 +75,7 @@ describe('useAccountGroupBalanceDisplay', () => {
       color: TextColor.successDefault,
       amountChange: 100.5,
       percentChange: 0.0525,
+      portfolioChange: mockBalanceChange,
     });
   });
 });
