@@ -5221,7 +5221,7 @@
     "message": "A token here reuses a symbol from another token you watch, this can be confusing or deceptive."
   },
   "revealMultichainPrivateKeysBannerDescription": {
-    "message": "This key grants full control of your account for the associated chain.",
+    "message": "This key grants full control of your account for the associated chain. $1",
     "description": "Description for the banner warning users not to share their private key"
   },
   "revealMultichainPrivateKeysBannerTitle": {
