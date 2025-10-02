@@ -402,7 +402,6 @@ const render = (
     permissionsRequestId: '1',
     rejectPermissionsRequest: jest.fn(),
     approveConnection: jest.fn(),
-    activeTabOrigin: mockTestDappUrl,
     targetSubjectMetadata: mockTargetSubjectMetadata,
     ...props,
   };

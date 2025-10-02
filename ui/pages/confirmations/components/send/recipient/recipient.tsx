@@ -32,15 +32,12 @@ export const Recipient = ({
   recipientValidationResult: ReturnType<typeof useRecipientValidation>;
 }) => {
   const {
-    recipientConfusableCharacters,
     recipientError,
     recipientWarning,
     recipientResolvedLookup,
     toAddressValidated,
     resolutionProtocol,
   } = recipientValidationResult;
-  const hasConfusableCharacters =
-    recipientConfusableCharacters && recipientConfusableCharacters.length > 0;
   const t = useI18nContext();
   const [isRecipientModalOpen, setIsRecipientModalOpen] = useState(false);
   const { to, updateTo, updateToResolved } = useSendContext();
@@ -107,10 +104,6 @@ export const Recipient = ({
       {to === toAddressValidated && recipientWarning && (
         <HelpText severity={HelpTextSeverity.Warning} marginTop={1}>
           {recipientWarning}
-          {hasConfusableCharacters &&
-            ` (${recipientConfusableCharacters
-              .map(({ point, similarTo }) => t('similarTo', [point, similarTo]))
-              .join(', ')})`}
         </HelpText>
       )}
       {to === toAddressValidated && recipientResolvedLookup && (
