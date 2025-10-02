@@ -1,4 +1,3 @@
-import NetworkSwitchModalConfirmation from '../../page-objects/pages/dialog/network-switch-modal-confirmation';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { Driver } from '../../webdriver/driver';
@@ -53,11 +52,4 @@ export const searchAndSwitchToNetworkFlow = async (
   await selectNetworkDialog.checkPageIsLoaded();
   await selectNetworkDialog.fillNetworkSearchInput(networkName);
   await selectNetworkDialog.clickAddButton();
-
-  const networkSwitchModalConfirmation = new NetworkSwitchModalConfirmation(
-    driver,
-  );
-  await networkSwitchModalConfirmation.checkPageIsLoaded();
-  await networkSwitchModalConfirmation.clickApproveButton();
-  // await headerNavbar.checkCurrentSelectedNetwork(networkName);
 };

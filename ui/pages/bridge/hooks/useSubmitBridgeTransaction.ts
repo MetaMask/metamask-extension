@@ -12,11 +12,11 @@ import {
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import {
-  getIsSmartTransaction,
-  isHardwareWallet,
-} from '../../../../shared/modules/selectors';
-import { getFromChain } from '../../../ducks/bridge/selectors';
+  getFromAccount,
+  getIsStxEnabled,
+} from '../../../ducks/bridge/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
@@ -59,14 +59,18 @@ export default function useSubmitBridgeTransaction() {
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
-  const fromChain = useSelector(getFromChain);
-  const smartTransactionsEnabled = useSelector((state) =>
-    getIsSmartTransaction(state as never, fromChain?.chainId),
-  );
+  const smartTransactionsEnabled = useSelector(getIsStxEnabled);
+
+  const fromAccount = useSelector(getFromAccount);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
   ) => {
+    if (!fromAccount) {
+      throw new Error(
+        'Failed to submit bridge transaction: No selected account',
+      );
+    }
     if (hardwareWalletUsed) {
       history.push(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }
@@ -79,11 +83,14 @@ export default function useSubmitBridgeTransaction() {
           pathname: DEFAULT_ROUTE,
           state: { stayOnHomePage: true },
         });
-        await dispatch(submitBridgeTx(quoteResponse, false));
+        await dispatch(
+          submitBridgeTx(fromAccount.address, quoteResponse, false),
+        );
         return;
       }
       await dispatch(
         await submitBridgeTx(
+          fromAccount.address,
           quoteResponse,
           isSolanaChainId(quoteResponse.quote.srcChainId)
             ? false

@@ -1,10 +1,9 @@
 import { BtcScope, SolScope } from '@metamask/keyring-api';
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
 import {
-  isCaipChainId,
-  KnownCaipNamespace,
-  parseCaipChainId,
-} from '@metamask/utils';
+  BaseController,
+  RestrictedMessenger,
+  StateMetadata,
+} from '@metamask/base-controller';
 import {
   NetworkControllerSetActiveNetworkAction,
   NetworkControllerStateChangeEvent,
@@ -15,7 +14,7 @@ import {
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import type { CaipChainId, CaipNamespace, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
+import { TEST_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
 const controllerName = 'NetworkOrderController';
@@ -35,7 +34,6 @@ export type EnabledNetworksByChainId = Record<
 // State shape for NetworkOrderController
 export type NetworkOrderControllerState = {
   orderedNetworkList: NetworksInfo[];
-  enabledNetworkMap: EnabledNetworksByChainId;
 };
 
 // Describes the structure of a state change event
@@ -76,28 +74,15 @@ export type NetworkOrderControllerMessenger = RestrictedMessenger<
 // Default state for the controller
 const defaultState: NetworkOrderControllerState = {
   orderedNetworkList: [],
-  enabledNetworkMap: {
-    [KnownCaipNamespace.Eip155]: {
-      [CHAIN_IDS.MAINNET]: true,
-      [CHAIN_IDS.LINEA_MAINNET]: true,
-      [CHAIN_IDS.BASE]: true,
-    },
-    [KnownCaipNamespace.Solana]: {
-      [SolScope.Mainnet]: true,
-    },
-    [KnownCaipNamespace.Bip122]: {},
-  },
 };
 
 // Metadata for the controller state
-const metadata = {
+const metadata: StateMetadata<NetworkOrderControllerState> = {
   orderedNetworkList: {
+    includeInStateLogs: false,
     persist: true,
     anonymous: true,
-  },
-  enabledNetworkMap: {
-    persist: true,
-    anonymous: true,
+    usedInUi: true,
   },
 };
 
@@ -138,13 +123,6 @@ export class NetworkOrderController extends BaseController<
       'NetworkController:stateChange',
       (networkControllerState) => {
         this.onNetworkControllerStateChange(networkControllerState);
-      },
-    );
-
-    this.messagingSystem.subscribe(
-      'NetworkController:networkRemoved',
-      (removedNetwork) => {
-        this.onNetworkRemoved(removedNetwork.chainId);
       },
     );
   }
@@ -194,27 +172,6 @@ export class NetworkOrderController extends BaseController<
     });
   }
 
-  onNetworkRemoved(networkId: Hex) {
-    const caipId: CaipChainId = isCaipChainId(networkId)
-      ? networkId
-      : toEvmCaipChainId(networkId);
-
-    const { namespace } = parseCaipChainId(caipId);
-
-    if (namespace === (KnownCaipNamespace.Eip155 as string)) {
-      this.update((state) => {
-        delete state.enabledNetworkMap[namespace][networkId];
-        if (Object.keys(state.enabledNetworkMap[namespace]).length === 0) {
-          state.enabledNetworkMap[namespace]['0x1'] = true;
-        }
-      });
-    } else {
-      this.update((state) => {
-        delete state.enabledNetworkMap[namespace][caipId];
-      });
-    }
-  }
-
   /**
    * Updates the networks list in the state with the provided list of networks.
    *
@@ -226,72 +183,6 @@ export class NetworkOrderController extends BaseController<
       state.orderedNetworkList = chainIds.map((chainId) => ({
         networkId: chainId,
       }));
-    });
-  }
-
-  /**
-   * Sets the enabled networks in the controller state for a specific namespace.
-   * This method updates the enabledNetworkMap to mark specified networks as enabled
-   * within the given namespace only, leaving other namespaces unchanged.
-   * It can handle both a single chain ID or an array of chain IDs.
-   *
-   * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
-   * to be enabled. All other networks in the namespace will be implicitly disabled.
-   * @param namespace - The caip-2 namespace of the currently selected network (e.g. 'eip155' or 'solana')
-   */
-  setEnabledNetworks(chainIds: string | string[], namespace: CaipNamespace) {
-    if (!namespace) {
-      throw new Error('namespace is required to set enabled networks');
-    }
-    if (!chainIds) {
-      throw new Error('chainIds is required to set enabled networks');
-    }
-    const ids = Array.isArray(chainIds) ? chainIds : [chainIds];
-
-    this.update((state) => {
-      const enabledNetworks = Object.fromEntries(ids.map((id) => [id, true]));
-
-      // Add the enabled networks to the mapping for the specified network type
-      state.enabledNetworkMap[namespace] = enabledNetworks;
-    });
-  }
-
-  /**
-   * Sets the enabled networks in the controller state with multichain account behavior.
-   * This method updates the enabledNetworkMap to mark specified networks as enabled
-   * and disables all networks in other namespaces (multichain account exclusive behavior).
-   * It can handle both a single chain ID or an array of chain IDs.
-   *
-   * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
-   * to be enabled. All other networks will be implicitly disabled.
-   * @param namespace - The caip-2 namespace of the currently selected network (e.g. 'eip155' or 'solana')
-   */
-  setEnabledNetworksMultichain(
-    chainIds: string | string[],
-    namespace: CaipNamespace,
-  ) {
-    if (!namespace) {
-      throw new Error('namespace is required to set enabled networks');
-    }
-    if (!chainIds) {
-      throw new Error('chainIds is required to set enabled networks');
-    }
-    const ids = Array.isArray(chainIds) ? chainIds : [chainIds];
-
-    this.update((state) => {
-      const enabledNetworks = Object.fromEntries(ids.map((id) => [id, true]));
-
-      // Disable all networks on all namespaces, then enable the specified ones for the given namespace
-      const updatedEnabledNetworkMap = Object.keys(
-        state.enabledNetworkMap,
-      ).reduce((acc, namespaceToUse) => {
-        if (namespaceToUse !== namespace) {
-          return { ...acc, [namespaceToUse]: {} };
-        }
-        return { ...acc, [namespaceToUse]: enabledNetworks };
-      }, {});
-
-      state.enabledNetworkMap = updatedEnabledNetworkMap;
     });
   }
 }

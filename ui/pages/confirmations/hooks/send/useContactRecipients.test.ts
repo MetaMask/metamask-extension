@@ -60,10 +60,12 @@ describe('useContactRecipients', () => {
       {
         address: '0x1234567890abcdef1234567890abcdef12345678',
         contactName: 'John Doe',
+        isContact: true,
       },
       {
         address: '0xabcdef1234567890abcdef1234567890abcdef12',
         contactName: 'Bob Wilson',
+        isContact: true,
       },
     ]);
   });
@@ -84,6 +86,7 @@ describe('useContactRecipients', () => {
       {
         address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
         contactName: 'Jane Smith',
+        isContact: true,
       },
     ]);
   });
@@ -135,6 +138,7 @@ describe('useContactRecipients', () => {
       {
         address: '0x1234567890abcdef1234567890abcdef12345678',
         contactName: 'John Doe',
+        isContact: true,
       },
     ]);
   });

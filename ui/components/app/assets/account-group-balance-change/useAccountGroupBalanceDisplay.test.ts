@@ -6,11 +6,7 @@ import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { TextColor } from '../../../../helpers/constants/design-system';
 import { getPrivacyMode } from '../../../../selectors';
 import { selectBalanceChangeBySelectedAccountGroup } from '../../../../selectors/assets';
-import {
-  determineBalanceColor,
-  formatAmountChange,
-  formatPercentageChange,
-} from './get-display-balance';
+import { determineBalanceColor } from './get-display-balance';
 import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
 jest.mock('react-redux');
@@ -25,18 +21,16 @@ const mockSelectBalanceChangeBySelectedAccountGroup = jest.mocked(
   selectBalanceChangeBySelectedAccountGroup,
 );
 const mockDetermineBalanceColor = jest.mocked(determineBalanceColor);
-const mockFormatAmountChange = jest.mocked(formatAmountChange);
-const mockFormatPercentageChange = jest.mocked(formatPercentageChange);
 
 // type utility for testing purposes only
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockVar = any;
 
 describe('useAccountGroupBalanceDisplay', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+  let mockBalanceChange: BalanceChangeResult;
 
-    const mockBalanceChange: BalanceChangeResult = {
+  beforeEach(() => {
+    mockBalanceChange = {
       amountChangeInUserCurrency: 100.5,
       percentChange: 5.25,
       period: '1d',
@@ -51,8 +45,6 @@ describe('useAccountGroupBalanceDisplay', () => {
       mockBalanceSelector as MockVar,
     );
     mockDetermineBalanceColor.mockReturnValue(TextColor.successDefault);
-    mockFormatAmountChange.mockReturnValue('+$100.50');
-    mockFormatPercentageChange.mockReturnValue('(+5.25%)');
 
     mockUseSelector.mockImplementation((selector) => {
       if (selector === getCurrentCurrency) {
@@ -81,11 +73,9 @@ describe('useAccountGroupBalanceDisplay', () => {
     expect(result.current).toEqual({
       privacyMode: false,
       color: TextColor.successDefault,
-      displayAmountChange: '+$100.50',
-      displayPercentChange: '(+5.25%)',
+      amountChange: 100.5,
+      percentChange: 0.0525,
+      portfolioChange: mockBalanceChange,
     });
-
-    expect(mockFormatAmountChange).toHaveBeenCalledWith(100.5, 'USD', 'en-US');
-    expect(mockFormatPercentageChange).toHaveBeenCalledWith(5.25, 'en-US');
   });
 });

@@ -153,10 +153,9 @@ describe('useSnapNameResolution', () => {
       mockState,
     );
 
-    const { lookupDomainAddresses } = result.current;
-    const results = await lookupDomainAddresses('eip155:1', 'metamask.eth');
-
-    expect(results).toStrictEqual([
+    expect(
+      await result.current.fetchResolutions('eip155:1', 'metamask.eth'),
+    ).toStrictEqual([
       {
         domainName: 'metamask.eth',
         protocol: 'ENS',
@@ -171,13 +170,12 @@ describe('useSnapNameResolution', () => {
       mockState,
     );
 
-    const { lookupDomainAddresses } = result.current;
-    const results = await lookupDomainAddresses(
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      'metamask',
-    );
-
-    expect(results).toStrictEqual([
+    expect(
+      await result.current.fetchResolutions(
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'metamask',
+      ),
+    ).toStrictEqual([
       {
         domainName: 'metamask.eth',
         protocol: 'ENS',
@@ -197,10 +195,9 @@ describe('useSnapNameResolution', () => {
       mockState,
     );
 
-    const { lookupDomainAddresses } = result.current;
-    const results = await lookupDomainAddresses('eip155:1', 'farcaster:v');
-
-    expect(results).toStrictEqual([
+    expect(
+      await result.current.fetchResolutions('eip155:1', 'farcaster:v'),
+    ).toStrictEqual([
       {
         domainName: 'farcaster:v',
         protocol: 'Farcaster',
@@ -215,15 +212,25 @@ describe('useSnapNameResolution', () => {
       mockState,
     );
 
-    const { lookupDomainAddresses } = result.current;
-    const results = await lookupDomainAddresses('eip155:1', 'foo.lens');
-
-    expect(results).toStrictEqual([
+    expect(
+      await result.current.fetchResolutions('eip155:1', 'foo.lens'),
+    ).toStrictEqual([
       {
         domainName: 'foo.lens',
         protocol: 'Lens',
         resolvedAddress: '0x0000000000000000000000000000000000000000',
       },
     ]);
+  });
+
+  it('returns undefined if no snap is available for the given chain ID', async () => {
+    const { result } = renderHookWithProvider(
+      () => useSnapNameResolution(),
+      mockState,
+    );
+
+    expect(
+      await result.current.fetchResolutions('dummy_chain_id', 'dummy.test'),
+    ).toStrictEqual([]);
   });
 });

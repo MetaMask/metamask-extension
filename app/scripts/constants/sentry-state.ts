@@ -36,6 +36,8 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   NetworkOrderController: {
     orderedNetworkList: [],
+  },
+  NetworkEnablementController: {
     enabledNetworkMap: {},
   },
   AccountOrderController: {
@@ -76,6 +78,7 @@ export const SENTRY_BACKGROUND_STATE = {
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
+    productTour: true,
     showPermissionsTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
@@ -242,6 +245,7 @@ export const SENTRY_BACKGROUND_STATE = {
       showNativeTokenAsMainBalance: true,
       showConfirmationAdvancedDetails: true,
       privacyMode: false,
+      avatarType: true,
     },
     useExternalServices: false,
     selectedAddress: false,
@@ -380,8 +384,6 @@ export const SENTRY_BACKGROUND_STATE = {
     isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
     isContactSyncingEnabled: true,
-    hasAccountSyncingSyncedAtLeastOnce: false,
-    isAccountSyncingReadyToBeDispatched: false,
   },
 };
 

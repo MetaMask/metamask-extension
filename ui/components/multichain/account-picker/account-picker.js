@@ -56,7 +56,7 @@ export const AccountPicker = ({
   const accountNameStyling = useMemo(
     () => ({
       ...labelProps.style,
-      fontWeight: isMultichainAccountsState2Enabled ? 600 : FontWeight.Medium,
+      fontWeight: isMultichainAccountsState2Enabled ? 500 : FontWeight.Medium,
     }),
     [isMultichainAccountsState2Enabled, labelProps.style],
   );
@@ -64,7 +64,7 @@ export const AccountPicker = ({
   const accountNameFontVariant = useMemo(
     () =>
       isMultichainAccountsState2Enabled
-        ? TextVariant.bodyLgMedium
+        ? TextVariant.bodyMdMedium
         : TextVariant.bodyMdMedium,
     [isMultichainAccountsState2Enabled],
   );
@@ -116,7 +116,6 @@ export const AccountPicker = ({
             <PreferredAvatar
               address={address}
               size={showAddress ? AvatarAccountSize.Md : AvatarAccountSize.Xs}
-              className="shrink-0"
             />
           ) : null}
           <Text

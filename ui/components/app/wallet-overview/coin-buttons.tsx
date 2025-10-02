@@ -9,7 +9,7 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 ///: END:ONLY_INCLUDE_IF
-import { ChainId } from '../../../../shared/constants/network';
+import { CHAIN_IDS, ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -257,7 +257,7 @@ const CoinButtons = ({
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
       {
-        event: MetaMetricsEventName.NavSendButtonClicked,
+        event: MetaMetricsEventName.SendStarted,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -328,11 +328,13 @@ const CoinButtons = ({
 
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
-      await setCorrectChain();
       // Handle clicking from the wallet overview page
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
-        getNativeAssetForChainId(chainId),
+        getNativeAssetForChainId(
+          location.pathname.split('/').filter(Boolean).at(-1) ??
+            CHAIN_IDS.MAINNET,
+        ),
         isSwap,
       );
     },
@@ -438,7 +440,7 @@ const CoinButtons = ({
           Icon={
             displayNewIconButtons ? (
               <Icon
-                name={IconName.Money}
+                name={IconName.Dollar}
                 color={IconColor.iconAlternative}
                 size={IconSize.Md}
               />
@@ -452,7 +454,7 @@ const CoinButtons = ({
           }
           disabled={!isBuyableChain}
           data-testid={`${classPrefix}-overview-buy`}
-          label={t('buyAndSell')}
+          label={t('buy')}
           onClick={handleBuyAndSellOnClick}
           width={BlockSize.Full}
           tooltipRender={(contents: React.ReactElement) =>
@@ -470,13 +472,13 @@ const CoinButtons = ({
         Icon={
           displayNewIconButtons ? (
             <Icon
-              name={IconName.SwapHorizontal}
+              name={IconName.SwapVertical}
               color={IconColor.iconAlternative}
               size={IconSize.Md}
             />
           ) : (
             <Icon
-              name={IconName.SwapHorizontal}
+              name={IconName.SwapVertical}
               color={IconColor.iconDefault}
               size={IconSize.Sm}
             />
@@ -566,7 +568,7 @@ const CoinButtons = ({
             Icon={
               displayNewIconButtons ? (
                 <Icon
-                  name={IconName.QrCode}
+                  name={IconName.Received}
                   color={IconColor.iconAlternative}
                   size={IconSize.Md}
                 />
