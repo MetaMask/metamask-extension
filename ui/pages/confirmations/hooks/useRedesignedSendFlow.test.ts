@@ -1,4 +1,3 @@
-import { ENVIRONMENT } from '../../../../development/build/constants';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flags';
