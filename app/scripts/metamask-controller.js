@@ -8949,6 +8949,13 @@ export default class MetamaskController extends EventEmitter {
       this.networkController.getNetworkConfigurationByNetworkClientId(
         selectedNetworkClientId,
       );
+
+    if (!networkConfig) {
+      throw new Error(
+        `No network configuration found for clientId: ${selectedNetworkClientId}`,
+      );
+    }
+
     return parseInt(networkConfig.chainId, 16);
   }
 }

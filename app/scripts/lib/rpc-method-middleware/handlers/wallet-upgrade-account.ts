@@ -9,12 +9,12 @@ import type {
   JsonRpcEngineEndCallback,
 } from '@metamask/json-rpc-engine';
 import type { SnapId } from '@metamask/snaps-sdk';
+import { toHex } from '@metamask/controller-utils';
 
 import { isAccountUpgraded } from '../../../../../shared/lib/eip7702-utils';
 import { isSnapPreinstalled } from '../../../../../shared/lib/snaps/snaps';
 // eslint-disable-next-line import/no-restricted-paths
 import { isFlask } from '../../../../../ui/helpers/utils/build-types';
-import { toHex } from '@metamask/controller-utils';
 
 export type UpgradeAccountParams = {
   account: string; // Address of the EOA to upgrade
