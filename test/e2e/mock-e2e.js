@@ -999,6 +999,8 @@ async function setupMocking(
                 name: 'groupC',
               },
             ],
+          },
+          {
             sendRedesign: {
               enabled: false,
             },
