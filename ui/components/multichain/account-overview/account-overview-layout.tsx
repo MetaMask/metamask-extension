@@ -51,11 +51,6 @@ export const AccountOverviewLayout = ({
     enabled: isCarouselEnabled,
   });
 
-  // Check if there are any visible (non-dismissed) slides
-  const hasVisibleSlides = useMemo(() => {
-    return slides.some((slide: CarouselSlide) => !slide.dismissed);
-  }, [slides]);
-
   const slideById = useMemo(() => {
     const m = new Map<string, CarouselSlide>();
     slides.forEach((s: CarouselSlide) => m.set(s.id, s));
@@ -126,7 +121,7 @@ export const AccountOverviewLayout = ({
         <NetworkConnectionBanner />
         {children}
       </div>
-      {isCarouselEnabled && hasVisibleSlides && (
+      {isCarouselEnabled && (
         <CarouselWithEmptyState
           slides={slides}
           isLoading={isLoading}

@@ -6,11 +6,19 @@ import type { CarouselProps } from './types';
 export const CarouselWithEmptyState: React.FC<CarouselProps> = (props) => {
   const [showFoldAnimation, setShowFoldAnimation] = useState(false);
   const [hasCompletedEmptyState, setHasCompletedEmptyState] = useState(false);
+  const [hasEverHadSlides, setHasEverHadSlides] = useState(false);
 
   // Calculate visible slides (non-dismissed) to prevent infinite loop
   const visibleSlidesCount = useMemo(() => {
     return (props.slides || []).filter((slide) => !slide.dismissed).length;
   }, [props.slides]);
+
+  // Track if user has ever seen slides
+  React.useEffect(() => {
+    if (visibleSlidesCount > 0 && !hasEverHadSlides) {
+      setHasEverHadSlides(true);
+    }
+  }, [visibleSlidesCount, hasEverHadSlides]);
 
   const handleEmptyState = () => {
     if (!hasCompletedEmptyState && !showFoldAnimation) {
@@ -38,6 +46,11 @@ export const CarouselWithEmptyState: React.FC<CarouselProps> = (props) => {
   // If empty state was completed and there are no visible slides, don't show carousel at all
   // This prevents infinite loops where dismissed slides cause the carousel to re-appear
   if (hasCompletedEmptyState && visibleSlidesCount === 0) {
+    return null;
+  }
+
+  // If we never had slides and there are no slides, don't show anything
+  if (!hasEverHadSlides && visibleSlidesCount === 0) {
     return null;
   }
 

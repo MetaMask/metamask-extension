@@ -59,6 +59,13 @@ export const Carousel = React.forwardRef(
         if (onSlideClose) {
           onSlideClose(slideId, isLastSlide);
         }
+
+        // If this was the last slide, trigger empty state after animation
+        if (isLastSlide && onEmptyState) {
+          setTimeout(() => {
+            onEmptyState();
+          }, 300); // Wait for slide exit animation to complete
+        }
       },
       isTransitioning: state.isTransitioning,
       setIsTransitioning: (transitioning: boolean) => {
@@ -141,44 +148,9 @@ export const Carousel = React.forwardRef(
       );
     }
 
-    // When no slides, show empty state as current card (but only trigger fold once)
+    // When no slides, don't show anything - let the wrapper handle this case
     if (visibleSlides.length === 0) {
-      return (
-        <Box
-          className={`carousel-container ${className}`}
-          ref={ref}
-          {...(props as BoxProps<'div'>)}
-        >
-          <div className="carousel-cards-wrapper">
-            <TransitionGroup>
-              <CSSTransitionComponent
-                key="empty-state-as-current"
-                timeout={300}
-                classNames="card"
-                appear={true}
-                onEntered={() => {
-                  // Only trigger empty state once
-                  if (state.hasTriggeredEmptyState) {
-                    return;
-                  }
-
-                  setState((prev) => ({
-                    ...prev,
-                    hasTriggeredEmptyState: true,
-                  }));
-                  setTimeout(() => {
-                    if (onEmptyState) {
-                      onEmptyState();
-                    }
-                  }, 1000); // Exactly 1 second after empty state card is fully visible
-                }}
-              >
-                <StackCardEmpty isBackground={false} />
-              </CSSTransitionComponent>
-            </TransitionGroup>
-          </div>
-        </Box>
-      );
+      return null;
     }
 
     return (
