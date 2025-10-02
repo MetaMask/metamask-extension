@@ -240,6 +240,6 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((error) => {
-  exitWithError(error);
-});
+// main().catch((error) => {
+//   exitWithError(error);
+// });
