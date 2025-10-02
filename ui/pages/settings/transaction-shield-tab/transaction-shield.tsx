@@ -191,7 +191,7 @@ const TransactionShield = () => {
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Lg}
-            color={IconColor.iconAlternativeSoft}
+            color={IconColor.iconAlternative}
           />
         )}
       </Box>
