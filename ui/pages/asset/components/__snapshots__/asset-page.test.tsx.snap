@@ -129,45 +129,39 @@ exports[`AssetPage should render a native asset 1`] = `
             </span>
           </span>
         </button>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-          data-testid="token-overview-button-swap"
-          disabled=""
+        <div
+          class="tooltip-button-wrapper"
         >
-          <span
-            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+          <div
+            aria-describedby="tippy-tooltip-9"
+            class=""
+            data-original-title="Unavailable on this network"
+            data-tooltipped=""
+            style="display: inline;"
+            tabindex="0"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/swap-vertical.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
-              style="margin-top: -4px;"
+            <button
+              class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+              data-testid="token-overview-button-swap"
+              disabled=""
             >
-              Swap
-            </span>
-          </span>
-        </button>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-          data-testid="coin-overview-bridge"
-        >
-          <span
-            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/bridge.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
-              style="margin-top: -4px;"
-            >
-              Bridge
-            </span>
-          </span>
-        </button>
+              <span
+                class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+                  style="mask-image: url('./images/icons/swap-vertical.svg');"
+                />
+                <span
+                  class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+                  style="margin-top: -4px;"
+                >
+                  Swap
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
           data-testid="coin-overview-send"
@@ -625,7 +619,8 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
           </span>
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+          disabled=""
         >
           <span
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -639,25 +634,6 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               style="margin-top: -4px;"
             >
               Swap
-            </span>
-          </span>
-        </button>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-          data-testid="token-overview-bridge"
-        >
-          <span
-            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/bridge.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
-              style="margin-top: -4px;"
-            >
-              Bridge
             </span>
           </span>
         </button>
@@ -1121,7 +1097,8 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           </span>
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+          class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--disabled icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+          disabled=""
         >
           <span
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -1135,25 +1112,6 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               style="margin-top: -4px;"
             >
               Swap
-            </span>
-          </span>
-        </button>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-          data-testid="token-overview-bridge"
-        >
-          <span
-            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/bridge.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
-              style="margin-top: -4px;"
-            >
-              Bridge
             </span>
           </span>
         </button>
