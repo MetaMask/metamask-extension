@@ -152,14 +152,14 @@ export const WalletDetailsPage = () => {
             >
               {t('balance')}
             </Text>
-            <Text
+            <SensitiveText
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textAlternative}
+              isHidden={privacyMode}
+              ellipsis
             >
-              <SensitiveText ellipsis isHidden={privacyMode}>
-                {walletTotalBalance ?? '$ n/a'}
-              </SensitiveText>
-            </Text>
+              {walletTotalBalance ?? '$ n/a'}
+            </SensitiveText>
           </Box>
           {isEntropyWallet ? (
             <MultichainSrpBackup

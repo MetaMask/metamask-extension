@@ -178,14 +178,10 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     style="flex-shrink: 0;"
                   >
                     <p
-                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
+                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
                     >
-                      <p
-                        class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
-                      >
-                        0.00
-                      </p>
+                      0.00
                     </p>
                     <div
                       aria-label="Test Account Group 1 options"
@@ -424,14 +420,10 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     style="flex-shrink: 0;"
                   >
                     <p
-                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
+                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
                     >
-                      <p
-                        class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
-                      >
-                        0.00
-                      </p>
+                      0.00
                     </p>
                     <div
                       aria-label="Test Account Group 1 options"
@@ -670,14 +662,10 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     style="flex-shrink: 0;"
                   >
                     <p
-                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
+                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
                     >
-                      <p
-                        class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
-                      >
-                        0.00
-                      </p>
+                      0.00
                     </p>
                     <div
                       aria-label="Test Account Group 1 options"

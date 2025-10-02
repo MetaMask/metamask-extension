@@ -124,16 +124,16 @@ export const MultichainAccountCell = ({
         justifyContent={JustifyContent.center}
         style={{ flexShrink: 0 }}
       >
-        <Text
+        <SensitiveText
           className="multichain-account-cell__account-balance"
           data-testid="balance-display"
           variant={TextVariant.bodyMdMedium}
           marginRight={2}
+          isHidden={privacyMode}
+          ellipsis
         >
-          <SensitiveText ellipsis isHidden={privacyMode}>
-            {balance}
-          </SensitiveText>
-        </Text>
+          {balance}
+        </SensitiveText>
         <Box
           className="multichain-account-cell__end_accessory"
           display={Display.Flex}
