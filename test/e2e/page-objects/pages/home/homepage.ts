@@ -18,6 +18,11 @@ class HomePage {
     css: '.home-notification__accept-button',
   };
 
+  private readonly backupRemindMeLaterButton = {
+    tag: 'button',
+    text: 'Remind me later',
+  };
+
   private readonly backupSecretRecoveryPhraseNotification = {
     text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
     css: '.home-notification__text',
@@ -113,6 +118,10 @@ class HomePage {
     await this.driver.assertElementNotPresent(this.tokensTab, {
       waitAtLeastGuard: 500,
     });
+  }
+
+  async clickBackupRemindMeLaterButton(): Promise<void> {
+    await this.driver.clickElement(this.backupRemindMeLaterButton);
   }
 
   async closeSurveyToast(surveyName: string): Promise<void> {

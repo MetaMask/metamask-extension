@@ -71,6 +71,7 @@ describe('Incremental Security', function (this: Suite) {
         // copy the wallet address
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.clickBackupRemindMeLaterButton();
         await homePage.headerNavbar.clickAddressCopyButton();
 
         // switched to Dapp and send eth to the current account
@@ -101,7 +102,7 @@ describe('Incremental Security', function (this: Suite) {
 
         // check the balance is correct after revealing and confirming the SRP
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('3,400.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('1,700.00', '$');
 
         // check backup reminder is not displayed on homepage
         await homePage.checkBackupReminderIsNotDisplayed();
