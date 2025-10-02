@@ -525,7 +525,7 @@ describe('EthOverview', () => {
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith(
       {
-        event: MetaMetricsEventName.NavSendButtonClicked,
+        event: MetaMetricsEventName.SendStarted,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
           account_type: mockEvmAccount1.type,
