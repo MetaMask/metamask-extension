@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import FileInput from 'react-simple-file-input';
 import {
   Box,
@@ -17,10 +17,17 @@ import {
   FontWeight,
   twMerge,
 } from '@metamask/design-system-react';
+
+// Legacy components
 import { Label } from '../label';
 import { HelpText, HelpTextSeverity } from '../help-text';
+import { TextColor as TextColorLegacy } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { FileUploaderProps } from './file-uploader.types';
+
+// Constants
+const BYTES_PER_KB = 1024;
+const BYTES_PER_MB = BYTES_PER_KB * 1024;
 
 export const FileUploader = ({
   helpText,
@@ -34,6 +41,7 @@ export const FileUploader = ({
   maxFileSize,
   fileInputProps,
   onChange,
+  multiple,
   ...props
 }: FileUploaderProps) => {
   const t = useI18nContext();
@@ -41,75 +49,85 @@ export const FileUploader = ({
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const addFiles = (newFiles: FileList | File) => {
-    setError(null);
-    const isFileList = newFiles instanceof FileList;
-    if (!newFiles || (isFileList && !newFiles?.length)) {
-      return;
-    }
+  // Helper function to convert bytes to MB
+  const convertBytesToMB = useCallback((bytes: number): number => {
+    return parseFloat((bytes / BYTES_PER_MB).toFixed(2));
+  }, []);
 
-    const existingFileNames = new Set(
-      files ? Array.from(files).map((f) => f.name) : [],
-    );
-
-    // Filter out duplicates and validate file size
-    const validFiles: File[] = [];
-
-    if (isFileList) {
-      Array.from(newFiles).forEach((file) => {
-        // Skip if duplicate
-        if (existingFileNames.has(file.name)) {
-          return;
-        }
-
-        // Check if file type is supported
-        // only happens on drag and drop since it does not check access prop
-        // remove whitespace from accept
-        const acceptArray = accept?.replaceAll(' ', '').split(',');
-        if (accept && acceptArray && !acceptArray.includes(file.type)) {
-          setError(t('fileUploaderInvalidFileTypeError'));
-          return;
-        }
-
-        // Check file size if maxFileSize(in bytes) is specified
-        if (maxFileSize && file.size > maxFileSize) {
-          const fileSizeInMB = parseFloat(
-            (maxFileSize / 1024 / 1024).toFixed(2),
-          );
-          setError(t('fileUploaderMaxFileSizeError', [fileSizeInMB]));
-          return;
-        }
-
-        validFiles.push(file);
-      });
-    } else {
-      if (existingFileNames.has(newFiles.name)) {
-        return;
-      }
-
-      if (maxFileSize && newFiles.size > maxFileSize) {
-        const fileSizeInMB = parseFloat((maxFileSize / 1024 / 1024).toFixed(2));
-        setError(t('fileUploaderMaxFileSizeError', [fileSizeInMB]));
-        return;
-      }
-      validFiles.push(newFiles);
-    }
-
-    if (!validFiles.length) {
-      return;
-    }
-
+  // Helper function to create a FileList from an array of Files
+  const createFileList = useCallback((fileArray: File[]): FileList => {
     const dt = new DataTransfer();
-    // Add existing files first
-    if (files) {
-      Array.from(files).forEach((f) => dt.items.add(f));
-    }
+    fileArray.forEach((file) => dt.items.add(file));
+    return dt.files;
+  }, []);
 
-    // Add new valid files
-    validFiles.forEach((f) => dt.items.add(f));
+  // Helper function to validate a single file
+  const validateFile = useCallback(
+    (file: File, existingNames: Set<string>): string | null => {
+      // Skip if duplicate
+      if (existingNames.has(file.name)) {
+        return null; // Skip silently
+      }
 
-    setFiles(dt.files);
-  };
+      // Check file type
+      if (accept) {
+        const acceptArray = accept.replaceAll(' ', '').split(',');
+        if (!acceptArray.includes(file.type)) {
+          return t('fileUploaderInvalidFileTypeError');
+        }
+      }
+
+      // Check file size
+      if (maxFileSize && file.size > maxFileSize) {
+        const fileSizeInMB = convertBytesToMB(maxFileSize);
+        return t('fileUploaderMaxFileSizeError', [fileSizeInMB]);
+      }
+
+      return null; // File is valid
+    },
+    [accept, maxFileSize, convertBytesToMB, t],
+  );
+
+  const addFiles = useCallback(
+    (newFiles: FileList | File) => {
+      setError(null);
+      const isFileList = newFiles instanceof FileList;
+      if (!newFiles || (isFileList && !newFiles?.length)) {
+        return;
+      }
+
+      const existingFileNames = new Set(
+        files ? Array.from(files).map((f) => f.name) : [],
+      );
+
+      const filesToProcess = isFileList ? Array.from(newFiles) : [newFiles];
+      const validFiles: File[] = [];
+
+      // Validate all files using the extracted validation logic
+      for (const file of filesToProcess) {
+        const validationError = validateFile(file, existingFileNames);
+
+        if (validationError) {
+          setError(validationError);
+          return; // Stop processing on first error
+        }
+
+        if (!existingFileNames.has(file.name)) {
+          validFiles.push(file);
+        }
+      }
+
+      if (!validFiles.length) {
+        return;
+      }
+
+      // Combine existing files with new valid files using helper function
+      const existingFiles = files ? Array.from(files) : [];
+      const allFiles = [...existingFiles, ...validFiles];
+      setFiles(createFileList(allFiles));
+    },
+    [files, validateFile, createFileList],
+  );
 
   const onFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -125,10 +143,18 @@ export const FileUploader = ({
     addFiles(fileChangeFiles);
   };
 
+  // Optimize onChange callback to prevent unnecessary re-renders
+  const handleFilesChange = useCallback(
+    (newFiles: FileList | null) => {
+      onChange?.(newFiles);
+    },
+    [onChange],
+  );
+
   // emit the files to parent when they change
   useEffect(() => {
-    onChange?.(files);
-  }, [files, onChange]);
+    handleFilesChange(files);
+  }, [files, handleFilesChange]);
 
   const inputId = id || 'file-uploader-input';
 
@@ -145,7 +171,7 @@ export const FileUploader = ({
   };
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} {...props}>
+    <Box {...props}>
       {label && (
         <Label
           htmlFor={inputId}
@@ -155,17 +181,7 @@ export const FileUploader = ({
           {label}
         </Label>
       )}
-      <FileInput
-        id={inputId}
-        data-testid="file-uploader-input"
-        accept={accept ?? undefined}
-        multiple
-        {...fileInputProps}
-        className={twMerge('sr-only', fileInputProps?.className ?? '')}
-        onChange={onFileChange}
-        // don't save the value to the input field to allow reuploading the same file
-        value={''}
-      />
+
       <div
         role="button"
         aria-label={label ? undefined : t('fileUploaderDescription')}
@@ -184,16 +200,27 @@ export const FileUploader = ({
         className={twMerge(
           'flex flex-col items-center justify-center w-full p-6 gap-2 text-center rounded-lg border border-dashed border-default hover:bg-background-default-hover hover:border-solid cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-default focus:ring-offset-2',
           isDragging && 'bg-background-default-hover border-solid',
-          dropAreaProps?.className,
+          dropAreaProps?.className || '',
         )}
         tabIndex={0}
       >
+        <FileInput
+          id={inputId}
+          data-testid="file-uploader-input"
+          accept={accept ?? undefined}
+          multiple={multiple ?? true}
+          {...fileInputProps}
+          className={twMerge('sr-only', fileInputProps?.className ?? '')}
+          onChange={onFileChange}
+          // don't save the value to the input field to allow reuploading the same file
+          value={''}
+        />
         <Icon
           name={IconName.Upload}
           size={IconSize.Xl}
           color={IconColor.IconAlternative}
         />
-        <Box flexDirection={BoxFlexDirection.Column}>
+        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
           <Text
             variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
@@ -216,6 +243,7 @@ export const FileUploader = ({
         <HelpText
           severity={error ? HelpTextSeverity.Danger : undefined}
           {...helpTextProps}
+          color={TextColorLegacy.textAlternative}
           className={twMerge('mt-1', helpTextProps?.className ?? '')}
         >
           {error || helpText}
@@ -255,15 +283,10 @@ export const FileUploader = ({
                 color={IconColor.IconAlternative}
                 ariaLabel={t('delete')}
                 onClick={() => {
-                  setFiles(
-                    (() => {
-                      const dt = new DataTransfer();
-                      Array.from(files)
-                        .filter((f) => f.name !== file.name)
-                        .forEach((f) => dt.items.add(f));
-                      return dt.files;
-                    })(),
+                  const remainingFiles = Array.from(files).filter(
+                    (f) => f.name !== file.name,
                   );
+                  setFiles(createFileList(remainingFiles));
                 }}
                 className="ml-auto"
               />
