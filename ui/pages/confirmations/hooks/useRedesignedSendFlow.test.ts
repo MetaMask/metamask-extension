@@ -1,4 +1,3 @@
-import { ENVIRONMENT } from '../../../../development/build/constants';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
 import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flags';
@@ -30,38 +29,7 @@ describe('useRedesignedSendFlow', () => {
     return result.current;
   };
 
-  it('returns enabled false when development environment override is not active', () => {
-    process.env.SEND_REDESIGN_ENABLED = 'false';
-    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.DEVELOPMENT;
-
-    mockGetRemoteFeatureFlags.mockReturnValue({
-      sendRedesign: { enabled: false },
-    });
-    mockGetIsMultichainAccountsState2Enabled.mockReturnValue(false);
-
-    const result = renderHook();
-
-    expect(result).toEqual({ enabled: false });
-  });
-
-  it('returns enabled false when not in development environment', () => {
-    process.env.SEND_REDESIGN_ENABLED = 'true';
-    process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.PRODUCTION;
-
-    mockGetRemoteFeatureFlags.mockReturnValue({
-      sendRedesign: { enabled: false },
-    });
-    mockGetIsMultichainAccountsState2Enabled.mockReturnValue(false);
-
-    const result = renderHook();
-
-    expect(result).toEqual({ enabled: false });
-  });
-
   it('returns enabled true when feature flag is enabled and multichain accounts are enabled', () => {
-    delete process.env.SEND_REDESIGN_ENABLED;
-    delete process.env.METAMASK_ENVIRONMENT;
-
     mockGetRemoteFeatureFlags.mockReturnValue({
       sendRedesign: { enabled: true },
     });
@@ -73,9 +41,6 @@ describe('useRedesignedSendFlow', () => {
   });
 
   it('returns enabled false when feature flag is enabled but multichain accounts are disabled', () => {
-    delete process.env.SEND_REDESIGN_ENABLED;
-    delete process.env.METAMASK_ENVIRONMENT;
-
     mockGetRemoteFeatureFlags.mockReturnValue({
       sendRedesign: { enabled: true },
     });
@@ -87,9 +52,6 @@ describe('useRedesignedSendFlow', () => {
   });
 
   it('returns enabled false when feature flag is disabled', () => {
-    delete process.env.SEND_REDESIGN_ENABLED;
-    delete process.env.METAMASK_ENVIRONMENT;
-
     mockGetRemoteFeatureFlags.mockReturnValue({
       sendRedesign: { enabled: false },
     });
@@ -100,22 +62,16 @@ describe('useRedesignedSendFlow', () => {
     expect(result).toEqual({ enabled: false });
   });
 
-  it('returns enabled false when feature flag is undefined', () => {
-    delete process.env.SEND_REDESIGN_ENABLED;
-    delete process.env.METAMASK_ENVIRONMENT;
-
+  it('returns enabled true when feature flag is undefined', () => {
     mockGetRemoteFeatureFlags.mockReturnValue({});
     mockGetIsMultichainAccountsState2Enabled.mockReturnValue(true);
 
     const result = renderHook();
 
-    expect(result).toEqual({ enabled: false });
+    expect(result).toEqual({ enabled: true });
   });
 
-  it('returns enabled false when remote feature flags is null', () => {
-    delete process.env.SEND_REDESIGN_ENABLED;
-    delete process.env.METAMASK_ENVIRONMENT;
-
+  it('returns enabled true when remote feature flags is null', () => {
     mockGetRemoteFeatureFlags.mockReturnValue({
       sendRedesign: null,
     });
@@ -123,6 +79,6 @@ describe('useRedesignedSendFlow', () => {
 
     const result = renderHook();
 
-    expect(result).toEqual({ enabled: false });
+    expect(result).toEqual({ enabled: true });
   });
 });

@@ -17,7 +17,10 @@ export const useRedesignedSendFlow = () => {
   const { enabled: isSendRedesignEnabled } = (sendRedesignFeatureFlag ??
     {}) as SendRedesignFeatureFlag;
 
-  if (!isSendRedesignEnabled || !isMultichainAccountsState2Enabled) {
+  if (
+    isSendRedesignEnabled === false ||
+    isMultichainAccountsState2Enabled === false
+  ) {
     return {
       enabled: false,
     };
