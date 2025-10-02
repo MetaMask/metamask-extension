@@ -1,5 +1,4 @@
 import React from 'react';
-import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import RestoreVaultPage from './restore-vault';
