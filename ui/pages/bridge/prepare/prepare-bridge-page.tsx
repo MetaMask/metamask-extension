@@ -781,7 +781,7 @@ const PrepareBridgePage = ({
               <>
                 <Text
                   textAlign={TextAlign.Center}
-                  color={TextColor.textAlternativeSoft}
+                  color={TextColor.textAlternative}
                 >
                   {t('swapFetchingQuotes')}
                 </Text>
