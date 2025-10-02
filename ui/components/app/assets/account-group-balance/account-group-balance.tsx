@@ -9,10 +9,7 @@ import {
   FlexWrap,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  Box,
-  SensitiveText,
-} from '../../../component-library';
+import { Box, SensitiveText } from '../../../component-library';
 import {
   getPreferences,
   selectAnyEnabledNetworksAreAvailable,
