@@ -180,7 +180,7 @@ async function main(): Promise<void> {
     const testDir = path.join(__dirname, 'multi-injected-provider');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
-    const testDir = path.join(__dirname, 'tests-new');
+    const testDir = path.join(__dirname, 'tests');
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
       FLASK_ONLY_TESTS.every((filteredTest) => !p.endsWith(filteredTest)),
     );

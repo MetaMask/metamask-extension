@@ -25,7 +25,7 @@ jobs:
       test-suite-name: test-e2e-chrome-browserify
       build-artifact: build-test-browserify
       build-command: yarn build:test
-      test-command: yarn test:e2e:chrome
+      test-command: yarn build:test
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
@@ -43,7 +43,7 @@ jobs:
       test-suite-name: test-e2e-chrome-webpack
       build-artifact: build-test-webpack
       build-command: yarn build:test:webpack
-      test-command: yarn test:e2e:chrome:webpack
+      test-command: yarn build:test
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
@@ -53,7 +53,7 @@ jobs:
       test-suite-name: test-e2e-chrome-multiple-providers
       build-artifact: build-test-browserify
       build-command: yarn build:test
-      test-command: yarn test:e2e:chrome:multi-provider
+      test-command: yarn build:test
 
   test-e2e-chrome-rpc:
     uses: ./.github/workflows/run-e2e.yml
@@ -61,7 +61,7 @@ jobs:
       test-suite-name: test-e2e-chrome-rpc
       build-artifact: build-test-browserify
       build-command: yarn build:test
-      test-command: yarn test:e2e:chrome:rpc
+      test-command: yarn build:test
 
   test-e2e-chrome-flask:
     uses: ./.github/workflows/run-e2e.yml
@@ -73,7 +73,7 @@ jobs:
       test-suite-name: test-e2e-chrome-flask
       build-artifact: build-test-flask-browserify
       build-command: yarn build:test:flask
-      test-command: yarn test:e2e:chrome:flask
+      test-command: yarn build:test
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
