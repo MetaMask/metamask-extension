@@ -446,7 +446,7 @@
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
   "alertMessageAddressTrustSignal": {
-    "message": "We can't verify this address. It may be new or unverified. Continue only if you trust the source."
+    "message": "We can't verify this address. It may be new or unverified. Only continue if you trust the source."
   },
   "alertMessageAddressTrustSignalMalicious": {
     "message": "If you confirm this request, you will probably lose your assets to a scammer."
@@ -485,10 +485,10 @@
     "message": "This site is asking you to sign in using the wrong account."
   },
   "alertMessageTokenTrustSignalMalicious": {
-    "message": "This token has been identified as malicious. We recommend not interacting with this token."
+    "message": "This token has been identified as malicious. Interacting with this token may result in a loss of funds."
   },
   "alertMessageTokenTrustSignalWarning": {
-    "message": "This token has been identified as suspicious. Proceed with caution."
+    "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds."
   },
   "alertModalAcknowledge": {
     "message": "I have acknowledged the risk and still want to proceed"
@@ -3636,7 +3636,7 @@
     "description": "Title of the modal created by the name component when address is verified."
   },
   "nameModalTitleWarning": {
-    "message": "Suspicious address",
+    "message": "Address Needs Review",
     "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
