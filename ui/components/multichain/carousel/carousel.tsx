@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { SolAccountType } from '@metamask/keyring-api';
 import {
@@ -34,6 +34,16 @@ export const Carousel = React.forwardRef(
     });
 
     const selectedAccount = useSelector(getSelectedAccount);
+    const emptyStateTimeoutRef = useRef<NodeJS.Timeout>();
+
+    // Cleanup timeout on unmount
+    useEffect(() => {
+      return () => {
+        if (emptyStateTimeoutRef.current) {
+          clearTimeout(emptyStateTimeoutRef.current);
+        }
+      };
+    }, []);
 
     // Filter visible slides
     const visibleSlides = slides
@@ -62,7 +72,12 @@ export const Carousel = React.forwardRef(
 
         // If this was the last slide, trigger empty state after animation
         if (isLastSlide && onEmptyState) {
-          setTimeout(() => {
+          // Clear any existing timeout first
+          if (emptyStateTimeoutRef.current) {
+            clearTimeout(emptyStateTimeoutRef.current);
+          }
+
+          emptyStateTimeoutRef.current = setTimeout(() => {
             onEmptyState();
           }, 300); // Wait for slide exit animation to complete
         }
