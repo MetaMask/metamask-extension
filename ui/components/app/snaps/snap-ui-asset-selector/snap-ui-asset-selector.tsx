@@ -22,7 +22,6 @@ import {
   AvatarNetworkSize,
 } from '../../../component-library';
 
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SnapUIAsset, useSnapAssetSelectorData } from './useSnapAssetDisplay';
 
@@ -47,65 +46,59 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
   fiat,
   networkName,
   networkIcon,
-}) => {
-  const { formatTokenQuantity } = useFormatters();
-
-  return (
+}) => (
+  <Box
+    className="snap-ui-renderer__asset-selector-option"
+    display={Display.Flex}
+    alignItems={AlignItems.center}
+    width={BlockSize.Full}
+    gap={4}
+    style={{ overflow: 'hidden' }}
+  >
+    <Box display={Display.Flex} alignItems={AlignItems.center}>
+      <BadgeWrapper
+        badge={
+          <AvatarNetwork
+            size={AvatarNetworkSize.Xs}
+            name={networkName}
+            src={networkIcon}
+            backgroundColor={BackgroundColor.backgroundDefault}
+          />
+        }
+      >
+        <AvatarToken src={icon} name={symbol} />
+      </BadgeWrapper>
+    </Box>
     <Box
-      className="snap-ui-renderer__asset-selector-option"
       display={Display.Flex}
-      alignItems={AlignItems.center}
-      width={BlockSize.Full}
-      gap={4}
+      flexDirection={FlexDirection.Column}
       style={{ overflow: 'hidden' }}
     >
-      <Box display={Display.Flex} alignItems={AlignItems.center}>
-        <BadgeWrapper
-          badge={
-            <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
-              name={networkName}
-              src={networkIcon}
-              backgroundColor={BackgroundColor.backgroundDefault}
-            />
-          }
-        >
-          <AvatarToken src={icon} name={symbol} />
-        </BadgeWrapper>
-      </Box>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        style={{ overflow: 'hidden' }}
+      <Text variant={TextVariant.bodyMdMedium} ellipsis>
+        {name}
+      </Text>
+      <Text
+        color={TextColor.textAlternative}
+        variant={TextVariant.bodySm}
+        ellipsis
       >
-        <Text variant={TextVariant.bodyMdMedium} ellipsis>
-          {name}
-        </Text>
-        <Text
-          color={TextColor.textAlternative}
-          variant={TextVariant.bodySm}
-          ellipsis
-        >
-          {networkName}
-        </Text>
-      </Box>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        marginLeft={'auto'}
-        textAlign={TextAlign.End}
-        className="snap-ui-renderer__asset-selector-option__balance"
-      >
-        <Text variant={TextVariant.bodySmMedium}>
-          {formatTokenQuantity(Number(balance ?? 0), symbol)}
-        </Text>
-        <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
-          {fiat}
-        </Text>
-      </Box>
+        {networkName}
+      </Text>
     </Box>
-  );
-};
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      marginLeft={'auto'}
+      textAlign={TextAlign.End}
+      className="snap-ui-renderer__asset-selector-option__balance"
+    >
+      <Text variant={TextVariant.bodySmMedium}>{balance}</Text>
+      <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
+        {fiat}
+      </Text>
+    </Box>
+  </Box>
+);
 
 /**
  * The props for the SnapUIAssetSelector.
