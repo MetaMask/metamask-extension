@@ -89,9 +89,7 @@ exports[`DeFiDetailsPage renders defi details list 1`] = `
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
-                500
-                 
-                Ethereum
+                500 Ethereum
               </p>
             </div>
           </div>
@@ -182,9 +180,7 @@ exports[`DeFiDetailsPage renders defi details list 1`] = `
                 class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
                 data-testid="multichain-token-list-item-value"
               >
-                500
-                 
-                Ethereum
+                500 Ethereum
               </p>
             </div>
           </div>

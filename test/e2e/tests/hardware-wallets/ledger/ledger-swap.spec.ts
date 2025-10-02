@@ -11,7 +11,6 @@ import { mockLedgerTransactionRequests } from './mocks';
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 describe('Ledger Swap', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
   it('swaps ETH to DAI', async function () {
     await withFixtures(
       {
