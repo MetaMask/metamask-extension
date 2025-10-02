@@ -2,6 +2,7 @@ import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
 import { useConfirmContext } from '../../context/confirm';
+import { getIsMetaMaskShieldFeatureEnabled } from '../../../../../shared/modules/environment';
 
 export const useEnableShieldCoverageChecks = () => {
   const { currentConfirmation } = useConfirmContext();
@@ -15,7 +16,9 @@ export const useEnableShieldCoverageChecks = () => {
     !subscriptionsLoading &&
     !subscriptionsError &&
     subscriptions.some((subscription) =>
-      subscription.products.some((product) => product.name === PRODUCT_TYPES.SHIELD),
+      subscription.products.some(
+        (product) => product.name === PRODUCT_TYPES.SHIELD,
+      ),
     );
 
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
@@ -25,6 +28,6 @@ export const useEnableShieldCoverageChecks = () => {
   return (
     (isTransactionConfirmation && hasUserSubscribedToShield) ||
     // to show the coverage check for development purposes
-    process.env.SHOW_SHIELD_COVERAGE_OVERRIDE === 'true'
+    getIsMetaMaskShieldFeatureEnabled()
   );
 };

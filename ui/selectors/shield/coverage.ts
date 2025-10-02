@@ -13,7 +13,7 @@ export function getCoverageStatus(
 ): CoverageStatus | undefined {
   const coverageResults = state.metamask.coverageResults[confirmationId];
   console.log('coverageResults', coverageResults);
-  return 'unknown';
+  // return 'unknown';
   if (!coverageResults || coverageResults.results.length === 0) {
     return undefined;
   }
