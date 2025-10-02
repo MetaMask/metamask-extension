@@ -46,32 +46,17 @@ async function mockLedgerIframeBridge(mockServer: MockttpServer) {
 
 export async function mockLedgerTransactionRequests(mockServer: MockttpServer) {
   await mockTransactionRequestsBase(mockServer);
-
   await mockEthDaiTrade(mockServer);
-
-  // Mock essential swap API endpoints
   await mockSwapNetworkInfo(mockServer);
-  // Using mockSwapTokens instead of complex mockTokenInfo
-  // Removed mockTransactionFees - not needed for basic swap test
-
-  // Mock critical swap API endpoints that are missing
   await mockSwapFeatureFlags(mockServer);
   await mockSwapTokens(mockServer);
   await mockSwapTopAssets(mockServer);
   await mockSwapAggregatorMetadata(mockServer);
   await mockSwapGasPrices(mockServer);
   await mockSuggestedGasFees(mockServer);
-  // Using mockLedgerEthDaiTrade instead of complex mockSwapTrades
-
-  // Mock price APIs - critical for swap functionality
   await mockPriceAPIs(mockServer);
-
-  // Mock Ledger iframe bridge - minimal mock to prevent catch-all redirect
   await mockLedgerIframeBridge(mockServer);
-
-  // Note: Smart Transaction APIs are NOT mocked because Smart Transactions are disabled in the test
-
-  // Mock external accounts API for activity list - CRITICAL for activity list display
   await mockExternalAccountsAPI(mockServer);
   await mockIcon(mockServer);
+  // Note: Smart Transaction APIs are NOT mocked because Smart Transactions are disabled in the test
 }
