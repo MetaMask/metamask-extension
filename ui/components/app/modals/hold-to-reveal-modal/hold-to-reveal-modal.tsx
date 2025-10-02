@@ -93,7 +93,7 @@ export default function HoldToRevealModal({
               key="hold-to-reveal-5"
               variant={ButtonVariant.Link}
               size={ButtonSize.Inherit}
-              href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
+              href={holdToRevealType === 'PrivateKey' ? ZENDESK_URLS.PRIVATE_KEY_GUIDE : ZENDESK_URLS.NON_CUSTODIAL_WALLET}
               externalLink
             >
               {t('holdToRevealContent5')}
