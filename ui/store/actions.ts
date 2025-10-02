@@ -165,6 +165,7 @@ import {
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
+import type { NetworkConnectionBanner } from '../../shared/constants/app-state';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -6298,6 +6299,16 @@ export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
 }
 
+export function updateNetworkConnectionBanner(
+  networkConnectionBanner: NetworkConnectionBanner,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateNetworkConnectionBanner', [
+      networkConnectionBanner,
+    ]);
+  };
+}
+
 /**
  * Sends the background state the networkClientId and domain upon network switch
  *
@@ -7336,16 +7347,6 @@ export async function getERC1155BalanceOf(
     userAddress,
     tokenAddress,
     tokenId,
-    networkClientId,
-  ]);
-}
-
-export async function getERC721AssetSymbol(
-  checksummedAddress: string,
-  networkClientId: string,
-): Promise<string> {
-  return await submitRequestToBackground<string>('getERC721AssetSymbol', [
-    checksummedAddress,
     networkClientId,
   ]);
 }

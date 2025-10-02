@@ -71,7 +71,11 @@ describe('Metrics', function () {
         await transactionConfirmation.clickAdvancedDetailsButton();
 
         await assertAdvancedGasDetails(driver);
-        await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 
