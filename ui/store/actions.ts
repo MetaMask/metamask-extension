@@ -165,6 +165,7 @@ import {
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
+import type { NetworkConnectionBanner } from '../../shared/constants/app-state';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -6296,6 +6297,16 @@ export function hideAccountBanner() {
 
 export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
+}
+
+export function updateNetworkConnectionBanner(
+  networkConnectionBanner: NetworkConnectionBanner,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateNetworkConnectionBanner', [
+      networkConnectionBanner,
+    ]);
+  };
 }
 
 /**
