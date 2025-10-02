@@ -181,7 +181,11 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                       class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
                     >
-                      0.00
+                      <p
+                        class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
+                      >
+                        0.00
+                      </p>
                     </p>
                     <div
                       aria-label="Test Account Group 1 options"
@@ -423,7 +427,11 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                       class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
                     >
-                      0.00
+                      <p
+                        class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
+                      >
+                        0.00
+                      </p>
                     </p>
                     <div
                       aria-label="Test Account Group 1 options"
@@ -665,7 +673,11 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                       class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
                     >
-                      0.00
+                      <p
+                        class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
+                      >
+                        0.00
+                      </p>
                     </p>
                     <div
                       aria-label="Test Account Group 1 options"
