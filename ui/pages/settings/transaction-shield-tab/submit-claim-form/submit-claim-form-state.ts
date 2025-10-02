@@ -1,8 +1,6 @@
 import { useState } from 'react';
 
 export const useSubmitClaimFormState = () => {
-  const [firstName, setFirstName] = useState<string>('');
-  const [lastName, setLastName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [impactedWalletAddress, setImpactedWalletAddress] =
     useState<string>('');
@@ -10,12 +8,9 @@ export const useSubmitClaimFormState = () => {
   const [reimbursementWalletAddress, setReimbursementWalletAddress] =
     useState<string>('');
   const [description, setDescription] = useState<string>('');
+  const [files, setFiles] = useState<FileList>();
 
   return {
-    firstName,
-    setFirstName,
-    lastName,
-    setLastName,
     email,
     setEmail,
     impactedWalletAddress,
@@ -26,14 +21,15 @@ export const useSubmitClaimFormState = () => {
     setReimbursementWalletAddress,
     description,
     setDescription,
+    files,
+    setFiles,
     clear: () => {
-      setFirstName('');
-      setLastName('');
       setEmail('');
       setImpactedWalletAddress('');
       setImpactedTxHash('');
       setReimbursementWalletAddress('');
       setDescription('');
+      setFiles(undefined);
     },
   };
 };

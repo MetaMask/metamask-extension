@@ -1,21 +1,30 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { isValidHexAddress } from '@metamask/controller-utils';
+import FileInput from 'react-simple-file-input';
 import {
   Box,
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonLink,
   ButtonLinkSize,
   ButtonSize,
   ButtonVariant,
   FormTextField,
   FormTextFieldSize,
+  Icon,
+  IconName,
+  IconSize,
   Text,
 } from '../../../../components/component-library';
 import {
+  AlignItems,
+  BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
+  IconColor,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -24,17 +33,14 @@ import {
   Textarea,
   TextareaResize,
 } from '../../../../components/component-library/textarea';
-import { FileUploader } from '../../../../components/component-library/components-temp/file-uploader';
 import { useSubmitClaimFormState } from './submit-claim-form-state';
+
+const MAX_FILE_SIZE = 1 * 1024 * 1024;
 
 const SubmitClaimForm = () => {
   const t = useI18nContext();
 
   const {
-    firstName,
-    setFirstName,
-    lastName,
-    setLastName,
     email,
     setEmail,
     impactedWalletAddress,
@@ -45,6 +51,8 @@ const SubmitClaimForm = () => {
     setReimbursementWalletAddress,
     description,
     setDescription,
+    files,
+    setFiles,
   } = useSubmitClaimFormState();
 
   const [errors, setErrors] = useState<
@@ -94,8 +102,6 @@ const SubmitClaimForm = () => {
   const isInvalidData = useMemo(() => {
     return (
       Object.values(errors).some((error) => error !== undefined) ||
-      !firstName ||
-      !lastName ||
       !email ||
       !impactedWalletAddress ||
       !impactedTxHash ||
@@ -104,14 +110,41 @@ const SubmitClaimForm = () => {
     );
   }, [
     errors,
-    firstName,
-    lastName,
     email,
     impactedWalletAddress,
     impactedTxHash,
     reimbursementWalletAddress,
     description,
   ]);
+
+  const addFile = useCallback(
+    (newFiles: FileList) => {
+      setErrors((state) => ({
+        ...state,
+        files: undefined,
+      }));
+
+      const dt = new DataTransfer();
+      // filter out files exceeding 5MB
+      Array.from(newFiles).forEach((file) => {
+        if (file.size <= MAX_FILE_SIZE) {
+          dt.items.add(file);
+        } else {
+          setErrors((state) => ({
+            ...state,
+            files: {
+              key: 'files',
+              msg: t('fileUploaderMaxFileSizeError', [1]),
+            },
+          }));
+        }
+      });
+
+      // save file to state
+      setFiles(dt.files);
+    },
+    [setFiles, t],
+  );
 
   return (
     <Box
@@ -135,30 +168,6 @@ const SubmitClaimForm = () => {
           </ButtonLink>,
         ])}
       </Text>
-      <Box display={Display.Flex} gap={4} width={BlockSize.Full}>
-        <FormTextField
-          label={`${t('shieldClaimFirstName')}*`}
-          placeholder={t('shieldClaimFirstNamePlaceholder')}
-          id="first-name"
-          name="first-name"
-          size={FormTextFieldSize.Lg}
-          onChange={(e) => setFirstName(e.target.value)}
-          value={firstName}
-          required
-          width={BlockSize.Full}
-        />
-        <FormTextField
-          label={`${t('shieldClaimLastName')}*`}
-          placeholder={t('shieldClaimLastNamePlaceholder')}
-          id="last-name"
-          name="last-name"
-          size={FormTextFieldSize.Lg}
-          onChange={(e) => setLastName(e.target.value)}
-          value={lastName}
-          required
-          width={BlockSize.Full}
-        />
-      </Box>
       <FormTextField
         label={`${t('shieldClaimEmail')}*`}
         placeholder="johncarpenter@sample.com"
@@ -257,7 +266,6 @@ const SubmitClaimForm = () => {
           {`${t('shieldClaimDescription')}*`}
         </Text>
         <Textarea
-          placeholder={t('shieldClaimDescriptionPlaceholder')}
           id="description"
           name="description"
           onChange={(e) => setDescription(e.target.value)}
@@ -270,25 +278,95 @@ const SubmitClaimForm = () => {
           paddingBottom={3}
         />
       </Box>
-      <FileUploader
-        id="upload-images-file-uploader"
-        label={t('shieldClaimFileUploader')}
-        multiple
-        acceptText={t('shieldClaimFileUploaderMaxFileSize')}
-        helpText={t('shieldClaimFileUploaderHelpText')}
-        helpTextProps={{
-          'data-testid': 'shield-claim-file-uploader-help-text',
-          color: TextColor.textAlternativeSoft,
-        }}
-        maxFileSize={5 * 1024 * 1024}
-        filesProps={{
-          className: 'settings-page__content-item-col',
-        }}
-        accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
-        onChange={(files) => {
-          console.log('check: onChange', files);
-        }}
-      />
+      <Box>
+        <Text variant={TextVariant.bodyMdMedium} marginBottom={2}>
+          {t('shieldClaimFileUploader')}
+        </Text>
+        <FileInput
+          id="upload-images-file-uploader"
+          data-testid="upload-images-file-uploader"
+          multiple
+          onChange={(inputFiles) => addFile(inputFiles)}
+          accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
+          value={''}
+          style={{ color: 'transparent' }}
+        />
+        <Text
+          variant={TextVariant.bodySm}
+          color={
+            errors.files
+              ? TextColor.errorDefault
+              : TextColor.textAlternativeSoft
+          }
+          marginTop={1}
+        >
+          {errors.files
+            ? errors.files.msg
+            : t('shieldClaimFileUploaderHelpText')}
+        </Text>
+
+        {files && (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={2}
+            marginTop={4}
+            className="settings-page__content-item-col"
+          >
+            {Array.from(files).map((file) => (
+              <Box
+                key={file.name}
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                flexDirection={FlexDirection.Row}
+                borderRadius={BorderRadius.LG}
+                backgroundColor={BackgroundColor.backgroundSection}
+                paddingTop={2}
+                paddingBottom={2}
+                paddingInline={4}
+              >
+                <Icon
+                  name={
+                    file.type.includes('image') ? IconName.Image : IconName.File
+                  }
+                  size={IconSize.Md}
+                  color={IconColor.iconAlternative}
+                  marginRight={2}
+                />
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {file.name}
+                </Text>
+                <ButtonIcon
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
+                  color={IconColor.iconAlternative}
+                  ariaLabel={t('delete')}
+                  onClick={() => {
+                    setFiles(
+                      (() => {
+                        setErrors((state) => ({
+                          ...state,
+                          files: undefined,
+                        }));
+
+                        const dt = new DataTransfer();
+                        Array.from(files)
+                          .filter((f) => f.name !== file.name)
+                          .forEach((f) => dt.items.add(f));
+                        return dt.files;
+                      })(),
+                    );
+                  }}
+                  marginLeft="auto"
+                />
+              </Box>
+            ))}
+          </Box>
+        )}
+      </Box>
       <Box className="settings-page__content-item-col">
         <Button
           data-testid="shield-claim-submit-button"
