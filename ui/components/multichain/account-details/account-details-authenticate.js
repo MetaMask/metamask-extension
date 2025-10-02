@@ -7,7 +7,6 @@ import {
   Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { exportAccount, hideWarning } from '../../../store/actions';
 import {
@@ -75,10 +74,6 @@ export const AccountDetailsAuthenticate = ({
         marginTop={6}
         severity={Severity.Danger}
         description={t('privateKeyWarning')}
-        actionButtonLabel={t('learnMore')}
-        actionButtonOnClick={() =>
-          window.open(ZENDESK_URLS.PRIVATE_KEY_GUIDE, '_blank')
-        }
       />
       <Box display={Display.Flex} marginTop={6} gap={2}>
         <ButtonSecondary onClick={onCancel} block>
