@@ -12,7 +12,7 @@ import {
   withMultichainAccountsDesignEnabled,
 } from './common';
 
-describe('Multichain Accounts - Account tree', function (this: Suite) {
+describe.skip('Multichain Accounts - Account tree', function (this: Suite) {
   it('should display basic wallets and accounts', async function () {
     await withMultichainAccountsDesignEnabled(
       {

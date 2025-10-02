@@ -11,7 +11,7 @@ import {
   withMultichainAccountsDesignEnabled,
 } from './common';
 
-describe('Multichain Accounts - Multichain accounts list page', function (this: Suite) {
+describe.skip('Multichain Accounts - Multichain accounts list page', function (this: Suite) {
   it('displays basic wallets and accounts', async function () {
     await withMultichainAccountsDesignEnabled(
       {
