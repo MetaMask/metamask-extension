@@ -37,6 +37,7 @@ const mockSetAccountName = jest.fn();
 const mockRemoveAccountHelper = jest.fn();
 const mockTrackEvent = jest.fn();
 const mockGetAccountByAddress = jest.fn();
+const mockListMultichainAccounts = jest.fn();
 const mockLocale = 'en';
 const mockPreferencesControllerGetState = jest.fn();
 const mockSnapControllerGet = jest.fn();
@@ -101,6 +102,7 @@ const createControllerMessenger = ({
       'KeyringController:getAccounts',
       'AccountsController:setSelectedAccount',
       'AccountsController:getAccountByAddress',
+      'AccountsController:listMultichainAccounts',
       'PreferencesController:getState',
       'SnapController:get',
       'SnapController:handleRequest',
@@ -136,6 +138,9 @@ const createControllerMessenger = ({
 
       case 'AccountsController:getAccountByAddress':
         return mockGetAccountByAddress.mockReturnValue(account)(params);
+
+      case 'AccountsController:listMultichainAccounts':
+        return mockListMultichainAccounts.mockReturnValue([])();
 
       case 'AccountsController:setSelectedAccount':
         return mockSetSelectedAccount(params);
@@ -551,6 +556,42 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
+    });
+
+    it('handles account creation with skipping confirmation and skipping name suggestion', async () => {
+      const builder = createSnapKeyringBuilder();
+      await builder().handleKeyringSnapMessage(mockSnapId, {
+        method: 'notify:accountCreated',
+        params: {
+          account: mockAccount,
+          displayConfirmation: false,
+          accountNameSuggestion: '',
+          displayAccountNameSuggestion: false,
+        },
+      });
+
+      expect(mockTrackEvent).toHaveBeenCalledTimes(1);
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AccountAdded,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: 'snap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_id: mockSnapId,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          snap_name: mockSnapName,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_suggested_name: false,
+        },
+      });
+
+      expect(mockStartFlow).not.toHaveBeenCalled();
+      expect(mockEndFlow).not.toHaveBeenCalled();
     });
 
     it('ends approval flow on error', async () => {
