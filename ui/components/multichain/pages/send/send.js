@@ -224,11 +224,9 @@ export const SendPage = () => {
       dispatch(showQrScanner());
 
       // Clear the queryString param after showing the modal
-      const [cleanUrl] = window.location.href.split('?');
-      window.history.pushState({}, null, `${cleanUrl}`);
-      window.location.hash = '#send';
+      navigate('/send', { replace: true });
     }
-  }, [location, dispatch]);
+  }, [location, dispatch, navigate]);
 
   useEffect(() => {
     return () => {

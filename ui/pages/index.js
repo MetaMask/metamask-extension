@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { HashRouter } from 'react-router-dom-v5-compat';
+import { MemoryRouter } from 'react-router-dom-v5-compat';
 import { captureException } from '../../shared/lib/sentry';
 import { I18nProvider, LegacyI18nProvider } from '../contexts/i18n';
 import {
@@ -44,7 +44,7 @@ class Index extends PureComponent {
 
     return (
       <Provider store={store}>
-        <HashRouter hashType="noslash">
+        <MemoryRouter>
           <MetaMetricsProvider>
             <LegacyMetaMetricsProvider>
               <I18nProvider>
@@ -60,7 +60,7 @@ class Index extends PureComponent {
               </I18nProvider>
             </LegacyMetaMetricsProvider>
           </MetaMetricsProvider>
-        </HashRouter>
+        </MemoryRouter>
       </Provider>
     );
   }
