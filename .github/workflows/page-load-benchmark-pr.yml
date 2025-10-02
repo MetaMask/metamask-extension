@@ -29,12 +29,12 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          # yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
-      - name: Download artifact 'build-dist-browserify'
+      - name: Download artifact 'build-test-browserify'
         uses: actions/download-artifact@v4
         with:
-          name: build-dist-browserify
+          name: build-test-browserify
 
       - name: Install Playwright browsers
         run: yarn playwright install chromium

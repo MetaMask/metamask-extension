@@ -37,6 +37,9 @@ on:
           ./test-artifacts
           ./test/test-results/e2e
         description: The path to the test artifacts
+    secrets:
+      INFURA_PROJECT_ID:
+        required: false
 
 jobs:
   run-e2e:
@@ -49,10 +52,11 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # This is to support tests that set manifestFlags.testing.infuraProjectId, such as power-user.spec.ts
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
-      COREPACK_ENABLE_UNSAFE_CUSTOM_URLS: 1
       # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
       # For a `push` event, the fork is `github.event.repository.fork`.
       IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
@@ -71,6 +75,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          use-yarn-hydrate: true
 
       - name: Restore .metamask folder
         id: restore-metamask
