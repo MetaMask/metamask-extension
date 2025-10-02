@@ -1076,9 +1076,6 @@
   "switchNetwork": {
     "message": "切換網路"
   },
-  "switchNetworks": {
-    "message": "切換網路"
-  },
   "switchToThisAccount": {
     "message": "切換到這個帳戶"
   },

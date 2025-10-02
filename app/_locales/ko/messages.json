@@ -308,9 +308,6 @@
   "addingAccount": {
     "message": "계정 추가"
   },
-  "addingCustomNetwork": {
-    "message": "네트워크 추가"
-  },
   "additionalNetworks": {
     "message": "추가 네트워크"
   },
@@ -742,10 +739,6 @@
   },
   "betaTerms": {
     "message": "베타 이용약관"
-  },
-  "billionAbbreviation": {
-    "message": "B",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "계정",
@@ -1425,9 +1418,6 @@
   "connectingTo": {
     "message": "$1에 연결 중"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "'$1' 네트워크는 단계적으로 지원 중단되므로 작동하지 않을 수 있습니다. 다른 네트워크를 사용해 보세요."
-  },
   "connectingToGoerli": {
     "message": "Goerli 테스트 네트워크에 연결 중"
   },
@@ -1590,9 +1580,6 @@
   "currentNetwork": {
     "message": "현재 네트워크",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "해당 네트워크의 현재 rpc url의 지원이 중단되었습니다."
   },
   "currentTitle": {
     "message": "현재:"
@@ -3319,10 +3306,6 @@
   "metrics": {
     "message": "메트릭"
   },
-  "millionAbbreviation": {
-    "message": "M",
-    "description": "Shortened form of 'million'"
-  },
   "mismatchedChainLinkText": {
     "message": "네트워크 세부 정보 검증",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3597,10 +3580,6 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "가스비가 지난 72시간에 비해 $1 상태입니다.",
     "description": "$1 is networks stability value - stable, low, high"
-  },
-  "networkSwitchConnectionError": {
-    "message": "$1 연결이 불가능합니다",
-    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "네트워크 URL"
@@ -6465,9 +6444,6 @@
   "switchNetwork": {
     "message": "네트워크 전환"
   },
-  "switchNetworks": {
-    "message": "네트워크 전환"
-  },
   "switchToNetwork": {
     "message": "$1 네트워크로 전환",
     "description": "$1 represents the custom network that has previously been added"
@@ -6716,10 +6692,6 @@
   },
   "transferRequest": {
     "message": "전송 요청"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Ledger 연결에 오류가 발생했습니다. $1",

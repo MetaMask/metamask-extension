@@ -7,9 +7,10 @@ import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
+import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockInfuraAndAccountSync } from '../mocks';
 import { arrangeTestUtils } from './helpers';
@@ -112,10 +113,10 @@ describe('Account syncing - Accounts with Balances', function () {
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
 
+        const homePage = new HomePage(driver);
+
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         // Verify synced accounts + discovered account with balance are present
         // 2 synced accounts + 1 discovered via balance = 3 total
