@@ -67,7 +67,7 @@ export const useSnapAssetSelectorData = ({
 }: UseSnapAssetSelectorDataParams) => {
   const currentCurrency = useSelector(getMemoizedCurrentCurrency);
   const locale = useSelector(getIntlLocale);
-  const { formatCurrencyWithMinThreshold } = useFormatters();
+  const { formatTokenQuantity } = useFormatters();
 
   const parsedAccounts = addresses.map(parseCaipAccountId);
 
@@ -108,10 +108,7 @@ export const useSnapAssetSelectorData = ({
       icon: asset.image,
       symbol: asset.symbol,
       name: asset.title,
-      balance: formatCurrencyWithMinThreshold(
-        Number(asset.balance ?? 0),
-        asset.symbol,
-      ),
+      balance: formatTokenQuantity(Number(asset.balance ?? 0), asset.symbol),
       networkName,
       networkIcon: getImageForChainId(asset.chainId),
       fiat: formatFiatBalance(asset.secondary),
