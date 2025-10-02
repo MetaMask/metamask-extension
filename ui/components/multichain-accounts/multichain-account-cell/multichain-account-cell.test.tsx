@@ -184,6 +184,23 @@ describe('MultichainAccountCell', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('hides balance value when privacy mode is enabled', () => {
+    const props = {
+      ...defaultProps,
+      privacyMode: true,
+    };
+
+    renderWithProvider(<MultichainAccountCell {...props} />, store);
+
+    expect(screen.queryByText('$2,400.00')).not.toBeInTheDocument();
+
+    const balanceContainer = screen.getByTestId('balance-display');
+
+    expect(balanceContainer).toBeInTheDocument();
+    expect(balanceContainer.textContent).not.toContain('$2,400.00');
+    expect(balanceContainer.textContent).toMatch(/^[•]+$/u);
+  });
+
   describe('Connection Status', () => {
     beforeEach(() => {
       mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
