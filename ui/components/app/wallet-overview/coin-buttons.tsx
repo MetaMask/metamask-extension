@@ -139,7 +139,7 @@ const CoinButtons = ({
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
 
-  // Url could be solana assetId or the hex chainId
+  // Determine the chainId to use in the Swap experience using the url
   const urlSuffix = location.pathname.split('/').filter(Boolean).at(-1);
   const hexChainOrAssetId = urlSuffix
     ? decodeURIComponent(urlSuffix)
@@ -148,10 +148,6 @@ const CoinButtons = ({
   const chainIdToUse = isCaipAssetType(hexChainOrAssetId)
     ? parseCaipAssetType(hexChainOrAssetId).chainId
     : hexChainOrAssetId;
-
-  const isBridgeChain = chainIdToUse
-    ? ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
-    : false;
 
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
   // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
@@ -186,7 +182,6 @@ const CoinButtons = ({
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
     bridgeButton: [
-      { condition: !isBridgeChain, message: 'currentlyUnavailable' },
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
   };
@@ -351,11 +346,10 @@ const CoinButtons = ({
 
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
-      // Handle clicking from the wallet overview page
-
+      // Handle clicking from the wallet or native asset overview page
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
-        isBridgeChain && chainIdToUse
+        chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
           ? getNativeAssetForChainId(chainIdToUse)
           : undefined,
         isSwap,
@@ -517,11 +511,7 @@ const CoinButtons = ({
       isNonEvmAccountWithoutExternalServices ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
-          disabled={
-            !isBridgeChain ||
-            !isSigningEnabled ||
-            isNonEvmAccountWithoutExternalServices
-          }
+          disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
           data-testid={`${classPrefix}-overview-bridge`}
           Icon={
             displayNewIconButtons ? (

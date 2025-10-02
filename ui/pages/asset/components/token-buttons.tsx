@@ -52,7 +52,6 @@ import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hoo
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
-import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { Asset } from '../types/asset';
 import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
@@ -98,7 +97,6 @@ const TokenButtons = ({
     string
   >;
 
-  const isBridgeChain = ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(currentChainId);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
   const { openBridgeExperience } = useBridging();
@@ -354,10 +352,10 @@ const TokenButtons = ({
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
-        disabled={!(isBridgeChain && isExternalServicesEnabled)}
+        disabled={!isExternalServicesEnabled}
       />
 
-      {!isUnifiedUIEnabled && !isTestnet && isBridgeChain && (
+      {!isUnifiedUIEnabled && !isTestnet && (
         <IconButton
           className="token-overview__button"
           data-testid="token-overview-bridge"
@@ -370,7 +368,7 @@ const TokenButtons = ({
           }
           label={t('bridge')}
           onClick={() => handleBridgeOnClick(false)}
-          disabled={!isBridgeChain}
+          disabled={!isExternalServicesEnabled}
         />
       )}
     </Box>
