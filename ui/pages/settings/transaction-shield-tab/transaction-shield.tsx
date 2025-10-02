@@ -52,6 +52,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { DAY } from '../../../../shared/constants/time';
 import LoadingScreen from '../../../components/ui/loading-screen';
+import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
@@ -579,9 +580,16 @@ const TransactionShield = () => {
               {isCryptoPayment &&
                 billingDetails(
                   t('shieldTxMembershipBillingDetailsBillingAccount'),
-                  isCryptoPaymentMethod(shieldSubscription.paymentMethod)
-                    ? shieldSubscription.paymentMethod.crypto.payerAddress // TODO: will change to account name
-                    : '',
+                  isCryptoPaymentMethod(shieldSubscription.paymentMethod) ? (
+                    <ConfirmInfoRowAddress
+                      address={
+                        shieldSubscription.paymentMethod.crypto.payerAddress
+                      }
+                      chainId={shieldSubscription.paymentMethod.crypto.chainId}
+                    />
+                  ) : (
+                    ''
+                  ),
                 )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsPaymentMethod'),
