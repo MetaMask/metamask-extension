@@ -1145,9 +1145,10 @@ export function setupController(
 
       /**
        * send event to sentry with details about the event
+       *
        * @param {import("extension-port-stream").MessageTooLargeEventData} details
        */
-      function handleMessageTooLarge({ chunkSize }) {
+      const handleMessageTooLarge = function({ chunkSize }) {
         /**
          * @type {MetamaskController}
          */
