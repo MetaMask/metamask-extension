@@ -99,13 +99,18 @@ export const MultichainAccountList = ({
     useState<AccountGroupId | null>(null);
 
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
-  const connectedAccountGroups = useSelector((state: MultichainAccountsState) =>
-    getAccountGroupsByAddress(
-      state,
-      permittedAccounts.map(
-        (caipAccoundId) => parseCaipAccountId(caipAccoundId).address,
-      ),
-    ),
+  const connectedAccountGroups = useSelector(
+    (state: MultichainAccountsState) => {
+      if (!showConnectionStatus) {
+        return [];
+      }
+      return getAccountGroupsByAddress(
+        state,
+        permittedAccounts.map(
+          (caipAccoundId) => parseCaipAccountId(caipAccoundId).address,
+        ),
+      );
+    },
   );
 
   const handleAccountRenameActionModalClose = useCallback(() => {
@@ -204,13 +209,21 @@ export const MultichainAccountList = ({
               (accountGroup) => accountGroup.id === groupId,
             );
 
-            let connectedStatus = STATUS_NOT_CONNECTED;
-            if (showConnectionStatus && isConnectedAccount) {
-              connectedStatus = selectedAccountGroupsSet.has(
-                groupId as AccountGroupId,
-              )
-                ? STATUS_CONNECTED
-                : STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
+            let connectedStatus:
+              | typeof STATUS_NOT_CONNECTED
+              | typeof STATUS_CONNECTED
+              | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT
+              | undefined;
+            if (showConnectionStatus) {
+              if (isConnectedAccount) {
+                if (selectedAccountGroupsSet.has(groupId as AccountGroupId)) {
+                  connectedStatus = STATUS_CONNECTED;
+                } else {
+                  connectedStatus = STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
+                }
+              } else {
+                connectedStatus = STATUS_NOT_CONNECTED;
+              }
             }
 
             return [
