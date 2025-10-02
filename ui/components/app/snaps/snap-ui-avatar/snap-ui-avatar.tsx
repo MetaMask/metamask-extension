@@ -1,44 +1,16 @@
-import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { CaipAccountId, parseCaipAccountId } from '@metamask/utils';
-import BlockieIdenticon from '../../../ui/identicon/blockieIdenticon';
-import Jazzicon from '../../../ui/jazzicon';
-import { getUseBlockie } from '../../../../selectors';
+import React from 'react';
+import { AvatarAccountSize } from '@metamask/design-system-react';
+import { PreferredAvatar } from '../../preferred-avatar';
 
-export const DIAMETERS: Record<string, number> = {
-  xs: 16,
-  sm: 24,
-  md: 32,
-  lg: 40,
-};
-
-export type SnapUIAvatarProps = {
+type SnapUIAvatarProps = {
   // The address must be a CAIP-10 string.
   address: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg';
+  size?: AvatarAccountSize;
 };
 
 export const SnapUIAvatar: React.FunctionComponent<SnapUIAvatarProps> = ({
   address,
-  size = 'md',
+  size,
 }) => {
-  const parsed = useMemo(() => {
-    return parseCaipAccountId(address as CaipAccountId);
-  }, [address]);
-  const useBlockie = useSelector(getUseBlockie);
-
-  return useBlockie ? (
-    <BlockieIdenticon
-      address={parsed.address}
-      diameter={DIAMETERS[size]}
-      borderRadius="50%"
-    />
-  ) : (
-    <Jazzicon
-      namespace={parsed.chain.namespace}
-      address={parsed.address}
-      diameter={DIAMETERS[size]}
-      style={{ display: 'flex' }}
-    />
-  );
+  return <PreferredAvatar address={address} size={size} />;
 };

@@ -1,6 +1,9 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
+import createMockStore from 'redux-mock-store';
 
+import { renderWithProvider } from '../../../../../../test/jest';
+import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { AssetStandard } from '../../../types/send';
 import { Asset } from './asset';
 
@@ -8,8 +11,11 @@ const mockTokenAsset = {
   name: 'Test Token',
   symbol: 'TEST',
   standard: AssetStandard.ERC20,
-  balanceInSelectedCurrency: '$100.00',
-  shortenedBalance: '10.5',
+  balance: '10.5',
+  fiat: {
+    balance: 100,
+    currency: 'USD',
+  },
   chainId: '0x1',
   image: 'https://example.com/token.png',
   networkName: 'Ethereum',
@@ -44,6 +50,16 @@ const mockNFTERC1155Asset = {
     imageUrl: 'https://example.com/collection1155.png',
   },
 };
+
+const store = createMockStore()();
+
+function render(ui: React.ReactElement) {
+  return renderWithProvider(ui, store);
+}
+
+jest.mock('../../../hooks/useNftImageUrl', () => ({
+  useNftImageUrl: jest.fn().mockReturnValue('https://example.com/nft.png'),
+}));
 
 describe('TokenAsset', () => {
   it('renders token asset with correct information', () => {
@@ -89,6 +105,12 @@ describe('TokenAsset', () => {
 });
 
 describe('NFTAsset', () => {
+  const mockUseNftImageUrl = jest.mocked(useNftImageUrl);
+
+  beforeEach(() => {
+    mockUseNftImageUrl.mockReturnValue('https://example.com/nft.png');
+  });
+
   it('renders ERC721 NFT asset with correct information', () => {
     const { getByText, getByTestId } = render(
       <Asset asset={mockNFTERC721Asset} />,
@@ -151,16 +173,8 @@ describe('NFTAsset', () => {
     expect(queryByRole('img', { name: 'Ethereum' })).not.toBeInTheDocument();
   });
 
-  it('handles image error gracefully', () => {
-    const { getByAltText } = render(<Asset asset={mockNFTERC721Asset} />);
-
-    const image = getByAltText('Test NFT');
-    fireEvent.error(image);
-
-    expect(image).toHaveStyle('display: none');
-  });
-
   it('uses collection imageUrl when asset image is not provided', () => {
+    mockUseNftImageUrl.mockReturnValue('');
     const assetWithoutImage = {
       ...mockNFTERC721Asset,
       image: undefined,

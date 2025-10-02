@@ -18,6 +18,7 @@ import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
 } from '@metamask/network-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -76,7 +77,9 @@ export function getMultichainAccountServiceMessenger(
   });
 }
 
-type AllowedInitializationActions = PreferencesControllerGetStateAction;
+type AllowedInitializationActions =
+  | PreferencesControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
 
@@ -99,7 +102,10 @@ export function getMultichainAccountServiceInitMessenger(
 ) {
   return messenger.getRestricted({
     name: 'MultichainAccountServiceInit',
-    allowedActions: ['PreferencesController:getState'],
+    allowedActions: [
+      'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
+    ],
     allowedEvents: ['PreferencesController:stateChange'],
   });
 }

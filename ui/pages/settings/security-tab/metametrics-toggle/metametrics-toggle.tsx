@@ -28,9 +28,11 @@ import {
 const MetametricsToggle = ({
   dataCollectionForMarketing,
   setDataCollectionForMarketing,
+  fromDefaultSettings = false,
 }: {
   dataCollectionForMarketing: boolean;
-  setDataCollectionForMarketing: (value: boolean) => void;
+  setDataCollectionForMarketing: (value: boolean) => Promise<void>;
+  fromDefaultSettings?: boolean;
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -47,8 +49,24 @@ const MetametricsToggle = ({
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const useExternalServices = useSelector(getUseExternalServices);
 
-  const handleUseParticipateInMetaMetrics = async () => {
-    if (participateInMetaMetrics) {
+  const handleUseParticipateInMetaMetrics = async (isParticipated: boolean) => {
+    if (isParticipated) {
+      await enableMetametrics();
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.TurnOnMetaMetrics,
+        properties: {
+          isProfileSyncingEnabled: isBackupAndSyncEnabled,
+          participateInMetaMetrics,
+          location: fromDefaultSettings ? 'Default Settings' : 'Settings',
+        },
+      });
+    } else {
+      // disable data collection for marketing if participate in meta metrics is set to false
+      if (dataCollectionForMarketing) {
+        await setDataCollectionForMarketing(false);
+      }
+
       await disableMetametrics();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
@@ -72,20 +90,6 @@ const MetametricsToggle = ({
           location: 'Settings',
         },
       });
-    } else {
-      await enableMetametrics();
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.TurnOnMetaMetrics,
-        properties: {
-          isProfileSyncingEnabled: isBackupAndSyncEnabled,
-          participateInMetaMetrics,
-        },
-      });
-    }
-
-    if (dataCollectionForMarketing) {
-      setDataCollectionForMarketing(false);
     }
   };
 
@@ -113,7 +117,7 @@ const MetametricsToggle = ({
           <ToggleButton
             value={participateInMetaMetrics}
             disabled={!useExternalServices}
-            onToggle={handleUseParticipateInMetaMetrics}
+            onToggle={(value) => handleUseParticipateInMetaMetrics(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
           />

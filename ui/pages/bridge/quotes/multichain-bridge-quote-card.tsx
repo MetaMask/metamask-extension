@@ -6,6 +6,7 @@ import {
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { bpsToPercentage } from '../../../ducks/bridge/utils';
 import {
   Text,
   PopoverPosition,
@@ -23,6 +24,7 @@ import {
   getPriceImpactThresholds,
   getQuoteRequest,
   getIsToOrFromSolana,
+  getIsStxEnabled,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatCurrencyAmount, formatTokenAmount } from '../utils/quote';
@@ -36,7 +38,6 @@ import {
 import { Row, Column, Tooltip } from '../layout';
 import { trackUnifiedSwapBridgeEvent } from '../../../ducks/bridge/actions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { useCountdownTimer } from '../../../hooks/bridge/useCountdownTimer';
 import { formatPriceImpact } from '../utils/price-impact';
 import { type DestinationAccount } from '../prepare/types';
@@ -70,9 +71,7 @@ export const MultichainBridgeQuoteCard = ({
   const { insufficientBal } = useSelector(getQuoteRequest);
   const fromChain = useSelector(getFromChain);
   const locale = useSelector(getIntlLocale);
-  const isStxEnabled = useSelector((state) =>
-    getIsSmartTransaction(state as never, fromChain?.chainId),
-  );
+  const isStxEnabled = useSelector(getIsStxEnabled);
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const slippage = useSelector(getSlippage);
@@ -156,7 +155,10 @@ export const MultichainBridgeQuoteCard = ({
             >
               {t('multichainQuoteCardRateExplanation', [
                 new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(0)
-                  ? BRIDGE_MM_FEE_RATE
+                  ? (bpsToPercentage(
+                      // @ts-expect-error: controller types are not up to date yet
+                      activeQuote.quote.feeData.metabridge.quoteBpsFee,
+                    ) ?? BRIDGE_MM_FEE_RATE)
                   : '0',
               ])}
             </Tooltip>

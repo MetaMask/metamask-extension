@@ -14,6 +14,7 @@ import {
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
@@ -28,7 +29,10 @@ import {
   getEnabledNetworksByNamespace,
   getSelectedMultichainNetworkChainId,
 } from '../../../../../selectors/multichain/networks';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import {
+  getAllNetworkConfigurationsByCaipChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../../shared/modules/selectors/networks';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -108,6 +112,7 @@ const AssetListControlBar = ({
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
@@ -366,21 +371,22 @@ const AssetListControlBar = ({
       Object.keys(allEnabledNetworksForAllNamespaces).length === 1
     ) {
       const chainId = allEnabledNetworksForAllNamespaces[0];
-      return isStrictHexString(chainId)
-        ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
-        : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
+      const caipChainId = isStrictHexString(chainId)
+        ? toEvmCaipChainId(chainId)
+        : chainId;
+      return allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
     }
 
     // > 1 network selected, show "all networks"
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(allEnabledNetworksForAllNamespaces).length > 1
+      allEnabledNetworksForAllNamespaces.length > 1
     ) {
       return t('allPopularNetworks');
     }
     if (
       isGlobalNetworkSelectorRemoved &&
-      Object.keys(allEnabledNetworksForAllNamespaces).length === 0
+      allEnabledNetworksForAllNamespaces.length === 0
     ) {
       return t('noNetworksSelected');
     }
@@ -395,13 +401,12 @@ const AssetListControlBar = ({
 
     return t('popularNetworks');
   }, [
+    allEnabledNetworksForAllNamespaces,
     isTokenNetworkFilterEqualCurrentNetwork,
     currentMultichainNetwork.isEvmNetwork,
-    currentMultichainNetwork.network.nickname,
     currentMultichainNetwork?.nickname,
     t,
-    allNetworks,
-    allEnabledNetworksForAllNamespaces,
+    allCaipNetworks,
   ]);
 
   const singleNetworkIconUrl = useMemo(() => {
@@ -409,7 +414,7 @@ const AssetListControlBar = ({
       return undefined;
     }
 
-    const chainIds = Object.keys(enabledNetworksByNamespace);
+    const chainIds = allEnabledNetworksForAllNamespaces;
 
     if (chainIds.length !== 1) {
       return undefined;
@@ -417,7 +422,7 @@ const AssetListControlBar = ({
 
     const singleEnabledChainId = chainIds[0];
     return CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[singleEnabledChainId];
-  }, [enabledNetworksByNamespace]);
+  }, [allEnabledNetworksForAllNamespaces]);
 
   return (
     <Box
@@ -454,7 +459,7 @@ const AssetListControlBar = ({
               <AvatarNetwork
                 name={currentMultichainNetwork.nickname}
                 src={singleNetworkIconUrl}
-                size={AvatarNetworkSize.Sm}
+                size={AvatarNetworkSize.Xs}
                 borderWidth={0}
               />
             )}
