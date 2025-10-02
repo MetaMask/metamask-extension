@@ -18,6 +18,11 @@ import { createMockMultichainAccountsState } from '../../../../selectors/multich
 import * as assetsSelectors from '../../../../selectors/assets';
 import { MultichainEditAccountsPage } from './multichain-edit-accounts-page';
 
+jest.mock('../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../store/actions'),
+  forceUpdateMetamaskState: jest.fn(),
+}));
+
 const MOCK_WALLET_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
 const MOCK_GROUP_ID_1 =
   'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId;

@@ -966,6 +966,9 @@ describe('AppStateController', () => {
               },
               "lastUpdatedAt": null,
               "lastViewedUserSurvey": null,
+              "networkConnectionBanner": {
+                "status": "unknown",
+              },
               "newPrivacyPolicyToastClickedOrClosed": null,
               "newPrivacyPolicyToastShownDate": null,
               "nftsDropdownState": {},

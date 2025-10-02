@@ -132,6 +132,7 @@ export const MultichainAccountsConnectPage: React.FC<
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
     MultichainAccountsConnectPageMode.Summary,
   );
+  const { isEip1193Request } = request.metadata ?? {};
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const allBalances = useSelector(selectBalanceForAllWallets);
   const wallets = allBalances?.wallets;
@@ -238,9 +239,30 @@ export const MultichainAccountsConnectPage: React.FC<
       ...testNetworkConfigurations,
     ].map(({ caipChainId }) => caipChainId);
 
-    const supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
-      (requestedCaipChainId) =>
-        allNetworksList.includes(requestedCaipChainId as CaipChainId),
+    const walletRequest =
+      requestedCaipChainIds.filter(
+        (caipChainId) =>
+          parseCaipChainId(caipChainId).namespace === KnownCaipNamespace.Wallet,
+      ).length > 0;
+
+    let additionalChains: CaipChainId[] = [];
+    if (walletRequest && isEip1193Request) {
+      additionalChains = nonTestNetworkConfigurations
+        .map(({ caipChainId }) => caipChainId)
+        .filter((caipChainId) =>
+          requestedNamespacesWithoutWallet.includes(
+            parseCaipChainId(caipChainId).namespace,
+          ),
+        );
+    }
+
+    const supportedRequestedCaipChainIds = Array.from(
+      new Set([
+        ...requestedCaipChainIds.filter((requestedCaipChainId) =>
+          allNetworksList.includes(requestedCaipChainId as CaipChainId),
+        ),
+        ...additionalChains,
+      ]),
     );
 
     // If globally selected network is a test network, include that in the default selected networks for connection request
@@ -278,12 +300,14 @@ export const MultichainAccountsConnectPage: React.FC<
 
     return defaultSelectedNetworkList;
   }, [
-    alreadyConnectedCaipChainIds,
-    currentlySelectedNetwork,
-    testNetworkConfigurations,
     nonTestNetworkConfigurations,
+    testNetworkConfigurations,
     requestedCaipChainIds,
+    isEip1193Request,
+    currentlySelectedNetwork.chainId,
     requestedNamespaces,
+    requestedNamespacesWithoutWallet,
+    alreadyConnectedCaipChainIds,
   ]);
 
   const {

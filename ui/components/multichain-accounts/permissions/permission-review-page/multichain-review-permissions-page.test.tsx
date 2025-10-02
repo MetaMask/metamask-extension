@@ -35,6 +35,7 @@ jest.mock('../../../../hooks/useAccountGroupsForPermissions', () => ({
 }));
 
 jest.mock('../../../../store/actions', () => ({
+  forceUpdateMetamaskState: jest.fn(),
   hidePermittedNetworkToast: jest.fn(() => ({
     type: 'HIDE_PERMITTED_NETWORK_TOAST',
   })),
