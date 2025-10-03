@@ -6,7 +6,7 @@ import {
   AccountsControllerSetSelectedAccountAction,
   AccountsControllerState,
 } from '@metamask/accounts-controller';
-import { Json } from '@metamask/utils';
+import { Json, Hex } from '@metamask/utils';
 import {
   BaseController,
   ControllerGetStateAction,
@@ -21,6 +21,15 @@ import {
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
+
+/**
+ * Referral status for an account (currently used for Hyperliquid referrals)
+ */
+export enum ReferralStatus {
+  Approved = 'approved',
+  Passed = 'passed',
+  Declined = 'declined',
+}
 
 type AccountIdentityEntry = {
   address: string;
@@ -149,6 +158,9 @@ export type PreferencesControllerState = Omit<
   useExternalServices: boolean;
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
+  referrals: {
+    hyperliquid: Record<Hex, ReferralStatus>;
+  };
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   watchEthereumAccountEnabled: boolean;
@@ -260,6 +272,9 @@ export const getDefaultPreferencesControllerState =
     useTokenDetection: true,
     useTransactionSimulations: true,
     watchEthereumAccountEnabled: false,
+    referrals: {
+      hyperliquid: {},
+    },
   });
 
 /**
@@ -499,6 +514,12 @@ const controllerMetadata = {
     anonymous: false,
     usedInUi: true,
   },
+  referrals: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: false,
+    usedInUi: true,
+  },
 };
 
 export class PreferencesController extends BaseController<
@@ -514,14 +535,22 @@ export class PreferencesController extends BaseController<
    * @param options.state - The initial controller state
    */
   constructor({ messenger, state }: PreferencesControllerOptions) {
+    const defaultState = getDefaultPreferencesControllerState();
+
+    const mergedState = {
+      ...defaultState,
+      ...state,
+      preferences: {
+        ...defaultState.preferences,
+        ...state?.preferences,
+      },
+    };
+
     super({
       messenger,
       metadata: controllerMetadata,
       name: controllerName,
-      state: {
-        ...getDefaultPreferencesControllerState(),
-        ...state,
-      },
+      state: mergedState,
     });
 
     this.messagingSystem.subscribe(
@@ -1057,6 +1086,38 @@ export class PreferencesController extends BaseController<
       state.identities = updatedIdentities;
       state.lostIdentities = updatedLostIdentities;
       state.selectedAddress = selectedAccount?.address || ''; // it will be an empty string during onboarding
+    });
+  }
+
+  addReferralApprovedAccount(accountAddress: Hex) {
+    this.update((state) => {
+      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Approved;
+    });
+  }
+
+  addReferralPassedAccount(accountAddress: Hex) {
+    this.update((state) => {
+      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Passed;
+    });
+  }
+
+  addReferralDeclinedAccount(accountAddress: Hex) {
+    this.update((state) => {
+      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Declined;
+    });
+  }
+
+  removeReferralDeclinedAccount(accountAddress: Hex) {
+    this.update((state) => {
+      delete state.referrals.hyperliquid[accountAddress];
+    });
+  }
+
+  setAccountsReferralApproved(accountAddresses: Hex[]) {
+    this.update((state) => {
+      accountAddresses.forEach((address) => {
+        state.referrals.hyperliquid[address] = ReferralStatus.Approved;
+      });
     });
   }
 }

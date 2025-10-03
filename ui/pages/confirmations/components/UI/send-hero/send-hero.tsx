@@ -23,11 +23,13 @@ import {
   AlignItems,
 } from '../../../../../helpers/constants/design-system';
 import { Asset, NFT_STANDARDS } from '../../../types/send';
+import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 
 const NFTHero = ({ asset }: { asset: Asset }) => {
   const nftData = asset;
   const { collection, name, image } = nftData;
+  const nftItemSrc = useNftImageUrl(image as string);
 
   return (
     <Box
@@ -36,7 +38,7 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       marginTop={6}
-      marginBottom={6}
+      marginBottom={9}
     >
       <BadgeWrapper
         style={{
@@ -48,6 +50,11 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
               size={AvatarNetworkSize.Sm}
               name={nftData.networkName ?? ''}
               src={nftData.networkImage}
+              style={{
+                width: 20,
+                height: 20,
+                borderWidth: 2,
+              }}
             />
           ) : null
         }
@@ -55,12 +62,12 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
         {image || collection?.imageUrl ? (
           <Box
             as="img"
-            src={image || (collection?.imageUrl as string)}
+            src={nftItemSrc || (collection?.imageUrl as string)}
             alt={name}
             style={{
-              width: 80,
-              height: 80,
-              borderRadius: 40,
+              width: 48,
+              height: 48,
+              borderRadius: 12,
               objectFit: 'cover',
             }}
             onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -72,9 +79,9 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
         ) : null}
       </BadgeWrapper>
       <Text
-        variant={TextVariant.bodyLgMedium}
+        variant={TextVariant.headingSm}
         color={TextColor.textDefault}
-        marginTop={2}
+        marginTop={4}
       >
         {asset.name || asset.collection?.name}
       </Text>
@@ -85,7 +92,8 @@ const NFTHero = ({ asset }: { asset: Asset }) => {
 const TokenHero = ({ asset }: { asset: Asset }) => {
   const chainNetworkNameAndImageMap = useChainNetworkNameAndImageMap();
 
-  const { chainId, image, symbol, isNative, networkImage, networkName } = asset;
+  const { chainId, image, symbol, isNative, networkImage, networkName } =
+    asset ?? {};
 
   const nativeTokenImage = isNative
     ? (CHAIN_ID_TOKEN_IMAGE_MAP[
@@ -100,19 +108,27 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
   return (
     <Box
       display={Display.Flex}
-      flexDirection={FlexDirection.Row}
+      flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       marginTop={6}
-      marginBottom={6}
+      marginBottom={9}
     >
       <BadgeWrapper
+        style={{
+          alignSelf: 'center',
+        }}
         badge={
           chainId ? (
             <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
+              size={AvatarNetworkSize.Sm}
               name={networkName || chainNetworkNameAndImage?.networkName || ''}
               src={networkImage || chainNetworkNameAndImage?.networkImage}
+              style={{
+                width: 20,
+                height: 20,
+                borderWidth: 2,
+              }}
             />
           ) : null
         }
@@ -125,9 +141,9 @@ const TokenHero = ({ asset }: { asset: Asset }) => {
         />
       </BadgeWrapper>
       <Text
-        variant={TextVariant.bodyLgMedium}
+        variant={TextVariant.headingSm}
         color={TextColor.textDefault}
-        marginLeft={2}
+        marginTop={4}
       >
         {symbol}
       </Text>

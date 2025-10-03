@@ -34,6 +34,7 @@ import {
   CronjobController,
   ExecutionService,
   JsonSnapsRegistry,
+  MultichainRouter,
   SnapController,
   SnapInsightsController,
   SnapInterfaceController,
@@ -62,6 +63,7 @@ import { SelectedNetworkController } from '@metamask/selected-network-controller
 import { BridgeController } from '@metamask/bridge-controller';
 import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { ApprovalController } from '@metamask/approval-controller';
+import { NetworkEnablementController } from '@metamask/network-enablement-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
@@ -74,6 +76,7 @@ import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import AccountTrackerController from '../controllers/account-tracker-controller';
 import { AppStateController } from '../controllers/app-state-controller';
 import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
+import { SubscriptionService } from '../services/subscription/subscription-service';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -101,6 +104,7 @@ export type Controller =
   | MultichainBalancesController
   | MultichainTransactionsController
   | MultichainNetworkController
+  | MultichainRouter
   | NameController
   | NetworkController
   | NetworkOrderController
@@ -129,6 +133,7 @@ export type Controller =
   | SubscriptionController
   | SnapsNameProvider
   | SubjectMetadataController
+  | SubscriptionService
   | SwapsController
   | TokenBalancesController
   | TokenDetectionController
@@ -143,7 +148,8 @@ export type Controller =
   | AssetsContractController
   | AccountTreeController
   | WebSocketService
-  | MultichainAccountService;
+  | MultichainAccountService
+  | NetworkEnablementController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -201,4 +207,5 @@ export type ControllerFlatState = AccountsController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
-  NftDetectionController['state'];
+  NftDetectionController['state'] &
+  NetworkEnablementController['state'];

@@ -300,9 +300,6 @@
   "addingAccount": {
     "message": "Hesap ekleniyor"
   },
-  "addingCustomNetwork": {
-    "message": "Ağ Ekleniyor"
-  },
   "additionalNetworks": {
     "message": "İlave ağlar"
   },
@@ -725,18 +722,11 @@
   "beta": {
     "message": "Beta"
   },
-  "betaHeaderText": {
-    "message": "Bu bir beta sürümdür. Lütfen hataları bildirin $1"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Sürümü"
   },
   "betaTerms": {
     "message": "Beta Kullanım koşulları"
-  },
-  "billionAbbreviation": {
-    "message": "MR",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "Hesap",
@@ -1404,9 +1394,6 @@
   "connectingTo": {
     "message": "Şuna bağlanılıyor: $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "'$1' aşamalı olarak devre dışı bırakılıyor ve çalışmayabilir. Başka bir ağ deneyin."
-  },
   "connectingToGoerli": {
     "message": "Goerli Test Ağına Bağlanıyor"
   },
@@ -1569,9 +1556,6 @@
   "currentNetwork": {
     "message": "Mevcut ağ",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "Bu ağ için mevcut rpc url artık kullanılmıyor."
   },
   "currentTitle": {
     "message": "Mevcut:"
@@ -3292,10 +3276,6 @@
   "metrics": {
     "message": "Metrikler"
   },
-  "millionAbbreviation": {
-    "message": "MN",
-    "description": "Shortened form of 'million'"
-  },
   "mismatchedChainLinkText": {
     "message": "ağ bilgilerini doğrula",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3571,10 +3551,6 @@
     "message": "Son 72 saate göre gaz ücretleri $1.",
     "description": "$1 is networks stability value - stable, low, high"
   },
-  "networkSwitchConnectionError": {
-    "message": "$1 ağına bağlanamıyoruz",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "Ağ URL adresi"
   },
@@ -3711,9 +3687,6 @@
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
   },
-  "noDeFiPositions": {
-    "message": "Aradığınızı bulamıyor musunuz?"
-  },
   "noDomainResolution": {
     "message": "Alan adı için çözümleme sunulmamış."
   },
@@ -3734,12 +3707,6 @@
   },
   "noSnaps": {
     "message": "Yüklü snapiniz yok."
-  },
-  "noThanks": {
-    "message": "Hayır, istemiyorum"
-  },
-  "noTransactions": {
-    "message": "Herhangi bir işleminiz yok"
   },
   "noWebcamFound": {
     "message": "Bilgisayarınızın web kamerası bulunamadı. Lütfen tekrar deneyin."
@@ -4018,45 +3985,11 @@
   "onboardingImportWallet": {
     "message": "Mevcut bir cüzdanım var"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Kabul ediyorum"
-  },
   "onboardingMetametricsDescription": {
     "message": "MetaMask'i iyileştirmek için temel kullanım ve tanılama verilerini toplamak istiyoruz. Her zaman şöyle olacaktır:"
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "Bu verileri başka maksatlarla kullanmayı planlarsak sizi bilgilendireceğiz. Dilediğiniz zaman $1 bölümümüzü inceleyebilirsiniz (burada sunduğunuz verileri asla satmayız).",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "Gizlilik Politikası"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 Uygulama üzerindeki tıklamalar ve görüntülemeler depolanır ancak diğer bilgiler (genel adresiniz gibi) depolanmaz.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "Özel:"
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 Genel bir konumu (ülkeniz veya bölgeniz gibi) algılamak için geçici olarak IP adresinizi kullanırız ancak bu bilgi asla saklanmaz.",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "Genel:"
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 Kullanım verilerinizi paylaşmak veya silmek isteyip istemediğinize ayarlar kısmından dilediğiniz zaman siz karar verirsiniz.",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "İsteğe bağlı:"
-  },
   "onboardingMetametricsTitle": {
     "message": "MetaMask'i iyileştirmemize yardımcı olun"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "Bu verileri, pazarlama iletişimlerimizle nasıl etkileşimde bulunduğunuzu öğrenmek için kullanacağız. İlgili haberleri (ürün özellikleri gibi) paylaşabiliriz."
   },
   "onboardingOptionIcon": {
     "message": "$1 simgesi",
@@ -4100,14 +4033,8 @@
   "onboardingSrpInputClearAll": {
     "message": "Tümünü temizle"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "Tümünü gizle"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "Her bir sözcüğün arasına boşluk ekleyin ve hiç kimsenin izlemediğinden emin olun."
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "Tümünü göster"
   },
   "onekey": {
     "message": "OneKey"
@@ -4602,9 +4529,6 @@
   "proposedApprovalLimit": {
     "message": "Önerilen onay limiti"
   },
-  "protocolNotSupported": {
-    "message": "Henüz protokolünüzü desteklemiyor olabiliriz."
-  },
   "provide": {
     "message": "Sun"
   },
@@ -4721,9 +4645,6 @@
   },
   "recipientAddressPlaceholderNew": {
     "message": "Genel adres (0x) veya alan adı gir"
-  },
-  "recommendedGasLabel": {
-    "message": "Önerilen"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Şimdi yedekle"
@@ -5021,18 +4942,8 @@
   "secureWallet": {
     "message": "Güvenli cüzdan"
   },
-  "secureWalletGetStartedButton": {
-    "message": "Başlarken"
-  },
   "secureWalletRemindLaterButton": {
     "message": "Daha sonra hatırlat"
-  },
-  "secureWalletWalletRecover": {
-    "message": "Uygulamanın dışında kalmanız veya yeni bir cihaz edinmeniz durumunda cüzdanınızı kurtarmanızın tek yoludur."
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "Paranızı kaybetme riskini almayın. $1 güvendiğiniz bir yere kaydederek cüzdanınızı koruyun.",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "Güvenlik"
@@ -5111,9 +5022,6 @@
   },
   "seeDetails": {
     "message": "Ayrıntılara bakın"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "Cüzdanınızı koruyun"
   },
   "seedPhraseReq": {
     "message": "Gizli Kurtarma İfadeleri 12, 15, 18, 21 veya 24 kelimeden oluşur"
@@ -5419,18 +5327,6 @@
   },
   "siweURI": {
     "message": "URL adresi"
-  },
-  "skipAccountSecurity": {
-    "message": "Hesap güvenliğini atla?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Bu Gizli Kurtarma İfadesini kaybederseniz bu cüzdana erişim sağlayamayacaksınız."
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "Şimdi güvence altına al"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "Atla"
   },
   "skipDeepLinkInterstitial": {
     "message": "Derin bağlantıları açarken geçiş ekranını gösterme"
@@ -5789,9 +5685,6 @@
   "spendingCaps": {
     "message": "Harcama üst limitleri"
   },
-  "srpDesignImageAlt": {
-    "message": "GKİ vault görüntüsü"
-  },
   "srpDetailsDescription": {
     "message": "Gizli Kurtarma İfadesi, anahtar cümle veya kurtarma ifadesi olarak da anılan, kripto cüzdanınıza erişiminizi ve kontrolü sağlayan bir sözcük dizisidir. Cüzdanınızı MetaMask'e taşımak için bu ifadeye ihtiyacınız var."
   },
@@ -6008,10 +5901,6 @@
   "step2LedgerWalletMsg": {
     "message": "Ledger'ınızı doğrudan bilgisayara bağlayın, ardından kilidini açın ve Ethereum uygulamasını açın.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "Adım $1 / $2",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "Bu mesajı almaya devam mı ediyorsun?"
@@ -6508,9 +6397,6 @@
   "switchNetwork": {
     "message": "Ağı değiştir"
   },
-  "switchNetworks": {
-    "message": "Ağ değiştir"
-  },
   "switchToNetwork": {
     "message": "$1 ağına geçin",
     "description": "$1 represents the custom network that has previously been added"
@@ -6759,10 +6645,6 @@
   },
   "transferRequest": {
     "message": "Transfer talebi"
-  },
-  "trillionAbbreviation": {
-    "message": "T",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Ledger'ınıza bağlanırken sorun yaşıyoruz. $1",
