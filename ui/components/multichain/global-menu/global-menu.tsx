@@ -166,8 +166,6 @@ export const GlobalMenu = ({
   const toggleDefaultView = async () => {
     try {
       const newValue = !isSidePanelDefault;
-
-      // Toggle the preference in background - the background script will handle browser API updates
       await dispatch(setUseSidePanelAsDefault(newValue));
     } catch (error) {
       console.error('Error toggling default view:', error);
