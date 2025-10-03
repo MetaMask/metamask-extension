@@ -136,45 +136,12 @@ exports[`ConfirmDecryptMessage Component should match snapshot when preference i
           <div
             class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-[10px] h-10 w-10"
           >
-            <div
-              class="flex [&>div]:!rounded-none"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 40px; height: 40px; display: inline-block; background: rgb(245, 228, 0);"
-              >
-                <svg
-                  height="40"
-                  width="40"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#F2BE02"
-                    height="40"
-                    transform="translate(6.85340641784172 -6.49420041913425) rotate(387.1 20.00000000000000 20.00000000000000)"
-                    width="40"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#01778E"
-                    height="40"
-                    transform="translate(-3.25681992727619 20.88075781940391) rotate(227.4 20.00000000000000 20.00000000000000)"
-                    width="40"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#C81435"
-                    height="40"
-                    transform="translate(22.46211355113039 -15.74081131487140) rotate(422.3 20.00000000000000 20.00000000000000)"
-                    width="40"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
+            <img
+              alt="maskicon"
+              height="40"
+              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+              width="40"
+            />
           </div>
         </div>
         <div

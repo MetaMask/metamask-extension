@@ -121,45 +121,12 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                       <div
                         class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
-                        <div
-                          class="flex [&>div]:!rounded-none"
-                        >
-                          <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 89);"
-                          >
-                            <svg
-                              height="32"
-                              width="32"
-                              x="0"
-                              y="0"
-                            >
-                              <rect
-                                fill="#FB188D"
-                                height="32"
-                                transform="translate(-1.10425413395151 -2.28627085338780) rotate(359.4 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#018E77"
-                                height="32"
-                                transform="translate(-14.91284386081665 10.85511085677637) rotate(246.0 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#C81471"
-                                height="32"
-                                transform="translate(-30.37340441878390 -6.94681861231760) rotate(324.3 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                            </svg>
-                          </div>
-                        </div>
+                        <img
+                          alt="maskicon"
+                          height="32"
+                          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+                          width="32"
+                        />
                       </div>
                     </div>
                     <div
@@ -363,45 +330,12 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                       <div
                         class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
-                        <div
-                          class="flex [&>div]:!rounded-none"
-                        >
-                          <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 89);"
-                          >
-                            <svg
-                              height="32"
-                              width="32"
-                              x="0"
-                              y="0"
-                            >
-                              <rect
-                                fill="#FB188D"
-                                height="32"
-                                transform="translate(-1.10425413395151 -2.28627085338780) rotate(359.4 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#018E77"
-                                height="32"
-                                transform="translate(-14.91284386081665 10.85511085677637) rotate(246.0 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#C81471"
-                                height="32"
-                                transform="translate(-30.37340441878390 -6.94681861231760) rotate(324.3 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                            </svg>
-                          </div>
-                        </div>
+                        <img
+                          alt="maskicon"
+                          height="32"
+                          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+                          width="32"
+                        />
                       </div>
                     </div>
                     <div
@@ -605,45 +539,12 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                       <div
                         class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                       >
-                        <div
-                          class="flex [&>div]:!rounded-none"
-                        >
-                          <div
-                            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(3, 94, 89);"
-                          >
-                            <svg
-                              height="32"
-                              width="32"
-                              x="0"
-                              y="0"
-                            >
-                              <rect
-                                fill="#FB188D"
-                                height="32"
-                                transform="translate(-1.10425413395151 -2.28627085338780) rotate(359.4 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#018E77"
-                                height="32"
-                                transform="translate(-14.91284386081665 10.85511085677637) rotate(246.0 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                              <rect
-                                fill="#C81471"
-                                height="32"
-                                transform="translate(-30.37340441878390 -6.94681861231760) rotate(324.3 16.00000000000000 16.00000000000000)"
-                                width="32"
-                                x="0"
-                                y="0"
-                              />
-                            </svg>
-                          </div>
-                        </div>
+                        <img
+                          alt="maskicon"
+                          height="32"
+                          src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+                          width="32"
+                        />
                       </div>
                     </div>
                     <div

@@ -22,45 +22,12 @@ exports[`SnapUIAddressInput renders the matched address info in a disabled state
             <div
               class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
             >
-              <div
-                class="flex [&>div]:!rounded-none"
-              >
-                <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
-                >
-                  <svg
-                    height="24"
-                    width="24"
-                    x="0"
-                    y="0"
-                  >
-                    <rect
-                      fill="#18CDF2"
-                      height="24"
-                      transform="translate(-0.78629512784545 -2.47821305209537) rotate(328.9 12.00000000000000 12.00000000000000)"
-                      width="24"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#035E56"
-                      height="24"
-                      transform="translate(-13.72384628162403 7.94434640381145) rotate(176.2 12.00000000000000 12.00000000000000)"
-                      width="24"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#F26602"
-                      height="24"
-                      transform="translate(12.50088151366794 -10.65385479224781) rotate(468.9 12.00000000000000 12.00000000000000)"
-                      width="24"
-                      x="0"
-                      y="0"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <img
+                alt="maskicon"
+                height="24"
+                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+                width="24"
+              />
             </div>
             <div
               class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
@@ -242,45 +209,12 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
             <div
               class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
             >
-              <div
-                class="flex [&>div]:!rounded-none"
-              >
-                <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
-                >
-                  <svg
-                    height="24"
-                    width="24"
-                    x="0"
-                    y="0"
-                  >
-                    <rect
-                      fill="#18CDF2"
-                      height="24"
-                      transform="translate(-0.78629512784545 -2.47821305209537) rotate(328.9 12.00000000000000 12.00000000000000)"
-                      width="24"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#035E56"
-                      height="24"
-                      transform="translate(-13.72384628162403 7.94434640381145) rotate(176.2 12.00000000000000 12.00000000000000)"
-                      width="24"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#F26602"
-                      height="24"
-                      transform="translate(12.50088151366794 -10.65385479224781) rotate(468.9 12.00000000000000 12.00000000000000)"
-                      width="24"
-                      x="0"
-                      y="0"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <img
+                alt="maskicon"
+                height="24"
+                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+                width="24"
+              />
             </div>
             <div
               class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
@@ -339,45 +273,12 @@ exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = 
             <div
               class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-md h-6 w-6"
             >
-              <div
-                class="flex [&>div]:!rounded-none"
-              >
-                <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(242, 202, 2);"
-                >
-                  <svg
-                    height="24"
-                    width="24"
-                    x="0"
-                    y="0"
-                  >
-                    <rect
-                      fill="#03405E"
-                      height="24"
-                      transform="translate(-5.10322745178983 -4.00545785380792) rotate(369.5 12.00000000000000 12.00000000000000)"
-                      width="24"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#FAA200"
-                      height="24"
-                      transform="translate(4.65401715943415 -10.42267189532552) rotate(387.5 12.00000000000000 12.00000000000000)"
-                      width="24"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#016F8E"
-                      height="24"
-                      transform="translate(-16.38031686102804 -8.91841489898652) rotate(241.5 12.00000000000000 12.00000000000000)"
-                      width="24"
-                      x="0"
-                      y="0"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <img
+                alt="maskicon"
+                height="24"
+                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+                width="24"
+              />
             </div>
             <input
               autocomplete="off"

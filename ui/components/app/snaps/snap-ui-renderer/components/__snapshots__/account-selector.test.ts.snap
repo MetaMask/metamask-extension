@@ -44,45 +44,12 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                         <div
                           class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                         >
-                          <div
-                            class="flex [&>div]:!rounded-none"
-                          >
-                            <div
-                              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
-                            >
-                              <svg
-                                height="32"
-                                width="32"
-                                x="0"
-                                y="0"
-                              >
-                                <rect
-                                  fill="#18CDF2"
-                                  height="32"
-                                  transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
-                                  width="32"
-                                  x="0"
-                                  y="0"
-                                />
-                                <rect
-                                  fill="#035E56"
-                                  height="32"
-                                  transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
-                                  width="32"
-                                  x="0"
-                                  y="0"
-                                />
-                                <rect
-                                  fill="#F26602"
-                                  height="32"
-                                  transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
-                                  width="32"
-                                  x="0"
-                                  y="0"
-                                />
-                              </svg>
-                            </div>
-                          </div>
+                          <img
+                            alt="maskicon"
+                            height="32"
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+                            width="32"
+                          />
                         </div>
                         <div
                           class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
@@ -96,45 +63,12 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
                     <div
                       class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                     >
-                      <div
-                        class="flex [&>div]:!rounded-none"
-                      >
-                        <div
-                          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
-                        >
-                          <svg
-                            height="32"
-                            width="32"
-                            x="0"
-                            y="0"
-                          >
-                            <rect
-                              fill="#18CDF2"
-                              height="32"
-                              transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
-                              width="32"
-                              x="0"
-                              y="0"
-                            />
-                            <rect
-                              fill="#035E56"
-                              height="32"
-                              transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
-                              width="32"
-                              x="0"
-                              y="0"
-                            />
-                            <rect
-                              fill="#F26602"
-                              height="32"
-                              transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
-                              width="32"
-                              x="0"
-                              y="0"
-                            />
-                          </svg>
-                        </div>
-                      </div>
+                      <img
+                        alt="maskicon"
+                        height="32"
+                        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+                        width="32"
+                      />
                     </div>
                   </div>
                   <div
@@ -355,45 +289,12 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                         <div
                           class="shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8 flex"
                         >
-                          <div
-                            class="flex [&>div]:!rounded-none"
-                          >
-                            <div
-                              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
-                            >
-                              <svg
-                                height="32"
-                                width="32"
-                                x="0"
-                                y="0"
-                              >
-                                <rect
-                                  fill="#18CDF2"
-                                  height="32"
-                                  transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
-                                  width="32"
-                                  x="0"
-                                  y="0"
-                                />
-                                <rect
-                                  fill="#035E56"
-                                  height="32"
-                                  transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
-                                  width="32"
-                                  x="0"
-                                  y="0"
-                                />
-                                <rect
-                                  fill="#F26602"
-                                  height="32"
-                                  transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
-                                  width="32"
-                                  x="0"
-                                  y="0"
-                                />
-                              </svg>
-                            </div>
-                          </div>
+                          <img
+                            alt="maskicon"
+                            height="32"
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+                            width="32"
+                          />
                         </div>
                         <div
                           class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
@@ -407,45 +308,12 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
                     <div
                       class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                     >
-                      <div
-                        class="flex [&>div]:!rounded-none"
-                      >
-                        <div
-                          style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
-                        >
-                          <svg
-                            height="32"
-                            width="32"
-                            x="0"
-                            y="0"
-                          >
-                            <rect
-                              fill="#18CDF2"
-                              height="32"
-                              transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
-                              width="32"
-                              x="0"
-                              y="0"
-                            />
-                            <rect
-                              fill="#035E56"
-                              height="32"
-                              transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
-                              width="32"
-                              x="0"
-                              y="0"
-                            />
-                            <rect
-                              fill="#F26602"
-                              height="32"
-                              transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
-                              width="32"
-                              x="0"
-                              y="0"
-                            />
-                          </svg>
-                        </div>
-                      </div>
+                      <img
+                        alt="maskicon"
+                        height="32"
+                        src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E"
+                        width="32"
+                      />
                     </div>
                   </div>
                   <div
