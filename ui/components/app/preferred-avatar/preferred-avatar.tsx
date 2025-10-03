@@ -26,5 +26,5 @@ const avatarTypeMap = {
 
 function getAvatarType({ metamask: { preferences } }: MetaMaskReduxState) {
   const avatarType = preferences?.avatarType;
-  return avatarType ? avatarTypeMap[avatarType] : undefined;
+  return avatarType ? avatarTypeMap[avatarType] : AvatarAccountVariant.Maskicon;
 }
