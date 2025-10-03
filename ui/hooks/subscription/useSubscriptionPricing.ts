@@ -30,7 +30,12 @@ export type TokenWithApprovalAmount = (
   | AssetWithDisplayData<ERC20Asset>
   | AssetWithDisplayData<NativeAsset>
 ) & {
-  approvalAmount: string;
+  approvalAmount: {
+    approveAmount: string;
+    chainId: Hex;
+    paymentAddress: Hex;
+    paymentTokenAddress: Hex;
+  };
 };
 
 export const useAvailableTokenBalances = (params: {
