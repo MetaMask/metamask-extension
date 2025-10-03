@@ -22,6 +22,7 @@ import {
   NFT_STANDARDS,
 } from '../../../types/send';
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
+import { useFormatters } from '../../../../../hooks/useFormatters';
 
 type AssetProps = {
   asset: AssetType;
@@ -60,7 +61,7 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
       paddingLeft={4}
       paddingRight={4}
     >
-      <Box marginRight={3} style={{ minWidth: 40 }}>
+      <Box marginRight={4} style={{ minWidth: 32 }}>
         <BadgeWrapper
           badge={
             nftData.chainId ? (
@@ -78,9 +79,9 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
               src={nftItemSrc || (collection?.imageUrl as string)}
               alt={name}
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: 20,
+                width: 32,
+                height: 32,
+                borderRadius: 8,
                 objectFit: 'cover',
               }}
             />
@@ -114,14 +115,9 @@ const NftAsset = ({ asset, onClick, isSelected }: AssetProps) => {
 
 const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
   const tokenData = asset;
-  const {
-    balanceInSelectedCurrency,
-    chainId,
-    image,
-    name,
-    shortenedBalance,
-    symbol,
-  } = tokenData;
+  const { chainId, image, name, balance, symbol = '', fiat } = tokenData;
+  const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
+    useFormatters();
 
   return (
     <Box
@@ -140,7 +136,7 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
       paddingLeft={4}
       paddingRight={4}
     >
-      <Box marginRight={3}>
+      <Box marginRight={4}>
         <BadgeWrapper
           badge={
             chainId ? (
@@ -153,7 +149,7 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
           }
         >
           <AvatarToken
-            size={AvatarTokenSize.Lg}
+            size={AvatarTokenSize.Md}
             src={image}
             name={symbol}
             showHalo={false}
@@ -183,13 +179,16 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
         marginLeft={2}
       >
         <Text variant={TextVariant.bodyMdMedium}>
-          {balanceInSelectedCurrency}
+          {formatCurrencyWithMinThreshold(
+            fiat?.balance ?? 0,
+            fiat?.currency || '',
+          )}
         </Text>
         <Text
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
         >
-          {shortenedBalance} {symbol}
+          {formatTokenQuantity(Number(balance ?? 0), symbol)}
         </Text>
       </Box>
     </Box>

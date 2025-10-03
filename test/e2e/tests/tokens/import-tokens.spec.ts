@@ -180,6 +180,11 @@ describe('Import flow', function () {
                     symbol: 'CHANGE',
                     address: '0x7051faed0775f664a0286af4f75ef5ed74e02754',
                   },
+                  '0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+                    name: 'Chai',
+                    symbol: 'CHAI',
+                    address: '0x06af07097c9eeb7fd685c692751d5c66db49c215',
+                  },
                 },
               },
             },

@@ -47,6 +47,7 @@
     "trezorModel": null,
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
+    "networkConnectionBanner": "object",
     "isRampCardClosed": false,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
@@ -227,7 +228,10 @@
     "permissionHistory": "object",
     "permissionActivityLog": "object"
   },
-  "PhishingController": { "urlScanCache": "object" },
+  "PhishingController": {
+    "urlScanCache": "object",
+    "tokenScanCache": "object"
+  },
   "PreferencesController": {
     "selectedAddress": "string",
     "useBlockie": false,

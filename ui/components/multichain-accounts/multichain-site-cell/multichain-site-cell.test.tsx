@@ -221,11 +221,14 @@ const createMockState = (overrides = {}) => ({
   },
 });
 
-const renderComponent = (props = {}, stateOverrides = {}) => {
+const renderComponent = (
+  props: Partial<React.ComponentProps<typeof MultichainSiteCell>> = {},
+  stateOverrides = {},
+) => {
   const defaultProps = {
     nonTestNetworks: mockNetworks,
     testNetworks: mockTestNetworks,
-    accountsGroups: mockAccountGroups,
+    supportedAccountGroups: mockAccountGroups,
     onSelectAccountGroupIds: jest.fn(),
     onSelectChainIds: jest.fn(),
     selectedAccountGroupIds: [MOCK_GROUP_ID_1 as AccountGroupObject['id']],
@@ -233,6 +236,10 @@ const renderComponent = (props = {}, stateOverrides = {}) => {
     isConnectFlow: false,
     hideAllToasts: jest.fn(),
   };
+
+  // Use the supportedAccountGroups from props if provided, otherwise use default
+  const supportedAccountGroups =
+    props.supportedAccountGroups ?? mockAccountGroups;
 
   const store = configureStore(createMockState(stateOverrides));
 
@@ -242,7 +249,7 @@ const renderComponent = (props = {}, stateOverrides = {}) => {
         showEditAccounts={jest.fn()}
         {...defaultProps}
         {...props}
-        supportedAccountGroups={mockAccountGroups}
+        supportedAccountGroups={supportedAccountGroups}
       />
     </Provider>,
   );
@@ -387,7 +394,7 @@ describe('MultichainSiteCell', () => {
 
   it('handles empty account groups array', () => {
     renderComponent({
-      accountsGroups: [],
+      supportedAccountGroups: [],
       selectedAccountGroupIds: [] as AccountGroupObject['id'][],
     });
 

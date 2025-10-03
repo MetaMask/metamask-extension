@@ -2,7 +2,6 @@ import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 
 // Common mixin for primary and secondary display values
 export type TokenDisplayValues = {
-  primary: string;
   secondary: number | null;
   string?: string;
 };
