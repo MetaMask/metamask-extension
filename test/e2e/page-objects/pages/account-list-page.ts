@@ -228,7 +228,7 @@ class AccountListPage {
             this.multichainAccountOptionsMenuButton,
           ]
         : [this.createAccountButton, this.accountOptionsMenuButton];
-      await this.driver.waitForMultipleSelectors(selectorsToWaitFor, 30000);
+      await this.driver.waitForMultipleSelectors(selectorsToWaitFor, { timeout: 30000, state: 'visible' });
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;

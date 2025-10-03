@@ -401,17 +401,17 @@ class Driver {
       );
     } else if (state === 'detached') {
       element = await this.driver.wait(
-        until.stalenessOf(await this.findElement(rawLocator)),
+        until.stalenessOf(await this.findElement(rawLocator, timeout)),
         timeout,
       );
     } else if (state === 'enabled') {
       element = await this.driver.wait(
-        until.elementIsEnabled(await this.findElement(rawLocator)),
+        until.elementIsEnabled(await this.findElement(rawLocator, timeout)),
         timeout,
       );
     } else if (state === 'disabled') {
       element = await this.driver.wait(
-        until.elementIsDisabled(await this.findElement(rawLocator)),
+        until.elementIsDisabled(await this.findElement(rawLocator, timeout)),
         timeout,
       );
     }
@@ -423,10 +423,13 @@ class Driver {
    * Waits for multiple elements that match the given locators to reach the specified state within the timeout period.
    *
    * @param {Array<string | object>} rawLocators - Array of element locators
-   * @param {number} timeout - Optional parameter that specifies the maximum amount of time (in milliseconds)
-   * to wait for the condition to be met and desired state of the elements to wait for.
-   * It defaults to 'visible', indicating that the method will wait until the elements are visible on the page.
-   * The other supported state is 'detached', which means waiting until the elements are removed from the DOM.
+   * @param {object} [options] - Optional configuration object
+   * @param {number} [options.timeout] - Maximum amount of time (in milliseconds) to wait for the condition to be met
+   * @param {'visible' | 'detached' | 'enabled' | 'disabled'} [options.state='visible'] - Desired state of the elements to wait for.
+   * 'visible' means waiting until the elements are visible on the page.
+   * 'detached' means waiting until the elements are removed from the DOM.
+   * 'enabled' means waiting until the elements are enabled.
+   * 'disabled' means waiting until the elements are disabled.
    * @returns {Promise<Array<WebElement>>} Promise resolving when all elements meet the state or timeout occurs.
    * @throws {Error} Will throw an error if any of the elements do not reach the specified state within the timeout period.
    */
