@@ -2,14 +2,19 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { toHex } from '@metamask/controller-utils';
-import { isCaipChainId, CaipChainId } from '@metamask/utils';
+import {
+  isCaipChainId,
+  CaipChainId,
+  isCaipAssetType,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 ///: END:ONLY_INCLUDE_IF
-import { CHAIN_IDS, ChainId } from '../../../../shared/constants/network';
+import { ChainId } from '../../../../shared/constants/network';
 
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -51,10 +56,7 @@ import { Box, Icon, IconName, IconSize } from '../../component-library';
 import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
-import {
-  getIsUnifiedUIEnabled,
-  type BridgeAppState,
-} from '../../../ducks/bridge/selectors';
+import { getIsUnifiedUIEnabled } from '../../../ducks/bridge/selectors';
 import { ReceiveModal } from '../../multichain/receive-modal';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
@@ -65,6 +67,7 @@ import {
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useRedesignedSendFlow } from '../../../pages/confirmations/hooks/useRedesignedSendFlow';
@@ -78,6 +81,7 @@ type CoinButtonsProps = {
   trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
+  /** @deprecated use bridge chain constants instead*/
   isBridgeChain: boolean;
   isBuyableChain: boolean;
   classPrefix?: string;
@@ -90,7 +94,6 @@ const CoinButtons = ({
   trackingLocation,
   isSwapsChain,
   isSigningEnabled,
-  isBridgeChain,
   isBuyableChain,
   classPrefix = 'coin',
 }: CoinButtonsProps) => {
@@ -159,11 +162,13 @@ const CoinButtons = ({
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
     swapButton: [
-      { condition: !isSwapsChain, message: 'currentlyUnavailable' },
+      {
+        condition: !isExternalServicesEnabled,
+        message: 'currentlyUnavailable',
+      },
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
     bridgeButton: [
-      { condition: !isBridgeChain, message: 'currentlyUnavailable' },
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
     ],
   };
@@ -221,9 +226,7 @@ const CoinButtons = ({
 
   const { openBridgeExperience } = useBridging();
 
-  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
-    getIsUnifiedUIEnabled(state, chainId),
-  );
+  const isUnifiedUIEnabled = useSelector(getIsUnifiedUIEnabled);
 
   const setCorrectChain = useCallback(async () => {
     if (
@@ -328,13 +331,21 @@ const CoinButtons = ({
 
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
-      // Handle clicking from the wallet overview page
+      // Determine the chainId to use in the Swap experience using the url
+      const urlSuffix = location.pathname.split('/').filter(Boolean).at(-1);
+      const hexChainOrAssetId = urlSuffix
+        ? decodeURIComponent(urlSuffix)
+        : undefined;
+      const chainIdToUse = isCaipAssetType(hexChainOrAssetId)
+        ? parseCaipAssetType(hexChainOrAssetId).chainId
+        : hexChainOrAssetId;
+
+      // Handle clicking from the wallet or native asset overview page
       openBridgeExperience(
         MetaMetricsSwapsEventSource.MainView,
-        getNativeAssetForChainId(
-          location.pathname.split('/').filter(Boolean).at(-1) ??
-            CHAIN_IDS.MAINNET,
-        ),
+        chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
+          ? getNativeAssetForChainId(chainIdToUse)
+          : undefined,
         isSwap,
       );
     },
@@ -464,11 +475,7 @@ const CoinButtons = ({
       }
       <IconButton
         className={`${classPrefix}-overview__button`}
-        disabled={
-          (!isSwapsChain && !isUnifiedUIEnabled) ||
-          !isSigningEnabled ||
-          !isExternalServicesEnabled
-        }
+        disabled={!isSigningEnabled || !isExternalServicesEnabled}
         Icon={
           displayNewIconButtons ? (
             <Icon
@@ -495,15 +502,10 @@ const CoinButtons = ({
       {/* the bridge button is redundant if unified ui is enabled, testnet or non-bridge chain (unsupported) */}
       {isUnifiedUIEnabled ||
       isTestnet ||
-      !isBridgeChain ||
       isNonEvmAccountWithoutExternalServices ? null : (
         <IconButton
           className={`${classPrefix}-overview__button`}
-          disabled={
-            !isBridgeChain ||
-            !isSigningEnabled ||
-            isNonEvmAccountWithoutExternalServices
-          }
+          disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
           data-testid={`${classPrefix}-overview-bridge`}
           Icon={
             displayNewIconButtons ? (

@@ -178,7 +178,7 @@ describe('EthOverview', () => {
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
   const ETH_OVERVIEW_RECEIVE = 'eth-overview-receive';
-  // const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
+  const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
   const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
 
@@ -262,7 +262,7 @@ describe('EthOverview', () => {
       expect(queryByText('*')).not.toBeInTheDocument();
     });
 
-    it('should have the Bridge button enabled if chain id is part of supported chains', () => {
+    it('should have the Swap button enabled if chain id is part of supported chains', () => {
       const mockedAvalancheStore = {
         ...mockStore,
         metamask: {
@@ -281,7 +281,7 @@ describe('EthOverview', () => {
         <EthOverview />,
         mockedStore,
       );
-      const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
+      const bridgeButton = queryByTestId(ETH_OVERVIEW_SWAP);
       expect(bridgeButton).toBeInTheDocument();
       expect(bridgeButton).toBeEnabled();
       expect(bridgeButton.parentElement).not.toHaveAttribute(
@@ -451,8 +451,7 @@ describe('EthOverview', () => {
   describe('Disabled buttons when an account cannot sign transactions', () => {
     const buttonTestCases = [
       { testId: ETH_OVERVIEW_SEND, buttonText: 'Send' },
-      // { testId: ETH_OVERVIEW_SWAP, buttonText: 'Swap' },
-      { testId: ETH_OVERVIEW_BRIDGE, buttonText: 'Bridge' },
+      { testId: ETH_OVERVIEW_SWAP, buttonText: 'Swap' },
     ];
 
     it.each(buttonTestCases)(
