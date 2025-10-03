@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import browser from 'webextension-polyfill';
 import {
   setCompletedOnboarding,
+  setCompletedOnboardingWithSidepanel,
   toggleExternalServices,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -81,7 +82,8 @@ export default function OnboardingPinExtension() {
         });
         if (tabs && tabs.length > 0) {
           await browser.sidePanel.open({ windowId: tabs[0].windowId });
-          await dispatch(setCompletedOnboarding());
+          // Use the sidepanel-specific action to avoid redirect in fullscreen
+          await dispatch(setCompletedOnboardingWithSidepanel());
         }
       } else {
         await dispatch(setCompletedOnboarding());
