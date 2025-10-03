@@ -50,7 +50,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
-        await installSnapSimpleKeyring(driver, true);
+        await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
         // Import snap account with private key on snap simple keyring page.
