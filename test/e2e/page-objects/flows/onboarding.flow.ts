@@ -1,6 +1,6 @@
 import { Browser } from 'selenium-webdriver';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-import { Driver } from '../../webdriver/driver';
+import { Driver, PAGES } from '../../webdriver/driver';
 import OnboardingMetricsPage from '../pages/onboarding/onboarding-metrics-page';
 import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page';
 import OnboardingSrpPage from '../pages/onboarding/onboarding-srp-page';
@@ -36,7 +36,7 @@ const goToOnboardingWelcomeLoginPage = async ({
   dataCollectionForMarketing?: boolean;
 }) => {
   if (needNavigateToNewPage) {
-    await driver.navigate();
+    await driver.navigate(PAGES.HOME);
   }
 
   if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
