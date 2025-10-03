@@ -150,7 +150,7 @@ test/e2e/mock-e2e-allowlist.js            @MetaMask/qa
 test/e2e/mock-e2e.js                      @MetaMask/qa
 
 # Wallet Integrations
-app/scripts/lib/rpc-method-middleware
+app/scripts/lib/rpc-method-middleware                                 @MetaMask/wallet-integrations
 shared/lib/caip25-caveat-merger.ts                                    @MetaMask/wallet-integrations
 test/e2e/page-objects/benchmark                                       @MetaMask/wallet-integrations
 test/e2e/playwright/benchmark                                         @MetaMask/wallet-integrations
