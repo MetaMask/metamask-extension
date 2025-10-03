@@ -250,10 +250,14 @@ export const NetworkListItem = ({
           </Tooltip>
           {isNetworkGasSponsored(chainId) && (
           <Text
+              marginLeft={2}
               variant={TextVariant.bodySm}
-              color={TextColor.successDefault}
+              color={TextColor.textDefault}
+              borderColor={BorderColor.borderDefault}
+              paddingLeft={1}
+              paddingRight={1}
             >
-              {t('swapGasFeesSponsored')}
+              {t('noNetworkFee')}
             </Text>
           )}
         </Box>
