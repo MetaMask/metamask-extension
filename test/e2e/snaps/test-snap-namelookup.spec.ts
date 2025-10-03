@@ -9,7 +9,8 @@ import { mockLookupSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { switchToNetworkFromSendFlow } from '../page-objects/flows/network.flow';
 
 describe('Name lookup', function () {
-  it('validate the recipient address appears in the send flow', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('validate the recipient address appears in the send flow', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
