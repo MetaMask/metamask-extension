@@ -1,3 +1,4 @@
+import { KeyringAccountType } from '@metamask/keyring-api';
 import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 
 // Common mixin for primary and secondary display values
@@ -56,6 +57,7 @@ export type TokenWithFiatAmount = Token &
   TokenBalanceValues & {
     isStakeable?: boolean;
     title: string;
+    type?: KeyringAccountType;
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;
