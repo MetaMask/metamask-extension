@@ -141,6 +141,9 @@ const generateClassNames = memoize(
   (styleDeclaration, value) => `${styleDeclaration}${value}`,
 );
 
+/**
+ * @deprecated Please update your code to use `Box` from `@metamask/design-system-react`
+ */
 export const Box: BoxComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

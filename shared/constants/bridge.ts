@@ -2,6 +2,7 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
+  ChainId,
 } from '@metamask/bridge-controller';
 import { MultichainNetworks } from './multichain/networks';
 import { CHAIN_IDS, NETWORK_TO_NAME_MAP } from './network';
@@ -38,6 +39,12 @@ export const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP =
   ALLOWED_EVM_BRIDGE_CHAIN_IDS.map(toEvmCaipChainId).concat(
     ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS,
   );
+
+export const ALL_ALLOWED_BRIDGE_CHAIN_IDS = [
+  ...ALLOWED_BRIDGE_CHAIN_IDS,
+  ...ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
+  ...Object.values(ChainId),
+];
 
 export type AllowedBridgeChainIds =
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number]

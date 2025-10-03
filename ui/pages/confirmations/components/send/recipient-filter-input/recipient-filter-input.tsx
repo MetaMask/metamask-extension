@@ -24,7 +24,7 @@ export const RecipientFilterInput = ({
   const t = useI18nContext();
 
   return (
-    <Box paddingBottom={2}>
+    <Box paddingInline={4} paddingBottom={4}>
       <TextFieldSearch
         borderRadius={BorderRadius.LG}
         placeholder={t('searchAnAcccountOrContact')}

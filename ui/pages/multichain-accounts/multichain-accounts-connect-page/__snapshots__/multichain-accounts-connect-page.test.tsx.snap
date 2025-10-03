@@ -11,13 +11,13 @@ exports[`MultichainConnectPage renders correctly 1`] = `
       data-testid="connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       >
         <div
           class="mm-box"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
               class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
@@ -65,7 +65,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
         style="overflow: auto;"
       >
         <div
@@ -107,9 +107,9 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
               >
                 <div
-                  class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                  class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-transparent"
                   data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-                  style="cursor: default;"
+                  style="cursor: default; position: relative;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-flex-start mm-box--align-items-center"
@@ -178,9 +178,11 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     style="flex-shrink: 0;"
                   >
                     <p
-                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
+                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
-                    />
+                    >
+                      0.00
+                    </p>
                     <div
                       aria-label="Test Account Group 1 options"
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
@@ -193,7 +195,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 class="mm-box mm-box--margin-top-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-flex-start"
               >
                 <div
-                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
+                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
@@ -251,13 +253,13 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
       data-testid="connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       >
         <div
           class="mm-box"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
               class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
@@ -305,7 +307,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
         style="overflow: auto;"
       >
         <div
@@ -347,9 +349,9 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
               >
                 <div
-                  class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                  class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-transparent"
                   data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-                  style="cursor: default;"
+                  style="cursor: default; position: relative;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-flex-start mm-box--align-items-center"
@@ -418,9 +420,11 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     style="flex-shrink: 0;"
                   >
                     <p
-                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
+                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
-                    />
+                    >
+                      0.00
+                    </p>
                     <div
                       aria-label="Test Account Group 1 options"
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
@@ -433,7 +437,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 class="mm-box mm-box--margin-top-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-flex-start"
               >
                 <div
-                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
+                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
@@ -491,13 +495,13 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
       data-testid="connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       >
         <div
           class="mm-box"
         >
           <p
-            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
             <div
               class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--justify-content-center"
@@ -545,7 +549,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
+        class="mm-box multichain-page-content mm-box--padding-4 mm-box--padding-top-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-transparent"
         style="overflow: auto;"
       >
         <div
@@ -587,9 +591,9 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 class="mm-box mm-box--background-color-background-default mm-box--rounded-xl"
               >
                 <div
-                  class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                  class="mm-box multichain-account-cell mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-transparent"
                   data-testid="multichain-account-cell-entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-                  style="cursor: default;"
+                  style="cursor: default; position: relative;"
                 >
                   <div
                     class="mm-box mm-box--display-flex mm-box--justify-content-flex-start mm-box--align-items-center"
@@ -658,9 +662,11 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     style="flex-shrink: 0;"
                   >
                     <p
-                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
+                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
-                    />
+                    >
+                      0.00
+                    </p>
                     <div
                       aria-label="Test Account Group 1 options"
                       class="mm-box multichain-account-cell__end_accessory mm-box--display-flex mm-box--justify-content-flex-end mm-box--align-items-center"
@@ -673,7 +679,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 class="mm-box mm-box--margin-top-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-flex-start"
               >
                 <div
-                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
+                  class="mm-box connect-page__edit-icon mm-box--margin-right-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-md"
                 >
                   <span
                     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"

@@ -1,74 +1,89 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-import { unlockWallet } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/redesign/deploy-confirmation';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import {
-  confirmDepositTransaction,
-  confirmRedesignedContractDeploymentTransaction,
-  createContractDeploymentTransaction,
-  createDepositTransaction,
-  TestSuiteArguments,
-} from './shared';
-
-const { withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+import FixtureBuilder from '../../../fixture-builder';
+import { withFixtures } from '../../../helpers';
+import { TestSuiteArguments } from './shared';
 
 describe('Confirmation Redesign Contract Deployment Component', function () {
-  describe('Create a deploy transaction', function () {
-    it(`Sends a contract interaction type 0 transaction (Legacy)`, async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .build(),
-          localNodeOptions: {
-            hardfork: 'muirGlacier',
-          },
-          title: this.test?.fullTitle(),
+  it(`Sends a contract deployment type 0 transaction (Legacy)`, async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        localNodeOptions: {
+          hardfork: 'muirGlacier',
         },
-        async ({ driver }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver);
 
-          const testDapp = new TestDapp(driver);
-          await testDapp.openTestDappPage();
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        // deploy contract
+        await testDapp.clickPiggyBankContract();
+        const deploymentConfirmation = new ContractDeploymentConfirmation(
+          driver,
+        );
+        await deploymentConfirmation.checkTitle();
+        await deploymentConfirmation.checkDeploymentSiteInfo();
+        await deploymentConfirmation.clickFooterConfirmButton();
 
-          await createContractDeploymentTransaction(driver);
+        // check activity list
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkTxAction({ action: 'Contract deployment' });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+      },
+    );
+  });
 
-          await confirmRedesignedContractDeploymentTransaction(driver);
+  it(`Sends a contract deployment type 2 transaction (EIP1559)`, async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver);
 
-          // confirm deposits can be made to the deployed contract
-          await createDepositTransaction(driver);
+        // deploy contract
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
+        await testDapp.clickPiggyBankContract();
+        const deploymentConfirmation = new ContractDeploymentConfirmation(
+          driver,
+        );
+        await deploymentConfirmation.checkTitle();
+        await deploymentConfirmation.checkDeploymentSiteInfo();
+        await deploymentConfirmation.clickFooterConfirmButton();
 
-          await confirmDepositTransaction(driver);
-        },
-      );
-    });
-
-    it(`Sends a contract interaction type 2 transaction (EIP1559)`, async function () {
-      await withFixtures(
-        {
-          dapp: true,
-          fixtures: new FixtureBuilder()
-            .withPermissionControllerConnectedToTestDapp()
-            .build(),
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver }: TestSuiteArguments) => {
-          await unlockWallet(driver);
-
-          const testDapp = new TestDapp(driver);
-          await testDapp.openTestDappPage();
-
-          await createContractDeploymentTransaction(driver);
-
-          await confirmRedesignedContractDeploymentTransaction(driver);
-
-          // confirm deposits can be made to the deployed contract
-          await createDepositTransaction(driver);
-
-          await confirmDepositTransaction(driver);
-        },
-      );
-    });
+        // check activity list
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homePage = new HomePage(driver);
+        await homePage.goToActivityList();
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkTxAction({ action: 'Contract deployment' });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+      },
+    );
   });
 });

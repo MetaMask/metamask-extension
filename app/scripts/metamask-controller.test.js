@@ -707,7 +707,9 @@ describe('MetaMaskController', () => {
           ).toBeDefined();
         });
 
-        expect(accountsControllerSpy).toHaveBeenCalledTimes(1);
+        // + 1 in `createNewVaultAndKeychain` (onboarding)
+        // + 1 in `submitPassword`
+        expect(accountsControllerSpy).toHaveBeenCalledTimes(2);
       });
     });
 
@@ -4409,6 +4411,7 @@ describe('MetaMaskController', () => {
       beforeEach(async () => {
         jest.spyOn(metamaskController, '_handleHyperliquidApprovedAccount');
         jest.spyOn(metamaskController, '_handleHyperliquidReferralRedirect');
+        jest.spyOn(metamaskController.metaMetricsController, 'trackEvent');
         jest
           .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValue({
@@ -4416,6 +4419,7 @@ describe('MetaMaskController', () => {
               extensionUxDefiReferral: true,
             },
           });
+        jest.spyOn(metamaskController.approvalController, 'add');
         jest
           .spyOn(metamaskController.approvalController, 'has')
           .mockReturnValue(false);
@@ -4449,7 +4453,6 @@ describe('MetaMaskController', () => {
         jest
           .spyOn(metamaskController, 'getPermittedAccounts')
           .mockReturnValueOnce([]);
-        jest.spyOn(metamaskController.approvalController, 'add');
 
         await metamaskController.handleHyperliquidReferral(
           mockTabId,
@@ -4473,7 +4476,6 @@ describe('MetaMaskController', () => {
         jest
           .spyOn(metamaskController.approvalController, 'has')
           .mockReturnValueOnce(true); // Pending approval exists
-        jest.spyOn(metamaskController.approvalController, 'add');
 
         await metamaskController.handleHyperliquidReferral(
           mockTabId,
@@ -4596,6 +4598,117 @@ describe('MetaMaskController', () => {
         expect(
           metamaskController._handleHyperliquidReferralRedirect,
         ).not.toHaveBeenCalled();
+      });
+
+      it('does not emit events if user has a pending approval', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'has')
+          .mockResolvedValueOnce(true); // Pending approval exists
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+        expect(
+          metamaskController.metaMetricsController.trackEvent,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('emits a "Referral Viewed" event when user is shown the approval screen on new connection', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({});
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+        expect(
+          metamaskController.metaMetricsController.trackEvent,
+        ).toHaveBeenCalledWith({
+          event: 'Referral Viewed',
+          category: 'Referrals',
+          properties: {
+            url: HYPERLIQUID_ORIGIN,
+            trigger_type: mockNewConnectionTriggerType,
+          },
+        });
+      });
+
+      it('emits a "Referral Viewed" event when user is shown the approval screen on navigate to connected tab', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({});
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockOnNavigateTriggerType,
+        );
+        expect(
+          metamaskController.metaMetricsController.trackEvent,
+        ).toHaveBeenCalledWith({
+          event: 'Referral Viewed',
+          category: 'Referrals',
+          properties: {
+            url: HYPERLIQUID_ORIGIN,
+            trigger_type: mockOnNavigateTriggerType,
+          },
+        });
+      });
+
+      it('emits a "Referral Confirm Button Clicked" event when user confirms the approval', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({ approved: true });
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+        expect(
+          metamaskController.metaMetricsController.trackEvent,
+        ).toHaveBeenCalledWith({
+          event: 'Referral Confirm Button Clicked',
+          category: 'Referrals',
+          properties: {
+            opt_in: true,
+          },
+        });
+      });
+
+      it('emits a "Referral Confirm Button Clicked" event when user declines the approval', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({ approved: false });
+
+        await metamaskController.handleHyperliquidReferral(
+          mockTabId,
+          mockNewConnectionTriggerType,
+        );
+        expect(
+          metamaskController.metaMetricsController.trackEvent,
+        ).toHaveBeenCalledWith({
+          event: 'Referral Confirm Button Clicked',
+          category: 'Referrals',
+          properties: {
+            opt_in: false,
+          },
+        });
       });
 
       it('redirects if account is approved only', async () => {
