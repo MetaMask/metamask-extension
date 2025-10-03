@@ -336,9 +336,10 @@ export default function CreatePassword({
       href={ZENDESK_URLS.PASSWORD_ARTICLE}
       target="_blank"
       rel="noopener noreferrer"
+      style={{ paddingLeft: '4px' }}
     >
       <span className="create-password__link-text">
-        {t('learnMoreUpperCaseWithDot')}
+        {t('learnMoreUpperCase')}
       </span>
     </a>
   );
@@ -363,13 +364,14 @@ export default function CreatePassword({
       <Box>
         <Box
           justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
+          marginBottom={6}
           width={BlockSize.Full}
+          style={{ paddingInline: '6px' }}
         >
           <ButtonIcon
             iconName={IconName.ArrowLeft}
             color={IconColor.iconDefault}
-            size={ButtonIconSize.Md}
+            size={ButtonIconSize.Sm}
             data-testid="create-password-back-button"
             type="button"
             onClick={handleBackClick}
@@ -377,70 +379,79 @@ export default function CreatePassword({
           />
         </Box>
         <Box
+          paddingInline={3}
           justifyContent={JustifyContent.flexStart}
           marginBottom={4}
           width={BlockSize.Full}
         >
-          <Text variant={TextVariant.headingLg} as="h2">
+          <Text variant={TextVariant.headingMd} as="h2" marginBottom={1}>
             {t('createPassword')}
           </Text>
-          {isSocialLoginFlow ? (
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              as="h2"
-            >
-              {t('createPasswordDetailsSocial')}
+          <Box marginBottom={7}>
+            {isSocialLoginFlow ? (
               <Text
                 variant={TextVariant.bodyMd}
-                color={TextColor.warningDefault}
-                as="span"
+                color={TextColor.textAlternative}
+                as="h2"
               >
-                {t('createPasswordDetailsSocialReset')}
+                {t('createPasswordDetailsSocial')}
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.warningDefault}
+                  as="span"
+                >
+                  {t('createPasswordDetailsSocialReset')}
+                </Text>
               </Text>
-            </Text>
-          ) : (
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              as="h2"
-            >
-              {t('createPasswordDetails')}
-            </Text>
-          )}
+            ) : (
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+                as="h2"
+              >
+                {t('createPasswordDetails')}
+              </Text>
+            )}
+          </Box>
         </Box>
         <PasswordForm onChange={(newPassword) => setPassword(newPassword)} />
+
+        {/* Terms Container - 24px from password form */}
         <Box
+          marginInline={3}
           className="create-password__terms-container"
           alignItems={AlignItems.center}
-          justifyContent={JustifyContent.spaceBetween}
+          justifyContent={JustifyContent.flexStart}
           marginTop={6}
           backgroundColor={BackgroundColor.backgroundMuted}
           padding={3}
           borderRadius={BorderRadius.LG}
         >
           <Checkbox
-            inputProps={{ 'data-testid': 'create-password-terms' }}
+            inputProps={{
+              'data-testid': 'create-password-terms',
+            }}
             alignItems={AlignItems.flexStart}
             isChecked={termsChecked}
             onChange={() => {
               setTermsChecked(!termsChecked);
             }}
             label={
-              <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textDefault}
+                style={{ whiteSpace: 'normal' }}
+              >
                 {checkboxLabel}
-                {!isSocialLoginFlow && (
-                  <>
-                    <br />
-                    {createPasswordLink}
-                  </>
-                )}
+                {!isSocialLoginFlow && <>{createPasswordLink}</>}
               </Text>
             }
           />
         </Box>
       </Box>
-      <Box>
+
+      {/* Button pinned to bottom */}
+      <Box paddingInline={3}>
         <Button
           data-testid="create-password-submit"
           variant={ButtonVariant.Primary}

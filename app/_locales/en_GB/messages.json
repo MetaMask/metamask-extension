@@ -1618,7 +1618,7 @@
     "message": "Create password"
   },
   "createPasswordDetails": {
-    "message": "Unlocks MetaMask on this device only."
+    "message": "Unlocks MetaMask on this device only"
   },
   "createPasswordDetailsSocial": {
     "message": "Losing this password means losing wallet access on all devices, "
@@ -1878,7 +1878,7 @@
     "message": "Default RPC URL"
   },
   "defaultSettingsSubTitle": {
-    "message": "MetaMask uses default settings to best balance safety and ease of use. Change these settings to further increase your privacy."
+    "message": "Configure the default settings to enhance your privacy"
   },
   "defaultSettingsTitle": {
     "message": "Default privacy settings"
@@ -4287,7 +4287,7 @@
     "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
   },
   "onboardingMetametricCheckboxTitleOne": {
-    "message": "Gather basic usage data"
+    "message": "Basic usage data"
   },
   "onboardingMetametricCheckboxTitleTwo": {
     "message": "Product updates"
@@ -4344,7 +4344,7 @@
     "message": "Clear all"
   },
   "onboardingSrpInputPlaceholder": {
-    "message": "Add a space between each word and make sure no one is watching."
+    "message": "Add a space between each word. Make sure no one sees your SRP."
   },
   "onekey": {
     "message": "OneKey"
@@ -7622,7 +7622,7 @@
     "message": "Wallet not found"
   },
   "walletReadyLearn": {
-    "message": "$1 you can keep this phrase safe so you never lose access to your money.",
+    "message": "$1  to keep your Secret Recovery Phrase safe so you don't lose your money. Without it, you can't use MetaMask.",
     "description": "$1 is the link to Learn how"
   },
   "walletReadyLearnRemind": {

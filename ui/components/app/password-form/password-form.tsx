@@ -83,7 +83,7 @@ export default function PasswordForm({
   }, [password.length]);
 
   return (
-    <Box>
+    <Box paddingInline={3}>
       <FormTextField
         label={t('newPasswordCreate')}
         id="create-password-new"
@@ -99,7 +99,7 @@ export default function PasswordForm({
           handlePasswordChange(e.target.value);
         }}
         helpTextProps={{
-          color: TextColor.textMuted,
+          color: TextColor.textAlternative,
           'data-testid': 'short-password-error',
         }}
         helpText={t('passwordNotLongEnough')}
