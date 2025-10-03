@@ -107,7 +107,7 @@ export function useSpenderAlerts(): Alert[] {
       field: RowAlertKey.Spender,
       isBlocking: false,
       key: 'spenderTrustSignalMalicious',
-      message: t('alertMessageAddressTrustSignal'),
+      message: t('alertMessageAddressTrustSignalMalicious'),
       reason: t('nameModalTitleMalicious'),
       severity: Severity.Danger as AlertSeverity,
     };
