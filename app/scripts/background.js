@@ -1681,7 +1681,6 @@ const initSidePanelBehavior = async () => {
       controller?.preferencesController?.state?.preferences
         ?.useSidePanelAsDefault ?? true;
 
-
     // Set panel behavior based on preference
     if (browser?.sidePanel?.setPanelBehavior) {
       await browser.sidePanel.setPanelBehavior({
@@ -1715,7 +1714,7 @@ const setupPreferenceListener = async () => {
               console.error('Error updating panel behavior:', error),
             );
         }
-      }
+      },
     );
   } catch (error) {
     console.error('Error setting up preference listener:', error);
