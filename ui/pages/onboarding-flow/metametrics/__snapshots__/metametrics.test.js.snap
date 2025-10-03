@@ -55,7 +55,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
           >
-            Gather basic usage data
+            Basic usage data
           </p>
         </span>
       </label>
@@ -168,7 +168,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
           >
-            Gather basic usage data
+            Basic usage data
           </p>
         </span>
       </label>
