@@ -10,14 +10,14 @@ export const Send = () => {
   const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   if (isSendRedesignEnabled) {
-    return <SendPage />;
+    return (
+      <SendContextProvider>
+        <SendMetricsContextProvider>
+          <SendInner />
+        </SendMetricsContextProvider>
+      </SendContextProvider>
+    );
   }
 
-  return (
-    <SendContextProvider>
-      <SendMetricsContextProvider>
-        <SendInner />
-      </SendMetricsContextProvider>
-    </SendContextProvider>
-  );
+  return <SendPage />;
 };
