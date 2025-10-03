@@ -27,11 +27,7 @@ import {
   toggleNetworkMenu,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  selectIsMetamaskNotificationsEnabled,
-  selectIsMetamaskNotificationsFeatureSeen,
-} from '../../../selectors/metamask-notifications/metamask-notifications';
-import { selectIsBackupAndSyncEnabled } from '../../../selectors/identity/backup-and-sync';
+import { selectIsMetamaskNotificationsFeatureSeen } from '../../../selectors/metamask-notifications/metamask-notifications';
 import {
   Box,
   IconName,
@@ -61,7 +57,6 @@ import {
   getSelectedInternalAccount,
   getUnapprovedTransactions,
   getAnySnapUpdateAvailable,
-  getThirdPartyNotifySnaps,
   getUseExternalServices,
 } from '../../../selectors';
 import {
@@ -135,11 +130,6 @@ export const GlobalMenu = ({
     selectIsMetamaskNotificationsFeatureSeen,
   );
 
-  const isMetamaskNotificationsEnabled = useSelector(
-    selectIsMetamaskNotificationsEnabled,
-  );
-  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
-
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactions).length > 0;
 
@@ -152,9 +142,7 @@ export const GlobalMenu = ({
    * which have the notify permission, so as to retain the existing workflow
    */
 
-  let hasThirdPartyNotifySnaps = false;
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
-  hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
 
   let supportText = t('support');
   let supportLink = SUPPORT_LINK || '';
@@ -187,29 +175,7 @@ export const GlobalMenu = ({
   }, [closeMenu]);
 
   const handleNotificationsClick = () => {
-    const shouldShowEnableModal =
-      !hasThirdPartyNotifySnaps && !isMetamaskNotificationsEnabled;
-
-    if (shouldShowEnableModal) {
-      trackEvent({
-        category: MetaMetricsEventCategory.NotificationsActivationFlow,
-        event: MetaMetricsEventName.NotificationsActivated,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          action_type: 'started',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_profile_syncing_enabled: isBackupAndSyncEnabled,
-        },
-      });
-      dispatch(showConfirmTurnOnMetamaskNotifications());
-
-      closeMenu();
-      return;
-    }
-
-    // Otherwise we can navigate to the notifications page
+    // navigate to the notifications page
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationsMenuOpened,
