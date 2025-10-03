@@ -167,7 +167,8 @@
       "globals": {
         "console.log": true,
         "console.warn": true,
-        "process": true
+        "process.exitCode": "write",
+        "process.versions.node": true
       },
       "packages": {
         "@babel/core": true,
@@ -993,7 +994,7 @@
         "browserify>JSONStream": true,
         "@lavamoat/lavapack>combine-source-map": true,
         "eslint>espree": true,
-        "@lavamoat/webpack>json-stable-stringify": true,
+        "@lavamoat/lavapack>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true,
         "@lavamoat/lavapack>readable-stream": true,
         "through2": true,
@@ -4235,10 +4236,26 @@
         "Buffer.isBuffer": true
       }
     },
+    "@lavamoat/lavapack>json-stable-stringify": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>jsonify": true,
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
+      }
+    },
     "@lavamoat/webpack>json-stable-stringify": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>jsonify": true,
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
+      }
+    },
+    "lavamoat>lavamoat-core>json-stable-stringify": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "@lavamoat/webpack>json-stable-stringify>jsonify": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
@@ -4398,7 +4415,7 @@
       "builtin": {
         "node:events": true,
         "node:fs.readFileSync": true,
-        "node:fs/promises.writeFile": true,
+        "node:fs/promises": true,
         "node:path.extname": true,
         "node:path.join": true
       },
@@ -4409,7 +4426,7 @@
         "define": true
       },
       "packages": {
-        "@lavamoat/webpack>json-stable-stringify": true,
+        "lavamoat>lavamoat-core>json-stable-stringify": true,
         "lavamoat>lavamoat-tofu": true,
         "lavamoat>lavamoat-core>merge-deep": true
       }
@@ -5632,20 +5649,21 @@
         "buffer.Buffer": true,
         "events.EventEmitter": true,
         "events.addAbortListener": true,
-        "stream": true
+        "stream": true,
+        "string_decoder.StringDecoder": true
       },
       "globals": {
         "AbortController": true,
         "AbortSignal": true,
         "AggregateError": true,
         "Blob": true,
+        "ERR_INVALID_ARG_TYPE": true,
         "process.env.READABLE_STREAM": true,
         "queueMicrotask": true
       },
       "packages": {
-        "@lavamoat/lavapack>readable-stream>abort-controller": true,
-        "process": true,
-        "browserify>string_decoder": true
+        "readable-stream>abort-controller": true,
+        "process": true
       }
     },
     "vinyl-buffer>bl>readable-stream": {
@@ -5903,20 +5921,21 @@
         "buffer.Buffer": true,
         "events.EventEmitter": true,
         "events.addAbortListener": true,
-        "stream": true
+        "stream": true,
+        "string_decoder.StringDecoder": true
       },
       "globals": {
         "AbortController": true,
         "AbortSignal": true,
         "AggregateError": true,
         "Blob": true,
+        "ERR_INVALID_ARG_TYPE": true,
         "process.env.READABLE_STREAM": true,
         "queueMicrotask": true
       },
       "packages": {
-        "@lavamoat/lavapack>readable-stream>abort-controller": true,
-        "process": true,
-        "browserify>string_decoder": true
+        "readable-stream>abort-controller": true,
+        "process": true
       }
     },
     "gulp>vinyl-fs>lazystream>readable-stream": {
