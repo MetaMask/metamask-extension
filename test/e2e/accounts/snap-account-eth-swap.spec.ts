@@ -39,11 +39,10 @@ describe('Snap Account - Swap', function () {
   it.skip('swaps ETH for DAI using a snap account', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        dapp: true,
         dappPaths: ['snap-simple-keyring-site'],
-        title: this.test?.fullTitle(),
+        fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSwapsAndSimpleKeyringSnap,
+        title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);

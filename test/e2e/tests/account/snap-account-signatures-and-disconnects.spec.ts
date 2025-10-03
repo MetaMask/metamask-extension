@@ -18,7 +18,6 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
   it('can connect to the Test Dapp, then #signTypedDataV3, disconnect then connect, then #signTypedDataV4 (async flow approve)', async function () {
     await withFixtures(
       {
-        dapp: true,
         dappPaths: ['test-dapp', 'snap-simple-keyring-site'],
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: async (mockServer: Mockttp) => {

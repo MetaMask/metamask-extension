@@ -14,10 +14,9 @@ describe('Create and remove Snap Account', function (this: Suite) {
   it('create snap account and remove it by removing snap', async function () {
     await withFixtures(
       {
+        dappPaths: ['snap-simple-keyring-site'],
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
