@@ -157,7 +157,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 </svg>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x0DCD5...3E7bc
@@ -256,7 +256,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0xC5b8d...10aCb
@@ -355,7 +355,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x2f8D4...6572D
@@ -465,7 +465,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 </svg>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x0DCD5...3E7bc
@@ -564,7 +564,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x95222...BAfe6
@@ -674,7 +674,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 </svg>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x0DCD5...3E7bc
@@ -865,7 +865,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x0DCD5...3E7bc
@@ -964,7 +964,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0xC5b8d...10aCb
@@ -1063,7 +1063,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x2f8D4...6572D
@@ -1162,7 +1162,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x0DCD5...3E7bc
@@ -1261,7 +1261,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x95222...BAfe6
@@ -1360,7 +1360,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x0DCD5...3E7bc
