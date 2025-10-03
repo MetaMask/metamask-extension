@@ -946,15 +946,6 @@
         "immer": true
       }
     },
-    "@metamask/smart-transactions-controller>@metamask/polling-controller>@metamask/base-controller": {
-      "globals": {
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/bridge-controller": {
       "globals": {
         "AbortController": true,
@@ -1780,18 +1771,6 @@
         "uuid": true
       }
     },
-    "@metamask/smart-transactions-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/smart-transactions-controller>@metamask/polling-controller>@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
     "@metamask/post-message-stream": {
       "globals": {
         "MessageEvent.prototype": true,
@@ -1971,7 +1950,7 @@
         "ethers>@ethersproject/transactions": true,
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "fast-json-patch": true,
@@ -3070,8 +3049,7 @@
     },
     "@metamask/smart-transactions-controller>bignumber.js": {
       "globals": {
-        "crypto": true,
-        "define": true
+        "crypto": true
       }
     },
     "@ngraveio/bc-ur>bignumber.js": {
@@ -5237,8 +5215,7 @@
     "reselect": {
       "globals": {
         "WeakRef": true,
-        "console.warn": true,
-        "unstable_autotrackMemoize": true
+        "console.warn": true
       },
       "packages": {
         "@swc/helpers": true
