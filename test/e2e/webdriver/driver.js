@@ -425,7 +425,7 @@ class Driver {
    * @param {Array<string | object>} rawLocators - Array of element locators
    * @param {object} [options] - Optional configuration object
    * @param {number} [options.timeout] - Maximum amount of time (in milliseconds) to wait for the condition to be met
-   * @param {'visible' | 'detached' | 'enabled' | 'disabled'} [options.state='visible'] - Desired state of the elements to wait for.
+   * @param {'visible' | 'detached' | 'enabled' | 'disabled'} [options.state] - Desired state of the elements to wait for.
    * 'visible' means waiting until the elements are visible on the page.
    * 'detached' means waiting until the elements are removed from the DOM.
    * 'enabled' means waiting until the elements are enabled.
