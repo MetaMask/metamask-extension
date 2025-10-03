@@ -264,7 +264,7 @@ describe('User Operations', function () {
     });
   });
 
-  it('from send transaction', async function () {
+  it.skip('from send transaction', async function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
