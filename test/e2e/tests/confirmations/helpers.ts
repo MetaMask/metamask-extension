@@ -631,6 +631,11 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
+            {
+              sendRedesign: {
+                enabled: false,
+              },
+            },
           ],
         };
       }),

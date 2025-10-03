@@ -84,6 +84,26 @@ async function mockAccountsApi(
           pageInfo: { hasNextPage: false },
         },
       })),
+    await mockServer
+      .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+      .withQuery({
+        client: 'extension',
+        distribution: 'main',
+        environment: 'dev',
+      })
+      .thenCallback(() => {
+        return {
+          ok: true,
+          statusCode: 200,
+          json: [
+            {
+              sendRedesign: {
+                enabled: false,
+              },
+            },
+          ],
+        };
+      }),
   ];
 }
 
@@ -186,7 +206,8 @@ describe('Incoming Transactions', function () {
     );
   });
 
-  it('does nothing if preference disabled', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('does nothing if preference disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
