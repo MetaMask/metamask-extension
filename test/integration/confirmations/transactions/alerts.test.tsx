@@ -910,7 +910,7 @@ describe('Contract Interaction Confirmation Alerts', () => {
       await screen.findByTestId('alert-modal__selected-alert'),
     ).toHaveTextContent(
       // This should match the i18n key 'alertMessageTokenTrustSignalWarning'
-      /token.*suspicious|suspicious.*token/iu,
+      'This token shows strong signs of malicious behavior. Continuing may result in loss of funds.',
     );
   });
 
