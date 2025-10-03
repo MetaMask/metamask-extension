@@ -6,6 +6,7 @@ import {
 import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
+  getMultichainRouterMessenger,
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
   getSnapControllerInitMessenger,
@@ -374,6 +375,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   MultichainNetworkController: {
     getMessenger: getMultichainNetworkControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MultichainRouter: {
+    getMessenger: getMultichainRouterMessenger,
     getInitMessenger: noop,
   },
   NameController: {
