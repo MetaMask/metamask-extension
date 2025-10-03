@@ -10,7 +10,6 @@ import {
 import {
   clickElementById,
   createMockImplementation,
-  waitForElementById,
   waitForElementByText,
 } from '../helpers';
 
@@ -72,15 +71,6 @@ describe('Wallet Created Events', () => {
 
     await waitForElementByText('Your wallet is ready!');
     await clickElementById('onboarding-complete-done');
-
-    await waitForElementByText('Scan QR code and download the app');
-    await clickElementById('download-app-continue');
-
-    await waitForElementById('pin-extension-next');
-    await clickElementById('pin-extension-next');
-
-    await waitForElementById('pin-extension-done');
-    await clickElementById('pin-extension-done');
 
     // Verify both completeOnboarding and ExtensionPinned event are called
     let completeOnboardingCall;

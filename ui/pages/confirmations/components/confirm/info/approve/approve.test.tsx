@@ -8,6 +8,10 @@ import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { genUnapprovedApproveConfirmation } from '../../../../../../../test/data/confirmations/token-approve';
 import ApproveInfo from './approve';
 
+jest.mock('../../../simulation-details/useBalanceChanges', () => ({
+  useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
+}));
+
 jest.mock('../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockResolvedValue({

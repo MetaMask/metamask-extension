@@ -18,12 +18,15 @@ import {
   SensitiveText,
   IconName,
 } from '../../../component-library';
-import { getPreferences } from '../../../../selectors';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
-import Spinner from '../../../ui/spinner';
-import { formatWithThreshold } from '../util/formatWithThreshold';
+import {
+  getPreferences,
+  selectAnyEnabledNetworksAreAvailable,
+} from '../../../../selectors';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Skeleton } from '../../../component-library/skeleton';
+import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 
 type AccountGroupBalanceProps = {
   classPrefix: string;
@@ -37,30 +40,28 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   handleSensitiveToggle,
 }) => {
   const { privacyMode } = useSelector(getPreferences);
-  const locale = useSelector(getIntlLocale);
+  const { formatCurrency } = useFormatters();
   const t = useI18nContext();
 
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const fallbackCurrency = useSelector(getCurrentCurrency);
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
+  );
 
-  if (!selectedGroupBalance) {
-    return <Spinner className="loading-overlay__spinner" />;
-  }
-
-  const total = selectedGroupBalance.totalBalanceInUserCurrency;
-  const currency = selectedGroupBalance.userCurrency ?? fallbackCurrency;
-
-  if (typeof total !== 'number' || !currency) {
-    return <Spinner className="loading-overlay__spinner" />;
-  }
-
-  const formattedFiatDisplay = formatWithThreshold(total, 0.0, locale, {
-    style: 'currency',
-    currency: currency.toUpperCase(),
-  });
+  const total = selectedGroupBalance?.totalBalanceInUserCurrency;
+  const currency = selectedGroupBalance
+    ? (selectedGroupBalance.userCurrency ?? fallbackCurrency)
+    : undefined;
 
   return (
-    <>
+    <Skeleton
+      isLoading={
+        !anyEnabledNetworksAreAvailable &&
+        (isZeroAmount(total) || currency === undefined)
+      }
+      marginBottom={1}
+    >
       <Box
         className={classnames(`${classPrefix}-overview__primary-balance`, {
           [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
@@ -76,14 +77,8 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
         >
-          {formattedFiatDisplay}
-        </SensitiveText>
-        <SensitiveText
-          marginInlineStart={privacyMode ? 0 : 1}
-          variant={TextVariant.inherit}
-          isHidden={privacyMode}
-        >
-          {currency.toUpperCase()}
+          {/* We should always show something but the check is just to appease TypeScript */}
+          {total === undefined ? null : formatCurrency(total, currency)}
         </SensitiveText>
 
         <ButtonIcon
@@ -97,7 +92,7 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
           data-testid="sensitive-toggle"
         />
       </Box>
-    </>
+    </Skeleton>
   );
 };
 

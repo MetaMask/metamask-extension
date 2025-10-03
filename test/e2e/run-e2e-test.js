@@ -68,11 +68,12 @@ async function main() {
     debug,
     e2eTestPath,
     retries,
-    stopAfterOneFailure,
     leaveRunning,
     updateSnapshot,
     updatePrivacySnapshot,
   } = argv;
+
+  let { stopAfterOneFailure } = argv;
 
   const runTestsOnSingleBrowser = async (selectedBrowserForRun) => {
     if (!selectedBrowserForRun) {
@@ -123,48 +124,54 @@ async function main() {
       process.env.UPDATE_PRIVACY_SNAPSHOT = 'true';
     }
 
+    // If the file path includes 'tolerate-failure', there is no reason to retry
+    if (e2eTestPath.includes('tolerate-failure')) {
+      stopAfterOneFailure = true;
+    }
+
     const configFile = path.join(__dirname, '.mocharc.js');
     const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
 
     const dir = 'test/test-results/e2e';
     fs.mkdir(dir, { recursive: true });
 
-    await retry({ retries, stopAfterOneFailure }, async () => {
-      await runInShell('yarn', [
-        'mocha',
-        `--config=${configFile}`,
-        `--timeout=${testTimeoutInMilliseconds}`,
-        '--reporter=mocha-junit-reporter',
-        '--reporter-options',
-        `mochaFile=test/test-results/e2e/[hash].xml,toConsole=true`,
-        ...extraArgs,
-        e2eTestPath,
-        exit,
-      ]);
-    });
+    console.log(`Running tests on ${selectedBrowserForRun}`);
+
+    try {
+      await retry({ retries, stopAfterOneFailure }, async () => {
+        await runInShell('yarn', [
+          'mocha',
+          `--config=${configFile}`,
+          `--timeout=${testTimeoutInMilliseconds}`,
+          '--reporter=mocha-junit-reporter',
+          '--reporter-options',
+          `mochaFile=test/test-results/e2e/[hash].xml,toConsole=true`,
+          ...extraArgs,
+          e2eTestPath,
+          exit,
+        ]);
+      });
+    } catch (error) {
+      // If the file path includes 'tolerate-failure', we log and tolerate the failure
+      if (e2eTestPath.includes('tolerate-failure')) {
+        console.log(
+          `Failure on TestFile ${e2eTestPath}, but we will log and tolerate this failure`,
+        );
+      } else {
+        exitWithError(
+          `Error occurred while running tests on ${selectedBrowserForRun}: ${error}`,
+        );
+      }
+    }
   };
 
   const allBrowsers = ['chrome', 'firefox'];
   if (browser === 'all') {
     for (const currentBrowser of allBrowsers) {
-      console.log(`Running tests on ${currentBrowser}`);
-      try {
-        await runTestsOnSingleBrowser(currentBrowser);
-      } catch (error) {
-        exitWithError(
-          `Error occurred while running tests on ${currentBrowser}: ${error}`,
-        );
-      }
+      await runTestsOnSingleBrowser(currentBrowser);
     }
   } else {
-    console.log(`Running tests on ${browser}`);
-    try {
-      await runTestsOnSingleBrowser(browser);
-    } catch (error) {
-      exitWithError(
-        `Error occurred while running tests on ${browser}: ${error}`,
-      );
-    }
+    await runTestsOnSingleBrowser(browser);
   }
 
   // In CI we sometimes get to this point without being ready to properly

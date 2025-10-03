@@ -20,7 +20,7 @@ jobs:
       platform: extension
       base-branch: ${{ inputs.base-branch }}
       semver-version: ${{ inputs.semver-version }}
-      previous-version-tag: Version-v${{ inputs.previous-semver-version }}
+      previous-version-tag: release/${{ inputs.previous-semver-version }}
       github-tools-version: fc6fe1a3fb591f6afa61f0dbbe7698bd50fab9c7
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning

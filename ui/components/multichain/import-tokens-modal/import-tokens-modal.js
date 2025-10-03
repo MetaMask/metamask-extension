@@ -739,14 +739,12 @@ export const ImportTokensModal = ({ onClose }) => {
           ) : (
             <Tabs
               t={t}
-              tabsClassName="import-tokens-modal__tabs"
               onTabClick={(tabKey) => setDefaultActiveTabKey(tabKey)}
               defaultActiveTabKey={defaultActiveTabKey}
+              tabListProps={{ className: 'px-4' }}
             >
               {showSearchTab ? (
                 <Tab
-                  activeClassName="import-tokens-modal__active-tab"
-                  buttonClassName="import-tokens-modal__button-tab"
                   tabKey={TAB_NAMES.SEARCH}
                   name={t('search')}
                   onClick={() => setDefaultActiveTabKey(TAB_NAMES.SEARCH)}
@@ -834,11 +832,10 @@ export const ImportTokensModal = ({ onClose }) => {
                 </Tab>
               ) : null}
               <Tab
-                activeClassName="import-tokens-modal__active-tab"
-                buttonClassName="import-tokens-modal__button-tab"
                 tabKey={TAB_NAMES.CUSTOM_TOKEN}
                 name={t('customToken')}
                 onClick={() => setDefaultActiveTabKey(TAB_NAMES.CUSTOM_TOKEN)}
+                data-testid="import-tokens-modal-custom-token-tab"
               >
                 {isConfirming ? (
                   <ImportTokensModalConfirm networkFilter={networkFilter} />

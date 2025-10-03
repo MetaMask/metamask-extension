@@ -1350,9 +1350,6 @@
   "receive": {
     "message": "Receber"
   },
-  "recommendedGasLabel": {
-    "message": "Recomendado"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "Comece aqui"
   },
@@ -1450,9 +1447,6 @@
   "securityAndPrivacy": {
     "message": "Segurança e privacidade"
   },
-  "seedPhraseIntroTitle": {
-    "message": "Proteja sua carteira"
-  },
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
   },
@@ -1531,12 +1525,6 @@
   },
   "simulationErrorMessageV2": {
     "message": "Não conseguimos estimar o preço do gás. Pode haver um erro no contrato, e essa transação poderá falhar."
-  },
-  "skipAccountSecurity": {
-    "message": "Ignorar a segurança da conta?"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "Compreendo que, até fazer o backup da minha Frase de Recuperação Secreta, poderei perder minhas contas e todos os ativos contidos nela."
   },
   "somethingWentWrong": {
     "message": "Opa! Ocorreu algum erro."
@@ -1876,9 +1864,6 @@
   },
   "switchNetwork": {
     "message": "Trocar de rede"
-  },
-  "switchNetworks": {
-    "message": "Trocar redes"
   },
   "switchToThisAccount": {
     "message": "Trocar para esta conta"

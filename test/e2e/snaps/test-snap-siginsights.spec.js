@@ -1,9 +1,5 @@
-const {
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../helpers');
+const { withFixtures, unlockWallet } = require('../helpers');
+const { DAPP_URL, WINDOW_TITLES } = require('../constants');
 const FixtureBuilder = require('../fixture-builder');
 const {
   mockSignatureInsightsSnap,
@@ -78,7 +74,7 @@ describe('Test Snap Signature Insights', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // open the test-dapp page
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
 
         // TEST ONE: personal sign
         // find and scroll to personal sign and click sign

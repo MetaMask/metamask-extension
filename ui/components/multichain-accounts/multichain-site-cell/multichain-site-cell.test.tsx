@@ -65,7 +65,8 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
       },
     },
     accounts: [mockEvmAccount1, mockSolAccount1],
-    walletName: 'Test Wallet 1',
+    walletName: 'Test Wallet',
+    walletId: MOCK_WALLET_ID,
   },
   {
     id: MOCK_GROUP_ID_2,
@@ -79,13 +80,14 @@ const mockAccountGroups: AccountGroupWithInternalAccounts[] = [
       },
     },
     accounts: [mockEvmAccount2, mockSolAccount2],
-    walletName: 'Test Wallet 1',
+    walletName: 'Test Wallet',
+    walletId: MOCK_WALLET_ID,
   },
 ];
 
 const mockNetworks: EvmAndMultichainNetworkConfigurationsWithCaipChainId[] = [
   {
-    name: 'Ethereum Mainnet',
+    name: 'Ethereum',
     chainId: '0x1' as Hex,
     caipChainId: 'eip155:1' as CaipChainId,
     blockExplorerUrls: ['https://etherscan.io'],
@@ -158,7 +160,7 @@ const createMockState = (overrides = {}) => ({
           id: MOCK_WALLET_ID,
           type: AccountWalletType.Entropy,
           metadata: {
-            name: 'Test Wallet 1',
+            name: 'Test Wallet',
             entropy: {
               id: '01JKAF3DSGM3AB87EM9N0K41AJ',
             },
@@ -219,11 +221,14 @@ const createMockState = (overrides = {}) => ({
   },
 });
 
-const renderComponent = (props = {}, stateOverrides = {}) => {
+const renderComponent = (
+  props: Partial<React.ComponentProps<typeof MultichainSiteCell>> = {},
+  stateOverrides = {},
+) => {
   const defaultProps = {
     nonTestNetworks: mockNetworks,
     testNetworks: mockTestNetworks,
-    accountsGroups: mockAccountGroups,
+    supportedAccountGroups: mockAccountGroups,
     onSelectAccountGroupIds: jest.fn(),
     onSelectChainIds: jest.fn(),
     selectedAccountGroupIds: [MOCK_GROUP_ID_1 as AccountGroupObject['id']],
@@ -231,6 +236,10 @@ const renderComponent = (props = {}, stateOverrides = {}) => {
     isConnectFlow: false,
     hideAllToasts: jest.fn(),
   };
+
+  // Use the supportedAccountGroups from props if provided, otherwise use default
+  const supportedAccountGroups =
+    props.supportedAccountGroups ?? mockAccountGroups;
 
   const store = configureStore(createMockState(stateOverrides));
 
@@ -240,7 +249,7 @@ const renderComponent = (props = {}, stateOverrides = {}) => {
         showEditAccounts={jest.fn()}
         {...defaultProps}
         {...props}
-        supportedAccountGroups={mockAccountGroups}
+        supportedAccountGroups={supportedAccountGroups}
       />
     </Provider>,
   );
@@ -385,7 +394,7 @@ describe('MultichainSiteCell', () => {
 
   it('handles empty account groups array', () => {
     renderComponent({
-      accountsGroups: [],
+      supportedAccountGroups: [],
       selectedAccountGroupIds: [] as AccountGroupObject['id'][],
     });
 

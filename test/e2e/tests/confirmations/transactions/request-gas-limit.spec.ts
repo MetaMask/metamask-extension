@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
 
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../../fixture-builder');
 const {
   withFixtures,
-  openDapp,
   unlockWallet,
   WINDOW_TITLES,
 } = require('../../../helpers');
@@ -31,9 +31,8 @@ describe('dApp Request Gas Limit', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
 
-        await openDapp(driver);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         const hardCodedGasLimit = '20502';
 
@@ -94,9 +93,8 @@ describe('dApp Request Gas Limit', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
 
-        await openDapp(driver);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         const hardCodedGasLimit = '20502';
 
@@ -157,9 +155,8 @@ describe('dApp Request Gas Limit', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
 
-        await openDapp(driver);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         const hardCodedGasLimit = '42000';
 
@@ -220,9 +217,8 @@ describe('dApp Request Gas Limit', function () {
       async ({ driver }: { driver: Driver }) => {
         await unlockWallet(driver);
 
-        await openDapp(driver);
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         const hardCodedGasLimit = '42000';
 

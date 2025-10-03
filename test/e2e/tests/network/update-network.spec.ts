@@ -154,7 +154,7 @@ describe('Update Network:', function (this: Suite) {
         await editNetworkModal.saveEditedNetwork();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum One');
+        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
         await homePage.closeUseNetworkNotificationModal();
 
         // Re-open the network menu and go back to edit the network
@@ -249,7 +249,7 @@ describe('Update Network:', function (this: Suite) {
         await editNetworkModal.saveEditedNetwork();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum One');
+        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
         await homePage.closeUseNetworkNotificationModal();
 
         // Re-open the network menu and go back to edit the network

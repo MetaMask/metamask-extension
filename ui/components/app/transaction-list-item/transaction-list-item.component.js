@@ -32,7 +32,6 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
   Box,
   Text,
 } from '../../component-library';
@@ -250,7 +249,7 @@ function TransactionListItemInner({
     });
   }, [isUnapproved, history, id, trackEvent, category]);
 
-  const speedUpButton = useMemo(() => {
+  const isSpeedUpButtonVisible = useMemo(() => {
     if (
       !shouldShowSpeedUp ||
       !isPending ||
@@ -258,6 +257,14 @@ function TransactionListItemInner({
       isSigning ||
       isSubmitting
     ) {
+      return false;
+    }
+
+    return true;
+  }, [shouldShowSpeedUp, isUnapproved, isPending, isSigning, isSubmitting]);
+
+  const speedUpButton = useMemo(() => {
+    if (!isSpeedUpButtonVisible) {
       return null;
     }
 
@@ -272,12 +279,8 @@ function TransactionListItemInner({
       </Button>
     );
   }, [
-    shouldShowSpeedUp,
-    isUnapproved,
+    isSpeedUpButtonVisible,
     t,
-    isPending,
-    isSigning,
-    isSubmitting,
     hasCancelled,
     retryTransaction,
     cancelTransaction,
@@ -298,7 +301,6 @@ function TransactionListItemInner({
         title={title}
         icon={
           <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
             display={Display.Block}
             badge={
               <AvatarNetwork
@@ -308,9 +310,11 @@ function TransactionListItemInner({
                 name={NETWORK_TO_NAME_MAP[chainId]}
                 src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
                 borderColor={BackgroundColor.backgroundDefault}
+                borderWidth={2}
                 backgroundColor={getTestNetworkBackgroundColor(chainId)}
               />
             }
+            style={{ alignSelf: 'center' }}
           >
             <TransactionIcon category={category} status={displayedStatusKey} />
           </BadgeWrapper>
@@ -395,7 +399,7 @@ function TransactionListItemInner({
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
           // showRetry={showRetry}
-          showSpeedUp={shouldShowSpeedUp}
+          showSpeedUp={isSpeedUpButtonVisible}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           transactionStatus={() => (

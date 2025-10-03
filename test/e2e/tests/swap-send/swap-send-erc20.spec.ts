@@ -1,10 +1,8 @@
 import { Suite } from 'mocha';
 import { Browser } from 'selenium-webdriver';
-import {
-  withFixtures,
-  openActionMenuAndStartSendFlow,
-  logInWithBalanceValidation,
-} from '../../helpers';
+import { withFixtures } from '../../helpers';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   NATIVE_TOKEN_SYMBOL,
   SwapSendPage,
@@ -24,12 +22,13 @@ describe('Swap-Send ERC20', function () {
           SWAP_SEND_QUOTES_RESPONSE_TST_ETH,
           '?sourceAmount=100000&sourceToken=0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947&destinationToken=0x0000000000000000000000000000000000000000&sender=0x5cfe73b6021e818b776b421b1c4db2474086a7e1&recipient=0xc427D562164062a23a5cFf596A4a3208e72Acd28&slippage=2',
         ),
-        async ({ driver }) => {
+        async ({ driver, localNodes }) => {
           const swapSendPage = new SwapSendPage(driver);
-          await logInWithBalanceValidation(driver);
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
           // START SWAP AND SEND FLOW
-          await openActionMenuAndStartSendFlow(driver);
+          const homePage = new HomePage(driver);
+          await homePage.startSendFlow();
 
           await swapSendPage.fillRecipientAddressInput(RECIPIENT_ADDRESS);
           await swapSendPage.fillAmountInput('1');

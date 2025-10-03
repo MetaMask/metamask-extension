@@ -4,10 +4,7 @@
 import { confusables } from 'unicode-confusables';
 
 import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
-import {
-  findNetworkClientIdByChainId,
-  getERC721AssetSymbol,
-} from '../../../store/actions';
+import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 import { RecipientValidationResult } from '../types/send';
 
 export const findConfusablesInRecipient = (
@@ -44,7 +41,6 @@ export const findConfusablesInRecipient = (
 
     return {
       confusableCharacters,
-      warning: 'confusingDomain',
     };
   }
   return {};
@@ -58,6 +54,7 @@ const LOWER_CASED_BURN_ADDRESSES = [
 export const validateEvmHexAddress = async (
   address: string,
   chainId?: string,
+  assetAddress?: string,
 ) => {
   if (LOWER_CASED_BURN_ADDRESSES.includes(address.toLowerCase())) {
     return {
@@ -65,16 +62,23 @@ export const validateEvmHexAddress = async (
     };
   }
 
+  if (address?.toLowerCase() === assetAddress?.toLowerCase()) {
+    return {
+      error: 'contractAddressError',
+    };
+  }
+
   if (chainId) {
-    const networkClientId = await findNetworkClientIdByChainId(chainId);
-    if (networkClientId) {
-      const symbol = await getERC721AssetSymbol(address, networkClientId);
-      if (symbol) {
-        // Contract address detected
-        return {
-          error: 'invalidAddress',
-        };
-      }
+    const tokenDetails = await getTokenStandardAndDetailsByChain(
+      address,
+      undefined,
+      undefined,
+      chainId,
+    );
+    if (tokenDetails?.standard) {
+      return {
+        error: 'invalidAddress',
+      };
     }
   }
 

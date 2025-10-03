@@ -24,7 +24,7 @@ describe('useConfirmationNetworkInfo', () => {
       ),
     );
 
-    expect(result.current.networkDisplayName).toBe('Ethereum Mainnet');
+    expect(result.current.networkDisplayName).toBe('Ethereum');
     expect(result.current.networkImageUrl).toBe('./images/eth_logo.svg');
   });
 

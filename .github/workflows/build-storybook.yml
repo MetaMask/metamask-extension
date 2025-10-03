@@ -20,7 +20,7 @@ jobs:
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Build storybook
         run: yarn storybook:build

@@ -3,6 +3,11 @@
  */
 import { EthAccountType } from '@metamask/keyring-api';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import {
+  BNB_DISPLAY_NAME,
+  LOCALHOST_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+} from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import Backup from './backup';
 
@@ -108,7 +113,7 @@ const jsonData = JSON.stringify({
       {
         id: 'network-configuration-id-1',
         chainId: '0x539',
-        nickname: 'Localhost 8545',
+        nickname: LOCALHOST_DISPLAY_NAME,
         rpcPrefs: {},
         rpcUrl: 'http://localhost:8545',
         ticker: 'ETH',
@@ -116,7 +121,7 @@ const jsonData = JSON.stringify({
       {
         id: 'network-configuration-id-2',
         chainId: '0x38',
-        nickname: 'Binance Smart Chain Mainnet',
+        nickname: BNB_DISPLAY_NAME,
         rpcPrefs: {
           blockExplorerUrl: 'https://bscscan.com',
         },
@@ -126,7 +131,7 @@ const jsonData = JSON.stringify({
       {
         id: 'network-configuration-id-3',
         chainId: '0x61',
-        nickname: 'Binance Smart Chain Testnet',
+        nickname: 'BNB Chain Testnet',
         rpcPrefs: {
           blockExplorerUrl: 'https://testnet.bscscan.com',
         },
@@ -136,7 +141,7 @@ const jsonData = JSON.stringify({
       {
         id: 'network-configuration-id-4',
         chainId: '0x89',
-        nickname: 'Polygon Mainnet',
+        nickname: POLYGON_DISPLAY_NAME,
         rpcPrefs: {
           blockExplorerUrl: 'https://polygonscan.com',
         },

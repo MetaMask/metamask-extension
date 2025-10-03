@@ -11,6 +11,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
@@ -62,6 +63,10 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         await testDapp.openTestDappPage({ contractAddress });
         await testDapp.checkPageIsLoaded();
         await testDapp.createDepositTransaction();
+
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.clickFooterConfirmButton();
 
         // Confirm the transaction in activity list on MetaMask
         await driver.switchToWindowWithTitle(

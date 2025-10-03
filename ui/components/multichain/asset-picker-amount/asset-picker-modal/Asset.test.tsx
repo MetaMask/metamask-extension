@@ -82,7 +82,6 @@ describe('Asset', () => {
     expect(TokenListItem).toHaveBeenCalledWith(
       expect.objectContaining({
         chainId: '0x1',
-        isPrimaryTokenSymbolHidden: true,
         primary: '$10.10',
         secondary: '10 WETH',
         title: 'WETH',

@@ -1,19 +1,22 @@
-import { Provider } from '@metamask/network-controller';
 import {
   ActionConstraint,
   Messenger,
   EventConstraint,
   RestrictedMessenger,
 } from '@metamask/base-controller';
-import { Hex } from '@metamask/utils';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Browser } from 'webextension-polyfill';
+import { ExportableKeyEncryptor } from '@metamask/keyring-controller';
+import { KeyringClass } from '@metamask/keyring-utils';
+import { QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
+import { HardwareTransportBridgeClass } from '../lib/hardware-keyring-builder-factory';
+import ExtensionPlatform from '../platforms/extension';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -72,9 +75,20 @@ export type ControllerInitRequest<
   controllerMessenger: ControllerMessengerType;
 
   /**
+   * An instance of an encryptor to use for encrypting and decrypting
+   * sensitive data.
+   */
+  encryptor?: ExportableKeyEncryptor;
+
+  /**
    * The extension browser API.
    */
   extension: Browser;
+
+  /**
+   * Extension platform handler
+   */
+  platform: ExtensionPlatform;
 
   /**
    * Retrieve a controller instance by name.
@@ -95,13 +109,6 @@ export type ControllerInitRequest<
   getFlatState: () => ControllerFlatState;
 
   /**
-   * Retrieve the chain ID of the globally selected network.
-   *
-   * @deprecated Will be removed in the future pending multi-chain support.
-   */
-  getGlobalChainId(): Hex;
-
-  /**
    * Retrieve the permitted accounts for a given origin.
    *
    * @param origin - The origin for which to retrieve permitted accounts.
@@ -114,17 +121,27 @@ export type ControllerInitRequest<
   ): Promise<string[]>;
 
   /**
-   * Retrieve the provider instance for the globally selected network.
-   *
-   * @deprecated Will be removed in the future pending multi-chain support.
-   */
-  getProvider: () => Provider;
-
-  /**
    * Retrieve a transaction metrics request instance.
    * Includes data and callbacks required to generate metrics.
    */
   getTransactionMetricsRequest(): TransactionMetricsRequest;
+
+  /**
+   * Overrides for the keyrings.
+   */
+  keyringOverrides?: {
+    qr?: KeyringClass;
+    qrBridge?: typeof QrKeyringScannerBridge;
+    lattice?: KeyringClass;
+    trezorBridge?: HardwareTransportBridgeClass;
+    oneKey?: HardwareTransportBridgeClass;
+    ledgerBridge?: HardwareTransportBridgeClass;
+  };
+
+  /**
+   * The Infura project ID to use for the network controller.
+   */
+  infuraProjectId: string;
 
   /**
    * Function to update account balance for network of the transaction
@@ -144,6 +161,11 @@ export type ControllerInitRequest<
    * e.g. `{ TransactionController: { transactions: [] } }`.
    */
   persistedState: ControllerPersistedState;
+
+  /**
+   * Remove an account from keyring state.
+   */
+  removeAccount(address: string): Promise<string>;
 
   /**
    * Close all connections for the given origin, and removes the references
@@ -170,6 +192,11 @@ export type ControllerInitRequest<
   }): void;
 
   /**
+   * Lock the extension.
+   */
+  setLocked(): void;
+
+  /**
    * Show a native notification.
    *
    * @param title - The title of the notification.
@@ -194,6 +221,11 @@ export type ControllerInitRequest<
   initMessenger: InitMessengerType;
 
   getCronjobControllerStorageManager: () => CronjobControllerStorageManager;
+
+  /**
+   * The user's preferred language code, if any.
+   */
+  initLangCode: string | null;
 };
 
 /**

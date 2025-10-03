@@ -48,7 +48,7 @@ describe('Account-watcher snap', function (this: Suite) {
       );
     });
 
-    it("disables 'Send' and 'Bridge' buttons for watch accounts", async function () {
+    it("disables 'Send' and 'Swap' buttons for watch accounts", async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -76,8 +76,8 @@ describe('Account-watcher snap', function (this: Suite) {
           // 'Send' button should be disabled
           assert.equal(await homePage.checkIfSendButtonIsClickable(), false);
 
-          // 'Bridge' button should be disabled
-          assert.equal(await homePage.checkIfBridgeButtonIsClickable(), false);
+          // 'Swap' button should be disabled
+          assert.equal(await homePage.checkIfSwapButtonIsClickable(), false);
         },
       );
     });

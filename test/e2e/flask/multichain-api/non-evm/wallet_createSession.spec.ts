@@ -17,7 +17,7 @@ describe('Multichain API - Non EVM', function () {
         },
         async (driver, _, extensionId) => {
           const requestScopesToNetworkMap = {
-            'eip155:1': 'Ethereum Mainnet',
+            'eip155:1': 'Ethereum',
             [SOLANA_SCOPE]: 'Solana',
           };
 

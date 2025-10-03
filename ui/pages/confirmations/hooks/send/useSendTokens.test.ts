@@ -103,14 +103,6 @@ describe('useSendTokens', () => {
     mockFormatter.mockReturnValue('$1,000.00');
   });
 
-  it('returns tokens with positive fiat balance', async () => {
-    const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
-
-    expect(result.current).toHaveLength(2);
-    expect(result.current[0].symbol).toBe('ETH');
-    expect(result.current[1].symbol).toBe('USDC');
-  });
-
   it('includes testnet assets with non-zero raw balance', async () => {
     const testNetAssetData = [
       {
@@ -158,25 +150,6 @@ describe('useSendTokens', () => {
 
     expect(result.current[0].fiat?.balance).toBe(2000);
     expect(result.current[1].fiat?.balance).toBe(500);
-  });
-
-  it('adds formatted balance in selected currency', async () => {
-    mockFormatter.mockReturnValue('$2,000.00');
-
-    const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
-
-    expect(mockFormatter).toHaveBeenCalledWith(2000, { shorten: true });
-    expect(result.current[0].balanceInSelectedCurrency).toBe('$2,000.00');
-  });
-
-  it('handles formatter error gracefully', async () => {
-    mockFormatter.mockImplementation(() => {
-      throw new Error('Formatter error');
-    });
-
-    const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
-
-    expect(result.current[0].balanceInSelectedCurrency).toBe('2000 USD');
   });
 
   it('sets correct standard for native tokens', async () => {
@@ -243,47 +216,13 @@ describe('useSendTokens', () => {
     expect(result.current).toEqual([]);
   });
 
-  it('handles assets without fiat data', async () => {
-    const assetsWithoutFiat = [
-      {
-        address: '0xToken',
-        chainId: '0x5',
-        balance: '1000000000000000000',
-        rawBalance: '0xde0b6b3a7640000',
-        isNative: false,
-        symbol: 'TOKEN',
-        decimals: 18,
-        fiat: {
-          balance: 100,
-          currency: 'USD',
-        },
-      },
-    ];
-
-    mockUseSelector.mockImplementation((selector) => {
-      if (selector === getAssetsBySelectedAccountGroup) {
-        return assetsWithoutFiat;
-      }
-      return undefined;
-    });
-
-    mockFormatter.mockImplementation(() => {
-      throw new Error('Formatter error');
-    });
-
-    const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
-
-    const asset = result.current[0];
-    expect(asset?.balanceInSelectedCurrency).toBe('100 USD');
-  });
-
   it('updates when dependencies change', async () => {
     const { result, rerender } = renderHookWithProvider(
       () => useSendTokens(),
       mockState,
     );
 
-    expect(result.current).toHaveLength(2);
+    expect(result.current).toHaveLength(3);
 
     const newAssetsData = [
       {

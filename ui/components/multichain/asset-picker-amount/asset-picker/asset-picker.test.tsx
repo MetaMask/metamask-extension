@@ -112,7 +112,7 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('NATIVE')).toBeInTheDocument();
-    const img = getByAltText('Ethereum Mainnet logo');
+    const img = getByAltText('Ethereum logo');
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute('src', './images/eth_logo.svg');
     expect(getByAltText('NATIVE logo')).toHaveAttribute(
@@ -139,7 +139,7 @@ describe('AssetPicker', () => {
       </Provider>,
     );
     expect(getByText('NATIVE...')).toBeInTheDocument();
-    const img = getByAltText('Ethereum Mainnet logo');
+    const img = getByAltText('Ethereum logo');
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute('src', './images/eth_logo.svg');
     expect(getByAltText('NATIVE TICKER logo')).toHaveAttribute(

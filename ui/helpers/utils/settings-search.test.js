@@ -87,7 +87,7 @@ const t = (key) => {
     case 'networks':
       return 'Networks';
     case 'mainnet':
-      return 'Ethereum Mainnet';
+      return 'Ethereum';
     case 'goerli':
       return 'Goerli test network';
     case 'sepolia':

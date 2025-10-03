@@ -20,7 +20,6 @@ import {
   createDeepEqualSelector,
   filterAndShapeUnapprovedTransactions,
 } from '../../shared/modules/selectors/util';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../shared/constants/network';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 
@@ -62,10 +61,7 @@ export const getAllNetworkTransactions = createDeepEqualSelector(
     if (!transactions.length) {
       return [];
     }
-    const popularNetworks = FEATURED_NETWORK_CHAIN_IDS;
-    return transactions.filter((transaction) =>
-      popularNetworks.includes(transaction.chainId),
-    );
+    return transactions;
   },
 );
 

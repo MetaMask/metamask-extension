@@ -13,12 +13,11 @@ import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import {
-  getIsSwapsChain,
-  getIsBridgeChain,
   getCurrentKeyring,
   getNetworkConfigurationIdByChainId,
   getSelectedMultichainNetworkConfiguration,
   getIsMultichainAccountsState2Enabled,
+  getUseExternalServices,
 } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
@@ -73,6 +72,7 @@ const TokenButtons = ({
   const keyring = useSelector(getCurrentKeyring);
   // @ts-expect-error keyring type is wrong maybe?
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
+  const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isEvm = isEvmChainId(token.chainId);
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
@@ -96,13 +96,7 @@ const TokenButtons = ({
     string,
     string
   >;
-  const isSwapsChain = useSelector((state) =>
-    getIsSwapsChain(state, currentChainId),
-  );
 
-  const isBridgeChain = useSelector((state) =>
-    getIsBridgeChain(state, currentChainId),
-  );
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
   const { openBridgeExperience } = useBridging();
@@ -358,10 +352,10 @@ const TokenButtons = ({
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
-        disabled={!isSwapsChain}
+        disabled={!isExternalServicesEnabled}
       />
 
-      {!isUnifiedUIEnabled && !isTestnet && isBridgeChain && (
+      {!isUnifiedUIEnabled && !isTestnet && (
         <IconButton
           className="token-overview__button"
           data-testid="token-overview-bridge"
@@ -374,7 +368,7 @@ const TokenButtons = ({
           }
           label={t('bridge')}
           onClick={() => handleBridgeOnClick(false)}
-          disabled={!isBridgeChain}
+          disabled={!isExternalServicesEnabled}
         />
       )}
     </Box>

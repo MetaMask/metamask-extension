@@ -9,11 +9,14 @@ import {
   AccountsControllerGetAccountAction,
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
-import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 import {
   TokensControllerGetStateAction,
   TokensControllerStateChangeEvent,
 } from '@metamask/assets-controllers';
+import {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../../../controllers/preferences-controller';
 
 type Actions =
   | TokensControllerGetStateAction
@@ -57,5 +60,34 @@ export function getTokenRatesControllerMessenger(
       'PreferencesController:stateChange',
       'TokensController:stateChange',
     ],
+  });
+}
+
+type AllowedInitializationActions = PreferencesControllerGetStateAction;
+
+type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
+
+export type TokenRatesControllerInitMessenger = ReturnType<
+  typeof getTokenRatesControllerInitMessenger
+>;
+
+/**
+ * Get a restricted messenger for the token rates controller initialization.
+ * This is scoped to the actions and events that the initialization is allowed
+ * to handle.
+ *
+ * @param messenger - The controller messenger to restrict.
+ * @returns The restricted controller messenger.
+ */
+export function getTokenRatesControllerInitMessenger(
+  messenger: Messenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
+) {
+  return messenger.getRestricted({
+    name: 'TokenRatesControllerInit',
+    allowedActions: ['PreferencesController:getState'],
+    allowedEvents: ['PreferencesController:stateChange'],
   });
 }

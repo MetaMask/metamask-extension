@@ -6,13 +6,18 @@ import React, {
   useState,
 } from 'react';
 import { NameType } from '@metamask/name-controller';
-import { Box } from '../../component-library';
+import { Box, Text } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Display } from '../../../helpers/constants/design-system';
+import {
+  Display,
+  FlexDirection,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import NameDisplay from './name-details/name-display';
 import NameDetails from './name-details/name-details';
@@ -48,7 +53,7 @@ const Name = memo(
     const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
-    const { name } = useDisplayName({
+    const { name, subtitle } = useDisplayName({
       value,
       type,
       preferContractSymbol,
@@ -80,7 +85,7 @@ const Name = memo(
     }, [setModalOpen]);
 
     return (
-      <Box display={Display.Flex}>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
         {modalOpen && (
           <NameDetails
             value={value}
@@ -97,6 +102,15 @@ const Name = memo(
           handleClick={handleClick}
           {...props}
         />
+        {subtitle && (
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            style={{ textAlign: 'right' }}
+          >
+            {subtitle}
+          </Text>
+        )}
       </Box>
     );
   },

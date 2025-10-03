@@ -15,7 +15,7 @@ const octokit = new Octokit({
  * Command to run the script: node development/generate-rc-commits.js origin/branchA origin/branchB
  *
  * @example <caption> Sample command to get all the commits from release v11.13.0 to v11.14.0 </caption>
- *        node development/generate-rc-commits.js origin/Version-v11.14.0 origin/Version-v11.13.0
+ *        node development/generate-rc-commits.js origin/release/11.14.0 origin/release/11.13.0
  * Output: the generated commits will be in a file named 'commits.csv'.
  */
 

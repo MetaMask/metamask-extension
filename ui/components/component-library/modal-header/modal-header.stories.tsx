@@ -13,7 +13,7 @@ import {
 import { ModalHeader } from './modal-header';
 import { Text } from '../text';
 import README from './README.mdx';
-import { AvatarAccount } from '../avatar-account';
+import { AvatarAccount } from '@metamask/design-system-react';
 import { Button, ButtonSize } from '../button';
 
 export default {

@@ -77,7 +77,10 @@ export function getDeleGatorEnvironment(
       OwnershipTransferEnforcer: c.OwnershipTransferEnforcer,
       RedeemerEnforcer: c.RedeemerEnforcer,
       SpecificActionERC20TransferBatchEnforcer:
-        c.SpecificActionERC20TransferBatchEnforcer,
+        // hardcoding a new deployment address that introduces support for value
+        // in the specific action, until we have a new versioned deployment
+        '0x6649b61c873F6F9686A1E1ae9ee98aC380c7bA13',
+      // c.SpecificActionERC20TransferBatchEnforcer,
       ERC20PeriodTransferEnforcer: c.ERC20PeriodTransferEnforcer,
       NativeTokenPeriodTransferEnforcer: c.NativeTokenPeriodTransferEnforcer,
       ExactCalldataBatchEnforcer: c.ExactCalldataBatchEnforcer,

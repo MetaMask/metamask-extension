@@ -50,6 +50,7 @@ export const DAPP_ONE_ADDRESS = '127.0.0.1:8081';
 export const DAPP_URL_LOCALHOST = 'http://localhost:8080';
 export const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 export const DAPP_ONE_URL = `http://${DAPP_ONE_ADDRESS}`;
+export const DAPP_TWO_URL = 'http://127.0.0.1:8082';
 
 /* Default BTC address created using test SRP */
 export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
@@ -129,3 +130,36 @@ export const MOCK_GOOGLE_ACCOUNT_WALLET_ADDRESS =
   '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1';
 /* Mock Apple account used in Social login flow e2e tests*/
 export const MOCK_APPLE_ACCOUNT = 'e2e-user-mock@appleid.com';
+
+/* Test seed phrases used in onboarding flows */
+export const TEST_SEED_PHRASE =
+  'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
+export const TEST_SEED_PHRASE_TWO =
+  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
+
+/* Test private keys and accounts used by local nodes */
+export const PRIVATE_KEY =
+  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+export const PRIVATE_KEY_TWO =
+  '0xf444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
+
+/* Frequently used test accounts */
+export const ACCOUNT_1 = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
+export const ACCOUNT_2 = '0x09781764c08de8ca82e156bbf156a3ca217c7950';
+
+/* Window titles */
+export const WINDOW_TITLES = Object.freeze({
+  ExtensionInFullScreenView: 'MetaMask',
+  ExtensionUpdating: 'MetaMask Updating',
+  InstalledExtensions: 'Extensions',
+  Dialog: 'MetaMask Dialog',
+  Phishing: 'MetaMask Phishing Detection',
+  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
+  SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
+  TestDApp: 'E2E Test Dapp',
+  TestDappSendIndividualRequest: 'E2E Test Dapp - Send Individual Request',
+  MultichainTestDApp: 'Multichain Test Dapp',
+  SolanaTestDApp: 'Solana Test Dapp',
+  TestSnaps: 'Test Snaps',
+  ERC4337Snap: 'Account Abstraction Snap',
+});

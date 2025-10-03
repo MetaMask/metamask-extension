@@ -11,7 +11,18 @@ import {
   KeyringControllerWithKeyringAction,
   KeyringControllerGetStateAction,
   KeyringControllerStateChangeEvent,
+  KeyringControllerAddNewKeyringAction,
+  KeyringControllerGetKeyringsByTypeAction,
 } from '@metamask/keyring-controller';
+import {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
+  NetworkControllerGetNetworkClientByIdAction,
+} from '@metamask/network-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../../../controllers/preferences-controller';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction
@@ -19,7 +30,11 @@ type Actions =
   | AccountsControllerGetAccountByAddressAction
   | SnapControllerHandleRequest
   | KeyringControllerGetStateAction
-  | KeyringControllerWithKeyringAction;
+  | KeyringControllerWithKeyringAction
+  | KeyringControllerAddNewKeyringAction
+  | KeyringControllerGetKeyringsByTypeAction
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction;
 
 type Events =
   | KeyringControllerStateChangeEvent
@@ -54,9 +69,23 @@ export function getMultichainAccountServiceMessenger(
       'SnapController:handleRequest',
       'KeyringController:getState',
       'KeyringController:withKeyring',
+      'KeyringController:addNewKeyring',
+      'KeyringController:getKeyringsByType',
+      'NetworkController:getNetworkClientById',
+      'NetworkController:findNetworkClientIdByChainId',
     ],
   });
 }
+
+type AllowedInitializationActions =
+  | PreferencesControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
+
+type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
+
+export type MultichainAccountServiceInitMessenger = ReturnType<
+  typeof getMultichainAccountServiceInitMessenger
+>;
 
 /**
  * Get a restricted messenger for the account wallet controller. This is scoped to the
@@ -66,9 +95,17 @@ export function getMultichainAccountServiceMessenger(
  * @returns The restricted controller messenger.
  */
 export function getMultichainAccountServiceInitMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: Messenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
 ) {
-  // Our `init` method needs the same actions, so just re-use the same messenger
-  // function here.
-  return getMultichainAccountServiceMessenger(messenger);
+  return messenger.getRestricted({
+    name: 'MultichainAccountServiceInit',
+    allowedActions: [
+      'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
+    ],
+    allowedEvents: ['PreferencesController:stateChange'],
+  });
 }

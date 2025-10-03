@@ -5,8 +5,7 @@ import {
   AddNetworkFields,
   NetworkConfiguration,
 } from '@metamask/network-controller';
-import { CaipChainId, parseCaipChainId } from '@metamask/utils';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box, Text } from '../../component-library';
 import {
@@ -23,7 +22,6 @@ import {
   getAllChainsToPoll,
   getCompleteAddressBook,
   getCurrentNetwork,
-  getEnabledNetworksByNamespace,
   getIpfsGateway,
   getNativeCurrencyImage,
   getSelectedInternalAccount,
@@ -50,10 +48,12 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/modules/selectors/networks';
-import { detectNfts, setActiveNetworkWithError } from '../../../store/actions';
+import {
+  detectNfts,
+  setActiveNetworkWithError,
+  setEnabledNetworks,
+} from '../../../store/actions';
 import { setToChainId } from '../../../ducks/bridge/actions';
-import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
-import { enableSingleNetwork } from '../../../store/controller-actions/network-order-controller';
 import MaxClearButton from './max-clear-button';
 import {
   AssetPicker,
@@ -126,7 +126,6 @@ export const AssetPickerAmount = ({
   const showNetworkPickerinModal = showNetworkPicker;
   const currentNetwork = useSelector(getCurrentNetwork);
   const allChainIds = useSelector(getAllChainsToPoll);
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   useEffect(() => {
     // if this input is immutable – avoids double fire
@@ -272,35 +271,7 @@ export const AssetPickerAmount = ({
                     dispatch(setToChainId(networkConfig.chainId));
                     dispatch(detectNfts(allChainIds));
 
-                    const enabledNetworkKeys = Object.keys(
-                      enabledNetworksByNamespace ?? {},
-                    );
-
-                    const caipChainId = formatChainIdToCaip(
-                      networkConfig.chainId,
-                    );
-
-                    const { namespace } = parseCaipChainId(caipChainId);
-
-                    if (namespace) {
-                      const isPopularNetwork =
-                        FEATURED_NETWORK_CHAIN_IDS.includes(
-                          networkConfig.chainId as `0x${string}`,
-                        );
-
-                      if (isPopularNetwork) {
-                        const isNetworkEnabled = enabledNetworkKeys.includes(
-                          networkConfig.chainId as `0x${string}`,
-                        );
-
-                        if (!isNetworkEnabled) {
-                          dispatch(enableSingleNetwork(networkConfig.chainId));
-                        }
-                      } else {
-                        dispatch(enableSingleNetwork(networkConfig.chainId));
-                      }
-                    }
-
+                    dispatch(setEnabledNetworks(networkConfig.chainId));
                     dispatch(
                       setActiveNetworkWithError(
                         'networkClientId' in rpcEndpoint

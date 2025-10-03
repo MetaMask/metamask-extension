@@ -10,3 +10,8 @@
 .expandIcon.expanded {
   rotate: -180deg;
 }
+
+.hoverable:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

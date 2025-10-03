@@ -228,7 +228,6 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               tokenFiatAmount,
               chainId: chainId as CaipChainId,
               string: String(balance),
-              primary: '',
               secondary: 0,
               title,
             });
@@ -288,7 +287,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
           decimals,
           chainId,
           isNative,
-          primary: balance.amount,
+          balance: balance.amount,
           secondary: balanceInFiat,
           string: '',
           tokenFiatAmount: balanceInFiat,
@@ -714,7 +713,8 @@ export const selectBalanceForAllWallets = createSelector(
     enabledNetworkMap,
   ) =>
     calculateBalanceForAllWallets(
-      accountTreeState,
+      // TODO: fix this by ensuring @metamask/assets-controllers has proper types
+      accountTreeState as AccountTreeControllerState,
       accountsState,
       tokenBalancesState,
       tokenRatesState,
@@ -758,7 +758,8 @@ export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
       enabledNetworkMap,
     ): BalanceChangeResult =>
       calculateBalanceChangeForAllWallets(
-        accountTreeState,
+        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
+        accountTreeState as AccountTreeControllerState,
         accountsState,
         tokenBalancesState,
         tokenRatesState,
@@ -814,7 +815,8 @@ export const selectBalanceChangeByAccountGroup = (
       enabledNetworkMap,
     ): BalanceChangeResult =>
       calculateBalanceChangeForAccountGroup(
-        accountTreeState,
+        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
+        accountTreeState as AccountTreeControllerState,
         accountsState,
         tokenBalancesState,
         tokenRatesState,
@@ -874,7 +876,8 @@ export const selectBalanceChangeBySelectedAccountGroup = (
         return null;
       }
       return calculateBalanceChangeForAccountGroup(
-        accountTreeState,
+        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
+        accountTreeState as AccountTreeControllerState,
         accountsState,
         tokenBalancesState,
         tokenRatesState,

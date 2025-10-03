@@ -3,13 +3,13 @@
 exports[`Name renders address with image 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex"
+    class="mm-box mm-box--display-flex mm-box--flex-direction-column"
   >
     <div
       class="name name__clickable name__saved"
     >
       <span
-        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+        class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-info-default"
         style="mask-image: url('./images/icons/verified-filled.svg');"
       />
       <p
@@ -25,13 +25,13 @@ exports[`Name renders address with image 1`] = `
 exports[`Name renders address with long saved name 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex"
+    class="mm-box mm-box--display-flex mm-box--flex-direction-column"
   >
     <div
       class="name name__clickable name__saved"
     >
       <span
-        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+        class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-info-default"
         style="mask-image: url('./images/icons/verified-filled.svg');"
       />
       <p
@@ -47,13 +47,13 @@ exports[`Name renders address with long saved name 1`] = `
 exports[`Name renders address with no saved name 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex"
+    class="mm-box mm-box--display-flex mm-box--flex-direction-column"
   >
     <div
       class="name name__clickable name__missing"
     >
       <span
-        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+        class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/question.svg');"
       />
       <p
@@ -69,13 +69,13 @@ exports[`Name renders address with no saved name 1`] = `
 exports[`Name renders address with saved name 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex"
+    class="mm-box mm-box--display-flex mm-box--flex-direction-column"
   >
     <div
       class="name name__clickable name__saved"
     >
       <span
-        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+        class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-info-default"
         style="mask-image: url('./images/icons/verified-filled.svg');"
       />
       <p
@@ -91,13 +91,13 @@ exports[`Name renders address with saved name 1`] = `
 exports[`Name renders when no address value is passed 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex"
+    class="mm-box mm-box--display-flex mm-box--flex-direction-column"
   >
     <div
       class="name name__clickable name__missing"
     >
       <span
-        class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+        class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/question.svg');"
       />
       <p

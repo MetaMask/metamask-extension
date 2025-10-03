@@ -39,6 +39,11 @@ export type SnapsNameProviderMessenger = RestrictedMessenger<
 >;
 
 export class SnapsNameProvider implements NameProvider {
+  // These fields are required for modular initialisation.
+  name: 'SnapsNameProvider' = 'SnapsNameProvider' as const;
+
+  state = null;
+
   #messenger: SnapsNameProviderMessenger;
 
   constructor({ messenger }: { messenger: SnapsNameProviderMessenger }) {

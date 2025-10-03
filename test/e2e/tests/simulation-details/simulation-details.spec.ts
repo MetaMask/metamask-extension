@@ -3,12 +3,8 @@ import { Mockttp, MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import FixtureBuilder from '../../fixture-builder';
-import {
-  createDappTransaction,
-  Fixtures,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
+import { Fixtures, withFixtures } from '../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import {
@@ -122,7 +118,9 @@ describe('Simulation Details', function () {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, SEND_ETH_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([SEND_ETH_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await expectBalanceChange(driver, true, 0, '- 0.001', 'ETH');
@@ -138,7 +136,9 @@ describe('Simulation Details', function () {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, BUY_ERC20_TRANSACTION);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC20_TRANSACTION])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await expectBalanceChange(driver, true, 0, '- 0.002', 'ETH');
@@ -155,8 +155,9 @@ describe('Simulation Details', function () {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, BUY_ERC721_TRANSACTION_MOCK);
-
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC721_TRANSACTION_MOCK])}`,
+        );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await expectBalanceChange(driver, true, 0, '- 0.014', 'ETH');
         await expectBalanceChange(
@@ -184,7 +185,9 @@ describe('Simulation Details', function () {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, BUY_ERC1155_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([BUY_ERC1155_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await expectBalanceChange(driver, true, 0, '- 0.00045', 'ETH');
@@ -206,7 +209,9 @@ describe('Simulation Details', function () {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, NO_CHANGES_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([NO_CHANGES_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findElement({
@@ -224,7 +229,9 @@ describe('Simulation Details', function () {
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },
       async ({ driver }) => {
-        await createDappTransaction(driver, INSUFFICIENT_GAS_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([INSUFFICIENT_GAS_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findElement({
@@ -246,7 +253,9 @@ describe('Simulation Details', function () {
         mockRequests,
       },
       async ({ driver }) => {
-        await createDappTransaction(driver, SEND_ETH_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([SEND_ETH_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.assertElementNotPresent(
@@ -267,7 +276,9 @@ describe('Simulation Details', function () {
         mockRequests,
       },
       async ({ driver }) => {
-        await createDappTransaction(driver, MALFORMED_TRANSACTION_MOCK);
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([MALFORMED_TRANSACTION_MOCK])}`,
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.findElement({

@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   AlignItems,
-  BackgroundColor,
   BorderRadius,
   Display,
   FlexDirection,
@@ -20,10 +19,6 @@ function SmartContractWithLogo() {
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
       borderRadius={BorderRadius.pill}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      style={{
-        padding: '1px 8px 1px 4px',
-      }}
     >
       <img src="images/logo/metamask-fox.svg" width="16" height="16" />
       <Text marginLeft={2} color={TextColor.inherit}>

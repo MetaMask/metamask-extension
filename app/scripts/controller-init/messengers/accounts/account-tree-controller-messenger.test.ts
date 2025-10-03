@@ -1,5 +1,8 @@
 import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
-import { getAccountTreeControllerMessenger } from './account-tree-controller-messenger';
+import {
+  getAccountTreeControllerInitMessenger,
+  getAccountTreeControllerMessenger,
+} from './account-tree-controller-messenger';
 
 describe('getAccountTreeControllerMessenger', () => {
   it('returns a restricted messenger', () => {
@@ -8,5 +11,17 @@ describe('getAccountTreeControllerMessenger', () => {
       getAccountTreeControllerMessenger(messenger);
 
     expect(accountTreeControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+  });
+});
+
+describe('getAccountTreeControllerInitMessenger', () => {
+  it('returns a restricted messenger', () => {
+    const messenger = new Messenger<never, never>();
+    const accountTreeControllerInitMessenger =
+      getAccountTreeControllerInitMessenger(messenger);
+
+    expect(accountTreeControllerInitMessenger).toBeInstanceOf(
+      RestrictedMessenger,
+    );
   });
 });

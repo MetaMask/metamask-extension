@@ -57,26 +57,30 @@ exports[`AggregatedMultichainPercentageOverview render renders correctly with po
 exports[`AggregatedMultichainPercentageOverview render renders correctly with zero values 1`] = `
 <div>
   <div
-    class="mm-box mm-box--display-flex"
+    class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
   >
-    <p
-      class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
-      data-testid="aggregated-value-change"
-      style="white-space: pre;"
+    <div
+      class="mm-box mm-box--display-flex"
     >
-      +
-      $0.00
-       
-    </p>
-    <p
-      class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
-      data-testid="aggregated-percentage-change"
-    >
-      (
-      +
-      0.00%
-      )
-    </p>
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
+        data-testid="aggregated-value-change"
+        style="white-space: pre;"
+      >
+        +
+        $0.00
+         
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
+        data-testid="aggregated-percentage-change"
+      >
+        (
+        +
+        0.00%
+        )
+      </p>
+    </div>
   </div>
 </div>
 `;
@@ -84,21 +88,25 @@ exports[`AggregatedMultichainPercentageOverview render renders correctly with ze
 exports[`AggregatedPercentageOverview render renders correctly 1`] = `
 <div>
   <div
-    class="mm-box gap-1 mm-box--display-flex"
+    class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
   >
-    <p
-      class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
-      data-testid="aggregated-value-change"
-      style="white-space: pre;"
+    <div
+      class="mm-box gap-1 mm-box--display-flex"
     >
-      +$0.00
-    </p>
-    <p
-      class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
-      data-testid="aggregated-percentage-change"
-    >
-      (+0.00%)
-    </p>
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
+        data-testid="aggregated-value-change"
+        style="white-space: pre;"
+      >
+        +$0.00
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md-medium mm-text--ellipsis mm-box--color-text-alternative"
+        data-testid="aggregated-percentage-change"
+      >
+        (+0.00%)
+      </p>
+    </div>
   </div>
 </div>
 `;

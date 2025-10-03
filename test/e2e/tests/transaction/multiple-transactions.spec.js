@@ -1,11 +1,6 @@
 const assert = require('assert');
-const {
-  withFixtures,
-  openDapp,
-  regularDelayMs,
-  unlockWallet,
-  WINDOW_TITLES,
-} = require('../../helpers');
+const { withFixtures, regularDelayMs, unlockWallet } = require('../../helpers');
+const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Multiple transactions', function () {
@@ -23,7 +18,7 @@ describe('Multiple transactions', function () {
         await unlockWallet(driver);
 
         // initiates a transaction from the dapp
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
         // creates first transaction
         await createDappTransaction(driver);
         await driver.waitUntilXWindowHandles(3);
@@ -85,7 +80,7 @@ describe('Multiple transactions', function () {
         await unlockWallet(driver);
 
         // initiates a transaction from the dapp
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
         // creates first transaction
         await createDappTransaction(driver);
         await driver.waitUntilXWindowHandles(3);

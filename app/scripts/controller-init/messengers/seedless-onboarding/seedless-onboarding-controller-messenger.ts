@@ -9,7 +9,8 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import {
   OAuthServiceGetNewRefreshTokenAction,
-  OAuthServiceRevokeAndGetNewRefreshTokenAction,
+  OAuthServiceRevokeRefreshTokenAction,
+  OAuthServiceRenewRefreshTokenAction,
 } from '../../../services/oauth/types';
 
 type MessengerActions = SeedlessOnboardingControllerGetStateAction;
@@ -36,13 +37,14 @@ export function getSeedlessOnboardingControllerMessenger(
   return messenger.getRestricted({
     name: 'SeedlessOnboardingController',
     allowedActions: [],
-    allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
+    allowedEvents: [],
   });
 }
 
 type InitActions =
   | OAuthServiceGetNewRefreshTokenAction
-  | OAuthServiceRevokeAndGetNewRefreshTokenAction;
+  | OAuthServiceRevokeRefreshTokenAction
+  | OAuthServiceRenewRefreshTokenAction;
 
 export type SeedlessOnboardingControllerInitMessenger = ReturnType<
   typeof getSeedlessOnboardingControllerInitMessenger
@@ -64,7 +66,8 @@ export function getSeedlessOnboardingControllerInitMessenger(
     allowedEvents: [],
     allowedActions: [
       'OAuthService:getNewRefreshToken',
-      'OAuthService:revokeAndGetNewRefreshToken',
+      'OAuthService:revokeRefreshToken',
+      'OAuthService:renewRefreshToken',
     ],
   });
 }

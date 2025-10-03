@@ -123,7 +123,7 @@ const WalletDetails = () => {
           }}
           startAccessory={
             <ButtonIcon
-              size={ButtonIconSize.Sm}
+              size={ButtonIconSize.Md}
               ariaLabel={t('back')}
               iconName={IconName.ArrowLeft}
               onClick={handleBack}
@@ -266,7 +266,7 @@ const WalletDetails = () => {
         }}
         startAccessory={
           <ButtonIcon
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={handleBack}

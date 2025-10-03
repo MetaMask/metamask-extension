@@ -72,6 +72,7 @@ export const BridgeInputGroup = ({
   onBlockExplorerClick,
   buttonProps,
   containerProps = {},
+  isDestinationToken = false,
 }: {
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
@@ -84,6 +85,7 @@ export const BridgeInputGroup = ({
   onMaxButtonClick?: (value: string) => void;
   onBlockExplorerClick?: (token: BridgeToken) => void;
   containerProps?: React.ComponentProps<typeof Column>;
+  isDestinationToken?: boolean;
 } & Pick<
   React.ComponentProps<typeof AssetPicker>,
   | 'networkProps'
@@ -241,6 +243,7 @@ export const BridgeInputGroup = ({
           customTokenListGenerator={customTokenListGenerator}
           isTokenListLoading={isTokenListLoading}
           isMultiselectEnabled={isMultiselectEnabled}
+          isDestinationToken={isDestinationToken}
         >
           {(onClickHandler, networkImageSrc) =>
             isAmountReadOnly && !token ? (
@@ -275,7 +278,7 @@ export const BridgeInputGroup = ({
           color={
             isAmountReadOnly && isEstimatedReturnLow
               ? TextColor.warningDefault
-              : TextColor.textAlternativeSoft
+              : TextColor.textAlternative
           }
           textAlign={TextAlign.End}
           ellipsis
@@ -293,7 +296,7 @@ export const BridgeInputGroup = ({
             color={
               isInsufficientBalance
                 ? TextColor.errorDefault
-                : TextColor.textAlternativeSoft
+                : TextColor.textAlternative
             }
             style={{
               cursor: 'default',
@@ -319,7 +322,7 @@ export const BridgeInputGroup = ({
               display={Display.Flex}
               gap={1}
               variant={TextVariant.bodyMd}
-              color={TextColor.textAlternativeSoft}
+              color={TextColor.textAlternative}
               onClick={() => {
                 handleAddressClick();
               }}

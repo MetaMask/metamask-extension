@@ -13,13 +13,8 @@ import { Driver, PAGES } from './webdriver/driver';
 import { createDriverTransport } from './api-specs/helpers';
 
 import FixtureBuilder from './fixture-builder';
-import {
-  withFixtures,
-  openDapp,
-  unlockWallet,
-  DAPP_URL,
-  ACCOUNT_1,
-} from './helpers';
+import { withFixtures, unlockWallet } from './helpers';
+import { DAPP_URL, ACCOUNT_1 } from './constants';
 import transformOpenRPCDocument from './api-specs/transform';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
@@ -54,7 +49,7 @@ async function main() {
       await driver.navigate(PAGES.HOME);
 
       // Open Dapp
-      await openDapp(driver, undefined, DAPP_URL);
+      await driver.openNewPage(DAPP_URL);
 
       const testCoverageResults = await testCoverage({
         openrpcDocument: parsedDoc,

@@ -18,6 +18,8 @@ import {
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { AccountTrackerControllerGetStateAction } from '../../controllers/account-tracker-controller';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -37,6 +39,7 @@ type TokensControllerStateChangeEvent = ControllerStateChangeEvent<
 type AllowedActions =
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerListAccountsAction
+  | AccountTrackerControllerGetStateAction
   | AccountTrackerUpdateNativeBalancesAction
   | AccountTrackerUpdateStakedBalancesAction
   | NetworkControllerGetNetworkClientByIdAction
@@ -73,6 +76,7 @@ export function getTokenBalancesControllerMessenger(
       'PreferencesController:getState',
       'AccountsController:getSelectedAccount',
       'AccountsController:listAccounts',
+      'AccountTrackerController:getState',
       'AccountTrackerController:updateNativeBalances',
       'AccountTrackerController:updateStakedBalances',
     ],
@@ -85,7 +89,9 @@ export function getTokenBalancesControllerMessenger(
   });
 }
 
-type AllowedInitializationActions = PreferencesControllerGetStateAction;
+type AllowedInitializationActions =
+  | PreferencesControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
 
 export type TokenBalancesControllerInitMessenger = ReturnType<
   typeof getTokenBalancesControllerInitMessenger
@@ -102,7 +108,10 @@ export function getTokenBalancesControllerInitMessenger(
 ) {
   return messenger.getRestricted({
     name: 'TokenBalancesControllerInit',
-    allowedActions: ['PreferencesController:getState'],
+    allowedActions: [
+      'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
+    ],
     allowedEvents: [],
   });
 }

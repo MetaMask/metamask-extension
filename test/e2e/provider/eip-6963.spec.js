@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
-const { withFixtures, openDapp, unlockWallet } = require('../helpers');
+const { withFixtures, unlockWallet } = require('../helpers');
+const { DAPP_URL } = require('../constants');
 
 // https://github.com/thenativeweb/uuidv4/blob/bdcf3a3138bef4fb7c51f389a170666f9012c478/lib/uuidv4.ts#L5
 const UUID_V4_REGEX =
@@ -21,7 +22,7 @@ describe('EIP-6963 Provider', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        await openDapp(driver);
+        await driver.openNewPage(DAPP_URL);
         await driver.executeScript(`
           window.announceProviderEvents = []
           window.addEventListener(

@@ -1,5 +1,9 @@
 import { ENVIRONMENT } from '../../development/build/constants';
-import { isGatorPermissionsFeatureEnabled, isProduction } from './environment';
+import {
+  isGatorPermissionsFeatureEnabled,
+  isProduction,
+  isGatorPermissionsRevocationFeatureEnabled,
+} from './environment';
 
 describe('isProduction', () => {
   let originalMetaMaskEnvironment: string | undefined;
@@ -42,5 +46,22 @@ describe('isGatorPermissionsFeatureEnabled', () => {
   it('should return false when GATOR_PERMISSIONS_ENABLED is undefined', () => {
     delete process.env.GATOR_PERMISSIONS_ENABLED;
     expect(isGatorPermissionsFeatureEnabled()).toBe(false);
+  });
+});
+
+describe('isGatorPermissionsRevocationFeatureEnabled', () => {
+  it('should return true when GATOR_PERMISSIONS_REVOCATION_ENABLED is "true"', () => {
+    process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED = 'true';
+    expect(isGatorPermissionsRevocationFeatureEnabled()).toBe(true);
+  });
+
+  it('should return false when GATOR_PERMISSIONS_REVOCATION_ENABLED is "false"', () => {
+    process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED = 'false';
+    expect(isGatorPermissionsRevocationFeatureEnabled()).toBe(false);
+  });
+
+  it('should return false when GATOR_PERMISSIONS_REVOCATION_ENABLED is undefined', () => {
+    delete process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED;
+    expect(isGatorPermissionsRevocationFeatureEnabled()).toBe(false);
   });
 });

@@ -9,9 +9,10 @@ import {
   BlockSize,
   FlexDirection,
   AlignItems,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
-  ONBOARDING_PIN_EXTENSION_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
@@ -31,7 +32,7 @@ export default function OnboardingDownloadApp() {
   const currentKeyring = useSelector(getCurrentKeyring);
 
   const handleClick = async () => {
-    navigate(ONBOARDING_PIN_EXTENSION_ROUTE);
+    navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
   };
 
   useEffect(() => {
@@ -66,7 +67,9 @@ export default function OnboardingDownloadApp() {
             alt="Download the app"
           />
         </Box>
-        <Text variant={TextVariant.bodyMd}>{t('downloadAppDescription')}</Text>
+        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          {t('downloadAppDescription')}
+        </Text>
       </Box>
       <Box>
         <Button

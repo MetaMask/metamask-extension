@@ -50,6 +50,7 @@ import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
+import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
 import {
   CorruptionHandler,
   hasVault,
@@ -91,6 +92,7 @@ import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
+import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferralMiddleware';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -145,6 +147,7 @@ let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
+const senderOriginMapping = {};
 const tabOriginMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
@@ -935,16 +938,26 @@ function emitDappViewedMetricEvent(origin) {
  * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
  */
 function trackDappView(remotePort) {
-  if (!remotePort.sender || !remotePort.sender.tab || !remotePort.sender.url) {
+  if (
+    !remotePort.sender?.tab ||
+    !remotePort.sender?.url ||
+    !remotePort.sender?.tab?.url
+  ) {
     return;
   }
   const tabId = remotePort.sender.tab.id;
   const url = new URL(remotePort.sender.url);
   const { origin } = url;
+  const tabUrl = new URL(remotePort.sender.tab.url);
+  const { origin: tabOrigin } = tabUrl;
 
-  // store the orgin to corresponding tab so it can provide infor for onActivated listener
-  if (!Object.keys(tabOriginMapping).includes(tabId)) {
-    tabOriginMapping[tabId] = origin;
+  // store the origin to corresponding tab so it can provide info for onActivated listener
+  if (!Object.keys(senderOriginMapping).includes(tabId)) {
+    senderOriginMapping[tabId] = origin;
+  }
+  // do the same for tab origin, which can be different to sender origin
+  if (!(tabId in tabOriginMapping)) {
+    tabOriginMapping[tabId] = tabOrigin;
   }
 
   const isConnectedToDapp = controller.controllerMessenger.call(
@@ -1579,7 +1592,8 @@ function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {
     if (controller) {
       const { tabId } = onActivatedTab;
-      const currentOrigin = tabOriginMapping[tabId];
+      const currentOrigin = senderOriginMapping[tabId];
+      const currentTabOrigin = tabOriginMapping[tabId];
       // *** Emit DappViewed metric event when ***
       // - navigate to a connected dapp
       if (currentOrigin) {
@@ -1589,6 +1603,27 @@ function onNavigateToTab() {
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
           emitDappViewedMetricEvent(currentOrigin);
+        }
+      }
+
+      // If the connected dApp is Hyperliquid, trigger the referral flow
+      if (currentTabOrigin === HYPERLIQUID_ORIGIN) {
+        const connectSitePermissions =
+          controller.permissionController.state.subjects[currentTabOrigin];
+        // when the dapp is not connected, connectSitePermissions is undefined
+        const isConnectedToDapp = connectSitePermissions !== undefined;
+        if (isConnectedToDapp) {
+          controller
+            .handleHyperliquidReferral(
+              tabId,
+              HyperliquidPermissionTriggerType.OnNavigateConnectedTab,
+            )
+            .catch((error) => {
+              log.error(
+                'Failed to handle Hyperliquid referral after navigation to connected tab: ',
+                error,
+              );
+            });
         }
       }
     }

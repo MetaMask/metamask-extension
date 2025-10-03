@@ -150,6 +150,8 @@ async function defineAndRunBuildTasks() {
       'logEncryptedVault',
       // Globals used by `react-dom`
       'getSelection',
+      // globals `opera` needs to function
+      'opr',
     ];
 
     if (

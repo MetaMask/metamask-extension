@@ -88,7 +88,7 @@ export const AssetList = ({
     <>
       {tokens.map((token) => (
         <AssetComponent
-          key={`${token.address}-${token.chainId}`}
+          key={`${token.address ?? token.assetId}-${token.chainId}`}
           asset={token}
           onClick={() => handleAssetClick(token)}
         />
@@ -97,7 +97,9 @@ export const AssetList = ({
         <Text
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textAlternative}
-          margin={4}
+          marginInline={4}
+          marginTop={2}
+          marginBottom={2}
         >
           NFTs
         </Text>

@@ -34,12 +34,12 @@ export const AccountDetailsRow = ({
 
   return (
     <Box
-      backgroundColor={BackgroundColor.backgroundMuted}
+      backgroundColor={BackgroundColor.backgroundSection}
       display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       style={style}
       paddingLeft={4}
-      paddingRight={4}
+      paddingRight={2}
       alignItems={AlignItems.center}
       onClick={onClick}
       className={rowClassName}

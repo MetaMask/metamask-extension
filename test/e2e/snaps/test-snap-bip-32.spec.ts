@@ -2,7 +2,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixture-builder';
-import { withFixtures } from '../helpers';
+import { withFixtures, WINDOW_TITLES } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockBip32Snap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -92,7 +92,7 @@ describe('Test Snap bip-32', function () {
         );
 
         // Select entropy source SRP 1, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
+        await testSnaps.selectEntropySource(
           'bip32EntropyDropDown',
           'SRP 1 (primary)',
         );
@@ -106,10 +106,8 @@ describe('Test Snap bip-32', function () {
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
-          'bip32EntropyDropDown',
-          'SRP 2',
-        );
+        await testSnaps.selectEntropySource('bip32EntropyDropDown', 'SRP 2');
+
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
         await switchAndApproveDialogSwitchToTestSnap(driver);
@@ -119,18 +117,16 @@ describe('Test Snap bip-32', function () {
         );
 
         // Select an invalid (non-existent) entropy source, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
-          'bip32EntropyDropDown',
-          'Invalid',
-        );
+        await testSnaps.selectEntropySource('bip32EntropyDropDown', 'Invalid');
         await testSnaps.fillMessage('messageSecp256k1Input', 'bar baz');
         await testSnaps.clickButton('signBip32messageSecp256k1Button');
 
-        // Check the error message and close the alert.
-        await driver.waitForAlert(
-          'Entropy source with ID "invalid" not found.',
-        );
-        await driver.closeAlertPopup();
+        // Verify that the expected error alert appears
+
+        await driver.waitForBrowserAlert({
+          text: 'Entropy source with ID "invalid" not found.',
+          windowTitle: WINDOW_TITLES.TestSnaps,
+        });
       },
     );
   });

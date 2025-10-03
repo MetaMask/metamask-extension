@@ -28,7 +28,7 @@ exports[`AccountListItem Component render should match snapshot 1`] = `
               <rect
                 fill="#2362E1"
                 height="18"
-                transform="translate(2.018998228945791 -3.0005497255688565) rotate(458.4 9 9)"
+                transform="translate(2.01899822894579 -3.00054972556886) rotate(458.4 9.00000000000000 9.00000000000000)"
                 width="18"
                 x="0"
                 y="0"
@@ -36,7 +36,7 @@ exports[`AccountListItem Component render should match snapshot 1`] = `
               <rect
                 fill="#F94301"
                 height="18"
-                transform="translate(-8.641945850428243 4.495697794961231) rotate(268.8 9 9)"
+                transform="translate(-8.64194585042824 4.49569779496123) rotate(268.8 9.00000000000000 9.00000000000000)"
                 width="18"
                 x="0"
                 y="0"
@@ -44,7 +44,7 @@ exports[`AccountListItem Component render should match snapshot 1`] = `
               <rect
                 fill="#FA7900"
                 height="18"
-                transform="translate(-5.10539291960705 16.582508932884398) rotate(117.3 9 9)"
+                transform="translate(-5.10539291960705 16.58250893288440) rotate(117.3 9.00000000000000 9.00000000000000)"
                 width="18"
                 x="0"
                 y="0"

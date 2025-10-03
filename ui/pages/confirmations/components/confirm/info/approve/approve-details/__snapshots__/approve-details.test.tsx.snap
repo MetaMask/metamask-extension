@@ -3,7 +3,7 @@
 exports[`<ApproveDetails /> renders component for approve details 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__approve-details"
   >
     <div
@@ -32,7 +32,7 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="confirmation__approve-spender-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -44,13 +44,13 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
           >
             <span
-              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
@@ -95,7 +95,7 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="transaction-details-origin-row-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -120,7 +120,7 @@ exports[`<ApproveDetails /> renders component for approve details 1`] = `
 exports[`<ApproveDetails /> renders component for approve details for setApprovalForAll 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__approve-details"
   >
     <div
@@ -149,7 +149,7 @@ exports[`<ApproveDetails /> renders component for approve details for setApprova
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="confirmation__approve-spender-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -161,13 +161,13 @@ exports[`<ApproveDetails /> renders component for approve details for setApprova
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
           >
             <span
-              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
@@ -212,7 +212,7 @@ exports[`<ApproveDetails /> renders component for approve details for setApprova
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="transaction-details-origin-row-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />

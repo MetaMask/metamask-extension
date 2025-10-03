@@ -170,13 +170,10 @@ class SwapPage {
   }
 
   async swapProcessingMessageCheck(message: string): Promise<void> {
-    await this.driver.wait(async () => {
-      const confirmedTxs = await this.driver.findElements({
-        css: this.transactionHeader,
-        text: message,
-      });
-      return confirmedTxs.length === 1;
-    }, 10000);
+    await this.driver.waitForSelector({
+      css: this.transactionHeader,
+      text: message,
+    });
   }
 
   async checkSwapButtonIsEnabled(): Promise<void> {

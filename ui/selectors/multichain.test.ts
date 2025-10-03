@@ -124,8 +124,9 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
       assetsMetadata: {},
       accountsAssets: {},
       isEvmSelected: false,
-      multichainNetworkConfigurationsByChainId:
-        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      multichainNetworkConfigurationsByChainId: {
+        ...AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      },
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
       networksWithTransactionActivity: {},
     },
