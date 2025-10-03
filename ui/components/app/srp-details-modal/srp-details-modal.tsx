@@ -4,6 +4,7 @@ import {
   AlignItems,
   Display,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -33,7 +34,7 @@ export default function SRPDetailsModal({ onClose }: { onClose: () => void }) {
       <ModalOverlay />
       <ModalContent alignItems={AlignItems.center}>
         <ModalHeader onClose={onClose}>
-          <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
+          <Text variant={TextVariant.bodyMdBold} textAlign={TextAlign.Center}>
             {t('srpDetailsTitle')}
           </Text>
         </ModalHeader>
