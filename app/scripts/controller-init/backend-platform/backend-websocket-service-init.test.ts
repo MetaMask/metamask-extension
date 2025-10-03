@@ -1,4 +1,4 @@
-import { WebSocketService as BackendWebSocketService } from '@metamask/backend-platform';
+import { BackendWebSocketService } from '@metamask/core-backend';
 import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';

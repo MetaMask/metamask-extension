@@ -2,7 +2,7 @@ import {
   type AccountActivityServiceMessenger as BackendPlatformAccountActivityServiceMessenger,
   ACCOUNT_ACTIVITY_SERVICE_ALLOWED_ACTIONS,
   ACCOUNT_ACTIVITY_SERVICE_ALLOWED_EVENTS,
-} from '@metamask/backend-platform';
+} from '@metamask/core-backend';
 
 export type AccountActivityServiceMessenger = BackendPlatformAccountActivityServiceMessenger;
 

@@ -1,4 +1,4 @@
-import { AccountActivityService } from '@metamask/backend-platform';
+import { AccountActivityService } from '@metamask/core-backend';
 import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';

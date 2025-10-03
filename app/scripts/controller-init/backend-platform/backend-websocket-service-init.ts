@@ -1,4 +1,4 @@
-import { WebSocketService } from '@metamask/backend-platform';
+import { BackendWebSocketService } from '@metamask/core-backend';
 import { ControllerInitFunction } from '../types';
 import {
   BackendWebSocketServiceMessenger,
@@ -22,11 +22,11 @@ import {
  * @returns The initialized service.
  */
 export const BackendWebSocketServiceInit: ControllerInitFunction<
-  WebSocketService,
+  BackendWebSocketService,
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
-  const controller = new WebSocketService({
+  const controller = new BackendWebSocketService({
     messenger: controllerMessenger,
     url: process.env.METAMASK_BACKEND_WEBSOCKET_URL || 'wss://api.metamask.io/backend/ws',
     // Backend Platform optimized configuration
@@ -35,7 +35,7 @@ export const BackendWebSocketServiceInit: ControllerInitFunction<
     maxReconnectDelay: 30000, // Allow longer delays for backend stability
     requestTimeout: 20000, // Reasonable timeout for backend requests
     // Feature flag integration - service will check this callback before connecting/reconnecting
-    enabledCallback: () => {
+    isEnabled: () => {
       try {
         // Check for local environment variable override first (for development)
         const envOverride = process.env.BACKEND_WEBSOCKET_CONNECTION_ENABLED as string | boolean | null;
@@ -54,9 +54,6 @@ export const BackendWebSocketServiceInit: ControllerInitFunction<
         return false;
       }
     },
-    // Enable authentication - core service will handle the authentication logic
-    // Note: This will show a linting error until @metamask/backend-platform is published with the new enableAuthentication option
-    enableAuthentication: true,
   });
 
   // Authentication and lock/unlock handling is now managed by the core WebSocket service

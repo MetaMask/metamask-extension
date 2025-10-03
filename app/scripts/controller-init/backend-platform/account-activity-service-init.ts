@@ -1,4 +1,4 @@
-import { AccountActivityService } from '@metamask/backend-platform';
+import { AccountActivityService } from '@metamask/core-backend';
 import { ControllerInitFunction } from '../types';
 import { AccountActivityServiceMessenger } from '../messengers/backend-platform';
 

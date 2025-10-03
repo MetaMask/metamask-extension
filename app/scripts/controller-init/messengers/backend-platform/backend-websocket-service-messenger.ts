@@ -1,6 +1,6 @@
 import {
-  WebSocketServiceMessenger as BackendPlatformWebSocketServiceMessenger,
-} from '@metamask/backend-platform';
+  BackendWebSocketServiceMessenger as BackendPlatformWebSocketServiceMessenger,
+} from '@metamask/core-backend';
 
 export type BackendWebSocketServiceMessenger = BackendPlatformWebSocketServiceMessenger;
 

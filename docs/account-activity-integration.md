@@ -2,12 +2,12 @@
 
 ## Overview
 
-The MetaMask extension integrates with the `@metamask/backend-platform` package to provide real-time account activity monitoring through WebSocket connections. This document outlines the extension-specific integration details.
+The MetaMask extension integrates with the `@metamask/core-backend` package to provide real-time account activity monitoring through WebSocket connections. This document outlines the extension-specific integration details.
 
 > 📖 **For comprehensive service documentation, see the core package docs:**
-> - [**WebSocketService Documentation**](https://github.com/MetaMask/core/blob/main/packages/backend-platform/docs/websocket-service.md)
-> - [**AccountActivityService Documentation**](https://github.com/MetaMask/core/blob/main/packages/backend-platform/docs/account-activity-service.md)
-> - [**Integration Guide**](https://github.com/MetaMask/core/blob/main/packages/backend-platform/docs/integration-guide.md)
+> - [**WebSocketService Documentation**](https://github.com/MetaMask/core/blob/main/packages/core-backend/docs/websocket-service.md)
+> - [**AccountActivityService Documentation**](https://github.com/MetaMask/core/blob/main/packages/core-backend/docs/account-activity-service.md)
+> - [**Integration Guide**](https://github.com/MetaMask/core/blob/main/packages/core-backend/docs/integration-guide.md)
 
 ## Extension-Specific Implementation
 
@@ -37,8 +37,8 @@ The MetaMask extension integrates with the `@metamask/backend-platform` package 
 
 #### AccountActivityService Configuration
 ```typescript
-// Using defaults from @metamask/backend-platform
-// Future extensions can be added when backend-platform supports:
+// Using defaults from @metamask/core-backend
+// Future extensions can be added when core-backend supports:
 {
   maxConcurrentSubscriptions: 50,           // Conservative limit for extension
   subscriptionNamespace: 'account-activity.v1', // Default namespace
@@ -230,7 +230,7 @@ controllerMessenger.subscribe('AccountActivityService:balanceUpdated', console.l
 
 ## Related Documentation
 
-- 📖 [Core WebSocketService Docs](https://github.com/MetaMask/core/blob/main/packages/backend-platform/docs/websocket-service.md)
-- 📖 [Core AccountActivityService Docs](https://github.com/MetaMask/core/blob/main/packages/backend-platform/docs/account-activity-service.md)
-- 📖 [Integration Guide](https://github.com/MetaMask/core/blob/main/packages/backend-platform/docs/integration-guide.md)
+- 📖 [Core WebSocketService Docs](https://github.com/MetaMask/core/blob/main/packages/core-backend/docs/websocket-service.md)
+- 📖 [Core AccountActivityService Docs](https://github.com/MetaMask/core/blob/main/packages/core-backend/docs/account-activity-service.md)
+- 📖 [Integration Guide](https://github.com/MetaMask/core/blob/main/packages/core-backend/docs/integration-guide.md)
 - 📖 [Controller Guidelines](https://github.com/MetaMask/core/blob/main/docs/controller-guidelines.md)

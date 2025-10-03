@@ -13,6 +13,7 @@ import {
   AccountsControllerListAccountsAction,
 } from '@metamask/accounts-controller';
 import {
+  AccountTrackerControllerGetStateAction,
   AccountTrackerUpdateNativeBalancesAction,
   AccountTrackerUpdateStakedBalancesAction,
   TokensControllerState,
@@ -31,7 +32,7 @@ import {
 import type {
   AccountActivityServiceBalanceUpdatedEvent,
   AccountActivityServiceStatusChangedEvent,
-} from '@metamask/backend-platform';
+} from '@metamask/core-backend';
 
 // Not exported from `@metamask/assets-controllers`.
 type TokensControllerGetStateAction = ControllerGetStateAction<
