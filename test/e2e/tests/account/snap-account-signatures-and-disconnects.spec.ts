@@ -18,13 +18,14 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
     await withFixtures(
       {
         dapp: true,
+        dappPaths: ['test-dapp', 'snap-simple-keyring-site'],
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
-        await installSnapSimpleKeyring(driver, false);
+        await installSnapSimpleKeyring(driver, false, 8081);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
         const newPublicKey = await snapSimpleKeyringPage.createNewAccount();
 

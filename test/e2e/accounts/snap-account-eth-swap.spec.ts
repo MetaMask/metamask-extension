@@ -40,6 +40,8 @@ describe('Snap Account - Swap', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
+        dapp: true,
+        dappPaths: ['snap-simple-keyring-site'],
         title: this.test?.fullTitle(),
         testSpecificMock: mockSwapsAndSimpleKeyringSnap,
       },

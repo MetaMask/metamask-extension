@@ -22,6 +22,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
     await withFixtures(
       {
         dapp: true,
+        dappPaths: ['test-dapp', 'snap-simple-keyring-site'],
         fixtures: new FixtureBuilder()
           .withPermissionControllerSnapAccountConnectedToTestDapp()
           .build(),
@@ -42,7 +43,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
         localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
         await loginWithBalanceValidation(driver, localNodes[0]);
-        await installSnapSimpleKeyring(driver);
+        await installSnapSimpleKeyring(driver, true, 8081);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
         // Import snap account with private key on snap simple keyring page.

@@ -31,6 +31,7 @@ describe('Snap Account Signatures', function (this: Suite) {
       await withFixtures(
         {
           dapp: true,
+          dappPaths: ['test-dapp', 'snap-simple-keyring-site'],
           fixtures: new FixtureBuilder().build(),
           testSpecificMock: mockSimpleKeyringSnap,
           title,
@@ -39,7 +40,7 @@ describe('Snap Account Signatures', function (this: Suite) {
           const isSyncFlow = flowType === 'sync';
           const approveTransaction = flowType === 'approve';
           await loginWithBalanceValidation(driver);
-          await installSnapSimpleKeyring(driver, isSyncFlow);
+          await installSnapSimpleKeyring(driver, isSyncFlow, 8081);
           const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
           const newPublicKey = await snapSimpleKeyringPage.createNewAccount();
 

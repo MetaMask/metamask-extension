@@ -15,6 +15,8 @@ describe('Create Snap Account', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSimpleKeyringSnap,
+        dapp: true,
+        dappPaths: ['snap-simple-keyring-site'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -39,6 +41,8 @@ describe('Create Snap Account', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSimpleKeyringSnap,
+        dapp: true,
+        dappPaths: ['snap-simple-keyring-site'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -77,6 +81,8 @@ describe('Create Snap Account', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSimpleKeyringSnap,
+        dapp: true,
+        dappPaths: ['snap-simple-keyring-site'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -111,6 +117,8 @@ describe('Create Snap Account', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSimpleKeyringSnap,
+        dapp: true,
+        dappPaths: ['snap-simple-keyring-site'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

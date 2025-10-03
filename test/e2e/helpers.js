@@ -282,18 +282,33 @@ async function withFixtures(options, testSuite) {
       }
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
-        if (dappPath || (dappPaths && dappPaths[i])) {
-          dappDirectory = path.resolve(__dirname, dappPath || dappPaths[i]);
-        } else {
-          dappDirectory = path.resolve(
-            __dirname,
-            '..',
-            '..',
-            'node_modules',
-            '@metamask',
-            'test-dapp',
-            'dist',
-          );
+        const currentDappPath =
+          dappPath || (dappPaths && dappPaths[i]) || 'test-dapp';
+
+        switch (currentDappPath) {
+          case 'snap-simple-keyring-site':
+            dappDirectory = path.resolve(
+              __dirname,
+              '..',
+              '..',
+              'node_modules',
+              '@metamask/snap-simple-keyring-site',
+              'public',
+            );
+            break;
+          case 'test-dapp':
+            dappDirectory = path.resolve(
+              __dirname,
+              '..',
+              '..',
+              'node_modules',
+              '@metamask/test-dapp',
+              'dist',
+            );
+            break;
+          default:
+            dappDirectory = path.resolve(__dirname, currentDappPath);
+            break;
         }
         dappServer.push(
           createStaticServer({ public: dappDirectory, ...staticServerOptions }),
