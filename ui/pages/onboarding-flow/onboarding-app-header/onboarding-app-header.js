@@ -86,7 +86,6 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
                 color: TextColor.textDefault,
                 variant: TextVariant.bodyMdMedium,
                 paddingRight: 2,
-                paddingLeft: 2,
               }}
               className="onboarding-app-header__banner-tip"
               padding={3}
@@ -96,7 +95,6 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
                 variant={TextVariant.bodySm}
                 alignItems={AlignItems.center}
                 color={TextColor.textAlternative}
-                paddingLeft={2}
                 paddingRight={2}
               >
                 {t('pinMetaMaskDescription', [
