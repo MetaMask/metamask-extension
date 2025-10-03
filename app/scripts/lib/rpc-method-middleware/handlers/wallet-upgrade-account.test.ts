@@ -17,7 +17,7 @@ const createUpgradeHandler = () => {
   const end = jest.fn();
   const next = jest.fn();
   const upgradeAccount = jest.fn();
-  const getCurrentChainId = jest.fn().mockReturnValue(1);
+  const getCurrentChainIdForDomain = jest.fn().mockReturnValue('0x1');
   const isAtomicBatchSupported = jest
     .fn()
     .mockImplementation(async ({ chainIds }: { chainIds: string[] }) => {
@@ -40,7 +40,7 @@ const createUpgradeHandler = () => {
   const handler = (request: JsonRpcRequest<Json[]> & { origin: string }) =>
     upgradeAccountHandler.implementation(request, response, next, end, {
       upgradeAccount,
-      getCurrentChainId,
+      getCurrentChainIdForDomain,
       isAtomicBatchSupported,
     });
 
@@ -48,7 +48,7 @@ const createUpgradeHandler = () => {
     end,
     next,
     upgradeAccount,
-    getCurrentChainId,
+    getCurrentChainIdForDomain,
     isAtomicBatchSupported,
     response,
     handler,
@@ -58,7 +58,7 @@ const createUpgradeHandler = () => {
 const createStatusHandler = () => {
   const end = jest.fn();
   const next = jest.fn();
-  const getCurrentChainId = jest.fn().mockReturnValue(1);
+  const getCurrentChainIdForDomain = jest.fn().mockReturnValue('0x1');
   const getCode = jest.fn();
   const getNetworkConfigurationByChainId = jest
     .fn()
@@ -80,7 +80,7 @@ const createStatusHandler = () => {
       next,
       end,
       {
-        getCurrentChainId,
+        getCurrentChainIdForDomain,
         getCode,
         getNetworkConfigurationByChainId,
       },
@@ -89,7 +89,7 @@ const createStatusHandler = () => {
   return {
     end,
     next,
-    getCurrentChainId,
+    getCurrentChainIdForDomain,
     getCode,
     getNetworkConfigurationByChainId,
     response,
@@ -176,8 +176,13 @@ describe('upgradeAccountHandler', () => {
   });
 
   it('upgrades account with current chain ID', async () => {
-    const { end, upgradeAccount, getCurrentChainId, response, handler } =
-      createUpgradeHandler();
+    const {
+      end,
+      upgradeAccount,
+      getCurrentChainIdForDomain,
+      response,
+      handler,
+    } = createUpgradeHandler();
     upgradeAccount.mockResolvedValue({
       transactionHash: '0xabc123',
       delegatedTo: UPGRADE_CONTRACT,
@@ -191,7 +196,7 @@ describe('upgradeAccountHandler', () => {
       params: [{ account: TEST_ACCOUNT }],
     });
 
-    expect(getCurrentChainId).toHaveBeenCalled();
+    expect(getCurrentChainIdForDomain).toHaveBeenCalled();
     expect(upgradeAccount).toHaveBeenCalledWith(
       TEST_ACCOUNT,
       UPGRADE_CONTRACT,
@@ -206,8 +211,13 @@ describe('upgradeAccountHandler', () => {
   });
 
   it('upgrades account with specified chain ID', async () => {
-    const { end, upgradeAccount, getCurrentChainId, response, handler } =
-      createUpgradeHandler();
+    const {
+      end,
+      upgradeAccount,
+      getCurrentChainIdForDomain,
+      response,
+      handler,
+    } = createUpgradeHandler();
     upgradeAccount.mockResolvedValue({
       transactionHash: '0xdef456',
       delegatedTo: UPGRADE_CONTRACT,
@@ -221,7 +231,7 @@ describe('upgradeAccountHandler', () => {
       params: [{ account: TEST_ACCOUNT, chainId: 11155111 }],
     });
 
-    expect(getCurrentChainId).not.toHaveBeenCalled();
+    expect(getCurrentChainIdForDomain).not.toHaveBeenCalled();
     expect(upgradeAccount).toHaveBeenCalledWith(
       TEST_ACCOUNT,
       UPGRADE_CONTRACT,

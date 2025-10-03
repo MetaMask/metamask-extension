@@ -6872,7 +6872,6 @@ export default class MetamaskController extends EventEmitter {
 
       // Account upgrade-related
       upgradeAccount: this.upgradeAccount.bind(this),
-      getCurrentChainId: this.getCurrentChainId.bind(this),
       getCode: this.getCode.bind(this),
       isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
         this.txController,
@@ -8936,26 +8935,5 @@ export default class MetamaskController extends EventEmitter {
         return transactionMeta;
       },
     );
-  }
-
-  /**
-   * Gets the current chain ID.
-   *
-   * @returns {number}
-   */
-  getCurrentChainId() {
-    const { selectedNetworkClientId } = this.networkController.state;
-    const networkConfig =
-      this.networkController.getNetworkConfigurationByNetworkClientId(
-        selectedNetworkClientId,
-      );
-
-    if (!networkConfig) {
-      throw new Error(
-        `No network configuration found for clientId: ${selectedNetworkClientId}`,
-      );
-    }
-
-    return parseInt(networkConfig.chainId, 16);
   }
 }

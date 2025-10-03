@@ -3,6 +3,7 @@ import type {
   JsonRpcRequest,
   PendingJsonRpcResponse,
   Json,
+  Hex,
 } from '@metamask/utils';
 import type {
   AsyncJsonRpcEngineNextCallback,
@@ -43,7 +44,7 @@ export const upgradeAccountHandler = {
   implementation: upgradeAccountImplementation,
   hookNames: {
     upgradeAccount: true,
-    getCurrentChainId: true,
+    getCurrentChainIdForDomain: true,
     isAtomicBatchSupported: true,
   },
 };
@@ -52,7 +53,7 @@ export const getAccountUpgradeStatusHandler = {
   methodNames: ['wallet_getAccountUpgradeStatus'],
   implementation: getAccountUpgradeStatusImplementation,
   hookNames: {
-    getCurrentChainId: true,
+    getCurrentChainIdForDomain: true,
     getCode: true,
     getNetworkConfigurationByChainId: true,
   },
@@ -65,7 +66,7 @@ async function upgradeAccountImplementation(
   end: JsonRpcEngineEndCallback,
   {
     upgradeAccount,
-    getCurrentChainId,
+    getCurrentChainIdForDomain,
     isAtomicBatchSupported,
   }: {
     upgradeAccount: (
@@ -73,7 +74,7 @@ async function upgradeAccountImplementation(
       upgradeContractAddress: string,
       chainId?: number,
     ) => Promise<{ transactionHash: string; delegatedTo: string }>;
-    getCurrentChainId: () => number;
+    getCurrentChainIdForDomain: (domain: string) => string;
     isAtomicBatchSupported: (request: {
       address: string;
       chainIds: string[];
@@ -119,7 +120,20 @@ async function upgradeAccountImplementation(
   }
 
   // Use current chain ID if not provided
-  const targetChainId = chainId ?? getCurrentChainId();
+  let targetChainId: number;
+  if (chainId) {
+    targetChainId = chainId;
+  } else {
+    const currentChainIdForDomain = getCurrentChainIdForDomain(origin);
+    if (!currentChainIdForDomain) {
+      res.error = {
+        code: -32602,
+        message: `No network configuration found for origin: ${origin}`,
+      };
+      return end();
+    }
+    targetChainId = parseInt(currentChainIdForDomain, 16);
+  }
 
   try {
     // Get the EIP7702 network configuration for the target chain
@@ -177,11 +191,11 @@ async function getAccountUpgradeStatusImplementation(
   _next: AsyncJsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   {
-    getCurrentChainId,
+    getCurrentChainIdForDomain,
     getCode,
     getNetworkConfigurationByChainId,
   }: {
-    getCurrentChainId: () => number;
+    getCurrentChainIdForDomain: (domain: string) => string;
     getCode: (
       address: string,
       networkClientId: string,
@@ -224,7 +238,20 @@ async function getAccountUpgradeStatusImplementation(
   }
 
   // Use current chain ID if not provided
-  const targetChainId = chainId ?? getCurrentChainId();
+  let targetChainId: number;
+  if (chainId) {
+    targetChainId = chainId;
+  } else {
+    const currentChainIdForDomain = getCurrentChainIdForDomain(origin);
+    if (!currentChainIdForDomain) {
+      res.error = {
+        code: -32602,
+        message: `No network configuration found for origin: ${origin}`,
+      };
+      return end();
+    }
+    targetChainId = parseInt(currentChainIdForDomain, 16);
+  }
 
   try {
     // Get the network configuration for the target chain
@@ -267,7 +294,7 @@ async function getAccountUpgradeStatusImplementation(
 
     // Check if the account is upgraded using the EIP7702 utils
     const isUpgraded = await isAccountUpgraded(
-      account as `0x${string}`,
+      account as Hex,
       networkClientId,
       getCode,
     );
