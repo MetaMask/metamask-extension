@@ -256,7 +256,7 @@ describe('Vault Corruption', function () {
     });
     await accountListPage.clickMultichainAccountMenuItem('Addresses');
     await accountListPage.clickShowQR();
-    await driver.delay(1000)
+    await driver.delay(1000);
 
     const accountDetailsPage = new MultichainAccountDetailsPage(driver);
     const accountAddress = await accountDetailsPage.getAddressFromShareModal();

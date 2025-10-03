@@ -210,8 +210,7 @@ class MultichainAccountDetailsPage {
    */
   async closeQRCodeDialog(): Promise<void> {
     console.log('Click on QR code dialog close button');
-    await this.driver.clickElement('[aria-label="Close"]')
-    ;
+    await this.driver.clickElement('[aria-label="Close"]');
   }
 
   /**
