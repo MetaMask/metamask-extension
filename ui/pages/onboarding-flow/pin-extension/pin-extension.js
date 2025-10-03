@@ -72,8 +72,7 @@ export default function OnboardingPinExtension() {
       },
     });
 
-    // Open MetaMask in side panel with homepage while keeping pin-extension page in fullscreen view
-    // Side panel API is only available in Chrome 114+ with Manifest V3
+    // Side Panel
     try {
       if (browser?.sidePanel?.open) {
         const tabs = await browser.tabs.query({
@@ -81,23 +80,14 @@ export default function OnboardingPinExtension() {
           currentWindow: true,
         });
         if (tabs && tabs.length > 0) {
-          // Open side panel with homepage - this will NOT affect the expanded/fullscreen view
-          // The expanded view will stay on pin-extension page while side panel shows homepage
           await browser.sidePanel.open({ windowId: tabs[0].windowId });
-          console.log('Successfully opened side panel with homepage. Pin-extension page remains in expanded view.');
-
-          // Complete onboarding AFTER side panel opens successfully
-          // This prevents automatic navigation while keeping the pin-extension page visible
           await dispatch(setCompletedOnboarding());
         }
       } else {
-        // Fallback: If side panel not available, complete onboarding and navigate to home as before
-        console.log('Side panel API not supported - completing onboarding and navigating to home');
         await dispatch(setCompletedOnboarding());
       }
     } catch (error) {
       console.error('Error opening side panel:', error);
-      // If side panel fails, complete onboarding and navigate to home as fallback
       await dispatch(setCompletedOnboarding());
     }
   };
