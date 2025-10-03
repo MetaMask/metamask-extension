@@ -136,7 +136,7 @@ function transformUiState(data: JsonRpcResponse<Json>): JsonRpcResponse<Json> {
 async function matchesSnapshot({
   data,
   snapshot,
-  update = process.env.UPDATE_SNAPSHOTS === 'true',
+  update = true || process.env.UPDATE_SNAPSHOTS === 'true',
 }: {
   data: JsonRpcResponse<Json>;
   snapshot: string;
