@@ -277,8 +277,11 @@ async function withFixtures(options, testSuite) {
 
     await phishingPageServer.start();
     if (dapp) {
+      // Auto-detect numberOfDapps from dappPaths array length, or use dappOptions override
       if (dappOptions?.numberOfDapps) {
         numberOfDapps = dappOptions.numberOfDapps;
+      } else if (dappPaths && Array.isArray(dappPaths)) {
+        numberOfDapps = dappPaths.length;
       }
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
