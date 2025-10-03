@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import { Tooltip } from 'react-tippy';
 import { useSelector } from 'react-redux';
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   BorderStyle,
@@ -14,13 +19,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { AvatarType } from '../../../avatar-group/avatar-group.types';
 import { AvatarGroup } from '../../..';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  Box,
-  Text,
-} from '../../../../component-library';
+import { Box, Text } from '../../../../component-library';
 import { getUseBlockie } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 

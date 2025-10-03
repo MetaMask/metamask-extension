@@ -66,12 +66,13 @@ function getAssetAmount(
 // Fetches token details for all the token addresses in the SimulationTokenBalanceChanges
 async function fetchAllErc20Decimals(
   addresses: Hex[],
+  chainId: Hex,
 ): Promise<Record<Hex, number>> {
   const uniqueAddresses = [
     ...new Set(addresses.map((address) => address.toLowerCase() as Hex)),
   ];
   const allDecimals = await Promise.all(
-    uniqueAddresses.map(fetchErc20Decimals),
+    uniqueAddresses.map((address) => fetchErc20Decimals(address, chainId)),
   );
   return Object.fromEntries(
     allDecimals.map((decimals, i) => [uniqueAddresses[i], decimals]),
@@ -188,8 +189,8 @@ export const useBalanceChanges = ({
     .map((tbc) => tbc.address);
 
   const erc20Decimals = useAsyncResultOrThrow(
-    () => fetchAllErc20Decimals(erc20TokenAddresses),
-    [JSON.stringify(erc20TokenAddresses)],
+    () => fetchAllErc20Decimals(erc20TokenAddresses, chainId),
+    [chainId, JSON.stringify(erc20TokenAddresses)],
   );
 
   const erc20FiatRates = useAsyncResultOrThrow(

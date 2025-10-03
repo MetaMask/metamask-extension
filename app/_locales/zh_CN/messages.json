@@ -308,9 +308,6 @@
   "addingAccount": {
     "message": "添加账户"
   },
-  "addingCustomNetwork": {
-    "message": "正在添加网络"
-  },
   "additionalNetworks": {
     "message": "其他网络"
   },
@@ -737,18 +734,11 @@
   "beta": {
     "message": "测试版"
   },
-  "betaHeaderText": {
-    "message": "此为测试版。请$1报告错误"
-  },
   "betaMetamaskVersion": {
     "message": "MetaMask 测试版本"
   },
   "betaTerms": {
     "message": "测试版使用条款"
-  },
-  "billionAbbreviation": {
-    "message": "十亿",
-    "description": "Shortened form of 'billion'"
   },
   "blockExplorerAccountAction": {
     "message": "账户",
@@ -1428,9 +1418,6 @@
   "connectingTo": {
     "message": "正在连接 $1"
   },
-  "connectingToDeprecatedNetwork": {
-    "message": "“$1” 正在逐步淘汰，可能无法使用。请尝试其他网络。"
-  },
   "connectingToGoerli": {
     "message": "正在连接 Goerli 测试网络"
   },
@@ -1593,9 +1580,6 @@
   "currentNetwork": {
     "message": "当前网络",
     "description": "Speicifies to token network filter to filter by current Network. Will render when network nickname is not available"
-  },
-  "currentRpcUrlDeprecated": {
-    "message": "此网络的当前 RPC URL 已被弃用。"
   },
   "currentTitle": {
     "message": "当前："
@@ -3322,10 +3306,6 @@
   "metrics": {
     "message": "指标"
   },
-  "millionAbbreviation": {
-    "message": "百万",
-    "description": "Shortened form of 'million'"
-  },
   "mismatchedChainLinkText": {
     "message": "验证网络信息",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -3601,10 +3581,6 @@
     "message": "相对过去72小时，燃料费用为 $1。",
     "description": "$1 is networks stability value - stable, low, high"
   },
-  "networkSwitchConnectionError": {
-    "message": "我们无法连接到 $1",
-    "description": "$1 represents the network name"
-  },
   "networkURL": {
     "message": "网络 URL"
   },
@@ -3761,12 +3737,6 @@
   },
   "noSnaps": {
     "message": "您没有安装 snap。"
-  },
-  "noThanks": {
-    "message": "不，谢谢"
-  },
-  "noTransactions": {
-    "message": "您没有任何交易"
   },
   "noWebcamFound": {
     "message": "未找到您电脑的网络摄像头。请重试。"
@@ -4045,45 +4015,11 @@
   "onboardingImportWallet": {
     "message": "我已有一个钱包"
   },
-  "onboardingMetametricsAgree": {
-    "message": "我同意"
-  },
   "onboardingMetametricsDescription": {
     "message": "我们希望通过收集基本使用情况和诊断数据来改进 MetaMask。它将始终是："
   },
-  "onboardingMetametricsInfuraTerms": {
-    "message": "如果我们决定将这些数据用于其他目的，将通知您。您可以随时查看我们的 $1 以了解更多信息（我们绝不会出售您在此处提供的数据）。",
-    "description": "$1 represents `onboardingMetametricsInfuraTermsPolicy`"
-  },
-  "onboardingMetametricsInfuraTermsPolicy": {
-    "message": "隐私政策"
-  },
-  "onboardingMetametricsNeverCollect": {
-    "message": "$1 应用中的点击量和浏览量会被存储，但不会存储其他详情（如您的公钥）。",
-    "description": "$1 represents `onboardingMetametricsNeverCollectEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectEmphasis": {
-    "message": "私密："
-  },
-  "onboardingMetametricsNeverCollectIP": {
-    "message": "$1 我们暂时使用您的 IP 地址来检测一般位置（如您的国家或地区），但从来不会进行存储。",
-    "description": "$1 represents `onboardingMetametricsNeverCollectIPEmphasis`"
-  },
-  "onboardingMetametricsNeverCollectIPEmphasis": {
-    "message": "通用："
-  },
-  "onboardingMetametricsNeverSellData": {
-    "message": "$1 您可以随时通过设置决定是否共享或删除您的使用数据。",
-    "description": "$1 represents `onboardingMetametricsNeverSellDataEmphasis`"
-  },
-  "onboardingMetametricsNeverSellDataEmphasis": {
-    "message": "可选："
-  },
   "onboardingMetametricsTitle": {
     "message": "请帮助我们改进 MetaMask"
-  },
-  "onboardingMetametricsUseDataCheckbox": {
-    "message": "我们将使用此数据来了解您如何与我们的营销通信交互。我们可能会分享相关资讯（例如产品特点）。"
   },
   "onboardingOptionIcon": {
     "message": "$1 图标",
@@ -4127,14 +4063,8 @@
   "onboardingSrpInputClearAll": {
     "message": "清除全部"
   },
-  "onboardingSrpInputHideAll": {
-    "message": "隐藏全部"
-  },
   "onboardingSrpInputPlaceholder": {
     "message": "在每个单词之间添加一个空格，确保无人看到。"
-  },
-  "onboardingSrpInputShowAll": {
-    "message": "显示全部"
   },
   "onekey": {
     "message": "OneKey"
@@ -4750,9 +4680,6 @@
   "recipientAddressPlaceholderNew": {
     "message": "输入公钥 (0x) 或域名"
   },
-  "recommendedGasLabel": {
-    "message": "建议"
-  },
   "recoveryPhraseReminderBackupStart": {
     "message": "立即备份"
   },
@@ -5053,18 +4980,8 @@
   "secureWallet": {
     "message": "安全钱包"
   },
-  "secureWalletGetStartedButton": {
-    "message": "开始使用"
-  },
   "secureWalletRemindLaterButton": {
     "message": "稍后提醒我"
-  },
-  "secureWalletWalletRecover": {
-    "message": "如果您无法登录应用程序或更换新设备，这是恢复钱包的唯一方法。"
-  },
-  "secureWalletWalletSaveSrp": {
-    "message": "不要冒损失资金的风险。把 $1 储存在您信任的地方，以保护您的钱包。",
-    "description": "The $1 is the button text 'Secret Recovery Phrase'"
   },
   "security": {
     "message": "安全"
@@ -5143,9 +5060,6 @@
   },
   "seeDetails": {
     "message": "查看详情"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "保护您的钱包安全"
   },
   "seedPhraseReq": {
     "message": "私钥助记词包含 12、15、18、21 或 24 个字词"
@@ -5451,18 +5365,6 @@
   },
   "siweURI": {
     "message": "URL"
-  },
-  "skipAccountSecurity": {
-    "message": "跳过账户安全？"
-  },
-  "skipAccountSecurityDetails": {
-    "message": "如果您丢失此私钥助记词，将无法访问该钱包。"
-  },
-  "skipAccountSecuritySecureNow": {
-    "message": "立即获取"
-  },
-  "skipAccountSecuritySkip": {
-    "message": "跳过"
   },
   "skipDeepLinkInterstitial": {
     "message": "打开深度链接时不显示插页式屏幕"
@@ -5830,9 +5732,6 @@
   "spendingCaps": {
     "message": "支出上限"
   },
-  "srpDesignImageAlt": {
-    "message": "私钥助记词保管库图像"
-  },
   "srpDetailsDescription": {
     "message": "私钥助记词（又称助记词）是一组用于访问和控制加密货币钱包的关键词。若需将钱包迁移至 MetaMask，您必须提供该助记词。"
   },
@@ -6049,10 +5948,6 @@
   "step2LedgerWalletMsg": {
     "message": "将您的 Ledger 直接插入电脑，然后解锁并打开以太坊应用程序。",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "stepOf": {
-    "message": "第 $1 步，共 $2 步",
-    "description": "$1 current step, $2 total steps"
   },
   "stillGettingMessage": {
     "message": "仍然收到此消息？"
@@ -6549,9 +6444,6 @@
   "switchNetwork": {
     "message": "切换网络"
   },
-  "switchNetworks": {
-    "message": "切换网络"
-  },
   "switchToNetwork": {
     "message": "切换至$1",
     "description": "$1 represents the custom network that has previously been added"
@@ -6800,10 +6692,6 @@
   },
   "transferRequest": {
     "message": "转账请求"
-  },
-  "trillionAbbreviation": {
-    "message": "万亿",
-    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "我们在连接您的 Ledger 时遇到问题。$1",

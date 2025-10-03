@@ -739,6 +739,8 @@ export enum MetaMetricsEventName {
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
   NavPermissionsOpened = 'Permissions Opened',
+  NetworkConnectionBannerShown = 'Network Connection Banner Shown',
+  NetworkConnectionBannerUpdateRpcClicked = 'Network Connection Banner Update RPC Clicked',
   UpdatePermissionedNetworks = 'Update Permissioned Networks',
   UpdatePermissionedAccounts = 'Update Permissioned Accounts',
   ViewPermissionedNetworks = 'View Permissioned Networks',
@@ -765,6 +767,8 @@ export enum MetaMetricsEventName {
   OnrampProviderSelected = 'On-ramp Provider Selected',
   PasswordChanged = 'Password Changed',
   ForgotPasswordClicked = 'Forgot Password Clicked',
+  ReferralViewed = 'Referral Viewed',
+  ReferralConfirmButtonClicked = 'Referral Confirm Button Clicked',
   ResetWallet = 'Reset Wallet',
   PermissionsApproved = 'Permissions Approved',
   PermissionsRejected = 'Permissions Rejected',
@@ -785,6 +789,7 @@ export enum MetaMetricsEventName {
   RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SettingsUpdated = 'Settings Updated',
+  SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',
@@ -994,6 +999,7 @@ export enum MetaMetricsEventCategory {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Permissions = 'Permissions',
   Phishing = 'Phishing',
+  Referrals = 'Referrals',
   BackupAndSync = 'Backup And Sync',
   PushNotifications = 'Notifications',
   Retention = 'Retention',
@@ -1038,6 +1044,7 @@ export enum MetaMetricsNetworkEventSource {
 export enum MetaMetricsSwapsEventSource {
   MainView = 'Main View',
   TokenView = 'Token View',
+  ActivityTabEmptyState = 'Activity Tab Empty State',
 }
 
 export enum MetaMetricsTokenEventSource {
