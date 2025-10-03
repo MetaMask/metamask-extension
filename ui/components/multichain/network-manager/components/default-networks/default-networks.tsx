@@ -15,6 +15,7 @@ import {
 import {
   AlignItems,
   BlockSize,
+  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
@@ -338,10 +339,14 @@ const DefaultNetworks = memo(() => {
           </Text>
           {isNetworkGasSponsored(network.chainId) && (
             <Text
+              marginLeft={1}
               variant={TextVariant.bodySm}
-              color={TextColor.successDefault}
+              color={TextColor.textDefault}
+              borderColor={BorderColor.borderDefault}
+              paddingLeft={1}
+              paddingRight={1}
             >
-              {t('swapGasFeesSponsored')}
+              {t('noNetworkFee')}
             </Text>
           )}
           <ButtonIcon
