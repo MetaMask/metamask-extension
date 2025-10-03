@@ -259,11 +259,9 @@ export default function OnboardingFlow() {
         borderStyle={
           isFullPage || isPopup ? BorderStyle.none : BorderStyle.solid
         }
-        borderRadius={BorderRadius.LG}
+        borderRadius={BorderRadius.XL}
         marginTop={pathname === ONBOARDING_WELCOME_ROUTE || isPopup ? 0 : 3}
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-        marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
-        ///: END:ONLY_INCLUDE_IF
+        marginBottom={10}
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
       >
