@@ -145,6 +145,9 @@ class AccountListPage {
   private readonly removeAccountButton =
     '[data-testid="account-list-menu-remove"]';
 
+  private readonly showQRCodeButton =
+    'button[data-testid="multichain-address-row-qr-button"]';
+
   private readonly removeAccountConfirmButton = {
     text: 'Remove',
     tag: 'button',
@@ -225,7 +228,7 @@ class AccountListPage {
             this.multichainAccountOptionsMenuButton,
           ]
         : [this.createAccountButton, this.accountOptionsMenuButton];
-      await this.driver.waitForMultipleSelectors(selectorsToWaitFor);
+      await this.driver.waitForMultipleSelectors(selectorsToWaitFor, 30000);
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
@@ -555,6 +558,18 @@ class AccountListPage {
     await this.driver.clickElement(
       this.multichainAccountNameInputConfirmButton,
     );
+  }
+
+  /**
+   * Open multichain QR Code dialog.
+   *
+   * @param options - Options for opening QR Code dialog
+   * @param options.index - Optional index if there are multiple networks
+   */
+  async clickShowQR(options?: { index?: number }): Promise<void> {
+    console.log(`Open multichain QR Code dialog`);
+    const QRCoddes = await this.driver.findElements(this.showQRCodeButton);
+    await QRCoddes[options?.index ?? 0].click();
   }
 
   /**

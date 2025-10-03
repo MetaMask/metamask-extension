@@ -8,7 +8,7 @@ import {
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
+import MultichainAccountDetailsPage from '../../page-objects/pages/multichain-account-details-page';
 import LoginPage from '../../page-objects/pages/login-page';
 
 describe('Vault Corruption', function () {
@@ -84,6 +84,7 @@ describe('Vault Corruption', function () {
   function getConfig(title?: string) {
     return {
       title,
+      forceBip44Version: 2,
       ignoredConsoleErrors: [
         // expected error caused by breaking the database:
         'PersistenceError: Data error: storage.local does not contain vault data',
@@ -247,13 +248,22 @@ describe('Vault Corruption', function () {
     await headerNavbar.openAccountMenu();
 
     const accountListPage = new AccountListPage(driver);
-    await accountListPage.checkPageIsLoaded();
-    await accountListPage.openAccountDetailsModal('Account 1');
+    await accountListPage.checkPageIsLoaded({
+      isMultichainAccountsState2Enabled: true,
+    });
+    await accountListPage.openMultichainAccountMenu({
+      accountLabel: 'Account 1',
+    });
+    await accountListPage.clickMultichainAccountMenuItem('Addresses');
+    await accountListPage.clickShowQR();
+    await driver.delay(1000);
 
-    const accountDetailsModal = new AccountDetailsModal(driver);
-    await accountDetailsModal.checkPageIsLoaded();
+    const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+    const accountAddress = await accountDetailsPage.getAddressFromShareModal();
 
-    const accountAddress = await accountDetailsModal.getAccountAddress();
+    await accountDetailsPage.closeQRCodeDialog();
+    await accountDetailsPage.navigateBack();
+    await accountDetailsPage.navigateBack();
     return accountAddress;
   }
 
