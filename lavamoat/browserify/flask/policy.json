@@ -1599,6 +1599,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
         "@metamask/multichain-network-controller": true,
         "@metamask/utils": true,
         "reselect": true
@@ -1679,6 +1680,7 @@
         "TextEncoder": true,
         "URL": true,
         "console.error": true,
+        "console.warn": true,
         "fetch": true
       },
       "packages": {
@@ -2842,11 +2844,6 @@
     "eth-lattice-keyring>gridplus-sdk>bitwise": {
       "packages": {
         "browserify>buffer": true
-      }
-    },
-    "blo": {
-      "globals": {
-        "btoa": true
       }
     },
     "@metamask/design-system-react>blo": {

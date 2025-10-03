@@ -18,6 +18,7 @@ import { useAmountSelectionMetrics } from '../../../hooks/send/metrics/useAmount
 import { useSendActions } from '../../../hooks/send/useSendActions';
 import { useSendContext } from '../../../context/send';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
+import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { SendHero } from '../../UI/send-hero';
 import { Amount } from '../amount/amount';
 import { Recipient } from '../recipient';
@@ -30,18 +31,20 @@ export const AmountRecipient = () => {
   const { asset, toResolved } = useSendContext();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
-  const { recipientError } = useRecipientValidation();
+  const { captureRecipientSelected } = useRecipientSelectionMetrics();
+  const recipientValidationResult = useRecipientValidation();
 
   const hasError =
     Boolean(amountValueError) ||
-    Boolean(recipientError) ||
+    Boolean(recipientValidationResult.recipientError) ||
     Boolean(hexDataError);
   const isDisabled = hasError || !toResolved;
 
   const onClick = useCallback(() => {
     handleSubmit();
     captureAmountSelected();
-  }, [captureAmountSelected, handleSubmit]);
+    captureRecipientSelected();
+  }, [captureAmountSelected, captureRecipientSelected, handleSubmit]);
 
   if (!asset) {
     return <LoadingScreen />;
@@ -58,7 +61,7 @@ export const AmountRecipient = () => {
     >
       <Box>
         <SendHero asset={asset as Asset} />
-        <Recipient />
+        <Recipient recipientValidationResult={recipientValidationResult} />
         <Amount setAmountValueError={setAmountValueError} />
         <HexData setHexDataError={setHexDataError} />
       </Box>
