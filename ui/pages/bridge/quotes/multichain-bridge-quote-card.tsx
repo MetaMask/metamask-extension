@@ -265,7 +265,7 @@ export const MultichainBridgeQuoteCard = ({
             <Row gap={1} data-testid="network-fees-sponsored">
               <Text
                 variant={TextVariant.bodySm}
-                color={TextColor.successDefault}
+                color={TextColor.textDefault}
               >
                 {t('swapGasFeesSponsored')}
               </Text>
