@@ -8,8 +8,8 @@ import { useIsOriginalNativeTokenSymbol } from './useIsOriginalNativeTokenSymbol
 
 const arrangeMocks = () => {
   // Mock Selectors
-  const mockUseSafeChainsListValidationSelector = jest
-    .spyOn(SelectorsModule, 'useSafeChainsListValidationSelector')
+  const mockGetUseSafeChainsListValidation = jest
+    .spyOn(SelectorsModule, 'getUseSafeChainsListValidation')
     .mockReturnValue(true);
 
   const createMockProviderConfig = () =>
@@ -26,7 +26,7 @@ const arrangeMocks = () => {
     .mockResolvedValue(true);
 
   return {
-    mockUseSafeChainsListValidationSelector,
+    mockGetUseSafeChainsListValidation,
     createMockProviderConfig,
     mockGetMultichainCurrentNetwork,
     mockIsOriginalNativeTokenSymbol,

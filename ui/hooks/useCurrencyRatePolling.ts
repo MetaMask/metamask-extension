@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   getChainIdsToPoll,
   getUseCurrencyRateCheck,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
 } from '../selectors';
 import { getEnabledChainIds } from '../selectors/multichain/networks';
 import {
@@ -30,7 +30,7 @@ const usePollingEnabled = () => {
 const useNativeCurrencies = (isPollingEnabled: boolean) => {
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    getUseSafeChainsListValidation,
   );
   const [nativeCurrencies, setNativeCurrencies] = useState<string[]>([]);
   const chainIds = useSelector(getChainIdsToPoll);
