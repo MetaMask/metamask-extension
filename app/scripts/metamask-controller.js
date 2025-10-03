@@ -346,7 +346,9 @@ import {
   SnapsNameProviderInit,
   SnapsRegistryInit,
   WebSocketServiceInit,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   MultichainRouterInit,
+  ///: END:ONLY_INCLUDE_IF
 } from './controller-init/snaps';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
