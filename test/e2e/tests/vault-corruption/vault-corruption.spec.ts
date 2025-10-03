@@ -8,7 +8,6 @@ import {
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain-account-details-page';
 import LoginPage from '../../page-objects/pages/login-page';
 
@@ -249,14 +248,17 @@ describe('Vault Corruption', function () {
     await headerNavbar.openAccountMenu();
 
     const accountListPage = new AccountListPage(driver);
-    await accountListPage.checkPageIsLoaded({ isMultichainAccountsState2Enabled : true});
-    await accountListPage.openMultichainAccountMenu({ accountLabel: 'Account 1' } );
-    await accountListPage.clickMultichainAccountMenuItem('Addresses')
-    await accountListPage.clickShowQR()
+    await accountListPage.checkPageIsLoaded({
+      isMultichainAccountsState2Enabled: true,
+    });
+    await accountListPage.openMultichainAccountMenu({
+      accountLabel: 'Account 1',
+    });
+    await accountListPage.clickMultichainAccountMenuItem('Addresses');
+    await accountListPage.clickShowQR();
 
     const accountDetailsPage = new MultichainAccountDetailsPage(driver);
-    const accountAddress =
-      await accountDetailsPage.getAddressFromShareModal();
+    const accountAddress = await accountDetailsPage.getAddressFromShareModal();
 
     await accountDetailsPage.closeQRCodeDialog();
     await accountDetailsPage.navigateBack();
