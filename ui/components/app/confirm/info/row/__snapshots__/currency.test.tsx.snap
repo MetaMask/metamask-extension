@@ -13,6 +13,7 @@ exports[`ConfirmInfoRowCurrency should display in currency passed 1`] = `
       <span
         class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         data-testid="account-value-and-suffix"
+        style="cursor: pointer; transition: color 0.2s ease;"
       >
         $82.65
       </span>
@@ -34,11 +35,13 @@ exports[`ConfirmInfoRowCurrency should display value in user preferred currency 
       <span
         class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
         data-testid="account-value-and-suffix"
+        style="cursor: pointer; transition: color 0.2s ease;"
       >
         0.14861879
       </span>
       <span
         class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+        style="cursor: pointer; transition: color 0.2s ease;"
       >
         ETH
       </span>

@@ -9,11 +9,13 @@ exports[`AssetBalanceText matches snapshot 1`] = `
     <span
       class="mm-box mm-text currency-display-component__text mm-text--body-sm mm-text--ellipsis mm-box--color-textColor"
       data-testid="account-value-and-suffix"
+      style="cursor: pointer; transition: color 0.2s ease;"
     >
       prefix-fiat value
     </span>
     <span
       class="mm-box mm-text currency-display-component__suffix mm-text--body-sm mm-box--margin-inline-start-1 mm-box--color-textColor"
+      style="cursor: pointer; transition: color 0.2s ease;"
     >
       suffix
     </span>
