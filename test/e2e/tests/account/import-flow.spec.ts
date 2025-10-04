@@ -53,7 +53,7 @@ describe('Import flow', function () {
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', '$');
 
         // Open account details modal and check displayed account address
         const headerNavbar = new HeaderNavbar(driver);

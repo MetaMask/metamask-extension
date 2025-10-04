@@ -82,7 +82,7 @@ describe('MultiRpc:', function (this: Suite) {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkLocalNodeBalanceIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', '$');
 
         await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
