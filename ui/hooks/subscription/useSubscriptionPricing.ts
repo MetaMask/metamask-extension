@@ -123,10 +123,22 @@ export const useAvailableTokenBalances = (params: {
 
       cryptoApprovalAmounts.forEach((amount, index) => {
         const token = validTokenBalances[index];
-        if (amount) {
+        if (!token.balance) {
+          return;
+        }
+        // NOTE: we are using stable coin for subscription atm, so we need to scale the balance by the decimals
+        const scaledFactor = 10n ** 6n;
+        const scaledBalance =
+          BigInt(Math.round(Number(token.balance) * Number(scaledFactor))) /
+          scaledFactor;
+        const tokenHasEnoughBalance =
+          amount &&
+          scaledBalance * BigInt(10 ** token.decimals) >=
+            BigInt(amount.approveAmount);
+        if (tokenHasEnoughBalance) {
           availableTokens.push({
             ...token,
-            approvalAmount: amount,
+            approvalAmount: amount.approveAmount,
             type: token.isNative ? AssetType.native : AssetType.token,
           } as TokenWithApprovalAmount);
         }
