@@ -94,6 +94,10 @@ const baseStore = {
     },
   },
   metamask: {
+    accountTree: {
+      wallets: {},
+      selectedAccountGroup: '',
+    },
     accountsByChainId: {},
     permissionHistory: {},
     transactions: [

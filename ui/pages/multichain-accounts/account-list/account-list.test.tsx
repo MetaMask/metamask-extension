@@ -43,6 +43,7 @@ describe('AccountList', () => {
 
   const renderComponent = () => {
     const store = configureStore({
+      activeTab: { origin: 'https://example.com' },
       metamask: {
         ...mockState.metamask,
       },
