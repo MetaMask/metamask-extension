@@ -3,11 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { setBackgroundConnection } from '../../../store/background-connection';
-import {
-  renderWithProvider,
-  createSwapsMockStore,
-  fireEvent,
-} from '../../../../test/jest';
+import { createSwapsMockStore, fireEvent } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   setSwapsFromToken,
   setSwapToToken,

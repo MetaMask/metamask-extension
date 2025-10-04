@@ -3,7 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 
 import { useConfirmContext } from '../context/confirm';
 import { useRedesignedSendFlow } from './useRedesignedSendFlow';
@@ -16,7 +16,7 @@ const SendTransactionTypes = [
 ];
 
 export const useConfirmSendNavigation = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
@@ -26,9 +26,9 @@ export const useConfirmSendNavigation = () => {
     }
     const { origin, type } = currentConfirmation;
     if (origin === 'metamask' && type && SendTransactionTypes.includes(type)) {
-      history.goBack();
+      navigate(-1);
     }
-  }, [currentConfirmation, history, isSendRedesignEnabled]);
+  }, [currentConfirmation, navigate, isSendRedesignEnabled]);
 
   return { navigateBackIfSend };
 };

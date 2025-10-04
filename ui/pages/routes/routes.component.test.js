@@ -234,6 +234,7 @@ describe('toast display', () => {
       },
       swapsState: { swapsFeatureIsLive: true },
       newPrivacyPolicyToastShownDate: date,
+      web3ShimUsageOrigins: {},
     },
   });
 
@@ -355,6 +356,7 @@ describe('toast display', () => {
             rate: '1.00',
           },
       },
+      web3ShimUsageOrigins: {},
     },
     activeTab: {
       id: 2143026027,

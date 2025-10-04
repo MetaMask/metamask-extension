@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import {
   getAccountToConnectToActiveTab,
   getOrderedConnectedAccountsForActiveTab,
@@ -16,6 +17,7 @@ import {
   setSelectedInternalAccount,
 } from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import ConnectedAccounts from './connected-accounts.component';
 
 const mapStateToProps = (state) => {
@@ -85,8 +87,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps,
+export default compose(
+  withRouterHooks,
+  connect(mapStateToProps, mapDispatchToProps, mergeProps),
 )(ConnectedAccounts);

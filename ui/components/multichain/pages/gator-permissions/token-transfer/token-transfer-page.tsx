@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { Header, Page } from '../../page';
 import {
   ButtonIcon,
@@ -18,7 +18,7 @@ import { GATOR_PERMISSIONS } from '../../../../../helpers/constants/routes';
 
 export const TokenTransferPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <Page
@@ -34,7 +34,7 @@ export const TokenTransferPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            onClick={() => history.push(GATOR_PERMISSIONS)}
+            onClick={() => navigate(GATOR_PERMISSIONS)}
             size={ButtonIconSize.Sm}
           />
         }

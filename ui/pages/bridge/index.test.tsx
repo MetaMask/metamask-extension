@@ -2,16 +2,26 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import nock from 'nock';
-import { MemoryRouter } from 'react-router-dom';
-
+import { BridgeBackgroundAction } from '@metamask/bridge-controller';
 import { setBackgroundConnection } from '../../store/background-connection';
-import { renderWithProvider, MOCKS, CONSTANTS } from '../../../test/jest';
+import { MOCKS, CONSTANTS } from '../../../test/jest';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import {
-  CROSS_CHAIN_SWAP_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../helpers/constants/routes';
 import CrossChainSwap from '.';
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => ({
+      pathname: '/cross-chain',
+      search: '',
+      hash: '',
+      state: null,
+    }),
+  };
+});
 
 const mockResetBridgeState = jest.fn();
 const middleware = [thunk];
@@ -28,8 +38,14 @@ setBackgroundConnection({
     .mockResolvedValue({ chainId: '0x1' }),
   trackUnifiedSwapBridgeEvent: jest.fn(),
   selectSrcNetwork: jest.fn(),
-  resetState: () => mockResetBridgeState(),
+  [BridgeBackgroundAction.RESET_STATE]: mockResetBridgeState,
   tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+  getStatePatches: jest.fn().mockResolvedValue([]),
+  addPollingTokenToAppState: jest.fn().mockResolvedValue('pollingToken'),
+  gasFeeStartPollingByNetworkClientId: jest
+    .fn()
+    .mockResolvedValue('pollingToken'),
+  removePollingTokenFromAppState: jest.fn().mockResolvedValue({}),
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,6 +53,7 @@ setBackgroundConnection({
 
 describe('Bridge', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     nock(CONSTANTS.METASWAP_BASE_URL)
       .get('/networks/1/topAssets')
       .reply(200, MOCKS.TOP_ASSETS_GET_RESPONSE);
@@ -92,11 +109,7 @@ describe('Bridge', () => {
     const store = configureMockStore(middleware)(bridgeMockStore);
 
     const { container, getByText } = renderWithProvider(
-      <MemoryRouter
-        initialEntries={[CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE]}
-      >
-        <CrossChainSwap />
-      </MemoryRouter>,
+      <CrossChainSwap />,
       store,
     );
 

@@ -1,6 +1,10 @@
 import { useSelector } from 'react-redux';
-import { useRouteMatch } from 'react-router-dom';
-import { PATH_NAME_MAP, getPaths } from '../helpers/constants/routes';
+import { useLocation } from 'react-router-dom-v5-compat';
+import {
+  PATH_NAME_MAP,
+  getPaths,
+  matchMultiplePaths,
+} from '../helpers/constants/routes';
 import { txDataSelector } from '../selectors';
 
 /**
@@ -15,8 +19,8 @@ import { txDataSelector } from '../selectors';
  * }}
  */
 export function useSegmentContext() {
-  const match = useRouteMatch({
-    path: getPaths(),
+  const location = useLocation();
+  const match = matchMultiplePaths(getPaths(), location.pathname, {
     exact: true,
     strict: true,
   });

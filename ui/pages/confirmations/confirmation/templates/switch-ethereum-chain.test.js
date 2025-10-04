@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 import Confirmation from '../confirmation';

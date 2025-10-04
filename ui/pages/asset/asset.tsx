@@ -2,7 +2,7 @@ import { Nft } from '@metamask/assets-controllers';
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect, useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom-v5-compat';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
@@ -52,7 +52,7 @@ const Asset = () => {
 
     const isInvalid = !token || !chainId;
     if (isInvalid) {
-      return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+      return <Navigate to={{ pathname: DEFAULT_ROUTE }} />;
     }
 
     const shouldShowToken = !token.isNative && token.address;

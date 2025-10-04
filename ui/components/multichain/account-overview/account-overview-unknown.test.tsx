@@ -1,9 +1,7 @@
 import React from 'react';
-import { MemoryRouter } from 'react-router-dom';
-import { CompatRouter } from 'react-router-dom-v5-compat';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   AccountOverviewUnknown,
   AccountOverviewUnknownProps,
@@ -14,14 +12,7 @@ const render = (props: AccountOverviewUnknownProps) => {
     metamask: mockState.metamask,
   });
 
-  return renderWithProvider(
-    <MemoryRouter>
-      <CompatRouter>
-        <AccountOverviewUnknown {...props} />
-      </CompatRouter>
-    </MemoryRouter>,
-    store,
-  );
+  return renderWithProvider(<AccountOverviewUnknown {...props} />, store);
 };
 
 describe('AccountOverviewUnknown', () => {

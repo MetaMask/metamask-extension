@@ -1,9 +1,8 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_SOLANA_MAINNET,
@@ -16,16 +15,13 @@ import { BaseAccountDetails } from './base-account-details';
 const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
 
-// Mock the useHistory hook
-const mockPush = jest.fn();
-const mockGoBack = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockPush,
-    goBack: mockGoBack,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const createMockState = (
   address: string,
@@ -134,8 +130,7 @@ const createMockState = (
 
 describe('BaseAccountDetails', () => {
   beforeEach(() => {
-    mockPush.mockClear();
-    mockGoBack.mockClear();
+    jest.clearAllMocks();
   });
 
   describe('Component Rendering', () => {
@@ -144,12 +139,10 @@ describe('BaseAccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={MOCK_ACCOUNT_EOA.address}
-            account={MOCK_ACCOUNT_EOA}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={MOCK_ACCOUNT_EOA.address}
+          account={MOCK_ACCOUNT_EOA}
+        />,
         store,
       );
 
@@ -176,12 +169,10 @@ describe('BaseAccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={MOCK_ACCOUNT_SOLANA_MAINNET.address}
-            account={MOCK_ACCOUNT_SOLANA_MAINNET}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={MOCK_ACCOUNT_SOLANA_MAINNET.address}
+          account={MOCK_ACCOUNT_SOLANA_MAINNET}
+        />,
         store,
       );
 
@@ -200,14 +191,12 @@ describe('BaseAccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={MOCK_ACCOUNT_EOA.address}
-            account={MOCK_ACCOUNT_EOA}
-          >
-            <div data-testid="test-child">Test Child Component</div>
-          </BaseAccountDetails>
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={MOCK_ACCOUNT_EOA.address}
+          account={MOCK_ACCOUNT_EOA}
+        >
+          <div data-testid="test-child">Test Child Component</div>
+        </BaseAccountDetails>,
         store,
       );
 
@@ -222,19 +211,17 @@ describe('BaseAccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={MOCK_ACCOUNT_EOA.address}
-            account={MOCK_ACCOUNT_EOA}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={MOCK_ACCOUNT_EOA.address}
+          account={MOCK_ACCOUNT_EOA}
+        />,
         store,
       );
 
       const backButton = screen.getByLabelText('Back');
       fireEvent.click(backButton);
 
-      expect(mockGoBack).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
 
     it('should navigate to QR code route when address row is clicked', () => {
@@ -242,12 +229,10 @@ describe('BaseAccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={MOCK_ACCOUNT_EOA.address}
-            account={MOCK_ACCOUNT_EOA}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={MOCK_ACCOUNT_EOA.address}
+          account={MOCK_ACCOUNT_EOA}
+        />,
         store,
       );
 
@@ -256,7 +241,7 @@ describe('BaseAccountDetails', () => {
       const addressRowButton = nextButtons[0];
       fireEvent.click(addressRowButton);
 
-      expect(mockPush).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${MOCK_ACCOUNT_EOA.address}`,
       );
     });
@@ -266,12 +251,10 @@ describe('BaseAccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={MOCK_ACCOUNT_EOA.address}
-            account={MOCK_ACCOUNT_EOA}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={MOCK_ACCOUNT_EOA.address}
+          account={MOCK_ACCOUNT_EOA}
+        />,
         store,
       );
 
@@ -280,7 +263,9 @@ describe('BaseAccountDetails', () => {
       const walletRowButton = nextButtons[1];
       fireEvent.click(walletRowButton);
 
-      expect(mockPush).toHaveBeenCalledWith('/wallet-details/mock-wallet-id');
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        '/wallet-details/mock-wallet-id',
+      );
     });
   });
 
@@ -290,12 +275,10 @@ describe('BaseAccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={MOCK_ACCOUNT_EOA.address}
-            account={MOCK_ACCOUNT_EOA}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={MOCK_ACCOUNT_EOA.address}
+          account={MOCK_ACCOUNT_EOA}
+        />,
         store,
       );
 
@@ -317,12 +300,10 @@ describe('BaseAccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={mockEvmAccount.address}
-            account={mockEvmAccount}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={mockEvmAccount.address}
+          account={mockEvmAccount}
+        />,
         store,
       );
 
@@ -338,12 +319,10 @@ describe('BaseAccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={MOCK_ACCOUNT_SOLANA_MAINNET.address}
-            account={MOCK_ACCOUNT_SOLANA_MAINNET}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={MOCK_ACCOUNT_SOLANA_MAINNET.address}
+          account={MOCK_ACCOUNT_SOLANA_MAINNET}
+        />,
         store,
       );
 
@@ -358,12 +337,10 @@ describe('BaseAccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={MOCK_ACCOUNT_EOA.address}
-            account={MOCK_ACCOUNT_EOA}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={MOCK_ACCOUNT_EOA.address}
+          account={MOCK_ACCOUNT_EOA}
+        />,
         store,
       );
 
@@ -394,12 +371,10 @@ describe('BaseAccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={hardwareAccount.address}
-            account={hardwareAccount}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={hardwareAccount.address}
+          account={hardwareAccount}
+        />,
         store,
       );
 
@@ -436,12 +411,10 @@ describe('BaseAccountDetails', () => {
       const store = mockStore(state);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={hdKeyTreeAccount.address}
-            account={hdKeyTreeAccount}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={hdKeyTreeAccount.address}
+          account={hdKeyTreeAccount}
+        />,
         store,
       );
 
@@ -464,12 +437,10 @@ describe('BaseAccountDetails', () => {
       const solanaStore = mockStore(solanaState);
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={solanaAccount.address}
-            account={solanaAccount}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={solanaAccount.address}
+          account={solanaAccount}
+        />,
         solanaStore,
       );
 
@@ -500,12 +471,10 @@ describe('BaseAccountDetails', () => {
       });
 
       renderWithProvider(
-        <MemoryRouter>
-          <BaseAccountDetails
-            address={hardwareAccount.address}
-            account={hardwareAccount}
-          />
-        </MemoryRouter>,
+        <BaseAccountDetails
+          address={hardwareAccount.address}
+          account={hardwareAccount}
+        />,
         store,
       );
 

@@ -8,11 +8,21 @@ import {
 } from '../../store/actions';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../test/jest/rendering';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import * as util from '../../helpers/utils/util';
 import ConfirmAddSuggestedNFT from '.';
+
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
 
 const PENDING_NFT_APPROVALS = {
   1: {
@@ -82,12 +92,19 @@ const renderComponent = (pendingNfts = {}) => {
       mostRecentOverviewPage: '/',
     },
   });
-  return renderWithProvider(<ConfirmAddSuggestedNFT />, store);
+  const result = renderWithProvider(<ConfirmAddSuggestedNFT />, store);
+  return result;
 };
 
 describe('ConfirmAddSuggestedNFT Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseLocation.mockReturnValue({
+      pathname: '/confirm-add-suggested-nft',
+      search: '',
+      hash: '',
+      state: null,
+    });
   });
 
   it('should render one suggested NFT', async () => {

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -24,15 +24,15 @@ import { ImportAccount } from '../../../components/multichain/import-account/imp
  */
 export const AddWalletPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onActionComplete = useCallback(
     async (confirmed: boolean) => {
       if (confirmed) {
-        history.goBack();
+        navigate(-1);
       }
     },
-    [history],
+    [navigate],
   );
 
   return (
@@ -46,7 +46,7 @@ export const AddWalletPage = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(-1)}
             data-testid="add-wallet-page-back-button"
           />
         }

@@ -4,7 +4,7 @@ import { SetURLSearchParams } from 'react-router-dom-v5-compat/dist/react-router
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, MOCK_NFT1155 } from '../../../../../test/data/send/assets';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
 import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';

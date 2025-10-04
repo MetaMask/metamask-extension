@@ -2785,7 +2785,7 @@ export function resetSendState() {
  * @returns {ThunkAction<void>}
  */
 
-export function signTransaction(history) {
+export function signTransaction(navigate) {
   return async (dispatch, getState) => {
     const state = getState();
     const globalNetworkClientId = getSelectedNetworkClientId(state);
@@ -2871,7 +2871,7 @@ export function signTransaction(history) {
             draftTransaction.sendAsset.type === AssetType.native,
         ),
       );
-      history.push(CONFIRM_TRANSACTION_ROUTE);
+      navigate(CONFIRM_TRANSACTION_ROUTE);
     } else {
       let transactionType;
 
@@ -2993,7 +2993,7 @@ export function signTransaction(history) {
         transactionId = swapAndSendTxId;
 
         await dispatch(setDefaultHomeActiveTabName('activity'));
-        history.push(DEFAULT_ROUTE);
+        navigate(DEFAULT_ROUTE);
       } else {
         // basic send
         const { id: basicSendTxId } = await dispatch(
@@ -3004,7 +3004,7 @@ export function signTransaction(history) {
           }),
         );
         transactionId = basicSendTxId;
-        history.push(CONFIRM_TRANSACTION_ROUTE);
+        navigate(CONFIRM_TRANSACTION_ROUTE);
       }
       await dispatch(
         setMaxValueMode(

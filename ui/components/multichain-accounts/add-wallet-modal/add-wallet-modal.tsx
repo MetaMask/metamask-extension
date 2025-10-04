@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   BoxAlignItems,
@@ -60,7 +60,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   ...props
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const institutionalWalletsEnabled = useSelector(
     getManageInstitutionalWallets,
   );
@@ -106,10 +106,10 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
         global.platform.openExtensionInBrowser?.(option.route);
       } else {
-        history.push(option.route);
+        navigate(option.route);
       }
     } else {
-      history.push(option.route);
+      navigate(option.route);
     }
   };
 
