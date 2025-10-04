@@ -1000,17 +1000,6 @@ async function setupMocking(
               },
             ],
           },
-        ],
-      };
-    });
-
-  await server
-    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: [
           {
             sendRedesign: {
               enabled: false,
