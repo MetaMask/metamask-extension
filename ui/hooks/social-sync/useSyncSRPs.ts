@@ -6,11 +6,11 @@ import { getIsSocialLoginFlow } from '../../selectors';
 
 export const useSyncSRPs = () => {
   const dispatch = useDispatch();
-  const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!isSocialLoginEnabled) {
+    if (!isSocialLoginFlow) {
       return;
     }
 
@@ -24,7 +24,7 @@ export const useSyncSRPs = () => {
         setLoading(false);
       }
     })();
-  }, [dispatch, isSocialLoginEnabled]);
+  }, [dispatch, isSocialLoginFlow]);
 
   return { loading };
 };
