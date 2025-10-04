@@ -7753,12 +7753,18 @@ export default class MetamaskController extends EventEmitter {
   // misc
 
   /**
-   * A method for emitting the full MetaMask state to all registered listeners.
+   * A method for emitting either the full MetaMask state or pending patches to all registered listeners of the 'update' event.
+   * This method can be used to force UI updates in response to background actions or events e.g. state updates.
    *
-   * @private
+   * @param sendFullState - If set to true, the full MetaMask state is sent. If set to false, only pending patches are sent.
+   * @see {@link {import('../../ui/store/actions.ts').forceUpdateMetamaskState}} also force-syncs UI state with background state, but in response to UI events or user actions.
    */
-  privateSendUpdate() {
-    this.emit('update', this.getState());
+  privateSendUpdate(sendFullState = true) {
+    if (sendFullState) {
+      this.emit('update', this.getState());
+    } else {
+      this.emit('update');
+    }
   }
 
   /**
