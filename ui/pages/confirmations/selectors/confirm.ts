@@ -4,11 +4,13 @@ import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
 import { createDeepEqualSelector } from '../../../../shared/modules/selectors/util';
 import { ConfirmMetamaskState } from '../types/confirm';
+import { APPROVAL_TYPE_EXAMPLE } from '../external/example/components/example-info';
 
 const ConfirmationApprovalTypes = [
   ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
   ApprovalType.Transaction,
+  'example',
 ];
 
 export function pendingConfirmationsSelector(state: ConfirmMetamaskState) {

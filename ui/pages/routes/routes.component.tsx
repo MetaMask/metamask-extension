@@ -75,6 +75,7 @@ import {
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
+  CONFIRMATION_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -261,6 +262,12 @@ const ConfirmationPage = mmLazy(
   (() =>
     import(
       '../confirmations/confirmation/index.js'
+    )) as unknown as DynamicImportType,
+);
+const ConfirmPage = mmLazy(
+  (() =>
+    import(
+      '../confirmations/confirm/confirm.tsx'
     )) as unknown as DynamicImportType,
 );
 const CreateAccountPage = mmLazy(
@@ -719,6 +726,7 @@ export default function Routes() {
             component={NonEvmBalanceCheck}
           />
           <Authenticated path={SHIELD_PLAN_ROUTE} component={ShieldPlan} />
+          <Authenticated path={CONFIRMATION_ROUTE} component={ConfirmPage} />
           <Authenticated path={DEFAULT_ROUTE} component={Home} />
         </Switch>
       </Suspense>

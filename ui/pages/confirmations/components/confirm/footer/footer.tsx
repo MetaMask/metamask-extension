@@ -1,6 +1,8 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
+import { useHistory } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { ConfirmAlertModal } from '../../../../../components/app/alert-system/confirm-alert-modal';
@@ -153,6 +155,7 @@ const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const { onTransactionConfirm } = useTransactionConfirm();
+  const history = useHistory();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
@@ -193,11 +196,16 @@ const Footer = () => {
       onTransactionConfirm();
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+
+      if (currentConfirmation.origin === ORIGIN_METAMASK) {
+        history.goBack();
+      }
     }
     resetTransactionState();
   }, [
     currentConfirmation,
     dispatch,
+    history,
     onTransactionConfirm,
     resetTransactionState,
   ]);

@@ -1,4 +1,3 @@
-import { ApprovalType } from '@metamask/controller-utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -10,10 +9,6 @@ import {
   selectPendingApproval,
 } from '../../../selectors';
 import { selectUnapprovedMessage } from '../../../selectors/signatures';
-import {
-  shouldUseRedesignForSignatures,
-  shouldUseRedesignForTransactions,
-} from '../../../../shared/lib/confirmation.utils';
 
 /**
  * Determine the current confirmation based on the pending approvals and controller state.
@@ -42,27 +37,12 @@ const useCurrentConfirmation = () => {
     selectUnapprovedMessage(state, confirmationId),
   );
 
-  const useRedesignedForSignatures = shouldUseRedesignForSignatures({
-    approvalType: pendingApproval?.type as ApprovalType,
-  });
-
-  const useRedesignedForTransaction = shouldUseRedesignForTransactions({
-    transactionMetadataType: transactionMetadata?.type,
-  });
-
-  const shouldUseRedesign =
-    useRedesignedForSignatures || useRedesignedForTransaction;
-
   return useMemo(() => {
-    if (!shouldUseRedesign) {
-      return { currentConfirmation: undefined };
-    }
-
     const currentConfirmation =
-      transactionMetadata ?? signatureMessage ?? undefined;
+      transactionMetadata ?? signatureMessage ?? pendingApproval;
 
     return { currentConfirmation };
-  }, [transactionMetadata, signatureMessage, shouldUseRedesign]);
+  }, [pendingApproval, signatureMessage, transactionMetadata]);
 };
 
 export default useCurrentConfirmation;

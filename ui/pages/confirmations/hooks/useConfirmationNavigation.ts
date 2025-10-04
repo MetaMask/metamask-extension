@@ -11,6 +11,7 @@ import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
@@ -22,6 +23,7 @@ import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
+import { APPROVAL_TYPE_EXAMPLE } from '../external/example/components/example-info';
 
 const CONNECT_APPROVAL_TYPES = [
   ApprovalType.WalletRequestPermissions,
@@ -152,5 +154,9 @@ export function navigateToConfirmation(
 
   if (type === ApprovalType.WatchAsset && tokenId) {
     history.replace(`${CONFIRM_ADD_SUGGESTED_NFT_ROUTE}`);
+  }
+
+  if (type === APPROVAL_TYPE_EXAMPLE) {
+    history.replace(`${CONFIRMATION_ROUTE}/${confirmationId}`);
   }
 }
