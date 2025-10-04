@@ -6,15 +6,14 @@ import {
   UpdateRequestState,
 } from '@metamask/approval-controller';
 import { RestrictedMessenger } from '@metamask/base-controller';
-import SmartTransactionsController, {
-  SmartTransactionsControllerSmartTransactionEvent,
-} from '@metamask/smart-transactions-controller';
 import {
-  Fee,
-  Fees,
-  SmartTransaction,
+  SmartTransactionsController,
+  SmartTransactionsControllerSmartTransactionEvent,
   SmartTransactionStatuses,
-} from '@metamask/smart-transactions-controller/dist/types';
+  type Fee,
+  type Fees,
+  type SmartTransaction,
+} from '@metamask/smart-transactions-controller';
 import {
   TransactionController,
   TransactionMeta,

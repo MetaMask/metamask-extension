@@ -1,4 +1,10 @@
 import { Messenger } from '@metamask/base-controller';
+import type {
+  TransactionControllerConfirmExternalTransactionAction,
+  TransactionControllerGetNonceLockAction,
+  TransactionControllerGetTransactionsAction,
+  TransactionControllerUpdateTransactionAction,
+} from '@metamask/transaction-controller';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
@@ -8,7 +14,11 @@ import { MetaMetricsControllerTrackEventAction } from '../../controllers/metamet
 
 type MessengerActions =
   | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetStateAction;
+  | NetworkControllerGetStateAction
+  | TransactionControllerGetNonceLockAction
+  | TransactionControllerGetTransactionsAction
+  | TransactionControllerUpdateTransactionAction
+  | TransactionControllerConfirmExternalTransactionAction;
 
 type MessengerEvents = NetworkControllerStateChangeEvent;
 
@@ -24,6 +34,10 @@ export function getSmartTransactionsControllerMessenger(
     allowedActions: [
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
+      'TransactionController:getNonceLock',
+      'TransactionController:confirmExternalTransaction',
+      'TransactionController:getTransactions',
+      'TransactionController:updateTransaction',
     ],
     allowedEvents: ['NetworkController:stateChange'],
   });
