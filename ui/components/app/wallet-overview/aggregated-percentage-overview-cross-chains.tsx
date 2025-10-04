@@ -31,11 +31,7 @@ import { TokenWithBalance } from '../assets/types';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
 
-export const AggregatedPercentageOverviewCrossChains = ({
-  portfolioButton,
-}: {
-  portfolioButton: () => JSX.Element | null;
-}) => {
+export const AggregatedPercentageOverviewCrossChains: React.FC = () => {
   const { formatCurrencyCompact } = useFormatters();
   const fiatCurrency = useSelector(getCurrentCurrency);
   const { privacyMode } = useSelector(getPreferences);
@@ -187,7 +183,6 @@ export const AggregatedPercentageOverviewCrossChains = ({
           {formattedPercentChangeCrossChains}
         </SensitiveText>
       </Box>
-      {portfolioButton()}
     </Skeleton>
   );
 };

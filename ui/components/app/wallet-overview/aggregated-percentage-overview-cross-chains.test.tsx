@@ -428,11 +428,7 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
         ],
         totalFiatBalance: 289.96,
       });
-      const { container } = render(
-        <AggregatedPercentageOverviewCrossChains
-          portfolioButton={() => null}
-        />,
-      );
+      const { container } = render(<AggregatedPercentageOverviewCrossChains />);
       expect(container).toMatchSnapshot();
     });
   });
@@ -456,9 +452,7 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
       totalFiatBalance: 0,
     });
 
-    render(
-      <AggregatedPercentageOverviewCrossChains portfolioButton={() => null} />,
-    );
+    render(<AggregatedPercentageOverviewCrossChains />);
     const percentageElement = screen.getByText('(+0.00%)');
     const numberElement = screen.getByText('+$0.00');
     expect(percentageElement).toBeInTheDocument();
@@ -503,9 +497,7 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
     mockGetMarketData.mockReturnValue(negativeCrossChainMarketDataMock);
     const expectedAmountChange = '-$0.97';
     const expectedPercentageChange = '(-0.33%)';
-    render(
-      <AggregatedPercentageOverviewCrossChains portfolioButton={() => null} />,
-    );
+    render(<AggregatedPercentageOverviewCrossChains />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -550,9 +542,7 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
     mockGetMarketData.mockReturnValue(positiveCrossChainMarketDataMock);
     const expectedAmountChange = '+$0.96';
     const expectedPercentageChange = '(+0.33%)';
-    render(
-      <AggregatedPercentageOverviewCrossChains portfolioButton={() => null} />,
-    );
+    render(<AggregatedPercentageOverviewCrossChains />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
@@ -596,9 +586,7 @@ describe('AggregatedPercentageOverviewCrossChains', () => {
     });
     const expectedAmountChange = '+$0.22';
     const expectedPercentageChange = '(+0.08%)';
-    render(
-      <AggregatedPercentageOverviewCrossChains portfolioButton={() => null} />,
-    );
+    render(<AggregatedPercentageOverviewCrossChains />);
     const percentageElement = screen.getByText(expectedPercentageChange);
     const numberElement = screen.getByText(expectedAmountChange);
     expect(percentageElement).toBeInTheDocument();
