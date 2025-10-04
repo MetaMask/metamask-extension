@@ -107,7 +107,7 @@
       "packages": {
         "@babel/core>@babel/types": true,
         "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
+        "@babel/core>@babel/generator>@jridgewell/trace-mapping": true,
         "@babel/core>@babel/generator>jsesc": true
       }
     },
@@ -940,6 +940,15 @@
         "define": true
       }
     },
+    "@babel/core>@babel/generator>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+      }
+    },
     "ts-node>@cspotcode/source-map-support>@jridgewell/trace-mapping": {
       "globals": {
         "define": true
@@ -1027,7 +1036,7 @@
     },
     "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals": {
       "packages": {
-        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": true
+        "webpack>eslint-scope": true
       }
     },
     "@noble/hashes": {
@@ -1196,7 +1205,6 @@
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
         "@typescript-eslint/parser>@typescript-eslint": true,
         "eslint": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope": true,
         "eslint>eslint-scope": true,
         "webpack>eslint-scope": true,
         "eslint-plugin-jest>@typescript-eslint/utils>webpack>eslint-scope": true,
@@ -2839,24 +2847,6 @@
     "eslint-plugin-react-hooks": {
       "globals": {
         "process.env.NODE_ENV": true
-      }
-    },
-    "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope>estraverse": true
-      }
-    },
-    "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "eslint>eslint-scope>esrecurse": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope>estraverse": true
       }
     },
     "eslint>eslint-scope": {

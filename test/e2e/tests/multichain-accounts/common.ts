@@ -106,6 +106,7 @@ export async function withMultichainAccountsDesignEnabled(
       testSpecificMock,
       title,
       dapp: true,
+      dappPaths: ['snap-simple-keyring-site'],
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
       // State 2 uses unified account group balance (fiat) and may not equal '25 ETH'.
