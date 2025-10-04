@@ -98,7 +98,7 @@ exports[`SnapUIForm will render with fields 1`] = `
               Checkbox
             </label>
             <label
-              class="mm-box mm-text mm-checkbox mm-text--body-md mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+              class="mm-box mm-text mm-checkbox mm-text--body-md mm-box--display-inline-flex mm-box--align-items-flex-start mm-box--color-text-default"
             >
               <span
                 class="mm-checkbox__input-wrapper"
@@ -108,7 +108,7 @@ exports[`SnapUIForm will render with fields 1`] = `
                   type="checkbox"
                 />
                 <span
-                  class="mm-box mm-checkbox__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-primary-inverse"
+                  class="mm-box mm-checkbox__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-inverse"
                   style="mask-image: url('./images/icons/check-bold.svg');"
                 />
               </span>
