@@ -19,6 +19,7 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
   FontWeight,
   IconColor,
@@ -87,11 +88,24 @@ export default function LoginOptions({
       isClosedOnOutsideClick={false}
       data-theme={ThemeType.dark}
     >
-      <ModalContent size={ModalContentSize.Sm} alignItems={AlignItems.center}>
+      <ModalContent
+        alignItems={AlignItems.center}
+        borderRadius={BorderRadius.XL}
+        modalDialogProps={{
+          style: {
+            width: '398px',
+            maxWidth: '398px', // overrides default sm size
+            paddingTop: '24px',
+            paddingBottom: '24px',
+          }
+        }}
+      >
         <ModalHeader onClose={onClose}>
-          {t('onboardingOptionTitle')}
+          <Text variant={TextVariant.bodyMdBold} textAlign={TextAlign.Center}>
+            {t('onboardingOptionTitle')}
+          </Text>
         </ModalHeader>
-        <Box paddingInline={4}>
+        <Box paddingInline={6}>
           <SocialButton
             data-testid={
               loginOption === LOGIN_OPTION.EXISTING
@@ -136,6 +150,7 @@ export default function LoginOptions({
           />
           <Box
             alignItems={AlignItems.center}
+            marginTop={2}
             marginBottom={4}
             className="options-modal__or"
           >
@@ -143,7 +158,7 @@ export default function LoginOptions({
               width={BlockSize.Min}
               variant={TextVariant.bodyMd}
               fontWeight={FontWeight.Medium}
-              color={TextColor.textMuted}
+              color={TextColor.textAlternative}
               backgroundColor={BackgroundColor.backgroundDefault}
               paddingInline={2}
               marginInline="auto"
@@ -172,42 +187,40 @@ export default function LoginOptions({
               ? t('onboardingSrpImport')
               : t('onboardingSrpCreate')}
           </Button>
-          <Text
-            variant={TextVariant.bodySm}
-            fontWeight={FontWeight.Medium}
-            textAlign={TextAlign.Center}
-            paddingTop={8}
-            width={BlockSize.Full}
-            margin={'auto'}
-          >
-            {t('onboardingLoginFooter', [
-              <Text
-                as="a"
-                href="https://consensys.io/terms-of-use"
-                target="_blank"
-                rel="noopener noreferrer"
-                variant={TextVariant.bodySm}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.primaryDefault}
-                key="onboardingLoginFooterTermsOfUse"
-              >
-                {t('onboardingLoginFooterTermsOfUse')}
-              </Text>,
-              <Text
-                as="a"
-                variant={TextVariant.bodySm}
-                fontWeight={FontWeight.Medium}
-                href="https://consensys.io/privacy-notice"
-                target="_blank"
-                rel="noopener noreferrer"
-                color={TextColor.primaryDefault}
-                key="onboardingLoginFooterPrivacyNotice"
-              >
-                {t('onboardingLoginFooterPrivacyNotice')}
-              </Text>,
-            ])}
-          </Text>
         </Box>
+        <Text
+          variant={TextVariant.bodyXsMedium}
+          color={TextColor.textAlternative}
+          textAlign={TextAlign.Center}
+          paddingTop={4}
+          paddingInline={12}
+          marginInline={8}
+        >
+          {t('onboardingLoginFooter', [
+            <Text
+              as="a"
+              href="https://consensys.io/terms-of-use"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant={TextVariant.bodyXsMedium}
+              color={TextColor.primaryDefault}
+              key="onboardingLoginFooterTermsOfUse"
+            >
+              {t('onboardingLoginFooterTermsOfUse')}
+            </Text>,
+            <Text
+              as="a"
+              variant={TextVariant.bodyXsMedium}
+              href="https://consensys.io/privacy-notice"
+              target="_blank"
+              rel="noopener noreferrer"
+              color={TextColor.primaryDefault}
+              key="onboardingLoginFooterPrivacyNotice"
+            >
+              {t('onboardingLoginFooterPrivacyNotice')}
+            </Text>,
+          ])}
+        </Text>
       </ModalContent>
     </Modal>
   );

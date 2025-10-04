@@ -157,9 +157,8 @@ export default function OnboardingMetametrics() {
       gap={4}
     >
       <Text
-        variant={TextVariant.headingLg}
+        variant={TextVariant.headingMd}
         textAlign={TextAlign.Left}
-        fontWeight={FontWeight.Bold}
         marginBottom={4}
       >
         {t('onboardingMetametricsTitle')}
@@ -190,9 +189,11 @@ export default function OnboardingMetametrics() {
 
       <Box
         display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.flexStart}
         gap={2}
-        padding={3}
+        padding={4}
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.backgroundMuted}
         className="onboarding-metametrics__checkbox"
@@ -208,6 +209,22 @@ export default function OnboardingMetametrics() {
           }
         }}
       >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={1}
+        >
+          <Text variant={TextVariant.bodyMdMedium}>
+            {t('onboardingMetametricCheckboxTitleOne')}
+          </Text>
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            textAlign={TextAlign.Left}
+          >
+            {t('onboardingMetametricCheckboxDescriptionOne')}
+          </Text>
+        </Box>
         <Checkbox
           id="metametrics-opt-in"
           data-testid="metametrics-checkbox"
@@ -217,28 +234,21 @@ export default function OnboardingMetametrics() {
           onClick={(e) => e.stopPropagation()}
           inputProps={{
             onClick: (e) => e.stopPropagation(),
+            style: {
+              '--checkbox-icon-justify-content': 'flex-end'
+            }
           }}
-          label={
-            <Text variant={TextVariant.bodyMdMedium}>
-              {t('onboardingMetametricCheckboxTitleOne')}
-            </Text>
-          }
-          alignItems={AlignItems.center}
+          alignItems={AlignItems.flexStart}
         />
-        <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          textAlign={TextAlign.Left}
-        >
-          {t('onboardingMetametricCheckboxDescriptionOne')}
-        </Text>
       </Box>
 
       <Box
         display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.flexStart}
         gap={2}
-        padding={3}
+        padding={4}
         borderRadius={BorderRadius.LG}
         backgroundColor={BackgroundColor.backgroundMuted}
         className={`${isParticipateInMetaMetricsChecked ? 'onboarding-metametrics__checkbox' : 'onboarding-metametrics__checkbox-disabled'}`}
@@ -262,6 +272,22 @@ export default function OnboardingMetametrics() {
           })
         }
       >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={1}
+        >
+          <Text variant={TextVariant.bodyMdMedium}>
+            {t('onboardingMetametricCheckboxTitleTwo')}
+          </Text>
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            textAlign={TextAlign.Left}
+          >
+            {t('onboardingMetametricCheckboxDescriptionTwo')}
+          </Text>
+        </Box>
         <Checkbox
           id="metametrics-datacollection-opt-in"
           data-testid="metametrics-data-collection-checkbox"
@@ -277,21 +303,12 @@ export default function OnboardingMetametrics() {
           onClick={(e) => e.stopPropagation()}
           inputProps={{
             onClick: (e) => e.stopPropagation(),
+            style: {
+              '--checkbox-icon-justify-content': 'flex-end'
+            }
           }}
-          label={
-            <Text variant={TextVariant.bodyMdMedium}>
-              {t('onboardingMetametricCheckboxTitleTwo')}
-            </Text>
-          }
-          alignItems={AlignItems.center}
+          alignItems={AlignItems.flexStart}
         />
-        <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          textAlign={TextAlign.Left}
-        >
-          {t('onboardingMetametricCheckboxDescriptionTwo')}
-        </Text>
       </Box>
 
       <Box width={BlockSize.Full}>

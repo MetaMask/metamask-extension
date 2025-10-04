@@ -196,7 +196,7 @@ export default function CreationSuccessful() {
           alignItems={AlignItems.flexStart}
         >
           <Text
-            variant={TextVariant.headingLg}
+            variant={TextVariant.headingMd}
             as="h2"
             justifyContent={JustifyContent.center}
             style={{

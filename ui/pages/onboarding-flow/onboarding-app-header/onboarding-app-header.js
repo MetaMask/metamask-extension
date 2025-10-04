@@ -28,6 +28,7 @@ import {
   BorderColor,
   TextColor,
   TextVariant,
+  BorderRadius,
 } from '../../../helpers/constants/design-system';
 import {
   ONBOARDING_COMPLETION_ROUTE,
@@ -80,19 +81,21 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
             <BannerTip
               borderColor={BorderColor.borderMuted}
               backgroundColor={BackgroundColor.backgroundMuted}
+              borderRadius={BorderRadius.XL}
               title={t('pinMetaMask')}
-              gap={4}
+              gap={3}
               titleProps={{
                 color: TextColor.textDefault,
-                variant: TextVariant.bodyMd,
+                variant: TextVariant.bodyMdMedium,
                 paddingRight: 2,
+                paddingBottom: 1,
               }}
               className="onboarding-app-header__banner-tip"
               padding={3}
               alignItems={AlignItems.center}
             >
               <Text
-                variant={TextVariant.bodySm}
+                variant={TextVariant.bodySmMedium}
                 alignItems={AlignItems.center}
                 color={TextColor.textAlternative}
               >

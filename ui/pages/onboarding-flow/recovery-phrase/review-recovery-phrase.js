@@ -162,16 +162,15 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.Center}
       height={BlockSize.Full}
-      gap={6}
+      gap={4}
       className="recovery-phrase"
       data-testid="recovery-phrase"
     >
+      {showSrpDetailsModal && (
+        <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
+      )}
       <Box>
-        {showSrpDetailsModal && (
-          <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
-        )}
         {isFromReminder && isFromSettingsSecurity ? (
           <Box
             className="recovery-phrase__header"
@@ -180,11 +179,12 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             gap={3}
             marginBottom={4}
             width={BlockSize.Full}
+            style={{ paddingInline: '6px' }}
           >
             <ButtonIcon
               iconName={IconName.ArrowLeft}
               color={IconColor.iconDefault}
-              size={ButtonIconSize.Md}
+              size={ButtonIconSize.Sm}
               data-testid="reveal-recovery-phrase-review-back-button"
               onClick={handleBack}
               ariaLabel={t('back')}
@@ -195,7 +195,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             <ButtonIcon
               iconName={IconName.Close}
               color={IconColor.iconDefault}
-              size={ButtonIconSize.Md}
+              size={ButtonIconSize.Sm}
               data-testid="reveal-recovery-phrase-review-close-button"
               onClick={onClose}
               ariaLabel={t('close')}
@@ -204,60 +204,70 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
         ) : (
           <Box
             justifyContent={JustifyContent.flexStart}
-            marginBottom={4}
+            marginBottom={6}
             width={BlockSize.Full}
+            style={{ paddingInline: '6px' }}
           >
-            <Text variant={TextVariant.headingLg} as="h2">
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              color={IconColor.iconDefault}
+              size={ButtonIconSize.Sm}
+              data-testid="recovery-phrase-back-button"
+              onClick={handleBack}
+              ariaLabel={t('back')}
+            />
+          </Box>
+        )}
+
+        <Box paddingInline={3}>
+          <Box justifyContent={JustifyContent.flexStart} marginBottom={1}>
+            <Text variant={TextVariant.headingMd} as="h2">
               {t('seedPhraseReviewTitle')}
             </Text>
           </Box>
-        )}
-        <Box marginBottom={6}>
-          <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-            marginBottom={6}
-          >
-            {t('seedPhraseReviewDetails', [
-              <ButtonLink
-                key="seedPhraseReviewDetails"
-                size={ButtonLinkSize.Inherit}
-                onClick={handleOnShowSrpDetailsModal}
-              >
-                {t('secretRecoveryPhrase')}
-              </ButtonLink>,
-              <Text
-                key="seedPhraseReviewDetails2"
-                fontWeight={FontWeight.Medium}
-                color={TextColor.textAlternative}
-              >
-                {t('seedPhraseReviewDetails2')}
-              </Text>,
-            ])}
-          </Text>
+          <Box marginBottom={7}>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              {t('seedPhraseReviewDetails', [
+                <ButtonLink
+                  key="seedPhraseReviewDetails"
+                  size={ButtonLinkSize.Inherit}
+                  onClick={handleOnShowSrpDetailsModal}
+                >
+                  {t('secretRecoveryPhrase')}
+                </ButtonLink>,
+                <Text
+                  key="seedPhraseReviewDetails2"
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.textAlternative}
+                >
+                  {t('seedPhraseReviewDetails2')}
+                </Text>,
+              ])}
+            </Text>
+          </Box>
+
+          <RecoveryPhraseChips
+            secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
+            phraseRevealed={phraseRevealed}
+            revealPhrase={() => {
+              trackEvent({
+                category: MetaMetricsEventCategory.Onboarding,
+                event:
+                  MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
+                properties: {
+                  hd_entropy_index: hdEntropyIndex,
+                },
+              });
+              setPhraseRevealed(true);
+            }}
+          />
         </Box>
-        <RecoveryPhraseChips
-          secretRecoveryPhrase={secretRecoveryPhrase.split(' ')}
-          phraseRevealed={phraseRevealed}
-          revealPhrase={() => {
-            trackEvent({
-              category: MetaMetricsEventCategory.Onboarding,
-              event:
-                MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
-              properties: {
-                hd_entropy_index: hdEntropyIndex,
-              },
-            });
-            setPhraseRevealed(true);
-          }}
-        />
       </Box>
-      <Box
-        width={BlockSize.Full}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        gap={2}
-      >
+
+      <Box paddingInline={3}>
         <Button
           width={BlockSize.Full}
           variant={ButtonVariant.Primary}

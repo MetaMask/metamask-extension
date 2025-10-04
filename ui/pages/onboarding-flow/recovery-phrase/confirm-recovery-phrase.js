@@ -187,34 +187,35 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
       flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.spaceBetween}
       height={BlockSize.Full}
-      gap={6}
+      gap={4}
       className="recovery-phrase recovery-phrase__confirm"
       data-testid="confirm-recovery-phrase"
     >
+      {showConfirmModal && (
+        <ConfirmSrpModal
+          isError={!matching}
+          onContinue={handleConfirmedPhrase}
+          onClose={() => {
+            resetQuizWords();
+            setShowConfirmModal(false);
+          }}
+        />
+      )}
       <Box>
-        {showConfirmModal && (
-          <ConfirmSrpModal
-            isError={!matching}
-            onContinue={handleConfirmedPhrase}
-            onClose={() => {
-              resetQuizWords();
-              setShowConfirmModal(false);
-            }}
-          />
-        )}
         {isFromReminder && isFromSettingsSecurity ? (
           <Box
             className="recovery-phrase__header"
             display={Display.Grid}
             alignItems={AlignItems.center}
-            gap={1}
+            gap={3}
             marginBottom={4}
             width={BlockSize.Full}
+            style={{ paddingInline: '6px' }}
           >
             <ButtonIcon
               iconName={IconName.ArrowLeft}
               color={IconColor.iconDefault}
-              size={ButtonIconSize.Md}
+              size={ButtonIconSize.Sm}
               data-testid="reveal-recovery-phrase-confirm-back-button"
               onClick={() => navigate(-1)}
               ariaLabel={t('back')}
@@ -225,54 +226,54 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
             <ButtonIcon
               iconName={IconName.Close}
               color={IconColor.iconDefault}
-              size={ButtonIconSize.Md}
+              size={ButtonIconSize.Sm}
               data-testid="reveal-recovery-phrase-confirm-close-button"
               onClick={onClose}
               ariaLabel={t('close')}
             />
           </Box>
         ) : (
-          <>
-            <Box
-              justifyContent={JustifyContent.flexStart}
-              marginBottom={4}
-              width={BlockSize.Full}
-            >
-              <ButtonIcon
-                iconName={IconName.ArrowLeft}
-                color={IconColor.iconDefault}
-                size={ButtonIconSize.Md}
-                data-testid="confirm-recovery-phrase-back-button"
-                onClick={() => navigate(-1)}
-                ariaLabel={t('back')}
-              />
-            </Box>
-            <Box
-              justifyContent={JustifyContent.flexStart}
-              marginBottom={4}
-              width={BlockSize.Full}
-            >
-              <Text variant={TextVariant.headingLg} as="h2">
-                {t('confirmRecoveryPhraseTitle')}
-              </Text>
-            </Box>
-          </>
+          <Box
+            justifyContent={JustifyContent.flexStart}
+            marginBottom={6}
+            width={BlockSize.Full}
+            style={{ paddingInline: '6px' }}
+          >
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              color={IconColor.iconDefault}
+              size={ButtonIconSize.Sm}
+              data-testid="confirm-recovery-phrase-back-button"
+              onClick={() => navigate(-1)}
+              ariaLabel={t('back')}
+            />
+          </Box>
         )}
-        <Box marginBottom={6}>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-            {t('confirmRecoveryPhraseDetails')}
-          </Text>
+
+        <Box paddingInline={3}>
+          <Box justifyContent={JustifyContent.flexStart} marginBottom={1}>
+            <Text variant={TextVariant.headingMd} as="h2">
+              {t('confirmRecoveryPhraseTitle')}
+            </Text>
+          </Box>
+          <Box marginBottom={7}>
+            <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+              {t('confirmRecoveryPhraseDetails')}
+            </Text>
+          </Box>
+
+          {splitSecretRecoveryPhrase.length > 0 && (
+            <RecoveryPhraseChips
+              secretRecoveryPhrase={splitSecretRecoveryPhrase}
+              quizWords={quizWords}
+              confirmPhase
+              setInputValue={handleQuizInput}
+            />
+          )}
         </Box>
-        {splitSecretRecoveryPhrase.length > 0 && (
-          <RecoveryPhraseChips
-            secretRecoveryPhrase={splitSecretRecoveryPhrase}
-            quizWords={quizWords}
-            confirmPhase
-            setInputValue={handleQuizInput}
-          />
-        )}
       </Box>
-      <Box width={BlockSize.Full}>
+
+      <Box paddingInline={3}>
         <Button
           variant={ButtonVariant.Primary}
           width={BlockSize.Full}

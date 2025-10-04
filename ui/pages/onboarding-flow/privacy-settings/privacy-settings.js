@@ -245,59 +245,36 @@ export default function PrivacySettings() {
           })}
         >
           <div className="list-view">
-            <Box
-              className="privacy-settings__header"
-              marginTop={6}
-              marginBottom={6}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              justifyContent={JustifyContent.flexStart}
-            >
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                flexDirection={FlexDirection.Row}
-                justifyContent={JustifyContent.flexStart}
-              >
-                <Button
-                  type="inline"
-                  icon={
-                    <Icon
-                      name={IconName.ArrowLeft}
-                      size={IconSize.Lg}
-                      color={IconColor.iconDefault}
-                    />
-                  }
+            <Box>
+              {/* Back Button - Isolated */}
+              <Box marginBottom={6} style={{ paddingInline: '6px' }}>
+                <ButtonIcon
+                  iconName={IconName.ArrowLeft}
+                  size={IconSize.Sm}
+                  color={IconColor.iconDefault}
                   data-testid="privacy-settings-back-button"
                   onClick={handleSubmit}
                 />
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  justifyContent={JustifyContent.center}
-                  width={BlockSize.Full}
-                >
-                  <Text variant={TextVariant.headingLg} as="h2">
+              </Box>
+
+              {/* All Content with Consistent Padding */}
+              <Box paddingInline={3}>
+                <Box textAlign={TextAlign.Left} marginBottom={1}>
+                  <Text variant={TextVariant.headingMd} as="h2">
                     {t('defaultSettingsTitle')}
                   </Text>
                 </Box>
+                <Box marginBottom={7}>
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    color={TextColor.textAlternative}
+                  >
+                    {t('defaultSettingsSubTitle')}
+                  </Text>
+                </Box>
               </Box>
-              <Text variant={TextVariant.bodyLgMedium} marginTop={5}>
-                {t('defaultSettingsSubTitle')}
-              </Text>
-              <a
-                href="https://support.metamask.io/privacy-and-security/privacy-best-practices"
-                target="_blank"
-                rel="noreferrer"
-                key="learnMoreAboutPrivacy"
-                style={{
-                  fontSize: 'var(--font-size-5)',
-                }}
-              >
-                {t('learnMoreAboutPrivacy')}
-              </a>
             </Box>
-            <Box>
+            <Box paddingInline={3}>
               <Box
                 as="ul"
                 marginTop={4}
@@ -319,7 +296,7 @@ export default function PrivacySettings() {
                       justifyContent={JustifyContent.spaceBetween}
                       data-testid={`category-item-${item.title}`}
                     >
-                      <Text variant={TextVariant.bodyLgMedium}>
+                      <Text variant={TextVariant.bodyMdMedium}>
                         {item.title}
                       </Text>
                       <Button
@@ -327,6 +304,7 @@ export default function PrivacySettings() {
                         icon={
                           <Icon
                             name={IconName.ArrowRight}
+                            size={IconSize.Sm}
                             color={IconColor.iconDefault}
                           />
                         }
@@ -335,7 +313,7 @@ export default function PrivacySettings() {
                     </Box>
                     <Text
                       className="description"
-                      variant={TextVariant.bodyMd}
+                      variant={TextVariant.bodySmMedium}
                       color={TextColor.textAlternative}
                     >
                       {item.subtitle}
