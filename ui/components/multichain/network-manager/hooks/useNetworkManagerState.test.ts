@@ -32,18 +32,20 @@ describe('useNetworkManagerInitialTab() tests', () => {
       expectedTab: 'networks',
     },
     {
-      scenario: 'some enabled networks are not featured',
-      enabledNetworks: ['eip155:1', 'eip155:137', 'eip155:999'],
-      expectedTab: 'custom-networks',
-    },
-    {
-      scenario: 'all enabled networks are non-featured',
-      enabledNetworks: ['eip155:999', 'eip155:1000'],
+      scenario: 'enable network is non-featured',
+      enabledNetworks: ['eip155:999'],
       expectedTab: 'custom-networks',
     },
     {
       scenario: 'no networks are enabled (empty subset)',
       enabledNetworks: [],
+      expectedTab: 'networks',
+    },
+    {
+      scenario: 'more than 1 network selected should defaults to popular',
+      // contains an unknown chain, but defaulting to popular tab
+      // this should never happen, but better to default to popular tab than custom tab
+      enabledNetworks: ['eip155:1', 'eip155:137', 'eip155:999'],
       expectedTab: 'networks',
     },
   ];
