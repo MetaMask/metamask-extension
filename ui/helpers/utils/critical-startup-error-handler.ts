@@ -10,7 +10,7 @@ import {
 } from '../../../shared/constants/start-up-errors';
 import { displayStateCorruptionError } from './state-corruption-html';
 import {
-  displayCriticalError,
+  displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
 } from './display-critical-error';
 
@@ -66,7 +66,7 @@ export class CriticalStartupErrorHandler {
     try {
       await Promise.race([livenessCheck, timeoutPromise]);
     } catch (error) {
-      await displayCriticalError(
+      await displayCriticalErrorMessage(
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
         // This cast is safe because `livenessCheck` can't throw, and `timeoutPromise` only throws an
@@ -102,7 +102,7 @@ export class CriticalStartupErrorHandler {
       if (this.#onLivenessCheckCompleted) {
         this.#onLivenessCheckCompleted();
       } else {
-        await displayCriticalError(
+        await displayCriticalErrorMessage(
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
           new Error('Unreachable error, liveness check not initialized'),
@@ -145,7 +145,7 @@ export class CriticalStartupErrorHandler {
         error: ErrorLike;
         currentLocale?: string;
       };
-      await displayCriticalError(
+      await displayCriticalErrorMessage(
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
         error as ErrorLike,

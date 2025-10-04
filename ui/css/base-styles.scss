@@ -45,7 +45,7 @@ html {
 }
 
 /* stylelint-disable */
-#app-content {
+#app-content, #critical-error-content {
   overflow-x: hidden;
   height: 100%;
   display: flex;
