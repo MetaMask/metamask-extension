@@ -36,7 +36,10 @@ export function getShieldControllerMessenger(
   return messenger.getRestricted({
     name: 'ShieldController',
     allowedActions: [],
-    allowedEvents: ['TransactionController:stateChange'],
+    allowedEvents: [
+      'TransactionController:stateChange',
+      'SignatureController:stateChange',
+    ],
   });
 }
 
