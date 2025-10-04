@@ -43,11 +43,14 @@ import {
   Page,
 } from '../../../components/multichain/pages/page';
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
+import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 import { filterWalletsByGroupName } from './utils';
 
 export const AccountList = () => {
   const t = useI18nContext();
   const history = useHistory();
+  // sync SRPs for social login flow
+  useSyncSRPs();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
