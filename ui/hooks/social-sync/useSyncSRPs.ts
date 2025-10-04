@@ -10,11 +10,11 @@ export const useSyncSRPs = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!isSocialLoginFlow) {
-      return;
-    }
-
     (async () => {
+      if (!isSocialLoginFlow) {
+        return;
+      }
+
       try {
         setLoading(true);
         await dispatch(syncSeedPhrases());
