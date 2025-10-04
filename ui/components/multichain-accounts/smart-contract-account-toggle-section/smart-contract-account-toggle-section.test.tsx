@@ -112,9 +112,7 @@ describe('SmartContractAccountToggleSection', () => {
       const { container } = render();
 
       expect(screen.getByTestId('network-loader')).toBeInTheDocument();
-      expect(
-        screen.getByText('Enable smart contract account'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('Enable smart account')).toBeInTheDocument();
       expect(
         screen.getByText(
           'You can enable smart account features on supported networks.',
