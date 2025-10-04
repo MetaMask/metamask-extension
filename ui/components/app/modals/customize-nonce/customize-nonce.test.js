@@ -69,7 +69,7 @@ describe('Customize Nonce', () => {
     expect(mockHideModal).toHaveBeenCalled();
   });
 
-  it('should handle emptry string custom nonce', () => {
+  it('should handle empty string custom nonce', () => {
     const { queryByTestId, queryByText } = renderWithProvider(
       <CustomizeNonce {...props} />,
       mockStore,
