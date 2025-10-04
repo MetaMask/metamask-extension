@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import classnames from 'classnames';
+import browser from 'webextension-polyfill';
 import {
   setCompletedOnboarding,
+  setCompletedOnboardingWithSidepanel,
   toggleExternalServices,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -19,10 +21,7 @@ import {
   IconColor,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import {
-  DEFAULT_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ONBOARDING_WELCOME_ROUTE } from '../../../helpers/constants/routes';
 import {
   Box,
   Button,
@@ -63,7 +62,6 @@ export default function OnboardingPinExtension() {
     await dispatch(
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
-    await dispatch(setCompletedOnboarding());
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
@@ -74,7 +72,26 @@ export default function OnboardingPinExtension() {
         new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
       },
     });
-    navigate(DEFAULT_ROUTE);
+
+    // Side Panel
+    try {
+      if (browser?.sidePanel?.open) {
+        const tabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+        if (tabs && tabs.length > 0) {
+          await browser.sidePanel.open({ windowId: tabs[0].windowId });
+          // Use the sidepanel-specific action to avoid redirect in fullscreen
+          await dispatch(setCompletedOnboardingWithSidepanel());
+        }
+      } else {
+        await dispatch(setCompletedOnboarding());
+      }
+    } catch (error) {
+      console.error('Error opening side panel:', error);
+      await dispatch(setCompletedOnboarding());
+    }
   };
 
   useEffect(() => {

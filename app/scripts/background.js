@@ -24,6 +24,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
@@ -144,6 +145,7 @@ const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
+let sidePanelIsOpen = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -1094,7 +1096,8 @@ export function setupController(
     return (
       openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
-      notificationIsOpen
+      notificationIsOpen ||
+      sidePanelIsOpen
     );
   };
 
@@ -1152,6 +1155,16 @@ export function setupController(
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
+        });
+      }
+
+      if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
+        sidePanelIsOpen = true;
+        finished(portStream, () => {
+          sidePanelIsOpen = false;
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
         });
       }
 
@@ -1503,7 +1516,8 @@ async function triggerUi() {
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
-    !currentlyActiveMetamaskTab
+    !currentlyActiveMetamaskTab &&
+    !sidePanelIsOpen
   ) {
     uiIsTriggering = true;
     try {
@@ -1567,6 +1581,32 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
+browser.runtime.onInstalled.addListener(() => {
+  browser.contextMenus.create({
+    id: 'openSidePanel',
+    title: 'MetaMask Sidepanel',
+    contexts: ['all'],
+  });
+});
+browser.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === 'openSidePanel') {
+    // This will open the panel in all the pages on the current window.
+    browser.sidePanel.open({ windowId: tab.windowId });
+  }
+});
+
+// // On first install, open a new tab with MetaMask
+// async function onInstall() {
+//   const storeAlreadyExisted = Boolean(await localStore.get());
+//   // If the store doesn't exist, then this is the first time running this script,
+//   // and is therefore an install
+//   if (process.env.IN_TEST) {
+//     addAppInstalledEvent();
+//   } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
+//     addAppInstalledEvent();
+//     platform.openExtensionInBrowser();
+//   }
+// }
 
 /**
  * Trigger actions that should happen only upon update installation
@@ -1629,6 +1669,98 @@ function onNavigateToTab() {
     }
   });
 }
+
+// Set initial side panel behavior based on user preference
+const initSidePanelBehavior = async () => {
+  try {
+    // Wait for controller to be initialized
+    await isInitialized;
+
+    // Get user preference (default to true for side panel)
+    const useSidePanelAsDefault =
+      controller?.preferencesController?.state?.preferences
+        ?.useSidePanelAsDefault ?? true;
+
+    // Set panel behavior based on preference
+    if (browser?.sidePanel?.setPanelBehavior) {
+      await browser.sidePanel.setPanelBehavior({
+        openPanelOnActionClick: useSidePanelAsDefault,
+      });
+    }
+  } catch (error) {
+    console.error('Error setting side panel behavior:', error);
+  }
+};
+
+initSidePanelBehavior();
+
+// Listen for preference changes to update side panel behavior dynamically
+const setupPreferenceListener = async () => {
+  try {
+    await isInitialized;
+
+    // Listen for preference changes using the controller messenger
+    controller?.controllerMessenger?.subscribe(
+      'PreferencesController:stateChange',
+      (state) => {
+        const useSidePanelAsDefault =
+          state?.preferences?.useSidePanelAsDefault ?? true;
+        if (browser?.sidePanel?.setPanelBehavior) {
+          browser.sidePanel
+            .setPanelBehavior({
+              openPanelOnActionClick: useSidePanelAsDefault,
+            })
+            .catch((error) =>
+              console.error('Error updating panel behavior:', error),
+            );
+        }
+      },
+    );
+  } catch (error) {
+    console.error('Error setting up preference listener:', error);
+  }
+};
+
+setupPreferenceListener();
+
+browser.tabs.onActivated.addListener(async ({ tabId }) => {
+  const activeTab = await browser.tabs.get(tabId);
+  const { id, title, url, favIconUrl } = activeTab;
+  const { origin, protocol, host, href } = url ? new URL(url) : {};
+  console.log({ id, title, origin, protocol, url });
+  if (!origin || origin === 'null') {
+    return {};
+  }
+  return controller.appStateController.setAppActiveTab({
+    id,
+    title,
+    origin,
+    protocol,
+    url,
+    host,
+    href,
+    favIconUrl,
+  });
+});
+browser.tabs.onUpdated.addListener(async (tabId) => {
+  const activeTab = await browser.tabs.get(tabId);
+  const { id, title, url, favIconUrl } = activeTab;
+  const { origin, protocol, host, href } = url ? new URL(url) : {};
+  console.log({ id, title, origin, protocol, url });
+  if (!origin || origin === 'null') {
+    return {};
+  }
+  return controller.appStateController.setAppActiveTab({
+    id,
+    title,
+    origin,
+    protocol,
+    url,
+    host,
+    href,
+    favIconUrl,
+  });
+});
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
