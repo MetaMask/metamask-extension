@@ -16,6 +16,7 @@ import {
   BoxBorderColor,
 } from '@metamask/design-system-react';
 
+import { useSelector } from 'react-redux';
 import {
   Modal,
   ModalOverlay,
@@ -35,6 +36,8 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getManageInstitutionalWallets } from '../../../selectors';
+import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
 
 export type AddWalletModalProps = Omit<
   ModalProps,
@@ -58,6 +61,9 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
 }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const institutionalWalletsEnabled = useSelector(
+    getManageInstitutionalWallets,
+  );
 
   const walletOptions: WalletOption[] = [
     {
@@ -78,6 +84,18 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       iconName: IconName.Hardware,
       route: CONNECT_HARDWARE_ROUTE,
     },
+    ...(institutionalWalletsEnabled
+      ? [
+          {
+            id: 'institutional-wallet',
+            titleKey: 'manageInstitutionalWallets',
+            iconName: IconName.Add,
+            route: `/snaps/view/${encodeURIComponent(
+              INSTITUTIONAL_WALLET_SNAP_ID,
+            )}`,
+          },
+        ]
+      : []),
   ];
 
   const handleOptionClick = (option: WalletOption) => {

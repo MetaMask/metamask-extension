@@ -174,7 +174,7 @@ const AssetPage = ({
     decimals: 0,
     aggregators: [],
     isNative: false,
-    primary: '',
+    balance: 0,
     secondary: 0,
   };
 
@@ -289,7 +289,7 @@ const AssetPage = ({
               ? asset.aggregators
               : [],
           isNative: type === AssetType.native,
-          primary: balance ? balance.toString() : '',
+          balance,
           secondary: balance ? Number(balance) : 0,
         }
       : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);

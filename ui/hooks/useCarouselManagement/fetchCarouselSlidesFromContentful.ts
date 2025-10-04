@@ -4,16 +4,50 @@ import { isProduction } from '../../../shared/modules/environment';
 import packageJson from '../../../package.json';
 
 const APP_VERSION = packageJson.version;
-const isProductionEnv = process.env.IN_TEST || isProduction();
-
-const SPACE_ID = process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '';
-const ACCESS_TOKEN = process.env.CONTENTFUL_ACCESS_TOKEN ?? '';
-const ENVIRONMENT = isProductionEnv ? 'master' : 'dev';
 const CONTENT_TYPE = 'promotionalBanner';
-const DEFAULT_DOMAIN = isProductionEnv
-  ? 'cdn.contentful.com'
-  : 'preview.contentful.com';
-const CONTENTFUL_API = `https://${DEFAULT_DOMAIN}/spaces/${SPACE_ID}/environments/${ENVIRONMENT}/entries`;
+
+const getContentPreviewToken = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const previewToken = urlParams.get('previewToken');
+  return previewToken;
+};
+
+export const getContentfulEnvironmentDetails = () => {
+  const SPACE_ID = process.env.CONTENTFUL_ACCESS_SPACE_ID ?? '';
+  const ACCESS_TOKEN = process.env.CONTENTFUL_ACCESS_TOKEN ?? '';
+
+  // If preview mode, then show preview prod master content
+  const previewToken = getContentPreviewToken();
+  if (previewToken) {
+    return {
+      environment: 'master',
+      domain: 'preview.contentful.com',
+      accessToken: previewToken,
+      spaceId: SPACE_ID,
+    };
+  }
+
+  const isProd = isProduction();
+
+  // If production, show prod master content
+  if (isProd) {
+    return {
+      environment: 'master',
+      domain: 'cdn.contentful.com',
+      accessToken: ACCESS_TOKEN,
+      spaceId: SPACE_ID,
+    };
+  }
+
+  // Default to preview dev content
+  return {
+    environment: 'dev',
+    domain: 'preview.contentful.com',
+    accessToken: ACCESS_TOKEN,
+    spaceId: SPACE_ID,
+  };
+};
+
 // Ideally we could construct the type through contentful package, but this is not installed
 type ContentfulSysField = { sys: { id: string } };
 type ContentfulBanner = ContentfulSysField & {
@@ -48,12 +82,17 @@ export async function fetchCarouselSlidesFromContentful(): Promise<{
   prioritySlides: CarouselSlide[];
   regularSlides: CarouselSlide[];
 }> {
-  if (!SPACE_ID || !ACCESS_TOKEN) {
+  const { accessToken, domain, environment, spaceId } =
+    getContentfulEnvironmentDetails();
+
+  if (!spaceId || !accessToken) {
     return { prioritySlides: [], regularSlides: [] };
   }
 
-  const url = new URL(CONTENTFUL_API);
-  url.searchParams.set('access_token', ACCESS_TOKEN);
+  const url = new URL(
+    `https://${domain}/spaces/${spaceId}/environments/${environment}/entries`,
+  );
+  url.searchParams.set('access_token', accessToken);
   url.searchParams.set('content_type', CONTENT_TYPE);
   url.searchParams.set('fields.showInExtension', 'true');
   const res: ContentfulBannerResponse = await fetch(url).then((r) => r.json());
