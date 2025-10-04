@@ -102,7 +102,7 @@ describe('ENS', function (this: Suite) {
         // fill ens address as recipient when user lands on send token screen
         const sendToPage = new SendTokenPage(driver);
         await sendToPage.checkPageIsLoaded();
-        await sendToPage.fillRecipient(sampleEnsDomain);
+        await sendToPage.fillEnsRecipient(sampleEnsDomain);
 
         // verify that ens domain resolves to the correct address
         await sendToPage.checkEnsAddressResolution(
