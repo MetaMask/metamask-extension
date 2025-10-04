@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Route,
-  Routes,
+  useLocation,
   useNavigate,
   useParams,
 } from 'react-router-dom-v5-compat';
@@ -20,7 +19,6 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getSendTo } from '../../../ducks/send';
 import { getSelectedNetworkClientId } from '../../../../shared/modules/selectors/networks';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   DEFAULT_ROUTE,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
@@ -55,6 +53,7 @@ import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 const ConfirmTransaction = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { id: paramsTransactionId } = useParams();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
@@ -195,24 +194,24 @@ const ConfirmTransaction = () => {
   if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
   }
-  // Show routes when state.confirmTransaction has been set and when either the ID in the params
-  // isn't specified or is specified and matches the ID in state.confirmTransaction in order to
-  // support URLs of /confirm-transaction or /confirm-transaction/<transactionId>
-  return isValidTransactionId ? (
-    <Routes>
-      <Route
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`}
-        element={<ConfirmDecryptMessage />}
-      />
-      <Route
-        path={`${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`}
-        element={<ConfirmEncryptionPublicKey />}
-      />
-      <Route path="*" element={<ConfirmTransactionSwitch />} />
-    </Routes>
-  ) : (
-    <Loading />
-  );
+
+  // Route to the correct component based on path
+  // This replaces nested Routes to avoid v6 nested routing issues
+  if (!isValidTransactionId) {
+    return <Loading />;
+  }
+
+  const { pathname } = location;
+
+  if (pathname.includes(DECRYPT_MESSAGE_REQUEST_PATH)) {
+    return <ConfirmDecryptMessage />;
+  }
+
+  if (pathname.includes(ENCRYPTION_PUBLIC_KEY_REQUEST_PATH)) {
+    return <ConfirmEncryptionPublicKey />;
+  }
+
+  return <ConfirmTransactionSwitch />;
 };
 
 export default ConfirmTransaction;

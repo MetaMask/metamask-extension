@@ -633,7 +633,7 @@ export default function RoutesComponent() {
             }
           />
           <Route
-            path={`${CONFIRM_TRANSACTION_ROUTE}/*`}
+            path={`${CONFIRM_TRANSACTION_ROUTE}/:id?/*`}
             element={
               <Authenticated>
                 <ConfirmTransaction />
