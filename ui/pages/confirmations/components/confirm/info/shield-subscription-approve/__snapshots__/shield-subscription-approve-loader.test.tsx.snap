@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ShieldSubscriptionApproveLoader renders correctly 1`] = `
+<div>
+  <div
+    class="pt-4"
+  >
+    <div
+      class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    >
+      <div
+        class="pb-4"
+      >
+        <div
+          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+          style="height: 12px; width: 150px;"
+        />
+      </div>
+      <div
+        class=""
+      >
+        <div
+          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+          style="height: 12px; width: 150px;"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    >
+      <div
+        class="pb-4"
+      >
+        <div
+          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+          style="height: 12px; width: 175px;"
+        />
+      </div>
+      <div
+        class=""
+      >
+        <div
+          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+          style="height: 12px; width: 100px;"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    >
+      <div
+        class=""
+      >
+        <div
+          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+          style="height: 12px; width: 75px;"
+        />
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    >
+      <div
+        class="pb-4"
+      >
+        <div
+          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+          style="height: 12px; width: 75px;"
+        />
+      </div>
+      <div
+        class=""
+      >
+        <div
+          class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+          style="height: 12px; width: 75px;"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
