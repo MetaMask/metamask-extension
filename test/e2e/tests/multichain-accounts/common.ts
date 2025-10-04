@@ -10,65 +10,17 @@ import {
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
-
-export const FEATURE_FLAGS_URL =
-  'https://client-config.api.cx.metamask.io/v1/flags';
+import {
+  mockMultichainAccountsFeatureFlagDisabled,
+  mockMultichainAccountsFeatureFlag,
+  mockMultichainAccountsFeatureFlagStateTwo,
+} from './feature-flag-mocks';
 
 export enum AccountType {
   MultiSRP = 'multi-srp',
   SSK = 'ssk',
   HardwareWallet = 'hardware-wallet',
 }
-
-export const mockMultichainAccountsFeatureFlag = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(FEATURE_FLAGS_URL)
-    .withQuery({
-      client: 'extension',
-      distribution: 'main',
-      environment: 'dev',
-    })
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: [
-          {
-            enableMultichainAccounts: {
-              enabled: true,
-              featureVersion: '1',
-              minimumVersion: '12.19.0',
-            },
-          },
-        ],
-      };
-    });
-
-export const mockMultichainAccountsFeatureFlagStateTwo = (
-  mockServer: Mockttp,
-) =>
-  mockServer
-    .forGet(FEATURE_FLAGS_URL)
-    .withQuery({
-      client: 'extension',
-      distribution: 'main',
-      environment: 'dev',
-    })
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: [
-          {
-            enableMultichainAccountsState2: {
-              enabled: true,
-              featureVersion: '2',
-              minimumVersion: '12.19.0',
-            },
-          },
-        ],
-      };
-    });
 
 export async function withMultichainAccountsDesignEnabled(
   {
@@ -106,6 +58,7 @@ export async function withMultichainAccountsDesignEnabled(
       testSpecificMock,
       title,
       dapp: true,
+      forceBip44Version: state === 2 ? 2 : 0,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
       // State 2 uses unified account group balance (fiat) and may not equal '25 ETH'.
@@ -154,3 +107,9 @@ export async function withImportedAccount(
     await test(driver);
   });
 }
+
+export {
+  mockMultichainAccountsFeatureFlagDisabled,
+  mockMultichainAccountsFeatureFlag,
+  mockMultichainAccountsFeatureFlagStateTwo,
+};

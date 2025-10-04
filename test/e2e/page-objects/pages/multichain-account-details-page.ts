@@ -201,8 +201,16 @@ class MultichainAccountDetailsPage {
    * Get address from share modal
    */
   async getAddressFromShareModal(): Promise<string> {
-    const element = await this.driver.findElement('.qr-code__address-segments');
+    const element = await this.driver.findElement('.max-w-64');
     return await element.getText();
+  }
+
+  /**
+   * Click on QR code dialog close button
+   */
+  async closeQRCodeDialog(): Promise<void> {
+    console.log('Click on QR code dialog close button');
+    await this.driver.clickElement('[aria-label="Close"]');
   }
 
   /**

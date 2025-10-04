@@ -275,6 +275,7 @@ describe('Multichain API', function () {
               },
             ],
             testSpecificMock: mockEip7702FeatureFlag,
+            forceBip44Version: 2,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
             const scope = GANACHE_SCOPES[0];
@@ -323,6 +324,7 @@ describe('Multichain API', function () {
               },
             ],
             testSpecificMock: mockEip7702FeatureFlag,
+            forceBip44Version: 2,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
             const scope = GANACHE_SCOPES[0];
@@ -398,6 +400,7 @@ describe('Multichain API', function () {
               },
             ],
             testSpecificMock: mockEip7702FeatureFlag,
+            forceBip44Version: 2,
           },
           async ({ driver, extensionId }: FixtureCallbackArgs) => {
             const scope = GANACHE_SCOPES[0];

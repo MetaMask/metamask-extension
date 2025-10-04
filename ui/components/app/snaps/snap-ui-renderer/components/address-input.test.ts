@@ -2,6 +2,12 @@ import { Box, AddressInput, Field } from '@metamask/snaps-sdk/jsx';
 import { fireEvent } from '@testing-library/react';
 import { renderInterface } from '../test-utils';
 
+// Mock getIsMultichainAccountsState2Enabled to false
+jest.mock('../../../../../selectors/multichain-accounts/feature-flags', () => ({
+  getIsMultichainAccountsState1Enabled: jest.fn(() => false),
+  getIsMultichainAccountsState2Enabled: jest.fn(() => false),
+}));
+
 describe('SnapUIAddressInput', () => {
   it('will render', () => {
     const { container, getByRole } = renderInterface(

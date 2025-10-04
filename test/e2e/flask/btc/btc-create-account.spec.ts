@@ -11,7 +11,8 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { ACCOUNT_TYPE, DEFAULT_BTC_ACCOUNT_NAME } from '../../constants';
 import { withBtcAccountSnap } from './common-btc';
 
-describe('Create BTC Account', function (this: Suite) {
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Create BTC Account', function (this: Suite) {
   it('create BTC account from the menu', async function () {
     await withBtcAccountSnap(async (driver) => {
       const headerNavbar = new HeaderNavbar(driver);

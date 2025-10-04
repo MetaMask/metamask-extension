@@ -7,6 +7,7 @@ import { Router } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { createMemoryHistory } from 'history';
 import { noop } from 'lodash';
+import merge from 'lodash/merge';
 import configureStore from '../../ui/store/store';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import {
@@ -233,7 +234,26 @@ export async function integrationTestRender(extendedRenderOptions) {
 
   connectToBackground(backgroundConnection, noop);
 
-  const store = await setupInitialStore(preloadedState, activeTab);
+  // Default flags/state applied to all integration tests.
+  // Tests can still override any of these by passing them in preloadedState.
+  const defaultMetamaskState = {
+    remoteFeatureFlags: {
+      enableMultichainAccounts: {
+        enabled: false,
+        featureVersion: '0',
+        minimumVersion: '0',
+      },
+      enableMultichainAccountsState2: {
+        enabled: false,
+        featureVersion: '0',
+        minimumVersion: '0',
+      },
+    },
+  };
+
+  const preloadedWithDefaults = merge({}, defaultMetamaskState, preloadedState);
+
+  const store = await setupInitialStore(preloadedWithDefaults, activeTab);
 
   return {
     ...render(<Root store={store} />, { ...renderOptions }),

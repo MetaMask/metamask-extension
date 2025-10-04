@@ -12,6 +12,7 @@ import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
+import { MOCK_META_METRICS_ID } from '../../constants';
 
 async function mockSegment(mockServer: Mockttp) {
   return [
@@ -112,7 +113,7 @@ describe('Settings: Show native token as main balance', function () {
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-fd20',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .build(),
@@ -155,7 +156,7 @@ describe('Settings: Show native token as main balance', function () {
       {
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-fd20',
+            metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()

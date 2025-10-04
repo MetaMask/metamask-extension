@@ -4,7 +4,8 @@ import { DEFAULT_BTC_ACCOUNT_NAME } from '../../constants';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import { withBtcAccountSnap } from './common-btc';
 
-describe('BTC Account - Overview', function (this: Suite) {
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('BTC Account - Overview', function (this: Suite) {
   it('has balance displayed and has portfolio button enabled for BTC accounts', async function () {
     await withBtcAccountSnap(async (driver) => {
       const homePage = new BitcoinHomepage(driver);

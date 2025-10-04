@@ -73,13 +73,13 @@ describe('Multichain Accounts Feature Flags', () => {
       ).toBe(true);
     });
 
-    it('returns false as the default value', () => {
+    it('returns true as the default value', () => {
       expect(
         getIsMultichainAccountsState1Enabled(
           // @ts-expect-error - overriding value in case of fetch failure
           getMockState(undefined, disabledStateMock),
         ),
-      ).toBe(false);
+      ).toBe(true);
     });
   });
 
@@ -100,13 +100,13 @@ describe('Multichain Accounts Feature Flags', () => {
       ).toBe(true);
     });
 
-    it('returns false as the default value', () => {
+    it('returns true as the default value', () => {
       expect(
         getIsMultichainAccountsState2Enabled(
           // @ts-expect-error - overriding value in case of fetch failure
           getMockState(disabledStateMock, undefined),
         ),
-      ).toBe(false);
+      ).toBe(true);
     });
   });
 });
