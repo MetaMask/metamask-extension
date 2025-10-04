@@ -29,7 +29,7 @@ yarn build:test
 
 ```bash
 # Run with default settings (10 browser loads, 10 page loads each)
-yarn test:e2e:benchmark
+yarn test:e2e:benchmark:page-load
 ```
 
 ### Using Playwright Directly
