@@ -14,6 +14,7 @@ import {
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
+import { ShieldMockttpService } from '../../helpers/shield/mock';
 
 async function doPasswordChangeAndLockWallet(
   driver: Driver,
@@ -62,6 +63,11 @@ describe('Change wallet password', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: (server: Mockttp) => {
+          // using this to mock the Shield Server
+          const oAuthMockttpService = new ShieldMockttpService();
+          return oAuthMockttpService.setup(server);
+        },
       },
       async ({ driver }) => {
         await completeCreateNewWalletOnboardingFlow({
@@ -95,9 +101,14 @@ describe('Change wallet password', function () {
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
           const oAuthMockttpService = new OAuthMockttpService();
-          return oAuthMockttpService.setup(server, {
-            userEmail: MOCK_GOOGLE_ACCOUNT,
-          });
+          const shieldMockttpService = new ShieldMockttpService();
+
+          return Promise.all([
+            oAuthMockttpService.setup(server, {
+              userEmail: MOCK_GOOGLE_ACCOUNT,
+            }),
+            shieldMockttpService.setup(server),
+          ]);
         },
       },
       async ({ driver }: { driver: Driver }) => {
