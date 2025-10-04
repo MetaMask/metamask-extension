@@ -4,7 +4,7 @@ import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {
   unapprovedPersonalMsgsSelector,
   unapprovedTypedMessagesSelector,
-} from './transactions';
+} from './transactions-legacy';
 
 export const selectUnapprovedMessages = createSelector(
   unapprovedPersonalMsgsSelector,

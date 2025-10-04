@@ -4,7 +4,7 @@ export * from './custom-gas';
 export * from './first-time-flow';
 export * from './metametrics';
 export * from './selectors';
-export * from './transactions';
+export * from './transactions-legacy';
 export * from './approvals';
 export * from './accounts';
 export * from './remote-feature-flags';

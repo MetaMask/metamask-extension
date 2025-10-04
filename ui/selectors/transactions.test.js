@@ -31,7 +31,7 @@ import {
   selectedAddressTxListSelectorAllChain,
   transactionSubSelectorAllChains,
   transactionsSelectorAllChains,
-} from './transactions';
+} from './transactions-legacy';
 
 describe('Transaction Selectors', () => {
   describe('unapprovedMessagesSelector', () => {

@@ -15,7 +15,7 @@ import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api
 import {
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelectorAllChains,
-} from '../../../selectors/transactions';
+} from '../../../selectors/transactions-legacy';
 import {
   getCurrentNetwork,
   getSelectedAccount,
