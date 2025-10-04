@@ -46,6 +46,7 @@ const generateMultichainNetworkMaps = (
   const networkMaps: Record<string, Record<string, boolean>> = {
     solana: {},
     bitcoin: {},
+    tron: {}
   };
 
   // Organize multichain networks by their prefix/type
@@ -56,6 +57,8 @@ const generateMultichainNetworkMaps = (
       networkMaps.solana[chainId] = isEnabled;
     } else if (chainId.startsWith('bip122:')) {
       networkMaps.bitcoin[chainId] = isEnabled;
+    } else if (chainId.startsWith('tron:')) {
+      networkMaps.tron[chainId] = isEnabled;
     }
     // Add other network types as needed
   });
