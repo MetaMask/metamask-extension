@@ -123,6 +123,11 @@ const getTitle = (
 
         return t('confirmTitlePermitTokens');
       }
+
+      if ((confirmation as SignatureRequestType).decodedPermission) {
+        return t('confirmTitlePermission');
+      }
+
       return t('confirmTitleSignature');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
