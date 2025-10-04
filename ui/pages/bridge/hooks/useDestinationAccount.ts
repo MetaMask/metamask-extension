@@ -1,6 +1,10 @@
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { useEffect, useState, useRef } from 'react';
+import {
+  formatChainIdToCaip,
+  isSolanaChainId,
+  isBitcoinChainId,
+} from '@metamask/bridge-controller';
 import {
   getAccountGroupNameByInternalAccount,
   getToChain,
@@ -20,6 +24,7 @@ export const useDestinationAccount = () => {
   const [isDestinationAccountPickerOpen, setIsDestinationAccountPickerOpen] =
     useState(false);
   const toChain = useSelector(getToChain);
+  const previousChainIdRef = useRef<string | undefined>(undefined);
 
   // For bridges, use the appropriate account type for the destination chain
   const defaultInternalDestinationAccount = useSelector((state) =>
@@ -39,16 +44,49 @@ export const useDestinationAccount = () => {
   );
 
   useEffect(() => {
-    setSelectedDestinationAccount(
-      defaultInternalDestinationAccount
-        ? {
-            ...defaultInternalDestinationAccount,
-            isExternal: false,
-            displayName: displayName ?? '',
-          }
-        : null,
-    );
-  }, [defaultInternalDestinationAccount, displayName]);
+    const currentChainId = toChain?.chainId;
+    const previousChainId = previousChainIdRef.current;
+
+    // Check if current and previous chains are non-EVM
+    const isPreviousNonEvm =
+      previousChainId &&
+      (isSolanaChainId(previousChainId) || isBitcoinChainId(previousChainId));
+    const isCurrentNonEvm =
+      currentChainId &&
+      (isSolanaChainId(currentChainId) || isBitcoinChainId(currentChainId));
+
+    // Check if previous chain was EVM (not non-EVM and exists)
+    const wasPreviousEvm = previousChainId && !isPreviousNonEvm;
+    // Check if current chain is EVM (not non-EVM and exists)
+    const isCurrentEvm = currentChainId && !isCurrentNonEvm;
+
+    // Open account picker when bridging between non-EVM and EVM chains
+    // Cases: non-EVM -> EVM, EVM -> non-EVM, or switching between different non-EVM chains
+    const shouldOpenPicker =
+      (isPreviousNonEvm && isCurrentEvm) || // non-EVM -> EVM
+      (wasPreviousEvm && isCurrentNonEvm) || // EVM -> non-EVM
+      (isPreviousNonEvm &&
+        isCurrentNonEvm &&
+        previousChainId !== currentChainId); // different non-EVM chains
+
+    if (shouldOpenPicker) {
+      setSelectedDestinationAccount(null);
+      setIsDestinationAccountPickerOpen(true);
+    } else {
+      setSelectedDestinationAccount(
+        defaultInternalDestinationAccount
+          ? {
+              ...defaultInternalDestinationAccount,
+              isExternal: false,
+              displayName: displayName ?? '',
+            }
+          : null,
+      );
+    }
+
+    // Update the ref for next comparison
+    previousChainIdRef.current = currentChainId;
+  }, [defaultInternalDestinationAccount, displayName, toChain?.chainId]);
 
   return {
     selectedDestinationAccount,

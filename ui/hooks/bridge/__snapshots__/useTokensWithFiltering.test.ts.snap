@@ -3,6 +3,17 @@
 exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens are not defined 1`] = `
 [
   {
+    "address": "",
+    "balance": "0.00000000000000001",
+    "chainId": "0x1",
+    "decimals": 18,
+    "image": "./images/eth_logo.svg",
+    "string": "0.00000000000000001",
+    "symbol": "ETH",
+    "tokenFiatAmount": 2.5242500000000003e-14,
+    "type": "NATIVE",
+  },
+  {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
     "balance": "0.00184",
     "chainId": "0x1",
@@ -25,17 +36,6 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens are 
     "string": "0.000000000000000014",
     "symbol": "ETH",
     "tokenFiatAmount": 3.53395e-14,
-    "type": "NATIVE",
-  },
-  {
-    "address": "",
-    "balance": "0.00000000000000001",
-    "chainId": "0x1",
-    "decimals": 18,
-    "image": "./images/eth_logo.svg",
-    "string": "0.00000000000000001",
-    "symbol": "ETH",
-    "tokenFiatAmount": 2.5242500000000003e-14,
     "type": "NATIVE",
   },
   {
@@ -262,7 +262,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if chain is solana 1`
     "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
     "decimals": 18,
     "iconUrl": "",
-    "image": "",
+    "image": "./images/solana-logo.svg",
     "name": "Ether",
     "string": "0",
     "symbol": "ETH",
@@ -289,6 +289,17 @@ exports[`useTokensWithFiltering should fetch bridge tokens if chain is solana 1`
 exports[`useTokensWithFiltering should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance 1`] = `
 [
   {
+    "address": "",
+    "balance": "0.00000000000000001",
+    "chainId": "0x1",
+    "decimals": 18,
+    "image": "./images/eth_logo.svg",
+    "string": "0.00000000000000001",
+    "symbol": "ETH",
+    "tokenFiatAmount": 2.5242500000000003e-14,
+    "type": "NATIVE",
+  },
+  {
     "address": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
     "balance": "0.00184",
     "chainId": "0x1",
@@ -311,17 +322,6 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
     "string": "0.000000000000000014",
     "symbol": "ETH",
     "tokenFiatAmount": 3.53395e-14,
-    "type": "NATIVE",
-  },
-  {
-    "address": "",
-    "balance": "0.00000000000000001",
-    "chainId": "0x1",
-    "decimals": 18,
-    "image": "./images/eth_logo.svg",
-    "string": "0.00000000000000001",
-    "symbol": "ETH",
-    "tokenFiatAmount": 2.5242500000000003e-14,
     "type": "NATIVE",
   },
   {
@@ -431,6 +431,19 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
 
 exports[`useTokensWithFiltering should return all tokens when chainId !== activeChainId and chainId has not been imported, sorted by balance 1`] = `
 [
+  {
+    "address": "",
+    "assetId": "eip155:137/slip44:966",
+    "balance": "0",
+    "chainId": "0x89",
+    "decimals": 18,
+    "iconUrl": "",
+    "image": "./images/pol-token.svg",
+    "name": "Polygon",
+    "string": "0",
+    "symbol": "POL",
+    "type": "NATIVE",
+  },
   {
     "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
     "aggregators": [],
@@ -563,21 +576,6 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
     "name": "SEED",
     "string": undefined,
     "symbol": "SEED",
-    "type": "TOKEN",
-  },
-  {
-    "address": "0x487d62468282bd04ddf976631c23128a425555ee",
-    "aggregators": [],
-    "assetId": "eip155:137/erc20:0x487d62468282bd04ddf976631c23128a425555ee",
-    "balance": "",
-    "chainId": "0x89",
-    "decimals": 5,
-    "erc20": true,
-    "iconUrl": "images/contract/UPC.svg",
-    "image": "images/contract/UPC.svg",
-    "name": "UPCX",
-    "string": undefined,
-    "symbol": "UPC",
     "type": "TOKEN",
   },
 ]

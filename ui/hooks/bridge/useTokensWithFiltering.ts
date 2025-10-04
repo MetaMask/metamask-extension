@@ -4,6 +4,7 @@ import { ChainId } from '@metamask/controller-utils';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import {
   isSolanaChainId,
+  isBitcoinChainId,
   formatChainIdToCaip,
   formatChainIdToHex,
   isNativeAddress,
@@ -51,9 +52,10 @@ const buildTokenData = (
   // Only tokens on the active chain are processed here here
   const sharedFields = {
     ...token,
-    chainId: isSolanaChainId(chainId)
-      ? formatChainIdToCaip(chainId)
-      : formatChainIdToHex(chainId),
+    chainId:
+      isSolanaChainId(chainId) || isBitcoinChainId(chainId)
+        ? formatChainIdToCaip(chainId)
+        : formatChainIdToHex(chainId),
     assetId:
       'assetId' in token
         ? token.assetId
@@ -61,21 +63,29 @@ const buildTokenData = (
   };
 
   if (isNativeAddress(token.address)) {
+    // Use MULTICHAIN_TOKEN_IMAGE_MAP for non-EVM chains
+    const isNonEvm = isSolanaChainId(chainId) || isBitcoinChainId(chainId);
+    const image = isNonEvm
+      ? MULTICHAIN_TOKEN_IMAGE_MAP[
+          sharedFields.chainId as keyof typeof MULTICHAIN_TOKEN_IMAGE_MAP
+        ]
+      : CHAIN_ID_TOKEN_IMAGE_MAP[
+          sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+        ];
+
     return {
       ...sharedFields,
       type: AssetType.native,
       address: '', // Return empty string to match useMultichainBalances output
       image:
-        CHAIN_ID_TOKEN_IMAGE_MAP[
-          sharedFields.chainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-        ] ??
+        image ??
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         (token.iconUrl || ('icon' in token ? token.icon : '') || ''),
       // Only unimported native assets are processed here so hardcode balance to 0
       balance: '0',
       string: '0',
-    };
+    } as AssetWithDisplayData<NativeAsset>;
   }
 
   return {
@@ -129,9 +139,23 @@ export const useTokensWithFiltering = (
     if (!chainId) {
       return undefined;
     }
+    // For Bitcoin chains, we only support native asset
+    if (isBitcoinChainId(chainId)) {
+      // Return native asset for Bitcoin chains
+      const nativeAsset = getNativeAssetForChainId(chainId);
+      if (nativeAsset) {
+        const key = nativeAsset.address ?? '';
+        return {
+          [key]: nativeAsset,
+        };
+      }
+      return undefined;
+    }
+    // For Solana chains, we don't cache in the same way, return undefined to trigger fetch
     if (isSolanaChainId(chainId)) {
       return undefined;
     }
+    // For EVM chains, check the cache
     const hexChainId = formatChainIdToHex(chainId);
     return hexChainId ? cachedTokens[hexChainId]?.data : undefined;
   }, [chainId, cachedTokens]);
@@ -223,12 +247,53 @@ export const useTokensWithFiltering = (
           );
         };
 
-        if (
-          !chainId ||
-          !topTokens ||
-          !tokenList ||
-          Object.keys(tokenList).length === 0
-        ) {
+        if (!chainId || !topTokens) {
+          return;
+        }
+
+        // For EVM chains, always yield the native token first (even with zero balance)
+        if (!isSolanaChainId(chainId) && !isBitcoinChainId(chainId)) {
+          const nativeAsset = getNativeAssetForChainId(chainId);
+          if (nativeAsset && shouldAddToken(nativeAsset.symbol, '', chainId)) {
+            // Check if we have a balance for the native token in multichain tokens
+            const nativeTokenWithBalance = multichainTokensWithBalance.find(
+              (token) =>
+                (isNativeAddress(token.address) || token.isNative) &&
+                token.chainId === chainId,
+            );
+
+            if (nativeTokenWithBalance) {
+              // Use the native token with actual balance from multichain tokens
+              yield {
+                symbol: nativeTokenWithBalance.symbol,
+                chainId: nativeTokenWithBalance.chainId,
+                tokenFiatAmount: nativeTokenWithBalance.tokenFiatAmount,
+                decimals: nativeTokenWithBalance.decimals,
+                address: '',
+                type: AssetType.native,
+                balance: nativeTokenWithBalance.balance ?? '0',
+                string: nativeTokenWithBalance.string ?? undefined,
+                image:
+                  CHAIN_ID_TOKEN_IMAGE_MAP[
+                    formatChainIdToHex(
+                      nativeTokenWithBalance.chainId,
+                    ) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+                  ] ??
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                  (nativeAsset.icon || nativeAsset.iconUrl || ''),
+              };
+            } else {
+              // Fall back to building with zero balance if not found in multichain tokens
+              const nativeToken = buildTokenData(chainId, nativeAsset);
+              if (nativeToken) {
+                yield nativeToken;
+              }
+            }
+          }
+        }
+
+        if (!tokenList || Object.keys(tokenList).length === 0) {
           return;
         }
 
@@ -241,10 +306,15 @@ export const useTokensWithFiltering = (
               token.chainId,
             )
           ) {
-            if (
-              (isNativeAddress(token.address) || token.isNative) &&
-              !isSolanaChainId(token.chainId)
-            ) {
+            if (isNativeAddress(token.address) || token.isNative) {
+              // Skip native tokens for EVM chains as they were already yielded above
+              if (
+                !isSolanaChainId(chainId) &&
+                !isBitcoinChainId(chainId) &&
+                token.chainId === chainId
+              ) {
+                continue;
+              }
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
@@ -285,7 +355,8 @@ export const useTokensWithFiltering = (
                 string: token.string ?? undefined,
                 image:
                   (token.image ||
-                    tokenList?.[token.address.toLowerCase()]?.iconUrl) ??
+                    (token.address &&
+                      tokenList?.[token.address.toLowerCase()]?.iconUrl)) ??
                   getAssetImageUrl(
                     token.address,
                     formatChainIdToCaip(token.chainId),
