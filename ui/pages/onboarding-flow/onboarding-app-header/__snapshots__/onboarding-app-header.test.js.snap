@@ -50,12 +50,12 @@ exports[`OnboardingAppHeader shoul match snapshot on onboarding completion page 
             class="mm-box mm-box--min-width-0"
           >
             <p
-              class="mm-box mm-text mm-text--body-md mm-box--padding-right-2 mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md-medium mm-box--padding-right-2 mm-box--color-text-default"
             >
               Pin the MetaMask extension
             </p>
             <p
-              class="mm-box mm-text mm-text--body-sm mm-box--align-items-center mm-box--color-text-alternative"
+              class="mm-box mm-text mm-text--body-sm mm-box--padding-right-2 mm-box--align-items-center mm-box--color-text-alternative"
             >
               <span>
                  
