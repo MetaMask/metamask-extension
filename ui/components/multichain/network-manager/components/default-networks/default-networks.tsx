@@ -15,6 +15,7 @@ import {
 import {
   AlignItems,
   BlockSize,
+  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
@@ -52,6 +53,7 @@ import {
   getMultichainNetworkConfigurationsByChainId,
   getIsMultichainAccountsState2Enabled,
   getSelectedInternalAccount,
+  getGasFeesSponsoredNetworkEnabled,
 } from '../../../../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import { isFlask } from '../../../../../helpers/utils/build-types';
@@ -102,6 +104,26 @@ const DefaultNetworks = memo(() => {
       getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
     );
   }
+
+  // This selector provides the indication if the "Gas sponsored" label
+  // is enabled based on the remote feature flag.
+  const isGasFeesSponsoredNetworkEnabled = useSelector(
+    getGasFeesSponsoredNetworkEnabled,
+  );
+
+  // Check if a network has gas sponsorship enabled
+  const isNetworkGasSponsored = useCallback(
+    (chainId: string | undefined): boolean => {
+      if (!chainId) return false;
+
+      return Boolean(
+        isGasFeesSponsoredNetworkEnabled?.[
+          chainId as keyof typeof isGasFeesSponsoredNetworkEnabled
+        ]
+      );
+    },
+    [isGasFeesSponsoredNetworkEnabled]
+  );
 
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
@@ -315,6 +337,18 @@ const DefaultNetworks = memo(() => {
           >
             {network.name}
           </Text>
+          {isNetworkGasSponsored(network.chainId) && (
+            <Text
+              marginLeft={1}
+              variant={TextVariant.bodySm}
+              color={TextColor.textDefault}
+              borderColor={BorderColor.borderDefault}
+              paddingLeft={1}
+              paddingRight={1}
+            >
+              {t('noNetworkFee')}
+            </Text>
+          )}
           <ButtonIcon
             size={ButtonIconSize.Md}
             color={IconColor.iconDefault}
@@ -326,7 +360,7 @@ const DefaultNetworks = memo(() => {
         </Box>
       );
     });
-  }, [featuredNetworksNotYetEnabled, handleAdditionalNetworkClick, t]);
+  }, [featuredNetworksNotYetEnabled, handleAdditionalNetworkClick, t, isNetworkGasSponsored]);
 
   return (
     <>
