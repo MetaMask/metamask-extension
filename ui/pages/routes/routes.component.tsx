@@ -19,7 +19,6 @@ import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
 import PermissionsConnect from '../permissions-connect';
 import Loading from '../../components/ui/loading-screen';
-import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
@@ -74,11 +73,10 @@ import {
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
   SHIELD_PLAN_ROUTE,
+  GATOR_PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  getProviderConfig,
-  isNetworkLoading as getIsNetworkLoading,
-} from '../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
   getPreferences,
@@ -155,12 +153,13 @@ import { MultichainAccountDetails } from '../multichain-accounts/account-details
 import { AddressQRCode } from '../multichain-accounts/address-qr-code';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
+import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
+import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
 import { useRedesignedSendFlow } from '../confirmations/hooks/useRedesignedSendFlow';
 import {
   getConnectingLabel,
@@ -296,6 +295,13 @@ const GatorPermissionsPage = mmLazy(
       '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
     )) as unknown as DynamicImportType,
 );
+const TokenTransferPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
+    )) as unknown as DynamicImportType,
+);
 const Connections = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
@@ -381,7 +387,6 @@ export default function Routes() {
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
   const account = useAppSelector(getSelectedInternalAccount);
-  const isNetworkLoading = useAppSelector(getIsNetworkLoading);
 
   const networkToAutomaticallySwitchTo = useAppSelector(
     getNetworkToAutomaticallySwitchTo,
@@ -459,7 +464,14 @@ export default function Routes() {
     getIsMultichainAccountsState1Enabled,
   );
 
-  const prevPropsRef = useRef({ isUnlocked, totalUnapprovedConfirmationCount });
+  // Multichain intro modal logic (extracted to custom hook)
+  const { showMultichainIntroModal, setShowMultichainIntroModal } =
+    useMultichainAccountsIntroModal(isUnlocked, location);
+
+  const prevPropsRef = useRef({
+    isUnlocked,
+    totalUnapprovedConfirmationCount,
+  });
 
   useEffect(() => {
     const prevProps = prevPropsRef.current;
@@ -477,7 +489,10 @@ export default function Routes() {
       dispatch(automaticallySwitchNetwork(networkToAutomaticallySwitchTo));
     }
 
-    prevPropsRef.current = { isUnlocked, totalUnapprovedConfirmationCount };
+    prevPropsRef.current = {
+      isUnlocked,
+      totalUnapprovedConfirmationCount,
+    };
   }, [
     networkToAutomaticallySwitchTo,
     isUnlocked,
@@ -633,13 +648,15 @@ export default function Routes() {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated
-            path={PERMISSIONS}
-            component={
-              isGatorPermissionsFeatureEnabled()
-                ? GatorPermissionsPage
-                : PermissionsPage
-            }
+            path={GATOR_PERMISSIONS}
+            component={GatorPermissionsPage}
+            exact
+          />
+          <Authenticated
+            path={TOKEN_TRANSFER_ROUTE}
+            component={TokenTransferPage}
             exact
           />
           <Authenticated
@@ -730,10 +747,9 @@ export default function Routes() {
     return <AccountDetails address={accountDetailsAddress} />;
   };
 
-  const loadMessage =
-    loadingMessage || isNetworkLoading
-      ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
-      : null;
+  const loadMessage = loadingMessage
+    ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
+    : null;
 
   const windowType = getEnvironmentType();
 
@@ -843,15 +859,15 @@ export default function Routes() {
         )
         ///: END:ONLY_INCLUDE_IF
       }
+
+      {showMultichainIntroModal ? (
+        <MultichainAccountIntroModalContainer
+          onClose={() => setShowMultichainIntroModal(false)}
+        />
+      ) : null}
+
       <Box className="main-container-wrapper">
         {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-        {!isLoading &&
-        isUnlocked &&
-        isNetworkLoading &&
-        completedOnboarding &&
-        !isShowingDeepLinkRoute ? (
-          <LoadingNetwork />
-        ) : null}
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}

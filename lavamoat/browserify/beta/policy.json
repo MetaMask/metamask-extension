@@ -935,7 +935,7 @@
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
+        "@metamask/multichain-network-controller": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -954,7 +954,6 @@
       "packages": {
         "@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/keyring-api": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
@@ -1013,6 +1012,13 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-controller": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/delegation-core": {
+      "packages": {
+        "@metamask/abi-utils": true,
+        "@metamask/utils": true,
+        "@noble/hashes": true
       }
     },
     "@metamask/design-system-react": {
@@ -1232,7 +1238,6 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "webpack>events": true,
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
@@ -1341,6 +1346,8 @@
     "@metamask/gator-permissions-controller": {
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/delegation-core": true,
+        "@metamask/gator-permissions-controller>@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true
       }
@@ -1386,22 +1393,6 @@
       }
     },
     "@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/multichain-network-controller>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/keyring-api": {
       "packages": {
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
@@ -1549,20 +1540,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/multichain-network-controller>@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "lodash": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/keyring-api": true,
+        "@metamask/keyring-api": true,
         "@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1617,6 +1595,16 @@
         "uuid": true
       }
     },
+    "@metamask/network-enablement-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/keyring-api": true,
+        "@metamask/multichain-network-controller": true,
+        "@metamask/utils": true,
+        "reselect": true
+      }
+    },
     "@metamask/transaction-controller>@metamask/nonce-tracker": {
       "packages": {
         "@ethersproject/providers": true,
@@ -1628,6 +1616,7 @@
       "globals": {
         "Intl.NumberFormat": true,
         "addEventListener": true,
+        "console.error": true,
         "fetch": true,
         "registration": true,
         "removeEventListener": true
@@ -1691,6 +1680,7 @@
         "TextEncoder": true,
         "URL": true,
         "console.error": true,
+        "console.warn": true,
         "fetch": true
       },
       "packages": {
@@ -2856,11 +2846,6 @@
         "browserify>buffer": true
       }
     },
-    "blo": {
-      "globals": {
-        "btoa": true
-      }
-    },
     "@metamask/design-system-react>blo": {
       "globals": {
         "btoa": true
@@ -3014,7 +2999,7 @@
         "string.prototype.matchall>call-bind>set-function-length": true
       }
     },
-    "browserify>util>which-typed-array>call-bound": {
+    "@lavamoat/webpack>json-stable-stringify>call-bound": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>get-intrinsic": true
@@ -3273,9 +3258,9 @@
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "string.prototype.matchall>es-abstract>is-regex": true,
         "string.prototype.matchall>es-abstract>is-shared-array-buffer": true,
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "@ngraveio/bc-ur>assert>object-is": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true,
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true,
         "gulp>vinyl-fs>object.assign": true,
         "string.prototype.matchall>regexp.prototype.flags": true,
         "string.prototype.matchall>side-channel": true,
@@ -3295,7 +3280,7 @@
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
         "string.prototype.matchall>es-abstract>has-property-descriptors": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
     "crypto-browserify>browserify-cipher>browserify-des>des.js": {
@@ -3358,7 +3343,7 @@
         "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-map": true,
         "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-set": true,
         "eslint-plugin-react>array-includes>is-string": true,
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "process": true,
         "@metamask/eth-token-tracker>deep-equal>es-get-iterator>stop-iteration-iterator": true
       }
@@ -4205,7 +4190,7 @@
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>has-symbols": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
     "@metamask/object-multiplex>once": {
@@ -4975,7 +4960,7 @@
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
       "packages": {
-        "browserify>util>which-typed-array>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
@@ -4983,7 +4968,7 @@
     },
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
       "packages": {
-        "browserify>util>which-typed-array>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
@@ -5103,7 +5088,7 @@
     },
     "addons-linter>sha.js>to-buffer": {
       "packages": {
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "koa>content-disposition>safe-buffer": true,
         "string.prototype.matchall>es-abstract>typed-array-buffer": true
       }
@@ -5132,7 +5117,7 @@
     },
     "string.prototype.matchall>es-abstract>typed-array-buffer": {
       "packages": {
-        "browserify>util>which-typed-array>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>es-abstract>es-errors": true,
         "browserify>util>is-typed-array": true
       }
@@ -5381,7 +5366,7 @@
       "packages": {
         "string.prototype.matchall>es-abstract>available-typed-arrays": true,
         "string.prototype.matchall>call-bind": true,
-        "browserify>util>which-typed-array>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "browserify>util>which-typed-array>for-each": true,
         "string.prototype.matchall>get-intrinsic>get-proto": true,
         "string.prototype.matchall>es-abstract>gopd": true,

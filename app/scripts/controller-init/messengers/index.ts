@@ -6,6 +6,9 @@ import {
 import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  getMultichainRouterMessenger,
+  ///: END:ONLY_INCLUDE_IF
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
   getSnapControllerInitMessenger,
@@ -35,12 +38,14 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
+  getNetworkEnablementControllerMessenger,
   getNetworkOrderControllerMessenger,
   getNftControllerInitMessenger,
   getNftControllerMessenger,
   getNftDetectionControllerMessenger,
   getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
+  getAssetsContractControllerInitMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -57,6 +62,8 @@ import {
   getAccountTreeControllerInitMessenger,
   getMultichainAccountServiceMessenger,
   getMultichainAccountServiceInitMessenger,
+  getSnapKeyringBuilderMessenger,
+  getSnapKeyringBuilderInitMessenger,
 } from './accounts';
 import {
   getOAuthServiceMessenger,
@@ -137,6 +144,16 @@ import {
   getPermissionControllerInitMessenger,
 } from './permission-controller-messenger';
 import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
+import {
+  getKeyringControllerInitMessenger,
+  getKeyringControllerMessenger,
+} from './keyring-controller-messenger';
+import { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
+import {
+  getNetworkControllerInitMessenger,
+  getNetworkControllerMessenger,
+} from './network-controller-messenger';
+import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -182,8 +199,24 @@ export {
   getGasFeeControllerMessenger,
   getGasFeeControllerInitMessenger,
 } from './gas-fee-controller-messenger';
+export type {
+  KeyringControllerMessenger,
+  KeyringControllerInitMessenger,
+} from './keyring-controller-messenger';
+export {
+  getKeyringControllerMessenger,
+  getKeyringControllerInitMessenger,
+} from './keyring-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+export type {
+  NetworkControllerMessenger,
+  NetworkControllerInitMessenger,
+} from './network-controller-messenger';
+export {
+  getNetworkControllerMessenger,
+  getNetworkControllerInitMessenger,
+} from './network-controller-messenger';
 export type { RatesControllerMessenger } from './rates-controller-messenger';
 export { getRatesControllerMessenger } from './rates-controller-messenger';
 export type {
@@ -206,6 +239,8 @@ export {
   getPermissionControllerMessenger,
   getPermissionControllerInitMessenger,
 } from './permission-controller-messenger';
+export type { PermissionLogControllerMessenger } from './permission-log-controller-messenger';
+export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export type {
   RemoteFeatureFlagControllerMessenger,
   RemoteFeatureFlagControllerInitMessenger,
@@ -316,6 +351,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getInstitutionalSnapControllerMessenger,
     getInitMessenger: noop,
   },
+  KeyringController: {
+    getMessenger: getKeyringControllerMessenger,
+    getInitMessenger: getKeyringControllerInitMessenger,
+  },
   MetaMetricsController: {
     getMessenger: getMetaMetricsControllerMessenger,
     getInitMessenger: noop,
@@ -340,9 +379,19 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getMultichainNetworkControllerMessenger,
     getInitMessenger: noop,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  MultichainRouter: {
+    getMessenger: getMultichainRouterMessenger,
+    getInitMessenger: noop,
+  },
+  ///: END:ONLY_INCLUDE_IF
   NameController: {
     getMessenger: getNameControllerMessenger,
     getInitMessenger: getNameControllerInitMessenger,
+  },
+  NetworkController: {
+    getMessenger: getNetworkControllerMessenger,
+    getInitMessenger: getNetworkControllerInitMessenger,
   },
   NotificationServicesController: {
     getMessenger: getNotificationServicesControllerMessenger,
@@ -363,6 +412,10 @@ export const CONTROLLER_MESSENGERS = {
   PermissionController: {
     getMessenger: getPermissionControllerMessenger,
     getInitMessenger: getPermissionControllerInitMessenger,
+  },
+  PermissionLogController: {
+    getMessenger: getPermissionLogControllerMessenger,
+    getInitMessenger: noop,
   },
   RateLimitController: {
     getMessenger: getRateLimitControllerMessenger,
@@ -408,6 +461,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSnapInterfaceControllerMessenger,
     getInitMessenger: noop,
   },
+  SnapKeyringBuilder: {
+    getMessenger: getSnapKeyringBuilderMessenger,
+    getInitMessenger: getSnapKeyringBuilderInitMessenger,
+  },
   SubjectMetadataController: {
     getMessenger: getSubjectMetadataControllerMessenger,
     getInitMessenger: noop,
@@ -415,6 +472,10 @@ export const CONTROLLER_MESSENGERS = {
   SubscriptionController: {
     getMessenger: getSubscriptionControllerMessenger,
     getInitMessenger: getSubscriptionControllerInitMessenger,
+  },
+  SubscriptionService: {
+    getMessenger: getSubscriptionServiceMessenger,
+    getInitMessenger: noop,
   },
   SwapsController: {
     getMessenger: getSwapsControllerMessenger,
@@ -466,7 +527,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   AssetsContractController: {
     getMessenger: getAssetsContractControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getAssetsContractControllerInitMessenger,
   },
   AccountTreeController: {
     getMessenger: getAccountTreeControllerMessenger,
@@ -486,6 +547,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NetworkEnablementController: {
+    getMessenger: getNetworkEnablementControllerMessenger,
     getInitMessenger: noop,
   },
 } as const;

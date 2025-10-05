@@ -21,7 +21,7 @@ exports[`Identicon should match snapshot with address prop div 1`] = `
           <rect
             fill="#2362E1"
             height="46"
-            transform="translate(5.159662140639244 -7.668071520898189) rotate(458.4 23 23)"
+            transform="translate(5.15966214063924 -7.66807152089819) rotate(458.4 23.00000000000000 23.00000000000000)"
             width="46"
             x="0"
             y="0"
@@ -29,7 +29,7 @@ exports[`Identicon should match snapshot with address prop div 1`] = `
           <rect
             fill="#F94301"
             height="46"
-            transform="translate(-22.084972728872177 11.489005476012034) rotate(268.8 23 23)"
+            transform="translate(-22.08497272887218 11.48900547601203) rotate(268.8 23.00000000000000 23.00000000000000)"
             width="46"
             x="0"
             y="0"
@@ -37,7 +37,7 @@ exports[`Identicon should match snapshot with address prop div 1`] = `
           <rect
             fill="#FA7900"
             height="46"
-            transform="translate(-13.047115238995795 42.377522828482356) rotate(117.3 23 23)"
+            transform="translate(-13.04711523899580 42.37752282848236) rotate(117.3 23.00000000000000 23.00000000000000)"
             width="46"
             x="0"
             y="0"

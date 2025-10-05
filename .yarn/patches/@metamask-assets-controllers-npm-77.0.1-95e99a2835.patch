@@ -1,0 +1,26 @@
+diff --git a/dist/assetsUtil.cjs b/dist/assetsUtil.cjs
+index b3db76c39d78362273ff081d8c8efe30040ffc28..cab60d3a8541ad0459112638f027c7e303b68b1e 100644
+--- a/dist/assetsUtil.cjs
++++ b/dist/assetsUtil.cjs
+@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
++function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } }
+ exports.accountAddressToCaipReference = exports.getKeyByValue = exports.fetchTokenContractExchangeRates = exports.reduceInBatchesSerially = exports.divideIntoBatches = exports.ethersBigNumberToBN = exports.addUrlProtocolPrefix = exports.getFormattedIpfsUrl = exports.getIpfsCIDv1AndPath = exports.removeIpfsProtocolPrefix = exports.isTokenListSupportedForNetwork = exports.isTokenDetectionSupportedForNetwork = exports.SupportedStakedBalanceNetworks = exports.SupportedTokenDetectionNetworks = exports.formatIconUrlWithProxy = exports.formatAggregatorNames = exports.hasNewCollectionFields = exports.compareNftMetadata = exports.TOKEN_PRICES_BATCH_SIZE = void 0;
+ const controller_utils_1 = require("@metamask/controller-utils");
+ const utils_1 = require("@metamask/utils");
+@@ -240,7 +241,12 @@ async function getIpfsCIDv1AndPath(ipfsUrl) {
+     const index = url.indexOf('/');
+     const cid = index !== -1 ? url.substring(0, index) : url;
+     const path = index !== -1 ? url.substring(index) : undefined;
+-    const { CID } = await import("multiformats");
++    // Dynamic import is used here in `core` for CJS compatbility, because 'multiformats' is ESM-
++    // only. However, dynamic import is not supported by LavaMoat.
++    // See here for details: https://github.com/MetaMask/metamask-extension/pull/27629#discussion_r1791797810
++    // TODO: Attempt deleting this patch after migrating to Webpack, which may support dynamic
++    // import with LavaMoat.
++    const { CID } = _interopRequireWildcard(require("multiformats"));
+     // We want to ensure that the CID is v1 (https://docs.ipfs.io/concepts/content-addressing/#identifier-formats)
+     // because most cid v0s appear to be incompatible with IPFS subdomains
+     return {

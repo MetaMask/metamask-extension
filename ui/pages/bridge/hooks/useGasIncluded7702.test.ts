@@ -1,5 +1,6 @@
-import { renderHook } from '@testing-library/react-hooks';
 import { act, waitFor } from '@testing-library/react';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { useGasIncluded7702 } from './useGasIncluded7702';
 
 jest.mock('../../../store/actions', () => ({
@@ -10,6 +11,20 @@ jest.mock('../../../store/controller-actions/transaction-controller', () => ({
   isAtomicBatchSupported: jest.fn(),
 }));
 
+jest.mock('../../../../shared/modules/selectors');
+
+const renderUseGasIncluded7702 = (
+  params: Parameters<typeof useGasIncluded7702>[0],
+  mockStoreOverrides?: Record<string, unknown>,
+) => {
+  return renderHookWithProvider(
+    () => useGasIncluded7702(params),
+    mockStoreOverrides ?? {
+      metamask: { preferences: { smartAccountOptIn: true } },
+    },
+  );
+};
+
 describe('useGasIncluded7702', () => {
   const mockIsRelaySupported = jest.requireMock(
     '../../../store/actions',
@@ -17,41 +32,66 @@ describe('useGasIncluded7702', () => {
   const mockIsAtomicBatchSupported = jest.requireMock(
     '../../../store/controller-actions/transaction-controller',
   ).isAtomicBatchSupported;
+  const mockGetIsSmartTransaction = jest.mocked(getIsSmartTransaction);
 
   beforeEach(() => {
     jest.clearAllMocks();
     jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    mockGetIsSmartTransaction.mockReturnValue(false);
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  it('returns false when isSendBundleSupportedForChain is true', () => {
-    const { result } = renderHook(() =>
-      useGasIncluded7702({
-        smartAccountOptedIn: true,
-        isSwap: true,
-        selectedAccount: { address: '0x123' },
-        fromChain: { chainId: '0x1' },
-        isSendBundleSupportedForChain: true,
-      }),
-    );
+  it('returns false and skips checks when send bundle supported AND Smart Transactions enabled', () => {
+    mockGetIsSmartTransaction.mockReturnValue(true);
+
+    const { result } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: true,
+    });
 
     expect(result.current).toBe(false);
     expect(mockIsAtomicBatchSupported).not.toHaveBeenCalled();
     expect(mockIsRelaySupported).not.toHaveBeenCalled();
   });
 
+  it('proceeds with checks when send bundle supported BUT Smart Transactions disabled', async () => {
+    mockGetIsSmartTransaction.mockReturnValue(false);
+    mockIsAtomicBatchSupported.mockResolvedValue([
+      { chainId: '0x1', isSupported: true },
+    ]);
+    mockIsRelaySupported.mockResolvedValue(true);
+
+    const { result, waitForNextUpdate } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: true,
+    });
+
+    // initial false
+    expect(result.current).toBe(false);
+
+    await waitForNextUpdate();
+
+    expect(mockIsAtomicBatchSupported).toHaveBeenCalled();
+    expect(mockIsRelaySupported).toHaveBeenCalled();
+    expect(result.current).toBe(true);
+  });
+
   it('returns false when smartAccountOptedIn is false', () => {
-    const { result } = renderHook(() =>
-      useGasIncluded7702({
-        smartAccountOptedIn: false,
+    const { result } = renderUseGasIncluded7702(
+      {
         isSwap: true,
         selectedAccount: { address: '0x123' },
         fromChain: { chainId: '0x1' },
         isSendBundleSupportedForChain: false,
-      }),
+      },
+      { metamask: { preferences: { smartAccountOptIn: false } } },
     );
 
     expect(result.current).toBe(false);
@@ -60,15 +100,12 @@ describe('useGasIncluded7702', () => {
   });
 
   it('returns false when isSwap is false', () => {
-    const { result } = renderHook(() =>
-      useGasIncluded7702({
-        smartAccountOptedIn: true,
-        isSwap: false,
-        selectedAccount: { address: '0x123' },
-        fromChain: { chainId: '0x1' },
-        isSendBundleSupportedForChain: false,
-      }),
-    );
+    const { result } = renderUseGasIncluded7702({
+      isSwap: false,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: false,
+    });
 
     expect(result.current).toBe(false);
     expect(mockIsAtomicBatchSupported).not.toHaveBeenCalled();
@@ -76,15 +113,12 @@ describe('useGasIncluded7702', () => {
   });
 
   it('returns false when selectedAccount is null', () => {
-    const { result } = renderHook(() =>
-      useGasIncluded7702({
-        smartAccountOptedIn: true,
-        isSwap: true,
-        selectedAccount: null,
-        fromChain: { chainId: '0x1' },
-        isSendBundleSupportedForChain: false,
-      }),
-    );
+    const { result } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: null,
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: false,
+    });
 
     expect(result.current).toBe(false);
     expect(mockIsAtomicBatchSupported).not.toHaveBeenCalled();
@@ -92,15 +126,12 @@ describe('useGasIncluded7702', () => {
   });
 
   it('returns false when fromChain is null', () => {
-    const { result } = renderHook(() =>
-      useGasIncluded7702({
-        smartAccountOptedIn: true,
-        isSwap: true,
-        selectedAccount: { address: '0x123' },
-        fromChain: null,
-        isSendBundleSupportedForChain: false,
-      }),
-    );
+    const { result } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: null,
+      isSendBundleSupportedForChain: false,
+    });
 
     expect(result.current).toBe(false);
     expect(mockIsAtomicBatchSupported).not.toHaveBeenCalled();
@@ -113,15 +144,12 @@ describe('useGasIncluded7702', () => {
     ]);
     mockIsRelaySupported.mockResolvedValue(true);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useGasIncluded7702({
-        smartAccountOptedIn: true,
-        isSwap: true,
-        selectedAccount: { address: '0x123' },
-        fromChain: { chainId: '0x1' },
-        isSendBundleSupportedForChain: false,
-      }),
-    );
+    const { result, waitForNextUpdate } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: false,
+    });
 
     await waitForNextUpdate();
 
@@ -139,15 +167,12 @@ describe('useGasIncluded7702', () => {
     ]);
     mockIsRelaySupported.mockResolvedValue(true);
 
-    const { result } = renderHook(() =>
-      useGasIncluded7702({
-        smartAccountOptedIn: true,
-        isSwap: true,
-        selectedAccount: { address: '0x123' },
-        fromChain: { chainId: '0x1' },
-        isSendBundleSupportedForChain: false,
-      }),
-    );
+    const { result } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: false,
+    });
 
     // Initial state should be false
     expect(result.current).toBe(false);
@@ -167,15 +192,12 @@ describe('useGasIncluded7702', () => {
     ]);
     mockIsRelaySupported.mockResolvedValue(false);
 
-    const { result } = renderHook(() =>
-      useGasIncluded7702({
-        smartAccountOptedIn: true,
-        isSwap: true,
-        selectedAccount: { address: '0x123' },
-        fromChain: { chainId: '0x1' },
-        isSendBundleSupportedForChain: false,
-      }),
-    );
+    const { result } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: false,
+    });
 
     // Initial state should be false
     expect(result.current).toBe(false);
@@ -192,15 +214,12 @@ describe('useGasIncluded7702', () => {
   it('handles errors gracefully and returns false', async () => {
     mockIsAtomicBatchSupported.mockRejectedValue(new Error('Test error'));
 
-    const { result } = renderHook(() =>
-      useGasIncluded7702({
-        smartAccountOptedIn: true,
-        isSwap: true,
-        selectedAccount: { address: '0x123' },
-        fromChain: { chainId: '0x1' },
-        isSendBundleSupportedForChain: false,
-      }),
-    );
+    const { result } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: false,
+    });
 
     // Initial state should be false
     expect(result.current).toBe(false);
@@ -224,15 +243,12 @@ describe('useGasIncluded7702', () => {
     ]);
     mockIsRelaySupported.mockResolvedValue(true);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useGasIncluded7702({
-        smartAccountOptedIn: true,
-        isSwap: true,
-        selectedAccount: { address: '0x123' },
-        fromChain: { chainId: '0x1' },
-        isSendBundleSupportedForChain: false,
-      }),
-    );
+    const { result, waitForNextUpdate } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: false,
+    });
 
     await waitForNextUpdate();
     expect(result.current).toBe(true);
@@ -244,15 +260,12 @@ describe('useGasIncluded7702', () => {
     ]);
     mockIsRelaySupported.mockResolvedValue(true);
 
-    const { result } = renderHook(() =>
-      useGasIncluded7702({
-        smartAccountOptedIn: true,
-        isSwap: true,
-        selectedAccount: { address: '0x123' },
-        fromChain: { chainId: '0x1' },
-        isSendBundleSupportedForChain: false,
-      }),
-    );
+    const { result } = renderUseGasIncluded7702({
+      isSwap: true,
+      selectedAccount: { address: '0x123' },
+      fromChain: { chainId: '0x1' },
+      isSendBundleSupportedForChain: false,
+    });
 
     // Initial state should be false
     expect(result.current).toBe(false);
@@ -277,15 +290,12 @@ describe('useGasIncluded7702', () => {
       mockIsAtomicBatchSupported.mockReturnValue(atomicBatchPromise);
       mockIsRelaySupported.mockResolvedValue(true);
 
-      const { result, unmount } = renderHook(() =>
-        useGasIncluded7702({
-          smartAccountOptedIn: true,
-          isSwap: true,
-          selectedAccount: { address: '0x123' },
-          fromChain: { chainId: '0x1' },
-          isSendBundleSupportedForChain: false,
-        }),
-      );
+      const { result, unmount } = renderUseGasIncluded7702({
+        isSwap: true,
+        selectedAccount: { address: '0x123' },
+        fromChain: { chainId: '0x1' },
+        isSendBundleSupportedForChain: false,
+      });
 
       // Initial state should be false
       expect(result.current).toBe(false);
@@ -319,17 +329,21 @@ describe('useGasIncluded7702', () => {
         .mockReturnValueOnce(secondAtomicBatchPromise);
       mockIsRelaySupported.mockResolvedValue(true);
 
-      const { result, rerender } = renderHook(
-        ({ address, chainId }) =>
+      const { result, rerender } = renderHookWithProvider(
+        (
+          { address, chainId } = {
+            address: '0x123',
+            chainId: '0x1',
+          },
+        ) =>
           useGasIncluded7702({
-            smartAccountOptedIn: true,
             isSwap: true,
             selectedAccount: { address },
             fromChain: { chainId },
             isSendBundleSupportedForChain: false,
           }),
         {
-          initialProps: { address: '0x123', chainId: '0x1' },
+          initialProps: { children: { address: '0x123', chainId: '0x1' } },
         },
       );
 
@@ -337,11 +351,13 @@ describe('useGasIncluded7702', () => {
       expect(result.current).toBe(false);
 
       // Change props (this triggers a new effect)
-      rerender({ address: '0x456', chainId: '0x2' });
+      rerender({ children: { address: '0x456', chainId: '0x2' } });
 
       // Resolve the second request first
       await act(async () => {
-        resolveSecondAtomicBatch?.([{ chainId: '0x2', isSupported: false }]);
+        resolveSecondAtomicBatch?.([
+          { children: { chainId: '0x2', isSupported: false } },
+        ]);
         await Promise.resolve();
       });
 
@@ -352,7 +368,9 @@ describe('useGasIncluded7702', () => {
 
       // Now resolve the first (stale) request
       await act(async () => {
-        resolveFirstAtomicBatch?.([{ chainId: '0x1', isSupported: true }]);
+        resolveFirstAtomicBatch?.([
+          { children: { chainId: '0x1', isSupported: true } },
+        ]);
         await Promise.resolve();
       });
 
@@ -382,24 +400,33 @@ describe('useGasIncluded7702', () => {
       );
       mockIsRelaySupported.mockResolvedValue(true);
 
-      const { result, rerender } = renderHook(
-        ({ address, chainId }) =>
+      const { result, rerender } = renderHookWithProvider(
+        (
+          { address, chainId } = {
+            address: addresses[0],
+            chainId: chainIds[0],
+          },
+        ) =>
           useGasIncluded7702({
-            smartAccountOptedIn: true,
             isSwap: true,
             selectedAccount: { address },
             fromChain: { chainId },
             isSendBundleSupportedForChain: false,
           }),
         {
-          initialProps: { address: addresses[0], chainId: chainIds[0] },
+          initialProps: {
+            children: { address: addresses[0], chainId: chainIds[0] },
+          },
+          state: { metamask: { preferences: { smartAccountOptIn: true } } },
         },
       );
 
       // Rapidly change props
       for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
-          rerender({ address: addresses[i], chainId: chainIds[j] });
+          rerender({
+            children: { address: addresses[i], chainId: chainIds[j] },
+          });
         }
       }
 
@@ -409,8 +436,8 @@ describe('useGasIncluded7702', () => {
       });
 
       await waitFor(() => {
-        // Final state should reflect the last combination (true)
-        expect(result.current).toBe(true);
+        // Final state should reflect the last combination (false)
+        expect(result.current).toBe(false);
       });
     });
 
@@ -427,22 +454,25 @@ describe('useGasIncluded7702', () => {
         .mockReturnValueOnce(firstRelayPromise)
         .mockResolvedValueOnce(false);
 
-      const { result, rerender } = renderHook(
-        ({ chainId }) =>
+      const { result, rerender } = renderHookWithProvider(
+        (
+          { chainId } = {
+            chainId: '0x1',
+          },
+        ) =>
           useGasIncluded7702({
-            smartAccountOptedIn: true,
             isSwap: true,
             selectedAccount: { address: '0x123' },
             fromChain: { chainId },
             isSendBundleSupportedForChain: false,
           }),
         {
-          initialProps: { chainId: '0x1' },
+          initialProps: { children: { chainId: '0x1' } },
         },
       );
 
       // Change chainId while first relay check is pending
-      rerender({ chainId: '0x2' });
+      rerender({ children: { chainId: '0x2' } });
 
       // Resolve the first (now stale) relay check
       await act(async () => {

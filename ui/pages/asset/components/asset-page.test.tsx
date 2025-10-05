@@ -199,6 +199,7 @@ describe('AssetPage', () => {
         },
       ],
       accountsAssets: {},
+      useExternalServices: true,
     },
   };
 
@@ -403,6 +404,7 @@ describe('AssetPage', () => {
     const { container } = renderWithProvider(
       <AssetPage asset={native} optionsButton={null} />,
       store,
+      ['/0x1'],
     );
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
     dynamicImages.forEach((img) => {
@@ -482,6 +484,7 @@ describe('AssetPage', () => {
           },
         },
       }),
+      ['/0x1/0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55'],
     );
 
     // Verify chart is rendered
@@ -492,9 +495,7 @@ describe('AssetPage', () => {
 
     // Verify market data is rendered
     const marketCapElement = queryByTestId('asset-market-cap');
-    expect(marketCapElement).toHaveTextContent(
-      `${marketCap * mockStore.metamask.currencyRates.ETH.conversionRate}`,
-    );
+    expect(marketCapElement).toHaveTextContent('$56.09K');
 
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
     dynamicImages.forEach((img) => {
