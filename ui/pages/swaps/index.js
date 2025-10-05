@@ -16,6 +16,7 @@ import {
 import { shuffle, isEqual } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
+import { useSetNavState } from '../../contexts/navigation-state';
 
 import {
   getSelectedAccount,
@@ -104,6 +105,7 @@ import NotificationPage from './notification-page/notification-page';
 export default function Swap() {
   const t = useContext(I18nContext);
   const navigate = useNavigate();
+  const setNavState = useSetNavState();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -347,9 +349,9 @@ export default function Swap() {
 
   const redirectToDefaultRoute = async () => {
     clearTemporaryTokenRef.current();
-    navigate(DEFAULT_ROUTE, {
-      state: { stayOnHomePage: true },
-    });
+    // Set navigation state before navigate (HashRouter in v5-compat doesn't support state)
+    setNavState({ stayOnHomePage: true });
+    navigate(DEFAULT_ROUTE);
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
   };

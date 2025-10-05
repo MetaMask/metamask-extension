@@ -8,12 +8,22 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import UnlockPage from '.';
 
 const mockUseNavigate = jest.fn();
+let mockNavState = null;
+const mockClearNavState = jest.fn();
+
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
   };
 });
+
+jest.mock('../../contexts/navigation-state', () => ({
+  useNavState: () => mockNavState,
+  useSetNavState: () => (newState) => {
+    mockNavState = newState;
+  },
+}));
 
 const mockTryUnlockMetamask = jest.fn(() => {
   return async () => {
@@ -43,6 +53,7 @@ jest.mock('@metamask/logo', () => () => {
 describe('Unlock Page', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockNavState = null; // Reset navigation state before each test
   });
 
   process.env.METAMASK_BUILD_TYPE = 'main';
@@ -141,7 +152,7 @@ describe('Unlock Page', () => {
     });
   });
 
-  it('should redirect to history location when unlocked', () => {
+  it('should redirect to history location when unlocked (from state)', () => {
     const intendedPath = '/previous-route';
     const mockStateWithUnlock = {
       metamask: { isUnlocked: true },
@@ -159,6 +170,30 @@ describe('Unlock Page', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledTimes(1);
     expect(mockUseNavigate).toHaveBeenCalledWith(intendedPath);
+  });
+
+  it('should redirect to context-stored location when unlocked (HashRouter v5-compat workaround)', () => {
+    const intendedPath = '/previous-route';
+    const intendedSearch = '?param=value';
+
+    // Set mock navigation state before rendering
+    mockNavState = {
+      from: { pathname: intendedPath, search: intendedSearch },
+    };
+
+    const mockStateWithUnlock = {
+      metamask: { isUnlocked: true },
+    };
+    const store = configureMockStore([thunk])(mockStateWithUnlock);
+
+    const pathname = '/unlock';
+
+    renderWithProvider(<UnlockPage />, store, {
+      pathname,
+    });
+
+    expect(mockUseNavigate).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(intendedPath + intendedSearch);
   });
 
   it('changes password, submits, and redirects to the specified route', async () => {

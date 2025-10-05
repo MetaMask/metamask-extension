@@ -107,13 +107,16 @@ const mapStateToProps = (state, ownProps) => {
   });
 
   // For nested routing in React Router v6/v5-compat, use relative paths from CONNECT_PATHS
+  // (These are used in <Route path={...}> definitions)
   const connectPath = '';
   const confirmPermissionPath = CONNECT_PATHS.CONFIRM_PERMISSIONS;
   const snapsConnectPath = CONNECT_PATHS.SNAPS_CONNECT;
   const snapInstallPath = CONNECT_PATHS.SNAP_INSTALL;
   const snapUpdatePath = CONNECT_PATHS.SNAP_UPDATE;
   const snapResultPath = CONNECT_PATHS.SNAP_RESULT;
-  // For checking pathname, we need to construct the full absolute paths
+
+  // For checking location.pathname, we need full absolute paths
+  // (location.pathname is always absolute, e.g., "/connect/123/snap-install")
   const fullSnapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
   const fullSnapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
   const fullSnapResultPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_RESULT_ROUTE}`;

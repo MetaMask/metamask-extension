@@ -87,7 +87,8 @@ export const useBridgeQueryParams = () => {
 
   const abortController = useRef<AbortController>(new AbortController());
 
-  const { search } = useLocation();
+  const location = useLocation();
+  const { search } = location;
   const navigate = useNavigate();
 
   // Parse CAIP asset data
@@ -102,9 +103,16 @@ export const useBridgeQueryParams = () => {
           updatedSearchParams.delete(param);
         }
       });
-      navigate({ search: updatedSearchParams.toString() }, { replace: true });
+      const searchString = updatedSearchParams.toString();
+      navigate(
+        {
+          pathname: location.pathname,
+          search: searchString,
+        },
+        { replace: true },
+      );
     },
-    [search, navigate],
+    [search, navigate, location.pathname],
   );
 
   const [parsedFromAssetId, setParsedFromAssetId] =

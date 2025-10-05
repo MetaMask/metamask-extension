@@ -69,10 +69,18 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     await propsTryUnlockMetamask(password);
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     let redirectTo = DEFAULT_ROUTE;
+
+    // Check state first (fallback), then navigation context (HashRouter v5-compat workaround)
     if (location.state?.from?.pathname) {
       const search = location.state.from.search || '';
       redirectTo = location.state.from.pathname + search;
+      ownProps.clearNavState();
+    } else if (ownProps.navState?.from?.pathname) {
+      redirectTo =
+        ownProps.navState.from.pathname + (ownProps.navState.from.search || '');
+      ownProps.clearNavState();
     }
+
     navigate(redirectTo);
   };
 

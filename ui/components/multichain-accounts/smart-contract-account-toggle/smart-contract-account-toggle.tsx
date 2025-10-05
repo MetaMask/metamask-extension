@@ -145,7 +145,7 @@ export const SmartContractAccountToggle = ({
     unconfirmedTransactions,
     address,
     chainIdHex,
-    history,
+    navigate,
     returnToPage,
     dispatch,
   ]);

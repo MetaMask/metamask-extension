@@ -35,6 +35,7 @@ import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
+  DEFAULT_ROUTE,
   LOCK_ROUTE,
   NEW_ACCOUNT_ROUTE,
   RESTORE_VAULT_ROUTE,
@@ -514,13 +515,9 @@ export default function RoutesComponent() {
     }
   }, [showExtensionInFullSizeView]);
 
-  // fire only when pathname actually changes
-  const prevPathRef = useRef(location.pathname);
+  // Dispatch pageChanged on every navigation (including initial load)
   useEffect(() => {
-    if (location.pathname !== prevPathRef.current) {
-      dispatch(pageChanged(location.pathname));
-      prevPathRef.current = location.pathname;
-    }
+    dispatch(pageChanged(location.pathname));
   }, [location.pathname, dispatch]);
 
   useEffect(() => {
@@ -548,18 +545,18 @@ export default function RoutesComponent() {
             }
           />
           <Route path={DEEP_LINK_ROUTE} element={<DeepLink />} />
-          <Route
-            path={RESTORE_VAULT_ROUTE}
-            element={
-              forgottenPassword ? (
-                <RestoreVaultPage />
-              ) : (
+          {forgottenPassword ? (
+            <Route path={RESTORE_VAULT_ROUTE} element={<RestoreVaultPage />} />
+          ) : (
+            <Route
+              path={RESTORE_VAULT_ROUTE}
+              element={
                 <Initialized>
                   <RestoreVaultPage />
                 </Initialized>
-              )
-            }
-          />
+              }
+            />
+          )}
           <Route
             path={SMART_ACCOUNT_UPDATE}
             element={
@@ -786,7 +783,11 @@ export default function RoutesComponent() {
           />
           <Route
             path={`${REVIEW_PERMISSIONS}/:origin`}
-            element={<MemoizedReviewPermissionsWrapper />}
+            element={
+              <Authenticated>
+                <MemoizedReviewPermissionsWrapper />
+              </Authenticated>
+            }
           />
           <Route
             path={ACCOUNT_LIST_PAGE_ROUTE}
@@ -881,6 +882,22 @@ export default function RoutesComponent() {
             element={
               <Authenticated>
                 <ShieldPlan />
+              </Authenticated>
+            }
+          />
+          <Route
+            path="/connected/*"
+            element={
+              <Authenticated>
+                <Home />
+              </Authenticated>
+            }
+          />
+          <Route
+            path={DEFAULT_ROUTE}
+            element={
+              <Authenticated>
+                <Home />
               </Authenticated>
             }
           />

@@ -780,8 +780,8 @@ ROUTES.forEach((route) => {
  * @param paths - Array of path patterns to match against
  * @param pathname - The pathname to match
  * @param options - Additional matchPath options (exact, strict, etc.)
- * @param options.exact
- * @param options.strict
+ * @param options.exact - If true, only matches if path exactly matches pathname (v5 compat)
+ * @param options.strict - If true, trailing slash matters (v5 compat) - NOTE: v6 doesn't have direct equivalent
  * @returns The first match found or null if no match
  */
 export function matchMultiplePaths(
@@ -791,10 +791,15 @@ export function matchMultiplePaths(
 ) {
   for (const path of paths) {
     // Convert v5 options to v6 options
+    // Note: v5 'strict' (trailing slash) doesn't map directly to v6 'caseSensitive'
+    // v6 doesn't have a direct equivalent for strict mode
     const v6Options = {
       path,
-      end: options.exact ?? false,
-      caseSensitive: options.strict ?? false,
+      // exact: true in v5 → end: true in v6 (match entire path)
+      // exact: false/undefined in v5 → end: false in v6 (partial matching)
+      end: options.exact === true,
+      // v6 doesn't support strict (trailing slash) mode, ignoring for now
+      caseSensitive: false,
     };
     const match = matchPath(v6Options, pathname);
     if (match) {

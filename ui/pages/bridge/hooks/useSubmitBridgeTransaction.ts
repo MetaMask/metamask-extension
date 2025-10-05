@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { createProjectLogger } from '@metamask/utils';
+import { useSetNavState } from '../../../contexts/navigation-state';
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
@@ -56,6 +57,7 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 
 export default function useSubmitBridgeTransaction() {
   const navigate = useNavigate();
+  const setNavState = useSetNavState();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
@@ -79,9 +81,9 @@ export default function useSubmitBridgeTransaction() {
     try {
       if (isSolanaChainId(quoteResponse.quote.srcChainId)) {
         await dispatch(setDefaultHomeActiveTabName('activity'));
-        navigate(DEFAULT_ROUTE, {
-          state: { stayOnHomePage: true },
-        });
+        // Set navigation state before navigate (HashRouter in v5-compat doesn't support state)
+        setNavState({ stayOnHomePage: true });
+        navigate(DEFAULT_ROUTE);
         await dispatch(
           submitBridgeTx(fromAccount.address, quoteResponse, false),
         );
@@ -110,9 +112,9 @@ export default function useSubmitBridgeTransaction() {
     }
     // Route user to activity tab on Home page
     await dispatch(setDefaultHomeActiveTabName('activity'));
-    navigate(DEFAULT_ROUTE, {
-      state: { stayOnHomePage: true },
-    });
+    // Set navigation state before navigate (HashRouter in v5-compat doesn't support state)
+    setNavState({ stayOnHomePage: true });
+    navigate(DEFAULT_ROUTE);
   };
 
   return {

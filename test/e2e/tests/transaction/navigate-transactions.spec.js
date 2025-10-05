@@ -15,7 +15,7 @@ const {
 const TRANSACTION_COUNT = 4;
 
 describe('Navigate transactions', function () {
-  it.only('should navigate the unapproved transactions', async function () {
+  it('should navigate the unapproved transactions', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

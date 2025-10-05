@@ -182,9 +182,8 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       );
 
       // Assert
-      expect(mockUseNavigate).toHaveBeenCalledWith('/', {
-        state: { stayOnHomePage: true },
-      });
+      // Navigation context handles stayOnHomePage (not via query param or state)
+      expect(mockUseNavigate).toHaveBeenCalledWith('/');
     });
   });
 });

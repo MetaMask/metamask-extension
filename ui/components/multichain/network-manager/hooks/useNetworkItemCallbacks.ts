@@ -4,6 +4,7 @@ import { type MultichainNetworkConfiguration } from '@metamask/multichain-networ
 import { type Hex } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import { useSetNavState } from '../../../../contexts/navigation-state';
 import { CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
@@ -25,6 +26,7 @@ import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/us
 export const useNetworkItemCallbacks = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const setNavState = useSetNavState();
   const isUnlocked = useSelector(getIsUnlocked);
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
   const isNetworkDiscoverButtonEnabled = useSelector(
@@ -137,19 +139,19 @@ export const useNetworkItemCallbacks = () => {
             }
           : undefined,
         onRpcSelect: () => {
-          navigate('/select-rpc', {
-            state: { chainId: hexChainId },
-          });
+          setNavState({ chainId: hexChainId });
+          navigate('/select-rpc');
         },
       };
     },
     [
-      currentChainId,
-      dispatch,
-      hasMultiRpcOptions,
       isUnlocked,
+      currentChainId,
       isDiscoverBtnEnabled,
-      history,
+      hasMultiRpcOptions,
+      dispatch,
+      navigate,
+      setNavState,
     ],
   );
 

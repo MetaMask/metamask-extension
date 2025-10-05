@@ -7,6 +7,7 @@ import {
   Route,
   Routes,
 } from 'react-router-dom-v5-compat';
+import { useNavState } from '../../contexts/navigation-state';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -183,6 +184,7 @@ function Home() {
   const trackEvent = useContext(MetaMetricsContext);
   const navigate = useNavigate();
   const location = useLocation();
+  const navState = useNavState();
   const dispatch = useDispatch();
 
   // Redux selectors - equivalent to mapStateToProps
@@ -395,7 +397,10 @@ function Home() {
   const [notificationClosing, setNotificationClosing] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
 
-  const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+  // Check both router state (v5 fallback) and navigation context (v5-compat with HashRouter)
+  const stayOnHomePage = Boolean(
+    location?.state?.stayOnHomePage || navState?.stayOnHomePage,
+  );
 
   const checkStatusAndNavigate = useCallback(() => {
     const canRedirect = !isNotification && !stayOnHomePage;

@@ -64,6 +64,14 @@ class UnlockPage extends Component {
      */
     location: PropTypes.object.isRequired,
     /**
+     * Navigation state from context (HashRouter v5-compat workaround)
+     */
+    navState: PropTypes.object,
+    /**
+     * Clear navigation state from context after use
+     */
+    clearNavState: PropTypes.func.isRequired,
+    /**
      * If isUnlocked is true will redirect to most recent route in history
      */
     isUnlocked: PropTypes.bool,
@@ -134,15 +142,28 @@ class UnlockPage extends Component {
   }
 
   UNSAFE_componentWillMount() {
-    const { isUnlocked, navigate, location } = this.props;
+    const {
+      isUnlocked,
+      navigate,
+      location,
+      navState,
+      clearNavState,
+    } = this.props;
 
     if (isUnlocked) {
       // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
       let redirectTo = DEFAULT_ROUTE;
+
+      // Check state first (fallback), then navigation context (HashRouter v5-compat workaround)
       if (location.state?.from?.pathname) {
         const search = location.state.from.search || '';
         redirectTo = location.state.from.pathname + search;
+        clearNavState();
+      } else if (navState?.from?.pathname) {
+        redirectTo = navState.from.pathname + (navState.from.search || '');
+        clearNavState(); // Clean up after use
       }
+
       navigate(redirectTo);
     }
   }

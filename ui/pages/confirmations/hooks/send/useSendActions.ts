@@ -76,9 +76,9 @@ export const useSendActions = () => {
     from,
     fromAccount,
     hexData,
-    history,
     isEvmSendType,
     maxValueMode,
+    navigate,
     to,
     value,
   ]);

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Routes, useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate, Routes, Route } from 'react-router-dom-v5-compat';
+import { useSetNavState } from '../../contexts/navigation-state';
 import {
   BridgeAppState,
   UnifiedSwapBridgeEventName,
@@ -58,6 +59,7 @@ const CrossChainSwap = () => {
   useBridging();
 
   const navigate = useNavigate();
+  const setNavState = useSetNavState();
   const dispatch = useDispatch();
 
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
@@ -112,7 +114,9 @@ const CrossChainSwap = () => {
 
   const redirectToDefaultRoute = async () => {
     await resetControllerAndInputStates();
-    navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+    // Set navigation state before navigate (HashRouter in v5-compat doesn't support state)
+    setNavState({ stayOnHomePage: true });
+    navigate(DEFAULT_ROUTE);
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
   };
@@ -147,20 +151,6 @@ const CrossChainSwap = () => {
       <Content padding={0}>
         <Routes>
           <Route
-            path=""
-            element={
-              <>
-                <BridgeTransactionSettingsModal
-                  isOpen={isSettingsModalOpen}
-                  onClose={() => setIsSettingsModalOpen(false)}
-                />
-                <PrepareBridgePage
-                  onOpenSettings={() => setIsSettingsModalOpen(true)}
-                />
-              </>
-            }
-          />
-          <Route
             path={CROSS_CHAIN_PATHS.SWAPS_PREPARE}
             element={
               <>
@@ -184,6 +174,20 @@ const CrossChainSwap = () => {
                 <Footer>
                   <AwaitingSignaturesCancelButton />
                 </Footer>
+              </>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <>
+                <BridgeTransactionSettingsModal
+                  isOpen={isSettingsModalOpen}
+                  onClose={() => setIsSettingsModalOpen(false)}
+                />
+                <PrepareBridgePage
+                  onOpenSettings={() => setIsSettingsModalOpen(true)}
+                />
               </>
             }
           />

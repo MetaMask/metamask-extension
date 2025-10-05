@@ -4,12 +4,15 @@ import {
   useLocation,
   useParams,
 } from 'react-router-dom-v5-compat';
+import { useNavState, useSetNavState } from '../../../contexts/navigation-state';
 
 // Types for the router hooks
 export type RouterHooksProps = {
   navigate: ReturnType<typeof useNavigate>;
   location: ReturnType<typeof useLocation>;
   params: ReturnType<typeof useParams>;
+  navState: ReturnType<typeof useNavState>;
+  clearNavState: () => void;
 };
 
 function withRouterHooks<Props extends object>(
@@ -19,6 +22,10 @@ function withRouterHooks<Props extends object>(
     const navigate = useNavigate();
     const location = useLocation();
     const params = useParams();
+    const navState = useNavState();
+    const setNavState = useSetNavState();
+
+    const clearNavState = () => setNavState(null);
 
     return (
       <WrappedComponent
@@ -26,6 +33,8 @@ function withRouterHooks<Props extends object>(
         navigate={navigate}
         location={location}
         params={params}
+        navState={navState}
+        clearNavState={clearNavState}
       />
     );
   }
