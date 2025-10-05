@@ -789,6 +789,7 @@ export enum MetaMetricsEventName {
   RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SettingsUpdated = 'Settings Updated',
+  SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',
