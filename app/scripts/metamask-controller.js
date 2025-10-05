@@ -2614,6 +2614,9 @@ export default class MetamaskController extends EventEmitter {
       syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
 
       // subscription
+      subscriptionStartPolling: this.subscriptionController.startPolling.bind(
+        this.subscriptionController,
+      ),
       getSubscriptions: this.subscriptionController.getSubscriptions.bind(
         this.subscriptionController,
       ),
@@ -2946,6 +2949,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.updateNetworkConnectionBanner.bind(
           appStateController,
         ),
+      setShowShieldEntryModalOnce:
+        appStateController.setShowShieldEntryModalOnce.bind(appStateController),
 
       // EnsController
       tryReverseResolveAddress:

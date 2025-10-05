@@ -460,11 +460,18 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
   };
 }
 
-export function setShowShieldEntryModalOnce(payload: boolean) {
-  return {
-    type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
-    payload,
-  };
+export async function setShowShieldEntryModalOnce(payload: boolean) {
+  try {
+    await submitRequestToBackground('setShowShieldEntryModalOnce', [payload]);
+    return {
+      type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
+      payload,
+    };
+  } catch (error) {
+    log.error('[setShowShieldEntryModalOnce] error', error);
+    dispatch(displayWarning(error));
+    throw error;
+  }
 }
 
 /**

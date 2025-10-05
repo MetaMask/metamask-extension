@@ -130,7 +130,7 @@ type AppState = {
   showPasswordChangeToast: PasswordChangeToastType | null;
   showConnectionsRemovedModal: boolean;
   showCopyAddressToast: boolean;
-  showShieldEntryModal: boolean;
+  showShieldEntryModalOnce: boolean;
 };
 
 export type AppSliceState = {
@@ -233,7 +233,7 @@ const initialState: AppState = {
   showCopyAddressToast: false,
   showSupportDataConsentModal: false,
   showConnectionsRemovedModal: false,
-  showShieldEntryModal: false,
+  showShieldEntryModalOnce: false,
 };
 
 export default function reduceApp(
@@ -792,7 +792,7 @@ export default function reduceApp(
     case actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE:
       return {
         ...appState,
-        showShieldEntryModal: action.payload,
+        showShieldEntryModalOnce: action.payload,
       };
 
     default:
