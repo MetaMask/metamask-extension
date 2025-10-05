@@ -15,8 +15,6 @@ export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
   const tokenBalances = useSelector(getTokenBalances);
   const enabledChainIds = useSelector(getEnabledChainIds);
 
-  console.log('enabledChainIds ..........', enabledChainIds);
-
   const pollableChains =
     chainIds && chainIds.length > 0 ? chainIds : enabledChainIds;
 
