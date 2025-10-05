@@ -2,27 +2,29 @@ import { Browser } from 'selenium-webdriver';
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { checkActivityTransaction } from '../../swaps/shared';
-
 import HomePage from '../../../page-objects/pages/home/homepage';
-import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
-
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { mockLedgerTransactionRequests } from './mocks';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
-describe('Ledger Swap', function () {
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('swaps ETH to DAI', async function () {
+// This test is skipped because it needs to be migrated to the new swap flow
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Ledger Swap', function () {
+  it('swaps ETH to DAI', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withLedgerAccount().build(),
+        fixtures: new FixtureBuilder()
+          .withPreferencesControllerSmartTransactionsOptedOut()
+          .withLedgerAccount()
+          .build(),
         localNodeOptions: {
           loadState: './test/e2e/seeder/network-states/with50Dai.json',
+        },
+        manifestFlags: {
+          testing: { disableSmartTransactionsOverride: true },
         },
         title: this.test?.fullTitle(),
         testSpecificMock: mockLedgerTransactionRequests,
@@ -36,20 +38,6 @@ describe('Ledger Swap', function () {
         await loginWithBalanceValidation(driver, undefined, undefined, '20');
 
         const homePage = new HomePage(driver);
-
-        // disable smart transactions
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.checkPageIsLoaded();
-        await headerNavbar.openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.clickAdvancedTab();
-        const advancedSettingsPage = new AdvancedSettings(driver);
-        await advancedSettingsPage.checkPageIsLoaded();
-        await advancedSettingsPage.toggleSmartTransactions();
-        await settingsPage.closeSettingsPage();
-
         await homePage.checkIfSwapButtonIsClickable();
 
         await homePage.startSwapFlow();
@@ -75,16 +63,13 @@ describe('Ledger Swap', function () {
 
         await swapPage.enterSwapAmount('2');
         await swapPage.selectDestinationToken('DAI');
+
         await swapPage.dismissManualTokenWarning();
-
         await swapPage.checkSwapButtonIsEnabled();
+        // To mitigate flakiness where the Swap page is re-rendered after submitting the swap (#36501)
+        await driver.delay(5000);
         await swapPage.submitSwap();
-
         await swapPage.waitForTransactionToComplete();
-
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
 
         await homePage.checkPageIsLoaded();
         // check activity list

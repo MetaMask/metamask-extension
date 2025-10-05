@@ -10,6 +10,9 @@ import { IconSize } from '../icon';
 import type { ButtonLinkProps } from './button-link.types';
 import { ButtonLinkSize, ButtonLinkComponent } from './button-link.types';
 
+/**
+ * @deprecated Please update your code to use `TextButton` from `@metamask/design-system-react`
+ */
 export const ButtonLink: ButtonLinkComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
