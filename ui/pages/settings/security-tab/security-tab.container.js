@@ -24,7 +24,6 @@ import {
   getMarketingConsent,
   setMarketingConsent,
   setParticipateInMetaMetrics,
-  getSubscriptions,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
@@ -145,7 +144,6 @@ const mapDispatchToProps = (dispatch) => {
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
     getMarketingConsent: () => getMarketingConsent(),
     setMarketingConsent: (value) => dispatch(setMarketingConsent(value)),
-    getSubscriptions: async () => await dispatch(getSubscriptions()),
   };
 };
 

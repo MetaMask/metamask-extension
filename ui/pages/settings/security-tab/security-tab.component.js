@@ -118,7 +118,6 @@ export default class SecurityTab extends PureComponent {
     setMarketingConsent: PropTypes.func,
     getMarketingConsent: PropTypes.func,
     hasActiveShieldSubscription: PropTypes.bool,
-    getSubscriptions: PropTypes.func,
   };
 
   state = {
@@ -169,10 +168,6 @@ export default class SecurityTab extends PureComponent {
       const marketingConsentFromRemote = await this.props.getMarketingConsent();
       // Update marketing consent in the store
       this.props.setDataCollectionForMarketing(marketingConsentFromRemote);
-    }
-
-    if (!this.props.hasActiveShieldSubscription) {
-      await this.props.getSubscriptions();
     }
   }
 
