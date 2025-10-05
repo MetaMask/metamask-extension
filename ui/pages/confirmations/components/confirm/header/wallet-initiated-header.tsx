@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -30,9 +27,9 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { showSendTokenPage } from '../../../../../store/actions';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
-import { useConfirmContext } from '../../../context/confirm';
 import { navigateToSendRoute } from '../../../utils/send';
 import { useRedesignedSendFlow } from '../../../hooks/useRedesignedSendFlow';
+import { useUnapprovedTransactionWithFallback } from '../../../hooks/transactions/useUnapprovedTransaction';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 export const WalletInitiatedHeader = () => {
@@ -41,7 +38,7 @@ export const WalletInitiatedHeader = () => {
   const history = useHistory();
   const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
   const { onCancel } = useConfirmActions();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
 
   const handleBackButtonClick = useCallback(async () => {
     const { id } = currentConfirmation;

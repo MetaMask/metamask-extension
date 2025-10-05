@@ -14,6 +14,8 @@ import {
   shouldUseRedesignForSignatures,
   shouldUseRedesignForTransactions,
 } from '../../../../shared/lib/confirmation.utils';
+import { useUnapprovedTransaction } from './transactions/useUnapprovedTransaction';
+import { useSignatureRequest } from './signatures/useSignatureRequest';
 
 /**
  * Determine the current confirmation based on the pending approvals and controller state.
@@ -24,45 +26,12 @@ import {
  * @returns The current confirmation data.
  */
 const useCurrentConfirmation = () => {
-  const { id: paramsConfirmationId } = useParams<{ id: string }>();
-  const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
-  const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
+  const unapprovedTransaction = useUnapprovedTransaction();
+  const signatureRequest = useSignatureRequest();
 
-  const pendingApproval = useSelector((state) =>
-    selectPendingApproval(state as ApprovalsMetaMaskState, confirmationId),
-  );
+  const currentConfirmation = unapprovedTransaction ?? signatureRequest;
 
-  const transactionMetadata = useSelector((state) =>
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (getUnapprovedTransaction as any)(state, confirmationId),
-  ) as TransactionMeta | undefined;
-
-  const signatureMessage = useSelector((state) =>
-    selectUnapprovedMessage(state, confirmationId),
-  );
-
-  const useRedesignedForSignatures = shouldUseRedesignForSignatures({
-    approvalType: pendingApproval?.type as ApprovalType,
-  });
-
-  const useRedesignedForTransaction = shouldUseRedesignForTransactions({
-    transactionMetadataType: transactionMetadata?.type,
-  });
-
-  const shouldUseRedesign =
-    useRedesignedForSignatures || useRedesignedForTransaction;
-
-  return useMemo(() => {
-    if (!shouldUseRedesign) {
-      return { currentConfirmation: undefined };
-    }
-
-    const currentConfirmation =
-      transactionMetadata ?? signatureMessage ?? undefined;
-
-    return { currentConfirmation };
-  }, [transactionMetadata, signatureMessage, shouldUseRedesign]);
+  return { currentConfirmation };
 };
 
 export default useCurrentConfirmation;

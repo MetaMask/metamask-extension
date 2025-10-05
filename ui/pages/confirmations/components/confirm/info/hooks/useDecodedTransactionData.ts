@@ -1,13 +1,12 @@
 import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useSelector } from 'react-redux';
 import { AsyncResult, useAsyncResult } from '../../../../../../hooks/useAsync';
 import { decodeTransactionData } from '../../../../../../store/actions';
 import { DecodedTransactionDataResponse } from '../../../../../../../shared/types/transaction-decode';
-import { useConfirmContext } from '../../../../context/confirm';
 import { hasTransactionData } from '../../../../../../../shared/modules/transaction.utils';
 import { use4ByteResolutionSelector } from '../../../../../../selectors';
+import { useUnapprovedTransaction } from '../../../../hooks/transactions/useUnapprovedTransaction';
 
 export function useDecodedTransactionData({
   data,
@@ -18,7 +17,7 @@ export function useDecodedTransactionData({
   to?: Hex;
   transactionTypeFilter?: string;
 } = {}): AsyncResult<DecodedTransactionDataResponse | undefined> {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
   const isDecodeEnabled = useSelector(use4ByteResolutionSelector);
 
   const currentTransactionType = currentConfirmation?.type;

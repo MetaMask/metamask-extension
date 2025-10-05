@@ -1,25 +1,21 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { getCustomNonceValue } from '../../../../selectors';
-import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
 import {
   getIsSmartTransaction,
   type SmartTransactionsState,
 } from '../../../../../shared/modules/selectors';
+import { useUnapprovedTransactionWithFallback } from './useUnapprovedTransaction';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransactionWithFallback();
   const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
     getIsSmartTransaction(state, transactionMeta?.chainId),
   );

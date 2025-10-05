@@ -1,20 +1,16 @@
 import { NameType } from '@metamask/name-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 import Name from '../../../../../../../components/app/name';
 import { Box } from '../../../../../../../components/component-library';
 import { Display } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../../../context/confirm';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 
 export const RevokeStaticSimulation = () => {
   const t = useI18nContext();
-
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
-
+  const transactionMeta = useUnapprovedTransactionWithFallback();
   const { chainId } = transactionMeta;
 
   const TokenContractRow = (

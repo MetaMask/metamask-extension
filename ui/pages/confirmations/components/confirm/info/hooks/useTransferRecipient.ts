@@ -1,13 +1,9 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../../../context/confirm';
+import { TransactionType } from '@metamask/transaction-controller';
+import { useUnapprovedTransaction } from '../../../../hooks/transactions/useUnapprovedTransaction';
 import { useTokenTransactionData } from './useTokenTransactionData';
 
 export function useTransferRecipient() {
-  const { currentConfirmation: transactionMetadata } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMetadata = useUnapprovedTransaction();
 
   const transactionData = useTokenTransactionData();
   const transactionType = transactionMetadata?.type;

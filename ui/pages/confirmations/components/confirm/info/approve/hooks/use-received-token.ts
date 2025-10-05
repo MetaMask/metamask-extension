@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
 // TODO: Remove restricted import
@@ -6,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { normalizeSafeAddress } from '../../../../../../../../app/scripts/lib/multichain/address';
 import { useAccountTotalFiatBalance } from '../../../../../../../hooks/useAccountTotalFiatBalance';
 import { getSelectedAccount } from '../../../../../../../selectors';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 
 export type TokenWithBalance = {
   address: string;
@@ -20,9 +19,7 @@ export type TokenWithBalance = {
 };
 
 export const useReceivedToken = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
-
+  const transactionMeta = useUnapprovedTransactionWithFallback();
   const selectedAccount = useSelector(getSelectedAccount);
 
   const { tokensWithBalances } = useAccountTotalFiatBalance(

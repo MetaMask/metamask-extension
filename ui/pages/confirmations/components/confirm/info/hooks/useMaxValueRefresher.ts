@@ -1,9 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  TransactionType,
-  type TransactionMeta,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { useSearchParams } from 'react-router-dom-v5-compat';
 
@@ -17,9 +14,9 @@ import {
 } from '../../../../../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../../../../../shared/modules/Numeric';
 import { updateEditableParams } from '../../../../../../store/actions';
-import { useConfirmContext } from '../../../../context/confirm';
 import { HEX_ZERO } from '../shared/constants';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
+import { useUnapprovedTransactionWithFallback } from '../../../../hooks/transactions/useUnapprovedTransaction';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
 
 /**
@@ -38,8 +35,7 @@ import { useSupportsEIP1559 } from './useSupportsEIP1559';
  * @requires Redux store - Requires access to account balance and transaction state
  */
 export const useMaxValueRefresher = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransactionWithFallback();
   const dispatch = useDispatch();
   const {
     chainId,

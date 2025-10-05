@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  BatchTransactionParams,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { BatchTransactionParams } from '@metamask/transaction-controller';
 import { Box } from '../../../../../../../components/component-library';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoExpandableRow } from '../../../../../../../components/app/confirm/info/row/expandable-row';
@@ -16,11 +12,12 @@ import {
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useNestedTransactionLabels } from '../../hooks/useNestedTransactionLabels';
+import { useUnapprovedTransaction } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function NestedTransactionData() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
   const { nestedTransactions } = currentConfirmation ?? {};
 
   if (!nestedTransactions?.length) {

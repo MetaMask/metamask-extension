@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -29,6 +28,7 @@ import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
+import { useUnapprovedTransaction } from '../../../hooks/transactions/useUnapprovedTransaction';
 import OriginThrottleModal from './origin-throttle-modal';
 
 export type OnCancelHandler = ({
@@ -153,10 +153,8 @@ const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const { onTransactionConfirm } = useTransactionConfirm();
-
-  const { currentConfirmation, isScrollToBottomCompleted } =
-    useConfirmContext<TransactionMeta>();
-
+  const currentConfirmation = useUnapprovedTransaction();
+  const { isScrollToBottomCompleted } = useConfirmContext();
   const { isGaslessLoading } = useIsGaslessLoading();
 
   const { from } = getConfirmationSender(currentConfirmation);

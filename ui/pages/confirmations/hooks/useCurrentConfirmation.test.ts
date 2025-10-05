@@ -73,9 +73,7 @@ function buildState({
       ...mockState.metamask,
       pendingApprovals: pendingApprovals ? arrayToIdMap(pendingApprovals) : {},
       transactions: transaction ? [transaction] : [],
-      unapprovedPersonalMsgs: message
-        ? { [message.id as string]: message }
-        : {},
+      signatureRequests: message ? { [message.id as string]: message } : {},
     },
   };
 }
@@ -143,24 +141,6 @@ describe('useCurrentConfirmation', () => {
     });
 
     expect(currentConfirmation).toStrictEqual(TRANSACTION_MOCK);
-  });
-
-  it('returns undefined if approval for message has incorrect type', () => {
-    const currentConfirmation = runHook({
-      message: MESSAGE_MOCK,
-      pendingApprovals: [{ ...APPROVAL_MOCK, type: 'invalid_type' }],
-    });
-
-    expect(currentConfirmation).toBeUndefined();
-  });
-
-  it('returns undefined if transaction has incorrect type', () => {
-    const currentConfirmation = runHook({
-      pendingApprovals: [{ ...APPROVAL_MOCK, type: ApprovalType.Transaction }],
-      transaction: { ...TRANSACTION_MOCK, type: TransactionType.cancel },
-    });
-
-    expect(currentConfirmation).toBeUndefined();
   });
 
   it('returns undefined if transaction is not unapproved', () => {

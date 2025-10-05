@@ -1,13 +1,10 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import React, { useState } from 'react';
-import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { AdvancedDetails } from '../shared/advanced-details/advanced-details';
 import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
+import { useUnapprovedTransactionWithFallback } from '../../../../hooks/transactions/useUnapprovedTransaction';
 import { ApproveDetails } from './approve-details/approve-details';
 import { ApproveStaticSimulation } from './approve-static-simulation/approve-static-simulation';
 import { EditSpendingCapModal } from './edit-spending-cap-modal/edit-spending-cap-modal';
@@ -17,8 +14,7 @@ import { RevokeDetails } from './revoke-details/revoke-details';
 import { RevokeStaticSimulation } from './revoke-static-simulation/revoke-static-simulation';
 
 const ApproveInfo = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransactionWithFallback();
 
   const { isNFT } = useIsNFT(transactionMeta);
 

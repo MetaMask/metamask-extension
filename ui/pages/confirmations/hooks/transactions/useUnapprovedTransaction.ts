@@ -1,15 +1,37 @@
 import { useSelector } from 'react-redux';
-import { selectUnapprovedTransactionById } from '../../../../selectors/transactions';
+import {
+  TransactionsRootState,
+  selectTransactionById,
+  selectUnapprovedTransactionById,
+} from '../../../../selectors/transactions';
 import { useApprovalRequest } from '../useApprovalRequest';
-import { TransactionControllerState } from '@metamask/transaction-controller';
+import { useMemo } from 'react';
+import { TransactionMeta, TransactionStatus } from '@metamask/transaction-controller';
 
 export function useUnapprovedTransaction() {
   const approvalRequest = useApprovalRequest();
   const transactionId = approvalRequest?.id ?? '';
 
-  const transaction = useSelector((state: TransactionControllerState) =>
+  return useSelector((state: TransactionsRootState) =>
     selectUnapprovedTransactionById(state, transactionId),
   );
+}
 
-  return transaction;
+export function useUnapprovedTransactionWithFallback(): TransactionMeta {
+  const result = useUnapprovedTransaction();
+
+  return useMemo(
+    () =>
+      result ?? {
+        chainId: '0x0',
+        id: '',
+        networkClientId: 'does-not-exist',
+        status: TransactionStatus.unapproved,
+        time: Date.now(),
+        txParams: {
+          from: '0x0',
+        },
+      },
+    [result],
+  );
 }

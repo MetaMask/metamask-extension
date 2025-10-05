@@ -1,13 +1,14 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { useConfirmContext } from '../../../../context/confirm';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../hooks/useEIP7702Account';
+import {
+  useUnapprovedTransaction,
+  useUnapprovedTransactionWithFallback,
+} from '../../../../hooks/transactions/useUnapprovedTransaction';
 
 export function useIsUpgradeTransaction() {
   const authorizationAddress = useTransactionAuthorizationAddress();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { txParams } = currentConfirmation ?? { txParams: {} };
-  const { data } = txParams ?? {};
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
+  const { data } = currentConfirmation.txParams;
   const isUpgrade =
     Boolean(authorizationAddress) &&
     authorizationAddress !== EIP_7702_REVOKE_ADDRESS;
@@ -27,7 +28,7 @@ export function useIsDowngradeTransaction(): boolean {
 }
 
 function useTransactionAuthorizationAddress(): Hex | undefined {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
   const { txParams } = currentConfirmation ?? {};
   const { authorizationList } = txParams ?? {};
   const authorization = authorizationList?.[0];

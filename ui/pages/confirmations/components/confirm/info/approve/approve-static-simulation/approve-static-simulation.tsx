@@ -1,5 +1,4 @@
 import { NameType } from '@metamask/name-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info/row';
 import Name from '../../../../../../../components/app/name';
@@ -21,12 +20,12 @@ import {
   TextAlign,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
 import { Container } from '../../shared/transaction-data/transaction-data';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 import { useIsNFT } from '../hooks/use-is-nft';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 
 export const ApproveStaticSimulation = ({
   setIsOpenEditSpendingCapModal,
@@ -34,9 +33,7 @@ export const ApproveStaticSimulation = ({
   setIsOpenEditSpendingCapModal: (newValue: boolean) => void;
 }) => {
   const t = useI18nContext();
-
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransactionWithFallback();
 
   const { decimals } = useAssetDetails(
     transactionMeta?.txParams?.to,

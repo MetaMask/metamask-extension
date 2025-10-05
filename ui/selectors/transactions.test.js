@@ -22,7 +22,6 @@ import {
   nonceSortedCompletedTransactionsSelector,
   submittedPendingTransactionsSelector,
   hasTransactionPendingApprovals,
-  getApprovedAndSignedTransactions,
   smartTransactionsListSelector,
   getTransactions,
   getAllNetworkTransactions,
@@ -743,77 +742,6 @@ describe('Transaction Selectors', () => {
         expect(result).toBe(true);
       },
     );
-  });
-
-  describe('getApprovedAndSignedTransactions', () => {
-    it('returns transactions with status of approved or signed for all networks', () => {
-      const state = {
-        metamask: {
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
-          transactions: [
-            {
-              id: 0,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.approved,
-            },
-            {
-              id: 1,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.submitted,
-            },
-            {
-              id: 2,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.unapproved,
-            },
-            {
-              id: 3,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.signed,
-            },
-            {
-              id: 4,
-              chainId: CHAIN_IDS.GOERLI,
-              status: TransactionStatus.signed,
-            },
-          ],
-        },
-      };
-
-      const results = getApprovedAndSignedTransactions(state);
-
-      expect(results).toStrictEqual([
-        state.metamask.transactions[0],
-        state.metamask.transactions[3],
-        state.metamask.transactions[4],
-      ]);
-    });
-
-    it('returns an empty array if there are no approved or signed transactions', () => {
-      const state = {
-        metamask: {
-          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
-
-          transactions: [
-            {
-              id: 0,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.submitted,
-            },
-            {
-              id: 1,
-              chainId: CHAIN_IDS.MAINNET,
-              status: TransactionStatus.unapproved,
-            },
-          ],
-        },
-      };
-
-      const results = getApprovedAndSignedTransactions(state);
-
-      expect(results).toStrictEqual([]);
-    });
   });
 
   describe('getAllNetworkTransactions', () => {

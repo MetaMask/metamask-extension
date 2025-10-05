@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import {
   getIsSmartTransaction,
@@ -7,15 +6,14 @@ import {
 } from '../../../../../shared/modules/selectors';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
-import { useConfirmContext } from '../../context/confirm';
 import {
   isRelaySupported,
   isSendBundleSupported,
 } from '../../../../store/actions';
+import { useUnapprovedTransactionWithFallback } from '../transactions/useUnapprovedTransaction';
 
 export function useIsGaslessSupported() {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransactionWithFallback();
 
   const { chainId, txParams } = transactionMeta ?? {};
   const { from } = txParams ?? {};
