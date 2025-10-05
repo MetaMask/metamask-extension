@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '../../../../../../../components/component-library';
@@ -8,7 +7,7 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 import GasTiming from '../../../../gas-timing/gas-timing.component';
 import { useEIP1559TxFees } from '../../hooks/useEIP1559TxFees';
 import { useFeeCalculations } from '../../hooks/useFeeCalculations';
@@ -27,8 +26,7 @@ export const GasFeesDetails = ({
   const t = useI18nContext();
   useAutomaticGasFeeTokenSelect();
 
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransactionWithFallback();
 
   const { maxFeePerGas, maxPriorityFeePerGas } =
     useEIP1559TxFees(transactionMeta);

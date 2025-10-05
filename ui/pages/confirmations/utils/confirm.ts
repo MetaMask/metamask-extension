@@ -1,4 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
+import { LegacyStateMessage } from '@metamask/signature-controller';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
@@ -28,7 +29,7 @@ export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
  *
  * @param request - The confirmation request to check
  */
-export const isSIWESignatureRequest = (request?: Confirmation) =>
+export const isSIWESignatureRequest = (request?: LegacyStateMessage) =>
   Boolean((request as SignatureRequestType)?.msgParams?.siwe?.isSIWEMessage);
 
 export const isOrderSignatureRequest = (request: SignatureRequestType) => {

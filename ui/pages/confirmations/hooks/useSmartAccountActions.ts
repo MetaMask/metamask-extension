@@ -1,15 +1,14 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { JsonRpcError, serializeError } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { rejectPendingApproval } from '../../../store/actions';
-import { useConfirmContext } from '../context/confirm';
 import { EIP5792ErrorCode } from '../../../../shared/constants/transaction';
+import { rejectPendingApproval } from '../../../store/actions';
+import { useUnapprovedTransactionWithFallback } from './transactions/useUnapprovedTransaction';
 
 export function useSmartAccountActions() {
   const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
   const { id: confirmationId, chainId, txParams } = currentConfirmation ?? {};
   const { from } = txParams ?? {};
 

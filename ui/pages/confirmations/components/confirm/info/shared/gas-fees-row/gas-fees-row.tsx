@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
@@ -17,7 +16,7 @@ import {
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
 import { getPreferences } from '../../../../../../../selectors';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useUnapprovedTransaction } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 
 export const GasFeesRow = ({
   label,
@@ -34,8 +33,7 @@ export const GasFeesRow = ({
   nativeFee: string;
   'data-testid'?: string;
 }) => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransaction();
 
   type TestNetChainId = (typeof TEST_CHAINS)[number];
   const isTestnet = TEST_CHAINS.includes(

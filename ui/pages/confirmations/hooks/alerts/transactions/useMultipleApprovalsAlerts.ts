@@ -2,7 +2,6 @@ import {
   NestedTransactionMetadata,
   SimulationErrorCode,
   SimulationTokenBalanceChange,
-  TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
@@ -17,11 +16,11 @@ import { useAsyncResult } from '../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getTokenStandardAndDetailsByChain } from '../../../../../store/actions';
 import { useBatchApproveBalanceChanges } from '../../../components/confirm/info/hooks/useBatchApproveBalanceChanges';
-import { useConfirmContext } from '../../../context/confirm';
 import {
   getUseTransactionSimulations,
   selectNonZeroUnusedApprovalsAllowList,
 } from '../../../../../selectors';
+import { useUnapprovedTransaction } from '../../transactions/useUnapprovedTransaction';
 
 type ApprovalInfo = {
   tokenAddress: Hex;
@@ -232,7 +231,7 @@ async function fetchTokenStandards(
 
 export function useMultipleApprovalsAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
   const { value: approveBalanceChanges } =
     useBatchApproveBalanceChanges() ?? {};
 

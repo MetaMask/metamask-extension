@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
@@ -10,12 +9,12 @@ import {
   setNextNonce,
   updateCustomNonce,
 } from '../../../store/actions';
-import { useConfirmContext } from '../context/confirm';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
+import { useUnapprovedTransaction } from './transactions/useUnapprovedTransaction';
 
 export const useConfirmActions = () => {
   const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
   const { navigateBackIfSend } = useConfirmSendNavigation();
   const { id: currentConfirmationId } = currentConfirmation || {};
 

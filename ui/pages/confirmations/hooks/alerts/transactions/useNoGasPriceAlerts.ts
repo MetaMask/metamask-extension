@@ -1,8 +1,5 @@
 import { useSelector } from 'react-redux';
-import {
-  TransactionMeta,
-  UserFeeLevel,
-} from '@metamask/transaction-controller';
+import { UserFeeLevel } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 
 import { txParamsAreDappSuggested } from '../../../../../../shared/modules/transaction.utils';
@@ -14,12 +11,12 @@ import {
 } from '../../../../../components/app/confirm/info/row/constants';
 import { getNoGasPriceFetched } from '../../../../../selectors';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { useUnapprovedTransaction } from '../../transactions/useUnapprovedTransaction';
 
 export function useNoGasPriceAlerts(): Alert[] {
   const t = useI18nContext();
   const isNoGasPriceFetched = useSelector(getNoGasPriceFetched);
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
 
   const isNotCustomGasPrice =
     currentConfirmation?.userFeeLevel &&

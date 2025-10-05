@@ -1,7 +1,6 @@
 import React from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { useUnapprovedTransaction } from '../../../hooks/transactions/useUnapprovedTransaction';
 import { useNestedTransactionLabels } from '../../confirm/info/hooks/useNestedTransactionLabels';
 import {
   BackgroundColor,
@@ -21,7 +20,8 @@ import { isBatchTransaction } from '../../../../../../shared/lib/transactions.ut
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function NestedTransactionTag() {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation =
+    useUnapprovedTransaction();
   const { nestedTransactions } = currentConfirmation ?? {};
 
   const isBatch = isBatchTransaction(nestedTransactions);

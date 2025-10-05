@@ -1,7 +1,6 @@
 import React from 'react';
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { DecodedTransactionDataMethod } from '../../../../../../../../shared/types/transaction-decode';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
@@ -16,7 +15,7 @@ import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { Box } from '../../../../../../../components/component-library';
 import { ERC20_DEFAULT_DECIMALS } from '../../../../../utils/token';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 import { isSpendingCapUnlimited } from '../../approve/hooks/use-approve-token-simulation';
 
 export type TranslateFunction = (arg: string) => string;
@@ -100,7 +99,7 @@ export function BatchedApprovalFunction({
 }) {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
   const { chainId } = currentConfirmation;
   const nestedTransaction =
     currentConfirmation?.nestedTransactions?.[nestedTransactionIndex];

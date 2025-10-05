@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
@@ -7,11 +6,11 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { useConfirmContext } from '../../../context/confirm';
+import { useUnapprovedTransaction } from '../../transactions/useUnapprovedTransaction';
 
 export function useGasEstimateFailedAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
 
   const estimationFailed = Boolean(currentConfirmation?.simulationFails);
 

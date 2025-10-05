@@ -9,18 +9,17 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-import { SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
-import { useConfirmContext } from '../../../context/confirm';
+import { useSignatureRequest } from '../../signatures/useSignatureRequest';
 
 export default function useDomainMismatchAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequest();
 
-  const { msgParams } = currentConfirmation || {};
+  const { msgParams } = currentConfirmation ?? {};
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
   const isInvalidSIWEDomain =
-    isSIWE && !isValidSIWEOrigin(msgParams as WrappedSIWERequest);
+    isSIWE && !isValidSIWEOrigin(msgParams as unknown as WrappedSIWERequest);
 
   const alerts = useMemo(() => {
     if (!isInvalidSIWEDomain) {

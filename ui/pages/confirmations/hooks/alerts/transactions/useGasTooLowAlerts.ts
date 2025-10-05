@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { MIN_GAS_LIMIT_DEC } from '../../../send-legacy/send.constants';
 import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
@@ -9,11 +8,11 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { useConfirmContext } from '../../../context/confirm';
+import { useUnapprovedTransaction } from '../../transactions/useUnapprovedTransaction';
 
 export function useGasTooLowAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
 
   const gas = currentConfirmation?.txParams?.gas;
 

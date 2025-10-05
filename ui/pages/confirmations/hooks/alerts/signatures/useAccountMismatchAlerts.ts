@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
+import { PersonalMessageParams } from '@metamask/message-manager';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getConfirmationSender } from '../../../components/confirm/utils';
-import { SignatureRequestType } from '../../../types/confirm';
+import { Confirmation } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
-import { useConfirmContext } from '../../../context/confirm';
+import { useSignatureRequest } from '../../signatures/useSignatureRequest';
 
 /**
  * This hook returns an array of alerts when the expected address of the request
@@ -14,12 +15,14 @@ import { useConfirmContext } from '../../../context/confirm';
  */
 export default function useAccountMismatchAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequest();
 
-  const { from: fromAddress } = getConfirmationSender(currentConfirmation);
+  const { from: fromAddress } = getConfirmationSender(
+    currentConfirmation as Confirmation,
+  );
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
-  const siweParsedAddress =
-    currentConfirmation?.msgParams?.siwe?.parsedMessage?.address;
+  const msgParams = currentConfirmation?.msgParams as PersonalMessageParams;
+  const siweParsedAddress = msgParams?.siwe?.parsedMessage?.address;
   const isMismatchSIWEAdddress =
     siweParsedAddress?.toLowerCase() !== fromAddress?.toLowerCase();
   const isMismatchAccount = isSIWE && isMismatchSIWEAdddress;

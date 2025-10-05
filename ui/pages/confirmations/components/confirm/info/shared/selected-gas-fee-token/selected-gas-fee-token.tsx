@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
@@ -16,7 +15,7 @@ import {
   BorderRadius,
   Display,
 } from '../../../../../../../helpers/constants/design-system';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
@@ -28,7 +27,7 @@ import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficient
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
   const { chainId, gasFeeTokens } = currentConfirmation;
 
   const { isSupported: isGaslessSupported, isSmartTransaction } =

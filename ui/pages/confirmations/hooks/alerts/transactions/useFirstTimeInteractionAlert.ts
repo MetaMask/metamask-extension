@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 
 import { useSelector } from 'react-redux';
@@ -8,7 +7,7 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
-import { useConfirmContext } from '../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../transactions/useUnapprovedTransaction';
 import { getInternalAccounts } from '../../../../../selectors';
 import { useTransferRecipient } from '../../../components/confirm/info/hooks/useTransferRecipient';
 import {
@@ -19,11 +18,10 @@ import { getExperience } from '../../../../../../shared/constants/verification';
 
 export function useFirstTimeInteractionAlert(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
   const internalAccounts = useSelector(getInternalAccounts);
   const to = useTransferRecipient();
-  const { isFirstTimeInteraction, chainId, txParams } =
-    currentConfirmation ?? {};
+  const { isFirstTimeInteraction, chainId, txParams } = currentConfirmation;
   const recipient = (txParams?.to ?? '0x') as Hex;
 
   const isInternalAccount = internalAccounts.some(

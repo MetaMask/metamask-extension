@@ -32,7 +32,7 @@ export function useOriginThrottling() {
   const signatureRequest = useSignatureRequest();
 
   const origin =
-    (transactionMeta?.origin || signatureRequest?.messageParams?.origin) ?? '';
+    (transactionMeta?.origin || signatureRequest?.msgParams?.origin) ?? '';
 
   const originState = throttledOrigins[origin];
   const shouldThrottleOrigin = willNextRejectionReachThreshold(originState);

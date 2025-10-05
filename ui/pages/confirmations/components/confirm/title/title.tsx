@@ -4,6 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import React, { memo, useMemo } from 'react';
 
+import { LegacyStateMessage } from '@metamask/signature-controller';
 import { TokenStandard } from '../../../../../../shared/constants/transaction';
 import GeneralAlert from '../../../../../components/app/alert-system/general-alert/general-alert';
 import { Box, Text } from '../../../../../components/component-library';
@@ -102,7 +103,7 @@ const getTitle = (
     case TransactionType.deployContract:
       return t('confirmTitleDeployContract');
     case TransactionType.personalSign:
-      if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
+      if (isSIWESignatureRequest(confirmation as LegacyStateMessage)) {
         return t('confirmTitleSIWESignature');
       }
       return t('confirmTitleSignature');
@@ -170,7 +171,7 @@ const getDescription = (
     case TransactionType.deployContract:
       return t('confirmTitleDescDeployContract');
     case TransactionType.personalSign:
-      if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
+      if (isSIWESignatureRequest(confirmation as LegacyStateMessage)) {
         return t('confirmTitleDescSIWESignature');
       }
       return t('confirmTitleDescSign');
