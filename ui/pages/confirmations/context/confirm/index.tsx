@@ -30,7 +30,7 @@ export const ConfirmContextProvider: React.FC<{
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
   const { currentConfirmation } = useCurrentConfirmation();
-  syncConfirmPath(currentConfirmation);
+  syncConfirmPath(currentConfirmation?.id);
   const dispatch = useDispatch();
 
   const value = useMemo(
@@ -60,7 +60,9 @@ export const ConfirmContextProvider: React.FC<{
   }, [dispatch, currentConfirmation]);
 
   return (
-    <ConfirmContext.Provider value={value}>{children}</ConfirmContext.Provider>
+    <ConfirmContext.Provider value={value as never}>
+      {children}
+    </ConfirmContext.Provider>
   );
 };
 
