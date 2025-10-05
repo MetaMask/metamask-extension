@@ -396,13 +396,20 @@ export function startSubscriptionWithCard(params: {
   recurringInterval: RecurringInterval;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    const currentTab = await global.platform.currentTab();
-    const subscriptions = await submitRequestToBackground<Subscription[]>(
-      'startSubscriptionWithCard',
-      [params, currentTab?.id],
-    );
+    try {
+      const currentTab = await global.platform.currentTab();
+      const subscriptions = await submitRequestToBackground<Subscription[]>(
+        'startSubscriptionWithCard',
+        [params, currentTab?.id],
+      );
 
-    return subscriptions;
+      await submitRequestToBackground('subscriptionStartPolling');
+
+      return subscriptions;
+    } catch (error) {
+      console.error('[startSubscriptionWithCard] error', error);
+      throw error;
+    }
   };
 }
 
@@ -450,6 +457,13 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
       [],
     );
     return res;
+  };
+}
+
+export function setShowShieldEntryModalOnce(payload: boolean) {
+  return {
+    type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
+    payload,
   };
 }
 

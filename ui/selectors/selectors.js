@@ -287,6 +287,10 @@ export function getShowConnectionsRemovedModal(state) {
   return state.appState.showConnectionsRemovedModal;
 }
 
+export function getShowShieldEntryModalOnce(state) {
+  return state.appState.showShieldEntryModal;
+}
+
 /** `metamask` slice selectors */
 
 export function getNetworkIdentifier(state) {
