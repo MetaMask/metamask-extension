@@ -6,6 +6,9 @@ import {
 import {
   getCronjobControllerMessenger,
   getExecutionServiceMessenger,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  getMultichainRouterMessenger,
+  ///: END:ONLY_INCLUDE_IF
   getRateLimitControllerInitMessenger,
   getRateLimitControllerMessenger,
   getSnapControllerInitMessenger,
@@ -35,6 +38,7 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
+  getNetworkEnablementControllerMessenger,
   getNetworkOrderControllerMessenger,
   getNftControllerInitMessenger,
   getNftControllerMessenger,
@@ -149,6 +153,7 @@ import {
   getNetworkControllerInitMessenger,
   getNetworkControllerMessenger,
 } from './network-controller-messenger';
+import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -374,6 +379,12 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getMultichainNetworkControllerMessenger,
     getInitMessenger: noop,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  MultichainRouter: {
+    getMessenger: getMultichainRouterMessenger,
+    getInitMessenger: noop,
+  },
+  ///: END:ONLY_INCLUDE_IF
   NameController: {
     getMessenger: getNameControllerMessenger,
     getInitMessenger: getNameControllerInitMessenger,
@@ -462,6 +473,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSubscriptionControllerMessenger,
     getInitMessenger: getSubscriptionControllerInitMessenger,
   },
+  SubscriptionService: {
+    getMessenger: getSubscriptionServiceMessenger,
+    getInitMessenger: noop,
+  },
   SwapsController: {
     getMessenger: getSwapsControllerMessenger,
     getInitMessenger: getSwapsControllerInitMessenger,
@@ -532,6 +547,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   NetworkOrderController: {
     getMessenger: getNetworkOrderControllerMessenger,
+    getInitMessenger: noop,
+  },
+  NetworkEnablementController: {
+    getMessenger: getNetworkEnablementControllerMessenger,
     getInitMessenger: noop,
   },
 } as const;

@@ -47,6 +47,7 @@
     "trezorModel": null,
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
+    "networkConnectionBanner": "object",
     "isRampCardClosed": false,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
@@ -186,9 +187,11 @@
     },
     "networkConfigurationsByChainId": "object"
   },
-  "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
+  "NetworkEnablementController": {
     "enabledNetworkMap": { "eip155": "object", "solana": "object" }
+  },
+  "NetworkOrderController": {
+    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -225,7 +228,10 @@
     "permissionHistory": "object",
     "permissionActivityLog": "object"
   },
-  "PhishingController": { "urlScanCache": "object" },
+  "PhishingController": {
+    "urlScanCache": "object",
+    "tokenScanCache": "object"
+  },
   "PreferencesController": {
     "selectedAddress": "string",
     "useBlockie": false,
@@ -250,10 +256,15 @@
     "lostIdentities": "object",
     "forgottenPassword": false,
     "preferences": {
+      "dismissSmartAccountSuggestionEnabled": "boolean",
+      "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": false,
+      "petnamesEnabled": "boolean",
+      "privacyMode": "boolean",
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
+      "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsOptInStatus": true,
       "showNativeTokenAsMainBalance": true,
       "showMultiRpcModal": "boolean",
@@ -261,7 +272,8 @@
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
       "smartTransactionsMigrationApplied": "boolean",
-      "smartAccountOptIn": "boolean"
+      "smartAccountOptIn": "boolean",
+      "useNativeCurrencyAsPrimaryCurrency": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",

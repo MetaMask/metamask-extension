@@ -16,6 +16,7 @@ export const useContactRecipients = (): Recipient[] => {
     return {
       address: contact.address,
       contactName: contact.name,
+      isContact: true,
     };
   }, []);
 
