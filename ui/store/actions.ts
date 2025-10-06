@@ -460,18 +460,28 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
   };
 }
 
-export async function setShowShieldEntryModalOnce(payload: boolean) {
-  try {
-    await submitRequestToBackground('setShowShieldEntryModalOnce', [payload]);
-    return {
-      type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
-      payload,
-    };
-  } catch (error) {
-    log.error('[setShowShieldEntryModalOnce] error', error);
-    dispatch(displayWarning(error));
-    throw error;
-  }
+export function setShowShieldEntryModalOnce(
+  payload: boolean | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setShowShieldEntryModalOnce', [payload]);
+      dispatch(setShowShieldEntryModalOnceAction(payload));
+    } catch (error) {
+      log.error('[setShowShieldEntryModalOnce] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+export function setShowShieldEntryModalOnceAction(
+  payload: boolean | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return {
+    type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
+    payload,
+  };
 }
 
 /**

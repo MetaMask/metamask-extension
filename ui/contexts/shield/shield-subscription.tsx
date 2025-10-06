@@ -1,34 +1,82 @@
-import React, { useEffect } from 'react';
-import { useUserSubscriptionByProduct, useUserSubscriptions } from '../../hooks/subscription/useSubscription';
-import { Subscription, SUBSCRIPTION_STATUSES } from '@metamask/subscription-controller';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setShowShieldEntryModalOnce } from '../../store/actions';
+import {
+  Subscription,
+  SUBSCRIPTION_STATUSES,
+} from '@metamask/subscription-controller';
+import {
+  useUserSubscriptionByProduct,
+  useUserSubscriptions,
+} from '../../hooks/subscription/useSubscription';
 import { getShowShieldEntryModalOnce } from '../../selectors/selectors';
+import { setShowShieldEntryModalOnce } from '../../store/actions';
+import { getSelectedInternalAccount } from '../../selectors';
+import { useAccountTotalFiatBalance } from '../../hooks/useAccountTotalFiatBalance';
+import { SHIELD_MIN_FIAT_BALANCE_THRESHOLD } from '../../../shared/constants/app';
 
-export const ShieldSubscriptionContext = React.createContext<Subscription | undefined>(undefined);
-
-export const SHIELD_SUBSCRIPTION_REFRESH_INTERVAL = 1000 * 60 * 60; // 1 hour
+export const ShieldSubscriptionContext = React.createContext<
+  Subscription | undefined
+>(undefined);
 
 export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const dispatch = useDispatch();
   const { subscriptions } = useUserSubscriptions();
-  const shieldSubscription = useUserSubscriptionByProduct('shield', subscriptions);
+  const shieldSubscription = useUserSubscriptionByProduct(
+    'shield',
+    subscriptions,
+  );
   const shieldEntryModalShownOnce = useSelector(getShowShieldEntryModalOnce);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { totalFiatBalance } = useAccountTotalFiatBalance(
+    selectedAccount,
+    false,
+  );
 
-  useEffect(() => {
+  /**
+   * Watch the shield subscription and show the shield entry modal if the subscription is paused and modal is not shown once
+   */
+  const watchShieldSubscription = useCallback(() => {
     if (!shieldSubscription) {
       return;
     }
-
     const { status } = shieldSubscription;
     if (!shieldEntryModalShownOnce && status === SUBSCRIPTION_STATUSES.paused) {
       // show shield entry modal if subscription is paused and modal is not shown once
       dispatch(setShowShieldEntryModalOnce(true));
-    } else if (shieldEntryModalShownOnce && status === SUBSCRIPTION_STATUSES.active) {
+    } else if (
+      shieldEntryModalShownOnce &&
+      status === SUBSCRIPTION_STATUSES.active
+    ) {
       // hide shield entry modal if subscription is active and modal is shown once
-      dispatch(setShowShieldEntryModalOnce(false));
+      dispatch(setShowShieldEntryModalOnce(null));
     }
-  }, [shieldSubscription, shieldEntryModalShownOnce, dispatch])
+  }, [shieldSubscription, shieldEntryModalShownOnce, dispatch]);
 
-  return <ShieldSubscriptionContext.Provider value={shieldSubscription}>{children}</ShieldSubscriptionContext.Provider>;
+  /**
+   * Watch the balance and show the shield entry modal if the balance is greater than the minimum fiat balance threshold
+   */
+  const watchBalance = useCallback(() => {
+    console.log('shieldEntryModalShownOnce', shieldEntryModalShownOnce);
+    if (shieldEntryModalShownOnce !== null || !selectedAccount) {
+      return;
+    }
+
+    if (
+      totalFiatBalance &&
+      Number(totalFiatBalance) >= SHIELD_MIN_FIAT_BALANCE_THRESHOLD
+    ) {
+      dispatch(setShowShieldEntryModalOnce(true));
+    }
+  }, [shieldEntryModalShownOnce, dispatch, selectedAccount, totalFiatBalance]);
+
+  useEffect(() => {
+    watchShieldSubscription();
+    watchBalance();
+  }, [watchShieldSubscription, watchBalance]);
+
+  return (
+    <ShieldSubscriptionContext.Provider value={shieldSubscription}>
+      {children}
+    </ShieldSubscriptionContext.Provider>
+  );
 };

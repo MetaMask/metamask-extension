@@ -1410,7 +1410,7 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean): void {
+  setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
     this.update((state) => {
       state.showShieldEntryModalOnce = showShieldEntryModalOnce;
     });
