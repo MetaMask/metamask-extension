@@ -10,9 +10,13 @@ import {
 } from '../../hooks/subscription/useSubscription';
 import { getShowShieldEntryModalOnce } from '../../selectors/selectors';
 import { setShowShieldEntryModalOnce } from '../../store/actions';
-import { getSelectedInternalAccount } from '../../selectors';
+import {
+  getSelectedInternalAccount,
+  getUseExternalServices,
+} from '../../selectors';
 import { useAccountTotalFiatBalance } from '../../hooks/useAccountTotalFiatBalance';
 import { SHIELD_MIN_FIAT_BALANCE_THRESHOLD } from '../../../shared/constants/app';
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
 
 export const ShieldSubscriptionContext = React.createContext<
   Subscription | undefined
@@ -20,6 +24,10 @@ export const ShieldSubscriptionContext = React.createContext<
 
 export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const dispatch = useDispatch();
+  const isBasicFunctionalityEnabled = Boolean(
+    useSelector(getUseExternalServices),
+  );
+  const isSignedIn = useSelector(selectIsSignedIn);
   const { subscriptions } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
     'shield',
@@ -56,18 +64,31 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
    * Watch the balance and show the shield entry modal if the balance is greater than the minimum fiat balance threshold
    */
   const watchBalance = useCallback(() => {
-    console.log('shieldEntryModalShownOnce', shieldEntryModalShownOnce);
-    if (shieldEntryModalShownOnce !== null || !selectedAccount) {
+    if (
+      shieldEntryModalShownOnce !== null ||
+      !selectedAccount ||
+      shieldSubscription
+    ) {
       return;
     }
 
     if (
+      isBasicFunctionalityEnabled &&
+      isSignedIn &&
       totalFiatBalance &&
       Number(totalFiatBalance) >= SHIELD_MIN_FIAT_BALANCE_THRESHOLD
     ) {
       dispatch(setShowShieldEntryModalOnce(true));
     }
-  }, [shieldEntryModalShownOnce, dispatch, selectedAccount, totalFiatBalance]);
+  }, [
+    shieldEntryModalShownOnce,
+    dispatch,
+    selectedAccount,
+    totalFiatBalance,
+    isSignedIn,
+    isBasicFunctionalityEnabled,
+    shieldSubscription,
+  ]);
 
   useEffect(() => {
     watchShieldSubscription();
