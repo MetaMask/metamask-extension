@@ -248,7 +248,6 @@ import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
-import { AlertController } from './controllers/alert-controller';
 import Backup from './lib/backup';
 import DecryptMessageController from './controllers/decrypt-message';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
@@ -402,6 +401,7 @@ import { AnnouncementControllerInit } from './controller-init/announcement-contr
 import { AccountOrderControllerInit } from './controller-init/account-order-controller-init';
 import { AccountsControllerInit } from './controller-init/accounts-controller-init';
 import { PhishingControllerInit } from './controller-init/phishing-controller-init';
+import { AlertControllerInit } from './controller-init/alert-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -606,15 +606,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AddressBookController,
     });
 
-    this.alertController = new AlertController({
-      state: initState.AlertController,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AlertController',
-        allowedEvents: ['AccountsController:selectedAccountChange'],
-        allowedActions: ['AccountsController:getSelectedAccount'],
-      }),
-    });
-
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
       messenger: this.controllerMessenger.getRestricted({
@@ -747,6 +738,7 @@ export default class MetamaskController extends EventEmitter {
       SnapKeyringBuilder: SnapKeyringBuilderInit,
       KeyringController: KeyringControllerInit,
       AccountsController: AccountsControllerInit,
+      AlertController: AlertControllerInit,
       PermissionController: PermissionControllerInit,
       PermissionLogController: PermissionLogControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
@@ -838,6 +830,7 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = controllersByName.PreferencesController;
     this.keyringController = controllersByName.KeyringController;
     this.accountsController = controllersByName.AccountsController;
+    this.alertController = controllersByName.AlertController;
     this.permissionController = controllersByName.PermissionController;
     this.permissionLogController = controllersByName.PermissionLogController;
     this.subjectMetadataController =

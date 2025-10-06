@@ -80,6 +80,7 @@ import { AppStateController } from '../controllers/app-state-controller';
 import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
 import { SubscriptionService } from '../services/subscription/subscription-service';
 import { AccountOrderController } from '../controllers/account-order';
+import { AlertController } from '../controllers/alert-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -88,6 +89,7 @@ export type Controller =
   | AccountOrderController
   | AccountTrackerController
   | AccountsController
+  | AlertController
   | AnnouncementController
   | ApprovalController
   | AppStateController
@@ -164,6 +166,7 @@ export type Controller =
  */
 export type ControllerFlatState = AccountOrderController['state'] &
   AccountsController['state'] &
+  AlertController['state'] &
   AccountTreeController['state'] &
   AnnouncementController['state'] &
   ApprovalController['state'] &

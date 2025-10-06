@@ -158,6 +158,7 @@ import { getAnnouncementControllerMessenger } from './announcement-controller-me
 import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 import { getAccountsControllerMessenger } from './accounts-controller-messenger';
 import { getPhishingControllerMessenger } from './phishing-controller-messenger';
+import { getAlertControllerMessenger } from './alert-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -171,6 +172,8 @@ export {
 } from './account-tracker-controller-messenger';
 export type { AccountsControllerMessenger } from './accounts-controller-messenger';
 export { getAccountsControllerMessenger } from './accounts-controller-messenger';
+export type { AlertControllerMessenger } from './alert-controller-messenger';
+export { getAlertControllerMessenger } from './alert-controller-messenger';
 export type { AnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 export type { AppStateControllerMessenger } from './app-state-controller-messenger';
@@ -317,6 +320,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   AccountsController: {
     getMessenger: getAccountsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AlertController: {
+    getMessenger: getAlertControllerMessenger,
     getInitMessenger: noop,
   },
   AnnouncementController: {
