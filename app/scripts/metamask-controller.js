@@ -278,8 +278,6 @@ import {
   getPermittedAccountsForScopesByOrigin,
   getOriginsWithSessionProperty,
 } from './controllers/permissions';
-import { MetaMetricsDataDeletionController } from './controllers/metametrics-data-deletion/metametrics-data-deletion';
-import { DataDeletionService } from './services/data-deletion-service';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { getAccountsBySnapId } from './lib/snap-keyring';
@@ -402,6 +400,7 @@ import { AccountOrderControllerInit } from './controller-init/account-order-cont
 import { AccountsControllerInit } from './controller-init/accounts-controller-init';
 import { PhishingControllerInit } from './controller-init/phishing-controller-init';
 import { AlertControllerInit } from './controller-init/alert-controller-init';
+import { MetaMetricsDataDeletionControllerInit } from './controller-init/metametrics-data-deletion-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -570,20 +569,6 @@ export default class MetamaskController extends EventEmitter {
     this.multichainMiddlewareManager = new MultichainMiddlewareManager();
     this.deprecatedNetworkVersions = {};
 
-    const dataDeletionService = new DataDeletionService();
-    const metaMetricsDataDeletionMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'MetaMetricsDataDeletionController',
-        allowedActions: ['MetaMetricsController:getState'],
-        allowedEvents: [],
-      });
-    this.metaMetricsDataDeletionController =
-      new MetaMetricsDataDeletionController({
-        dataDeletionService,
-        messenger: metaMetricsDataDeletionMessenger,
-        state: initState.metaMetricsDataDeletionController,
-      });
-
     // start and stop polling for balances based on activeControllerConnections
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
       const { completedOnboarding } = this.onboardingController.state;
@@ -745,6 +730,7 @@ export default class MetamaskController extends EventEmitter {
       AppStateController: AppStateControllerInit,
       NetworkController: NetworkControllerInit,
       MetaMetricsController: MetaMetricsControllerInit,
+      MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       GasFeeController: GasFeeControllerInit,
       ExecutionService: ExecutionServiceInit,
@@ -838,6 +824,8 @@ export default class MetamaskController extends EventEmitter {
     this.appStateController = controllersByName.AppStateController;
     this.networkController = controllersByName.NetworkController;
     this.metaMetricsController = controllersByName.MetaMetricsController;
+    this.metaMetricsDataDeletionController =
+      controllersByName.MetaMetricsDataDeletionController;
     this.remoteFeatureFlagController =
       controllersByName.RemoteFeatureFlagController;
     this.gasFeeController = controllersByName.GasFeeController;

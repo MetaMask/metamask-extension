@@ -159,6 +159,7 @@ import { getAccountOrderControllerMessenger } from './account-order-controller-m
 import { getAccountsControllerMessenger } from './accounts-controller-messenger';
 import { getPhishingControllerMessenger } from './phishing-controller-messenger';
 import { getAlertControllerMessenger } from './alert-controller-messenger';
+import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -222,6 +223,8 @@ export {
 } from './keyring-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+export type { MetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
+export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export type {
   NetworkControllerMessenger,
   NetworkControllerInitMessenger,
@@ -388,6 +391,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   MetaMetricsController: {
     getMessenger: getMetaMetricsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MetaMetricsDataDeletionController: {
+    getMessenger: getMetaMetricsDataDeletionControllerMessenger,
     getInitMessenger: noop,
   },
   MultichainAssetsController: {
