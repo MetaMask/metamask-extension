@@ -29,7 +29,6 @@ import {
   ApprovalRequestNotFoundError,
 } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
-import { PhishingController } from '@metamask/phishing-controller';
 import {
   MethodNames,
   PermissionDoesNotExistError,
@@ -402,6 +401,7 @@ import { NetworkControllerInit } from './controller-init/network-controller-init
 import { AnnouncementControllerInit } from './controller-init/announcement-controller-init';
 import { AccountOrderControllerInit } from './controller-init/account-order-controller-init';
 import { AccountsControllerInit } from './controller-init/accounts-controller-init';
+import { PhishingControllerInit } from './controller-init/phishing-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -583,18 +583,6 @@ export default class MetamaskController extends EventEmitter {
         messenger: metaMetricsDataDeletionMessenger,
         state: initState.metaMetricsDataDeletionController,
       });
-
-    const phishingControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'PhishingController',
-      allowedEvents: ['TransactionController:stateChange'],
-    });
-
-    this.phishingController = new PhishingController({
-      messenger: phishingControllerMessenger,
-      state: initState.PhishingController,
-      hotlistRefreshInterval: process.env.IN_TEST ? 5 * SECOND : undefined,
-      stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
-    });
 
     // start and stop polling for balances based on activeControllerConnections
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
@@ -778,6 +766,7 @@ export default class MetamaskController extends EventEmitter {
       SnapInterfaceController: SnapInterfaceControllerInit,
       WebSocketService: WebSocketServiceInit,
       PPOMController: PPOMControllerInit,
+      PhishingController: PhishingControllerInit,
       OnboardingController: OnboardingControllerInit,
       AccountTrackerController: AccountTrackerControllerInit,
       TransactionController: TransactionControllerInit,
@@ -868,6 +857,7 @@ export default class MetamaskController extends EventEmitter {
     this.snapInterfaceController = controllersByName.SnapInterfaceController;
     this.snapsRegistry = controllersByName.SnapsRegistry;
     this.ppomController = controllersByName.PPOMController;
+    this.phishingController = controllersByName.PhishingController;
     this.onboardingController = controllersByName.OnboardingController;
     this.accountTrackerController = controllersByName.AccountTrackerController;
     this.txController = controllersByName.TransactionController;

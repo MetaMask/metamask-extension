@@ -157,6 +157,7 @@ import { getSubscriptionServiceMessenger } from './subscription/subscription-ser
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 import { getAccountsControllerMessenger } from './accounts-controller-messenger';
+import { getPhishingControllerMessenger } from './phishing-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -250,6 +251,8 @@ export {
 } from './permission-controller-messenger';
 export type { PermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
+export type { PhishingControllerMessenger } from './phishing-controller-messenger';
+export { getPhishingControllerMessenger } from './phishing-controller-messenger';
 export type {
   RemoteFeatureFlagControllerMessenger,
   RemoteFeatureFlagControllerInitMessenger,
@@ -436,6 +439,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   PermissionLogController: {
     getMessenger: getPermissionLogControllerMessenger,
+    getInitMessenger: noop,
+  },
+  PhishingController: {
+    getMessenger: getPhishingControllerMessenger,
     getInitMessenger: noop,
   },
   RateLimitController: {

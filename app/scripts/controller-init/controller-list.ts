@@ -66,6 +66,7 @@ import { ApprovalController } from '@metamask/approval-controller';
 import { NetworkEnablementController } from '@metamask/network-enablement-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
+import { PhishingController } from '@metamask/phishing-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -122,6 +123,7 @@ export type Controller =
       CaveatSpecificationConstraint
     >
   | PermissionLogController
+  | PhishingController
   | PPOMController
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
@@ -193,6 +195,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
     CaveatSpecificationConstraint
   >['state'] &
   PermissionLogController['state'] &
+  PhishingController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &
