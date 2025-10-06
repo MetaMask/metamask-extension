@@ -9,6 +9,7 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
 }));
 
 jest.mock('@metamask/bridge-controller', () => ({
+  ...jest.requireActual('@metamask/bridge-controller'),
   formatChainIdToCaip: jest.fn(),
 }));
 

@@ -192,7 +192,7 @@ const TransactionShield = () => {
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Lg}
-            color={IconColor.iconAlternativeSoft}
+            color={IconColor.iconAlternative}
           />
         )}
       </Box>
@@ -424,7 +424,7 @@ const TransactionShield = () => {
                     label={t('shieldTxMembershipFreeTrial')}
                     labelProps={{
                       variant: TextVariant.bodySmMedium,
-                      color: TextColor.textAlternativeSoft,
+                      color: TextColor.textAlternative,
                     }}
                     borderStyle={BorderStyle.none}
                     borderRadius={BorderRadius.SM}
@@ -436,7 +436,7 @@ const TransactionShield = () => {
                     label={t('shieldTxMembershipPaused')}
                     labelProps={{
                       variant: TextVariant.bodySmMedium,
-                      color: TextColor.textAlternativeSoft,
+                      color: TextColor.textAlternative,
                     }}
                     borderStyle={BorderStyle.none}
                     borderRadius={BorderRadius.SM}
