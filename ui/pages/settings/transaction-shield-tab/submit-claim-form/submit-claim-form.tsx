@@ -4,36 +4,37 @@ import FileInput from 'react-simple-file-input';
 import { isHexString } from '@metamask/utils';
 import {
   Box,
+  BoxBackgroundColor,
   Button,
   ButtonIcon,
   ButtonIconSize,
-  ButtonLink,
-  ButtonLinkSize,
   ButtonSize,
   ButtonVariant,
-  FormTextField,
-  FormTextFieldSize,
+  FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   Text,
-} from '../../../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  IconColor,
+  TextButton,
+  TextButtonSize,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Textarea,
   TextareaResize,
 } from '../../../../components/component-library/textarea';
+import {
+  FormTextField,
+  FormTextFieldSize,
+} from '../../../../components/component-library';
+import {
+  BlockSize,
+  BorderRadius,
+  TextColor as DsTextColor,
+} from '../../../../helpers/constants/design-system';
 import { useSubmitClaimFormState } from './submit-claim-form-state';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -170,24 +171,16 @@ const SubmitClaimForm = () => {
 
   return (
     <Box
-      className="submit-claim-page"
+      className="submit-claim-page flex flex-col"
       data-testid="submit-claim-page"
-      width={BlockSize.Full}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
       padding={4}
       gap={4}
     >
-      <Text variant={TextVariant.bodyMdMedium}>
+      <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {t('shieldClaimDetails', [
-          <ButtonLink
-            key="here-link"
-            size={ButtonLinkSize.Inherit}
-            externalLink
-            href="#"
-          >
-            {t('here')}
-          </ButtonLink>,
+          <TextButton key="here-link" className="min-w-0" asChild>
+            <a href="#">{t('here')}</a>
+          </TextButton>,
         ])}
       </Text>
       <FormTextField
@@ -199,7 +192,7 @@ const SubmitClaimForm = () => {
         }
         helpTextProps={{
           'data-testid': 'shield-claim-help-text',
-          color: TextColor.textAlternativeSoft,
+          color: DsTextColor.textAlternative,
         }}
         id="email"
         name="email"
@@ -219,7 +212,7 @@ const SubmitClaimForm = () => {
         }}
         helpTextProps={{
           'data-testid': 'shield-claim-impacted-wallet-address-help-text',
-          color: TextColor.textAlternativeSoft,
+          color: DsTextColor.textAlternative,
         }}
         helpText={
           errors.impactedWalletAddress
@@ -244,13 +237,17 @@ const SubmitClaimForm = () => {
             errors.impactedTxHash?.msg
           ) : (
             <Text
-              variant={TextVariant.inherit}
-              color={TextColor.textAlternativeSoft}
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
             >
               {t('shieldClaimImpactedTxHashHelpText')}{' '}
-              <ButtonLink size={ButtonLinkSize.Inherit} externalLink href="#">
-                {t('shieldClaimImpactedTxHashHelpTextLink')}
-              </ButtonLink>
+              <TextButton
+                size={TextButtonSize.BodySm}
+                className="min-w-0"
+                asChild
+              >
+                <a href="#">{t('shieldClaimImpactedTxHashHelpTextLink')}</a>
+              </TextButton>
             </Text>
           )
         }
@@ -272,7 +269,7 @@ const SubmitClaimForm = () => {
         }}
         helpTextProps={{
           'data-testid': 'shield-claim-reimbursement-wallet-address-help-text',
-          color: TextColor.textAlternativeSoft,
+          color: DsTextColor.textAlternative,
         }}
         helpText={
           errors.reimbursementWalletAddress
@@ -289,8 +286,8 @@ const SubmitClaimForm = () => {
         required
         width={BlockSize.Full}
       />
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
-        <Text variant={TextVariant.bodyMdMedium}>
+      <Box gap={2}>
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {`${t('shieldClaimDescription')}*`}
         </Text>
         <Textarea
@@ -307,7 +304,11 @@ const SubmitClaimForm = () => {
         />
       </Box>
       <Box>
-        <Text variant={TextVariant.bodyMdMedium} marginBottom={2}>
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          className="mb-1"
+        >
           {t('shieldClaimFileUploader')}
         </Text>
         <FileInput
@@ -320,13 +321,11 @@ const SubmitClaimForm = () => {
           style={{ color: 'transparent' }}
         />
         <Text
-          variant={TextVariant.bodySm}
+          variant={TextVariant.BodySm}
           color={
-            errors.files
-              ? TextColor.errorDefault
-              : TextColor.textAlternativeSoft
+            errors.files ? TextColor.ErrorDefault : TextColor.TextAlternative
           }
-          marginTop={1}
+          className="mt-0.5"
         >
           {errors.files
             ? errors.files.msg
@@ -335,8 +334,6 @@ const SubmitClaimForm = () => {
 
         {files && (
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
             gap={2}
             marginTop={4}
             className="settings-page__content-item-col"
@@ -344,33 +341,27 @@ const SubmitClaimForm = () => {
             {Array.from(files).map((file) => (
               <Box
                 key={file.name}
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                flexDirection={FlexDirection.Row}
-                borderRadius={BorderRadius.LG}
-                backgroundColor={BackgroundColor.backgroundSection}
-                paddingTop={2}
-                paddingBottom={2}
-                paddingInline={4}
+                className="flex items-center rounded-lg py-1 px-2"
+                backgroundColor={BoxBackgroundColor.BackgroundSection}
               >
                 <Icon
                   name={
                     file.type.includes('image') ? IconName.Image : IconName.File
                   }
-                  size={IconSize.Md}
-                  color={IconColor.iconAlternative}
-                  marginRight={2}
+                  size={IconSize.Lg}
+                  color={IconColor.IconDefault}
+                  className="mr-2"
                 />
                 <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextDefault}
                 >
                   {file.name}
                 </Text>
                 <ButtonIcon
                   iconName={IconName.Close}
                   size={ButtonIconSize.Sm}
-                  color={IconColor.iconAlternative}
+                  color={IconColor.IconDefault}
                   ariaLabel={t('delete')}
                   onClick={() => {
                     setFiles(
@@ -388,7 +379,7 @@ const SubmitClaimForm = () => {
                       })(),
                     );
                   }}
-                  marginLeft="auto"
+                  className="ml-auto"
                 />
               </Box>
             ))}
