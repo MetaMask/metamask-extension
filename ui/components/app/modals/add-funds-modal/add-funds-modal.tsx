@@ -1,5 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import React, { useCallback, useState } from 'react';
 import { toHex } from '@metamask/controller-utils';
 import {
   Box,
@@ -10,6 +9,17 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  CaipChainId,
+  isCaipChainId,
+  isCaipAssetType,
+  parseCaipAssetType,
+} from '@metamask/utils';
+import { useHistory } from 'react-router-dom';
+import { isEqual } from 'lodash';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Modal,
   ModalBody,
@@ -17,20 +27,12 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { useDispatch, useSelector } from 'react-redux';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
-import {
-  CaipChainId,
-  isCaipChainId,
-  isCaipAssetType,
-  parseCaipAssetType,
-} from '@metamask/utils';
 import { ChainId } from '../../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { getIsMultichainAccountsState2Enabled } from '../../../../selectors/multichain-accounts';
 import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
-import { useHistory } from 'react-router-dom';
 import {
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -41,14 +43,10 @@ import {
 } from '../../../../pages/multichain-accounts/multichain-account-address-list-page';
 import { ReceiveModal } from '../../../multichain/receive-modal';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
-import { isEqual } from 'lodash';
 import { getIsUnifiedUIEnabled } from '../../../../ducks/bridge/selectors';
 import useBridging from '../../../../hooks/bridge/useBridging';
 import { MetaMetricsSwapsEventSource } from '../../../../../shared/constants/metametrics';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../../shared/constants/bridge';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
-import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
-import { getMultichainNetwork } from '../../../../selectors/multichain';
 import {
   getCurrentKeyring,
   getIsSwapsChain,
@@ -87,23 +85,15 @@ const AddFundsModal = ({ onClose }: { onClose: () => void }) => {
     getSwapsDefaultToken(state, chainId.toString()),
   );
 
-  // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
-  // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
-  // network).
-  const { isEvmNetwork, chainId: multichainChainId } = useMultichainSelector(
-    getMultichainNetwork,
-    account,
-  );
-
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const getChainId = (): CaipChainId | ChainId => {
+  const getChainId = useCallback((): CaipChainId | ChainId => {
     if (isCaipChainId(chainId)) {
       return chainId as CaipChainId;
     }
     // Otherwise we assume that's an EVM chain ID, so use the usual 0x prefix
     return toHex(chainId) as ChainId;
-  };
+  }, [chainId]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp(getChainId());
@@ -119,12 +109,7 @@ const AddFundsModal = ({ onClose }: { onClose: () => void }) => {
       // Show the traditional receive modal
       setShowReceiveModal(true);
     }
-  }, [
-    isMultichainAccountsState2Enabled,
-    selectedAccountGroup,
-    history,
-    chainId,
-  ]);
+  }, [isMultichainAccountsState2Enabled, selectedAccountGroup, history]);
 
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
@@ -146,7 +131,7 @@ const AddFundsModal = ({ onClose }: { onClose: () => void }) => {
         isSwap,
       );
     },
-    [location, openBridgeExperience],
+    [openBridgeExperience],
   );
 
   const handleSwapOnClick = useCallback(async () => {
@@ -166,13 +151,13 @@ const AddFundsModal = ({ onClose }: { onClose: () => void }) => {
       }
     }
   }, [
-    isSwapsChain,
-    chainId,
-    isMultichainAccountsState2Enabled,
-    multichainChainId,
     isUnifiedUIEnabled,
-    usingHardwareWallet,
+    isSwapsChain,
+    handleBridgeOnClick,
+    dispatch,
     defaultSwapsToken,
+    usingHardwareWallet,
+    history,
   ]);
 
   const buttonRow = ({
