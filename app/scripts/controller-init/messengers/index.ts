@@ -154,6 +154,7 @@ import {
   getNetworkControllerMessenger,
 } from './network-controller-messenger';
 import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
+import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 
 export type {
   AccountTrackerControllerMessenger,
@@ -163,6 +164,8 @@ export {
   getAccountTrackerControllerMessenger,
   getAccountTrackerControllerInitMessenger,
 } from './account-tracker-controller-messenger';
+export type { AnnouncementControllerMessenger } from './announcement-controller-messenger';
+export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 export type { AppStateControllerMessenger } from './app-state-controller-messenger';
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';
 export type {
@@ -298,6 +301,10 @@ export const CONTROLLER_MESSENGERS = {
   AccountTrackerController: {
     getMessenger: getAccountTrackerControllerMessenger,
     getInitMessenger: getAccountTrackerControllerInitMessenger,
+  },
+  AnnouncementController: {
+    getMessenger: getAnnouncementControllerMessenger,
+    getInitMessenger: noop,
   },
   AppStateController: {
     getMessenger: getAppStateControllerMessenger,

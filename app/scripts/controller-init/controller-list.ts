@@ -65,6 +65,7 @@ import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { ApprovalController } from '@metamask/approval-controller';
 import { NetworkEnablementController } from '@metamask/network-enablement-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
+import { AnnouncementController } from '@metamask/announcement-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -83,6 +84,7 @@ import { SubscriptionService } from '../services/subscription/subscription-servi
  */
 export type Controller =
   | AccountTrackerController
+  | AnnouncementController
   | ApprovalController
   | AppStateController
   | AuthenticationController
@@ -157,6 +159,7 @@ export type Controller =
  */
 export type ControllerFlatState = AccountsController['state'] &
   AccountTreeController['state'] &
+  AnnouncementController['state'] &
   ApprovalController['state'] &
   AppStateController['state'] &
   AuthenticationController['state'] &

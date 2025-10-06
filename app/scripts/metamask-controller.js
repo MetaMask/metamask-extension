@@ -30,7 +30,6 @@ import {
 } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
 import { PhishingController } from '@metamask/phishing-controller';
-import { AnnouncementController } from '@metamask/announcement-controller';
 import {
   MethodNames,
   PermissionDoesNotExistError,
@@ -157,7 +156,6 @@ import {
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
-import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
   HYPERLIQUID_APPROVAL_TYPE,
@@ -403,6 +401,7 @@ import { KeyringControllerInit } from './controller-init/keyring-controller-init
 import { SnapKeyringBuilderInit } from './controller-init/accounts/snap-keyring-builder-init';
 import { PermissionLogControllerInit } from './controller-init/permission-log-controller-init';
 import { NetworkControllerInit } from './controller-init/network-controller-init';
+import { AnnouncementControllerInit } from './controller-init/announcement-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -617,16 +616,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.PhishingController,
       hotlistRefreshInterval: process.env.IN_TEST ? 5 * SECOND : undefined,
       stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
-    });
-
-    const announcementMessenger = this.controllerMessenger.getRestricted({
-      name: 'AnnouncementController',
-    });
-
-    this.announcementController = new AnnouncementController({
-      messenger: announcementMessenger,
-      allAnnouncements: UI_NOTIFICATIONS,
-      state: initState.AnnouncementController,
     });
 
     const accountOrderMessenger = this.controllerMessenger.getRestricted({
@@ -899,6 +888,7 @@ export default class MetamaskController extends EventEmitter {
       EnsController: EnsControllerInit,
       NameController: NameControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
+      AnnouncementController: AnnouncementControllerInit,
     };
 
     const {
@@ -992,6 +982,7 @@ export default class MetamaskController extends EventEmitter {
       controllersByName.GatorPermissionsController;
     this.ensController = controllersByName.EnsController;
     this.nameController = controllersByName.NameController;
+    this.announcementController = controllersByName.AnnouncementController;
 
     this.backup = new Backup({
       preferencesController: this.preferencesController,
