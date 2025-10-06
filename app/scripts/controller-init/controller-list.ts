@@ -68,6 +68,7 @@ import { PermissionLogController } from '@metamask/permission-log-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { LoggingController } from '@metamask/logging-controller';
+import { ErrorReportingService } from '@metamask/error-reporting-service';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -105,6 +106,7 @@ export type Controller =
   | DelegationController
   | DeFiPositionsController
   | EnsController
+  | ErrorReportingService
   | ExecutionService
   | GasFeeController
   | GatorPermissionsController

@@ -127,7 +127,6 @@ import {
   BridgeStatusAction,
 } from '@metamask/bridge-status-controller';
 
-import { ErrorReportingService } from '@metamask/error-reporting-service';
 import {
   SeedlessOnboardingControllerErrorMessage,
   SecretType,
@@ -400,6 +399,7 @@ import { AlertControllerInit } from './controller-init/alert-controller-init';
 import { MetaMetricsDataDeletionControllerInit } from './controller-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './controller-init/logging-controller-init';
 import { AppMetadataControllerInit } from './controller-init/app-metadata-controller-init';
+import { ErrorReportingServiceInit } from './controller-init/error-reporting-service-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -510,20 +510,6 @@ export default class MetamaskController extends EventEmitter {
         // Exclude Smart TX Status Page from rate limiting to allow sequential transactions
         SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
       ],
-    });
-
-    const errorReportingServiceMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'ErrorReportingService',
-        allowedActions: [],
-        allowedEvents: [],
-      });
-    // Initializing the ErrorReportingService populates the
-    // ErrorReportingServiceMessenger.
-    // eslint-disable-next-line no-new
-    new ErrorReportingService({
-      messenger: errorReportingServiceMessenger,
-      captureException,
     });
 
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
@@ -690,6 +676,7 @@ export default class MetamaskController extends EventEmitter {
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       LoggingController: LoggingControllerInit,
+      ErrorReportingService: ErrorReportingServiceInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
       SnapKeyringBuilder: SnapKeyringBuilderInit,

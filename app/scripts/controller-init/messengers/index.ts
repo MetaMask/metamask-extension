@@ -162,6 +162,7 @@ import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
+import { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -209,6 +210,8 @@ export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
+export type { ErrorReportingServiceMessenger } from './error-reporting-service-messenger';
+export { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 export type {
   GasFeeControllerMessenger,
   GasFeeControllerInitMessenger,
@@ -378,6 +381,10 @@ export const CONTROLLER_MESSENGERS = {
   EnsController: {
     getMessenger: getEnsControllerMessenger,
     getInitMessenger: getEnsControllerInitMessenger,
+  },
+  ErrorReportingService: {
+    getMessenger: getErrorReportingServiceMessenger,
+    getInitMessenger: noop,
   },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
