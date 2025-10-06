@@ -9824,13 +9824,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rive-app/canvas-lite@npm:2.31.5":
-  version: 2.31.5
-  resolution: "@rive-app/canvas-lite@npm:2.31.5"
-  checksum: 10/7b0d6953684e985d3cfac7947e0d5d02751d4744a5a77cecc4a9e755e66797385d4aceb9297ac7027c503ec3d1bbb8e416448c88b1f0024459c14ec0908a723f
-  languageName: node
-  linkType: hard
-
 "@rive-app/canvas@npm:2.31.5":
   version: 2.31.5
   resolution: "@rive-app/canvas@npm:2.31.5"
@@ -9846,20 +9839,6 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
   checksum: 10/e33cc8773a69b8f243b75e545704b760dabdb71c373c7fe6465ffa2a84c5172a873bf88079cec73694b01addfcede1606cf542eb69594b1fc86376c4ca443dcd
-  languageName: node
-  linkType: hard
-
-"@rive-app/webgl2@npm:2.31.5":
-  version: 2.31.5
-  resolution: "@rive-app/webgl2@npm:2.31.5"
-  checksum: 10/abc4edb26e5c3ccb9849f8e49f3591c56d00280497d717a997558c16298626741c1a9bd9f4434d2bda446236f96ed489900e38ea842e90601e833c5b4b02ba1a
-  languageName: node
-  linkType: hard
-
-"@rive-app/webgl@npm:2.31.5":
-  version: 2.31.5
-  resolution: "@rive-app/webgl@npm:2.31.5"
-  checksum: 10/8d70c045f0a3a4d498cdba78e82189503da13df7525688ba1a976bdf2022cfc8f952adf5840817d3b34efe27279dafc9552e68da934fcba5c6db1053cf1359e4
   languageName: node
   linkType: hard
 
@@ -10065,18 +10044,99 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/cli@npm:^2.19.4":
-  version: 2.19.4
-  resolution: "@sentry/cli@npm:2.19.4"
+"@sentry/cli-darwin@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-darwin@npm:2.56.0"
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-linux-arm64@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-linux-arm64@npm:2.56.0"
+  conditions: (os=linux | os=freebsd | os=android) & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-linux-arm@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-linux-arm@npm:2.56.0"
+  conditions: (os=linux | os=freebsd | os=android) & cpu=arm
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-linux-i686@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-linux-i686@npm:2.56.0"
+  conditions: (os=linux | os=freebsd | os=android) & (cpu=x86 | cpu=ia32)
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-linux-x64@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-linux-x64@npm:2.56.0"
+  conditions: (os=linux | os=freebsd | os=android) & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-win32-arm64@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-win32-arm64@npm:2.56.0"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-win32-i686@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-win32-i686@npm:2.56.0"
+  conditions: os=win32 & (cpu=x86 | cpu=ia32)
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-win32-x64@npm:2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli-win32-x64@npm:2.56.0"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@sentry/cli@npm:^2.56.0":
+  version: 2.56.0
+  resolution: "@sentry/cli@npm:2.56.0"
   dependencies:
+    "@sentry/cli-darwin": "npm:2.56.0"
+    "@sentry/cli-linux-arm": "npm:2.56.0"
+    "@sentry/cli-linux-arm64": "npm:2.56.0"
+    "@sentry/cli-linux-i686": "npm:2.56.0"
+    "@sentry/cli-linux-x64": "npm:2.56.0"
+    "@sentry/cli-win32-arm64": "npm:2.56.0"
+    "@sentry/cli-win32-i686": "npm:2.56.0"
+    "@sentry/cli-win32-x64": "npm:2.56.0"
     https-proxy-agent: "npm:^5.0.0"
     node-fetch: "npm:^2.6.7"
     progress: "npm:^2.0.3"
     proxy-from-env: "npm:^1.1.0"
     which: "npm:^2.0.2"
+  dependenciesMeta:
+    "@sentry/cli-darwin":
+      optional: true
+    "@sentry/cli-linux-arm":
+      optional: true
+    "@sentry/cli-linux-arm64":
+      optional: true
+    "@sentry/cli-linux-i686":
+      optional: true
+    "@sentry/cli-linux-x64":
+      optional: true
+    "@sentry/cli-win32-arm64":
+      optional: true
+    "@sentry/cli-win32-i686":
+      optional: true
+    "@sentry/cli-win32-x64":
+      optional: true
   bin:
     sentry-cli: bin/sentry-cli
-  checksum: 10/d79151025d9f2d714d4503c345d5e1ac729601efceb23cc85410dfdab85f5419b1d9e37708549fc3cd69a6bb37f3e3eae33f47815da4fec90f84efb5749ddbc0
+  checksum: 10/6ed494c6c21c7da53c71ae9ca6b26d49efa29b12707019b6460653cc9e0087412df57e49f2a3d56fbef5d8d0bb64fa23b066d1d7307af7f1093d8804137875cb
   languageName: node
   linkType: hard
 
@@ -32249,7 +32309,7 @@ __metadata:
     "@rive-app/react-canvas": "npm:^4.23.3"
     "@segment/loosely-validate-event": "npm:^2.0.0"
     "@sentry/browser": "patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch"
-    "@sentry/cli": "npm:^2.19.4"
+    "@sentry/cli": "npm:^2.56.0"
     "@sentry/types": "npm:^8.33.1"
     "@sentry/utils": "npm:^8.33.1"
     "@slack/types": "npm:^2.14.0"
@@ -32505,7 +32565,6 @@ __metadata:
     remove-trailing-slash: "npm:^0.1.1"
     reselect: "npm:^5.1.1"
     resolve-url-loader: "npm:^3.1.5"
-    rive-react: "npm:^4.23.3"
     sass-embedded: "npm:^1.71.0"
     sass-loader: "npm:^14.1.1"
     schema-utils: "npm:^4.2.0"
@@ -38480,20 +38539,6 @@ __metadata:
     "@xrplf/isomorphic": "npm:^1.0.0"
     ripple-address-codec: "npm:^5.0.0"
   checksum: 10/401ade8b179b8693f9689457346a5f0b5b7d789bb88613f27917c2a1ef907edc23bb1902ba5e8158dcd303e462f160e39897047fb778227af2dc6fab8897f503
-  languageName: node
-  linkType: hard
-
-"rive-react@npm:^4.23.3":
-  version: 4.23.3
-  resolution: "rive-react@npm:4.23.3"
-  dependencies:
-    "@rive-app/canvas": "npm:2.31.5"
-    "@rive-app/canvas-lite": "npm:2.31.5"
-    "@rive-app/webgl": "npm:2.31.5"
-    "@rive-app/webgl2": "npm:2.31.5"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
-  checksum: 10/603e5cc1d62081cf6299151ef711e101085a5258dad965444a1b4b2794b33e3ebdda3c22c2aed21f7d4540d9df15031b9fc979b4226d8b14570ec384c31d0138
   languageName: node
   linkType: hard
 
