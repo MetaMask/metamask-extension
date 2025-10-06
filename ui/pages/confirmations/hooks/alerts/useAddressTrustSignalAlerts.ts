@@ -1,38 +1,37 @@
 import { useMemo } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
-import { useConfirmContext } from '../../context/confirm';
 import {
   useTrustSignal,
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
-import { SignatureRequestType } from '../../types/confirm';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 // eslint-disable-next-line import/no-restricted-paths
 import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
+import { useUnapprovedTransaction } from '../transactions/useUnapprovedTransaction';
+import { useSignatureRequest } from '../signatures/useSignatureRequest';
 
 export function useAddressTrustSignalAlerts(): Alert[] {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMeta = useUnapprovedTransaction();
+  const signatureRequest = useSignatureRequest();
   const t = useI18nContext();
 
   const addressToCheck = useMemo(() => {
-    if (!currentConfirmation) {
+    if (!transactionMeta && !signatureRequest) {
       return null;
     }
 
     // For transactions, check the 'to' address
-    if ((currentConfirmation as TransactionMeta)?.txParams?.to) {
-      return (currentConfirmation as TransactionMeta).txParams.to;
+    if (transactionMeta) {
+      return transactionMeta.txParams.to;
     }
 
     // For signatures, check the verifying contract if available
-    if ((currentConfirmation as SignatureRequestType)?.msgParams?.data) {
+    if (signatureRequest) {
       try {
-        const data = (currentConfirmation as SignatureRequestType)?.msgParams
-          ?.data;
+        const data = signatureRequest?.msgParams?.data;
         const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
         if (parsedData?.domain?.verifyingContract) {
           return parsedData.domain.verifyingContract;
@@ -43,7 +42,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
     }
 
     return null;
-  }, [currentConfirmation]);
+  }, [transactionMeta, signatureRequest]);
 
   const { state: trustSignalDisplayState } = useTrustSignal(
     addressToCheck || '',

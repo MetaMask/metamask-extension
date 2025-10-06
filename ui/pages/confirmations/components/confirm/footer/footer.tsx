@@ -26,9 +26,10 @@ import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
-import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useUnapprovedTransaction } from '../../../hooks/transactions/useUnapprovedTransaction';
+import { useSignatureRequest } from '../../../hooks/signatures/useSignatureRequest';
+import { useApprovalRequest } from '../../../hooks/useApprovalRequest';
 import OriginThrottleModal from './origin-throttle-modal';
 
 export type OnCancelHandler = ({
@@ -153,11 +154,13 @@ const Footer = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const { onTransactionConfirm } = useTransactionConfirm();
-  const currentConfirmation = useUnapprovedTransaction();
+  const approvalRequest = useApprovalRequest();
+  const transactionMeta = useUnapprovedTransaction();
+  const signatureRequest = useSignatureRequest();
   const { isScrollToBottomCompleted } = useConfirmContext();
   const { isGaslessLoading } = useIsGaslessLoading();
 
-  const { from } = getConfirmationSender(currentConfirmation);
+  const { from } = getConfirmationSender(transactionMeta, signatureRequest);
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();
@@ -171,33 +174,32 @@ const Footer = () => {
     return false;
   });
 
-  const isSignature = isSignatureTransactionType(currentConfirmation);
-
   const isConfirmDisabled =
-    (!isScrollToBottomCompleted && !isSignature) ||
+    (!isScrollToBottomCompleted && !signatureRequest) ||
     hardwareWalletRequiresConnection ||
     isGaslessLoading;
 
   const onSubmit = useCallback(() => {
-    if (!currentConfirmation) {
+    if (!approvalRequest) {
       return;
     }
 
     const isTransactionConfirmation = isCorrectDeveloperTransactionType(
-      currentConfirmation?.type,
+      transactionMeta?.type,
     );
 
     if (isTransactionConfirmation) {
       onTransactionConfirm();
     } else {
-      dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+      dispatch(resolvePendingApproval(approvalRequest.id, undefined));
     }
     resetTransactionState();
   }, [
-    currentConfirmation,
+    approvalRequest,
     dispatch,
     onTransactionConfirm,
     resetTransactionState,
+    transactionMeta,
   ]);
 
   const handleFooterCancel = useCallback(() => {
@@ -228,7 +230,7 @@ const Footer = () => {
           {t('cancel')}
         </Button>
         <ConfirmButton
-          alertOwnerId={currentConfirmation?.id}
+          alertOwnerId={approvalRequest?.id}
           onSubmit={() => onSubmit()}
           disabled={isConfirmDisabled}
           onCancel={onCancel}

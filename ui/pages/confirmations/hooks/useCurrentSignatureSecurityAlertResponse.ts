@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { SecurityAlertResponse } from '../types/confirm';
-import { useConfirmContext } from '../context/confirm';
+import { useSignatureRequest } from './signatures/useSignatureRequest';
 
 type SecurityAlertResponsesState = {
   metamask: {
@@ -14,11 +14,10 @@ type SecurityAlertResponsesState = {
 const useCurrentSignatureSecurityAlertResponse = ():
   | SecurityAlertResponse
   | undefined => {
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useSignatureRequest();
 
-  const securityAlertId = (
-    currentConfirmation?.securityAlertResponse as SecurityAlertResponse
-  )?.securityAlertId as string;
+  const securityAlertId =
+    currentConfirmation?.securityAlertResponse?.securityAlertId;
 
   const signatureSecurityAlertResponse = useSelector(
     (state: SecurityAlertResponsesState) => {

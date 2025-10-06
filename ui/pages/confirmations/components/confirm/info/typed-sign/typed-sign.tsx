@@ -13,23 +13,22 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { SignatureRequestType } from '../../../../types/confirm';
 import { useGetTokenStandardAndDetails } from '../../../../hooks/useGetTokenStandardAndDetails';
 import {
   isOrderSignatureRequest,
   isPermitSignatureRequest,
 } from '../../../../utils';
-import { useConfirmContext } from '../../../../context/confirm';
 import { useIsBIP44 } from '../../../../hooks/useIsBIP44';
 import { useTypesSignSimulationEnabledInfo } from '../../../../hooks/useTypesSignSimulationEnabledInfo';
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
+import { useSignatureRequestWithFallback } from '../../../../hooks/signatures/useSignatureRequest';
 import { TypedSignV4Simulation } from './typed-sign-v4-simulation';
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequestWithFallback();
   const isSimulationSupported = useTypesSignSimulationEnabledInfo();
   const isBIP44 = useIsBIP44();
 
@@ -73,7 +72,9 @@ const TypedSignInfo: React.FC = () => {
           label={t('requestFrom')}
           tooltip={toolTipMessage}
         >
-          <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
+          <ConfirmInfoRowUrl
+            url={currentConfirmation.msgParams.origin as string}
+          />
         </ConfirmInfoAlertRow>
         {isValidAddress(verifyingContract) && (
           <ConfirmInfoAlertRow

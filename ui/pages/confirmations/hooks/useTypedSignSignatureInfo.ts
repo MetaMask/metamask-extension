@@ -5,14 +5,14 @@ import {
   isPermitSignatureRequest,
   isSignatureTransactionType,
 } from '../utils';
-import { SignatureRequestType } from '../types/confirm';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { TypedSignSignaturePrimaryTypes } from '../constants';
+import { SignatureRequestType } from '../types/confirm';
 
 export const useTypedSignSignatureInfo = (
-  confirmation: SignatureRequestType,
+  confirmation?: SignatureRequestType,
 ) => {
   const primaryType = useMemo(() => {
     if (

@@ -24,12 +24,13 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import * as Actions from '../../../../../store/actions';
 import configureStore from '../../../../../store/store';
-import * as confirmContext from '../../../context/confirm';
-import { SignatureRequestType } from '../../../types/confirm';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
+import { useUnapprovedTransaction } from '../../../hooks/transactions/useUnapprovedTransaction';
+import { useSignatureRequest } from '../../../hooks/signatures/useSignatureRequest';
+import { SignatureRequestType } from '../../../types/confirm';
 import Footer from './footer';
 
 jest.mock('../../../hooks/gas/useIsGaslessLoading');
@@ -52,6 +53,8 @@ jest.mock(
 );
 
 jest.mock('../../../hooks/useOriginThrottling');
+jest.mock('../../../hooks/transactions/useUnapprovedTransaction');
+jest.mock('../../../hooks/signatures/useSignatureRequest');
 
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
@@ -74,6 +77,8 @@ describe('ConfirmFooter', () => {
     useInsufficientBalanceAlerts,
   );
   const useIsGaslessLoadingMock = jest.mocked(useIsGaslessLoading);
+  const useUnapprovedTransactionMock = jest.mocked(useUnapprovedTransaction);
+  const useSignatureRequestMock = jest.mocked(useSignatureRequest);
 
   beforeEach(() => {
     mockUseOriginThrottling.mockReturnValue({
@@ -113,11 +118,8 @@ describe('ConfirmFooter', () => {
     });
 
     it('when the confirmation is a Sign-in With Ethereum (SIWE) request', () => {
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: signatureRequestSIWE,
-        isScrollToBottomCompleted: false,
-        setIsScrollToBottomCompleted: () => undefined,
-      });
+      useSignatureRequestMock.mockReturnValue(signatureRequestSIWE);
+
       const mockStateSIWE =
         getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
       const { getByText } = render(mockStateSIWE);
@@ -141,16 +143,15 @@ describe('ConfirmFooter', () => {
         isSupported: true,
       });
       useInsufficientBalanceAlertsMock.mockReturnValue(ALERT_MOCK);
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: {
-          ...genUnapprovedContractInteractionConfirmation(),
+
+      useUnapprovedTransactionMock.mockReturnValue(
+        genUnapprovedContractInteractionConfirmation({
+          ...genUnapprovedContractInteractionConfirmation().simulationData,
           simulationData: {
             tokenBalanceChanges: [],
           },
-        },
-        isScrollToBottomCompleted: true,
-        setIsScrollToBottomCompleted: () => undefined,
-      });
+        }),
+      );
 
       const mockState2 = {
         ...getMockContractInteractionConfirmState(),
@@ -177,11 +178,10 @@ describe('ConfirmFooter', () => {
 
   describe('renders disabled "Confirm" Button', () => {
     it('when isScrollToBottomCompleted is false', () => {
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
-        isScrollToBottomCompleted: false,
-        setIsScrollToBottomCompleted: () => undefined,
-      });
+      useUnapprovedTransactionMock.mockReturnValue(
+        genUnapprovedContractInteractionConfirmation(),
+      );
+
       const mockStateTypedSign = getMockContractInteractionConfirmState();
       const { getByText } = render(mockStateTypedSign);
 
@@ -320,6 +320,7 @@ describe('ConfirmFooter', () => {
           ...unapprovedPersonalSignMsg,
           msgParams: {
             from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            data: '0x0',
           },
         } as SignatureRequestType,
         {
@@ -364,6 +365,7 @@ describe('ConfirmFooter', () => {
           id: OWNER_ID_MOCK,
           msgParams: {
             from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            data: '0x0',
           },
         } as SignatureRequestType,
         {

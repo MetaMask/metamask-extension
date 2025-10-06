@@ -20,7 +20,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import {
   Box,
   Button,
@@ -39,6 +38,8 @@ import {
 } from '../../../component-library';
 import { useAlertActionHandler } from '../contexts/alertActionHandler';
 import { useAlertMetrics } from '../contexts/alertMetricsContext';
+import { useUnapprovedTransaction } from '../../../../pages/confirmations/hooks/transactions/useUnapprovedTransaction';
+import { useSignatureRequest } from '../../../../pages/confirmations/hooks/signatures/useSignatureRequest';
 
 export type AlertModalProps = {
   /**
@@ -144,8 +145,11 @@ function AlertHeader({
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function BlockaidAlertDetails() {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
-  const { securityAlertResponse } = currentConfirmation;
+  const transactionMeta = useUnapprovedTransaction();
+  const signatureRequest = useSignatureRequest();
+  const securityAlertResponse =
+    transactionMeta?.securityAlertResponse ??
+    signatureRequest?.securityAlertResponse;
   let copy;
   switch (securityAlertResponse?.reason) {
     case BlockaidReason.approvalFarming:

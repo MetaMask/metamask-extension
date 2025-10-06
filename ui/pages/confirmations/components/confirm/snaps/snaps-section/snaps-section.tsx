@@ -5,11 +5,11 @@ import {
   Display,
   FlexDirection,
 } from '../../../../../../helpers/constants/design-system';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useApprovalRequest } from '../../../../hooks/useApprovalRequest';
 import { SnapInsight } from './snap-insight';
 
 export const SnapsSection = () => {
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useApprovalRequest();
   const { data } = useInsightSnaps(currentConfirmation?.id);
 
   if (data.length === 0) {

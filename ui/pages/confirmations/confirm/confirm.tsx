@@ -16,10 +16,11 @@ import { PluggableSection } from '../components/confirm/pluggable-section';
 import ScrollToBottom from '../components/confirm/scroll-to-bottom';
 import { Title } from '../components/confirm/title';
 import EditGasFeePopover from '../components/edit-gas-fee-popover';
-import { ConfirmContextProvider, useConfirmContext } from '../context/confirm';
+import { ConfirmContextProvider } from '../context/confirm';
 import { ConfirmNav } from '../components/confirm/nav/nav';
 import { GasFeeTokenToast } from '../components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast';
 import { Splash } from '../components/confirm/splash';
+import { useUnapprovedTransaction } from '../hooks/transactions/useUnapprovedTransaction';
 
 const EIP1559TransactionGasModal = () => {
   return (
@@ -33,7 +34,7 @@ const EIP1559TransactionGasModal = () => {
 const GasFeeContextProviderWrapper: React.FC<{
   children: ReactNode;
 }> = ({ children }) => {
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useUnapprovedTransaction();
   return (
     <GasFeeContextProvider transaction={currentConfirmation}>
       {children as NonNullable<ReactNodeLike>}

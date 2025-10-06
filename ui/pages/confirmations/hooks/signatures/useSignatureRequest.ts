@@ -10,6 +10,7 @@ import {
   SignatureRequestStatus,
   SignatureRequestType,
 } from '@metamask/signature-controller';
+import { SignatureRequestType as SignatureRequest } from '../../types/confirm';
 
 export function useSignatureRequest() {
   const approvalRequest = useApprovalRequest();
@@ -17,15 +18,15 @@ export function useSignatureRequest() {
 
   return useSelector((state: SignaturesRootState) =>
     selectUnapprovedMessage(state, signatureRequestId),
-  );
+  ) as SignatureRequest | undefined;
 }
 
-export function useSignatureRequestWithFallback(): LegacyStateMessage {
+export function useSignatureRequestWithFallback() {
   const signatureRequest = useSignatureRequest();
 
   return useMemo(() => {
     return (
-      signatureRequest ?? {
+      signatureRequest as SignatureRequest ?? {
         chainId: '0x0',
         id: '',
         msgParams: {

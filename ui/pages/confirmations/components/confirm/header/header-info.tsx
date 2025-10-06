@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { AvatarAccountSize } from '@metamask/design-system-react';
+import { Json } from '@metamask/utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLocation,
@@ -34,23 +35,21 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
 import { useBalance } from '../../../hooks/useBalance';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import { SignatureRequestType } from '../../../types/confirm';
-import { isSignatureTransactionType } from '../../../utils/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import { getHDEntropyIndex } from '../../../../../selectors/selectors';
+import { useUnapprovedTransaction } from '../../../hooks/transactions/useUnapprovedTransaction';
+import { useSignatureRequest } from '../../../hooks/signatures/useSignatureRequest';
 import { AdvancedDetailsButton } from './advanced-details-button';
 
 const HeaderInfo = () => {
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-
-  const [showAccountInfo, setShowAccountInfo] = React.useState(false);
-
-  const { currentConfirmation } = useConfirmContext();
+  const [showAccountInfo, setShowAccountInfo] = useState(false);
+  const transactionMeta = useUnapprovedTransaction();
+  const signatureRequest = useSignatureRequest();
 
   const {
     senderAddress: fromAddress,
@@ -61,31 +60,32 @@ const HeaderInfo = () => {
   } = useConfirmationRecipientInfo();
 
   const t = useI18nContext();
-
   const { balance: balanceToUse } = useBalance(fromAddress);
 
-  const isSignature = isSignatureTransactionType(currentConfirmation);
+  let eventProps: Record<string, Json | undefined>;
 
-  const eventProps = isSignature
-    ? {
-        location: MetaMetricsEventLocation.SignatureConfirmation,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        signature_type: (currentConfirmation as SignatureRequestType)?.msgParams
-          ?.signatureMethod,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      }
-    : {
-        location: MetaMetricsEventLocation.Transaction,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        transaction_type: currentConfirmation?.type,
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
-      };
+  if (signatureRequest) {
+    eventProps = {
+      location: MetaMetricsEventLocation.SignatureConfirmation,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      signature_type: (signatureRequest?.msgParams as Record<string, Json>)
+        .signatureMethod,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      hd_entropy_index: hdEntropyIndex,
+    };
+  } else if (transactionMeta) {
+    eventProps = {
+      location: MetaMetricsEventLocation.Transaction,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      transaction_type: transactionMeta?.type,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      hd_entropy_index: hdEntropyIndex,
+    };
+  }
 
   function trackAccountModalOpened() {
     const event = {
@@ -101,7 +101,7 @@ const HeaderInfo = () => {
   }
 
   const isShowAdvancedDetailsToggle = isCorrectDeveloperTransactionType(
-    currentConfirmation?.type,
+    transactionMeta?.type,
   );
 
   return (

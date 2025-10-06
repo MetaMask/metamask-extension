@@ -146,9 +146,7 @@ const PersonalSignInfo: React.FC = () => {
           label={t('requestFrom')}
           tooltip={toolTipMessage}
         >
-          <ConfirmInfoRowUrl
-            url={currentConfirmation.msgParams.origin as string}
-          />
+          <ConfirmInfoRowUrl url={currentConfirmation.msgParams.origin} />
         </ConfirmInfoAlertRow>
         <SigningInWithRow />
       </ConfirmInfoSection>

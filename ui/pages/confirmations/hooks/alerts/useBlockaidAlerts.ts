@@ -21,8 +21,9 @@ import {
   SecurityAlertResponse,
   SignatureRequestType,
 } from '../../types/confirm';
-import { useConfirmContext } from '../../context/confirm';
 import useCurrentSignatureSecurityAlertResponse from '../useCurrentSignatureSecurityAlertResponse';
+import { useUnapprovedTransaction } from '../transactions/useUnapprovedTransaction';
+import { useSignatureRequest } from '../signatures/useSignatureRequest';
 import { normalizeProviderAlert } from './utils';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
@@ -42,7 +43,9 @@ type SecurityAlertResponsesState = {
 
 const useBlockaidAlerts = (): Alert[] => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMeta = useUnapprovedTransaction();
+  const signatureRequest = useSignatureRequest();
+  const currentConfirmation = transactionMeta ?? signatureRequest;
 
   const securityAlertId = (
     currentConfirmation?.securityAlertResponse as SecurityAlertResponse

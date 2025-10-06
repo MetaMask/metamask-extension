@@ -1,12 +1,12 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { LegacyStateMessage } from '@metamask/signature-controller';
+import { MessageParamsTyped } from '@metamask/signature-controller';
 import {
   PRIMARY_TYPES_ORDER,
   PRIMARY_TYPES_PERMIT,
 } from '../../../../shared/constants/signatures';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { sanitizeMessage } from '../../../helpers/utils/util';
-import { Confirmation, SignatureRequestType } from '../types/confirm';
+import { SignatureRequestType } from '../types/confirm';
 import { TYPED_SIGNATURE_VERSIONS } from '../constants';
 
 export const SIGNATURE_TRANSACTION_TYPES = [
@@ -29,7 +29,7 @@ export const parseSanitizeTypedDataMessage = (dataToParse: string) => {
  *
  * @param request - The confirmation request to check
  */
-export const isSIWESignatureRequest = (request?: LegacyStateMessage) =>
+export const isSIWESignatureRequest = (request?: SignatureRequestType) =>
   Boolean((request as SignatureRequestType)?.msgParams?.siwe?.isSIWEMessage);
 
 export const isOrderSignatureRequest = (request: SignatureRequestType) => {
@@ -37,7 +37,8 @@ export const isOrderSignatureRequest = (request: SignatureRequestType) => {
     !request ||
     !isSignatureTransactionType(request) ||
     request.type !== 'eth_signTypedData' ||
-    request.msgParams?.version?.toUpperCase() === TYPED_SIGNATURE_VERSIONS.V1
+    (request.msgParams as MessageParamsTyped)?.version?.toUpperCase() ===
+      TYPED_SIGNATURE_VERSIONS.V1
   ) {
     return false;
   }
@@ -53,7 +54,7 @@ export const isOrderSignatureRequest = (request: SignatureRequestType) => {
  *
  * @param request - The confirmation request to check
  */
-export const isPermitSignatureRequest = (request?: Confirmation) => {
+export const isPermitSignatureRequest = (request?: SignatureRequestType) => {
   if (
     !request ||
     !isSignatureTransactionType(request) ||

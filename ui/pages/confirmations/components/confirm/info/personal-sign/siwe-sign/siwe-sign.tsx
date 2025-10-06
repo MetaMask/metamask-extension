@@ -4,7 +4,6 @@ import { toHex } from '@metamask/controller-utils';
 
 import { NETWORK_TO_NAME_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { SignatureRequestType } from '../../../../../types/confirm';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
@@ -16,11 +15,14 @@ import {
   BlockSize,
   TextColor,
 } from '../../../../../../../helpers/constants/design-system';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useSignatureRequestWithFallback } from '../../../../../hooks/signatures/useSignatureRequest';
+import { SignatureRequestType } from '../../../../../types/confirm';
 
 const SIWESignInfo: React.FC = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+
+  const currentConfirmation =
+    useSignatureRequestWithFallback() as SignatureRequestType;
 
   const siweMessage = currentConfirmation?.msgParams?.siwe?.parsedMessage;
 

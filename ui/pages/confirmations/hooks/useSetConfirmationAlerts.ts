@@ -5,18 +5,18 @@ import {
   clearAlerts,
   updateAlerts,
 } from '../../../ducks/confirm-alerts/confirm-alerts';
-import { useConfirmContext } from '../context/confirm';
 import useConfirmationAlerts from './useConfirmationAlerts';
+import { useApprovalRequest } from './useApprovalRequest';
 
-const setConfirmationAlerts = () => {
+const useSetConfirmationAlerts = () => {
   const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useApprovalRequest();
   const alerts = useConfirmationAlerts();
   const ownerId = currentConfirmation?.id as string;
 
   useEffect(() => {
     dispatch(updateAlerts(ownerId, alerts));
-  }, [alerts, ownerId]);
+  }, [alerts, dispatch, ownerId]);
 
   useEffect(() => {
     return () => {
@@ -25,4 +25,4 @@ const setConfirmationAlerts = () => {
   }, []);
 };
 
-export default setConfirmationAlerts;
+export default useSetConfirmationAlerts;

@@ -5,7 +5,6 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getConfirmationSender } from '../../../components/confirm/utils';
-import { Confirmation } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
 import { useSignatureRequest } from '../../signatures/useSignatureRequest';
 
@@ -18,7 +17,8 @@ export default function useAccountMismatchAlerts(): Alert[] {
   const currentConfirmation = useSignatureRequest();
 
   const { from: fromAddress } = getConfirmationSender(
-    currentConfirmation as Confirmation,
+    undefined,
+    currentConfirmation,
   );
   const isSIWE = isSIWESignatureRequest(currentConfirmation);
   const msgParams = currentConfirmation?.msgParams as PersonalMessageParams;

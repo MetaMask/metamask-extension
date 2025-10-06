@@ -12,16 +12,16 @@ import {
   SignatureRequestType,
   TypedSignDataV1Type,
 } from '../../../../types/confirm';
-import { useConfirmContext } from '../../../../context/confirm';
 import { useIsBIP44 } from '../../../../hooks/useIsBIP44';
 import { ConfirmInfoRowTypedSignDataV1 } from '../../row/typed-sign-data-v1/typedSignDataV1';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
+import { useSignatureRequestWithFallback } from '../../../../hooks/signatures/useSignatureRequest';
 
 const TypedSignV1Info: React.FC = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequestWithFallback();
   const isBIP44 = useIsBIP44();
   if (!(currentConfirmation as SignatureRequestType)?.msgParams) {
     return null;

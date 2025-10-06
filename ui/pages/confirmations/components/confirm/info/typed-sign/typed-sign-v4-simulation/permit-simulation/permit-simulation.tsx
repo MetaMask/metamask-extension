@@ -9,10 +9,9 @@ import {
   FlexDirection,
 } from '../../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../../../../context/confirm';
-import { SignatureRequestType } from '../../../../../../types/confirm';
 import StaticSimulation from '../../../shared/static-simulation/static-simulation';
 import PermitSimulationValueDisplay from '../value-display/value-display';
+import { useSignatureRequestWithFallback } from '../../../../../../hooks/signatures/useSignatureRequest';
 
 type TokenDetail = {
   token: string;
@@ -45,7 +44,7 @@ function extractTokenDetailsByPrimaryType(
 
 const PermitSimulation: React.FC<object> = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequestWithFallback();
   const msgData = currentConfirmation.msgParams?.data;
   const chainId = currentConfirmation.chainId as Hex;
   const {

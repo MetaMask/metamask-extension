@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { LastInteractedConfirmationInfo } from '../../../../../shared/types/confirm';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
@@ -12,24 +11,27 @@ import {
 } from '../../../../store/actions';
 import { selectNetworkConfigurationByChainId } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../context/confirm';
-import { SignatureRequestType } from '../../types/confirm';
+import { useSignatureRequest } from '../signatures/useSignatureRequest';
+import { useUnapprovedTransaction } from '../transactions/useUnapprovedTransaction';
 
 const CHANGE_THRESHOLD_MS = 60 * 1000; // 1 Minute
 
 export const useNetworkAndOriginSwitchingAlerts = (): Alert[] => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMeta = useUnapprovedTransaction();
+  const signatureRequest = useSignatureRequest();
+
   const { chainId: newChainId = '', id: currentConfirmationId } =
-    currentConfirmation ?? {};
+    transactionMeta ?? signatureRequest ?? {};
+
   const newOrigin =
-    (currentConfirmation as TransactionMeta)?.origin ??
-    (currentConfirmation as SignatureRequestType)?.msgParams?.origin ??
-    '';
+    transactionMeta?.origin ?? signatureRequest?.msgParams?.origin ?? '';
+
   const newNetwork = useSelector((state) =>
     selectNetworkConfigurationByChainId(state, newChainId),
   );
+
   const [lastInteractedConfirmationInfo, updateLastInteractedConfirmationInfo] =
     useState<LastInteractedConfirmationInfo>();
 

@@ -5,7 +5,7 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { useConfirmContext } from '../../context/confirm';
+import { useUnapprovedTransaction } from '../../hooks/transactions/useUnapprovedTransaction';
 import { BalanceChangeRow } from './balance-change-row';
 import { BalanceChange } from './types';
 import { TotalFiatDisplay } from './fiat-display';
@@ -28,7 +28,7 @@ export const BalanceChangeList: React.FC<{
   testId?: string;
   labelColor?: TextColor;
 }> = ({ heading, balanceChanges, testId, labelColor }) => {
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useUnapprovedTransaction();
   const sortedBalanceChanges = useMemo(() => {
     return sortBalanceChanges(balanceChanges);
   }, [balanceChanges]);

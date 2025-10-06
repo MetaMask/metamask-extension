@@ -10,12 +10,11 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { useDispatch } from 'react-redux';
 
 import { setAccountDetailsAddress } from '../../../../store/actions';
-import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import syncConfirmPath from '../../hooks/syncConfirmPath';
-import { Confirmation } from '../../types/confirm';
+import { useApprovalRequest } from '../../hooks/useApprovalRequest';
+import { useUnapprovedTransaction } from '../../hooks/transactions/useUnapprovedTransaction';
 
 export type ConfirmContextType = {
-  currentConfirmation: Confirmation;
   isScrollToBottomCompleted: boolean;
   setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
 };
@@ -27,23 +26,21 @@ export const ConfirmContext = createContext<ConfirmContextType | undefined>(
 export const ConfirmContextProvider: React.FC<{
   children: ReactElement;
 }> = ({ children }) => {
+  const dispatch = useDispatch();
+  const currentConfirmation = useApprovalRequest();
+  const transactionMeta = useUnapprovedTransaction();
+
   const [isScrollToBottomCompleted, setIsScrollToBottomCompleted] =
     useState(true);
-  const { currentConfirmation } = useCurrentConfirmation();
+
   syncConfirmPath(currentConfirmation?.id);
-  const dispatch = useDispatch();
 
   const value = useMemo(
     () => ({
-      currentConfirmation,
       isScrollToBottomCompleted,
       setIsScrollToBottomCompleted,
     }),
-    [
-      currentConfirmation,
-      isScrollToBottomCompleted,
-      setIsScrollToBottomCompleted,
-    ],
+    [isScrollToBottomCompleted, setIsScrollToBottomCompleted],
   );
 
   // The code below is added to close address details modal when opening confirmation from account details modal
@@ -51,13 +48,12 @@ export const ConfirmContextProvider: React.FC<{
   // routes it back to home page which also closes confirmation modal.
   useEffect(() => {
     if (
-      currentConfirmation &&
-      (currentConfirmation.type === TransactionType.revokeDelegation ||
-        currentConfirmation.type === TransactionType.batch)
+      transactionMeta?.type === TransactionType.revokeDelegation ||
+      transactionMeta?.type === TransactionType.batch
     ) {
       dispatch(setAccountDetailsAddress(''));
     }
-  }, [dispatch, currentConfirmation]);
+  }, [dispatch, transactionMeta]);
 
   return (
     <ConfirmContext.Provider value={value as never}>
@@ -68,7 +64,7 @@ export const ConfirmContextProvider: React.FC<{
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const useConfirmContext = <T = Confirmation,>() => {
+export const useConfirmContext = () => {
   const context = useContext(ConfirmContext);
   if (!context) {
     throw new Error(
@@ -76,7 +72,6 @@ export const useConfirmContext = <T = Confirmation,>() => {
     );
   }
   return context as {
-    currentConfirmation: T;
     isScrollToBottomCompleted: boolean;
     setIsScrollToBottomCompleted: (isScrollToBottomCompleted: boolean) => void;
   };
