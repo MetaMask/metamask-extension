@@ -27,7 +27,7 @@ describe('Add funds modal Component', () => {
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
-      <AddFundsModal onClose={jest.fn()} />,
+      <AddFundsModal onClose={jest.fn()} tokenSymbol="mUSD" />,
       mockStore,
     );
 
