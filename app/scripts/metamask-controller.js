@@ -39,7 +39,6 @@ import {
   METAMASK_DOMAIN,
   createSelectedNetworkMiddleware,
 } from '@metamask/selected-network-controller';
-import { LoggingController, LogType } from '@metamask/logging-controller';
 
 import {
   createPreinstalledSnapsMiddleware,
@@ -168,7 +167,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsRequestedThrough,
 } from '../../shared/constants/metametrics';
-import { LOG_EVENT } from '../../shared/constants/logs';
 
 import {
   getStorageItem,
@@ -401,6 +399,7 @@ import { AccountsControllerInit } from './controller-init/accounts-controller-in
 import { PhishingControllerInit } from './controller-init/phishing-controller-init';
 import { AlertControllerInit } from './controller-init/alert-controller-init';
 import { MetaMetricsDataDeletionControllerInit } from './controller-init/metametrics-data-deletion-controller-init';
+import { LoggingControllerInit } from './controller-init/logging-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -469,16 +468,6 @@ export default class MetamaskController extends EventEmitter {
     this.initializeChainlist();
 
     this.controllerMessenger = new Messenger();
-
-    this.loggingController = new LoggingController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'LoggingController',
-        allowedActions: [],
-        allowedEvents: [],
-      }),
-      state: initState.LoggingController,
-    });
-
     this.currentMigrationVersion = opts.currentMigrationVersion;
 
     // observable state store
@@ -503,14 +492,6 @@ export default class MetamaskController extends EventEmitter {
         if (version === '8.1.0') {
           this.platform.openExtensionInBrowser();
         }
-        this.loggingController.add({
-          type: LogType.GenericLog,
-          data: {
-            event: LOG_EVENT.VERSION_UPDATE,
-            previousVersion: details.previousVersion,
-            version,
-          },
-        });
       }
     });
 
@@ -654,7 +635,7 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:signMessage',
           'KeyringController:signPersonalMessage',
           'KeyringController:signTypedMessage',
-          `${this.loggingController.name}:add`,
+          'LoggingController:add',
           `NetworkController:getNetworkClientById`,
           `GatorPermissionsController:decodePermissionFromPermissionContextForOrigin`,
         ],
@@ -719,6 +700,7 @@ export default class MetamaskController extends EventEmitter {
 
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
+      LoggingController: LoggingControllerInit,
       PreferencesController: PreferencesControllerInit,
       SnapKeyringBuilder: SnapKeyringBuilderInit,
       KeyringController: KeyringControllerInit,
@@ -813,6 +795,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllersByName = controllersByName;
 
     // Backwards compatibility for existing references
+    this.loggingController = controllersByName.LoggingController;
     this.preferencesController = controllersByName.PreferencesController;
     this.keyringController = controllersByName.KeyringController;
     this.accountsController = controllersByName.AccountsController;

@@ -67,6 +67,7 @@ import { NetworkEnablementController } from '@metamask/network-enablement-contro
 import { PermissionLogController } from '@metamask/permission-log-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { PhishingController } from '@metamask/phishing-controller';
+import { LoggingController } from '@metamask/logging-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -107,6 +108,7 @@ export type Controller =
   | GatorPermissionsController
   | JsonSnapsRegistry
   | KeyringController
+  | LoggingController
   | MetaMetricsController
   | MetaMetricsDataDeletionController
   | MultichainAssetsController
@@ -185,6 +187,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   GatorPermissionsController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
+  LoggingController['state'] &
   MetaMetricsController['state'] &
   MetaMetricsDataDeletionController['state'] &
   MultichainAssetsController['state'] &

@@ -160,6 +160,7 @@ import { getAccountsControllerMessenger } from './accounts-controller-messenger'
 import { getPhishingControllerMessenger } from './phishing-controller-messenger';
 import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
+import { getLoggingControllerMessenger } from './logging-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -221,6 +222,8 @@ export {
   getKeyringControllerMessenger,
   getKeyringControllerInitMessenger,
 } from './keyring-controller-messenger';
+export type { LoggingControllerMessenger } from './logging-controller-messenger';
+export { getLoggingControllerMessenger } from './logging-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export type { MetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
@@ -388,6 +391,10 @@ export const CONTROLLER_MESSENGERS = {
   KeyringController: {
     getMessenger: getKeyringControllerMessenger,
     getInitMessenger: getKeyringControllerInitMessenger,
+  },
+  LoggingController: {
+    getMessenger: getLoggingControllerMessenger,
+    getInitMessenger: noop,
   },
   MetaMetricsController: {
     getMessenger: getMetaMetricsControllerMessenger,
