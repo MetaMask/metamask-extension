@@ -83,6 +83,7 @@ import { SubscriptionService } from '../services/subscription/subscription-servi
 import { AccountOrderController } from '../controllers/account-order';
 import { AlertController } from '../controllers/alert-controller';
 import { MetaMetricsDataDeletionController } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
+import AppMetadataController from '../controllers/app-metadata';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -93,6 +94,7 @@ export type Controller =
   | AccountsController
   | AlertController
   | AnnouncementController
+  | AppMetadataController
   | ApprovalController
   | AppStateController
   | AuthenticationController
@@ -173,6 +175,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   AlertController['state'] &
   AccountTreeController['state'] &
   AnnouncementController['state'] &
+  AppMetadataController['state'] &
   ApprovalController['state'] &
   AppStateController['state'] &
   AuthenticationController['state'] &

@@ -161,6 +161,7 @@ import { getPhishingControllerMessenger } from './phishing-controller-messenger'
 import { getAlertControllerMessenger } from './alert-controller-messenger';
 import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 import { getLoggingControllerMessenger } from './logging-controller-messenger';
+import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -178,6 +179,8 @@ export type { AlertControllerMessenger } from './alert-controller-messenger';
 export { getAlertControllerMessenger } from './alert-controller-messenger';
 export type { AnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
+export type { AppMetadataControllerMessenger } from './app-metadata-controller-messenger';
+export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 export type { AppStateControllerMessenger } from './app-state-controller-messenger';
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';
 export type {
@@ -334,6 +337,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   AnnouncementController: {
     getMessenger: getAnnouncementControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AppMetadataController: {
+    getMessenger: getAppMetadataControllerMessenger,
     getInitMessenger: noop,
   },
   AppStateController: {

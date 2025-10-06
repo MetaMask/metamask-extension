@@ -258,7 +258,6 @@ import {
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
-import AppMetadataController from './controllers/app-metadata';
 import {
   createHyperliquidReferralMiddleware,
   HyperliquidPermissionTriggerType,
@@ -400,6 +399,7 @@ import { PhishingControllerInit } from './controller-init/phishing-controller-in
 import { AlertControllerInit } from './controller-init/alert-controller-init';
 import { MetaMetricsDataDeletionControllerInit } from './controller-init/metametrics-data-deletion-controller-init';
 import { LoggingControllerInit } from './controller-init/logging-controller-init';
+import { AppMetadataControllerInit } from './controller-init/app-metadata-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -493,17 +493,6 @@ export default class MetamaskController extends EventEmitter {
           this.platform.openExtensionInBrowser();
         }
       }
-    });
-
-    this.appMetadataController = new AppMetadataController({
-      state: initState.AppMetadataController,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AppMetadataController',
-        allowedActions: [],
-        allowedEvents: [],
-      }),
-      currentMigrationVersion: this.currentMigrationVersion,
-      currentAppVersion: version,
     });
 
     this.approvalController = new ApprovalController({
@@ -701,6 +690,7 @@ export default class MetamaskController extends EventEmitter {
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       LoggingController: LoggingControllerInit,
+      AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
       SnapKeyringBuilder: SnapKeyringBuilderInit,
       KeyringController: KeyringControllerInit,
@@ -796,6 +786,7 @@ export default class MetamaskController extends EventEmitter {
 
     // Backwards compatibility for existing references
     this.loggingController = controllersByName.LoggingController;
+    this.appMetadataController = controllersByName.AppMetadataController;
     this.preferencesController = controllersByName.PreferencesController;
     this.keyringController = controllersByName.KeyringController;
     this.accountsController = controllersByName.AccountsController;
@@ -8730,6 +8721,7 @@ export default class MetamaskController extends EventEmitter {
 
   #initControllers({ existingControllers, initFunctions, initState }) {
     const initRequest = {
+      currentMigrationVersion: this.opts.currentMigrationVersion,
       encryptor: this.opts.encryptor,
       extension: this.extension,
       platform: this.platform,
