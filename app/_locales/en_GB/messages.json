@@ -5629,6 +5629,9 @@
   "shieldClaimInvalidEmail": {
     "message": "Invalid email"
   },
+  "shieldClaimInvalidTxHash": {
+    "message": "Invalid transaction hash"
+  },
   "shieldClaimInvalidWalletAddress": {
     "message": "Invalid wallet address"
   },

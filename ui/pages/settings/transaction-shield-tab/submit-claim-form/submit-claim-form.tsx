@@ -34,8 +34,19 @@ import {
   TextareaResize,
 } from '../../../../components/component-library/textarea';
 import { useSubmitClaimFormState } from './submit-claim-form-state';
+import { isHexString } from '@metamask/utils';
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024;
+
+function isValidTransactionHash(hash: string): boolean {
+  // Check if it's exactly 66 characters (0x + 64 hex chars)
+  if (hash.length !== 66) {
+    return false;
+  }
+
+  // Check if it starts with 0x and is valid hex
+  return hash.startsWith('0x') && isHexString(hash);
+}
 
 const SubmitClaimForm = () => {
   const t = useI18nContext();
@@ -116,6 +127,17 @@ const SubmitClaimForm = () => {
     reimbursementWalletAddress,
     description,
   ]);
+
+  const validateImpactedTxHash = useCallback(() => {
+    const isImpactedTxHashValid = isValidTransactionHash(impactedTxHash);
+
+    setErrors((state) => ({
+      ...state,
+      impactedTxHash: isImpactedTxHashValid
+        ? undefined
+        : { key: 'impactedTxHash', msg: t('shieldClaimInvalidTxHash') },
+    }));
+  }, [impactedTxHash, t]);
 
   const addFile = useCallback(
     (newFiles: FileList) => {
@@ -218,21 +240,27 @@ const SubmitClaimForm = () => {
         label={`${t('shieldClaimImpactedTxHash')}*`}
         placeholder={'e.g. a1084235686add...q46q8wurgw'}
         helpText={
-          <Text
-            variant={TextVariant.inherit}
-            color={TextColor.textAlternativeSoft}
-          >
-            {t('shieldClaimImpactedTxHashHelpText')}{' '}
-            <ButtonLink size={ButtonLinkSize.Inherit} externalLink href="#">
-              {t('shieldClaimImpactedTxHashHelpTextLink')}
-            </ButtonLink>
-          </Text>
+          Boolean(errors.impactedTxHash) ? (
+            errors.impactedTxHash?.msg
+          ) : (
+            <Text
+              variant={TextVariant.inherit}
+              color={TextColor.textAlternativeSoft}
+            >
+              {t('shieldClaimImpactedTxHashHelpText')}{' '}
+              <ButtonLink size={ButtonLinkSize.Inherit} externalLink href="#">
+                {t('shieldClaimImpactedTxHashHelpTextLink')}
+              </ButtonLink>
+            </Text>
+          )
         }
         id="impacted-tx-hash"
         name="impacted-tx-hash"
         size={FormTextFieldSize.Lg}
         onChange={(e) => setImpactedTxHash(e.target.value)}
+        onBlur={() => validateImpactedTxHash()}
         value={impactedTxHash}
+        error={Boolean(errors.impactedTxHash)}
         required
         width={BlockSize.Full}
       />
