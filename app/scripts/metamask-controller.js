@@ -247,7 +247,6 @@ import {
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
-import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
@@ -402,6 +401,7 @@ import { SnapKeyringBuilderInit } from './controller-init/accounts/snap-keyring-
 import { PermissionLogControllerInit } from './controller-init/permission-log-controller-init';
 import { NetworkControllerInit } from './controller-init/network-controller-init';
 import { AnnouncementControllerInit } from './controller-init/announcement-controller-init';
+import { AccountOrderControllerInit } from './controller-init/account-order-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -616,14 +616,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.PhishingController,
       hotlistRefreshInterval: process.env.IN_TEST ? 5 * SECOND : undefined,
       stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
-    });
-
-    const accountOrderMessenger = this.controllerMessenger.getRestricted({
-      name: 'AccountOrderController',
-    });
-    this.accountOrderController = new AccountOrderController({
-      messenger: accountOrderMessenger,
-      state: initState.AccountOrderController,
     });
 
     // start and stop polling for balances based on activeControllerConnections
@@ -889,6 +881,7 @@ export default class MetamaskController extends EventEmitter {
       NameController: NameControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
       AnnouncementController: AnnouncementControllerInit,
+      AccountOrderController: AccountOrderControllerInit,
     };
 
     const {
@@ -983,6 +976,7 @@ export default class MetamaskController extends EventEmitter {
     this.ensController = controllersByName.EnsController;
     this.nameController = controllersByName.NameController;
     this.announcementController = controllersByName.AnnouncementController;
+    this.accountOrderController = controllersByName.AccountOrderController;
 
     this.backup = new Backup({
       preferencesController: this.preferencesController,

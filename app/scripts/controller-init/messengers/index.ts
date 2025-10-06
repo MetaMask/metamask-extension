@@ -155,7 +155,10 @@ import {
 } from './network-controller-messenger';
 import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
+import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 
+export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
+export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type {
   AccountTrackerControllerMessenger,
   AccountTrackerControllerInitMessenger,
@@ -298,6 +301,10 @@ export {
 } from './tokens-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
+  AccountOrderController: {
+    getMessenger: getAccountOrderControllerMessenger,
+    getInitMessenger: noop,
+  },
   AccountTrackerController: {
     getMessenger: getAccountTrackerControllerMessenger,
     getInitMessenger: getAccountTrackerControllerInitMessenger,
