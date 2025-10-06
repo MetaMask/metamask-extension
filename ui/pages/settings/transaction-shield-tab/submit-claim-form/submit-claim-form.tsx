@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { isValidHexAddress } from '@metamask/controller-utils';
 import FileInput from 'react-simple-file-input';
+import { isHexString } from '@metamask/utils';
 import {
   Box,
   Button,
@@ -34,9 +35,8 @@ import {
   TextareaResize,
 } from '../../../../components/component-library/textarea';
 import { useSubmitClaimFormState } from './submit-claim-form-state';
-import { isHexString } from '@metamask/utils';
 
-const MAX_FILE_SIZE = 1 * 1024 * 1024;
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 function isValidTransactionHash(hash: string): boolean {
   // Check if it's exactly 66 characters (0x + 64 hex chars)
@@ -240,7 +240,7 @@ const SubmitClaimForm = () => {
         label={`${t('shieldClaimImpactedTxHash')}*`}
         placeholder={'e.g. a1084235686add...q46q8wurgw'}
         helpText={
-          Boolean(errors.impactedTxHash) ? (
+          errors.impactedTxHash ? (
             errors.impactedTxHash?.msg
           ) : (
             <Text
