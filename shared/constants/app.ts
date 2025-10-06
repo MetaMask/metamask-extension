@@ -128,3 +128,8 @@ export const TRACE_ENABLED_SIGN_METHODS = [
 ];
 
 export const DOWNLOAD_MOBILE_APP_SLIDE_ID = 'downloadMobileApp';
+
+/**
+ * The minimum fiat balance threshold for the shield entry modal to be shown
+ */
+export const SHIELD_MIN_FIAT_BALANCE_THRESHOLD = 1000;

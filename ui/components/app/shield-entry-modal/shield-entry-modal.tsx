@@ -1,4 +1,6 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -25,23 +27,37 @@ import {
   ButtonLinkSize,
 } from '../../component-library';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import { setShowShieldEntryModalOnce } from '../../../store/actions';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+import { getBrowserWindowType } from '../../../../shared/modules/browser-runtime.utils';
+import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function ShieldEntryModal({
-  onClose,
-  onGetStarted,
-}: {
-  onClose: () => void;
-  onGetStarted: () => void;
-}) {
+export default function ShieldEntryModal() {
   const t = useI18nContext();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleOnClose = () => {
+    dispatch(setShowShieldEntryModalOnce(false));
+  };
+
+  const handleOnGetStarted = () => {
+    dispatch(setShowShieldEntryModalOnce(false));
+    const windowType = getBrowserWindowType();
+    if (windowType === ENVIRONMENT_TYPE_FULLSCREEN) {
+      navigate(SHIELD_PLAN_ROUTE);
+    } else {
+      global.platform.openExtensionInBrowser?.(SHIELD_PLAN_ROUTE);
+    }
+  };
 
   return (
     <Modal
       data-testid="shield-entry-modal"
       isOpen
-      onClose={onClose}
+      onClose={handleOnClose}
       className="shield-entry-modal"
     >
       <ModalOverlay />
@@ -56,7 +72,7 @@ export default function ShieldEntryModal({
           closeButtonProps={{
             className: 'absolute top-2 right-2',
           }}
-          onClose={onClose}
+          onClose={handleOnClose}
         />
         <ModalBody paddingTop={4}>
           <Text variant={TextVariant.headingMd} marginBottom={1}>
@@ -112,7 +128,7 @@ export default function ShieldEntryModal({
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Lg}
               block
-              onClick={onClose}
+              onClick={handleOnClose}
             >
               {t('shieldEntryModalSkip')}
             </Button>
@@ -120,7 +136,7 @@ export default function ShieldEntryModal({
               data-testid="shield-entry-modal-get-started-button"
               size={ButtonSize.Lg}
               block
-              onClick={onGetStarted}
+              onClick={handleOnGetStarted}
             >
               {t('shieldEntryModalGetStarted')}
             </Button>

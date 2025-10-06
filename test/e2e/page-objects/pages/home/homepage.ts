@@ -87,6 +87,11 @@ class HomePage {
   private readonly connectionsRemovedModal =
     '[data-testid="connections-removed-modal"]';
 
+  private readonly shieldEntryModal = '[data-testid="shield-entry-modal"]';
+
+  private readonly shieldEntryModalGetStarted =
+    '[data-testid="shield-entry-modal-get-started-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -409,6 +414,23 @@ class HomePage {
 
   async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
     await this.driver.waitForSelector(this.connectionsRemovedModal);
+  }
+
+  async checkShieldEntryModalIsDisplayed(): Promise<void> {
+    console.log('Check shield entry modal is displayed on homepage');
+    await this.driver.waitForSelector(this.shieldEntryModal);
+  }
+
+  async clickOnShieldEntryModalGetStarted(): Promise<void> {
+    console.log('Click on shield entry modal get started');
+    await this.driver.clickElement(this.shieldEntryModalGetStarted);
+  }
+
+  async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
+    console.log('Check no shield entry modal is displayed on homepage');
+    await this.driver.assertElementNotPresent(this.shieldEntryModal, {
+      timeout: 5000,
+    });
   }
 }
 

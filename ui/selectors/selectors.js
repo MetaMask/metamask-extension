@@ -287,6 +287,10 @@ export function getShowConnectionsRemovedModal(state) {
   return state.appState.showConnectionsRemovedModal;
 }
 
+export function getShowShieldEntryModalOnce(state) {
+  return state.metamask.showShieldEntryModalOnce;
+}
+
 /** `metamask` slice selectors */
 
 export function getNetworkIdentifier(state) {
@@ -974,9 +978,12 @@ export function isBalanceCached(state) {
 
 export function getSelectedAccountCachedBalance(state) {
   const cachedBalances = getMetaMaskCachedBalances(state);
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const selectedAccount = getSelectedInternalAccount(state);
+  if (!selectedAccount) {
+    return undefined;
+  }
 
-  return cachedBalances?.[selectedAddress];
+  return cachedBalances?.[selectedAccount?.address];
 }
 
 export function getAllTokens(state) {
