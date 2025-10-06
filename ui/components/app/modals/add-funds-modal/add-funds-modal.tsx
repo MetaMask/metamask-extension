@@ -1,5 +1,4 @@
-import React, { useCallback, useState } from 'react';
-import { toHex } from '@metamask/controller-utils';
+import React, { useCallback, useContext, useState } from 'react';
 import {
   Box,
   Icon,
@@ -10,12 +9,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  CaipChainId,
-  isCaipChainId,
-  isCaipAssetType,
-  parseCaipAssetType,
-} from '@metamask/utils';
+import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
@@ -29,7 +23,6 @@ import {
 } from '../../../component-library';
 import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
 import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
-import { ChainId } from '../../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { getIsMultichainAccountsState2Enabled } from '../../../../selectors/multichain-accounts';
 import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
@@ -45,7 +38,11 @@ import { ReceiveModal } from '../../../multichain/receive-modal';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import { getIsUnifiedUIEnabled } from '../../../../ducks/bridge/selectors';
 import useBridging from '../../../../hooks/bridge/useBridging';
-import { MetaMetricsSwapsEventSource } from '../../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsSwapsEventSource,
+} from '../../../../../shared/constants/metametrics';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../../shared/constants/bridge';
 import {
   getCurrentKeyring,
@@ -54,12 +51,20 @@ import {
 } from '../../../../selectors';
 import { setSwapsFromToken } from '../../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
 
-const AddFundsModal = ({ onClose }: { onClose: () => void }) => {
+const AddFundsModal = ({
+  onClose,
+  tokenSymbol,
+}: {
+  onClose: () => void;
+  tokenSymbol: string;
+}) => {
   const t = useI18nContext();
   const { openBuyCryptoInPdapp } = useRamps();
   const history = useHistory();
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
@@ -87,17 +92,23 @@ const AddFundsModal = ({ onClose }: { onClose: () => void }) => {
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const getChainId = useCallback((): CaipChainId | ChainId => {
-    if (isCaipChainId(chainId)) {
-      return chainId as CaipChainId;
-    }
-    // Otherwise we assume that's an EVM chain ID, so use the usual 0x prefix
-    return toHex(chainId) as ChainId;
-  }, [chainId]);
-
   const handleBuyAndSellOnClick = useCallback(() => {
-    openBuyCryptoInPdapp(getChainId());
-  }, [getChainId, openBuyCryptoInPdapp]);
+    openBuyCryptoInPdapp();
+    trackEvent({
+      event: MetaMetricsEventName.NavBuyButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        location: 'Transaction Shield',
+        text: 'Buy',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: chainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        token_symbol: tokenSymbol,
+      },
+    });
+  }, [chainId, openBuyCryptoInPdapp, tokenSymbol, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
     if (isMultichainAccountsState2Enabled && selectedAccountGroup) {

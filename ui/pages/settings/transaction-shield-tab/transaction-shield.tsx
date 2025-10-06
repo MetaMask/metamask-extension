@@ -52,6 +52,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { DAY } from '../../../../shared/constants/time';
 import LoadingScreen from '../../../components/ui/loading-screen';
+import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
@@ -149,6 +150,8 @@ const TransactionShield = () => {
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
 
+  const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
+
   const shieldDetails = [
     {
       icon: IconName.ShieldLock,
@@ -234,8 +237,7 @@ const TransactionShield = () => {
           )}
           actionButtonOnClick={async () => {
             if (isCryptoPayment) {
-              // TODO: handle add funds crypto
-              console.log('add funds');
+              setIsAddFundsModalOpen(true);
             } else {
               await executeUpdateSubscriptionCardPaymentMethod();
             }
@@ -255,7 +257,7 @@ const TransactionShield = () => {
           marginBottom={4}
           actionButtonLabel={t('shieldTxMembershipErrorAddFunds')}
           actionButtonOnClick={() => {
-            console.log('add funds');
+            setIsAddFundsModalOpen(true);
           }}
         />
       );
@@ -292,8 +294,7 @@ const TransactionShield = () => {
             }}
             onClick={async () => {
               if (isCryptoPayment) {
-                // TODO: handle add funds crypto
-                console.log('add funds');
+                setIsAddFundsModalOpen(true);
               } else {
                 await executeUpdateSubscriptionCardPaymentMethod();
               }
@@ -325,7 +326,7 @@ const TransactionShield = () => {
           }}
           color={TextColor.warningDefault}
           onClick={() => {
-            console.log('add funds');
+            setIsAddFundsModalOpen(true);
           }}
         >
           {isCryptoPaymentMethod(shieldSubscription.paymentMethod)
@@ -608,6 +609,14 @@ const TransactionShield = () => {
         />
       )}
       {loading && <LoadingScreen />}
+      {isAddFundsModalOpen &&
+        shieldSubscription &&
+        isCryptoPaymentMethod(shieldSubscription.paymentMethod) && (
+          <AddFundsModal
+            onClose={() => setIsAddFundsModalOpen(false)}
+            tokenSymbol={shieldSubscription.paymentMethod.crypto.tokenSymbol}
+          />
+        )}
     </Box>
   );
 };
