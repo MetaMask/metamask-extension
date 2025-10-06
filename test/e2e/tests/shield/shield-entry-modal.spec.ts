@@ -77,6 +77,9 @@ describe('Shield Entry Modal', function () {
               },
             },
           })
+          .withAppStateController({
+            showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSubscriptionApiCalls,
@@ -98,7 +101,11 @@ describe('Shield Entry Modal', function () {
   it('should not show the shield entry modal if user does not have a shield subscription and has a balance less than the minimum fiat balance threshold', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withAppStateController({
+            showShieldEntryModalOnce: null,
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSubscriptionApiCalls,
       },
@@ -122,6 +129,9 @@ describe('Shield Entry Modal', function () {
         fixtures: new FixtureBuilder()
           .withPreferencesController({
             useExternalServices: false,
+          })
+          .withAppStateController({
+            showShieldEntryModalOnce: null,
           })
           .build(),
         manifestFlags: {

@@ -17,6 +17,7 @@ import {
 import { useAccountTotalFiatBalance } from '../../hooks/useAccountTotalFiatBalance';
 import { SHIELD_MIN_FIAT_BALANCE_THRESHOLD } from '../../../shared/constants/app';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
+import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
 
 export const ShieldSubscriptionContext = React.createContext<
   Subscription | undefined
@@ -39,6 +40,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     selectedAccount,
     false,
   );
+  const isMetaMaskShieldFeatureEnabled = getIsMetaMaskShieldFeatureEnabled();
 
   /**
    * Watch the shield subscription and show the shield entry modal if the subscription is paused and modal is not shown once
@@ -64,6 +66,8 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
    * Watch the balance and show the shield entry modal if the balance is greater than the minimum fiat balance threshold
    */
   const watchBalance = useCallback(() => {
+    console.log('isMetaMaskShieldFeatureEnabled', isMetaMaskShieldFeatureEnabled);
+    console.log('shieldEntryModalShownOnce', shieldEntryModalShownOnce);
     if (
       shieldEntryModalShownOnce !== null ||
       !selectedAccount ||
@@ -91,6 +95,10 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   ]);
 
   useEffect(() => {
+    if (!isMetaMaskShieldFeatureEnabled) {
+      return;
+    }
+
     watchShieldSubscription();
     watchBalance();
   }, [watchShieldSubscription, watchBalance]);

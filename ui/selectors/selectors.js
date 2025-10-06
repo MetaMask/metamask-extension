@@ -288,7 +288,7 @@ export function getShowConnectionsRemovedModal(state) {
 }
 
 export function getShowShieldEntryModalOnce(state) {
-  return state.appState.showShieldEntryModalOnce;
+  return state.metamask.showShieldEntryModalOnce;
 }
 
 /** `metamask` slice selectors */
