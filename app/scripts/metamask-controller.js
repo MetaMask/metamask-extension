@@ -53,7 +53,6 @@ import {
   ERC721,
 } from '@metamask/controller-utils';
 
-import { AccountsController } from '@metamask/accounts-controller';
 import { SignatureController } from '@metamask/signature-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
@@ -402,6 +401,7 @@ import { PermissionLogControllerInit } from './controller-init/permission-log-co
 import { NetworkControllerInit } from './controller-init/network-controller-init';
 import { AnnouncementControllerInit } from './controller-init/announcement-controller-init';
 import { AccountOrderControllerInit } from './controller-init/account-order-controller-init';
+import { AccountsControllerInit } from './controller-init/accounts-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -570,28 +570,6 @@ export default class MetamaskController extends EventEmitter {
     this.multichainMiddlewareManager = new MultichainMiddlewareManager();
     this.deprecatedNetworkVersions = {};
 
-    const accountsControllerMessenger = this.controllerMessenger.getRestricted({
-      name: 'AccountsController',
-      allowedEvents: [
-        'SnapController:stateChange',
-        'KeyringController:accountRemoved',
-        'KeyringController:stateChange',
-        'SnapKeyring:accountAssetListUpdated',
-        'SnapKeyring:accountBalancesUpdated',
-        'SnapKeyring:accountTransactionsUpdated',
-        'MultichainNetworkController:networkDidChange',
-      ],
-      allowedActions: [
-        'KeyringController:getState',
-        'KeyringController:getKeyringsByType',
-      ],
-    });
-
-    this.accountsController = new AccountsController({
-      messenger: accountsControllerMessenger,
-      state: initState.AccountsController,
-    });
-
     const dataDeletionService = new DataDeletionService();
     const metaMetricsDataDeletionMessenger =
       this.controllerMessenger.getRestricted({
@@ -648,24 +626,6 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: ['AccountsController:getSelectedAccount'],
       }),
     });
-
-    // This gets used as a ...spread parameter in two places: new TransactionController() and createRPCMethodTrackingMiddleware()
-    this.snapAndHardwareMetricsParams = {
-      getSelectedAccount: this.accountsController.getSelectedAccount.bind(
-        this.accountsController,
-      ),
-      getAccountType: this.getAccountType.bind(this),
-      getDeviceModel: this.getDeviceModel.bind(this),
-      getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
-      snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
-        name: 'SnapAndHardwareMessenger',
-        allowedActions: [
-          'KeyringController:getKeyringForAccount',
-          'SnapController:get',
-          'AccountsController:getSelectedAccount',
-        ],
-      }),
-    };
 
     this.decryptMessageController = new DecryptMessageController({
       getState: this.getState.bind(this),
@@ -725,7 +685,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'SignatureController',
         allowedActions: [
-          `${this.accountsController.name}:getState`,
+          `AccountsController:getState`,
           `${this.approvalController.name}:addRequest`,
           'KeyringController:signMessage',
           'KeyringController:signPersonalMessage',
@@ -791,29 +751,14 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    // TODO: Remove this after BIP-44 rollout
-    accountsControllerMessenger.subscribe(
-      'AccountsController:selectedAccountChange',
-      (account) => {
-        if (account.type === SolAccountType.DataAccount) {
-          this.networkEnablementController.enableNetworkInNamespace(
-            SolScope.Mainnet,
-            KnownCaipNamespace.Solana,
-          );
-        }
-      },
-    );
-
-    const existingControllers = [
-      this.approvalController,
-      this.accountsController,
-    ];
+    const existingControllers = [this.approvalController];
 
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       PreferencesController: PreferencesControllerInit,
       SnapKeyringBuilder: SnapKeyringBuilderInit,
       KeyringController: KeyringControllerInit,
+      AccountsController: AccountsControllerInit,
       PermissionController: PermissionControllerInit,
       PermissionLogController: PermissionLogControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
@@ -903,6 +848,7 @@ export default class MetamaskController extends EventEmitter {
     // Backwards compatibility for existing references
     this.preferencesController = controllersByName.PreferencesController;
     this.keyringController = controllersByName.KeyringController;
+    this.accountsController = controllersByName.AccountsController;
     this.permissionController = controllersByName.PermissionController;
     this.permissionLogController = controllersByName.PermissionLogController;
     this.subjectMetadataController =
@@ -1032,6 +978,19 @@ export default class MetamaskController extends EventEmitter {
       'KeyringController:stateChange',
       (state) => {
         this._onKeyringControllerUpdate(state);
+      },
+    );
+
+    // TODO: Remove this after BIP-44 rollout
+    this.controllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (account) => {
+        if (account.type === SolAccountType.DataAccount) {
+          this.networkEnablementController.enableNetworkInNamespace(
+            SolScope.Mainnet,
+            KnownCaipNamespace.Solana,
+          );
+        }
       },
     );
 

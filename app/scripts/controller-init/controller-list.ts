@@ -86,6 +86,7 @@ import { AccountOrderController } from '../controllers/account-order';
 export type Controller =
   | AccountOrderController
   | AccountTrackerController
+  | AccountsController
   | AnnouncementController
   | ApprovalController
   | AppStateController
