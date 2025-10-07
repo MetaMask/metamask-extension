@@ -69,6 +69,7 @@ import { AnnouncementController } from '@metamask/announcement-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { LoggingController } from '@metamask/logging-controller';
 import { ErrorReportingService } from '@metamask/error-reporting-service';
+import { AddressBookController } from '@metamask/address-book-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -93,6 +94,7 @@ export type Controller =
   | AccountOrderController
   | AccountTrackerController
   | AccountsController
+  | AddressBookController
   | AlertController
   | AnnouncementController
   | AppMetadataController
@@ -176,6 +178,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   AccountsController['state'] &
   AlertController['state'] &
   AccountTreeController['state'] &
+  AddressBookController['state'] &
   AnnouncementController['state'] &
   AppMetadataController['state'] &
   ApprovalController['state'] &

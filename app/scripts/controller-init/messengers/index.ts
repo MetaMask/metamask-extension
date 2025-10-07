@@ -164,6 +164,7 @@ import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 import { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 import { getApprovalControllerMessenger } from './approval-controller-messenger';
+import { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -177,6 +178,8 @@ export {
 } from './account-tracker-controller-messenger';
 export type { AccountsControllerMessenger } from './accounts-controller-messenger';
 export { getAccountsControllerMessenger } from './accounts-controller-messenger';
+export type { AddressBookControllerMessenger } from './address-book-controller-messenger';
+export { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 export type { AlertControllerMessenger } from './alert-controller-messenger';
 export { getAlertControllerMessenger } from './alert-controller-messenger';
 export type { AnnouncementControllerMessenger } from './announcement-controller-messenger';
@@ -335,6 +338,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   AccountsController: {
     getMessenger: getAccountsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AddressBookController: {
+    getMessenger: getAddressBookControllerMessenger,
     getInitMessenger: noop,
   },
   AlertController: {

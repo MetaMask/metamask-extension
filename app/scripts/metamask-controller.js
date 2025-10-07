@@ -23,7 +23,6 @@ import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
-import { AddressBookController } from '@metamask/address-book-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
 import {
@@ -392,6 +391,7 @@ import { LoggingControllerInit } from './controller-init/logging-controller-init
 import { AppMetadataControllerInit } from './controller-init/app-metadata-controller-init';
 import { ErrorReportingServiceInit } from './controller-init/error-reporting-service-init';
 import { ApprovalControllerInit } from './controller-init/confirmations/approval-controller-init';
+import { AddressBookControllerInit } from './controller-init/confirmations/address-book-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -508,18 +508,6 @@ export default class MetamaskController extends EventEmitter {
       } else {
         this.stopNetworkRequests();
       }
-    });
-
-    const addressBookControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'AddressBookController',
-        allowedActions: [],
-        allowedEvents: [],
-      });
-
-    this.addressBookController = new AddressBookController({
-      messenger: addressBookControllerMessenger,
-      state: initState.AddressBookController,
     });
 
     this.decryptMessageController = new DecryptMessageController({
@@ -656,6 +644,7 @@ export default class MetamaskController extends EventEmitter {
       SnapKeyringBuilder: SnapKeyringBuilderInit,
       KeyringController: KeyringControllerInit,
       AccountsController: AccountsControllerInit,
+      AddressBookController: AddressBookControllerInit,
       AlertController: AlertControllerInit,
       PermissionController: PermissionControllerInit,
       PermissionLogController: PermissionLogControllerInit,
@@ -751,6 +740,7 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = controllersByName.PreferencesController;
     this.keyringController = controllersByName.KeyringController;
     this.accountsController = controllersByName.AccountsController;
+    this.addressBookController = controllersByName.AddressBookController;
     this.alertController = controllersByName.AlertController;
     this.permissionController = controllersByName.PermissionController;
     this.permissionLogController = controllersByName.PermissionLogController;
