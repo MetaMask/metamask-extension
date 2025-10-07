@@ -38,6 +38,6 @@ describe('SmartAccountUpdateSuccess', () => {
     );
 
     fireEvent.click(getByRole('button'));
-    expect(mockReplace).toHaveBeenCalledTimes(1);
+    expect(mockReplace).toHaveBeenCalledWith('/');
   });
 });

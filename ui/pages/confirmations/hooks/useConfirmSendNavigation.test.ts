@@ -1,8 +1,12 @@
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
-import * as ConfirmContext from '../context/confirm';
 import { useRedesignedSendFlow } from './useRedesignedSendFlow';
 import { useConfirmSendNavigation } from './useConfirmSendNavigation';
+import { useUnapprovedTransactionWithFallback } from './transactions/useUnapprovedTransaction';
 
 const mockUseRedesignedSendFlow = jest.mocked(useRedesignedSendFlow);
 
@@ -26,8 +30,13 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('./useRedesignedSendFlow');
+jest.mock('./transactions/useUnapprovedTransaction');
 
 describe('useConfirmSendNavigation', () => {
+  const useUnapprovedTransactionMock = jest.mocked(
+    useUnapprovedTransactionWithFallback,
+  );
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -41,9 +50,7 @@ describe('useConfirmSendNavigation', () => {
   };
 
   it('returns navigateBackIfSend method', () => {
-    jest
-      .spyOn(ConfirmContext, 'useConfirmContext')
-      .mockReturnValue({} as unknown as ConfirmContext.ConfirmContextType);
+    useUnapprovedTransactionMock.mockReturnValue({} as TransactionMeta);
     mockUseRedesignedSendFlow.mockReturnValue({ enabled: false });
 
     const result = renderHook();
@@ -52,9 +59,10 @@ describe('useConfirmSendNavigation', () => {
   });
 
   it('does not navigate back when send redesign is disabled', () => {
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: { origin: 'metamask', type: 'simpleSend' },
-    } as unknown as ConfirmContext.ConfirmContextType);
+    useUnapprovedTransactionMock.mockReturnValue({
+      origin: 'metamask',
+      type: TransactionType.simpleSend,
+    } as TransactionMeta);
     mockUseRedesignedSendFlow.mockReturnValue({ enabled: false });
 
     const result = renderHook();
@@ -64,9 +72,10 @@ describe('useConfirmSendNavigation', () => {
   });
 
   it('navigates back when send redesign is enabled and confirmation is metamask simpleSend', () => {
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: { origin: 'metamask', type: 'simpleSend' },
-    } as unknown as ConfirmContext.ConfirmContextType);
+    useUnapprovedTransactionMock.mockReturnValue({
+      origin: 'metamask',
+      type: TransactionType.simpleSend,
+    } as TransactionMeta);
     mockUseRedesignedSendFlow.mockReturnValue({ enabled: true });
 
     const result = renderHook();
@@ -76,9 +85,10 @@ describe('useConfirmSendNavigation', () => {
   });
 
   it('does not navigate back when send redesign is enabled but origin is not metamask', () => {
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: { origin: 'dapp', type: 'simpleSend' },
-    } as unknown as ConfirmContext.ConfirmContextType);
+    useUnapprovedTransactionMock.mockReturnValue({
+      origin: 'dapp',
+      type: TransactionType.simpleSend,
+    } as TransactionMeta);
     mockUseRedesignedSendFlow.mockReturnValue({ enabled: true });
 
     const result = renderHook();
@@ -88,9 +98,10 @@ describe('useConfirmSendNavigation', () => {
   });
 
   it('does not navigate back when send redesign is enabled but type is not simpleSend', () => {
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: { origin: 'metamask', type: 'contractInteraction' },
-    } as unknown as ConfirmContext.ConfirmContextType);
+    useUnapprovedTransactionMock.mockReturnValue({
+      origin: 'metamask',
+      type: TransactionType.contractInteraction,
+    } as TransactionMeta);
     mockUseRedesignedSendFlow.mockReturnValue({ enabled: true });
 
     const result = renderHook();
@@ -100,9 +111,10 @@ describe('useConfirmSendNavigation', () => {
   });
 
   it('does not navigate back when send redesign is enabled but both origin and type do not match', () => {
-    jest.spyOn(ConfirmContext, 'useConfirmContext').mockReturnValue({
-      currentConfirmation: { origin: 'dapp', type: 'contractInteraction' },
-    } as unknown as ConfirmContext.ConfirmContextType);
+    useUnapprovedTransactionMock.mockReturnValue({
+      origin: 'dapp',
+      type: TransactionType.contractInteraction,
+    } as TransactionMeta);
     mockUseRedesignedSendFlow.mockReturnValue({ enabled: true });
 
     const result = renderHook();

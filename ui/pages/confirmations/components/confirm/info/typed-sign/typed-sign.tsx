@@ -23,12 +23,12 @@ import { useTypesSignSimulationEnabledInfo } from '../../../../hooks/useTypesSig
 import { ConfirmInfoRowTypedSignData } from '../../row/typed-sign-data/typedSignData';
 import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
-import { useSignatureRequestWithFallback } from '../../../../hooks/signatures/useSignatureRequest';
+import { useSignatureRequest } from '../../../../hooks/signatures/useSignatureRequest';
 import { TypedSignV4Simulation } from './typed-sign-v4-simulation';
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
-  const currentConfirmation = useSignatureRequestWithFallback();
+  const currentConfirmation = useSignatureRequest();
   const isSimulationSupported = useTypesSignSimulationEnabledInfo();
   const isBIP44 = useIsBIP44();
 

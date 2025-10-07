@@ -137,6 +137,7 @@ export const getMockPersonalSignConfirmStateForRequest = (
       [signature.id]: {
         id: signature.id,
         type: ApprovalType.PersonalSign,
+        origin: signature.msgParams?.origin,
       },
     },
     unapprovedPersonalMsgs: {

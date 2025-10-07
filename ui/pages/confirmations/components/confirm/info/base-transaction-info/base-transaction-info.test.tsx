@@ -3,6 +3,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -58,7 +59,7 @@ describe('<BaseTransactionInfo />', () => {
       status: TransactionStatus.unapproved,
       time: new Date().getTime(),
       type: TransactionType.contractInteraction,
-    });
+    } as unknown as TransactionMeta);
     const mockStore = configureMockStore(middleware)(state);
     const { container } = renderWithConfirmContextProvider(
       <BaseTransactionInfo />,

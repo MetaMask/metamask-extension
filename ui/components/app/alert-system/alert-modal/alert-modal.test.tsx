@@ -2,6 +2,10 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import {
+  SecurityAlertResponse,
+  TransactionMeta,
+} from '@metamask/transaction-controller';
+import {
   BlockaidReason,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
@@ -11,7 +15,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import * as useAlertsModule from '../../../../hooks/useAlerts';
-import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
+import { useUnapprovedTransaction } from '../../../../pages/confirmations/hooks/transactions/useUnapprovedTransaction';
 import { AlertModal } from './alert-modal';
 
 const onProcessActionMock = jest.fn();
@@ -24,6 +28,14 @@ jest.mock('../contexts/alertActionHandler', () => ({
   useAlertActionHandler: jest.fn(() => mockAlertActionHandlerProviderValue),
 }));
 
+jest.mock(
+  '../../../../pages/confirmations/hooks/transactions/useUnapprovedTransaction',
+);
+
+jest.mock(
+  '../../../../pages/confirmations/hooks/signatures/useSignatureRequest',
+);
+
 const mockTrackAlertActionClicked = jest.fn();
 const mockTrackAlertRender = jest.fn();
 jest.mock('../contexts/alertMetricsContext', () => ({
@@ -31,16 +43,6 @@ jest.mock('../contexts/alertMetricsContext', () => ({
     trackAlertActionClicked: mockTrackAlertActionClicked,
     trackInlineAlertClicked: jest.fn(),
     trackAlertRender: mockTrackAlertRender,
-  })),
-}));
-
-jest.mock('../../../../pages/confirmations/context/confirm', () => ({
-  useConfirmContext: jest.fn(() => ({
-    currentConfirmation: {
-      securityAlertResponse: {
-        reason: '',
-      },
-    },
   })),
 }));
 
@@ -54,6 +56,7 @@ describe('AlertModal', () => {
   const ACTION_LABEL_MOCK = 'Label Mock';
   const onAcknowledgeClickMock = jest.fn();
   const onCloseMock = jest.fn();
+  const useUnapprovedTransactionMock = jest.mocked(useUnapprovedTransaction);
 
   const alertsMock: Alert[] = [
     {
@@ -393,13 +396,9 @@ describe('AlertModal', () => {
 
     testCases.forEach(({ reason, expectedKey }) => {
       it(`displays correct message for ${reason}`, () => {
-        (useConfirmContext as jest.Mock).mockImplementation(() => ({
-          currentConfirmation: {
-            securityAlertResponse: {
-              reason,
-            },
-          },
-        }));
+        useUnapprovedTransactionMock.mockReturnValue({
+          securityAlertResponse: { reason } as SecurityAlertResponse,
+        } as TransactionMeta);
 
         const { getByText } = renderWithProvider(
           <AlertModal
@@ -416,10 +415,6 @@ describe('AlertModal', () => {
     });
 
     it('handles undefined securityAlertResponse', () => {
-      (useConfirmContext as jest.Mock).mockImplementation(() => ({
-        currentConfirmation: {},
-      }));
-
       const { getByText } = renderWithProvider(
         <AlertModal
           ownerId={OWNER_ID_MOCK}

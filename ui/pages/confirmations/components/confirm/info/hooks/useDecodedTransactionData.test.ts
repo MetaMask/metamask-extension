@@ -1,5 +1,6 @@
 import { act } from 'react-dom/test-utils';
 import {
+  TransactionMeta,
   TransactionParams,
   TransactionStatus,
   TransactionType,
@@ -61,7 +62,7 @@ describe('useDecodedTransactionData', () => {
             data,
             to: CONTRACT_ADDRESS_MOCK,
           } as TransactionParams,
-        }),
+        } as unknown as TransactionMeta),
       );
 
       expect(result).toEqual(
@@ -84,7 +85,7 @@ describe('useDecodedTransactionData', () => {
           data: TRANSACTION_DATA_UNISWAP,
           to: undefined,
         } as TransactionParams,
-      }),
+      } as unknown as TransactionMeta),
     );
 
     expect(result).toEqual(
@@ -109,7 +110,7 @@ describe('useDecodedTransactionData', () => {
             data: TRANSACTION_DATA_UNISWAP,
             to: CONTRACT_ADDRESS_MOCK,
           } as TransactionParams,
-        },
+        } as unknown as TransactionMeta,
         {
           metamask: {
             use4ByteResolution: false,
@@ -139,7 +140,7 @@ describe('useDecodedTransactionData', () => {
           data: TRANSACTION_DATA_UNISWAP,
           to: CONTRACT_ADDRESS_MOCK,
         } as TransactionParams,
-      }),
+      } as unknown as TransactionMeta),
     );
 
     expect(result).toEqual(
@@ -189,7 +190,7 @@ describe('useDecodedTransactionData', () => {
           data: TRANSACTION_DATA_FOUR_BYTE,
           to: '0x1234',
         } as TransactionParams,
-      }),
+      } as unknown as TransactionMeta),
       {
         data: TRANSACTION_DATA_UNISWAP,
         to: CONTRACT_ADDRESS_MOCK,

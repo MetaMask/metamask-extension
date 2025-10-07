@@ -2,7 +2,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useState } from 'react';
 import { EditGasModes } from '../../../../../../../../shared/constants/gas';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
+import { useUnapprovedTransaction } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 import EditGasPopover from '../../../../edit-gas-popover';
 import { useSupportsEIP1559 } from '../../hooks/useSupportsEIP1559';
 import { GasFeesDetails } from '../gas-fees-details/gas-fees-details';
@@ -24,7 +24,7 @@ const LegacyTransactionGasModal = ({
 };
 
 export const GasFeesSection = () => {
-  const transactionMeta = useUnapprovedTransactionWithFallback();
+  const transactionMeta = useUnapprovedTransaction();
 
   const [showCustomizeGasPopover, setShowCustomizeGasPopover] = useState(false);
   const closeCustomizeGasPopover = useCallback(

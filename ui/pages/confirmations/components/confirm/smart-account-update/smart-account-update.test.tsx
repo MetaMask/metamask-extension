@@ -5,7 +5,6 @@ import { fireEvent } from '@testing-library/dom';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { upgradeAccountConfirmation } from '../../../../../../test/data/confirmations/batch-transaction';
-import { Confirmation } from '../../../types/confirm';
 import { setSmartAccountOptIn } from '../../../../../store/actions';
 import { SmartAccountUpdate } from './smart-account-update';
 
@@ -37,9 +36,7 @@ describe('SmartAccountUpdate', () => {
 
   it('renders correctly', () => {
     const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
-      ),
+      getMockConfirmStateForTransaction(upgradeAccountConfirmation),
     );
     const { getByText } = renderWithConfirmContextProvider(
       <SmartAccountUpdate />,
@@ -51,9 +48,7 @@ describe('SmartAccountUpdate', () => {
 
   it('show success after acknowledgement', () => {
     const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
-      ),
+      getMockConfirmStateForTransaction(upgradeAccountConfirmation),
     );
     const { getByRole, getByText, container } =
       renderWithConfirmContextProvider(<SmartAccountUpdate />, mockStore);
@@ -72,9 +67,7 @@ describe('SmartAccountUpdate', () => {
 
   it('call history.replace when close button is clicked', () => {
     const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
-      ),
+      getMockConfirmStateForTransaction(upgradeAccountConfirmation),
     );
     const { getByTestId, history } = renderWithConfirmContextProvider(
       <SmartAccountUpdate />,

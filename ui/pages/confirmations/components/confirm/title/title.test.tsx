@@ -24,7 +24,6 @@ import {
   ConfirmAlertsState,
 } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { Confirmation } from '../../../types/confirm';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import ConfirmTitle from './title';
 
@@ -99,9 +98,7 @@ describe('ConfirmTitle', () => {
 
   it('should render the title and description for smart account upgrade correctly', () => {
     const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        upgradeAccountConfirmationOnly as Confirmation,
-      ),
+      getMockConfirmStateForTransaction(upgradeAccountConfirmationOnly),
     );
     const { getByText } = renderWithConfirmContextProvider(
       <ConfirmTitle />,

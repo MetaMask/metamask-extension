@@ -7,7 +7,6 @@ import {
 } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { upgradeAccountConfirmation } from '../../../../../../test/data/confirmations/batch-transaction';
-import { Confirmation } from '../../../types/confirm';
 import { Splash } from './splash';
 
 describe('Splash', () => {
@@ -23,9 +22,7 @@ describe('Splash', () => {
 
   it('return splash screen if current confirmation is upgrade confirmation', () => {
     const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
-      ),
+      getMockConfirmStateForTransaction(upgradeAccountConfirmation),
     );
     const { container } = renderWithConfirmContextProvider(
       <Splash />,

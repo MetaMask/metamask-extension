@@ -2,13 +2,13 @@ import React from 'react';
 import {
   AuthorizationList,
   NestedTransactionMetadata,
+  TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import configureStore from '../../../../../../../store/store';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
-import { Confirmation } from '../../../../../types/confirm';
 import {
   downgradeAccountConfirmation,
   upgradeAccountConfirmation,
@@ -48,7 +48,7 @@ function render({
   return renderWithConfirmContextProvider(<TransactionAccountDetails />, store);
 }
 
-function renderConfirmation(confirmation: Confirmation) {
+function renderConfirmation(confirmation: TransactionMeta) {
   const store = configureStore(getMockConfirmStateForTransaction(confirmation));
   return renderWithConfirmContextProvider(<TransactionAccountDetails />, store);
 }

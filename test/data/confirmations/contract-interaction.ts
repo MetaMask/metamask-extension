@@ -11,7 +11,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { Confirmation } from '../../../ui/pages/confirmations/types/confirm';
 
 export const PAYMASTER_AND_DATA =
   '0x9d6ac51b972544251fcc0f2902e633e3f9bd3f2900000000000000000000000000000000000000000000000000000000666bfd410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003498a76eb88b702e5e52b00fbc16a36baf89ebe3e0dd23170949cffc0a623011383cced660ff67930308c22e5aa746a2d586629ddbd87046a146225bf80e9d6f1b';
@@ -50,7 +49,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
   simulationData?: SimulationData;
   txParamsOriginal?: TransactionParams;
 } = {}): TransactionMeta => {
-  const confirmation: Confirmation = {
+  const confirmation = {
     actionId: String(400855682),
     chainId,
     containerTypes,
@@ -80,7 +79,6 @@ export const genUnapprovedContractInteractionConfirmation = ({
           maxPriorityFeePerGas: '0x59682f00',
         },
         id: '1d7c08c0-fe54-11ee-9243-91b1e533746a',
-        networkClientId: 'goerli',
         origin: 'https://metamask.github.io',
         securityAlertResponse: {
           reason: 'loading',
@@ -160,7 +158,6 @@ export const genUnapprovedContractInteractionConfirmation = ({
     ],
     id: '1d7c08c0-fe54-11ee-9243-91b1e533746a',
     nestedTransactions,
-    networkClientId: 'goerli',
     origin: origin ?? 'https://metamask.github.io',
     securityAlertResponse: {
       features: [],
@@ -198,7 +195,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
     userEditedGasLimit: false,
     userFeeLevel: 'medium',
     verifiedOnBlockchain: false,
-  } as TransactionMeta;
+  } as unknown as TransactionMeta;
 
   // Overwrite simulation data if provided
   if (simulationData) {

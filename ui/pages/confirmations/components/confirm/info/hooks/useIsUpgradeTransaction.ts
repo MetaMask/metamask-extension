@@ -1,14 +1,11 @@
 import { Hex } from '@metamask/utils';
 import { EIP_7702_REVOKE_ADDRESS } from '../../../../hooks/useEIP7702Account';
-import {
-  useUnapprovedTransaction,
-  useUnapprovedTransactionWithFallback,
-} from '../../../../hooks/transactions/useUnapprovedTransaction';
+import { useUnapprovedTransaction } from '../../../../hooks/transactions/useUnapprovedTransaction';
 
 export function useIsUpgradeTransaction() {
   const authorizationAddress = useTransactionAuthorizationAddress();
-  const currentConfirmation = useUnapprovedTransactionWithFallback();
-  const { data } = currentConfirmation.txParams;
+  const currentConfirmation = useUnapprovedTransaction();
+  const { data } = currentConfirmation?.txParams ?? {};
   const isUpgrade =
     Boolean(authorizationAddress) &&
     authorizationAddress !== EIP_7702_REVOKE_ADDRESS;
