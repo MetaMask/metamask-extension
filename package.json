@@ -323,7 +323,7 @@
     "@metamask/metamask-eth-abis": "^3.1.1",
     "@metamask/multichain-account-service": "^1.5.0",
     "@metamask/multichain-api-client": "^0.7.0",
-    "@metamask/multichain-api-middleware": "1.1.0",
+    "@metamask/multichain-api-middleware": "1.2.0",
     "@metamask/multichain-network-controller": "^1.0.0",
     "@metamask/multichain-transactions-controller": "^5.0.0",
     "@metamask/name-controller": "^8.0.3",
