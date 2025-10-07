@@ -25,7 +25,7 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
         <h4
           class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
         >
-          Save your Secret Recovery Phrase
+          Save Secret Recovery Phrase
         </h4>
         <button
           aria-label="Close"

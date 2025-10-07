@@ -43,7 +43,6 @@ import {
 } from '@metamask/selected-network-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 
-import { MultichainRouter } from '@metamask/snaps-controllers';
 import {
   createPreinstalledSnapsMiddleware,
   createSnapsMethodMiddleware,
@@ -355,6 +354,9 @@ import {
   SnapsNameProviderInit,
   SnapsRegistryInit,
   WebSocketServiceInit,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  MultichainRouterInit,
+  ///: END:ONLY_INCLUDE_IF
 } from './controller-init/snaps';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
@@ -643,32 +645,6 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AccountOrderController,
     });
 
-    // @TODO(snaps): This fixes an issue where `withKeyring` would lock the `KeyringController` mutex.
-    // That meant that if a snap requested a keyring operation (like requesting entropy) while the `KeyringController` was locked,
-    // it would cause a deadlock.
-    // This is a temporary fix until we can refactor how we handle requests to the Snaps Keyring.
-    const withSnapKeyring = async (operation) => {
-      const keyring = await this.getSnapKeyring();
-
-      return operation({ keyring });
-    };
-
-    const multichainRouterMessenger = this.controllerMessenger.getRestricted({
-      name: 'MultichainRouter',
-      allowedActions: [
-        'SnapController:getAll',
-        'SnapController:handleRequest',
-        'PermissionController:getPermissions',
-        'AccountsController:listMultichainAccounts',
-      ],
-      allowedEvents: [],
-    });
-
-    this.multichainRouter = new MultichainRouter({
-      messenger: multichainRouterMessenger,
-      withSnapKeyring,
-    });
-
     // start and stop polling for balances based on activeControllerConnections
     this.on('controllerConnectionChanged', (activeControllerConnections) => {
       const { completedOnboarding } = this.onboardingController.state;
@@ -907,6 +883,9 @@ export default class MetamaskController extends EventEmitter {
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
       MultichainAccountService: MultichainAccountServiceInit,
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+      MultichainRouter: MultichainRouterInit,
       ///: END:ONLY_INCLUDE_IF
       MultichainNetworkController: MultichainNetworkControllerInit,
       AuthenticationController: AuthenticationControllerInit,
