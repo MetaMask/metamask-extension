@@ -77,7 +77,7 @@ export const validateEvmHexAddress = async (
     );
     if (tokenDetails?.standard) {
       return {
-        error: 'invalidAddress',
+        error: 'tokenContractError',
       };
     }
   }
