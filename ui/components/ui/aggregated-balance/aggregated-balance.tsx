@@ -32,6 +32,7 @@ import {
   getPreferences,
   getSelectedInternalAccount,
   isGlobalNetworkSelectorRemoved,
+  selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
 import {
   getMultichainNetwork,
@@ -39,8 +40,9 @@ import {
 } from '../../../selectors/multichain';
 import { formatWithThreshold } from '../../app/assets/util/formatWithThreshold';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import Spinner from '../spinner';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { Skeleton } from '../../component-library/skeleton';
+import { isZeroAmount } from '../../../helpers/utils/number-utils';
 
 export const AggregatedBalance = ({
   classPrefix,
@@ -63,6 +65,9 @@ export const AggregatedBalance = ({
     getMultichainAggregatedBalance(state, selectedAccount),
   );
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
+  );
 
   const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
     ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
@@ -100,12 +105,17 @@ export const AggregatedBalance = ({
     },
   );
 
-  if (!balances || !assets[selectedAccount.id]?.length) {
-    return <Spinner className="loading-overlay__spinner" />;
-  }
-
   return (
-    <>
+    <Skeleton
+      isLoading={
+        !balances ||
+        assets[selectedAccount.id] === undefined ||
+        assets[selectedAccount.id].length === 0 ||
+        (!anyEnabledNetworksAreAvailable &&
+          isZeroAmount(multichainNativeTokenBalance.amount.toString()))
+      }
+      marginBottom={1}
+    >
       <Box
         className={classnames(`${classPrefix}-overview__primary-balance`, {
           [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
@@ -146,6 +156,6 @@ export const AggregatedBalance = ({
           data-testid="sensitive-toggle"
         />
       </Box>
-    </>
+    </Skeleton>
   );
 };

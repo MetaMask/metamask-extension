@@ -1,22 +1,23 @@
 import { BUILT_IN_NETWORKS } from '@metamask/controller-utils';
 import {
   NON_EVM_TESTNET_IDS,
+  toEvmCaipChainId,
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex, isStrictHexString } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { convertCaipToHexChainId } from '../../../../../shared/modules/network.utils';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import {
   FEATURED_NETWORK_CHAIN_IDS,
+  FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN,
   FEATURED_RPCS,
   TEST_CHAINS,
 } from '../../../../../shared/constants/network';
 import {
-  getEnabledNetworksByNamespace,
+  getAllEnabledNetworksForAllNamespaces,
   getMultichainNetworkConfigurationsByChainId,
-  getSelectedMultichainNetworkConfiguration,
 } from '../../../../selectors';
 
 export const useNetworkManagerState = ({
@@ -24,13 +25,9 @@ export const useNetworkManagerState = ({
 }: {
   showDefaultNetworks?: boolean;
 } = {}) => {
-  const currentMultichainNetwork = useSelector(
-    getSelectedMultichainNetworkConfiguration,
-  );
   const [multichainNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>
@@ -105,22 +102,37 @@ export const useNetworkManagerState = ({
     [],
   );
 
-  const initialTab = useMemo(() => {
-    if (!currentMultichainNetwork.isEvm) {
-      return 'networks';
-    }
-
-    const isCustomNetworkEnabled = FEATURED_NETWORK_CHAIN_IDS.some(
-      (networkChainId) => enabledNetworksByNamespace[networkChainId] === true,
-    );
-
-    return isCustomNetworkEnabled ? 'networks' : 'custom-networks';
-  }, []);
-
   return {
     nonTestNetworks,
     testNetworks,
     isNetworkInDefaultNetworkTab,
-    initialTab,
   };
+};
+
+export const useNetworkManagerInitialTab = () => {
+  const allEnabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
+
+  const initialTab = useMemo(() => {
+    const isSubset = (subset: string[], superset: string[]) => {
+      const supersetSet = new Set(superset);
+      return subset.every((x) => supersetSet.has(x));
+    };
+
+    const enabledNetworksCaipIds = allEnabledNetworksForAllNamespaces.map(
+      (c) => (isStrictHexString(c) ? toEvmCaipChainId(c) : (c as CaipChainId)),
+    );
+
+    const featuredNetworksCaipIds = FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN.map(
+      (c) => (isStrictHexString(c) ? toEvmCaipChainId(c) : c),
+    );
+
+    // Check against known list of popular chainIds
+    return isSubset(enabledNetworksCaipIds, featuredNetworksCaipIds)
+      ? 'networks'
+      : 'custom-networks';
+  }, [allEnabledNetworksForAllNamespaces]);
+
+  return { initialTab };
 };

@@ -36,8 +36,9 @@ export type TokenWithApprovalAmount = (
 export const useAvailableTokenBalances = (params: {
   paymentChains?: ChainPaymentInfo[];
   price?: ProductPrice;
+  productType: ProductType;
 }): TokenWithApprovalAmount[] => {
-  const { paymentChains, price } = params;
+  const { paymentChains, price, productType } = params;
 
   const paymentChainIds = useMemo(
     () => paymentChains?.map((chain) => chain.chainId),
@@ -112,18 +113,32 @@ export const useAvailableTokenBalances = (params: {
             return null;
           }
           return getSubscriptionCryptoApprovalAmount({
-            price,
-            tokenPaymentInfo,
+            chainId: token.chainId as Hex,
+            paymentTokenAddress: token.address as Hex,
+            productType,
+            interval: price.interval,
           });
         }),
       );
 
       cryptoApprovalAmounts.forEach((amount, index) => {
         const token = validTokenBalances[index];
-        if (amount) {
+        if (!token.balance) {
+          return;
+        }
+        // NOTE: we are using stable coin for subscription atm, so we need to scale the balance by the decimals
+        const scaledFactor = 10n ** 6n;
+        const scaledBalance =
+          BigInt(Math.round(Number(token.balance) * Number(scaledFactor))) /
+          scaledFactor;
+        const tokenHasEnoughBalance =
+          amount &&
+          scaledBalance * BigInt(10 ** token.decimals) >=
+            BigInt(amount.approveAmount);
+        if (tokenHasEnoughBalance) {
           availableTokens.push({
             ...token,
-            approvalAmount: amount,
+            approvalAmount: amount.approveAmount,
             type: token.isNative ? AssetType.native : AssetType.token,
           } as TokenWithApprovalAmount);
         }
@@ -133,7 +148,7 @@ export const useAvailableTokenBalances = (params: {
     };
 
     getAvailableTokenBalances();
-  }, [price, paymentChainTokenMap, validTokenBalances]);
+  }, [price, productType, paymentChainTokenMap, validTokenBalances]);
 
   return availableTokenBalances;
 };

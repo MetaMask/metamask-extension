@@ -67,7 +67,7 @@ export const useSendQueryParams = () => {
       queryParams.set('amount', value);
     }
     if (asset?.address !== undefined && paramAsset !== asset.address) {
-      queryParams.set('asset', asset.address);
+      queryParams.set('asset', asset.assetId ?? asset.address);
     }
     if (asset?.chainId !== undefined && paramChainId !== asset.chainId) {
       queryParams.set('chainId', asset.chainId.toString());
