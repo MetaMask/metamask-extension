@@ -634,10 +634,11 @@ const TransactionShield = () => {
             <Skeleton width="60%" height={24} />
           )}
         </Box>
-        {buttonRow(
-          t('shieldTxMembershipBillingDetailsViewBillingHistory'),
-          executeOpenGetSubscriptionBillingPortal,
-        )}
+        {shieldSubscription?.status !== SUBSCRIPTION_STATUSES.provisional &&
+          buttonRow(
+            t('shieldTxMembershipBillingDetailsViewBillingHistory'),
+            executeOpenGetSubscriptionBillingPortal,
+          )}
       </Box>
       {shieldSubscription && isCancelMembershipModalOpen && (
         <CancelMembershipModal
