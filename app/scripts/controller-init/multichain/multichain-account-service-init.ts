@@ -42,7 +42,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
           'RemoteFeatureFlagController:getState',
         );
         const multichainAccountsFeatureFlag =
-          remoteFeatureFlags?.enableMultichainAccounts as
+          remoteFeatureFlags?.enableMultichainAccountsState2 as
             | MultichainAccountsFeatureFlag
             | undefined;
 

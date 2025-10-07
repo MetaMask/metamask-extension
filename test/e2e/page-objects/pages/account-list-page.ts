@@ -218,7 +218,10 @@ class AccountListPage {
     try {
       const selectorsToWaitFor = options?.isMultichainAccountsState2Enabled
         ? [
-            this.createMultichainAccountButton,
+            {
+              css: this.createMultichainAccountButton,
+              text: 'Create account',
+            },
             this.multichainAccountOptionsMenuButton,
           ]
         : [this.createAccountButton, this.accountOptionsMenuButton];

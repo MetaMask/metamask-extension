@@ -12,6 +12,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  SensitiveText,
   Text,
 } from '../../../components/component-library';
 import {
@@ -40,6 +41,7 @@ import {
   useSingleWalletAccountsBalanceCallback,
   useSingleWalletDisplayBalance,
 } from '../../../hooks/multichain-accounts/useWalletBalance';
+import { getPreferences } from '../../../selectors';
 
 export const WalletDetailsPage = () => {
   const t = useI18nContext();
@@ -53,6 +55,7 @@ export const WalletDetailsPage = () => {
 
   const walletTotalBalance = useSingleWalletDisplayBalance(walletId);
   const walletAccountBalance = useSingleWalletAccountsBalanceCallback(walletId);
+  const { privacyMode } = useSelector(getPreferences);
 
   useEffect(() => {
     if (!wallet) {
@@ -83,9 +86,10 @@ export const WalletDetailsPage = () => {
           accountName={group.metadata.name}
           balance={walletAccountBalance(group.id) ?? ''}
           disableHoverEffect={true}
+          privacyMode={privacyMode}
         />
       )),
-    [multichainAccounts, walletAccountBalance],
+    [multichainAccounts, privacyMode, walletAccountBalance],
   );
 
   const walletDetailsTitle = useMemo(() => {
@@ -148,12 +152,14 @@ export const WalletDetailsPage = () => {
             >
               {t('balance')}
             </Text>
-            <Text
+            <SensitiveText
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textAlternative}
+              isHidden={privacyMode}
+              ellipsis
             >
               {walletTotalBalance ?? '$ n/a'}
-            </Text>
+            </SensitiveText>
           </Box>
           {isEntropyWallet ? (
             <MultichainSrpBackup

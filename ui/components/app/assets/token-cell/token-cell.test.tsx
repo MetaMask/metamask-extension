@@ -114,7 +114,7 @@ describe('Token Cell', () => {
       symbol: 'TEST',
       string: '5.000',
       currentCurrency: 'usd',
-      primary: '5.00',
+      balance: '5',
       image: '',
       chainId: '0x1' as Hex,
       tokenFiatAmount: 5,
@@ -139,7 +139,7 @@ describe('Token Cell', () => {
     image: '',
     chainId: '0x1' as Hex,
     tokenFiatAmount: 5000000,
-    primary: '5000000',
+    balance: '5000000',
     aggregators: [],
     decimals: 18,
     isNative: false,
@@ -235,7 +235,7 @@ describe('Token Cell', () => {
     const amountElement = getByTestId('multichain-token-list-item-value');
 
     expect(amountElement).toBeInTheDocument();
-    expect(amountElement.textContent).toBe('5,000,000 TEST');
+    expect(amountElement.textContent).toBe('5.00M TEST');
   });
 
   it('should show a scam warning if the native ticker does not match the expected ticker', async () => {

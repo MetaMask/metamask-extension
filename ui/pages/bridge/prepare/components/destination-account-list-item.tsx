@@ -150,7 +150,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
         </Row>
         <Text
           variant={TextVariant.bodySm}
-          color={TextColor.textAlternativeSoft}
+          color={TextColor.textAlternative}
           data-testid="account-list-address"
         >
           {shortenAddress(normalizeSafeAddress(account.address))}

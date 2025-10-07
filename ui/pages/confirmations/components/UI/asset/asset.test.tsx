@@ -1,6 +1,8 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
+import createMockStore from 'redux-mock-store';
 
+import { renderWithProvider } from '../../../../../../test/jest';
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
 import { AssetStandard } from '../../../types/send';
 import { Asset } from './asset';
@@ -9,8 +11,11 @@ const mockTokenAsset = {
   name: 'Test Token',
   symbol: 'TEST',
   standard: AssetStandard.ERC20,
-  balanceInSelectedCurrency: '$100.00',
-  shortenedBalance: '10.5',
+  balance: '10.5',
+  fiat: {
+    balance: 100,
+    currency: 'USD',
+  },
   chainId: '0x1',
   image: 'https://example.com/token.png',
   networkName: 'Ethereum',
@@ -45,6 +50,12 @@ const mockNFTERC1155Asset = {
     imageUrl: 'https://example.com/collection1155.png',
   },
 };
+
+const store = createMockStore()();
+
+function render(ui: React.ReactElement) {
+  return renderWithProvider(ui, store);
+}
 
 jest.mock('../../../hooks/useNftImageUrl', () => ({
   useNftImageUrl: jest.fn().mockReturnValue('https://example.com/nft.png'),

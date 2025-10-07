@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { AccountWalletId } from '@metamask/account-api';
 import { useDispatch } from 'react-redux';
 import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
@@ -14,6 +14,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { createNextMultichainAccountGroup } from '../../../store/actions';
+import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 
 export type AddMultichainAccountProps = {
   walletId: AccountWalletId;
@@ -26,8 +27,32 @@ export const AddMultichainAccount = ({
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
+  const {
+    isAccountTreeSyncingInProgress,
+    loadingMessage: accountOperationLoadingMessage,
+  } = useAccountsOperationsLoadingStates();
+
+  const isLoadingState = isLoading || isAccountTreeSyncingInProgress;
+
+  const actionLabel = useMemo(() => {
+    if (isAccountTreeSyncingInProgress) {
+      return accountOperationLoadingMessage;
+    }
+
+    if (isLoadingState) {
+      return t('createMultichainAccountButtonLoading');
+    }
+
+    return t('createMultichainAccountButton');
+  }, [
+    isLoadingState,
+    accountOperationLoadingMessage,
+    isAccountTreeSyncingInProgress,
+    t,
+  ]);
+
   const handleCreateMultichainAccountClick = async () => {
-    if (isLoading) {
+    if (isLoadingState) {
       return;
     }
 
@@ -43,7 +68,7 @@ export const AddMultichainAccount = ({
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.flexStart}
       style={{
-        cursor: isLoading ? 'not-allowed' : 'pointer',
+        cursor: isLoadingState ? 'not-allowed' : 'pointer',
       }}
       padding={4}
       onClick={handleCreateMultichainAccountClick}
@@ -53,7 +78,9 @@ export const AddMultichainAccount = ({
       <Box
         className="add-multichain-account__icon-box"
         backgroundColor={
-          isLoading ? BackgroundColor.transparent : BackgroundColor.infoMuted
+          isLoadingState
+            ? BackgroundColor.transparent
+            : BackgroundColor.infoMuted
         }
         borderRadius={BorderRadius.MD}
         display={Display.Flex}
@@ -62,7 +89,7 @@ export const AddMultichainAccount = ({
         marginLeft={1}
         marginRight={4}
       >
-        {!isLoading && (
+        {!isLoadingState && (
           <Icon
             className="add-multichain-account__icon-box__icon"
             name={IconName.Add}
@@ -70,7 +97,7 @@ export const AddMultichainAccount = ({
             size={IconSize.Lg}
           />
         )}
-        {isLoading && (
+        {isLoadingState && (
           <Icon
             className="add-multichain-account__icon-box__icon-loading"
             name={IconName.Loading}
@@ -81,12 +108,10 @@ export const AddMultichainAccount = ({
       </Box>
       <Text
         className="add-multichain-account__text"
-        color={isLoading ? TextColor.textMuted : TextColor.infoDefault}
+        color={isLoadingState ? TextColor.textMuted : TextColor.infoDefault}
         variant={TextVariant.bodyMdMedium}
       >
-        {isLoading
-          ? t('createMultichainAccountButtonLoading')
-          : t('createMultichainAccountButton')}
+        {actionLabel}
       </Text>
     </Box>
   );

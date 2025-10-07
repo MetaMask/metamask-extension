@@ -5,8 +5,9 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
+import { isPublicEndpointUrl } from '../../../../shared/lib/network-utils';
 import MetaMetricsController from '../../controllers/metametrics-controller';
-import { isPublicEndpointUrl, shouldCreateRpcServiceEvents } from './utils';
+import { shouldCreateRpcServiceEvents } from './utils';
 
 /**
  * Called when an endpoint is determined to be "unavailable". Creates a Segment

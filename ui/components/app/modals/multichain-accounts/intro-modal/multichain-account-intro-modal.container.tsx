@@ -33,7 +33,8 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
   const isClosingRef = useRef(false);
 
   const MINIMUM_LOADING_TIME_MS = 2000;
-  const SUPPORT_URL = 'https://support.metamask.io/multichain-accounts';
+  const SUPPORT_URL =
+    'https://support.metamask.io/configure/accounts/multichain-accounts/';
 
   // Create alignment promise - always defined, no conditionals needed
   const alignmentPromise = useMemo(
@@ -78,7 +79,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
 
     // Navigate to account list
     history.push(ACCOUNT_LIST_PAGE_ROUTE);
-  }, [dispatch, history, onClose]);
+  }, [alignmentPromise, dispatch, history, onClose]);
 
   const handleLearnMore = useCallback(() => {
     // Open multichain accounts support page

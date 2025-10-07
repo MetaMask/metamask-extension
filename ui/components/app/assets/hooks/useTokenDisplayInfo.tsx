@@ -15,8 +15,6 @@ import {
   isChainIdMainnet,
   makeGetMultichainShouldShowFiatByChainId,
 } from '../../../../selectors/multichain';
-import { formatWithThreshold } from '../util/formatWithThreshold';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { useFormatters } from '../../../../hooks/useFormatters';
@@ -37,7 +35,6 @@ export const useTokenDisplayInfo = ({
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const locale = useSelector(getIntlLocale);
   const tokenChainImage = getImageForChainId(token.chainId);
   const caipChainId = isCaipChainId(token.chainId)
     ? token.chainId
@@ -73,16 +70,6 @@ export const useTokenDisplayInfo = ({
         )
       : undefined;
 
-  const formattedPrimary = formatWithThreshold(
-    Number((isEvm ? token.string : token.primary) || token.balance),
-    0.00001,
-    locale,
-    {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 5,
-    },
-  );
-
   const isEvmMainnet =
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
 
@@ -116,7 +103,6 @@ export const useTokenDisplayInfo = ({
     return {
       title,
       tokenImage,
-      primary: formattedPrimary,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       secondary,
@@ -136,7 +122,6 @@ export const useTokenDisplayInfo = ({
   return {
     title: token.title,
     tokenImage: token.image,
-    primary: formattedPrimary,
     secondary: showFiat ? nonEvmSecondary : null,
     isStakeable: false,
     tokenChainImage: token.image as string,

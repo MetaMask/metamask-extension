@@ -70,7 +70,7 @@ export const EditGasFeesRow = ({
         data-testid="edit-gas-fees-row"
         label={t('networkFee')}
         tooltip={tooltip}
-        style={{ alignItems: AlignItems.center, marginBottom: '2px' }}
+        style={{ alignItems: AlignItems.center }}
       >
         {isLoadingGasUsed ? (
           <Skeleton height={16} width={128} />
@@ -106,15 +106,18 @@ export const EditGasFeesRow = ({
         justifyContent={JustifyContent.spaceBetween}
         paddingInline={2}
       >
-        <Text
-          data-testid="gas-fee-token-fee"
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-        >
-          {gasFeeToken
-            ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
-            : ' '}
-        </Text>
+        <Box style={{ marginTop: gasFeeToken ? -8 : 0 }}>
+          <Text
+            data-testid="gas-fee-token-fee"
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+            paddingBottom={gasFeeToken ? 2 : 0}
+          >
+            {gasFeeToken
+              ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
+              : ' '}
+          </Text>
+        </Box>
         {showAdvancedDetails && (
           <FiatValue
             fullValue={fiatFeeWith18SignificantDigits}

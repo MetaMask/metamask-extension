@@ -228,7 +228,6 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
               tokenFiatAmount,
               chainId: chainId as CaipChainId,
               string: String(balance),
-              primary: '',
               secondary: 0,
               title,
             });
@@ -288,7 +287,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
           decimals,
           chainId,
           isNative,
-          primary: balance.amount,
+          balance: balance.amount,
           secondary: balanceInFiat,
           string: '',
           tokenFiatAmount: balanceInFiat,

@@ -6,6 +6,7 @@ import {
   EVM_ASSET,
   EVM_NATIVE_ASSET,
   MOCK_NFT1155,
+  SOLANA_NATIVE_ASSET,
 } from '../../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
@@ -14,14 +15,12 @@ import {
   useSendMetricsContext,
 } from '../../../context/send-metrics';
 import { useSendAssets } from '../useSendAssets';
-import { useSendType } from '../useSendType';
 import { useAssetSelectionMetrics } from './useAssetSelectionMetrics';
 
 const mockTrackEvent = jest.fn();
 const mockSetAssetFilterMethod = jest.fn();
 const mockUseSendMetricsContext = jest.mocked(useSendMetricsContext);
 const mockUseSendAssets = jest.mocked(useSendAssets);
-const mockUseSendType = jest.mocked(useSendType);
 
 jest.mock('../../../context/send-metrics', () => ({
   ...jest.requireActual('../../../context/send-metrics'),
@@ -58,14 +57,6 @@ describe('useAssetSelectionMetrics', () => {
       tokens: [EVM_ASSET, EVM_NATIVE_ASSET],
       nfts: [MOCK_NFT1155],
     } as unknown as ReturnType<typeof useSendAssets>);
-
-    mockUseSendType.mockReturnValue({
-      isEvmSendType: true,
-      isEvmNativeSendType: false,
-      isNonEvmSendType: false,
-      isNonEvmNativeSendType: false,
-      isSolanaSendType: false,
-    });
   });
 
   describe('addAssetFilterMethod', () => {
@@ -256,7 +247,7 @@ describe('useAssetSelectionMetrics', () => {
           asset_list_position: 1,
           asset_list_size: '5',
           chain_id: 5,
-          chain_id_caip: undefined,
+          chain_id_caip: 'eip155:5',
           filter_method: [AssetFilterMethod.None],
         },
       });
@@ -283,7 +274,7 @@ describe('useAssetSelectionMetrics', () => {
           asset_list_position: 2,
           asset_list_size: '5',
           chain_id: 5,
-          chain_id_caip: undefined,
+          chain_id_caip: 'eip155:5',
           filter_method: [AssetFilterMethod.None],
         },
       });
@@ -308,21 +299,13 @@ describe('useAssetSelectionMetrics', () => {
           asset_list_position: 3,
           asset_list_size: '5',
           chain_id: 8453,
-          chain_id_caip: undefined,
+          chain_id_caip: 'eip155:33875',
           filter_method: [AssetFilterMethod.None],
         },
       });
     });
 
     it('uses chain_id_caip for non-EVM assets', () => {
-      mockUseSendType.mockReturnValue({
-        isEvmSendType: false,
-        isEvmNativeSendType: false,
-        isNonEvmSendType: true,
-        isNonEvmNativeSendType: false,
-        isSolanaSendType: true,
-      });
-
       const { result } = renderHookWithProvider(
         () => useAssetSelectionMetrics(),
         mockState,
@@ -330,18 +313,18 @@ describe('useAssetSelectionMetrics', () => {
         Container,
       );
 
-      result.current.captureAssetSelected(EVM_ASSET);
+      result.current.captureAssetSelected(SOLANA_NATIVE_ASSET);
 
       expect(mockTrackEvent).toHaveBeenCalledWith({
         event: 'Send Asset Selected',
         category: 'Send',
         properties: {
           account_type: 'MetaMask',
-          asset_type: 'token',
-          asset_list_position: 1,
+          asset_type: 'native',
+          asset_list_position: 0,
           asset_list_size: '5',
-          chain_id: undefined,
-          chain_id_caip: 5,
+          chain_id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          chain_id_caip: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
           filter_method: [AssetFilterMethod.None],
         },
       });
@@ -373,7 +356,7 @@ describe('useAssetSelectionMetrics', () => {
           asset_list_position: 0,
           asset_list_size: '5',
           chain_id: 1,
-          chain_id_caip: undefined,
+          chain_id_caip: 1,
           filter_method: [AssetFilterMethod.None],
         },
       });

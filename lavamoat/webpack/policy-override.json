@@ -1,0 +1,251 @@
+{
+  "resources": {
+    "@ethersproject/wallet>@ethersproject/random": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@lavamoat/lavadome-react": {
+      "globals": {
+        "Array": true,
+        "Clipboard": true,
+        "Document": true,
+        "DocumentFragment": true,
+        "DocumentFragment.prototype": true,
+        "Element": true,
+        "Event": true,
+        "EventTarget": true,
+        "Function": true,
+        "JSON": true,
+        "NavigateEvent": true,
+        "NavigationDestination": true,
+        "Node": true,
+        "Number": true,
+        "Object": true,
+        "String": true,
+        "Weakmap": true
+      }
+    },
+    "@metamask/keyring-controller>ulid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@popperjs/core": {
+      "globals": {
+        "devicePixelRatio": true,
+        "devicePixelRatio.Symbol(Symbol.toPrimitive)": true,
+        "devicePixelRatio.Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive)": true,
+        "devicePixelRatio.Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive)": true,
+        "devicePixelRatio.Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive).Symbol(Symbol.toPrimitive)": true
+      }
+    },
+    "@sentry/utils": {
+      "globals": {
+        "performance": true,
+        "performance.now": true,
+        "performance.now.now": true,
+        "performance.now.now.timeOrigin": true,
+        "performance.now.now.timeOrigin.timeOrigin": true,
+        "performance.now.now.timeOrigin.timeOrigin.Symbol(Symbol.toPrimitive)": true,
+        "performance.now.now.timeOrigin.timeOrigin.timing": true,
+        "performance.now.now.timeOrigin.timeOrigin.timing.timing": true,
+        "performance.now.now.timeOrigin.timeOrigin.timing.timing.navigationStart": true,
+        "navigator": true,
+        "devicePixelRatio": true,
+        "navigator.userAgent": true,
+        "navigator.language": true,
+        "navigator.userAgentData": true,
+        "crypto": true,
+        "onunhandledrejection": true,
+        "addEventListener": true,
+        "PerformanceObserver": true,
+        "chrome": true,
+        "chrome.runtime": true,
+        "chrome.runtime.runtime": true,
+        "chrome.runtime.runtime.id": true,
+        "location": true,
+        "location.href": true,
+        "top": true
+      }
+    },
+    "@trezor/connect-web>@trezor/connect-common>@trezor/env-utils>ua-parser-js": {
+      "globals": {
+        "navigator": true,
+        "navigator.userAgentData": true,
+        "navigator.userAgentData.userAgentData": true
+      }
+    },
+    "^ background; v popup": {},
+    "axios": {
+      "globals": {
+        "postMessage": true,
+        "fetch": true,
+        "Request": true,
+        "Response": true,
+        "TextEncoder": true,
+        "fetch.Symbol(Symbol.toStringTag)": true,
+        "Request.Symbol(Symbol.toStringTag)": true,
+        "Response.Symbol(Symbol.toStringTag)": true,
+        "TextEncoder.prototype": true,
+        "Request.Symbol(Symbol.toStringTag).prototype": true,
+        "Request.Symbol(Symbol.toStringTag).prototype.headers": true,
+        "Request.Symbol(Symbol.toStringTag).prototype.headers.has": true,
+        "Response.Symbol(Symbol.toStringTag).prototype": true,
+        "Response.Symbol(Symbol.toStringTag).prototype.body": true,
+        "Response.Symbol(Symbol.toStringTag).prototype.body.Symbol(Symbol.toStringTag)": true
+      }
+    },
+    "browserify>util": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "buffer": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "core-js-pure": {
+      "globals": {
+        "navigator": true,
+        "navigator.userAgent": true,
+        "navigator.userAgent.Symbol(Symbol.toPrimitive)": true,
+        "MessageChannel": true,
+        "location": true,
+        "MessageChannel.prototype": true,
+        "MessageChannel.prototype.port2": true,
+        "MessageChannel.prototype.port2.port1": true,
+        "MessageChannel.prototype.port2.postMessage": true,
+        "MessageChannel.prototype.port2.postMessage.length": true,
+        "MessageChannel.prototype.port2.postMessage.length.name": true
+      }
+    },
+    "ethers>@ethersproject/random": {
+      "globals": {
+        "crypto": true,
+        "crypto.getRandomValues": true
+      }
+    },
+    "lodash": {
+      "globals": {
+        "_": true,
+        "setTimeout": true,
+        "clearTimeout": true
+      }
+    },
+    "node-fetch": {
+      "globals": {
+        "fetch": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true
+      }
+    },
+    "react-dom": {
+      "globals": {
+        "event": false,
+        "HTMLIFrameElement": true
+      }
+    },
+    "react-dom>scheduler": {
+      "globals": {
+        "SharedArrayBuffer": true
+      }
+    },
+    "react-responsive-carousel": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    },
+    "react-toggle-button": {
+      "globals": {
+        "requestAnimationFrame": true,
+        "cancelAnimationFrame": true
+      }
+    },
+    "string.prototype.matchall>get-intrinsic": {
+      "globals": {
+        "Atomics": true,
+        "SharedArrayBuffer": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>buffer": {
+      "globals": {
+        "SharedArrayBuffer": true,
+        "SharedArrayBuffer.Symbol(Symbol.hasInstance)": true,
+        "SharedArrayBuffer.Symbol(Symbol.hasInstance).name": true
+      }
+    },
+    "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": {
+      "globals": {
+        "DOMException": true,
+        "DOMException.prototype": true,
+        "fetch": true
+      }
+    },
+    "react-beautiful-dnd": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    },
+    "@metamask/network-controller": {
+      "packages": {
+        "cockatiel": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/util": {
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring": {
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
+      }
+    },
+    "react-router-dom-v5-compat": {
+      "packages": {
+        "react-router-dom>react-router": true
+      }
+    },
+    "@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/multichain-network-controller>@metamask/keyring-api": true
+      }
+    },
+    "@metamask/multichain-network-controller>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    },
+    "@metamask/bridge-controller": {
+      "packages": {
+        "@metamask/bridge-controller>@metamask/multichain-network-controller": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/keyring-api": true,
+        "@metamask/network-controller": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "lodash": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "bitcoin-address-validation": true
+      }
+    }
+  }
+}

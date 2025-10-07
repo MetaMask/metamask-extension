@@ -34,6 +34,7 @@ import {
   CronjobController,
   ExecutionService,
   JsonSnapsRegistry,
+  MultichainRouter,
   SnapController,
   SnapInsightsController,
   SnapInterfaceController,
@@ -103,6 +104,7 @@ export type Controller =
   | MultichainBalancesController
   | MultichainTransactionsController
   | MultichainNetworkController
+  | MultichainRouter
   | NameController
   | NetworkController
   | NetworkOrderController

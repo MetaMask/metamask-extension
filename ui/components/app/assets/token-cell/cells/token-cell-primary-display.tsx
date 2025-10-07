@@ -13,6 +13,7 @@ import { TokenFiatDisplayInfo } from '../../types';
 import { Skeleton } from '../../../../component-library/skeleton';
 import { selectAnyEnabledNetworksAreAvailable } from '../../../../../selectors';
 import { isZeroAmount } from '../../../../../helpers/utils/number-utils';
+import { useFormatters } from '../../../../../hooks/useFormatters';
 
 type TokenCellPrimaryDisplayProps = {
   token: TokenFiatDisplayInfo;
@@ -21,6 +22,7 @@ type TokenCellPrimaryDisplayProps = {
 
 export const TokenCellPrimaryDisplay = React.memo(
   ({ token, privacyMode }: TokenCellPrimaryDisplayProps) => {
+    const { formatTokenQuantity } = useFormatters();
     const anyEnabledNetworksAreAvailable = useSelector(
       selectAnyEnabledNetworksAreAvailable,
     );
@@ -28,7 +30,7 @@ export const TokenCellPrimaryDisplay = React.memo(
     return (
       <Skeleton
         isLoading={
-          !anyEnabledNetworksAreAvailable && isZeroAmount(token.primary)
+          !anyEnabledNetworksAreAvailable && isZeroAmount(token.balance)
         }
       >
         <SensitiveText
@@ -39,12 +41,12 @@ export const TokenCellPrimaryDisplay = React.memo(
           isHidden={privacyMode}
           length={SensitiveTextLength.Short}
         >
-          {token.primary} {token.symbol}
+          {formatTokenQuantity(Number(token.balance ?? 0), token.symbol)}
         </SensitiveText>
       </Skeleton>
     );
   },
   (prevProps, nextProps) =>
-    prevProps.token.primary === nextProps.token.primary &&
+    prevProps.token.balance === nextProps.token.balance &&
     prevProps.privacyMode === nextProps.privacyMode,
 );

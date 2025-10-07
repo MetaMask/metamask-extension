@@ -14,6 +14,9 @@ import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import type { AvatarNetworkComponent } from './avatar-network.types';
 import { AvatarNetworkProps, AvatarNetworkSize } from './avatar-network.types';
 
+/**
+ * @deprecated Please update your code to use `AvatarNetwork` from `@metamask/design-system-react`
+ */
 export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

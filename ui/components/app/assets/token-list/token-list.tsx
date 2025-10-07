@@ -109,7 +109,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
           const token: TokenWithFiatAmount = {
             ...asset,
             tokenFiatAmount: asset.fiat?.balance,
-            primary: '',
             secondary: null,
             title: asset.name,
             address:

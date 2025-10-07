@@ -18,6 +18,7 @@ import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
+import { NetworkConnectionBanner } from '../../app/network-connection-banner';
 import {
   AccountOverviewTabsProps,
   AccountOverviewTabs,
@@ -116,7 +117,10 @@ export const AccountOverviewLayout = ({
 
   return (
     <>
-      <div className="account-overview__balance-wrapper">{children}</div>
+      <div className="account-overview__balance-wrapper">
+        <NetworkConnectionBanner />
+        {children}
+      </div>
       {isCarouselEnabled && (
         <CarouselWithEmptyState
           slides={slides}

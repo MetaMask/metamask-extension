@@ -32,7 +32,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
             class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/info.svg');"
             />
           </div>
@@ -75,7 +75,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
             class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/info.svg');"
             />
           </div>
@@ -106,7 +106,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
             class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/info.svg');"
             />
           </div>
@@ -150,7 +150,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
             class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/info.svg');"
             />
           </div>
@@ -166,7 +166,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
     class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
   >
     <p
-      class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative-soft"
+      class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
     >
       Includes 0.875% MM fee. Approves token for bridge.
     </p>
@@ -177,7 +177,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         class="mm-box mm-box--display-flex"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
           style="mask-image: url('./images/icons/info.svg');"
         />
       </div>
@@ -214,7 +214,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
             class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/info.svg');"
             />
           </div>
@@ -257,7 +257,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
             class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/info.svg');"
             />
           </div>
@@ -288,7 +288,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
             class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/info.svg');"
             />
           </div>
@@ -332,7 +332,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
             class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/info.svg');"
             />
           </div>
@@ -348,7 +348,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
     class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
   >
     <p
-      class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative-soft"
+      class="mm-box mm-text mm-text--body-xs mm-box--color-text-alternative"
     >
       Approves token for bridge.
     </p>
@@ -359,7 +359,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
         class="mm-box mm-box--display-flex"
       >
         <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
           style="mask-image: url('./images/icons/info.svg');"
         />
       </div>
@@ -396,7 +396,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
             class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/info.svg');"
             />
           </div>
@@ -439,7 +439,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
             class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/info.svg');"
             />
           </div>
@@ -470,7 +470,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
             class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/info.svg');"
             />
           </div>
@@ -514,7 +514,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
             class="mm-box mm-box--display-flex"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative-soft"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/info.svg');"
             />
           </div>

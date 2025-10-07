@@ -9,14 +9,17 @@ import {
   AccountOverviewNonEvmProps,
 } from './account-overview-non-evm';
 
-jest.mock('../../../store/actions', () => ({
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
-  setTokenNetworkFilter: jest.fn(),
-  updateSlides: jest.fn(),
-  removeSlide: jest.fn(),
-  addImportedTokens: jest.fn(),
-}));
+jest.mock('../../../store/actions', () => {
+  return {
+    ...jest.requireActual('../../../store/actions'),
+    tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+    tokenBalancesStopPollingByPollingToken: jest.fn(),
+    setTokenNetworkFilter: jest.fn(),
+    updateSlides: jest.fn(),
+    removeSlide: jest.fn(),
+    addImportedTokens: jest.fn(),
+  };
+});
 
 // Mock the dispatch function
 const mockDispatch = jest.fn();

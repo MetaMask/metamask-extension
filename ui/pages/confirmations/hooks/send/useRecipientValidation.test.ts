@@ -83,33 +83,6 @@ describe('useRecipientValidation', () => {
     });
   });
 
-  it('translates warning messages', async () => {
-    mockUseSendContext.mockReturnValue({
-      asset: EVM_ASSET,
-      to: 'exаmple.eth',
-      chainId: '0x1',
-    } as unknown as ReturnType<typeof useSendContext>);
-
-    jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
-      validateName: () =>
-        Promise.resolve({
-          resolvedLookup: '0x123',
-          confusableCharacters: [
-            { point: 'а', similarTo: 'a' },
-            { point: 'е', similarTo: 'e' },
-          ],
-          warning: 'confusingDomain',
-        }),
-    });
-
-    const { result } = renderHook();
-
-    await waitFor(() => {
-      expect(result.current.recipientWarning).toEqual('confusingDomain');
-      expect(mockT).toHaveBeenLastCalledWith('confusingDomain');
-    });
-  });
-
   it('returns resolved lookup when available', async () => {
     mockUseSendContext.mockReturnValue({
       asset: EVM_ASSET,
@@ -118,7 +91,8 @@ describe('useRecipientValidation', () => {
     } as unknown as ReturnType<typeof useSendContext>);
 
     jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
-      validateName: () => Promise.resolve({ resolvedLookup: '0x123' }),
+      validateName: () =>
+        Promise.resolve({ resolvedLookup: '0x123', protocol: 'ens' }),
     });
 
     const { result } = renderHook();
@@ -143,7 +117,7 @@ describe('useRecipientValidation', () => {
             { point: 'а', similarTo: 'a' },
             { point: 'е', similarTo: 'e' },
           ],
-          warning: 'confusingDomain',
+          protocol: 'ens',
         }),
     });
 

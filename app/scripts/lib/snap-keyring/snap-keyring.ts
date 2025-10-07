@@ -240,15 +240,31 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     snapId,
     skipConfirmationDialog,
     skipAccountNameSuggestionDialog,
+    skipApprovalFlow,
     handleUserInput,
     accountNameSuggestion,
   }: {
     snapId: SnapId;
     skipConfirmationDialog: boolean;
     skipAccountNameSuggestionDialog: boolean;
+    skipApprovalFlow: boolean;
     accountNameSuggestion: string;
     handleUserInput: (accepted: boolean) => Promise<void>;
   }): Promise<{ accountName?: string }> {
+    // If both confirmation and name suggestion dialogs are skipped (preinstalled snap
+    // without confirmations), don't enter the approval flow at all to avoid
+    // unnecessary loader/flow UI. Just compute the name and signal acceptance.
+    if (skipApprovalFlow) {
+      const { success, accountName } = await this.#getAccountNameFromSuggestion(
+        accountNameSuggestion,
+      );
+      await handleUserInput(success);
+      if (!success) {
+        throw new Error('User denied account creation');
+      }
+      return { accountName };
+    }
+
     return await this.#withApprovalFlow(async (_) => {
       // 1. Show the account CREATION confirmation dialog.
       {
@@ -288,6 +304,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     snapId,
     skipConfirmationDialog,
     skipSetSelectedAccountStep,
+    skipApprovalFlow,
     accountName,
     onceSaved,
     defaultAccountNameChosen,
@@ -296,6 +313,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     snapId: SnapId;
     skipConfirmationDialog: boolean;
     skipSetSelectedAccountStep: boolean;
+    skipApprovalFlow: boolean;
     onceSaved: Promise<string>;
     accountName?: string;
     defaultAccountNameChosen: boolean;
@@ -328,7 +346,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
       });
     };
 
-    await this.#withApprovalFlow(async (_) => {
+    const finalizeFn = async () => {
       try {
         // First, wait for the account to be fully saved.
         // NOTE: This might throw, so keep this in the `try` clause.
@@ -405,7 +423,15 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         // This part of the flow is not awaited, so we just log the error for now:
         console.error('Error occurred while creating snap account:', error);
       }
-    });
+    };
+
+    // If confirmation was skipped, do not start an approval flow to avoid loader UI.
+    if (skipApprovalFlow) {
+      await finalizeFn();
+      return;
+    }
+
+    await this.#withApprovalFlow(finalizeFn);
   }
 
   async addAccount(
@@ -434,12 +460,16 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     const skipSetSelectedAccountStep =
       isSnapPreinstalled(snapId) && !setSelectedAccount;
 
+    const skipApprovalFlow =
+      skipConfirmationDialog && skipAccountNameSuggestionDialog;
+
     // First part of the flow, which includes confirmation dialogs (if not skipped).
     // Once confirmed, we resume the Snap execution.
     const { accountName } = await this.#addAccountConfirmations({
       snapId,
       skipConfirmationDialog,
       skipAccountNameSuggestionDialog,
+      skipApprovalFlow,
       accountNameSuggestion,
       handleUserInput,
     });
@@ -453,6 +483,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
       snapId,
       skipConfirmationDialog,
       skipSetSelectedAccountStep,
+      skipApprovalFlow,
       accountName,
       onceSaved,
       defaultAccountNameChosen:

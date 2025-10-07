@@ -32,7 +32,6 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
   Box,
   Text,
 } from '../../component-library';
@@ -302,7 +301,6 @@ function TransactionListItemInner({
         title={title}
         icon={
           <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
             display={Display.Block}
             badge={
               <AvatarNetwork
@@ -312,9 +310,11 @@ function TransactionListItemInner({
                 name={NETWORK_TO_NAME_MAP[chainId]}
                 src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
                 borderColor={BackgroundColor.backgroundDefault}
+                borderWidth={2}
                 backgroundColor={getTestNetworkBackgroundColor(chainId)}
               />
             }
+            style={{ alignSelf: 'center' }}
           >
             <TransactionIcon category={category} status={displayedStatusKey} />
           </BadgeWrapper>

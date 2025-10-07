@@ -117,7 +117,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
@@ -135,7 +135,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             Review request details before you confirm.
           </p>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -162,7 +162,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -181,7 +181,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
           >
             <div
               class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -189,7 +189,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
             >
               <button
                 aria-label="copy-button"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
@@ -199,7 +199,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
               </button>
               <button
                 aria-label="collapse-button"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="sectionCollapseButton"
                 style="cursor: pointer; position: absolute; right: 8px;"
               >
@@ -342,7 +342,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
@@ -350,7 +350,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
           style="overflow: auto;"
         >
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation__simulation_section"
           >
             <div
@@ -378,7 +378,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -531,7 +531,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_request-section"
           >
             <div
@@ -605,7 +605,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -647,7 +647,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -678,7 +678,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_message-section"
           >
             <div
@@ -687,7 +687,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
             >
               <button
                 aria-label="copy-button"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
@@ -697,7 +697,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
               </button>
               <button
                 aria-label="collapse-button"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="sectionCollapseButton"
                 style="cursor: pointer; position: absolute; right: 8px;"
               >
@@ -830,7 +830,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
@@ -838,7 +838,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
           style="overflow: auto;"
         >
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation__simulation_section"
           >
             <div
@@ -866,7 +866,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -966,7 +966,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_request-section"
           >
             <div
@@ -1040,7 +1040,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -1082,7 +1082,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -1113,7 +1113,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_message-section"
           >
             <div
@@ -1122,7 +1122,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
             >
               <button
                 aria-label="copy-button"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
@@ -1132,7 +1132,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
               </button>
               <button
                 aria-label="collapse-button"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="sectionCollapseButton"
                 style="cursor: pointer; position: absolute; right: 8px;"
               >
@@ -1300,7 +1300,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
@@ -1318,7 +1318,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             Review request details before you confirm.
           </p>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_request-section"
           >
             <div
@@ -1346,7 +1346,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -1388,7 +1388,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -1419,7 +1419,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_message-section"
           >
             <div
@@ -1428,7 +1428,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
             >
               <button
                 aria-label="copy-button"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
               >
                 <span
@@ -2076,7 +2076,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
@@ -2094,7 +2094,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             This site wants permission to spend your tokens.
           </p>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation__simulation_section"
           >
             <div
@@ -2122,7 +2122,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -2218,7 +2218,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_request-section"
           >
             <div
@@ -2292,7 +2292,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -2334,7 +2334,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -2365,7 +2365,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_message-section"
           >
             <div
@@ -2374,7 +2374,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
             >
               <button
                 aria-label="copy-button"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
@@ -2384,7 +2384,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
               </button>
               <button
                 aria-label="collapse-button"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="sectionCollapseButton"
                 style="cursor: pointer; position: absolute; right: 8px;"
               >
@@ -2550,7 +2550,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
@@ -2568,7 +2568,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             Review request details before you confirm.
           </p>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_request-section"
           >
             <div
@@ -2596,7 +2596,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -2638,7 +2638,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -2669,7 +2669,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_message-section"
           >
             <div
@@ -2678,7 +2678,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
             >
               <button
                 aria-label="copy-button"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
               >
                 <span
@@ -2688,7 +2688,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
               </button>
               <button
                 aria-label="collapse-button"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="sectionCollapseButton"
                 style="cursor: pointer; position: absolute; right: 8px;"
               >
@@ -3207,7 +3207,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
@@ -3324,7 +3324,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
         </div>
       </div>
       <div
-        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative"
+        class="mm-box mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
         style="min-height: 0; overflow: hidden; position: relative;"
       >
         <div
@@ -3332,7 +3332,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
           style="overflow: auto;"
         >
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_request-section"
           >
             <div
@@ -3360,7 +3360,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -3402,7 +3402,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
                       tabindex="0"
                     >
                       <span
-                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
@@ -3433,7 +3433,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             </div>
           </div>
           <div
-            class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+            class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
             data-testid="confirmation_message-section"
           >
             <div
@@ -3442,7 +3442,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
             >
               <button
                 aria-label="copy-button"
-                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
               >
                 <span

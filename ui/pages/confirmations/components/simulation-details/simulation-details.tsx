@@ -214,7 +214,7 @@ const LegacyHeader = () => {
         <Icon
           name={IconName.Question}
           marginLeft={1}
-          color={IconColor.iconMuted}
+          color={IconColor.iconAlternative}
           size={IconSize.Sm}
         />
       </Tooltip>
@@ -278,7 +278,9 @@ const SimulationDetailsLayout: React.FC<{
             ? BorderColor.transparent
             : BorderColor.borderDefault
         }
-        padding={3}
+        paddingInline={3}
+        paddingTop={1}
+        paddingBottom={2}
         margin={isTransactionsRedesign ? null : 4}
         gap={3}
       >
@@ -303,7 +305,9 @@ const SimulationDetailsLayout: React.FC<{
           ? BorderColor.transparent
           : BorderColor.borderDefault
       }
-      padding={3}
+      paddingInline={3}
+      paddingTop={1}
+      paddingBottom={2}
       margin={isTransactionsRedesign ? null : 4}
       gap={3}
     >

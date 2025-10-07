@@ -85,7 +85,8 @@ import {
 import { MultichainSiteCell } from '../../../components/multichain-accounts/multichain-site-cell/multichain-site-cell';
 import { MultichainEditAccountsPage } from '../../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../shared/lib/multichain/scope-utils';
-import { useAllWalletAccountsBalances } from '../../../hooks/multichain-accounts/useAccountBalance';
+import { selectBalanceForAllWallets } from '../../../selectors/assets';
+import { useFormatters } from '../../../hooks/useFormatters';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 
@@ -103,7 +104,6 @@ export type MultichainConnectPageProps = {
   permissionsRequestId: string;
   rejectPermissionsRequest: (id: string) => void;
   approveConnection: (request: MultichainAccountsConnectPageRequest) => void;
-  activeTabOrigin: string;
   targetSubjectMetadata: {
     extensionId: string | null;
     iconUrl: string | null;
@@ -132,7 +132,10 @@ export const MultichainAccountsConnectPage: React.FC<
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
     MultichainAccountsConnectPageMode.Summary,
   );
-  const formattedAccountGroupBalancesByWallet = useAllWalletAccountsBalances();
+  const { isEip1193Request } = request.metadata ?? {};
+  const { formatCurrencyWithMinThreshold } = useFormatters();
+  const allBalances = useSelector(selectBalanceForAllWallets);
+  const wallets = allBalances?.wallets;
 
   const existingPermissions = useSelector((state) =>
     getPermissions(state, request.metadata?.origin),
@@ -236,9 +239,30 @@ export const MultichainAccountsConnectPage: React.FC<
       ...testNetworkConfigurations,
     ].map(({ caipChainId }) => caipChainId);
 
-    const supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
-      (requestedCaipChainId) =>
-        allNetworksList.includes(requestedCaipChainId as CaipChainId),
+    const walletRequest =
+      requestedCaipChainIds.filter(
+        (caipChainId) =>
+          parseCaipChainId(caipChainId).namespace === KnownCaipNamespace.Wallet,
+      ).length > 0;
+
+    let additionalChains: CaipChainId[] = [];
+    if (walletRequest && isEip1193Request) {
+      additionalChains = nonTestNetworkConfigurations
+        .map(({ caipChainId }) => caipChainId)
+        .filter((caipChainId) =>
+          requestedNamespacesWithoutWallet.includes(
+            parseCaipChainId(caipChainId).namespace,
+          ),
+        );
+    }
+
+    const supportedRequestedCaipChainIds = Array.from(
+      new Set([
+        ...requestedCaipChainIds.filter((requestedCaipChainId) =>
+          allNetworksList.includes(requestedCaipChainId as CaipChainId),
+        ),
+        ...additionalChains,
+      ]),
     );
 
     // If globally selected network is a test network, include that in the default selected networks for connection request
@@ -276,12 +300,14 @@ export const MultichainAccountsConnectPage: React.FC<
 
     return defaultSelectedNetworkList;
   }, [
-    alreadyConnectedCaipChainIds,
-    currentlySelectedNetwork,
-    testNetworkConfigurations,
     nonTestNetworkConfigurations,
+    testNetworkConfigurations,
     requestedCaipChainIds,
+    isEip1193Request,
+    currentlySelectedNetwork.chainId,
     requestedNamespaces,
+    requestedNamespacesWithoutWallet,
+    alreadyConnectedCaipChainIds,
   ]);
 
   const {
@@ -465,24 +491,23 @@ export const MultichainAccountsConnectPage: React.FC<
         (group) => group.id === accountGroupId,
       );
 
-      const balanceText =
-        formattedAccountGroupBalancesByWallet && accountGroup
-          ? (formattedAccountGroupBalancesByWallet?.[accountGroup.walletId]?.[
-              accountGroupId
-            ] ?? undefined)
-          : '';
+      const account = accountGroup
+        ? wallets?.[accountGroup.walletId]?.groups?.[accountGroupId]
+        : undefined;
+      const balance = account?.totalBalanceInUserCurrency ?? 0;
+      const currency = account?.userCurrency ?? '';
 
       return (
         <MultichainAccountCell
           accountId={accountGroupId}
           accountName={accountGroup?.metadata.name || 'Unknown Account'}
-          balance={balanceText ?? ''}
+          balance={formatCurrencyWithMinThreshold(balance, currency)}
           key={accountGroupId}
           walletName={accountGroup?.walletName}
         />
       );
     },
-    [supportedAccountGroups, formattedAccountGroupBalancesByWallet],
+    [supportedAccountGroups, wallets, formatCurrencyWithMinThreshold],
   );
 
   return pageMode === MultichainAccountsConnectPageMode.Summary ? (

@@ -2343,7 +2343,10 @@
     "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
     "isGatorPermissionsEnabled": false,
     "isFetchingGatorPermissions": false,
-    "isUpdatingGatorPermissions": false
+    "isUpdatingGatorPermissions": false,
+    "networkConnectionBanner": {
+      "status": "unknown"
+    }
   },
   "ramps": {
     "buyableChains": [

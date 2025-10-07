@@ -1,0 +1,440 @@
+---
+alwaysApply: true
+---
+# MetaMask Extension E2E Testing Guidelines
+
+## Core Principles
+
+1. **Test Coverage is Critical**: Higher coverage creates more confidence and helps identify bugs effectively.
+2. **Tests Should Be Reliable**: Tests should consistently produce the same results and be resilient to minor system changes.
+3. **Tests Should Provide Fast Feedback**: Optimize for quick execution and clear failure messages.
+4. **Tests Should Be Easy to Debug**: When a test fails, it should be clear what functionality is broken.
+5. **Tests Should Be Maintainable**: Structure tests for easy maintenance as the application evolves.
+
+## Test Naming Conventions
+
+### DO:
+- Use clear, descriptive names that communicate the purpose of the test
+- Name tests based on what they verify (e.g., `adds Bob to the address book`)
+- Keep names concise but informative
+
+### DON'T:
+- Use the prefix 'should' (e.g., `should add Bob to the address book`)
+- Include multiple behaviors with 'and' in a single test name
+- Use vague or generic names
+
+## Test Organization
+
+- Organize tests into folders based on features and scenarios
+- Each feature team should own one or more folders of tests
+- Follow the same organization pattern as the extension team for consistency
+- Place tests in logical feature directories:
+  ```
+  e2e/tests/tokens/import/import-erc1155.spec.ts
+  e2e/tests/settings/clear-activity.spec.ts
+  e2e/tests/ppom/ppom-blockaid-alert-erc20-approval.spec.ts
+  ```
+
+## Test Atomicity and Coupling
+
+### When to Isolate Tests:
+- Testing specific functionality of a single component or feature
+- When you need to pinpoint exact failure causes
+- For basic unit-level behaviors
+
+### When to Combine Tests:
+- For multi-step user flows that represent real user behavior
+- When testing how different parts of the application work together
+- When the setup for multiple tests is time-consuming and identical
+
+### Guidelines:
+- Each test should run with a dedicated browser and mock services
+- Use the `withFixtures` function to create test prerequisites and clean up afterward
+- Avoid shared mocks and services between tests when possible
+- Consider the "fail-fast" philosophy - if an initial step fails, subsequent steps may not need to run
+
+## Controlling State
+
+### Best Practices:
+- Control application state programmatically rather than through UI interactions
+- Use fixtures to set up test prerequisites instead of UI steps
+- Minimize UI interactions to reduce potential breaking points
+- Improve test stability by reducing timing and synchronization issues
+
+### Example:
+```typescript
+// GOOD: Use fixture to set up prerequisites
+new FixtureBuilder()
+  .withAddressBookControllerContactBob()
+  .withTokensControllerERC20()
+  .build();
+
+// Then test only the essential steps:
+// Login
+// Send TST
+// Assertion
+
+// BAD: Building all state through UI
+new FixtureBuilder().build();
+// Login
+// Add Contact
+// Open test dapp
+// Connect to test dapp
+// Deploy TST
+// Add TST to wallet
+// Send TST
+// Assertion
+```
+
+## Framework Architecture
+
+### Core Components:
+
+- **Driver** (`/test/e2e/webdriver/driver.js`) - Custom Selenium WebDriver wrapper providing enhanced element interactions, waiting strategies, and browser management
+- **Page Objects** (`/test/e2e/page-objects/pages/`) - Individual page classes following Page Object Model pattern for UI interactions
+- **Flow Objects** (`/test/e2e/page-objects/flows/`) - Multi-step user workflow implementations with Page Object Model pattern (login, onboarding, transaction flows)
+- **Test Fixtures** - Mock data, network responses, and test state management utilities
+- **Helper Functions** (`/test/e2e/helpers.js`) - Common test utilities
+
+### Key Features:
+- ✅ **Enhanced Element Interactions** - Selenium elements wrapped with enhanced methods (`.fill()`, `.press()`, `.click()`)
+- ✅ **Intelligent Waiting** - Built-in waits for element visibility, enabled state, stability, and custom conditions
+- ✅ **Click Intercepted Handling** - Automatic retry logic for loading overlays and modal backdrop interference
+- ✅ **Multi-Window Support** - Window/tab management with title-based switching and handle tracking
+- ✅ **Test Artifacts** - Screenshot capture on failures with DOM snapshots and application state dumps
+- ✅ **Cross-Browser** - Chrome and Firefox support with browser-specific optimizations
+
+## Framework Best Practices
+
+### Page Object Model (POM) Pattern
+- ALWAYS use the Page Object Model pattern for organizing test code
+- Move all element selectors to Page Objects or dedicated selector files
+- Access UI elements through Page Object methods, not directly in test specs
+- **Sort class members alphabetically**: Variables first (sorted A-Z), then methods (sorted A-Z) for easier navigation
+
+#### Page Object Structure Example:
+```typescript
+import { Driver } from '../../webdriver/driver';
+import { WALLET_PASSWORD } from '../../helpers';
+
+class LoginPage {
+  private driver: Driver;
+
+  // Private selector properties (sorted alphabetically)
+  private readonly incorrectPasswordMessage = {
+    css: '[data-testid="unlock-page-help-text"]',
+    text: 'Password is incorrect. Please try again.',
+  };
+
+  private readonly passwordInput = '[data-testid="unlock-password"]';
+
+  private readonly unlockButton = '[data-testid="unlock-submit"]';
+
+  private readonly welcomeBackMessage = {
+    css: '[data-testid="unlock-page-title"]',
+    text: 'Welcome back',
+  };
+
+  constructor(driver: Driver) {
+    this.driver = driver;
+  }
+
+  // Public methods (sorted alphabetically)
+  async checkPageIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.welcomeBackMessage,
+      this.passwordInput,
+      this.unlockButton,
+    ]);
+    console.log('Login page is loaded');
+  }
+
+  async loginToHomepage(password: string = WALLET_PASSWORD): Promise<void> {
+    console.log('Login to homepage');
+    await this.driver.fill(this.passwordInput, password);
+    await this.driver.clickElement(this.unlockButton);
+  }
+}
+
+export default LoginPage;
+```
+
+### Complex Flows for Multi-Page Interactions
+
+For complex user workflows that span multiple pages, create **Flow Objects** that orchestrate interactions between multiple Page Objects. Flows should encapsulate complete user journeys and promote reusability across tests.
+
+#### When to Create Flows
+
+- **Multi-step workflows** that involve multiple pages
+- **Common user journeys** used across multiple tests
+- **Complex business processes** (onboarding, transaction flows, account management)
+
+#### Flow Structure Example
+
+```typescript
+import { Driver } from '../../webdriver/driver';
+import HomePage from '../pages/home/homepage';
+import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
+import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page';
+import OnboardingSrpPage from '../pages/onboarding/onboarding-srp-page';
+import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
+import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
+
+export async function performCompleteOnboardingFlow(
+  driver: Driver,
+  options: {
+    seedPhrase: string[];
+    password: string;
+    confirmSeedPhrase?: boolean;
+    skipMetricsOptIn?: boolean;
+  },
+): Promise<void> {
+  console.log('Starting complete onboarding flow with imported wallet');
+
+  // Step 1: Start onboarding process
+  const startPage = new StartOnboardingPage(driver);
+  await startPage.checkPageIsLoaded();
+  await startPage.selectImportWallet();
+  await startPage.acceptMetaMetricsOptIn();
+
+  // Step 2: Import existing wallet
+  const srpPage = new OnboardingSrpPage(driver);
+  await srpPage.checkPageIsLoaded();
+  await srpPage.enterSeedPhrase(options.seedPhrase);
+  await srpPage.confirmSeedPhrase();
+
+  // Step 3: Create password
+  const passwordPage = new OnboardingPasswordPage(driver);
+  await passwordPage.checkPageIsLoaded();
+  await passwordPage.enterPassword(options.password);
+  await passwordPage.confirmPassword(options.password);
+  await passwordPage.acceptTermsAndConditions();
+  await passwordPage.clickImportWalletButton();
+
+  // Step 4: Secure wallet (optional SRP confirmation)
+  const secureWalletPage = new SecureWalletPage(driver);
+  if (options.confirmSeedPhrase !== false) {
+    await secureWalletPage.checkPageIsLoaded();
+    await secureWalletPage.clickRemindMeLaterButton(); // or completeSRPQuiz()
+  }
+
+  // Step 5: Complete onboarding
+  const completePage = new OnboardingCompletePage(driver);
+  await completePage.checkPageIsLoaded();
+  await completePage.clickDoneButton();
+
+  // Step 6: Verify we reach homepage
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+  await homePage.closeUseNetworkNotificationModal(); // Handle potential modals
+
+  console.log('Completed onboarding flow successfully');
+}
+```
+
+#### Flow Best Practices
+
+**Structure & Organization:**
+- Place flows in `/test/e2e/page-objects/flows/` directory
+- Use descriptive names ending with `.flow.ts`
+- Group related flows (e.g., `onboarding.flow.ts`, `swap.flow.ts`)
+
+**Implementation Guidelines:**
+- **Orchestrate, don't duplicate**: Flows should call page object methods, not contain UI logic
+- **Provide clear parameters**: Use typed options objects for configuration
+- **Add comprehensive logging**: Help with debugging when flows fail
+
+**Flow Testing & Maintenance:**
+- **Parameterize flows**: Make flows configurable for different test scenarios
+- **Version flows**: Update flows when UI changes, maintain backward compatibility
+
+### TypeScript Requirement
+
+- **ALWAYS write e2e tests in TypeScript (.spec.ts), not JavaScript (.spec.js)**
+- Use proper type annotations for page object properties and method parameters
+
+### Proper Waiting and Assertions
+- NEVER use `driver.delay()` - it creates flaky tests and slows down test execution
+- ALWAYS use dynamic wait from the framework:
+  ```typescript
+  // DON'T:
+  await driver.delay(5000);
+
+  // DO:
+  await driver.waitForSelector(expectedElement)
+  ```
+
+### Element State Handling
+
+- **Default behavior**: Driver automatically waits for elements to be present and visible
+- **When to use safe clicks**: For elements that may not always be present
+- **When to handle states**: Loading overlays, modals, and dynamic content
+
+```typescript
+// Standard click - waits for element to be clickable
+await driver.clickElement(button);
+
+// Safe click - won't fail if element is not found
+await driver.clickElementSafe(optionalButton);
+
+// Wait for specific element state
+await driver.waitForSelector(element, { state: 'visible' });
+await driver.waitForSelector(element, { state: 'detached' });
+
+// Handle loading states
+await driver.waitForElementToStopMoving(animatedElement);
+await driver.assertElementNotPresent(loadingOverlay);
+```
+
+### Prohibited Patterns in Test Specs
+
+The following patterns are prohibited in test specs:
+
+1. **Direct Driver Calls in Tests**
+   ```typescript
+   // DON'T:
+   await driver.clickElement('[data-testid="some-button"]');
+
+   // DO:
+   await somePage.clickSomeButton();
+   ```
+
+2. **Hardcoded Selectors in Tests**
+   ```typescript
+   // DON'T:
+   await driver.fill('#password-input', 'password123');
+
+   // DO:
+   // Define in page object:
+   private readonly passwordInput = '[data-testid="password-input"]';
+   async enterPassword(password: string) {
+     await this.driver.fill(this.passwordInput, password);
+   }
+   ```
+
+3. **Direct Element State Checks in Tests**
+   ```typescript
+   // DON'T:
+   await driver.waitForSelector('.loading-spinner', { state: 'detached' });
+
+   // DO:
+   await somePage.waitForLoadingToComplete();
+   ```
+
+## Handling Flaky Tests
+
+### Common Issues and Solutions
+
+#### Element Click Intercepted Errors
+- **Cause**: Loading overlays, modal backdrops, or other elements blocking interactions
+- **Solution**: Driver automatically detects and handles these with built-in retry logic
+
+```typescript
+// Driver automatically handles loading overlays and modal backdrops
+await this.driver.clickElement(this.confirmButton);
+
+// Use safe click for elements that may not always be present (won't throw if missing)
+await this.driver.clickElementSafe(this.optionalNotificationButton, 2000);
+
+// For elements that need to disappear after clicking (like confirmation dialog)
+await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
+```
+
+#### Element Timing and State Issues
+- **Cause**: Elements not ready for interaction due to loading states or animations
+- **Solution**: Use appropriate waiting strategies before interaction
+
+```typescript
+// Wait for multiple elements to be present before proceeding
+await this.driver.waitForMultipleSelectors([
+  this.usernameField,
+  this.passwordField,
+  this.loginButton
+]);
+
+// Wait for element to stop moving (useful for animated carousels, sliding panels)
+await this.driver.waitForElementToStopMoving(this.animatedElement);
+await this.driver.clickElement(this.animatedElement);
+
+// Wait for loading states to complete
+await this.driver.assertElementNotPresent(this.loadingSpinner, {
+  waitAtLeastGuard: 1000,
+  timeout: 10000
+});
+```
+
+#### Network and Data Loading Issues
+- **Cause**: Tests failing due to slow API responses, network timeouts, or external service dependencies
+- **Solution**: Use mock responses and controlled data instead of relying on real network calls
+
+The framework provides **two layers of mocking**:
+
+**1. Global Mocks** (automatic) - Handle common external dependencies.
+
+**2. Test-Specific Mocks** (manual) - Override globals with test requirements.
+
+```typescript
+// ✅ PREFERRED: Use test-specific mocks for reliable, fast tests
+async function mockTokenPriceApi(mockServer: Mockttp): Promise<MockedEndpoint[]> {
+  return [
+    // Mock token price API to avoid external dependency
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: { ETH: { usd: 2500 }, BTC: { usd: 45000 } },
+      })),
+  ];
+}
+
+await withFixtures(
+  {
+    fixtures: new FixtureBuilder().build(),
+    title: this.test?.fullTitle(),
+    testSpecificMock: mockTokenPriceApi, // Layered on top of global mocks
+  },
+  async ({ driver }) => {
+    // Tests now run with predictable, fast mock data
+    await loginWithBalanceValidation(driver);
+  }
+);
+```
+
+## Code Review Checklist
+
+Before submitting E2E tests, ensure:
+
+### Code Quality & Structure
+
+- [ ] **Tests are written in TypeScript (.spec.ts), not JavaScript (.spec.js)**
+- [ ] Page Object pattern used for all UI interactions
+- [ ] Element selectors defined in page objects, not in test specs
+- [ ] No hardcoded selectors in test files
+- [ ] Proper TypeScript type annotations used for variables and method parameters
+
+### Test Reliability
+
+- [ ] No usage of `driver.delay()` or `setTimeout()` - use proper waits instead
+- [ ] Proper waiting strategies used (waitForSelector, waitForMultipleSelectors)
+- [ ] Mock responses used for network calls instead of real API dependencies
+- [ ] Use fixtures to set up test state instead of UI interactions
+- [ ] Error handling for expected failure scenarios
+
+## Debugging Failed Tests
+- [ ] Console.log statements added for debugging complex flows
+- [ ] Tests work on both Chrome and Firefox browsers
+- [ ] Clear, descriptive test names that explain what is being tested
+- [ ] Use data-testid attributes for stable element selection
+- [ ] Descriptive method names in page objects for better error messages
+- [ ] Include enough context in page object methods to understand failures
+
+**Note**: Screenshots and DOM snapshots are automatically captured on failure for debugging.
+
+## Maintenance Guidelines
+
+- Review and update tests when features change
+- Delete tests for removed features
+- Keep test files focused on specific features
+- Extract common setup into fixtures
+- Document complex test setups with comments
+- Avoid non-extendable logic for specific fixtures - make fixtures reusable

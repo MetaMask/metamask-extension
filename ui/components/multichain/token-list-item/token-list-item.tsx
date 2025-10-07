@@ -76,7 +76,6 @@ type TokenListItemProps = {
   chainId: string;
   address?: string | null;
   showPercentage?: boolean;
-  isPrimaryTokenSymbolHidden?: boolean;
   privacyMode?: boolean;
   nativeCurrencySymbol?: string;
   isDestinationToken?: boolean;
@@ -93,7 +92,6 @@ export const TokenListItemComponent = ({
   tooltipText,
   tokenChainImage,
   chainId,
-  isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
   isStakeable = false,
   isTitleNetworkName = false,
@@ -380,7 +378,7 @@ export const TokenListItemComponent = ({
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
+                {primary}
               </SensitiveText>
             ) : (
               <SensitiveText
@@ -391,7 +389,7 @@ export const TokenListItemComponent = ({
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
+                {primary}
               </SensitiveText>
             )}
           </Box>

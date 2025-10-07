@@ -1,4 +1,5 @@
 import { HttpError } from '@metamask/controller-utils';
+import * as networkUtilsModule from '../../../../shared/lib/network-utils';
 import {
   onRpcEndpointDegraded,
   onRpcEndpointUnavailable,
@@ -13,8 +14,8 @@ describe('onRpcEndpointUnavailable', () => {
     Parameters<typeof networkControllerUtilsModule.shouldCreateRpcServiceEvents>
   >;
   let isPublicEndpointUrlMock: jest.SpyInstance<
-    ReturnType<typeof networkControllerUtilsModule.isPublicEndpointUrl>,
-    Parameters<typeof networkControllerUtilsModule.isPublicEndpointUrl>
+    ReturnType<typeof networkUtilsModule.isPublicEndpointUrl>,
+    Parameters<typeof networkUtilsModule.isPublicEndpointUrl>
   >;
 
   beforeEach(() => {
@@ -24,7 +25,7 @@ describe('onRpcEndpointUnavailable', () => {
     );
 
     isPublicEndpointUrlMock = jest.spyOn(
-      networkControllerUtilsModule,
+      networkUtilsModule,
       'isPublicEndpointUrl',
     );
   });
@@ -166,8 +167,8 @@ describe('onRpcEndpointDegraded', () => {
     Parameters<typeof networkControllerUtilsModule.shouldCreateRpcServiceEvents>
   >;
   let isPublicEndpointUrlMock: jest.SpyInstance<
-    ReturnType<typeof networkControllerUtilsModule.isPublicEndpointUrl>,
-    Parameters<typeof networkControllerUtilsModule.isPublicEndpointUrl>
+    ReturnType<typeof networkUtilsModule.isPublicEndpointUrl>,
+    Parameters<typeof networkUtilsModule.isPublicEndpointUrl>
   >;
 
   beforeEach(() => {
@@ -177,7 +178,7 @@ describe('onRpcEndpointDegraded', () => {
     );
 
     isPublicEndpointUrlMock = jest.spyOn(
-      networkControllerUtilsModule,
+      networkUtilsModule,
       'isPublicEndpointUrl',
     );
   });

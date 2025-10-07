@@ -1,4 +1,3 @@
-import BN from 'bn.js';
 import { Hex } from '@metamask/utils';
 
 export enum AssetStandard {
@@ -15,8 +14,7 @@ export type Asset = {
   accountId?: string;
   address?: string;
   assetId?: string;
-  balance?: BN | string | number | undefined;
-  balanceInSelectedCurrency?: string;
+  balance?: string | number | undefined;
   chainId?: string | number;
   collection?: {
     name?: string;
@@ -52,4 +50,5 @@ export type RecipientValidationResult = {
   warning?: string;
   toAddressValidated?: string;
   loading?: boolean;
+  protocol?: string;
 };

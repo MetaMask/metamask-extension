@@ -6,7 +6,6 @@ import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../../../../../shared/constants/network';
-import { useFiatFormatter } from '../../../../hooks/useFiatFormatter';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
 import { AssetStandard, type Asset } from '../../types/send';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
@@ -14,7 +13,6 @@ import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
 export const useSendTokens = (): Asset[] => {
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
   const assets = useSelector(getAssetsBySelectedAccountGroup);
-  const formatter = useFiatFormatter();
 
   const flatAssets = useMemo(() => Object.values(assets).flat(), [assets]);
 
@@ -27,8 +25,6 @@ export const useSendTokens = (): Asset[] => {
 
   const processedAssets = useMemo(() => {
     return assetsWithBalance.map((asset) => {
-      const fiatBalance = asset.fiat?.balance || 0;
-      const fiatCurrency = asset.fiat?.currency;
       const chainNetworkNameAndImage = chainNetworkNAmeAndImageMap.get(
         asset.chainId as Hex,
       );
@@ -44,17 +40,8 @@ export const useSendTokens = (): Asset[] => {
         imageSource = asset.image;
       }
 
-      let balanceInSelectedCurrency: string;
-      try {
-        balanceInSelectedCurrency = formatter(fiatBalance, {
-          shorten: true,
-        });
-      } catch (error) {
-        balanceInSelectedCurrency = `${fiatBalance.toFixed()} ${fiatCurrency}`;
-      }
       return {
         ...asset,
-        balanceInSelectedCurrency,
         image: imageSource,
         networkImage: chainNetworkNameAndImage?.networkImage,
         networkName: chainNetworkNameAndImage?.networkName,
@@ -62,7 +49,7 @@ export const useSendTokens = (): Asset[] => {
         standard: asset.isNative ? AssetStandard.Native : AssetStandard.ERC20,
       };
     });
-  }, [assetsWithBalance, chainNetworkNAmeAndImageMap, formatter]);
+  }, [assetsWithBalance, chainNetworkNAmeAndImageMap]);
 
   return useMemo(() => {
     return processedAssets.sort(

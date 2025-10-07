@@ -35,7 +35,7 @@
   &__switch-tokens {
     button {
       &:hover:enabled {
-        background: var(--color-background-default-hover);
+        background: var(--color-background-muted-hover);
 
         .mm-icon {
           color: var(--color-icon-default);
@@ -43,7 +43,7 @@
       }
 
       &:active {
-        background: var(--color-background-default-pressed);
+        background: var(--color-background-muted-pressed);
 
         .mm-icon {
           color: var(--color-icon-default);
