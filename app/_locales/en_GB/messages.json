@@ -1325,6 +1325,9 @@
   "confirmRecoveryPhraseTitle": {
     "message": "Confirm your Secret Recovery Phrase"
   },
+  "confirmRecoveryPhraseTitleSettings": {
+    "message": "Confirm Secret Recovery Phrase"
+  },
   "confirmSimulationApprove": {
     "message": "You approve"
   },
@@ -5455,6 +5458,9 @@
   "seedPhraseReviewTitle": {
     "message": "Save your Secret Recovery Phrase"
   },
+  "seedPhraseReviewTitleSettings": {
+    "message": "Save Secret Recovery Phrase"
+  },
   "select": {
     "message": "Select"
   },
@@ -7133,6 +7139,9 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
+  "tokenContractError": {
+    "message": "This address is a token contract address. If you send tokens to this address, you will lose them."
+  },
   "tokenDecimal": {
     "message": "Token decimal"
   },
@@ -7153,6 +7162,14 @@
   },
   "tokenMarketplace": {
     "message": "Token marketplace"
+  },
+  "tokenPermissionCount": {
+    "message": "$1 token permission",
+    "description": "$1 is the count of token permissions (singular form)"
+  },
+  "tokenPermissionsCount": {
+    "message": "$1 token permissions",
+    "description": "$1 is the count of token permissions (plural form)"
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
@@ -7398,6 +7415,10 @@
   },
   "unknownCollection": {
     "message": "Unnamed collection"
+  },
+  "unknownNetworkForGatorPermissions": {
+    "message": "Unknown network",
+    "description": "Displayed on places like Gator permissions when regular name is not available."
   },
   "unknownNetworkForKeyEntropy": {
     "message": "Unknown network",
