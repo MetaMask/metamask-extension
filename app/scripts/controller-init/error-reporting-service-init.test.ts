@@ -36,7 +36,6 @@ describe('ErrorReportingServiceInit', () => {
     const controllerMock = jest.mocked(ErrorReportingService);
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
-      state: undefined,
       captureException: expect.any(Function),
     });
   });
