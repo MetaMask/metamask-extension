@@ -5,6 +5,19 @@ export default {
   title: 'Components/App/Modals/AddFundsModal',
 };
 
-export const DefaultStory = () => <AddFundsModal onClose={() => {}} />;
+export const DefaultStory = () => (
+  <AddFundsModal
+    onClose={() => {}}
+    token={{
+      address: '0x0',
+      decimals: 18,
+      symbol: 'USDC',
+      chainId: '0x1',
+      conversionRate: {
+        usd: '1',
+      },
+    }}
+  />
+);
 
 DefaultStory.storyName = 'Default';
