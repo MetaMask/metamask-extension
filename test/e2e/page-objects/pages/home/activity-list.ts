@@ -46,7 +46,10 @@ class ActivityListPage {
     tag: 'button',
   };
 
-  private readonly speedupButton = '[data-testid="speedup-button"]';
+  private readonly speedupButton = {
+    tag: 'button',
+    text: 'Speed Up',
+  };
 
   private readonly confirmTransactionReplacementButton = {
     text: 'Submit',
