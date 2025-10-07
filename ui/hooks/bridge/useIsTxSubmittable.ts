@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { isCrossChain } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -9,7 +10,6 @@ import {
 } from '../../ducks/bridge/selectors';
 import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import { useMultichainSelector } from '../useMultichainSelector';
-import { useIsMultichainSwap } from '../../pages/bridge/hooks/useIsMultichainSwap';
 
 export const useIsTxSubmittable = () => {
   const fromToken = useSelector(getFromToken);
@@ -19,7 +19,6 @@ export const useIsTxSubmittable = () => {
   const fromAmount = useSelector(getFromAmount);
   const { activeQuote } = useSelector(getBridgeQuotes);
 
-  const isSwap = useIsMultichainSwap();
   const {
     isInsufficientBalance,
     isInsufficientGasBalance,
@@ -31,7 +30,7 @@ export const useIsTxSubmittable = () => {
     fromToken &&
       toToken &&
       fromChainId &&
-      (isSwap || toChain) &&
+      (!isCrossChain(fromChainId, toChain?.chainId) || toChain) &&
       fromAmount &&
       activeQuote &&
       !isInsufficientBalance &&
