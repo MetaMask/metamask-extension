@@ -109,7 +109,9 @@ describe('User Operations', function () {
     });
   });
 
-  it('from send transaction', async function () {
+  // https://github.com/MetaMask/metamask-extension/issues/36567
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('from send transaction', async function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {

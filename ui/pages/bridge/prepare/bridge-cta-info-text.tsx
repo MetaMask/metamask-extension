@@ -57,7 +57,7 @@ export const BridgeCTAInfoText = () => {
 
   return hasMMFee || hasApproval ? (
     <Row gap={1} justifyContent={JustifyContent.center}>
-      <Text variant={TextVariant.bodyXs} color={TextColor.textAlternativeSoft}>
+      <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
         {[
           hasMMFee ? t('rateIncludesMMFee', [feePercentage]) : null,
           hasApproval &&

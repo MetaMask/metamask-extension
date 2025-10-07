@@ -535,14 +535,22 @@ export class PreferencesController extends BaseController<
    * @param options.state - The initial controller state
    */
   constructor({ messenger, state }: PreferencesControllerOptions) {
+    const defaultState = getDefaultPreferencesControllerState();
+
+    const mergedState = {
+      ...defaultState,
+      ...state,
+      preferences: {
+        ...defaultState.preferences,
+        ...state?.preferences,
+      },
+    };
+
     super({
       messenger,
       metadata: controllerMetadata,
       name: controllerName,
-      state: {
-        ...getDefaultPreferencesControllerState(),
-        ...state,
-      },
+      state: mergedState,
     });
 
     this.messagingSystem.subscribe(
