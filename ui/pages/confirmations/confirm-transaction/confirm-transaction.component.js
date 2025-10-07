@@ -39,12 +39,12 @@ import ConfirmDecryptMessage from '../../confirm-decrypt-message';
 import ConfirmEncryptionPublicKey from '../../confirm-encryption-public-key';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 import Confirm from '../confirm/confirm';
-import useCurrentConfirmation from '../hooks/useCurrentConfirmation';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { TraceName } from '../../../../shared/lib/trace';
+import { useUnapprovedTransaction } from '../hooks/transactions/useUnapprovedTransaction';
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
@@ -72,7 +72,7 @@ const ConfirmTransaction = () => {
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
   const use4ByteResolution = useSelector(use4ByteResolutionSelector);
-  const { currentConfirmation } = useCurrentConfirmation();
+  const currentConfirmation = useUnapprovedTransaction();
 
   useEffect(() => {
     const tx = getTransaction();

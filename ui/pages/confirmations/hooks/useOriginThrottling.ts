@@ -5,8 +5,7 @@ import type { ThrottledOrigin } from '../../../../shared/types/origin-throttling
 import { updateThrottledOriginState } from '../../../store/actions';
 
 import { selectThrottledOrigins } from '../../../selectors';
-import { useUnapprovedTransaction } from './transactions/useUnapprovedTransaction';
-import { useSignatureRequest } from './signatures/useSignatureRequest';
+import { useApprovalRequest } from './useApprovalRequest';
 
 const NUMBER_OF_REJECTIONS_THRESHOLD = 3;
 const REJECTION_THRESHOLD_IN_MS = 30000;
@@ -28,12 +27,8 @@ const willNextRejectionReachThreshold = (
 export function useOriginThrottling() {
   const dispatch = useDispatch();
   const throttledOrigins = useSelector(selectThrottledOrigins);
-  const transactionMeta = useUnapprovedTransaction();
-  const signatureRequest = useSignatureRequest();
-
-  const origin =
-    (transactionMeta?.origin || signatureRequest?.msgParams?.origin) ?? '';
-
+  const approvalRequest = useApprovalRequest();
+  const origin = approvalRequest?.origin ?? '';
   const originState = throttledOrigins[origin];
   const shouldThrottleOrigin = willNextRejectionReachThreshold(originState);
 
