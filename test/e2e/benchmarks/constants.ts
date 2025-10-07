@@ -1,5 +1,5 @@
-export const DEFAULT_NUM_BROWSER_LOADS = 2;
-export const DEFAULT_NUM_PAGE_LOADS = 2;
+export const DEFAULT_NUM_BROWSER_LOADS = 5;
+export const DEFAULT_NUM_PAGE_LOADS = 5;
 
 export const ALL_TRACES = {
   uiStartup: 'UI Startup',
