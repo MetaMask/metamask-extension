@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ThemeType } from '../../../../shared/constants/preferences';
 import {
-  BannerBase,
-  Box,
-  BoxProps,
-  ButtonLink,
-  Text,
-} from '../../component-library';
+  ButtonBase,
+  ButtonBaseSize,
+  FontWeight,
+} from '@metamask/design-system-react';
+import { ThemeType } from '../../../../shared/constants/preferences';
+import { BannerBase, Box, BoxProps, Text } from '../../component-library';
 import {
   BackgroundColor,
   BorderColor,
@@ -106,13 +105,20 @@ export const Toast = ({
             <Text
               className="toast-text"
               variant={descriptionVariant || TextVariant.bodySm}
-              color={TextColor.textAlternativeSoft}
+              color={TextColor.textAlternative}
             >
               {description}
             </Text>
           )}
           {actionText && onActionClick ? (
-            <ButtonLink onClick={onActionClick}>{actionText}</ButtonLink>
+            <ButtonBase
+              size={ButtonBaseSize.Sm}
+              textProps={{ fontWeight: FontWeight.Regular }}
+              onClick={onActionClick}
+              className="mt-2"
+            >
+              {actionText}
+            </ButtonBase>
           ) : null}
         </Box>
       </Box>
