@@ -58,6 +58,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -94,6 +95,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: [IFRAMED_HOSTNAME],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -158,6 +160,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -200,6 +203,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
           mockConfigLookupOnWarningPage(mockServer, { statusCode: 500 });
         },
@@ -240,6 +244,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: [phishingSite.hostname],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -277,6 +282,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -319,6 +325,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -355,6 +362,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -463,6 +471,7 @@ describe('Phishing Detection', function (this: Suite) {
               blockProvider: BlockProvider.MetaMask,
               blocklist: [blocked],
               c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+              blocklistPaths: [],
             });
           },
         },
@@ -518,5 +527,112 @@ describe('Phishing Detection', function (this: Suite) {
         });
       });
     }
+  });
+
+  describe('Path-based Blocking', function () {
+    // Tests for blocklistPaths functionality where paths are in format: hostname/pathname
+    it('displays the MetaMask Phishing Detection page when accessing a blocklisted path', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: async (mockServer: Mockttp) => {
+            return setupPhishingDetectionMocks(mockServer, {
+              statusCode: 200,
+              blockProvider: BlockProvider.MetaMask,
+              blocklist: [],
+              c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+              blocklistPaths: ['127.0.0.1/malicious'],
+            });
+          },
+          dapp: true,
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+
+          await driver.openNewPage('http://127.0.0.1/malicious');
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+          const phishingWarningPage = new PhishingWarningPage(driver);
+          await phishingWarningPage.checkPageIsLoaded();
+        },
+      );
+    });
+
+    it('blocks access to blocklisted subpaths', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: async (mockServer: Mockttp) => {
+            return setupPhishingDetectionMocks(mockServer, {
+              statusCode: 200,
+              blockProvider: BlockProvider.MetaMask,
+              blocklist: [],
+              c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+              blocklistPaths: ['127.0.0.1/malicious'],
+            });
+          },
+          dapp: true,
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+
+          // Test that subpaths are blocked
+          await driver.openNewPage('http://127.0.0.1/malicious/path');
+
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+          const phishingWarningPage = new PhishingWarningPage(driver);
+          await phishingWarningPage.checkPageIsLoaded();
+        },
+      );
+    });
+
+    describe('whitelisted paths', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder().build(),
+          title: 'whitelisted paths',
+          testSpecificMock: async (mockServer: Mockttp) => {
+            return setupPhishingDetectionMocks(mockServer, {
+              statusCode: 200,
+              blockProvider: BlockProvider.MetaMask,
+              blocklist: [],
+              c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+              blocklistPaths: ['127.0.0.1/whitelisted/path'],
+            });
+          },
+          dapp: true,
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+
+          await driver.openNewPage('http://127.0.0.1/whitelisted/path');
+
+          // To mitigate a race condition where 2 requests are made to the localhost:8080 which triggers a page refresh
+          await driver.delay(veryLargeDelayMs);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+
+          // we need to wait for this selector to mitigate a race condition on the phishing page site
+          // see more here https://github.com/MetaMask/phishing-warning/pull/173
+          const phishingWarningPage = new PhishingWarningPage(driver);
+          await phishingWarningPage.checkPageIsLoaded();
+          await phishingWarningPage.clickProceedAnywayButton();
+          await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+
+          it('a whitelisted path shows no phishing detection page', async function () {
+            await driver.openNewPage('http://127.0.0.1/whitelisted/path');
+            await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+          });
+
+          it('a path that contains the whitelisted path shows no phishing detection page', async function () {
+            await driver.openNewPage(
+              'http://127.0.0.1/whitelisted/path/subpath',
+            );
+            await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+          });
+        },
+      );
+    });
   });
 });
