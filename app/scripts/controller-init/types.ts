@@ -17,6 +17,9 @@ import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
 import { HardwareTransportBridgeClass } from '../lib/hardware-keyring-builder-factory';
 import ExtensionPlatform from '../platforms/extension';
+// This import is only used for the type.
+// eslint-disable-next-line import/no-restricted-paths
+import type { MetaMaskReduxState } from '../../../ui/store/store';
 import { Controller, ControllerFlatState } from './controller-list';
 
 /** The supported controller names. */
@@ -130,6 +133,11 @@ export type ControllerInitRequest<
    * Includes data and callbacks required to generate metrics.
    */
   getTransactionMetricsRequest(): TransactionMetricsRequest;
+
+  /**
+   * Get the MetaMask state of the client available to the UI.
+   */
+  getUIState(): MetaMaskReduxState['metamask'];
 
   /**
    * Overrides for the keyrings.

@@ -70,6 +70,7 @@ import { PhishingController } from '@metamask/phishing-controller';
 import { LoggingController } from '@metamask/logging-controller';
 import { ErrorReportingService } from '@metamask/error-reporting-service';
 import { AddressBookController } from '@metamask/address-book-controller';
+import { DecryptMessageManager } from '@metamask/message-manager';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -86,6 +87,7 @@ import { AccountOrderController } from '../controllers/account-order';
 import { AlertController } from '../controllers/alert-controller';
 import { MetaMetricsDataDeletionController } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
 import AppMetadataController from '../controllers/app-metadata';
+import DecryptMessageController from '../controllers/decrypt-message';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -105,6 +107,8 @@ export type Controller =
   | BridgeStatusController
   | CronjobController
   | CurrencyRateController
+  | DecryptMessageController
+  | DecryptMessageManager
   | DelegationController
   | DeFiPositionsController
   | EnsController

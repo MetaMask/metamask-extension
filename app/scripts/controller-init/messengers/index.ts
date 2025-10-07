@@ -165,6 +165,11 @@ import { getAppMetadataControllerMessenger } from './app-metadata-controller-mes
 import { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 import { getApprovalControllerMessenger } from './approval-controller-messenger';
 import { getAddressBookControllerMessenger } from './address-book-controller-messenger';
+import { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
+import {
+  getDecryptMessageControllerInitMessenger,
+  getDecryptMessageControllerMessenger,
+} from './decrypt-message-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -208,6 +213,13 @@ export {
   getCurrencyRateControllerMessenger,
   getCurrencyRateControllerInitMessenger,
 } from './currency-rate-controller-messenger';
+export type { DecryptMessageControllerMessenger } from './decrypt-message-controller-messenger';
+export {
+  getDecryptMessageControllerMessenger,
+  getDecryptMessageControllerInitMessenger,
+} from './decrypt-message-controller-messenger';
+export type { DecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
+export { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
 export type {
   EnsControllerMessenger,
   EnsControllerInitMessenger,
@@ -383,6 +395,14 @@ export const CONTROLLER_MESSENGERS = {
   CurrencyRateController: {
     getMessenger: getCurrencyRateControllerMessenger,
     getInitMessenger: getCurrencyRateControllerInitMessenger,
+  },
+  DecryptMessageController: {
+    getMessenger: getDecryptMessageControllerMessenger,
+    getInitMessenger: getDecryptMessageControllerInitMessenger,
+  },
+  DecryptMessageManager: {
+    getMessenger: getDecryptMessageManagerMessenger,
+    getInitMessenger: noop,
   },
   DeFiPositionsController: {
     getMessenger: getDeFiPositionsControllerMessenger,

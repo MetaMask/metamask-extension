@@ -236,7 +236,6 @@ import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
 import Backup from './lib/backup';
-import DecryptMessageController from './controllers/decrypt-message';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
   addHexPrefix,
@@ -392,6 +391,8 @@ import { AppMetadataControllerInit } from './controller-init/app-metadata-contro
 import { ErrorReportingServiceInit } from './controller-init/error-reporting-service-init';
 import { ApprovalControllerInit } from './controller-init/confirmations/approval-controller-init';
 import { AddressBookControllerInit } from './controller-init/confirmations/address-book-controller-init';
+import { DecryptMessageManagerInit } from './controller-init/confirmations/decrypt-message-manager-init';
+import { DecryptMessageControllerInit } from './controller-init/confirmations/decrypt-message-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -510,30 +511,6 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    this.decryptMessageController = new DecryptMessageController({
-      getState: this.getState.bind(this),
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'DecryptMessageController',
-        allowedActions: [
-          `ApprovalController:addRequest`,
-          `ApprovalController:acceptRequest`,
-          `ApprovalController:rejectRequest`,
-          'KeyringController:decryptMessage',
-        ],
-        allowedEvents: [
-          'DecryptMessageManager:stateChange',
-          'DecryptMessageManager:unapprovedMessage',
-        ],
-      }),
-      managerMessenger: this.controllerMessenger.getRestricted({
-        name: 'DecryptMessageManager',
-      }),
-      metricsEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
-    });
-
     this.encryptionPublicKeyController = new EncryptionPublicKeyController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'EncryptionPublicKeyController',
@@ -646,6 +623,8 @@ export default class MetamaskController extends EventEmitter {
       AccountsController: AccountsControllerInit,
       AddressBookController: AddressBookControllerInit,
       AlertController: AlertControllerInit,
+      DecryptMessageManager: DecryptMessageManagerInit,
+      DecryptMessageController: DecryptMessageControllerInit,
       PermissionController: PermissionControllerInit,
       PermissionLogController: PermissionLogControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
@@ -742,6 +721,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountsController = controllersByName.AccountsController;
     this.addressBookController = controllersByName.AddressBookController;
     this.alertController = controllersByName.AlertController;
+    this.decryptMessageController = controllersByName.DecryptMessageController;
     this.permissionController = controllersByName.PermissionController;
     this.permissionLogController = controllersByName.PermissionLogController;
     this.subjectMetadataController =
@@ -8688,9 +8668,9 @@ export default class MetamaskController extends EventEmitter {
         this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
-      getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
+      getUIState: this.getState.bind(this),
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       keyringOverrides: this.opts.overrides?.keyrings,
