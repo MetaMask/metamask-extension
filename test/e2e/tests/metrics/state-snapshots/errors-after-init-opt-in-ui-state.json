@@ -318,6 +318,7 @@
     "allDeFiPositionsCount": "object",
     "urlScanCache": "object",
     "tokenScanCache": "object",
+    "whitelistPaths": "object",
     "coverageResults": "object",
     "orderedTransactionHistory": "object",
     "accounts": "object",
