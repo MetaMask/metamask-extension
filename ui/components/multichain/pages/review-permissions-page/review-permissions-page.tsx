@@ -59,7 +59,12 @@ import {
 } from '../../../../selectors/selectors.types';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
+import {
+  AppState,
+  getPermissionGroupDetailsByOrigin,
+} from '../../../../selectors/gator-permissions/gator-permissions';
 import { SiteCell } from './site-cell/site-cell';
+import { PermissionsCell } from './permissions-cell/permissions-cell';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
@@ -186,6 +191,10 @@ export const ReviewPermissions = () => {
     }),
   );
 
+  const gatorPermissionGroupDetailsMap = useSelector((state: AppState) =>
+    getPermissionGroupDetailsByOrigin(state, activeTabOrigin),
+  );
+
   const handleSelectAccountAddresses = (caipAccountIds: CaipAccountId[]) => {
     if (caipAccountIds.length === 0) {
       setShowDisconnectAllModal(true);
@@ -226,9 +235,29 @@ export const ReviewPermissions = () => {
               selectedChainIds={connectedChainIds}
               hideAllToasts={hideAllToasts}
             />
-          ) : (
+          ) : null}
+          {Object.values(gatorPermissionGroupDetailsMap).every(
+            (details) => details.total === 0,
+          )
+            ? null
+            : Object.entries(gatorPermissionGroupDetailsMap).map(
+                ([permissionGroupName, details]) => (
+                  <PermissionsCell
+                    key={permissionGroupName}
+                    nonTestNetworks={nonTestNetworks}
+                    testNetworks={testNetworks}
+                    totalCount={details.total}
+                    chainIds={details.chains}
+                    paddingTop={connectedAccountAddresses.length === 0 ? 4 : 0}
+                  />
+                ),
+              )}
+          {connectedAccountAddresses.length === 0 &&
+          Object.values(gatorPermissionGroupDetailsMap).every(
+            (details) => details.total === 0,
+          ) ? (
             <NoConnectionContent />
-          )}
+          ) : null}
           {showDisconnectAllModal ? (
             <DisconnectAllModal
               type={DisconnectType.Account}
