@@ -279,10 +279,8 @@ async function withFixtures(options, testSuite) {
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
         numberOfDapps = dappOptions.numberOfDapps;
-        // If dappPaths is provided, ensure we don't exceed its bounds
-        if (dappPaths && Array.isArray(dappPaths)) {
-          numberOfDapps = Math.min(numberOfDapps, dappPaths.length);
-        }
+        // Note: We don't cap numberOfDapps here even if dappPaths is shorter,
+        // because tests may need multiple dapps where some use default paths
       } else if (dappPaths && Array.isArray(dappPaths)) {
         numberOfDapps = dappPaths.length;
       } else {
