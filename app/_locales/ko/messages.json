@@ -876,9 +876,6 @@
   "bridgeFetchNewQuotes": {
     "message": "새로 가져올까요?"
   },
-  "bridgeFrom": {
-    "message": "브릿지 출처"
-  },
   "bridgeFromTo": {
     "message": "$3(으)로 $1 $2 브릿지",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
