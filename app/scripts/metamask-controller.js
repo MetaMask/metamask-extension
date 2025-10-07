@@ -245,7 +245,6 @@ import {
   getPlatform,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
-import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import {
   createHyperliquidReferralMiddleware,
   HyperliquidPermissionTriggerType,
@@ -393,6 +392,8 @@ import { ApprovalControllerInit } from './controller-init/confirmations/approval
 import { AddressBookControllerInit } from './controller-init/confirmations/address-book-controller-init';
 import { DecryptMessageManagerInit } from './controller-init/confirmations/decrypt-message-manager-init';
 import { DecryptMessageControllerInit } from './controller-init/confirmations/decrypt-message-controller-init';
+import { EncryptionPublicKeyControllerInit } from './controller-init/confirmations/encryption-public-key-controller-init';
+import { EncryptionPublicKeyManagerInit } from './controller-init/confirmations/encryption-public-key-message-manager-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -511,36 +512,6 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    this.encryptionPublicKeyController = new EncryptionPublicKeyController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'EncryptionPublicKeyController',
-        allowedActions: [
-          `ApprovalController:addRequest`,
-          `ApprovalController:acceptRequest`,
-          `ApprovalController:rejectRequest`,
-        ],
-        allowedEvents: [
-          'EncryptionPublicKeyManager:stateChange',
-          'EncryptionPublicKeyManager:unapprovedMessage',
-        ],
-      }),
-      managerMessenger: this.controllerMessenger.getRestricted({
-        name: 'EncryptionPublicKeyManager',
-      }),
-      getEncryptionPublicKey: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'KeyringController:getEncryptionPublicKey',
-      ),
-      getAccountKeyringType: (...args) => {
-        return this.keyringController.getAccountKeyringType(...args);
-      },
-      getState: this.getState.bind(this),
-      metricsEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
-    });
-
     this.signatureController = new SignatureController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'SignatureController',
@@ -625,6 +596,8 @@ export default class MetamaskController extends EventEmitter {
       AlertController: AlertControllerInit,
       DecryptMessageManager: DecryptMessageManagerInit,
       DecryptMessageController: DecryptMessageControllerInit,
+      EncryptionPublicKeyManager: EncryptionPublicKeyManagerInit,
+      EncryptionPublicKeyController: EncryptionPublicKeyControllerInit,
       PermissionController: PermissionControllerInit,
       PermissionLogController: PermissionLogControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
@@ -722,6 +695,8 @@ export default class MetamaskController extends EventEmitter {
     this.addressBookController = controllersByName.AddressBookController;
     this.alertController = controllersByName.AlertController;
     this.decryptMessageController = controllersByName.DecryptMessageController;
+    this.encryptionPublicKeyController =
+      controllersByName.EncryptionPublicKeyController;
     this.permissionController = controllersByName.PermissionController;
     this.permissionLogController = controllersByName.PermissionLogController;
     this.subjectMetadataController =

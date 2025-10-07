@@ -170,6 +170,11 @@ import {
   getDecryptMessageControllerInitMessenger,
   getDecryptMessageControllerMessenger,
 } from './decrypt-message-controller-messenger';
+import {
+  getEncryptionPublicKeyControllerInitMessenger,
+  getEncryptionPublicKeyControllerMessenger,
+} from './encryption-public-key-controller-messenger';
+import { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -220,6 +225,16 @@ export {
 } from './decrypt-message-controller-messenger';
 export type { DecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
 export { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
+export type {
+  EncryptionPublicKeyControllerMessenger,
+  EncryptionPublicKeyControllerInitMessenger,
+} from './encryption-public-key-controller-messenger';
+export {
+  getEncryptionPublicKeyControllerMessenger,
+  getEncryptionPublicKeyControllerInitMessenger,
+} from './encryption-public-key-controller-messenger';
+export type { EncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
+export { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
 export type {
   EnsControllerMessenger,
   EnsControllerInitMessenger,
@@ -411,6 +426,14 @@ export const CONTROLLER_MESSENGERS = {
   DelegationController: {
     getMessenger: getDelegationControllerMessenger,
     getInitMessenger: getDelegationControllerInitMessenger,
+  },
+  EncryptionPublicKeyController: {
+    getMessenger: getEncryptionPublicKeyControllerMessenger,
+    getInitMessenger: getEncryptionPublicKeyControllerInitMessenger,
+  },
+  EncryptionPublicKeyManager: {
+    getMessenger: getEncryptionPublicKeyManagerMessenger,
+    getInitMessenger: noop,
   },
   EnsController: {
     getMessenger: getEnsControllerMessenger,
