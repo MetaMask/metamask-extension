@@ -48,7 +48,7 @@ class ActivityListPage {
 
   private readonly speedupButton = {
     tag: 'button',
-    text: 'Speed Up',
+    text: 'Speed up',
   };
 
   private readonly confirmTransactionReplacementButton = {
