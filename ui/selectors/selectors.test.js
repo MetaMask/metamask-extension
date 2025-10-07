@@ -16,7 +16,6 @@ import { createMockInternalAccount } from '../../test/jest/mocks';
 import { mockNetworkState } from '../../test/stub/networks';
 import { DeleteRegulationStatus } from '../../shared/constants/metametrics';
 import * as networkSelectors from '../../shared/modules/selectors/networks';
-import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 
 import {
   SOLANA_WALLET_NAME,
@@ -1146,44 +1145,6 @@ describe('Selectors', () => {
     expect(showOutdatedBrowserWarning).toStrictEqual(true);
   });
 
-  it('#getIsBridgeChain', () => {
-    const isOptimismSupported = selectors.getIsBridgeChain({
-      metamask: {
-        ...mockNetworkState({ chainId: CHAIN_IDS.OPTIMISM }),
-        internalAccounts: {
-          selectedAccount: '0xabc',
-          accounts: { '0xabc': { metadata: { keyring: {} } } },
-        },
-      },
-    });
-    expect(isOptimismSupported).toBeTruthy();
-
-    const isFantomSupported = selectors.getIsBridgeChain({
-      metamask: {
-        ...mockNetworkState({ chainId: CHAIN_IDS.FANTOM }),
-        internalAccounts: {
-          selectedAccount: '0xabc',
-          accounts: { '0xabc': { metadata: { keyring: {} } } },
-        },
-      },
-    });
-    expect(isFantomSupported).toBeFalsy();
-
-    const isSolanaSupported = selectors.getIsBridgeChain({
-      metamask: {
-        ...mockNetworkState({ chainId: MultichainNetworks.SOLANA }),
-        internalAccounts: {
-          selectedAccount: '0xabc',
-          accounts: {
-            '0xabc': { metadata: { keyring: {} } },
-            type: 'solana',
-          },
-        },
-      },
-    });
-    expect(isSolanaSupported).toBeTruthy();
-  });
-
   it('returns proper values for snaps privacy warning shown status', () => {
     mockState.metamask.snapsInstallPrivacyWarningShown = false;
     expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
@@ -2088,63 +2049,6 @@ describe('#getConnectedSitesList', () => {
       );
 
       const result = selectors.getIsSwapsChain(mockState, '0x89');
-      expect(result).toBe(true);
-      expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
-    });
-  });
-
-  describe('getIsBridgeChain', () => {
-    it('returns true for an allowed bridge chainId', () => {
-      const state = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          selectedNetworkClientId: 'testNetworkConfigurationId', // corresponds to mainnet RPC in mockState
-        },
-      };
-
-      const result = selectors.getIsBridgeChain(state);
-
-      expect(result).toBe(true);
-    });
-
-    it('returns false for a disallowed bridge chainId', () => {
-      const state = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          selectedNetworkClientId: 'fooChain', // corresponds to mainnet RPC in mockState
-          networkConfigurationsByChainId: {
-            '0x8080': {
-              chainId: '0x8080',
-              name: 'Custom Mainnet RPC',
-              nativeCurrency: 'ETH',
-              defaultRpcEndpointIndex: 0,
-              rpcEndpoints: [
-                {
-                  type: 'custom',
-                  url: 'https://testrpc.com',
-                  networkClientId: 'fooChain',
-                },
-              ],
-            },
-          },
-        },
-      };
-
-      const result = selectors.getIsBridgeChain(state);
-
-      expect(result).toBe(false);
-    });
-
-    it('respects the overrideChainId parameter', () => {
-      const getCurrentChainIdSpy = jest.spyOn(
-        networkSelectors,
-        'getCurrentChainId',
-      );
-
-      const result = selectors.getIsBridgeChain(mockState, '0x89');
-
       expect(result).toBe(true);
       expect(getCurrentChainIdSpy).not.toHaveBeenCalled(); // Ensure overrideChainId is used
     });

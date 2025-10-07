@@ -87,7 +87,6 @@ jest.mock('../../../selectors', () => {
   return {
     ...original,
     getIsBridgeEnabled: () => true,
-    getIsBridgeChain: () => true,
     checkNetworkAndAccountSupports1559: () => true,
   };
 });

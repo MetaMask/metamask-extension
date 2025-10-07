@@ -77,7 +77,6 @@ export type CoinOverviewProps = {
   className?: string;
   classPrefix?: string;
   chainId: CaipChainId | Hex;
-  isBridgeChain: boolean;
   isBuyableChain: boolean;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
@@ -205,7 +204,6 @@ export const CoinOverview = ({
   className,
   classPrefix = 'coin',
   chainId,
-  isBridgeChain,
   isBuyableChain,
   isSwapsChain,
   isSigningEnabled,
@@ -399,7 +397,6 @@ export const CoinOverview = ({
             chainId,
             isSwapsChain,
             isSigningEnabled,
-            isBridgeChain,
             isBuyableChain,
             classPrefix,
           }}

@@ -93,7 +93,6 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 import { AssetType } from '../../shared/constants/transaction';
 
 import {
@@ -142,7 +141,6 @@ import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
 import {
   getMultichainBalances,
   getMultichainNetworkProviders,
-  getMultichainNetwork,
 } from './multichain';
 import {
   getSelectedMultichainNetworkChainId,
@@ -1930,30 +1928,6 @@ export function getIsSwapsChain(state, overrideChainId) {
   return isDevelopment
     ? ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId)
     : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
-}
-
-/**
- * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
- * @param state - The Redux state
- * @param overrideChainId - The chainId to check
- * @returns {boolean} Whether the chainId is a bridge chain
- */
-export function getIsBridgeChain(state, overrideChainId) {
-  const account = getSelectedInternalAccount(state);
-  const { chainId: selectedMultiChainId, isEvmNetwork } = getMultichainNetwork(
-    state,
-    account,
-  );
-
-  let currentChainId = selectedMultiChainId;
-
-  // While we do not support the multichain network on EVM chains (ex: mainnet is epi155:1), use the old chainId
-  if (isEvmNetwork) {
-    currentChainId = getCurrentChainId(state);
-  }
-
-  const chainId = overrideChainId ?? currentChainId;
-  return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
 const getBridgeFeatureFlags = createDeepEqualSelector(

@@ -152,8 +152,6 @@ const mapStateToProps = (state) => {
     defaultHomeActiveTabName,
     firstTimeFlowType,
     completedOnboarding,
-    haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
-    swapsFetchParams: swapsState.fetchParams,
     showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
     haveBridgeQuotes: Boolean(Object.values(quotes || {}).length),
     isMainnet: getIsMainnet(state),

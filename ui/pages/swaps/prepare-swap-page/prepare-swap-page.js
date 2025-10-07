@@ -70,7 +70,6 @@ import {
   getTokenList,
   isHardwareWallet,
   getHardwareWalletType,
-  getIsBridgeChain,
   getIsBridgeEnabled,
 } from '../../../selectors';
 import {
@@ -222,7 +221,6 @@ export default function PrepareSwapPage({
   const numberOfAggregators = aggregatorMetadata
     ? Object.keys(aggregatorMetadata).length
     : 0;
-  const isBridgeChain = useSelector(getIsBridgeChain);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -743,10 +741,7 @@ export default function PrepareSwapPage({
   const showNotEnoughTokenMessage =
     !fromTokenError && balanceError && fromTokenSymbol;
   const showCrossChainSwapsLink =
-    isBridgeChain &&
-    !showReviewQuote &&
-    !showQuotesLoadingAnimation &&
-    !areQuotesPresent;
+    !showReviewQuote && !showQuotesLoadingAnimation && !areQuotesPresent;
 
   const tokenVerifiedOn1Source = occurrences === 1;
 

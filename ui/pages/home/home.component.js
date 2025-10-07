@@ -124,12 +124,10 @@ export default class Home extends PureComponent {
     defaultHomeActiveTabName: PropTypes.string,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     onTabClick: PropTypes.func.isRequired,
-    haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
     haveBridgeQuotes: PropTypes.bool.isRequired,
     setDataCollectionForMarketing: PropTypes.func.isRequired,
     dataCollectionForMarketing: PropTypes.bool,
-    swapsFetchParams: PropTypes.object,
     location: PropTypes.object,
     shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
@@ -186,12 +184,10 @@ export default class Home extends PureComponent {
 
     const {
       attemptCloseNotificationPopup,
-      haveSwapsQuotes,
       haveBridgeQuotes,
       isNotification,
       pendingApprovals,
       showAwaitingSwapScreen,
-      swapsFetchParams,
       location,
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
@@ -203,10 +199,7 @@ export default class Home extends PureComponent {
       pendingApprovals.length ||
       (!isNotification &&
         !stayOnHomePage &&
-        (showAwaitingSwapScreen ||
-          haveSwapsQuotes ||
-          swapsFetchParams ||
-          haveBridgeQuotes))
+        (showAwaitingSwapScreen || haveBridgeQuotes))
     ) {
       this.state.redirecting = true;
     }
@@ -216,10 +209,8 @@ export default class Home extends PureComponent {
     const {
       history,
       isNotification,
-      haveSwapsQuotes,
       haveBridgeQuotes,
       showAwaitingSwapScreen,
-      swapsFetchParams,
       location,
       pendingApprovals,
       hasApprovalFlows,
@@ -229,8 +220,6 @@ export default class Home extends PureComponent {
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
-      history.push(PREPARE_SWAP_ROUTE);
     } else if (canRedirect && haveBridgeQuotes) {
       history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
     } else if (pendingApprovals.length || hasApprovalFlows) {

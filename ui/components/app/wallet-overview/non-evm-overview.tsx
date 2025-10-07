@@ -6,7 +6,6 @@ import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/mu
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import {
   getIsSwapsChain,
-  getIsBridgeChain,
   getSelectedInternalAccount,
 } from '../../../selectors';
 import { CoinOverview } from './coin-overview';
@@ -22,9 +21,7 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
   const isNativeTokenBuyable = useSelector(getIsNativeTokenBuyable);
 
   let isSwapsChain = false;
-  let isBridgeChain = false;
   isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
-  isBridgeChain = useSelector((state) => getIsBridgeChain(state, chainId));
 
   return (
     <CoinOverview
@@ -36,7 +33,6 @@ const NonEvmOverview = ({ className }: NonEvmOverviewProps) => {
       chainId={chainId}
       isSigningEnabled={true}
       isSwapsChain={isSwapsChain}
-      isBridgeChain={isBridgeChain}
       isBuyableChain={isNativeTokenBuyable}
     />
   );
