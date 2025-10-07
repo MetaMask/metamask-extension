@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import FileInput from 'react-simple-file-input';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import FileInput, { FileInputRef } from 'react-simple-file-input';
 import {
   Box,
   BoxAlignItems,
@@ -45,6 +45,7 @@ export const FileUploader = ({
   ...props
 }: FileUploaderProps) => {
   const t = useI18nContext();
+  const fileInputRef = useRef<FileInputRef>(null);
   const [files, setFiles] = useState<FileList | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -159,8 +160,10 @@ export const FileUploader = ({
   const inputId = id || 'file-uploader-input';
 
   const handleClick = () => {
-    const input = document.getElementById(inputId) as HTMLInputElement;
-    input?.click();
+    const inputField = fileInputRef.current?.refs.inputField;
+    if (inputField) {
+      inputField.click();
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -206,6 +209,7 @@ export const FileUploader = ({
       >
         <FileInput
           id={inputId}
+          ref={fileInputRef}
           data-testid="file-uploader-input"
           accept={accept ?? undefined}
           multiple={multiple ?? true}

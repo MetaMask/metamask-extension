@@ -74,9 +74,20 @@ declare module 'react-simple-file-input' {
   } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'onLoad'>;
 
   /**
+   * Ref object structure for FileInput component
+   */
+  export type FileInputRef = {
+    refs: {
+      inputField: HTMLInputElement;
+    };
+  };
+
+  /**
    * FileInput component from react-simple-file-input
    */
-  const FileInput: React.FC<FileInputProps>;
+  const FileInput: React.ForwardRefExoticComponent<
+    FileInputProps & React.RefAttributes<FileInputRef>
+  >;
 
   export default FileInput;
 }
