@@ -109,6 +109,29 @@ const setupController = ({
 };
 
 describe('preferences controller', () => {
+  describe('initialization and merging', () => {
+    it('defaults avatarType to maskicon', () => {
+      const { controller } = setupController({});
+      expect(controller.state.preferences.avatarType).toBe('maskicon');
+    });
+
+    it('preserves existing avatarType', () => {
+      const { controller } = setupController({});
+      const defaultPreferences = controller.state.preferences;
+
+      const { controller: mergedController } = setupController({
+        state: {
+          preferences: {
+            ...defaultPreferences,
+            avatarType: 'jazzicon',
+          },
+        },
+      });
+
+      expect(mergedController.state.preferences.avatarType).toBe('jazzicon');
+    });
+  });
+
   describe('useBlockie', () => {
     it('defaults useBlockie to false', () => {
       const { controller } = setupController({});
