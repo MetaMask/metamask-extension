@@ -83,6 +83,7 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
+import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
 import type {
   PreferencesControllerState,
   PreferencesControllerGetStateAction,
@@ -165,38 +166,34 @@ type BufferedTrace = {
   parentTraceName?: string;
 };
 
-// TODO: Complete MetaMaskState by adding the full state definition and relocate it after the background is converted to TypeScript.
-export type MetaMaskState = {
-  ledgerTransportType: LedgerTransportTypes;
-  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'];
-  internalAccounts: AccountsControllerState['internalAccounts'];
-  allNfts: NftControllerState['allNfts'];
-  allTokens: TokensControllerState['allTokens'];
-  theme: string;
-  participateInMetaMetrics: boolean;
-  dataCollectionForMarketing: boolean;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  ShowNativeTokenAsMainBalance: boolean;
-  useNftDetection: PreferencesControllerState['useNftDetection'];
-  openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
-  securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
-  useTokenDetection: PreferencesControllerState['useTokenDetection'];
-  tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
-  names: NameControllerState['names'];
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  security_providers: string[];
-  addressBook: AddressBookControllerState['addressBook'];
-  currentCurrency: string;
-  preferences: {
-    privacyMode: PreferencesControllerState['preferences']['privacyMode'];
-    tokenNetworkFilter: string[];
-  };
-  srpSessionData: AuthenticationControllerState['srpSessionData'];
-  keyrings: { type: string; accounts: string[] }[];
-  multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
-};
+export type MetaMaskState = Pick<
+  FlattenedBackgroundStateProxy,
+  | 'ledgerTransportType'
+  | 'networkConfigurationsByChainId'
+  | 'internalAccounts'
+  | 'allNfts'
+  | 'allTokens'
+  | 'theme'
+  | 'participateInMetaMetrics'
+  | 'dataCollectionForMarketing'
+  | 'ShowNativeTokenAsMainBalance'
+  | 'useNftDetection'
+  | 'openSeaEnabled'
+  | 'securityAlertsEnabled'
+  | 'useTokenDetection'
+  | 'tokenSortConfig'
+  | 'names'
+  | 'security_providers'
+  | 'addressBook'
+  | 'currentCurrency'
+  | 'srpSessionData'
+  | 'keyrings'
+  | 'multichainNetworkConfigurationsByChainId'
+> &
+  Pick<
+    FlattenedBackgroundStateProxy['preferences'],
+    'privacyMode' | 'tokenNetworkFilter'
+  >;
 
 /**
  * {@link MetaMetricsController}'s metadata.
