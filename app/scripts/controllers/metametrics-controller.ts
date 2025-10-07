@@ -167,24 +167,27 @@ export type MetaMaskState = Pick<
   | 'theme'
   | 'participateInMetaMetrics'
   | 'dataCollectionForMarketing'
-  | 'ShowNativeTokenAsMainBalance'
   | 'useNftDetection'
   | 'openSeaEnabled'
   | 'securityAlertsEnabled'
   | 'useTokenDetection'
-  | 'tokenSortConfig'
   | 'names'
-  | 'security_providers'
   | 'addressBook'
   | 'currentCurrency'
   | 'srpSessionData'
   | 'keyrings'
   | 'multichainNetworkConfigurationsByChainId'
-> &
-  Pick<
+  // TODO: Remove as this is no longer a top-level property of the flattened background state object.
+  // | 'security_providers'
+> & {
+  preferences: Pick<
     FlattenedBackgroundStateProxy['preferences'],
-    'privacyMode' | 'tokenNetworkFilter'
+    | 'privacyMode'
+    | 'tokenNetworkFilter'
+    | 'showNativeTokenAsMainBalance'
+    | 'tokenSortConfig'
   >;
+};
 
 /**
  * {@link MetaMetricsController}'s metadata.
@@ -1403,7 +1406,7 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
       [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
-        metamaskState.ShowNativeTokenAsMainBalance,
+        metamaskState.preferences.showNativeTokenAsMainBalance,
       [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
@@ -1414,7 +1417,7 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
-        metamaskState.tokenSortConfig?.key || '',
+        metamaskState.preferences.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
         metamaskState.preferences.privacyMode,
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
