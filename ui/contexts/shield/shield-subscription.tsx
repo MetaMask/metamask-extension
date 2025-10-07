@@ -66,8 +66,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
    * Watch the balance and show the shield entry modal if the balance is greater than the minimum fiat balance threshold
    */
   const watchBalance = useCallback(() => {
-    console.log('isMetaMaskShieldFeatureEnabled', isMetaMaskShieldFeatureEnabled);
-    console.log('shieldEntryModalShownOnce', shieldEntryModalShownOnce);
     if (
       shieldEntryModalShownOnce !== null ||
       !selectedAccount ||

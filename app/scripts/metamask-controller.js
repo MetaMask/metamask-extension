@@ -138,6 +138,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+import { SUBSCRIPTION_STATUSES } from '@metamask/subscription-controller';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
@@ -215,6 +216,7 @@ import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-s
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
+  getIsMetaMaskShieldFeatureEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
   isGatorPermissionsFeatureEnabled,
 } from '../../shared/modules/environment';
@@ -1071,6 +1073,30 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    // on/off shield controller based on shield subscription
+    this.controllerMessenger.subscribe(
+      'SubscriptionController:stateChange',
+      (_state) => {
+        if (!getIsMetaMaskShieldFeatureEnabled()) {
+          this.shieldController.stop();
+        }
+
+        const shieldSubscription = this.controllerMessenger.call(
+          'SubscriptionController:getSubscriptionByProduct',
+          'shield',
+        );
+        if (
+          shieldSubscription &&
+          (shieldSubscription.status === SUBSCRIPTION_STATUSES.active ||
+            shieldSubscription.status === SUBSCRIPTION_STATUSES.trialing)
+        ) {
+          this.shieldController.start();
+        } else {
+          this.shieldController.stop();
+        }
+      },
+    );
+
     const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
       name: 'PetnamesBridge',
       allowedEvents: [
@@ -1093,11 +1119,22 @@ export default class MetamaskController extends EventEmitter {
     }).init();
 
     this.getSecurityAlertsConfig = async (url) => {
-      const getToken = () =>
-        this.controllerMessenger.call(
-          'AuthenticationController:getBearerToken',
-        );
-      return getShieldGatewayConfig(getToken, url);
+      const shieldSubscription = this.controllerMessenger.call(
+        'SubscriptionController:getSubscriptionByProduct',
+        'shield',
+      );
+      if (
+        shieldSubscription &&
+        (shieldSubscription.status === SUBSCRIPTION_STATUSES.active ||
+          shieldSubscription.status === SUBSCRIPTION_STATUSES.trialing)
+      ) {
+        const getToken = () =>
+          this.controllerMessenger.call(
+            'AuthenticationController:getBearerToken',
+          );
+        return getShieldGatewayConfig(getToken, url);
+      }
+      return { newUrl: url, authorization: undefined };
     };
 
     this.notificationServicesController.init();

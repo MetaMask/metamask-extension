@@ -10,6 +10,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
+import { SUBSCRIPTION_STATUSES } from '@metamask/subscription-controller';
 import { trace } from '../../../../shared/lib/trace';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
@@ -83,9 +84,20 @@ export const TransactionControllerInit: ControllerInitFunction<
       ] as unknown as SavedGasFees | undefined;
     },
     getSimulationConfig: async (url) => {
-      const getToken = () =>
-        initMessenger.call('AuthenticationController:getBearerToken');
-      return getShieldGatewayConfig(getToken, url);
+      const shieldSubscription = initMessenger.call(
+        'SubscriptionController:getSubscriptionByProduct',
+        'shield',
+      );
+      if (
+        shieldSubscription &&
+        (shieldSubscription.status === SUBSCRIPTION_STATUSES.active ||
+          shieldSubscription.status === SUBSCRIPTION_STATUSES.trialing)
+      ) {
+        const getToken = () =>
+          initMessenger.call('AuthenticationController:getBearerToken');
+        return getShieldGatewayConfig(getToken, url);
+      }
+      return { newUrl: url, authorization: undefined };
     },
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
