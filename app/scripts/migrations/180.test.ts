@@ -40,9 +40,7 @@ describe('migration #180', () => {
 
     const newStorage = await migrate(oldStorage);
 
-    expect(
-      newStorage.data.PreferencesController,
-    ).toStrictEqual({
+    expect(newStorage.data.PreferencesController).toStrictEqual({
       selectedAddress: '0x123',
       identities: {},
     });
