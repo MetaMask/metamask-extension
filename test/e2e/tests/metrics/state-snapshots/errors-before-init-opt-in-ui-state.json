@@ -135,7 +135,6 @@
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
       "isMultiAccountBalancesEnabled": "boolean",
-      "showIncomingTransactions": "object",
       "referrals": "object"
     },
     "SelectedNetworkController": { "domains": "object" },

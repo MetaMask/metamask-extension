@@ -287,7 +287,6 @@
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
-    "showIncomingTransactions": "object",
     "manageInstitutionalWallets": "boolean",
     "referrals": "object"
   },
