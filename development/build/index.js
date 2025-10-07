@@ -152,6 +152,7 @@ async function defineAndRunBuildTasks() {
       'getSelection',
       // globals `opera` needs to function
       'opr',
+      'Iterator',
     ];
 
     if (
