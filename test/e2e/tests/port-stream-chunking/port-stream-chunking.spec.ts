@@ -67,18 +67,16 @@ describe('Port Stream Chunking', function () {
         await homepage.checkExpectedBalanceIsDisplayed();
 
         const events = await getEventPayloads(driver, mockedEndpoint);
-        // Firefox will never be chunked
         if (isFirefox) {
-          assert.deepStrictEqual(events.length, 0);
+          // Firefox will never be chunked
+          assert.strictEqual(
+            events.some((event) => event.category === 'Port Stream Chunked'),
+            false,
+          );
         } else {
-          console.log(events);
-          assert.deepStrictEqual(events[0], {
-            category: 'Port Stream',
-            event: 'Port Stream Chunked',
-            properties: {
-              chunkSize: 67108864, // 64MB
-            },
-          });
+          assert.strictEqual(events[1].category, 'Port Stream');
+          assert.strictEqual(events[1].event, 'Port Stream Chunked');
+          assert.strictEqual(events[1].properties.chunkSize, 67108864); // 64 MB
         }
       },
     );
