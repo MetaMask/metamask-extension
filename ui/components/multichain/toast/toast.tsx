@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
-  ButtonBase,
-  ButtonBaseSize,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   FontWeight,
+  TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { BannerBase, Box, BoxProps, Text } from '../../component-library';
@@ -111,14 +113,18 @@ export const Toast = ({
             </Text>
           )}
           {actionText && onActionClick ? (
-            <ButtonBase
-              size={ButtonBaseSize.Sm}
-              textProps={{ fontWeight: FontWeight.Regular }}
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Sm}
+              textProps={{
+                fontWeight: FontWeight.Regular,
+                variant: DsTextVariant.BodySm,
+              }}
               onClick={onActionClick}
               className="mt-2"
             >
               {actionText}
-            </ButtonBase>
+            </Button>
           ) : null}
         </Box>
       </Box>
