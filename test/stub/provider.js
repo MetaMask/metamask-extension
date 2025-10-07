@@ -2,7 +2,10 @@ import {
   JsonRpcEngine,
   createScaffoldMiddleware,
 } from '@metamask/json-rpc-engine';
+import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { providerFromEngine } from '@metamask/eth-json-rpc-provider';
+import Ganache from 'ganache';
+import { CHAIN_IDS } from '../../shared/constants/network';
 
 export function getTestSeed() {
   return 'people carpet cluster attract ankle motor ozone mass dove original primary mask';
@@ -42,23 +45,23 @@ export function createTestProviderTools(opts = {}) {
   const engine = createEngineForTestData();
   // handle provided hooks
   engine.push(createScaffoldMiddleware(opts.scaffold ?? {}));
-  // // handle block tracker methods
-  // engine.push(
-  //   providerAsMiddleware(
-  //     Ganache.provider({
-  //       mnemonic: getTestSeed(),
-  //       network_id: opts.networkId ?? 1,
-  //       chain: { chainId: opts.chainId ?? CHAIN_IDS.MAINNET },
-  //       hardfork: 'muirGlacier',
-  //       logging: {
-  //         logger: {
-  //           // eslint-disable-next-line no-empty-function
-  //           log: () => {}, // don't do anything
-  //         },
-  //       },
-  //     }),
-  //   ),
-  // );
+  // handle block tracker methods
+  engine.push(
+    providerAsMiddleware(
+      Ganache.provider({
+        mnemonic: getTestSeed(),
+        network_id: opts.networkId ?? 1,
+        chain: { chainId: opts.chainId ?? CHAIN_IDS.MAINNET },
+        hardfork: 'muirGlacier',
+        logging: {
+          logger: {
+            // eslint-disable-next-line no-empty-function
+            log: () => {}, // don't do anything
+          },
+        },
+      }),
+    ),
+  );
   // wrap in standard provider interface
   const provider = providerFromEngine(engine);
   return { provider, engine };
