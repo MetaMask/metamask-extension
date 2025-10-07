@@ -13,7 +13,7 @@ import {
   useHistory,
   Redirect,
 } from 'react-router-dom';
-import { shuffle, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
 
@@ -22,7 +22,6 @@ import {
   getIsSwapsChain,
   isHardwareWallet,
   getHardwareWalletType,
-  getTokenList,
   getHDEntropyIndex,
 } from '../../selectors/selectors';
 import {
@@ -136,8 +135,6 @@ export default function Swap() {
   const swapsEnabled = useSelector(getSwapsFeatureIsLive);
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const tokenList = useSelector(getTokenList, isEqual);
-  const shuffledTokensList = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);
   const smartTransactionsOptInStatus = useSelector(
@@ -168,8 +165,7 @@ export default function Swap() {
   // This will pre-load gas fees before going to the View Quote page.
   useGasFeeEstimates();
 
-  const { balance: ethBalance, address: selectedAccountAddress } =
-    selectedAccount;
+  const { address: selectedAccountAddress } = selectedAccount;
 
   const approveTxData =
     approveTxId && txList.find(({ id }) => approveTxId === id);
