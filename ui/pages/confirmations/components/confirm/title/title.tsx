@@ -27,6 +27,7 @@ import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragm
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { NestedTransactionTag } from '../../transactions/nested-transaction-tag';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
+import { APPROVAL_TYPE_EXAMPLE } from '../../../external/example/components/example-info';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -91,7 +92,7 @@ const getTitle = (
     return '';
   }
 
-  switch (confirmation?.type) {
+  switch (confirmation?.type as string) {
     case TransactionType.contractInteraction:
       return t('confirmTitleTransaction');
     case TransactionType.batch:
@@ -139,6 +140,8 @@ const getTitle = (
         return t('confirmTitleSetApprovalForAllRevokeTransaction');
       }
       return t('setApprovalForAllRedesignedTitle');
+    case APPROVAL_TYPE_EXAMPLE:
+      return 'Example';
     default:
       return '';
   }
@@ -159,7 +162,7 @@ const getDescription = (
     return '';
   }
 
-  switch (confirmation?.type) {
+  switch (confirmation?.type as string) {
     case TransactionType.contractInteraction:
       return '';
     case TransactionType.batch:
@@ -207,6 +210,8 @@ const getDescription = (
         return '';
       }
       return t('confirmTitleDescApproveTransaction');
+    case APPROVAL_TYPE_EXAMPLE:
+      return 'Example confirmation using the row architecture.';
 
     default:
       return '';
@@ -217,7 +222,6 @@ const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
-
   const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
 
   const { primaryType, tokenStandard } = useTypedSignSignatureInfo(

@@ -6,6 +6,10 @@ import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransact
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
 import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
+import {
+  APPROVAL_TYPE_EXAMPLE,
+  ExampleInfo,
+} from '../../../external/example/components/example-info';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
@@ -23,7 +27,6 @@ const Info = () => {
   // TODO: Create TransactionInfo and SignatureInfo components.
   useSmartTransactionFeatureFlags();
   useTransactionFocusEffect();
-
   useTrustSignalMetrics();
 
   const ConfirmationInfoComponentMap = useMemo(
@@ -60,6 +63,10 @@ const Info = () => {
     }),
     [currentConfirmation],
   );
+
+  if ((currentConfirmation?.type as string) === APPROVAL_TYPE_EXAMPLE) {
+    return <ExampleInfo />;
+  }
 
   if (!currentConfirmation?.type) {
     return null;

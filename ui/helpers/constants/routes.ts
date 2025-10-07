@@ -82,6 +82,7 @@ export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 export const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
+export const CONFIRMATION_ROUTE = '/confirm';
 export const CONFIRM_SEND_ETHER_PATH = '/send-ether';
 export const CONFIRM_SEND_TOKEN_PATH = '/send-token';
 export const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract';
