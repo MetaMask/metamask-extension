@@ -113,6 +113,8 @@ describe('Snap Account Transfers', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
+        dapp: true,
+        dappPaths: ['snap-simple-keyring-site'],
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },
