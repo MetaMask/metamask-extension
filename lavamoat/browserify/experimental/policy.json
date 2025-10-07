@@ -1904,6 +1904,7 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/approval-controller": true,
         "@metamask/base-controller": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/json-rpc-middleware-stream": true,
@@ -1977,6 +1978,7 @@
         "File": true,
         "FileReader": true,
         "TextDecoder": true,
+        "TextEncoder": true,
         "URL": true,
         "console.error": true,
         "console.log": true,
@@ -5145,7 +5147,7 @@
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
         "react-markdown>unified>is-buffer": true,
-        "react-markdown>unified>is-plain-obj": true,
+        "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }
