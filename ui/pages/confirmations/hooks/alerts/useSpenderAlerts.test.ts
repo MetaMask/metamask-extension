@@ -93,7 +93,7 @@ describe('useSpenderAlerts', () => {
         field: RowAlertKey.Spender,
         isBlocking: false,
         key: 'spenderTrustSignalMalicious',
-        message: 'alertMessageAddressTrustSignal',
+        message: 'alertMessageAddressTrustSignalMalicious',
         reason: 'nameModalTitleMalicious',
         severity: Severity.Danger,
       });
@@ -174,7 +174,7 @@ describe('useSpenderAlerts', () => {
         field: RowAlertKey.Spender,
         isBlocking: false,
         key: 'spenderTrustSignalMalicious',
-        message: 'alertMessageAddressTrustSignal',
+        message: 'alertMessageAddressTrustSignalMalicious',
         reason: 'nameModalTitleMalicious',
         severity: Severity.Danger,
       });
@@ -231,6 +231,8 @@ describe('useSpenderAlerts', () => {
 
       mockUseConfirmContext.mockReturnValue({
         currentConfirmation: mockTransaction,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
       });
       mockParseApprovalTransactionData.mockReturnValue(undefined);
 
