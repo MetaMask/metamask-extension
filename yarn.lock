@@ -5879,6 +5879,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eip-7702-internal-rpc-middleware@file:/Users/tadejvengust/Documents/metamask/core/packages/eip-7702-internal-rpc-middleware::locator=metamask-crx%40workspace%3A.":
+  version: 1.0.0
+  resolution: "@metamask/eip-7702-internal-rpc-middleware@file:/Users/tadejvengust/Documents/metamask/core/packages/eip-7702-internal-rpc-middleware#/Users/tadejvengust/Documents/metamask/core/packages/eip-7702-internal-rpc-middleware::hash=eece7d&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/controller-utils": "npm:^11.14.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.8.1"
+  checksum: 10/fb350b55fa82dd2a3486d0e3ca134f9e7a9e3b163cfa645c440f19efeeb21c1253a8607099166fbcb748cf3dcc5ad21937d49865b8f2b0a132f31c4b8cbc8448
+  languageName: node
+  linkType: hard
+
 "@metamask/ens-controller@npm:^17.0.1":
   version: 17.0.1
   resolution: "@metamask/ens-controller@npm:17.0.1"
@@ -32129,6 +32141,7 @@ __metadata:
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
     "@metamask/eip-5792-middleware": "npm:^1.1.0"
+    "@metamask/eip-7702-internal-rpc-middleware": "npm:1.0.0"
     "@metamask/ens-controller": "npm:^17.0.1"
     "@metamask/ens-resolver-snap": "npm:^0.1.4"
     "@metamask/error-reporting-service": "npm:^2.0.0"

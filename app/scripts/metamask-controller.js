@@ -115,6 +115,11 @@ import {
 } from '@metamask/eip-5792-middleware';
 
 import {
+  walletUpgradeAccount,
+  walletGetAccountUpgradeStatus,
+} from '@metamask/eip-7702-internal-rpc-middleware';
+
+import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -220,6 +225,8 @@ import {
   isGatorPermissionsFeatureEnabled,
 } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
+// eslint-disable-next-line import/no-restricted-paths
+import { isFlask } from '../../ui/helpers/utils/build-types';
 import { getShieldGatewayConfig } from '../../shared/modules/shield';
 import {
   HYPERLIQUID_ORIGIN,
@@ -1298,6 +1305,35 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
+    this.eip7702Middleware = createScaffoldMiddleware({
+      wallet_upgradeAccount: createAsyncMiddleware(async (req, res) => {
+        await walletUpgradeAccount(req, res, {
+          upgradeAccount: this.upgradeAccount.bind(this),
+          getCurrentChainIdForDomain:
+            this.getCurrentChainIdForDomain.bind(this),
+          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+            this.txController,
+          ),
+          getAccounts: this.getPermittedAccounts.bind(this, req.origin),
+        });
+      }),
+      wallet_getAccountUpgradeStatus: createAsyncMiddleware(
+        async (req, res) => {
+          await walletGetAccountUpgradeStatus(req, res, {
+            getCurrentChainIdForDomain:
+              this.getCurrentChainIdForDomain.bind(this),
+            getCode: this.getCode.bind(this),
+            getNetworkConfigurationByChainId:
+              this.controllerMessenger.call.bind(
+                this.controllerMessenger,
+                'NetworkController:getNetworkConfigurationByChainId',
+              ),
+            getAccounts: this.getPermittedAccounts.bind(this, req.origin),
+          });
+        },
+      ),
+    });
+
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
@@ -1559,6 +1595,22 @@ export default class MetamaskController extends EventEmitter {
     if (this.onboardingController.state.completedOnboarding) {
       this.postOnboardingInitialization();
     }
+  }
+
+  /**
+   * Returns the current chainId (hex string) for a given domain/origin.
+   * Used by EIP-7702 middleware hooks.
+   * @param {string} domain
+   * @returns {string | undefined}
+   */
+  getCurrentChainIdForDomain(domain) {
+    const networkClientId =
+      this.selectedNetworkController.getNetworkClientIdForDomain(domain);
+    const { chainId } =
+      this.networkController.getNetworkConfigurationByNetworkClientId(
+        networkClientId,
+      );
+    return chainId;
   }
 
   // Provides a method for getting feature flags for the multichain
@@ -6869,13 +6921,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       rejectApprovalRequestsForOrigin: () =>
         this.rejectOriginPendingApprovals(origin),
-
-      // Account upgrade-related
-      upgradeAccount: this.upgradeAccount.bind(this),
-      getCode: this.getCode.bind(this),
-      isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
-        this.txController,
-      ),
     };
   }
 
@@ -7018,6 +7063,13 @@ export default class MetamaskController extends EventEmitter {
         getAccounts: this.getPermittedAccounts.bind(this, origin),
       }),
     );
+
+    if (
+      subjectType === SubjectType.Snap &&
+      (isFlask() || isSnapPreinstalled(origin))
+    ) {
+      engine.push(this.eip7702Middleware);
+    }
 
     if (subjectType !== SubjectType.Internal) {
       engine.push(
@@ -7474,6 +7526,7 @@ export default class MetamaskController extends EventEmitter {
         ...this.setupCommonMiddlewareHooks(origin),
       }),
     );
+
     engine.push(this.metamaskMiddleware);
 
     engine.push(this.eip5792Middleware);
