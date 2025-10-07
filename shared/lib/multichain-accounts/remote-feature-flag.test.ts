@@ -34,13 +34,13 @@ describe('remoteFeatureFlag', () => {
     expect(isMultichainAccountsFeatureEnabled(featureFlag, '2')).toBe(false);
   });
 
-  it('should return false when the feature flag is undefined', () => {
+  it('should return true when the feature flag is undefined', () => {
     const featureFlag = undefined;
 
     expect(isMultichainAccountsFeatureEnabled(featureFlag, '2')).toBe(true);
   });
 
-  it('should return false when the feature flag is null', () => {
+  it('should return true when the feature flag is null', () => {
     const featureFlag = null;
 
     expect(isMultichainAccountsFeatureEnabled(featureFlag, '2')).toBe(true);
