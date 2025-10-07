@@ -49,8 +49,4 @@ export type FileUploaderProps = Omit<Partial<BoxProps>, 'children' | 'ref'> & {
    * Callback when files are selected
    */
   onChange?: (files: FileList | null) => void;
-  /*
-   * for multiple file uploads
-   */
-  multiple?: FileInputProps['multiple'];
 };

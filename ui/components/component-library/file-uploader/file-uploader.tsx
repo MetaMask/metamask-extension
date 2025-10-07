@@ -41,7 +41,6 @@ export const FileUploader = ({
   maxFileSize,
   fileInputProps,
   onChange,
-  multiple,
   ...props
 }: FileUploaderProps) => {
   const t = useI18nContext();
@@ -212,7 +211,7 @@ export const FileUploader = ({
           ref={fileInputRef}
           data-testid="file-uploader-input"
           accept={accept ?? undefined}
-          multiple={multiple ?? true}
+          multiple
           {...fileInputProps}
           className={twMerge('sr-only', fileInputProps?.className ?? '')}
           onChange={onFileChange}
