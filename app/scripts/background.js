@@ -1505,7 +1505,7 @@ export function setupController(
       (snap) => !snap.preinstalled,
     )
   ) {
-    controller.snapController.updateBlockedSnaps();
+    controller.snapController.updateRegistry();
   }
 }
 

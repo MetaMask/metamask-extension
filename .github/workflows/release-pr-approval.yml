@@ -7,7 +7,7 @@ on:
       - release/*
 
 jobs:
-  check:
+  release-pr-approval:
     runs-on: ubuntu-latest
     steps:
       - name: Require Release Team approval
