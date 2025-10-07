@@ -63,6 +63,7 @@ import {
   SWAPS_MAINTENANCE_ROUTE,
   PREPARE_SWAP_ROUTE,
   SWAPS_NOTIFICATION_ROUTE,
+  CROSS_CHAIN_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   ERROR_FETCHING_QUOTES,
@@ -100,7 +101,6 @@ import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
-import PrepareSwapPage from './prepare-swap-page/prepare-swap-page';
 import NotificationPage from './notification-page/notification-page';
 
 export default function Swap() {
@@ -421,10 +421,10 @@ export default function Swap() {
               path={PREPARE_SWAP_ROUTE}
               exact
               render={() => (
-                <PrepareSwapPage
-                  ethBalance={ethBalance}
-                  selectedAccountAddress={selectedAccountAddress}
-                  shuffledTokensList={shuffledTokensList}
+                <Redirect
+                  to={{
+                    pathname: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
+                  }}
                 />
               )}
             />
