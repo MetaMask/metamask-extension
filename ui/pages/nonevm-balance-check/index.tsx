@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import {
   Box,
   Modal,
@@ -18,8 +19,6 @@ import {
 import { setSelectedAccount } from '../../store/actions';
 import { useMultichainBalances } from '../../hooks/useMultichainBalances';
 import { NonEvmQueryParams } from '../../../shared/lib/deep-links/routes/nonevm';
-import { SWAP_ROUTE } from '../../../shared/lib/deep-links/routes/route';
-import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { RampsMetaMaskEntry } from '../../hooks/ramps/useRamps/useRamps';
 import { getLastSelectedNonEvmAccount } from '../../selectors/multichain';
 import {
@@ -29,16 +28,9 @@ import {
   getParticipateInMetaMetrics,
 } from '../../selectors';
 import { BaseUrl } from '../../../shared/constants/urls';
+import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import AddNonEvmAccountModal from '../../components/multichain/network-list-menu/add-non-evm-account/add-non-evm-account';
-
-const { getExtensionURL } = globalThis.platform;
-
-const getSwapUrl = (chainId: CaipChainId): string => {
-  const query = new URLSearchParams();
-  query.set('sourceToken', chainId);
-  query.set(BridgeQueryParams.SWAPS, 'true');
-  return getExtensionURL(SWAP_ROUTE, query.toString());
-};
+import useBridging from '../../hooks/bridge/useBridging';
 
 const getBuyUrl = (
   chainId: CaipChainId,
@@ -83,6 +75,8 @@ export const NonEvmBalanceCheck = () => {
     account.scopes.includes(chainId),
   );
 
+  const { openBridgeExperience } = useBridging();
+
   useEffect(() => {
     if (!chainId) {
       return;
@@ -99,17 +93,23 @@ export const NonEvmBalanceCheck = () => {
           asset.chainId === chainId && asset.balance && asset.balance !== '0',
       );
 
-      window.location.href = hasPositiveBalance
-        ? getSwapUrl(chainId)
-        : getBuyUrl(
-            chainId,
-            metaMetricsId,
-            isMetaMetricsEnabled,
-            isMarketingEnabled,
-          );
+      if (hasPositiveBalance) {
+        openBridgeExperience(
+          MetaMetricsSwapsEventSource.MainView,
+          getNativeAssetForChainId(chainId),
+        );
+      } else {
+        window.location.href = getBuyUrl(
+          chainId,
+          metaMetricsId,
+          isMetaMetricsEnabled,
+          isMarketingEnabled,
+        );
+      }
     }
   }, [
     chainId,
+    openBridgeExperience,
     assetsWithBalance,
     metaMetricsId,
     isMetaMetricsEnabled,
