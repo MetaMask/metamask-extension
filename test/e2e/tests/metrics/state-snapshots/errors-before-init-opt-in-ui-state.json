@@ -39,6 +39,7 @@
       "popupGasPollTokens": "object",
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
+      "showShieldEntryModalOnce": "boolean",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
       "isRampCardClosed": false,
