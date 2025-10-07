@@ -107,7 +107,7 @@ const AddFundsModal = ({
     if (!token.chainId) {
       return false;
     }
-    return !buyableChains.some(
+    return buyableChains.some(
       (network: AggregatorNetwork) =>
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         String(network.chainId) === hexToDecimal(token.chainId!),
