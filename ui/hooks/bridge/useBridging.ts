@@ -91,6 +91,7 @@ const useBridging = () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: srcToken?.symbol ?? '',
           location,
+          text: 'Swap',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: srcToken?.chainId ?? lastSelectedChainId,

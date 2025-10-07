@@ -4,7 +4,6 @@ import {
   getBridgeQuotes,
   getFromAmount,
   getFromToken,
-  getToChain,
   getValidationErrors,
   getToToken,
 } from '../../ducks/bridge/selectors';
@@ -15,7 +14,6 @@ export const useIsTxSubmittable = () => {
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
   const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
-  const toChain = useSelector(getToChain);
   const fromAmount = useSelector(getFromAmount);
   const { activeQuote } = useSelector(getBridgeQuotes);
 
@@ -30,7 +28,6 @@ export const useIsTxSubmittable = () => {
     fromToken &&
       toToken &&
       fromChainId &&
-      (!isCrossChain(fromChainId, toChain?.chainId) || toChain) &&
       fromAmount &&
       activeQuote &&
       !isInsufficientBalance &&

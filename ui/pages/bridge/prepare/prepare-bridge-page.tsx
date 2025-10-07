@@ -19,6 +19,7 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   type BridgeController,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
@@ -165,8 +166,6 @@ const PrepareBridgePage = ({
   const t = useI18nContext();
 
   const fromChain = useSelector(getFromChain);
-
-  // Check the two types of swaps
   const isSwap = useSelector(getIsSwap);
 
   const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
@@ -451,7 +450,7 @@ const PrepareBridgePage = ({
   // Trace swap/bridge view loaded
   useEffect(() => {
     endTrace({
-      name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
+      name: TraceName.SwapViewLoaded,
       timestamp: Date.now(),
     });
 
@@ -697,7 +696,9 @@ const PrepareBridgePage = ({
               header: t('yourNetworks'),
             }}
             customTokenListGenerator={
-              toChain && toChain.chainId !== fromChain?.chainId
+              toChain &&
+              fromChain &&
+              isCrossChain(fromChain.chainId, toChain.chainId)
                 ? toTokenListGenerator
                 : undefined
             }
