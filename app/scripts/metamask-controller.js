@@ -1058,6 +1058,7 @@ export default class MetamaskController extends EventEmitter {
       (_state) => {
         if (!getIsMetaMaskShieldFeatureEnabled()) {
           this.shieldController.stop();
+          return;
         }
 
         const shieldSubscription = this.controllerMessenger.call(

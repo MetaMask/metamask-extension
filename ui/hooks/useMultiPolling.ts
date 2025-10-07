@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { getSelectedInternalAccount } from '../selectors';
 import { getCompletedOnboarding } from '../ducks/metamask/metamask';
 
 type UseMultiPollingOptions<PollingInput> = {
@@ -15,12 +14,11 @@ type UseMultiPollingOptions<PollingInput> = {
 const useMultiPolling = <PollingInput>(
   usePollingOptions: UseMultiPollingOptions<PollingInput>,
 ) => {
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const pollingTokens = useRef<Map<string, string>>(new Map());
 
   useEffect(() => {
-    if (!selectedAccount || !completedOnboarding) {
+    if (!completedOnboarding) {
       // don't start polling if no selected account or onboarding is not completed yet
       return;
     }
@@ -47,7 +45,6 @@ const useMultiPolling = <PollingInput>(
       }
     }
   }, [
-    selectedAccount,
     completedOnboarding,
     usePollingOptions.input && JSON.stringify(usePollingOptions.input),
   ]);
