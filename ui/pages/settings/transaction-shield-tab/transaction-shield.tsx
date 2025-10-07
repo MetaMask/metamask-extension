@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
+  PaymentType,
   Product,
   PRODUCT_TYPES,
   ProductType,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
+  SubscriptionCryptoPaymentMethod,
   SubscriptionStatus,
+  TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import {
@@ -53,6 +56,10 @@ import { useFormatters } from '../../../hooks/useFormatters';
 import { DAY } from '../../../../shared/constants/time';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
+import {
+  useSubscriptionPaymentMethods,
+  useSubscriptionPricing,
+} from '../../../hooks/subscription/useSubscriptionPricing';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
@@ -72,6 +79,14 @@ const TransactionShield = () => {
     'shield' as ProductType,
     subscriptions,
   );
+
+  const { subscriptionPricing, loading: subscriptionPricingLoading } =
+    useSubscriptionPricing();
+  const cryptoPaymentMethod = useSubscriptionPaymentMethods(
+    'crypto' as PaymentType,
+    subscriptionPricing,
+  );
+
   const isCancelled =
     shieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
   const isPaused = Boolean(
@@ -138,7 +153,7 @@ const TransactionShield = () => {
     openGetSubscriptionBillingPortalResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending;
 
-  const showSkeletonLoader = subscriptionsLoading;
+  const showSkeletonLoader = subscriptionsLoading || subscriptionPricingLoading;
 
   useEffect(() => {
     if (!shieldSubscription) {
@@ -150,7 +165,7 @@ const TransactionShield = () => {
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
 
-  const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
+  const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(true);
 
   const shieldDetails = [
     {
@@ -170,6 +185,32 @@ const TransactionShield = () => {
     backgroundColor: BackgroundColor.backgroundSection,
     padding: 4,
   };
+
+  const currentToken = useMemo(():
+    | (TokenPaymentInfo & { chainId: `0x${string}` | undefined })
+    | undefined => {
+    if (
+      !shieldSubscription ||
+      !isCryptoPaymentMethod(shieldSubscription.paymentMethod)
+    ) {
+      return undefined;
+    }
+    const chainPaymentInfo = cryptoPaymentMethod?.chains?.find(
+      (chain) =>
+        chain.chainId ===
+        (shieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod)
+          .crypto.chainId,
+    );
+
+    const token = chainPaymentInfo?.tokens.find(
+      (paymentToken) =>
+        paymentToken.symbol ===
+        (shieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod)
+          .crypto.tokenSymbol,
+    );
+
+    return token ? { ...token, chainId: chainPaymentInfo?.chainId } : undefined;
+  }, [cryptoPaymentMethod, shieldSubscription]);
 
   const buttonRow = (label: string, onClick: () => void, id?: string) => {
     return (
@@ -609,12 +650,13 @@ const TransactionShield = () => {
         />
       )}
       {loading && <LoadingScreen />}
-      {isAddFundsModalOpen &&
+      {currentToken &&
+        isAddFundsModalOpen &&
         shieldSubscription &&
         isCryptoPaymentMethod(shieldSubscription.paymentMethod) && (
           <AddFundsModal
             onClose={() => setIsAddFundsModalOpen(false)}
-            tokenSymbol={shieldSubscription.paymentMethod.crypto.tokenSymbol}
+            token={currentToken}
           />
         )}
     </Box>

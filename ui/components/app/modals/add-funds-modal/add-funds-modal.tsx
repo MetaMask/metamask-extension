@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import {
   Box,
   Icon,
@@ -9,7 +9,11 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
+import {
+  CaipChainId,
+  isCaipAssetType,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
@@ -21,7 +25,7 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
-import { getIsNativeTokenBuyable } from '../../../../ducks/ramps';
+import { getBuyableChains } from '../../../../ducks/ramps';
 import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { getIsMultichainAccountsState2Enabled } from '../../../../selectors/multichain-accounts';
@@ -47,18 +51,25 @@ import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../../shared/constants/br
 import {
   getCurrentKeyring,
   getIsSwapsChain,
-  getSwapsDefaultToken,
+  getNetworkConfigurationIdByChainId,
 } from '../../../../selectors';
-import { setSwapsFromToken } from '../../../../ducks/swaps/swaps';
+import { setSwapToToken } from '../../../../ducks/swaps/swaps';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
+import { AggregatorNetwork } from '../../../../ducks/ramps/types';
+import { trace, TraceName } from '../../../../../shared/lib/trace';
+import { setActiveNetworkWithError } from '../../../../store/actions';
+import { TokenPaymentInfo } from '@metamask/subscription-controller';
 
 const AddFundsModal = ({
   onClose,
-  tokenSymbol,
+  token,
 }: {
   onClose: () => void;
-  tokenSymbol: string;
+  token: TokenPaymentInfo & {
+    chainId: `0x${string}` | CaipChainId | undefined;
+  };
 }) => {
   const t = useI18nContext();
   const { openBuyCryptoInPdapp } = useRamps();
@@ -66,6 +77,11 @@ const AddFundsModal = ({
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const currentChainId = useSelector(getCurrentChainId);
+  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
+    string,
+    string
+  >;
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
 
@@ -73,8 +89,7 @@ const AddFundsModal = ({
   const account = useSelector(getSelectedInternalAccount, isEqual);
   const { address: selectedAddress } = account;
 
-  const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const chainId = useSelector(getCurrentChainId);
+  const buyableChains = useSelector(getBuyableChains);
 
   // Multichain accounts feature flag and selected account group
   const isMultichainAccountsState2Enabled = useSelector(
@@ -86,11 +101,17 @@ const AddFundsModal = ({
   const isUnifiedUIEnabled = useSelector(getIsUnifiedUIEnabled);
   const isSwapsChain = useSelector(getIsSwapsChain);
 
-  const defaultSwapsToken = useSelector((state) =>
-    getSwapsDefaultToken(state, chainId.toString()),
-  );
-
   const [showReceiveModal, setShowReceiveModal] = useState(false);
+
+  const isBuyableChain = useMemo(() => {
+    if (!token.chainId) {
+      return false;
+    }
+    return buyableChains.some(
+      (network: AggregatorNetwork) =>
+        String(network.chainId) === hexToDecimal(token.chainId!),
+    );
+  }, [buyableChains, token.chainId]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp();
@@ -102,15 +123,28 @@ const AddFundsModal = ({
         text: 'Buy',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: chainId,
+        chain_id: token.chainId,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        token_symbol: tokenSymbol,
+        token_symbol: token.symbol,
       },
     });
-  }, [chainId, openBuyCryptoInPdapp, tokenSymbol, trackEvent]);
+  }, [token.chainId, openBuyCryptoInPdapp, token.symbol, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
+    trace({ name: TraceName.ReceiveModal });
+    trackEvent({
+      event: MetaMetricsEventName.NavReceiveButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        text: 'Receive',
+        location: 'Transaction Shield',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        chain_id: token.chainId,
+      },
+    });
+
     if (isMultichainAccountsState2Enabled && selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
       history.push(
@@ -120,7 +154,13 @@ const AddFundsModal = ({
       // Show the traditional receive modal
       setShowReceiveModal(true);
     }
-  }, [isMultichainAccountsState2Enabled, selectedAccountGroup, history]);
+  }, [
+    isMultichainAccountsState2Enabled,
+    selectedAccountGroup,
+    history,
+    token.chainId,
+    trackEvent,
+  ]);
 
   const handleBridgeOnClick = useCallback(
     async (isSwap: boolean) => {
@@ -145,14 +185,58 @@ const AddFundsModal = ({
     [openBridgeExperience],
   );
 
+  const setCorrectChain = useCallback(async () => {
+    if (
+      token.chainId &&
+      currentChainId !== token.chainId &&
+      !isMultichainAccountsState2Enabled
+    ) {
+      try {
+        const networkConfigurationId = networks[token.chainId];
+        await dispatch(setActiveNetworkWithError(networkConfigurationId));
+      } catch (err) {
+        console.error(`Failed to switch chains.
+        Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
+        ${
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          err
+        }`);
+        throw err;
+      }
+    }
+  }, [
+    isMultichainAccountsState2Enabled,
+    currentChainId,
+    token.chainId,
+    networks,
+    dispatch,
+  ]);
+
   const handleSwapOnClick = useCallback(async () => {
     if (isUnifiedUIEnabled) {
       handleBridgeOnClick(true);
       return;
     }
 
+    await setCorrectChain();
+
     if (isSwapsChain) {
-      dispatch(setSwapsFromToken(defaultSwapsToken));
+      trackEvent({
+        event: MetaMetricsEventName.NavSwapButtonClicked,
+        category: MetaMetricsEventCategory.Swaps,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: token.symbol,
+          location: MetaMetricsSwapsEventSource.TransactionShield,
+          text: 'Swap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: token.chainId,
+        },
+      });
+      dispatch(setSwapToToken(token));
       if (usingHardwareWallet) {
         if (global.platform.openExtensionInBrowser) {
           global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
@@ -166,7 +250,7 @@ const AddFundsModal = ({
     isSwapsChain,
     handleBridgeOnClick,
     dispatch,
-    defaultSwapsToken,
+    token,
     usingHardwareWallet,
     history,
   ]);
