@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { Hex } from '@metamask/utils';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
@@ -25,6 +26,7 @@ import TransactionList from '../../app/transaction-list';
 import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
 import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
+import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -51,6 +53,11 @@ export const AccountOverviewTabs = ({
   const allChainIds = useSelector(getAllChainsToPoll);
 
   useAssetListTokenDetection();
+
+  // EVM specific tokenBalance polling, updates state via polling loop per chainId
+  useTokenBalances({
+    chainIds: allChainIds as Hex[],
+  });
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTabKey) => {
