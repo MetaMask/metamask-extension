@@ -155,10 +155,10 @@ describe('Multichain API', function () {
                 true,
               );
               await confirmation.checkNetworkIsDisplayed('Localhost 7777');
-              await confirmation.clickFooterConfirmButton();
+              await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
             } else {
               await confirmation.checkNetworkIsDisplayed('Localhost 7777');
-              await confirmation.clickFooterConfirmButton();
+              await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
               // third confirmation page should display Account 2 as sender account
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -168,7 +168,7 @@ describe('Multichain API', function () {
                 true,
               );
               await confirmation.checkNetworkIsDisplayed('Localhost 8546');
-              await confirmation.clickFooterConfirmButton();
+              await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
             }
           },
         );
@@ -352,7 +352,7 @@ describe('Multichain API', function () {
               driver,
             );
             await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
-            await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+            await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
@@ -427,7 +427,7 @@ describe('Multichain API', function () {
               driver,
             );
             await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
-            await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+            await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,

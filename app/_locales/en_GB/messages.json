@@ -7139,6 +7139,9 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
+  "tokenContractError": {
+    "message": "This address is a token contract address. If you send tokens to this address, you will lose them."
+  },
   "tokenDecimal": {
     "message": "Token decimal"
   },
