@@ -1,6 +1,3 @@
-const {
-  ETHERSCAN_SUPPORTED_CHAIN_IDS,
-} = require('@metamask/preferences-controller');
 const { mockNetworkStateOld } = require('../stub/networks');
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const { FirstTimeFlowType } = require('../../shared/constants/onboarding');
