@@ -277,16 +277,36 @@ async function withFixtures(options, testSuite) {
 
     await phishingPageServer.start();
     if (dapp) {
-      // Auto-detect numberOfDapps from dappPaths array length, or use dappOptions override
       if (dappOptions?.numberOfDapps) {
         numberOfDapps = dappOptions.numberOfDapps;
+        // If dappPaths is provided, ensure we don't exceed its bounds
+        if (dappPaths && Array.isArray(dappPaths)) {
+          numberOfDapps = Math.min(numberOfDapps, dappPaths.length);
+        }
       } else if (dappPaths && Array.isArray(dappPaths)) {
         numberOfDapps = dappPaths.length;
+      } else {
+        // Default to 1 dapp when dapp=true but no specific configuration
+        numberOfDapps = 1;
       }
+
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
-        const currentDappPath =
-          dappPath || (dappPaths && dappPaths[i]) || 'test-dapp';
+        let currentDappPath;
+        if (dappPath) {
+          // Single dappPath takes precedence
+          currentDappPath = dappPath;
+        } else if (
+          dappPaths &&
+          Array.isArray(dappPaths) &&
+          i < dappPaths.length
+        ) {
+          // Use dappPaths[i] if within bounds
+          currentDappPath = dappPaths[i];
+        } else {
+          // Fallback to default
+          currentDappPath = 'test-dapp';
+        }
 
         switch (currentDappPath) {
           case 'snap-simple-keyring-site':
