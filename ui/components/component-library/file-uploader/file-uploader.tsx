@@ -80,8 +80,8 @@ export const FileUploader = ({
 
       // Check file size
       if (maxFileSize && file.size > maxFileSize) {
-        const fileSizeInMB = convertBytesToMB(maxFileSize);
-        return t('fileUploaderMaxFileSizeError', [fileSizeInMB]);
+        const maxFileSizeInMB = convertBytesToMB(maxFileSize);
+        return t('fileUploaderMaxFileSizeError', [maxFileSizeInMB]);
       }
 
       return null; // File is valid
