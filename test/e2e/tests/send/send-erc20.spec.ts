@@ -7,13 +7,10 @@ import { mockSendRedesignFeatureFlag } from './common';
 const getERC20Fixtures = () => {
   return new FixtureBuilder()
     .withNetworkControllerOnMainnet()
-    .withNetworkControllerOnPolygon()
     .withEnabledNetworks({
       eip155: {
         [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.POLYGON]: true,
         [CHAIN_IDS.LINEA_MAINNET]: true,
-        [CHAIN_IDS.BASE]: true,
       },
     })
     .withTokensController({
@@ -30,20 +27,6 @@ const getERC20Fixtures = () => {
                 'https://static.cx.metamask.io/api/v1/tokenIcons/1/0x0a0e3bfd5a8ce610e735d4469bc1b3b130402267.png',
               occurrences: 3,
               symbol: 'ERP',
-            },
-          },
-        },
-        '0x89': {
-          data: {
-            '0xc2132D05D31c914a87C6611C10748AEb04B58e8F': {
-              name: 'USDT',
-              aggregators: ['Lifi', 'Coinmarketcap', 'Rango'],
-              address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F',
-              decimals: 6,
-              iconUrl:
-                'https://static.cx.metamask.io/api/v1/tokenIcons/137/0xc2132D05D31c914a87C6611C10748AEb04B58e8F.png',
-              occurrences: 3,
-              symbol: 'USDT',
             },
           },
         },

@@ -1,5 +1,6 @@
 import { Mockttp } from 'mockttp';
 
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
@@ -7,7 +8,6 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { mockSendRedesignFeatureFlag } from './common';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 describe('Send ETH', function () {
   it('it should be possible to send ETH', async function () {

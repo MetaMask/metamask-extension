@@ -1,5 +1,5 @@
 import { DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from '../../flask/solana-wallet-standard/testHelpers';
-import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
+import { withSolanaAccountSnap } from '../solana/common-solana';
 import { mockSendRedesignFeatureFlag } from './common';
 
 describe('Send Solana', function () {
