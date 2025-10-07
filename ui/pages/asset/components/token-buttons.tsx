@@ -268,6 +268,7 @@ const TokenButtons = ({
           />
         }
         onClick={handleSwapOnClick}
+        data-testid="token-overview-swap"
         label={t('swap')}
         disabled={!isExternalServicesEnabled}
       />

@@ -40,13 +40,13 @@ describe('useIsMultichainSwap', () => {
     expect(result.current).toBe(true);
   });
 
-  it('returns false when swaps=true but chain is not Solana', () => {
+  it('returns true when swaps=true and chain is not Solana', () => {
     jest
       .requireMock('../../../selectors/multichain')
       .getMultichainIsSolana.mockReturnValue(false);
 
     const { result } = renderUseIsMultichainSwap('/bridge?swaps=true');
-    expect(result.current).toBe(false);
+    expect(result.current).toBe(true);
   });
 
   it('returns false when chain is Solana but swaps param is not set', () => {

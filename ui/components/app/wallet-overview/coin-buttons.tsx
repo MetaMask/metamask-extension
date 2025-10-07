@@ -420,7 +420,7 @@ const CoinButtons = ({
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
-        data-testid="token-overview-button-swap"
+        data-testid={`${classPrefix}-overview-swap`}
         width={BlockSize.Full}
         tooltipRender={(contents: React.ReactElement) =>
           generateTooltip('swapButton', contents)
