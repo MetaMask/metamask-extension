@@ -130,7 +130,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
               helpTextProps?.className ?? '',
             )}
           >
-            {helpText}
+            {String(helpText)}
           </HelpText>
         )}
       </Box>
