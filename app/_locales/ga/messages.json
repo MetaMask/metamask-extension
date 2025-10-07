@@ -5048,11 +5048,11 @@
   "recipientAddressPlaceholderNew": {
     "message": "Cuir isteach seoladh poiblí (0x) nó ainm fearainn"
   },
-  "recommendedGasLabel": {
-    "message": "Molta"
-  },
   "recipientPlaceholder": {
     "message": "Cuir isteach nó greamaigh seoladh bailí"
+  },
+  "recommendedGasLabel": {
+    "message": "Molta"
   },
   "recoveryPhraseReminderBackupStart": {
     "message": "Cúltaca anois"
