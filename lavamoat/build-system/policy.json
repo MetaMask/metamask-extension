@@ -112,6 +112,18 @@
         "@babel/core>@babel/generator>jsesc": true
       }
     },
+    "depcheck>@babel/traverse>@babel/generator": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@babel/core>@babel/types": true,
+        "depcheck>@babel/traverse>@babel/generator>@jridgewell/gen-mapping": true,
+        "depcheck>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
+        "@babel/core>@babel/generator>jsesc": true
+      }
+    },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
       "packages": {
         "@babel/core>@babel/types": true
@@ -168,7 +180,8 @@
       "globals": {
         "console.log": true,
         "console.warn": true,
-        "process": true
+        "process.exitCode": "write",
+        "process.versions.node": true
       },
       "packages": {
         "@babel/core": true,
@@ -780,25 +793,66 @@
         "@babel/core>@babel/types": true
       }
     },
+    "depcheck>@babel/traverse>@babel/template": {
+      "packages": {
+        "@babel/code-frame": true,
+        "@babel/core>@babel/parser": true,
+        "@babel/core>@babel/types": true
+      }
+    },
     "depcheck>@babel/traverse": {
       "globals": {
         "console.log": true
       },
       "packages": {
         "@babel/code-frame": true,
-        "@babel/core>@babel/generator": true,
+        "depcheck>@babel/traverse>@babel/generator": true,
         "@babel/core>@babel/parser": true,
-        "@babel/core>@babel/template": true,
+        "depcheck>@babel/traverse>@babel/template": true,
         "@babel/core>@babel/types": true,
         "babel/preset-env>b@babel/types": true,
         "nock>debug": true,
         "depcheck>@babel/traverse>globals": true
       }
     },
+    "lavamoat>lavamoat-tofu>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "@babel/code-frame": true,
+        "@babel/core>@babel/generator": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/parser": true,
+        "@babel/core>@babel/template": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
+        "nock>debug": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
+      }
+    },
     "@babel/core>@babel/types": {
       "globals": {
         "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>@babel/helper-string-parser": true,
+        "@babel/code-frame>@babel/helper-validator-identifier": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "@babel/core>@babel/types>@babel/helper-string-parser": true,
+        "@babel/code-frame>@babel/helper-validator-identifier": true
+      }
+    },
+    "babel-plugin-react-compiler>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env": true
       },
       "packages": {
         "@babel/core>@babel/types>@babel/helper-string-parser": true,
@@ -914,6 +968,15 @@
         "eslint>minimatch": true
       }
     },
+    "depcheck>@babel/traverse>@babel/generator>@jridgewell/gen-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true
+      }
+    },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
       "globals": {
         "define": true
@@ -939,6 +1002,15 @@
         "Buffer": true,
         "TextDecoder": true,
         "define": true
+      }
+    },
+    "depcheck>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "ts-node>@cspotcode/source-map-support>@jridgewell/trace-mapping": {
@@ -969,7 +1041,7 @@
         "node:path.relative": true
       },
       "packages": {
-        "depcheck>resolve": true
+        "lavamoat>@lavamoat/aa>resolve": true
       }
     },
     "@lavamoat/lavapack": {
@@ -994,7 +1066,7 @@
         "browserify>JSONStream": true,
         "@lavamoat/lavapack>combine-source-map": true,
         "eslint>espree": true,
-        "@lavamoat/webpack>json-stable-stringify": true,
+        "@lavamoat/lavapack>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true,
         "@lavamoat/lavapack>readable-stream": true,
         "through2": true,
@@ -1395,7 +1467,7 @@
     "eslint-plugin-react>array-includes": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>define-properties": true,
         "eslint-plugin-react>array-includes>es-abstract": true,
         "eslint-plugin-react>object.values>es-object-atoms": true,
@@ -1552,7 +1624,8 @@
         "process": true
       },
       "packages": {
-        "@babel/core>@babel/types": true
+        "@babel/core>@babel/types": true,
+        "babel-plugin-react-compiler>@babel/types": true
       }
     },
     "babelify": {
@@ -2341,7 +2414,7 @@
     "string.prototype.matchall>define-properties": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
+        "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
@@ -2587,7 +2660,7 @@
     "eslint-plugin-react>array-includes>es-abstract": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>call-bind>es-define-property": true,
         "eslint-plugin-react>es-iterator-helpers>es-errors": true,
         "eslint-plugin-react>object.values>es-object-atoms": true,
@@ -2641,7 +2714,7 @@
       },
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>define-properties": true,
         "eslint-plugin-react>array-includes>es-abstract": true,
         "eslint-plugin-react>es-iterator-helpers>es-errors": true,
@@ -3544,7 +3617,7 @@
       },
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>define-properties": true,
         "eslint-plugin-react>string.prototype.matchall>set-function-name>functions-have-names": true,
         "eslint-plugin-react>hasown": true,
@@ -4282,7 +4355,7 @@
     },
     "eslint-plugin-react>array-includes>es-abstract>is-regex": {
       "packages": {
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "eslint-plugin-react>es-iterator-helpers>gopd": true,
         "koa>is-generator-function>has-tostringtag": true,
         "eslint-plugin-react>hasown": true
@@ -4296,7 +4369,7 @@
     },
     "eslint-plugin-react>array-includes>es-abstract>safe-regex-test>is-regex": {
       "packages": {
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "eslint-plugin-react>es-iterator-helpers>gopd": true,
         "koa>is-generator-function>has-tostringtag": true,
         "eslint-plugin-react>hasown": true
@@ -4314,19 +4387,19 @@
     },
     "eslint-plugin-react>array-includes>is-string": {
       "packages": {
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "koa>is-generator-function>has-tostringtag": true
       }
     },
     "eslint-plugin-react>array-includes>es-abstract>is-string": {
       "packages": {
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "koa>is-generator-function>has-tostringtag": true
       }
     },
     "eslint-plugin-react>array-includes>es-abstract>es-to-primitive>is-symbol": {
       "packages": {
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>has-symbols": true,
         "eslint-plugin-react>array-includes>es-abstract>safe-regex-test": true
       }
@@ -4440,10 +4513,26 @@
         "Buffer.isBuffer": true
       }
     },
+    "@lavamoat/lavapack>json-stable-stringify": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>jsonify": true,
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
+      }
+    },
     "@lavamoat/webpack>json-stable-stringify": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>jsonify": true,
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
+      }
+    },
+    "lavamoat>lavamoat-core>json-stable-stringify": {
+      "packages": {
+        "string.prototype.matchall>call-bind": true,
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
         "@lavamoat/webpack>json-stable-stringify>jsonify": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
@@ -4603,7 +4692,7 @@
       "builtin": {
         "node:events": true,
         "node:fs.readFileSync": true,
-        "node:fs/promises.writeFile": true,
+        "node:fs/promises": true,
         "node:path.extname": true,
         "node:path.join": true
       },
@@ -4614,7 +4703,7 @@
         "define": true
       },
       "packages": {
-        "@lavamoat/webpack>json-stable-stringify": true,
+        "lavamoat>lavamoat-core>json-stable-stringify": true,
         "lavamoat>lavamoat-tofu": true,
         "lavamoat>lavamoat-core>merge-deep": true
       }
@@ -4625,7 +4714,7 @@
       },
       "packages": {
         "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "depcheck>@babel/traverse": true
+        "lavamoat>lavamoat-tofu>@babel/traverse": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
@@ -5121,7 +5210,7 @@
     "eslint-plugin-react>object.entries": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>define-properties": true,
         "eslint-plugin-react>object.values>es-object-atoms": true
       }
@@ -5154,7 +5243,7 @@
     "eslint-plugin-react>object.values": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>define-properties": true,
         "eslint-plugin-react>object.values>es-object-atoms": true
       }
@@ -5848,20 +5937,21 @@
         "buffer.Buffer": true,
         "events.EventEmitter": true,
         "events.addAbortListener": true,
-        "stream": true
+        "stream": true,
+        "string_decoder.StringDecoder": true
       },
       "globals": {
         "AbortController": true,
         "AbortSignal": true,
         "AggregateError": true,
         "Blob": true,
+        "ERR_INVALID_ARG_TYPE": true,
         "process.env.READABLE_STREAM": true,
         "queueMicrotask": true
       },
       "packages": {
         "@lavamoat/lavapack>readable-stream>abort-controller": true,
-        "process": true,
-        "browserify>string_decoder": true
+        "process": true
       }
     },
     "vinyl-buffer>bl>readable-stream": {
@@ -6081,20 +6171,21 @@
         "buffer.Buffer": true,
         "events.EventEmitter": true,
         "events.addAbortListener": true,
-        "stream": true
+        "stream": true,
+        "string_decoder.StringDecoder": true
       },
       "globals": {
         "AbortController": true,
         "AbortSignal": true,
         "AggregateError": true,
         "Blob": true,
+        "ERR_INVALID_ARG_TYPE": true,
         "process.env.READABLE_STREAM": true,
         "queueMicrotask": true
       },
       "packages": {
         "@lavamoat/lavapack>readable-stream>abort-controller": true,
-        "process": true,
-        "browserify>string_decoder": true
+        "process": true
       }
     },
     "gulp>vinyl-fs>lazystream>readable-stream": {
@@ -6757,6 +6848,36 @@
         "gulp>vinyl-fs>value-or-function": true
       }
     },
+    "lavamoat>@lavamoat/aa>resolve": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "fs.realpathSync": true,
+        "fs.statSync": true,
+        "os.homedir": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.parse": true,
+        "path.relative": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "process.env.HOME": true,
+        "process.env.HOMEDRIVE": true,
+        "process.env.HOMEPATH": true,
+        "process.env.LNAME": true,
+        "process.env.LOGNAME": true,
+        "process.env.USER": true,
+        "process.env.USERNAME": true,
+        "process.env.USERPROFILE": true,
+        "process.getuid": true,
+        "process.platform": true,
+        "process.versions.pnp": true
+      },
+      "packages": {
+        "depcheck>is-core-module": true,
+        "depcheck>resolve>path-parse": true
+      }
+    },
     "depcheck>resolve": {
       "builtin": {
         "fs.readFile": true,
@@ -6891,10 +7012,10 @@
     "eslint-plugin-react>es-iterator-helpers>safe-array-concat": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>has-symbols": true,
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true
+        "@lavamoat/webpack>json-stable-stringify>isarray": true
       }
     },
     "koa>content-disposition>safe-buffer": {
@@ -7061,7 +7182,7 @@
     },
     "eslint-plugin-react>array-includes>es-abstract>safe-regex-test": {
       "packages": {
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "eslint-plugin-react>es-iterator-helpers>es-errors": true,
         "eslint-plugin-react>array-includes>es-abstract>safe-regex-test>is-regex": true
       }
@@ -7266,7 +7387,7 @@
     "string.prototype.matchall>side-channel>side-channel-map": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bound": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
       }
@@ -7274,7 +7395,7 @@
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>call-bound": true,
-        "string.prototype.matchall>es-abstract>es-errors": true,
+        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-map": true
@@ -7493,7 +7614,7 @@
     "eslint-plugin-react>string.prototype.matchall": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>define-properties": true,
         "eslint-plugin-react>array-includes>es-abstract": true,
         "eslint-plugin-react>es-iterator-helpers>es-errors": true,
@@ -7514,7 +7635,7 @@
     "eslint-plugin-react>array-includes>es-abstract>string.prototype.trim": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "eslint-plugin-react>object.values>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
         "string.prototype.matchall>define-properties>define-data-property": true,
         "string.prototype.matchall>define-properties": true,
         "eslint-plugin-react>array-includes>es-abstract": true,
