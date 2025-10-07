@@ -17,6 +17,7 @@ import {
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
+import { TokenPaymentInfo } from '@metamask/subscription-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Modal,
@@ -60,7 +61,6 @@ import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { AggregatorNetwork } from '../../../../ducks/ramps/types';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { setActiveNetworkWithError } from '../../../../store/actions';
-import { TokenPaymentInfo } from '@metamask/subscription-controller';
 
 const AddFundsModal = ({
   onClose,
@@ -109,6 +109,7 @@ const AddFundsModal = ({
     }
     return buyableChains.some(
       (network: AggregatorNetwork) =>
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         String(network.chainId) === hexToDecimal(token.chainId!),
     );
   }, [buyableChains, token.chainId]);
