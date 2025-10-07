@@ -6980,7 +6980,7 @@ __metadata:
 
 "@metamask/notification-services-controller@patch:@metamask/notification-services-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-notification-services-controller-npm-18.1.0-d262049d1a.patch":
   version: 18.1.0
-  resolution: "@metamask/notification-services-controller@patch:@metamask/notification-services-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-notification-services-controller-npm-18.1.0-d262049d1a.patch::version=18.1.0&hash=513d83"
+  resolution: "@metamask/notification-services-controller@patch:@metamask/notification-services-controller@npm%3A18.1.0#~/.yarn/patches/@metamask-notification-services-controller-npm-18.1.0-d262049d1a.patch::version=18.1.0&hash=539f2c"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/base-controller": "npm:^8.3.0"
@@ -6993,7 +6993,7 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^23.0.0
     "@metamask/profile-sync-controller": ^25.0.0
-  checksum: 10/632ef20829702ae32600aedfbf85001b84211de1054929d659cf16091d658f8a0bc933b177917d00e61b2bff08ab43b0da2ca84127c8879a92b2de10603df89c
+  checksum: 10/ea214b51adc3fc68901bdd2d461caf96f7c30f2400da8382e851bfdb924b4326e0e07df6e7b4c72f625fbb50630ececf91d0d05f90946428a724d853527e18de
   languageName: node
   linkType: hard
 

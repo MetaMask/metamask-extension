@@ -1,5 +1,5 @@
 diff --git a/dist/NotificationServicesController/NotificationServicesController.cjs b/dist/NotificationServicesController/NotificationServicesController.cjs
-index 5cb6bff2e73861f5c8aab8e67a666b9de30ccc64..fb706ac1f06360878fcc83587c4eae0ab528bfb9 100644
+index 5cb6bff2e73861f5c8aab8e67a666b9de30ccc64..e343da6573b28efd1d33d3d544d1ca3eb71f77c3 100644
 --- a/dist/NotificationServicesController/NotificationServicesController.cjs
 +++ b/dist/NotificationServicesController/NotificationServicesController.cjs
 @@ -1,18 +1,18 @@
@@ -86,6 +86,15 @@ index 5cb6bff2e73861f5c8aab8e67a666b9de30ccc64..fb706ac1f06360878fcc83587c4eae0a
              },
          });
          _NotificationServicesController_featureAnnouncementEnv.set(this, void 0);
+@@ -381,7 +381,7 @@ class NotificationServicesController extends base_controller_1.BaseController {
+         }
+         catch (e) {
+             loglevel_1.default.error('Unable to toggle feature announcements', e);
+-            throw new Error('Unable to toggle feature announcements');
++            throw new Error(e);
+         }
+     }
+     /**
 @@ -416,8 +416,8 @@ class NotificationServicesController extends base_controller_1.BaseController {
              __classPrivateFieldGet(this, _NotificationServicesController_pushNotifications, "f")
                  .enablePushNotifications(accountsWithNotifications)
@@ -97,6 +106,15 @@ index 5cb6bff2e73861f5c8aab8e67a666b9de30ccc64..fb706ac1f06360878fcc83587c4eae0a
              // Update the state of the controller
              this.update((state) => {
                  state.isNotificationServicesEnabled = true;
+@@ -427,7 +427,7 @@ class NotificationServicesController extends base_controller_1.BaseController {
+         }
+         catch (err) {
+             loglevel_1.default.error('Failed to create On Chain triggers', err);
+-            throw new Error('Failed to create On Chain triggers');
++            throw new Error(err);
+         }
+         finally {
+             __classPrivateFieldGet(this, _NotificationServicesController_instances, "m", _NotificationServicesController_setIsUpdatingMetamaskNotifications).call(this, false);
 @@ -447,7 +447,7 @@ class NotificationServicesController extends base_controller_1.BaseController {
          }
          catch (e) {
@@ -106,6 +124,33 @@ index 5cb6bff2e73861f5c8aab8e67a666b9de30ccc64..fb706ac1f06360878fcc83587c4eae0a
          }
          finally {
              __classPrivateFieldGet(this, _NotificationServicesController_instances, "m", _NotificationServicesController_setIsUpdatingMetamaskNotifications).call(this, false);
+@@ -505,7 +505,7 @@ class NotificationServicesController extends base_controller_1.BaseController {
+         }
+         catch (err) {
+             loglevel_1.default.error('Failed to delete OnChain triggers', err);
+-            throw new Error('Failed to delete OnChain triggers');
++            throw new Error(err);
+         }
+         finally {
+             __classPrivateFieldGet(this, _NotificationServicesController_instances, "m", _NotificationServicesController_clearUpdatingAccountsState).call(this, accounts);
+@@ -534,7 +534,7 @@ class NotificationServicesController extends base_controller_1.BaseController {
+         }
+         catch (err) {
+             loglevel_1.default.error('Failed to update OnChain triggers', err);
+-            throw new Error('Failed to update OnChain triggers');
++            throw new Error(err);
+         }
+         finally {
+             __classPrivateFieldGet(this, _NotificationServicesController_instances, "m", _NotificationServicesController_clearUpdatingAccountsState).call(this, accounts);
+@@ -599,7 +599,7 @@ class NotificationServicesController extends base_controller_1.BaseController {
+         catch (err) {
+             __classPrivateFieldGet(this, _NotificationServicesController_instances, "m", _NotificationServicesController_setIsFetchingMetamaskNotifications).call(this, false);
+             loglevel_1.default.error('Failed to fetch notifications', err);
+-            throw new Error('Failed to fetch notifications');
++            throw new Error(err);
+         }
+     }
+     /**
 @@ -625,10 +625,10 @@ class NotificationServicesController extends base_controller_1.BaseController {
          const fetchedNotification = this.state.metamaskNotificationsList.find((notification) => notification.id === id);
          (0, utils_1.assert)(fetchedNotification, 'The notification to be deleted does not exist.');
@@ -122,7 +167,7 @@ index 5cb6bff2e73861f5c8aab8e67a666b9de30ccc64..fb706ac1f06360878fcc83587c4eae0a
          this.update((state) => {
              state.metamaskNotificationsList = newList;
 diff --git a/dist/NotificationServicesController/NotificationServicesController.mjs b/dist/NotificationServicesController/NotificationServicesController.mjs
-index 5ed299555f559f9dc44f09b58ff07dd5df910e88..10b1639d8a5378064a9028480258b5b24c093b2c 100644
+index 5ed299555f559f9dc44f09b58ff07dd5df910e88..c316474e0f2472bc96ebe73693f7951bbd646898 100644
 --- a/dist/NotificationServicesController/NotificationServicesController.mjs
 +++ b/dist/NotificationServicesController/NotificationServicesController.mjs
 @@ -186,8 +186,8 @@ class NotificationServicesController extends BaseController {
@@ -185,6 +230,15 @@ index 5ed299555f559f9dc44f09b58ff07dd5df910e88..10b1639d8a5378064a9028480258b5b2
              },
          });
          _NotificationServicesController_featureAnnouncementEnv.set(this, void 0);
+@@ -359,7 +359,7 @@ class NotificationServicesController extends BaseController {
+         }
+         catch (e) {
+             log.error('Unable to toggle feature announcements', e);
+-            throw new Error('Unable to toggle feature announcements');
++            throw new Error(e);
+         }
+     }
+     /**
 @@ -394,8 +394,8 @@ class NotificationServicesController extends BaseController {
              __classPrivateFieldGet(this, _NotificationServicesController_pushNotifications, "f")
                  .enablePushNotifications(accountsWithNotifications)
@@ -196,6 +250,15 @@ index 5ed299555f559f9dc44f09b58ff07dd5df910e88..10b1639d8a5378064a9028480258b5b2
              // Update the state of the controller
              this.update((state) => {
                  state.isNotificationServicesEnabled = true;
+@@ -405,7 +405,7 @@ class NotificationServicesController extends BaseController {
+         }
+         catch (err) {
+             log.error('Failed to create On Chain triggers', err);
+-            throw new Error('Failed to create On Chain triggers');
++            throw new Error(err);
+         }
+         finally {
+             __classPrivateFieldGet(this, _NotificationServicesController_instances, "m", _NotificationServicesController_setIsUpdatingMetamaskNotifications).call(this, false);
 @@ -425,7 +425,7 @@ class NotificationServicesController extends BaseController {
          }
          catch (e) {
@@ -205,6 +268,33 @@ index 5ed299555f559f9dc44f09b58ff07dd5df910e88..10b1639d8a5378064a9028480258b5b2
          }
          finally {
              __classPrivateFieldGet(this, _NotificationServicesController_instances, "m", _NotificationServicesController_setIsUpdatingMetamaskNotifications).call(this, false);
+@@ -483,7 +483,7 @@ class NotificationServicesController extends BaseController {
+         }
+         catch (err) {
+             log.error('Failed to delete OnChain triggers', err);
+-            throw new Error('Failed to delete OnChain triggers');
++            throw new Error(err);
+         }
+         finally {
+             __classPrivateFieldGet(this, _NotificationServicesController_instances, "m", _NotificationServicesController_clearUpdatingAccountsState).call(this, accounts);
+@@ -512,7 +512,7 @@ class NotificationServicesController extends BaseController {
+         }
+         catch (err) {
+             log.error('Failed to update OnChain triggers', err);
+-            throw new Error('Failed to update OnChain triggers');
++            throw new Error(err);
+         }
+         finally {
+             __classPrivateFieldGet(this, _NotificationServicesController_instances, "m", _NotificationServicesController_clearUpdatingAccountsState).call(this, accounts);
+@@ -577,7 +577,7 @@ class NotificationServicesController extends BaseController {
+         catch (err) {
+             __classPrivateFieldGet(this, _NotificationServicesController_instances, "m", _NotificationServicesController_setIsFetchingMetamaskNotifications).call(this, false);
+             log.error('Failed to fetch notifications', err);
+-            throw new Error('Failed to fetch notifications');
++            throw new Error(err);
+         }
+     }
+     /**
 @@ -603,10 +603,10 @@ class NotificationServicesController extends BaseController {
          const fetchedNotification = this.state.metamaskNotificationsList.find((notification) => notification.id === id);
          assert(fetchedNotification, 'The notification to be deleted does not exist.');
@@ -220,3 +310,211 @@ index 5ed299555f559f9dc44f09b58ff07dd5df910e88..10b1639d8a5378064a9028480258b5b2
          const newList = this.state.metamaskNotificationsList.filter((notification) => notification.id !== id);
          this.update((state) => {
              state.metamaskNotificationsList = newList;
+diff --git a/dist/NotificationServicesPushController/services/push/push-web.cjs b/dist/NotificationServicesPushController/services/push/push-web.cjs
+index 3e2c9aab28d8511ab604f469c185a0ec86cf4b4d..077f03ecd09ab025985c268d4eb83880638349ea 100644
+--- a/dist/NotificationServicesPushController/services/push/push-web.cjs
++++ b/dist/NotificationServicesPushController/services/push/push-web.cjs
+@@ -97,27 +97,27 @@ async function listenToPushNotificationsReceived(env, handler) {
+     if (!messaging) {
+         return null;
+     }
+-    const unsubscribePushNotifications = (0, sw_1.onBackgroundMessage)(messaging, 
+-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+-    async (payload) => {
+-        try {
+-            const data = payload?.data?.data ? JSON.parse(payload?.data?.data) : undefined;
+-            if (!data) {
+-                return;
++    const unsubscribePushNotifications = (0, sw_1.onBackgroundMessage)(messaging,
++        // eslint-disable-next-line @typescript-eslint/no-misused-promises
++        async (payload) => {
++            try {
++                const data = payload?.data?.data ? JSON.parse(payload?.data?.data) : undefined;
++                if (!data) {
++                    return;
++                }
++                const notificationData = (0, to_raw_notification_1.toRawOnChainNotification)(data);
++                const notification = NotificationServicesController_1.Processors.processNotification(notificationData);
++                await handler(notification);
+             }
+-            const notificationData = (0, to_raw_notification_1.toRawOnChainNotification)(data);
+-            const notification = NotificationServicesController_1.Processors.processNotification(notificationData);
+-            await handler(notification);
+-        }
+-        catch (error) {
+-            // Do Nothing, cannot parse a bad notification
+-            loglevel_1.default.error('Unable to send push notification:', {
+-                notification: payload?.data?.data,
+-                error,
+-            });
+-            throw new Error('Unable to send push notification');
+-        }
+-    });
++            catch (error) {
++                // Do Nothing, cannot parse a bad notification
++                loglevel_1.default.error('Unable to send push notification:', {
++                    notification: payload?.data?.data,
++                    error,
++                });
++                throw new Error(error);
++            }
++        });
+     const unsubscribe = () => unsubscribePushNotifications();
+     return unsubscribe;
+ }
+diff --git a/dist/NotificationServicesPushController/services/push/push-web.mjs b/dist/NotificationServicesPushController/services/push/push-web.mjs
+index 3dcff7c6db208d28fdd4167e0bdfad5f85863eb6..4baf2133687e1a27d0f1c42634c76e3881b6e9a8 100644
+--- a/dist/NotificationServicesPushController/services/push/push-web.mjs
++++ b/dist/NotificationServicesPushController/services/push/push-web.mjs
+@@ -96,27 +96,27 @@ export async function listenToPushNotificationsReceived(env, handler) {
+     if (!messaging) {
+         return null;
+     }
+-    const unsubscribePushNotifications = onBackgroundMessage(messaging, 
+-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+-    async (payload) => {
+-        try {
+-            const data = payload?.data?.data ? JSON.parse(payload?.data?.data) : undefined;
+-            if (!data) {
+-                return;
++    const unsubscribePushNotifications = onBackgroundMessage(messaging,
++        // eslint-disable-next-line @typescript-eslint/no-misused-promises
++        async (payload) => {
++            try {
++                const data = payload?.data?.data ? JSON.parse(payload?.data?.data) : undefined;
++                if (!data) {
++                    return;
++                }
++                const notificationData = toRawOnChainNotification(data);
++                const notification = Processors.processNotification(notificationData);
++                await handler(notification);
+             }
+-            const notificationData = toRawOnChainNotification(data);
+-            const notification = Processors.processNotification(notificationData);
+-            await handler(notification);
+-        }
+-        catch (error) {
+-            // Do Nothing, cannot parse a bad notification
+-            log.error('Unable to send push notification:', {
+-                notification: payload?.data?.data,
+-                error,
+-            });
+-            throw new Error('Unable to send push notification');
+-        }
+-    });
++            catch (error) {
++                // Do Nothing, cannot parse a bad notification
++                log.error('Unable to send push notification:', {
++                    notification: payload?.data?.data,
++                    error,
++                });
++                throw new Error(error);
++            }
++        });
+     const unsubscribe = () => unsubscribePushNotifications();
+     return unsubscribe;
+ }
+diff --git a/dist/NotificationServicesPushController/web/push-utils.cjs b/dist/NotificationServicesPushController/web/push-utils.cjs
+index d101fec2eedb8620ffea36f24959219ba928f532..9e1f1c60741f57988cc96b8bc0672a74c5d191e8 100644
+--- a/dist/NotificationServicesPushController/web/push-utils.cjs
++++ b/dist/NotificationServicesPushController/web/push-utils.cjs
+@@ -97,27 +97,27 @@ async function listenToPushNotificationsReceived(env, handler) {
+     if (!messaging) {
+         return null;
+     }
+-    const unsubscribePushNotifications = (0, sw_1.onBackgroundMessage)(messaging, 
+-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+-    async (payload) => {
+-        try {
+-            const data = payload?.data?.data ? JSON.parse(payload?.data?.data) : undefined;
+-            if (!data) {
+-                return;
++    const unsubscribePushNotifications = (0, sw_1.onBackgroundMessage)(messaging,
++        // eslint-disable-next-line @typescript-eslint/no-misused-promises
++        async (payload) => {
++            try {
++                const data = payload?.data?.data ? JSON.parse(payload?.data?.data) : undefined;
++                if (!data) {
++                    return;
++                }
++                const notificationData = (0, to_raw_notification_1.toRawOnChainNotification)(data);
++                const notification = NotificationServicesController_1.Processors.processNotification(notificationData);
++                await handler(notification);
+             }
+-            const notificationData = (0, to_raw_notification_1.toRawOnChainNotification)(data);
+-            const notification = NotificationServicesController_1.Processors.processNotification(notificationData);
+-            await handler(notification);
+-        }
+-        catch (error) {
+-            // Do Nothing, cannot parse a bad notification
+-            loglevel_1.default.error('Unable to send push notification:', {
+-                notification: payload?.data?.data,
+-                error,
+-            });
+-            throw new Error('Unable to send push notification');
+-        }
+-    });
++            catch (error) {
++                // Do Nothing, cannot parse a bad notification
++                loglevel_1.default.error('Unable to send push notification:', {
++                    notification: payload?.data?.data,
++                    error,
++                });
++                throw new Error(error);
++            }
++        });
+     const unsubscribe = () => unsubscribePushNotifications();
+     return unsubscribe;
+ }
+diff --git a/dist/NotificationServicesPushController/web/push-utils.mjs b/dist/NotificationServicesPushController/web/push-utils.mjs
+index 1b6015b21fd67af6cf113691c8268399ce8c260e..fe98e91b13e75ec3e5797c62249799da5ff0696e 100644
+--- a/dist/NotificationServicesPushController/web/push-utils.mjs
++++ b/dist/NotificationServicesPushController/web/push-utils.mjs
+@@ -96,27 +96,27 @@ async function listenToPushNotificationsReceived(env, handler) {
+     if (!messaging) {
+         return null;
+     }
+-    const unsubscribePushNotifications = onBackgroundMessage(messaging, 
+-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+-    async (payload) => {
+-        try {
+-            const data = payload?.data?.data ? JSON.parse(payload?.data?.data) : undefined;
+-            if (!data) {
+-                return;
++    const unsubscribePushNotifications = onBackgroundMessage(messaging,
++        // eslint-disable-next-line @typescript-eslint/no-misused-promises
++        async (payload) => {
++            try {
++                const data = payload?.data?.data ? JSON.parse(payload?.data?.data) : undefined;
++                if (!data) {
++                    return;
++                }
++                const notificationData = toRawOnChainNotification(data);
++                const notification = Processors.processNotification(notificationData);
++                await handler(notification);
+             }
+-            const notificationData = toRawOnChainNotification(data);
+-            const notification = Processors.processNotification(notificationData);
+-            await handler(notification);
+-        }
+-        catch (error) {
+-            // Do Nothing, cannot parse a bad notification
+-            log.error('Unable to send push notification:', {
+-                notification: payload?.data?.data,
+-                error,
+-            });
+-            throw new Error('Unable to send push notification');
+-        }
+-    });
++            catch (error) {
++                // Do Nothing, cannot parse a bad notification
++                log.error('Unable to send push notification:', {
++                    notification: payload?.data?.data,
++                    error,
++                });
++                throw new Error(error);
++            }
++        });
+     const unsubscribe = () => unsubscribePushNotifications();
+     return unsubscribe;
+ }
