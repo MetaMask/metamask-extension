@@ -158,7 +158,6 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-import { useRedesignedSendFlow } from '../confirmations/hooks/useRedesignedSendFlow';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -229,13 +228,6 @@ const SendPage = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
     import('../confirmations/send/index.ts')) as unknown as DynamicImportType,
-);
-const LegacySendPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/send/index.js'
-    )) as unknown as DynamicImportType,
 );
 const Swaps = mmLazy(
   (() => import('../swaps/index.js')) as unknown as DynamicImportType,
@@ -356,12 +348,15 @@ const ShieldPlan = mmLazy(
 );
 // End Lazy Routes
 
-const MemoizedReviewPermissionsWrapper = React.memo(() => (
-  <State2Wrapper
-    state1Component={ReviewPermissions}
-    state2Component={MultichainReviewPermissions}
-  />
-));
+const MemoizedReviewPermissionsWrapper = React.memo(
+  (props: Record<string, unknown>) => (
+    <State2Wrapper
+      {...props}
+      state1Component={ReviewPermissions}
+      state2Component={MultichainReviewPermissions}
+    />
+  ),
+);
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RoutesComponent() {
@@ -444,7 +439,6 @@ export default function RoutesComponent() {
   const currentExtensionPopupId = useAppSelector(
     (state) => state.metamask.currentExtensionPopupId,
   );
-  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const isShowKeyringSnapRemovalResultModal = useAppSelector(
@@ -641,7 +635,7 @@ export default function RoutesComponent() {
             path={`${SEND_ROUTE}/:page?`}
             element={
               <Authenticated>
-                {isSendRedesignEnabled ? <SendPage /> : <LegacySendPage />}
+                <SendPage />
               </Authenticated>
             }
           />
@@ -925,7 +919,7 @@ export default function RoutesComponent() {
     }
 
     return routes;
-  }, [autoLockTimeLimit, forgottenPassword, dispatch, isSendRedesignEnabled]);
+  }, [autoLockTimeLimit, forgottenPassword, dispatch]);
 
   const t = useI18nContext();
 

@@ -603,6 +603,11 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
+            {
+              sendRedesign: {
+                enabled: false,
+              },
+            },
           ],
         };
       }),
@@ -630,6 +635,11 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
           json: [
             {
               assetsDefiPositionsEnabled: true,
+            },
+            {
+              sendRedesign: {
+                enabled: false,
+              },
             },
           ],
         };
