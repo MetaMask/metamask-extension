@@ -66,8 +66,7 @@ class HomePage {
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
-  protected readonly swapButton: string =
-    '[data-testid="token-overview-button-swap"]';
+  protected readonly swapButton: string = '[data-testid="coin-overview-swap"]';
 
   private readonly refreshErc20Tokens = {
     testId: 'refreshList',
