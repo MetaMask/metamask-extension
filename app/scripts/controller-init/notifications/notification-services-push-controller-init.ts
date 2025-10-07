@@ -18,7 +18,7 @@ import {
 export const NotificationServicesPushControllerInit: ControllerInitFunction<
   NotificationServicesPushController,
   NotificationServicesPushControllerMessenger
-> = ({ controllerMessenger, persistedState }) => {
+> = ({ controllerMessenger, persistedState, getController }) => {
   const controller = new NotificationServicesPushController({
     messenger: controllerMessenger,
     state: {
@@ -49,6 +49,11 @@ export const NotificationServicesPushControllerInit: ControllerInitFunction<
           onClickHandler: onPushNotificationClicked,
         }),
       },
+      getLocale: () =>
+        getController('PreferencesController').state.currentLocale.replace(
+          '_',
+          '-',
+        ),
     },
   });
 

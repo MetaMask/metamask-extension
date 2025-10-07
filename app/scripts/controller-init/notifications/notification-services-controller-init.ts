@@ -14,6 +14,7 @@ export const NotificationServicesControllerInit: ControllerInitFunction<
         platform: 'extension',
         spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? ':spaceId',
         accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? ':accessToken',
+        platformVersion: platform.getVersion(),
       },
     },
   });
