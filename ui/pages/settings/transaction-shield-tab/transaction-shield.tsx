@@ -257,10 +257,18 @@ const TransactionShield = () => {
                 // TODO: handle add funds crypto
                 // then use subscription controller to trigger subscription check
                 console.log('add funds');
+                // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                //   ...params,
+                //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
+                // }))
               } else if (isAllowanceNeededCrypto) {
                 // TODO: handle add approval transaction crypto
                 // then use subscription controller to udpate the subscription with new raw transaction
                 console.log('add allowance');
+                // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                //   ...params,
+                //   rawTransaction: newApprovalRawTransaction
+                // }))
               } else {
                 throw new Error('Unknown crypto error action');
               }
@@ -291,9 +299,17 @@ const TransactionShield = () => {
               if (isInsufficientFundsCrypto) {
                 // TODO: handle add funds crypto
                 console.log('add funds');
+                // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                //   ...params,
+                //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
+                // }))
               } else if (isAllowanceNeededCrypto) {
                 // TODO: handle add allowance crypto
                 console.log('add allowance');
+                // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                //   ...params,
+                //   rawTransaction: newApprovalRawTransaction
+                // }))
               } else {
                 throw new Error('Unknown crypto error action');
               }
@@ -343,9 +359,17 @@ const TransactionShield = () => {
                 if (isInsufficientFundsCrypto) {
                   // TODO: handle add funds crypto
                   console.log('add funds');
+                  // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                  //   ...params,
+                  //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
+                  // }))
                 } else if (isAllowanceNeededCrypto) {
                   // TODO: handle add allowance crypto
                   console.log('add allowance');
+                  // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                  //   ...params,
+                  //   rawTransaction: newApprovalRawTransaction
+                  // }))
                 } else {
                   throw new Error('Unknown crypto error action');
                 }
@@ -384,9 +408,17 @@ const TransactionShield = () => {
               if (isInsufficientFundsCrypto) {
                 // TODO: handle add funds crypto
                 console.log('add funds');
+                // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                //   ...params,
+                //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
+                // }))
               } else if (isAllowanceNeededCrypto) {
                 // TODO: handle add allowance crypto
                 console.log('add allowance');
+                // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                //   ...params,
+                //   rawTransaction: newApprovalRawTransaction
+                // }))
               } else {
                 throw new Error('Unknown crypto error action');
               }
