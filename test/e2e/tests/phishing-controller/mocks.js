@@ -51,6 +51,7 @@ const emptyHtmlPage = (blockProvider) => `<!DOCTYPE html>
  * @param {number} mockPhishingConfigResponseConfig.statusCode - The status code for the response.
  * @param {string[]} mockPhishingConfigResponseConfig.blocklist - The blocklist for the response.
  * @param {string[]} mockPhishingConfigResponseConfig.c2DomainBlocklist - The c2DomainBlocklist for the response.
+ * @param {string[]} mockPhishingConfigResponseConfig.blocklistPaths - The blocklistPaths for the response.
  * @param {BlockProvider} mockPhishingConfigResponseConfig.blockProvider - The name of the provider who blocked the page.
  * configuration lookup performed by the warning page.
  */
@@ -62,6 +63,7 @@ async function setupPhishingDetectionMocks(
     c2DomainBlocklist = [
       'a379a6f6eeafb9a55e378c118034e2751e682fab9f2d30ab13d2125586ce1947',
     ],
+    blocklistPaths = [],
     blockProvider = BlockProvider.MetaMask,
   },
 ) {
@@ -79,6 +81,7 @@ async function setupPhishingDetectionMocks(
                 ...defaultStalelist[blockProviderConfig],
                 blocklist,
                 c2DomainBlocklist,
+                blocklistPaths,
               },
             },
           },
