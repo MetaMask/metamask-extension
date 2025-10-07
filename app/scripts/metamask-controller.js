@@ -88,6 +88,7 @@ import {
   hexToBytes,
   bytesToHex,
   KnownCaipNamespace,
+  isObject,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -1010,6 +1011,9 @@ export default class MetamaskController extends EventEmitter {
       this.networkController.getProviderAndBlockTracker().blockTracker;
 
     this.on('update', (update) => {
+      if (!isObject(update)) {
+        return;
+      }
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
 
@@ -1336,7 +1340,12 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
-    this.on('update', (memState) => this._onStateUpdate(memState));
+    this.on('update', (memState) => {
+      if (!isObject(memState) || !('isUnlocked' in memState)) {
+        return;
+      }
+      this._onStateUpdate(memState);
+    });
 
     /**
      * All controllers in Memstore but not in store. They are not persisted.
@@ -2282,6 +2291,13 @@ export default class MetamaskController extends EventEmitter {
     };
 
     const updatePublicConfigStore = async (memState) => {
+      if (
+        !isObject(memState) ||
+        !('networksMetadata' in memState) ||
+        !('selectedNetworkId' in memState)
+      ) {
+        return;
+      }
       const networkStatus =
         memState.networksMetadata[memState.selectedNetworkClientId]?.status;
       if (networkStatus === NetworkStatus.Available) {
