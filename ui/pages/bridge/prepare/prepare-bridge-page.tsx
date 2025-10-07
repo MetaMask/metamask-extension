@@ -49,7 +49,6 @@ import {
   getIsToOrFromSolana,
   getHardwareWalletName,
   getIsQuoteExpired,
-  getIsUnifiedUIEnabled,
   getIsSwap,
   BridgeAppState,
   getTxAlerts,
@@ -96,7 +95,6 @@ import {
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getMultichainNativeCurrency,
@@ -167,16 +165,10 @@ const PrepareBridgePage = ({
   const t = useI18nContext();
 
   const fromChain = useSelector(getFromChain);
-  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
-    getIsUnifiedUIEnabled(state, fromChain?.chainId),
-  );
 
   // Check the two types of swaps
-  const isSwapFromQuote = useSelector(getIsSwap);
-  const isSwapFromUrl = useIsMultichainSwap();
+  const isSwap = useSelector(getIsSwap);
 
-  // Use the appropriate value based on unified UI setting
-  const isSwap = isUnifiedUIEnabled ? isSwapFromQuote : isSwapFromUrl;
   const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
   const gasIncluded = useSelector((state) =>
     getIsGasIncluded(state, isSendBundleSupportedForChain),
@@ -481,17 +473,11 @@ const PrepareBridgePage = ({
   const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
 
   const getFromInputHeader = () => {
-    if (isUnifiedUIEnabled) {
-      return t('swapSelectToken');
-    }
-    return isSwap ? t('swapSwapFrom') : t('bridgeFrom');
+    return t('swapSelectToken');
   };
 
   const getToInputHeader = () => {
-    if (isUnifiedUIEnabled) {
-      return t('swapSelectToken');
-    }
-    return isSwap ? t('swapSwapTo') : t('bridgeTo');
+    return t('swapSelectToken');
   };
 
   return (
@@ -526,15 +512,8 @@ const PrepareBridgePage = ({
           }}
           networkProps={{
             network: fromChain,
-            networks: isSwap && !isUnifiedUIEnabled ? undefined : fromChains,
+            networks: fromChains,
             onNetworkChange: (networkConfig) => {
-              if (
-                !isUnifiedUIEnabled &&
-                networkConfig?.chainId &&
-                networkConfig.chainId === toChain?.chainId
-              ) {
-                dispatch(setToChainId(null));
-              }
               if (isNetworkAdded(networkConfig)) {
                 enableMissingNetwork(networkConfig.chainId);
               }
@@ -547,7 +526,7 @@ const PrepareBridgePage = ({
             },
             header: t('yourNetworks'),
           }}
-          isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
+          isMultiselectEnabled={true}
           onMaxButtonClick={
             shouldShowMaxButton
               ? (value: string) => {
@@ -674,9 +653,7 @@ const PrepareBridgePage = ({
 
                 setRotateSwitchTokens(!rotateSwitchTokens);
 
-                const shouldFlipNetworks = isUnifiedUIEnabled || !isSwap;
-                if (shouldFlipNetworks) {
-                  // Handle account switching for Solana
+                if (!isSwap) {
                   dispatch(
                     setFromChain({
                       networkConfig: toChain,
@@ -708,27 +685,19 @@ const PrepareBridgePage = ({
               };
               dispatch(setToToken(bridgeToken));
             }}
-            networkProps={
-              isSwap && !isUnifiedUIEnabled
-                ? undefined
-                : {
-                    network: toChain,
-                    networks: toChains,
-                    onNetworkChange: (networkConfig) => {
-                      if (isNetworkAdded(networkConfig)) {
-                        enableMissingNetwork(networkConfig.chainId);
-                      }
-                      dispatch(setToChainId(networkConfig.chainId));
-                    },
-                    header: t('yourNetworks'),
-                    shouldDisableNetwork: isUnifiedUIEnabled
-                      ? undefined
-                      : ({ chainId }) => chainId === fromChain?.chainId,
-                  }
-            }
+            networkProps={{
+              network: toChain,
+              networks: toChains,
+              onNetworkChange: (networkConfig) => {
+                if (isNetworkAdded(networkConfig)) {
+                  enableMissingNetwork(networkConfig.chainId);
+                }
+                dispatch(setToChainId(networkConfig.chainId));
+              },
+              header: t('yourNetworks'),
+            }}
             customTokenListGenerator={
-              toChain &&
-              (isSwapFromUrl || toChain.chainId !== fromChain?.chainId)
+              toChain && toChain.chainId !== fromChain?.chainId
                 ? toTokenListGenerator
                 : undefined
             }
