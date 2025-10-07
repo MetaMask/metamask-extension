@@ -2295,6 +2295,7 @@
         "FinalizationRegistry": true,
         "HTMLCanvasElement": true,
         "Image": true,
+        "Iterator": true,
         "MouseEvent": true,
         "Path2D": true,
         "Request": true,
