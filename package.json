@@ -132,6 +132,9 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/eth-json-rpc-provider@^4.1.6": "npm:@metamask-previews/eth-json-rpc-provider@5.0.0-preview-622f3f09",
+    "@metamask/network-controller": "npm:@metamask-previews/network-controller@24.2.0-preview-622f3f09",
+    "@metamask/selected-network-controller@^24.0.0": "npm:@metamask-previews/selected-network-controller@24.0.0-preview-622f3f09",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",
