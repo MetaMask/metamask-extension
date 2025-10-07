@@ -41,7 +41,6 @@ export const findConfusablesInRecipient = (
 
     return {
       confusableCharacters,
-      warning: 'confusingDomain',
     };
   }
   return {};
@@ -78,7 +77,7 @@ export const validateEvmHexAddress = async (
     );
     if (tokenDetails?.standard) {
       return {
-        error: 'invalidAddress',
+        error: 'tokenContractError',
       };
     }
   }

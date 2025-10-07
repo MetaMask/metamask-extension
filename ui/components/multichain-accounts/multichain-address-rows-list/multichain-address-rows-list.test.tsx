@@ -8,6 +8,7 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MultichainAddressRowsList } from './multichain-address-rows-list';
 
 jest.mock('@metamask/bridge-controller', () => ({
+  ...jest.requireActual('@metamask/bridge-controller'),
   formatChainIdToCaip: jest.fn(),
 }));
 

@@ -739,6 +739,9 @@
       "nativeCurrency": "SepoliaETH"
     }
   },
+  "networkConnectionBanner": {
+    "status": "unknown"
+  },
   "networksMetadata": {
     "goerli-network-id": {
       "EIPS": {

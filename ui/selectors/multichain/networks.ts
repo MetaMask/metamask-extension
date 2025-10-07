@@ -327,3 +327,43 @@ export const selectAnyEnabledNetworksAreAvailable = createSelector(
     );
   },
 );
+
+export const selectFirstUnavailableEvmNetwork = createSelector(
+  getEnabledNetworks,
+  getNetworkConfigurationsByChainId,
+  getNetworksMetadata,
+  (enabledNetworks, networkConfigurationsByChainId, networksMetadata) => {
+    // Get all enabled EVM networks
+    const enabledEvmNetworks = enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
+    const enabledChainIds = Object.entries(enabledEvmNetworks)
+      .filter(([, isEnabled]) => isEnabled)
+      .map(([chainId]) => chainId as Hex);
+
+    // Find the first network that is not available
+    for (const chainId of enabledChainIds) {
+      const networkConfiguration = networkConfigurationsByChainId[chainId];
+      if (networkConfiguration) {
+        // Get the network client ID directly from the network configuration
+        const { rpcEndpoints, defaultRpcEndpointIndex, name } =
+          networkConfiguration;
+        const rpcEndpoint = rpcEndpoints[defaultRpcEndpointIndex];
+
+        if (rpcEndpoint) {
+          const metadata = networksMetadata[rpcEndpoint.networkClientId];
+
+          if (
+            metadata !== undefined &&
+            metadata.status !== NetworkStatus.Available
+          ) {
+            return {
+              networkName: name,
+              networkClientId: rpcEndpoint.networkClientId,
+              chainId,
+            };
+          }
+        }
+      }
+    }
+    return null;
+  },
+);

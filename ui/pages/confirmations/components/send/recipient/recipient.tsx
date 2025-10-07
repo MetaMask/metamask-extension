@@ -32,20 +32,16 @@ export const Recipient = ({
   recipientValidationResult: ReturnType<typeof useRecipientValidation>;
 }) => {
   const {
-    recipientConfusableCharacters,
     recipientError,
     recipientWarning,
     recipientResolvedLookup,
     toAddressValidated,
     resolutionProtocol,
   } = recipientValidationResult;
-  const hasConfusableCharacters =
-    recipientConfusableCharacters && recipientConfusableCharacters.length > 0;
   const t = useI18nContext();
   const [isRecipientModalOpen, setIsRecipientModalOpen] = useState(false);
   const { to, updateTo, updateToResolved } = useSendContext();
   const {
-    captureRecipientSelected,
     setRecipientInputMethodSelectContact,
     setRecipientInputMethodSelectAccount,
   } = useRecipientSelectionMetrics();
@@ -65,7 +61,7 @@ export const Recipient = ({
       const isRecipientContact = recipients.some(
         (recipient) =>
           recipient.address.toLowerCase() === address.toLowerCase() &&
-          recipient.contactName,
+          recipient.isContact,
       );
       if (isRecipientContact) {
         setRecipientInputMethodSelectContact();
@@ -74,14 +70,12 @@ export const Recipient = ({
       }
 
       updateTo(address);
-      captureRecipientSelected();
     },
     [
-      captureRecipientSelected,
       recipients,
+      updateTo,
       setRecipientInputMethodSelectContact,
       setRecipientInputMethodSelectAccount,
-      updateTo,
     ],
   );
 
@@ -107,10 +101,6 @@ export const Recipient = ({
       {to === toAddressValidated && recipientWarning && (
         <HelpText severity={HelpTextSeverity.Warning} marginTop={1}>
           {recipientWarning}
-          {hasConfusableCharacters &&
-            ` (${recipientConfusableCharacters
-              .map(({ point, similarTo }) => t('similarTo', [point, similarTo]))
-              .join(', ')})`}
         </HelpText>
       )}
       {to === toAddressValidated && recipientResolvedLookup && (

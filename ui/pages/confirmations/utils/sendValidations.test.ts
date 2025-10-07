@@ -50,7 +50,6 @@ describe('SendValidations', () => {
           { point: 'а', similarTo: 'a' },
           { point: 'е', similarTo: 'e' },
         ],
-        warning: 'confusingDomain',
       });
     });
 
@@ -139,7 +138,7 @@ describe('SendValidations', () => {
           '0x1',
         ),
       ).toEqual({
-        error: 'invalidAddress',
+        error: 'tokenContractError',
       });
 
       expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
