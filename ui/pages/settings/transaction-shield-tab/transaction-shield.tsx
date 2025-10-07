@@ -165,7 +165,7 @@ const TransactionShield = () => {
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
 
-  const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(true);
+  const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
   const shieldDetails = [
     {
