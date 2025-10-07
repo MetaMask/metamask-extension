@@ -19,6 +19,7 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   type BridgeController,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
@@ -95,7 +96,6 @@ import {
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getMultichainNativeCurrency,
@@ -167,9 +167,7 @@ const PrepareBridgePage = ({
 
   const fromChain = useSelector(getFromChain);
 
-  // Check the two types of swaps
   const isSwap = useSelector(getIsSwap);
-  const isSwapFromUrl = useIsMultichainSwap();
 
   const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
   const gasIncluded = useSelector((state) =>
@@ -453,7 +451,7 @@ const PrepareBridgePage = ({
   // Trace swap/bridge view loaded
   useEffect(() => {
     endTrace({
-      name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
+      name: TraceName.SwapViewLoaded,
       timestamp: Date.now(),
     });
 
@@ -701,7 +699,8 @@ const PrepareBridgePage = ({
             }}
             customTokenListGenerator={
               toChain &&
-              (isSwapFromUrl || toChain.chainId !== fromChain?.chainId)
+              fromChain &&
+              isCrossChain(fromChain.chainId, toChain.chainId)
                 ? toTokenListGenerator
                 : undefined
             }

@@ -114,7 +114,6 @@ const useBridging = () => {
       if (srcAssetIdToUse) {
         url += `${BridgeQueryParams.FROM}=${srcAssetIdToUse}`;
       }
-      url += `&${BridgeQueryParams.SWAPS}=true`;
       history.push(url);
     },
     [
