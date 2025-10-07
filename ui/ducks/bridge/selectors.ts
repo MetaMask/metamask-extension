@@ -302,11 +302,6 @@ export const getToChains = createDeepEqualSelector(
       );
     }
 
-    // Similarly, prevent Solana from being selected as destination when source is Solana
-    // if (fromChain && isSolanaChainId(fromChain.chainId)) {
-    //   return availableChains.filter(({ chainId }) => !isSolanaChainId(chainId));
-    // }
-
     return availableChains;
   },
 );
@@ -629,8 +624,6 @@ export const getFromTokenConversionRate = createSelector(
           ),
           nativeAssetRate,
         );
-        // Bitcoin doesn't have separate currency/USD rates in the rates object
-        // So we use the native asset rate for both
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
           Number(nativeToCurrencyRate),
