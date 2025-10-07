@@ -101,7 +101,7 @@ const AddFundsModal = ({
   const isUnifiedUIEnabled = useSelector(getIsUnifiedUIEnabled);
   const isSwapsChain = useSelector(getIsSwapsChain);
 
-  const [showReceiveModal, setShowReceiveModal] = useState(true);
+  const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const isBuyableChain = useMemo(() => {
     if (!token.chainId) {
