@@ -33,11 +33,10 @@ export const ConfusableRecipientName = ({
   const t = useI18nContext();
   const { to } = useSendContext();
 
-  if (!to) {
-    return null;
-  }
-
   const nameSplits = useMemo(() => {
+    if (!to) {
+      return null;
+    }
     const confusableList = confusableCharacters.flatMap((confusable) =>
       findAllIndexesOfConfusable(to, confusable),
     );
@@ -59,7 +58,7 @@ export const ConfusableRecipientName = ({
     return splits;
   }, [to, confusableCharacters]);
 
-  return (
+  return nameSplits ? (
     <Box display={Display.Flex}>
       {nameSplits.map((split) => {
         if (split.confusable) {
@@ -92,5 +91,5 @@ export const ConfusableRecipientName = ({
         return <Text variant={TextVariant.bodyMd}>{split.str}</Text>;
       })}
     </Box>
-  );
+  ) : null;
 };
