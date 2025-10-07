@@ -143,11 +143,7 @@ describe('FileUploader', () => {
   it('should skip duplicate files silently', async () => {
     const mockOnChange = jest.fn();
     const { getByTestId } = renderWithUserEvent(
-      <FileUploader
-        data-testid="file-uploader"
-        multiple
-        onChange={mockOnChange}
-      />,
+      <FileUploader data-testid="file-uploader" onChange={mockOnChange} />,
     );
     const input = getByTestId('file-uploader-input') as HTMLInputElement;
     const originalFile = new File(['content1'], 'test.txt', {
@@ -320,11 +316,7 @@ describe('FileUploader', () => {
   it('should add new files to existing files when multiple is enabled', async () => {
     const mockOnChange = jest.fn();
     const { getByTestId } = renderWithUserEvent(
-      <FileUploader
-        data-testid="file-uploader"
-        multiple
-        onChange={mockOnChange}
-      />,
+      <FileUploader data-testid="file-uploader" onChange={mockOnChange} />,
     );
     const input = getByTestId('file-uploader-input') as HTMLInputElement;
     const file1 = new File(['content1'], 'file1.txt', { type: 'text/plain' });
