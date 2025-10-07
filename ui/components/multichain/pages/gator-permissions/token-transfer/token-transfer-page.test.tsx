@@ -11,6 +11,16 @@ const store = configureStore({
   },
 });
 
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
+
 describe('Token Transfer Page', () => {
   describe('render', () => {
     it('renders correctly', () => {
