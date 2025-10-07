@@ -60,18 +60,19 @@ export const ConfusableRecipientName = ({
 
   return nameSplits ? (
     <Box display={Display.Flex}>
-      {nameSplits.map((split) => {
+      {nameSplits.map((split, index) => {
         if (split.confusable) {
           return (
             <Tooltip
+              key={index}
               position="top"
               html={
                 <Text>
                   {t('confusableCharacterTooltip', [
-                    <Box className="confusable-character">
+                    <Box key={index * 10} className="confusable-character">
                       {` ‘${split.confusable.point}’ `}
                     </Box>,
-                    <Box className="confusable-character">
+                    <Box key={index * 100} className="confusable-character">
                       {` ‘${split.confusable.similarTo}’`}.
                     </Box>,
                   ])}
@@ -88,7 +89,11 @@ export const ConfusableRecipientName = ({
             </Tooltip>
           );
         }
-        return <Text variant={TextVariant.bodyMd}>{split.str}</Text>;
+        return (
+          <Text key={index} variant={TextVariant.bodyMd}>
+            {split.str}
+          </Text>
+        );
       })}
     </Box>
   ) : null;
