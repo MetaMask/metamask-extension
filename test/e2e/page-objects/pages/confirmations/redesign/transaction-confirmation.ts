@@ -79,13 +79,84 @@ class TransactionConfirmation extends Confirmation {
     text: tEn('review') as string,
   };
 
+  private readonly estimatedSimulationDetails = (type: string) => {
+    const css = '[data-testid="simulation-details-layout"]';
+    if (type === '') {
+      return css;
+    }
+
+    return {
+      css,
+      text: type,
+    };
+  };
+
+  private readonly outgoingIncomingSimulationDetails = (
+    isOutgoing: boolean,
+    index: number,
+  ) => {
+    const listTestId = isOutgoing
+      ? 'simulation-rows-outgoing'
+      : 'simulation-rows-incoming';
+    const id = index + 1;
+    const css = `[data-testid="${listTestId}"] [data-testid="simulation-details-balance-change-row"]:nth-child(${id})`;
+    console.log(`Locator for outgoing/incoming simulation details: ${css}`);
+
+    return css;
+  };
+
+  private readonly dappNumberConnected = (dappNumber: string) =>
+    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
+
   constructor(driver: Driver) {
     super(driver);
     this.driver = driver;
   }
 
-  private readonly dappNumberConnected = (dappNumber: string) =>
-    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
+  async expectBalanceChange(
+    isOutgoing: boolean,
+    index: number,
+    displayAmount: string,
+    assetName: string,
+  ) {
+    console.log(
+      `Checking balance change ${displayAmount} ${assetName} is displayed on transaction confirmation page.`,
+    );
+    const css = this.outgoingIncomingSimulationDetails(isOutgoing, index);
+
+    console.log(
+      `Checking balance change ${css} with text ${displayAmount} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.findElement({
+      css,
+      text: displayAmount,
+    });
+
+    console.log(
+      `Checking balance change ${css} with text ${assetName}  is displayed on transaction confirmation page.`,
+    );
+    await this.driver.findElement({
+      css,
+      text: assetName,
+    });
+  }
+
+  async checkEstimatedSimulationDetails(type: string) {
+    console.log(
+      `Checking estimated simulation details ${type} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector(this.estimatedSimulationDetails(type));
+  }
+
+  async checkEstimatedSimulationDetailsNotDisplayed(waitAtLeastGuard: number) {
+    console.log(
+      `Checking estimated simulation details not displayed on transaction confirmation page.`,
+    );
+    await this.driver.assertElementNotPresent(
+      this.estimatedSimulationDetails(''),
+      { waitAtLeastGuard },
+    );
+  }
 
   /**
    * Checks if the alert message is displayed on the transaction confirmation page.
