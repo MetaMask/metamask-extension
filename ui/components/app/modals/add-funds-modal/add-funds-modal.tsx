@@ -101,13 +101,13 @@ const AddFundsModal = ({
   const isUnifiedUIEnabled = useSelector(getIsUnifiedUIEnabled);
   const isSwapsChain = useSelector(getIsSwapsChain);
 
-  const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [showReceiveModal, setShowReceiveModal] = useState(true);
 
   const isBuyableChain = useMemo(() => {
     if (!token.chainId) {
       return false;
     }
-    return buyableChains.some(
+    return !buyableChains.some(
       (network: AggregatorNetwork) =>
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         String(network.chainId) === hexToDecimal(token.chainId!),
@@ -248,10 +248,12 @@ const AddFundsModal = ({
     }
   }, [
     isUnifiedUIEnabled,
+    setCorrectChain,
     isSwapsChain,
     handleBridgeOnClick,
-    dispatch,
+    trackEvent,
     token,
+    dispatch,
     usingHardwareWallet,
     history,
   ]);
@@ -298,7 +300,11 @@ const AddFundsModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>{t('addFunds')}</ModalHeader>
-        <ModalBody className="add-funds-modal__body">
+        <ModalBody
+          className="add-funds-modal__body"
+          paddingLeft={0}
+          paddingRight={0}
+        >
           {buttonRow({
             id: 'add-funds-modal-buy-crypto-button',
             label: t('addFundsModalBuyCrypto'),
