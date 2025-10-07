@@ -1,12 +1,14 @@
 import { useSelector } from 'react-redux';
+import { useMemo } from 'react';
+import {
+  TransactionMeta,
+  TransactionStatus,
+} from '@metamask/transaction-controller';
 import {
   TransactionsRootState,
-  selectTransactionById,
   selectUnapprovedTransactionById,
 } from '../../../../selectors/transactions';
 import { useApprovalRequest } from '../useApprovalRequest';
-import { useMemo } from 'react';
-import { TransactionMeta, TransactionStatus } from '@metamask/transaction-controller';
 
 export function useUnapprovedTransaction() {
   const approvalRequest = useApprovalRequest();

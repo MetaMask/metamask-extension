@@ -20,8 +20,7 @@ import { isBatchTransaction } from '../../../../../../shared/lib/transactions.ut
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function NestedTransactionTag() {
   const t = useI18nContext();
-  const currentConfirmation =
-    useUnapprovedTransaction();
+  const currentConfirmation = useUnapprovedTransaction();
   const { nestedTransactions } = currentConfirmation ?? {};
 
   const isBatch = isBatchTransaction(nestedTransactions);

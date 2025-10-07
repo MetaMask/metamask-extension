@@ -1,13 +1,9 @@
 import {
   TransactionControllerState,
-  TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import { Hex, Json } from '@metamask/utils';
-import { Transaction } from 'ethers';
-import _ from 'lodash';
+import { Hex } from '@metamask/utils';
 import { createSelector } from 'reselect';
-import { createDeepEqualResultSelector } from '../../shared/modules/selectors/util';
 
 export type TransactionsRootState = {
   metamask: TransactionControllerState;
