@@ -42,7 +42,7 @@ function getInitRequestMock(): jest.Mocked<
     'RemoteFeatureFlagController:getState',
     () => ({
       remoteFeatureFlags: {
-        accountApiBalances: ['0x1', '0x38', '0xe708'],
+        assetsAccountApiBalances: ['0x1', '0x38', '0xe708'],
       },
       cacheTimestamp: Date.now(),
     }),
@@ -73,7 +73,7 @@ describe('AccountTrackerControllerInit', () => {
       provider: expect.any(Object),
       blockTracker: expect.any(Object),
       getNetworkIdentifier: expect.any(Function),
-      useAccountApiBalances: ['0x1', '0x38', '0xe708'],
+      accountsApiChainIds: expect.any(Function),
     });
   });
 
@@ -83,13 +83,11 @@ describe('AccountTrackerControllerInit', () => {
     const controllerMock = jest.mocked(AccountTrackerController);
     const [constructorArgs] = controllerMock.mock.calls[0];
 
-    expect(constructorArgs.useAccountApiBalances).toEqual([
-      '0x1',
-      '0x38',
-      '0xe708',
-    ]);
-    expect(constructorArgs.useAccountApiBalances).toContain('0x1'); // Ethereum
-    expect(constructorArgs.useAccountApiBalances).toContain('0x38'); // BSC
-    expect(constructorArgs.useAccountApiBalances).toContain('0xe708'); // Linea
+    expect(constructorArgs.accountsApiChainIds).toBeDefined();
+    const chainIds = constructorArgs.accountsApiChainIds?.();
+    expect(chainIds).toEqual(['0x1', '0x38', '0xe708']);
+    expect(chainIds).toContain('0x1'); // Ethereum
+    expect(chainIds).toContain('0x38'); // BSC
+    expect(chainIds).toContain('0xe708'); // Linea
   });
 });
