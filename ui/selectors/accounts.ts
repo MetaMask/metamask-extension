@@ -54,7 +54,7 @@ export const getMemoizedInternalAccountByAddress = createDeepEqualSelector(
 
 export function getSelectedInternalAccount(state: AccountsState) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts?.accounts?.[accountId];
+  return state.metamask.internalAccounts.accounts[accountId];
 }
 
 export function isSelectedInternalAccountEth(state: AccountsState) {

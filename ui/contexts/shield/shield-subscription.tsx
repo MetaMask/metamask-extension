@@ -28,6 +28,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const isBasicFunctionalityEnabled = Boolean(
     useSelector(getUseExternalServices),
   );
+  const isMetaMaskShieldFeatureEnabled = getIsMetaMaskShieldFeatureEnabled();
   const isSignedIn = useSelector(selectIsSignedIn);
   const { subscriptions } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
@@ -40,7 +41,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     selectedAccount,
     false,
   );
-  const isMetaMaskShieldFeatureEnabled = getIsMetaMaskShieldFeatureEnabled();
 
   /**
    * Watch the shield subscription and show the shield entry modal if the subscription is paused and modal is not shown once
