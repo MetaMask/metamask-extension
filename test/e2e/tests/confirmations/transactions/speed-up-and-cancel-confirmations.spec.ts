@@ -57,6 +57,8 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           const activityListPage = new ActivityListPage(driver);
           await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
 
+          await activityListPage.checkSpeedUpInlineButtonIsPresent();
+          await activityListPage.clickTransactionListItem();
           await activityListPage.clickSpeedUpTransaction();
           await activityListPage.clickConfirmTransactionReplacement();
           await driver.delay(3000); // Delay needed to ensure the transaction is updated before mining
