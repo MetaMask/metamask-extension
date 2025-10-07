@@ -5618,10 +5618,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:1.0.0"
-  checksum: 10/1046b3cfbb82d9597a7dba5ebdda17f58161f7e1e1f72261cbbbdc0e38c3ca56407ae5e338207590220a97086b03d9cab9347262b88b5d60c00e296690bddf5b
+"@metamask/bitcoin-wallet-snap@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:1.2.0"
+  checksum: 10/0dc4515b4b7b23086ae9cbc04b22fbf6330ab05bbf8d827d998e5be21ca6a2cca4c906792e787c4e3ff1760c077c0914b5c52c7fc4b728ce30390b6fad4711ac
   languageName: node
   linkType: hard
 
@@ -6840,6 +6840,11 @@ __metadata:
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
   checksum: 10/5ca5203431e66c59037b2b28b0df445bb5174a149942d6bfdf0fb0f6d367ee84c68f69ecf4ea31c66917ed27e663295400666820b30cd00b976b17b32643618b
   languageName: node
+  linkType: hard
+
+"@metamask/multichain-api-client@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@metamask/multichain-api-client@npm:0.7.0"
   checksum: 10/82c58ba382d651430cc27c15c1881ac9943131aebd66b1e404735795bcc4125cb20b74843504ffd207ba9e8c21272facfcd65a91c6f16846bf1aee4e83ed1fca
   languageName: node
   linkType: hard
@@ -31401,7 +31406,7 @@ __metadata:
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A77.0.1#~/.yarn/patches/@metamask-assets-controllers-npm-77.0.1-95e99a2835.patch"
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^1.0.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^1.2.0"
     "@metamask/bridge-controller": "npm:^47.0.0"
     "@metamask/bridge-status-controller": "npm:^47.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
