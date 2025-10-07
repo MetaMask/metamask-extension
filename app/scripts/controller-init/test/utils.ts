@@ -33,6 +33,7 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     setupUntrustedCommunicationEip1193: jest.fn(),
     setLocked: jest.fn(),
     showNotification: jest.fn(),
+    showUserConfirmation: jest.fn(),
     preinstalledSnaps: [],
   };
 }

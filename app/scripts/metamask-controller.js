@@ -24,10 +24,7 @@ import { rawChainData } from 'eth-chainlist';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
 import { AddressBookController } from '@metamask/address-book-controller';
-import {
-  ApprovalController,
-  ApprovalRequestNotFoundError,
-} from '@metamask/approval-controller';
+import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
 import {
   MethodNames,
@@ -44,12 +41,7 @@ import {
   createPreinstalledSnapsMiddleware,
   createSnapsMethodMiddleware,
 } from '@metamask/snaps-rpc-methods';
-import {
-  ApprovalType,
-  ERC1155,
-  ERC20,
-  ERC721,
-} from '@metamask/controller-utils';
+import { ERC1155, ERC20, ERC721 } from '@metamask/controller-utils';
 
 import { SignatureController } from '@metamask/signature-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
@@ -158,7 +150,6 @@ import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import {
@@ -400,6 +391,7 @@ import { MetaMetricsDataDeletionControllerInit } from './controller-init/metamet
 import { LoggingControllerInit } from './controller-init/logging-controller-init';
 import { AppMetadataControllerInit } from './controller-init/app-metadata-controller-init';
 import { ErrorReportingServiceInit } from './controller-init/error-reporting-service-init';
+import { ApprovalControllerInit } from './controller-init/confirmations/approval-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -495,23 +487,6 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    this.approvalController = new ApprovalController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'ApprovalController',
-      }),
-      showApprovalRequest: opts.showUserConfirmation,
-      typesExcludedFromRateLimiting: [
-        ApprovalType.PersonalSign,
-        ApprovalType.EthSignTypedData,
-        ApprovalType.Transaction,
-        ApprovalType.WatchAsset,
-        ApprovalType.EthGetEncryptionPublicKey,
-        ApprovalType.EthDecrypt,
-        // Exclude Smart TX Status Page from rate limiting to allow sequential transactions
-        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-      ],
-    });
-
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
       getNetworkClientById: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -552,9 +527,9 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'DecryptMessageController',
         allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
+          `ApprovalController:addRequest`,
+          `ApprovalController:acceptRequest`,
+          `ApprovalController:rejectRequest`,
           'KeyringController:decryptMessage',
         ],
         allowedEvents: [
@@ -575,9 +550,9 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'EncryptionPublicKeyController',
         allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
+          `ApprovalController:addRequest`,
+          `ApprovalController:acceptRequest`,
+          `ApprovalController:rejectRequest`,
         ],
         allowedEvents: [
           'EncryptionPublicKeyManager:stateChange',
@@ -606,7 +581,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'SignatureController',
         allowedActions: [
           `AccountsController:getState`,
-          `${this.approvalController.name}:addRequest`,
+          `ApprovalController:addRequest`,
           'KeyringController:signMessage',
           'KeyringController:signPersonalMessage',
           'KeyringController:signTypedMessage',
@@ -671,10 +646,9 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    const existingControllers = [this.approvalController];
-
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
+      ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
       ErrorReportingService: ErrorReportingServiceInit,
       AppMetadataController: AppMetadataControllerInit,
@@ -761,7 +735,6 @@ export default class MetamaskController extends EventEmitter {
       controllerPersistedState,
       controllersByName,
     } = this.#initControllers({
-      existingControllers,
       initFunctions: controllerInitFunctions,
       initState,
     });
@@ -772,6 +745,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllersByName = controllersByName;
 
     // Backwards compatibility for existing references
+    this.approvalController = controllersByName.ApprovalController;
     this.loggingController = controllersByName.LoggingController;
     this.appMetadataController = controllersByName.AppMetadataController;
     this.preferencesController = controllersByName.PreferencesController;
@@ -8741,6 +8715,7 @@ export default class MetamaskController extends EventEmitter {
         this.setupUntrustedCommunicationEip1193.bind(this),
       setLocked: this.setLocked.bind(this),
       showNotification: this.platform._showNotification,
+      showUserConfirmation: this.opts.showUserConfirmation,
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),

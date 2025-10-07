@@ -163,6 +163,7 @@ import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-dat
 import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 import { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
+import { getApprovalControllerMessenger } from './approval-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -184,6 +185,8 @@ export type { AppMetadataControllerMessenger } from './app-metadata-controller-m
 export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 export type { AppStateControllerMessenger } from './app-state-controller-messenger';
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';
+export type { ApprovalControllerMessenger } from './approval-controller-messenger';
+export { getApprovalControllerMessenger } from './approval-controller-messenger';
 export type {
   BridgeControllerMessenger,
   BridgeControllerInitMessenger,
@@ -344,6 +347,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   AppMetadataController: {
     getMessenger: getAppMetadataControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ApprovalController: {
+    getMessenger: getApprovalControllerMessenger,
     getInitMessenger: noop,
   },
   AppStateController: {

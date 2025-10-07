@@ -215,6 +215,11 @@ export type ControllerInitRequest<
   ) => Promise<void>;
 
   /**
+   * Show the confirmation UI to the user.
+   */
+  showUserConfirmation: () => void | Promise<void>;
+
+  /**
    * A list of preinstalled Snaps loaded from disk during boot.
    */
   preinstalledSnaps: PreinstalledSnap[];
