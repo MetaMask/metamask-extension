@@ -3412,7 +3412,7 @@
         "browserify>buffer": true,
         "ethereumjs-util>ethereum-cryptography>keccak": true,
         "crypto-browserify>randombytes": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true
+        "ganache>secp256k1": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": {
@@ -3425,7 +3425,7 @@
         "ethereumjs-util>ethereum-cryptography>keccak": true,
         "crypto-browserify>randombytes": true,
         "koa>content-disposition>safe-buffer": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true
+        "ganache>secp256k1": true
       }
     },
     "ethereumjs-util": {
@@ -3637,7 +3637,7 @@
         "eth-ens-namehash>js-sha3": true,
         "lodash": true,
         "eth-lattice-keyring>gridplus-sdk>rlp": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
+        "ganache>secp256k1": true,
         "eth-lattice-keyring>gridplus-sdk>uuid": true
       }
     },
@@ -3690,7 +3690,7 @@
         "crypto-browserify": true,
         "ethereumjs-util>create-hash>ripemd160": true,
         "koa>content-disposition>safe-buffer": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true
+        "ganache>secp256k1": true
       }
     },
     "he": {
@@ -4917,7 +4917,7 @@
         "browserify>timers-browserify": true
       }
     },
-    "ethereumjs-util>ethereum-cryptography>secp256k1": {
+    "ganache>secp256k1": {
       "packages": {
         "@toruslabs/eccrypto>elliptic": true
       }
