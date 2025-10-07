@@ -230,7 +230,7 @@ const AddFundsModal = ({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: token.symbol,
-          location: MetaMetricsSwapsEventSource.TransactionShield,
+          location: 'Transaction Shield',
           text: 'Swap',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
