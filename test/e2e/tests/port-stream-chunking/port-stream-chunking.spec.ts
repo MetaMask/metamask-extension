@@ -71,6 +71,7 @@ describe('Port Stream Chunking', function () {
         if (isFirefox) {
           assert.deepStrictEqual(events.length, 0);
         } else {
+          console.log(events);
           assert.deepStrictEqual(events[0], {
             category: 'Port Stream',
             event: 'Port Stream Chunked',
