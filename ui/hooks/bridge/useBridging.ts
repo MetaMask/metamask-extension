@@ -54,7 +54,6 @@ const useBridging = () => {
       srcToken?: Pick<BridgeAsset, 'symbol' | 'address'> & {
         chainId: GenericQuoteRequest['srcChainId'];
       },
-      isSwap = false,
     ) => {
       // If srcToken is a bridge token, use its assetId
       let srcAssetIdToUse =
@@ -81,20 +80,18 @@ const useBridging = () => {
       }
 
       trace({
-        name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
+        name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
       });
       trackEvent({
-        event: isSwap
-          ? MetaMetricsEventName.SwapLinkClicked
-          : MetaMetricsEventName.BridgeLinkClicked,
+        event: MetaMetricsEventName.SwapLinkClicked,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_symbol: srcToken?.symbol ?? '',
           location,
-          text: isSwap ? 'Swap' : 'Bridge',
+          text: 'Swap',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: srcToken?.chainId ?? lastSelectedChainId,
@@ -117,9 +114,7 @@ const useBridging = () => {
       if (srcAssetIdToUse) {
         url += `${BridgeQueryParams.FROM}=${srcAssetIdToUse}`;
       }
-      if (isSwap) {
-        url += `&${BridgeQueryParams.SWAPS}=true`;
-      }
+      url += `&${BridgeQueryParams.SWAPS}=true`;
       history.push(url);
     },
     [
