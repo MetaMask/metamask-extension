@@ -10,45 +10,38 @@ import {
 } from 'lodash';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
-import { NameControllerState, NameType } from '@metamask/name-controller';
-import { AccountsControllerState } from '@metamask/accounts-controller';
+import { NameType } from '@metamask/name-controller';
 import {
   getErrorMessage,
-  Hex,
+  type Hex,
   isErrorWithMessage,
   isErrorWithStack,
 } from '@metamask/utils';
-import {
+import type {
   NetworkClientId,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkDidChangeEvent,
-  NetworkState,
 } from '@metamask/network-controller';
-import { Browser } from 'webextension-polyfill';
-import {
-  Nft,
-  NftControllerState,
-  TokensControllerState,
-} from '@metamask/assets-controllers';
+import type { Browser } from 'webextension-polyfill';
+import type { Nft } from '@metamask/assets-controllers';
 import {
   BaseController,
-  ControllerGetStateAction,
-  ControllerStateChangeEvent,
-  RestrictedMessenger,
+  type ControllerGetStateAction,
+  type ControllerStateChangeEvent,
+  type RestrictedMessenger,
 } from '@metamask/base-controller';
 import type { Json } from '@metamask/utils';
-import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
-import { AddressBookControllerState } from '@metamask/address-book-controller';
-import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventFragment,
   MetaMetricsUserTrait,
+} from '../../../shared/constants/metametrics';
+import type {
+  MetaMetricsEventFragment,
   MetaMetricsUserTraits,
   SegmentEventPayload,
   MetaMetricsContext,
@@ -67,14 +60,13 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import Analytics from '../lib/segment/analytics';
 import {
   trace,
   endTrace,
-  TraceRequest,
-  EndTraceRequest,
-  TraceCallback,
+  type TraceRequest,
+  type EndTraceRequest,
+  type TraceCallback,
 } from '../../../shared/lib/trace';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -85,7 +77,6 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
 import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
 import type {
-  PreferencesControllerState,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
