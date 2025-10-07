@@ -7,6 +7,7 @@ jobs:
   extract:
     if: ${{ github.ref_type == 'branch' && (startsWith(github.ref, 'refs/heads/Version-v') || startsWith(github.ref, 'refs/heads/release/')) }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       semver: ${{ steps.out.outputs.semver }}
     steps:

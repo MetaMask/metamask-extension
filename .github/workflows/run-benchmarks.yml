@@ -10,7 +10,8 @@ env:
 
 jobs:
   benchmarks:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-
+    timeout-minutes: 3022.04
     strategy:
       fail-fast: false
       matrix:
