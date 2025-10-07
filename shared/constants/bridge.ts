@@ -108,7 +108,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     // ETH -> mUSD on mainnet
     address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
     symbol: 'mUSD',
-    decimals: 18,
+    decimals: 6,
     name: 'MetaMask USD',
   },
   [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]: {
@@ -164,7 +164,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     // ETH -> mUSD on Linea
     address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
     symbol: 'mUSD',
-    decimals: 18,
+    decimals: 6,
     name: 'MetaMask USD',
   },
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: {
