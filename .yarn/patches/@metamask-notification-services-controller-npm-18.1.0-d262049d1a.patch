@@ -1,0 +1,222 @@
+diff --git a/dist/NotificationServicesController/NotificationServicesController.cjs b/dist/NotificationServicesController/NotificationServicesController.cjs
+index 5cb6bff2e73861f5c8aab8e67a666b9de30ccc64..fb706ac1f06360878fcc83587c4eae0ab528bfb9 100644
+--- a/dist/NotificationServicesController/NotificationServicesController.cjs
++++ b/dist/NotificationServicesController/NotificationServicesController.cjs
+@@ -1,18 +1,18 @@
+ "use strict";
+-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
++var __createBinding = (this && this.__createBinding) || (Object.create ? (function (o, m, k, k2) {
+     if (k2 === undefined) k2 = k;
+     var desc = Object.getOwnPropertyDescriptor(m, k);
+     if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+-      desc = { enumerable: true, get: function() { return m[k]; } };
++        desc = { enumerable: true, get: function () { return m[k]; } };
+     }
+     Object.defineProperty(o, k2, desc);
+-}) : (function(o, m, k, k2) {
++}) : (function (o, m, k, k2) {
+     if (k2 === undefined) k2 = k;
+     o[k2] = m[k];
+ }));
+-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
++var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function (o, v) {
+     Object.defineProperty(o, "default", { enumerable: true, value: v });
+-}) : function(o, v) {
++}) : function (o, v) {
+     o["default"] = v;
+ });
+ var __importStar = (this && this.__importStar) || function (mod) {
+@@ -208,8 +208,8 @@ class NotificationServicesController extends base_controller_1.BaseController {
+                     await __classPrivateFieldGet(this, _NotificationServicesController_pushNotifications, "f")
+                         .subscribeToPushNotifications()
+                         .catch(() => {
+-                        // do nothing
+-                    });
++                            // do nothing
++                        });
+                 }
+             },
+         });
+@@ -280,27 +280,27 @@ class NotificationServicesController extends base_controller_1.BaseController {
+              * And call effects to subscribe/unsubscribe to notifications.
+              */
+             subscribe: () => {
+-                this.messagingSystem.subscribe('KeyringController:stateChange', 
+-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+-                async (totalAccounts, prevTotalAccounts) => {
+-                    const hasTotalAccountsChanged = totalAccounts !== prevTotalAccounts;
+-                    if (!this.state.isNotificationServicesEnabled ||
+-                        !hasTotalAccountsChanged) {
+-                        return;
+-                    }
+-                    const { accountsAdded, accountsRemoved } = __classPrivateFieldGet(this, _NotificationServicesController_accounts, "f").listAccounts();
+-                    const promises = [];
+-                    if (accountsAdded.length > 0) {
+-                        promises.push(this.enableAccounts(accountsAdded));
+-                    }
+-                    if (accountsRemoved.length > 0) {
+-                        promises.push(this.disableAccounts(accountsRemoved));
+-                    }
+-                    await Promise.allSettled(promises);
+-                }, (state) => {
+-                    return (state?.keyrings?.flatMap?.((keyring) => keyring.accounts)?.length ??
+-                        0);
+-                });
++                this.messagingSystem.subscribe('KeyringController:stateChange',
++                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
++                    async (totalAccounts, prevTotalAccounts) => {
++                        const hasTotalAccountsChanged = totalAccounts !== prevTotalAccounts;
++                        if (!this.state.isNotificationServicesEnabled ||
++                            !hasTotalAccountsChanged) {
++                            return;
++                        }
++                        const { accountsAdded, accountsRemoved } = __classPrivateFieldGet(this, _NotificationServicesController_accounts, "f").listAccounts();
++                        const promises = [];
++                        if (accountsAdded.length > 0) {
++                            promises.push(this.enableAccounts(accountsAdded));
++                        }
++                        if (accountsRemoved.length > 0) {
++                            promises.push(this.disableAccounts(accountsRemoved));
++                        }
++                        await Promise.allSettled(promises);
++                    }, (state) => {
++                        return (state?.keyrings?.flatMap?.((keyring) => keyring.accounts)?.length ??
++                            0);
++                    });
+             },
+         });
+         _NotificationServicesController_featureAnnouncementEnv.set(this, void 0);
+@@ -416,8 +416,8 @@ class NotificationServicesController extends base_controller_1.BaseController {
+             __classPrivateFieldGet(this, _NotificationServicesController_pushNotifications, "f")
+                 .enablePushNotifications(accountsWithNotifications)
+                 .catch(() => {
+-                // Do Nothing
+-            });
++                    // Do Nothing
++                });
+             // Update the state of the controller
+             this.update((state) => {
+                 state.isNotificationServicesEnabled = true;
+@@ -447,7 +447,7 @@ class NotificationServicesController extends base_controller_1.BaseController {
+         }
+         catch (e) {
+             loglevel_1.default.error('Unable to enable notifications', e);
+-            throw new Error('Unable to enable notifications');
++            throw new Error(e);
+         }
+         finally {
+             __classPrivateFieldGet(this, _NotificationServicesController_instances, "m", _NotificationServicesController_setIsUpdatingMetamaskNotifications).call(this, false);
+@@ -625,10 +625,10 @@ class NotificationServicesController extends base_controller_1.BaseController {
+         const fetchedNotification = this.state.metamaskNotificationsList.find((notification) => notification.id === id);
+         (0, utils_1.assert)(fetchedNotification, 'The notification to be deleted does not exist.');
+         (0, utils_1.assert)(locallyPersistedNotificationTypes.has(fetchedNotification.type), `The notification type of "${
+-        // notifications are guaranteed to have type properties which equate to strings
+-        fetchedNotification.type}" is not locally persisted, only the following types can use this function: ${[
+-            ...locallyPersistedNotificationTypes,
+-        ].join(', ')}.`);
++            // notifications are guaranteed to have type properties which equate to strings
++            fetchedNotification.type}" is not locally persisted, only the following types can use this function: ${[
++                ...locallyPersistedNotificationTypes,
++            ].join(', ')}.`);
+         const newList = this.state.metamaskNotificationsList.filter((notification) => notification.id !== id);
+         this.update((state) => {
+             state.metamaskNotificationsList = newList;
+diff --git a/dist/NotificationServicesController/NotificationServicesController.mjs b/dist/NotificationServicesController/NotificationServicesController.mjs
+index 5ed299555f559f9dc44f09b58ff07dd5df910e88..10b1639d8a5378064a9028480258b5b24c093b2c 100644
+--- a/dist/NotificationServicesController/NotificationServicesController.mjs
++++ b/dist/NotificationServicesController/NotificationServicesController.mjs
+@@ -186,8 +186,8 @@ class NotificationServicesController extends BaseController {
+                     await __classPrivateFieldGet(this, _NotificationServicesController_pushNotifications, "f")
+                         .subscribeToPushNotifications()
+                         .catch(() => {
+-                        // do nothing
+-                    });
++                            // do nothing
++                        });
+                 }
+             },
+         });
+@@ -258,27 +258,27 @@ class NotificationServicesController extends BaseController {
+              * And call effects to subscribe/unsubscribe to notifications.
+              */
+             subscribe: () => {
+-                this.messagingSystem.subscribe('KeyringController:stateChange', 
+-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+-                async (totalAccounts, prevTotalAccounts) => {
+-                    const hasTotalAccountsChanged = totalAccounts !== prevTotalAccounts;
+-                    if (!this.state.isNotificationServicesEnabled ||
+-                        !hasTotalAccountsChanged) {
+-                        return;
+-                    }
+-                    const { accountsAdded, accountsRemoved } = __classPrivateFieldGet(this, _NotificationServicesController_accounts, "f").listAccounts();
+-                    const promises = [];
+-                    if (accountsAdded.length > 0) {
+-                        promises.push(this.enableAccounts(accountsAdded));
+-                    }
+-                    if (accountsRemoved.length > 0) {
+-                        promises.push(this.disableAccounts(accountsRemoved));
+-                    }
+-                    await Promise.allSettled(promises);
+-                }, (state) => {
+-                    return (state?.keyrings?.flatMap?.((keyring) => keyring.accounts)?.length ??
+-                        0);
+-                });
++                this.messagingSystem.subscribe('KeyringController:stateChange',
++                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
++                    async (totalAccounts, prevTotalAccounts) => {
++                        const hasTotalAccountsChanged = totalAccounts !== prevTotalAccounts;
++                        if (!this.state.isNotificationServicesEnabled ||
++                            !hasTotalAccountsChanged) {
++                            return;
++                        }
++                        const { accountsAdded, accountsRemoved } = __classPrivateFieldGet(this, _NotificationServicesController_accounts, "f").listAccounts();
++                        const promises = [];
++                        if (accountsAdded.length > 0) {
++                            promises.push(this.enableAccounts(accountsAdded));
++                        }
++                        if (accountsRemoved.length > 0) {
++                            promises.push(this.disableAccounts(accountsRemoved));
++                        }
++                        await Promise.allSettled(promises);
++                    }, (state) => {
++                        return (state?.keyrings?.flatMap?.((keyring) => keyring.accounts)?.length ??
++                            0);
++                    });
+             },
+         });
+         _NotificationServicesController_featureAnnouncementEnv.set(this, void 0);
+@@ -394,8 +394,8 @@ class NotificationServicesController extends BaseController {
+             __classPrivateFieldGet(this, _NotificationServicesController_pushNotifications, "f")
+                 .enablePushNotifications(accountsWithNotifications)
+                 .catch(() => {
+-                // Do Nothing
+-            });
++                    // Do Nothing
++                });
+             // Update the state of the controller
+             this.update((state) => {
+                 state.isNotificationServicesEnabled = true;
+@@ -425,7 +425,7 @@ class NotificationServicesController extends BaseController {
+         }
+         catch (e) {
+             log.error('Unable to enable notifications', e);
+-            throw new Error('Unable to enable notifications');
++            throw new Error(e);
+         }
+         finally {
+             __classPrivateFieldGet(this, _NotificationServicesController_instances, "m", _NotificationServicesController_setIsUpdatingMetamaskNotifications).call(this, false);
+@@ -603,10 +603,10 @@ class NotificationServicesController extends BaseController {
+         const fetchedNotification = this.state.metamaskNotificationsList.find((notification) => notification.id === id);
+         assert(fetchedNotification, 'The notification to be deleted does not exist.');
+         assert(locallyPersistedNotificationTypes.has(fetchedNotification.type), `The notification type of "${
+-        // notifications are guaranteed to have type properties which equate to strings
+-        fetchedNotification.type}" is not locally persisted, only the following types can use this function: ${[
+-            ...locallyPersistedNotificationTypes,
+-        ].join(', ')}.`);
++            // notifications are guaranteed to have type properties which equate to strings
++            fetchedNotification.type}" is not locally persisted, only the following types can use this function: ${[
++                ...locallyPersistedNotificationTypes,
++            ].join(', ')}.`);
+         const newList = this.state.metamaskNotificationsList.filter((notification) => notification.id !== id);
+         this.update((state) => {
+             state.metamaskNotificationsList = newList;
