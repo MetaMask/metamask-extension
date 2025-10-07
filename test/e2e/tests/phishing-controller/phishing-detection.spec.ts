@@ -588,51 +588,51 @@ describe('Phishing Detection', function (this: Suite) {
       );
     });
 
-    describe('whitelisted paths', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder().build(),
-          title: 'whitelisted paths',
-          testSpecificMock: async (mockServer: Mockttp) => {
-            return setupPhishingDetectionMocks(mockServer, {
-              statusCode: 200,
-              blockProvider: BlockProvider.MetaMask,
-              blocklist: [],
-              c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-              blocklistPaths: ['127.0.0.1/whitelisted/path'],
-            });
+    describe('whitelisted paths', function () {
+      it('shows phishing warning for blocked domain but allows whitelisted paths', async function () {
+        await withFixtures(
+          {
+            fixtures: new FixtureBuilder().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (mockServer: Mockttp) => {
+              return setupPhishingDetectionMocks(mockServer, {
+                statusCode: 200,
+                blockProvider: BlockProvider.MetaMask,
+                blocklist: [],
+                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+                blocklistPaths: ['127.0.0.1/whitelisted/path'],
+              });
+            },
+            dapp: true,
           },
-          dapp: true,
-        },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
 
-          await driver.openNewPage('http://127.0.0.1/whitelisted/path');
+            await driver.openNewPage('http://127.0.0.1/whitelisted/path');
 
-          // To mitigate a race condition where 2 requests are made to the localhost:8080 which triggers a page refresh
-          await driver.delay(veryLargeDelayMs);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+            // To mitigate a race condition where 2 requests are made to the localhost:8080 which triggers a page refresh
+            await driver.delay(veryLargeDelayMs);
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
 
-          // we need to wait for this selector to mitigate a race condition on the phishing page site
-          // see more here https://github.com/MetaMask/phishing-warning/pull/173
-          const phishingWarningPage = new PhishingWarningPage(driver);
-          await phishingWarningPage.checkPageIsLoaded();
-          await phishingWarningPage.clickProceedAnywayButton();
-          await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+            // we need to wait for this selector to mitigate a race condition on the phishing page site
+            // see more here https://github.com/MetaMask/phishing-warning/pull/173
+            const phishingWarningPage = new PhishingWarningPage(driver);
+            await phishingWarningPage.checkPageIsLoaded();
+            await phishingWarningPage.clickProceedAnywayButton();
+            await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
 
-          it('a whitelisted path shows no phishing detection page', async function () {
+            // Test that whitelisted paths are allowed
             await driver.openNewPage('http://127.0.0.1/whitelisted/path');
             await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
-          });
 
-          it('a path that contains the whitelisted path shows no phishing detection page', async function () {
+            // Test that subpaths are allowed
             await driver.openNewPage(
               'http://127.0.0.1/whitelisted/path/subpath',
             );
             await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
-          });
-        },
-      );
+          },
+        );
+      });
     });
   });
 });
