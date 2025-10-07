@@ -1,5 +1,9 @@
-import FixtureBuilder from '../../fixture-builder';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import FixtureBuilder from '../../fixture-builder';
+import HomePage from '../../page-objects/pages/home/homepage';
+import SendPage from '../../page-objects/pages/send/send-page';
+import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withFixtures } from '../../helpers';
 import { mockSendRedesignFeatureFlag } from './common';
@@ -46,38 +50,28 @@ describe('Send ERC20', function () {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+        const homePage = new HomePage(driver);
+        const sendPage = new SendPage(driver);
+        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const activityListPage = new ActivityListPage(driver);
 
-        await driver.clickElement('[data-testid="token-asset-0xe708-ETH"]');
+        await homePage.startSendFlow();
 
-        await driver.fill(
-          'input[placeholder="Enter or paste a valid address"]',
+        await sendPage.selectToken('0xe708', 'ETH');
+        await sendPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
+        await sendPage.fillAmount('1000');
+        await sendPage.checkInsufficientFundsError();
+        await sendPage.pressOnAmountInput('BACK_SPACE');
+        await sendPage.pressOnAmountInput('BACK_SPACE');
+        await sendPage.pressOnAmountInput('BACK_SPACE');
+        await sendPage.pressContinueButton();
 
-        await driver.fill('input[placeholder="0"]', '1000');
-
-        await driver.findElement({
-          text: 'Insufficient funds',
-        });
-
-        await driver.press('input[placeholder="0"]', driver.Key.BACK_SPACE);
-        await driver.press('input[placeholder="0"]', driver.Key.BACK_SPACE);
-        await driver.press('input[placeholder="0"]', driver.Key.BACK_SPACE);
-
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
-
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        await sendTokenConfirmationPage.clickOnConfirm();
+        await activityListPage.checkTransactionActivityByText('Sent');
+        await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
+        await activityListPage.checkTxAmountInActivity('-1 ETH');
       },
     );
   });
@@ -92,30 +86,25 @@ describe('Send ERC20', function () {
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+        const homePage = new HomePage(driver);
+        const sendPage = new SendPage(driver);
+        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const activityListPage = new ActivityListPage(driver);
 
-        await driver.clickElement('[data-testid="token-asset-0xe708-ETH"]');
+        await homePage.startSendFlow();
 
-        await driver.fill(
-          'input[placeholder="Enter or paste a valid address"]',
+        await homePage.startSendFlow();
+
+        await sendPage.selectToken('0xe708', 'ETH');
+        await sendPage.fillRecipient(
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
+        await sendPage.pressMaxButton();
+        await sendPage.pressContinueButton();
 
-        await driver.clickElement({ text: 'Max', tag: 'button' });
-
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
-
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        await sendTokenConfirmationPage.clickOnConfirm();
+        await activityListPage.checkTransactionActivityByText('Sent');
+        await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
       },
     );
   });
