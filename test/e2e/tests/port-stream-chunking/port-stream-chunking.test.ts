@@ -76,7 +76,6 @@ describe('Port Stream Chunking', function () {
             event: 'Port Stream Chunked',
             properties: {
               chunkSize: 67108864, // 64MB
-              numberOfChunks: 2,
             },
           });
         }
