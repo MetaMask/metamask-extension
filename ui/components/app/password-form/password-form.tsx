@@ -99,7 +99,7 @@ export default function PasswordForm({
           handlePasswordChange(e.target.value);
         }}
         helpTextProps={{
-          color: TextColor.textMuted,
+          color: TextColor.textAlternative,
           'data-testid': 'short-password-error',
         }}
         helpText={t('passwordNotLongEnough')}

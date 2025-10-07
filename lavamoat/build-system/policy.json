@@ -168,8 +168,7 @@
       "globals": {
         "console.log": true,
         "console.warn": true,
-        "process.exitCode": "write",
-        "process.versions.node": true
+        "process": true
       },
       "packages": {
         "@babel/core": true,
@@ -799,7 +798,7 @@
     "@babel/core>@babel/types": {
       "globals": {
         "console.warn": true,
-        "process.env": true
+        "process.env.BABEL_TYPES_8_BREAKING": true
       },
       "packages": {
         "@babel/core>@babel/types>@babel/helper-string-parser": true,
@@ -970,7 +969,7 @@
         "node:path.relative": true
       },
       "packages": {
-        "lavamoat>@lavamoat/aa>resolve": true
+        "depcheck>resolve": true
       }
     },
     "@lavamoat/lavapack": {
@@ -995,7 +994,7 @@
         "browserify>JSONStream": true,
         "@lavamoat/lavapack>combine-source-map": true,
         "eslint>espree": true,
-        "@lavamoat/lavapack>json-stable-stringify": true,
+        "@lavamoat/webpack>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true,
         "@lavamoat/lavapack>readable-stream": true,
         "through2": true,
@@ -1810,7 +1809,7 @@
         "string.prototype.matchall>call-bind>set-function-length": true
       }
     },
-    "eslint-plugin-react>object.values>call-bound": {
+    "@lavamoat/webpack>json-stable-stringify>call-bound": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
         "string.prototype.matchall>get-intrinsic": true
@@ -2342,8 +2341,8 @@
     "string.prototype.matchall>define-properties": {
       "packages": {
         "string.prototype.matchall>define-properties>define-data-property": true,
-        "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
+        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
     "gulp>gulp-cli>matchdep>micromatch>snapdragon>base>define-property": {
@@ -4441,21 +4440,13 @@
         "Buffer.isBuffer": true
       }
     },
-    "@lavamoat/lavapack>json-stable-stringify": {
+    "@lavamoat/webpack>json-stable-stringify": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
-        "@lavamoat/lavapack>json-stable-stringify>jsonify": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
-      }
-    },
-    "gulp>vinyl-fs>glob-stream>unique-stream>json-stable-stringify": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "eslint-plugin-react>object.values>call-bound": true,
-        "@lavamoat/lavapack>json-stable-stringify>isarray": true,
-        "@lavamoat/lavapack>json-stable-stringify>jsonify": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "@lavamoat/webpack>json-stable-stringify>isarray": true,
+        "@lavamoat/webpack>json-stable-stringify>jsonify": true,
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
     "depcheck>json5": {
@@ -4612,7 +4603,7 @@
       "builtin": {
         "node:events": true,
         "node:fs.readFileSync": true,
-        "node:fs/promises": true,
+        "node:fs/promises.writeFile": true,
         "node:path.extname": true,
         "node:path.join": true
       },
@@ -4623,7 +4614,7 @@
         "define": true
       },
       "packages": {
-        "@lavamoat/lavapack>json-stable-stringify": true,
+        "@lavamoat/webpack>json-stable-stringify": true,
         "lavamoat>lavamoat-tofu": true,
         "lavamoat>lavamoat-core>merge-deep": true
       }
@@ -5116,7 +5107,7 @@
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>has-symbols": true,
-        "@lavamoat/lavapack>json-stable-stringify>object-keys": true
+        "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
     "gulp>undertaker>object.defaults": {
@@ -5857,21 +5848,20 @@
         "buffer.Buffer": true,
         "events.EventEmitter": true,
         "events.addAbortListener": true,
-        "stream": true,
-        "string_decoder.StringDecoder": true
+        "stream": true
       },
       "globals": {
         "AbortController": true,
         "AbortSignal": true,
         "AggregateError": true,
         "Blob": true,
-        "ERR_INVALID_ARG_TYPE": true,
         "process.env.READABLE_STREAM": true,
         "queueMicrotask": true
       },
       "packages": {
         "@lavamoat/lavapack>readable-stream>abort-controller": true,
-        "process": true
+        "process": true,
+        "browserify>string_decoder": true
       }
     },
     "vinyl-buffer>bl>readable-stream": {
@@ -6091,21 +6081,20 @@
         "buffer.Buffer": true,
         "events.EventEmitter": true,
         "events.addAbortListener": true,
-        "stream": true,
-        "string_decoder.StringDecoder": true
+        "stream": true
       },
       "globals": {
         "AbortController": true,
         "AbortSignal": true,
         "AggregateError": true,
         "Blob": true,
-        "ERR_INVALID_ARG_TYPE": true,
         "process.env.READABLE_STREAM": true,
         "queueMicrotask": true
       },
       "packages": {
         "@lavamoat/lavapack>readable-stream>abort-controller": true,
-        "process": true
+        "process": true,
+        "browserify>string_decoder": true
       }
     },
     "gulp>vinyl-fs>lazystream>readable-stream": {
@@ -6768,36 +6757,6 @@
         "gulp>vinyl-fs>value-or-function": true
       }
     },
-    "lavamoat>@lavamoat/aa>resolve": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "fs.realpathSync": true,
-        "fs.statSync": true,
-        "os.homedir": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.parse": true,
-        "path.relative": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "process.env.HOME": true,
-        "process.env.HOMEDRIVE": true,
-        "process.env.HOMEPATH": true,
-        "process.env.LNAME": true,
-        "process.env.LOGNAME": true,
-        "process.env.USER": true,
-        "process.env.USERNAME": true,
-        "process.env.USERPROFILE": true,
-        "process.getuid": true,
-        "process.platform": true,
-        "process.versions.pnp": true
-      },
-      "packages": {
-        "depcheck>is-core-module": true,
-        "depcheck>resolve>path-parse": true
-      }
-    },
     "depcheck>resolve": {
       "builtin": {
         "fs.readFile": true,
@@ -7306,16 +7265,16 @@
     },
     "string.prototype.matchall>side-channel>side-channel-map": {
       "packages": {
-        "eslint-plugin-react>object.values>call-bound": true,
-        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true
       }
     },
     "string.prototype.matchall>side-channel>side-channel-weakmap": {
       "packages": {
-        "eslint-plugin-react>object.values>call-bound": true,
-        "eslint-plugin-react>es-iterator-helpers>es-errors": true,
+        "@lavamoat/webpack>json-stable-stringify>call-bound": true,
+        "string.prototype.matchall>es-abstract>es-errors": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>es-abstract>object-inspect": true,
         "string.prototype.matchall>side-channel>side-channel-map": true
@@ -8484,7 +8443,7 @@
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
         "react-markdown>unified>is-buffer": true,
-        "react-markdown>unified>is-plain-obj": true,
+        "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }
@@ -8499,7 +8458,7 @@
     },
     "gulp>vinyl-fs>glob-stream>unique-stream": {
       "packages": {
-        "gulp>vinyl-fs>glob-stream>unique-stream>json-stable-stringify": true,
+        "@lavamoat/webpack>json-stable-stringify": true,
         "gulp>vinyl-fs>glob-stream>unique-stream>through2-filter": true
       }
     },
