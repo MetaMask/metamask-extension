@@ -142,13 +142,8 @@ class UnlockPage extends Component {
   }
 
   UNSAFE_componentWillMount() {
-    const {
-      isUnlocked,
-      navigate,
-      location,
-      navState,
-      clearNavState,
-    } = this.props;
+    const { isUnlocked, navigate, location, navState, clearNavState } =
+      this.props;
 
     if (isUnlocked) {
       // Redirect to the intended route if available, otherwise DEFAULT_ROUTE

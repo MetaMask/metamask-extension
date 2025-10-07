@@ -258,7 +258,9 @@ export default class PermissionConnect extends Component {
             this.props.navigate(toAbsolutePath(snapResultPath));
             break;
           case 'wallet_connectSnaps':
-            this.props.navigate(toAbsolutePath(snapsConnectPath), { replace: true });
+            this.props.navigate(toAbsolutePath(snapsConnectPath), {
+              replace: true,
+            });
             break;
           default:
             this.props.navigate(toAbsolutePath(confirmPermissionPath));

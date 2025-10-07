@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -19,7 +19,7 @@ import { getMultichainNetworkConfigurationsByChainId } from '../../../../../sele
 
 export const ReviewGatorPermissionsPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { chainId } = useParams();
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
@@ -53,7 +53,7 @@ export const ReviewGatorPermissionsPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.IconDefault}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(-1)}
             size={ButtonIconSize.Sm}
           />
         }

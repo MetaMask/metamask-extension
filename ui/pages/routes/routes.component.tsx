@@ -640,7 +640,15 @@ export default function RoutesComponent() {
             }
           />
           <Route
-            path={`${SEND_ROUTE}/:page?`}
+            path={SEND_ROUTE}
+            element={
+              <Authenticated>
+                <SendPage />
+              </Authenticated>
+            }
+          />
+          <Route
+            path={`${SEND_ROUTE}/:page`}
             element={
               <Authenticated>
                 <SendPage />

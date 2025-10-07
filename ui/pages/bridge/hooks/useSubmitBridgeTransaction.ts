@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { createProjectLogger } from '@metamask/utils';
-import { useSetNavState } from '../../../contexts/navigation-state';
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { useSetNavState } from '../../../contexts/navigation-state';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,

@@ -74,10 +74,15 @@ export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =
   '/multichain-wallet-details-page';
 export const MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE = '/multichain-smart-account';
 export const NEW_ACCOUNT_ROUTE = '/new-account';
+
+const NEW_ACCOUNT_PATHS = {
+  CONNECT: 'connect',
+} as const;
+
 export const ACCOUNT_DETAILS_ROUTE = '/account-details';
 export const ACCOUNT_DETAILS_QR_CODE_ROUTE = '/account-details/qr-code';
 export const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
-export const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
+export const CONNECT_HARDWARE_ROUTE = `${NEW_ACCOUNT_ROUTE}/${NEW_ACCOUNT_PATHS.CONNECT}`;
 export const SEND_ROUTE = '/send';
 export const REMOTE_ROUTE = '/remote';
 export const REMOTE_ROUTE_SETUP_SWAPS = '/remote/setup-swaps';
@@ -232,6 +237,7 @@ export {
   CONNECT_PATHS,
   CONFIRM_TRANSACTION_PATHS,
   SNAPS_PATHS,
+  NEW_ACCOUNT_PATHS,
 };
 
 export const ROUTES = [

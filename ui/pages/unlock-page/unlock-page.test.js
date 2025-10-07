@@ -9,7 +9,6 @@ import UnlockPage from '.';
 
 const mockUseNavigate = jest.fn();
 let mockNavState = null;
-const mockClearNavState = jest.fn();
 
 jest.mock('react-router-dom-v5-compat', () => {
   return {

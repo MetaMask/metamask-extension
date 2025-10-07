@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom-v5-compat';
 import { Box } from '../../components/component-library';
-import { CONNECT_HARDWARE_ROUTE } from '../../helpers/constants/routes';
+import { NEW_ACCOUNT_PATHS } from '../../helpers/constants/routes';
 import ConnectHardwareForm from './connect-hardware';
 
 export default function CreateAccountPage() {
@@ -9,7 +9,7 @@ export default function CreateAccountPage() {
     <Box className="new-account-wrapper">
       <Routes>
         <Route
-          path={CONNECT_HARDWARE_ROUTE}
+          path={NEW_ACCOUNT_PATHS.CONNECT}
           element={<ConnectHardwareForm />}
         />
       </Routes>

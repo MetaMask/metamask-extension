@@ -5,6 +5,7 @@ import { type CaipChainId } from '@metamask/utils';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom-v5-compat';
+import { useNavState } from '../../../../contexts/navigation-state';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -33,7 +34,9 @@ export const SelectRpcUrlModal = ({
 }) => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const chainId = location.state?.chainId;
+  const navState = useNavState();
+  // Check both location.state (v5 fallback and future v6) and navigation context (HashRouter v5-compat workaround)
+  const chainId = location.state?.chainId ?? navState?.chainId;
 
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,

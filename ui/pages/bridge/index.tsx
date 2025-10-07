@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Routes, Route } from 'react-router-dom-v5-compat';
-import { useSetNavState } from '../../contexts/navigation-state';
 import {
   BridgeAppState,
   UnifiedSwapBridgeEventName,
   // TODO: update this with all non-EVM chains when bitcoin added.
   isSolanaChainId,
 } from '@metamask/bridge-controller';
+import { useSetNavState } from '../../contexts/navigation-state';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {

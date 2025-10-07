@@ -1,7 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useSelector } from 'react-redux';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   ADD_WALLET_PAGE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
