@@ -10,10 +10,12 @@ import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 
 type TokenCellPercentChangeProps = {
   token: TokenFiatDisplayInfo;
+  price?: number;
+  comparePrice?: number;
 };
 
 export const TokenCellPercentChange = React.memo(
-  ({ token }: TokenCellPercentChangeProps) => {
+  ({ token, price, comparePrice }: TokenCellPercentChangeProps) => {
     const isEvm = isEvmChainId(token.chainId);
     const multiChainMarketData = useSelector(getMarketData);
     const nonEvmConversionRates = useSelector(getAssetsRates);
@@ -23,15 +25,26 @@ export const TokenCellPercentChange = React.memo(
         ? getNativeTokenAddress(token.chainId as Hex)
         : token.address;
 
-    const tokenPercentageChange = isEvm
-      ? multiChainMarketData?.[token.chainId]?.[tokenAddress]
-          ?.pricePercentChange1d
-      : nonEvmConversionRates?.[tokenAddress as CaipAssetType]?.marketData
-          ?.pricePercentChange?.P1D;
+    let tokenPercentageChange;
+
+    // Compare null and undefined
+    // eslint-disable-next-line no-eq-null
+    if (price != null && comparePrice != null) {
+      tokenPercentageChange = ((price - comparePrice) / comparePrice) * 100;
+    } else {
+      tokenPercentageChange = isEvm
+        ? multiChainMarketData?.[token.chainId]?.[tokenAddress]
+            ?.pricePercentChange1d
+        : nonEvmConversionRates?.[tokenAddress as CaipAssetType]?.marketData
+            ?.pricePercentChange?.P1D;
+    }
 
     return (
       <PercentageChange value={tokenPercentageChange} address={tokenAddress} />
     );
   },
-  (prevProps, nextProps) => prevProps.token.address === nextProps.token.address,
+  (prevProps, nextProps) =>
+    prevProps.token.address === nextProps.token.address &&
+    prevProps.price === nextProps.price &&
+    prevProps.comparePrice === nextProps.comparePrice,
 );
