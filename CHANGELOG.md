@@ -162,6 +162,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated petnames to use account group name (#35835)
 - Show checkbox in edit account page. (#35868)
 
+## [13.4.1]
+
+### Fixed
+
+- Fixes the issue where new Trezor hardware wallet users are unable to connect (#36425)
+- Fixes issue with polycon not being set as default for existing users (#36553)
+- Fixes intermittent connection and signing errors with Lattice1 hardware wallets by improving message validation (#36306)
+
 ## [13.4.0]
 
 ### Added
@@ -848,7 +856,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.5.0...HEAD
-[13.5.0]: https://github.com/MetaMask/metamask-extension/compare/v13.4.0...v13.5.0
+[13.5.0]: https://github.com/MetaMask/metamask-extension/compare/v13.4.1...v13.5.0
+[13.4.1]: https://github.com/MetaMask/metamask-extension/compare/v13.4.0...v13.4.1
 [13.4.0]: https://github.com/MetaMask/metamask-extension/compare/v13.3.2...v13.4.0
 [13.3.2]: https://github.com/MetaMask/metamask-extension/compare/v13.3.1...v13.3.2
 [13.3.1]: https://github.com/MetaMask/metamask-extension/compare/v13.3.0...v13.3.1
