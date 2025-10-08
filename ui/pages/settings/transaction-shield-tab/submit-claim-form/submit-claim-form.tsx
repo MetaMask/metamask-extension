@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { isValidHexAddress } from '@metamask/controller-utils';
 import FileInput from 'react-simple-file-input';
-import { isHexString } from '@metamask/utils';
+import { isStrictHexString } from '@metamask/utils';
 import {
   Box,
   BoxBackgroundColor,
@@ -35,18 +35,14 @@ import {
   BorderRadius,
   TextColor as DsTextColor,
 } from '../../../../helpers/constants/design-system';
-import { useSubmitClaimFormState } from './submit-claim-form-state';
+import { useClaimState } from '../../../../hooks/claims/useClaimState';
+import { isValidEmail } from '../../../../../app/scripts/lib/util';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 function isValidTransactionHash(hash: string): boolean {
   // Check if it's exactly 66 characters (0x + 64 hex chars)
-  if (hash.length !== 66) {
-    return false;
-  }
-
-  // Check if it starts with 0x and is valid hex
-  return hash.startsWith('0x') && isHexString(hash);
+  return hash.length === 66 && isStrictHexString(hash);
 }
 
 const SubmitClaimForm = () => {
@@ -65,14 +61,14 @@ const SubmitClaimForm = () => {
     setDescription,
     files,
     setFiles,
-  } = useSubmitClaimFormState();
+  } = useClaimState();
 
   const [errors, setErrors] = useState<
     Record<string, { key: string; msg: string } | undefined>
   >({});
 
   const validateEmail = useCallback(() => {
-    const isEmailValid = email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/iu);
+    const isEmailValid = isValidEmail(email);
     setErrors((state) => ({
       ...state,
       email: isEmailValid

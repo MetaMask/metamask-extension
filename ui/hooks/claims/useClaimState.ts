@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export const useSubmitClaimFormState = () => {
+export const useClaimState = () => {
   const [email, setEmail] = useState<string>('');
   const [impactedWalletAddress, setImpactedWalletAddress] =
     useState<string>('');
