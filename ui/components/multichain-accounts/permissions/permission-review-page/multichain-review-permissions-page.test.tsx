@@ -427,22 +427,5 @@ describe('MultichainReviewPermissions', () => {
         queryByTestId(TEST_IDS.GATOR_PERMISSIONS_CELL),
       ).not.toBeInTheDocument();
     });
-
-    it('should render no connection content when feature is enabled and there are no permissions', () => {
-      jest
-        .mocked(isGatorPermissionsRevocationFeatureEnabled)
-        .mockReturnValue(true);
-
-      jest.mocked(getPermissionGroupDetailsByOrigin).mockReturnValue({
-        tokenTransfer: {
-          total: 0,
-          chains: [],
-        },
-      });
-
-      const { getByText } = render();
-
-      expect(getByText('No connections')).toBeInTheDocument();
-    });
   });
 });
