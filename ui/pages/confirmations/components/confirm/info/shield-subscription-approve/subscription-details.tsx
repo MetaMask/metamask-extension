@@ -51,8 +51,6 @@ export const SubscriptionDetails = ({
         {showTrial && (
           <Box
             data-testid="free-seven-day-trial"
-            // borderRadius={BorderRadius.LG}
-            // display={Display.InlineFlex}
             alignItems={BoxAlignItems.Center}
             paddingLeft={1}
             paddingRight={1}

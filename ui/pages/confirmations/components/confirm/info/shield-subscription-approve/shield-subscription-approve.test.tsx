@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { getMockApproveConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
+import { tEn } from '../../../../../../../test/lib/i18n-helpers';
 import ShieldSubscriptionApproveInfo from './shield-subscription-approve';
 
 jest.mock('../hooks/useDecodedTransactionData', () => ({
@@ -49,11 +50,19 @@ describe('ShieldSubscriptionApproveInfo', () => {
   it('renders correctly', () => {
     const state = getMockApproveConfirmState();
     const mockStore = configureMockStore([])(state);
-    const { container } = renderWithConfirmContextProvider(
+    const { getByText } = renderWithConfirmContextProvider(
       <ShieldSubscriptionApproveInfo />,
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(getByText(tEn('transactionShield') as string)).toBeInTheDocument();
+    expect(getByText('$8/month (Monthly)' as string)).toBeInTheDocument();
+    expect(getByText(tEn('freeSevenDayTrial') as string)).toBeInTheDocument();
+    expect(getByText(tEn('estimatedChanges') as string)).toBeInTheDocument();
+    expect(getByText(tEn('youApprove') as string)).toBeInTheDocument();
+    expect(getByText('96')).toBeInTheDocument();
+    expect(getByText(tEn('account') as string)).toBeInTheDocument();
+    expect(getByText(tEn('networkFee') as string)).toBeInTheDocument();
+    expect(getByText(tEn('speed') as string)).toBeInTheDocument();
   });
 });

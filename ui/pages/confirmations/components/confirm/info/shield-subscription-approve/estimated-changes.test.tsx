@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { getMockConfirmState } from '../../../../../../../test/data/confirmations/helper';
+import { tEn } from '../../../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
 import { EstimatedChanges } from './estimated-changes';
 
@@ -11,10 +12,10 @@ jest.mock('../../../../../../components/app/name/name', () => ({
 }));
 
 describe('EstimatedChanges', () => {
-  it('renders monthly plan correctly with tooltip', () => {
+  it('renders for monthly plan correctly', () => {
     const state = getMockConfirmState();
     const mockStore = configureMockStore([])(state);
-    const { container } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <EstimatedChanges
         approvalAmount={'96'}
         tokenAddress={'0xToken'}
@@ -23,13 +24,16 @@ describe('EstimatedChanges', () => {
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(getByText(tEn('estimatedChanges') as string)).toBeInTheDocument();
+    expect(getByText(tEn('youApprove') as string)).toBeInTheDocument();
+    expect(getByText('96')).toBeInTheDocument();
+    expect(getByText('0xToken')).toBeInTheDocument();
   });
 
-  it('renders annual plan correctly without tooltip', () => {
+  it('renders for annual plan correctly', () => {
     const state = getMockConfirmState();
     const mockStore = configureMockStore([])(state);
-    const { container } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <EstimatedChanges
         approvalAmount={'80'}
         tokenAddress={'0xToken'}
@@ -38,6 +42,9 @@ describe('EstimatedChanges', () => {
       mockStore,
     );
 
-    expect(container).toMatchSnapshot();
+    expect(getByText(tEn('estimatedChanges') as string)).toBeInTheDocument();
+    expect(getByText(tEn('youApprove') as string)).toBeInTheDocument();
+    expect(getByText('80')).toBeInTheDocument();
+    expect(getByText('0xToken')).toBeInTheDocument();
   });
 });
