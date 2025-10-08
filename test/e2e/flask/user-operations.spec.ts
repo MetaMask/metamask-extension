@@ -23,10 +23,10 @@ import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import HomePage from '../page-objects/pages/home/homepage';
 import { mockSendRedesignFeatureFlag } from '../tests/send/common';
 import SendPage from '../page-objects/pages/send/send-page';
+import SendTokenConfirmPage from '../page-objects/pages/send/send-token-confirmation-page';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -277,12 +277,15 @@ describe('User Operations', function () {
         await homePage.startSendFlow();
 
         const sendPage = new SendPage(driver);
+        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+
         await sendPage.createSendRequest({
           chainId: '0x539',
           symbol: 'ETH',
           recipientAddress: LOCAL_NODE_ACCOUNT,
           amount: '1',
         });
+        await sendTokenConfirmationPage.clickOnConfirm();
 
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
