@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Token Transfer Page render renders correctly 1`] = `
+exports[`Review Gator Permissions Page render renders correctly 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -8,7 +8,7 @@ exports[`Token Transfer Page render renders correctly 1`] = `
   >
     <div
       class="mm-box multichain-page__inner-container main-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
-      data-testid="token-transfer-page"
+      data-testid="review-gator-permissions-page"
     >
       <div
         class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
@@ -42,30 +42,10 @@ exports[`Token Transfer Page render renders correctly 1`] = `
           >
             <h3
               class="text-default text-s-heading-md leading-s-heading-md tracking-s-heading-md md:text-l-heading-md md:leading-l-heading-md md:tracking-l-heading-md font-bold font-default text-center"
-              data-testid="token-transfer-page-title"
+              data-testid="review-gator-permissions-page-title"
             >
-              Token transfer
+              Unknown network
             </h3>
-          </p>
-        </div>
-      </div>
-      <div
-        class="mm-box multichain-page-content mm-box--padding-0 mm-box--padding-top-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
-        style="overflow: auto;"
-      >
-        <div
-          class="flex flex-col gap-2 justify-center p-4"
-          data-testid="no-connections"
-        >
-          <p
-            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
-          >
-            Nothing to see here
-          </p>
-          <p
-            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
-          >
-            This is where you can see the permissions you've given to installed Snaps or connected sites.
           </p>
         </div>
       </div>
