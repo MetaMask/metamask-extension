@@ -66,6 +66,7 @@ import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
   BillingPortalResponse,
   GetCryptoApproveTransactionRequest,
+  GetCryptoApproveTransactionResponse,
   PaymentType,
   PricingResponse,
   ProductType,
@@ -375,7 +376,7 @@ export function getSubscriptionPricing(): ThunkAction<
  */
 export async function getSubscriptionCryptoApprovalAmount(
   params: GetCryptoApproveTransactionRequest,
-): Promise<string> {
+): Promise<GetCryptoApproveTransactionResponse> {
   return await submitRequestToBackground<string>(
     'getSubscriptionCryptoApprovalAmount',
     [params],
