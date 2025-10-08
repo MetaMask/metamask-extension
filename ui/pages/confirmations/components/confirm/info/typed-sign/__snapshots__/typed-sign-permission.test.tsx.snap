@@ -243,15 +243,13 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -629,15 +627,13 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -972,15 +968,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -1028,15 +1022,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -1175,15 +1167,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -1231,15 +1221,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -1493,15 +1481,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -1549,15 +1535,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -1653,15 +1637,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -1709,15 +1691,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -1971,15 +1951,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -2118,15 +2096,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -2174,15 +2150,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -2436,15 +2410,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -2583,15 +2555,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -2639,15 +2609,13 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -2863,15 +2831,13 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -3211,15 +3177,13 @@ exports[`TypedSignPermissionInfo native-token-periodic renders native token peri
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -3516,15 +3480,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -3572,15 +3534,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -3719,15 +3679,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -3775,15 +3733,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -3999,15 +3955,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -4055,15 +4009,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -4159,15 +4111,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -4215,15 +4165,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -4439,15 +4387,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -4586,15 +4532,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -4642,15 +4586,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -4866,15 +4808,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -5013,15 +4953,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -5069,15 +5007,13 @@ exports[`TypedSignPermissionInfo native-token-stream renders native token stream
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
