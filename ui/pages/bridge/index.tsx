@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import {
-  BridgeAppState,
   UnifiedSwapBridgeEventName,
   // TODO: update this with all non-EVM chains when bitcoin added.
   isSolanaChainId,
@@ -22,7 +21,6 @@ import {
   IconName,
 } from '../../components/component-library';
 import { getSelectedNetworkClientId } from '../../../shared/modules/selectors/networks';
-import { getMultichainCurrentChainId } from '../../selectors/multichain';
 import useBridging from '../../hooks/bridge/useBridging';
 import {
   Content,
@@ -41,16 +39,11 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
-import {
-  getFromChain,
-  getBridgeQuotes,
-  getIsUnifiedUIEnabled,
-} from '../../ducks/bridge/selectors';
+import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
-import { useIsMultichainSwap } from './hooks/useIsMultichainSwap';
 
 const CrossChainSwap = () => {
   const t = useContext(I18nContext);
@@ -68,11 +61,6 @@ const CrossChainSwap = () => {
     await dispatch(resetBridgeState());
   };
 
-  const isSwap = useIsMultichainSwap();
-  const chainId = useSelector(getMultichainCurrentChainId);
-  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
-    getIsUnifiedUIEnabled(state, chainId),
-  );
   const { activeQuote } = useSelector(getBridgeQuotes);
 
   // Get chain information to determine if we need gas estimates
@@ -149,7 +137,7 @@ const CrossChainSwap = () => {
           />
         }
       >
-        {isSwap || isUnifiedUIEnabled ? t('swap') : t('bridge')}
+        {t('swap')}
       </Header>
       <Content padding={0}>
         <Switch>

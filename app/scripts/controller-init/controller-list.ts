@@ -65,6 +65,10 @@ import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { ApprovalController } from '@metamask/approval-controller';
 import { NetworkEnablementController } from '@metamask/network-enablement-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
+import { AnnouncementController } from '@metamask/announcement-controller';
+import { PhishingController } from '@metamask/phishing-controller';
+import { LoggingController } from '@metamask/logging-controller';
+import { ErrorReportingService } from '@metamask/error-reporting-service';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -77,12 +81,21 @@ import AccountTrackerController from '../controllers/account-tracker-controller'
 import { AppStateController } from '../controllers/app-state-controller';
 import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
 import { SubscriptionService } from '../services/subscription/subscription-service';
+import { AccountOrderController } from '../controllers/account-order';
+import { AlertController } from '../controllers/alert-controller';
+import { MetaMetricsDataDeletionController } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
+import AppMetadataController from '../controllers/app-metadata';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
  */
 export type Controller =
+  | AccountOrderController
   | AccountTrackerController
+  | AccountsController
+  | AlertController
+  | AnnouncementController
+  | AppMetadataController
   | ApprovalController
   | AppStateController
   | AuthenticationController
@@ -93,12 +106,15 @@ export type Controller =
   | DelegationController
   | DeFiPositionsController
   | EnsController
+  | ErrorReportingService
   | ExecutionService
   | GasFeeController
   | GatorPermissionsController
   | JsonSnapsRegistry
   | KeyringController
+  | LoggingController
   | MetaMetricsController
+  | MetaMetricsDataDeletionController
   | MultichainAssetsController
   | MultichainAssetsRatesController
   | MultichainBalancesController
@@ -117,6 +133,7 @@ export type Controller =
       CaveatSpecificationConstraint
     >
   | PermissionLogController
+  | PhishingController
   | PPOMController
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
@@ -155,8 +172,12 @@ export type Controller =
  * Flat state object for all controllers supporting or required by modular initialization.
  * e.g. `{ transactions: [] }`.
  */
-export type ControllerFlatState = AccountsController['state'] &
+export type ControllerFlatState = AccountOrderController['state'] &
+  AccountsController['state'] &
+  AlertController['state'] &
   AccountTreeController['state'] &
+  AnnouncementController['state'] &
+  AppMetadataController['state'] &
   ApprovalController['state'] &
   AppStateController['state'] &
   AuthenticationController['state'] &
@@ -171,7 +192,9 @@ export type ControllerFlatState = AccountsController['state'] &
   GatorPermissionsController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
+  LoggingController['state'] &
   MetaMetricsController['state'] &
+  MetaMetricsDataDeletionController['state'] &
   MultichainAssetsController['state'] &
   MultichainAssetsRatesController['state'] &
   MultichainBalancesController['state'] &
@@ -186,6 +209,7 @@ export type ControllerFlatState = AccountsController['state'] &
     CaveatSpecificationConstraint
   >['state'] &
   PermissionLogController['state'] &
+  PhishingController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &
