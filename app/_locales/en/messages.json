@@ -595,6 +595,9 @@
     "message": "$1 and $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
+  "annual": {
+    "message": "Annual"
+  },
   "appDescription": {
     "message": "The world's most trusted crypto wallet",
     "description": "The description of the application"
@@ -942,9 +945,6 @@
   },
   "bridgeFetchNewQuotes": {
     "message": "Fetch a new one?"
-  },
-  "bridgeFrom": {
-    "message": "Bridge from"
   },
   "bridgeFromTo": {
     "message": "Bridge $1 $2 to $3",
@@ -2432,6 +2432,9 @@
     "message": "Error with $1",
     "description": "$1 represents the name of the snap"
   },
+  "estimatedChanges": {
+    "message": "Estimated changes"
+  },
   "estimatedFee": {
     "message": "Estimated fee"
   },
@@ -2586,6 +2589,9 @@
   },
   "form": {
     "message": "form"
+  },
+  "freeSevenDayTrial": {
+    "message": "Free 7-day trial"
   },
   "from": {
     "message": "From"
@@ -3509,6 +3515,12 @@
   },
   "missingSettingRequest": {
     "message": "Request here"
+  },
+  "month": {
+    "message": "month"
+  },
+  "monthly": {
+    "message": "Monthly"
   },
   "more": {
     "message": "more"
@@ -5594,6 +5606,9 @@
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Signature and transaction requests"
   },
+  "shieldConfirmMembership": {
+    "message": "Confirm membership"
+  },
   "shieldEntryModalAssetCoverage": {
     "message": "$10,000 asset coverage per transaction"
   },
@@ -5615,6 +5630,9 @@
   },
   "shieldEntryModalSupport": {
     "message": "Priority customer support"
+  },
+  "shieldEstimatedChangesMonthlyTooltip": {
+    "message": "Authorize up to $$1 for the full year. You'll be billed $$2 each month, not the full amount now."
   },
   "shieldPlanAnnual": {
     "message": "Annual"
@@ -7139,6 +7157,9 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
+  "tokenContractError": {
+    "message": "This address is a token contract address. If you send tokens to this address, you will lose them."
+  },
   "tokenDecimal": {
     "message": "Token decimal"
   },
@@ -7159,6 +7180,14 @@
   },
   "tokenMarketplace": {
     "message": "Token marketplace"
+  },
+  "tokenPermissionCount": {
+    "message": "$1 token permission",
+    "description": "$1 is the count of token permissions (singular form)"
+  },
+  "tokenPermissionsCount": {
+    "message": "$1 token permissions",
+    "description": "$1 is the count of token permissions (plural form)"
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
@@ -7272,6 +7301,9 @@
   },
   "transactionSettings": {
     "message": "Transaction settings"
+  },
+  "transactionShield": {
+    "message": "Transaction Shield"
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
@@ -7404,6 +7436,10 @@
   },
   "unknownCollection": {
     "message": "Unnamed collection"
+  },
+  "unknownNetworkForGatorPermissions": {
+    "message": "Unknown network",
+    "description": "Displayed on places like Gator permissions when regular name is not available."
   },
   "unknownNetworkForKeyEntropy": {
     "message": "Unknown network",
@@ -7714,11 +7750,17 @@
     "message": "Wrong password",
     "description": "Displayed when the user enters an incorrect password"
   },
+  "year": {
+    "message": "year"
+  },
   "yes": {
     "message": "Yes"
   },
   "you": {
     "message": "You"
+  },
+  "youApprove": {
+    "message": "You approve"
   },
   "youDeclinedTheTransaction": {
     "message": "You declined the transaction."
