@@ -158,6 +158,7 @@ async function mockEmptyStalelistAndHotlist(mockServer) {
         statusCode: 200,
         json: defaultHotlist,
       };
+    });
 }
 
 module.exports = {
