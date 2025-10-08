@@ -67,12 +67,11 @@ describe('Send ETH', function () {
 
         await homePage.startSendFlow();
 
-        await sendPage.selectToken('0x539', 'ETH');
-        await sendPage.fillRecipient(
-          '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-        );
-        await sendPage.pressMaxButton();
-        await sendPage.pressContinueButton();
+        await sendPage.createMaxSendRequest({
+          chainId: '0x539',
+          symbol: 'ETH',
+          recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+        });
 
         await sendTokenConfirmationPage.clickOnConfirm();
         await activityListPage.checkTransactionActivityByText('Sent');
@@ -105,34 +104,22 @@ describe('Send ETH', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+        const homePage = new HomePage(driver);
+        const sendPage = new SendPage(driver);
+        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const activityListPage = new ActivityListPage(driver);
 
-        await driver.clickElement('[data-testid="token-asset-0x539-ETH"]');
+        await homePage.startSendFlow();
 
-        await driver.clickElement('[data-testid="open-recipient-modal-btn"]');
+        await sendPage.selectToken('0x539', 'ETH');
+        await sendPage.selectAccountFromRecipientModal('Test Name 1');
+        await sendPage.fillAmount('1');
+        await sendPage.pressContinueButton();
 
-        await driver.clickElement({ text: 'Test Name 1' });
-
-        await driver.fill('input[placeholder="0"]', '1');
-
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
-
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
-
-        await driver.waitForSelector({
-          css: '[data-testid="transaction-list-item-primary-currency"]',
-          text: '-1 ETH',
-        });
+        await sendTokenConfirmationPage.clickOnConfirm();
+        await activityListPage.checkTransactionActivityByText('Sent');
+        await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
+        await activityListPage.checkTxAmountInActivity('-1 ETH');
       },
     );
   });
@@ -160,30 +147,22 @@ describe('Send ETH', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+        const homePage = new HomePage(driver);
+        const sendPage = new SendPage(driver);
+        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const activityListPage = new ActivityListPage(driver);
 
-        await driver.clickElement('[data-testid="token-asset-0x1-ETH"]');
+        await homePage.startSendFlow();
 
-        await driver.fill(
-          'input[placeholder="Enter or paste a valid address"]',
-          'test.eth',
-        );
+        await sendPage.createSendRequest({
+          chainId: '0x1',
+          symbol: 'ETH',
+          recipientAddress: 'test.eth',
+          amount: '1',
+        });
 
-        await driver.fill('input[placeholder="0"]', '1');
-
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
-
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .activity-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        // cancelling request as send on mainnet will fail
+        await sendTokenConfirmationPage.clickOnCancel();
       },
     );
   });

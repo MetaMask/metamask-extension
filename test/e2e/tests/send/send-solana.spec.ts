@@ -23,15 +23,12 @@ describe('Send Solana', function () {
 
         await nonEvmHomepage.clickOnSendButton();
 
-        await sendPage.selectToken(
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          'SOL',
-        );
-        await sendPage.fillRecipient(
-          '7bYxDqvLQ4P8p6Vq3J6t1wczVwLk9h4Q9M5rjqvN1sVg',
-        );
-        await sendPage.fillAmount('1');
-        await sendPage.pressContinueButton();
+        await sendPage.createSendRequest({
+          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+          symbol: 'SOL',
+          recipientAddress: '7bYxDqvLQ4P8p6Vq3J6t1wczVwLk9h4Q9M5rjqvN1sVg',
+          amount: '1',
+        });
 
         await snapTransactionConfirmation.clickFooterCancelButton();
       },
