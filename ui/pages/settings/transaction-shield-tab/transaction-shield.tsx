@@ -60,6 +60,7 @@ import {
   useSubscriptionPaymentMethods,
   useSubscriptionPricing,
 } from '../../../hooks/subscription/useSubscriptionPricing';
+import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
@@ -263,6 +264,21 @@ const TransactionShield = () => {
       </Box>
     );
   };
+  const isInsufficientFundsCrypto =
+    shieldSubscription &&
+    isCryptoPaymentMethod(shieldSubscription.paymentMethod) &&
+    shieldSubscription.paymentMethod.crypto.error === 'insufficient_balance';
+  const isAllowanceNeededCrypto =
+    shieldSubscription &&
+    isCryptoPaymentMethod(shieldSubscription.paymentMethod) &&
+    (shieldSubscription.paymentMethod.crypto.error ===
+      'insufficient_allowance' ||
+      shieldSubscription.paymentMethod.crypto.error ===
+        'approval_transaction_too_old' ||
+      shieldSubscription.paymentMethod.crypto.error ===
+        'approval_transaction_reverted' ||
+      shieldSubscription.paymentMethod.crypto.error ===
+        'approval_transaction_max_verification_attempts_reached');
 
   const membershipErrorBanner = useMemo(() => {
     if (isPaused) {
@@ -272,13 +288,34 @@ const TransactionShield = () => {
           severity={BannerAlertSeverity.Danger}
           marginBottom={4}
           actionButtonLabel={t(
-            isCryptoPayment
+            isCryptoPayment && isInsufficientFundsCrypto
               ? 'shieldTxMembershipErrorAddFunds'
               : 'shieldTxMembershipErrorUpdatePayment',
           )}
           actionButtonOnClick={async () => {
-            if (isCryptoPayment) {
-              setIsAddFundsModalOpen(true);
+            if (
+              shieldSubscription &&
+              isCryptoPaymentMethod(shieldSubscription.paymentMethod)
+            ) {
+              if (isInsufficientFundsCrypto) {
+                // TODO: handle add funds crypto
+                // then use subscription controller to trigger subscription check
+                setIsAddFundsModalOpen(true);
+                // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                //   ...params,
+                //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
+                // }))
+              } else if (isAllowanceNeededCrypto) {
+                // TODO: handle add approval transaction crypto
+                // then use subscription controller to udpate the subscription with new raw transaction
+                console.log('add allowance');
+                // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                //   ...params,
+                //   rawTransaction: newApprovalRawTransaction
+                // }))
+              } else {
+                throw new Error('Unknown crypto error action');
+              }
             } else {
               await executeUpdateSubscriptionCardPaymentMethod();
             }
@@ -296,9 +333,35 @@ const TransactionShield = () => {
           ])}
           severity={BannerAlertSeverity.Warning}
           marginBottom={4}
-          actionButtonLabel={t('shieldTxMembershipErrorAddFunds')}
+          actionButtonLabel={
+            isAllowanceNeededCrypto
+              ? t('shieldTxMembershipRenew')
+              : t('shieldTxMembershipErrorAddFunds')
+          }
           actionButtonOnClick={() => {
-            setIsAddFundsModalOpen(true);
+            if (isCryptoPaymentMethod(shieldSubscription.paymentMethod)) {
+              if (isInsufficientFundsCrypto) {
+                // TODO: handle add funds crypto
+                setIsAddFundsModalOpen(true);
+                // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                //   ...params,
+                //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
+                // }))
+              } else if (isAllowanceNeededCrypto) {
+                // TODO: handle add allowance crypto
+                console.log('add allowance');
+                // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                //   ...params,
+                //   rawTransaction: newApprovalRawTransaction
+                // }))
+              } else {
+                throw new Error('Unknown crypto error action');
+              }
+            } else {
+              throw new Error(
+                'Only crypto payment method is supported when ending soon',
+              );
+            }
           }}
         />
       );
@@ -312,6 +375,8 @@ const TransactionShield = () => {
     t,
     isCryptoPayment,
     executeUpdateSubscriptionCardPaymentMethod,
+    isInsufficientFundsCrypto,
+    isAllowanceNeededCrypto,
   ]);
 
   const paymentMethod = useMemo(() => {
@@ -335,7 +400,23 @@ const TransactionShield = () => {
             }}
             onClick={async () => {
               if (isCryptoPayment) {
-                setIsAddFundsModalOpen(true);
+                if (isInsufficientFundsCrypto) {
+                  // TODO: handle add funds crypto
+                  setIsAddFundsModalOpen(true);
+                  // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                  //   ...params,
+                  //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
+                  // }))
+                } else if (isAllowanceNeededCrypto) {
+                  // TODO: handle add allowance crypto
+                  console.log('add allowance');
+                  // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                  //   ...params,
+                  //   rawTransaction: newApprovalRawTransaction
+                  // }))
+                } else {
+                  throw new Error('Unknown crypto error action');
+                }
               } else {
                 await executeUpdateSubscriptionCardPaymentMethod();
               }
@@ -367,7 +448,29 @@ const TransactionShield = () => {
           }}
           color={TextColor.warningDefault}
           onClick={() => {
-            setIsAddFundsModalOpen(true);
+            if (isCryptoPaymentMethod(shieldSubscription.paymentMethod)) {
+              if (isInsufficientFundsCrypto) {
+                // TODO: handle add funds crypto
+                setIsAddFundsModalOpen(true);
+                // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                //   ...params,
+                //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
+                // }))
+              } else if (isAllowanceNeededCrypto) {
+                // TODO: handle add allowance crypto
+                console.log('add allowance');
+                // await dispatch(updateSubscriptionCryptoPaymentMethod({
+                //   ...params,
+                //   rawTransaction: newApprovalRawTransaction
+                // }))
+              } else {
+                throw new Error('Unknown crypto error action');
+              }
+            } else {
+              throw new Error(
+                'Only crypto payment method is supported when ending soon',
+              );
+            }
           }}
         >
           {isCryptoPaymentMethod(shieldSubscription.paymentMethod)
@@ -386,6 +489,8 @@ const TransactionShield = () => {
     isSubscriptionEndingSoon,
     t,
     executeUpdateSubscriptionCardPaymentMethod,
+    isInsufficientFundsCrypto,
+    isAllowanceNeededCrypto,
   ]);
 
   return (
@@ -621,9 +726,16 @@ const TransactionShield = () => {
               {isCryptoPayment &&
                 billingDetails(
                   t('shieldTxMembershipBillingDetailsBillingAccount'),
-                  isCryptoPaymentMethod(shieldSubscription.paymentMethod)
-                    ? shieldSubscription.paymentMethod.crypto.payerAddress // TODO: will change to account name
-                    : '',
+                  isCryptoPaymentMethod(shieldSubscription.paymentMethod) ? (
+                    <ConfirmInfoRowAddress
+                      address={
+                        shieldSubscription.paymentMethod.crypto.payerAddress
+                      }
+                      chainId={shieldSubscription.paymentMethod.crypto.chainId}
+                    />
+                  ) : (
+                    ''
+                  ),
                 )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsPaymentMethod'),
