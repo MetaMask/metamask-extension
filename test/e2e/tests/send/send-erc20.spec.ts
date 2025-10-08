@@ -1,8 +1,8 @@
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import FixtureBuilder from '../../fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
-import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withFixtures } from '../../helpers';
 import { mockSendRedesignFeatureFlag } from './common';
@@ -51,7 +51,7 @@ describe('Send ERC20', function () {
 
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
-        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const confirmation = new Confirmation(driver);
 
         await homePage.startSendFlow();
 
@@ -67,7 +67,7 @@ describe('Send ERC20', function () {
         await sendPage.pressContinueButton();
 
         // cancelling request as send on linea will fail
-        await sendTokenConfirmationPage.clickOnCancel();
+        await confirmation.clickFooterCancelButton();
       },
     );
   });
@@ -84,7 +84,7 @@ describe('Send ERC20', function () {
 
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
-        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const confirmation = new Confirmation(driver);
 
         await homePage.startSendFlow();
 
@@ -95,7 +95,7 @@ describe('Send ERC20', function () {
         });
 
         // cancelling request as send on linea will fail
-        await sendTokenConfirmationPage.clickOnCancel();
+        await confirmation.clickFooterCancelButton();
       },
     );
   });
