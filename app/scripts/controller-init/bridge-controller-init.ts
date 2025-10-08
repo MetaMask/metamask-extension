@@ -3,7 +3,7 @@ import {
   BridgeController,
   UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
 } from '@metamask/bridge-controller';
-import { handleFetch } from '@metamask/controller-utils';
+import { HttpError } from '@metamask/controller-utils';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { trace } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -13,6 +13,7 @@ import {
   BridgeControllerInitMessenger,
   BridgeControllerMessenger,
 } from './messengers';
+import { MINUTE, SECOND } from '../../../shared/constants/time';
 
 type FetchWithCacheOptions = {
   cacheOptions?: {
@@ -45,27 +46,34 @@ export const BridgeControllerInit: ControllerInitFunction<
     getLayer1GasFee: (...args) =>
       transactionController.getLayer1GasFee(...args),
 
-    fetchFn: async (
-      url,
-      {
-        cacheOptions,
-        functionName,
-        ...requestOptions
-      }: FetchWithCacheOptions = {},
-    ) => {
-      if (functionName === 'fetchBridgeTokens') {
+    fetchFn: async (url, requestOptions) => {
+      const urlString = url.toString();
+      if (urlString.includes('getTokens')) {
         return await fetchWithCache({
-          url: url.toString(),
+          url: urlString,
           fetchOptions: { method: 'GET', ...requestOptions },
-          cacheOptions,
-          functionName,
+          cacheOptions: { cacheRefreshTime: 10 * MINUTE },
+          functionName: 'fetchBridgeTokens',
         });
       }
 
-      return await handleFetch(url, {
-        method: 'GET',
-        ...requestOptions,
-      });
+      if (urlString.includes('spot-prices')) {
+        return await fetchWithCache({
+          url: urlString,
+          fetchOptions: { method: 'GET', ...requestOptions },
+          cacheOptions: { cacheRefreshTime: 30 * SECOND },
+          functionName: 'fetchAssetExchangeRates',
+        });
+      }
+
+      const response = await fetch(url, requestOptions);
+      if (!response.ok) {
+        throw new HttpError(
+          response.status,
+          `=====Fetch failed with status '${response.status}' for request ${urlString}`,
+        );
+      }
+      return response;
     },
 
     trackMetaMetricsFn: (event, properties) => {
