@@ -36,6 +36,8 @@ import {
   TextColor as DsTextColor,
 } from '../../../../helpers/constants/design-system';
 import { useClaimState } from '../../../../hooks/claims/useClaimState';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
