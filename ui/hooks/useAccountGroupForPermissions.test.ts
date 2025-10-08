@@ -602,4 +602,576 @@ describe('useAccountGroupsForPermissions', () => {
       expect(result.current.supportedAccountGroups[1].id).toBe(MOCK_GROUP_ID_1);
     });
   });
+
+  describe('connectedAccountGroupWithRequested', () => {
+    it('includes connected account groups when existing permissions exist', () => {
+      const existingPermission = createPermissionWithEvmAccounts([
+        mockEvmAccount1.address,
+      ]);
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        existingPermission,
+        EMPTY_REQUESTED_ACCOUNT_IDS,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.connectedAccountGroupWithRequested).toHaveLength(1);
+      expect(result.current.connectedAccountGroupWithRequested[0].id).toBe(
+        MOCK_GROUP_ID_1,
+      );
+    });
+
+    it('includes priority groups that fulfill requested account IDs', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedCaipAccountIds: CaipAccountId[] = [
+        `eip155:1:${mockEvmAccount2.address}` as CaipAccountId,
+      ];
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        requestedCaipAccountIds,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.connectedAccountGroupWithRequested).toHaveLength(1);
+      expect(result.current.connectedAccountGroupWithRequested[0].id).toBe(
+        MOCK_GROUP_ID_2,
+      );
+    });
+
+    it('includes both connected and requested account groups', () => {
+      const existingPermission = createPermissionWithEvmAccounts([
+        mockEvmAccount1.address,
+      ]);
+      const requestedCaipAccountIds: CaipAccountId[] = [
+        `eip155:1:${mockEvmAccount2.address}` as CaipAccountId,
+      ];
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        existingPermission,
+        requestedCaipAccountIds,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.connectedAccountGroupWithRequested).toHaveLength(2);
+      const groupIds = result.current.connectedAccountGroupWithRequested.map(
+        (g) => g.id,
+      );
+      expect(groupIds).toContain(MOCK_GROUP_ID_1); // Connected group
+      expect(groupIds).toContain(MOCK_GROUP_ID_2); // Requested group
+    });
+
+    it('returns empty array when no connected or requested accounts', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        EMPTY_REQUESTED_ACCOUNT_IDS,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.connectedAccountGroupWithRequested).toEqual([]);
+    });
+
+    it('handles Solana account connections', () => {
+      const solPermission: Caip25CaveatValue = {
+        requiredScopes: {
+          [MOCK_SOLANA_CHAIN_ID]: {
+            accounts: [
+              `${MOCK_SOLANA_CHAIN_ID}:${mockSolAccount1.address}` as CaipAccountId,
+            ],
+          },
+        },
+        optionalScopes: {},
+        sessionProperties: {},
+        isMultichainOrigin: false,
+      };
+
+      const requestedChainIds: CaipChainId[] = [
+        MOCK_SOLANA_CHAIN_ID as CaipChainId,
+      ];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        solPermission,
+        EMPTY_REQUESTED_ACCOUNT_IDS,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.connectedAccountGroupWithRequested).toHaveLength(1);
+      expect(result.current.connectedAccountGroupWithRequested[0].id).toBe(
+        MOCK_GROUP_ID_1,
+      );
+    });
+
+    it('avoids duplicates when an account group is both connected and requested', () => {
+      const existingPermission = createPermissionWithEvmAccounts([
+        mockEvmAccount1.address,
+      ]);
+      const requestedCaipAccountIds: CaipAccountId[] = [
+        `eip155:1:${mockEvmAccount1.address}` as CaipAccountId,
+      ];
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        existingPermission,
+        requestedCaipAccountIds,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.connectedAccountGroupWithRequested).toHaveLength(1);
+      expect(result.current.connectedAccountGroupWithRequested[0].id).toBe(
+        MOCK_GROUP_ID_1,
+      );
+    });
+  });
+
+  describe('caipAccountIdsOfConnectedAndRequestedAccountGroups', () => {
+    it('returns CAIP account IDs for connected account groups with requested chains', () => {
+      const existingPermission = createPermissionWithEvmAccounts([
+        mockEvmAccount1.address,
+      ]);
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        existingPermission,
+        EMPTY_REQUESTED_ACCOUNT_IDS,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups,
+      ).toContain(`eip155:1:${mockEvmAccount1.address}`);
+    });
+
+    it('includes CAIP account IDs for requested account groups', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedCaipAccountIds: CaipAccountId[] = [
+        `eip155:1:${mockEvmAccount2.address}` as CaipAccountId,
+      ];
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        requestedCaipAccountIds,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups,
+      ).toContain(`eip155:1:${mockEvmAccount2.address}`);
+    });
+
+    it('returns unique CAIP account IDs (no duplicates)', () => {
+      const existingPermission = createPermissionWithEvmAccounts([
+        mockEvmAccount1.address,
+      ]);
+      const requestedCaipAccountIds: CaipAccountId[] = [
+        `eip155:1:${mockEvmAccount1.address}` as CaipAccountId,
+      ];
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        existingPermission,
+        requestedCaipAccountIds,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      const caipAccountIds =
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups;
+      const uniqueIds = [...new Set(caipAccountIds)];
+      expect(caipAccountIds).toHaveLength(uniqueIds.length);
+    });
+
+    it('handles multiple chain IDs for the same account group', () => {
+      const existingPermission = createPermissionWithEvmAccounts([
+        mockEvmAccount1.address,
+      ]);
+      const requestedChainIds: CaipChainId[] = [
+        'eip155:1' as CaipChainId,
+        'eip155:137' as CaipChainId,
+      ];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        existingPermission,
+        EMPTY_REQUESTED_ACCOUNT_IDS,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      const caipAccountIds =
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups;
+      expect(caipAccountIds).toContain(`eip155:1:${mockEvmAccount1.address}`);
+      expect(caipAccountIds).toContain(`eip155:137:${mockEvmAccount1.address}`);
+    });
+
+    it('returns empty array when no connected account groups with requested chains', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        EMPTY_REQUESTED_ACCOUNT_IDS,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups,
+      ).toEqual([]);
+    });
+
+    it('handles Solana account IDs correctly', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedCaipAccountIds: CaipAccountId[] = [
+        `${MOCK_SOLANA_CHAIN_ID}:${mockSolAccount1.address}` as CaipAccountId,
+      ];
+      const requestedChainIds: CaipChainId[] = [
+        MOCK_SOLANA_CHAIN_ID as CaipChainId,
+      ];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        requestedCaipAccountIds,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups,
+      ).toContain(`${MOCK_SOLANA_CHAIN_ID}:${mockSolAccount1.address}`);
+    });
+
+    it('includes accounts from both EVM and Solana in mixed scenarios', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedCaipAccountIds: CaipAccountId[] = [
+        `eip155:1:${mockEvmAccount1.address}` as CaipAccountId,
+        `${MOCK_SOLANA_CHAIN_ID}:${mockSolAccount1.address}` as CaipAccountId,
+      ];
+      const requestedChainIds: CaipChainId[] = [
+        'eip155:1' as CaipChainId,
+        MOCK_SOLANA_CHAIN_ID as CaipChainId,
+      ];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        requestedCaipAccountIds,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      const caipAccountIds =
+        result.current.caipAccountIdsOfConnectedAndRequestedAccountGroups;
+      expect(caipAccountIds).toContain(`eip155:1:${mockEvmAccount1.address}`);
+      expect(caipAccountIds).toContain(
+        `${MOCK_SOLANA_CHAIN_ID}:${mockSolAccount1.address}`,
+      );
+    });
+  });
+
+  describe('selectedAndRequestedAccountGroups', () => {
+    it('includes priority groups when they fulfill requested account IDs', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedCaipAccountIds: CaipAccountId[] = [
+        `eip155:1:${mockEvmAccount2.address}` as CaipAccountId,
+      ];
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        requestedCaipAccountIds,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.selectedAndRequestedAccountGroups).toHaveLength(1);
+      expect(result.current.selectedAndRequestedAccountGroups[0].id).toBe(
+        MOCK_GROUP_ID_2,
+      );
+    });
+
+    it('includes selected account group when it is supported', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        EMPTY_REQUESTED_ACCOUNT_IDS,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.selectedAndRequestedAccountGroups).toHaveLength(1);
+      expect(result.current.selectedAndRequestedAccountGroups[0].id).toBe(
+        MOCK_GROUP_ID_1,
+      );
+    });
+
+    it('includes first supported group when selected account group is not provided', () => {
+      const stateOverrides = {
+        accountTree: {
+          selectedAccountGroup: null, // No selected account group
+          wallets: {
+            [MOCK_WALLET_ID]: {
+              id: MOCK_WALLET_ID,
+              type: AccountWalletType.Entropy,
+              metadata: {
+                name: 'Test Wallet 1',
+                entropy: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                },
+              },
+              groups: {
+                [MOCK_GROUP_ID_1]: {
+                  id: MOCK_GROUP_ID_1,
+                  type: AccountGroupType.MultichainAccount,
+                  metadata: {
+                    name: 'Test Group 1',
+                    pinned: false,
+                    hidden: false,
+                    entropy: {
+                      groupIndex: 0,
+                    },
+                  },
+                  accounts: [mockEvmAccount1.id, mockSolAccount1.id],
+                },
+                [MOCK_GROUP_ID_2]: {
+                  id: MOCK_GROUP_ID_2,
+                  type: AccountGroupType.MultichainAccount,
+                  metadata: {
+                    name: 'Test Group 2',
+                    pinned: false,
+                    hidden: false,
+                    entropy: {
+                      groupIndex: 1,
+                    },
+                  },
+                  accounts: [mockEvmAccount2.id, mockSolAccount2.id],
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const emptyPermission = createEmptyPermission();
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        EMPTY_REQUESTED_ACCOUNT_IDS,
+        requestedChainIds,
+        requestedNamespaces,
+        stateOverrides,
+      );
+
+      expect(result.current.selectedAndRequestedAccountGroups).toHaveLength(1);
+      // Should include the first supported account group
+      expect(result.current.selectedAndRequestedAccountGroups[0].id).toBe(
+        MOCK_GROUP_ID_1,
+      );
+    });
+
+    it('returns empty array when no supported account groups exist', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedChainIds: CaipChainId[] = [
+        'bip122:bitcoin' as CaipChainId,
+      ]; // Unsupported chain
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        EMPTY_REQUESTED_ACCOUNT_IDS,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.selectedAndRequestedAccountGroups).toEqual([]);
+    });
+
+    it('excludes selected account group when it does not support requested chains', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedChainIds: CaipChainId[] = [
+        MOCK_SOLANA_CHAIN_ID as CaipChainId,
+      ];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const stateOverrides = {
+        accountTree: {
+          selectedAccountGroup: MOCK_GROUP_ID_1,
+          wallets: {
+            [MOCK_WALLET_ID]: {
+              id: MOCK_WALLET_ID,
+              type: AccountWalletType.Entropy,
+              metadata: {
+                name: 'Test Wallet',
+                entropy: {
+                  id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+                },
+              },
+              groups: {
+                [MOCK_GROUP_ID_1]: {
+                  id: MOCK_GROUP_ID_1,
+                  type: AccountGroupType.MultichainAccount,
+                  metadata: {
+                    name: 'EVM Group',
+                    pinned: false,
+                    hidden: false,
+                    entropy: {
+                      groupIndex: 0,
+                    },
+                  },
+                  accounts: [mockEvmAccount1.id],
+                },
+                [MOCK_GROUP_ID_2]: {
+                  id: MOCK_GROUP_ID_2,
+                  type: AccountGroupType.MultichainAccount,
+                  metadata: {
+                    name: 'Solana Group',
+                    pinned: false,
+                    hidden: false,
+                    entropy: {
+                      groupIndex: 1,
+                    },
+                  },
+                  accounts: [mockSolAccount1.id],
+                },
+              },
+            },
+          },
+        },
+      };
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        EMPTY_REQUESTED_ACCOUNT_IDS,
+        requestedChainIds,
+        requestedNamespaces,
+        stateOverrides,
+      );
+
+      // Should include Group 2 (supports Solana) but NOT Group 1 (selected but doesn't support Solana)
+      expect(result.current.selectedAndRequestedAccountGroups).toHaveLength(1);
+      expect(result.current.selectedAndRequestedAccountGroups[0].id).toBe(
+        MOCK_GROUP_ID_2,
+      );
+    });
+
+    it('prioritizes requested account groups over selected account group', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedCaipAccountIds: CaipAccountId[] = [
+        `eip155:1:${mockEvmAccount2.address}` as CaipAccountId,
+      ];
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        requestedCaipAccountIds,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.selectedAndRequestedAccountGroups).toHaveLength(1);
+      // Should prioritize Group 2 (requested) over Group 1 (selected)
+      expect(result.current.selectedAndRequestedAccountGroups[0].id).toBe(
+        MOCK_GROUP_ID_2,
+      );
+    });
+
+    it('avoids duplicates when priority group is also the selected group', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedCaipAccountIds: CaipAccountId[] = [
+        `eip155:1:${mockEvmAccount1.address}` as CaipAccountId, // Group 1 account (also selected)
+      ];
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        requestedCaipAccountIds,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.selectedAndRequestedAccountGroups).toHaveLength(1);
+      expect(result.current.selectedAndRequestedAccountGroups[0].id).toBe(
+        MOCK_GROUP_ID_1,
+      );
+    });
+
+    it('includes multiple priority groups when multiple account IDs are requested', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedCaipAccountIds: CaipAccountId[] = [
+        `eip155:1:${mockEvmAccount1.address}` as CaipAccountId,
+        `eip155:1:${mockEvmAccount2.address}` as CaipAccountId,
+      ];
+      const requestedChainIds: CaipChainId[] = ['eip155:1' as CaipChainId];
+      const requestedNamespaces: CaipNamespace[] = [];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        requestedCaipAccountIds,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.selectedAndRequestedAccountGroups).toHaveLength(2);
+      const groupIds = result.current.selectedAndRequestedAccountGroups.map(
+        (g) => g.id,
+      );
+      expect(groupIds).toContain(MOCK_GROUP_ID_1);
+      expect(groupIds).toContain(MOCK_GROUP_ID_2);
+    });
+
+    it('handles namespace-based requests with priority groups', () => {
+      const emptyPermission = createEmptyPermission();
+      const requestedCaipAccountIds: CaipAccountId[] = [
+        `${MOCK_SOLANA_CHAIN_ID}:${mockSolAccount2.address}` as CaipAccountId,
+      ];
+      const requestedChainIds: CaipChainId[] = [];
+      const requestedNamespaces: CaipNamespace[] = ['solana' as CaipNamespace];
+
+      const { result } = renderHookWithStore(
+        emptyPermission,
+        requestedCaipAccountIds,
+        requestedChainIds,
+        requestedNamespaces,
+      );
+
+      expect(result.current.selectedAndRequestedAccountGroups).toHaveLength(1);
+      // Group 2 should be prioritized since it contains the requested Solana account
+      expect(result.current.selectedAndRequestedAccountGroups[0].id).toBe(
+        MOCK_GROUP_ID_2,
+      );
+    });
+  });
 });

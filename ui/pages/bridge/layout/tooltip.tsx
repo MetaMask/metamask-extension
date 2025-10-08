@@ -17,6 +17,7 @@ import {
   JustifyContent,
   TextAlign,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import Column from './column';
 
@@ -59,14 +60,14 @@ const Tooltip = React.forwardRef(
           {triggerElement ??
             (iconName && (
               <Icon
-                color={IconColor.iconAlternativeSoft}
+                color={IconColor.iconAlternative}
                 name={iconName}
                 size={IconSize.Sm}
               />
             )) ?? (
               <Icon
                 name={IconName.Info}
-                color={IconColor.iconAlternativeSoft}
+                color={IconColor.iconAlternative}
                 size={IconSize.Sm}
               />
             )}
@@ -78,11 +79,11 @@ const Tooltip = React.forwardRef(
             isOpen={isOpen}
             onClickOutside={handleMouseLeave}
             style={{
-              maxWidth: '240px',
+              maxWidth: '264px',
               backgroundColor: 'var(--color-text-default)',
-              paddingInline: '16px',
-              paddingTop: '8px',
-              paddingBottom: '8px',
+              paddingInline: '12px',
+              paddingTop: '12px',
+              paddingBottom: '12px',
               transitionTimingFunction: 'linear',
               display: 'inherit',
               ...style,
@@ -93,7 +94,7 @@ const Tooltip = React.forwardRef(
             isPortal
             {...props}
           >
-            <Column gap={4}>
+            <Column gap={2}>
               {title && (
                 <PopoverHeader
                   color={TextColor.infoInverse}
@@ -112,6 +113,7 @@ const Tooltip = React.forwardRef(
               <Text
                 justifyContent={JustifyContent.center}
                 color={TextColor.infoInverse}
+                variant={TextVariant.bodySm}
               >
                 {children}
               </Text>

@@ -143,14 +143,12 @@ const privateHostMatchers = [
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
  * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH.
- * @param {object} withSolanaWebSocket - Solana WebSocket configuration with server flag and mocks function
  * @returns {Promise<SetupMockReturn>}
  */
 async function setupMocking(
   server,
   testSpecificMock,
   { chainId, ethConversionInUsd = 1700 },
-  withSolanaWebSocket,
 ) {
   const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
@@ -1002,17 +1000,6 @@ async function setupMocking(
               },
             ],
           },
-        ],
-      };
-    });
-
-  await server
-    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: [
           {
             sendRedesign: {
               enabled: false,
@@ -1139,14 +1126,12 @@ async function setupMocking(
    * Solana Websocket
    * Setup HTTP intercept for WebSocket handshake requests
    */
-  if (withSolanaWebSocket.server) {
-    await server
-      .forAnyWebSocket()
-      .matching((req) =>
-        /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
-      )
-      .thenForwardTo('ws://localhost:8088');
-  }
+  await server
+    .forAnyWebSocket()
+    .matching((req) =>
+      /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
+    )
+    .thenForwardTo('ws://localhost:8088');
 
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);

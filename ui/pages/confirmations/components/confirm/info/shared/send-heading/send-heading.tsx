@@ -94,6 +94,7 @@ const SendHeading = () => {
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       padding={4}
+      marginBottom={2}
     >
       {TokenImage}
       {TokenValue}

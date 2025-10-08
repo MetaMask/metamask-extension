@@ -18,7 +18,6 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
@@ -41,6 +40,7 @@ import {
   createNewVaultAndRestore,
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
+  setCompletedOnboarding,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
@@ -73,7 +73,6 @@ import LoadingScreen from '../../components/ui/loading-screen';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
-import SecureYourWallet from './secure-your-wallet/secure-your-wallet';
 import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
 import PrivacySettings from './privacy-settings/privacy-settings';
 import CreationSuccessful from './creation-successful/creation-successful';
@@ -131,7 +130,6 @@ export default function OnboardingFlow() {
 
   useEffect(() => {
     const isSRPBackupRoute = [
-      ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
       ONBOARDING_REVIEW_SRP_ROUTE,
       ONBOARDING_CONFIRM_SRP_ROUTE,
     ].some((route) => pathname?.startsWith(route));
@@ -213,6 +211,9 @@ export default function OnboardingFlow() {
       }
 
       setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
+      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+        await dispatch(setCompletedOnboarding());
+      }
       navigate(nextRoute, { replace: true });
     } finally {
       setIsLoading(false);
@@ -281,10 +282,6 @@ export default function OnboardingFlow() {
                 secretRecoveryPhrase={secretRecoveryPhrase}
               />
             }
-          />
-          <Route
-            path={ONBOARDING_SECURE_YOUR_WALLET_ROUTE}
-            element={<SecureYourWallet />}
           />
           <Route
             path={ONBOARDING_REVEAL_SRP_ROUTE}

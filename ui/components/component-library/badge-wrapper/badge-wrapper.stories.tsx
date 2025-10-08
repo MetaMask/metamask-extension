@@ -20,7 +20,7 @@ import README from './README.mdx';
 
 import { BadgeWrapper } from './badge-wrapper';
 import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
-import { AvatarAccount } from '../avatar-account';
+import { AvatarAccount } from '@metamask/design-system-react';
 import { AvatarToken } from '../avatar-token';
 
 import Box from '../../ui/box/box';

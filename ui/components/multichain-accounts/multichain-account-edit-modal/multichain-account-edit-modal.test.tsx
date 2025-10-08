@@ -267,4 +267,24 @@ describe('MultichainAccountEditModal', () => {
       'Duplicate Account Name',
     );
   });
+
+  it('saves account name when Enter key is pressed in the input field', async () => {
+    const store = configureStore(mockDefaultState);
+    store.dispatch = jest.fn().mockResolvedValue(true);
+
+    renderWithProvider(<MultichainAccountEditModal {...mockProps} />, store);
+
+    const input = screen.getByPlaceholderText('Account 1');
+
+    fireEvent.change(input, { target: { value: 'New Account Name' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    await waitFor(() => {
+      expect(setAccountGroupName).toHaveBeenCalledWith(
+        mockProps.accountGroupId,
+        'New Account Name',
+      );
+      expect(mockProps.onClose).toHaveBeenCalledTimes(1);
+    });
+  });
 });

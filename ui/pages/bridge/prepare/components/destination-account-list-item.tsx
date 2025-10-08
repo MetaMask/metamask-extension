@@ -72,9 +72,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   const isEvmNetwork = isEvmAccountType(account.type);
 
   const toChain = useSelector(getToChain);
-  const { balanceByChainId } = useMultichainBalances(
-    'id' in account ? account.id : undefined,
-  );
+  const { balanceByChainId } = useMultichainBalances(account.address);
 
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
@@ -152,7 +150,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
         </Row>
         <Text
           variant={TextVariant.bodySm}
-          color={TextColor.textAlternativeSoft}
+          color={TextColor.textAlternative}
           data-testid="account-list-address"
         >
           {shortenAddress(normalizeSafeAddress(account.address))}

@@ -1,4 +1,4 @@
-# This workflow is meant to better structure the main.yaml one for redability reasons.
+# This workflow is meant to better structure the main.yaml one for readability reasons.
 # It is not meant to be a reusable workflow.
 
 name: E2E Chrome
@@ -8,10 +8,14 @@ on:
     secrets:
       PR_COMMENT_TOKEN:
         required: true
+      INFURA_PROJECT_ID:
+        required: false
 
 jobs:
   test-e2e-chrome-browserify:
     uses: ./.github/workflows/run-e2e.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
@@ -28,6 +32,8 @@ jobs:
   test-e2e-chrome-webpack:
     uses: ./.github/workflows/run-e2e.yml
     if: ${{ github.event_name != 'merge_group' }}
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
@@ -37,7 +43,7 @@ jobs:
       test-suite-name: test-e2e-chrome-webpack
       build-artifact: build-test-webpack
       build-command: yarn build:test:webpack
-      test-command: yarn test:e2e:chrome:webpack
+      test-command: yarn test:e2e:chrome
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
@@ -188,7 +194,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Download test results
         uses: actions/download-artifact@v4
