@@ -25,25 +25,19 @@ export const TokenCellPercentChange = React.memo(
         ? getNativeTokenAddress(token.chainId as Hex)
         : token.address;
 
+    let tokenPercentageChange;
+
     // Compare null and undefined
     // eslint-disable-next-line no-eq-null
     if (price != null && comparePrice != null) {
-      const tokenPercentageChange =
-        ((price - comparePrice) / comparePrice) * 100;
-
-      return (
-        <PercentageChange
-          value={tokenPercentageChange}
-          address={tokenAddress}
-        />
-      );
+      tokenPercentageChange = ((price - comparePrice) / comparePrice) * 100;
+    } else {
+      tokenPercentageChange = isEvm
+        ? multiChainMarketData?.[token.chainId]?.[tokenAddress]
+            ?.pricePercentChange1d
+        : nonEvmConversionRates?.[tokenAddress as CaipAssetType]?.marketData
+            ?.pricePercentChange?.P1D;
     }
-
-    const tokenPercentageChange = isEvm
-      ? multiChainMarketData?.[token.chainId]?.[tokenAddress]
-          ?.pricePercentChange1d
-      : nonEvmConversionRates?.[tokenAddress as CaipAssetType]?.marketData
-          ?.pricePercentChange?.P1D;
 
     return (
       <PercentageChange value={tokenPercentageChange} address={tokenAddress} />
