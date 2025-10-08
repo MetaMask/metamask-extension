@@ -79,7 +79,7 @@ const mockBlocks = (
       },
     ]);
   }
-  return
+  return mockServer.forGet(`${network}/esplora/blocks`).thenJson(200, []);
 };
 
 const mockFundingTx = (
