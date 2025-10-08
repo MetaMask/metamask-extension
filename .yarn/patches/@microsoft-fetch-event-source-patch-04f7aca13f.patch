@@ -1,0 +1,13 @@
+diff --git a/lib/esm/fetch.js b/lib/esm/fetch.js
+index 1d55ef558db50e99fc780387398194f78fea1068..cb19d614fe099381f7be9c2eac1e2ef1af9a8e2a 100644
+--- a/lib/esm/fetch.js
++++ b/lib/esm/fetch.js
+@@ -39,7 +39,7 @@ export function fetchEventSource(input, _a) {
+         }
+         inputSignal === null || inputSignal === void 0 ? void 0 : inputSignal.addEventListener('abort', (e) => {
+             dispose();
+-            reject(Object.assign(new Error('Aborted'), { name: 'AbortError', error: e.target.reason }));
++            reject(Object.assign(new Error('Aborted'), { name: 'AbortError', message: e.target.reason }));
+         });
+         const fetch = inputFetch !== null && inputFetch !== void 0 ? inputFetch : window.fetch;
+         const onopen = inputOnOpen !== null && inputOnOpen !== void 0 ? inputOnOpen : defaultOnOpen;

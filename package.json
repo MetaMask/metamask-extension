@@ -239,6 +239,7 @@
     "dompurify": "patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch",
     "sha.js": "^2.4.12",
     "jsonpath-plus": "^10.3.0",
+    "@microsoft/fetch-event-source@npm:^2.0.1": "patch:@microsoft/fetch-event-source@patch%3A@microsoft/fetch-event-source@npm%253A2.0.1%23~/.yarn/patches/@microsoft-fetch-event-source-npm-2.0.1-679d34d9ba.patch%3A%3Aversion=2.0.1&hash=e595e0#~/.yarn/patches/@microsoft-fetch-event-source-patch-04f7aca13f.patch",
     "@endo/env-options@npm:^1.1.11": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@endo/env-options@npm:^1.1.7": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@endo/env-options@npm:^1.1.8": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
