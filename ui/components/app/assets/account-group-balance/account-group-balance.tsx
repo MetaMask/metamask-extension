@@ -67,16 +67,7 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
           onClick={handleSensitiveToggle}
-          style={{
-            cursor: 'pointer',
-            transition: 'color 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = 'var(--color-text-alternative)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = 'var(--color-text-default)';
-          }}
+          className="cursor-pointer transition-colors duration-200 hover:text-text-alternative"
         >
           {/* We should always show something but the check is just to appease TypeScript */}
           {total === undefined ? null : formatCurrency(total, currency)}

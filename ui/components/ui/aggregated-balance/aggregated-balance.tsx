@@ -123,16 +123,7 @@ export const AggregatedBalance = ({
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
           onClick={handleSensitiveToggle}
-          style={{
-            cursor: 'pointer',
-            transition: 'color 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = 'var(--color-text-alternative)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = 'var(--color-text-default)';
-          }}
+          className="cursor-pointer transition-colors duration-200 hover:text-text-alternative"
         >
           {showNativeTokenAsMain || !isNonEvmRatesAvailable || !shouldShowFiat
             ? formattedTokenDisplay
@@ -143,16 +134,7 @@ export const AggregatedBalance = ({
           variant={TextVariant.inherit}
           isHidden={privacyMode}
           onClick={handleSensitiveToggle}
-          style={{
-            cursor: 'pointer',
-            transition: 'color 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = 'var(--color-text-alternative)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = 'var(--color-text-default)';
-          }}
+          className="cursor-pointer transition-colors duration-200 hover:text-text-alternative"
         >
           {showNativeTokenAsMain || !isNonEvmRatesAvailable || !shouldShowFiat
             ? currentNetwork.network.ticker

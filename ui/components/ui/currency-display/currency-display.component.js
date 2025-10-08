@@ -60,22 +60,12 @@ export default function CurrencyDisplay({
     >
       <SensitiveText
         as="span"
-        className="currency-display-component__text"
+        className="currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative"
         ellipsis
         variant={TextVariant.inherit}
         isHidden={privacyMode}
         data-testid="account-value-and-suffix"
         onClick={onClick}
-        style={{
-          cursor: 'pointer',
-          transition: 'color 0.2s ease',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.color = 'var(--color-text-alternative)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.color = 'var(--color-text-default)';
-        }}
         {...textProps}
       >
         {parts.prefix}
@@ -84,25 +74,15 @@ export default function CurrencyDisplay({
       {parts.suffix ? (
         <SensitiveText
           as="span"
-          className={
+          className={`${
             privacyMode
               ? 'currency-display-component__text'
               : 'currency-display-component__suffix'
-          }
+          } cursor-pointer transition-colors duration-200 hover:text-text-alternative`}
           marginInlineStart={privacyMode ? 0 : 1}
           variant={TextVariant.inherit}
           isHidden={privacyMode}
           onClick={onClick}
-          style={{
-            cursor: 'pointer',
-            transition: 'color 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = 'var(--color-text-alternative)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = 'var(--color-text-default)';
-          }}
           {...suffixProps}
         >
           {parts.suffix}
