@@ -111,9 +111,6 @@ describe('Phishing Detection', function (this: Suite) {
         getFixtureOptions({
           title: this.test?.fullTitle(),
           dappPaths: ['./tests/phishing-controller/mock-page-with-iframe'],
-          dappOptions: {
-            numberOfDapps: 1,
-          },
         }),
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -124,7 +121,7 @@ describe('Phishing Detection', function (this: Suite) {
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
           await phishingWarningPage.clickProceedAnywayButton();
-          await driver.wait(until.titleIs('Mock E2E Phishing Page'), 10000);
+          await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
         },
       );
     });
