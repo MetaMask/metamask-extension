@@ -42,7 +42,6 @@ export const isMultichainAccountsFeatureEnabled = (
     enabled &&
     minimumVersion !== null &&
     currentFeatureVersion === featureVersion &&
-    semver.valid(minimumVersion) &&
     semver.gte(APP_VERSION, minimumVersion)
   );
 };
