@@ -215,7 +215,6 @@ import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-s
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
-  getIsMetaMaskShieldFeatureEnabled,
   getIsSeedlessOnboardingFeatureEnabled,
   isGatorPermissionsFeatureEnabled,
 } from '../../shared/modules/environment';
@@ -225,6 +224,7 @@ import {
   HYPERLIQUID_ORIGIN,
   METAMASK_REFERRAL_CODE,
 } from '../../shared/constants/referrals';
+import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -1055,21 +1055,12 @@ export default class MetamaskController extends EventEmitter {
     // on/off shield controller based on shield subscription
     this.controllerMessenger.subscribe(
       'SubscriptionController:stateChange',
-      (_state) => {
-        if (!getIsMetaMaskShieldFeatureEnabled()) {
-          this.shieldController.stop();
-          return;
-        }
-
-        const shieldSubscription = this.controllerMessenger.call(
-          'SubscriptionController:getSubscriptionByProduct',
-          'shield',
+      (state) => {
+        console.log('SubscriptionController:stateChange', state);
+        const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
+          state.subscriptions,
         );
-        if (
-          shieldSubscription &&
-          (shieldSubscription.status === SUBSCRIPTION_STATUSES.active ||
-            shieldSubscription.status === SUBSCRIPTION_STATUSES.trialing)
-        ) {
+        if (hasActiveShieldSubscription) {
           this.shieldController.start();
         } else {
           this.shieldController.stop();

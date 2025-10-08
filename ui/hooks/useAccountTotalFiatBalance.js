@@ -28,10 +28,18 @@ import { useTokenTracker } from './useTokenBalances';
 export const useAccountTotalFiatBalance = (
   account,
   shouldHideZeroBalanceTokens,
+  /**
+   * The optional currency to use for the fiat balance.
+   * If not provided, the current currency will be used.
+   */
+  currencyOverride,
 ) => {
   const currentChainId = useSelector(getCurrentChainId);
   const conversionRate = useSelector(getConversionRate);
-  const currentCurrency = useSelector(getCurrentCurrency);
+  let currentCurrency = useSelector(getCurrentCurrency);
+  if (currencyOverride) {
+    currentCurrency = currencyOverride;
+  }
 
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,
