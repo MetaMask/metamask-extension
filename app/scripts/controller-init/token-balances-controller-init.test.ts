@@ -63,10 +63,9 @@ describe('TokenBalancesControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       interval: 30_000,
-      useAccountsAPI: false,
       queryMultipleAccounts: true,
       allowExternalServices: expect.any(Function),
-      useAccountsApiBalances: [],
+      accountsApiChainIds: expect.any(Function),
     });
   });
 });
