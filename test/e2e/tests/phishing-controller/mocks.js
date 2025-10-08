@@ -2,7 +2,6 @@ const {
   METAMASK_STALELIST_URL,
   METAMASK_HOTLIST_DIFF_URL,
   C2_DOMAIN_BLOCKLIST_URL,
-  ListNames,
   BlockProvider,
 } = require('./helpers');
 
@@ -20,13 +19,10 @@ const defaultStalelist = {
   version: 2,
   tolerance: 2,
   lastUpdated,
-  eth_phishing_detect_config: {
-    fuzzylist: [],
-    allowlist: [],
-    blocklist: [],
-    c2DomainBlocklist: [],
-    name: ListNames.MetaMask,
-  },
+  fuzzylist: [],
+  allowlist: [],
+  blocklist: [],
+  blocklistPaths: [],
 };
 
 const emptyHtmlPage = (blockProvider) => `<!DOCTYPE html>
@@ -67,8 +63,6 @@ async function setupPhishingDetectionMocks(
     blockProvider = BlockProvider.MetaMask,
   },
 ) {
-  const blockProviderConfig = resolveProviderConfigName(blockProvider);
-
   const response =
     statusCode >= 400
       ? { statusCode }
@@ -77,12 +71,8 @@ async function setupPhishingDetectionMocks(
           json: {
             data: {
               ...defaultStalelist,
-              [blockProviderConfig]: {
-                ...defaultStalelist[blockProviderConfig],
-                blocklist,
-                c2DomainBlocklist,
-                blocklistPaths,
-              },
+              blocklist,
+              blocklistPaths,
             },
           },
         };
@@ -100,6 +90,7 @@ async function setupPhishingDetectionMocks(
       };
     });
 
+  defaultC2DomainBlocklist.recentlyAdded.push(...c2DomainBlocklist);
   await mockServer.forGet(C2_DOMAIN_BLOCKLIST_URL).thenCallback(() => {
     return {
       statusCode: 200,
@@ -126,64 +117,3 @@ async function setupPhishingDetectionMocks(
       };
     });
 }
-
-/**
- * Mocks the request made from the phishing warning page to check eth-phishing-detect
- *
- * @param {*} mockServer
- * @param {*} metamaskPhishingConfigResponse
- */
-async function mockConfigLookupOnWarningPage(
-  mockServer,
-  metamaskPhishingConfigResponse,
-) {
-  await mockServer
-    .forGet(
-      'https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/config.json',
-    )
-    .thenCallback(() => metamaskPhishingConfigResponse);
-}
-
-/**
- * Setup fallback mocks for default behaviour of the phishing detection feature.
- *
- * This sets up default mocks for a mockttp server when included in test/e2e/mock-e2e.js
- *
- * @param {import('mockttp').Mockttp} mockServer - The mock server.
- */
-
-async function mockEmptyStalelistAndHotlist(mockServer) {
-  await mockServer.forGet(METAMASK_STALELIST_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: { ...defaultStalelist },
-    };
-  });
-
-  await mockServer
-    .forGet(`${METAMASK_HOTLIST_DIFF_URL}/${lastUpdated}`)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: defaultHotlist,
-      };
-    });
-}
-
-/**
- *
- * @param {BlockProvider} providerName - The name of the provider who issued the block.
- * @returns {string} The name of the phishing config in the response.
- */
-function resolveProviderConfigName(providerName) {
-  if (providerName.toLowerCase() === BlockProvider.MetaMask) {
-    return 'eth_phishing_detect_config';
-  }
-  throw new Error(`Unknown provider: ${providerName}`);
-}
-
-module.exports = {
-  setupPhishingDetectionMocks,
-  mockEmptyStalelistAndHotlist,
-  mockConfigLookupOnWarningPage,
-};
