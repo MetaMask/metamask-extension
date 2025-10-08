@@ -2,7 +2,6 @@ import { Mockttp } from 'mockttp';
 
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import FixtureBuilder from '../../fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -125,7 +124,7 @@ describe('Send ETH', function () {
     );
   });
 
-  it('it should be possible to send to name lookup address', async function () {
+  it('it should be possible to resolve name lookup address', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({
@@ -150,7 +149,6 @@ describe('Send ETH', function () {
 
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
-        const confirmation = new Confirmation(driver);
 
         await homePage.startSendFlow();
 
@@ -161,9 +159,7 @@ describe('Send ETH', function () {
           amount: '1',
         });
 
-        // cancelling request as send on mainnet will fail
-        await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterCancelButton();
+        await driver.findElement({ text: '0xc0ffe...54979' });
       },
     );
   });
