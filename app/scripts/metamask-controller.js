@@ -512,14 +512,6 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    // ensure AccountTrackerController updates balances after network change
-    this.controllerMessenger.subscribe(
-      'NetworkController:networkDidChange',
-      () => {
-        this.accountTrackerController.updateAccounts();
-      },
-    );
-
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       ApprovalController: ApprovalControllerInit,
