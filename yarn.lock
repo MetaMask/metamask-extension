@@ -5716,6 +5716,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:^8.4.1":
+  version: 8.4.1
+  resolution: "@metamask/base-controller@npm:8.4.1"
+  dependencies:
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
+    immer: "npm:^9.0.6"
+  checksum: 10/d720638b6a640f43e06b37bd77b7291be20df2f3cc89ab571ee47c895313ba2521cd49e6dede02dd7e06971c351f88eec2c39b65d8f46ba09492d89131d640b9
+  languageName: node
+  linkType: hard
+
 "@metamask/bitcoin-wallet-snap@npm:^1.3.0":
   version: 1.3.0
   resolution: "@metamask/bitcoin-wallet-snap@npm:1.3.0"
@@ -5723,22 +5734,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:@metamask-previews/bridge-controller@47.2.0-preview-5eac8e7":
-  version: 47.2.0-preview-5eac8e7
-  resolution: "@metamask-previews/bridge-controller@npm:47.2.0-preview-5eac8e7"
+"@metamask/bridge-controller@file:../core-1/packages/bridge-controller::locator=metamask-crx%40workspace%3A.":
+  version: 49.0.1
+  resolution: "@metamask/bridge-controller@file:../core-1/packages/bridge-controller#../core-1/packages/bridge-controller::hash=50786f&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
     "@ethersproject/constants": "npm:^5.7.0"
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^8.4.0"
-    "@metamask/controller-utils": "npm:^11.14.0"
-    "@metamask/gas-fee-controller": "npm:^24.0.0"
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/gas-fee-controller": "npm:^24.1.0"
     "@metamask/keyring-api": "npm:^21.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-network-controller": "npm:^1.0.0"
-    "@metamask/polling-controller": "npm:^14.0.0"
+    "@metamask/multichain-network-controller": "npm:^1.0.1"
+    "@metamask/polling-controller": "npm:^14.0.1"
     "@metamask/utils": "npm:^11.8.1"
     "@microsoft/fetch-event-source": "npm:^2.0.1"
     bignumber.js: "npm:^9.1.2"
@@ -5746,14 +5757,18 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/accounts-controller": ^33.0.0
-    "@metamask/assets-controllers": ^78.0.0
+    "@metamask/assets-controllers": ^79.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/remote-feature-flag-controller": ^1.6.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/df5852102101220430b6d8b55294b3f33e4dfd04dec7771b72d3f33c4c4fb598c9b3ffae8724e9e3c9a91cf0fa4d79a9436d2b794d73b465010f34aaf7ba5483
+  checksum: 10/e4ccac81d40a1efaa5cfafd248713de68c1c063c6918fd11bf618551c4f64a5b8263c401f02a5da49d252e9164a1f39433918a84cec3f55635ddf75a91bbc0de
   languageName: node
+  linkType: hard
+
+"@metamask/bridge-status-controller@npm:^48.0.0":
   version: 48.0.0
+  resolution: "@metamask/bridge-status-controller@npm:48.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.0"
     "@metamask/controller-utils": "npm:^11.14.0"
@@ -5832,6 +5847,27 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
   checksum: 10/68a30d60a0f94316635dbe6b7f4edb0adc62873b7834a72a1342b2f61ff85fdd1d994a4168af6b15aa23a8385627df7becb14a7aa033b875d96a97b9c07120c4
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:^11.14.1":
+  version: 11.14.1
+  resolution: "@metamask/controller-utils@npm:11.14.1"
+  dependencies:
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
+    "@spruceid/siwe-parser": "npm:2.1.0"
+    "@types/bn.js": "npm:^5.1.5"
+    bignumber.js: "npm:^9.1.2"
+    bn.js: "npm:^5.2.1"
+    cockatiel: "npm:^3.1.2"
+    eth-ens-namehash: "npm:^2.0.8"
+    fast-deep-equal: "npm:^3.1.3"
+    lodash: "npm:^4.17.21"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+  checksum: 10/b00e2ba24a0903ec06c00de4506c789a717ecba3510244cc58435d26c990680e88d884ce417ba39e5cb3b8f7f16f3f42bdc77f284af248b7d1bd60abb80a836c
   languageName: node
   linkType: hard
 
@@ -6517,6 +6553,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/gas-fee-controller@npm:^24.1.0":
+  version: 24.1.0
+  resolution: "@metamask/gas-fee-controller@npm:24.1.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.3.0"
+    "@metamask/polling-controller": "npm:^14.0.1"
+    "@metamask/utils": "npm:^11.8.1"
+    "@types/bn.js": "npm:^5.1.5"
+    "@types/uuid": "npm:^8.3.0"
+    bn.js: "npm:^5.2.1"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+    "@metamask/network-controller": ^24.0.0
+  checksum: 10/da4a8193a5bf7ddb2f0b7bf00c891b5580fa679d9809ac4a2c22a7f6af66ecb7f608fa474ee329d2ef829c1e6ec4625b1a92c99ed5402e8f3dfea28ac8f20bc4
+  languageName: node
+  linkType: hard
+
 "@metamask/gator-permissions-controller@npm:^0.2.0":
   version: 0.2.0
   resolution: "@metamask/gator-permissions-controller@npm:0.2.0"
@@ -7009,6 +7066,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/multichain-network-controller@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/multichain-network-controller@npm:1.0.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/keyring-api": "npm:^21.0.0"
+    "@metamask/keyring-internal-api": "npm:^9.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.8.1"
+    "@solana/addresses": "npm:^2.0.0"
+    lodash: "npm:^4.17.21"
+  peerDependencies:
+    "@metamask/accounts-controller": ^33.0.0
+    "@metamask/network-controller": ^24.0.0
+  checksum: 10/904c19679a32e4b2b4743d39daa7e219e549b4544c0a7e73478b6714673b3dfd826dce10035ed450f6f8be8a8b9739ebae7a974b9a4dc25644c1137083f82702
+  languageName: node
+  linkType: hard
+
 "@metamask/multichain-transactions-controller@npm:^5.0.0":
   version: 5.0.0
   resolution: "@metamask/multichain-transactions-controller@npm:5.0.0"
@@ -7358,6 +7434,22 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^24.0.0
   checksum: 10/94c0744b49a2f262b266fa3b58010650876f49d295902d9796a08fa30d6584d18b635a70a5f02d9676cb623871b45afd7892bdc7546e6ddac574e02b6cd5be36
+  languageName: node
+  linkType: hard
+
+"@metamask/polling-controller@npm:^14.0.1":
+  version: 14.0.1
+  resolution: "@metamask/polling-controller@npm:14.0.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/utils": "npm:^11.8.1"
+    "@types/uuid": "npm:^8.3.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^24.0.0
+  checksum: 10/72f8e4f9ceb728fb1c2dc43b2226a6ec03cc6f588a1d2ffff34eadc3fee2c9ba4473e9eca6aac2b2514c7f7905d48bb218253db198b751dd804f1f75cb74d3c9
   languageName: node
   linkType: hard
 
@@ -8137,10 +8229,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/fetch-event-source@npm:^2.0.1":
+"@microsoft/fetch-event-source@npm:2.0.1":
   version: 2.0.1
   resolution: "@microsoft/fetch-event-source@npm:2.0.1"
   checksum: 10/c147055fafe83801efb9834136ba4b7944406a0bba3517afcea6ceeb56714b5ef78c2e89544bd9c1426ad1d2f964a087e3a719169ae04855836a23fb53269f8d
+  languageName: node
+  linkType: hard
+
+"@microsoft/fetch-event-source@patch:@microsoft/fetch-event-source@npm%3A2.0.1#~/.yarn/patches/@microsoft-fetch-event-source-npm-2.0.1-679d34d9ba.patch::version=2.0.1&hash=e595e0":
+  version: 2.0.1
+  resolution: "@microsoft/fetch-event-source@patch:@microsoft/fetch-event-source@npm%3A2.0.1#~/.yarn/patches/@microsoft-fetch-event-source-npm-2.0.1-679d34d9ba.patch::version=2.0.1&hash=e595e0"
+  checksum: 10/70e4dcfde44ecdd0a59e8dbdeb79aa1e57304ad81e4fcad6dff064e2f0bc9a0c1786820a02e6eb927f2ad2e130b12ce2966caeb4b16894785a5bcddd5d512fa1
+  languageName: node
+  linkType: hard
+
+"@microsoft/fetch-event-source@patch:@microsoft/fetch-event-source@patch%3A@microsoft/fetch-event-source@npm%253A2.0.1%23~/.yarn/patches/@microsoft-fetch-event-source-npm-2.0.1-679d34d9ba.patch%3A%3Aversion=2.0.1&hash=e595e0#~/.yarn/patches/@microsoft-fetch-event-source-patch-04f7aca13f.patch":
+  version: 2.0.1
+  resolution: "@microsoft/fetch-event-source@patch:@microsoft/fetch-event-source@patch%3A@microsoft/fetch-event-source@npm%253A2.0.1%23~/.yarn/patches/@microsoft-fetch-event-source-npm-2.0.1-679d34d9ba.patch%3A%3Aversion=2.0.1&hash=e595e0#~/.yarn/patches/@microsoft-fetch-event-source-patch-04f7aca13f.patch::version=2.0.1&hash=401264"
+  checksum: 10/f51aa308ba793d92e5fa65f1585e2bc103904bad31c4ea890a040c2cb438dc6d4f2dc366aeedb3ae6364fa8090450213ff9c45575ad25973e0e865aa3ab62c0a
   languageName: node
   linkType: hard
 
@@ -31847,7 +31953,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.3.0"
-    "@metamask/bridge-controller": "npm:^48.0.0"
+    "@metamask/bridge-controller": ../core-1/packages/bridge-controller
     "@metamask/bridge-status-controller": "npm:^48.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
