@@ -40,6 +40,7 @@ export const BridgeControllerInit: ControllerInitFunction<
   const controller = new BridgeController({
     messenger: controllerMessenger,
     clientId: BridgeClientId.EXTENSION,
+    clientVersion: process.env.METAMASK_VERSION,
 
     // TODO: Remove once TransactionController exports this action type.
     getLayer1GasFee: (...args) =>
