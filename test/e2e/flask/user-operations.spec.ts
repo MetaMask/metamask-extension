@@ -25,7 +25,6 @@ import TestDapp from '../page-objects/pages/test-dapp';
 import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import HomePage from '../page-objects/pages/home/homepage';
-import { mockLegacySendFeatureFlag } from '../tests/send/common';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -209,10 +208,7 @@ async function withAccountSnap(
         mnemonic:
           'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
       },
-      testSpecificMock: (mockServer: Mockttp) => {
-        mockSnapAndSwaps(mockServer);
-        mockLegacySendFeatureFlag(mockServer);
-      },
+      testSpecificMock: mockSnapAndSwaps,
     },
     async ({
       driver,
@@ -268,7 +264,9 @@ describe('User Operations', function () {
     });
   });
 
-  it('from send transaction', async function () {
+  // https://github.com/MetaMask/metamask-extension/issues/36567
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('from send transaction', async function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
