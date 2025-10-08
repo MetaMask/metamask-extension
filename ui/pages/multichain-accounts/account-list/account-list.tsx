@@ -49,7 +49,10 @@ import { filterWalletsByGroupName } from './utils';
 export const AccountList = () => {
   const t = useI18nContext();
   const history = useHistory();
-  // sync SRPs for social login flow
+  // Sync SRPs for social login flow
+  // TODO: Move this logic on the background side, so we don't trigger this sync
+  // every time the account list is being opened.
+  // See: https://github.com/MetaMask/metamask-extension/issues/36639
   useSyncSRPs();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
