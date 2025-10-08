@@ -211,7 +211,7 @@ async function withAccountSnap(
           'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
       },
       testSpecificMock: async (mockServer: Mockttp) => [
-        await mockSnapAndSwaps(mockServer),
+        ...(await mockSnapAndSwaps(mockServer)),
         await mockSendRedesignFeatureFlag(mockServer),
       ],
     },
