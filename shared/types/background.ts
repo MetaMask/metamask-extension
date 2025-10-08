@@ -73,10 +73,7 @@ import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/s
 
 export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
-  accounts: AccountTrackerControllerState['accounts'];
   accountsByChainId: AccountTrackerControllerState['accountsByChainId'];
-  currentBlockGasLimit: AccountTrackerControllerState['currentBlockGasLimit'];
-  currentBlockGasLimitByChainId: AccountTrackerControllerState['currentBlockGasLimitByChainId'];
   addressBook: AddressBookControllerState['addressBook'];
   alertEnabledness: AlertControllerState['alertEnabledness'];
   unconnectedAccountAlertShownOrigins: AlertControllerState['unconnectedAccountAlertShownOrigins'];

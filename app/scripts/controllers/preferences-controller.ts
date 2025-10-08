@@ -154,6 +154,7 @@ export type PreferencesControllerState = Omit<
   useCurrencyRateCheck: boolean;
   useExternalNameSources: boolean;
   useExternalServices: boolean;
+  // ACCOUNTTRACKER TODO: Change this to isMultiAccountBalancesEnabled
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
   referrals: {

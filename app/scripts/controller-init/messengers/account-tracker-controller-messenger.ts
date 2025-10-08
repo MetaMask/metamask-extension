@@ -1,19 +1,33 @@
 import { Messenger } from '@metamask/base-controller';
 import {
-  NetworkControllerGetSelectedNetworkClientAction,
+  NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import {
-  AllowedActions,
-  AllowedEvents,
-} from '../../controllers/account-tracker-controller';
+  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerListAccountsAction,
+  AccountsControllerSelectedAccountChangeEvent,
+  AccountsControllerSelectedEvmAccountChangeEvent,
+} from '@metamask/accounts-controller';
+import { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
+import { PreferencesControllerGetStateAction as InternalPreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 export type AccountTrackerControllerMessenger = ReturnType<
   typeof getAccountTrackerControllerMessenger
 >;
+
+type AllowedActions =
+  | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerListAccountsAction
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetStateAction
+  | PreferencesControllerGetStateAction;
+
+type AllowedEvents =
+  | AccountsControllerSelectedAccountChangeEvent
+  | AccountsControllerSelectedEvmAccountChangeEvent;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -29,25 +43,21 @@ export function getAccountTrackerControllerMessenger(
     name: 'AccountTrackerController',
     allowedActions: [
       'AccountsController:getSelectedAccount',
-      'NetworkController:getState',
+      'AccountsController:listAccounts',
       'NetworkController:getNetworkClientById',
-      'OnboardingController:getState',
+      'NetworkController:getState',
       'PreferencesController:getState',
-      'RemoteFeatureFlagController:getState',
     ],
     allowedEvents: [
+      'AccountsController:selectedAccountChange',
       'AccountsController:selectedEvmAccountChange',
-      'OnboardingController:stateChange',
-      'KeyringController:accountRemoved',
     ],
   });
 }
 
 type AllowedInitializationActions =
-  | NetworkControllerGetSelectedNetworkClientAction
-  | NetworkControllerGetStateAction
   | RemoteFeatureFlagControllerGetStateAction
-  | PreferencesControllerGetStateAction;
+  | InternalPreferencesControllerGetStateAction;
 
 type AllowedInitializationEvents = NetworkControllerNetworkDidChangeEvent;
 
@@ -71,8 +81,6 @@ export function getAccountTrackerControllerInitMessenger(
   return messenger.getRestricted({
     name: 'AccountTrackerControllerInit',
     allowedActions: [
-      'NetworkController:getSelectedNetworkClient',
-      'NetworkController:getState',
       'RemoteFeatureFlagController:getState',
       'PreferencesController:getState',
     ],
