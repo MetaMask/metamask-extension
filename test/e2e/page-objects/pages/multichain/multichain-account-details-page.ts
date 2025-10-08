@@ -35,7 +35,7 @@ class MultichainAccountDetailsPage {
     '[data-testid="account-details-row-value-wallet"]'; // Wallet text
 
   private readonly walletNavigationButton =
-    '[data-testid="wallet-details-link"]';
+    '[data-testid="account-details-row-wallet"]';
 
   // Account-specific features
   private readonly showSrpButton = '[data-testid="account-show-srp-button"]';
