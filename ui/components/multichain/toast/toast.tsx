@@ -6,7 +6,6 @@ import {
   FontWeight,
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
-import { ThemeType } from '../../../../shared/constants/preferences';
 import { BannerBase, Box, BoxProps, Text } from '../../component-library';
 import {
   BackgroundColor,
@@ -54,7 +53,6 @@ export const Toast = ({
   className?: string;
   contentProps?: BoxProps<'div'>;
 }) => {
-  const { theme } = document.documentElement.dataset;
   const [shouldDisplay, setShouldDisplay] = useState(true);
   useEffect(
     function () {
@@ -80,7 +78,6 @@ export const Toast = ({
 
   return (
     <BannerBase
-      data-theme={theme === ThemeType.light ? ThemeType.dark : ThemeType.light}
       onClose={onClose}
       backgroundColor={BackgroundColor.backgroundSection}
       borderWidth={1}
