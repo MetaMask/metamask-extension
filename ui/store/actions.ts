@@ -404,8 +404,6 @@ export function startSubscriptionWithCard(params: {
         [params, currentTab?.id],
       );
 
-      await submitRequestToBackground('subscriptionStartPolling');
-
       return subscriptions;
     } catch (error) {
       console.error('[startSubscriptionWithCard] error', error);

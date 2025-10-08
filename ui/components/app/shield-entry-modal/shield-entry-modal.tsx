@@ -28,8 +28,6 @@ import {
 } from '../../component-library';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { setShowShieldEntryModalOnce } from '../../../store/actions';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-import { getBrowserWindowType } from '../../../../shared/modules/browser-runtime.utils';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -45,12 +43,7 @@ export default function ShieldEntryModal() {
 
   const handleOnGetStarted = () => {
     dispatch(setShowShieldEntryModalOnce(false));
-    const windowType = getBrowserWindowType();
-    if (windowType === ENVIRONMENT_TYPE_FULLSCREEN) {
-      navigate(SHIELD_PLAN_ROUTE);
-    } else {
-      global.platform.openExtensionInBrowser?.(SHIELD_PLAN_ROUTE);
-    }
+    navigate(SHIELD_PLAN_ROUTE);
   };
 
   return (

@@ -10,7 +10,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { SUBSCRIPTION_STATUSES } from '@metamask/subscription-controller';
 import { trace } from '../../../../shared/lib/trace';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
@@ -38,6 +37,8 @@ import {
   ControllerInitRequest,
   ControllerInitResult,
 } from '../types';
+import { SubscriptionProductName } from '../../../../shared/constants/subscriptions';
+import { getIsShieldSubscriptionActive } from '../../../../shared/lib/shield';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -86,12 +87,11 @@ export const TransactionControllerInit: ControllerInitFunction<
     getSimulationConfig: async (url) => {
       const shieldSubscription = initMessenger.call(
         'SubscriptionController:getSubscriptionByProduct',
-        'shield',
+        SubscriptionProductName.SHIELD,
       );
       if (
         shieldSubscription &&
-        (shieldSubscription.status === SUBSCRIPTION_STATUSES.active ||
-          shieldSubscription.status === SUBSCRIPTION_STATUSES.trialing)
+        getIsShieldSubscriptionActive(shieldSubscription)
       ) {
         const getToken = () =>
           initMessenger.call('AuthenticationController:getBearerToken');
