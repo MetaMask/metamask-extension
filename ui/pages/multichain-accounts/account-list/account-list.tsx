@@ -43,6 +43,7 @@ import {
   Page,
 } from '../../../components/multichain/pages/page';
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
+import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
 import { filterWalletsByGroupName } from './utils';
 
 export const AccountList = () => {
@@ -67,6 +68,12 @@ export const AccountList = () => {
   // Update balances for all accounts when component mounts
   // This ensures all account balances are visible without requiring user interaction
   useAssetsUpdateAllAccountBalances();
+
+  // Sync SRPs for social login flow
+  // TODO: Move this logic on the background side, so we don't trigger this sync
+  // every time the account list is being opened.
+  // See: https://github.com/MetaMask/metamask-extension/issues/36639
+  useSyncSRPs();
 
   const hasMultipleWallets = useMemo(
     () => Object.keys(wallets).length > 1,

@@ -5876,12 +5876,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/error-reporting-service@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/error-reporting-service@npm:2.0.0"
+"@metamask/error-reporting-service@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@metamask/error-reporting-service@npm:2.2.0"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
-  checksum: 10/639206e3d3fcf136243503073692b97cac194dc6f2003e62db58315b82393be8d6426d22b0e0c97c7f2903ffa3c11ef4600565576bcb58ea6ff72fce74e18d59
+    "@metamask/base-controller": "npm:^8.4.0"
+  checksum: 10/f2cd8845247c753c3f37b6af9ea47960340b4120e69e5c6fda88ec2daf953ec3ab96a8a767b6a382a1537a221b0dbccadfe443d72935a8bbc9250f4389834a51
   languageName: node
   linkType: hard
 
@@ -31315,7 +31315,7 @@ __metadata:
     "@metamask/eip-5792-middleware": "npm:^1.1.0"
     "@metamask/ens-controller": "npm:^17.0.1"
     "@metamask/ens-resolver-snap": "npm:^0.1.4"
-    "@metamask/error-reporting-service": "npm:^2.0.0"
+    "@metamask/error-reporting-service": "npm:^2.2.0"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
     "@metamask/eslint-config-mocha": "npm:^9.0.0"
