@@ -7,10 +7,10 @@ class MultichainWalletDetailsPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(walletName: string): Promise<void> {
     await this.driver.waitForSelector({
       css: 'h4',
-      text: 'Wallet details',
+      text: `${walletName} / Accounts`,
     });
   }
 }
