@@ -25,7 +25,8 @@ import TestDapp from '../page-objects/pages/test-dapp';
 import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import HomePage from '../page-objects/pages/home/homepage';
-import { mockLegacySendFeatureFlag } from '../tests/send/common';
+import { mockSendRedesignFeatureFlag } from '../tests/send/common';
+import SendPage from '../page-objects/pages/send/send-page';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -211,7 +212,7 @@ async function withAccountSnap(
       },
       testSpecificMock: (mockServer: Mockttp) => {
         mockSnapAndSwaps(mockServer);
-        mockLegacySendFeatureFlag(mockServer);
+        mockSendRedesignFeatureFlag(mockServer);
       },
     },
     async ({
@@ -275,12 +276,13 @@ describe('User Operations', function () {
         const homePage = new HomePage(driver);
         await homePage.startSendFlow();
 
-        const sendToPage = new SendTokenPage(driver);
-        await sendToPage.checkPageIsLoaded();
-        await sendToPage.fillRecipient(LOCAL_NODE_ACCOUNT);
-        await sendToPage.fillAmount('1');
-        await sendToPage.goToNextScreen();
-        await sendToPage.clickConfirmButton();
+        const sendPage = new SendPage(driver);
+        await sendPage.createSendRequest({
+          chainId: '0x539',
+          symbol: 'ETH',
+          recipientAddress: LOCAL_NODE_ACCOUNT,
+          amount: '1',
+        });
 
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
