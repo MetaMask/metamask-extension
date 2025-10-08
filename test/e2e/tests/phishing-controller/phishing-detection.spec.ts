@@ -589,19 +589,75 @@ describe('Phishing Detection', function (this: Suite) {
       });
     });
 
+    describe('whitelisted paths', function () {
+      it('does not display the MetaMask Phishing Detection page when accessing a whitelisted path', async function () {
+        await withFixtures(
+          {
+            fixtures: new FixtureBuilder().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (mockServer: Mockttp) => {
+              return setupPhishingDetectionMocks(mockServer, {
+                statusCode: 200,
+                blockProvider: BlockProvider.MetaMask,
+                blocklist: [],
+                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+                blocklistPaths: ['127.0.0.1/path1'],
               });
             },
             dapp: true,
+            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
 
-            // Test that subpaths are blocked
-            await driver.openNewPage('http://127.0.0.1/malicious/path');
-
+            await driver.openNewPage('http://127.0.0.1:8080/path1/');
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
             const phishingWarningPage = new PhishingWarningPage(driver);
             await phishingWarningPage.checkPageIsLoaded();
+            await phishingWarningPage.clickProceedAnywayButton();
+            await driver.wait(
+              until.titleIs('Mock E2E Phishing Page: Path 1'),
+              10000,
+            );
+          },
+        );
+      });
+
+      it('does not display the MetaMask Phishing Detection page when accessing a whitelisted subpath', async function () {
+        await withFixtures(
+          {
+            fixtures: new FixtureBuilder().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (mockServer: Mockttp) => {
+              return setupPhishingDetectionMocks(mockServer, {
+                statusCode: 200,
+                blockProvider: BlockProvider.MetaMask,
+                blocklist: [],
+                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+                blocklistPaths: ['127.0.0.1/path1'],
+              });
+            },
+            dapp: true,
+            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
+          },
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
+
+            await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+            const phishingWarningPage = new PhishingWarningPage(driver);
+            await phishingWarningPage.checkPageIsLoaded();
+            await phishingWarningPage.clickProceedAnywayButton();
+            await driver.wait(
+              until.titleIs('Mock E2E Phishing Page: Path 2'),
+              10000,
+            );
+
+            await driver.openNewPage('http://127.0.0.1:8080/path1');
+            await driver.wait(
+              until.titleIs('Mock E2E Phishing Page: Path 1'),
+              10000,
+            );
           },
         );
       });
