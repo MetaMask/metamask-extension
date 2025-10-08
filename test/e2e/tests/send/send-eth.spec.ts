@@ -152,12 +152,8 @@ describe('Send ETH', function () {
 
         await homePage.startSendFlow();
 
-        await sendPage.createSendRequest({
-          chainId: '0x1',
-          symbol: 'ETH',
-          recipientAddress: 'test.eth',
-          amount: '1',
-        });
+        await sendPage.selectToken('0x1', 'ETH');
+        await sendPage.fillRecipient('test.eth');
 
         await driver.findElement({ text: '0xc0ffe...54979' });
       },
