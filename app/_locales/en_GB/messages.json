@@ -7195,6 +7195,9 @@
   "tokenContractAddress": {
     "message": "Token contract address"
   },
+  "tokenContractError": {
+    "message": "This address is a token contract address. If you send tokens to this address, you will lose them."
+  },
   "tokenDecimal": {
     "message": "Token decimal"
   },
@@ -7215,6 +7218,14 @@
   },
   "tokenMarketplace": {
     "message": "Token marketplace"
+  },
+  "tokenPermissionCount": {
+    "message": "$1 token permission",
+    "description": "$1 is the count of token permissions (singular form)"
+  },
+  "tokenPermissionsCount": {
+    "message": "$1 token permissions",
+    "description": "$1 is the count of token permissions (plural form)"
   },
   "tokenScamSecurityRisk": {
     "message": "token scams and security risks"
@@ -7460,6 +7471,10 @@
   },
   "unknownCollection": {
     "message": "Unnamed collection"
+  },
+  "unknownNetworkForGatorPermissions": {
+    "message": "Unknown network",
+    "description": "Displayed on places like Gator permissions when regular name is not available."
   },
   "unknownNetworkForKeyEntropy": {
     "message": "Unknown network",
