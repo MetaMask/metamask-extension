@@ -19,7 +19,9 @@ const accountTypeLabel: Partial<Record<KeyringAccountType, string>> = {
 
 export const TokenCellTitle = React.memo(
   ({ token }: TokenCellTitleProps) => {
-    const label = token.type ? accountTypeLabel[token.type] : undefined;
+    const label = token.accountType
+      ? accountTypeLabel[token.accountType]
+      : undefined;
     return (
       <Box flexDirection={BoxFlexDirection.Row}>
         <Box flexDirection={BoxFlexDirection.Row} gap={2}>

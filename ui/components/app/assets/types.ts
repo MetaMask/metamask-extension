@@ -58,7 +58,7 @@ export type TokenWithFiatAmount = Token &
     isStakeable?: boolean;
     title: string;
     // TODO BIP44: This will not need to be optional once BIP44 is enabled
-    type?: KeyringAccountType;
+    accountType?: KeyringAccountType;
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;

@@ -39,7 +39,7 @@ describe('TokenCellTitle', () => {
     overrides: Partial<TokenFiatDisplayInfo> = {},
   ): TokenFiatDisplayInfo =>
     ({
-      type: EthAccountType.Eoa,
+      accountType: EthAccountType.Eoa,
       address: '0x1',
       symbol: 'ETH',
       image: 'test-image.png',
@@ -66,14 +66,14 @@ describe('TokenCellTitle', () => {
   });
 
   it('renders without any tag when token.type is undefined', () => {
-    const token = createMockToken({ type: EthAccountType.Eoa });
+    const token = createMockToken({ accountType: EthAccountType.Eoa });
     const { queryByTestId } = render(<TokenCellTitle token={token} />);
 
     expect(queryByTestId('tag')).not.toBeInTheDocument();
   });
 
   it('renders Legacy tag for P2pkh account type', () => {
-    const token = createMockToken({ type: BtcAccountType.P2pkh });
+    const token = createMockToken({ accountType: BtcAccountType.P2pkh });
     const { getByTestId } = render(<TokenCellTitle token={token} />);
 
     const tag = getByTestId('tag');
@@ -82,7 +82,7 @@ describe('TokenCellTitle', () => {
   });
 
   it('renders Nested SegWit tag for P2sh account type', () => {
-    const token = createMockToken({ type: BtcAccountType.P2sh });
+    const token = createMockToken({ accountType: BtcAccountType.P2sh });
     const { getByTestId } = render(<TokenCellTitle token={token} />);
 
     const tag = getByTestId('tag');
@@ -91,7 +91,7 @@ describe('TokenCellTitle', () => {
   });
 
   it('renders Native SegWit tag for P2wpkh account type', () => {
-    const token = createMockToken({ type: BtcAccountType.P2wpkh });
+    const token = createMockToken({ accountType: BtcAccountType.P2wpkh });
     const { getByTestId } = render(<TokenCellTitle token={token} />);
 
     const tag = getByTestId('tag');
@@ -100,7 +100,7 @@ describe('TokenCellTitle', () => {
   });
 
   it('renders Taproot tag for P2tr account type', () => {
-    const token = createMockToken({ type: BtcAccountType.P2tr });
+    const token = createMockToken({ accountType: BtcAccountType.P2tr });
     const { getByTestId } = render(<TokenCellTitle token={token} />);
 
     const tag = getByTestId('tag');
@@ -139,7 +139,7 @@ describe('TokenCellTitle', () => {
   it('renders both tag and StakeableLink when both conditions are met', () => {
     const token = createMockToken({
       title: 'Bitcoin',
-      type: BtcAccountType.P2tr,
+      accountType: BtcAccountType.P2tr,
       isStakeable: true,
       chainId: BtcScope.Mainnet,
       symbol: 'BTC',
