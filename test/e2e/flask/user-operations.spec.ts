@@ -26,7 +26,7 @@ import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/s
 import HomePage from '../page-objects/pages/home/homepage';
 import { mockSendRedesignFeatureFlag } from '../tests/send/common';
 import SendPage from '../page-objects/pages/send/send-page';
-import SendTokenConfirmPage from '../page-objects/pages/send/send-token-confirmation-page';
+import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -277,7 +277,7 @@ describe('User Operations', function () {
         await homePage.startSendFlow();
 
         const sendPage = new SendPage(driver);
-        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+        const confirmation = new Confirmation(driver);
 
         await sendPage.createSendRequest({
           chainId: '0x539',
@@ -285,8 +285,8 @@ describe('User Operations', function () {
           recipientAddress: LOCAL_NODE_ACCOUNT,
           amount: '1',
         });
-        await sendTokenConfirmationPage.checkPageIsLoaded();
-        await sendTokenConfirmationPage.clickOnConfirm();
+        await confirmation.checkPageIsLoaded();
+        await confirmation.clickFooterConfirmButton();
 
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
