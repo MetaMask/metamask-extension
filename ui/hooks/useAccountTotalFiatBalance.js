@@ -9,6 +9,7 @@ import {
   getConfirmationExchangeRates,
   getNativeCurrencyImage,
   getTokenList,
+  getUSDConversionRate,
 } from '../selectors';
 import {
   getValueFromWeiHex,
@@ -29,16 +30,18 @@ export const useAccountTotalFiatBalance = (
   account,
   shouldHideZeroBalanceTokens,
   /**
-   * The optional currency to use for the fiat balance.
-   * If not provided, the current currency will be used.
+   * The optional parameter to use USD conversion rate instead of the current currency.
+   * If not provided, fallback to the current currency.
    */
-  currencyOverride,
+  useUSD = false,
 ) => {
   const currentChainId = useSelector(getCurrentChainId);
-  const conversionRate = useSelector(getConversionRate);
+  let conversionRate = useSelector(getConversionRate);
+  const usdConversionRate = useSelector(getUSDConversionRate);
   let currentCurrency = useSelector(getCurrentCurrency);
-  if (currencyOverride) {
-    currentCurrency = currencyOverride;
+  if (useUSD) {
+    conversionRate = usdConversionRate;
+    currentCurrency = 'usd';
   }
 
   const contractExchangeRates = useSelector(

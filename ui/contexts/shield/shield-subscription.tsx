@@ -65,7 +65,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const { totalFiatBalance } = useAccountTotalFiatBalance(
     selectedAccount,
     false,
-    'usd',
+    true, // use USD conversion rate instead of the current currency
   );
 
   /**
@@ -127,7 +127,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
 
   const setShieldEntryModalShownStatus = useCallback(
     (showShieldEntryModalOnce: boolean | null) => {
-      if (!isShieldSubscriptionActive) {
+      if (!isShieldSubscriptionActive && !process.env.IN_TEST) {
         dispatch(setShowShieldEntryModalOnce(showShieldEntryModalOnce));
       }
     },
