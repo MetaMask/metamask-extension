@@ -1,6 +1,6 @@
 import { Driver } from '../webdriver/driver';
 import HomePage from '../page-objects/pages/home/homepage';
-import SendPage from '../page-objects/pages/send/send-page';
+import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
@@ -20,7 +20,7 @@ describe('Name lookup', function () {
         await loginWithoutBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
-        const sendPage = new SendPage(driver);
+        const sendTokenPage = new SendTokenPage(driver);
 
         // Open a new tab and navigate to test snaps page and click name lookup
         await openTestSnapClickButtonAndInstall(
@@ -33,12 +33,12 @@ describe('Name lookup', function () {
         // Navigate to the extension home page and validate the recipient address in the send flow
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await homePage.startSendFlow();
-        await sendPage.selectToken('0x1', 'ETH');
-        await sendPage.fillRecipient('metamask.domain');
-
-        await driver.findElement({
-          text: '0xc0ffe...54979',
-        });
+        await sendTokenPage.checkPageIsLoaded();
+        await sendTokenPage.fillRecipient('metamask.domain');
+        await sendTokenPage.checkEnsAddressResolution(
+          'metamask.domain',
+          '0xc0ffe...54979',
+        );
       },
     );
   });
