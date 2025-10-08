@@ -230,8 +230,7 @@
   },
   "PhishingController": {
     "urlScanCache": "object",
-    "tokenScanCache": "object",
-    "whitelistPaths": "object"
+    "tokenScanCache": "object"
   },
   "PreferencesController": {
     "selectedAddress": "string",
