@@ -876,9 +876,6 @@
   "bridgeFetchNewQuotes": {
     "message": "Ambil yang baru?"
   },
-  "bridgeFrom": {
-    "message": "Bridge dari"
-  },
   "bridgeFromTo": {
     "message": "Bridge $1 $2 ke $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
