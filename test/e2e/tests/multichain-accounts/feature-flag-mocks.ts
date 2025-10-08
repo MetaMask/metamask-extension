@@ -105,6 +105,9 @@ export const mockMultichainAccountsFeatureFlagDisabled = (
             featureVersion: '0',
             minimumVersion: '12.19.0',
           },
+          sendRedesign: {
+             "enabled": false
+          }
         },
       ],
     };
