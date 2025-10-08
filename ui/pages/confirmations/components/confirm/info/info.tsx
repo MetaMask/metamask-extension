@@ -1,17 +1,18 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
+import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
+import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
 import { useConfirmContext } from '../../../context/confirm';
-import { SignatureRequestType } from '../../../types/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
-import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
-import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
+import { SignatureRequestType } from '../../../types/confirm';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
 import NFTTokenTransferInfo from './nft-token-transfer/nft-token-transfer';
 import PersonalSignInfo from './personal-sign/personal-sign';
 import SetApprovalForAllInfo from './set-approval-for-all-info/set-approval-for-all-info';
+import ShieldSubscriptionApproveInfo from './shield-subscription-approve/shield-subscription-approve';
 import TokenTransferInfo from './token-transfer/token-transfer';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
@@ -34,6 +35,8 @@ const Info = () => {
       [TransactionType.personalSign]: () => PersonalSignInfo,
       [TransactionType.revokeDelegation]: () => BaseTransactionInfo,
       [TransactionType.simpleSend]: () => NativeTransferInfo,
+      [TransactionType.shieldSubscriptionApprove]: () =>
+        ShieldSubscriptionApproveInfo,
       [TransactionType.signTypedData]: () => {
         const signatureRequest = currentConfirmation as SignatureRequestType;
 
