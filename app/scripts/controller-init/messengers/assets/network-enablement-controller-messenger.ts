@@ -7,6 +7,7 @@ import {
   NetworkControllerNetworkAddedEvent,
 } from '@metamask/network-controller';
 import { TransactionControllerTransactionSubmittedEvent } from '@metamask/transaction-controller';
+import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
 
 type Actions =
   | NetworkControllerGetStateAction
@@ -37,5 +38,28 @@ export function getNetworkEnablementControllerMessenger(
       'NetworkController:stateChange',
       'TransactionController:transactionSubmitted',
     ],
+  });
+}
+
+type AllowedInitializationEvents = AccountsControllerSelectedAccountChangeEvent;
+
+export type NetworkEnablementControllerInitMessenger = ReturnType<
+  typeof getNetworkEnablementControllerInitMessenger
+>;
+
+/**
+ * Create a messenger restricted to the allowed initialization events of the
+ * network enablement controller.
+ *
+ * @param messenger - The base messenger used to create the restricted
+ * messenger.
+ */
+export function getNetworkEnablementControllerInitMessenger(
+  messenger: Messenger<never, AllowedInitializationEvents>,
+) {
+  return messenger.getRestricted({
+    name: 'NetworkEnablementControllerInit',
+    allowedActions: [],
+    allowedEvents: ['AccountsController:selectedAccountChange'],
   });
 }

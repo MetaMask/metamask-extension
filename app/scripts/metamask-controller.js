@@ -72,7 +72,6 @@ import {
   add0x,
   hexToBytes,
   bytesToHex,
-  KnownCaipNamespace,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -741,19 +740,6 @@ export default class MetamaskController extends EventEmitter {
       'KeyringController:stateChange',
       (state) => {
         this._onKeyringControllerUpdate(state);
-      },
-    );
-
-    // TODO: Remove this after BIP-44 rollout
-    this.controllerMessenger.subscribe(
-      'AccountsController:selectedAccountChange',
-      (account) => {
-        if (account.type === SolAccountType.DataAccount) {
-          this.networkEnablementController.enableNetworkInNamespace(
-            SolScope.Mainnet,
-            KnownCaipNamespace.Solana,
-          );
-        }
       },
     );
 

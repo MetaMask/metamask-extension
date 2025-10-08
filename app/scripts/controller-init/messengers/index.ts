@@ -46,6 +46,7 @@ import {
   getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
+  getNetworkEnablementControllerInitMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -694,6 +695,6 @@ export const CONTROLLER_MESSENGERS = {
   },
   NetworkEnablementController: {
     getMessenger: getNetworkEnablementControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getNetworkEnablementControllerInitMessenger,
   },
 } as const;

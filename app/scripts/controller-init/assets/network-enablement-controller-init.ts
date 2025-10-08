@@ -4,12 +4,15 @@ import {
 } from '@metamask/network-enablement-controller';
 import { NetworkState } from '@metamask/network-controller';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
+import { SolAccountType, SolScope } from '@metamask/keyring-api';
+import { KnownCaipNamespace } from '@metamask/utils';
 import { NetworkEnablementControllerMessenger } from '../messengers/assets';
 import { ControllerInitFunction } from '../types';
 import {
   CHAIN_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
 } from '../../../../shared/constants/network';
+import { NetworkEnablementControllerInitMessenger } from '../messengers/assets/network-enablement-controller-messenger';
 
 /**
  * Generates a map of EVM chain IDs to their enabled status based on NetworkController state.
@@ -113,8 +116,9 @@ const generateDefaultNetworkEnablementControllerState = (
 
 export const NetworkEnablementControllerInit: ControllerInitFunction<
   NetworkEnablementController,
-  NetworkEnablementControllerMessenger
-> = ({ controllerMessenger, persistedState, getController }) => {
+  NetworkEnablementControllerMessenger,
+  NetworkEnablementControllerInitMessenger
+> = ({ controllerMessenger, initMessenger, persistedState, getController }) => {
   const multichainNetworkControllerState = getController(
     'MultichainNetworkController',
   ).state;
@@ -131,6 +135,19 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
       ...persistedState.NetworkEnablementController,
     },
   });
+
+  // TODO: Remove this after BIP-44 rollout.
+  initMessenger.subscribe(
+    'AccountsController:selectedAccountChange',
+    (account) => {
+      if (account.type === SolAccountType.DataAccount) {
+        controller.enableNetworkInNamespace(
+          SolScope.Mainnet,
+          KnownCaipNamespace.Solana,
+        );
+      }
+    },
+  );
 
   return {
     controller,
