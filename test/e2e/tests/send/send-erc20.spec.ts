@@ -1,5 +1,4 @@
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import FixtureBuilder from '../../fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
@@ -53,7 +52,6 @@ describe('Send ERC20', function () {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
-        const activityListPage = new ActivityListPage(driver);
 
         await homePage.startSendFlow();
 
@@ -87,7 +85,6 @@ describe('Send ERC20', function () {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
-        const activityListPage = new ActivityListPage(driver);
 
         await homePage.startSendFlow();
 

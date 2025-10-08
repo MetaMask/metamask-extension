@@ -150,7 +150,6 @@ describe('Send ETH', function () {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
-        const activityListPage = new ActivityListPage(driver);
 
         await homePage.startSendFlow();
 
