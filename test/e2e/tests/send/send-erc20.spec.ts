@@ -67,6 +67,7 @@ describe('Send ERC20', function () {
         await sendPage.pressContinueButton();
 
         // cancelling request as send on linea will fail
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterCancelButton();
       },
     );
@@ -95,6 +96,7 @@ describe('Send ERC20', function () {
         });
 
         // cancelling request as send on linea will fail
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterCancelButton();
       },
     );

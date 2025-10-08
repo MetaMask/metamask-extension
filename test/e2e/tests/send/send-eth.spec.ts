@@ -162,6 +162,7 @@ describe('Send ETH', function () {
         });
 
         // cancelling request as send on mainnet will fail
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterCancelButton();
       },
     );
