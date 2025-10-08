@@ -1,6 +1,9 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { SUBSCRIPTION_STATUSES } from '@metamask/subscription-controller';
+import {
+  PRODUCT_TYPES,
+  SUBSCRIPTION_STATUSES,
+} from '@metamask/subscription-controller';
 import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   setIpfsGateway,
@@ -66,7 +69,9 @@ const mapStateToProps = (state) => {
   const { subscriptions } = getUserSubscriptions(state);
   // get shield subscription
   const shieldSubscription = subscriptions.find((subscription) =>
-    subscription.products.some((product) => product.name === 'shield'),
+    subscription.products.some(
+      (product) => product.name === PRODUCT_TYPES.SHIELD,
+    ),
   );
 
   const hasActiveShieldSubscription = [
