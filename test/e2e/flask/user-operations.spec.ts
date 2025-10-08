@@ -25,6 +25,7 @@ import TestDapp from '../page-objects/pages/test-dapp';
 import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import HomePage from '../page-objects/pages/home/homepage';
+import { mockLegacySendFeatureFlag } from '../tests/send/common';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -208,7 +209,10 @@ async function withAccountSnap(
         mnemonic:
           'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
       },
-      testSpecificMock: mockSnapAndSwaps,
+      testSpecificMock: (mockServer: Mockttp) => {
+        mockSnapAndSwaps(mockServer);
+        mockLegacySendFeatureFlag(mockServer);
+      },
     },
     async ({
       driver,
