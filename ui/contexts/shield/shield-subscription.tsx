@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Subscription } from '@metamask/subscription-controller';
 import {
@@ -19,9 +19,31 @@ import {
 } from '../../selectors/subscription';
 import { SHIELD_MIN_FIAT_BALANCE_THRESHOLD } from '../../../shared/constants/subscriptions';
 
-export const ShieldSubscriptionContext = React.createContext<
-  Subscription | undefined
->(undefined);
+export const ShieldSubscriptionContext = React.createContext<{
+  resetShieldEntryModalShownStatus: () => void;
+  setShieldEntryModalShownStatus: (
+    showShieldEntryModalOnce: boolean | null,
+  ) => void;
+  shieldSubscription: Subscription | undefined;
+}>({
+  resetShieldEntryModalShownStatus: () => {
+    // Default empty function
+  },
+  setShieldEntryModalShownStatus: () => {
+    // Default empty function
+  },
+  shieldSubscription: undefined,
+});
+
+export const useShieldSubscriptionContext = () => {
+  const context = useContext(ShieldSubscriptionContext);
+  if (!context) {
+    throw new Error(
+      'useShieldSubscriptionContext must be used within a ShieldSubscriptionProvider',
+    );
+  }
+  return context;
+};
 
 export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const dispatch = useDispatch();
@@ -97,8 +119,29 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     isBasicFunctionalityEnabled,
   ]);
 
+  const resetShieldEntryModalShownStatus = useCallback(() => {
+    if (!isShieldSubscriptionActive) {
+      dispatch(setShowShieldEntryModalOnce(null));
+    }
+  }, [isShieldSubscriptionActive, dispatch]);
+
+  const setShieldEntryModalShownStatus = useCallback(
+    (showShieldEntryModalOnce: boolean | null) => {
+      if (!isShieldSubscriptionActive) {
+        dispatch(setShowShieldEntryModalOnce(showShieldEntryModalOnce));
+      }
+    },
+    [dispatch, isShieldSubscriptionActive],
+  );
+
   return (
-    <ShieldSubscriptionContext.Provider value={shieldSubscription}>
+    <ShieldSubscriptionContext.Provider
+      value={{
+        resetShieldEntryModalShownStatus,
+        setShieldEntryModalShownStatus,
+        shieldSubscription,
+      }}
+    >
       {children}
     </ShieldSubscriptionContext.Provider>
   );
