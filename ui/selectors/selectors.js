@@ -1816,7 +1816,20 @@ export function getFeatureFlags(state) {
 }
 
 export function getOriginOfCurrentTab(state) {
-  return state.activeTab.origin;
+  const appActiveTab = getAppActiveTab(state);
+  if (appActiveTab && appActiveTab.origin) {
+    return appActiveTab.origin;
+  }
+
+  if (state.activeTab && state.activeTab.origin) {
+    return state.activeTab.origin;
+  }
+
+  return null;
+}
+
+export function getAppActiveTab(state) {
+  return state.metamask.appActiveTab;
 }
 
 export function getDefaultHomeActiveTabName(state) {
@@ -2565,7 +2578,16 @@ export function getNetworkToAutomaticallySwitchTo(state) {
   // for a given dapp, when there are no pending confimrations
   // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
-  const selectedTabOrigin = getOriginOfCurrentTab(state);
+
+  // Use appActiveTab as primary source, fallback to activeTab
+  let selectedTabOrigin = null;
+  const appActiveTab = getAppActiveTab(state);
+  if (appActiveTab && appActiveTab.origin) {
+    selectedTabOrigin = appActiveTab.origin;
+  } else if (state.activeTab && state.activeTab.origin) {
+    selectedTabOrigin = state.activeTab.origin;
+  }
+
   if (
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     getIsUnlocked(state) &&
@@ -3638,7 +3660,18 @@ export function getPermittedEVMAccountsForSelectedTab(state, activeTab) {
 }
 
 export function getAllPermittedAccountsForCurrentTab(state) {
-  return getAllPermittedAccounts(state, getOriginOfCurrentTab(state));
+  // First try the new appActiveTab structure (primary source)
+  const appActiveTab = getAppActiveTab(state);
+  if (appActiveTab && appActiveTab.origin) {
+    return getAllPermittedAccounts(state, appActiveTab.origin);
+  }
+
+  // Fallback to the old activeTab structure if appActiveTab is not available
+  if (state.activeTab && state.activeTab.origin) {
+    return getAllPermittedAccounts(state, state.activeTab.origin);
+  }
+
+  return [];
 }
 
 export function getAllPermittedAccountsForSelectedTab(state, activeTab) {
@@ -3915,10 +3948,23 @@ export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
 }
 
 export function getPermissionsForActiveTab(state) {
-  const { activeTab, metamask } = state;
+  const { metamask } = state;
   const { subjects = {} } = metamask;
 
-  const permissions = subjects[activeTab.origin]?.permissions ?? {};
+  // Get origin from the new appActiveTab structure first (primary source)
+  let origin = null;
+  const appActiveTab = getAppActiveTab(state);
+  if (appActiveTab && appActiveTab.origin) {
+    origin = appActiveTab.origin;
+  } else if (state.activeTab && state.activeTab.origin) {
+    origin = state.activeTab.origin;
+  }
+
+  if (!origin) {
+    return [];
+  }
+
+  const permissions = subjects[origin]?.permissions ?? {};
   return Object.keys(permissions).map((parentCapability) => {
     return {
       key: parentCapability,
@@ -3928,12 +3974,23 @@ export function getPermissionsForActiveTab(state) {
 }
 
 export function activeTabHasPermissions(state) {
-  const { activeTab, metamask } = state;
+  const { metamask } = state;
   const { subjects = {} } = metamask;
 
-  return Boolean(
-    Object.keys(subjects[activeTab.origin]?.permissions || {}).length > 0,
-  );
+  // Get origin from the new appActiveTab structure first (primary source)
+  let origin = null;
+  const appActiveTab = getAppActiveTab(state);
+  if (appActiveTab && appActiveTab.origin) {
+    origin = appActiveTab.origin;
+  } else if (state.activeTab && state.activeTab.origin) {
+    origin = state.activeTab.origin;
+  }
+
+  if (!origin) {
+    return false;
+  }
+
+  return Boolean(Object.keys(subjects[origin]?.permissions || {}).length > 0);
 }
 
 /**

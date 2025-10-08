@@ -1731,7 +1731,9 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
   if (!origin || origin === 'null') {
     return {};
   }
-  return controller.appStateController.setAppActiveTab({
+
+  // Update the app active tab state
+  controller.appStateController.setAppActiveTab({
     id,
     title,
     origin,
@@ -1741,6 +1743,16 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
     href,
     favIconUrl,
   });
+
+  // Update subject metadata for permission system
+  controller.subjectMetadataController.addSubjectMetadata({
+    origin,
+    name: title || host || origin,
+    iconUrl: favIconUrl || null,
+    subjectType: 'website',
+  });
+
+  return {};
 });
 browser.tabs.onUpdated.addListener(async (tabId) => {
   const activeTab = await browser.tabs.get(tabId);
@@ -1750,7 +1762,9 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
   if (!origin || origin === 'null') {
     return {};
   }
-  return controller.appStateController.setAppActiveTab({
+
+  // Update the app active tab state
+  controller.appStateController.setAppActiveTab({
     id,
     title,
     origin,
@@ -1760,6 +1774,16 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
     href,
     favIconUrl,
   });
+
+  // Update subject metadata for permission system
+  controller.subjectMetadataController.addSubjectMetadata({
+    origin,
+    name: title || host || origin,
+    iconUrl: favIconUrl || null,
+    subjectType: 'website',
+  });
+
+  return {};
 });
 
 function setupSentryGetStateGlobal(store) {

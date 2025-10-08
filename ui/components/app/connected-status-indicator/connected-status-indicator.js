@@ -16,6 +16,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAllPermittedAccountsForCurrentTab,
+  getAppActiveTab,
   getPermissionsForActiveTab,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
@@ -26,7 +27,8 @@ import {
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
-
+  const tabisActive = useSelector(getAppActiveTab);
+  console.log(tabisActive, 'tabisActive');
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupInternalAccounts = useSelector((state) =>
     getInternalAccountsFromGroupById(state, selectedAccountGroupId),

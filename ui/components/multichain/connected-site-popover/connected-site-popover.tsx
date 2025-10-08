@@ -20,7 +20,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import { getOriginOfCurrentTab, getAllDomains } from '../../../selectors';
+import { getAllDomains, getAppActiveTab } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
@@ -42,8 +42,8 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
   onClick,
 }) => {
   const t = useContext(I18nContext);
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const siteName = getURLHost(activeTabOrigin);
+  const activeTabOrigin = useSelector(getAppActiveTab);
+  const siteName = getURLHost(activeTabOrigin.origin);
   const allDomains = useSelector(getAllDomains);
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
@@ -52,12 +52,12 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
 
   // Get the network that this dapp is actually connected to using domain mapping
   const dappActiveNetwork = useMemo(() => {
-    if (!activeTabOrigin || !allDomains) {
+    if (!activeTabOrigin.origin || !allDomains) {
       return null;
     }
 
     // Get the networkClientId for this domain
-    const networkClientId = allDomains[activeTabOrigin];
+    const networkClientId = allDomains[activeTabOrigin.origin];
     if (!networkClientId) {
       return null;
     }
@@ -72,7 +72,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
     });
 
     return networkConfiguration || null;
-  }, [activeTabOrigin, allDomains, networkConfigurationsByChainId]);
+  }, [activeTabOrigin.origin, allDomains, networkConfigurationsByChainId]);
 
   const getChainIdForImage = (chainId: `${string}:${string}`): string => {
     const { namespace, reference } = parseCaipChainId(chainId);
