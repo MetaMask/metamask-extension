@@ -30,7 +30,12 @@ export type TokenWithApprovalAmount = (
   | AssetWithDisplayData<ERC20Asset>
   | AssetWithDisplayData<NativeAsset>
 ) & {
-  approvalAmount: string;
+  approvalAmount: {
+    approveAmount: string;
+    chainId: Hex;
+    paymentAddress: Hex;
+    paymentTokenAddress: Hex;
+  };
 };
 
 export const useAvailableTokenBalances = (params: {
@@ -138,7 +143,12 @@ export const useAvailableTokenBalances = (params: {
         if (tokenHasEnoughBalance) {
           availableTokens.push({
             ...token,
-            approvalAmount: amount.approveAmount,
+            approvalAmount: {
+              approveAmount: amount.approveAmount,
+              chainId: token.chainId as Hex,
+              paymentAddress: amount.paymentAddress,
+              paymentTokenAddress: amount.paymentTokenAddress,
+            },
             type: token.isNative ? AssetType.native : AssetType.token,
           } as TokenWithApprovalAmount);
         }
