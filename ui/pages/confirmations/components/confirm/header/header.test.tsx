@@ -17,6 +17,11 @@ jest.mock('../../../../../selectors/multichain-accounts/feature-flags', () => ({
   getIsMultichainAccountsState1Enabled: jest.fn(() => false),
 }));
 
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => jest.fn(),
+}));
+
 const render = (state: DefaultRootState = getMockTypedSignConfirmState()) => {
   const store = configureStore(state);
   return renderWithConfirmContextProvider(<Header />, store);
