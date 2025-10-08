@@ -9,15 +9,9 @@ type VersionedData = {
 export const version = 179;
 
 /**
- * This migration removes `qrHardware` from the state.
+ * This migration clears the urlScanCache from PhishingController
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly
- * what we persist to dist.
- * @param originalVersionedData.meta - State metadata.
- * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by
- * controller.
- * @returns Updated versioned MetaMask extension state.
+ * @param originalVersionedData - The original state data to migrate
  */
 export async function migrate(
   originalVersionedData: VersionedData,
@@ -28,17 +22,21 @@ export async function migrate(
   return versionedData;
 }
 
-/**
- * Removes `qrHardware` if present.
- *
- * @param state - The state object to transform.
- */
 function transformState(state: Record<string, unknown>) {
   if (
-    hasProperty(state, 'AppStateController') &&
-    isObject(state.AppStateController) &&
-    hasProperty(state.AppStateController, 'qrHardware')
+    hasProperty(state, 'PhishingController') &&
+    isObject(state.PhishingController)
   ) {
-    delete state.AppStateController.qrHardware;
+    const phishingController = state.PhishingController as Record<
+      string,
+      unknown
+    >;
+
+    // Clear the urlScanCache if it exists
+    if (hasProperty(phishingController, 'urlScanCache')) {
+      phishingController.urlScanCache = {};
+    }
   }
+
+  return state;
 }

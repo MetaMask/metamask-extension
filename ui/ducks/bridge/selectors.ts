@@ -82,6 +82,7 @@ import {
   getAllAccountGroups,
   getInternalAccountBySelectedAccountGroupAndCaip,
 } from '../../selectors/multichain-accounts/account-tree';
+import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
 
 import {
   exchangeRateFromMarketData,
@@ -188,10 +189,27 @@ export const getFromChains = createDeepEqualSelector(
   },
 );
 
+/**
+ * This matches the network filter in the activity and asset lists
+ */
+export const getLastSelectedChainId = createSelector(
+  [getAllEnabledNetworksForAllNamespaces],
+  (allEnabledNetworksForAllNamespaces) => {
+    return allEnabledNetworksForAllNamespaces[0];
+  },
+);
+
+// This returns undefined if the selected chain is not supported by swap/bridge (i.e, testnets)
 export const getFromChain = createDeepEqualSelector(
-  [getMultichainProviderConfig, getFromChains],
-  (providerConfig, fromChains) => {
-    return fromChains.find(({ chainId }) => chainId === providerConfig.chainId);
+  [getFromChains, getMultichainProviderConfig],
+  (fromChains, providerConfig) => {
+    // When the page loads the global network always matches the network filter
+    // Because useBridging checks whether the lastSelectedNetwork matches the provider config
+    // Then useBridgeQueryParams sets the global network to lastSelectedNetwork as needed
+    // TODO remove providerConfig references and just use getLastSelectedChainId
+    return fromChains.find(
+      ({ chainId }) => chainId === providerConfig?.chainId,
+    );
   },
 );
 
@@ -237,9 +255,7 @@ export const getToChain = createSelector(
 export const getDefaultTokenPair = createDeepEqualSelector(
   [
     (state) => getFromChain(state)?.chainId,
-    (state) =>
-      // @ts-expect-error will be fixed when controller is updated
-      getBridgeFeatureFlags(state).bip44DefaultPairs,
+    (state) => getBridgeFeatureFlags(state).bip44DefaultPairs,
   ],
   (fromChainId, bip44DefaultPairs): null | [CaipAssetType, CaipAssetType] => {
     if (!fromChainId) {
@@ -258,22 +274,23 @@ export const getDefaultTokenPair = createDeepEqualSelector(
 );
 
 export const getFromToken = createSelector(
-  [(state: BridgeAppState) => state.bridge.fromToken, getFromChain],
-  (fromToken, fromChain) => {
-    if (!fromChain?.chainId) {
+  [
+    (state: BridgeAppState) => state.bridge.fromToken,
+    (state) => getFromChain(state)?.chainId,
+  ],
+  (fromToken, fromChainId) => {
+    if (!fromChainId) {
       return null;
     }
     if (fromToken?.address) {
       return fromToken;
     }
-    const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(
-      fromChain.chainId,
-    );
+    const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(fromChainId);
     const newToToken = toBridgeToken(nativeAsset);
     return newToToken
       ? {
           ...newToToken,
-          chainId: formatChainIdToCaip(fromChain.chainId),
+          chainId: formatChainIdToCaip(fromChainId),
         }
       : newToToken;
   },
@@ -852,41 +869,6 @@ export const getHardwareWalletName = (state: BridgeAppState) => {
       return undefined;
   }
 };
-
-/**
- * Returns true if Unified UI swaps are enabled for the chain.
- * Falls back to false when the chain is missing from feature-flags.
- *
- * @param _state - Redux state (unused placeholder for reselect signature)
- * @param chainId - ChainId in either hex (e.g. 0x1) or CAIP format (eip155:1).
- */
-export const getIsUnifiedUIEnabled = createSelector(
-  [
-    getBridgeFeatureFlags,
-    (_state: BridgeAppState, chainId?: string | number) => chainId,
-  ],
-  (bridgeFeatureFlags, chainId): boolean => {
-    if (chainId === undefined || chainId === null) {
-      return false;
-    }
-
-    const caipChainId = formatChainIdToCaip(chainId);
-
-    // TODO remove this when bridge-controller's types are updated
-    return bridgeFeatureFlags?.chains?.[caipChainId]
-      ? Boolean(
-          'isSingleSwapBridgeButtonEnabled' in
-            bridgeFeatureFlags.chains[caipChainId]
-            ? (
-                bridgeFeatureFlags.chains[caipChainId] as unknown as {
-                  isSingleSwapBridgeButtonEnabled: boolean;
-                }
-              ).isSingleSwapBridgeButtonEnabled
-            : false,
-        )
-      : false;
-  },
-);
 
 export const selectNoFeeAssets = createSelector(
   [

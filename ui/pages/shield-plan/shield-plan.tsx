@@ -1,6 +1,3 @@
-import log from 'loglevel';
-import React, { useEffect, useMemo, useState } from 'react';
-import classnames from 'classnames';
 import {
   PAYMENT_TYPES,
   PaymentType,
@@ -9,14 +6,42 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
-import { useDispatch } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
+import { BigNumber } from 'bignumber.js';
+import classnames from 'classnames';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import {
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  NETWORK_TO_NAME_MAP,
+} from '../../../shared/constants/network';
+import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  BadgeWrapper,
+  Box,
+  BoxProps,
+  Button,
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../components/component-library';
 import {
   Content,
   Footer,
   Header,
   Page,
 } from '../../components/multichain/pages/page';
+import LoadingScreen from '../../components/ui/loading-screen';
 import {
   AlignItems,
   BackgroundColor,
@@ -32,29 +57,14 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import {
-  ButtonIconSize,
-  ButtonIcon,
-  IconName,
-  Box,
-  Text,
-  BoxProps,
-  BadgeWrapper,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  Icon,
-  IconSize,
-  ButtonSize,
-  ButtonVariant,
-  Button,
-} from '../../components/component-library';
-import { useI18nContext } from '../../hooks/useI18nContext';
-
+  CONFIRM_TRANSACTION_ROUTE,
+  SETTINGS_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
+} from '../../helpers/constants/routes';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  NETWORK_TO_NAME_MAP,
-} from '../../../shared/constants/network';
-import LoadingScreen from '../../components/ui/loading-screen';
+  useUserSubscriptionByProduct,
+  useUserSubscriptions,
+} from '../../hooks/subscription/useSubscription';
 import {
   TokenWithApprovalAmount,
   useAvailableTokenBalances,
@@ -62,16 +72,12 @@ import {
   useSubscriptionPricing,
   useSubscriptionProductPlans,
 } from '../../hooks/subscription/useSubscriptionPricing';
-import { startSubscriptionWithCard } from '../../store/actions';
-import {
-  useUserSubscriptionByProduct,
-  useUserSubscriptions,
-} from '../../hooks/subscription/useSubscription';
-import {
-  SETTINGS_ROUTE,
-  TRANSACTION_SHIELD_ROUTE,
-} from '../../helpers/constants/routes';
 import { useAsyncCallback } from '../../hooks/useAsync';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { selectNetworkConfigurationByChainId } from '../../selectors';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { addTransaction, startSubscriptionWithCard } from '../../store/actions';
+import { generateERC20ApprovalData } from '../confirmations/send-legacy/send.utils';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -80,7 +86,10 @@ const ShieldPlan = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
-
+  const evmInternalAccount = useSelector((state) =>
+    // Account address will be the same for all EVM accounts
+    getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
+  );
   const {
     subscriptions,
     trialedProducts,
@@ -111,7 +120,7 @@ const ShieldPlan = () => {
   } = useSubscriptionPricing();
 
   const pricingPlans = useSubscriptionProductPlans(
-    'shield' as ProductType,
+    PRODUCT_TYPES.SHIELD,
     subscriptionPricing,
   );
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
@@ -126,6 +135,7 @@ const ShieldPlan = () => {
   const availableTokenBalances = useAvailableTokenBalances({
     paymentChains: cryptoPaymentMethod?.chains,
     price: selectedProductPrice,
+    productType: PRODUCT_TYPES.SHIELD,
   });
   const hasAvailableToken = availableTokenBalances.length > 0;
 
@@ -139,6 +149,20 @@ const ShieldPlan = () => {
   >(() => {
     return availableTokenBalances[0];
   });
+  const networkConfiguration = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, selectedToken?.chainId as Hex),
+  );
+  const networkClientId =
+    networkConfiguration?.rpcEndpoints[
+      networkConfiguration.defaultRpcEndpointIndex ?? 0
+    ]?.networkClientId;
+
+  // set selected token to the first available token if no token is selected
+  useEffect(() => {
+    if (!selectedToken) {
+      setSelectedToken(availableTokenBalances[0]);
+    }
+  }, [availableTokenBalances, selectedToken, setSelectedToken]);
 
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
@@ -150,11 +174,55 @@ const ShieldPlan = () => {
             recurringInterval: selectedPlan,
           }),
         );
-      } else {
-        log.error('Crypto payment method is not supported at the moment');
-        throw new Error('Crypto payment method is not supported at the moment');
+      } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
+        const approvalAmount = new BigNumber(
+          selectedToken?.approvalAmount?.approveAmount ?? '0',
+        );
+        const balance = new BigNumber(selectedToken?.balance ?? '0');
+        const balanceInWei = balance.mul(10 ** (selectedToken?.decimals ?? 18));
+        const userHasEnoughBalance = balanceInWei.gte(approvalAmount);
+
+        if (!userHasEnoughBalance) {
+          throw new Error('Insufficient balance');
+        }
+
+        if (!selectedToken) {
+          throw new Error('No token selected');
+        }
+
+        const spenderAddress = subscriptionPricing?.paymentMethods
+          ?.find((method) => method.type === PAYMENT_TYPES.byCrypto)
+          ?.chains?.find(
+            (chain) => chain.chainId === selectedToken?.chainId,
+          )?.paymentAddress;
+        const approvalData = generateERC20ApprovalData({
+          spenderAddress,
+          amount: decimalToHex(selectedToken.approvalAmount.approveAmount),
+        });
+        const transactionParams = {
+          from: evmInternalAccount?.address as Hex,
+          to: selectedToken.address as Hex,
+          value: '0x0',
+          data: approvalData,
+        };
+        const transactionOptions = {
+          type: TransactionType.shieldSubscriptionApprove,
+          networkClientId: networkClientId as string,
+        };
+        await addTransaction(transactionParams, transactionOptions);
+        navigate(CONFIRM_TRANSACTION_ROUTE);
       }
-    }, [selectedPlan, selectedPaymentMethod, dispatch, isTrialed]);
+    }, [
+      dispatch,
+      evmInternalAccount?.address,
+      isTrialed,
+      navigate,
+      networkClientId,
+      selectedPaymentMethod,
+      selectedPlan,
+      selectedToken,
+      subscriptionPricing,
+    ]);
 
   const loading =
     subscriptionsLoading ||
@@ -220,7 +288,7 @@ const ShieldPlan = () => {
         }}
         startAccessory={
           <ButtonIcon
-            size={ButtonIconSize.Sm}
+            size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             onClick={handleBack}
@@ -238,6 +306,7 @@ const ShieldPlan = () => {
               display={Display.Grid}
               gap={2}
               marginBottom={4}
+              paddingTop={2}
               className="shield-plan-page__plans"
             >
               {plans.map((plan) => (
@@ -374,7 +443,7 @@ const ShieldPlan = () => {
             <ShieldPaymentModal
               isOpen={showPaymentModal}
               onClose={() => setShowPaymentModal(false)}
-              selectedToken={selectedToken ?? undefined}
+              selectedToken={selectedToken}
               selectedPaymentMethod={selectedPaymentMethod}
               hasStableTokenWithBalance={hasAvailableToken}
               setSelectedPaymentMethod={setSelectedPaymentMethod}

@@ -183,7 +183,7 @@ export const ShieldPaymentModal = ({
                   <Text variant={TextVariant.bodyMdMedium}>
                     {t('shieldPlanPayWithToken', [
                       hasStableTokenWithBalance
-                        ? selectedToken?.symbol
+                        ? (selectedToken?.symbol ?? '')
                         : 'Crypto',
                     ])}
                   </Text>
@@ -192,7 +192,7 @@ export const ShieldPaymentModal = ({
                     color={TextColor.textAlternative}
                   >
                     {hasStableTokenWithBalance
-                      ? `${t('balance')}: ${selectedToken?.string} ${selectedToken?.symbol}`
+                      ? `${t('balance')}: ${selectedToken?.string ?? ''} ${selectedToken?.symbol ?? ''}`
                       : t('shieldPlanNoFunds')}
                   </Text>
                 </Box>

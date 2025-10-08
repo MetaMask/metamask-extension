@@ -54,7 +54,13 @@ const NameDisplay = memo(
         return <Identicon address={value} diameter={16} image={image} />;
       }
 
-      return <PreferredAvatar address={value} size={AvatarAccountSize.Xs} />;
+      return (
+        <PreferredAvatar
+          className="rounded-md"
+          address={value}
+          size={AvatarAccountSize.Xs}
+        />
+      );
     };
 
     const renderName = () => {

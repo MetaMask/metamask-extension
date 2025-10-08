@@ -50,7 +50,7 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
-import { Patch } from 'immer';
+import { Immer, Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -65,12 +65,13 @@ import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
   BillingPortalResponse,
+  GetCryptoApproveTransactionRequest,
+  GetCryptoApproveTransactionResponse,
+  PaymentType,
   PricingResponse,
-  ProductPrice,
   ProductType,
   RecurringInterval,
   Subscription,
-  TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
@@ -165,6 +166,7 @@ import {
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
+import type { NetworkConnectionBanner } from '../../shared/constants/app-state';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -371,10 +373,9 @@ export function getSubscriptionPricing(): ThunkAction<
  * @param params.tokenPaymentInfo - The token payment info.
  * @returns The subscription crypto approval amount.
  */
-export async function getSubscriptionCryptoApprovalAmount(params: {
-  price: ProductPrice;
-  tokenPaymentInfo: TokenPaymentInfo;
-}): Promise<string> {
+export async function getSubscriptionCryptoApprovalAmount(
+  params: GetCryptoApproveTransactionRequest,
+): Promise<GetCryptoApproveTransactionResponse> {
   return await submitRequestToBackground<string>(
     'getSubscriptionCryptoApprovalAmount',
     [params],
@@ -399,6 +400,22 @@ export function startSubscriptionWithCard(params: {
     const currentTab = await global.platform.currentTab();
     const subscriptions = await submitRequestToBackground<Subscription[]>(
       'startSubscriptionWithCard',
+      [params, currentTab?.id],
+    );
+
+    return subscriptions;
+  };
+}
+
+export function updateSubscriptionCardPaymentMethod(params: {
+  paymentType: Extract<PaymentType, 'card'>;
+  subscriptionId: string;
+  recurringInterval: RecurringInterval;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const currentTab = await global.platform.currentTab();
+    const subscriptions = await submitRequestToBackground(
+      'updateSubscriptionCardPaymentMethod',
       [params, currentTab?.id],
     );
 
@@ -5787,6 +5804,15 @@ export async function tokenBalancesStopPollingByPollingToken(
   await removePollingTokenFromAppState(pollingToken);
 }
 
+export async function updateBalancesFoAccounts(
+  chainIds: string[],
+  queryAllAccounts: boolean,
+): Promise<void> {
+  await submitRequestToBackground('updateBalances', [
+    { chainIds, queryAllAccounts },
+  ]);
+}
+
 /**
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
@@ -6274,6 +6300,16 @@ export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
 }
 
+export function updateNetworkConnectionBanner(
+  networkConnectionBanner: NetworkConnectionBanner,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateNetworkConnectionBanner', [
+      networkConnectionBanner,
+    ]);
+  };
+}
+
 /**
  * Sends the background state the networkClientId and domain upon network switch
  *
@@ -6446,6 +6482,16 @@ export async function getNetworkConfigurationByNetworkClientId(
     console.error(error);
   }
   return networkConfiguration;
+}
+
+/**
+ * Gathers metadata (primarily connectivity status) about the globally selected
+ * network as well as each enabled network and persists it to state.
+ */
+export function lookupSelectedNetworks() {
+  return async () => {
+    await submitRequestToBackground('lookupSelectedNetworks');
+  };
 }
 
 export function updateProposedNames(
@@ -7153,34 +7199,14 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
   ]);
 }
 
-/**
- * Apply the state patches from the background.
- * Intentionally not using immer as a temporary measure to avoid
- * freezing the resulting state and requiring further fixes
- * to remove direct state mutations.
- *
- * @param oldState - The current state.
- * @param patches - The patches to apply.
- * Only supports 'replace' operations with a single path element.
- * @returns The new state.
- */
 function applyPatches(
   oldState: Record<string, unknown>,
   patches: Patch[],
 ): Record<string, unknown> {
-  const newState = { ...oldState };
+  const immer = new Immer();
+  immer.setAutoFreeze(false);
 
-  for (const patch of patches) {
-    const { op, path, value } = patch;
-
-    if (op === 'replace') {
-      newState[path[0]] = value;
-    } else {
-      throw new Error(`Unsupported patch operation: ${op}`);
-    }
-  }
-
-  return newState;
+  return immer.applyPatches(oldState, patches);
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -7302,16 +7328,6 @@ export async function getERC1155BalanceOf(
     userAddress,
     tokenAddress,
     tokenId,
-    networkClientId,
-  ]);
-}
-
-export async function getERC721AssetSymbol(
-  checksummedAddress: string,
-  networkClientId: string,
-): Promise<string> {
-  return await submitRequestToBackground<string>('getERC721AssetSymbol', [
-    checksummedAddress,
     networkClientId,
   ]);
 }

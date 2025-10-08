@@ -19,6 +19,7 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   type BridgeController,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
@@ -49,7 +50,6 @@ import {
   getIsToOrFromSolana,
   getHardwareWalletName,
   getIsQuoteExpired,
-  getIsUnifiedUIEnabled,
   getIsSwap,
   BridgeAppState,
   getTxAlerts,
@@ -96,7 +96,6 @@ import {
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { SECOND } from '../../../../shared/constants/time';
 import { getIntlLocale } from '../../../ducks/locale/locale';
-import { useIsMultichainSwap } from '../hooks/useIsMultichainSwap';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getMultichainNativeCurrency,
@@ -167,16 +166,9 @@ const PrepareBridgePage = ({
   const t = useI18nContext();
 
   const fromChain = useSelector(getFromChain);
-  const isUnifiedUIEnabled = useSelector((state: BridgeAppState) =>
-    getIsUnifiedUIEnabled(state, fromChain?.chainId),
-  );
 
-  // Check the two types of swaps
-  const isSwapFromQuote = useSelector(getIsSwap);
-  const isSwapFromUrl = useIsMultichainSwap();
+  const isSwap = useSelector(getIsSwap);
 
-  // Use the appropriate value based on unified UI setting
-  const isSwap = isUnifiedUIEnabled ? isSwapFromQuote : isSwapFromUrl;
   const isSendBundleSupportedForChain = useIsSendBundleSupported(fromChain);
   const gasIncluded = useSelector((state) =>
     getIsGasIncluded(state, isSendBundleSupportedForChain),
@@ -459,7 +451,7 @@ const PrepareBridgePage = ({
   // Trace swap/bridge view loaded
   useEffect(() => {
     endTrace({
-      name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
+      name: TraceName.SwapViewLoaded,
       timestamp: Date.now(),
     });
 
@@ -481,17 +473,11 @@ const PrepareBridgePage = ({
   const [toastTriggerCounter, setToastTriggerCounter] = useState(0);
 
   const getFromInputHeader = () => {
-    if (isUnifiedUIEnabled) {
-      return t('swapSelectToken');
-    }
-    return isSwap ? t('swapSwapFrom') : t('bridgeFrom');
+    return t('swapSelectToken');
   };
 
   const getToInputHeader = () => {
-    if (isUnifiedUIEnabled) {
-      return t('swapSelectToken');
-    }
-    return isSwap ? t('swapSwapTo') : t('bridgeTo');
+    return t('swapSelectToken');
   };
 
   return (
@@ -526,15 +512,8 @@ const PrepareBridgePage = ({
           }}
           networkProps={{
             network: fromChain,
-            networks: isSwap && !isUnifiedUIEnabled ? undefined : fromChains,
+            networks: fromChains,
             onNetworkChange: (networkConfig) => {
-              if (
-                !isUnifiedUIEnabled &&
-                networkConfig?.chainId &&
-                networkConfig.chainId === toChain?.chainId
-              ) {
-                dispatch(setToChainId(null));
-              }
               if (isNetworkAdded(networkConfig)) {
                 enableMissingNetwork(networkConfig.chainId);
               }
@@ -547,7 +526,7 @@ const PrepareBridgePage = ({
             },
             header: t('yourNetworks'),
           }}
-          isMultiselectEnabled={isUnifiedUIEnabled || !isSwap}
+          isMultiselectEnabled={true}
           onMaxButtonClick={
             shouldShowMaxButton
               ? (value: string) => {
@@ -584,7 +563,7 @@ const PrepareBridgePage = ({
           height={BlockSize.Full}
           padding={4}
           gap={4}
-          backgroundColor={BackgroundColor.backgroundAlternativeSoft}
+          backgroundColor={BackgroundColor.backgroundDefault}
           style={{
             position: 'relative',
           }}
@@ -592,7 +571,7 @@ const PrepareBridgePage = ({
           <Box
             className="prepare-bridge-page__switch-tokens"
             display={Display.Flex}
-            backgroundColor={BackgroundColor.backgroundAlternativeSoft}
+            backgroundColor={BackgroundColor.backgroundSection}
             style={{
               position: 'absolute',
               top: '-20px',
@@ -619,8 +598,8 @@ const PrepareBridgePage = ({
               }}
               data-testid="switch-tokens"
               ariaLabel="switch-tokens"
-              iconName={IconName.Arrow2Down}
-              color={IconColor.iconAlternativeSoft}
+              iconName={IconName.SwapVertical}
+              color={IconColor.iconAlternative}
               disabled={
                 isSwitchingTemporarilyDisabled ||
                 !isValidQuoteRequest(quoteRequest, false) ||
@@ -674,8 +653,7 @@ const PrepareBridgePage = ({
 
                 setRotateSwitchTokens(!rotateSwitchTokens);
 
-                const shouldFlipNetworks = isUnifiedUIEnabled || !isSwap;
-                if (shouldFlipNetworks) {
+                if (!isSwap) {
                   // Handle account switching for Solana
                   dispatch(
                     setFromChain({
@@ -690,6 +668,14 @@ const PrepareBridgePage = ({
             />
           </Box>
 
+          <Box
+            paddingInline={4}
+            style={{
+              borderTop: '1px solid var(--color-border-muted)',
+              marginTop: '-16px',
+            }}
+          />
+
           <BridgeInputGroup
             header={getToInputHeader()}
             token={toToken}
@@ -700,27 +686,21 @@ const PrepareBridgePage = ({
               };
               dispatch(setToToken(bridgeToken));
             }}
-            networkProps={
-              isSwap && !isUnifiedUIEnabled
-                ? undefined
-                : {
-                    network: toChain,
-                    networks: toChains,
-                    onNetworkChange: (networkConfig) => {
-                      if (isNetworkAdded(networkConfig)) {
-                        enableMissingNetwork(networkConfig.chainId);
-                      }
-                      dispatch(setToChainId(networkConfig.chainId));
-                    },
-                    header: t('yourNetworks'),
-                    shouldDisableNetwork: isUnifiedUIEnabled
-                      ? undefined
-                      : ({ chainId }) => chainId === fromChain?.chainId,
-                  }
-            }
+            networkProps={{
+              network: toChain,
+              networks: toChains,
+              onNetworkChange: (networkConfig) => {
+                if (isNetworkAdded(networkConfig)) {
+                  enableMissingNetwork(networkConfig.chainId);
+                }
+                dispatch(setToChainId(networkConfig.chainId));
+              },
+              header: t('yourNetworks'),
+            }}
             customTokenListGenerator={
               toChain &&
-              (isSwapFromUrl || toChain.chainId !== fromChain?.chainId)
+              fromChain &&
+              isCrossChain(fromChain.chainId, toChain.chainId)
                 ? toTokenListGenerator
                 : undefined
             }
@@ -781,7 +761,7 @@ const PrepareBridgePage = ({
               <>
                 <Text
                   textAlign={TextAlign.Center}
-                  color={TextColor.textAlternativeSoft}
+                  color={TextColor.textAlternative}
                 >
                   {t('swapFetchingQuotes')}
                 </Text>
@@ -821,7 +801,7 @@ const PrepareBridgePage = ({
       <Column
         paddingInline={4}
         gap={4}
-        backgroundColor={BackgroundColor.backgroundAlternativeSoft}
+        backgroundColor={BackgroundColor.backgroundDefault}
       >
         {isUsingHardwareWallet &&
           isTxSubmittable &&

@@ -3,6 +3,8 @@ import {
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import {
   AllowedActions,
   AllowedEvents,
@@ -30,6 +32,7 @@ export function getAccountTrackerControllerMessenger(
       'NetworkController:getNetworkClientById',
       'OnboardingController:getState',
       'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
     ],
     allowedEvents: [
       'AccountsController:selectedEvmAccountChange',
@@ -41,7 +44,9 @@ export function getAccountTrackerControllerMessenger(
 
 type AllowedInitializationActions =
   | NetworkControllerGetSelectedNetworkClientAction
-  | NetworkControllerGetStateAction;
+  | NetworkControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction
+  | PreferencesControllerGetStateAction;
 
 export type AccountTrackerControllerInitMessenger = ReturnType<
   typeof getAccountTrackerControllerInitMessenger
@@ -62,6 +67,8 @@ export function getAccountTrackerControllerInitMessenger(
     allowedActions: [
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:getState',
+      'RemoteFeatureFlagController:getState',
+      'PreferencesController:getState',
     ],
     allowedEvents: [],
   });
