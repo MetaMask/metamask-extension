@@ -75,6 +75,7 @@ import {
   EncryptionPublicKeyManager,
 } from '@metamask/message-manager';
 import { SignatureController } from '@metamask/signature-controller';
+import { UserOperationController } from '@metamask/user-operation-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -172,6 +173,7 @@ export type Controller =
   | TokensController
   | TransactionController
   | InstitutionalSnapController
+  | UserOperationController
   | UserStorageController
   | TokenRatesController
   | NftController
@@ -244,6 +246,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   TokenListController['state'] &
   TokensController['state'] &
   TransactionController['state'] &
+  UserOperationController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &

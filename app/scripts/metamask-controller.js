@@ -44,7 +44,6 @@ import { ERC1155, ERC20, ERC721 } from '@metamask/controller-utils';
 
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
-import { UserOperationController } from '@metamask/user-operation-controller';
 import {
   BRIDGE_CONTROLLER_NAME,
   BridgeUserAction,
@@ -394,6 +393,7 @@ import { DecryptMessageControllerInit } from './controller-init/confirmations/de
 import { EncryptionPublicKeyControllerInit } from './controller-init/confirmations/encryption-public-key-controller-init';
 import { EncryptionPublicKeyManagerInit } from './controller-init/confirmations/encryption-public-key-message-manager-init';
 import { SignatureControllerInit } from './controller-init/confirmations/signature-controller-init';
+import { UserOperationControllerInit } from './controller-init/confirmations/user-operation-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -512,34 +512,6 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    this.userOperationController = new UserOperationController({
-      entrypoint: process.env.EIP_4337_ENTRYPOINT,
-      getGasFeeEstimates: (...args) => {
-        return this.gasFeeController.fetchGasFeeEstimates(...args);
-      },
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'UserOperationController',
-        allowedActions: [
-          'ApprovalController:addRequest',
-          'NetworkController:getNetworkClientById',
-          'KeyringController:prepareUserOperation',
-          'KeyringController:patchUserOperation',
-          'KeyringController:signUserOperation',
-        ],
-      }),
-      state: initState.UserOperationController,
-    });
-
-    this.userOperationController.hub.on(
-      'user-operation-added',
-      this._onUserOperationAdded.bind(this),
-    );
-
-    this.userOperationController.hub.on(
-      'transaction-updated',
-      this._onUserOperationTransactionUpdated.bind(this),
-    );
-
     // ensure AccountTrackerController updates balances after network change
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
@@ -574,6 +546,7 @@ export default class MetamaskController extends EventEmitter {
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       GasFeeController: GasFeeControllerInit,
+      UserOperationController: UserOperationControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
@@ -677,6 +650,7 @@ export default class MetamaskController extends EventEmitter {
     this.remoteFeatureFlagController =
       controllersByName.RemoteFeatureFlagController;
     this.gasFeeController = controllersByName.GasFeeController;
+    this.userOperationController = controllersByName.UserOperationController;
     this.cronjobController = controllersByName.CronjobController;
     this.rateLimitController = controllersByName.RateLimitController;
     this.selectedNetworkController =
@@ -811,6 +785,16 @@ export default class MetamaskController extends EventEmitter {
           );
         }
       },
+    );
+
+    this.userOperationController.hub.on(
+      'user-operation-added',
+      this._onUserOperationAdded.bind(this),
+    );
+
+    this.userOperationController.hub.on(
+      'transaction-updated',
+      this._onUserOperationTransactionUpdated.bind(this),
     );
 
     const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({

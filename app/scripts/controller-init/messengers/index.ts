@@ -179,6 +179,7 @@ import {
   getSignatureControllerInitMessenger,
   getSignatureControllerMessenger,
 } from './signature-controller-messenger';
+import { getUserOperationControllerMessenger } from './user-operation-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -365,6 +366,8 @@ export {
   getTokensControllerMessenger,
   getTokensControllerInitMessenger,
 } from './tokens-controller-messenger';
+export type { UserOperationControllerMessenger } from './user-operation-controller-messenger';
+export { getUserOperationControllerMessenger } from './user-operation-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AccountOrderController: {
@@ -644,6 +647,10 @@ export const CONTROLLER_MESSENGERS = {
   TransactionController: {
     getMessenger: getTransactionControllerMessenger,
     getInitMessenger: getTransactionControllerInitMessenger,
+  },
+  UserOperationController: {
+    getMessenger: getUserOperationControllerMessenger,
+    getInitMessenger: noop,
   },
   UserStorageController: {
     getMessenger: getUserStorageControllerMessenger,
