@@ -51,13 +51,6 @@ describe('Shield Entry Modal', () => {
   });
 
   it('should call onGetStarted when the get started button is clicked', () => {
-    // @ts-expect-error mocking platform
-    global.platform = {
-      openExtensionInBrowser: jest.fn(),
-      openTab: jest.fn(),
-      closeCurrentWindow: jest.fn(),
-    };
-
     const { getByTestId } = renderWithProvider(<ShieldEntryModal />, mockStore);
 
     const getStartedButton = getByTestId(
@@ -66,8 +59,6 @@ describe('Shield Entry Modal', () => {
 
     fireEvent.click(getStartedButton);
     expect(setShowShieldEntryModalOnceStub).toHaveBeenCalledWith(false);
-    expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
-      SHIELD_PLAN_ROUTE,
-    );
+    expect(mockUseNavigate).toHaveBeenCalledWith(SHIELD_PLAN_ROUTE);
   });
 });
