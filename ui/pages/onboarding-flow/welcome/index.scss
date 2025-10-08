@@ -5,16 +5,6 @@
 // startup.
 @use "react-responsive-carousel/lib/styles/carousel";
 
-.riv-container {
-  height: 300px;
-  width: 200px;
-}
-
-.riv-canvas {
-  height: inherit;
-  width: inherit;
-}
-
 .welcome-banner {
   &__wrapper {
     max-width: 1280px;
