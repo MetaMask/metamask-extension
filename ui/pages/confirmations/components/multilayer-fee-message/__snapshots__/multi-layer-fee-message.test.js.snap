@@ -106,7 +106,7 @@ exports[`Multi layer fee message when balance and token price checker is enabled
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                 data-testid="account-value-and-suffix"
-                style="cursor: pointer; transition: color 0.2s ease;"
+                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
               >
                 $0.00
               </span>
@@ -155,7 +155,7 @@ exports[`Multi layer fee message when balance and token price checker is enabled
               <span
                 class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                 data-testid="account-value-and-suffix"
-                style="cursor: pointer; transition: color 0.2s ease;"
+                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
               >
                 $0.56
               </span>

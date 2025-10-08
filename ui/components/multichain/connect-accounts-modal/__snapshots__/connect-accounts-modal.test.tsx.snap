@@ -277,13 +277,13 @@ exports[`Connect More Accounts Modal should render correctly 1`] = `
                           <span
                             class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                             data-testid="account-value-and-suffix"
-                            style="cursor: pointer; transition: color 0.2s ease;"
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
                           >
                             0
                           </span>
                           <span
                             class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-                            style="cursor: pointer; transition: color 0.2s ease;"
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default cursor-pointer transition-colors duration-200 hover:text-text-alternative"
                           >
                             ETH
                           </span>
