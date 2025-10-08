@@ -210,10 +210,10 @@ async function withAccountSnap(
         mnemonic:
           'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
       },
-      testSpecificMock: (mockServer: Mockttp) => {
-        mockSnapAndSwaps(mockServer);
-        mockSendRedesignFeatureFlag(mockServer);
-      },
+      testSpecificMock: async (mockServer: Mockttp) => [
+        await mockSnapAndSwaps(mockServer),
+        await mockSendRedesignFeatureFlag(mockServer),
+      ],
     },
     async ({
       driver,
@@ -285,6 +285,7 @@ describe('User Operations', function () {
           recipientAddress: LOCAL_NODE_ACCOUNT,
           amount: '1',
         });
+        await sendTokenConfirmationPage.checkPageIsLoaded();
         await sendTokenConfirmationPage.clickOnConfirm();
 
         await openConfirmedTransaction(driver);

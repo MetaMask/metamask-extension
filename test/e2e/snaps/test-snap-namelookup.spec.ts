@@ -18,10 +18,10 @@ describe('Name lookup', function () {
         fixtures: new FixtureBuilder({
           inputChainId: CHAIN_IDS.MAINNET,
         }).build(),
-        testSpecificMock: (mockServer: Mockttp) => {
-          mockLookupSnap(mockServer);
-          mockSendRedesignFeatureFlag(mockServer);
-        },
+        testSpecificMock: async (mockServer: Mockttp) => [
+          await mockLookupSnap(mockServer),
+          await mockSendRedesignFeatureFlag(mockServer),
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
