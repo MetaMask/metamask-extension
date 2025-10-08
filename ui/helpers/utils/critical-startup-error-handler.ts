@@ -1,4 +1,4 @@
-import type browser from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 import { isObject, hasProperty, createDeferredPromise } from '@metamask/utils';
 import log from 'loglevel';
 import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../../shared/constants/state-corruption';
@@ -13,6 +13,7 @@ import {
   displayCriticalError,
   CriticalErrorTranslationKey,
 } from './display-critical-error';
+import { browserApiErrorsIntegration } from '@sentry/browser';
 
 // This should be long enough that it doesn't trigger when the popup is opened soon after startup.
 // The extension can take a few seconds to start up after a reload.
@@ -63,6 +64,16 @@ export class CriticalStartupErrorHandler {
       );
     });
 
+    const { promise: bgReadyCheck, resolve: bgReadyCheckCompleted } =
+      createDeferredPromise();
+    function listener(message: any) {
+      if (message?.backgroundReady) {
+        browser.runtime.onMessage.removeListener(listener);
+        bgReadyCheckCompleted();
+      }
+    }
+    browser.runtime.onMessage.addListener(listener);
+
     try {
       await Promise.race([livenessCheck, timeoutPromise]);
     } catch (error) {
@@ -74,6 +85,7 @@ export class CriticalStartupErrorHandler {
         error as ErrorLike,
       );
     } finally {
+      browser.runtime.onMessage.removeListener(listener);
       clearTimeout(this.#livenessCheckTimeoutId);
     }
   }

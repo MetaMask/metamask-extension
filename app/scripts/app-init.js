@@ -5,16 +5,59 @@
 // is so small we won't ever have a problem with these two files being "split".
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 
-// Represents if importAllScripts has been run
-// eslint-disable-next-line
-let scriptsLoadInitiated = false;
 const { chrome } = globalThis;
-const testMode = process.env.IN_TEST;
 
 /**
  * @type {import('../../types/global').StateHooks}
  */
 globalThis.stateHooks = globalThis.stateHooks || {};
+
+/**
+ * A promise that resolves when the `onInstalled` event is fired.
+ *
+ * @type {PromiseWithResolvers<chrome.runtime.InstalledDetails>}
+ */
+const deferredOnInstalledListener = withResolvers();
+globalThis.stateHooks.onInstalledListener = deferredOnInstalledListener.promise;
+
+/**
+ * `onInstalled` event handler.
+ *
+ * On MV3 builds we must listen for this event in `app-init`, otherwise we found
+ * that the listener is never called.
+ * For MV2 builds, the listener is added in `background.js` instead.
+ */
+chrome.runtime.onInstalled.addListener(function listener(details) {
+  chrome.runtime.onInstalled.removeListener(listener);
+  deferredOnInstalledListener.resolve(details);
+  delete globalThis.stateHooks.onInstalledListener;
+});
+
+/**
+ * A promise that resolves when the `onInstalled` event is fired.
+ *
+ * @type {PromiseWithResolvers<chrome.runtime.InstalledDetails>}
+ */
+const deferredOnConnectListener = withResolvers();
+globalThis.stateHooks.onConnectListener = deferredOnConnectListener.promise;
+
+/**
+ * `onConnect` event handler.
+ *
+ * On MV3 builds we must listen for this event in `app-init`, otherwise we found
+ * that the listener is never called.
+ * For MV2 builds, the listener is added in `background.js` instead.
+ */
+chrome.runtime.onConnect.addListener(function listener(details) {
+  chrome.runtime.onConnect.removeListener(listener);
+  deferredOnConnectListener.resolve(details);
+  delete globalThis.stateHooks.onConnectListener;
+});
+
+// Represents if importAllScripts has been run
+// eslint-disable-next-line
+let scriptsLoadInitiated = false;
+const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];
 // eslint-disable-next-line import/unambiguous
@@ -193,26 +236,5 @@ const registerInPageContentScript = async () => {
     console.warn(`Dropped attempt to register inpage content script. ${err}`);
   }
 };
-
-/**
- * A promise that resolves when the `onInstalled` event is fired.
- *
- * @type {PromiseWithResolvers<chrome.runtime.InstalledDetails>}
- */
-const deferredOnInstalledListener = withResolvers();
-globalThis.stateHooks.onInstalledListener = deferredOnInstalledListener.promise;
-
-/**
- * `onInstalled` event handler.
- *
- * On MV3 builds we must listen for this event in `app-init`, otherwise we found
- * that the listener is never called.
- * For MV2 builds, the listener is added in `background.js` instead.
- */
-chrome.runtime.onInstalled.addListener(function listener(details) {
-  chrome.runtime.onInstalled.removeListener(listener);
-  deferredOnInstalledListener.resolve(details);
-  delete globalThis.stateHooks.onInstalledListener;
-});
 
 registerInPageContentScript();
