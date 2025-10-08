@@ -175,6 +175,10 @@ import {
   getEncryptionPublicKeyControllerMessenger,
 } from './encryption-public-key-controller-messenger';
 import { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
+import {
+  getSignatureControllerInitMessenger,
+  getSignatureControllerMessenger,
+} from './signature-controller-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -311,6 +315,14 @@ export {
 } from './remote-feature-flag-controller-messenger';
 export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+export type {
+  SignatureControllerMessenger,
+  SignatureControllerInitMessenger,
+} from './signature-controller-messenger';
+export {
+  getSignatureControllerMessenger,
+  getSignatureControllerInitMessenger,
+} from './signature-controller-messenger';
 export type { SubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export type {
@@ -560,6 +572,10 @@ export const CONTROLLER_MESSENGERS = {
   ShieldController: {
     getMessenger: getShieldControllerMessenger,
     getInitMessenger: getShieldControllerInitMessenger,
+  },
+  SignatureController: {
+    getMessenger: getSignatureControllerMessenger,
+    getInitMessenger: getSignatureControllerInitMessenger,
   },
   SnapsNameProvider: {
     getMessenger: getSnapsNameProviderMessenger,

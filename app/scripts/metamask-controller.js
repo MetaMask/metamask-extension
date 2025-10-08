@@ -42,7 +42,6 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import { ERC1155, ERC20, ERC721 } from '@metamask/controller-utils';
 
-import { SignatureController } from '@metamask/signature-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 import { UserOperationController } from '@metamask/user-operation-controller';
@@ -394,6 +393,7 @@ import { DecryptMessageManagerInit } from './controller-init/confirmations/decry
 import { DecryptMessageControllerInit } from './controller-init/confirmations/decrypt-message-controller-init';
 import { EncryptionPublicKeyControllerInit } from './controller-init/confirmations/encryption-public-key-controller-init';
 import { EncryptionPublicKeyManagerInit } from './controller-init/confirmations/encryption-public-key-message-manager-init';
+import { SignatureControllerInit } from './controller-init/confirmations/signature-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -512,40 +512,6 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    this.signatureController = new SignatureController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'SignatureController',
-        allowedActions: [
-          `AccountsController:getState`,
-          `ApprovalController:addRequest`,
-          'KeyringController:signMessage',
-          'KeyringController:signPersonalMessage',
-          'KeyringController:signTypedMessage',
-          'LoggingController:add',
-          `NetworkController:getNetworkClientById`,
-          `GatorPermissionsController:decodePermissionFromPermissionContextForOrigin`,
-        ],
-      }),
-      trace,
-      decodingApiUrl: process.env.DECODING_API_URL,
-      isDecodeSignatureRequestEnabled: () =>
-        this.preferencesController.state.useTransactionSimulations,
-    });
-
-    this.signatureController.hub.on(
-      'cancelWithReason',
-      ({ metadata: message, reason }) => {
-        this.controllerMessenger.call('MetaMetricsController:trackEvent', {
-          event: reason,
-          category: MetaMetricsEventCategory.Transactions,
-          properties: {
-            action: 'Sign Request',
-            type: message.type,
-          },
-        });
-      },
-    );
-
     this.userOperationController = new UserOperationController({
       entrypoint: process.env.EIP_4337_ENTRYPOINT,
       getGasFeeEstimates: (...args) => {
@@ -598,6 +564,7 @@ export default class MetamaskController extends EventEmitter {
       DecryptMessageController: DecryptMessageControllerInit,
       EncryptionPublicKeyManager: EncryptionPublicKeyManagerInit,
       EncryptionPublicKeyController: EncryptionPublicKeyControllerInit,
+      SignatureController: SignatureControllerInit,
       PermissionController: PermissionControllerInit,
       PermissionLogController: PermissionLogControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
@@ -697,6 +664,7 @@ export default class MetamaskController extends EventEmitter {
     this.decryptMessageController = controllersByName.DecryptMessageController;
     this.encryptionPublicKeyController =
       controllersByName.EncryptionPublicKeyController;
+    this.signatureController = controllersByName.SignatureController;
     this.permissionController = controllersByName.PermissionController;
     this.permissionLogController = controllersByName.PermissionLogController;
     this.subjectMetadataController =

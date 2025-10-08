@@ -74,6 +74,7 @@ import {
   DecryptMessageManager,
   EncryptionPublicKeyManager,
 } from '@metamask/message-manager';
+import { SignatureController } from '@metamask/signature-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -154,6 +155,7 @@ export type Controller =
   | SeedlessOnboardingController<EncryptionKey>
   | SelectedNetworkController
   | ShieldController
+  | SignatureController
   | SmartTransactionsController
   | SnapController
   | SnapInterfaceController
@@ -230,6 +232,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   SelectedNetworkController['state'] &
   ShieldController['state'] &
+  SignatureController['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
