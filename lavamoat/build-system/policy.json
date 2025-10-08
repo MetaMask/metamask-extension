@@ -107,20 +107,8 @@
       },
       "packages": {
         "@babel/core>@babel/types": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser-webpack-plugin>@jridgewell/trace-mapping": true,
-        "@babel/core>@babel/generator>jsesc": true
-      }
-    },
-    "depcheck>@babel/traverse>@babel/generator": {
-      "globals": {
-        "console.error": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@babel/core>@babel/types": true,
-        "depcheck>@babel/traverse>@babel/generator>@jridgewell/gen-mapping": true,
-        "depcheck>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
+        "@babel/core>@babel/generator>@jridgewell/gen-mapping": true,
+        "@babel/core>@babel/generator>@jridgewell/trace-mapping": true,
         "@babel/core>@babel/generator>jsesc": true
       }
     },
@@ -180,8 +168,7 @@
       "globals": {
         "console.log": true,
         "console.warn": true,
-        "process.exitCode": "write",
-        "process.versions.node": true
+        "process": true
       },
       "packages": {
         "@babel/core": true,
@@ -793,53 +780,22 @@
         "@babel/core>@babel/types": true
       }
     },
-    "depcheck>@babel/traverse>@babel/template": {
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@babel/parser": true,
-        "@babel/core>@babel/types": true
-      }
-    },
     "depcheck>@babel/traverse": {
       "globals": {
         "console.log": true
       },
       "packages": {
         "@babel/code-frame": true,
-        "depcheck>@babel/traverse>@babel/generator": true,
+        "@babel/core>@babel/generator": true,
         "@babel/core>@babel/parser": true,
-        "depcheck>@babel/traverse>@babel/template": true,
+        "@babel/core>@babel/template": true,
         "@babel/core>@babel/types": true,
         "babel/preset-env>b@babel/types": true,
         "nock>debug": true,
         "depcheck>@babel/traverse>globals": true
       }
     },
-    "lavamoat>lavamoat-tofu>@babel/traverse": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@babel/code-frame": true,
-        "@babel/core>@babel/generator": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/parser": true,
-        "@babel/core>@babel/template": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
-        "nock>debug": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
-      }
-    },
     "@babel/core>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "@babel/code-frame>@babel/helper-validator-identifier": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
       "globals": {
         "console.warn": true,
         "process.env.BABEL_TYPES_8_BREAKING": true
@@ -968,13 +924,13 @@
         "eslint>minimatch": true
       }
     },
-    "depcheck>@babel/traverse>@babel/generator>@jridgewell/gen-mapping": {
+    "@babel/core>@babel/generator>@jridgewell/gen-mapping": {
       "globals": {
         "define": true
       },
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
-        "terser-webpack-plugin>@jridgewell/trace-mapping": true
+        "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/trace-mapping": true
       }
     },
     "terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
@@ -1004,7 +960,7 @@
         "define": true
       }
     },
-    "depcheck>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": {
+    "@babel/core>@babel/generator>@jridgewell/trace-mapping": {
       "globals": {
         "define": true
       },
@@ -1014,6 +970,15 @@
       }
     },
     "ts-node>@cspotcode/source-map-support>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+      }
+    },
+    "@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/trace-mapping": {
       "globals": {
         "define": true
       },
@@ -4530,14 +4495,6 @@
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
       }
     },
-    "lavamoat>lavamoat-core>json-stable-stringify": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "@lavamoat/webpack>json-stable-stringify>isarray": true,
-        "@lavamoat/webpack>json-stable-stringify>jsonify": true,
-        "@lavamoat/webpack>json-stable-stringify>object-keys": true
-      }
-    },
     "depcheck>json5": {
       "globals": {
         "console.warn": true
@@ -4692,7 +4649,7 @@
       "builtin": {
         "node:events": true,
         "node:fs.readFileSync": true,
-        "node:fs/promises": true,
+        "node:fs/promises.writeFile": true,
         "node:path.extname": true,
         "node:path.join": true
       },
@@ -4703,18 +4660,18 @@
         "define": true
       },
       "packages": {
-        "lavamoat>lavamoat-core>json-stable-stringify": true,
-        "lavamoat>lavamoat-tofu": true,
+        "@lavamoat/webpack>json-stable-stringify": true,
+        "lavamoat>lavamoat-core>lavamoat-tofu": true,
         "lavamoat>lavamoat-core>merge-deep": true
       }
     },
-    "lavamoat>lavamoat-tofu": {
+    "lavamoat>lavamoat-core>lavamoat-tofu": {
       "globals": {
         "console.log": true
       },
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse": true
+        "lavamoat>lavamoat-core>lavamoat-tofu>@babel/parser": true,
+        "depcheck>@babel/traverse": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
