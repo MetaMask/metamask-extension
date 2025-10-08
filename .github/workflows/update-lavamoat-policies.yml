@@ -5,8 +5,8 @@ on:
     types: created
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ !contains(github.ref, 'release/')}}
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: ${{ !contains(github.ref_name, 'release/')}}
 
 jobs:
   is-fork-pull-request:
