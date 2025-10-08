@@ -56,6 +56,8 @@ export const ExecutionServiceInit: ControllerInitFunction<
         messenger: controllerMessenger,
         setupSnapProvider,
         offscreenPromise,
+        pingTimeout: Infinity,
+        initTimeout: Infinity,
       }),
     };
   }
@@ -70,6 +72,8 @@ export const ExecutionServiceInit: ControllerInitFunction<
       messenger: controllerMessenger,
       iframeUrl: new URL(iframeUrl),
       setupSnapProvider,
+      pingTimeout: Infinity,
+      initTimeout: Infinity,
     }),
   };
 };
