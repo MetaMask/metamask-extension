@@ -75,7 +75,7 @@ function transformState(
       hasProperty(existingBaseNetwork, 'rpcEndpoints') &&
       Array.isArray(existingBaseNetwork.rpcEndpoints) &&
       existingBaseNetwork.rpcEndpoints.some(
-        (endpoint: any) =>
+        (endpoint) =>
           isObject(endpoint) &&
           hasProperty(endpoint, 'networkClientId') &&
           hasProperty(endpoint, 'type') &&
