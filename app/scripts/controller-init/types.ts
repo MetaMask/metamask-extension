@@ -75,6 +75,11 @@ export type ControllerInitRequest<
   controllerMessenger: ControllerMessengerType;
 
   /**
+   * The current version of the extension, used for migrations.
+   */
+  currentMigrationVersion: number;
+
+  /**
    * An instance of an encryptor to use for encrypting and decrypting
    * sensitive data.
    */
