@@ -23,8 +23,10 @@ import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import HomePage from '../page-objects/pages/home/homepage';
+import { mockSendRedesignFeatureFlag } from '../tests/send/common';
+import SendPage from '../page-objects/pages/send/send-page';
+import SendTokenConfirmPage from '../page-objects/pages/send/send-token-confirmation-page';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -208,7 +210,10 @@ async function withAccountSnap(
         mnemonic:
           'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent',
       },
-      testSpecificMock: mockSnapAndSwaps,
+      testSpecificMock: (mockServer: Mockttp) => {
+        mockSnapAndSwaps(mockServer);
+        mockSendRedesignFeatureFlag(mockServer);
+      },
     },
     async ({
       driver,
@@ -264,21 +269,23 @@ describe('User Operations', function () {
     });
   });
 
-  // https://github.com/MetaMask/metamask-extension/issues/36567
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('from send transaction', async function () {
+  it('from send transaction', async function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
         const homePage = new HomePage(driver);
         await homePage.startSendFlow();
 
-        const sendToPage = new SendTokenPage(driver);
-        await sendToPage.checkPageIsLoaded();
-        await sendToPage.fillRecipient(LOCAL_NODE_ACCOUNT);
-        await sendToPage.fillAmount('1');
-        await sendToPage.goToNextScreen();
-        await sendToPage.clickConfirmButton();
+        const sendPage = new SendPage(driver);
+        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+
+        await sendPage.createSendRequest({
+          chainId: '0x539',
+          symbol: 'ETH',
+          recipientAddress: LOCAL_NODE_ACCOUNT,
+          amount: '1',
+        });
+        await sendTokenConfirmationPage.clickOnConfirm();
 
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
