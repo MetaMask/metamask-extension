@@ -4298,20 +4298,20 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Téarmaí Úsáide"
   },
-  "onboardingMetametricsAgree": {
-    "message": "Aontaím"
-  },
-  "onboardingMetametricsDescription": {
-    "message": "Ba mhaith linn sonraí bunúsacha úsáide agus diagnóisice a bhailiú chun MetaMask a fheabhsú. Beidh sé i gcónaí:"
-  },
   "onboardingMetametricCheckboxTitleOne": {
     "message": "Bailigh sonraí úsáide bunúsacha"
   },
   "onboardingMetametricCheckboxTitleTwo": {
     "message": "Nuashonruithe táirgí"
   },
+  "onboardingMetametricsAgree": {
+    "message": "Aontaím"
+  },
   "onboardingMetametricsContinue": {
     "message": "Lean ar aghaidh"
+  },
+  "onboardingMetametricsDescription": {
+    "message": "Ba mhaith linn sonraí bunúsacha úsáide agus diagnóisice a bhailiú chun MetaMask a fheabhsú. Beidh sé i gcónaí:"
   },
   "onboardingMetametricsDescription": {
     "message": "Ba mhaith linn na ceadanna seo a iarraidh. Is féidir leat rogha an diúltaithe a dhéanamh nó do shonraí úsáide a scriosadh tráth ar bith."
