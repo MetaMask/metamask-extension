@@ -1,10 +1,9 @@
 import { DecodingDataStateChange } from '@metamask/signature-controller';
 import { useEffect, useMemo } from 'react';
 
-import { SignatureRequestType } from '../types/confirm';
-import { useConfirmContext } from '../context/confirm';
 import { useLoadingTime } from '../components/simulation-details/useLoadingTime';
 import { useSignatureEventFragment } from './useSignatureEventFragment';
+import { useSignatureRequestWithFallback } from './signatures/useSignatureRequest';
 
 enum DecodingResponseType {
   Change = 'CHANGE',
@@ -14,7 +13,7 @@ enum DecodingResponseType {
 
 export function useDecodedSignatureMetrics(supportedByDecodingAPI: boolean) {
   const { updateSignatureEventFragment } = useSignatureEventFragment();
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequestWithFallback();
   const { loadingTime, setLoadingComplete } = useLoadingTime();
   const { decodingLoading, decodingData } = currentConfirmation;
 

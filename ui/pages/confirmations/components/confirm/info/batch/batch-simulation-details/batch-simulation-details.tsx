@@ -1,8 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import {
   SimulationDetails,
@@ -12,22 +9,19 @@ import {
   ApprovalBalanceChange,
   useBatchApproveBalanceChanges,
 } from '../../hooks/useBatchApproveBalanceChanges';
-import { useConfirmContext } from '../../../../../context/confirm';
 import { EditSpendingCapModal } from '../../approve/edit-spending-cap-modal/edit-spending-cap-modal';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { updateAtomicBatchData } from '../../../../../../../store/controller-actions/transaction-controller';
 import { useIsUpgradeTransaction } from '../../hooks/useIsUpgradeTransaction';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function BatchSimulationDetails() {
   const t = useI18nContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
-
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
-
+  const transactionMeta = useUnapprovedTransactionWithFallback();
   const { id, nestedTransactions } = transactionMeta;
 
   const { value: approveBalanceChanges } =

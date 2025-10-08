@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import React from 'react';
 import { Text } from '../../../../../components/component-library';
@@ -7,7 +6,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
+import { useUnapprovedTransaction } from '../../transactions/useUnapprovedTransaction';
 import { ellipsify } from '../../../send-legacy/send.utils';
 
 export const NonContractAddressAlertMessage = (
@@ -15,7 +14,7 @@ export const NonContractAddressAlertMessage = (
 ) => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
 
   const networkName =
     currentConfirmation?.chainId &&

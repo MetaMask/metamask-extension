@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
@@ -26,7 +25,7 @@ import { isHardwareKeyring } from '../../../../../../helpers/utils/hardware';
 import { setSmartAccountOptIn } from '../../../../../../store/actions';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getUseSmartAccount } from '../../../../selectors/preferences';
-import { useConfirmContext } from '../../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../../../hooks/transactions/useUnapprovedTransaction';
 import { useSmartAccountActions } from '../../../../hooks/useSmartAccountActions';
 import { SmartAccountUpdateContent } from '../../smart-account-update-content/smart-account-update-content';
 
@@ -34,7 +33,7 @@ import { SmartAccountUpdateContent } from '../../smart-account-update-content/sm
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function SmartAccountUpdateSplash() {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
   const { handleRejectUpgrade } = useSmartAccountActions();
   const smartAccountOptIn = useSelector(getUseSmartAccount);
   const { txParams, origin } = currentConfirmation ?? {};

@@ -27,7 +27,7 @@ const STATE_MOCK = {
 describe('syncConfirmPath', () => {
   it('should execute correctly', () => {
     const result = renderHookWithConfirmContextProvider(
-      () => syncConfirmPath(unapprovedPersonalSignMsg),
+      () => syncConfirmPath(unapprovedPersonalSignMsg.id),
       STATE_MOCK,
     );
     expect(result).toBeDefined();
@@ -36,7 +36,7 @@ describe('syncConfirmPath', () => {
   it('should replace history route', () => {
     mockHistoryReplace.mockClear();
     renderHookWithConfirmContextProvider(
-      () => syncConfirmPath(unapprovedPersonalSignMsg),
+      () => syncConfirmPath(unapprovedPersonalSignMsg.id),
       STATE_MOCK,
     );
     expect(mockHistoryReplace).toHaveBeenCalled();

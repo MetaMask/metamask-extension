@@ -1,27 +1,32 @@
 import { createSelector } from 'reselect';
-import { DefaultRootState } from 'react-redux';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import {
-  unapprovedPersonalMsgsSelector,
-  unapprovedTypedMessagesSelector,
-} from './transactions';
+import { SignatureControllerState } from '@metamask/signature-controller';
+
+export type SignaturesRootState = {
+  metamask: SignatureControllerState;
+};
+
+export const selectPersonalMessages = createSelector(
+  (state: SignaturesRootState) => state.metamask?.unapprovedPersonalMsgs,
+  (unapprovedPersonalMsgs) => unapprovedPersonalMsgs || {},
+);
+
+export const selectTypedMessages = createSelector(
+  (state: SignaturesRootState) => state.metamask?.unapprovedTypedMessages,
+  (unapprovedTypedMessages) => unapprovedTypedMessages || {},
+);
 
 export const selectUnapprovedMessages = createSelector(
-  unapprovedPersonalMsgsSelector,
-  unapprovedTypedMessagesSelector,
+  selectPersonalMessages,
+  selectTypedMessages,
   (personalMsgs, typedMessages) => ({
     ...personalMsgs,
     ...typedMessages,
   }),
 );
 
-const internalSelectUnapprovedMessage = createSelector(
+export const selectUnapprovedMessage = createSelector(
   selectUnapprovedMessages,
-  (_state: DefaultRootState, messageId: string) => messageId,
-  (messages, messageId) => messages[messageId],
-);
-
-export const selectUnapprovedMessage = createDeepEqualSelector(
-  internalSelectUnapprovedMessage,
-  (message) => message,
+  (_state: SignaturesRootState, messageId: string | undefined) => messageId,
+  (unapprovedMessages, messageId) =>
+    messageId ? unapprovedMessages[messageId] : undefined,
 );

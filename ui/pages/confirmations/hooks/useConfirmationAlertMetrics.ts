@@ -4,10 +4,10 @@ import { validate as isUuid } from 'uuid';
 import useAlerts from '../../../hooks/useAlerts';
 import { isSignatureTransactionType } from '../utils';
 import { Alert } from '../../../ducks/confirm-alerts/confirm-alerts';
-import { useConfirmContext } from '../context/confirm';
 import { AlertsName } from './alerts/constants';
 import { useSignatureEventFragment } from './useSignatureEventFragment';
 import { useTransactionEventFragment } from './useTransactionEventFragment';
+import { useApprovalRequest } from './useApprovalRequest';
 
 export type AlertMetricsProperties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -53,7 +53,7 @@ function getAlertName(alertKey: string): string {
 }
 
 export function useConfirmationAlertMetrics() {
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useApprovalRequest();
   const ownerId = currentConfirmation?.id ?? '';
   const { alerts, isAlertConfirmed } = useAlerts(ownerId);
   const { updateSignatureEventFragment } = useSignatureEventFragment();

@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import React from 'react';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import {
@@ -19,15 +16,14 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { getAvatarNetworkColor } from '../../../../../helpers/utils/accounts';
-import { useConfirmContext } from '../../../context/confirm';
 import useConfirmationNetworkInfo from '../../../hooks/useConfirmationNetworkInfo';
 import useConfirmationRecipientInfo from '../../../hooks/useConfirmationRecipientInfo';
-import { Confirmation } from '../../../types/confirm';
+import { useUnapprovedTransaction } from '../../../hooks/transactions/useUnapprovedTransaction';
 import { DAppInitiatedHeader } from './dapp-initiated-header';
 import HeaderInfo from './header-info';
 import { WalletInitiatedHeader } from './wallet-initiated-header';
 
-const CONFIRMATIONS_WITH_NEW_HEADER = [
+const TRANSACTION_TYPES_NEW_HEADER: TransactionType[] = [
   TransactionType.tokenMethodTransfer,
   TransactionType.tokenMethodTransferFrom,
   TransactionType.tokenMethodSafeTransferFrom,
@@ -44,7 +40,7 @@ const Header = () => {
     hasMoreThanOneWallet,
   } = useConfirmationRecipientInfo();
 
-  const { currentConfirmation } = useConfirmContext<Confirmation>();
+  const transactionMeta = useUnapprovedTransaction();
   let secondaryText;
 
   if (isBIP44) {
@@ -104,16 +100,20 @@ const Header = () => {
   // back button if it's a wallet initiated confirmation. The default header is
   // the original header for the redesigns and includes the sender and recipient
   // addresses as well.
-  const isConfirmationWithNewHeader =
-    currentConfirmation?.type &&
-    CONFIRMATIONS_WITH_NEW_HEADER.includes(currentConfirmation.type);
-  const isWalletInitiated =
-    (currentConfirmation as TransactionMeta)?.origin === ORIGIN_METAMASK;
-  if (isConfirmationWithNewHeader && isWalletInitiated) {
+  const isTransactionWithNewHeader =
+    transactionMeta?.type &&
+    TRANSACTION_TYPES_NEW_HEADER.includes(transactionMeta.type);
+
+  const isWalletInitiated = transactionMeta?.origin === ORIGIN_METAMASK;
+
+  if (isTransactionWithNewHeader && isWalletInitiated) {
     return <WalletInitiatedHeader />;
-  } else if (isConfirmationWithNewHeader && !isWalletInitiated) {
+  }
+
+  if (isTransactionWithNewHeader && !isWalletInitiated) {
     return <DAppInitiatedHeader />;
   }
+
   return DefaultHeader;
 };
 

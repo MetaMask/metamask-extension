@@ -1,20 +1,20 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { renderHook } from '@testing-library/react-hooks';
 import { useDispatch } from 'react-redux';
 import { setTransactionActive } from '../../../store/actions';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
-import { useConfirmContext } from '../context/confirm';
-import { type Confirmation } from '../types/confirm';
 import { useTransactionFocusEffect } from './useTransactionFocusEffect';
+import { useUnapprovedTransaction } from './transactions/useUnapprovedTransaction';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: jest.fn(),
 }));
 
-jest.mock('../context/confirm', () => ({
-  useConfirmContext: jest.fn(),
-}));
+jest.mock('./transactions/useUnapprovedTransaction');
 
 jest.mock('../../../hooks/useWindowFocus', () => ({
   useWindowFocus: jest.fn(),
@@ -24,25 +24,20 @@ jest.mock('../../../store/actions', () => ({
   setTransactionActive: jest.fn(),
 }));
 
-const mockConfirmation: Confirmation = {
+const mockConfirmation = {
   id: '1',
   type: TransactionType.simpleSend,
-};
-
-const confirmContextMock = {
-  currentConfirmation: mockConfirmation,
-  isScrollToBottomCompleted: false,
-  setIsScrollToBottomCompleted: jest.fn(),
-};
+} as TransactionMeta;
 
 describe('useTransactionFocusEffect', () => {
   const dispatchMock = jest.fn();
   const setTransactionActiveMock = setTransactionActive as jest.MockedFunction<
     typeof setTransactionActive
   >;
-  const useConfirmContextMock = useConfirmContext as jest.MockedFunction<
-    typeof useConfirmContext
-  >;
+  const useUnapprovedTransactionMock =
+    useUnapprovedTransaction as jest.MockedFunction<
+      typeof useUnapprovedTransaction
+    >;
   const useWindowFocusMock = useWindowFocus as jest.MockedFunction<
     typeof useWindowFocus
   >;
@@ -53,7 +48,7 @@ describe('useTransactionFocusEffect', () => {
   beforeEach(() => {
     useDispatchMock.mockReturnValue(dispatchMock);
     useWindowFocusMock.mockReturnValue(true);
-    useConfirmContextMock.mockReturnValue(confirmContextMock);
+    useUnapprovedTransactionMock.mockReturnValue(mockConfirmation);
 
     setTransactionActiveMock.mockClear();
     dispatchMock.mockClear();
@@ -71,12 +66,9 @@ describe('useTransactionFocusEffect', () => {
     const simpleSendConfirmation = {
       id: '2',
       type: TransactionType.simpleSend,
-    };
+    } as TransactionMeta;
 
-    useConfirmContextMock.mockReturnValue({
-      ...confirmContextMock,
-      currentConfirmation: simpleSendConfirmation,
-    });
+    useUnapprovedTransactionMock.mockReturnValue(simpleSendConfirmation);
 
     rerender();
 
@@ -96,15 +88,7 @@ describe('useTransactionFocusEffect', () => {
 
   describe('when confirmation type is not valid', () => {
     it('should not focus transaction initially', () => {
-      const signatureConfirmation = {
-        id: '2',
-        type: TransactionType.signTypedData,
-      };
-
-      useConfirmContextMock.mockReturnValue({
-        ...confirmContextMock,
-        currentConfirmation: signatureConfirmation,
-      });
+      useUnapprovedTransactionMock.mockReturnValue(undefined);
       renderHook(() => useTransactionFocusEffect());
       expect(dispatchMock).not.toHaveBeenCalled();
     });
@@ -112,15 +96,7 @@ describe('useTransactionFocusEffect', () => {
     it('should unfocus the previous transaction', () => {
       const { rerender } = renderHook(() => useTransactionFocusEffect());
 
-      const signatureConfirmation = {
-        id: '2',
-        type: TransactionType.signTypedData,
-      };
-
-      useConfirmContextMock.mockReturnValue({
-        ...confirmContextMock,
-        currentConfirmation: signatureConfirmation,
-      });
+      useUnapprovedTransactionMock.mockReturnValue(undefined);
 
       rerender();
 

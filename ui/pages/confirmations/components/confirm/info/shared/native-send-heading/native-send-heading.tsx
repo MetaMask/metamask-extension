@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -30,13 +29,12 @@ import {
   getPreferences,
   selectConversionRateByChainId,
 } from '../../../../../../../selectors';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 import { formatAmount } from '../../../../simulation-details/formatAmount';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 
 const NativeSendHeading = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransactionWithFallback();
 
   const { chainId } = transactionMeta;
 

@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
@@ -28,12 +27,12 @@ import {
   estimateGas,
   updateEditableParams,
 } from '../../../../../../../store/actions';
-import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useApproveTokenSimulation } from '../hooks/use-approve-token-simulation';
 import { ConfirmLoader } from '../../shared/confirm-loader/confirm-loader';
 import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { updateApprovalAmount } from '../../../../../../../../shared/lib/transactions/approvals';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 
 export function countDecimalDigits(numberString: string) {
   return numberString.split('.')[1]?.length || 0;
@@ -53,11 +52,8 @@ export const EditSpendingCapModal = ({
   to?: Hex;
 }) => {
   const t = useI18nContext();
-
   const dispatch = useDispatch();
-
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransactionWithFallback();
 
   const currentTo = transactionMeta.txParams.to;
   const currentFrom = transactionMeta.txParams.from;

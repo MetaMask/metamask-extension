@@ -15,13 +15,17 @@ describe('confirm - utils', () => {
     test("returns the sender address from a signature if it's passed", () => {
       const testCurrentConfirmation =
         genUnapprovedContractInteractionConfirmation() as TransactionMeta;
-      const { from } = getConfirmationSender(testCurrentConfirmation);
+      const { from } = getConfirmationSender(
+        testCurrentConfirmation,
+        undefined,
+      );
 
       expect(from).toEqual(CONTRACT_INTERACTION_SENDER_ADDRESS);
     });
 
     test("returns the sender address from a transaction if it's passed", () => {
       const { from } = getConfirmationSender(
+        undefined,
         unapprovedPersonalSignMsg as SignatureRequestType,
       );
 
@@ -30,7 +34,10 @@ describe('confirm - utils', () => {
 
     test('returns no sender address if no confirmation is passed', () => {
       const testCurrentConfirmation = undefined;
-      const { from } = getConfirmationSender(testCurrentConfirmation);
+      const { from } = getConfirmationSender(
+        testCurrentConfirmation,
+        undefined,
+      );
 
       expect(from).toEqual(undefined);
     });

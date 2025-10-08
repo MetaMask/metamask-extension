@@ -1,9 +1,8 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
-import { useConfirmContext } from '../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from './useUnapprovedTransaction';
 
 export function useIsEnforcedSimulationsSupported() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
   const { delegationAddress, origin, simulationData } = currentConfirmation;
 
   const isInternalOrigin = !origin || origin === ORIGIN_METAMASK;

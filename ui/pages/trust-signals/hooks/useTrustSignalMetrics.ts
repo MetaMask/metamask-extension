@@ -3,16 +3,13 @@ import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { getAddressSecurityAlertResponse } from '../../../selectors';
-import { useConfirmContext } from '../../confirmations/context/confirm';
-import { isSignatureTransactionType } from '../../confirmations/utils';
-import type {
-  Confirmation,
-  SignatureRequestType,
-} from '../../confirmations/types/confirm';
 // eslint-disable-next-line import/no-restricted-paths
 import { ResultType } from '../../../../app/scripts/lib/trust-signals/types';
 import { useTransactionEventFragment } from '../../confirmations/hooks/useTransactionEventFragment';
 import { useSignatureEventFragment } from '../../confirmations/hooks/useSignatureEventFragment';
+import { useUnapprovedTransaction } from '../../confirmations/hooks/transactions/useUnapprovedTransaction';
+import { useSignatureRequest } from '../../confirmations/hooks/signatures/useSignatureRequest';
+import { SignatureRequestType } from '../../confirmations/types/confirm';
 
 export type TrustSignalMetricsProperties = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -27,17 +24,19 @@ export type TrustSignalMetricsAnonProperties = {
 };
 
 // For transactions, this is the 'to' address. For signatures, this is the verifying contract.
-function getTargetAddress(confirmation: Confirmation): string | null {
-  if (!confirmation) {
+function getTargetAddress(
+  transactionMeta?: TransactionMeta,
+  signatureRequest?: SignatureRequestType,
+): string | null {
+  if (!transactionMeta && !signatureRequest) {
     return null;
   }
 
-  if (!isSignatureTransactionType(confirmation)) {
-    const txMeta = confirmation as TransactionMeta;
-    return txMeta.txParams?.to ?? null;
+  if (transactionMeta) {
+    return transactionMeta.txParams?.to ?? null;
   }
   try {
-    const data = (confirmation as SignatureRequestType)?.msgParams?.data;
+    const data = signatureRequest?.msgParams?.data;
     const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
     if (parsedData?.domain?.verifyingContract) {
       return parsedData.domain.verifyingContract;
@@ -49,13 +48,14 @@ function getTargetAddress(confirmation: Confirmation): string | null {
 }
 
 export function useTrustSignalMetrics() {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMeta = useUnapprovedTransaction();
+  const signatureRequest = useSignatureRequest();
   const { updateSignatureEventFragment } = useSignatureEventFragment();
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const addressToCheck = useMemo(
-    () => getTargetAddress(currentConfirmation),
-    [currentConfirmation],
+    () => getTargetAddress(transactionMeta, signatureRequest),
+    [transactionMeta, signatureRequest],
   );
 
   const addressSecurityAlertResponse = useSelector((state) =>
@@ -87,13 +87,16 @@ export function useTrustSignalMetrics() {
   }, [addressSecurityAlertResponse]);
 
   const updateTrustSignalMetrics = useCallback(() => {
-    if (!addressSecurityAlertResponse || !currentConfirmation) {
+    if (
+      !addressSecurityAlertResponse ||
+      (!transactionMeta && !signatureRequest)
+    ) {
       return;
     }
 
-    const ownerId = currentConfirmation?.id ?? '';
+    const ownerId = transactionMeta?.id ?? signatureRequest?.id ?? '';
 
-    if (isSignatureTransactionType(currentConfirmation)) {
+    if (signatureRequest) {
       updateSignatureEventFragment({ properties });
       if (anonymousProperties.address_label) {
         updateSignatureEventFragment({
@@ -111,9 +114,10 @@ export function useTrustSignalMetrics() {
     }
   }, [
     addressSecurityAlertResponse,
-    currentConfirmation,
     properties,
     anonymousProperties,
+    signatureRequest,
+    transactionMeta,
     updateSignatureEventFragment,
     updateTransactionEventFragment,
   ]);

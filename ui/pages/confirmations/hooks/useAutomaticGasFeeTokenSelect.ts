@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -6,7 +5,7 @@ import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import { useAsyncResult } from '../../../hooks/useAsync';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
-import { useConfirmContext } from '../context/confirm';
+import { useUnapprovedTransactionWithFallback } from './transactions/useUnapprovedTransaction';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
 
@@ -16,8 +15,7 @@ export function useAutomaticGasFeeTokenSelect() {
     useIsGaslessSupported();
   const [firstCheck, setFirstCheck] = useState(true);
 
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransactionWithFallback();
 
   const hasInsufficientBalance = Boolean(
     useInsufficientBalanceAlerts()?.length,

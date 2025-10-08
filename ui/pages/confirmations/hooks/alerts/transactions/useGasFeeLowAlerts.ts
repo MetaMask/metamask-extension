@@ -9,12 +9,11 @@ import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
-import { useConfirmContext } from '../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../transactions/useUnapprovedTransaction';
 
 export function useGasFeeLowAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
-  const { id: transactionId } = (currentConfirmation ?? {}) as TransactionMeta;
+  const { id: transactionId } = useUnapprovedTransactionWithFallback();
 
   const { estimateUsed, transaction } = useGasFeeContext() as {
     estimateUsed: PriorityLevels;

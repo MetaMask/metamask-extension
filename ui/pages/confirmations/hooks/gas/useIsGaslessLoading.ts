@@ -1,14 +1,11 @@
 import { useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
-import { useConfirmContext } from '../../context/confirm';
 import { getUseTransactionSimulations } from '../../../../selectors';
 import { useIsInsufficientBalance } from '../useIsInsufficientBalance';
+import { useUnapprovedTransaction } from '../transactions/useUnapprovedTransaction';
 import { useIsGaslessSupported } from './useIsGaslessSupported';
 
 export function useIsGaslessLoading() {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
-
+  const transactionMeta = useUnapprovedTransaction();
   const { gasFeeTokens } = transactionMeta ?? {};
 
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();

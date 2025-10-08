@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { setTransactionActive } from '../../../store/actions';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
-import { useConfirmContext } from '../context/confirm';
+import { useUnapprovedTransaction } from './transactions/useUnapprovedTransaction';
 
 const FOCUSABLE_TYPES: Set<TransactionType> = new Set([
   TransactionType.contractInteraction,
@@ -16,7 +16,7 @@ const FOCUSABLE_TYPES: Set<TransactionType> = new Set([
 ]);
 
 export const useTransactionFocusEffect = () => {
-  const { currentConfirmation } = useConfirmContext();
+  const currentConfirmation = useUnapprovedTransaction();
   const { id, type } = currentConfirmation ?? {};
   const isWindowFocused = useWindowFocus();
   const dispatch = useDispatch();
@@ -32,6 +32,10 @@ export const useTransactionFocusEffect = () => {
   );
 
   useEffect(() => {
+    if (!id) {
+      return;
+    }
+
     const isFocusable = FOCUSABLE_TYPES.has(type as TransactionType);
 
     if (!isFocusable) {

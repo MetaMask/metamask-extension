@@ -38,7 +38,7 @@ import {
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-} from './transactions';
+} from './transactions-legacy';
 
 const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
 

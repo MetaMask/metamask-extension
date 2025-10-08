@@ -8,8 +8,6 @@ import { hexToBigInt } from '@metamask/utils';
 import React from 'react';
 import { isSnapId } from '@metamask/snaps-utils';
 
-import { SignatureRequestType } from '../../../../types/confirm';
-import { useConfirmContext } from '../../../../context/confirm';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowDate,
@@ -24,6 +22,7 @@ import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/c
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { ConfirmInfoRowCurrency } from '../../../../../../components/app/confirm/info/row/currency';
 import { DAY, WEEK } from '../../../../../../../shared/constants/time';
+import { useSignatureRequestWithFallback } from '../../../../hooks/signatures/useSignatureRequest';
 
 /**
  * Formats a period duration in seconds to a human-readable string.
@@ -359,9 +358,8 @@ const Erc20TokenStreamDetails: React.FC<{
  */
 const TypedSignPermissionInfo: React.FC = () => {
   const t = useI18nContext();
-  const {
-    currentConfirmation: { decodedPermission, id },
-  } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequestWithFallback();
+  const { decodedPermission, id } = currentConfirmation ?? {};
 
   if (!decodedPermission) {
     throw new Error('Decoded permission is undefined');

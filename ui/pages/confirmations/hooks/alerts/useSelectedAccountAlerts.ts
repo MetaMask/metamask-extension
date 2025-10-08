@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -10,25 +9,27 @@ import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SignatureRequestType } from '../../types/confirm';
-import { useConfirmContext } from '../../context/confirm';
+import { useUnapprovedTransaction } from '../transactions/useUnapprovedTransaction';
+import { useSignatureRequest } from '../signatures/useSignatureRequest';
 
 export const useSelectedAccountAlerts = (): Alert[] => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMeta = useUnapprovedTransaction();
+  const signatureRequest = useSignatureRequest();
+
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupWithInternalAccounts = useSelector(
     getAccountGroupWithInternalAccounts,
   );
+
   const selectedAccountGroupWithInternalAccounts =
     accountGroupWithInternalAccounts.find(
       (accountGroup) => accountGroup.id === selectedAccountGroupId,
     )?.accounts;
 
   const fromAccount =
-    (currentConfirmation as SignatureRequestType)?.msgParams?.from ??
-    (currentConfirmation as TransactionMeta)?.txParams?.from;
+    signatureRequest?.msgParams?.from ?? transactionMeta?.txParams?.from;
 
   const isAccountFromSelectedAccountGroup =
     selectedAccountGroupWithInternalAccounts?.find(

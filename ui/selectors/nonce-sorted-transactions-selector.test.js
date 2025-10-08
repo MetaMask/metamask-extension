@@ -7,7 +7,7 @@ import {
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../test/stub/networks';
-import { nonceSortedTransactionsSelector } from './transactions';
+import { nonceSortedTransactionsSelector } from './transactions-legacy';
 
 const RECIPIENTS = {
   ONE: '0xRecipient1',

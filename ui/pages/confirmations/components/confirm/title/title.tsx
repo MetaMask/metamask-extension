@@ -15,9 +15,7 @@ import {
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TypedSignSignaturePrimaryTypes } from '../../../constants';
-import { useConfirmContext } from '../../../context/confirm';
 import { useTypedSignSignatureInfo } from '../../../hooks/useTypedSignSignatureInfo';
-import { Confirmation, SignatureRequestType } from '../../../types/confirm';
 import { isSIWESignatureRequest } from '../../../utils';
 import { useIsNFT } from '../info/approve/hooks/use-is-nft';
 import { useTokenTransactionData } from '../info/hooks/useTokenTransactionData';
@@ -27,6 +25,10 @@ import { useSignatureEventFragment } from '../../../hooks/useSignatureEventFragm
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
 import { NestedTransactionTag } from '../../transactions/nested-transaction-tag';
 import { useIsUpgradeTransaction } from '../info/hooks/useIsUpgradeTransaction';
+import { useUnapprovedTransaction } from '../../../hooks/transactions/useUnapprovedTransaction';
+import { useSignatureRequest } from '../../../hooks/signatures/useSignatureRequest';
+import { useApprovalRequest } from '../../../hooks/useApprovalRequest';
+import { SignatureRequestType } from '../../../types/confirm';
 import { useCurrentSpendingCap } from './hooks/useCurrentSpendingCap';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -78,7 +80,8 @@ type IntlFunction = (str: string) => string;
 
 const getTitle = (
   t: IntlFunction,
-  confirmation?: Confirmation,
+  transactionMeta?: TransactionMeta,
+  signatureRequest?: SignatureRequestType,
   isNFT?: boolean,
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
@@ -91,62 +94,72 @@ const getTitle = (
     return '';
   }
 
-  switch (confirmation?.type) {
-    case TransactionType.contractInteraction:
-      return t('confirmTitleTransaction');
-    case TransactionType.batch:
-      if (isUpgradeOnly) {
+  if (transactionMeta) {
+    switch (transactionMeta.type) {
+      case TransactionType.contractInteraction:
+        return t('confirmTitleTransaction');
+      case TransactionType.batch:
+        if (isUpgradeOnly) {
+          return t('confirmTitleAccountTypeSwitch');
+        }
+        return t('confirmTitleTransaction');
+      case TransactionType.deployContract:
+        return t('confirmTitleDeployContract');
+      case TransactionType.revokeDelegation:
         return t('confirmTitleAccountTypeSwitch');
-      }
-      return t('confirmTitleTransaction');
-    case TransactionType.deployContract:
-      return t('confirmTitleDeployContract');
-    case TransactionType.personalSign:
-      if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
-        return t('confirmTitleSIWESignature');
-      }
-      return t('confirmTitleSignature');
-    case TransactionType.revokeDelegation:
-      return t('confirmTitleAccountTypeSwitch');
-    case TransactionType.signTypedData:
-      if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
-        const isRevokeDAIPermit = getIsRevokeDAIPermit(
-          confirmation as SignatureRequestType,
-        );
-        if (isRevokeDAIPermit || customSpendingCap === '0') {
+      case TransactionType.tokenMethodApprove:
+        if (isNFT) {
+          return t('confirmTitleApproveTransactionNFT');
+        }
+        if (customSpendingCap === '0') {
           return t('confirmTitleRevokeApproveTransaction');
         }
-
-        if (tokenStandard === TokenStandard.ERC721) {
-          return t('setApprovalForAllRedesignedTitle');
-        }
-
         return t('confirmTitlePermitTokens');
-      }
-      return t('confirmTitleSignature');
-    case TransactionType.tokenMethodApprove:
-      if (isNFT) {
-        return t('confirmTitleApproveTransactionNFT');
-      }
-      if (customSpendingCap === '0') {
-        return t('confirmTitleRevokeApproveTransaction');
-      }
-      return t('confirmTitlePermitTokens');
-    case TransactionType.tokenMethodIncreaseAllowance:
-      return t('confirmTitlePermitTokens');
-    case TransactionType.tokenMethodSetApprovalForAll:
-      if (isRevokeSetApprovalForAll) {
-        return t('confirmTitleSetApprovalForAllRevokeTransaction');
-      }
-      return t('setApprovalForAllRedesignedTitle');
-    default:
-      return '';
+      case TransactionType.tokenMethodIncreaseAllowance:
+        return t('confirmTitlePermitTokens');
+      case TransactionType.tokenMethodSetApprovalForAll:
+        if (isRevokeSetApprovalForAll) {
+          return t('confirmTitleSetApprovalForAllRevokeTransaction');
+        }
+        return t('setApprovalForAllRedesignedTitle');
+      default:
+        return '';
+    }
   }
+
+  if (signatureRequest) {
+    switch (signatureRequest.type) {
+      case TransactionType.personalSign:
+        if (isSIWESignatureRequest(signatureRequest)) {
+          return t('confirmTitleSIWESignature');
+        }
+        return t('confirmTitleSignature');
+      case TransactionType.signTypedData:
+        if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
+          const isRevokeDAIPermit = getIsRevokeDAIPermit(signatureRequest);
+          if (isRevokeDAIPermit || customSpendingCap === '0') {
+            return t('confirmTitleRevokeApproveTransaction');
+          }
+
+          if (tokenStandard === TokenStandard.ERC721) {
+            return t('setApprovalForAllRedesignedTitle');
+          }
+
+          return t('confirmTitlePermitTokens');
+        }
+        return t('confirmTitleSignature');
+      default:
+        return '';
+    }
+  }
+
+  return '';
 };
 
 const getDescription = (
   t: IntlFunction,
-  confirmation?: Confirmation,
+  transactionMeta?: TransactionMeta,
+  signatureRequest?: SignatureRequestType,
   isNFT?: boolean,
   customSpendingCap?: string,
   isRevokeSetApprovalForAll?: boolean,
@@ -159,86 +172,96 @@ const getDescription = (
     return '';
   }
 
-  switch (confirmation?.type) {
-    case TransactionType.contractInteraction:
-      return '';
-    case TransactionType.batch:
-      if (isUpgradeOnly) {
-        return t('confirmTitleDescDelegationUpgrade');
-      }
-      return '';
-    case TransactionType.deployContract:
-      return t('confirmTitleDescDeployContract');
-    case TransactionType.personalSign:
-      if (isSIWESignatureRequest(confirmation as SignatureRequestType)) {
-        return t('confirmTitleDescSIWESignature');
-      }
-      return t('confirmTitleDescSign');
-    case TransactionType.revokeDelegation:
-      return t('confirmTitleDescDelegationRevoke');
-    case TransactionType.signTypedData:
-      if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
-        if (tokenStandard === TokenStandard.ERC721) {
+  if (transactionMeta) {
+    switch (transactionMeta.type) {
+      case TransactionType.contractInteraction:
+        return '';
+      case TransactionType.batch:
+        if (isUpgradeOnly) {
+          return t('confirmTitleDescDelegationUpgrade');
+        }
+        return '';
+      case TransactionType.deployContract:
+        return t('confirmTitleDescDeployContract');
+      case TransactionType.revokeDelegation:
+        return t('confirmTitleDescDelegationRevoke');
+      case TransactionType.tokenMethodApprove:
+        if (isNFT) {
           return t('confirmTitleDescApproveTransaction');
         }
-
-        const isRevokeDAIPermit = getIsRevokeDAIPermit(
-          confirmation as SignatureRequestType,
-        );
-        if (isRevokeDAIPermit || customSpendingCap === '0') {
+        if (customSpendingCap === '0') {
           return '';
         }
-
+        return t('confirmTitleDescERC20ApproveTransaction');
+      case TransactionType.tokenMethodIncreaseAllowance:
         return t('confirmTitleDescPermitSignature');
-      }
-      return t('confirmTitleDescSign');
-    case TransactionType.tokenMethodApprove:
-      if (isNFT) {
+      case TransactionType.tokenMethodSetApprovalForAll:
+        if (isRevokeSetApprovalForAll) {
+          return '';
+        }
         return t('confirmTitleDescApproveTransaction');
-      }
-      if (customSpendingCap === '0') {
-        return '';
-      }
-      return t('confirmTitleDescERC20ApproveTransaction');
-    case TransactionType.tokenMethodIncreaseAllowance:
-      return t('confirmTitleDescPermitSignature');
-    case TransactionType.tokenMethodSetApprovalForAll:
-      if (isRevokeSetApprovalForAll) {
-        return '';
-      }
-      return t('confirmTitleDescApproveTransaction');
 
-    default:
-      return '';
+      default:
+        return '';
+    }
   }
+
+  if (signatureRequest) {
+    switch (signatureRequest.type) {
+      case TransactionType.personalSign:
+        if (isSIWESignatureRequest(signatureRequest)) {
+          return t('confirmTitleDescSIWESignature');
+        }
+        return t('confirmTitleDescSign');
+      case TransactionType.signTypedData:
+        if (primaryType === TypedSignSignaturePrimaryTypes.PERMIT) {
+          if (tokenStandard === TokenStandard.ERC721) {
+            return t('confirmTitleDescApproveTransaction');
+          }
+
+          const isRevokeDAIPermit = getIsRevokeDAIPermit(signatureRequest);
+          if (isRevokeDAIPermit || customSpendingCap === '0') {
+            return '';
+          }
+
+          return t('confirmTitleDescPermitSignature');
+        }
+        return t('confirmTitleDescSign');
+      default:
+        return '';
+    }
+  }
+
+  return '';
 };
 
 const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
+  const approvalRequest = useApprovalRequest();
+  const transactionMeta = useUnapprovedTransaction();
+  const signatureRequest = useSignatureRequest();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
 
-  const { isNFT } = useIsNFT(currentConfirmation as TransactionMeta);
+  const { isNFT } = useIsNFT(transactionMeta);
 
-  const { primaryType, tokenStandard } = useTypedSignSignatureInfo(
-    currentConfirmation as SignatureRequestType,
-  );
+  const { primaryType, tokenStandard } =
+    useTypedSignSignatureInfo(signatureRequest);
 
   const { customSpendingCap, pending: spendingCapPending } =
-    useCurrentSpendingCap(currentConfirmation);
+    useCurrentSpendingCap(transactionMeta);
 
   const parsedTransactionData = useTokenTransactionData();
 
   const isRevokeSetApprovalForAll =
-    currentConfirmation?.type ===
-      TransactionType.tokenMethodSetApprovalForAll &&
+    transactionMeta?.type === TransactionType.tokenMethodSetApprovalForAll &&
     getIsRevokeSetApprovalForAll(parsedTransactionData);
 
   const title = useMemo(
     () =>
       getTitle(
         t as IntlFunction,
-        currentConfirmation,
+        transactionMeta,
+        signatureRequest,
         isNFT,
         customSpendingCap,
         isRevokeSetApprovalForAll,
@@ -248,7 +271,8 @@ const ConfirmTitle: React.FC = memo(() => {
         isUpgradeOnly,
       ),
     [
-      currentConfirmation,
+      transactionMeta,
+      signatureRequest,
       isNFT,
       customSpendingCap,
       isRevokeSetApprovalForAll,
@@ -264,7 +288,8 @@ const ConfirmTitle: React.FC = memo(() => {
     () =>
       getDescription(
         t as IntlFunction,
-        currentConfirmation,
+        transactionMeta,
+        signatureRequest,
         isNFT,
         customSpendingCap,
         isRevokeSetApprovalForAll,
@@ -274,7 +299,8 @@ const ConfirmTitle: React.FC = memo(() => {
         isUpgradeOnly,
       ),
     [
-      currentConfirmation,
+      transactionMeta,
+      signatureRequest,
       isNFT,
       customSpendingCap,
       isRevokeSetApprovalForAll,
@@ -286,13 +312,13 @@ const ConfirmTitle: React.FC = memo(() => {
     ],
   );
 
-  if (!currentConfirmation) {
+  if (!approvalRequest) {
     return null;
   }
 
   return (
     <>
-      <ConfirmBannerAlert ownerId={currentConfirmation.id} />
+      <ConfirmBannerAlert ownerId={approvalRequest.id} />
       {title !== '' && (
         <Text
           variant={TextVariant.headingLg}

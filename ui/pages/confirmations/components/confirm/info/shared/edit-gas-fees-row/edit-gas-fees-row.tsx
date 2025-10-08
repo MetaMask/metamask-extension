@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
@@ -19,7 +18,7 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
@@ -41,8 +40,7 @@ export const EditGasFeesRow = ({
 }) => {
   const t = useI18nContext();
 
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransactionWithFallback();
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,

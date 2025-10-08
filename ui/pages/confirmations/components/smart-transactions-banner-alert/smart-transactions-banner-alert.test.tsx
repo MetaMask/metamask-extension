@@ -255,28 +255,6 @@ describe('SmartTransactionsBannerAlert', () => {
     ).toBeInTheDocument();
   });
 
-  it('does not render banner for unsupported transaction types', () => {
-    const store = configureStore(mockState);
-    const unsupportedConfirmation: TestConfirmContextValue = {
-      currentConfirmation: {
-        type: TransactionType.signTypedData,
-        id: '2',
-      } as SignatureRequestType,
-      isScrollToBottomCompleted: true,
-      setIsScrollToBottomCompleted: () => undefined,
-    };
-
-    renderWithConfirmContext(
-      <SmartTransactionsBannerAlert />,
-      store,
-      unsupportedConfirmation,
-    );
-
-    expect(
-      screen.queryByTestId('smart-transactions-banner-alert'),
-    ).not.toBeInTheDocument();
-  });
-
   describe('margin style tests', () => {
     const store = configureStore(mockState);
 

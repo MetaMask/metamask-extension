@@ -1,5 +1,4 @@
 import React from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { isBatchTransaction } from '../../../../../../../../shared/lib/transactions.utils';
 import {
@@ -9,7 +8,6 @@ import {
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../../../context/confirm';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import {
@@ -17,12 +15,13 @@ import {
   useIsUpgradeTransaction,
 } from '../../hooks/useIsUpgradeTransaction';
 import { RecipientRow } from '../../shared/transaction-details/transaction-details';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionAccountDetails() {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
   const { isUpgrade, isUpgradeOnly } = useIsUpgradeTransaction();
   const isDowngrade = useIsDowngradeTransaction();
   const { chainId, nestedTransactions, txParams, id } = currentConfirmation;

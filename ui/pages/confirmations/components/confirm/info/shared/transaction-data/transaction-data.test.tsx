@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import {
   BatchTransactionParams,
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -19,7 +20,6 @@ import {
   TRANSACTION_DECODE_NESTED,
   TRANSACTION_DECODE_UNISWAP,
 } from '../../../../../../../../test/data/confirmations/transaction-decode';
-import { Confirmation } from '../../../../../types/confirm';
 import * as useDecodedTransactionDataModule from '../../hooks/useDecodedTransactionData';
 import {
   DecodedTransactionDataMethod,
@@ -61,7 +61,7 @@ async function renderTransactionData({
       to: TO_MOCK,
       data: currentData,
     },
-  } as Confirmation);
+  } as unknown as TransactionMeta);
 
   const mockStore = configureMockStore()(state);
 

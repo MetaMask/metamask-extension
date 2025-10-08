@@ -1,8 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import {
-  TransactionContainerType,
-  TransactionMeta,
-} from '@metamask/transaction-controller';
+import { TransactionContainerType } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import {
   AlignItems,
@@ -29,7 +26,6 @@ import {
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import ToggleButton from '../../../../../components/ui/toggle-button';
-import { useConfirmContext } from '../../../context/confirm';
 import {
   applyTransactionContainersExisting,
   setEnableEnforcedSimulationsForTransaction,
@@ -40,6 +36,7 @@ import {
   selectEnforcedSimulationsSlippage,
 } from '../../../selectors';
 import { ConfirmMetamaskState } from '../../../types/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../../hooks/transactions/useUnapprovedTransaction';
 
 const Section = ({ children }: { children: React.ReactNode | string }) => {
   return (
@@ -119,8 +116,8 @@ const Slippage = ({
 };
 
 function useSimulationSettings() {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { containerTypes, id: transactionId } = currentConfirmation || {};
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
+  const { containerTypes, id: transactionId } = currentConfirmation;
 
   const isEnforcedSimulationsEnabled = useSelector(
     (state: ConfirmMetamaskState) =>

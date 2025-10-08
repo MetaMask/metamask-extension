@@ -1,10 +1,9 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
 import Identicon from '../../../../../../../components/ui/identicon';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constants/network';
@@ -29,7 +28,7 @@ export function GasFeeTokenIcon({
   size?: GasFeeTokenIconSize;
   tokenAddress: Hex;
 }) {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
   const { chainId } = currentConfirmation;
 
   const networkConfiguration = useSelector((state) =>

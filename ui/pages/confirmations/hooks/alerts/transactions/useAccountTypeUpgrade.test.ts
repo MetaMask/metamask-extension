@@ -1,3 +1,4 @@
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
@@ -8,7 +9,6 @@ import {
   upgradeAccountConfirmationOnly,
 } from '../../../../../../test/data/confirmations/batch-transaction';
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../test/data/confirmations/token-transfer';
-import { Confirmation } from '../../../types/confirm';
 import { AccountTypeMessage } from './AccountTypeMessage';
 import { useAccountTypeUpgrade } from './useAccountTypeUpgrade';
 
@@ -25,7 +25,7 @@ jest.mock('./AccountTypeMessage', () => ({
   AccountTypeMessage: jest.fn(() => 'Mocked AccountTypeMessage'),
 }));
 
-function runHook(confirmation: Confirmation) {
+function runHook(confirmation: TransactionMeta) {
   const state = getMockConfirmStateForTransaction(confirmation);
 
   const response = renderHookWithConfirmContextProvider(

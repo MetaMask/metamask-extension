@@ -1,7 +1,6 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
@@ -18,7 +17,7 @@ import {
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
 import { isBalanceSufficient } from '../../../send-legacy/send.utils';
-import { useConfirmContext } from '../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../transactions/useUnapprovedTransaction';
 
 export function useInsufficientBalanceAlerts({
   ignoreGasFeeToken,
@@ -26,7 +25,7 @@ export function useInsufficientBalanceAlerts({
   ignoreGasFeeToken?: boolean;
 } = {}): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
   const {
     id: transactionId,
     chainId,

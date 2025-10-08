@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { isValidAddress } from 'ethereumjs-util';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -15,7 +14,10 @@ import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { selectPaymasterAddress } from '../../../../../../../selectors/account-abstraction';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
-import { useConfirmContext } from '../../../../../context/confirm';
+import {
+  useUnapprovedTransaction,
+  useUnapprovedTransactionWithFallback,
+} from '../../../../../hooks/transactions/useUnapprovedTransaction';
 import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
@@ -34,7 +36,7 @@ import { isBatchTransaction } from '../../../../../../../../shared/lib/transacti
 export const OriginRow = () => {
   const t = useI18nContext();
 
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
 
   const origin = currentConfirmation?.origin;
 
@@ -57,7 +59,7 @@ export const OriginRow = () => {
 
 export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
   const isDowngrade = useIsDowngradeTransaction();
   const { nestedTransactions, txParams, chainId, id } =
@@ -93,7 +95,7 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
 
 export const MethodDataRow = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
   const { txParams } = currentConfirmation ?? {};
   const to = txParams?.to as Hex | undefined;
   const data = txParams?.data as Hex | undefined;
@@ -116,7 +118,7 @@ export const MethodDataRow = () => {
 
 const AmountRow = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
   const { currency } = useUserPreferencedCurrency(PRIMARY);
 
   const value = currentConfirmation?.txParams?.value;
@@ -139,7 +141,7 @@ const AmountRow = () => {
 
 const PaymasterRow = () => {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
 
   const { id: userOperationId, chainId } = currentConfirmation ?? {};
   const isUserOperation = Boolean(currentConfirmation?.isUserOperation);
@@ -168,10 +170,10 @@ const PaymasterRow = () => {
 };
 
 export const TransactionDetails = () => {
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const hasValueAndNativeBalanceMismatch = useMemo(
     () => checkValueAndNativeBalanceMismatch(currentConfirmation),
     [currentConfirmation],

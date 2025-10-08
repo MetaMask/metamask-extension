@@ -3,7 +3,6 @@ import { rejectPendingApproval } from '../../../store/actions';
 import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
 import { flushPromises } from '../../../../test/lib/timer-helpers';
 import { upgradeAccountConfirmation } from '../../../../test/data/confirmations/batch-transaction';
-import { Confirmation } from '../types/confirm';
 import { useSmartAccountActions } from './useSmartAccountActions';
 
 jest.mock('../../../store/actions', () => ({
@@ -26,7 +25,7 @@ describe('useSmartAccountActions', () => {
   describe('handleRejectUpgrade', () => {
     it('should reject current confirmation', async () => {
       const state = getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
+        upgradeAccountConfirmation,
       );
       const { result } = renderHookWithConfirmContextProvider(
         () => useSmartAccountActions(),

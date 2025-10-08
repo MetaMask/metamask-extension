@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import {
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -68,7 +69,7 @@ describe('TypedSignInfo', () => {
       time: new Date().getTime(),
       type: TransactionType.contractInteraction,
       chainId: '0x5',
-    });
+    } as unknown as TransactionMeta);
 
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(

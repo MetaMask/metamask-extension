@@ -1,11 +1,8 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { useConfirmContext } from '../context/confirm';
+import { useUnapprovedTransactionWithFallback } from './transactions/useUnapprovedTransaction';
 import { useRedesignedSendFlow } from './useRedesignedSendFlow';
 
 const SendTransactionTypes = [
@@ -17,7 +14,7 @@ const SendTransactionTypes = [
 
 export const useConfirmSendNavigation = () => {
   const history = useHistory();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransactionWithFallback();
   const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   const navigateBackIfSend = useCallback(() => {

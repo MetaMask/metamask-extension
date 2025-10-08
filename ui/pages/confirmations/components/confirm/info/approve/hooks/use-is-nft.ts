@@ -4,7 +4,7 @@ import { useAsyncResult } from '../../../../../../../hooks/useAsync';
 import { getTokenStandardAndDetailsByChain } from '../../../../../../../store/actions';
 
 export const useIsNFT = (
-  transactionMeta: TransactionMeta,
+  transactionMeta?: TransactionMeta,
 ): { isNFT: boolean; pending: boolean } => {
   const { value, pending } = useAsyncResult(async () => {
     return await getTokenStandardAndDetailsByChain(

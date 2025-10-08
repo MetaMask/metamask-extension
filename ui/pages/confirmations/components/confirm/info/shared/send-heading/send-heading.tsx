@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
@@ -20,15 +19,14 @@ import {
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 import { useTokenValues } from '../../hooks/use-token-values';
 import { useSendingValueMetric } from '../../hooks/useSendingValueMetric';
 import { useTokenDetails } from '../../hooks/useTokenDetails';
 
 const SendHeading = () => {
   const t = useI18nContext();
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransactionWithFallback();
   const { tokenImage, tokenSymbol } = useTokenDetails(transactionMeta);
   const {
     decodedTransferValue,

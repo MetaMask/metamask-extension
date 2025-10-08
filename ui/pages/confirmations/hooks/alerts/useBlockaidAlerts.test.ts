@@ -1,4 +1,5 @@
 import {
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -81,7 +82,7 @@ describe('useBlockaidAlerts', () => {
       chainId: '0x5',
       securityAlertResponse: mockSecurityAlertResponse,
       status: TransactionStatus.unapproved,
-    });
+    } as unknown as TransactionMeta);
 
     const { result } = renderHookWithConfirmContextProvider(
       () => useBlockaidAlert(),

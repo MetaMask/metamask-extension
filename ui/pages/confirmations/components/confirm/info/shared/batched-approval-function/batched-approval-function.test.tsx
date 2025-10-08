@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { Hex } from '@metamask/utils';
 import {
   BatchTransactionParams,
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
@@ -14,7 +15,6 @@ import { buildSetApproveForAllTransactionData } from '../../../../../../../../te
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { DecodedTransactionDataMethod } from '../../../../../../../../shared/types/transaction-decode';
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
-import { Confirmation } from '../../../../../types/confirm';
 import { BatchedApprovalFunction } from './batched-approval-function';
 
 const DATA_MOCK = '0x123456';
@@ -48,7 +48,7 @@ async function renderTransactionData({
       to: TO_MOCK,
       data: DATA_MOCK,
     },
-  } as Confirmation);
+  } as unknown as TransactionMeta);
 
   const mockStore = configureMockStore()(state);
 

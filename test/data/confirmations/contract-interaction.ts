@@ -11,10 +11,6 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import {
-  Confirmation,
-  SignatureRequestType,
-} from '../../../ui/pages/confirmations/types/confirm';
 
 export const PAYMASTER_AND_DATA =
   '0x9d6ac51b972544251fcc0f2902e633e3f9bd3f2900000000000000000000000000000000000000000000000000000000666bfd410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003498a76eb88b702e5e52b00fbc16a36baf89ebe3e0dd23170949cffc0a623011383cced660ff67930308c22e5aa746a2d586629ddbd87046a146225bf80e9d6f1b';
@@ -52,8 +48,8 @@ export const genUnapprovedContractInteractionConfirmation = ({
   selectedGasFeeToken?: Hex;
   simulationData?: SimulationData;
   txParamsOriginal?: TransactionParams;
-} = {}): Confirmation => {
-  const confirmation: Confirmation = {
+} = {}): TransactionMeta => {
+  const confirmation = {
     actionId: String(400855682),
     chainId,
     containerTypes,
@@ -199,7 +195,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
     userEditedGasLimit: false,
     userFeeLevel: 'medium',
     verifiedOnBlockchain: false,
-  } as SignatureRequestType;
+  } as unknown as TransactionMeta;
 
   // Overwrite simulation data if provided
   if (simulationData) {

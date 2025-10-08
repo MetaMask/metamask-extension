@@ -1,4 +1,5 @@
 import React from 'react';
+import { ApprovalRequest } from '@metamask/approval-controller';
 import {
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
@@ -30,6 +31,9 @@ import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
+import * as useUnapprovedTransaction from '../../../hooks/transactions/useUnapprovedTransaction';
+import * as useSignatureRequest from '../../../hooks/signatures/useSignatureRequest';
+import * as useApprovalRequest from '../../../hooks/useApprovalRequest';
 import Footer from './footer';
 
 jest.mock('../../../hooks/gas/useIsGaslessLoading');
@@ -52,6 +56,8 @@ jest.mock(
 );
 
 jest.mock('../../../hooks/useOriginThrottling');
+jest.mock('../../../hooks/transactions/useUnapprovedTransaction');
+jest.mock('../../../hooks/signatures/useSignatureRequest');
 
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
@@ -74,6 +80,18 @@ describe('ConfirmFooter', () => {
     useInsufficientBalanceAlerts,
   );
   const useIsGaslessLoadingMock = jest.mocked(useIsGaslessLoading);
+  const useUnapprovedTransactionMock = jest.spyOn(
+    useUnapprovedTransaction,
+    'useUnapprovedTransaction',
+  );
+  const useSignatureRequestMock = jest.spyOn(
+    useSignatureRequest,
+    'useSignatureRequest',
+  );
+  const useApprovalRequestMock = jest.spyOn(
+    useApprovalRequest,
+    'useApprovalRequest',
+  );
 
   beforeEach(() => {
     mockUseOriginThrottling.mockReturnValue({
@@ -113,11 +131,8 @@ describe('ConfirmFooter', () => {
     });
 
     it('when the confirmation is a Sign-in With Ethereum (SIWE) request', () => {
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: signatureRequestSIWE,
-        isScrollToBottomCompleted: false,
-        setIsScrollToBottomCompleted: () => undefined,
-      });
+      useSignatureRequestMock.mockReturnValue(signatureRequestSIWE);
+
       const mockStateSIWE =
         getMockPersonalSignConfirmStateForRequest(signatureRequestSIWE);
       const { getByText } = render(mockStateSIWE);
@@ -142,14 +157,14 @@ describe('ConfirmFooter', () => {
       });
       useInsufficientBalanceAlertsMock.mockReturnValue(ALERT_MOCK);
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: {
-          ...genUnapprovedContractInteractionConfirmation(),
-          simulationData: {
-            tokenBalanceChanges: [],
-          },
-        },
         isScrollToBottomCompleted: true,
         setIsScrollToBottomCompleted: () => undefined,
+      });
+      useUnapprovedTransactionMock.mockReturnValue({
+        ...genUnapprovedContractInteractionConfirmation(),
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
       });
 
       const mockState2 = {
@@ -178,10 +193,13 @@ describe('ConfirmFooter', () => {
   describe('renders disabled "Confirm" Button', () => {
     it('when isScrollToBottomCompleted is false', () => {
       jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: genUnapprovedContractInteractionConfirmation(),
         isScrollToBottomCompleted: false,
         setIsScrollToBottomCompleted: () => undefined,
       });
+      useUnapprovedTransactionMock.mockReturnValue(
+        genUnapprovedContractInteractionConfirmation(),
+      );
+      useSignatureRequestMock.mockReturnValue(undefined);
       const mockStateTypedSign = getMockContractInteractionConfirmState();
       const { getByText } = render(mockStateTypedSign);
 
@@ -242,6 +260,13 @@ describe('ConfirmFooter', () => {
   });
 
   it('invoke required actions when submit button is clicked', () => {
+    useApprovalRequestMock.mockReturnValue({
+      id: 'testTransactionId',
+    } as ApprovalRequest<never>);
+
+    useUnapprovedTransactionMock.mockReturnValue(undefined);
+    useSignatureRequestMock.mockReturnValue({} as SignatureRequestType);
+
     const { getAllByRole } = render();
     const submitButton = getAllByRole('button')[1];
     const resolveSpy = jest
@@ -314,6 +339,14 @@ describe('ConfirmFooter', () => {
   });
 
   it('disables submit button if required LedgerHidConnection is not yet established', () => {
+    useUnapprovedTransactionMock.mockReturnValue(undefined);
+    useSignatureRequestMock.mockReturnValue({
+      ...unapprovedPersonalSignMsg,
+      msgParams: {
+        from: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+      },
+    } as SignatureRequestType);
+
     const { getAllByRole } = render(
       getMockPersonalSignConfirmStateForRequest(
         {

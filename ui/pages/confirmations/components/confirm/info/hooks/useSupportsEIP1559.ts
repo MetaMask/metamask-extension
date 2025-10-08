@@ -6,7 +6,9 @@ import { useSelector } from 'react-redux';
 import { isLegacyTransaction } from '../../../../../../helpers/utils/transactions.util';
 import { checkNetworkAndAccountSupports1559 } from '../../../../../../selectors';
 
-export function useSupportsEIP1559(transactionMeta: TransactionMeta) {
+export function useSupportsEIP1559(
+  transactionMeta: TransactionMeta | undefined,
+) {
   const { networkClientId, txParams } = transactionMeta ?? {};
 
   const isLegacyTxn =

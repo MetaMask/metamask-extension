@@ -16,11 +16,9 @@ jest.mock('./fiat-display', () => ({
   TotalFiatDisplay: jest.fn(() => null),
 }));
 
-jest.mock('../../context/confirm', () => ({
-  useConfirmContext: jest.fn(() => ({
-    currentConfirmation: {
-      id: 'testTransactionId',
-    },
+jest.mock('../../hooks/transactions/useUnapprovedTransaction', () => ({
+  useUnapprovedTransaction: jest.fn(() => ({
+    id: 'testTransactionId',
   })),
 }));
 

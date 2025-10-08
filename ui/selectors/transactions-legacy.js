@@ -122,21 +122,6 @@ export const getAllUnapprovedTransactions = createDeepEqualSelector(
   (transactions) => transactions,
 );
 
-export const getApprovedAndSignedTransactions = createDeepEqualSelector(
-  (state) => {
-    // Fetch transactions across all networks to address a nonce management limitation.
-    // This issue arises when a pending transaction exists on one network, and the user initiates another transaction on a different network.
-    const transactions = getTransactions(state);
-
-    return transactions.filter((transaction) =>
-      [TransactionStatus.approved, TransactionStatus.signed].includes(
-        transaction.status,
-      ),
-    );
-  },
-  (transactions) => transactions,
-);
-
 export const incomingTxListSelector = createDeepEqualSelector(
   (state) => {
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);

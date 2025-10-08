@@ -1,7 +1,4 @@
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
@@ -11,14 +8,14 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useConfirmContext } from '../../../context/confirm';
 import { useIsUpgradeTransaction } from '../../../components/confirm/info/hooks/useIsUpgradeTransaction';
+import { useUnapprovedTransaction } from '../../transactions/useUnapprovedTransaction';
 import { NonContractAddressAlertMessage } from './NonContractAddressAlertMessage';
 import { useContractCode } from './useContractCode';
 
 export function useNonContractAddressAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const currentConfirmation = useUnapprovedTransaction();
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const { isUpgrade } = useIsUpgradeTransaction();
   const { pending, value } = useContractCode(

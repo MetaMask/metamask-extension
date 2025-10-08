@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   HardwareTransportStates,
   LEDGER_USB_VENDOR_ID,
@@ -18,20 +17,19 @@ import {
   isAddressLedger,
 } from '../../../ducks/metamask/metamask';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
-import { SignatureRequestType } from '../types/confirm';
-import { useConfirmContext } from '../context/confirm';
+import { useUnapprovedTransaction } from './transactions/useUnapprovedTransaction';
+import { useSignatureRequest } from './signatures/useSignatureRequest';
 
 const useLedgerConnection = () => {
   const dispatch = useDispatch();
-  const { currentConfirmation } = useConfirmContext<
-    SignatureRequestType & TransactionMeta
-  >();
+  const transactionMeta = useUnapprovedTransaction();
+  const signatureRequest = useSignatureRequest();
   const ledgerTransportType = useSelector(getLedgerTransportType);
   const transportStatus = useSelector(getLedgerTransportStatus);
   const webHidConnectedStatus = useSelector(getLedgerWebHidConnectedStatus);
 
   const from =
-    currentConfirmation?.msgParams?.from ?? currentConfirmation?.txParams?.from;
+    signatureRequest?.msgParams?.from ?? transactionMeta?.txParams?.from;
 
   const isLedgerWallet = useSelector(
     (state) => from && isAddressLedger(state, from),

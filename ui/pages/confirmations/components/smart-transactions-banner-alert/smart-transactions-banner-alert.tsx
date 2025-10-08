@@ -13,7 +13,6 @@ import { setAlertEnabledness } from '../../../../store/actions';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { SMART_TRANSACTIONS_LEARN_MORE_URL } from '../../../../../shared/constants/smartTransactions';
 import { FontWeight } from '../../../../helpers/constants/design-system';
-import { useConfirmContext } from '../../context/confirm';
 import { isCorrectDeveloperTransactionType } from '../../../../../shared/lib/confirmation.utils';
 import {
   getSmartTransactionsOptInStatusInternal,
@@ -23,6 +22,7 @@ import {
   getChainSupportsSmartTransactions,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../../shared/modules/selectors';
+import { useUnapprovedTransaction } from '../../hooks/transactions/useUnapprovedTransaction';
 
 type MarginType = 'default' | 'none' | 'noTop' | 'onlyTop';
 
@@ -34,13 +34,7 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
   React.memo(({ marginType = 'default' }) => {
     const t = useI18nContext();
 
-    let currentConfirmation;
-    try {
-      const context = useConfirmContext();
-      currentConfirmation = context?.currentConfirmation;
-    } catch {
-      currentConfirmation = null;
-    }
+    const currentConfirmation = useUnapprovedTransaction();
 
     const alertEnabled = useSelector(
       (state: {
@@ -84,13 +78,12 @@ export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlert
       chainSupportsSmartTransactions &&
       smartTransactionsPreferenceEnabled;
 
-    const shouldRender =
-      currentConfirmation === null
-        ? alertConditions
-        : alertConditions &&
-          isCorrectDeveloperTransactionType(
-            currentConfirmation?.type as TransactionType,
-          );
+    const shouldRender = currentConfirmation
+      ? alertConditions &&
+        isCorrectDeveloperTransactionType(
+          currentConfirmation?.type as TransactionType,
+        )
+      : alertConditions;
 
     if (!shouldRender) {
       return null;

@@ -10,7 +10,6 @@ import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
 
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../shared/constants/transaction';
-import { useConfirmContext } from '../../../../context/confirm';
 import { useEthFiatAmount } from '../../../../../../hooks/useEthFiatAmount';
 import { formatAmount } from '../../../simulation-details/formatAmount';
 import { getIntlLocale } from '../../../../../../ducks/locale/locale';
@@ -18,14 +17,14 @@ import {
   selectNetworkConfigurationByChainId,
   selectTransactionAvailableBalance,
 } from '../../../../../../selectors';
+import { useUnapprovedTransaction } from '../../../../hooks/transactions/useUnapprovedTransaction';
 import { useFeeCalculations } from './useFeeCalculations';
 
 export const RATE_WEI_NATIVE = '0xDE0B6B3A7640000'; // 1x10^18
 export const METAMASK_FEE_PERCENTAGE = 0.35;
 
 export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransaction();
 
   const locale = useSelector(getIntlLocale);
   const nativeFeeToken = useNativeGasFeeToken();
@@ -71,9 +70,7 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
 }
 
 export function useSelectedGasFeeToken() {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
-
+  const transactionMeta = useUnapprovedTransaction();
   const { selectedGasFeeToken: tokenAddress } = transactionMeta ?? {};
   const selectedToken = useGasFeeToken({ tokenAddress });
 
@@ -81,9 +78,7 @@ export function useSelectedGasFeeToken() {
 }
 
 function useNativeGasFeeToken(): GasFeeToken {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
-
+  const transactionMeta = useUnapprovedTransaction();
   const { id: transactionId, txParams } = transactionMeta ?? {};
 
   const { estimatedFeeNativeHex } = useFeeCalculations(

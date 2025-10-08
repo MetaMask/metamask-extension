@@ -5,7 +5,7 @@ import { parseTypedDataMessage } from '../../../../shared/modules/transaction.ut
 import { SignatureRequestType } from '../types/confirm';
 import { isPermitSignatureRequest } from '../utils';
 import { selectUseTransactionSimulations } from '../selectors/preferences';
-import { useConfirmContext } from '../context/confirm';
+import { useSignatureRequest } from './signatures/useSignatureRequest';
 
 const NON_PERMIT_SUPPORTED_TYPES_SIGNS = [
   {
@@ -40,7 +40,7 @@ const isNonPermitSupportedByDecodingAPI = (
 };
 
 export function useTypesSignSimulationEnabledInfo() {
-  const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
+  const currentConfirmation = useSignatureRequest();
   const useTransactionSimulations = useSelector(
     selectUseTransactionSimulations,
   );
@@ -51,7 +51,9 @@ export function useTypesSignSimulationEnabledInfo() {
     signatureMethod === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3;
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const nonPermitSupportedByDecodingAPI =
-    isTypedSignV3V4 && isNonPermitSupportedByDecodingAPI(currentConfirmation);
+    isTypedSignV3V4 &&
+    currentConfirmation &&
+    isNonPermitSupportedByDecodingAPI(currentConfirmation);
 
   if (!currentConfirmation) {
     return undefined;

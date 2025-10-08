@@ -17,7 +17,7 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { I18nContext } from '../../../../../contexts/i18n';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { selectPendingApprovalsForNavigation } from '../../../../../selectors';
-import { ConfirmContext } from '../../../context/confirm';
+import { useUnapprovedTransaction } from '../../transactions/useUnapprovedTransaction';
 import { useNonContractAddressAlerts } from './useNonContractAddressAlerts';
 import { useContractCode } from './useContractCode';
 
@@ -49,6 +49,8 @@ jest.mock('./useContractCode', () => ({
 jest.mock('./NonContractAddressAlertMessage', () => ({
   NonContractAddressAlertMessage: () => 'NonContractAddressAlertMessage',
 }));
+
+jest.mock('../../transactions/useUnapprovedTransaction');
 
 const TRANSACTION_ID_MOCK = '123-456';
 const ACCOUNT_ADDRESS_MOCK = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -89,6 +91,7 @@ describe('useNonContractAddressAlerts', () => {
   const useSelectorMock = useSelector as jest.Mock;
   const mockUseContractCode = jest.mocked(useContractCode);
   const useLocationMock = jest.mocked(useLocation);
+  const useUnapprovedTransactionMock = jest.mocked(useUnapprovedTransaction);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -111,10 +114,9 @@ describe('useNonContractAddressAlerts', () => {
 
   it('returns no alerts if no confirmation', () => {
     const confirmation = TRANSACTION_META_MOCK;
+    useUnapprovedTransactionMock.mockReturnValue(confirmation);
     useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: confirmation };
-      } else if (context === I18nContext) {
+      if (context === I18nContext) {
         return (translationKey: string) => translationKey;
       }
       return undefined;
@@ -146,10 +148,9 @@ describe('useNonContractAddressAlerts', () => {
       },
     };
 
+    useUnapprovedTransactionMock.mockReturnValue(transactionWithNoData);
     useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: transactionWithNoData };
-      } else if (context === I18nContext) {
+      if (context === I18nContext) {
         return (translationKey: string) => translationKey;
       }
       return undefined;
@@ -185,10 +186,10 @@ describe('useNonContractAddressAlerts', () => {
       },
     };
 
+    useUnapprovedTransactionMock.mockReturnValue(transactionWithData);
+
     useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: transactionWithData };
-      } else if (context === I18nContext) {
+      if (context === I18nContext) {
         return (translationKey: string) => translationKey;
       }
       return undefined;
@@ -232,10 +233,10 @@ describe('useNonContractAddressAlerts', () => {
       authorizationList,
     });
 
+    useUnapprovedTransactionMock.mockReturnValue(transaction);
+
     useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: transaction };
-      } else if (context === I18nContext) {
+      if (context === I18nContext) {
         return (translationKey: string) => translationKey;
       }
       return undefined;
@@ -274,10 +275,10 @@ describe('useNonContractAddressAlerts', () => {
         data: '0xabcdef',
       },
     };
+
+    useUnapprovedTransactionMock.mockReturnValue(transactionWithData);
     useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: transactionWithData };
-      } else if (context === I18nContext) {
+      if (context === I18nContext) {
         return (translationKey: string) => translationKey;
       }
       return undefined;
@@ -327,10 +328,9 @@ describe('useNonContractAddressAlerts', () => {
         data: '0xabcdef',
       },
     };
+    useUnapprovedTransactionMock.mockReturnValue(transactionWithData);
     useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: transactionWithData };
-      } else if (context === I18nContext) {
+      if (context === I18nContext) {
         return (translationKey: string) => translationKey;
       }
       return undefined;
@@ -371,10 +371,10 @@ describe('useNonContractAddressAlerts', () => {
       },
     };
 
+    useUnapprovedTransactionMock.mockReturnValue(transactionWithData);
+
     useContextMock.mockImplementation((context) => {
-      if (context === ConfirmContext) {
-        return { currentConfirmation: transactionWithData };
-      } else if (context === I18nContext) {
+      if (context === I18nContext) {
         return (translationKey: string) => translationKey;
       }
       return undefined;

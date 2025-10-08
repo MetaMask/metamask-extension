@@ -1,4 +1,3 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
@@ -7,13 +6,13 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { submittedPendingTransactionsSelector } from '../../../../../selectors';
-import { useConfirmContext } from '../../../context/confirm';
+import { useUnapprovedTransaction } from '../../transactions/useUnapprovedTransaction';
 import { PendingTransactionAlertMessage } from './PendingTransactionAlertMessage';
 
 export function usePendingTransactionAlerts(): Alert[] {
   const t = useI18nContext();
-  const { currentConfirmation } = useConfirmContext();
-  const { type } = currentConfirmation ?? ({} as TransactionMeta);
+  const transactionMeta = useUnapprovedTransaction();
+  const { type } = transactionMeta ?? {};
   const pendingTransactions = useSelector(submittedPendingTransactionsSelector);
 
   const isValidType = isCorrectDeveloperTransactionType(type);

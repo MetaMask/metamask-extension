@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors';
 import { getConfirmationSender } from '../components/confirm/utils';
-import { useConfirmContext } from '../context/confirm';
 import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 import {
   selectAccountGroupNameByInternalAccount,
@@ -12,14 +11,17 @@ import {
   getWalletIdAndNameByAccountAddress,
   getWalletsWithAccounts,
 } from '../../../selectors/multichain-accounts/account-tree';
+import { useUnapprovedTransaction } from './transactions/useUnapprovedTransaction';
+import { useSignatureRequest } from './signatures/useSignatureRequest';
 
 function useConfirmationRecipientInfo() {
-  const { currentConfirmation } = useConfirmContext();
+  const transactionMeta = useUnapprovedTransaction();
+  const signatureRequest = useSignatureRequest();
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
 
-  const { from } = getConfirmationSender(currentConfirmation);
+  const { from } = getConfirmationSender(transactionMeta, signatureRequest);
   const senderAddress = from ?? '';
 
   const accountGroupName = useSelector((state: MultichainAccountsState) =>

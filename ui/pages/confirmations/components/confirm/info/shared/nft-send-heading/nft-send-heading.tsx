@@ -1,5 +1,4 @@
 import { Nft } from '@metamask/assets-controllers';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
@@ -21,7 +20,7 @@ import {
   getNftImage,
   getNftImageAlt,
 } from '../../../../../../../helpers/utils/nfts';
-import { useConfirmContext } from '../../../../../context/confirm';
+import { useUnapprovedTransactionWithFallback } from '../../../../../hooks/transactions/useUnapprovedTransaction';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useNftImageUrl } from '../../../../../hooks/useNftImageUrl';
 import { ellipsify } from '../../../../../send-legacy/send.utils';
@@ -36,8 +35,7 @@ export const generateTokenIdDisplay = (tokenId: string) => {
 };
 
 const NFTSendHeading = () => {
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
+  const transactionMeta = useUnapprovedTransactionWithFallback();
 
   const tokenAddress = transactionMeta.txParams.to;
   const userAddress = transactionMeta.txParams.from;

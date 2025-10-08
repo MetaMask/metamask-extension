@@ -20,7 +20,8 @@ import { usePrevious } from '../../../../../hooks/usePrevious';
 import { useScrollRequired } from '../../../../../hooks/useScrollRequired';
 import { useConfirmContext } from '../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../selectors/preferences';
-import { isCorrectDeveloperTransactionType } from '../../../../../../shared/lib/confirmation.utils';
+import { useUnapprovedTransaction } from '../../../hooks/transactions/useUnapprovedTransaction';
+import { useApprovalRequest } from '../../../hooks/useApprovalRequest';
 
 type ContentProps = {
   /**
@@ -31,9 +32,10 @@ type ContentProps = {
 
 const ScrollToBottom = ({ children }: ContentProps) => {
   const t = useContext(I18nContext);
-  const { currentConfirmation, setIsScrollToBottomCompleted } =
-    useConfirmContext();
-  const previousId = usePrevious(currentConfirmation?.id);
+  const { setIsScrollToBottomCompleted } = useConfirmContext();
+  const approvalRequest = useApprovalRequest();
+  const transactionMeta = useUnapprovedTransaction();
+  const previousId = usePrevious(approvalRequest?.id);
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
@@ -46,23 +48,19 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     scrollToBottom,
     setHasScrolledToBottom,
     ref,
-  } = useScrollRequired([currentConfirmation?.id, showAdvancedDetails], {
+  } = useScrollRequired([approvalRequest?.id, showAdvancedDetails], {
     offsetPxFromBottom: 0,
   });
 
-  const isTransactionRedesign = isCorrectDeveloperTransactionType(
-    currentConfirmation?.type,
-  );
-
   const showScrollToBottom =
-    isScrollable && !isScrolledToBottom && !isTransactionRedesign;
+    isScrollable && !isScrolledToBottom && !transactionMeta;
 
   /**
    * Scroll to the top of the page when the confirmation changes. This happens
    * when we navigate through different confirmations. Also, resets hasScrolledToBottom
    */
   useEffect(() => {
-    if (previousId === currentConfirmation?.id) {
+    if (previousId === approvalRequest?.id) {
       return;
     }
 
@@ -76,16 +74,16 @@ const ScrollToBottom = ({ children }: ContentProps) => {
     }
 
     setHasScrolledToBottom(false);
-  }, [currentConfirmation?.id, previousId, ref?.current]);
+  }, [approvalRequest?.id, previousId, ref?.current]);
 
   useEffect(() => {
-    if (isTransactionRedesign) {
+    if (transactionMeta) {
       setIsScrollToBottomCompleted(true);
       return;
     }
 
     setIsScrollToBottomCompleted(!isScrollable || hasScrolledToBottom);
-  }, [isScrollable, hasScrolledToBottom, isTransactionRedesign]);
+  }, [isScrollable, hasScrolledToBottom, transactionMeta]);
 
   return (
     <Box

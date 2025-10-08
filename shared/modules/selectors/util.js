@@ -7,6 +7,10 @@ export const createDeepEqualSelector = createSelectorCreator(
   isEqual,
 );
 
+export const createDeepEqualResultSelector = createSelectorCreator(lruMemoize, {
+  resultEqualityCheck: isEqual,
+});
+
 export const filterAndShapeUnapprovedTransactions = (transactions) => {
   return transactions
     .filter(({ status }) => status === TransactionStatus.unapproved)

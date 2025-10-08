@@ -7,7 +7,6 @@ import { flushPromises } from '../../../../../../../test/lib/timer-helpers';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { upgradeAccountConfirmation } from '../../../../../../../test/data/confirmations/batch-transaction';
-import { Confirmation } from '../../../../types/confirm';
 import {
   rejectPendingApproval,
   setSmartAccountOptIn,
@@ -47,7 +46,7 @@ describe('Splash', () => {
   it('renders correctly', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
+        upgradeAccountConfirmation as TransactionMeta,
       ),
     );
     const { getByText } = renderWithConfirmContextProvider(
@@ -61,7 +60,7 @@ describe('Splash', () => {
   it('closes after acknowledgement', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
+        upgradeAccountConfirmation as TransactionMeta,
         {
           metamask: {
             preferences: {
@@ -99,7 +98,7 @@ describe('Splash', () => {
   it('reject confirmation if user does not accept', async () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
+        upgradeAccountConfirmation as TransactionMeta,
       ),
     );
     const { getByRole } = renderWithConfirmContextProvider(
@@ -121,7 +120,7 @@ describe('Splash', () => {
       getMockConfirmStateForTransaction({
         ...upgradeAccountConfirmation,
         origin: 'metamask',
-      } as Confirmation),
+      } as TransactionMeta),
     );
     const { container } = renderWithConfirmContextProvider(
       <SmartAccountUpdateSplash />,
@@ -137,7 +136,7 @@ describe('Splash', () => {
         {
           ...upgradeAccountConfirmation,
           origin: 'metamask',
-        } as Confirmation,
+        } as TransactionMeta,
         {
           metamask: {
             preferences: {
@@ -173,7 +172,7 @@ describe('Splash', () => {
         {
           ...upgradeAccountConfirmation,
           origin: 'metamask',
-        } as Confirmation,
+        } as TransactionMeta,
         {
           metamask: {
             preferences: {

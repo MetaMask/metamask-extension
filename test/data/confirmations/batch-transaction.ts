@@ -1,10 +1,9 @@
 import {
   GasFeeEstimateType,
+  TransactionMeta,
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-
-import { Confirmation } from '../../../ui/pages/confirmations/types/confirm';
 
 export const upgradeAccountConfirmation = {
   batchId: '0x6046131032d748a6bfac42fd5117479f',
@@ -204,7 +203,7 @@ export const upgradeAccountConfirmation = {
     },
     tokenBalanceChanges: [],
   },
-} as Confirmation;
+} as unknown as TransactionMeta;
 
 export const downgradeAccountConfirmation = {
   actionId: 1743757606797.6257,
@@ -316,7 +315,7 @@ export const downgradeAccountConfirmation = {
   gasFeeEstimatesLoaded: true,
   gasFeeTokens: [],
   simulationData: { tokenBalanceChanges: [] },
-};
+} as unknown as TransactionMeta;
 
 export const upgradeAccountConfirmationOnly = {
   actionId: '1745326968248.2673',
@@ -429,4 +428,4 @@ export const upgradeAccountConfirmationOnly = {
   gasFeeEstimatesLoaded: true,
   gasFeeTokens: [],
   simulationData: { tokenBalanceChanges: [] },
-};
+} as unknown as TransactionMeta;

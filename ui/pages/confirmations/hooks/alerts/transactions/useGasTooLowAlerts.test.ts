@@ -17,14 +17,13 @@ import {
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
 import { MIN_GAS_LIMIT_DEC } from '../../../send-legacy/send.constants';
-import { Confirmation } from '../../../types/confirm';
 import { useGasTooLowAlerts } from './useGasTooLowAlerts';
 
 const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
   chainId: '0x5',
 }) as TransactionMeta;
 
-function runHook(confirmation?: Confirmation) {
+function runHook(confirmation?: TransactionMeta) {
   const state = confirmation
     ? getMockConfirmStateForTransaction(confirmation)
     : getMockConfirmState();
