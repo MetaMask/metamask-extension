@@ -5746,7 +5746,7 @@
     "message": "Add funds"
   },
   "shieldTxMembershipErrorInsufficientFunds": {
-    "message": "Insufficient funds for your April 18 renewal. Keep access active by adding funds.",
+    "message": "Insufficient funds for your $1 renewal. Keep access active by adding funds.",
     "description": "The $1 is the date"
   },
   "shieldTxMembershipErrorInsufficientToken": {
