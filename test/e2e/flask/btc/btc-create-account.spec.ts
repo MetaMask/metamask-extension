@@ -16,7 +16,7 @@ describe('Create BTC Account', function (this: Suite) {
     await withBtcAccountSnap(async (driver) => {
       const headerNavbar = new HeaderNavbar(driver);
       await headerNavbar.checkPageIsLoaded();
-            await headerNavbar.checkAccountLabel(DEFAULT_BTC_ACCOUNT_NAME);
+      await headerNavbar.checkAccountLabel(DEFAULT_BTC_ACCOUNT_NAME);
     }, this.test?.fullTitle());
   });
 
