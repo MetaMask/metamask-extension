@@ -92,20 +92,28 @@ type AppMetadataControllerMessenger = RestrictedMessenger<
  */
 const controllerMetadata = {
   currentAppVersion: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: false,
   },
   previousAppVersion: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: false,
   },
   previousMigrationVersion: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: false,
   },
   currentMigrationVersion: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: false,
   },
 };
 

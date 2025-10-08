@@ -12,6 +12,7 @@ import { getMemoizedInternalAccountByAddress } from '../../../../selectors';
 import { getMultiChainAssets } from '../../../../selectors/assets';
 import { TokenWithFiatAmount } from '../../assets/types';
 
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatWithThreshold } from '../../assets/util/formatWithThreshold';
 import {
@@ -66,6 +67,7 @@ export const useSnapAssetSelectorData = ({
 }: UseSnapAssetSelectorDataParams) => {
   const currentCurrency = useSelector(getMemoizedCurrentCurrency);
   const locale = useSelector(getIntlLocale);
+  const { formatTokenQuantity } = useFormatters();
 
   const parsedAccounts = addresses.map(parseCaipAccountId);
 
@@ -91,20 +93,6 @@ export const useSnapAssetSelectorData = ({
     });
 
   /**
-   * Formats an asset balance.
-   *
-   * @param balance - The balance to format.
-   * @returns The formatted balance.
-   */
-  const formatAssetBalance = (balance: string) => {
-    const parsedBalance = parseFloat(balance);
-    return formatWithThreshold(parsedBalance, 0.00001, locale, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 5,
-    });
-  };
-
-  /**
    * Formats a non-EVM asset for the SnapUIAssetSelector.
    *
    * @param asset - The asset to format.
@@ -120,7 +108,7 @@ export const useSnapAssetSelectorData = ({
       icon: asset.image,
       symbol: asset.symbol,
       name: asset.title,
-      balance: formatAssetBalance(asset.primary),
+      balance: formatTokenQuantity(Number(asset.balance ?? 0), asset.symbol),
       networkName,
       networkIcon: getImageForChainId(asset.chainId),
       fiat: formatFiatBalance(asset.secondary),

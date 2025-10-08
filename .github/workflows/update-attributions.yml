@@ -63,7 +63,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
       - name: Get commit SHA
         id: commit-sha
         run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
@@ -89,7 +89,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
       - name: Generate Attributions
         run: yarn attributions:generate
       - name: Cache attributions file

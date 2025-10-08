@@ -1,10 +1,13 @@
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -3019,29 +3022,6 @@ describe('Actions', () => {
     });
   });
 
-  describe('syncInternalAccountsWithUserStorage', () => {
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('calls syncInternalAccountsWithUserStorage in the background', async () => {
-      const store = mockStore();
-
-      const syncInternalAccountsWithUserStorageStub = sinon.stub().resolves();
-
-      background.getApi.returns({
-        syncInternalAccountsWithUserStorage:
-          syncInternalAccountsWithUserStorageStub,
-      });
-      setBackgroundConnection(background.getApi());
-
-      await store.dispatch(actions.syncInternalAccountsWithUserStorage());
-      expect(syncInternalAccountsWithUserStorageStub.calledOnceWith()).toBe(
-        true,
-      );
-    });
-  });
-
   describe('syncContactsWithUserStorage', () => {
     afterEach(() => {
       sinon.restore();
@@ -3081,8 +3061,13 @@ describe('Actions', () => {
 
       await store.dispatch(actions.deleteAccountSyncingDataFromUserStorage());
       expect(
-        deleteAccountSyncingDataFromUserStorageStub.calledOnceWith(
-          USER_STORAGE_FEATURE_NAMES.accounts,
+        deleteAccountSyncingDataFromUserStorageStub.calledWith(
+          USER_STORAGE_GROUPS_FEATURE_KEY,
+        ),
+      ).toBe(true);
+      expect(
+        deleteAccountSyncingDataFromUserStorageStub.calledWith(
+          USER_STORAGE_WALLETS_FEATURE_KEY,
         ),
       ).toBe(true);
     });

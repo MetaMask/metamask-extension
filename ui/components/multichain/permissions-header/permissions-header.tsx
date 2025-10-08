@@ -36,17 +36,19 @@ export const PermissionsHeader = ({
 
   return (
     <Header
+      textProps={{
+        variant: TextVariant.headingSm,
+      }}
       backgroundColor={BackgroundColor.backgroundDefault}
       startAccessory={
         <ButtonIcon
+          size={ButtonIconSize.Md}
           ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
           className="connections-header__start-accessory"
           color={IconColor.iconDefault}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onClick={() => (history as any).goBack()}
-          size={ButtonIconSize.Sm}
+          onClick={() => history.goBack()}
+          data-testid="back-button"
         />
       }
     >
@@ -72,7 +74,7 @@ export const PermissionsHeader = ({
         )}
         <Text
           as="span"
-          variant={TextVariant.headingMd}
+          variant={TextVariant.headingSm}
           textAlign={TextAlign.Center}
           ellipsis
         >

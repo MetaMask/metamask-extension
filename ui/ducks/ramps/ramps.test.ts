@@ -23,6 +23,8 @@ jest.mock('../../../shared/modules/selectors/networks', () => ({
   getCurrentChainId: jest.fn(),
   getNetworkConfigurationsByChainId: jest.fn(),
   getSelectedNetworkClientId: jest.fn(),
+  selectDefaultNetworkClientIdsByChainId: jest.fn(),
+  getNetworksMetadata: jest.fn(),
 }));
 
 jest.mock('../../selectors', () => ({
@@ -144,7 +146,7 @@ describe('rampsSlice', () => {
         {
           active: true,
           chainId: 1,
-          chainName: 'Ethereum Mainnet',
+          chainName: 'Ethereum',
           nativeTokenSupported: true,
           shortName: 'Ethereum',
         },

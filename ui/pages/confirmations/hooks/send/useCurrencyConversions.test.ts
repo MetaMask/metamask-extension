@@ -4,7 +4,8 @@ import mockState from '../../../../../test/data/mock-state.json';
 import {
   EVM_ASSET,
   EVM_NATIVE_ASSET,
-  SOLANA_ASSET,
+  MOCK_NFT1155,
+  MOCK_NFT721,
 } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import * as SendContext from '../../context/send';
@@ -21,10 +22,10 @@ function renderHook(args: DefaultRootState = {}) {
 describe('useCurrencyConversions', () => {
   it('return fields for currency conversion', () => {
     const result = renderHook();
+    expect(result.conversionSupportedForAsset).toBeDefined();
     expect(result.getFiatValue).toBeDefined();
     expect(result.getFiatDisplayValue).toBeDefined();
     expect(result.getNativeValue).toBeDefined();
-    expect(result.getNativeDisplayValue).toBeDefined();
   });
 
   it('use conversion rate from asset if available', () => {
@@ -39,66 +40,44 @@ describe('useCurrencyConversions', () => {
     } as unknown as SendContext.SendContextType);
 
     const result = renderHook();
-    expect(result.getFiatValue(10)).toEqual('20');
-    expect(result.getFiatDisplayValue(10)).toEqual('$ 20');
-    expect(result.getNativeValue(5000)).toEqual('2500');
-    expect(result.getNativeDisplayValue(5000)).toEqual('ETH 2500');
+    expect(result.getFiatValue('10')).toEqual('20');
+    expect(result.getFiatDisplayValue('10')).toEqual('$ 20.00');
+    expect(result.getNativeValue('5000')).toEqual('2500');
   });
 
-  it('return correct values for Native assets', () => {
+  it('conversionSupportedForAsset is false for ERC1155 asset', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: EVM_NATIVE_ASSET,
-      chainId: '0x5',
-    } as unknown as SendContext.SendContextType);
-
-    const result = renderHook();
-    expect(result.getFiatValue(10)).toEqual('5561.2');
-    expect(result.getFiatDisplayValue(10)).toEqual('$ 5561.2');
-    expect(result.getNativeValue(5000)).toEqual('8.990865280874631');
-    expect(result.getNativeDisplayValue(5000)).toEqual('ETH 8.99086');
-  });
-
-  it('return correct values for ERC20 assets', () => {
-    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: { ...EVM_ASSET, decimals: 4 },
+      asset: MOCK_NFT1155,
       chainId: '0x5',
       decimals: 4,
     } as unknown as SendContext.SendContextType);
 
-    const result = renderHook({
-      marketData: {
-        '0x5': {
-          [EVM_ASSET.address]: {
-            price: 5,
-            contractPercentChange1d: 0.55,
-            priceChange1d: 0.75,
-          },
-        },
-      },
-    });
+    const result = renderHook();
 
-    expect(result.getFiatValue(10)).toEqual('27806');
-    expect(result.getFiatDisplayValue(10)).toEqual('$ 27806');
-    expect(result.getNativeValue(5000)).toEqual('1.7981');
-    expect(result.getNativeDisplayValue(5000)).toEqual('NEU 1.7981');
+    expect(result.conversionSupportedForAsset).toBeFalsy();
   });
 
-  it('return correct values for solana assets', () => {
+  it('conversionSupportedForAsset is false for ERC721 asset', () => {
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: SOLANA_ASSET,
+      asset: MOCK_NFT721,
+      chainId: '0x5',
+      decimals: 4,
     } as unknown as SendContext.SendContextType);
 
-    const result = renderHook({
-      conversionRates: {
-        [SOLANA_ASSET.address]: {
-          rate: '.5',
-        },
-      },
-    });
+    const result = renderHook();
 
-    expect(result.getFiatValue(10)).toEqual('5');
-    expect(result.getFiatDisplayValue(10)).toEqual('$ 5');
-    expect(result.getNativeValue(5000)).toEqual('10000');
-    expect(result.getNativeDisplayValue(5000)).toEqual('FARTCOIN 10000');
+    expect(result.conversionSupportedForAsset).toBeFalsy();
+  });
+
+  it('conversionSupportedForAsset is false if conversion raet is not available', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: { ...EVM_ASSET, chainId: 137 },
+      chainId: '0x89',
+      decimals: 4,
+    } as unknown as SendContext.SendContextType);
+
+    const result = renderHook();
+
+    expect(result.conversionSupportedForAsset).toBeFalsy();
   });
 });

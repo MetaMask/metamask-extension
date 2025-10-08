@@ -18,7 +18,6 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
   Box,
 } from '../../component-library';
 import {
@@ -68,7 +67,6 @@ export default function SmartTransactionListItem({
         onClick={toggleShowDetails}
         icon={
           <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
             display={Display.Block}
             badge={
               <AvatarNetwork
@@ -78,6 +76,7 @@ export default function SmartTransactionListItem({
                 name={currentChain?.nickname}
                 src={currentChain?.rpcPrefs?.imageUrl}
                 borderColor={BackgroundColor.backgroundDefault}
+                borderWidth={2}
               />
             }
           >
