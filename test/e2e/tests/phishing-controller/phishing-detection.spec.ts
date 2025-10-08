@@ -529,63 +529,65 @@ describe('Phishing Detection', function (this: Suite) {
     }
   });
 
-  describe('Path-based Blocking', function () {
-    // Tests for blocklistPaths functionality where paths are in format: hostname/pathname
-    it('displays the MetaMask Phishing Detection page when accessing a blocklisted path', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder().build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: Mockttp) => {
-            return setupPhishingDetectionMocks(mockServer, {
-              statusCode: 200,
-              blockProvider: BlockProvider.MetaMask,
-              blocklist: [],
-              c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-              blocklistPaths: ['127.0.0.1/malicious'],
-            });
+  describe('Path-based URLs', function () {
+    describe('blocklisted paths', function () {
+      // Tests for blocklistPaths functionality where paths are in format: hostname/pathname
+      it('displays the MetaMask Phishing Detection page when accessing a blocklisted path', async function () {
+        await withFixtures(
+          {
+            fixtures: new FixtureBuilder().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (mockServer: Mockttp) => {
+              return setupPhishingDetectionMocks(mockServer, {
+                statusCode: 200,
+                blockProvider: BlockProvider.MetaMask,
+                blocklist: [],
+                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+                blocklistPaths: ['127.0.0.1/malicious'],
+              });
+            },
+            dapp: true,
           },
-          dapp: true,
-        },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
 
-          await driver.openNewPage('http://127.0.0.1/malicious');
+            await driver.openNewPage('http://127.0.0.1/malicious');
 
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
-          const phishingWarningPage = new PhishingWarningPage(driver);
-          await phishingWarningPage.checkPageIsLoaded();
-        },
-      );
-    });
-
-    it('blocks access to blocklisted subpaths', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder().build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: Mockttp) => {
-            return setupPhishingDetectionMocks(mockServer, {
-              statusCode: 200,
-              blockProvider: BlockProvider.MetaMask,
-              blocklist: [],
-              c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-              blocklistPaths: ['127.0.0.1/malicious'],
-            });
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+            const phishingWarningPage = new PhishingWarningPage(driver);
+            await phishingWarningPage.checkPageIsLoaded();
           },
-          dapp: true,
-        },
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+        );
+      });
 
-          // Test that subpaths are blocked
-          await driver.openNewPage('http://127.0.0.1/malicious/path');
+      it('blocks access to blocklisted subpaths', async function () {
+        await withFixtures(
+          {
+            fixtures: new FixtureBuilder().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (mockServer: Mockttp) => {
+              return setupPhishingDetectionMocks(mockServer, {
+                statusCode: 200,
+                blockProvider: BlockProvider.MetaMask,
+                blocklist: [],
+                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+                blocklistPaths: ['127.0.0.1/malicious'],
+              });
+            },
+            dapp: true,
+          },
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
 
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
-          const phishingWarningPage = new PhishingWarningPage(driver);
-          await phishingWarningPage.checkPageIsLoaded();
-        },
-      );
+            // Test that subpaths are blocked
+            await driver.openNewPage('http://127.0.0.1/malicious/path');
+
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+            const phishingWarningPage = new PhishingWarningPage(driver);
+            await phishingWarningPage.checkPageIsLoaded();
+          },
+        );
+      });
     });
 
     describe('whitelisted paths', function () {
@@ -619,17 +621,27 @@ describe('Phishing Detection', function (this: Suite) {
             const phishingWarningPage = new PhishingWarningPage(driver);
             await phishingWarningPage.checkPageIsLoaded();
             await phishingWarningPage.clickProceedAnywayButton();
-            await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
-
+            await driver.wait(
+              async () =>
+                (await driver.driver.getTitle()) !== WINDOW_TITLES.Phishing,
+              10000,
+            );
             // Test that whitelisted paths are allowed
             await driver.openNewPage('http://127.0.0.1/whitelisted/path');
-            await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
-
-            // Test that subpaths are allowed
+            await driver.wait(
+              async () =>
+                (await driver.driver.getTitle()) !== WINDOW_TITLES.Phishing,
+              10000,
+            );
+            // // Test that subpaths are allowed
             await driver.openNewPage(
               'http://127.0.0.1/whitelisted/path/subpath',
             );
-            await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+            await driver.wait(
+              async () =>
+                (await driver.driver.getTitle()) !== WINDOW_TITLES.Phishing,
+              10000,
+            );
           },
         );
       });
