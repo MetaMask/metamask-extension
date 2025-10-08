@@ -280,7 +280,7 @@ const filterPermissionsByOriginAndType = (
     }
   }
 
-  return Object.values(allPermissionsAcrossAllChains).filter(
+  return allPermissionsAcrossAllChains.filter(
     (gatorPermission) =>
       gatorPermission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase(),
   );
