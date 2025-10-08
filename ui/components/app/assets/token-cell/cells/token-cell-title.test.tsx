@@ -1,8 +1,12 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { BtcAccountType, BtcScope, EthAccountType } from '@metamask/keyring-api';
-import { TokenCellTitle } from './token-cell-title';
+import {
+  BtcAccountType,
+  BtcScope,
+  EthAccountType,
+} from '@metamask/keyring-api';
 import { TokenFiatDisplayInfo } from '../../types';
+import { TokenCellTitle } from './token-cell-title';
 
 jest.mock('../../asset-list/cells/asset-title', () => ({
   AssetCellTitle: ({ title }: { title: string }) => (
@@ -12,7 +16,11 @@ jest.mock('../../asset-list/cells/asset-title', () => ({
 
 jest.mock('../../../../multichain/token-list-item/stakeable-link', () => ({
   StakeableLink: ({ chainId, symbol }: { chainId: string; symbol: string }) => (
-    <div data-testid="stakeable-link" data-chain-id={chainId} data-symbol={symbol}>
+    <div
+      data-testid="stakeable-link"
+      data-chain-id={chainId}
+      data-symbol={symbol}
+    >
       Stake
     </div>
   ),
@@ -27,25 +35,28 @@ jest.mock('../../../../component-library', () => ({
 }));
 
 describe('TokenCellTitle', () => {
-  const createMockToken = (overrides: Partial<TokenFiatDisplayInfo> = {}): TokenFiatDisplayInfo => ({
-    type: EthAccountType.Eoa,
-    address: '0x1',
-    symbol: 'ETH',
-    image: 'test-image.png',
-    decimals: 18,
-    chainId: '0x1',
-    title: 'Ethereum',
-    tokenImage: 'test-image.png',
-    tokenChainImage: 'chain-image.png',
-    secondary: 100,
-    string: '100',
-    balance: '100',
-    tokenFiatAmount: 100,
-    aggregators: [],
-    isNative: false,
-    isStakeable: true,
-    ...overrides,
-  } as TokenFiatDisplayInfo);
+  const createMockToken = (
+    overrides: Partial<TokenFiatDisplayInfo> = {},
+  ): TokenFiatDisplayInfo =>
+    ({
+      type: EthAccountType.Eoa,
+      address: '0x1',
+      symbol: 'ETH',
+      image: 'test-image.png',
+      decimals: 18,
+      chainId: '0x1',
+      title: 'Ethereum',
+      tokenImage: 'test-image.png',
+      tokenChainImage: 'chain-image.png',
+      secondary: 100,
+      string: '100',
+      balance: '100',
+      tokenFiatAmount: 100,
+      aggregators: [],
+      isNative: false,
+      isStakeable: true,
+      ...overrides,
+    }) as TokenFiatDisplayInfo;
 
   it('renders the token title', () => {
     const token = createMockToken({ title: 'My Test Token' });
@@ -101,7 +112,7 @@ describe('TokenCellTitle', () => {
     const token = createMockToken({
       isStakeable: true,
       chainId: '0x1',
-      symbol: 'ETH'
+      symbol: 'ETH',
     });
     const { getByTestId } = render(<TokenCellTitle token={token} />);
 
@@ -131,12 +142,18 @@ describe('TokenCellTitle', () => {
       type: BtcAccountType.P2tr,
       isStakeable: true,
       chainId: BtcScope.Mainnet,
-      symbol: 'BTC'
+      symbol: 'BTC',
     });
     const { container } = render(<TokenCellTitle token={token} />);
 
-    expect(container.querySelector('[data-testid="asset-cell-title"]')).toHaveTextContent('Bitcoin');
-    expect(container.querySelector('[data-testid="tag"]')).toHaveTextContent('Taproot');
-    expect(container.querySelector('[data-testid="stakeable-link"]')).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-testid="asset-cell-title"]'),
+    ).toHaveTextContent('Bitcoin');
+    expect(container.querySelector('[data-testid="tag"]')).toHaveTextContent(
+      'Taproot',
+    );
+    expect(
+      container.querySelector('[data-testid="stakeable-link"]'),
+    ).toBeInTheDocument();
   });
 });
