@@ -111,6 +111,9 @@ describe('Phishing Detection', function (this: Suite) {
         getFixtureOptions({
           title: this.test?.fullTitle(),
           dappPaths: ['./tests/phishing-controller/mock-page-with-iframe'],
+          dappOptions: {
+            numberOfDapps: 1,
+          },
         }),
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
