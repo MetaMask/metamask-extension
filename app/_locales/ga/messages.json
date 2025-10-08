@@ -595,6 +595,9 @@
     "message": "$1 agus $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
+  "annual": {
+    "message": "Bliantúil"
+  },
   "appDescription": {
     "message": "An sparán cripte is iontaofa ar domhan",
     "description": "The description of the application"
@@ -2432,6 +2435,9 @@
     "message": "Earráid le $1",
     "description": "$1 represents the name of the snap"
   },
+  "estimatedChanges": {
+    "message": "Athruithe measta"
+  },
   "estimatedFee": {
     "message": "Táille mheasta"
   },
@@ -2586,6 +2592,9 @@
   },
   "form": {
     "message": "foirm"
+  },
+  "freeSevenDayTrial": {
+    "message": "Triail 7 lá saor in aisce"
   },
   "from": {
     "message": "Ó"
@@ -3509,6 +3518,12 @@
   },
   "missingSettingRequest": {
     "message": "Iarratas anseo"
+  },
+  "month": {
+    "message": "mí"
+  },
+  "monthly": {
+    "message": "Míosúil"
   },
   "more": {
     "message": "níos mó"
@@ -5594,6 +5609,9 @@
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Iarratais shínithe agus idirbhearta"
   },
+  "shieldConfirmMembership": {
+    "message": "Deimhnigh ballraíocht"
+  },
   "shieldEntryModalAssetCoverage": {
     "message": "Clúdach sócmhainne $10,000 in aghaidh an idirbhirt"
   },
@@ -5615,6 +5633,9 @@
   },
   "shieldEntryModalSupport": {
     "message": "Tacaíocht do chustaiméirí tosaíochta"
+  },
+  "shieldEstimatedChangesMonthlyTooltip": {
+    "message": "Údaraigh suas le $$1 don bhliain iomlán. Gearrfar $$2 ort gach mí, ní an méid iomlán anois."
   },
   "shieldPlanAnnual": {
     "message": "Bliantúil"
@@ -7284,6 +7305,9 @@
   "transactionSettings": {
     "message": "Socruithe idirbhirt"
   },
+  "transactionShield": {
+    "message": "Sciath Idirbhirt"
+  },
   "transactionSubmitted": {
     "message": "Idirbheart curtha isteach le táille gáis mheasta de $1 ag $2."
   },
@@ -7729,11 +7753,17 @@
     "message": "Pasfhocal mícheart",
     "description": "Displayed when the user enters an incorrect password"
   },
+  "year": {
+    "message": "bliain"
+  },
   "yes": {
     "message": "Tá"
   },
   "you": {
     "message": "Tusa"
+  },
+  "youApprove": {
+    "message": "Ceadaíonn tú"
   },
   "youDeclinedTheTransaction": {
     "message": "Dhiúltaigh tú don idirbheart."
