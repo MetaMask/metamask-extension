@@ -114,7 +114,6 @@ import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { FEATURED_NETWORK_CHAIN_IDS } from '../../../../shared/constants/network';
 import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams';
-import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
 import { BridgeInputGroup } from './bridge-input-group';
@@ -446,15 +445,6 @@ const PrepareBridgePage = ({
     debouncedUpdateQuoteRequestInController(quoteParams, eventProperties);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteParams]);
-
-  // Use smart slippage defaults
-  useSmartSlippage({
-    fromChain,
-    toChain,
-    fromToken,
-    toToken,
-    isSwap,
-  });
 
   // Trace swap/bridge view loaded
   useEffect(() => {
