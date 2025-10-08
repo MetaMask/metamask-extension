@@ -531,7 +531,6 @@ describe('Phishing Detection', function (this: Suite) {
 
   describe('Path-based URLs', function () {
     describe('blocklisted paths', function () {
-      // Tests for blocklistPaths functionality where paths are in format: hostname/pathname
       it('displays the MetaMask Phishing Detection page when accessing a blocklisted path', async function () {
         await withFixtures(
           {
@@ -543,16 +542,16 @@ describe('Phishing Detection', function (this: Suite) {
                 blockProvider: BlockProvider.MetaMask,
                 blocklist: [],
                 c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-                blocklistPaths: ['127.0.0.1/malicious'],
+                blocklistPaths: ['127.0.0.1/path1'],
               });
             },
             dapp: true,
+            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
 
-            await driver.openNewPage('http://127.0.0.1/malicious');
-
+            await driver.openNewPage('http://127.0.0.1:8080/path1/');
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
             const phishingWarningPage = new PhishingWarningPage(driver);
             await phishingWarningPage.checkPageIsLoaded();
@@ -571,7 +570,25 @@ describe('Phishing Detection', function (this: Suite) {
                 blockProvider: BlockProvider.MetaMask,
                 blocklist: [],
                 c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-                blocklistPaths: ['127.0.0.1/malicious'],
+                blocklistPaths: ['127.0.0.1/path1'],
+              });
+            },
+            dapp: true,
+            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
+          },
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
+
+            await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
+
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+            const phishingWarningPage = new PhishingWarningPage(driver);
+            await phishingWarningPage.checkPageIsLoaded();
+          },
+        );
+      });
+    });
+
               });
             },
             dapp: true,
