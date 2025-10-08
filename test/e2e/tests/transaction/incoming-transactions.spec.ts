@@ -174,7 +174,9 @@ describe('Incoming Transactions', function () {
       },
       async ({ driver }: { driver: Driver }) => {
         const activityList = await changeNetworkAndGoToActivity(driver);
+        await driver.delay(2000);
         await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
+        await driver.delay(2000);
 
         await activityList.checkTxAction({
           action: 'Contract interaction',
@@ -186,9 +188,7 @@ describe('Incoming Transactions', function () {
     );
   });
 
-  // https://github.com/MetaMask/metamask-extension/issues/36566
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('does nothing if preference disabled', async function () {
+  it('does nothing if preference disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -241,7 +241,6 @@ describe('Incoming Transactions', function () {
 
 async function changeNetworkAndGoToActivity(driver: Driver) {
   await loginWithoutBalanceValidation(driver);
-  await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
   const homepage = new HomePage(driver);
   await homepage.goToActivityList();
