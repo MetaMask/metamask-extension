@@ -59,43 +59,6 @@ function importAllScripts() {
 
   const startImportScriptsTime = Date.now();
 
-  // value of useSnow below is dynamically replaced at build time with actual value
-  const useSnow = process.env.USE_SNOW;
-  if (typeof useSnow !== 'boolean') {
-    throw new Error('Missing USE_SNOW environment variable');
-  }
-
-  // value of applyLavaMoat below is dynamically replaced at build time with actual value
-  const applyLavaMoat = process.env.APPLY_LAVAMOAT;
-  if (typeof applyLavaMoat !== 'boolean') {
-    throw new Error('Missing APPLY_LAVAMOAT environment variable');
-  }
-
-  loadFile('../scripts/sentry-install.js');
-
-  if (useSnow) {
-    // eslint-disable-next-line no-undef
-    const isWorker = !self.document;
-    if (!isWorker) {
-      loadFile('../scripts/snow.js');
-    }
-
-    loadFile('../scripts/use-snow.js');
-  }
-
-  // Always apply LavaMoat in e2e test builds, so that we can capture initialization stats
-  if (testMode || applyLavaMoat) {
-    loadFile('../scripts/runtime-lavamoat.js');
-    loadFile('../scripts/lockdown-more.js');
-    loadFile('../scripts/policy-load.js');
-  } else {
-    loadFile('../scripts/init-globals.js');
-    loadFile('../scripts/lockdown-install.js');
-    loadFile('../scripts/lockdown-run.js');
-    loadFile('../scripts/lockdown-more.js');
-    loadFile('../scripts/runtime-cjs.js');
-  }
-
   // This environment variable is set to a string of comma-separated relative file paths.
   const rawFileList = process.env.FILE_NAMES;
   const fileList = rawFileList.split(',');
@@ -165,35 +128,6 @@ if (self.serviceWorker.state === 'activated') {
   importAllScripts();
 }
 
-/*
- * This content script is injected programmatically because
- * MAIN world injection does not work properly via manifest
- * https://bugs.chromium.org/p/chromium/issues/detail?id=634381
- */
-const registerInPageContentScript = async () => {
-  try {
-    await chrome.scripting.registerContentScripts([
-      {
-        id: 'inpage',
-        matches: ['file://*/*', 'http://*/*', 'https://*/*'],
-        js: ['scripts/inpage.js'],
-        runAt: 'document_start',
-        world: 'MAIN',
-        allFrames: true,
-      },
-    ]);
-  } catch (err) {
-    /**
-     * An error occurs when app-init.js is reloaded. Attempts to avoid the duplicate script error:
-     * 1. registeringContentScripts inside runtime.onInstalled - This caused a race condition
-     *    in which the provider might not be loaded in time.
-     * 2. await chrome.scripting.getRegisteredContentScripts() to check for an existing
-     *    inpage script before registering - The provider is not loaded on time.
-     */
-    console.warn(`Dropped attempt to register inpage content script. ${err}`);
-  }
-};
-
 /**
  * A promise that resolves when the `onInstalled` event is fired.
  *
@@ -214,5 +148,3 @@ chrome.runtime.onInstalled.addListener(function listener(details) {
   deferredOnInstalledListener.resolve(details);
   delete globalThis.stateHooks.onInstalledListener;
 });
-
-registerInPageContentScript();

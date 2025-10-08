@@ -43,6 +43,13 @@
       "all_frames": true
     },
     {
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": ["scripts/inpage.js"],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    },
+    {
       "matches": ["*://connect.trezor.io/*/popup.html*"],
       "js": ["vendor/trezor/content-script.js"]
     }

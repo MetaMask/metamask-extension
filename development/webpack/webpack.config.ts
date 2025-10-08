@@ -44,14 +44,6 @@ if (args.dryRun) {
   exit(0);
 }
 
-// #region short circuit for unsupported build configurations
-if (args.manifest_version === 3) {
-  throw new Error(
-    "The webpack build doesn't support manifest_version version 3 yet. So sorry.",
-  );
-}
-// #endregion short circuit for unsupported build configurations
-
 const context = join(__dirname, '../../app');
 const isDevelopment = args.env === 'development';
 const MANIFEST_VERSION = args.manifest_version;
@@ -177,6 +169,13 @@ const plugins: WebpackPluginInstance[] = [
 if (MANIFEST_VERSION === 2) {
   const { SelfInjectPlugin } = require('./utils/plugins/SelfInjectPlugin');
   plugins.push(new SelfInjectPlugin({ test: /^scripts\/inpage\.js$/u }));
+}
+// MV3 requires service worker importScripts injection
+if (MANIFEST_VERSION === 3) {
+  const {
+    serviceWorkerPlugin,
+  } = require('./utils/plugins/ServiceWorkerPlugin');
+  plugins.push(serviceWorkerPlugin);
 }
 if (args.lavamoat) {
   const {
