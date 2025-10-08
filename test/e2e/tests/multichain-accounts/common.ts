@@ -75,9 +75,7 @@ export async function withMultichainAccountsDesignEnabled(
     title,
     testSpecificMock = mockMultichainAccountsFeatureFlag,
     accountType = AccountType.MultiSRP,
-    state = 1,
-    dapp,
-    dappPaths,
+    state = 2,
   }: {
     title?: string;
     testSpecificMock?: (mockServer: Mockttp) => Promise<MockedEndpoint>;
@@ -155,6 +153,10 @@ export async function withImportedAccount(
     const accountListPage = new AccountListPage(driver);
     await accountListPage.addNewImportedAccount(
       options.privateKey ?? DUMMY_PRIVATE_KEY,
+      undefined,
+      {
+        isMultichainAccountsState2Enabled: true,
+      },
     );
     await test(driver);
   });

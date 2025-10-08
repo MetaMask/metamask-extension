@@ -1,5 +1,5 @@
-import { Driver } from '../../webdriver/driver';
-import { largeDelayMs } from '../../helpers';
+import { Driver } from '../../../webdriver/driver';
+import { largeDelayMs } from '../../../helpers';
 
 class MultichainAccountDetailsPage {
   private readonly driver: Driver;
@@ -12,7 +12,7 @@ class MultichainAccountDetailsPage {
   // Account information section
   private readonly accountAvatar = '[data-testid="avatar"]';
 
-  private readonly accountNameRow = '.multichain-account-details__row'; // First row is account name
+  private readonly accountNameRow = '[data-testid="account-details-row-value-account-name"]'; // First row is account name
 
   private readonly accountAddressRow =
     '.multichain-account-details__row:nth-of-type(2)'; // Second row is address
@@ -25,7 +25,7 @@ class MultichainAccountDetailsPage {
 
   private readonly accountNameInput = 'input[placeholder*="Account"]';
 
-  private readonly saveAccountNameButton = 'button[aria-label="Save"]';
+  private readonly confirmAccountNameButton = 'button[aria-label="Confirm"]';
 
   // Address and wallet navigation
   private readonly addressValue =
@@ -50,10 +50,8 @@ class MultichainAccountDetailsPage {
     '[data-testid="account-export-private-key-button"]';
 
   // Account removal
-  private readonly removeAccountButton = {
-    tag: 'button',
-    text: 'Remove account',
-  };
+  private readonly removeAccountButton =
+    '[data-testid="account-details-row-remove-account"]';
 
   private readonly removeAccountModalHeader = {
     tag: 'h4',
@@ -80,6 +78,7 @@ class MultichainAccountDetailsPage {
     tag: 'button',
     text: 'View on explorer',
   };
+  private readonly networksRow = { text: 'Networks' };
 
   private readonly privateKeyRow = { text: 'Private key' };
 
@@ -143,6 +142,15 @@ class MultichainAccountDetailsPage {
    */
   async checkAccountIconPresent(): Promise<boolean> {
     return await this.driver.isElementPresent(this.accountAvatar);
+  }
+
+  /**
+   * Click on the Networks row
+   */
+  async clickNetworksRow(): Promise<void> {
+    console.log('Click on the networks row');
+    const netoworksRow = await this.driver.findElement(this.networksRow);
+    await netoworksRow.click();
   }
 
   /**
@@ -242,16 +250,7 @@ class MultichainAccountDetailsPage {
     await this.driver.clickElement(this.editAccountNameButton);
     await this.driver.delay(largeDelayMs);
     await this.driver.fill(this.accountNameInput, newName);
-    await this.driver.clickElement(this.saveAccountNameButton);
-    await this.driver.delay(largeDelayMs);
-  }
-
-  /**
-   * Click on the pencil icon to edit account name
-   */
-  async clickEditAccountNameButton(): Promise<void> {
-    console.log('Click on the pencil icon to edit account name');
-    await this.driver.clickElement(this.editAccountNameButton);
+    await this.driver.clickElement(this.confirmAccountNameButton);
     await this.driver.delay(largeDelayMs);
   }
 
@@ -267,11 +266,11 @@ class MultichainAccountDetailsPage {
   }
 
   /**
-   * Click the save account name button
+   * Click the confirm account name button
    */
-  async clickSaveAccountNameButton(): Promise<void> {
-    console.log('Click save account name button');
-    await this.driver.clickElement(this.saveAccountNameButton);
+  async clickConfirmAccountNameButton(): Promise<void> {
+    console.log('Click confirm account name button');
+    await this.driver.clickElement(this.confirmAccountNameButton);
     await this.driver.delay(largeDelayMs);
   }
 
