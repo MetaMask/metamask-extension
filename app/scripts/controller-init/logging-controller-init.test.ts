@@ -1,5 +1,5 @@
 import { Messenger } from '@metamask/base-controller';
-import { LoggingController } from '@metamask/logging-controller';
+import { LoggingController, LogType } from '@metamask/logging-controller';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -45,6 +45,31 @@ describe('LoggingControllerInit', () => {
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
       state: undefined,
+    });
+  });
+
+  it('logs the previous and current version when the client is updated', () => {
+    const request = getInitRequestMock();
+    const { controller } = LoggingControllerInit(request);
+
+    expect(controller.add).not.toHaveBeenCalled();
+
+    const listener = jest.mocked(
+      request.extension.runtime.onInstalled.addListener,
+    ).mock.calls[0][0];
+
+    listener({ reason: 'install', temporary: false });
+    expect(controller.add).not.toHaveBeenCalled();
+
+    listener({ reason: 'update', previousVersion: '1.0.0', temporary: false });
+
+    expect(controller.add).toHaveBeenCalledWith({
+      type: LogType.GenericLog,
+      data: {
+        event: 'Extension version update',
+        previousVersion: '1.0.0',
+        version: process.env.METAMASK_VERSION,
+      },
     });
   });
 });
