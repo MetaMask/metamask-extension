@@ -5876,12 +5876,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/error-reporting-service@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/error-reporting-service@npm:2.0.0"
+"@metamask/error-reporting-service@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@metamask/error-reporting-service@npm:2.2.0"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
-  checksum: 10/639206e3d3fcf136243503073692b97cac194dc6f2003e62db58315b82393be8d6426d22b0e0c97c7f2903ffa3c11ef4600565576bcb58ea6ff72fce74e18d59
+    "@metamask/base-controller": "npm:^8.4.0"
+  checksum: 10/f2cd8845247c753c3f37b6af9ea47960340b4120e69e5c6fda88ec2daf953ec3ab96a8a767b6a382a1537a221b0dbccadfe443d72935a8bbc9250f4389834a51
   languageName: node
   linkType: hard
 
@@ -7734,9 +7734,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^60.2.0":
-  version: 60.4.0
-  resolution: "@metamask/transaction-controller@npm:60.4.0"
+"@metamask/transaction-controller@npm:^60.2.0, @metamask/transaction-controller@npm:^60.6.0":
+  version: 60.6.0
+  resolution: "@metamask/transaction-controller@npm:60.6.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -7751,7 +7751,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/nonce-tracker": "npm:^6.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.8.0"
+    "@metamask/utils": "npm:^11.8.1"
     async-mutex: "npm:^0.5.0"
     bn.js: "npm:^5.2.1"
     eth-method-registry: "npm:^4.0.0"
@@ -7766,7 +7766,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^24.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/17606a99425b1a3d6afe2c34820e456ed4101cc9c874551aef04f8308f3f795420adc5ee6199f5bb331b5e1f3defda1325cb3a48d865e6b11759b3d70938a654
+  checksum: 10/c23f146d625fc92093361785950cd950421615f91e781950a66e61f8c689806e61c7db03bd3cecf7b44fa4406c12204ad7e69f9b40c18062f77f14175ee7bf2a
   languageName: node
   linkType: hard
 
@@ -9855,14 +9855,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rive-app/canvas@patch:@rive-app/canvas@npm%3A2.31.6#~/.yarn/patches/@rive-app-canvas-npm-2.31.6-6a62b47451.patch":
-  version: 2.31.6
-  resolution: "@rive-app/canvas@patch:@rive-app/canvas@npm%3A2.31.6#~/.yarn/patches/@rive-app-canvas-npm-2.31.6-6a62b47451.patch::version=2.31.6&hash=948ff3"
-  checksum: 10/8ae7aef1ffb5ae59246334f95f7a5060020b5b7559b52cd674b46c07a4a1c25e458e838fa42d34c7fe850f713c260d7ca8d8796af33903763f59bdb0d45db740
+"@rive-app/canvas@patch:@rive-app/canvas@npm%3A2.31.5#~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch":
+  version: 2.31.5
+  resolution: "@rive-app/canvas@patch:@rive-app/canvas@npm%3A2.31.5#~/.yarn/patches/@rive-app-canvas-npm-2.31.5-df519c6e0f.patch::version=2.31.5&hash=1ed092"
+  checksum: 10/d3197be660dcd7508f9864cbca689bd439d02010907e29bd860278dc62af8a3cfff997cc8912fe12632daad9b0541c7cdc6519cc743b5ef1fccb2c0e1d1e6478
   languageName: node
   linkType: hard
 
-"@rive-app/react-canvas@npm:^4.23.3":
+"@rive-app/react-canvas@npm:4.23.3":
   version: 4.23.3
   resolution: "@rive-app/react-canvas@npm:4.23.3"
   dependencies:
@@ -9870,6 +9870,17 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
   checksum: 10/e33cc8773a69b8f243b75e545704b760dabdb71c373c7fe6465ffa2a84c5172a873bf88079cec73694b01addfcede1606cf542eb69594b1fc86376c4ca443dcd
+  languageName: node
+  linkType: hard
+
+"@rive-app/react-canvas@patch:@rive-app/react-canvas@npm%3A4.23.3#~/.yarn/patches/@rive-app-react-canvas-npm-4.23.3-3ab1940c19.patch":
+  version: 4.23.3
+  resolution: "@rive-app/react-canvas@patch:@rive-app/react-canvas@npm%3A4.23.3#~/.yarn/patches/@rive-app-react-canvas-npm-4.23.3-3ab1940c19.patch::version=4.23.3&hash=a56107"
+  dependencies:
+    "@rive-app/canvas": "npm:2.31.5"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
+  checksum: 10/dc501d3fb58b284734b730bce1c479a80c2e84309189369430e92d94792f65780fe0480b33df419349ea3e4e249cf1e2e475143c948c579d4086e2564843a4ff
   languageName: node
   linkType: hard
 
@@ -31449,7 +31460,7 @@ __metadata:
     "@metamask/eip-5792-middleware": "npm:^1.1.0"
     "@metamask/ens-controller": "npm:^17.0.1"
     "@metamask/ens-resolver-snap": "npm:^0.1.4"
-    "@metamask/error-reporting-service": "npm:^2.0.0"
+    "@metamask/error-reporting-service": "npm:^2.2.0"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
     "@metamask/eslint-config-mocha": "npm:^9.0.0"
@@ -31537,7 +31548,7 @@ __metadata:
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
-    "@metamask/transaction-controller": "npm:^60.2.0"
+    "@metamask/transaction-controller": "npm:^60.6.0"
     "@metamask/user-operation-controller": "npm:^39.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"
@@ -31554,7 +31565,7 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.6.1"
     "@popperjs/core": "npm:^2.4.0"
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch"
-    "@rive-app/react-canvas": "npm:^4.23.3"
+    "@rive-app/react-canvas": "patch:@rive-app/react-canvas@npm%3A4.23.3#~/.yarn/patches/@rive-app-react-canvas-npm-4.23.3-3ab1940c19.patch"
     "@segment/loosely-validate-event": "npm:^2.0.0"
     "@sentry/browser": "patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch"
     "@sentry/cli": "npm:^2.56.0"
