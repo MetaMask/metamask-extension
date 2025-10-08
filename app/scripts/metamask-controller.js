@@ -729,28 +729,6 @@ export default class MetamaskController extends EventEmitter {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
 
-    this.controllerMessenger.subscribe(
-      'RemoteFeatureFlagController:stateChange',
-      (isRpcFailoverEnabled) => {
-        if (isRpcFailoverEnabled) {
-          console.log(
-            'isRpcFailoverEnabled = ',
-            isRpcFailoverEnabled,
-            ', enabling RPC failover',
-          );
-          this.networkController.enableRpcFailover();
-        } else {
-          console.log(
-            'isRpcFailoverEnabled = ',
-            isRpcFailoverEnabled,
-            ', disabling RPC failover',
-          );
-          this.networkController.disableRpcFailover();
-        }
-      },
-      (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
-    );
-
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
       this._onUnlock(),
     );
