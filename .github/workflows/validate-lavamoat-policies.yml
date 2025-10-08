@@ -13,7 +13,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Validate LavaMoat build policy
         run: yarn lavamoat:build:auto
@@ -45,7 +45,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Validate LavaMoat ${{ matrix.build-type }} policy
         run: yarn lavamoat:webapp:auto:ci --build-types=${{ matrix.build-type }}
