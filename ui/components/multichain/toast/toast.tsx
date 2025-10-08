@@ -3,10 +3,15 @@ import {
   Button,
   ButtonSize,
   ButtonVariant,
-  FontWeight,
   TextVariant as DsTextVariant,
 } from '@metamask/design-system-react';
-import { BannerBase, Box, BoxProps, Text } from '../../component-library';
+import {
+  BannerBase,
+  Box,
+  BoxProps,
+  IconSize,
+  Text,
+} from '../../component-library';
 import {
   BackgroundColor,
   BorderColor,
@@ -84,6 +89,11 @@ export const Toast = ({
       borderColor={BorderColor.borderMuted}
       borderRadius={borderRadius || BorderRadius.XL}
       data-testid={dataTestId ? `${dataTestId}-banner-base` : undefined}
+      closeButtonProps={{
+        iconProps: {
+          size: IconSize.Md,
+        },
+      }}
       className={`toasts-container__banner-base ${className}`}
     >
       <Box
@@ -114,11 +124,10 @@ export const Toast = ({
               variant={ButtonVariant.Secondary}
               size={ButtonSize.Sm}
               textProps={{
-                fontWeight: FontWeight.Regular,
                 variant: DsTextVariant.BodySm,
               }}
               onClick={onActionClick}
-              className="mt-2"
+              className="mt-2 rounded-lg"
             >
               {actionText}
             </Button>
