@@ -131,7 +131,7 @@ exports[`AssetPage should render a native asset 1`] = `
         </button>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-          data-testid="token-overview-button-swap"
+          data-testid="coin-overview-swap"
         >
           <span
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -601,6 +601,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         </button>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+          data-testid="token-overview-swap"
         >
           <span
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -614,25 +615,6 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               style="margin-top: -4px;"
             >
               Swap
-            </span>
-          </span>
-        </button>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-          data-testid="token-overview-bridge"
-        >
-          <span
-            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/bridge.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
-              style="margin-top: -4px;"
-            >
-              Bridge
             </span>
           </span>
         </button>
@@ -1092,6 +1074,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         </button>
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
+          data-testid="token-overview-swap"
         >
           <span
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
@@ -1105,25 +1088,6 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               style="margin-top: -4px;"
             >
               Swap
-            </span>
-          </span>
-        </button>
-        <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button token-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
-          data-testid="token-overview-bridge"
-        >
-          <span
-            class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/bridge.svg');"
-            />
-            <span
-              class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
-              style="margin-top: -4px;"
-            >
-              Bridge
             </span>
           </span>
         </button>
