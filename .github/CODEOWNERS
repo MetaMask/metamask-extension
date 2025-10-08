@@ -154,18 +154,16 @@ app/scripts/lib/rpc-method-middleware                                 @MetaMask/
 shared/lib/caip25-caveat-merger.ts                                    @MetaMask/wallet-integrations
 test/e2e/page-objects/benchmark                                       @MetaMask/wallet-integrations
 test/e2e/playwright/benchmark                                         @MetaMask/wallet-integrations
-test/e2e/flask/multichain                                             @MetaMask/wallet-integrations
+test/e2e/flask/multichain-api                                         @MetaMask/wallet-integrations
 # TODO CONSOLIDATE THE MIDDLEWARE BELOW INTO THE RPC-METHOD-MIDDLEWARE FOLDER
 app/scripts/lib/createRPCMethodTrackingMiddleware.js                  @MetaMask/wallet-integrations
 app/scripts/lib/createMetamaskMiddleware.js                           @MetaMask/wallet-integrations
 app/scripts/lib/createOnboardingMiddleware.js                         @MetaMask/wallet-integrations
 app/scripts/lib/createMetaRPCHandler.js                               @MetaMask/wallet-integrations
 app/scripts/lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware.ts @MetaMask/wallet-integrations
-app/scripts/lib/createUnsupportedMethodMiddleware.ts                  @MetaMask/wallet-integrations
 app/scripts/lib/createHyperliquidReferralMiddleware.ts                @MetaMask/wallet-integrations
 app/scripts/lib/metaRPCClientFactory.ts                               @MetaMask/wallet-integrations
 app/scripts/lib/middleware/                                           @MetaMask/wallet-integrations
-app/scripts/lib/stream-utils.js                                       @MetaMask/wallet-integrations
 app/scripts/lib/createOriginThrottlingMiddleware.ts                   @MetaMask/wallet-integrations
 app/scripts/lib/createMainFrameOriginMiddleware.ts                    @MetaMask/wallet-integrations
 app/scripts/lib/createTracingMiddleware.ts                            @MetaMask/wallet-integrations
