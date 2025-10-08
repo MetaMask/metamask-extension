@@ -175,7 +175,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.23.5, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.27.1":
+"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/code-frame@npm:7.27.1"
   dependencies:
@@ -265,20 +265,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/generator@npm:^7.22.5, @babel/generator@npm:^7.23.0, @babel/generator@npm:^7.23.6, @babel/generator@npm:^7.25.9, @babel/generator@npm:^7.26.3, @babel/generator@npm:^7.7.2":
-  version: 7.27.1
-  resolution: "@babel/generator@npm:7.27.1"
-  dependencies:
-    "@babel/parser": "npm:^7.27.1"
-    "@babel/types": "npm:^7.27.1"
-    "@jridgewell/gen-mapping": "npm:^0.3.5"
-    "@jridgewell/trace-mapping": "npm:^0.3.25"
-    jsesc: "npm:^3.0.2"
-  checksum: 10/6101825922a8a116e64b507d9309b38c5bc027b333d7111fcb760422741d3c72bd8f8e5aa935c2944c434ffe376353a27afa3a25a8526dc2ef90743d266770db
-  languageName: node
-  linkType: hard
-
-"@babel/generator@npm:^7.27.3, @babel/generator@npm:^7.28.3":
+"@babel/generator@npm:^7.22.5, @babel/generator@npm:^7.23.0, @babel/generator@npm:^7.25.9, @babel/generator@npm:^7.26.3, @babel/generator@npm:^7.27.3, @babel/generator@npm:^7.28.3, @babel/generator@npm:^7.7.2":
   version: 7.28.3
   resolution: "@babel/generator@npm:7.28.3"
   dependencies:
@@ -394,38 +381,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-environment-visitor@npm:^7.22.20":
-  version: 7.24.7
-  resolution: "@babel/helper-environment-visitor@npm:7.24.7"
-  dependencies:
-    "@babel/types": "npm:^7.24.7"
-  checksum: 10/079d86e65701b29ebc10baf6ed548d17c19b808a07aa6885cc141b690a78581b180ee92b580d755361dc3b16adf975b2d2058b8ce6c86675fcaf43cf22f2f7c6
-  languageName: node
-  linkType: hard
-
-"@babel/helper-function-name@npm:^7.23.0":
-  version: 7.24.7
-  resolution: "@babel/helper-function-name@npm:7.24.7"
-  dependencies:
-    "@babel/template": "npm:^7.24.7"
-    "@babel/types": "npm:^7.24.7"
-  checksum: 10/2ceb3d9b2b35a0fc4100fc06ed7be3bc38f03ff0bf128ff0edbc0cc7dd842967b1496fc70b5c616c747d7711c2b87e7d025c8888f48740631d6148a9d3614f85
-  languageName: node
-  linkType: hard
-
 "@babel/helper-globals@npm:^7.28.0":
   version: 7.28.0
   resolution: "@babel/helper-globals@npm:7.28.0"
   checksum: 10/91445f7edfde9b65dcac47f4f858f68dc1661bf73332060ab67ad7cc7b313421099a2bfc4bda30c3db3842cfa1e86fffbb0d7b2c5205a177d91b22c8d7d9cb47
-  languageName: node
-  linkType: hard
-
-"@babel/helper-hoist-variables@npm:^7.22.5":
-  version: 7.24.7
-  resolution: "@babel/helper-hoist-variables@npm:7.24.7"
-  dependencies:
-    "@babel/types": "npm:^7.24.7"
-  checksum: 10/6cfdcf2289cd12185dcdbdf2435fa8d3447b797ac75851166de9fc8503e2fd0021db6baf8dfbecad3753e582c08e6a3f805c8d00cbed756060a877d705bd8d8d
   languageName: node
   linkType: hard
 
@@ -574,23 +533,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-split-export-declaration@npm:^7.22.6":
-  version: 7.24.7
-  resolution: "@babel/helper-split-export-declaration@npm:7.24.7"
-  dependencies:
-    "@babel/types": "npm:^7.24.7"
-  checksum: 10/ff04a3071603c87de0d6ee2540b7291ab36305b329bd047cdbb6cbd7db335a12f9a77af1cf708779f75f13c4d9af46093c00b34432e50b2411872c658d1a2e5e
-  languageName: node
-  linkType: hard
-
-"@babel/helper-string-parser@npm:^7.23.4, @babel/helper-string-parser@npm:^7.25.9, @babel/helper-string-parser@npm:^7.27.1":
+"@babel/helper-string-parser@npm:^7.25.9, @babel/helper-string-parser@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/helper-string-parser@npm:7.27.1"
   checksum: 10/0ae29cc2005084abdae2966afdb86ed14d41c9c37db02c3693d5022fba9f5d59b011d039380b8e537c34daf117c549f52b452398f576e908fb9db3c7abbb3a00
   languageName: node
   linkType: hard
 
-"@babel/helper-validator-identifier@npm:^7.22.20, @babel/helper-validator-identifier@npm:^7.25.9, @babel/helper-validator-identifier@npm:^7.27.1":
+"@babel/helper-validator-identifier@npm:^7.25.9, @babel/helper-validator-identifier@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/helper-validator-identifier@npm:7.27.1"
   checksum: 10/75041904d21bdc0cd3b07a8ac90b11d64cd3c881e89cb936fa80edd734bf23c35e6bd1312611e8574c4eab1f3af0f63e8a5894f4699e9cfdf70c06fcf4252320
@@ -646,15 +596,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:7.24.0":
-  version: 7.24.0
-  resolution: "@babel/parser@npm:7.24.0"
-  bin:
-    parser: ./bin/babel-parser.js
-  checksum: 10/3e5ebb903a6f71629a9d0226743e37fe3d961e79911d2698b243637f66c4df7e3e0a42c07838bc0e7cc9fcd585d9be8f4134a145b9459ee4a459420fb0d1360b
-  languageName: node
-  linkType: hard
-
 "@babel/parser@npm:7.26.2":
   version: 7.26.2
   resolution: "@babel/parser@npm:7.26.2"
@@ -688,7 +629,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.0, @babel/parser@npm:^7.24.0, @babel/parser@npm:^7.24.4, @babel/parser@npm:^7.25.3, @babel/parser@npm:^7.25.9, @babel/parser@npm:^7.26.7, @babel/parser@npm:^7.27.2, @babel/parser@npm:^7.27.3, @babel/parser@npm:^7.28.3, @babel/parser@npm:^7.28.4":
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.0, @babel/parser@npm:^7.24.4, @babel/parser@npm:^7.25.3, @babel/parser@npm:^7.25.9, @babel/parser@npm:^7.26.7, @babel/parser@npm:^7.27.2, @babel/parser@npm:^7.27.3, @babel/parser@npm:^7.28.3, @babel/parser@npm:^7.28.4":
   version: 7.28.4
   resolution: "@babel/parser@npm:7.28.4"
   dependencies:
@@ -696,17 +637,6 @@ __metadata:
   bin:
     parser: ./bin/babel-parser.js
   checksum: 10/f54c46213ef180b149f6a17ea765bf40acc1aebe2009f594e2a283aec69a190c6dda1fdf24c61a258dbeb903abb8ffb7a28f1a378f8ab5d333846ce7b7e23bf1
-  languageName: node
-  linkType: hard
-
-"@babel/parser@npm:^7.27.1":
-  version: 7.27.2
-  resolution: "@babel/parser@npm:7.27.2"
-  dependencies:
-    "@babel/types": "npm:^7.27.1"
-  bin:
-    parser: ./bin/babel-parser.js
-  checksum: 10/133b4ccfbc01d4f36b0945937aabff87026c29fda6dcd3c842053a672e50f2487a101a3acd150bbaa2eecd33f3bd35650f95b806567c926f93b2af35c2b615c9
   languageName: node
   linkType: hard
 
@@ -1843,18 +1773,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/template@npm:^7.22.5, @babel/template@npm:^7.24.7, @babel/template@npm:^7.25.9, @babel/template@npm:^7.3.3":
-  version: 7.25.9
-  resolution: "@babel/template@npm:7.25.9"
-  dependencies:
-    "@babel/code-frame": "npm:^7.25.9"
-    "@babel/parser": "npm:^7.25.9"
-    "@babel/types": "npm:^7.25.9"
-  checksum: 10/e861180881507210150c1335ad94aff80fd9e9be6202e1efa752059c93224e2d5310186ddcdd4c0f0b0fc658ce48cb47823f15142b5c00c8456dde54f5de80b2
-  languageName: node
-  linkType: hard
-
-"@babel/template@npm:^7.27.2":
+"@babel/template@npm:^7.22.5, @babel/template@npm:^7.25.9, @babel/template@npm:^7.27.2, @babel/template@npm:^7.3.3":
   version: 7.27.2
   resolution: "@babel/template@npm:7.27.2"
   dependencies:
@@ -1862,24 +1781,6 @@ __metadata:
     "@babel/parser": "npm:^7.27.2"
     "@babel/types": "npm:^7.27.1"
   checksum: 10/fed15a84beb0b9340e5f81566600dbee5eccd92e4b9cc42a944359b1aa1082373391d9d5fc3656981dff27233ec935d0bc96453cf507f60a4b079463999244d8
-  languageName: node
-  linkType: hard
-
-"@babel/traverse@npm:7.24.0":
-  version: 7.24.0
-  resolution: "@babel/traverse@npm:7.24.0"
-  dependencies:
-    "@babel/code-frame": "npm:^7.23.5"
-    "@babel/generator": "npm:^7.23.6"
-    "@babel/helper-environment-visitor": "npm:^7.22.20"
-    "@babel/helper-function-name": "npm:^7.23.0"
-    "@babel/helper-hoist-variables": "npm:^7.22.5"
-    "@babel/helper-split-export-declaration": "npm:^7.22.6"
-    "@babel/parser": "npm:^7.24.0"
-    "@babel/types": "npm:^7.24.0"
-    debug: "npm:^4.3.1"
-    globals: "npm:^11.1.0"
-  checksum: 10/5cc482248ebb79adcbcf021aab4e0e95bafe2a1736ee4b46abe6f88b59848ad73e15e219db8f06c9a33a14c64257e5b47e53876601e998a8c596accb1b7f4996
   languageName: node
   linkType: hard
 
@@ -1928,17 +1829,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:7.24.0":
-  version: 7.24.0
-  resolution: "@babel/types@npm:7.24.0"
-  dependencies:
-    "@babel/helper-string-parser": "npm:^7.23.4"
-    "@babel/helper-validator-identifier": "npm:^7.22.20"
-    to-fast-properties: "npm:^2.0.0"
-  checksum: 10/a0b4875ce2e132f9daff0d5b27c7f4c4fcc97f2b084bdc5834e92c9d32592778489029e65d99d00c406da612d87b72d7a236c0afccaa1435c028d0c94c9b6da4
-  languageName: node
-  linkType: hard
-
 "@babel/types@npm:7.26.0":
   version: 7.26.0
   resolution: "@babel/types@npm:7.26.0"
@@ -1959,7 +1849,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.18.9, @babel/types@npm:^7.20.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.22.5, @babel/types@npm:^7.23.0, @babel/types@npm:^7.24.0, @babel/types@npm:^7.24.7, @babel/types@npm:^7.25.9, @babel/types@npm:^7.26.10, @babel/types@npm:^7.27.1, @babel/types@npm:^7.27.3, @babel/types@npm:^7.28.2, @babel/types@npm:^7.28.4, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
+"@babel/types@npm:^7.0.0, @babel/types@npm:^7.18.9, @babel/types@npm:^7.20.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.22.5, @babel/types@npm:^7.23.0, @babel/types@npm:^7.25.9, @babel/types@npm:^7.26.10, @babel/types@npm:^7.27.1, @babel/types@npm:^7.27.3, @babel/types@npm:^7.28.2, @babel/types@npm:^7.28.4, @babel/types@npm:^7.3.3, @babel/types@npm:^7.4.4, @babel/types@npm:^7.8.3":
   version: 7.28.4
   resolution: "@babel/types@npm:7.28.4"
   dependencies:
@@ -5689,9 +5579,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:77.0.1":
-  version: 77.0.1
-  resolution: "@metamask/assets-controllers@npm:77.0.1"
+"@metamask/assets-controllers@npm:78.0.0":
+  version: 78.0.0
+  resolution: "@metamask/assets-controllers@npm:78.0.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5735,13 +5625,13 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/7fbeb062ae55b130b7476b421c494153de8c09096aff57a08203171038097b7607a024ae05bf2043bc5904986eaccfa8705a25f07badd39b7ecaae9e580bd614
+  checksum: 10/052f80da831d91a4166f15abddcb28f833eebf0693c15029467eb063d44325601f723fd6b946bd40786d940626f6625e1e41a1735afd4dd8cf0771d39f0433b3
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A77.0.1#~/.yarn/patches/@metamask-assets-controllers-npm-77.0.1-95e99a2835.patch":
-  version: 77.0.1
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A77.0.1#~/.yarn/patches/@metamask-assets-controllers-npm-77.0.1-95e99a2835.patch::version=77.0.1&hash=5bbfdf"
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A78.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-78.0.0-95e99a2835.patch":
+  version: 78.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A78.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-78.0.0-95e99a2835.patch::version=78.0.0&hash=5bbfdf"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5785,7 +5675,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/2a9bc9437ed566c47ed08b635cf63e637d77ac4750e7238ad0dc21b56e9f0b9521ccfafe8a635c916e86a1e92904ee9eea35f2d7e5a2869ec5141ceaacb2656d
+  checksum: 10/1a7567675c8970b81fd041e2494bd51dcd341097936a07035138ef18e960b04a7423872bae110b3555ec652ee5aa62262c0aebc3c8160e097acd2bda7b3efe46
   languageName: node
   linkType: hard
 
@@ -5859,16 +5749,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:1.0.0"
-  checksum: 10/1046b3cfbb82d9597a7dba5ebdda17f58161f7e1e1f72261cbbbdc0e38c3ca56407ae5e338207590220a97086b03d9cab9347262b88b5d60c00e296690bddf5b
+"@metamask/bitcoin-wallet-snap@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:1.2.0"
+  checksum: 10/0dc4515b4b7b23086ae9cbc04b22fbf6330ab05bbf8d827d998e5be21ca6a2cca4c906792e787c4e3ff1760c077c0914b5c52c7fc4b728ce30390b6fad4711ac
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^47.0.0":
-  version: 47.0.0
-  resolution: "@metamask/bridge-controller@npm:47.0.0"
+"@metamask/bridge-controller@npm:^48.0.0":
+  version: 48.0.0
+  resolution: "@metamask/bridge-controller@npm:48.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5888,18 +5778,18 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/accounts-controller": ^33.0.0
-    "@metamask/assets-controllers": ^77.0.0
+    "@metamask/assets-controllers": ^78.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/remote-feature-flag-controller": ^1.6.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/0a26abeb799b9ab1f6807b056c02c0c886ac31db2c71c0b04c13ceb896de31bd00aa292d763b7e768a05edd6cb15f57a954a7ad3210bb44f0ffb64d996948800
+  checksum: 10/96d6516a961dd5c21fa4adadf9ff9d678d960ac02ff582a8bc6a0c3aaa5bd82df34547c7e4c2f5d1197c4be89f7f6b9cb2b1fef0e236741d667dba69bf6b0930
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^47.0.0":
-  version: 47.0.0
-  resolution: "@metamask/bridge-status-controller@npm:47.0.0"
+"@metamask/bridge-status-controller@npm:^48.0.0":
+  version: 48.0.0
+  resolution: "@metamask/bridge-status-controller@npm:48.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.0"
     "@metamask/controller-utils": "npm:^11.14.0"
@@ -5910,12 +5800,12 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/accounts-controller": ^33.0.0
-    "@metamask/bridge-controller": ^47.0.0
+    "@metamask/bridge-controller": ^48.0.0
     "@metamask/gas-fee-controller": ^24.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/fabba12d892b808a378c8e61258221dd5de427f88dfe0d46216a747988ef25fec87ec08264f71dee3f4f5d3f1b9075d976ba7459421f82cfcc140851043eabee
+  checksum: 10/b7c16561d53f55c905cba995cdd841b281e8c15ee27590a6aeb84b53805373f5f6e3d9da2934dbcd737fe8319689280e9ff2cd102e0132c509eb5f28708ba061
   languageName: node
   linkType: hard
 
@@ -6192,12 +6082,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/error-reporting-service@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/error-reporting-service@npm:2.0.0"
+"@metamask/error-reporting-service@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@metamask/error-reporting-service@npm:2.2.0"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
-  checksum: 10/639206e3d3fcf136243503073692b97cac194dc6f2003e62db58315b82393be8d6426d22b0e0c97c7f2903ffa3c11ef4600565576bcb58ea6ff72fce74e18d59
+    "@metamask/base-controller": "npm:^8.4.0"
+  checksum: 10/f2cd8845247c753c3f37b6af9ea47960340b4120e69e5c6fda88ec2daf953ec3ab96a8a767b6a382a1537a221b0dbccadfe443d72935a8bbc9250f4389834a51
   languageName: node
   linkType: hard
 
@@ -7055,9 +6945,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "@metamask/multichain-account-service@npm:1.5.0"
+"@metamask/multichain-account-service@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "@metamask/multichain-account-service@npm:1.6.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/base-controller": "npm:^8.4.0"
@@ -7079,7 +6969,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/3b909a987fce2ccb6a8ebd4338da385d43909a8158fc63b2acd759188b731439d0ce1ab4b81030485e0d114c67b7b07873cfebd337d1de5b9847780fba6c4e9c
+  checksum: 10/5ca5203431e66c59037b2b28b0df445bb5174a149942d6bfdf0fb0f6d367ee84c68f69ecf4ea31c66917ed27e663295400666820b30cd00b976b17b32643618b
   languageName: node
   linkType: hard
 
@@ -8050,9 +7940,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^60.2.0":
-  version: 60.4.0
-  resolution: "@metamask/transaction-controller@npm:60.4.0"
+"@metamask/transaction-controller@npm:^60.2.0, @metamask/transaction-controller@npm:^60.6.0":
+  version: 60.6.0
+  resolution: "@metamask/transaction-controller@npm:60.6.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -8067,7 +7957,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/nonce-tracker": "npm:^6.0.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.8.0"
+    "@metamask/utils": "npm:^11.8.1"
     async-mutex: "npm:^0.5.0"
     bn.js: "npm:^5.2.1"
     eth-method-registry: "npm:^4.0.0"
@@ -8082,7 +7972,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^24.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/17606a99425b1a3d6afe2c34820e456ed4101cc9c874551aef04f8308f3f795420adc5ee6199f5bb331b5e1f3defda1325cb3a48d865e6b11759b3d70938a654
+  checksum: 10/c23f146d625fc92093361785950cd950421615f91e781950a66e61f8c689806e61c7db03bd3cecf7b44fa4406c12204ad7e69f9b40c18062f77f14175ee7bf2a
   languageName: node
   linkType: hard
 
@@ -14233,15 +14123,6 @@ __metadata:
   dependencies:
     "@babel/types": "npm:^7.20.7"
   checksum: 10/d005b58e1c26bdafc1ce564f60db0ee938393c7fc586b1197bdb71a02f7f33f72bc10ae4165776b6cafc77c4b6f2e1a164dd20bc36518c471b1131b153b4baa6
-  languageName: node
-  linkType: hard
-
-"@types/babel__traverse@npm:7.20.5":
-  version: 7.20.5
-  resolution: "@types/babel__traverse@npm:7.20.5"
-  dependencies:
-    "@babel/types": "npm:^7.20.7"
-  checksum: 10/f0352d537448e1e37f27e6bb8c962d7893720a92fde9d8601a68a93dbc14e15c088b4c0c8f71021d0966d09fba802ef3de11fdb6766c33993f8cf24f1277c6a9
   languageName: node
   linkType: hard
 
@@ -30901,36 +30782,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:16.2.2":
-  version: 16.2.2
-  resolution: "lavamoat-core@npm:16.2.2"
-  dependencies:
-    "@babel/types": "npm:7.26.0"
-    json-stable-stringify: "npm:1.1.1"
-    lavamoat-tofu: "npm:^8.0.4"
-    merge-deep: "npm:3.0.3"
-    ses: "npm:1.9.0"
-    type-fest: "npm:4.30.0"
-  bin:
-    lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/4509a560ec6f35aabf3f2915beeaefb526db06121b0bea40864c8f75d0b3e55df089bedd719392a3224dab040fa03a2593c998a66ea23ca820c29de038aa448b
-  languageName: node
-  linkType: hard
-
-"lavamoat-core@npm:^15.2.1":
-  version: 15.3.0
-  resolution: "lavamoat-core@npm:15.3.0"
-  dependencies:
-    "@babel/types": "npm:7.24.0"
-    json-stable-stringify: "npm:1.1.1"
-    lavamoat-tofu: "npm:^7.2.3"
-    merge-deep: "npm:3.0.3"
-    type-fest: "npm:4.13.1"
-  checksum: 10/567e186017eba440a683c2d286fce14ca050762c3a24d80f4b57fd00aab3762680180ce867fff6bb301051fb3cc5a74506515fdd5b9f87a3b571f4e6edc8043d
-  languageName: node
-  linkType: hard
-
-"lavamoat-core@npm:^16.7.1":
+"lavamoat-core@npm:16.7.1, lavamoat-core@npm:^16.2.2":
   version: 16.7.1
   resolution: "lavamoat-core@npm:16.7.1"
   dependencies:
@@ -30946,34 +30798,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@patch:lavamoat-core@npm%3A16.2.2#~/.yarn/patches/lavamoat-core-npm-16.2.2-e361ff1f8a.patch":
-  version: 16.2.2
-  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A16.2.2#~/.yarn/patches/lavamoat-core-npm-16.2.2-e361ff1f8a.patch::version=16.2.2&hash=c09704"
+"lavamoat-core@patch:lavamoat-core@npm%3A16.7.1#~/.yarn/patches/lavamoat-core-npm-16.7.1-9dcb956c6f.patch":
+  version: 16.7.1
+  resolution: "lavamoat-core@patch:lavamoat-core@npm%3A16.7.1#~/.yarn/patches/lavamoat-core-npm-16.7.1-9dcb956c6f.patch::version=16.7.1&hash=745a77"
   dependencies:
-    "@babel/types": "npm:7.26.0"
-    json-stable-stringify: "npm:1.1.1"
-    lavamoat-tofu: "npm:^8.0.4"
+    "@babel/types": "npm:7.27.3"
+    "@lavamoat/types": "npm:^0.1.0"
+    json-stable-stringify: "npm:1.3.0"
+    lavamoat-tofu: "npm:^8.0.11"
     merge-deep: "npm:3.0.3"
-    ses: "npm:1.9.0"
-    type-fest: "npm:4.30.0"
+    ses: "npm:1.14.0"
   bin:
     lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/d0feaa9598f50ba4fa268c227e81cf6235d12f6272f9b06d9e3e350367081ce3060c67caff9855211ce5f05f995cd342361e4cfa2bc108a7d525c0a630301efc
-  languageName: node
-  linkType: hard
-
-"lavamoat-tofu@npm:^7.2.3":
-  version: 7.2.3
-  resolution: "lavamoat-tofu@npm:7.2.3"
-  dependencies:
-    "@babel/parser": "npm:7.24.0"
-    "@babel/traverse": "npm:7.24.0"
-    "@babel/types": "npm:7.24.0"
-    "@types/babel__traverse": "npm:7.20.5"
-    type-fest: "npm:4.13.1"
-  peerDependencies:
-    lavamoat-core: ^15.3.0
-  checksum: 10/c0f67b47107b1fa6b319c37fca74611adb42b0d1bcf593923dd200e8de1783ff3f05435f806842cef888cfd2b8d589889541b8fdaa7aeb445482516dc0e8bfcc
+  checksum: 10/8ba61b7aab123fc65f9cbdfdbfbb27b67e75656a053c359b74aa87eb25bef0aca47676b09f14c023e0870948f6bc9bf3321402358aa5d97f7af90c3a9e074773
   languageName: node
   linkType: hard
 
@@ -32205,12 +32042,12 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A77.0.1#~/.yarn/patches/@metamask-assets-controllers-npm-77.0.1-95e99a2835.patch"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A78.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-78.0.0-95e99a2835.patch"
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^1.0.0"
-    "@metamask/bridge-controller": "npm:^47.0.0"
-    "@metamask/bridge-status-controller": "npm:^47.0.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^1.2.0"
+    "@metamask/bridge-controller": "npm:^48.0.0"
+    "@metamask/bridge-status-controller": "npm:^48.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.1.0"
@@ -32225,7 +32062,7 @@ __metadata:
     "@metamask/eip-5792-middleware": "npm:^1.1.0"
     "@metamask/ens-controller": "npm:^17.0.1"
     "@metamask/ens-resolver-snap": "npm:^0.1.4"
-    "@metamask/error-reporting-service": "npm:^2.0.0"
+    "@metamask/error-reporting-service": "npm:^2.2.0"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
     "@metamask/eslint-config-mocha": "npm:^9.0.0"
@@ -32267,7 +32104,7 @@ __metadata:
     "@metamask/message-manager": "npm:^13.0.0"
     "@metamask/message-signing-snap": "npm:1.1.3"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:^1.5.0"
+    "@metamask/multichain-account-service": "npm:^1.6.0"
     "@metamask/multichain-api-client": "npm:^0.7.0"
     "@metamask/multichain-api-middleware": "npm:1.2.0"
     "@metamask/multichain-network-controller": "npm:^1.0.0"
@@ -32313,7 +32150,7 @@ __metadata:
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
-    "@metamask/transaction-controller": "npm:^60.2.0"
+    "@metamask/transaction-controller": "npm:^60.6.0"
     "@metamask/user-operation-controller": "npm:^39.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"
@@ -39300,15 +39137,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:1.9.0":
-  version: 1.9.0
-  resolution: "ses@npm:1.9.0"
-  dependencies:
-    "@endo/env-options": "npm:^1.1.7"
-  checksum: 10/6a1a54d3a62839b1fb888a71136960ad042bed89bdb2e20417fd7ef8880387b30d5fe6aa2420ec58992962f790f0392c65a84c5d3be36e0ebbc4d604d8795174
-  languageName: node
-  linkType: hard
-
 "set-blocking@npm:^2.0.0":
   version: 2.0.0
   resolution: "set-blocking@npm:2.0.0"
@@ -41633,13 +41461,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"to-fast-properties@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "to-fast-properties@npm:2.0.0"
-  checksum: 10/be2de62fe58ead94e3e592680052683b1ec986c72d589e7b21e5697f8744cdbf48c266fa72f6c15932894c10187b5f54573a3bcf7da0bfd964d5caf23d436168
-  languageName: node
-  linkType: hard
-
 "to-object-path@npm:^0.3.0":
   version: 0.3.0
   resolution: "to-object-path@npm:0.3.0"
@@ -42064,13 +41885,6 @@ __metadata:
   version: 4.1.0
   resolution: "type-detect@npm:4.1.0"
   checksum: 10/e363bf0352427a79301f26a7795a27718624c49c576965076624eb5495d87515030b207217845f7018093adcbe169b2d119bb9b7f1a31a92bfbb1ab9639ca8dd
-  languageName: node
-  linkType: hard
-
-"type-fest@npm:4.13.1":
-  version: 4.13.1
-  resolution: "type-fest@npm:4.13.1"
-  checksum: 10/3a5db31e45d79dae6d7810b3e6180fed117cfeec7b9f0d3ebbc3780dc53297f9f0dea1752cd8d1f42c2f8206f9a1091a18aa38eb3cb9923a4c79aea480404182
   languageName: node
   linkType: hard
 

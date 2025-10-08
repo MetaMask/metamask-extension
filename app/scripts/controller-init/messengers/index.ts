@@ -154,7 +154,18 @@ import {
   getNetworkControllerMessenger,
 } from './network-controller-messenger';
 import { getSubscriptionServiceMessenger } from './subscription/subscription-service-messenger';
+import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
+import { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
+import { getAccountsControllerMessenger } from './accounts-controller-messenger';
+import { getPhishingControllerMessenger } from './phishing-controller-messenger';
+import { getAlertControllerMessenger } from './alert-controller-messenger';
+import { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
+import { getLoggingControllerMessenger } from './logging-controller-messenger';
+import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
+import { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 
+export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
+export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type {
   AccountTrackerControllerMessenger,
   AccountTrackerControllerInitMessenger,
@@ -163,6 +174,14 @@ export {
   getAccountTrackerControllerMessenger,
   getAccountTrackerControllerInitMessenger,
 } from './account-tracker-controller-messenger';
+export type { AccountsControllerMessenger } from './accounts-controller-messenger';
+export { getAccountsControllerMessenger } from './accounts-controller-messenger';
+export type { AlertControllerMessenger } from './alert-controller-messenger';
+export { getAlertControllerMessenger } from './alert-controller-messenger';
+export type { AnnouncementControllerMessenger } from './announcement-controller-messenger';
+export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
+export type { AppMetadataControllerMessenger } from './app-metadata-controller-messenger';
+export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 export type { AppStateControllerMessenger } from './app-state-controller-messenger';
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';
 export type {
@@ -191,6 +210,8 @@ export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
+export type { ErrorReportingServiceMessenger } from './error-reporting-service-messenger';
+export { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 export type {
   GasFeeControllerMessenger,
   GasFeeControllerInitMessenger,
@@ -207,8 +228,12 @@ export {
   getKeyringControllerMessenger,
   getKeyringControllerInitMessenger,
 } from './keyring-controller-messenger';
+export type { LoggingControllerMessenger } from './logging-controller-messenger';
+export { getLoggingControllerMessenger } from './logging-controller-messenger';
 export type { MetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
+export type { MetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
+export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export type {
   NetworkControllerMessenger,
   NetworkControllerInitMessenger,
@@ -241,6 +266,8 @@ export {
 } from './permission-controller-messenger';
 export type { PermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
+export type { PhishingControllerMessenger } from './phishing-controller-messenger';
+export { getPhishingControllerMessenger } from './phishing-controller-messenger';
 export type {
   RemoteFeatureFlagControllerMessenger,
   RemoteFeatureFlagControllerInitMessenger,
@@ -295,9 +322,29 @@ export {
 } from './tokens-controller-messenger';
 
 export const CONTROLLER_MESSENGERS = {
+  AccountOrderController: {
+    getMessenger: getAccountOrderControllerMessenger,
+    getInitMessenger: noop,
+  },
   AccountTrackerController: {
     getMessenger: getAccountTrackerControllerMessenger,
     getInitMessenger: getAccountTrackerControllerInitMessenger,
+  },
+  AccountsController: {
+    getMessenger: getAccountsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AlertController: {
+    getMessenger: getAlertControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AnnouncementController: {
+    getMessenger: getAnnouncementControllerMessenger,
+    getInitMessenger: noop,
+  },
+  AppMetadataController: {
+    getMessenger: getAppMetadataControllerMessenger,
+    getInitMessenger: noop,
   },
   AppStateController: {
     getMessenger: getAppStateControllerMessenger,
@@ -335,6 +382,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getEnsControllerMessenger,
     getInitMessenger: getEnsControllerInitMessenger,
   },
+  ErrorReportingService: {
+    getMessenger: getErrorReportingServiceMessenger,
+    getInitMessenger: noop,
+  },
   ExecutionService: {
     getMessenger: getExecutionServiceMessenger,
     getInitMessenger: noop,
@@ -355,8 +406,16 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getKeyringControllerMessenger,
     getInitMessenger: getKeyringControllerInitMessenger,
   },
+  LoggingController: {
+    getMessenger: getLoggingControllerMessenger,
+    getInitMessenger: noop,
+  },
   MetaMetricsController: {
     getMessenger: getMetaMetricsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  MetaMetricsDataDeletionController: {
+    getMessenger: getMetaMetricsDataDeletionControllerMessenger,
     getInitMessenger: noop,
   },
   MultichainAssetsController: {
@@ -415,6 +474,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   PermissionLogController: {
     getMessenger: getPermissionLogControllerMessenger,
+    getInitMessenger: noop,
+  },
+  PhishingController: {
+    getMessenger: getPhishingControllerMessenger,
     getInitMessenger: noop,
   },
   RateLimitController: {
