@@ -3,8 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 class SendTokenConfirmPage {
   private driver: Driver;
 
-  private readonly cancelButton =
-    '[data-testid="confirm-footer-cancel-button"]';
+  private readonly cancelButton = '[data-testid="cancel-footer-button"]';
 
   private readonly confirmButton = '[data-testid="confirm-footer-button"]';
 
