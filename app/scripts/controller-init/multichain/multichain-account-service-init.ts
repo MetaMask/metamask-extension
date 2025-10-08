@@ -92,9 +92,10 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   // Subscribe to RemoteFeatureFlagsController:stateChange for runtime control of Bitcoin provider state
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
-    (state: any) => {
+    (state: unknown) => {
       const addBitcoinAccountEnabled = Boolean(
-        state?.remoteFeatureFlags?.addBitcoinAccount,
+        (state as { remoteFeatureFlags?: { addBitcoinAccount?: boolean } })
+          ?.remoteFeatureFlags?.addBitcoinAccount,
       );
 
       btcProvider.setEnabled(addBitcoinAccountEnabled);
