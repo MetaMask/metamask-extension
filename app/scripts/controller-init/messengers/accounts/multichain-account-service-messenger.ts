@@ -39,7 +39,8 @@ type Actions =
 type Events =
   | KeyringControllerStateChangeEvent
   | AccountsControllerAccountAddedEvent
-  | AccountsControllerAccountRemovedEvent;
+  | AccountsControllerAccountRemovedEvent
+  | { type: 'RemoteFeatureFlagController:stateChange'; payload: [any] };
 
 export type MultichainAccountServiceMessenger = ReturnType<
   typeof getMultichainAccountServiceMessenger
@@ -61,6 +62,7 @@ export function getMultichainAccountServiceMessenger(
       'KeyringController:stateChange',
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
+      'RemoteFeatureFlagController:stateChange',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',

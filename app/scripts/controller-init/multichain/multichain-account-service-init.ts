@@ -1,4 +1,8 @@
-import { MultichainAccountService } from '@metamask/multichain-account-service';
+import {
+  MultichainAccountService,
+  BtcAccountProvider,
+  AccountProviderWrapper,
+} from '@metamask/multichain-account-service';
 import { ControllerInitFunction } from '../types';
 import {
   MultichainAccountServiceMessenger,
@@ -24,8 +28,14 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   MultichainAccountServiceMessenger,
   MultichainAccountServiceInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
+  const btcProvider = new AccountProviderWrapper(
+    controllerMessenger,
+    new BtcAccountProvider(controllerMessenger),
+  );
+
   const controller = new MultichainAccountService({
     messenger: controllerMessenger,
+    providers: [btcProvider],
   });
 
   const preferencesState = initMessenger.call('PreferencesController:getState');
@@ -67,6 +77,35 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
 
       return true;
     }, preferencesState),
+  );
+
+  const remoteFeatureFlagsState = initMessenger.call(
+    'RemoteFeatureFlagController:getState',
+  );
+
+  // Set initial state based on addBitcoinAccount feature flag
+  const initialBitcoinEnabled = Boolean(
+    remoteFeatureFlagsState?.remoteFeatureFlags?.addBitcoinAccount,
+  );
+  btcProvider.setEnabled(initialBitcoinEnabled);
+
+  // Subscribe to RemoteFeatureFlagsController:stateChange for runtime control of Bitcoin provider state
+  controllerMessenger.subscribe(
+    'RemoteFeatureFlagController:stateChange',
+    (state: any) => {
+      const addBitcoinAccountEnabled = Boolean(
+        state?.remoteFeatureFlags?.addBitcoinAccount,
+      );
+
+      btcProvider.setEnabled(addBitcoinAccountEnabled);
+
+      // Trigger wallet sync to update account visibility
+      // sync() rebuilds mappings based on getAccounts() so disabled provider's accounts are hidden
+      const wallets = controller.getMultichainAccountWallets();
+      for (const wallet of wallets) {
+        wallet.sync();
+      }
+    },
   );
 
   return {
