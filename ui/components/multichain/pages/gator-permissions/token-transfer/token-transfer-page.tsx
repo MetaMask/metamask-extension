@@ -18,10 +18,7 @@ import {
 import { Content, Header, Page } from '../../page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  GATOR_PERMISSIONS,
-  REVIEW_GATOR_PERMISSIONS_ROUTE,
-} from '../../../../../helpers/constants/routes';
+import { REVIEW_GATOR_PERMISSIONS_ROUTE } from '../../../../../helpers/constants/routes';
 import { PermissionGroupListItem } from '../components';
 import {
   AppState,
@@ -72,7 +69,7 @@ export const TokenTransferPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.IconDefault}
-            onClick={() => history.push(GATOR_PERMISSIONS)}
+            onClick={() => history.goBack()}
             size={ButtonIconSize.Sm}
           />
         }

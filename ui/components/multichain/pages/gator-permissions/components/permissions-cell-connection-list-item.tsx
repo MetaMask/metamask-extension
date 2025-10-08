@@ -16,6 +16,7 @@ import {
   IconName,
   IconSize,
   BoxSpacing,
+  BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { PermissionsCellTooltip } from './permissions-cell-tooltip';
 
@@ -50,29 +51,38 @@ export const PermissionsCellConnectionListItem = ({
   return (
     <Box
       data-testid="permissions-cell-connection-list-item"
-      alignItems={BoxAlignItems.Baseline}
+      alignItems={BoxAlignItems.Center}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
-      gap={4}
+      flexDirection={BoxFlexDirection.Row}
       className="multichain-permissions-list-item"
       paddingTop={paddingTopValue}
       paddingBottom={paddingBottomValue}
       onClick={onClick}
+      gap={4}
       style={{ cursor: 'pointer' }}
     >
-      <AvatarIcon
-        iconName={iconName}
-        size={AvatarIconSize.Md}
-        color={IconColor.IconAlternative}
-      />
+      <Box alignItems={BoxAlignItems.Start}>
+        <AvatarIcon
+          iconName={iconName}
+          size={AvatarIconSize.Md}
+          color={IconColor.IconAlternative}
+        />
+      </Box>
+
       <Box
         flexDirection={BoxFlexDirection.Column}
-        style={{ alignSelf: 'center', flexGrow: 1 }}
-        gap={1}
+        alignItems={BoxAlignItems.Start}
+        justifyContent={BoxJustifyContent.Start}
+        style={{ flexGrow: '1' }}
       >
         <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Left}>
           {title}
         </Text>
-        <Box alignItems={BoxAlignItems.Center} gap={1}>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Baseline}
+          gap={1}
+        >
           <Text
             color={TextColor.TextAlternative}
             variant={TextVariant.BodySm}
@@ -83,11 +93,17 @@ export const PermissionsCellConnectionListItem = ({
           <PermissionsCellTooltip networks={networks} />
         </Box>
       </Box>
-      <Icon
-        name={IconName.ArrowRight}
-        color={IconColor.IconAlternative}
-        size={IconSize.Sm}
-      />
+
+      <Box
+        justifyContent={BoxJustifyContent.End}
+        alignItems={BoxAlignItems.End}
+      >
+        <Icon
+          name={IconName.ArrowRight}
+          color={IconColor.IconAlternative}
+          size={IconSize.Sm}
+        />
+      </Box>
     </Box>
   );
 };

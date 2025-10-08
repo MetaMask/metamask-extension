@@ -41,6 +41,7 @@ export const PermissionsCell: React.FC<PermissionsCellProps> = ({
 
   return (
     <Box
+      data-testid="gator-permissions-cell"
       padding={4}
       paddingTop={paddingTop === undefined ? 0 : paddingTop}
       gap={4}
