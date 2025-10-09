@@ -18,6 +18,21 @@ import {
 } from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
 
 /**
+ * Extract addBitcoinAccount flag from RemoteFeatureFlagController state.
+ *
+ * @param state - RemoteFeatureFlagController state
+ * @returns True if addBitcoinAccount flag is enabled
+ */
+function getIsAddBitcoinAccountEnabled(
+  state: unknown,
+): boolean {
+  return Boolean(
+    (state as { remoteFeatureFlags?: { addBitcoinAccount?: boolean } })
+      ?.remoteFeatureFlags?.addBitcoinAccount,
+  );
+}
+
+/**
  * Initialize the multichain account service.
  *
  * @param request - The request object.
@@ -30,10 +45,12 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   MultichainAccountServiceMessenger,
   MultichainAccountServiceInitMessenger
 > = ({ controllerMessenger, initMessenger }) => {
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const btcProvider = new AccountProviderWrapper(
     controllerMessenger,
     new BtcAccountProvider(controllerMessenger),
   );
+  ///: END:ONLY_INCLUDE_IF
 
   const controller = new MultichainAccountService({
     messenger: controllerMessenger,
@@ -41,10 +58,8 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       btcProvider,
       ///: END:ONLY_INCLUDE_IF
-    ],
+    ].filter(Boolean),
   });
-
-  // Bitcoin provider will be used during account creation after keyring is unlocked
 
   const preferencesState = initMessenger.call('PreferencesController:getState');
 
@@ -87,37 +102,43 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     }, preferencesState),
   );
 
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  // Handle Bitcoin provider feature flag
   const remoteFeatureFlagsState = initMessenger.call(
     'RemoteFeatureFlagController:getState',
   );
 
   // Set initial state based on addBitcoinAccount feature flag
-  const initialBitcoinEnabled = Boolean(
-    remoteFeatureFlagsState?.remoteFeatureFlags?.addBitcoinAccount,
-  );
+  const isAddBitcoinAccountEnabled = getIsAddBitcoinAccountEnabled(remoteFeatureFlagsState);
+  btcProvider.setEnabled(isAddBitcoinAccountEnabled);
 
-  btcProvider.setEnabled(initialBitcoinEnabled);
+  // Track current state to prevent unnecessary work
+  let currentBitcoinEnabled = isAddBitcoinAccountEnabled;
 
-  // Subscribe to RemoteFeatureFlagsController:stateChange for runtime control of Bitcoin provider state
+  // Subscribe to RemoteFeatureFlagsController:stateChange for runtime control
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
     (state: unknown) => {
-      const addBitcoinAccountEnabled = Boolean(
-        (state as { remoteFeatureFlags?: { addBitcoinAccount?: boolean } })
-          ?.remoteFeatureFlags?.addBitcoinAccount,
-      );
+      const newBitcoinEnabled = getIsAddBitcoinAccountEnabled(state);
 
-      // Enable/disable Bitcoin provider based on feature flag
-      btcProvider.setEnabled(addBitcoinAccountEnabled);
+      // Defense: Only react if the flag actually changed
+      if (newBitcoinEnabled !== currentBitcoinEnabled) {
+        currentBitcoinEnabled = newBitcoinEnabled;
 
-      // Trigger wallet sync to update account visibility
-      // sync() rebuilds mappings based on getAccounts() so disabled provider's accounts are hidden
-      const wallets = controller.getMultichainAccountWallets();
-      for (const wallet of wallets) {
-        wallet.sync();
+        // Enable/disable Bitcoin provider based on feature flag
+        btcProvider.setEnabled(newBitcoinEnabled);
+
+        // Only sync when disabling to hide accounts (no need when enabling)
+        if (!newBitcoinEnabled) {
+          const wallets = controller.getMultichainAccountWallets();
+          for (const wallet of wallets) {
+            wallet.sync();
+          }
+        }
       }
     },
   );
+  ///: END:ONLY_INCLUDE_IF
 
   return {
     memStateKey: null,
