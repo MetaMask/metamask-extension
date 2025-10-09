@@ -6646,19 +6646,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-snap-sdk@npm:7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/keyring-snap-sdk@npm:7.0.0"
+"@metamask/keyring-snap-sdk@npm:@metamask-previews/keyring-snap-sdk@7.0.0-582d075":
+  version: 7.0.0-582d075
+  resolution: "@metamask-previews/keyring-snap-sdk@npm:7.0.0-582d075"
   dependencies:
-    "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/keyring-api": "npm:21.0.0"
+    "@metamask/keyring-utils": "npm:3.1.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.1.0"
     webextension-polyfill: "npm:^0.12.0"
   peerDependencies:
-    "@metamask/keyring-api": ^21.0.0
     "@metamask/providers": ^19.0.0
-  checksum: 10/420e4a77bfec8600026b9862dda316764f19cea3ce5990a3bca6b7c8985009f5862446f1ca5ce82266e606ae77e582b03327cf09397774eb47ddb1d631066ae9
+  checksum: 10/26a832653bdea452599a0f02e0104d844f34b6621e7ef5ff09be0f4057ccc4635c4f85bfbf7296346bab079c25fe73f826f079153a6a9ae10d16ebe31b7e4a58
   languageName: node
   linkType: hard
 
