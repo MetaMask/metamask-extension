@@ -34,9 +34,9 @@ chrome.runtime.onInstalled.addListener(function listener(details) {
 });
 
 /**
- * A promise that resolves when the `onInstalled` event is fired.
+ * A promise that resolves when the `onConnect` event is fired.
  *
- * @type {PromiseWithResolvers<chrome.runtime.InstalledDetails>}
+ * @type {PromiseWithResolvers<chrome.runtime.Port>}
  */
 const deferredOnConnectListener = withResolvers();
 globalThis.stateHooks.onConnectListener = deferredOnConnectListener.promise;
@@ -44,15 +44,21 @@ globalThis.stateHooks.onConnectListener = deferredOnConnectListener.promise;
 /**
  * `onConnect` event handler.
  *
- * On MV3 builds we must listen for this event in `app-init`, otherwise we found
- * that the listener is never called.
+ * On MV3 builds we must listen for this event in `app-init`, otherwise the UI
+ * might attempt to connect before the a listener is added, and it will never
+ * load.
  * For MV2 builds, the listener is added in `background.js` instead.
  */
-chrome.runtime.onConnect.addListener(function listener(details) {
+chrome.runtime.onConnect.addListener(function listener(port) {
   chrome.runtime.onConnect.removeListener(listener);
-  deferredOnConnectListener.resolve(details);
+  deferredOnConnectListener.resolve(port);
   delete globalThis.stateHooks.onConnectListener;
 });
+// if a UI was opened _before_ the service worker was started, then it is
+// possible for it to call `connect` before the listener above was added. To
+// handle this case, we send a message to the UI that the background is ready
+// to accept connections. The UI will then try to connect again.
+chrome.runtime.sendMessage({ backgroundIsListeningForUiConnection: true });
 
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
@@ -151,8 +157,7 @@ function importAllScripts() {
 
   // for performance metrics/reference
   console.log(
-    `SCRIPTS IMPORT COMPLETE in Seconds: ${
-      (Date.now() - startImportScriptsTime) / 1000
+    `SCRIPTS IMPORT COMPLETE in Seconds: ${(Date.now() - startImportScriptsTime) / 1000
     }`,
   );
 

@@ -523,9 +523,11 @@ const handleOnConnect = async (port) => {
 if (globalThis.stateHooks.onConnectListener) {
   // if the UI has already tried to connect, let it connect now!
   globalThis.stateHooks.onConnectListener.then(handleOnConnect);
+  // we can only ever use this once, so delete it afterwards as it can't be
+  // automatically garbage collected unless we dereference it.
+  delete globalThis.stateHooks.onConnectListener;
 }
 browser.runtime.onConnect.addListener(handleOnConnect);
-browser.runtime.sendMessage({ backgroundReady: true });
 
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
