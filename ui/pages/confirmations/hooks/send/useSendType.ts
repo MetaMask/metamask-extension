@@ -30,8 +30,10 @@ export const useSendType = () => {
     () => ({
       isEvmSendType,
       isEvmNativeSendType: isEvmSendType && assetIsNative,
-      isNonEvmSendType: isSolanaSendType,
-      isNonEvmNativeSendType: isSolanaSendType && assetIsNative,
+      isNonEvmSendType: isSolanaSendType || isBitcoinSendType,
+      isNonEvmNativeSendType:
+        (isSolanaSendType && assetIsNative) ||
+        (isBitcoinSendType && assetIsNative),
       isSolanaSendType,
       isBitcoinSendType,
     }),
