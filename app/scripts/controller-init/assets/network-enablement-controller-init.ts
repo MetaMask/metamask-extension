@@ -4,6 +4,8 @@ import {
 } from '@metamask/network-enablement-controller';
 import { NetworkState } from '@metamask/network-controller';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
+import { KnownCaipNamespace } from '@metamask/utils';
+import { SolScope, BtcScope } from '@metamask/keyring-api';
 import { NetworkEnablementControllerMessenger } from '../messengers/assets';
 import { ControllerInitFunction } from '../types';
 import {
@@ -44,18 +46,18 @@ const generateMultichainNetworkMaps = (
   enabledNetworks: string[] = [],
 ): Record<string, Record<string, boolean>> => {
   const networkMaps: Record<string, Record<string, boolean>> = {
-    solana: {},
-    bitcoin: {},
+    [KnownCaipNamespace.Solana]: {},
+    [KnownCaipNamespace.Bip122]: {},
   };
 
   // Organize multichain networks by their prefix/type
   Object.keys(multichainNetworkConfigurationsByChainId).forEach((chainId) => {
     const isEnabled = enabledNetworks.includes(chainId);
 
-    if (chainId.startsWith('solana:')) {
+    if (chainId.startsWith(`${KnownCaipNamespace.Solana}:`)) {
       networkMaps.solana[chainId] = isEnabled;
-    } else if (chainId.startsWith('bip122:')) {
-      networkMaps.bitcoin[chainId] = isEnabled;
+    } else if (chainId.startsWith(`${KnownCaipNamespace.Bip122}:`)) {
+      networkMaps.bip122[chainId] = isEnabled;
     }
     // Add other network types as needed
   });
@@ -71,42 +73,50 @@ const generateDefaultNetworkEnablementControllerState = (
   const { multichainNetworkConfigurationsByChainId } =
     multichainNetworkControllerState;
 
-  // Generate multichain network maps (always empty for all environments currently)
-  const multichainMaps = generateMultichainNetworkMaps(
-    multichainNetworkConfigurationsByChainId,
-    [],
-  );
-
   if (process.env.IN_TEST) {
     return {
       enabledNetworkMap: {
-        eip155: generateEVMNetworkMap(networkConfigurationsByChainId, [
-          CHAIN_IDS.LOCALHOST,
-        ]),
-        ...multichainMaps,
+        [KnownCaipNamespace.Eip155]: generateEVMNetworkMap(
+          networkConfigurationsByChainId,
+          [CHAIN_IDS.LOCALHOST],
+        ),
+        ...generateMultichainNetworkMaps(
+          multichainNetworkConfigurationsByChainId,
+          [],
+        ),
       },
     };
-  } else if (
-    process.env.METAMASK_DEBUG ||
-    process.env.METAMASK_ENVIRONMENT === 'test'
-  ) {
+  } else if (process.env.METAMASK_ENVIRONMENT === 'test') {
     return {
       enabledNetworkMap: {
-        eip155: generateEVMNetworkMap(networkConfigurationsByChainId, [
-          CHAIN_IDS.SEPOLIA,
-        ]),
-        ...multichainMaps,
+        [KnownCaipNamespace.Eip155]: generateEVMNetworkMap(
+          networkConfigurationsByChainId,
+          [CHAIN_IDS.SEPOLIA],
+        ),
+        ...generateMultichainNetworkMaps(
+          multichainNetworkConfigurationsByChainId,
+          [],
+        ),
       },
     };
   }
 
+  const enabledMultichainNetworks: string[] = [SolScope.Mainnet];
+
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  enabledMultichainNetworks.push(BtcScope.Mainnet);
+  ///: END:ONLY_INCLUDE_IF
+
   return {
     enabledNetworkMap: {
-      eip155: generateEVMNetworkMap(
+      [KnownCaipNamespace.Eip155]: generateEVMNetworkMap(
         networkConfigurationsByChainId,
         FEATURED_NETWORK_CHAIN_IDS,
       ),
-      ...multichainMaps,
+      ...generateMultichainNetworkMaps(
+        multichainNetworkConfigurationsByChainId,
+        enabledMultichainNetworks,
+      ),
     },
   };
 };
