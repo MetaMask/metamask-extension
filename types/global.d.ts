@@ -286,8 +286,8 @@ type StateHooks = {
     reason: chrome.runtime.InstalledDetails;
   }>;
   /**
-   * This is set in `app-init.js` to communicate why MetaMask installed or
-   * updated. It is handled in `background.js`.
+   * This is set in `app-init.js` to make sure we handle early UI connections.
+   * It is handled in `background.js`.
    */
   onConnectListener?: Promise<{
     port: chrome.runtime.Port;
