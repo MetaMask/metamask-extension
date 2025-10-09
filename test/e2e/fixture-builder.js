@@ -27,7 +27,7 @@ const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
 } = require('./default-fixture');
-const onboardingFixtureJson = require('./onboarding-fixture.json');
+const onboardingFixtureJson = require('./fixtures/onboarding-fixture.json');
 
 function onboardingFixture() {
   return onboardingFixtureJson;
