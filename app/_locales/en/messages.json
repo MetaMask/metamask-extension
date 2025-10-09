@@ -5594,6 +5594,16 @@
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Signature and transaction requests"
   },
+  "shieldCoverageEnding": {
+    "message": "Shield coverage ends soon"
+  },
+  "shieldCoverageEndingAction": {
+    "message": "Renew"
+  },
+  "shieldCoverageEndingDescription": {
+    "message": "Membership ends on $1.",
+    "description": "The $1 is the date"
+  },
   "shieldEntryModalAssetCoverage": {
     "message": "$10,000 asset coverage per transaction"
   },
@@ -5615,6 +5625,15 @@
   },
   "shieldEntryModalSupport": {
     "message": "Priority customer support"
+  },
+  "shieldPaymentDeclined": {
+    "message": "Shield payment declined"
+  },
+  "shieldPaymentDeclinedAction": {
+    "message": "Add funds"
+  },
+  "shieldPaymentDeclinedDescription": {
+    "message": "Insufficient token balance. Please try again to resume coverage."
   },
   "shieldPlanAnnual": {
     "message": "Annual"

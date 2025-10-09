@@ -6,6 +6,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import { AvatarAccountSize } from '@metamask/design-system-react';
+import { SUBSCRIPTION_STATUSES } from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
@@ -39,7 +40,12 @@ import {
   addPermittedAccount,
   hidePermittedNetworkToast,
 } from '../../../store/actions';
-import { AvatarNetwork, Icon, IconName } from '../../component-library';
+import {
+  AvatarNetwork,
+  Icon,
+  IconName,
+  IconSize,
+} from '../../component-library';
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
@@ -51,6 +57,13 @@ import {
 } from '../../../selectors/multichain-accounts/account-tree';
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
 import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
+import {
+  useUserSubscriptionByProduct,
+  useUserSubscriptions,
+  useUpdateSubscriptionCardPaymentMethod,
+} from '../../../hooks/subscription/useSubscription';
+import { isCryptoPaymentMethod } from '../../../pages/settings/transaction-shield-tab/types';
+import { getShortDateFormatterV2 } from '../../../pages/asset/util';
 import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,
@@ -95,6 +108,8 @@ export function ToastMaster() {
         <PermittedNetworkToast />
         <NewSrpAddedToast />
         <CopyAddressToast />
+        <ShieldPaymentDeclinedToast />
+        <ShieldCoverageEndingToast />
       </ToastContainer>
     );
   }
@@ -510,6 +525,115 @@ function CopyAddressToast() {
         autoHideTime={autoHideToastDelay}
         onAutoHideToast={() => dispatch(setShowCopyAddressToast(false))}
         dataTestId="copy-address-toast"
+      />
+    )
+  );
+}
+
+function ShieldPaymentDeclinedToast() {
+  const t = useI18nContext();
+
+  const { subscriptions } = useUserSubscriptions();
+
+  const shieldSubscription = useUserSubscriptionByProduct(
+    'shield',
+    subscriptions,
+  );
+
+  const isPaused =
+    shieldSubscription &&
+    [
+      SUBSCRIPTION_STATUSES.paused,
+      SUBSCRIPTION_STATUSES.pastDue,
+      SUBSCRIPTION_STATUSES.unpaid,
+    ].includes(shieldSubscription.status);
+
+  const isCryptoPayment =
+    shieldSubscription?.paymentMethod &&
+    isCryptoPaymentMethod(shieldSubscription?.paymentMethod);
+
+  const [executeUpdateSubscriptionCardPaymentMethod] =
+    useUpdateSubscriptionCardPaymentMethod({
+      subscriptionId: shieldSubscription?.id,
+      recurringInterval: shieldSubscription?.interval,
+    });
+
+  return (
+    isPaused && (
+      <Toast
+        key="shield-payment-declined-toast"
+        text={t('shieldPaymentDeclined')}
+        description={t('shieldPaymentDeclinedDescription')}
+        actionText={t('shieldPaymentDeclinedAction')}
+        onActionClick={async () => {
+          if (isCryptoPayment) {
+            // TODO: handle add funds crypto
+            console.log('add funds');
+          } else {
+            await executeUpdateSubscriptionCardPaymentMethod();
+          }
+        }}
+        startAdornment={
+          <Icon
+            name={IconName.CircleX}
+            color={IconColor.errorDefault}
+            size={IconSize.Lg}
+          />
+        }
+        onClose={() => console.log('close')}
+      />
+    )
+  );
+}
+
+function ShieldCoverageEndingToast() {
+  const t = useI18nContext();
+
+  const { subscriptions } = useUserSubscriptions();
+  const shieldSubscription = useUserSubscriptionByProduct(
+    'shield',
+    subscriptions,
+  );
+  const isCancelled =
+    shieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
+
+  const isCryptoPayment =
+    shieldSubscription?.paymentMethod &&
+    isCryptoPaymentMethod(shieldSubscription?.paymentMethod);
+
+  const [executeUpdateSubscriptionCardPaymentMethod] =
+    useUpdateSubscriptionCardPaymentMethod({
+      subscriptionId: shieldSubscription?.id,
+      recurringInterval: shieldSubscription?.interval,
+    });
+
+  return (
+    isCancelled && (
+      <Toast
+        key="shield-coverage-ending-toast"
+        text={t('shieldCoverageEnding')}
+        description={t('shieldCoverageEndingDescription', [
+          getShortDateFormatterV2().format(
+            new Date(shieldSubscription.currentPeriodEnd),
+          ),
+        ])}
+        actionText={t('shieldCoverageEndingAction')}
+        onActionClick={async () => {
+          if (isCryptoPayment) {
+            // TODO: handle renew membership crypto
+            console.log('renew membership');
+          } else {
+            executeUpdateSubscriptionCardPaymentMethod();
+          }
+        }}
+        startAdornment={
+          <Icon
+            name={IconName.Clock}
+            color={IconColor.warningDefault}
+            size={IconSize.Lg}
+          />
+        }
+        onClose={() => console.log('close')}
       />
     )
   );
