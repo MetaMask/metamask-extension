@@ -12,7 +12,12 @@ import {
 } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
-import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller/next';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { merge } from 'lodash';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
@@ -2065,7 +2070,7 @@ describe('MetaMetricsController', function () {
             deriveStateFromMetadata(
               controller.state,
               controller.metadata,
-              'anonymous',
+              'includeInDebugSnapshot',
             ),
           ).toMatchInlineSnapshot(`
             {
@@ -2166,6 +2171,8 @@ describe('MetaMetricsController', function () {
   });
 });
 
+type RootMessenger = Messenger<MockAnyNamespace, AllowedActions, AllowedEvents>;
+
 type WithControllerOptions = {
   currentLocale?: string;
   options?: Partial<MetaMetricsControllerOptions>;
@@ -2211,7 +2218,9 @@ async function withController<ReturnValue>(
         },
       },
     } = rest;
-    const messenger = new Messenger<AllowedActions, AllowedEvents>();
+    const messenger: RootMessenger = new Messenger({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
 
     messenger.registerActionHandler(
       'PreferencesController:getState',
@@ -2238,21 +2247,32 @@ async function withController<ReturnValue>(
       }),
     );
 
+    const metaMetricsControllerMessenger = new Messenger<
+      'MetaMetricsController',
+      AllowedActions,
+      AllowedEvents,
+      RootMessenger
+    >({
+      namespace: 'MetaMetricsController',
+      parent: messenger,
+    });
+    messenger.delegate({
+      messenger: metaMetricsControllerMessenger,
+      actions: [
+        'PreferencesController:getState',
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+      ],
+      events: [
+        'PreferencesController:stateChange',
+        'NetworkController:networkDidChange',
+      ],
+    });
+
     return fn({
       controller: new MetaMetricsController({
         segment: segmentMock,
-        messenger: messenger.getRestricted({
-          name: 'MetaMetricsController',
-          allowedActions: [
-            'PreferencesController:getState',
-            'NetworkController:getState',
-            'NetworkController:getNetworkClientById',
-          ],
-          allowedEvents: [
-            'PreferencesController:stateChange',
-            'NetworkController:networkDidChange',
-          ],
-        }),
+        messenger: metaMetricsControllerMessenger,
         version: '0.0.1',
         environment: 'test',
         extension: MOCK_EXTENSION,
