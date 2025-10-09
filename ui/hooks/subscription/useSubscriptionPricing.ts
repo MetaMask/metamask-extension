@@ -254,7 +254,7 @@ export const useShieldSubscriptionPricingFromTokenApproval = ({
   }, [cryptoPaymentMethod, transactionMeta]);
 
   // need to do async here since `getSubscriptionCryptoApprovalAmount` make call to background script
-  const { value: productPrice } = useAsyncResult(async (): Promise<
+  const { value: productPrice, pending } = useAsyncResult(async (): Promise<
     ProductPrice | undefined
   > => {
     if (selectedTokenPrice) {
@@ -294,5 +294,5 @@ export const useShieldSubscriptionPricingFromTokenApproval = ({
     pricingPlans,
   ]);
 
-  return { productPrice };
+  return { productPrice, pending };
 };
