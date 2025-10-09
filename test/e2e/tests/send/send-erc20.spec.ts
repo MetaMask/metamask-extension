@@ -1,3 +1,4 @@
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
 import FixtureBuilder from '../../fixture-builder';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
@@ -30,6 +31,7 @@ describe('Send ERC20', function () {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
         const confirmation = new Confirmation(driver);
+        const activityListPage = new ActivityListPage(driver);
 
         await homePage.startSendFlow();
 
@@ -44,9 +46,10 @@ describe('Send ERC20', function () {
         await sendPage.pressOnAmountInput('BACK_SPACE');
         await sendPage.pressContinueButton();
 
-        // cancelling request as send on linea will fail
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterCancelButton();
+        await confirmation.clickFooterConfirmButton();
+        await activityListPage.checkTransactionActivityByText('Sent');
+        await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -71,6 +74,7 @@ describe('Send ERC20', function () {
         const homePage = new HomePage(driver);
         const sendPage = new SendPage(driver);
         const confirmation = new Confirmation(driver);
+        const activityListPage = new ActivityListPage(driver);
 
         await homePage.startSendFlow();
 
@@ -80,9 +84,11 @@ describe('Send ERC20', function () {
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         });
 
-        // cancelling request as send on linea will fail
         await confirmation.checkPageIsLoaded();
-        await confirmation.clickFooterCancelButton();
+        await confirmation.checkPageIsLoaded();
+        await confirmation.clickFooterConfirmButton();
+        await activityListPage.checkTransactionActivityByText('Sent');
+        await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
       },
     );
   });
