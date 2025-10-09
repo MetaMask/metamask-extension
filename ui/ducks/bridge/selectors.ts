@@ -56,10 +56,7 @@ import {
   getUSDConversionRateByChainId,
   selectConversionRateByChainId,
 } from '../../selectors/selectors';
-import {
-  ALL_ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_CHAIN_IDS,
-} from '../../../shared/constants/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { getNetworkConfigurationsByChainId } from '../../../shared/modules/selectors/networks';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
@@ -302,6 +299,11 @@ export const getToChains = createDeepEqualSelector(
       );
     }
 
+    // Similarly, prevent Solana from being selected as destination when source is Solana
+    // if (fromChain && isSolanaChainId(fromChain.chainId)) {
+    //   return availableChains.filter(({ chainId }) => !isSolanaChainId(chainId));
+    // }
+
     return availableChains;
   },
 );
@@ -337,9 +339,7 @@ export const getToChain = createSelector(
 export const getDefaultTokenPair = createDeepEqualSelector(
   [
     (state) => getFromChain(state)?.chainId,
-    (state) =>
-      // @ts-expect-error will be fixed when controller is updated
-      getBridgeFeatureFlags(state).bip44DefaultPairs,
+    (state) => getBridgeFeatureFlags(state).bip44DefaultPairs,
   ],
   (fromChainId, bip44DefaultPairs): null | [CaipAssetType, CaipAssetType] => {
     if (!fromChainId) {
@@ -1012,47 +1012,6 @@ export const getHardwareWalletName = (state: BridgeAppState) => {
       return undefined;
   }
 };
-
-/**
- * Returns true if Unified UI swaps are enabled for the chain.
- * Falls back to false when the chain is missing from feature-flags.
- *
- * @deprecated should be true by default
- * @param _state - Redux state (unused placeholder for reselect signature)
- * @param chainId - ChainId in either hex (e.g. 0x1) or CAIP format (eip155:1).
- */
-export const getIsUnifiedUIEnabled = createSelector(
-  [
-    getBridgeFeatureFlags,
-    (_state: BridgeAppState, chainId?: string | number) => chainId,
-  ],
-  (bridgeFeatureFlags, chainId): boolean => {
-    if (chainId === undefined || chainId === null) {
-      return true;
-    }
-
-    // Show Unified UI for all other chains
-    if (!ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId)) {
-      return true;
-    }
-
-    const caipChainId = formatChainIdToCaip(chainId);
-
-    // TODO remove this when bridge-controller's types are updated
-    return bridgeFeatureFlags?.chains?.[caipChainId]
-      ? Boolean(
-          'isSingleSwapBridgeButtonEnabled' in
-            bridgeFeatureFlags.chains[caipChainId]
-            ? (
-                bridgeFeatureFlags.chains[caipChainId] as unknown as {
-                  isSingleSwapBridgeButtonEnabled: boolean;
-                }
-              ).isSingleSwapBridgeButtonEnabled
-            : false,
-        )
-      : false;
-  },
-);
 
 export const selectNoFeeAssets = createSelector(
   [
