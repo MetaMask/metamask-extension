@@ -481,6 +481,7 @@
     "@metamask/foundryup": "^1.0.1",
     "@metamask/phishing-warning": "^5.0.1",
     "@metamask/preferences-controller": "^19.0.0",
+    "@metamask/snap-simple-keyring-site": "^2.0.0",
     "@metamask/superstruct": "^3.2.1",
     "@metamask/test-bundler": "^1.0.0",
     "@metamask/test-dapp": "9.3.0",
