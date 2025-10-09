@@ -48,7 +48,10 @@ import {
   useUserSubscriptions,
 } from '../../../hooks/subscription/useSubscription';
 import { getShortDateFormatterV2 } from '../../asset/util';
-import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
+import {
+  SHIELD_PLAN_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTE,
+} from '../../../helpers/constants/routes';
 import { getProductPrice } from '../../shield-plan/utils';
 import Tooltip from '../../../components/ui/tooltip';
 import { ThemeType } from '../../../../shared/constants/preferences';
@@ -661,7 +664,7 @@ const TransactionShield = () => {
         {/* TODO: implement logic to allow submitting case until after 21 days of last active subscription */}
         {!isCancelled &&
           buttonRow(t('shieldTxMembershipSubmitCase'), () => {
-            // todo: link to submit claim page
+            navigate(TRANSACTION_SHIELD_CLAIM_ROUTE);
           })}
         {!isMembershipInactive &&
           shieldSubscription?.cancelAtPeriodEnd &&
