@@ -87,14 +87,11 @@ export const useBridgeQueryParams = () => {
 
   const abortController = useRef<AbortController>(new AbortController());
 
-  const location = useLocation();
-  const { search } = location;
+  const { search } = useLocation();
   const navigate = useNavigate();
 
-  // Parse CAIP asset data
   const searchParams = useMemo(() => new URLSearchParams(search), [search]);
 
-  // Clean up URL parameters
   const cleanupUrlParams = useCallback(
     (paramsToRemove: BridgeQueryParams[]) => {
       const updatedSearchParams = new URLSearchParams(search);
@@ -103,20 +100,17 @@ export const useBridgeQueryParams = () => {
           updatedSearchParams.delete(param);
         }
       });
-      const searchString = updatedSearchParams.toString();
-      navigate(`${location.pathname}${searchString}`, { replace: true });
+      navigate(`?${updatedSearchParams.toString()}`, { replace: true });
     },
-    [search, navigate, location.pathname],
+    [search, navigate],
   );
 
   const [parsedFromAssetId, setParsedFromAssetId] =
     useState<ReturnType<typeof parseAsset>>(null);
   const [parsedToAssetId, setParsedToAssetId] =
     useState<ReturnType<typeof parseAsset>>(null);
-
   const [parsedAmount, setParsedAmount] = useState<string | null>(null);
 
-  // Cleanup abort controller on unmount
   useEffect(() => {
     return () => {
       abortController.current.abort();
