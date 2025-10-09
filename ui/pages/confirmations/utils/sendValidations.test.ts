@@ -138,7 +138,7 @@ describe('SendValidations', () => {
           '0x1',
         ),
       ).toEqual({
-        error: 'invalidAddress',
+        error: 'tokenContractError',
       });
 
       expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
