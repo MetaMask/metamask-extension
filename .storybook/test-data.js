@@ -1710,6 +1710,10 @@ const state = {
       },
     },
     openSeaEnabled: true,
+    networkConnectionBanner: {
+      status: 'unknown',
+    },
+    coverageResults: {},
   },
   appState: {
     isAccountMenuOpen: false,

@@ -1,5 +1,6 @@
 import { ActionConstraint, Messenger } from '@metamask/base-controller';
 import { NetworkControllerGetSelectedNetworkClientAction } from '@metamask/network-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import AccountTrackerController from '../controllers/account-tracker-controller';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -20,7 +21,9 @@ function getInitRequestMock(): jest.Mocked<
   >
 > {
   const baseMessenger = new Messenger<
-    NetworkControllerGetSelectedNetworkClientAction | ActionConstraint,
+    | NetworkControllerGetSelectedNetworkClientAction
+    | RemoteFeatureFlagControllerGetStateAction
+    | ActionConstraint,
     never
   >();
 
@@ -32,6 +35,16 @@ function getInitRequestMock(): jest.Mocked<
 
       // @ts-expect-error: Partial mock.
       blockTracker: {},
+    }),
+  );
+
+  baseMessenger.registerActionHandler(
+    'RemoteFeatureFlagController:getState',
+    () => ({
+      remoteFeatureFlags: {
+        assetsAccountApiBalances: ['0x1', '0x38', '0xe708'],
+      },
+      cacheTimestamp: Date.now(),
     }),
   );
 
@@ -60,6 +73,21 @@ describe('AccountTrackerControllerInit', () => {
       provider: expect.any(Object),
       blockTracker: expect.any(Object),
       getNetworkIdentifier: expect.any(Function),
+      accountsApiChainIds: expect.any(Function),
     });
+  });
+
+  it('initializes with Account API feature flag configuration', () => {
+    AccountTrackerControllerInit(getInitRequestMock());
+
+    const controllerMock = jest.mocked(AccountTrackerController);
+    const [constructorArgs] = controllerMock.mock.calls[0];
+
+    expect(constructorArgs.accountsApiChainIds).toBeDefined();
+    const chainIds = constructorArgs.accountsApiChainIds?.();
+    expect(chainIds).toEqual(['0x1', '0x38', '0xe708']);
+    expect(chainIds).toContain('0x1'); // Ethereum
+    expect(chainIds).toContain('0x38'); // BSC
+    expect(chainIds).toContain('0xe708'); // Linea
   });
 });

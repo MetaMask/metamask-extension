@@ -1,6 +1,6 @@
 import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
@@ -203,6 +203,7 @@ export const CHAIN_IDS = {
   ACALA_TESTNET: '0x253',
   KARURA: '0x2ae',
   HEMI: '0xa867',
+  MONAD: '0x8f',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -1219,6 +1220,7 @@ export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<
   [CHAIN_IDS.SEI]: 'https://app.metamask.io/explore/networks/sei',
   [MultichainNetworks.SOLANA]:
     'https://app.metamask.io/explore/networks/solana',
+  [CHAIN_IDS.MONAD]: 'https://app.metamask.io/explore/networks/monad',
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -1501,8 +1503,8 @@ export const FEATURED_NETWORK_CHAIN_IDS = [
 
 export const FEATURED_NETWORK_CHAIN_IDS_MULTICHAIN = [
   SolScope.Mainnet,
-  SolScope.Devnet,
   BtcScope.Mainnet,
+  TrxScope.Mainnet,
   CHAIN_IDS.MAINNET,
   ...FEATURED_RPCS.map((rpc) => rpc.chainId),
 ];

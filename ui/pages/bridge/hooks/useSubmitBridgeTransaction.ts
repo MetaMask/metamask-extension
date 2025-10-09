@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { createProjectLogger } from '@metamask/utils';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import { isSolanaChainId, isBitcoinChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -21,8 +20,6 @@ import { captureException } from '../../../../shared/lib/sentry';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
-
-const debugLog = createProjectLogger('bridge');
 
 export const isAllowanceResetError = (error: unknown): boolean => {
   const errorMessage = (error as Error).message ?? '';
@@ -77,28 +74,32 @@ export default function useSubmitBridgeTransaction() {
 
     // Execute transaction(s)
     try {
-      if (isSolanaChainId(quoteResponse.quote.srcChainId)) {
+      // Handle non-EVM source chains (Solana, Bitcoin)
+      const isNonEvmSource =
+        isSolanaChainId(quoteResponse.quote.srcChainId) ||
+        isBitcoinChainId(quoteResponse.quote.srcChainId);
+
+      if (isNonEvmSource) {
+        // Submit the transaction first, THEN navigate
+        await dispatch(
+          submitBridgeTx(fromAccount.address, quoteResponse, false),
+        );
         await dispatch(setDefaultHomeActiveTabName('activity'));
         history.push({
           pathname: DEFAULT_ROUTE,
           state: { stayOnHomePage: true },
         });
-        await dispatch(
-          submitBridgeTx(fromAccount.address, quoteResponse, false),
-        );
         return;
       }
+
       await dispatch(
-        await submitBridgeTx(
+        submitBridgeTx(
           fromAccount.address,
           quoteResponse,
-          isSolanaChainId(quoteResponse.quote.srcChainId)
-            ? false
-            : smartTransactionsEnabled,
+          smartTransactionsEnabled,
         ),
       );
     } catch (e) {
-      debugLog('Bridge transaction failed', e);
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));

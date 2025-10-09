@@ -93,10 +93,15 @@
     "featureFlags": {},
     "currentLocale": "en",
     "preferences": {
+      "dismissSmartAccountSuggestionEnabled": "boolean",
+      "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": false,
+      "petnamesEnabled": "boolean",
+      "privacyMode": "boolean",
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
+      "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsOptInStatus": true,
       "showNativeTokenAsMainBalance": true,
       "showMultiRpcModal": "boolean",
@@ -104,7 +109,8 @@
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
       "smartTransactionsMigrationApplied": "boolean",
-      "smartAccountOptIn": "boolean"
+      "smartAccountOptIn": "boolean",
+      "useNativeCurrencyAsPrimaryCurrency": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -188,6 +194,7 @@
       }
     },
     "networkConfigurationsByChainId": "object",
+    "networkConnectionBanner": "object",
     "keyrings": "object",
     "selectedAddress": "string",
     "usePhishDetect": true,
@@ -310,7 +317,8 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" }
+      "feature3": { "name": "groupC", "value": "valueC" },
+      "sendRedesign": { "enabled": false }
     },
     "cacheTimestamp": "number",
     "allDeFiPositions": "object",
