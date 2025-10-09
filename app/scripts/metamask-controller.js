@@ -23,11 +23,7 @@ import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
-import { AddressBookController } from '@metamask/address-book-controller';
-import {
-  ApprovalController,
-  ApprovalRequestNotFoundError,
-} from '@metamask/approval-controller';
+import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
 import {
   MethodNames,
@@ -44,17 +40,10 @@ import {
   createPreinstalledSnapsMiddleware,
   createSnapsMethodMiddleware,
 } from '@metamask/snaps-rpc-methods';
-import {
-  ApprovalType,
-  ERC1155,
-  ERC20,
-  ERC721,
-} from '@metamask/controller-utils';
+import { ERC1155, ERC20, ERC721 } from '@metamask/controller-utils';
 
-import { SignatureController } from '@metamask/signature-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
-import { UserOperationController } from '@metamask/user-operation-controller';
 import {
   BRIDGE_CONTROLLER_NAME,
   BridgeUserAction,
@@ -158,7 +147,6 @@ import {
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
   PLATFORM_FIREFOX,
 } from '../../shared/constants/app';
 import {
@@ -246,7 +234,6 @@ import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { isStreamWritable, setupMultiplex } from './lib/stream-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
 import Backup from './lib/backup';
-import DecryptMessageController from './controllers/decrypt-message';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import {
   addHexPrefix,
@@ -256,7 +243,6 @@ import {
   getPlatform,
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
-import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import {
   createHyperliquidReferralMiddleware,
   HyperliquidPermissionTriggerType,
@@ -400,6 +386,14 @@ import { MetaMetricsDataDeletionControllerInit } from './controller-init/metamet
 import { LoggingControllerInit } from './controller-init/logging-controller-init';
 import { AppMetadataControllerInit } from './controller-init/app-metadata-controller-init';
 import { ErrorReportingServiceInit } from './controller-init/error-reporting-service-init';
+import { ApprovalControllerInit } from './controller-init/confirmations/approval-controller-init';
+import { AddressBookControllerInit } from './controller-init/confirmations/address-book-controller-init';
+import { DecryptMessageManagerInit } from './controller-init/confirmations/decrypt-message-manager-init';
+import { DecryptMessageControllerInit } from './controller-init/confirmations/decrypt-message-controller-init';
+import { EncryptionPublicKeyControllerInit } from './controller-init/confirmations/encryption-public-key-controller-init';
+import { EncryptionPublicKeyManagerInit } from './controller-init/confirmations/encryption-public-key-message-manager-init';
+import { SignatureControllerInit } from './controller-init/confirmations/signature-controller-init';
+import { UserOperationControllerInit } from './controller-init/confirmations/user-operation-controller-init';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -495,23 +489,6 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    this.approvalController = new ApprovalController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'ApprovalController',
-      }),
-      showApprovalRequest: opts.showUserConfirmation,
-      typesExcludedFromRateLimiting: [
-        ApprovalType.PersonalSign,
-        ApprovalType.EthSignTypedData,
-        ApprovalType.Transaction,
-        ApprovalType.WatchAsset,
-        ApprovalType.EthGetEncryptionPublicKey,
-        ApprovalType.EthDecrypt,
-        // Exclude Smart TX Status Page from rate limiting to allow sequential transactions
-        SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
-      ],
-    });
-
     this.multichainSubscriptionManager = new MultichainSubscriptionManager({
       getNetworkClientById: this.controllerMessenger.call.bind(
         this.controllerMessenger,
@@ -535,134 +512,6 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    const addressBookControllerMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'AddressBookController',
-        allowedActions: [],
-        allowedEvents: [],
-      });
-
-    this.addressBookController = new AddressBookController({
-      messenger: addressBookControllerMessenger,
-      state: initState.AddressBookController,
-    });
-
-    this.decryptMessageController = new DecryptMessageController({
-      getState: this.getState.bind(this),
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'DecryptMessageController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
-          'KeyringController:decryptMessage',
-        ],
-        allowedEvents: [
-          'DecryptMessageManager:stateChange',
-          'DecryptMessageManager:unapprovedMessage',
-        ],
-      }),
-      managerMessenger: this.controllerMessenger.getRestricted({
-        name: 'DecryptMessageManager',
-      }),
-      metricsEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
-    });
-
-    this.encryptionPublicKeyController = new EncryptionPublicKeyController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'EncryptionPublicKeyController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
-        ],
-        allowedEvents: [
-          'EncryptionPublicKeyManager:stateChange',
-          'EncryptionPublicKeyManager:unapprovedMessage',
-        ],
-      }),
-      managerMessenger: this.controllerMessenger.getRestricted({
-        name: 'EncryptionPublicKeyManager',
-      }),
-      getEncryptionPublicKey: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'KeyringController:getEncryptionPublicKey',
-      ),
-      getAccountKeyringType: (...args) => {
-        return this.keyringController.getAccountKeyringType(...args);
-      },
-      getState: this.getState.bind(this),
-      metricsEvent: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'MetaMetricsController:trackEvent',
-      ),
-    });
-
-    this.signatureController = new SignatureController({
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'SignatureController',
-        allowedActions: [
-          `AccountsController:getState`,
-          `${this.approvalController.name}:addRequest`,
-          'KeyringController:signMessage',
-          'KeyringController:signPersonalMessage',
-          'KeyringController:signTypedMessage',
-          'LoggingController:add',
-          `NetworkController:getNetworkClientById`,
-          `GatorPermissionsController:decodePermissionFromPermissionContextForOrigin`,
-        ],
-      }),
-      trace,
-      decodingApiUrl: process.env.DECODING_API_URL,
-      isDecodeSignatureRequestEnabled: () =>
-        this.preferencesController.state.useTransactionSimulations,
-    });
-
-    this.signatureController.hub.on(
-      'cancelWithReason',
-      ({ metadata: message, reason }) => {
-        this.controllerMessenger.call('MetaMetricsController:trackEvent', {
-          event: reason,
-          category: MetaMetricsEventCategory.Transactions,
-          properties: {
-            action: 'Sign Request',
-            type: message.type,
-          },
-        });
-      },
-    );
-
-    this.userOperationController = new UserOperationController({
-      entrypoint: process.env.EIP_4337_ENTRYPOINT,
-      getGasFeeEstimates: (...args) => {
-        return this.gasFeeController.fetchGasFeeEstimates(...args);
-      },
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'UserOperationController',
-        allowedActions: [
-          'ApprovalController:addRequest',
-          'NetworkController:getNetworkClientById',
-          'KeyringController:prepareUserOperation',
-          'KeyringController:patchUserOperation',
-          'KeyringController:signUserOperation',
-        ],
-      }),
-      state: initState.UserOperationController,
-    });
-
-    this.userOperationController.hub.on(
-      'user-operation-added',
-      this._onUserOperationAdded.bind(this),
-    );
-
-    this.userOperationController.hub.on(
-      'transaction-updated',
-      this._onUserOperationTransactionUpdated.bind(this),
-    );
-
     // ensure AccountTrackerController updates balances after network change
     this.controllerMessenger.subscribe(
       'NetworkController:networkDidChange',
@@ -671,10 +520,9 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    const existingControllers = [this.approvalController];
-
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
+      ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
       ErrorReportingService: ErrorReportingServiceInit,
       AppMetadataController: AppMetadataControllerInit,
@@ -682,7 +530,13 @@ export default class MetamaskController extends EventEmitter {
       SnapKeyringBuilder: SnapKeyringBuilderInit,
       KeyringController: KeyringControllerInit,
       AccountsController: AccountsControllerInit,
+      AddressBookController: AddressBookControllerInit,
       AlertController: AlertControllerInit,
+      DecryptMessageManager: DecryptMessageManagerInit,
+      DecryptMessageController: DecryptMessageControllerInit,
+      EncryptionPublicKeyManager: EncryptionPublicKeyManagerInit,
+      EncryptionPublicKeyController: EncryptionPublicKeyControllerInit,
+      SignatureController: SignatureControllerInit,
       PermissionController: PermissionControllerInit,
       PermissionLogController: PermissionLogControllerInit,
       SubjectMetadataController: SubjectMetadataControllerInit,
@@ -692,6 +546,7 @@ export default class MetamaskController extends EventEmitter {
       MetaMetricsDataDeletionController: MetaMetricsDataDeletionControllerInit,
       RemoteFeatureFlagController: RemoteFeatureFlagControllerInit,
       GasFeeController: GasFeeControllerInit,
+      UserOperationController: UserOperationControllerInit,
       ExecutionService: ExecutionServiceInit,
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
@@ -761,7 +616,6 @@ export default class MetamaskController extends EventEmitter {
       controllerPersistedState,
       controllersByName,
     } = this.#initControllers({
-      existingControllers,
       initFunctions: controllerInitFunctions,
       initState,
     });
@@ -772,12 +626,18 @@ export default class MetamaskController extends EventEmitter {
     this.controllersByName = controllersByName;
 
     // Backwards compatibility for existing references
+    this.approvalController = controllersByName.ApprovalController;
     this.loggingController = controllersByName.LoggingController;
     this.appMetadataController = controllersByName.AppMetadataController;
     this.preferencesController = controllersByName.PreferencesController;
     this.keyringController = controllersByName.KeyringController;
     this.accountsController = controllersByName.AccountsController;
+    this.addressBookController = controllersByName.AddressBookController;
     this.alertController = controllersByName.AlertController;
+    this.decryptMessageController = controllersByName.DecryptMessageController;
+    this.encryptionPublicKeyController =
+      controllersByName.EncryptionPublicKeyController;
+    this.signatureController = controllersByName.SignatureController;
     this.permissionController = controllersByName.PermissionController;
     this.permissionLogController = controllersByName.PermissionLogController;
     this.subjectMetadataController =
@@ -790,6 +650,7 @@ export default class MetamaskController extends EventEmitter {
     this.remoteFeatureFlagController =
       controllersByName.RemoteFeatureFlagController;
     this.gasFeeController = controllersByName.GasFeeController;
+    this.userOperationController = controllersByName.UserOperationController;
     this.cronjobController = controllersByName.CronjobController;
     this.rateLimitController = controllersByName.RateLimitController;
     this.selectedNetworkController =
@@ -924,6 +785,16 @@ export default class MetamaskController extends EventEmitter {
           );
         }
       },
+    );
+
+    this.userOperationController.hub.on(
+      'user-operation-added',
+      this._onUserOperationAdded.bind(this),
+    );
+
+    this.userOperationController.hub.on(
+      'transaction-updated',
+      this._onUserOperationTransactionUpdated.bind(this),
     );
 
     const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
@@ -8724,9 +8595,9 @@ export default class MetamaskController extends EventEmitter {
         this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
-      getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
+      getUIState: this.getState.bind(this),
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       keyringOverrides: this.opts.overrides?.keyrings,
@@ -8741,6 +8612,7 @@ export default class MetamaskController extends EventEmitter {
         this.setupUntrustedCommunicationEip1193.bind(this),
       setLocked: this.setLocked.bind(this),
       showNotification: this.platform._showNotification,
+      showUserConfirmation: this.opts.showUserConfirmation,
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
