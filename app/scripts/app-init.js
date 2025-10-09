@@ -54,11 +54,6 @@ chrome.runtime.onConnect.addListener(function listener(port) {
   deferredOnConnectListener.resolve(port);
   delete globalThis.stateHooks.onConnectListener;
 });
-// if a UI was opened _before_ the service worker was started, then it is
-// possible for it to call `connect` before the listener above was added. To
-// handle this case, we send a message to the UI that the background is ready
-// to accept connections. The UI will then try to connect again.
-chrome.runtime.sendMessage({ backgroundIsListeningForUiConnection: true });
 
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
