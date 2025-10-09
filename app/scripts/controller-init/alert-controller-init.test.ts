@@ -1,10 +1,10 @@
-import { Messenger } from '@metamask/base-controller';
 import { AlertController } from '../controllers/alert-controller';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAlertControllerMessenger,
   AlertControllerMessenger,
+  getRootMessenger,
 } from './messengers';
 import { AlertControllerInit } from './alert-controller-init';
 
@@ -13,7 +13,7 @@ jest.mock('../controllers/alert-controller');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<AlertControllerMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

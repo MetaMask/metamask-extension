@@ -1,5 +1,10 @@
 import { noop } from 'lodash';
 import {
+  ActionConstraint,
+  EventConstraint,
+  Messenger,
+} from '@metamask/messenger';
+import {
   getPPOMControllerMessenger,
   getPPOMControllerInitMessenger,
 } from './ppom-controller-messenger';
@@ -617,3 +622,17 @@ export const CONTROLLER_MESSENGERS = {
     getInitMessenger: noop,
   },
 } as const;
+
+export type RootMessenger<
+  AllowedActions extends ActionConstraint = never,
+  AllowedEvents extends EventConstraint = never,
+> = Messenger<'Root', AllowedActions, AllowedEvents>;
+
+export const getRootMessenger = <
+  AllowedActions extends ActionConstraint = never,
+  AllowedEvents extends EventConstraint = never,
+>(): RootMessenger<AllowedActions, AllowedEvents> => {
+  return new Messenger<'Root', AllowedActions, AllowedEvents>({
+    namespace: 'Root',
+  });
+};
