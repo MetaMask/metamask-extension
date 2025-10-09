@@ -428,8 +428,6 @@ export default function UnifiedTransactionList({
     getSelectedAccountGroupMultichainTransactions(state, nonEvmChainIds),
   );
 
-  console.log('OGP - nonEvmTransactions', nonEvmTransactions);
-
   const nonEvmTransactionsForToken = useMemo(
     () => filterNonEvmTxByToken(nonEvmTransactions, tokenAddress),
     [nonEvmTransactions, tokenAddress],
