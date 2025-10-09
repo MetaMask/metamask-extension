@@ -38,7 +38,6 @@ import {
   ControllerInitRequest,
   ControllerInitResult,
 } from '../types';
-import { getIsShieldSubscriptionActive } from '../../../../shared/lib/shield';
 
 export const TransactionControllerInit: ControllerInitFunction<
   TransactionController,
@@ -85,19 +84,14 @@ export const TransactionControllerInit: ControllerInitFunction<
       ] as unknown as SavedGasFees | undefined;
     },
     getSimulationConfig: async (url) => {
-      const shieldSubscription = initMessenger.call(
-        'SubscriptionController:getSubscriptionByProduct',
-        PRODUCT_TYPES.SHIELD,
-      );
-      if (
-        shieldSubscription &&
-        getIsShieldSubscriptionActive(shieldSubscription)
-      ) {
-        const getToken = () =>
-          initMessenger.call('AuthenticationController:getBearerToken');
-        return getShieldGatewayConfig(getToken, url);
-      }
-      return { newUrl: url, authorization: undefined };
+      const getToken = () =>
+        initMessenger.call('AuthenticationController:getBearerToken');
+      const getShieldSubscription = () =>
+        initMessenger.call(
+          'SubscriptionController:getSubscriptionByProduct',
+          PRODUCT_TYPES.SHIELD,
+        );
+      return getShieldGatewayConfig(getToken, getShieldSubscription, url);
     },
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,

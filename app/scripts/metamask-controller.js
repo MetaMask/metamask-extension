@@ -978,21 +978,16 @@ export default class MetamaskController extends EventEmitter {
     }).init();
 
     this.getSecurityAlertsConfig = async (url) => {
-      const shieldSubscription = this.controllerMessenger.call(
-        'SubscriptionController:getSubscriptionByProduct',
-        PRODUCT_TYPES.SHIELD,
-      );
-      if (
-        shieldSubscription &&
-        getIsShieldSubscriptionActive(shieldSubscription)
-      ) {
-        const getToken = () =>
-          this.controllerMessenger.call(
-            'AuthenticationController:getBearerToken',
-          );
-        return getShieldGatewayConfig(getToken, url);
-      }
-      return { newUrl: url, authorization: undefined };
+      const getShieldSubscription = () =>
+        this.controllerMessenger.call(
+          'SubscriptionController:getSubscriptionByProduct',
+          PRODUCT_TYPES.SHIELD,
+        );
+      const getToken = () =>
+        this.controllerMessenger.call(
+          'AuthenticationController:getBearerToken',
+        );
+      return getShieldGatewayConfig(getToken, getShieldSubscription, url);
     };
 
     this.notificationServicesController.init();
