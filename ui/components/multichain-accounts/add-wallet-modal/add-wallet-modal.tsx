@@ -1,4 +1,9 @@
-import React, { useCallback, useContext } from 'react';
+import React, {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  useCallback,
+  useContext,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Box,
@@ -37,11 +42,14 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getIsAddSnapAccountEnabled,
   getIsWatchEthereumAccountEnabled,
+  ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
 } from '../../../selectors';
 import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -53,6 +61,7 @@ import {
   ACCOUNT_WATCHER_SNAP_ID,
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../../app/scripts/lib/snap-keyring/account-watcher-snap';
+///: END:ONLY_INCLUDE_IF
 
 export type AddWalletModalProps = Omit<
   ModalProps,
@@ -79,11 +88,13 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   const institutionalWalletsEnabled = useSelector(
     getManageInstitutionalWallets,
   );
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const trackEvent = useContext(MetaMetricsContext);
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
+  ///: END:ONLY_INCLUDE_IF
 
   const walletOptions: WalletOption[] = [
     {
@@ -133,7 +144,8 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
     }
   };
 
-  const handleSnapAccountLinkClick = () => {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const handleSnapAccountLinkClick = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.AccountAddSelected,
@@ -150,8 +162,10 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
     global.platform.openTab({
       url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL as string,
     });
-  };
+  }, [trackEvent]);
+  ///: END:ONLY_INCLUDE_IF
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const handleAddWatchAccount = useCallback(async () => {
     await trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -175,6 +189,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
     onClose();
     history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
   }, [trackEvent, onClose, history]);
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} {...props}>
@@ -223,78 +238,86 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
               <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
             </Box>
           ))}
-          {addSnapAccountEnabled && (
-            <Box
-              key="snap-account"
-              onClick={() => handleSnapAccountLinkClick()}
-              onKeyDown={(e: React.KeyboardEvent) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleSnapAccountLinkClick();
-                }
-              }}
-              alignItems={BoxAlignItems.Center}
-              padding={4}
-              gap={3}
-              backgroundColor={BoxBackgroundColor.BackgroundDefault}
-              flexDirection={BoxFlexDirection.Row}
-              borderColor={BoxBorderColor.BorderMuted}
-              className="hover:bg-background-default-hover cursor-pointer transition-all duration-200 w-full text-left outline-none focus:outline-none focus:shadow-none focus-visible:shadow-[inset_0_0_0_2px_var(--color-primary-default)]"
-              tabIndex={0}
-              data-testid={`add-wallet-modal-snap-account`}
-            >
-              <Icon
-                name={IconName.Snaps}
-                size={IconSize.Md}
-                color={IconColor.IconAlternative}
-              />
-              <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.TextDefault}
-                className="flex-1"
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+            addSnapAccountEnabled && (
+              <Box
+                key="snap-account"
+                onClick={() => handleSnapAccountLinkClick()}
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleSnapAccountLinkClick();
+                  }
+                }}
+                alignItems={BoxAlignItems.Center}
+                padding={4}
+                gap={3}
+                backgroundColor={BoxBackgroundColor.BackgroundDefault}
+                flexDirection={BoxFlexDirection.Row}
+                borderColor={BoxBorderColor.BorderMuted}
+                className="hover:bg-background-default-hover cursor-pointer transition-all duration-200 w-full text-left outline-none focus:outline-none focus:shadow-none focus-visible:shadow-[inset_0_0_0_2px_var(--color-primary-default)]"
+                tabIndex={0}
+                data-testid={`add-wallet-modal-snap-account`}
               >
-                {t('settingAddSnapAccount')}
-              </Text>
-              <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
-            </Box>
-          )}
-          {isAddWatchEthereumAccountEnabled && (
-            <Box
-              key="watch-ethereum-account"
-              onClick={() => handleAddWatchAccount()}
-              onKeyDown={(e: React.KeyboardEvent) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleAddWatchAccount();
-                }
-              }}
-              alignItems={BoxAlignItems.Center}
-              padding={4}
-              gap={3}
-              backgroundColor={BoxBackgroundColor.BackgroundDefault}
-              flexDirection={BoxFlexDirection.Row}
-              borderColor={BoxBorderColor.BorderMuted}
-              className="hover:bg-background-default-hover cursor-pointer transition-all duration-200 w-full text-left outline-none focus:outline-none focus:shadow-none focus-visible:shadow-[inset_0_0_0_2px_var(--color-primary-default)]"
-              tabIndex={0}
-              data-testid={`add-wallet-modal-watch-ethereum-account`}
-            >
-              <Icon
-                name={IconName.Eye}
-                size={IconSize.Md}
-                color={IconColor.IconAlternative}
-              />
-              <Text
-                variant={TextVariant.BodyMd}
-                fontWeight={FontWeight.Medium}
-                color={TextColor.TextDefault}
-                className="flex-1"
+                <Icon
+                  name={IconName.Snaps}
+                  size={IconSize.Md}
+                  color={IconColor.IconAlternative}
+                />
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextDefault}
+                  className="flex-1"
+                >
+                  {t('settingAddSnapAccount')}
+                </Text>
+                <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
+              </Box>
+            )
+            ///: END:ONLY_INCLUDE_IF
+          }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+            isAddWatchEthereumAccountEnabled && (
+              <Box
+                key="watch-ethereum-account"
+                onClick={() => handleAddWatchAccount()}
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleAddWatchAccount();
+                  }
+                }}
+                alignItems={BoxAlignItems.Center}
+                padding={4}
+                gap={3}
+                backgroundColor={BoxBackgroundColor.BackgroundDefault}
+                flexDirection={BoxFlexDirection.Row}
+                borderColor={BoxBorderColor.BorderMuted}
+                className="hover:bg-background-default-hover cursor-pointer transition-all duration-200 w-full text-left outline-none focus:outline-none focus:shadow-none focus-visible:shadow-[inset_0_0_0_2px_var(--color-primary-default)]"
+                tabIndex={0}
+                data-testid={`add-wallet-modal-watch-ethereum-account`}
               >
-                {t('addEthereumWatchOnlyAccount')}
-              </Text>
-              <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
-            </Box>
-          )}
+                <Icon
+                  name={IconName.Eye}
+                  size={IconSize.Md}
+                  color={IconColor.IconAlternative}
+                />
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.TextDefault}
+                  className="flex-1"
+                >
+                  {t('addEthereumWatchOnlyAccount')}
+                </Text>
+                <Icon name={IconName.ArrowRight} size={IconSize.Sm} />
+              </Box>
+            )
+            ///: END:ONLY_INCLUDE_IF
+          }
         </ModalBody>
       </ModalContent>
     </Modal>
