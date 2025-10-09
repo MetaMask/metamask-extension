@@ -56,6 +56,7 @@ class PhishingWarningPage {
       this.iframeSelector,
     )) as WebElement;
     await this.driver.switchToFrame(iframe as unknown as string);
+    await this.driver.waitForSelector(this.openWarningInNewTabLink);
     await this.driver.clickElement(this.openWarningInNewTabLink);
   }
 
