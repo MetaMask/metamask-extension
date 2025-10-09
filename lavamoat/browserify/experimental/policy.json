@@ -737,7 +737,7 @@
       "packages": {
         "@babel/runtime": true,
         "@material-ui/core>@material-ui/utils": true,
-        "@material-ui/core>clsx": true,
+        "@material-ui/core>@material-ui/styles>clsx": true,
         "react-redux>hoist-non-react-statics": true,
         "@material-ui/core>@material-ui/styles>jss-plugin-camel-case": true,
         "@material-ui/core>@material-ui/styles>jss-plugin-default-unit": true,
@@ -2218,10 +2218,9 @@
         "Element": true,
         "HTMLElement": true,
         "ShadowRoot": true,
-        "console.error": true,
-        "console.warn": true,
         "document": true,
-        "navigator.userAgent": true
+        "navigator.userAgent": true,
+        "navigator.userAgentData": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": {
