@@ -946,9 +946,6 @@
   "bridgeFetchNewQuotes": {
     "message": "Fetch a new one?"
   },
-  "bridgeFrom": {
-    "message": "Bridge from"
-  },
   "bridgeFromTo": {
     "message": "Bridge $1 $2 to $3",
     "description": "Tells a user that they need to confirm on their hardware wallet a bridge. $1 is amount of source token, $2 is the source network, and $3 is the destination network"
@@ -2527,6 +2524,10 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "fileUploaderMaxFileSizeError": {
+    "message": "File size exceeds $1MB. Please upload a smaller file.",
+    "description": "$1 is the maximum file size in MB"
   },
   "flaskWelcomeUninstall": {
     "message": "you should uninstall this extension",
@@ -5609,8 +5610,84 @@
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Signature and transaction requests"
   },
+  "shieldClaim": {
+    "message": "Submit a claim"
+  },
+  "shieldClaimDescription": {
+    "message": "Description of case"
+  },
+  "shieldClaimDetails": {
+    "message": "You may file a single claim per incident within 21 days of the incident. View the full coverage policy $1.",
+    "description": "The $1 is a link to the full coverage policy"
+  },
+  "shieldClaimEmail": {
+    "message": "Email"
+  },
+  "shieldClaimEmailHelpText": {
+    "message": "We'll use this email to keep you informed with updates."
+  },
+  "shieldClaimFileUploader": {
+    "message": "Image Upload"
+  },
+  "shieldClaimFileUploaderHelpText": {
+    "message": "If you have any additional evidence, please upload it here."
+  },
+  "shieldClaimImpactedTxHash": {
+    "message": "Impacted transaction hash"
+  },
+  "shieldClaimImpactedTxHashHelpText": {
+    "message": "Also known as TXID, hash ID, or transaction ID."
+  },
+  "shieldClaimImpactedTxHashHelpTextLink": {
+    "message": "Need help finding it?"
+  },
+  "shieldClaimImpactedWalletAddress": {
+    "message": "Impacted wallet address"
+  },
+  "shieldClaimInvalidEmail": {
+    "message": "Invalid email"
+  },
+  "shieldClaimInvalidTxHash": {
+    "message": "Invalid transaction hash"
+  },
+  "shieldClaimInvalidWalletAddress": {
+    "message": "Invalid wallet address"
+  },
+  "shieldClaimReimbursementWalletAddress": {
+    "message": "Wallet address for reimbursement"
+  },
+  "shieldClaimReimbursementWalletAddressHelpText": {
+    "message": "Please ensure this is not a compromised wallet."
+  },
+  "shieldClaimSubmit": {
+    "message": "Submit a claim"
+  },
   "shieldConfirmMembership": {
     "message": "Confirm membership"
+  },
+  "shieldCoverageAlertMessageChainNotSupported": {
+    "message": "This chain is not supported, so it isn't protected by Transaction Shield. $1."
+  },
+  "shieldCoverageAlertMessageLearnHowCoverageWorks": {
+    "message": "Learn how coverage works"
+  },
+  "shieldCoverageAlertMessagePotentialRisks": {
+    "message": "This transaction has potential risks, so it isn't protected by Transaction Shield. $1."
+  },
+  "shieldCoverageAlertMessageSignatureNotSupported": {
+    "message": "This signature isn't supported, so it isn't protected by Transaction Shield. $1."
+  },
+  "shieldCoverageAlertMessageTitle": {
+    "message": "This transaction isn't covered"
+  },
+  "shieldCoverageAlertMessageTxTypeNotSupported": {
+    "message": "This transaction type is not supported, so it isn't protected by Transaction Shield. $1."
+  },
+  "shieldCoverageAlertMessageUnknown": {
+    "message": "This request can't be verified, so it isn't protected by Transaction Shield. $1."
+  },
+  "shieldCovered": {
+    "message": "Covered"
   },
   "shieldEntryModalAssetCoverage": {
     "message": "$10,000 asset coverage per transaction"
@@ -5636,6 +5713,12 @@
   },
   "shieldEstimatedChangesMonthlyTooltip": {
     "message": "Authorize up to $$1 for the full year. You'll be billed $$2 each month, not the full amount now."
+  },
+  "shieldFooterAgreement": {
+    "message": "By continuing, I agree to Transaction Shield $1."
+  },
+  "shieldNotCovered": {
+    "message": "Not covered"
   },
   "shieldPlanAnnual": {
     "message": "Annual"
@@ -5698,6 +5781,9 @@
   "shieldPlanTitle": {
     "message": "Choose your plan"
   },
+  "shieldStartNowCTA": {
+    "message": "Start now"
+  },
   "shieldTx": {
     "message": "Transaction Shield"
   },
@@ -5749,7 +5835,7 @@
     "message": "Add funds"
   },
   "shieldTxMembershipErrorInsufficientFunds": {
-    "message": "Insufficient funds for your April 18 renewal. Keep access active by adding funds.",
+    "message": "Insufficient funds for your $1 renewal. Keep access active by adding funds.",
     "description": "The $1 is the date"
   },
   "shieldTxMembershipErrorInsufficientToken": {
