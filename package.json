@@ -251,6 +251,7 @@
     "@metamask/keyring-snap-sdk@7.0.0": "npm:@metamask-previews/keyring-snap-sdk@7.0.0-582d075",
     "@metamask/keyring-snap-client@^7.0.0": "npm:@metamask-previews/keyring-snap-client@8.0.0-582d075",
     "@metamask/keyring-snap-client@^8.0.0": "npm:@metamask-previews/keyring-snap-client@8.0.0-582d075",
+    "@metamask/keyring-snap-client@8.0.0": "npm:@metamask-previews/keyring-snap-client@8.0.0-582d075",
     "@metamask/keyring-internal-snap-client@^7.0.0": "npm:@metamask-previews/keyring-internal-snap-client@7.1.0-582d075",
     "@metamask/keyring-internal-snap-client@7.1.0": "npm:@metamask-previews/keyring-internal-snap-client@7.1.0-582d075",
     "@metamask/eth-snap-keyring@^17.2.0": "npm:@metamask-previews/eth-snap-keyring@17.2.0-582d075",
