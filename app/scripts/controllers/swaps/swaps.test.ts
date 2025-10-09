@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { deriveStateFromMetadata } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller/next';
 import { ChainId, InfuraNetworkType } from '@metamask/controller-utils';
 import BigNumberjs from 'bignumber.js';
 import { mapValues } from 'lodash';
@@ -1755,7 +1755,7 @@ describe('SwapsController', function () {
         deriveStateFromMetadata(
           controller.state,
           controller.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`{}`);
     });
