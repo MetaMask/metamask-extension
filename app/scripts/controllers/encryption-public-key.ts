@@ -13,7 +13,8 @@ import type {
   EncryptionPublicKeyManagerState,
   EncryptionPublicKeyManagerUnapprovedMessageAddedEvent,
 } from '@metamask/message-manager';
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
+import { BaseController, StateMetadata } from '@metamask/base-controller/next';
+import type { Messenger } from '@metamask/messenger';
 import { Patch } from 'immer';
 import {
   AcceptRequest,
@@ -28,17 +29,17 @@ const controllerName = 'EncryptionPublicKeyController';
 const managerName = 'EncryptionPublicKeyManager';
 const methodNameGetEncryptionPublicKey = 'eth_getEncryptionPublicKey';
 
-const stateMetadata = {
+const stateMetadata: StateMetadata<EncryptionPublicKeyControllerState> = {
   unapprovedEncryptionPublicKeyMsgs: {
     includeInStateLogs: true,
     persist: false,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   unapprovedEncryptionPublicKeyMsgCount: {
     includeInStateLogs: true,
     persist: false,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
 };
@@ -93,12 +94,10 @@ type AllowedEvents =
   | EncryptionPublicKeyManagerStateChange
   | EncryptionPublicKeyManagerUnapprovedMessageAddedEvent;
 
-export type EncryptionPublicKeyControllerMessenger = RestrictedMessenger<
+export type EncryptionPublicKeyControllerMessenger = Messenger<
   typeof controllerName,
   EncryptionPublicKeyControllerActions | AllowedActions,
-  EncryptionPublicKeyControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  EncryptionPublicKeyControllerEvents | AllowedEvents
 >;
 
 export type EncryptionPublicKeyControllerOptions = {
@@ -173,7 +172,7 @@ export default class EncryptionPublicKeyController extends BaseController<
       messenger: managerMessenger,
     });
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       `${managerName}:unapprovedMessage`,
       this._requestApproval.bind(this),
     );
@@ -407,7 +406,7 @@ export default class EncryptionPublicKeyController extends BaseController<
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const origin = msgParams.origin || ORIGIN_METAMASK;
 
-    this.messagingSystem
+    this.messenger
       .call(
         'ApprovalController:addRequest',
         {
@@ -423,11 +422,11 @@ export default class EncryptionPublicKeyController extends BaseController<
   }
 
   private _acceptApproval(messageId: string) {
-    this.messagingSystem.call('ApprovalController:acceptRequest', messageId);
+    this.messenger.call('ApprovalController:acceptRequest', messageId);
   }
 
   private _rejectApproval(messageId: string) {
-    this.messagingSystem.call(
+    this.messenger.call(
       'ApprovalController:rejectRequest',
       messageId,
       'Cancel',
