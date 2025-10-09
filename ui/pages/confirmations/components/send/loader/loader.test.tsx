@@ -32,6 +32,7 @@ describe('Loader', () => {
   beforeEach(() => {
     mockUseHistory.mockReturnValue({
       push: mockPush,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
     mockPush.mockClear();
   });
