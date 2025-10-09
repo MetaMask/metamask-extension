@@ -1,48 +1,33 @@
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom-v5-compat';
-import {
-  PATH_NAME_MAP,
-  getPaths,
-  matchMultiplePaths,
-} from '../helpers/constants/routes';
+import { useLocation, matchPath } from 'react-router-dom-v5-compat';
+import { PATH_NAME_MAP, getPaths } from '../helpers/constants/routes';
 import { txDataSelector } from '../selectors';
 
 /**
  * Returns the current page if it matches our route map, as well as the origin
- * if there is a confirmation that was triggered by a dapp. These values are
- * not required but add valuable context to events, and should be included in
- * the context object on the event payload.
- *
- * @returns {{
- *  page?: MetaMetricsPageObject
- *  referrer?: MetaMetricsReferrerObject
- * }}
+ * if there is a confirmation that was triggered by a dapp.
  */
 export function useSegmentContext() {
   const location = useLocation();
-  const match = matchMultiplePaths(getPaths(), location.pathname, {
-    exact: true,
-    strict: true,
-  });
+  const paths = getPaths();
   const txData = useSelector(txDataSelector) || {};
   const confirmTransactionOrigin = txData.origin;
 
   const referrer = confirmTransactionOrigin
-    ? {
-        url: confirmTransactionOrigin,
-      }
+    ? { url: confirmTransactionOrigin }
     : undefined;
+
+  const match = paths.find((path) =>
+    matchPath(location.pathname, { path, exact: true, strict: true }),
+  );
 
   const page = match
     ? {
-        path: match.path,
-        title: PATH_NAME_MAP.get(match.path),
-        url: match.path,
+        path: match,
+        title: PATH_NAME_MAP.get(match),
+        url: match,
       }
     : undefined;
 
-  return {
-    page,
-    referrer,
-  };
+  return { page, referrer };
 }

@@ -803,18 +803,11 @@ export function matchMultiplePaths(
   options: { exact?: boolean; strict?: boolean } = {},
 ) {
   for (const path of paths) {
-    // Convert v5 options to v6 options
-    // Note: v5 'strict' (trailing slash) doesn't map directly to v6 'caseSensitive'
-    // v6 doesn't have a direct equivalent for strict mode
-    const v6Options = {
+    const match = matchPath(pathname, {
       path,
-      // exact: true in v5 → end: true in v6 (match entire path)
-      // exact: false/undefined in v5 → end: false in v6 (partial matching)
-      end: options.exact === true,
-      // v6 doesn't support strict (trailing slash) mode, ignoring for now
-      caseSensitive: false,
-    };
-    const match = matchPath(v6Options, pathname);
+      exact: options.exact,
+      strict: options.strict,
+    });
     if (match) {
       return match;
     }
