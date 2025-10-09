@@ -129,29 +129,25 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
                 >
                   <div
-                    class="flex flex-row"
+                    class="mm-box mm-box--display-flex"
                   >
                     <div
-                      class="flex flex-row gap-2"
+                      class="token-cell-title--ellipsis"
                     >
                       <div
-                        class="token-cell-title--ellipsis"
+                        aria-describedby="tippy-tooltip-1"
+                        class=""
+                        data-original-title="null"
+                        data-tooltipped=""
+                        style="display: inline;"
+                        tabindex="0"
                       >
-                        <div
-                          aria-describedby="tippy-tooltip-1"
-                          class=""
-                          data-original-title="null"
-                          data-tooltipped=""
-                          style="display: inline;"
-                          tabindex="0"
+                        <span
+                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
+                          data-testid="multichain-token-list-item-token-name"
                         >
-                          <span
-                            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
-                            data-testid="multichain-token-list-item-token-name"
-                          >
-                            Liquid staked Ether 2.0
-                          </span>
-                        </div>
+                          Liquid staked Ether 2.0
+                        </span>
                       </div>
                     </div>
                   </div>

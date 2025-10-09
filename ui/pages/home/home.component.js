@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Navigate, Route, Routes } from 'react-router-dom-v5-compat';
-import { useSafeNavigation } from '../../hooks/useSafeNavigation';
+import {
+  useNavigate,
+  useLocation,
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom-v5-compat';
 import { useNavState } from '../../contexts/navigation-state';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -177,7 +182,8 @@ function shouldCloseNotificationPopup({
 function Home() {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const { navigate, location } = useSafeNavigation();
+  const navigate = useNavigate();
+  const location = useLocation();
   const navState = useNavState();
   const dispatch = useDispatch();
 

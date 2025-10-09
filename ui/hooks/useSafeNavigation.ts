@@ -10,10 +10,7 @@ export const useSafeNavigation = (): {
   const location = useLocation();
   const setNavState = useSetNavState();
 
-  const safeNavigate = (
-    path: string,
-    state?: Record<string, unknown> | null,
-  ) => {
+  const safeNavigate = (path: string, state?: Record<string, unknown> | null) => {
     if (state) {
       setNavState(state);
     } else {
@@ -22,9 +19,9 @@ export const useSafeNavigation = (): {
     navigate(path);
   };
 
-  return {
-    navigate: safeNavigate,
-    location,
-    setNavState,
+  return { 
+    navigate: safeNavigate, 
+    location, 
+    setNavState 
   };
 };

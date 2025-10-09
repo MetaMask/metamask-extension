@@ -267,7 +267,6 @@ function getPetnameType(
     name: '',
     hasPetname: false,
     displayState: TrustSignalDisplayState.Unknown,
-    isAccount: false,
   },
 ) {
   if (balanceChange.asset.standard === TokenStandard.none) {

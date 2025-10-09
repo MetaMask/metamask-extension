@@ -1,6 +1,5 @@
 import mockState from '../../../../../test/data/mock-state.json';
 import {
-  BITCOIN_ASSET,
   EVM_ASSET,
   EVM_NATIVE_ASSET,
   SOLANA_ASSET,
@@ -33,7 +32,6 @@ describe('useSendType', () => {
     } as unknown as SendContext.SendContextType);
     const result = renderHook();
     expect(result).toEqual({
-      isBitcoinSendType: false,
       isEvmNativeSendType: false,
       isEvmSendType: true,
       isNonEvmNativeSendType: false,
@@ -49,7 +47,6 @@ describe('useSendType', () => {
     } as unknown as SendContext.SendContextType);
     const result = renderHook();
     expect(result).toEqual({
-      isBitcoinSendType: false,
       isEvmNativeSendType: false,
       isEvmSendType: true,
       isNonEvmNativeSendType: false,
@@ -65,7 +62,6 @@ describe('useSendType', () => {
     } as unknown as SendContext.SendContextType);
     const result = renderHook();
     expect(result).toEqual({
-      isBitcoinSendType: false,
       isEvmNativeSendType: true,
       isEvmSendType: true,
       isNonEvmNativeSendType: false,
@@ -81,7 +77,6 @@ describe('useSendType', () => {
     } as unknown as SendContext.SendContextType);
     const result = renderHook();
     expect(result).toEqual({
-      isBitcoinSendType: false,
       isEvmNativeSendType: false,
       isEvmSendType: false,
       isNonEvmNativeSendType: true,
@@ -97,28 +92,11 @@ describe('useSendType', () => {
     } as unknown as SendContext.SendContextType);
     const result = renderHook();
     expect(result).toEqual({
-      isBitcoinSendType: false,
       isEvmNativeSendType: false,
       isEvmSendType: false,
       isNonEvmNativeSendType: false,
       isNonEvmSendType: true,
       isSolanaSendType: true,
-    });
-  });
-
-  it('return correct type for bitcoin asset send', () => {
-    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
-      asset: BITCOIN_ASSET,
-      chainId: BITCOIN_ASSET.chainId,
-    } as unknown as SendContext.SendContextType);
-    const result = renderHook();
-    expect(result).toEqual({
-      isBitcoinSendType: true,
-      isEvmNativeSendType: false,
-      isEvmSendType: false,
-      isNonEvmNativeSendType: true,
-      isNonEvmSendType: true,
-      isSolanaSendType: false,
     });
   });
 });

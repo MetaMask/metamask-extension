@@ -173,7 +173,6 @@ describe('NameDetails', () => {
       name: null,
       hasPetname: false,
       displayState: TrustSignalDisplayState.Unknown,
-      isAccount: false,
     });
 
     useSelectorMock.mockImplementation((selector) => {
@@ -286,7 +285,6 @@ describe('NameDetails', () => {
       name: null,
       hasPetname: false,
       displayState: TrustSignalDisplayState.Unknown,
-      isAccount: false,
     });
 
     const { baseElement } = renderWithProvider(
@@ -307,7 +305,6 @@ describe('NameDetails', () => {
       name: SAVED_NAME_MOCK,
       hasPetname: true,
       displayState: TrustSignalDisplayState.Petname,
-      isAccount: false,
     });
 
     const { baseElement } = renderWithProvider(
@@ -328,7 +325,6 @@ describe('NameDetails', () => {
       name: 'iZUMi Bond USD',
       hasPetname: false,
       displayState: TrustSignalDisplayState.Recognized,
-      isAccount: false,
     });
 
     const { baseElement } = renderWithProvider(
@@ -349,7 +345,6 @@ describe('NameDetails', () => {
       name: SAVED_NAME_MOCK,
       hasPetname: true,
       displayState: TrustSignalDisplayState.Petname,
-      isAccount: false,
     });
 
     const component = renderWithProvider(
@@ -377,7 +372,6 @@ describe('NameDetails', () => {
       name: 'TestName',
       hasPetname: false,
       displayState: TrustSignalDisplayState.Unknown,
-      isAccount: false,
     });
 
     const component = renderWithProvider(
@@ -411,7 +405,6 @@ describe('NameDetails', () => {
       name: 'TestName',
       hasPetname: false,
       displayState: TrustSignalDisplayState.Unknown,
-      isAccount: false,
     });
 
     const component = renderWithProvider(
@@ -445,7 +438,6 @@ describe('NameDetails', () => {
       name: SAVED_NAME_MOCK,
       hasPetname: true,
       displayState: TrustSignalDisplayState.Petname,
-      isAccount: false,
     });
 
     const component = renderWithProvider(
@@ -475,7 +467,6 @@ describe('NameDetails', () => {
       name: SAVED_NAME_MOCK,
       hasPetname: true,
       displayState: TrustSignalDisplayState.Petname,
-      isAccount: false,
     });
 
     const component = renderWithProvider(
@@ -565,7 +556,6 @@ describe('NameDetails', () => {
         name: SAVED_NAME_MOCK,
         hasPetname: true,
         displayState: TrustSignalDisplayState.Petname,
-        isAccount: false,
       });
 
       await act(async () => {
@@ -648,7 +638,6 @@ describe('NameDetails', () => {
         name: null,
         hasPetname: false,
         displayState: TrustSignalDisplayState.Unknown,
-        isAccount: false,
       });
 
       const trackEventMock = jest.fn();
@@ -752,7 +741,6 @@ describe('NameDetails', () => {
         name: SAVED_NAME_MOCK,
         hasPetname: true,
         displayState: TrustSignalDisplayState.Petname,
-        isAccount: false,
       });
 
       const trackEventMock = jest.fn();
@@ -863,7 +851,6 @@ describe('NameDetails', () => {
         name: SAVED_NAME_MOCK,
         hasPetname: true,
         displayState: TrustSignalDisplayState.Petname,
-        isAccount: false,
       });
 
       const trackEventMock = jest.fn();
@@ -906,7 +893,6 @@ describe('NameDetails', () => {
         name: null,
         hasPetname: false,
         displayState: TrustSignalDisplayState.Malicious,
-        isAccount: false,
       });
 
       const { getByText } = renderWithProvider(
@@ -927,7 +913,6 @@ describe('NameDetails', () => {
         name: null,
         hasPetname: false,
         displayState: TrustSignalDisplayState.Warning,
-        isAccount: false,
       });
 
       const { getByText } = renderWithProvider(
@@ -948,7 +933,6 @@ describe('NameDetails', () => {
         name: 'Verified Contract',
         hasPetname: false,
         displayState: TrustSignalDisplayState.Verified,
-        isAccount: false,
       });
 
       const { getByText } = renderWithProvider(
@@ -969,7 +953,6 @@ describe('NameDetails', () => {
         name: null,
         hasPetname: false,
         displayState: TrustSignalDisplayState.Malicious,
-        isAccount: false,
       });
 
       const { getByText } = renderWithProvider(
@@ -990,7 +973,6 @@ describe('NameDetails', () => {
         name: null,
         hasPetname: false,
         displayState: TrustSignalDisplayState.Warning,
-        isAccount: false,
       });
 
       const { getByText } = renderWithProvider(

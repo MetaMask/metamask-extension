@@ -53,7 +53,7 @@ const Name = memo(
     const [modalOpen, setModalOpen] = useState(false);
     const trackEvent = useContext(MetaMetricsContext);
 
-    const { name, subtitle, isAccount } = useDisplayName({
+    const { name, subtitle } = useDisplayName({
       value,
       type,
       preferContractSymbol,
@@ -77,11 +77,8 @@ const Name = memo(
     }, []);
 
     const handleClick = useCallback(() => {
-      if (isAccount) {
-        return;
-      }
       setModalOpen(true);
-    }, [isAccount, setModalOpen]);
+    }, [setModalOpen]);
 
     const handleModalClose = useCallback(() => {
       setModalOpen(false);
