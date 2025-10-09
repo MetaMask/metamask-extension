@@ -1,8 +1,10 @@
+import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import {
   BaseController,
-  RestrictedMessenger,
+  ControllerGetStateAction,
   StateMetadata,
-} from '@metamask/base-controller';
+} from '@metamask/base-controller/next';
+import type { Messenger } from '@metamask/messenger';
 
 // Unique name for the controller
 const controllerName = 'AccountOrderController';
@@ -32,16 +34,20 @@ export type AccountOrderControllerhideAccountsListAction = {
 
 // Union of all possible actions for the messenger
 export type AccountOrderControllerMessengerActions =
+  | ControllerGetStateAction<typeof controllerName, AccountOrderControllerState>
   | AccountOrderControllerupdateAccountsListAction
   | AccountOrderControllerhideAccountsListAction;
 
+export type AccountOrderControllerMessengerEvents = ControllerStateChangeEvent<
+  typeof controllerName,
+  AccountOrderControllerState
+>;
+
 // Type for the messenger of AccountOrderController
-export type AccountOrderControllerMessenger = RestrictedMessenger<
+export type AccountOrderControllerMessenger = Messenger<
   typeof controllerName,
   AccountOrderControllerMessengerActions,
-  never,
-  never,
-  never
+  AccountOrderControllerMessengerEvents
 >;
 
 // Default state for the controller
@@ -55,13 +61,13 @@ const metadata: StateMetadata<AccountOrderControllerState> = {
   pinnedAccountList: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   hiddenAccountList: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
 };
