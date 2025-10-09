@@ -769,7 +769,16 @@ const TransactionShield = () => {
         shieldSubscription &&
         isCryptoPaymentMethod(shieldSubscription.paymentMethod) && (
           <AddFundsModal
-            onClose={() => setIsAddFundsModalOpen(false)}
+            onClose={(userSelectedAddFundOption) => {
+              setIsAddFundsModalOpen(false);
+              if (userSelectedAddFundOption) {
+                // TODO: handle user selected add funds option
+                console.log(
+                  'user selected add funds option',
+                  userSelectedAddFundOption,
+                );
+              }
+            }}
             token={currentToken}
             chainId={shieldSubscription.paymentMethod.crypto.chainId}
           />
