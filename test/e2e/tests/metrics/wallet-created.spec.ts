@@ -118,7 +118,7 @@ describe('Wallet Created Events', function () {
           participateInMetaMetrics: true,
         });
         const events = await getEventPayloads(driver, mockedEndpoints);
-        assert.equal(events.length, 7);
+        assert.equal(events.length, 6);
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           assert.equal(events[0].event, 'Wallet Setup Started');

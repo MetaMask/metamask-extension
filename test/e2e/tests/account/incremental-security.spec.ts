@@ -101,7 +101,7 @@ describe('Incremental Security', function (this: Suite) {
 
         // check the balance is correct after revealing and confirming the SRP
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('1,700.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('3,400.00', '$');
 
         // check backup reminder is not displayed on homepage
         await homePage.checkBackupReminderIsNotDisplayed();
