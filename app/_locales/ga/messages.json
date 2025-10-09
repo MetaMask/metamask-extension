@@ -2525,6 +2525,10 @@
     "message": "Nach bhfuil allmhairiú comhaid ag obair? Cliceáil anseo!",
     "description": "Helps user import their account from a JSON file"
   },
+  "fileUploaderMaxFileSizeError": {
+    "message": "Tá méid an chomhaid níos mó ná $1MB. Uaslódáil comhad níos lú le do thoil.",
+    "description": "$1 is the maximum file size in MB"
+  },
   "flaskWelcomeUninstall": {
     "message": "ba chóir duit an síneadh seo a dhíshuiteáil",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -4295,6 +4299,12 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Téarmaí Úsáide"
   },
+  "onboardingMetametricCheckboxDescriptionOne": {
+    "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored."
+  },
+  "onboardingMetametricCheckboxDescriptionTwo": {
+    "message": "We’ll use this data to learn how you interact with our marketing communications. We may share relevant news (like product features)."
+  },
   "onboardingMetametricCheckboxTitleOne": {
     "message": "Bailigh sonraí úsáide bunúsacha"
   },
@@ -5599,6 +5609,58 @@
   },
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Iarratais shínithe agus idirbhearta"
+  },
+  "shieldClaim": {
+    "message": "Cuir éileamh isteach"
+  },
+  "shieldClaimDescription": {
+    "message": "Cur síos ar an gcás"
+  },
+  "shieldClaimDetails": {
+    "message": "Féadfaidh tú éileamh amháin a chomhdú in aghaidh gach teagmhais laistigh de 21 lá ón teagmhas. Féach ar an bpolasaí clúdaigh iomlán $1.",
+    "description": "The $1 is a link to the full coverage policy"
+  },
+  "shieldClaimEmail": {
+    "message": "Ríomhphost"
+  },
+  "shieldClaimEmailHelpText": {
+    "message": "Úsáidfimid an ríomhphost seo chun tú a choinneáil ar an eolas faoi nuashonruithe."
+  },
+  "shieldClaimFileUploader": {
+    "message": "Uaslódáil Íomhá"
+  },
+  "shieldClaimFileUploaderHelpText": {
+    "message": "Má tá aon fhianaise bhreise agat, uaslódáil anseo í le do thoil."
+  },
+  "shieldClaimImpactedTxHash": {
+    "message": "Hais idirbhirt a ndearnadh difear dó"
+  },
+  "shieldClaimImpactedTxHashHelpText": {
+    "message": "Ar a dtugtar TXID, hais-aitheantas, nó aitheantóir idirbhirt freisin."
+  },
+  "shieldClaimImpactedTxHashHelpTextLink": {
+    "message": "An bhfuil cabhair uait chun é a aimsiú?"
+  },
+  "shieldClaimImpactedWalletAddress": {
+    "message": "Seoladh sparán atá buailte"
+  },
+  "shieldClaimInvalidEmail": {
+    "message": "Ríomhphost neamhbhailí"
+  },
+  "shieldClaimInvalidTxHash": {
+    "message": "Hais idirbhirt neamhbhailí"
+  },
+  "shieldClaimInvalidWalletAddress": {
+    "message": "Seoladh sparán neamhbhailí"
+  },
+  "shieldClaimReimbursementWalletAddress": {
+    "message": "Seoladh sparán le haghaidh aisíocaíochta"
+  },
+  "shieldClaimReimbursementWalletAddressHelpText": {
+    "message": "Cinntigh nach sparán atá i mbaol é seo."
+  },
+  "shieldClaimSubmit": {
+    "message": "Cuir éileamh isteach"
   },
   "shieldConfirmMembership": {
     "message": "Deimhnigh ballraíocht"
