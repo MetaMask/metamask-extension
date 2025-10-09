@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '.';
 
 export type AccountOrderControllerMessenger = ReturnType<
   typeof getAccountOrderControllerMessenger
@@ -12,13 +13,15 @@ export type AccountOrderControllerMessenger = ReturnType<
  * messenger.
  */
 export function getAccountOrderControllerMessenger(
-  messenger: Messenger<never, never>,
+  messenger: RootMessenger<never, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'AccountOrderController',
-
-    // This controller does not call any actions or subscribe to any events.
-    allowedActions: [],
-    allowedEvents: [],
+  return new Messenger<
+    'AccountOrderController',
+    never,
+    never,
+    typeof messenger
+  >({
+    namespace: 'AccountOrderController',
+    parent: messenger,
   });
 }
