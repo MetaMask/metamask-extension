@@ -15,15 +15,15 @@ export const UserOperationControllerInit: ControllerInitFunction<
   UserOperationController,
   UserOperationControllerMessenger
 > = ({ controllerMessenger, persistedState, getController }) => {
+  const gasFeeController = getController('GasFeeController');
+
   const controller = new UserOperationController({
     messenger: controllerMessenger,
     state: persistedState.UserOperationController,
     // @ts-expect-error: `UserOperationController` does not accept `undefined`.
     entrypoint: process.env.EIP_4337_ENTRYPOINT,
-    getGasFeeEstimates: (...args) => {
-      const gasFeeController = getController('GasFeeController');
-      return gasFeeController.fetchGasFeeEstimates(...args);
-    },
+    getGasFeeEstimates: (...args) =>
+      gasFeeController.fetchGasFeeEstimates(...args),
   });
 
   return {

@@ -21,6 +21,16 @@ function getInitRequestMock(): jest.Mocked<
     initMessenger: undefined,
   };
 
+  // @ts-expect-error: Partial mock.
+  requestMock.getController.mockImplementation((name: string) => {
+    if (name === 'GasFeeController') {
+      return {
+        fetchGasFeeEstimates: jest.fn(),
+      };
+    }
+    return undefined;
+  });
+
   return requestMock;
 }
 
