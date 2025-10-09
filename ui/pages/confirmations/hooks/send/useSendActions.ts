@@ -55,8 +55,7 @@ export const useSendActions = () => {
       history.push(`${SEND_ROUTE}/${SendPages.LOADER}`);
       await dispatch(setDefaultHomeActiveTabName('activity'));
       try {
-        console.log('OGP - Sending multichain transaction for review');
-        const response = await sendMultichainTransactionForReview(
+        await sendMultichainTransactionForReview(
           fromAccount as InternalAccount,
           {
             fromAccountId: fromAccount?.id as string,
@@ -65,19 +64,8 @@ export const useSendActions = () => {
             amount: addLeadingZeroIfNeeded(value) as string,
           },
         );
-        console.log(
-          'OGP - Multichain transaction for review sent response',
-          response,
-        );
-        console.log(
-          'OGP - Multichain transaction for review sent should push to default route',
-        );
         history.push(DEFAULT_ROUTE);
       } catch (error) {
-        console.log(
-          'OGP - Multichain transaction for review sent error',
-          error,
-        );
         // intentional empty catch
       }
     }
