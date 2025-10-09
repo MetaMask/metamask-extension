@@ -38,6 +38,8 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     providers: [btcProvider],
   });
 
+  // Bitcoin provider will be used during account creation after keyring is unlocked
+
   const preferencesState = initMessenger.call('PreferencesController:getState');
 
   initMessenger.subscribe(
@@ -87,6 +89,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   const initialBitcoinEnabled = Boolean(
     remoteFeatureFlagsState?.remoteFeatureFlags?.addBitcoinAccount,
   );
+
   btcProvider.setEnabled(initialBitcoinEnabled);
 
   // Subscribe to RemoteFeatureFlagsController:stateChange for runtime control of Bitcoin provider state
@@ -98,6 +101,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
           ?.remoteFeatureFlags?.addBitcoinAccount,
       );
 
+      // Enable/disable Bitcoin provider based on feature flag
       btcProvider.setEnabled(addBitcoinAccountEnabled);
 
       // Trigger wallet sync to update account visibility
