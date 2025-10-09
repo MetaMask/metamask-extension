@@ -113,14 +113,19 @@ class TransactionConfirmation extends Confirmation {
     this.driver = driver;
   }
 
-  async expectBalanceChange(
-    isOutgoing: boolean,
-    index: number,
-    displayAmount: string,
-    assetName: string,
-  ) {
+  async expectBalanceChange({
+    isOutgoing,
+    index,
+    displayAmount,
+    assetName,
+  }: {
+    isOutgoing: boolean;
+    index: number;
+    displayAmount: string;
+    assetName: string;
+  }) {
     console.log(
-      `Checking balance change ${displayAmount} ${assetName} is displayed on transaction confirmation page.`,
+      `Checking balance change ${isOutgoing} ${index} with text ${displayAmount} ${assetName} is displayed on transaction confirmation page.`,
     );
     const css = this.outgoingIncomingSimulationDetails(isOutgoing, index);
 

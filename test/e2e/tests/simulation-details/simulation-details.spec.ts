@@ -99,12 +99,12 @@ describe('Simulation Details', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.expectBalanceChange(
-          true,
-          0,
-          '- 0.001',
-          'ETH',
-        );
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: true,
+          index: 0,
+          displayAmount: '- 0.001',
+          assetName: 'ETH',
+        });
       },
     );
   });
@@ -124,18 +124,19 @@ describe('Simulation Details', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.expectBalanceChange(
-          true,
-          0,
-          '- 0.002',
-          'ETH',
-        );
-        await transactionConfirmation.expectBalanceChange(
-          false,
-          0,
-          '+ 6.756',
-          'DAI',
-        );
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: true,
+          index: 0,
+          displayAmount: '- 0.002',
+          assetName: 'ETH',
+        });
+
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: false,
+          index: 0,
+          displayAmount: '+ 6.756',
+          assetName: 'DAI',
+        });
       },
     );
   });
@@ -154,18 +155,19 @@ describe('Simulation Details', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.expectBalanceChange(
-          true,
-          0,
-          '- 0.014',
-          'ETH',
-        );
-        await transactionConfirmation.expectBalanceChange(
-          false,
-          0,
-          '+ #719',
-          '0xEF9c2...2AD6e',
-        );
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: true,
+          index: 0,
+          displayAmount: '- 0.014',
+          assetName: 'ETH',
+        });
+
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: false,
+          index: 0,
+          displayAmount: '+ #719',
+          assetName: '0xEF9c2...2AD6e',
+        });
       },
     );
   });
@@ -191,18 +193,19 @@ describe('Simulation Details', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.expectBalanceChange(
-          true,
-          0,
-          '- 0.00045',
-          'ETH',
-        );
-        await transactionConfirmation.expectBalanceChange(
-          false,
-          0,
-          '+ 1 #10340',
-          '0x76BE3...E8E77',
-        );
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: true,
+          index: 0,
+          displayAmount: '- 0.00045',
+          assetName: 'ETH',
+        });
+
+        await transactionConfirmation.expectBalanceChange({
+          isOutgoing: false,
+          index: 0,
+          displayAmount: '+ 1 #10340',
+          assetName: '0x76BE3...E8E77',
+        });
       },
     );
   });
@@ -263,6 +266,8 @@ describe('Simulation Details', function () {
         await driver.openNewPage(
           `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([SEND_ETH_TRANSACTION_MOCK])}`,
         );
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkEstimatedSimulationDetailsNotDisplayed(
