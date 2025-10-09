@@ -18,10 +18,9 @@ describe('useEnableShieldCoverageChecks', () => {
     '../../../../hooks/subscription/useSubscription',
   ) as { useUserSubscriptions: jest.Mock };
 
-  const originalEnv = process.env;
   beforeEach(() => {
     jest.resetModules();
-    process.env = { ...originalEnv, METAMASK_SHIELD_ENABLED: 'true' };
+    process.env.METAMASK_SHIELD_ENABLED = 'true';
     useUserSubscriptions.mockReturnValue({
       subscriptions: [],
       loading: false,
@@ -30,7 +29,7 @@ describe('useEnableShieldCoverageChecks', () => {
   });
 
   afterAll(() => {
-    process.env = originalEnv;
+    process.env.METAMASK_SHIELD_ENABLED = 'false';
   });
 
   it('returns true when user has a SHIELD subscription', () => {
