@@ -18,7 +18,7 @@ export function getIsShieldSubscriptionActive(
       ),
     );
   } else {
-    const isShieldSubscription = subscriptions.products.some(
+    const isShieldSubscription = subscriptions?.products?.some(
       (product) => product.name === PRODUCT_TYPES.SHIELD,
     );
     if (isShieldSubscription) {

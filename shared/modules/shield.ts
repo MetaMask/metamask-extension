@@ -3,10 +3,10 @@ import { getIsShieldSubscriptionActive } from '../lib/shield';
 
 export async function getShieldGatewayConfig(
   getToken: () => Promise<string>,
-  getShieldSubscription: () => Promise<Subscription | undefined>,
+  getShieldSubscription: () => Subscription | undefined,
   url: string,
 ): Promise<{ newUrl: string; authorization: string | undefined }> {
-  const shieldSubscription = await getShieldSubscription();
+  const shieldSubscription = getShieldSubscription();
   const isShieldSubscriptionActive = shieldSubscription
     ? getIsShieldSubscriptionActive(shieldSubscription)
     : false;

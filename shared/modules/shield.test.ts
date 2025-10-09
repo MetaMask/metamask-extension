@@ -52,7 +52,7 @@ const setup = ({
     mockGetToken: jest.fn().mockResolvedValue('token'),
     mockGetShieldSubscription: jest
       .fn()
-      .mockResolvedValue(
+      .mockReturnValue(
         isShieldSubscriptionActive ? MOCK_SUBSCRIPTION : undefined,
       ),
     targetUrl: 'https://example.com',
