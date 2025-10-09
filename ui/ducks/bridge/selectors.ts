@@ -971,13 +971,16 @@ export const getIsToOrFromNonEvm = createSelector(
       return false;
     }
 
-    const fromChainIsNonEvm = isNonEvmChain(fromChain.chainId);
-    const toChainIsNonEvm = isNonEvmChain(toChain.chainId);
+    // Parse the CAIP chain IDs to get their namespaces
+    const fromCaipChainId = formatChainIdToCaip(fromChain.chainId);
+    const toCaipChainId = formatChainIdToCaip(toChain.chainId);
 
-    // Return true if one chain is non-EVM and the other is EVM
-    // TODO: Generalize this to detect whether chains are in different namespaces
-    // (e.g., Solana <> Bitcoin bridges should also return true, not just non-EVM <> EVM)
-    return fromChainIsNonEvm !== toChainIsNonEvm;
+    const { namespace: fromNamespace } = parseCaipChainId(fromCaipChainId);
+    const { namespace: toNamespace } = parseCaipChainId(toCaipChainId);
+
+    // Return true if chains are in different namespaces
+    // This covers EVM <> non-EVM as well as non-EVM <> non-EVM (e.g., Solana <> Bitcoin)
+    return fromNamespace !== toNamespace;
   },
 );
 
