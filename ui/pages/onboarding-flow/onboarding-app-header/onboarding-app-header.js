@@ -33,7 +33,6 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
-import { ThemeType } from '../../../../shared/constants/preferences';
 
 export default function OnboardingAppHeader({ isWelcomePage }) {
   const dispatch = useDispatch();
@@ -61,16 +60,16 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
       <Box
         display={Display.Flex}
         width={BlockSize.Full}
-        justifyContent={JustifyContent.spaceBetween}
+        justifyContent={
+          pathname === ONBOARDING_WELCOME_ROUTE
+            ? JustifyContent.flexEnd
+            : JustifyContent.spaceBetween
+        }
         className="onboarding-app-header__contents"
       >
-        <MetaFoxLogo
-          theme={
-            pathname === ONBOARDING_WELCOME_ROUTE ? ThemeType.light : undefined
-          }
-          unsetIconHeight
-          isOnboarding
-        />
+        {pathname !== ONBOARDING_WELCOME_ROUTE && (
+          <MetaFoxLogo unsetIconHeight isOnboarding />
+        )}
 
         {pathname === ONBOARDING_COMPLETION_ROUTE ? (
           <Box

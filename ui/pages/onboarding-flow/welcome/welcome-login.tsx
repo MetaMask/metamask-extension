@@ -1,25 +1,17 @@
-import EventEmitter from 'events';
-import React, { useCallback, useRef, useState } from 'react';
-import classnames from 'classnames';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useRive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
-import Mascot from '../../../components/ui/mascot';
 import {
   Box,
   Button,
   ButtonSize,
   ButtonVariant,
-  Text,
 } from '../../../components/component-library';
 import {
-  AlignItems,
   Display,
   FlexDirection,
-  JustifyContent,
-  TextAlign,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { isFlask, isBeta } from '../../../helpers/utils/build-types';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
@@ -34,58 +26,12 @@ export default function WelcomeLogin({
   onLogin: (loginType: LoginType, loginOption: string) => Promise<void>;
 }) {
   const t = useI18nContext();
-  const animationEventEmitter = useRef(new EventEmitter());
   const [showLoginOptions, setShowLoginOptions] = useState(false);
   const [loginOption, setLoginOption] = useState<LoginOptionType | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const dispatch = useDispatch();
-
-  const { rive, RiveComponent } = useRive({
-    src: './images/riv_animations/fox_appear.riv',
-    stateMachines: 'FoxRaiseUp',
-    animations: ['Appear (Rise)'],
-    autoplay: true,
-    autoBind: true,
-    layout: new Layout({
-      fit: Fit.Contain,
-      alignment: Alignment.Center,
-    }),
-  });
-
-  console.log('Hi EVERYONE');
-
-  React.useEffect(() => {
-    if (rive) {
-      console.log('active artboard', rive);
-      // console.log('active animation', rive.animationNames);
-      // console.log('active state machine', rive.stateMachineNames);
-      // console.log(
-      //   'active playingStateMachineNames',
-      //   rive.playingStateMachineNames,
-      // );
-    }
-  }, [rive]);
-
-  const renderMascot = () => {
-    if (isFlask()) {
-      return (
-        <img src="./images/logo/metamask-fox.svg" width="178" height="178" />
-      );
-    }
-    if (isBeta()) {
-      return (
-        <img src="./images/logo/metamask-fox.svg" width="178" height="178" />
-      );
-    }
-    return (
-      <Mascot
-        animationEventEmitter={animationEventEmitter.current}
-        width="268"
-        height="268"
-      />
-    );
-  };
 
   const handleLogin = useCallback(
     async (loginType: LoginType) => {
@@ -101,98 +47,75 @@ export default function WelcomeLogin({
     [dispatch, loginOption, onLogin],
   );
 
+  const handleButtonClick = async (
+    option: LoginOptionType,
+    loginType?: LoginType,
+  ) => {
+    if (isSeedlessOnboardingFeatureEnabled) {
+      setIsTransitioning(true);
+      // Wait for fade-out animation
+      setTimeout(() => {
+        setShowLoginOptions(true);
+        setLoginOption(option);
+        setIsTransitioning(false);
+      }, 400);
+    } else {
+      setShowLoginOptions(true);
+      setLoginOption(option);
+      if (loginType) {
+        await onLogin(loginType, option);
+      }
+    }
+  };
+
   return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      gap={4}
-      marginInline="auto"
-      marginTop={2}
-      padding={6}
-      className="welcome-login"
-      data-testid="get-started"
-    >
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        className="welcome-login__content"
-      >
-        <Box
-          className={classnames('welcome-login__mascot', {
-            'welcome-login__mascot--image': isFlask() || isBeta(),
-          })}
-        >
-          {renderMascot()}
-        </Box>
-
-        <Box className="riv-container">
-          <RiveComponent className="riv-canvas" />
-        </Box>
-
-        <Text
-          marginInline={5}
-          textAlign={TextAlign.Center}
-          as="h2"
-          className="welcome-login__title"
-          data-testid="onboarding-welcome"
-        >
-          {t('welcomeToMetaMask')}!
-        </Text>
-      </Box>
-
-      <Box
-        data-theme={ThemeType.light}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        gap={4}
-      >
-        <Button
-          data-testid="onboarding-create-wallet"
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          block
-          onClick={async () => {
-            setShowLoginOptions(true);
-            setLoginOption(LOGIN_OPTION.NEW);
-            if (!isSeedlessOnboardingFeatureEnabled) {
-              await onLogin(LOGIN_TYPE.SRP, LOGIN_OPTION.NEW);
-            }
-          }}
-        >
-          {t('onboardingCreateWallet')}
-        </Button>
-        <Button
-          data-testid="onboarding-import-wallet"
-          variant={ButtonVariant.Secondary}
-          size={ButtonSize.Lg}
-          block
-          onClick={async () => {
-            setShowLoginOptions(true);
-            setLoginOption(LOGIN_OPTION.EXISTING);
-            if (!isSeedlessOnboardingFeatureEnabled) {
-              await onLogin(LOGIN_TYPE.SRP, LOGIN_OPTION.EXISTING);
-            }
-          }}
-        >
-          {isSeedlessOnboardingFeatureEnabled
-            ? t('onboardingImportWallet')
-            : t('onboardingSrpImport')}
-        </Button>
-      </Box>
-      {isSeedlessOnboardingFeatureEnabled &&
+    <>
+      <Box className="welcome-login" data-testid="get-started">
+        {isSeedlessOnboardingFeatureEnabled &&
         showLoginOptions &&
-        loginOption && (
-          <LoginOptions
-            loginOption={loginOption}
-            onClose={() => {
-              setLoginOption(null);
-            }}
-            handleLogin={handleLogin}
-          />
+        loginOption ? (
+          <Box className="welcome-login__options welcome-login__options--fade-in">
+            <LoginOptions loginOption={loginOption} handleLogin={handleLogin} />
+          </Box>
+        ) : (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            width={BlockSize.Full}
+            gap={4}
+            className={`welcome-login__cta ${
+              isTransitioning ? 'welcome-login__cta--fade-out' : ''
+            }`}
+          >
+            <Button
+              data-theme={ThemeType.dark}
+              data-testid="onboarding-create-wallet"
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              block
+              onClick={() =>
+                handleButtonClick(LOGIN_OPTION.NEW, LOGIN_TYPE.SRP)
+              }
+            >
+              {t('onboardingCreateWallet')}
+            </Button>
+            <Button
+              data-theme={ThemeType.light}
+              data-testid="onboarding-import-wallet"
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              block
+              onClick={() =>
+                handleButtonClick(LOGIN_OPTION.EXISTING, LOGIN_TYPE.SRP)
+              }
+            >
+              {isSeedlessOnboardingFeatureEnabled
+                ? t('onboardingImportWallet')
+                : t('onboardingSrpImport')}
+            </Button>
+          </Box>
         )}
-    </Box>
+      </Box>
+    </>
   );
 }

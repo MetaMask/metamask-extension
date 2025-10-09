@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
+import { Box } from '../../../components/component-library';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -25,7 +26,7 @@ import {
   startOAuthLogin,
   setParticipateInMetaMetrics,
 } from '../../../store/actions';
-import LoadingScreen from '../../../components/ui/loading-screen';
+// import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -36,9 +37,18 @@ import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  BlockSize,
+} from '../../../helpers/constants/design-system';
 import WelcomeLogin from './welcome-login';
 import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
 import LoginErrorModal from './login-error-modal';
+import MetamaskWordMarkAnimation from './MetamaskWordMarkAnimation';
+import FoxAppearAnimation from './FoxAppearAnimation';
 
 export default function OnboardingWelcome() {
   const dispatch = useDispatch();
@@ -58,6 +68,7 @@ export default function OnboardingWelcome() {
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
+  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
 
   const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
   // Don't allow users to come back to this screen after they
@@ -374,17 +385,37 @@ export default function OnboardingWelcome() {
   );
 
   return (
-    <>
-      <WelcomeLogin onLogin={handleLogin} />
-
-      {isLoggingIn && <LoadingScreen />}
-
-      {loginError !== null && (
-        <LoginErrorModal
-          onClose={() => setLoginError(null)}
-          loginError={loginError}
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      height={BlockSize.Full}
+      width={BlockSize.Full}
+      className="welcome-container"
+    >
+      {!isLoggingIn && (
+        <MetamaskWordMarkAnimation
+          setIsAnimationComplete={setIsAnimationComplete}
         />
       )}
-    </>
+
+      {isAnimationComplete && !isLoggingIn && (
+        <>
+          <WelcomeLogin onLogin={handleLogin} />
+
+          <FoxAppearAnimation />
+
+          {loginError !== null && (
+            <LoginErrorModal
+              onClose={() => setLoginError(null)}
+              loginError={loginError}
+            />
+          )}
+        </>
+      )}
+
+      {isLoggingIn && <FoxAppearAnimation isLoader />}
+    </Box>
   );
 }

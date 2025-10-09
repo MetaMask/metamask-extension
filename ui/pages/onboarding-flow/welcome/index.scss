@@ -5,14 +5,91 @@
 // startup.
 @use "react-responsive-carousel/lib/styles/carousel";
 
-.riv-container {
-  height: 300px;
-  width: 200px;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.riv-canvas {
-  height: inherit;
-  width: inherit;
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.riv-animation {
+  &__wordmark-container {
+    height: 200px;
+    width: 200px;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -100px;
+    margin-bottom: 20px;
+    transition: transform 0.6s ease-out;
+
+    &--complete {
+      transform: translateY(-40px);
+      margin-top: 0;
+    }
+  }
+
+  &__fox-container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 400px;
+    width: 100%;
+    max-width: 1280px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    pointer-events: none;
+
+    &--loader {
+      height: 400px;
+      width: 100%;
+      max-width: 1280px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease-out 0.5s forwards;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-top: -100px;
+    }
+  }
+
+
+  &__canvas {
+    height: 100%;
+    width: 100%;
+  }
+
+  &__spinner {
+    height: 30px;
+    width: 30px;
+  }
+}
+
+.welcome-container {
+  position: relative;
 }
 
 .welcome-banner {
@@ -40,15 +117,45 @@
 }
 
 .welcome-login {
-  height: calc(100% - 16px);
-  max-height: 728px;
-  width: 446px;
-  background-color: var(--color-accent02-light);
-  border-radius: 24px;
-  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+  width: 343px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: -40px;
+  overflow: hidden;
+  position: relative;
 
-  &__content {
-    flex: 1;
+
+  &__cta {
+    width: 100%;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.8s ease-out 0.5s forwards;
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    &--fade-out {
+      opacity: 0 !important;
+      transform: translateX(-30px) !important;
+      animation: none;
+    }
+  }
+
+  &__options {
+    width: 100%;
+    opacity: 0;
+    transform: translateX(30px);
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    &--fade-in {
+      animation: slideInFromRight 0.5s ease-out forwards;
+    }
   }
 
   &__title {
@@ -81,7 +188,11 @@
       top: 50%;
       width: 100%;
       height: 1px;
-      background-color: var(--color-border-muted);
+      background-color: var(--color-text-alternative);
+    }
+
+    &-text {
+      background-color: var(--color-accent02-dark);
     }
   }
 
