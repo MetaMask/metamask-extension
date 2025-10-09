@@ -19,7 +19,6 @@ import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
-
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -51,6 +50,7 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import { addListener, once } from './lib/mv3-lazy-listener/mv3-lazy-listener';
 import {
   CorruptionHandler,
   hasVault,
@@ -167,15 +167,7 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-// In MV3 onInstalled must be installed in the entry file
-if (globalThis.stateHooks.onInstalledListener) {
-  globalThis.stateHooks.onInstalledListener.then(handleOnInstalled);
-} else {
-  browser.runtime.onInstalled.addListener(function listener(details) {
-    browser.runtime.onInstalled.removeListener(listener);
-    handleOnInstalled(details);
-  });
-}
+once('onInstalled', handleOnInstalled);
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -448,6 +440,7 @@ let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
 const handleOnConnect = async (port) => {
+  console.log('Handling connection to port 1...');
   if (
     inTest &&
     getManifestFlags().testing?.simulateUnresponsiveBackground === true
@@ -455,6 +448,7 @@ const handleOnConnect = async (port) => {
     return;
   }
 
+  console.log('Handling connection to port...');
   port.postMessage({
     data: {
       method: BACKGROUND_LIVENESS_METHOD,
@@ -519,17 +513,26 @@ const handleOnConnect = async (port) => {
       });
     }
   }
+};
+const installOnConnectListener = () => {
+  addListener('onConnect', handleOnConnect);
+};
+if (
+  inTest &&
+  getManifestFlags().testing?.simulatedSlowBackgroundLoadingTimeout
+) {
+  const timeout =
+    getManifestFlags().testing?.simulatedSlowBackgroundLoadingTimeout;
+  console.log(
+    `Simulating slow background \`onConnect\`. Will start listening in ${timeout
+    }ms`,
+  ); // eslint-disable-line no-console
+  setTimeout(installOnConnectListener, timeout);
+} else {
+  installOnConnectListener();
 }
-if (globalThis.stateHooks.onConnectListener) {
-  // if the UI has already tried to connect, let it connect now!
-  globalThis.stateHooks.onConnectListener.then(handleOnConnect);
-  // we can only ever use this once, so delete it afterwards as it can't be
-  // automatically garbage collected unless we dereference it.
-  delete globalThis.stateHooks.onConnectListener;
-}
-browser.runtime.onConnect.addListener(handleOnConnect);
 
-browser.runtime.onConnectExternal.addListener(async (...args) => {
+addListener('onConnectExternal', async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
@@ -1595,7 +1598,7 @@ async function onUpdateAvailable() {
   controller.appStateController.setIsUpdateAvailable(true);
 }
 
-browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
+addListener('onUpdateAvailable', onUpdateAvailable);
 
 function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {
