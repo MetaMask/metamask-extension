@@ -49,6 +49,7 @@ import {
   ERC1155,
   ERC20,
   ERC721,
+  toHex,
 } from '@metamask/controller-utils';
 
 import { SignatureController } from '@metamask/signature-controller';
@@ -65,7 +66,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-
 import { Interface } from '@ethersproject/abi';
 import { abiERC1155, abiERC721 } from '@metamask/metamask-eth-abis';
 import {
@@ -110,6 +110,11 @@ import {
 } from '@metamask/eip-5792-middleware';
 
 import {
+  walletUpgradeAccount,
+  walletGetAccountUpgradeStatus,
+} from '@metamask/eip-7702-internal-rpc-middleware';
+
+import {
   Caip25CaveatMutators,
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
@@ -132,6 +137,7 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
@@ -211,6 +217,8 @@ import {
   isGatorPermissionsFeatureEnabled,
 } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
+// eslint-disable-next-line import/no-restricted-paths
+import { isFlask } from '../../ui/helpers/utils/build-types';
 import { getShieldGatewayConfig } from '../../shared/modules/shield';
 import {
   HYPERLIQUID_ORIGIN,
@@ -1152,6 +1160,35 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
+    this.eip7702Middleware = createScaffoldMiddleware({
+      wallet_upgradeAccount: createAsyncMiddleware(async (req, res) => {
+        await walletUpgradeAccount(req, res, {
+          upgradeAccount: this.upgradeAccount.bind(this),
+          getCurrentChainIdForDomain:
+            this.getCurrentChainIdForDomain.bind(this),
+          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
+            this.txController,
+          ),
+          getAccounts: this.getPermittedAccounts.bind(this, req.origin),
+        });
+      }),
+      wallet_getAccountUpgradeStatus: createAsyncMiddleware(
+        async (req, res) => {
+          await walletGetAccountUpgradeStatus(req, res, {
+            getCurrentChainIdForDomain:
+              this.getCurrentChainIdForDomain.bind(this),
+            getCode: this.getCode.bind(this),
+            getNetworkConfigurationByChainId:
+              this.controllerMessenger.call.bind(
+                this.controllerMessenger,
+                'NetworkController:getNetworkConfigurationByChainId',
+              ),
+            getAccounts: this.getPermittedAccounts.bind(this, req.origin),
+          });
+        },
+      ),
+    });
+
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
@@ -1413,6 +1450,22 @@ export default class MetamaskController extends EventEmitter {
     if (this.onboardingController.state.completedOnboarding) {
       this.postOnboardingInitialization();
     }
+  }
+
+  /**
+   * Returns the current chainId (hex string) for a given domain/origin.
+   * Used by EIP-7702 middleware hooks.
+   * @param {string} domain
+   * @returns {string | undefined}
+   */
+  getCurrentChainIdForDomain(domain) {
+    const networkClientId =
+      this.selectedNetworkController.getNetworkClientIdForDomain(domain);
+    const { chainId } =
+      this.networkController.getNetworkConfigurationByNetworkClientId(
+        networkClientId,
+      );
+    return chainId;
   }
 
   // Provides a method for getting feature flags for the multichain
@@ -6874,6 +6927,13 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
+    if (
+      subjectType === SubjectType.Snap &&
+      (isFlask() || isSnapPreinstalled(origin))
+    ) {
+      engine.push(this.eip7702Middleware);
+    }
+
     if (subjectType !== SubjectType.Internal) {
       engine.push(
         this.permissionController.createPermissionMiddleware({
@@ -7329,6 +7389,7 @@ export default class MetamaskController extends EventEmitter {
         ...this.setupCommonMiddlewareHooks(origin),
       }),
     );
+
     engine.push(this.metamaskMiddleware);
 
     engine.push(this.eip5792Middleware);
@@ -8753,5 +8814,43 @@ export default class MetamaskController extends EventEmitter {
       initFunctions,
       initRequest,
     });
+  }
+
+  /**
+   * Upgrades an account to support EIP-7702 delegation.
+   * Uses shared EIP-7702 utility to avoid code duplication.
+   *
+   * @param {string} address - The account address to upgrade
+   * @param {string} upgradeContractAddress - The contract address to delegate to
+   * @param {number} chainId - The chain ID for the upgrade
+   * @returns {Promise<{transactionHash: string, delegatedTo: string}>}
+   */
+  async upgradeAccount(address, upgradeContractAddress, chainId) {
+    // Get the network client for the specified chain
+    const networkClientId = this.networkController.findNetworkClientIdByChainId(
+      toHex(chainId),
+    );
+
+    return createEIP7702UpgradeTransaction(
+      {
+        address,
+        upgradeContractAddress,
+        networkClientId,
+      },
+      async (transactionParams, options) => {
+        const transactionMeta = await addTransaction(
+          this.getAddTransactionRequest({
+            transactionParams,
+            transactionOptions: {
+              ...options,
+              origin: 'metamask',
+              requireApproval: true,
+            },
+            waitForSubmit: true,
+          }),
+        );
+        return transactionMeta;
+      },
+    );
   }
 }
