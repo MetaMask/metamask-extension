@@ -1,5 +1,4 @@
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
-import { isSolanaChainId } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as selectors from '../../../../selectors';
@@ -18,7 +17,6 @@ const mockGetCompleteAddressBook = jest.spyOn(
   'getCompleteAddressBook',
 );
 const mockIsEvmAddress = jest.mocked(isEvmAddress);
-const mockIsSolanaChainId = jest.mocked(isSolanaChainId);
 
 describe('useContactRecipients', () => {
   const mockAddressBookEntries = [
@@ -60,38 +58,21 @@ describe('useContactRecipients', () => {
       {
         address: '0x1234567890abcdef1234567890abcdef12345678',
         contactName: 'John Doe',
+        isContact: true,
       },
       {
         address: '0xabcdef1234567890abcdef1234567890abcdef12',
         contactName: 'Bob Wilson',
+        isContact: true,
       },
     ]);
   });
 
-  it('returns Solana contacts when isSolanaSendType is true', () => {
-    mockUseSendType.mockReturnValue({
-      isEvmSendType: false,
-      isSolanaSendType: true,
-    } as unknown as ReturnType<typeof useSendType>);
-    mockIsSolanaChainId.mockImplementation((chainId) => chainId === 'sol:101');
-
-    const { result } = renderHookWithProvider(
-      () => useContactRecipients(),
-      mockState,
-    );
-
-    expect(result.current).toEqual([
-      {
-        address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
-        contactName: 'Jane Smith',
-      },
-    ]);
-  });
-
-  it('returns empty array when neither EVM nor Solana send type', () => {
+  it('returns empty array when isEvmSendType is false', () => {
     mockUseSendType.mockReturnValue({
       isEvmSendType: false,
       isSolanaSendType: false,
+      isBitcoinSendType: false,
     } as unknown as ReturnType<typeof useSendType>);
 
     const { result } = renderHookWithProvider(
@@ -135,23 +116,9 @@ describe('useContactRecipients', () => {
       {
         address: '0x1234567890abcdef1234567890abcdef12345678',
         contactName: 'John Doe',
+        isContact: true,
       },
     ]);
-  });
-
-  it('filters out non-Solana chain contacts when isSolanaSendType is true', () => {
-    mockUseSendType.mockReturnValue({
-      isEvmSendType: false,
-      isSolanaSendType: true,
-    } as unknown as ReturnType<typeof useSendType>);
-    mockIsSolanaChainId.mockReturnValue(false);
-
-    const { result } = renderHookWithProvider(
-      () => useContactRecipients(),
-      mockState,
-    );
-
-    expect(result.current).toEqual([]);
   });
 
   it('calls useSendType hook', () => {

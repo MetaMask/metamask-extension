@@ -17,7 +17,7 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
   isNativeAddress,
-  isSolanaChainId,
+  isNonEvmChainId,
   formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
@@ -29,6 +29,9 @@ import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/brid
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { TokenPayload, BridgeToken } from './types';
+
+// Re-export isNonEvmChainId from bridge-controller for backward compatibility
+export { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
 
 /**
  * Safely gets the native token name for a given chainId.
@@ -73,6 +76,30 @@ export const getHexMaxGasLimit = (gasLimit: number) => {
     10,
   ).toPrefixedHexString() as Hex;
 };
+/**
+ * Converts basis points (BPS) to percentage
+ * 1 BPS = 0.01%
+ *
+ * @param bps - The value in basis points (e.g., "87.5" or 87.5)
+ * @returns The percentage value as a string (e.g., "0.875")
+ */
+export const bpsToPercentage = (
+  bps: string | number | undefined,
+): string | undefined => {
+  if (bps === undefined || bps === null) {
+    return undefined;
+  }
+
+  const bpsValue = typeof bps === 'string' ? parseFloat(bps) : bps;
+
+  if (isNaN(bpsValue)) {
+    return undefined;
+  }
+
+  // BPS to percentage: divide by 100
+  return (bpsValue / 100).toString();
+};
+
 export const getTxGasEstimates = async ({
   networkAndAccountSupports1559,
   networkGasFeeEstimates,
@@ -225,9 +252,11 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
   const caipChainId = formatChainIdToCaip(chainId);
   // If the token is native, return the SVG image asset
   if (isNativeAddress(address)) {
-    if (isSolanaChainId(chainId)) {
+    // Non-EVM chains (Solana, Bitcoin) use MULTICHAIN_TOKEN_IMAGE_MAP
+    if (isNonEvmChainId(chainId)) {
       return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
     }
+    // EVM chains use CHAIN_ID_TOKEN_IMAGE_MAP
     return CHAIN_ID_TOKEN_IMAGE_MAP[
       formatChainIdToHex(chainId) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
     ];

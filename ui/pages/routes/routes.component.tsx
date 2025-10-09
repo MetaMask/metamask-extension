@@ -19,7 +19,6 @@ import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
 import PermissionsConnect from '../permissions-connect';
 import Loading from '../../components/ui/loading-screen';
-import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
@@ -74,11 +73,11 @@ import {
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
   SHIELD_PLAN_ROUTE,
+  GATOR_PERMISSIONS,
+  TOKEN_TRANSFER_ROUTE,
+  REVIEW_GATOR_PERMISSIONS_ROUTE,
 } from '../../helpers/constants/routes';
-import {
-  getProviderConfig,
-  isNetworkLoading as getIsNetworkLoading,
-} from '../../../shared/modules/selectors/networks';
+import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
   getPreferences,
@@ -162,8 +161,6 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-// import { isGatorPermissionsFeatureEnabled } from '../../../shared/modules/environment';
-import { useRedesignedSendFlow } from '../confirmations/hooks/useRedesignedSendFlow';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -235,13 +232,6 @@ const SendPage = mmLazy(
   (() =>
     import('../confirmations/send/index.ts')) as unknown as DynamicImportType,
 );
-const LegacySendPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/send/index.js'
-    )) as unknown as DynamicImportType,
-);
 const Swaps = mmLazy(
   (() => import('../swaps/index.js')) as unknown as DynamicImportType,
 );
@@ -291,13 +281,27 @@ const PermissionsPage = mmLazy(
       '../../components/multichain/pages/permissions-page/permissions-page.js'
     )) as unknown as DynamicImportType,
 );
-// const GatorPermissionsPage = mmLazy(
-//   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-//   (() =>
-//     import(
-//       '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
-//     )) as unknown as DynamicImportType,
-// );
+const GatorPermissionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/gator-permissions-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+const TokenTransferPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+const ReviewGatorPermissionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
+    )) as unknown as DynamicImportType,
+);
 const Connections = mmLazy(
   // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
   (() =>
@@ -383,7 +387,6 @@ export default function Routes() {
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
   const account = useAppSelector(getSelectedInternalAccount);
-  const isNetworkLoading = useAppSelector(getIsNetworkLoading);
 
   const networkToAutomaticallySwitchTo = useAppSelector(
     getNetworkToAutomaticallySwitchTo,
@@ -446,7 +449,6 @@ export default function Routes() {
   const currentExtensionPopupId = useAppSelector(
     (state) => state.metamask.currentExtensionPopupId,
   );
-  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const isShowKeyringSnapRemovalResultModal = useAppSelector(
@@ -588,10 +590,7 @@ export default function Routes() {
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             component={ConfirmTransaction}
           />
-          <Authenticated
-            path={`${SEND_ROUTE}/:page?`}
-            component={isSendRedesignEnabled ? SendPage : LegacySendPage}
-          />
+          <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
@@ -645,15 +644,20 @@ export default function Routes() {
             path={`${CONNECTIONS}/:origin`}
             component={Connections}
           />
+          <Authenticated path={PERMISSIONS} component={PermissionsPage} exact />
           <Authenticated
-            path={PERMISSIONS}
-            component={
-              // TODO: enable this when gator permission page is implemented
-              // isGatorPermissionsFeatureEnabled()
-              //   ? GatorPermissionsPage
-              //   : PermissionsPage
-              PermissionsPage
-            }
+            path={GATOR_PERMISSIONS}
+            component={GatorPermissionsPage}
+            exact
+          />
+          <Authenticated
+            path={TOKEN_TRANSFER_ROUTE}
+            component={TokenTransferPage}
+            exact
+          />
+          <Authenticated
+            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
+            component={ReviewGatorPermissionsPage}
             exact
           />
           <Authenticated
@@ -744,10 +748,9 @@ export default function Routes() {
     return <AccountDetails address={accountDetailsAddress} />;
   };
 
-  const loadMessage =
-    loadingMessage || isNetworkLoading
-      ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
-      : null;
+  const loadMessage = loadingMessage
+    ? getConnectingLabel(loadingMessage, { providerType, providerId }, { t })
+    : null;
 
   const windowType = getEnvironmentType();
 
@@ -866,13 +869,6 @@ export default function Routes() {
 
       <Box className="main-container-wrapper">
         {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
-        {!isLoading &&
-        isUnlocked &&
-        isNetworkLoading &&
-        completedOnboarding &&
-        !isShowingDeepLinkRoute ? (
-          <LoadingNetwork />
-        ) : null}
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}

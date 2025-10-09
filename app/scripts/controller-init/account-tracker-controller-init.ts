@@ -52,6 +52,16 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
         ? config.rpcUrl
         : config.type;
     },
+    accountsApiChainIds: () => {
+      const state = initMessenger.call('RemoteFeatureFlagController:getState');
+
+      const featureFlagForAccountApiBalances =
+        state?.remoteFeatureFlags?.assetsAccountApiBalances;
+
+      return Array.isArray(featureFlagForAccountApiBalances)
+        ? (featureFlagForAccountApiBalances as string[])
+        : [];
+    },
   });
 
   return {

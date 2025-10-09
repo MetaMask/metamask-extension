@@ -1,3 +1,4 @@
+import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
@@ -65,8 +66,7 @@ class HomePage {
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
-  protected readonly swapButton: string =
-    '[data-testid="token-overview-button-swap"]';
+  protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
   private readonly refreshErc20Tokens = {
     testId: 'refreshList',
@@ -304,19 +304,6 @@ class HomePage {
     }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
   }
 
-  async checkIfBridgeButtonIsClickable(): Promise<boolean> {
-    try {
-      await this.driver.findClickableElement(this.bridgeButton, {
-        timeout: 1000,
-      });
-    } catch (e) {
-      console.log('Bridge button not clickable', e);
-      return false;
-    }
-    console.log('Bridge button is clickable');
-    return true;
-  }
-
   async checkIfSendButtonIsClickable(): Promise<boolean> {
     try {
       await this.driver.findClickableElement(this.sendButton, {
@@ -356,9 +343,31 @@ class HomePage {
     await this.checkExpectedBalanceIsDisplayed(expectedBalance);
   }
 
+  async getSkeleton(): Promise<
+    WebElement & {
+      waitForElementState: (state: string, timeout: number) => Promise<void>;
+    }
+  > {
+    return (await this.driver.waitForSelector('.mm-skeleton', {
+      state: 'visible',
+      timeout: 100,
+      // The `waitForSelector` method returns the wrong type.
+      // We supply that type in the return type, and we don't need to restate it here.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    })) as any;
+  }
+
+  async waitForSkeletonToDisappear(
+    skeleton: WebElement & {
+      waitForElementState: (state: string, timeout: number) => Promise<void>;
+    },
+  ): Promise<void> {
+    await skeleton.waitForElementState('hidden', this.driver.timeout);
+  }
+
   async checkNewSrpAddedToastIsDisplayed(srpNumber: number = 2): Promise<void> {
     await this.driver.waitForSelector({
-      text: `Secret Recovery Phrase ${srpNumber} imported`,
+      text: `Wallet ${srpNumber} imported`,
     });
   }
 
