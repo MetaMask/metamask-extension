@@ -374,14 +374,17 @@ export const groupAnyTransactionsByDate = (items) =>
   );
 
 function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
-  const filteredEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
-  const filteredNonEvmChainIds =
-    Object.keys(enabledNetworks)
-      .filter((namespace) => namespace !== 'eip155')
-      .reduce((acc, namespace) => {
-        const newAcc = [...acc, ...Object.keys(enabledNetworks[namespace])];
-        return newAcc;
-      }, []) ?? [];
+  const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
+  const filteredUniqueNonEvmChainIds =
+    [
+      ...new Set(
+        Object.keys(enabledNetworks)
+          .filter((namespace) => namespace !== 'eip155')
+          .reduce((acc, namespace) => {
+            return [...acc, ...Object.keys(enabledNetworks[namespace])];
+          }, []),
+      ),
+    ] ?? [];
 
   if (tokenChainIdOverride && !tokenChainIdOverride.startsWith('solana')) {
     return {
@@ -396,8 +399,8 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
     };
   }
   return {
-    evmChainIds: filteredEVMChainIds,
-    nonEvmChainIds: filteredNonEvmChainIds,
+    evmChainIds: filteredUniqueEVMChainIds,
+    nonEvmChainIds: filteredUniqueNonEvmChainIds,
   };
 }
 export default function UnifiedTransactionList({
@@ -424,6 +427,8 @@ export default function UnifiedTransactionList({
   const nonEvmTransactions = useSelector((state) =>
     getSelectedAccountGroupMultichainTransactions(state, nonEvmChainIds),
   );
+
+  console.log('OGP - nonEvmTransactions', nonEvmTransactions);
 
   const nonEvmTransactionsForToken = useMemo(
     () => filterNonEvmTxByToken(nonEvmTransactions, tokenAddress),
