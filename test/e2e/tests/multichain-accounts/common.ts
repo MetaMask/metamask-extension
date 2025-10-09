@@ -28,11 +28,15 @@ export async function withMultichainAccountsDesignEnabled(
     testSpecificMock = mockMultichainAccountsFeatureFlag,
     accountType = AccountType.MultiSRP,
     state = 1,
+    dapp,
+    dappPaths,
   }: {
     title?: string;
     testSpecificMock?: (mockServer: Mockttp) => Promise<MockedEndpoint>;
     accountType?: AccountType;
     state?: number;
+    dapp?: boolean;
+    dappPaths?: string[];
   },
   test: (driver: Driver) => Promise<void>,
 ) {
@@ -59,6 +63,8 @@ export async function withMultichainAccountsDesignEnabled(
       title,
       dapp: true,
       forceBip44Version: state === 2 ? 2 : 0,
+      dapp,
+      dappPaths,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
       // State 2 uses unified account group balance (fiat) and may not equal '25 ETH'.
