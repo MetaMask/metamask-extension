@@ -267,23 +267,19 @@ const filterPermissionsByOriginAndType = (
     return [];
   }
 
-  // check if any undefined values are present
-  const allPermissionsAcrossAllChains: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  >[] = Object.values(gatorPermissionsMap[permissionType]).flat();
-  for (const gatorPermission of allPermissionsAcrossAllChains) {
-    if (!gatorPermission) {
-      throw new Error(
-        `Undefined values present in the gatorPermissionsMap for permission type: ${permissionType}`,
-      );
-    }
-  }
+  return Object.values(gatorPermissionsMap[permissionType])
+    .flat() // flatten array of arrays to get permission across all chains
+    .filter((gatorPermission) => {
+      if (!gatorPermission) {
+        throw new Error(
+          `Undefined values present in the gatorPermissionsMap for permission type: ${permissionType}`,
+        );
+      }
 
-  return allPermissionsAcrossAllChains.filter(
-    (gatorPermission) =>
-      gatorPermission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase(),
-  );
+      return (
+        gatorPermission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase()
+      );
+    });
 };
 
 /**
