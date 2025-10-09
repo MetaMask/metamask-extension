@@ -8,15 +8,9 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  CaipChainId,
-  isCaipAssetType,
-  parseCaipAssetType,
-} from '@metamask/utils';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
-import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { TokenPaymentInfo } from '@metamask/subscription-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -31,36 +25,24 @@ import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { getIsMultichainAccountsState2Enabled } from '../../../../selectors/multichain-accounts';
 import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
-import {
-  MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
-  PREPARE_SWAP_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../../helpers/constants/routes';
 import {
   AddressListQueryParams,
   AddressListSource,
 } from '../../../../pages/multichain-accounts/multichain-account-address-list-page';
 import { ReceiveModal } from '../../../multichain/receive-modal';
 import { getSelectedInternalAccount } from '../../../../selectors/accounts';
-import { getIsUnifiedUIEnabled } from '../../../../ducks/bridge/selectors';
 import useBridging from '../../../../hooks/bridge/useBridging';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../../shared/constants/metametrics';
-import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../../shared/constants/bridge';
-import {
-  getCurrentKeyring,
-  getIsSwapsChain,
-  getNetworkConfigurationIdByChainId,
-} from '../../../../selectors';
-import { setSwapToToken } from '../../../../ducks/swaps/swaps';
-import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
+import { getCurrentKeyring } from '../../../../selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { AggregatorNetwork } from '../../../../ducks/ramps/types';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
-import { setActiveNetworkWithError } from '../../../../store/actions';
 
 const AddFundsModal = ({
   onClose,
@@ -68,22 +50,13 @@ const AddFundsModal = ({
 }: {
   onClose: () => void;
   token: TokenPaymentInfo & {
-    chainId: `0x${string}` | CaipChainId | undefined;
+    chainId: string | number;
   };
 }) => {
   const t = useI18nContext();
   const { openBuyCryptoInPdapp } = useRamps();
   const history = useHistory();
-  const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-
-  const currentChainId = useSelector(getCurrentChainId);
-  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
-    string,
-    string
-  >;
-  const keyring = useSelector(getCurrentKeyring);
-  const usingHardwareWallet = isHardwareKeyring(keyring?.type);
 
   // FIXME: This causes re-renders, so use isEqual to avoid this
   const account = useSelector(getSelectedInternalAccount, isEqual);
@@ -98,8 +71,6 @@ const AddFundsModal = ({
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
   const { openBridgeExperience } = useBridging();
-  const isUnifiedUIEnabled = useSelector(getIsUnifiedUIEnabled);
-  const isSwapsChain = useSelector(getIsSwapsChain);
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
@@ -163,100 +134,13 @@ const AddFundsModal = ({
     trackEvent,
   ]);
 
-  const handleBridgeOnClick = useCallback(
-    async (isSwap: boolean) => {
-      // Determine the chainId to use in the Swap experience using the url
-      const urlSuffix = location.pathname.split('/').filter(Boolean).at(-1);
-      const hexChainOrAssetId = urlSuffix
-        ? decodeURIComponent(urlSuffix)
-        : undefined;
-      const chainIdToUse = isCaipAssetType(hexChainOrAssetId)
-        ? parseCaipAssetType(hexChainOrAssetId).chainId
-        : hexChainOrAssetId;
-
-      // Handle clicking from the wallet or native asset overview page
-      openBridgeExperience(
-        MetaMetricsSwapsEventSource.MainView,
-        chainIdToUse && ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainIdToUse)
-          ? getNativeAssetForChainId(chainIdToUse)
-          : undefined,
-        isSwap,
-      );
-    },
-    [openBridgeExperience],
-  );
-
-  const setCorrectChain = useCallback(async () => {
-    if (
-      token.chainId &&
-      currentChainId !== token.chainId &&
-      !isMultichainAccountsState2Enabled
-    ) {
-      try {
-        const networkConfigurationId = networks[token.chainId];
-        await dispatch(setActiveNetworkWithError(networkConfigurationId));
-      } catch (err) {
-        console.error(`Failed to switch chains.
-        Target chainId: ${token.chainId}, Current chainId: ${currentChainId}.
-        ${
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          err
-        }`);
-        throw err;
-      }
-    }
-  }, [
-    isMultichainAccountsState2Enabled,
-    currentChainId,
-    token.chainId,
-    networks,
-    dispatch,
-  ]);
-
   const handleSwapOnClick = useCallback(async () => {
-    if (isUnifiedUIEnabled) {
-      handleBridgeOnClick(true);
-      return;
-    }
-
-    await setCorrectChain();
-
-    if (isSwapsChain) {
-      trackEvent({
-        event: MetaMetricsEventName.NavSwapButtonClicked,
-        category: MetaMetricsEventCategory.Swaps,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_symbol: token.symbol,
-          location: 'Transaction Shield',
-          text: 'Swap',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: token.chainId,
-        },
-      });
-      dispatch(setSwapToToken(token));
-      if (usingHardwareWallet) {
-        if (global.platform.openExtensionInBrowser) {
-          global.platform.openExtensionInBrowser(PREPARE_SWAP_ROUTE);
-        }
-      } else {
-        history.push(PREPARE_SWAP_ROUTE);
-      }
-    }
-  }, [
-    isUnifiedUIEnabled,
-    setCorrectChain,
-    isSwapsChain,
-    handleBridgeOnClick,
-    trackEvent,
-    token,
-    dispatch,
-    usingHardwareWallet,
-    history,
-  ]);
+    openBridgeExperience(MetaMetricsSwapsEventSource.TransactionShield, {
+      symbol: token.symbol,
+      address: token.address,
+      chainId: token.chainId,
+    });
+  }, [token, openBridgeExperience]);
 
   const buttonRow = ({
     label,

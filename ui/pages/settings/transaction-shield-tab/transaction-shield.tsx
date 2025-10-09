@@ -191,7 +191,7 @@ const TransactionShield = () => {
   };
 
   const currentToken = useMemo(():
-    | (TokenPaymentInfo & { chainId: `0x${string}` | undefined })
+    | (TokenPaymentInfo & { chainId: string | number })
     | undefined => {
     if (
       !shieldSubscription ||
@@ -213,7 +213,9 @@ const TransactionShield = () => {
           .crypto.tokenSymbol,
     );
 
-    return token ? { ...token, chainId: chainPaymentInfo?.chainId } : undefined;
+    return token
+      ? { ...token, chainId: chainPaymentInfo?.chainId || '' }
+      : undefined;
   }, [cryptoPaymentMethod, shieldSubscription]);
 
   const buttonRow = (label: string, onClick: () => void, id?: string) => {
