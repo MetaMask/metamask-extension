@@ -3,12 +3,12 @@ import { render } from '@testing-library/react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { Loader } from './loader';
 import {
   BITCOIN_WALLET_SNAP_ID,
   SOLANA_WALLET_SNAP_ID,
 } from '../../../../../../shared/lib/accounts';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../../helpers/constants/routes';
+import { Loader } from './loader';
 
 jest.mock('react-router-dom', () => ({
   useHistory: jest.fn(),
@@ -19,6 +19,8 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('../../../../../components/ui/loading-screen', () => ({
+  // This is the name of the property that turns this into an ES module.
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => <div data-testid="loading-screen">Loading...</div>,
 }));
