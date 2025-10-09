@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
@@ -10,12 +10,27 @@ import {
   IconColor,
   TextAlign,
   TextVariant,
+  Box,
+  TextColor,
+  BoxJustifyContent,
+  BoxFlexDirection,
 } from '@metamask/design-system-react';
-import { Header, Page } from '../../page';
+import {
+  PermissionTypesWithCustom,
+  Signer,
+  StoredGatorPermissionSanitized,
+} from '@metamask/gator-permissions-controller';
+import { Content, Header, Page } from '../../page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { extractNetworkName } from '../helper';
 import { getMultichainNetworkConfigurationsByChainId } from '../../../../../selectors';
+import { useRevokeGatorPermissions } from '../../../../../hooks/gator-permissions/useRevokeGatorPermissions';
+import {
+  AppState,
+  getAggregatedGatorPermissionByChainId,
+} from '../../../../../selectors/gator-permissions/gator-permissions';
+import { ReviewGatorPermissionItem } from '../components';
 
 export const ReviewGatorPermissionsPage = () => {
   const t = useI18nContext();
@@ -24,20 +39,70 @@ export const ReviewGatorPermissionsPage = () => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const getNetworkNameForChainId = () => {
+  const [totalGatorPermissions, setTotalGatorPermissions] = useState(0);
+
+  const networkName: string = useMemo(() => {
     if (!chainId) {
       return t('unknownNetworkForGatorPermissions');
     }
     const networkNameKey = extractNetworkName(evmNetworks, chainId as Hex);
-    const networkName = t(networkNameKey);
+    const networkNameFromTranslation: string = t(networkNameKey);
 
     // If the translation key doesn't exist (returns the same key), fall back to the full network name
-    if (!networkName || networkName === networkNameKey) {
+    if (
+      !networkNameFromTranslation ||
+      networkNameFromTranslation === networkNameKey
+    ) {
       return extractNetworkName(evmNetworks, chainId as Hex, true);
     }
 
-    return networkName;
+    return networkNameFromTranslation;
+  }, [chainId, evmNetworks, t]);
+
+  const gatorPermissions = useSelector((state: AppState) =>
+    getAggregatedGatorPermissionByChainId(state, {
+      aggregatedPermissionType: 'token-transfer',
+      chainId: chainId as Hex,
+    }),
+  );
+
+  const { revokeGatorPermission } = useRevokeGatorPermissions({
+    chainId: (chainId ?? '') as Hex,
+  });
+
+  useEffect(() => {
+    setTotalGatorPermissions(gatorPermissions.length);
+  }, [chainId, gatorPermissions]);
+
+  const handleRevokeClick = async (
+    permission: StoredGatorPermissionSanitized<
+      Signer,
+      PermissionTypesWithCustom
+    >,
+  ) => {
+    try {
+      await revokeGatorPermission(permission);
+    } catch (error) {
+      console.error('Error revoking gator permission:', error);
+    }
   };
+
+  const renderGatorPermissions = (
+    permissions: StoredGatorPermissionSanitized<
+      Signer,
+      PermissionTypesWithCustom
+    >[],
+  ) =>
+    permissions.map((permission) => {
+      return (
+        <ReviewGatorPermissionItem
+          key={`${permission.siteOrigin}-${permission.permissionResponse.context}`}
+          networkName={networkName}
+          gatorPermission={permission}
+          onRevokeClick={() => handleRevokeClick(permission)}
+        />
+      );
+    });
 
   return (
     <Page
@@ -63,9 +128,33 @@ export const ReviewGatorPermissionsPage = () => {
           textAlign={TextAlign.Center}
           data-testid="review-gator-permissions-page-title"
         >
-          {getNetworkNameForChainId()}
+          {networkName}
         </Text>
       </Header>
+      <Content padding={0}>
+        {totalGatorPermissions > 0 ? (
+          renderGatorPermissions(gatorPermissions)
+        ) : (
+          <Box
+            data-testid="no-connections"
+            flexDirection={BoxFlexDirection.Column}
+            justifyContent={BoxJustifyContent.Center}
+            gap={2}
+            padding={4}
+          >
+            <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Center}>
+              {t('permissionsPageEmptyContent')}
+            </Text>
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+              textAlign={TextAlign.Center}
+            >
+              {t('permissionsPageEmptySubContent')}
+            </Text>
+          </Box>
+        )}
+      </Content>
     </Page>
   );
 };

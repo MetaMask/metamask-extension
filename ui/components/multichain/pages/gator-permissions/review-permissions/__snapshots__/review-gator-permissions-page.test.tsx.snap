@@ -49,6 +49,26 @@ exports[`Review Gator Permissions Page render renders correctly 1`] = `
           </p>
         </div>
       </div>
+      <div
+        class="mm-box multichain-page-content mm-box--padding-0 mm-box--padding-top-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        style="overflow: auto;"
+      >
+        <div
+          class="flex flex-col gap-2 justify-center p-4"
+          data-testid="no-connections"
+        >
+          <p
+            class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+          >
+            Nothing to see here
+          </p>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-center"
+          >
+            This is where you can see the permissions you've given to installed Snaps or connected sites.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
