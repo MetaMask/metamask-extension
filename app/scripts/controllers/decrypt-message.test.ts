@@ -1,4 +1,4 @@
-import { deriveStateFromMetadata } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller/next';
 import {
   DecryptMessageManager,
   DecryptMessageParams,
@@ -312,7 +312,7 @@ describe('DecryptMessageController', () => {
         deriveStateFromMetadata(
           decryptMessageController.state,
           decryptMessageController.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`{}`);
     });

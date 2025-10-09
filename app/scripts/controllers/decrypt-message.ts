@@ -14,7 +14,8 @@ import type {
   DecryptMessageManagerState,
   DecryptMessageManagerUnapprovedMessageAddedEvent,
 } from '@metamask/message-manager';
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
+import { BaseController, StateMetadata } from '@metamask/base-controller/next';
+import { Messenger } from '@metamask/messenger';
 import {
   AcceptRequest,
   AddApprovalRequest,
@@ -29,17 +30,17 @@ import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 const controllerName = 'DecryptMessageController';
 
-const stateMetadata = {
+const stateMetadata: StateMetadata<DecryptMessageControllerState> = {
   unapprovedDecryptMsgs: {
     includeInStateLogs: true,
     persist: false,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   unapprovedDecryptMsgCount: {
     includeInStateLogs: true,
     persist: false,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
 };
@@ -128,12 +129,10 @@ type AllowedEvents =
   | DecryptMessageManagerStateChangeEvent
   | DecryptMessageManagerUnapprovedMessageAddedEvent;
 
-export type DecryptMessageControllerMessenger = RestrictedMessenger<
+export type DecryptMessageControllerMessenger = Messenger<
   typeof controllerName,
   DecryptMessageControllerActions | AllowedActions,
-  DecryptMessageControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  DecryptMessageControllerEvents | AllowedEvents
 >;
 
 export type DecryptMessageControllerOptions = {
@@ -267,7 +266,7 @@ export default class DecryptMessageController extends BaseController<
         throw new Error('Invalid encrypted data.');
       }
 
-      const rawMessage = await this.messagingSystem.call(
+      const rawMessage = await this.messenger.call(
         'KeyringController:decryptMessage',
         cleanMessageParams,
       );
@@ -298,7 +297,7 @@ export default class DecryptMessageController extends BaseController<
     if (!isEIP1024EncryptedMessage(messageParams)) {
       throw new Error('Invalid encrypted data.');
     }
-    const rawMessage = await this.messagingSystem.call(
+    const rawMessage = await this.messenger.call(
       'KeyringController:decryptMessage',
       messageParams,
     );
@@ -338,7 +337,7 @@ export default class DecryptMessageController extends BaseController<
   }
 
   private _acceptApproval(messageId: string) {
-    this.messagingSystem.call('ApprovalController:acceptRequest', messageId);
+    this.messenger.call('ApprovalController:acceptRequest', messageId);
   }
 
   private _cancelAbstractMessage(
@@ -418,7 +417,7 @@ export default class DecryptMessageController extends BaseController<
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const origin = messageParams.origin || ORIGIN_METAMASK;
     try {
-      this.messagingSystem.call(
+      this.messenger.call(
         'ApprovalController:addRequest',
         {
           id,
@@ -440,7 +439,7 @@ export default class DecryptMessageController extends BaseController<
 
   private _rejectApproval(messageId: string) {
     try {
-      this.messagingSystem.call(
+      this.messenger.call(
         'ApprovalController:rejectRequest',
         messageId,
         'Cancel',
