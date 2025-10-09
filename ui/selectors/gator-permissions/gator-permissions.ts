@@ -10,6 +10,7 @@ import {
   Signer,
 } from '@metamask/gator-permissions-controller';
 import { Hex } from '@metamask/utils';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 export type AppState = {
   metamask: GatorPermissionsControllerState;
@@ -276,8 +277,9 @@ const filterPermissionsByOriginAndType = (
         );
       }
 
-      return (
-        gatorPermission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase()
+      return isEqualCaseInsensitive(
+        decodeURIComponent(gatorPermission.siteOrigin),
+        decodeURIComponent(siteOrigin),
       );
     });
 };
