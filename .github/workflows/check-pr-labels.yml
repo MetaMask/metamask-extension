@@ -17,6 +17,7 @@ concurrency:
 jobs:
   check-pr-labels:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       pull-requests: read
 
