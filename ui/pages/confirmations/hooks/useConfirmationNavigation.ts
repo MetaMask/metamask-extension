@@ -35,7 +35,7 @@ export function useConfirmationNavigation() {
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const navigate = useNavigate();
   const location = useLocation();
-  const queryString = location?.search || '';
+  const queryString = location?.search ?? '';
 
   const getIndex = useCallback(
     (confirmationId?: string) => {
@@ -58,7 +58,7 @@ export function useConfirmationNavigation() {
         queryString,
       );
     },
-    [confirmations, navigate, queryString],
+    [approvalFlows?.length, confirmations, navigate, queryString],
   );
 
   const navigateToIndex = useCallback(

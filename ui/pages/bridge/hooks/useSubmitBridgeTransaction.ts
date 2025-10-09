@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
 import { isSolanaChainId, isBitcoinChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
-import { useSetNavState } from '../../../contexts/navigation-state';
+import { useSafeNavigation } from '../../../hooks/useSafeNavigation';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -11,7 +10,10 @@ import {
 } from '../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
-import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import {
+  setWasTxDeclined,
+  resetBridgeState,
+} from '../../../ducks/bridge/actions';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import {
   getFromAccount,
@@ -53,8 +55,7 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const navigate = useNavigate();
-  const setNavState = useSetNavState();
+  const { navigate } = useSafeNavigation();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
@@ -89,11 +90,7 @@ export default function useSubmitBridgeTransaction() {
         await dispatch(setDefaultHomeActiveTabName('activity'));
 
         // Set navigation state before navigate (HashRouter in v5-compat doesn't support state)
-        setNavState({ stayOnHomePage: true });
-        navigate(DEFAULT_ROUTE);
-        await dispatch(
-          submitBridgeTx(fromAccount.address, quoteResponse, false),
-        );
+        navigate(DEFAULT_ROUTE, { stayOnHomePage: true });
         return;
       }
 
@@ -115,11 +112,12 @@ export default function useSubmitBridgeTransaction() {
       }
       return;
     }
+    // Clear bridge state to prevent navigation back to bridge page
+    dispatch(resetBridgeState());
     // Route user to activity tab on Home page
     await dispatch(setDefaultHomeActiveTabName('activity'));
     // Set navigation state before navigate (HashRouter in v5-compat doesn't support state)
-    setNavState({ stayOnHomePage: true });
-    navigate(DEFAULT_ROUTE);
+    navigate(DEFAULT_ROUTE, { stayOnHomePage: true });
   };
 
   return {

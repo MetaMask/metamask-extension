@@ -36,7 +36,9 @@ export const SelectRpcUrlModal = ({
   const location = useLocation();
   const navState = useNavState();
   // Check both location.state (v5 fallback and future v6) and navigation context (HashRouter v5-compat workaround)
-  const chainId = location.state?.chainId ?? navState?.chainId;
+  // Only fall back to navState if location.state doesn't exist at all
+  const chainId =
+    location.state === undefined ? navState?.chainId : location.state?.chainId;
 
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,

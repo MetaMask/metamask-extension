@@ -104,13 +104,7 @@ export const useBridgeQueryParams = () => {
         }
       });
       const searchString = updatedSearchParams.toString();
-      navigate(
-        {
-          pathname: location.pathname,
-          search: searchString,
-        },
-        { replace: true },
-      );
+      navigate(`${location.pathname}${searchString}`, { replace: true });
     },
     [search, navigate, location.pathname],
   );

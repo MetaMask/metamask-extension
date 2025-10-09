@@ -1,14 +1,15 @@
 import { useSelector } from 'react-redux';
-import { useLocation, matchPath } from 'react-router-dom-v5-compat';
+import { safeMatchPath } from '../utils/safeRouteMatching';
 import { PATH_NAME_MAP, getPaths } from '../helpers/constants/routes';
 import { txDataSelector } from '../selectors';
+import { useSafeNavigation } from './useSafeNavigation';
 
 /**
  * Returns the current page if it matches our route map, as well as the origin
  * if there is a confirmation that was triggered by a dapp.
  */
 export function useSegmentContext() {
-  const location = useLocation();
+  const { location } = useSafeNavigation();
   const paths = getPaths();
   const txData = useSelector(txDataSelector) || {};
   const confirmTransactionOrigin = txData.origin;
@@ -17,9 +18,12 @@ export function useSegmentContext() {
     ? { url: confirmTransactionOrigin }
     : undefined;
 
-  const match = paths.find((path) =>
-    matchPath(location.pathname, { path, exact: true, strict: true }),
-  );
+  // Use safe location from useSafeNavigation hook
+  const safePathname = location.pathname;
+
+  const match = paths.find((path) => {
+    return safeMatchPath({ path, exact: true, strict: true }, safePathname);
+  });
 
   const page = match
     ? {
@@ -27,7 +31,11 @@ export function useSegmentContext() {
         title: PATH_NAME_MAP.get(match),
         url: match,
       }
-    : undefined;
+    : {
+        path: safePathname,
+        title: 'Home',
+        url: safePathname,
+      };
 
   return { page, referrer };
 }

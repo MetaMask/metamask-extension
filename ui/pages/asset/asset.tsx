@@ -52,7 +52,7 @@ const Asset = () => {
 
     const isInvalid = !token || !chainId;
     if (isInvalid) {
-      return <Navigate to={{ pathname: DEFAULT_ROUTE }} />;
+      return <Navigate to={DEFAULT_ROUTE} />;
     }
 
     const shouldShowToken = !token.isNative && token.address;

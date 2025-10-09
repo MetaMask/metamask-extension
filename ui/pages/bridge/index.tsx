@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, Routes, Route } from 'react-router-dom-v5-compat';
+import { Routes, Route } from 'react-router-dom-v5-compat';
 import {
   UnifiedSwapBridgeEventName,
   // TODO: update this with all non-EVM chains when bitcoin added.
   isSolanaChainId,
 } from '@metamask/bridge-controller';
-import { useSetNavState } from '../../contexts/navigation-state';
+import { useSafeNavigation } from '../../hooks/useSafeNavigation';
 import { I18nContext } from '../../contexts/i18n';
 import { clearSwapsState } from '../../ducks/swaps/swaps';
 import {
@@ -51,8 +51,7 @@ const CrossChainSwap = () => {
   useSwapsFeatureFlags();
   useBridging();
 
-  const navigate = useNavigate();
-  const setNavState = useSetNavState();
+  const { navigate } = useSafeNavigation();
   const dispatch = useDispatch();
 
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
@@ -103,8 +102,7 @@ const CrossChainSwap = () => {
   const redirectToDefaultRoute = async () => {
     await resetControllerAndInputStates();
     // Set navigation state before navigate (HashRouter in v5-compat doesn't support state)
-    setNavState({ stayOnHomePage: true });
-    navigate(DEFAULT_ROUTE);
+    navigate(DEFAULT_ROUTE, { stayOnHomePage: true });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
   };

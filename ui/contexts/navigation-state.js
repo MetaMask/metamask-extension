@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
 const NavStateContext = createContext(null);
-const SetNavStateContext = createContext(() => {});
+const SetNavStateContext = createContext((state) => {});
 
 export function NavigationStateProvider({ children }) {
   const [navState, setNavState] = useState(null);

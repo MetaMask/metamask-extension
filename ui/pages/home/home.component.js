@@ -72,7 +72,7 @@ import {
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
-import { AccountOverview } from '../../components/multichain/account-overview';
+import { AccountOverview } from '../../components/multichain';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
@@ -398,8 +398,12 @@ function Home() {
   const [redirecting, setRedirecting] = useState(false);
 
   // Check both router state (v5 fallback) and navigation context (v5-compat with HashRouter)
+  // Only fall back to navState if location.state.stayOnHomePage doesn't exist
   const stayOnHomePage = Boolean(
-    location?.state?.stayOnHomePage || navState?.stayOnHomePage,
+    location?.state?.stayOnHomePage !== null &&
+      location?.state?.stayOnHomePage !== undefined
+      ? location?.state?.stayOnHomePage
+      : navState?.stayOnHomePage,
   );
 
   const checkStatusAndNavigate = useCallback(() => {
@@ -1083,7 +1087,7 @@ function Home() {
             defaultHomeActiveTabName={defaultHomeActiveTabName}
             useExternalServices={useExternalServices}
             setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
-          ></AccountOverview>
+          />
           {
             ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
             <div className="home__support">

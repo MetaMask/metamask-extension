@@ -291,7 +291,9 @@ const CoinButtons = ({
     dispatch,
     trackingLocation,
     navigate,
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     handleSendNonEvm,
+    ///: END:ONLY_INCLUDE_IF
   ]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
@@ -351,7 +353,7 @@ const CoinButtons = ({
 
     if (isMultichainAccountsState2Enabled && selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
-      history.push(
+      navigate(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
       );
     } else {
@@ -361,7 +363,7 @@ const CoinButtons = ({
   }, [
     isMultichainAccountsState2Enabled,
     selectedAccountGroup,
-    history,
+    navigate,
     trackEvent,
     trackingLocation,
     chainId,

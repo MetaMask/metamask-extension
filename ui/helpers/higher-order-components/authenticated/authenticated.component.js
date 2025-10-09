@@ -1,18 +1,15 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Navigate, useLocation } from 'react-router-dom-v5-compat';
+import { Navigate } from 'react-router-dom-v5-compat';
 import { UNLOCK_ROUTE, ONBOARDING_ROUTE } from '../../constants/routes';
-import { useSetNavState } from '../../../contexts/navigation-state';
-
-const OnboardingRoute = { pathname: ONBOARDING_ROUTE };
+import { useSafeNavigation } from '../../../hooks/useSafeNavigation';
 
 export default function Authenticated({
   isUnlocked,
   completedOnboarding,
   children,
 }) {
-  const location = useLocation();
-  const setNavState = useSetNavState();
+  const { location, setNavState } = useSafeNavigation();
 
   // Store redirect location in navigation context when navigating to unlock
   // (HashRouter in v5-compat doesn't support state)
@@ -24,6 +21,9 @@ export default function Authenticated({
           search: location.search,
         },
       });
+    } else if (isUnlocked) {
+      // Clear navigation state when user is unlocked to prevent stale redirects
+      setNavState(null);
     }
   }, [
     isUnlocked,
@@ -37,7 +37,7 @@ export default function Authenticated({
     case isUnlocked && completedOnboarding:
       return children;
     case !completedOnboarding:
-      return <Navigate to={OnboardingRoute} replace />;
+      return <Navigate to={ONBOARDING_ROUTE} replace />;
     default:
       return <Navigate to={UNLOCK_ROUTE} replace />;
   }

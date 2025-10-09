@@ -215,10 +215,7 @@ export const ImportNftsModal = ({ onClose }) => {
         <ModalContent>
           <ModalHeader
             onBack={() => setActionMode(ACTION_MODES.IMPORT_NFT)}
-            onClose={() => {
-              onClose();
-              navigate();
-            }}
+            onClose={onClose}
           >
             <Text variant={TextVariant.headingSm} align={TextAlign.Center}>
               {t('networkMenuHeading')}

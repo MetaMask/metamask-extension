@@ -2346,7 +2346,8 @@
     "isUpdatingGatorPermissions": false,
     "networkConnectionBanner": {
       "status": "unknown"
-    }
+    },
+    "coverageResults": {}
   },
   "ramps": {
     "buyableChains": [

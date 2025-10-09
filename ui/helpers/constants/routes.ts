@@ -803,11 +803,13 @@ export function matchMultiplePaths(
   options: { exact?: boolean; strict?: boolean } = {},
 ) {
   for (const path of paths) {
-    const match = matchPath(pathname, {
-      path,
-      exact: options.exact,
-      strict: options.strict,
-    });
+    const match = matchPath(
+      {
+        path,
+        end: options.exact,
+      },
+      pathname,
+    );
     if (match) {
       return match;
     }

@@ -74,7 +74,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     if (location.state?.from?.pathname) {
       const search = location.state.from.search || '';
       redirectTo = location.state.from.pathname + search;
-      ownProps.clearNavState();
     } else if (ownProps.navState?.from?.pathname) {
       redirectTo =
         ownProps.navState.from.pathname + (ownProps.navState.from.search || '');
