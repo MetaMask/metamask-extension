@@ -1,15 +1,15 @@
 import React from 'react';
+import { useParams } from 'react-router-dom-v5-compat';
+import { useSafeNavigation } from '../../../hooks/useSafeNavigation';
 import {
-  useNavigate,
-  useLocation,
-  useParams,
-} from 'react-router-dom-v5-compat';
-import { useNavState, useSetNavState } from '../../../contexts/navigation-state';
+  useNavState,
+  useSetNavState,
+} from '../../../contexts/navigation-state';
 
 // Types for the router hooks
 export type RouterHooksProps = {
-  navigate: ReturnType<typeof useNavigate>;
-  location: ReturnType<typeof useLocation>;
+  navigate: (path: string, state?: Record<string, unknown> | null) => void;
+  location: ReturnType<typeof import('react-router-dom-v5-compat').useLocation>;
   params: ReturnType<typeof useParams>;
   navState: ReturnType<typeof useNavState>;
   clearNavState: () => void;
@@ -18,9 +18,8 @@ export type RouterHooksProps = {
 function withRouterHooks<Props extends object>(
   WrappedComponent: React.ComponentType<Props & RouterHooksProps>,
 ): React.ComponentType<Props> {
-  function componentWithRouterHooks(props: Props) {
-    const navigate = useNavigate();
-    const location = useLocation();
+  const ComponentWithRouterHooks = (props: Props) => {
+    const { navigate, location } = useSafeNavigation();
     const params = useParams();
     const navState = useNavState();
     const setNavState = useSetNavState();
@@ -37,14 +36,14 @@ function withRouterHooks<Props extends object>(
         clearNavState={clearNavState}
       />
     );
-  }
+  };
 
   // Preserve component name for debugging
-  componentWithRouterHooks.displayName = `withRouterHooks(${
+  ComponentWithRouterHooks.displayName = `withRouterHooks(${
     WrappedComponent.displayName || WrappedComponent.name || 'Component'
   })`;
 
-  return componentWithRouterHooks;
+  return ComponentWithRouterHooks;
 }
 
 export default withRouterHooks;
