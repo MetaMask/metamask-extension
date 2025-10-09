@@ -3,7 +3,7 @@ import { Mockttp } from 'mockttp';
 export const FEATURE_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags';
 
-export const mockSendRedesignFeatureFlag = (mockServer: Mockttp) =>
+const mockSendFeatureFlag = (mockServer: Mockttp, enabled: boolean) =>
   mockServer
     .forGet(FEATURE_FLAGS_URL)
     .withQuery({
@@ -18,9 +18,15 @@ export const mockSendRedesignFeatureFlag = (mockServer: Mockttp) =>
         json: [
           {
             sendRedesign: {
-              enabled: true,
+              enabled,
             },
           },
         ],
       };
     });
+
+export const mockSendRedesignFeatureFlag = (mockServer: Mockttp) =>
+  mockSendFeatureFlag(mockServer, true);
+
+export const mockLegacySendFeatureFlag = (mockServer: Mockttp) =>
+  mockSendFeatureFlag(mockServer, false);
