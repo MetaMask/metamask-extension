@@ -1,9 +1,5 @@
 import { SUBSCRIPTION_STATUSES } from '@metamask/subscription-controller';
 
-export enum SubscriptionProductName {
-  SHIELD = 'shield',
-}
-
 export const ActiveSubscriptionStatuses: string[] = [
   SUBSCRIPTION_STATUSES.active,
   SUBSCRIPTION_STATUSES.trialing,

@@ -133,6 +133,7 @@ import {
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
 
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
@@ -218,7 +219,6 @@ import {
   METAMASK_REFERRAL_CODE,
 } from '../../shared/constants/referrals';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
-import { SubscriptionProductName } from '../../shared/constants/subscriptions';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -980,7 +980,7 @@ export default class MetamaskController extends EventEmitter {
     this.getSecurityAlertsConfig = async (url) => {
       const shieldSubscription = this.controllerMessenger.call(
         'SubscriptionController:getSubscriptionByProduct',
-        SubscriptionProductName.SHIELD,
+        PRODUCT_TYPES.SHIELD,
       );
       if (
         shieldSubscription &&

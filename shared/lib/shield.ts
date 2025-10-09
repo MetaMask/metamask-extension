@@ -1,8 +1,5 @@
-import { Subscription } from '@metamask/subscription-controller';
-import {
-  ActiveSubscriptionStatuses,
-  SubscriptionProductName,
-} from '../constants/subscriptions';
+import { PRODUCT_TYPES, Subscription } from '@metamask/subscription-controller';
+import { ActiveSubscriptionStatuses } from '../constants/subscriptions';
 import { getIsMetaMaskShieldFeatureEnabled } from '../modules/environment';
 
 export function getIsShieldSubscriptionActive(
@@ -17,12 +14,12 @@ export function getIsShieldSubscriptionActive(
   if (Array.isArray(subscriptions)) {
     shieldSubscription = subscriptions.find((subscription) =>
       subscription.products.some(
-        (product) => product.name === SubscriptionProductName.SHIELD,
+        (product) => product.name === PRODUCT_TYPES.SHIELD,
       ),
     );
   } else {
     const isShieldSubscription = subscriptions.products.some(
-      (product) => product.name === SubscriptionProductName.SHIELD,
+      (product) => product.name === PRODUCT_TYPES.SHIELD,
     );
     if (isShieldSubscription) {
       shieldSubscription = subscriptions;
