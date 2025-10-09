@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
-  PaymentType,
+  PAYMENT_TYPES,
   Product,
   PRODUCT_TYPES,
   ProductType,
@@ -87,7 +87,7 @@ const TransactionShield = () => {
   const { subscriptionPricing, loading: subscriptionPricingLoading } =
     useSubscriptionPricing();
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
-    'crypto' as PaymentType,
+    PAYMENT_TYPES.byCrypto,
     subscriptionPricing,
   );
 
@@ -190,9 +190,7 @@ const TransactionShield = () => {
     padding: 4,
   };
 
-  const currentToken = useMemo(():
-    | (TokenPaymentInfo & { chainId: string | number })
-    | undefined => {
+  const currentToken = useMemo((): TokenPaymentInfo | undefined => {
     if (
       !shieldSubscription ||
       !isCryptoPaymentMethod(shieldSubscription.paymentMethod)
@@ -213,9 +211,7 @@ const TransactionShield = () => {
           .crypto.tokenSymbol,
     );
 
-    return token
-      ? { ...token, chainId: chainPaymentInfo?.chainId || '' }
-      : undefined;
+    return token;
   }, [cryptoPaymentMethod, shieldSubscription]);
 
   const buttonRow = (label: string, onClick: () => void, id?: string) => {
@@ -775,6 +771,7 @@ const TransactionShield = () => {
           <AddFundsModal
             onClose={() => setIsAddFundsModalOpen(false)}
             token={currentToken}
+            chainId={shieldSubscription.paymentMethod.crypto.chainId}
           />
         )}
     </Box>

@@ -45,11 +45,11 @@ import { trace, TraceName } from '../../../../../shared/lib/trace';
 const AddFundsModal = ({
   onClose,
   token,
+  chainId,
 }: {
   onClose: () => void;
-  token: TokenPaymentInfo & {
-    chainId: string | number;
-  };
+  token: TokenPaymentInfo;
+  chainId: string | number;
 }) => {
   const t = useI18nContext();
   const { openBuyCryptoInPdapp } = useRamps();
@@ -73,15 +73,14 @@ const AddFundsModal = ({
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
   const isBuyableChain = useMemo(() => {
-    if (!token.chainId) {
+    if (!chainId) {
       return false;
     }
     return buyableChains.some(
       (network: AggregatorNetwork) =>
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        String(network.chainId) === hexToDecimal(token.chainId!),
+        String(network.chainId) === hexToDecimal(chainId),
     );
-  }, [buyableChains, token.chainId]);
+  }, [buyableChains, chainId]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp();
@@ -93,13 +92,13 @@ const AddFundsModal = ({
         text: 'Buy',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: token.chainId,
+        chain_id: chainId,
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         token_symbol: token.symbol,
       },
     });
-  }, [token.chainId, openBuyCryptoInPdapp, token.symbol, trackEvent]);
+  }, [chainId, openBuyCryptoInPdapp, token.symbol, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
@@ -111,7 +110,7 @@ const AddFundsModal = ({
         location: 'Transaction Shield',
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: token.chainId,
+        chain_id: chainId,
       },
     });
 
@@ -128,7 +127,7 @@ const AddFundsModal = ({
     isMultichainAccountsState2Enabled,
     selectedAccountGroup,
     history,
-    token.chainId,
+    chainId,
     trackEvent,
   ]);
 
@@ -136,7 +135,7 @@ const AddFundsModal = ({
     openBridgeExperience(MetaMetricsSwapsEventSource.TransactionShield, {
       symbol: token.symbol,
       address: token.address,
-      chainId: token.chainId,
+      chainId,
     });
   }, [token, openBridgeExperience]);
 
