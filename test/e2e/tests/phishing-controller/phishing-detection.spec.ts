@@ -615,6 +615,7 @@ describe('Phishing Detection', function (this: Suite) {
             const phishingWarningPage = new PhishingWarningPage(driver);
             await phishingWarningPage.checkPageIsLoaded();
             await phishingWarningPage.clickProceedAnywayButton();
+
             await driver.wait(
               until.titleIs('Mock E2E Phishing Page: Path 1'),
               10000,
@@ -623,7 +624,7 @@ describe('Phishing Detection', function (this: Suite) {
         );
       });
 
-      it('does not display the MetaMask Phishing Detection page when accessing a whitelisted subpath', async function () {
+      it('when the subpath is whitelisted, the phishing warning page is not displayed for the blocklisted path and all subpaths', async function () {
         await withFixtures(
           {
             fixtures: new FixtureBuilder().build(),
