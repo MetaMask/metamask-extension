@@ -35,6 +35,7 @@ import { mapChainIdToSupportedEVMChain } from '../trust-signals/trust-signals-ut
 import {
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
+  ScanAddressResponse,
 } from '../trust-signals/types';
 
 export type AddTransactionOptions = NonNullable<
@@ -260,10 +261,26 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     return;
   }
 
+  const createCacheKey = (address: string) =>
+    `${supportedEVMChain}:${address.toLowerCase()}`;
+
+  const getAddressSecurityAlertResponseWithChain = (address: string) => {
+    const cacheKey = createCacheKey(address);
+    return getSecurityAlertResponse(cacheKey);
+  };
+
+  const addAddressSecurityAlertResponseWithChain = (
+    address: string,
+    response: ScanAddressResponse,
+  ) => {
+    const cacheKey = createCacheKey(address);
+    return addSecurityAlertResponse(cacheKey, response);
+  };
+
   scanAddressAndAddToCache(
     to,
-    getSecurityAlertResponse,
-    addSecurityAlertResponse,
+    getAddressSecurityAlertResponseWithChain,
+    addAddressSecurityAlertResponseWithChain,
     supportedEVMChain,
   ).catch((error) => {
     console.error(

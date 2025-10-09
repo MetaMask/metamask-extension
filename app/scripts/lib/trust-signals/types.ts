@@ -62,10 +62,10 @@ export type CachedScanAddressResponse = ScanAddressResponse & {
 };
 
 export type GetAddressSecurityAlertResponse = (
-  address: string,
+  cacheKey: string,
 ) => ScanAddressResponse | undefined;
 
 export type AddAddressSecurityAlertResponse = (
-  address: string,
+  cacheKey: string,
   response: ScanAddressResponse,
 ) => void;

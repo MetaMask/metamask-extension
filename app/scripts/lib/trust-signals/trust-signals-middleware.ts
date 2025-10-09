@@ -1,5 +1,8 @@
 import { JsonRpcRequest, JsonRpcResponse } from '@metamask/utils';
-import { NetworkController } from '@metamask/network-controller';
+import {
+  NetworkController,
+  NetworkClientId,
+} from '@metamask/network-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import type { AppStateController } from '../../controllers/app-state-controller';
 import { PreferencesController } from '../../controllers/preferences-controller';
@@ -14,9 +17,13 @@ import {
   isSecurityAlertsEnabledByUser,
   isConnected,
   connectScreenHasBeenPrompted,
-  getChainId,
+  mapChainIdToSupportedEVMChain,
 } from './trust-signals-util';
-import { SupportedEVMChain } from './types';
+
+export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
+  origin?: string;
+  networkClientId: NetworkClientId;
+};
 
 export function createTrustSignalsMiddleware(
   networkController: NetworkController,
@@ -26,7 +33,7 @@ export function createTrustSignalsMiddleware(
   getPermittedAccounts: (origin: string) => string[],
 ) {
   return async (
-    req: JsonRpcRequest & { origin?: string },
+    req: TrustSignalsMiddlewareRequest,
     _res: JsonRpcResponse,
     next: () => void,
   ) => {
@@ -58,7 +65,7 @@ export function createTrustSignalsMiddleware(
 }
 
 function scanUrl(
-  req: JsonRpcRequest & { origin?: string },
+  req: TrustSignalsMiddlewareRequest,
   phishingController: PhishingController,
 ) {
   if (req.origin) {
@@ -69,7 +76,7 @@ function scanUrl(
 }
 
 function handleEthSendTransaction(
-  req: JsonRpcRequest,
+  req: TrustSignalsMiddlewareRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
 ) {
@@ -78,18 +85,20 @@ function handleEthSendTransaction(
   }
 
   const { to } = req.params[0];
-  let chainId: SupportedEVMChain | undefined;
-  try {
-    chainId = getChainId(networkController);
-  } catch (error) {
-    console.error(
-      '[createTrustSignalsMiddleware] error getting chainId:',
-      error,
-    );
+
+  const { chainId: rawChainId } =
+    networkController.getNetworkConfigurationByNetworkClientId(
+      req.networkClientId,
+    ) ?? {};
+
+  if (!rawChainId) {
+    console.error('ChainID not found for networkClientId');
     return;
   }
 
+  const chainId = mapChainIdToSupportedEVMChain(rawChainId);
   if (!chainId) {
+    console.error('Unsupported chainId:', rawChainId);
     return;
   }
 
@@ -107,7 +116,7 @@ function handleEthSendTransaction(
 }
 
 function handleEthSignTypedData(
-  req: JsonRpcRequest,
+  req: TrustSignalsMiddlewareRequest,
   appStateController: AppStateController,
   networkController: NetworkController,
 ) {
@@ -125,18 +134,19 @@ function handleEthSignTypedData(
     return;
   }
 
-  let chainId: SupportedEVMChain | undefined;
-  try {
-    chainId = getChainId(networkController);
-  } catch (error) {
-    console.error(
-      '[createTrustSignalsMiddleware] error getting chainId:',
-      error,
-    );
+  const { chainId: rawChainId } =
+    networkController.getNetworkConfigurationByNetworkClientId(
+      req.networkClientId,
+    ) ?? {};
+
+  if (!rawChainId) {
+    console.error('ChainID not found for networkClientId');
     return;
   }
 
+  const chainId = mapChainIdToSupportedEVMChain(rawChainId);
   if (!chainId) {
+    console.error('Unsupported chainId:', rawChainId);
     return;
   }
 

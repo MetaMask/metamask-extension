@@ -53,7 +53,8 @@ export async function scanAddressAndAddToCache(
   addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse,
   chainId: SupportedEVMChain,
 ): Promise<ScanAddressResponse> {
-  const cachedResponse = getAddressSecurityAlertResponse(address);
+  const cacheKey = `${chainId}:${address.toLowerCase()}`;
+  const cachedResponse = getAddressSecurityAlertResponse(cacheKey);
   if (cachedResponse) {
     return cachedResponse;
   }
@@ -64,11 +65,11 @@ export async function scanAddressAndAddToCache(
     result_type: ResultType.Loading,
     label: '',
   };
-  addAddressSecurityAlertResponse(address, loadingResponse);
+  addAddressSecurityAlertResponse(cacheKey, loadingResponse);
 
   try {
     const result = await scanAddress(chainId, address);
-    addAddressSecurityAlertResponse(address, result);
+    addAddressSecurityAlertResponse(cacheKey, result);
     return result;
   } catch (error) {
     const errorResponse: ScanAddressResponse = {
@@ -77,7 +78,7 @@ export async function scanAddressAndAddToCache(
       result_type: ResultType.ErrorResult,
       label: '',
     };
-    addAddressSecurityAlertResponse(address, errorResponse);
+    addAddressSecurityAlertResponse(cacheKey, errorResponse);
     throw error;
   }
 }

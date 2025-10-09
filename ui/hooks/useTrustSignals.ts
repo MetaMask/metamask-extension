@@ -3,11 +3,14 @@ import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { ResultType } from '../../app/scripts/lib/trust-signals/types';
+// eslint-disable-next-line import/no-restricted-paths
+import { mapChainIdToSupportedEVMChain } from '../../app/scripts/lib/trust-signals/trust-signals-util';
 import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
 
 export type UseTrustSignalRequest = {
   value: string;
   type: NameType;
+  chainId?: string;
 };
 
 export enum TrustSignalDisplayState {
@@ -28,15 +31,16 @@ export type TrustSignalResult = {
 export function useTrustSignal(
   value: string,
   type: NameType,
+  chainId?: string,
 ): TrustSignalResult {
-  return useTrustSignals([{ value, type }])[0];
+  return useTrustSignals([{ value, type, chainId }])[0];
 }
 
 export function useTrustSignals(
   requests: UseTrustSignalRequest[],
 ): TrustSignalResult[] {
   return useSelector((state) =>
-    requests.map(({ value, type }) => {
+    requests.map(({ value, type, chainId }) => {
       if (type !== NameType.ETHEREUM_ADDRESS) {
         return {
           state: TrustSignalDisplayState.Unknown,
@@ -44,9 +48,27 @@ export function useTrustSignals(
         };
       }
 
+      // If no chainId provided or chainId is not supported, return Unknown
+      if (!chainId) {
+        return {
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        };
+      }
+
+      const supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
+      if (!supportedEVMChain) {
+        return {
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        };
+      }
+
+      const cacheKey = `${supportedEVMChain}:${value.toLowerCase()}`;
+
       const securityAlertResponse = getAddressSecurityAlertResponse(
         state,
-        value,
+        cacheKey,
       );
 
       if (!securityAlertResponse) {

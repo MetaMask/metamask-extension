@@ -2,6 +2,8 @@ import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
 // eslint-disable-next-line import/no-restricted-paths
 import { ResultType } from '../../app/scripts/lib/trust-signals/types';
+// eslint-disable-next-line import/no-restricted-paths
+import { SupportedEVMChain } from '../../app/scripts/lib/trust-signals/types';
 import {
   useTrustSignal,
   useTrustSignals,
@@ -17,6 +19,12 @@ jest.mock('react-redux', () => ({
 
 jest.mock('../selectors', () => ({
   getAddressSecurityAlertResponse: jest.fn(),
+}));
+
+jest.mock('../../app/scripts/lib/trust-signals/trust-signals-util', () => ({
+  mapChainIdToSupportedEVMChain: jest
+    .fn()
+    .mockReturnValue(SupportedEVMChain.Ethereum),
 }));
 
 const VALUE_MOCK = '0x1234567890123456789012345678901234567890';

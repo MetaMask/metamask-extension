@@ -1183,10 +1183,9 @@ export class AppStateController extends BaseController<
   }
 
   getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse = (
-    address: string,
+    cacheKey: string,
   ): ScanAddressResponse | undefined => {
-    const cached =
-      this.state.addressSecurityAlertResponses[address.toLowerCase()];
+    const cached = this.state.addressSecurityAlertResponses[cacheKey];
 
     if (!cached) {
       return undefined;
@@ -1198,7 +1197,7 @@ export class AppStateController extends BaseController<
     if (now - cached.timestamp > ADDRESS_SECURITY_ALERT_TTL) {
       // Remove expired entry
       this.update((state) => {
-        delete state.addressSecurityAlertResponses[address.toLowerCase()];
+        delete state.addressSecurityAlertResponses[cacheKey];
       });
       return undefined;
     }
@@ -1209,11 +1208,11 @@ export class AppStateController extends BaseController<
   };
 
   addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse = (
-    address: string,
+    cacheKey: string,
     addressSecurityAlertResponse: ScanAddressResponse,
   ): void => {
     this.update((state) => {
-      state.addressSecurityAlertResponses[address.toLowerCase()] = {
+      state.addressSecurityAlertResponses[cacheKey] = {
         ...addressSecurityAlertResponse,
         timestamp: Date.now(),
       };
