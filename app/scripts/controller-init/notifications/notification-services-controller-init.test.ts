@@ -60,6 +60,7 @@ describe('NotificationServicesControllerInit', () => {
           platform: 'extension',
           spaceId: 'MOCK_SPACE_ID',
           accessToken: 'MOCK_ACCESS_TOKEN',
+          platformVersion: expect.any(String),
         },
       },
     });

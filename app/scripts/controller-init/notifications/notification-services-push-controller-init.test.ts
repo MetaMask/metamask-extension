@@ -9,7 +9,10 @@ import {
   getNotificationServicesPushControllerMessenger,
   type NotificationServicesPushControllerMessenger,
 } from '../messengers/notifications';
-import { NotificationServicesPushControllerInit } from './notification-services-push-controller-init';
+import {
+  getNormalisedLocale,
+  NotificationServicesPushControllerInit,
+} from './notification-services-push-controller-init';
 
 jest.mock('@metamask/notification-services-controller/push-services');
 
@@ -82,7 +85,23 @@ describe('NotificationServicesPushControllerInit', () => {
           deleteRegToken: expect.any(Function),
           subscribeToPushNotifications: expect.any(Function),
         },
+        getLocale: expect.any(Function),
       },
     });
+  });
+});
+
+describe('NotificationServicesPushControllerInit - getNormalisedLocale', () => {
+  it('converts underscore locale to hypenated locale', () => {
+    // normalises
+    expect(getNormalisedLocale('en_GB')).toBe('en-GB');
+    expect(getNormalisedLocale('zh_CN')).toBe('zh-CN');
+
+    // does nothing (since already hyphenated)
+    expect(getNormalisedLocale('en-GB')).toBe('en-GB');
+    expect(getNormalisedLocale('zh-CN')).toBe('zh-CN');
+
+    // does nothing (as does not specify region)
+    expect(getNormalisedLocale('en')).toBe('en');
   });
 });

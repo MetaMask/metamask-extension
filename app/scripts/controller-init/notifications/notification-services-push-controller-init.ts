@@ -15,6 +15,15 @@ import {
   onPushNotificationReceived,
 } from '../../controllers/push-notifications';
 
+/**
+ * normalises the extension locale path to use hyphens ('-') instead of underscores ('_')
+ *
+ * @param locale - extension locale
+ * @returns normalised locale
+ */
+export const getNormalisedLocale = (locale: string): string =>
+  locale.replace('_', '-');
+
 export const NotificationServicesPushControllerInit: ControllerInitFunction<
   NotificationServicesPushController,
   NotificationServicesPushControllerMessenger
@@ -50,9 +59,8 @@ export const NotificationServicesPushControllerInit: ControllerInitFunction<
         }),
       },
       getLocale: () =>
-        getController('PreferencesController').state.currentLocale.replace(
-          '_',
-          '-',
+        getNormalisedLocale(
+          getController('PreferencesController').state.currentLocale,
         ),
     },
   });
