@@ -13,7 +13,5 @@ export const useEnableShieldCoverageChecks = () => {
     !subscriptionsError &&
     getIsShieldSubscriptionActive(subscriptions);
 
-  return (
-    hasUserSubscribedToShield
-  );
+  return hasUserSubscribedToShield;
 };
