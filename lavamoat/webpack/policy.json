@@ -1934,6 +1934,8 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/signature-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
