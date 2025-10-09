@@ -93,7 +93,6 @@ import { CreateSolanaAccountModal } from '../../../components/multichain/create-
 import { mergeCaip25CaveatValues } from '../../../../shared/lib/caip25-caveat-merger';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
-import { useShieldSubscriptionContext } from '../../../contexts/shield/shield-subscription';
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
@@ -134,7 +133,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const { setShieldEntryModalShownStatus } = useShieldSubscriptionContext();
 
   const existingPermissions = useSelector((state) =>
     getPermissions(state, request.metadata?.origin),
@@ -445,16 +443,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       },
     };
     approveConnection(_request);
-    // Whenever user connects to a dapp, we want to display the shield entry modal in the home page.
-    // set the shield entry modal shown status to true if user has not subscribed to shield yet.
-    setShieldEntryModalShownStatus(true);
   }, [
     request,
     requestedCaip25CaveatValueWithExistingPermissions,
     selectedCaipAccountAddresses,
     selectedChainIds,
     approveConnection,
-    setShieldEntryModalShownStatus,
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);

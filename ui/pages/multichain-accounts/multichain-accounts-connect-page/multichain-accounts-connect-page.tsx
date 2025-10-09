@@ -89,7 +89,6 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getMultichainNetwork } from '../../../selectors/multichain';
-import { useShieldSubscriptionContext } from '../../../contexts/shield/shield-subscription';
 
 export type MultichainAccountsConnectPageRequest = {
   permissions?: PermissionsRequest;
@@ -130,7 +129,6 @@ export const MultichainAccountsConnectPage: React.FC<
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const { setShieldEntryModalShownStatus } = useShieldSubscriptionContext();
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
     MultichainAccountsConnectPageMode.Summary,
   );
@@ -477,16 +475,12 @@ export const MultichainAccountsConnectPage: React.FC<
       },
     };
     approveConnection(_request);
-    // Whenever user connects to a dapp, we want to display the shield entry modal in the home page.
-    // set the shield entry modal shown status to true if user has not subscribed to shield yet.
-    setShieldEntryModalShownStatus(true);
   }, [
     request,
     requestedCaip25CaveatValueWithExistingPermissions,
     selectedCaipAccountIds,
     selectedChainIds,
     approveConnection,
-    setShieldEntryModalShownStatus,
   ]);
 
   const title = transformOriginToTitle(targetSubjectMetadata.origin);

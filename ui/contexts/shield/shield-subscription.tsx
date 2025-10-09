@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Subscription } from '@metamask/subscription-controller';
+import { PRODUCT_TYPES, Subscription } from '@metamask/subscription-controller';
 import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
@@ -54,7 +54,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const isSignedIn = useSelector(selectIsSignedIn);
   const { subscriptions } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
-    'shield',
+    PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
   const isShieldSubscriptionActive = useSelector(getIsActiveShieldSubscription);
@@ -101,8 +101,9 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     }
 
     if (isShieldSubscriptionActive) {
-      // reset the shield entry modal state if subscription is active
-      dispatch(setShowShieldEntryModalOnce(null));
+      // if user has subscribed to shield, set the shield entry modal shown status to false
+      // means we will not show the shield entry modal again
+      dispatch(setShowShieldEntryModalOnce(false));
     } else if (!hasShieldEntryModalShownOnce) {
       // shield entry modal has been shown before,
       const isUserBalanceCriteriaMet = getIsUserBalanceCriteriaMet();
@@ -127,7 +128,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
 
   const setShieldEntryModalShownStatus = useCallback(
     (showShieldEntryModalOnce: boolean | null) => {
-      if (!isShieldSubscriptionActive && !process.env.IN_TEST) {
+      if (!isShieldSubscriptionActive) {
         dispatch(setShowShieldEntryModalOnce(showShieldEntryModalOnce));
       }
     },
