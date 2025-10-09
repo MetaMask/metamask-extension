@@ -794,49 +794,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     this.controllerMessenger.subscribe(
-      'AccountTreeController:selectedAccountGroupChange',
-      () => {
-        const solAccounts =
-          this.accountTreeController.getAccountsFromSelectedAccountGroup({
-            scopes: [SolScope.Mainnet],
-          });
-
-        // eslint-disable-next-line no-unused-vars
-        let btcAccounts = [];
-        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-        btcAccounts =
-          this.accountTreeController.getAccountsFromSelectedAccountGroup({
-            scopes: [BtcScope.Mainnet],
-          });
-        ///: END:ONLY_INCLUDE_IF(bitcoin)
-
-        const allEnabledNetworks = Object.values(
-          this.networkEnablementController.state.enabledNetworkMap,
-        ).reduce((acc, curr) => {
-          return { ...acc, ...curr };
-        }, {});
-
-        if (Object.keys(allEnabledNetworks).length === 1) {
-          const chainId = Object.keys(allEnabledNetworks)[0];
-
-          let shouldEnableMainetNetworks = false;
-          if (chainId === SolScope.Mainnet && solAccounts.length === 0) {
-            shouldEnableMainetNetworks = true;
-          }
-          ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-          if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
-            shouldEnableMainetNetworks = true;
-          }
-          ///: END:ONLY_INCLUDE_IF(bitcoin)
-
-          if (shouldEnableMainetNetworks) {
-            this.networkEnablementController.enableNetwork('0x1');
-          }
-        }
-      },
-    );
-
-    this.controllerMessenger.subscribe(
       `OnboardingController:stateChange`,
       previousValueComparator(async (prevState, currState) => {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;

@@ -4,15 +4,17 @@ import {
 } from '@metamask/network-enablement-controller';
 import { NetworkState } from '@metamask/network-controller';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
-import { SolAccountType, SolScope } from '@metamask/keyring-api';
+import { BtcScope, SolAccountType, SolScope } from '@metamask/keyring-api';
 import { KnownCaipNamespace } from '@metamask/utils';
-import { NetworkEnablementControllerMessenger } from '../messengers/assets';
+import {
+  NetworkEnablementControllerMessenger,
+  NetworkEnablementControllerInitMessenger,
+} from '../messengers/assets';
 import { ControllerInitFunction } from '../types';
 import {
   CHAIN_IDS,
   FEATURED_NETWORK_CHAIN_IDS,
 } from '../../../../shared/constants/network';
-import { NetworkEnablementControllerInitMessenger } from '../messengers/assets/network-enablement-controller-messenger';
 
 /**
  * Generates a map of EVM chain IDs to their enabled status based on NetworkController state.
@@ -145,6 +147,52 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
           SolScope.Mainnet,
           KnownCaipNamespace.Solana,
         );
+      }
+    },
+  );
+
+  initMessenger.subscribe(
+    'AccountTreeController:selectedAccountGroupChange',
+    () => {
+      const solAccounts = initMessenger.call(
+        'AccountTreeController:getAccountsFromSelectedAccountGroup',
+        {
+          scopes: [SolScope.Mainnet],
+        },
+      );
+
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+      const btcAccounts = initMessenger.call(
+        'AccountTreeController:getAccountsFromSelectedAccountGroup',
+        {
+          scopes: [BtcScope.Mainnet],
+        },
+      );
+      ///: END:ONLY_INCLUDE_IF(bitcoin)
+
+      const allEnabledNetworks = Object.values(
+        controller.state.enabledNetworkMap,
+      ).reduce((acc, curr) => {
+        return { ...acc, ...curr };
+      }, {});
+
+      if (Object.keys(allEnabledNetworks).length === 1) {
+        const chainId = Object.keys(allEnabledNetworks)[0];
+
+        let shouldEnableMainnetNetworks = false;
+        if (chainId === SolScope.Mainnet && solAccounts.length === 0) {
+          shouldEnableMainnetNetworks = true;
+        }
+
+        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+        if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
+          shouldEnableMainnetNetworks = true;
+        }
+        ///: END:ONLY_INCLUDE_IF(bitcoin)
+
+        if (shouldEnableMainnetNetworks) {
+          controller.enableNetwork('0x1');
+        }
       }
     },
   );

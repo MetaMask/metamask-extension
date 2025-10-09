@@ -8,6 +8,10 @@ import {
 } from '@metamask/network-controller';
 import { TransactionControllerTransactionSubmittedEvent } from '@metamask/transaction-controller';
 import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
+import {
+  AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+  AccountTreeControllerSelectedAccountGroupChangeEvent,
+} from '@metamask/account-tree-controller';
 
 type Actions =
   | NetworkControllerGetStateAction
@@ -41,7 +45,12 @@ export function getNetworkEnablementControllerMessenger(
   });
 }
 
-type AllowedInitializationEvents = AccountsControllerSelectedAccountChangeEvent;
+type AllowedInitializationActions =
+  AccountTreeControllerGetAccountsFromSelectedAccountGroupAction;
+
+type AllowedInitializationEvents =
+  | AccountsControllerSelectedAccountChangeEvent
+  | AccountTreeControllerSelectedAccountGroupChangeEvent;
 
 export type NetworkEnablementControllerInitMessenger = ReturnType<
   typeof getNetworkEnablementControllerInitMessenger
@@ -55,11 +64,19 @@ export type NetworkEnablementControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getNetworkEnablementControllerInitMessenger(
-  messenger: Messenger<never, AllowedInitializationEvents>,
+  messenger: Messenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
 ) {
   return messenger.getRestricted({
     name: 'NetworkEnablementControllerInit',
-    allowedActions: [],
-    allowedEvents: ['AccountsController:selectedAccountChange'],
+    allowedActions: [
+      'AccountTreeController:getAccountsFromSelectedAccountGroup',
+    ],
+    allowedEvents: [
+      'AccountsController:selectedAccountChange',
+      'AccountTreeController:selectedAccountGroupChange',
+    ],
   });
 }
