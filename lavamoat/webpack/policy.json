@@ -2298,9 +2298,10 @@
         "Element": true,
         "HTMLElement": true,
         "ShadowRoot": true,
+        "console.error": true,
+        "console.warn": true,
         "document": true,
-        "navigator.userAgent": true,
-        "navigator.userAgentData": true
+        "navigator.userAgent": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": {
