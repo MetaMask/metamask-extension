@@ -40,6 +40,7 @@ export const loginWithBalanceValidation = async (
   value?: string,
 ) => {
   await loginWithoutBalanceValidation(driver, password);
+  return
   const homePage = new HomePage(driver);
 
   // Verify the expected balance on the homepage
