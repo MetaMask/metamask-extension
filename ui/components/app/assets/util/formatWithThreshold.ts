@@ -1,3 +1,10 @@
+/**
+ * @deprecated Use `useFormatters` or `createFormatters` instead.
+ * @param amount
+ * @param threshold
+ * @param locale
+ * @param options
+ */
 export const formatWithThreshold = (
   amount: number | null,
   threshold: number,

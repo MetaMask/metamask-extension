@@ -1,3 +1,4 @@
+import ExtensionPlatform from '../../platforms/extension';
 import {
   BaseRestrictedControllerMessenger,
   ControllerInitRequest,
@@ -15,12 +16,13 @@ export function buildControllerInitRequestMock(): jest.Mocked<
   >
 > {
   return {
+    currentMigrationVersion: 0,
     // @ts-expect-error: Partial mock.
     extension: {},
+    platform: new ExtensionPlatform(),
     getCronjobControllerStorageManager: jest.fn(),
     getController: jest.fn(),
     getFlatState: jest.fn(),
-    getGlobalChainId: jest.fn().mockReturnValue(CHAIN_ID_MOCK),
     getPermittedAccounts: jest.fn(),
     getProvider: jest.fn(),
     getTransactionMetricsRequest: jest.fn(),
@@ -29,6 +31,7 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     persistedState: {},
     removeAllConnections: jest.fn(),
     setupUntrustedCommunicationEip1193: jest.fn(),
+    setLocked: jest.fn(),
     showNotification: jest.fn(),
     preinstalledSnaps: [],
   };

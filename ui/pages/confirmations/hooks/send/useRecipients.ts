@@ -5,6 +5,7 @@ export type Recipient = {
   accountGroupName?: string;
   address: string;
   contactName?: string;
+  isContact?: boolean;
   walletName?: string;
 };
 

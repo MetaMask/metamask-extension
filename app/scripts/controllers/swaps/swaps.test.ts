@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { ChainId, InfuraNetworkType } from '@metamask/controller-utils';
 import BigNumberjs from 'bignumber.js';
 import { mapValues } from 'lodash';
@@ -1743,6 +1744,118 @@ describe('SwapsController', function () {
           'Expected non-empty array param.',
         );
       });
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const controller = getSwapsController();
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'anonymous',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('includes expected state in state logs', () => {
+      const controller = getSwapsController();
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "swapsState": {
+            "approveTxId": null,
+            "customApproveTxData": "",
+            "customGasPrice": null,
+            "customMaxFeePerGas": null,
+            "customMaxGas": "",
+            "customMaxPriorityFeePerGas": null,
+            "errorKey": "",
+            "fetchParams": null,
+            "quotes": {},
+            "quotesLastFetched": null,
+            "quotesPollingLimitEnabled": false,
+            "routeState": "",
+            "saveFetchedQuotes": false,
+            "selectedAggId": null,
+            "swapsFeatureFlags": {},
+            "swapsFeatureIsLive": true,
+            "swapsQuotePrefetchingRefreshTime": 60000,
+            "swapsQuoteRefreshTime": 60000,
+            "swapsStxBatchStatusRefreshTime": 10000,
+            "swapsStxGetTransactionsRefreshTime": 10000,
+            "swapsStxMaxFeeMultiplier": 2,
+            "swapsStxStatusDeadline": 180,
+            "swapsUserFeeLevel": "",
+            "tokens": null,
+            "topAggId": null,
+            "tradeTxId": null,
+          },
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      const controller = getSwapsController();
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('exposes expected state to UI', () => {
+      const controller = getSwapsController();
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "swapsState": {
+            "approveTxId": null,
+            "customApproveTxData": "",
+            "customGasPrice": null,
+            "customMaxFeePerGas": null,
+            "customMaxGas": "",
+            "customMaxPriorityFeePerGas": null,
+            "errorKey": "",
+            "fetchParams": null,
+            "quotes": {},
+            "quotesLastFetched": null,
+            "quotesPollingLimitEnabled": false,
+            "routeState": "",
+            "saveFetchedQuotes": false,
+            "selectedAggId": null,
+            "swapsFeatureFlags": {},
+            "swapsFeatureIsLive": true,
+            "swapsQuotePrefetchingRefreshTime": 60000,
+            "swapsQuoteRefreshTime": 60000,
+            "swapsStxBatchStatusRefreshTime": 10000,
+            "swapsStxGetTransactionsRefreshTime": 10000,
+            "swapsStxMaxFeeMultiplier": 2,
+            "swapsStxStatusDeadline": 180,
+            "swapsUserFeeLevel": "",
+            "tokens": null,
+            "topAggId": null,
+            "tradeTxId": null,
+          },
+        }
+      `);
     });
   });
 });
