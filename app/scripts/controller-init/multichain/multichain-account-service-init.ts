@@ -1,6 +1,8 @@
 import {
-  MultichainAccountService,
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcAccountProvider,
+  ///: END:ONLY_INCLUDE_IF
+  MultichainAccountService,
   AccountProviderWrapper,
 } from '@metamask/multichain-account-service';
 import { ControllerInitFunction } from '../types';
@@ -35,7 +37,11 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
 
   const controller = new MultichainAccountService({
     messenger: controllerMessenger,
-    providers: [btcProvider],
+    providers: [
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+      new BtcAccountProvider(btcProvider),
+      ///: END:ONLY_INCLUDE_IF
+    ],
   });
 
   // Bitcoin provider will be used during account creation after keyring is unlocked
