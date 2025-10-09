@@ -1,9 +1,9 @@
 import {
+  MultichainAccountService,
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   BtcAccountProvider,
-  ///: END:ONLY_INCLUDE_IF
-  MultichainAccountService,
   AccountProviderWrapper,
+  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain-account-service';
 import { ControllerInitFunction } from '../types';
 import {
@@ -17,20 +17,20 @@ import {
   MultichainAccountsFeatureFlag,
 } from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
 
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 /**
  * Extract addBitcoinAccount flag from RemoteFeatureFlagController state.
  *
  * @param state - RemoteFeatureFlagController state
  * @returns True if addBitcoinAccount flag is enabled
  */
-function getIsAddBitcoinAccountEnabled(
-  state: unknown,
-): boolean {
+function getIsAddBitcoinAccountEnabled(state: unknown): boolean {
   return Boolean(
     (state as { remoteFeatureFlags?: { addBitcoinAccount?: boolean } })
       ?.remoteFeatureFlags?.addBitcoinAccount,
   );
 }
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Initialize the multichain account service.
@@ -109,7 +109,9 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   );
 
   // Set initial state based on addBitcoinAccount feature flag
-  const isAddBitcoinAccountEnabled = getIsAddBitcoinAccountEnabled(remoteFeatureFlagsState);
+  const isAddBitcoinAccountEnabled = getIsAddBitcoinAccountEnabled(
+    remoteFeatureFlagsState,
+  );
   btcProvider.setEnabled(isAddBitcoinAccountEnabled);
 
   // Track current state to prevent unnecessary work
