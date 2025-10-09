@@ -294,5 +294,5 @@ export const useShieldSubscriptionPricingFromTokenApproval = ({
     pricingPlans,
   ]);
 
-  return { productPrice };
+  return { productPrice, tokenPrice: selectedTokenPrice };
 };
