@@ -5298,20 +5298,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^33.1.0":
-  version: 33.1.0
-  resolution: "@metamask/accounts-controller@npm:33.1.0"
+"@metamask/accounts-controller@npm:@metamask-previews/accounts-controller@33.1.0-preview-6c94ae59":
+  version: 33.1.0-preview-6c94ae59
+  resolution: "@metamask-previews/accounts-controller@npm:33.1.0-preview-6c94ae59"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/base-controller": "npm:^8.3.0"
+    "@metamask/base-controller": "npm:^8.4.0"
     "@metamask/eth-snap-keyring": "npm:^17.0.0"
     "@metamask/keyring-api": "npm:^21.0.0"
     "@metamask/keyring-internal-api": "npm:^9.0.0"
     "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.4.2"
+    "@metamask/utils": "npm:^11.8.0"
     deepmerge: "npm:^4.2.2"
     ethereum-cryptography: "npm:^2.1.2"
     immer: "npm:^9.0.6"
@@ -5323,7 +5324,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/653538961fcc1ec1fb12a118236319ee20c4e7c2d9fda063fe102cfc75011ab6001c48440247e31828c698b54b2a157dd7a5bbc446af2a573f9fe1d8701fbe9e
+  checksum: 10/3771f3c77cf062d6cebdfea49aef9104dfe1390f8341d5624a328b9b30b663226e976b1240c2a982163af406a3e7bc748bc8a8c7aef1263d634ac906992f20d7
   languageName: node
   linkType: hard
 

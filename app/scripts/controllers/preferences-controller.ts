@@ -11,8 +11,9 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
+  StateMetadata,
+} from '@metamask/base-controller/next';
+import type { Messenger } from '@metamask/messenger';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import {
   ETHERSCAN_SUPPORTED_CHAIN_IDS,
@@ -80,12 +81,10 @@ export type AllowedActions =
  */
 export type AllowedEvents = AccountsControllerChangeEvent;
 
-export type PreferencesControllerMessenger = RestrictedMessenger<
+export type PreferencesControllerMessenger = Messenger<
   typeof controllerName,
   PreferencesControllerActions | AllowedActions,
-  PreferencesControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  PreferencesControllerEvents | AllowedEvents
 >;
 
 type PreferencesControllerOptions = {
@@ -284,240 +283,240 @@ export const getDefaultPreferencesControllerState =
  * using the `persist` flag; and if they can be sent to Sentry or not, using
  * the `anonymous` flag.
  */
-const controllerMetadata = {
+const controllerMetadata: StateMetadata<PreferencesControllerState> = {
   addSnapAccountEnabled: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   advancedGasFee: {
     persist: true,
     includeInStateLogs: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   currentLocale: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   dismissSeedBackUpReminder: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   enableMV3TimestampSave: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   featureFlags: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   forgottenPassword: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   identities: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   ipfsGateway: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   isIpfsGatewayEnabled: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   isMultiAccountBalancesEnabled: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   knownMethodData: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   ledgerTransportType: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   lostIdentities: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   manageInstitutionalWallets: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   openSeaEnabled: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   overrideContentSecurityPolicyHeader: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   preferences: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   securityAlertsEnabled: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   selectedAddress: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   showIncomingTransactions: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   snapRegistryList: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   snapsAddSnapAccountModalDismissed: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   textDirection: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   theme: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   use4ByteResolution: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   useAddressBarEnsResolution: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   /** @deprecated Use avatarType instead */
   useBlockie: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   useCurrencyRateCheck: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   useExternalNameSources: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   useExternalServices: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   useMultiAccountBalanceChecker: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   useNftDetection: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   usePhishDetect: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   useSafeChainsListValidation: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   useTokenDetection: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   useTransactionSimulations: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   watchEthereumAccountEnabled: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   referrals: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
 };
@@ -553,7 +552,7 @@ export class PreferencesController extends BaseController<
       state: mergedState,
     });
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'AccountsController:stateChange',
       this.#handleAccountsControllerSync.bind(this),
     );
@@ -822,7 +821,7 @@ export class PreferencesController extends BaseController<
    * @param address - A new hex address for an account
    */
   setSelectedAddress(address: string): void {
-    const account = this.messagingSystem.call(
+    const account = this.messenger.call(
       'AccountsController:getAccountByAddress',
       address,
     );
@@ -830,10 +829,7 @@ export class PreferencesController extends BaseController<
       throw new Error(`Identity for '${address} not found`);
     }
 
-    this.messagingSystem.call(
-      'AccountsController:setSelectedAccount',
-      account.id,
-    );
+    this.messenger.call('AccountsController:setSelectedAccount', account.id);
   }
 
   /**
@@ -843,7 +839,7 @@ export class PreferencesController extends BaseController<
    * @returns The hex address for the currently selected account
    */
   getSelectedAddress(): string {
-    const selectedAccount = this.messagingSystem.call(
+    const selectedAccount = this.messenger.call(
       'AccountsController:getSelectedAccount',
     );
 
@@ -865,12 +861,12 @@ export class PreferencesController extends BaseController<
       );
     }
 
-    const account = this.messagingSystem.call(
+    const account = this.messenger.call(
       'AccountsController:getAccountByAddress',
       address,
     );
     if (account) {
-      this.messagingSystem.call(
+      this.messenger.call(
         'AccountsController:setAccountName',
         account.id,
         label,
