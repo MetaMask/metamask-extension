@@ -4,7 +4,13 @@ import {
 } from '@metamask/network-enablement-controller';
 import { NetworkState } from '@metamask/network-controller';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
-import { BtcScope, SolAccountType, SolScope } from '@metamask/keyring-api';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  BtcScope,
+  ///: END:ONLY_INCLUDE_IF
+  SolAccountType,
+  SolScope,
+} from '@metamask/keyring-api';
 import { KnownCaipNamespace } from '@metamask/utils';
 import {
   NetworkEnablementControllerMessenger,
@@ -168,7 +174,7 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
           scopes: [BtcScope.Mainnet],
         },
       );
-      ///: END:ONLY_INCLUDE_IF(bitcoin)
+      ///: END:ONLY_INCLUDE_IF
 
       const allEnabledNetworks = Object.values(
         controller.state.enabledNetworkMap,
@@ -188,7 +194,7 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
         if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
           shouldEnableMainnetNetworks = true;
         }
-        ///: END:ONLY_INCLUDE_IF(bitcoin)
+        ///: END:ONLY_INCLUDE_IF
 
         if (shouldEnableMainnetNetworks) {
           controller.enableNetwork('0x1');
