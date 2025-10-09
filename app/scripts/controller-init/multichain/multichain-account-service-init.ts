@@ -118,7 +118,9 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   // Subscribe to RemoteFeatureFlagsController:stateChange for runtime control
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
-    (state: unknown) => {
+    (...args: unknown[]) => {
+      // RemoteFeatureFlagController:stateChange sends state as first argument
+      const [state] = args;
       const newBitcoinEnabled = getIsAddBitcoinAccountEnabled(state);
 
       // Defense: Only react if the flag actually changed
