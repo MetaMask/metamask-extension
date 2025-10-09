@@ -1,5 +1,5 @@
 import React from 'react';
-import { TransactionShield } from './';
+import TransactionShield from './transaction-shield';
 
 export default {
   title: 'Pages/Settings/ShieldTransactionTab',
