@@ -12,7 +12,13 @@ describe('Show account details', function () {
   it('should show the correct private key from account menu', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder()
+          .withEnabledNetworks({
+              eip155: {
+                '0x1': true,
+              },
+            })
+          .build(),
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
