@@ -4,7 +4,6 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getProviderConfig } from '../../../../shared/modules/selectors/networks';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { PreferencesController } from '../../controllers/preferences-controller';
-import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
 import { SupportedEVMChain } from './types';
 
 // isSecurityAlertsEnabledByUser is a function that checks if the security alerts are enabled in the preferences controller.
@@ -148,18 +147,4 @@ export function mapChainIdToSupportedEVMChain(
   }
 
   return CHAIN_IDS_LOWERCASED[chainId.toLowerCase()];
-}
-
-export function isApprovalTransaction(req: JsonRpcRequest): boolean {
-  if (!hasValidTransactionParams(req)) {
-    return false;
-  }
-
-  const { data } = req.params[0];
-  if (!data || typeof data !== 'string') {
-    return false;
-  }
-
-  const approvalData = parseApprovalTransactionData(data as `0x${string}`);
-  return Boolean(approvalData?.spender);
 }

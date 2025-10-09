@@ -19,7 +19,6 @@ import {
   isConnected,
   connectScreenHasBeenPrompted,
   getChainId,
-  isApprovalTransaction,
 } from './trust-signals-util';
 import { SupportedEVMChain } from './types';
 
@@ -112,7 +111,7 @@ function handleEthSendTransaction(
   });
 
   // If this is an approval transaction, also scan the spender address
-  if (isApprovalTransaction(req) && data && typeof data === 'string') {
+  if (data && typeof data === 'string') {
     const approvalData = parseApprovalTransactionData(data as `0x${string}`);
     const spenderAddress = approvalData?.spender;
     if (spenderAddress) {

@@ -2,7 +2,6 @@ import { JsonRpcRequest } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import * as networksModule from '../../../../shared/modules/selectors/networks';
-import { parseApprovalTransactionData } from '../../../../shared/modules/transaction.utils';
 import {
   isEthSendTransaction,
   hasValidTransactionParams,
@@ -12,17 +11,12 @@ import {
   isConnected,
   connectScreenHasBeenPrompted,
   mapChainIdToSupportedEVMChain,
-  isApprovalTransaction,
 } from './trust-signals-util';
 import { SupportedEVMChain } from './types';
 
 jest.mock('../../../../shared/modules/selectors/networks');
-jest.mock('../../../../shared/modules/transaction.utils');
 
 describe('trust-signals-util', () => {
-  const parseApprovalTransactionDataMock = jest.mocked(
-    parseApprovalTransactionData,
-  );
   describe('isEthSendTransaction', () => {
     it('should return true for eth_sendTransaction method', () => {
       const req: JsonRpcRequest = {
@@ -669,238 +663,6 @@ describe('trust-signals-util', () => {
           expect(mapChainIdToSupportedEVMChain(chainId)).toBeUndefined();
         });
       });
-    });
-  });
-
-  describe('isApprovalTransaction', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should return true for ERC-20 approve transaction', () => {
-      const req: JsonRpcRequest = {
-        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-        params: [
-          {
-            to: '0x1234567890123456789012345678901234567890',
-            data: '0x095ea7b3000000000000000000000000abcdef0123456789012345678901234567890123000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000000000006400',
-          },
-        ],
-        id: 1,
-        jsonrpc: '2.0',
-      };
-
-      parseApprovalTransactionDataMock.mockReturnValue({
-        name: 'approve',
-        spender: '0xabcdef0123456789012345678901234567890123',
-        amountOrTokenId: undefined,
-        isApproveAll: false,
-        isRevokeAll: false,
-        tokenAddress: undefined,
-      });
-
-      expect(isApprovalTransaction(req)).toBe(true);
-    });
-
-    it('should return true for ERC-721 setApprovalForAll transaction', () => {
-      const req: JsonRpcRequest = {
-        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-        params: [
-          {
-            to: '0x1234567890123456789012345678901234567890',
-            data: '0xa22cb465000000000000000000000000abcdef01234567890123456789012345678901230000000000000000000000000000000000000000000000000000000000000001',
-          },
-        ],
-        id: 1,
-        jsonrpc: '2.0',
-      };
-
-      parseApprovalTransactionDataMock.mockReturnValue({
-        name: 'setApprovalForAll',
-        spender: '0xabcdef0123456789012345678901234567890123',
-        amountOrTokenId: undefined,
-        isApproveAll: true,
-        isRevokeAll: false,
-        tokenAddress: undefined,
-      });
-
-      expect(isApprovalTransaction(req)).toBe(true);
-    });
-
-    it('should return true for increaseAllowance transaction', () => {
-      const req: JsonRpcRequest = {
-        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-        params: [
-          {
-            to: '0x1234567890123456789012345678901234567890',
-            data: '0x39509351000000000000000000000000abcdef0123456789012345678901234567890123000000000000000000000000000000000000000000000000000000000000006400000000000000000000000000000000000000000000000000000000000000006400',
-          },
-        ],
-        id: 1,
-        jsonrpc: '2.0',
-      };
-
-      parseApprovalTransactionDataMock.mockReturnValue({
-        name: 'increaseAllowance',
-        spender: '0xabcdef0123456789012345678901234567890123',
-        amountOrTokenId: undefined,
-        isApproveAll: false,
-        isRevokeAll: false,
-        tokenAddress: undefined,
-      });
-
-      expect(isApprovalTransaction(req)).toBe(true);
-    });
-
-    it('should return true for Permit2 approve transaction', () => {
-      const req: JsonRpcRequest = {
-        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-        params: [
-          {
-            to: '0x000000000022d473030f116ddee9f6b43ac78ba3', // Permit2 contract
-            data: '0x87517c45000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000abcdef01234567890123456789012345678901230000000000000000000000000000000000000000000000000000000000000064000000000000000000000000000000000000000000000000000000006670a4e6',
-          },
-        ],
-        id: 1,
-        jsonrpc: '2.0',
-      };
-
-      parseApprovalTransactionDataMock.mockReturnValue({
-        name: 'approve',
-        spender: '0xabcdef0123456789012345678901234567890123',
-        amountOrTokenId: undefined,
-        isApproveAll: false,
-        isRevokeAll: false,
-        tokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      });
-
-      expect(isApprovalTransaction(req)).toBe(true);
-    });
-
-    it('should return false for non-approval transaction', () => {
-      const req: JsonRpcRequest = {
-        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-        params: [
-          {
-            to: '0x1234567890123456789012345678901234567890',
-            data: '0xa9059cbb000000000000000000000000abcdef01234567890123456789012345678901230000000000000000000000000000000000000000000000000000000000000064', // transfer
-          },
-        ],
-        id: 1,
-        jsonrpc: '2.0',
-      };
-
-      parseApprovalTransactionDataMock.mockReturnValue({
-        name: 'transfer',
-        spender: undefined, // transfer doesn't have spender
-        amountOrTokenId: undefined,
-        isApproveAll: false,
-        isRevokeAll: false,
-        tokenAddress: undefined,
-      });
-
-      expect(isApprovalTransaction(req)).toBe(false);
-    });
-
-    it('should return false when parseApprovalTransactionData returns undefined', () => {
-      const req: JsonRpcRequest = {
-        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-        params: [
-          {
-            to: '0x1234567890123456789012345678901234567890',
-            data: '0xinvaliddata',
-          },
-        ],
-        id: 1,
-        jsonrpc: '2.0',
-      };
-
-      parseApprovalTransactionDataMock.mockReturnValue(undefined);
-
-      expect(isApprovalTransaction(req)).toBe(false);
-    });
-
-    it('should return false when params do not contain valid transaction params', () => {
-      const req: JsonRpcRequest = {
-        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-        params: [], // Empty params
-        id: 1,
-        jsonrpc: '2.0',
-      };
-
-      expect(isApprovalTransaction(req)).toBe(false);
-      expect(parseApprovalTransactionDataMock).not.toHaveBeenCalled();
-    });
-
-    it('should return false when transaction has no data field', () => {
-      const req: JsonRpcRequest = {
-        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-        params: [
-          {
-            to: '0x1234567890123456789012345678901234567890',
-            // No data field
-          },
-        ],
-        id: 1,
-        jsonrpc: '2.0',
-      };
-
-      expect(isApprovalTransaction(req)).toBe(false);
-      expect(parseApprovalTransactionDataMock).not.toHaveBeenCalled();
-    });
-
-    it('should return false when data is not a string', () => {
-      const req: JsonRpcRequest = {
-        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-        params: [
-          {
-            to: '0x1234567890123456789012345678901234567890',
-            data: 123, // Invalid data type
-          },
-        ],
-        id: 1,
-        jsonrpc: '2.0',
-      };
-
-      expect(isApprovalTransaction(req)).toBe(false);
-      expect(parseApprovalTransactionDataMock).not.toHaveBeenCalled();
-    });
-
-    it('should return false when spender is present but falsy', () => {
-      const req: JsonRpcRequest = {
-        method: MESSAGE_TYPE.ETH_SEND_TRANSACTION,
-        params: [
-          {
-            to: '0x1234567890123456789012345678901234567890',
-            data: '0x095ea7b3',
-          },
-        ],
-        id: 1,
-        jsonrpc: '2.0',
-      };
-
-      parseApprovalTransactionDataMock.mockReturnValue({
-        name: 'approve',
-        spender: undefined, // Undefined spender is falsy
-        amountOrTokenId: undefined,
-        isApproveAll: false,
-        isRevokeAll: false,
-        tokenAddress: undefined,
-      });
-
-      expect(isApprovalTransaction(req)).toBe(false);
-    });
-
-    it('should return false for non-transaction methods', () => {
-      const req: JsonRpcRequest = {
-        method: 'eth_getBalance',
-        params: ['0x1234567890123456789012345678901234567890'],
-        id: 1,
-        jsonrpc: '2.0',
-      };
-
-      expect(isApprovalTransaction(req)).toBe(false);
-      expect(parseApprovalTransactionDataMock).not.toHaveBeenCalled();
     });
   });
 });
