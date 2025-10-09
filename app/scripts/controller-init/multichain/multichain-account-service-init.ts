@@ -39,7 +39,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     messenger: controllerMessenger,
     providers: [
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-      new BtcAccountProvider(btcProvider),
+      btcProvider,
       ///: END:ONLY_INCLUDE_IF
     ],
   });
