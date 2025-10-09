@@ -48,7 +48,7 @@ jobs:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
-          use-yarn-hydrate: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       # Need to cache `.metamask` folder for the anvil binary
       - name: Cache .metamask folder
@@ -77,7 +77,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -93,10 +93,15 @@ jobs:
       - prep-deps
     uses: ./.github/workflows/test-storybook.yml
 
-  validate-lavamoat-policies:
+  validate-lavamoat-policy-build:
     needs:
       - prep-deps
-    uses: ./.github/workflows/validate-lavamoat-policies.yml
+    uses: ./.github/workflows/validate-lavamoat-policy-build.yml
+
+  validate-lavamoat-policy-webapp:
+    needs:
+      - prep-deps
+    uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
 
   build-dist-browserify:
     uses: ./.github/workflows/run-build.yml
@@ -212,7 +217,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -268,7 +273,6 @@ jobs:
     uses: ./.github/workflows/e2e-chrome.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   e2e-firefox:
     needs:
@@ -277,8 +281,6 @@ jobs:
       - build-test-flask-mv2-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
-    secrets:
-      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   build-storybook:
     name: Build storybook
@@ -303,7 +305,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -341,7 +343,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          use-yarn-hydrate: true
+          yarn-custom-url: ${{ vars.YARN_URL }}
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -406,7 +408,8 @@ jobs:
       - test-lint
       - repository-health-checks
       - test-storybook
-      - validate-lavamoat-policies
+      - validate-lavamoat-policy-build
+      - validate-lavamoat-policy-webapp
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-beta-browserify
