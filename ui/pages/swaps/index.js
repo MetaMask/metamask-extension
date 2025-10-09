@@ -128,6 +128,8 @@ export default function Swap() {
   const quotes = useSelector(getQuotes, isEqual);
   const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const txList = useSelector(getCurrentNetworkTransactions, shallowEqual);
+  const tokenList = useSelector(getTokenList, isEqual);
+  const shuffledTokensList = shuffle(Object.values(tokenList));
   const tradeTxId = useSelector(getTradeTxId);
   const approveTxId = useSelector(getApproveTxId);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
@@ -136,8 +138,6 @@ export default function Swap() {
   const swapsEnabled = useSelector(getSwapsFeatureIsLive);
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const tokenList = useSelector(getTokenList, isEqual);
-  const shuffledTokensList = shuffle(Object.values(tokenList));
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const reviewSwapClicked = Boolean(reviewSwapClickedTimestamp);
   const smartTransactionsOptInStatus = useSelector(
@@ -155,8 +155,6 @@ export default function Swap() {
   useEffect(() => {
     const leaveSwaps = async () => {
       await dispatch(prepareToLeaveSwaps());
-      // We need to wait until "prepareToLeaveSwaps" is done, because otherwise
-      // a user would be redirected from DEFAULT_ROUTE back to Swaps.
       navigate(DEFAULT_ROUTE);
     };
 
@@ -165,7 +163,6 @@ export default function Swap() {
     }
   }, [isSwapsChain, dispatch, navigate]);
 
-  // This will pre-load gas fees before going to the View Quote page.
   useGasFeeEstimates();
 
   const { balance: ethBalance, address: selectedAccountAddress } =
@@ -271,10 +268,8 @@ export default function Swap() {
   }, [dispatch]);
 
   useEffect(() => {
-    // If there is a swapsErrorKey and reviewSwapClicked is false, there was an error in silent quotes prefetching
-    // and we don't want to show the error page in that case, because another API call for quotes can be successful.
     if (swapsErrorKey && !isSwapsErrorRoute && reviewSwapClicked) {
-      navigate(SWAPS_ERROR_ROUTE);
+      navigate(SWAPS_PATHS.ERROR);
     }
   }, [navigate, swapsErrorKey, isSwapsErrorRoute, reviewSwapClicked]);
 

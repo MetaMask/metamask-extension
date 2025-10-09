@@ -24,6 +24,7 @@ import {
   ABOUT_US_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   DEVELOPER_OPTIONS_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -63,7 +64,8 @@ import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
-import { TransactionShield } from './transaction-shield-tab';
+import TransactionShield from './transaction-shield-tab';
+import SubmitClaimForm from './transaction-shield-tab/submit-claim-form';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -534,6 +536,10 @@ class SettingsPage extends PureComponent {
         <Route
           path={SETTINGS_PATHS.TRANSACTION_SHIELD}
           element={<TransactionShield />}
+        />
+        <Route
+          path={TRANSACTION_SHIELD_CLAIM_ROUTE}
+          element={<SubmitClaimForm />}
         />
         <Route
           path={SETTINGS_PATHS.EXPERIMENTAL}

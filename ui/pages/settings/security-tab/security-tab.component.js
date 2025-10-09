@@ -50,7 +50,7 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
-  ADD_POPULAR_CUSTOM_NETWORK,
+  ADD_POPULAR_CUSTOM_NETWORK_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -577,9 +577,9 @@ export default class SecurityTab extends PureComponent {
             onClick={() => {
               getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
                 ? global.platform.openExtensionInBrowser(
-                    ADD_POPULAR_CUSTOM_NETWORK,
+                    ADD_POPULAR_CUSTOM_NETWORK_ROUTE,
                   )
-                : navigate(ADD_POPULAR_CUSTOM_NETWORK);
+                : navigate(ADD_POPULAR_CUSTOM_NETWORK_ROUTE);
             }}
           >
             {t('addCustomNetwork')}

@@ -30,7 +30,6 @@ interface PageProps extends StyleUtilityProps {
 export const Page = ({ children, className = '', ...props }: PageProps) => {
   const location = useLocation();
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
-
   const classNames = classnames('multichain-page', {
     'multichain-page--has-app-header': hasAppHeader,
   });

@@ -7,18 +7,23 @@ import { Connections } from './connections';
 
 const mockUseNavigate = jest.fn();
 const mockUseParams = jest.fn();
+const mockUseLocation = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => {
   return {
     ...jest.requireActual('react-router-dom-v5-compat'),
     useNavigate: () => mockUseNavigate,
     useParams: () => mockUseParams(),
+    useLocation: () => mockUseLocation(),
   };
 });
 
 describe('Connections Content', () => {
   beforeEach(() => {
     mockUseParams.mockReturnValue({
-      origin: 'https%3A%2F%2Fmetamask.github.io', // URL encoded version
+      origin: 'https%3A%2F%2Fmetamask.github.io',
+    });
+    mockUseLocation.mockReturnValue({
+      pathname: '/connect/https%3A%2F%2Fmetamask.github.io',
     });
   });
 
