@@ -13,13 +13,15 @@ import {
   SmartTransactionsControllerInitMessenger,
   SmartTransactionsControllerMessenger,
 } from '../messengers/smart-transactions-controller-messenger';
-import { ControllerFlatState } from '../controller-list';
+// This import is only used for the type.
+// eslint-disable-next-line import/no-restricted-paths
+import type { MetaMaskReduxState } from '../../../../ui/store/store';
 
 type SmartTransactionsControllerInitRequest = ControllerInitRequest<
   SmartTransactionsControllerMessenger,
   SmartTransactionsControllerInitMessenger
 > & {
-  getStateUI: () => { metamask: ControllerFlatState };
+  getUIState: () => MetaMaskReduxState['metamask'];
   getGlobalNetworkClientId: () => string;
   getAccountType: (address: string) => Promise<string>;
   getDeviceModel: (address: string) => Promise<string>;
@@ -37,7 +39,7 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
     initMessenger,
     getController,
     persistedState,
-    getStateUI,
+    getUIState,
     getGlobalNetworkClientId,
     getAccountType,
     getDeviceModel,
@@ -74,17 +76,14 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
     updateTransaction: (...args) =>
       transactionController.updateTransaction(...args),
     getFeatureFlags: () => {
-      const state = getStateUI();
+      const state = { metamask: getUIState() };
       return getFeatureFlagsByChainId(
         state as unknown as ProviderConfigState & FeatureFlagsMetaMaskState,
       ) as unknown as FeatureFlags;
     },
     getMetaMetricsProps: async () => {
-      const { metamask } = getStateUI();
-      const { internalAccounts } = metamask as Pick<
-        ControllerFlatState,
-        'internalAccounts'
-      >;
+      const metamask = getUIState();
+      const { internalAccounts } = metamask;
       const selectedAccountId = internalAccounts?.selectedAccount;
       const selectedAccount = selectedAccountId
         ? internalAccounts?.accounts?.[selectedAccountId]
