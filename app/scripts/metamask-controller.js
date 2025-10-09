@@ -1525,13 +1525,13 @@ export default class MetamaskController extends EventEmitter {
    * @param groupId - Currently selected account group.
    */
   async forwardSelectedAccountGroupToSnapKeyring(groupId) {
-    console.log('-- SnapKeyring -- forwarding');
+    console.log('@@ SnapKeyring -- forwarding');
     if (groupId) {
       const group = this.accountTreeController.getAccountGroupObject(groupId);
       if (group) {
         const snapKeyring = await this.getSnapKeyring();
 
-        console.log('-- SnapKeyring.setSelectedAccounts', group.accounts);
+        console.log('@@ SnapKeyring.setSelectedAccounts', group.accounts);
         snapKeyring.setSelectedAccounts(group.accounts);
       }
     }
@@ -1899,6 +1899,7 @@ export default class MetamaskController extends EventEmitter {
         // If the current group gets updated, then maybe there are more accounts being "selected"
         // now, so we have to forward them to the Snap keyring too!
         if (this.accountTreeController.getSelectedAccountGroup() === group.id) {
+          console.log('@@ SnapKeyring - groups got updated:', group.id, group.getAccounts());
           // eslint-disable-next-line no-void
           void this.forwardSelectedAccountGroupToSnapKeyring(group.id);
         }
