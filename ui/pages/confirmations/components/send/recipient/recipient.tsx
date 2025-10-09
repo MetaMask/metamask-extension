@@ -46,6 +46,7 @@ export const Recipient = ({
     setRecipientInputMethodSelectAccount,
   } = useRecipientSelectionMetrics();
   const recipients = useRecipients();
+  // const recipients = [];
   const recipientInputRef = useRef<HTMLInputElement>(null);
   const closeRecipientModal = useCallback(() => {
     setIsRecipientModalOpen(false);

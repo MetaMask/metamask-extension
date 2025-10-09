@@ -5,11 +5,12 @@ import { isSolanaChainId } from '@metamask/bridge-controller';
 import { AddressBookEntry } from '@metamask/address-book-controller';
 
 import { getCompleteAddressBook } from '../../../../selectors';
+import { isBtcMainnetAddress } from '../../../../../shared/lib/multichain/accounts';
 import { type Recipient } from './useRecipients';
 import { useSendType } from './useSendType';
 
 export const useContactRecipients = (): Recipient[] => {
-  const { isEvmSendType, isSolanaSendType } = useSendType();
+  const { isEvmSendType, isSolanaSendType, isBitcoinSendType } = useSendType();
   const addressBook = useSelector(getCompleteAddressBook);
 
   const processContacts = useCallback((contact: AddressBookEntry) => {
@@ -28,6 +29,12 @@ export const useContactRecipients = (): Recipient[] => {
   if (isSolanaSendType) {
     return addressBook
       .filter((contact) => isSolanaChainId(contact.chainId))
+      .map(processContacts);
+  }
+
+  if (isBitcoinSendType) {
+    return addressBook
+      .filter((contact) => isBtcMainnetAddress(contact.address))
       .map(processContacts);
   }
 
