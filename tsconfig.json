@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    // permit using ES6 imports for `*.ts` files via tsx/bun
+    // permit using ES6 imports for *.ts files via tsx/bun
     "allowImportingTsExtensions": true,
     "allowJs": true,
     // ensures single-file compilers, like babel, webpack+swc, etc work
     "isolatedModules": true,
-    // makes typechecking faster (also see `tsBuildInfoFile` setting)
+    // makes typechecking faster (also see tsBuildInfoFile setting)
     "incremental": true,
     "jsx": "react",
     // todo: make two tsconfigs, one for node (development and test) and one for
@@ -13,32 +13,32 @@
     // directories that make sense for their environment.
     // I think this would eliminate a lot of eslint overrides complexity
     // In the meantime, we need DOM libs and should target the ES version in
-    // "@tsconfig/node22/tsconfig.json" (`libs` here overwrites extends's `libs`)
+    // "@tsconfig/node22/tsconfig.json" (libs here overwrites extends's libs)
     "lib": ["DOM", "es2023"],
     // we only use tsc for type checking (yarn lint:tsc)
     "noEmit": true,
-    // matches webpack's `symlinks: false`
+    // matches webpack's symlinks: false
     "preserveSymlinks": true,
     "resolveJsonModule": true,
-    // sets output file location for the `incremental` setting
+    // sets output file location for the incremental setting
     "tsBuildInfoFile": "node_modules/.cache/typescript/tsconfig.tsbuildinfo",
-    "useUnknownInCatchVariables": true
+  "useUnknownInCatchVariables": true,
+  "esModuleInterop": true
   },
   "exclude": [
     // don't typecheck stories, as they don't yet pass the type checker.
-    "**/*.stories.tsx",
-    "**/*.stories.ts"
+    "/*.stories.tsx",
+    "/*.stories.ts"
   ],
-  // this should match our node version in .nvmrc
-  "extends": "@tsconfig/node22/tsconfig.json",
   "include": [
+    ".devcontainer",
+    ".github/scripts",
     "app",
     "development",
     "offscreen",
     "shared",
     "test",
     "types",
-    "ui",
-    "*.ts"
+    "ui"
   ]
 }
