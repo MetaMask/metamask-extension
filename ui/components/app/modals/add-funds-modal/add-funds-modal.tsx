@@ -22,7 +22,6 @@ import {
 } from '../../../component-library';
 import { getBuyableChains } from '../../../../ducks/ramps';
 import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { getIsMultichainAccountsState2Enabled } from '../../../../selectors/multichain-accounts';
 import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
 import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../../helpers/constants/routes';
@@ -38,7 +37,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../../shared/constants/metametrics';
-import { getCurrentKeyring } from '../../../../selectors';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { AggregatorNetwork } from '../../../../ducks/ramps/types';
