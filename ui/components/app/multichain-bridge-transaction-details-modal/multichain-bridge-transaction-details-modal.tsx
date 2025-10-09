@@ -79,11 +79,6 @@ const MultichainBridgeTransactionDetailsModal = ({
 }: MultichainBridgeTransactionDetailsModalProps) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  console.log(
-    '🌉 Bridge History Item Details:',
-    JSON.stringify(bridgeHistoryItem, null, 2),
-  );
-  console.log('🔗 Transaction Details:', JSON.stringify(transaction, null, 2));
 
   const { quote, status } = bridgeHistoryItem;
 
