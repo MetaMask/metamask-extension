@@ -624,13 +624,13 @@ export const CONTROLLER_MESSENGERS = {
 } as const;
 
 export type RootMessenger<
-  AllowedActions extends ActionConstraint = never,
-  AllowedEvents extends EventConstraint = never,
+  AllowedActions extends ActionConstraint = ActionConstraint,
+  AllowedEvents extends EventConstraint = EventConstraint,
 > = Messenger<'Root', AllowedActions, AllowedEvents>;
 
 export const getRootMessenger = <
-  AllowedActions extends ActionConstraint = never,
-  AllowedEvents extends EventConstraint = never,
+  AllowedActions extends ActionConstraint = ActionConstraint,
+  AllowedEvents extends EventConstraint = EventConstraint,
 >(): RootMessenger<AllowedActions, AllowedEvents> => {
   return new Messenger<'Root', AllowedActions, AllowedEvents>({
     namespace: 'Root',

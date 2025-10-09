@@ -4,11 +4,8 @@ import {
   EventConstraint,
   MOCK_ANY_NAMESPACE,
   Messenger,
-  MessengerActions,
-  MessengerEvents,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { AppMetadataControllerMessenger } from '../controller-init/messengers';
 import AppMetadataController, {
   getDefaultAppMetadataControllerState,
   type AppMetadataControllerOptions,
