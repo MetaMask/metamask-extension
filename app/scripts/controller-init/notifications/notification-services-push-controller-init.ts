@@ -64,9 +64,9 @@ export const NotificationServicesPushControllerInit: ControllerInitFunction<
   initMessenger.subscribe(
     'NotificationServicesPushController:onNewNotifications',
     (notification) => {
-      const chainId =
-        hasProperty(notification, 'chain_id') &&
-        (notification.chain_id as number);
+      const chainId = hasProperty(notification, 'chain_id')
+        ? (notification.chain_id as number)
+        : null;
 
       initMessenger.call('MetaMetricsController:trackEvent', {
         category: MetaMetricsEventCategory.PushNotifications,
@@ -85,9 +85,9 @@ export const NotificationServicesPushControllerInit: ControllerInitFunction<
   initMessenger.subscribe(
     'NotificationServicesPushController:pushNotificationClicked',
     (notification) => {
-      const chainId =
-        hasProperty(notification, 'chain_id') &&
-        (notification.chain_id as number);
+      const chainId = hasProperty(notification, 'chain_id')
+        ? (notification.chain_id as number)
+        : null;
 
       initMessenger.call('MetaMetricsController:trackEvent', {
         category: MetaMetricsEventCategory.PushNotifications,
