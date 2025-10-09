@@ -1892,7 +1892,8 @@ export default class MetamaskController extends EventEmitter {
     // TODO: Move this logic to the SnapKeyring directly.
     // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
     this.controllerMessenger.subscribe(
-      `${this.multichainAccountService.name}:multichainAccountGroupUpdated`, (group) => {
+      `${this.multichainAccountService.name}:multichainAccountGroupUpdated`,
+      (group) => {
         // If the current group gets updated, then maybe there are more accounts being "selected"
         // now, so we have to forward them to the Snap keyring too!
         if (this.accountTreeController.getSelectedAccountGroup() === group.id) {
