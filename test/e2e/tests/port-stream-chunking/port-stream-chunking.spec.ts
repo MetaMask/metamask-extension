@@ -74,9 +74,12 @@ describe('Port Stream Chunking', function () {
             false,
           );
         } else {
-          assert.strictEqual(events[0].event, 'Port Stream Chunked');
-          assert.strictEqual(events[0].properties.category, 'Port Stream');
-          assert.strictEqual(events[0].properties.chunkSize, 67108864); // 64 MB
+          const chunkEvent = events.find(
+            (e) => e.event === 'Port Stream Chunked',
+          );
+          assert.ok(chunkEvent, 'Port Stream Chunked event should be present');
+          assert.strictEqual(chunkEvent.properties.category, 'Port Stream');
+          assert.strictEqual(chunkEvent.properties.chunkSize, 67108864); // 64 MB
         }
       },
     );

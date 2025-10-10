@@ -1159,6 +1159,9 @@ export function setupController(
           properties: { chunkSize },
         });
       };
+      remotePort.onDisconnect.addListener(() =>
+        portStream.off('message-too-large', handleMessageTooLarge),
+      );
       portStream.on('message-too-large', handleMessageTooLarge);
 
       // communication with popup
