@@ -487,6 +487,9 @@ export default class MetamaskController extends EventEmitter {
     // lock to ensure only one seedless onboarding operation is running at once
     this.seedlessOperationMutex = new Mutex();
 
+    // lock to ensure only one Snap keyring operation is running at once
+    this.snapKeyringMutex = new Mutex();
+
     this.extension.runtime.onInstalled.addListener((details) => {
       if (details.reason === 'update') {
         if (version === '8.1.0') {
@@ -1505,18 +1508,23 @@ export default class MetamaskController extends EventEmitter {
    * @returns {SnapKeyring}
    */
   async getSnapKeyring() {
-    // TODO: Use `withKeyring` instead
-    let [snapKeyring] = this.keyringController.getKeyringsByType(
-      KeyringType.snap,
-    );
-    if (!snapKeyring) {
-      await this.keyringController.addNewKeyring(KeyringType.snap);
+    const releaseLock = await this.snapKeyringMutex.acquire();
+    try {
       // TODO: Use `withKeyring` instead
-      [snapKeyring] = this.keyringController.getKeyringsByType(
+      let [snapKeyring] = this.keyringController.getKeyringsByType(
         KeyringType.snap,
       );
+      if (!snapKeyring) {
+        await this.keyringController.addNewKeyring(KeyringType.snap);
+        // TODO: Use `withKeyring` instead
+        [snapKeyring] = this.keyringController.getKeyringsByType(
+          KeyringType.snap,
+        );
+      }
+      return snapKeyring;
+    } finally {
+      releaseLock();
     }
-    return snapKeyring;
   }
 
   /**
@@ -1529,6 +1537,7 @@ export default class MetamaskController extends EventEmitter {
       const group = this.accountTreeController.getAccountGroupObject(groupId);
       if (group) {
         const snapKeyring = await this.getSnapKeyring();
+        console.log('@@', snapKeyring);
         await snapKeyring.setSelectedAccounts(group.accounts);
       }
     }
