@@ -85,9 +85,18 @@ describe('MultiRpc:', function (this: Suite) {
               },
             },
             networksMetadata: {
-              'networkConfigurationId': { EIPS: { 1559: true }, status: 'available' },
-              '2ce66016-8aab-47df-b27f-318c80865eb0': { EIPS: { 1559: true }, status: 'available' },
-              '2ce66016-8aab-47df-b27f-318c80865eb1': { EIPS: { 1559: true }, status: 'available' },
+              networkConfigurationId: {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb0': {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb1': {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
             },
             selectedNetworkClientId: 'networkConfigurationId',
           })
@@ -184,9 +193,18 @@ describe('MultiRpc:', function (this: Suite) {
               },
             },
             networksMetadata: {
-              'networkConfigurationId': { EIPS: { 1559: true }, status: 'available' },
-              '2ce66016-8aab-47df-b27f-318c80865eb0': { EIPS: { 1559: true }, status: 'available' },
-              '2ce66016-8aab-47df-b27f-318c80865eb1': { EIPS: { 1559: true }, status: 'available' },
+              networkConfigurationId: {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb0': {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb1': {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
             },
             selectedNetworkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
           })
@@ -239,7 +257,7 @@ describe('MultiRpc:', function (this: Suite) {
     );
   });
 
-  it.only('should select rpc from edit menu', async function () {
+  it('should select rpc from edit menu', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -300,9 +318,18 @@ describe('MultiRpc:', function (this: Suite) {
               },
             },
             networksMetadata: {
-              'networkConfigurationId': { EIPS: { 1559: true }, status: 'available' },
-              '2ce66016-8aab-47df-b27f-318c80865eb0': { EIPS: { 1559: true }, status: 'available' },
-              '2ce66016-8aab-47df-b27f-318c80865eb1': { EIPS: { 1559: true }, status: 'available' },
+              networkConfigurationId: {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb0': {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb1': {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
             },
             selectedNetworkClientId: 'networkConfigurationId',
           })
@@ -330,8 +357,10 @@ describe('MultiRpc:', function (this: Suite) {
         // validate the network was successfully edited
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        //await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-        //await homePage.closeUseNetworkNotificationModal();
+
+        // await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+
+        // await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog
         await switchToEditRPCViaGlobalMenuNetworks(driver);
@@ -402,9 +431,18 @@ describe('MultiRpc:', function (this: Suite) {
               },
             },
             networksMetadata: {
-              'networkConfigurationId': { EIPS: { 1559: true }, status: 'available' },
-              '2ce66016-8aab-47df-b27f-318c80865eb0': { EIPS: { 1559: true }, status: 'available' },
-              '2ce66016-8aab-47df-b27f-318c80865eb1': { EIPS: { 1559: true }, status: 'available' },
+              networkConfigurationId: {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb0': {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
+              '2ce66016-8aab-47df-b27f-318c80865eb1': {
+                EIPS: { 1559: true },
+                status: 'available',
+              },
             },
             selectedNetworkClientId: 'networkConfigurationId',
           })
@@ -439,8 +477,10 @@ describe('MultiRpc:', function (this: Suite) {
         await onboardingCompletePage.completeOnboarding();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        //await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-        //await homePage.closeUseNetworkNotificationModal();
+
+        // await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+
+        // await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog
         await switchToEditRPCViaGlobalMenuNetworks(driver);
