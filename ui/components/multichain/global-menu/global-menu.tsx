@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import browser from 'webextension-polyfill';
 import {
   ProductType,
   SUBSCRIPTION_STATUSES,
@@ -45,7 +46,11 @@ import { MenuItem } from '../../ui/menu';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
@@ -169,6 +174,41 @@ export const GlobalMenu = ({
     try {
       const newValue = !isSidePanelDefault;
       await dispatch(setUseSidePanelAsDefault(newValue));
+
+      // If switching from sidepanel to popup view, close the current sidepanel
+      if (
+        isSidePanelDefault &&
+        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+      ) {
+        // Close only the sidepanel, not the entire browser window
+        window.close();
+      }
+      // If switching from popup to sidepanel view, open the sidepanel
+      else if (
+        !isSidePanelDefault &&
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+      ) {
+        try {
+          const browserWithSidePanel = browser as typeof browser & {
+            sidePanel?: {
+              open: (options: { windowId: number }) => Promise<void>;
+            };
+          };
+          if (browserWithSidePanel?.sidePanel?.open) {
+            const tabs = await browser.tabs.query({
+              active: true,
+              currentWindow: true,
+            });
+            if (tabs && tabs.length > 0 && tabs[0].windowId) {
+              await browserWithSidePanel.sidePanel.open({
+                windowId: tabs[0].windowId,
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error opening side panel:', error);
+        }
+      }
     } catch (error) {
       console.error('Error toggling default view:', error);
     }
