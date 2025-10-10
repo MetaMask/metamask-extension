@@ -5,6 +5,7 @@ import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThroughStream } from 'through2';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
+import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import {
   ListNames,
   METAMASK_STALELIST_URL,
@@ -74,6 +75,7 @@ import {
 } from './controllers/permissions';
 import MetaMaskController from './metamask-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { setSelectedAccount } from '../../ui/store/actions';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -877,40 +879,6 @@ describe('MetaMaskController', () => {
             allTokens: {},
             allIgnoredTokens: {},
             allDetectedTokens: { '0x1': { [TEST_ADDRESS_2]: [{}] } },
-          });
-
-        const mockSnapKeyring = {
-          createAccount: jest
-            .fn()
-            .mockResolvedValue({ address: 'mockedAddress' }),
-        };
-
-        const originalGetKeyringsByType =
-          metamaskController.keyringController.getKeyringsByType;
-        let snapKeyringCallCount = 0;
-        jest
-          .spyOn(metamaskController.keyringController, 'getKeyringsByType')
-          .mockImplementation((type) => {
-            if (type === 'Snap Keyring') {
-              snapKeyringCallCount += 1;
-
-              if (snapKeyringCallCount === 1) {
-                // First call - use original implementation to let controller initialize snap keyring
-                return originalGetKeyringsByType.call(
-                  metamaskController.keyringController,
-                  type,
-                );
-              }
-              // Second call and beyond - return mock
-              console.log('returning mocked snap keyring!');
-              return [mockSnapKeyring];
-            }
-
-            // For other types, always use original implementation
-            return originalGetKeyringsByType.call(
-              metamaskController.keyringController,
-              type,
-            );
           });
 
         await metamaskController.createNewVaultAndRestore(
@@ -3514,55 +3482,23 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
           .mockReturnValue(false);
 
-        const mockSnapKeyring = {
-          createAccount: jest
-            .fn()
-            .mockResolvedValue({ address: 'mockedAddress' }),
-        };
-
-        const originalGetKeyringsByType =
-          metamaskController.keyringController.getKeyringsByType;
-        let snapKeyringCallCount = 0;
-        jest
-          .spyOn(metamaskController.keyringController, 'getKeyringsByType')
-          .mockImplementation((type) => {
-            if (type === 'Snap Keyring') {
-              snapKeyringCallCount += 1;
-
-              if (snapKeyringCallCount === 1) {
-                // First call - use original implementation to let controller initialize snap keyring
-                return originalGetKeyringsByType.call(
-                  metamaskController.keyringController,
-                  type,
-                );
-              }
-              // Second call and beyond - return mock
-              console.log('returning mocked snap keyring!');
-              return [mockSnapKeyring];
-            }
-
-            // For other types, always use original implementation
-            return originalGetKeyringsByType.call(
-              metamaskController.keyringController,
-              type,
-            );
-          });
-
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
 
-        const previousKeyrings =
-          metamaskController.keyringController.state.keyrings;
+        const previousKeyrings = cloneDeep(
+          metamaskController.keyringController.state.keyrings,
+        );
 
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
         const currentKeyrings =
           metamaskController.keyringController.state.keyrings;
 
+        // 0: Primary HD keyring, 1: Snap keyring, 2: Newly imported HD keyring
+        expect(
+          metamaskController.keyringController.state.keyrings,
+        ).toHaveLength(3);
         const newlyAddedKeyringId =
-          metamaskController.keyringController.state.keyrings[
-            metamaskController.keyringController.state.keyrings.length - 2 // -1 for the snap keyring, -1 for the newly added keyring
-          ].metadata.id;
-
+          metamaskController.keyringController.state.keyrings[2].metadata.id;
         const newSRP = Buffer.from(
           await metamaskController.getSeedPhrase(password, newlyAddedKeyringId),
         ).toString('utf8');
@@ -3573,7 +3509,7 @@ describe('MetaMaskController', () => {
         expect(
           currentKeyrings.filter((kr) => kr.type === 'Snap Keyring'),
         ).toHaveLength(1);
-        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 2);
+        expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
         expect(newSRP).toStrictEqual(TEST_SEED_ALT);
       });
 
@@ -3612,10 +3548,11 @@ describe('MetaMaskController', () => {
           .spyOn(KeyringInternalSnapClient.prototype, 'discoverAccounts')
           .mockImplementation(mockDiscoverAccounts);
 
-        const mockCreateAccount = jest.fn().mockResolvedValue(undefined);
-        jest
-          .spyOn(metamaskController, 'getSnapKeyring')
-          .mockResolvedValue({ createAccount: mockCreateAccount });
+        const mockCreateAccount = jest.spyOn(
+          SnapKeyring.prototype,
+          'createAccount',
+        );
+        mockCreateAccount.mockResolvedValue(undefined);
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
@@ -3693,10 +3630,12 @@ describe('MetaMaskController', () => {
           .spyOn(KeyringInternalSnapClient.prototype, 'discoverAccounts')
           .mockImplementation(mockDiscoverAccounts);
 
-        const mockCreateAccount = jest.fn().mockResolvedValue(undefined);
-        jest
-          .spyOn(metamaskController, 'getSnapKeyring')
-          .mockResolvedValue({ createAccount: mockCreateAccount });
+        const mockCreateAccount = jest.spyOn(
+          SnapKeyring.prototype,
+          'createAccount',
+        );
+        mockCreateAccount.mockResolvedValue(undefined);
+
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
@@ -5044,7 +4983,10 @@ describe('MetaMaskController', () => {
       });
 
       // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
-      jest.spyOn(metamaskController, 'getSnapKeyring').mockResolvedValue({});
+      jest.spyOn(metamaskController, 'getSnapKeyring').mockResolvedValue({
+        // Now required, since it's invoked automatically when new account groups get added.
+        setSelectedAccounts: jest.fn(),
+      });
       jest
         .spyOn(metamaskController.accountTrackerController, 'syncWithAddresses')
         .mockReturnValue();
@@ -5319,7 +5261,10 @@ describe('MetaMaskController', () => {
       });
 
       // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
-      jest.spyOn(metamaskController, 'getSnapKeyring').mockResolvedValue({});
+      jest.spyOn(metamaskController, 'getSnapKeyring').mockResolvedValue({
+        // Now required, since it's invoked automatically when new account groups get added.
+        setSelectedAccounts: jest.fn(),
+      });
       jest
         .spyOn(metamaskController.accountTrackerController, 'syncWithAddresses')
         .mockReturnValue();
