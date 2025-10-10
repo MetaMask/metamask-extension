@@ -1309,15 +1309,38 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Get the snap keyring instance if available.
+   *
+   * @returns {SnapKeyring}
+   */
+  getSnapKeyringIfAvailable() {
+    // Check if the controller has been unlocked, otherwise this will throw.
+    if (this.keyringController.isUnlocked()) {
+      // TODO: Use `withKeyring` instead
+      const [snapKeyring] = this.keyringController.getKeyringsByType(
+        KeyringType.snap,
+      );
+
+      return snapKeyring;
+    }
+    return undefined;
+  }
+
+  /**
    * Forward currently selected account group to the Snap keyring.
    *
+   * @param snapKeyring - Snap keyring instance or undefined if not available.
    * @param groupId - Currently selected account group.
    */
-  async forwardSelectedAccountGroupToSnapKeyring(groupId) {
+  async forwardSelectedAccountGroupToSnapKeyring(snapKeyring, groupId) {
+    if (!snapKeyring) {
+      // Nothing to forward if the Snap keyring is not available.
+      return;
+    }
+
     if (groupId) {
       const group = this.accountTreeController.getAccountGroupObject(groupId);
       if (group) {
-        const snapKeyring = await this.getSnapKeyring();
         await snapKeyring.setSelectedAccounts(group.accounts);
       }
     }
@@ -1630,7 +1653,10 @@ export default class MetamaskController extends EventEmitter {
         // TODO: Move this logic to the SnapKeyring directly.
         // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
         // eslint-disable-next-line no-void
-        void this.forwardSelectedAccountGroupToSnapKeyring(groupId);
+        void this.forwardSelectedAccountGroupToSnapKeyring(
+          this.getSnapKeyringIfAvailable(),
+          groupId,
+        );
 
         const [account] =
           this.accountTreeController.getAccountsFromSelectedAccountGroup({
@@ -1687,7 +1713,10 @@ export default class MetamaskController extends EventEmitter {
         // now, so we have to forward them to the Snap keyring too!
         if (this.accountTreeController.getSelectedAccountGroup() === group.id) {
           // eslint-disable-next-line no-void
-          void this.forwardSelectedAccountGroupToSnapKeyring(group.id);
+          void this.forwardSelectedAccountGroupToSnapKeyring(
+            this.getSnapKeyringIfAvailable(),
+            group.id,
+          );
         }
       },
     );
@@ -4065,6 +4094,7 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Move this logic to the SnapKeyring directly.
       // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
       await this.forwardSelectedAccountGroupToSnapKeyring(
+        await this.getSnapKeyring(),
         this.accountTreeController.getSelectedAccountGroup(),
       );
 
@@ -4453,6 +4483,7 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Move this logic to the SnapKeyring directly.
       // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
       await this.forwardSelectedAccountGroupToSnapKeyring(
+        await this.getSnapKeyring(),
         this.accountTreeController.getSelectedAccountGroup(),
       );
 
@@ -4812,6 +4843,7 @@ export default class MetamaskController extends EventEmitter {
     // TODO: Move this logic to the SnapKeyring directly.
     // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
     await this.forwardSelectedAccountGroupToSnapKeyring(
+      await this.getSnapKeyring(),
       this.accountTreeController.getSelectedAccountGroup(),
     );
   }
