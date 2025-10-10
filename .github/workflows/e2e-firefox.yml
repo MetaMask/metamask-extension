@@ -65,7 +65,6 @@ jobs:
       - test-e2e-firefox-webpack
       - test-e2e-firefox-flask
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     if: ${{ !cancelled() }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

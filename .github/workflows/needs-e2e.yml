@@ -10,7 +10,6 @@ on:
 jobs:
   needs-e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     outputs:
       needs-e2e: ${{ steps.determine.outputs.NEEDS_E2E }}
     env:
@@ -75,7 +74,6 @@ jobs:
     needs:
       - needs-e2e
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       OWNER: ${{ github.repository_owner }}
