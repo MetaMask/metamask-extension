@@ -231,6 +231,11 @@ describe('Vault Corruption', function () {
     // to switch back to the other page (required for Chrome)
     await driver.switchToWindow(initialWindow);
 
+    // Wait for the extension to be re-enabled to mitigate a race condition where Chrome temporarily disables the extension
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      await waitForEnabledExtensionInChrome(driver, extensionId as string);
+    }
+
     // get a new tab ready to use (required for Firefox)
     await driver.openNewPage('about:blank');
 
