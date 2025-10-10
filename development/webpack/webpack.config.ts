@@ -11,6 +11,7 @@ import {
   type WebpackPluginInstance,
   type MemoryCacheOptions,
   type FileCacheOptions,
+  DefinePlugin,
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
@@ -163,6 +164,9 @@ const plugins: WebpackPluginInstance[] = [
       // TODO: fix overlap between this folder and automatically bundled assets
       { from: join(context, 'images'), to: 'images' },
     ],
+  }),
+  new DefinePlugin({
+    'process.env.WEBPACK': JSON.stringify(true),
   }),
 ];
 // MV2 requires self-injection

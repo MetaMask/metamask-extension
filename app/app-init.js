@@ -3,7 +3,7 @@
 // We don't usually `import` files into `app-init.js` because we need to load
 // "chunks" via `importScripts`; but in this case `promise-with-resolvers` file
 // is so small we won't ever have a problem with these two files being "split".
-import { withResolvers } from '../../shared/lib/promise-with-resolvers';
+import { withResolvers } from '../shared/lib/promise-with-resolvers';
 
 // We need to define 'window' in the global scope to use it in the service worker
 globalThis.window = globalThis;
@@ -15,7 +15,7 @@ const { chrome } = globalThis;
 const testMode = process.env.IN_TEST;
 
 /**
- * @type {import('../../types/global').StateHooks}
+ * @type {import('../types/global').StateHooks}
  */
 globalThis.stateHooks = globalThis.stateHooks || {};
 
@@ -61,6 +61,45 @@ function importAllScripts() {
   };
 
   const startImportScriptsTime = Date.now();
+
+  if (!process.env.WEBPACK) {
+    // value of useSnow below is dynamically replaced at build time with actual value
+    const useSnow = process.env.USE_SNOW;
+    if (typeof useSnow !== 'boolean') {
+      throw new Error('Missing USE_SNOW environment variable');
+    }
+
+    // value of applyLavaMoat below is dynamically replaced at build time with actual value
+    const applyLavaMoat = process.env.APPLY_LAVAMOAT;
+    if (typeof applyLavaMoat !== 'boolean') {
+      throw new Error('Missing APPLY_LAVAMOAT environment variable');
+    }
+
+    loadFile('../scripts/sentry-install.js');
+
+    if (useSnow) {
+      // eslint-disable-next-line no-undef
+      const isWorker = !self.document;
+      if (!isWorker) {
+        loadFile('../scripts/snow.js');
+      }
+
+      loadFile('../scripts/use-snow.js');
+    }
+
+    // Always apply LavaMoat in e2e test builds, so that we can capture initialization stats
+    if (testMode || applyLavaMoat) {
+      loadFile('../scripts/runtime-lavamoat.js');
+      loadFile('../scripts/lockdown-more.js');
+      loadFile('../scripts/policy-load.js');
+    } else {
+      loadFile('../scripts/init-globals.js');
+      loadFile('../scripts/lockdown-install.js');
+      loadFile('../scripts/lockdown-run.js');
+      loadFile('../scripts/lockdown-more.js');
+      loadFile('../scripts/runtime-cjs.js');
+    }
+  }
 
   // This environment variable is set to a string of comma-separated relative file paths.
   const rawFileList = process.env.FILE_NAMES;
