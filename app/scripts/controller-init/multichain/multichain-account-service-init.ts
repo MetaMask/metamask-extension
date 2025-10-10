@@ -16,6 +16,7 @@ import {
   isMultichainAccountsFeatureEnabled,
   MultichainAccountsFeatureFlag,
 } from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
+import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 /**
@@ -24,11 +25,8 @@ import {
  * @param state - RemoteFeatureFlagController state
  * @returns True if addBitcoinAccount flag is enabled
  */
-function getIsAddBitcoinAccountEnabled(state: unknown): boolean {
-  return Boolean(
-    (state as { remoteFeatureFlags?: { addBitcoinAccount?: boolean } })
-      ?.remoteFeatureFlags?.addBitcoinAccount,
-  );
+function getIsAddBitcoinAccountEnabled(state: RemoteFeatureFlagControllerState): boolean {
+  return Boolean(state?.remoteFeatureFlags?.addBitcoinAccount);
 }
 ///: END:ONLY_INCLUDE_IF
 
@@ -104,13 +102,13 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
 
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   // Handle Bitcoin provider feature flag
-  const remoteFeatureFlagsState = initMessenger.call(
+  const initialRemoteFeatureFlagsState = initMessenger.call(
     'RemoteFeatureFlagController:getState',
   );
 
   // Set initial state based on addBitcoinAccount feature flag
   const isAddBitcoinAccountEnabled = getIsAddBitcoinAccountEnabled(
-    remoteFeatureFlagsState,
+    initialRemoteFeatureFlagsState,
   );
   btcProvider.setEnabled(isAddBitcoinAccountEnabled);
 
@@ -120,10 +118,8 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   // Subscribe to RemoteFeatureFlagsController:stateChange for runtime control
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
-    (...args: unknown[]) => {
-      // RemoteFeatureFlagController:stateChange sends state as first argument
-      const [state] = args;
-      const newBitcoinEnabled = getIsAddBitcoinAccountEnabled(state);
+    (state: unknown) => {
+      const newBitcoinEnabled = getIsAddBitcoinAccountEnabled(state as RemoteFeatureFlagControllerState);
 
       // Defense: Only react if the flag actually changed
       if (newBitcoinEnabled !== currentBitcoinEnabled) {
