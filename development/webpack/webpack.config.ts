@@ -175,7 +175,7 @@ if (MANIFEST_VERSION === 3) {
   const {
     serviceWorkerPlugin,
   } = require('./utils/plugins/ServiceWorkerPlugin');
-  plugins.push(serviceWorkerPlugin);
+  plugins.push(serviceWorkerPlugin(manifest));
 }
 if (args.lavamoat) {
   const {
