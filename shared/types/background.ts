@@ -238,7 +238,6 @@ export type ControllerStatePropertiesEnumerated = {
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
   securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
   selectedAddress: PreferencesControllerState['selectedAddress'];
-  showIncomingTransactions: PreferencesControllerState['showIncomingTransactions'];
   useNftDetection: PreferencesControllerState['useNftDetection'];
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   useTransactionSimulations: PreferencesControllerState['useTransactionSimulations'];
