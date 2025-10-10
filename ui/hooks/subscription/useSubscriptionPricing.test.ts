@@ -1,3 +1,15 @@
+import {
+  PRODUCT_TYPES,
+  PAYMENT_TYPES,
+  RECURRING_INTERVALS,
+  PricingResponse,
+  ProductType,
+  PaymentType,
+} from '@metamask/subscription-controller';
+import {
+  TransactionMeta,
+  TransactionStatus,
+} from '@metamask/transaction-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import baseMockState from '../../../test/data/mock-state.json';
 import {
@@ -6,13 +18,6 @@ import {
   useSubscriptionPaymentMethods,
   useShieldSubscriptionPricingFromTokenApproval,
 } from './useSubscriptionPricing';
-import {
-  PRODUCT_TYPES,
-  PAYMENT_TYPES,
-  RECURRING_INTERVALS,
-  PricingResponse,
-} from '@metamask/subscription-controller';
-import { TransactionMeta } from '@metamask/transaction-controller';
 
 const mockSubscriptionPricing: PricingResponse = {
   products: [
@@ -57,35 +62,37 @@ const mockSubscriptionPricing: PricingResponse = {
       ],
     },
   ],
-}
+};
 
 // Mock the actions
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
-  getSubscriptionCryptoApprovalAmount: jest.fn().mockImplementation((params) => {
-    if (params.interval === 'month') {
+  getSubscriptionCryptoApprovalAmount: jest
+    .fn()
+    .mockImplementation((params) => {
+      if (params.interval === 'month') {
+        return Promise.resolve({
+          approveAmount: '120000000',
+          chainId: params.chainId,
+          paymentAddress: '0x1234567890123456789012345678901234567890',
+          paymentTokenAddress: params.paymentTokenAddress,
+        });
+      }
+      if (params.interval === 'year') {
+        return Promise.resolve({
+          approveAmount: '100000000',
+          chainId: params.chainId,
+          paymentAddress: '0x1234567890123456789012345678901234567890',
+          paymentTokenAddress: params.paymentTokenAddress,
+        });
+      }
       return Promise.resolve({
-        approveAmount: '120000000',
+        approveAmount: '0',
         chainId: params.chainId,
         paymentAddress: '0x1234567890123456789012345678901234567890',
         paymentTokenAddress: params.paymentTokenAddress,
       });
-    }
-    if (params.interval === 'year') {
-      return Promise.resolve({
-        approveAmount: '100000000',
-        chainId: params.chainId,
-        paymentAddress: '0x1234567890123456789012345678901234567890',
-        paymentTokenAddress: params.paymentTokenAddress,
-      });
-    }
-    return Promise.resolve({
-      approveAmount: '0',
-      chainId: params.chainId,
-      paymentAddress: '0x1234567890123456789012345678901234567890',
-      paymentTokenAddress: params.paymentTokenAddress,
-    });
-  }),
+    }),
 }));
 
 const mockState = {
@@ -118,16 +125,28 @@ describe('useSubscriptionPricing', () => {
   describe('useSubscriptionProductPlans', () => {
     it('should return product plans for a given product type', () => {
       const { result } = renderHookWithProvider(
-        () => useSubscriptionProductPlans(PRODUCT_TYPES.SHIELD, mockState.metamask.pricing),
+        () =>
+          useSubscriptionProductPlans(
+            PRODUCT_TYPES.SHIELD,
+            mockState.metamask.pricing,
+          ),
         mockState,
       );
 
-      expect(result.current).toEqual(mockSubscriptionPricing.products.find((product) => product.name === PRODUCT_TYPES.SHIELD)?.prices);
+      expect(result.current).toEqual(
+        mockSubscriptionPricing.products.find(
+          (product) => product.name === PRODUCT_TYPES.SHIELD,
+        )?.prices,
+      );
     });
 
     it('should return undefined when product type is not found', () => {
       const { result } = renderHookWithProvider(
-        () => useSubscriptionProductPlans('unknown-product' as any, mockState.metamask.pricing),
+        () =>
+          useSubscriptionProductPlans(
+            'unknown-product' as ProductType,
+            mockState.metamask.pricing,
+          ),
         mockState,
       );
 
@@ -138,16 +157,28 @@ describe('useSubscriptionPricing', () => {
   describe('useSubscriptionPaymentMethods', () => {
     it('should return payment method for a given payment type', () => {
       const { result } = renderHookWithProvider(
-        () => useSubscriptionPaymentMethods(PAYMENT_TYPES.byCrypto, mockState.metamask.pricing),
+        () =>
+          useSubscriptionPaymentMethods(
+            PAYMENT_TYPES.byCrypto,
+            mockState.metamask.pricing,
+          ),
         mockState,
       );
 
-      expect(result.current).toEqual(mockSubscriptionPricing.paymentMethods.find((paymentMethod) => paymentMethod.type === PAYMENT_TYPES.byCrypto));
+      expect(result.current).toEqual(
+        mockSubscriptionPricing.paymentMethods.find(
+          (paymentMethod) => paymentMethod.type === PAYMENT_TYPES.byCrypto,
+        ),
+      );
     });
 
     it('should return undefined when payment type is not found', () => {
       const { result } = renderHookWithProvider(
-        () => useSubscriptionPaymentMethods('unknown-payment-type' as any, mockState.metamask.pricing),
+        () =>
+          useSubscriptionPaymentMethods(
+            'unknown-payment-type' as PaymentType,
+            mockState.metamask.pricing,
+          ),
         mockState,
       );
 
@@ -160,7 +191,7 @@ describe('useSubscriptionPricing', () => {
       id: 'test-tx-id',
       chainId: '0x1',
       networkClientId: 'mainnet',
-      status: 'unapproved' as any,
+      status: TransactionStatus.unapproved,
       time: Date.now(),
       txParams: {
         from: '0x1234567890123456789012345678901234567890',
