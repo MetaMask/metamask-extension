@@ -93,7 +93,8 @@ export const CustomNetworks = React.memo(() => {
 
       const isEnabled = Boolean(enabledNetworksByNamespace[convertedChainId]);
 
-      const { onDelete, onEdit, onRpcSelect } = getItemCallbacks(network);
+      const { onDelete, onEdit, onDiscoverClick, onRpcSelect } =
+        getItemCallbacks(network);
 
       const rpcEndpoint =
         network.isEvm && hasMultiRpcOptions(network)
@@ -111,6 +112,7 @@ export const CustomNetworks = React.memo(() => {
           onClick={() => handleNetworkClick(network.chainId)}
           onDeleteClick={onDelete}
           onEditClick={onEdit}
+          onDiscoverClick={onDiscoverClick}
           selected={isEnabled}
           onRpcEndpointClick={onRpcSelect}
           disabled={!isNetworkEnabled(network)}
@@ -164,7 +166,7 @@ export const CustomNetworks = React.memo(() => {
   const renderedTestNetworks = useMemo(() => {
     const filteredTestNetworks = orderedTestNetworks.filter((network) => {
       // If EVM network is selected, only show EVM networks
-      if (isEvmNetworkSelected || isMultichainAccountsFeatureEnabled) {
+      if (isEvmNetworkSelected) {
         return network.isEvm;
       }
       // If non-EVM network is selected, only show non-EVM networks
@@ -178,7 +180,6 @@ export const CustomNetworks = React.memo(() => {
     orderedTestNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
-    isMultichainAccountsFeatureEnabled,
   ]);
 
   // Memoize the padding value to prevent unnecessary re-renders

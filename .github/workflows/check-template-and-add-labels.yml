@@ -10,6 +10,7 @@ on:
 jobs:
   check-template-and-add-labels:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: ${{ github.event_name != 'merge_group' }} # Skip this step for merge_group events
     steps:
       - name: Checkout and setup environment
@@ -17,7 +18,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Check template and add labels
         id: check-template-and-add-labels

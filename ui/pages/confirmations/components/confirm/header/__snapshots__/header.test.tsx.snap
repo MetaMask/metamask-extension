@@ -13,7 +13,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
         class="mm-box mm-box--margin-top-2 mm-box--display-flex"
       >
         <div
-          class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
         >
           <div
             class="flex [&>div]:!rounded-none"
@@ -62,7 +62,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-inline-start-4"
+        class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
@@ -115,14 +115,14 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
 exports[`Header should match snapshot with token transfer confirmation initiated in a dApp 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
+    class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-inline-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
     style="z-index: 2; position: relative;"
   >
-    <h3
-      class="mm-box mm-text mm-text--heading-md mm-box--color-inherit"
+    <h4
+      class="mm-box mm-text mm-text--heading-sm mm-box--color-inherit"
     >
       Transfer request
-    </h3>
+    </h4>
     <div
       class="mm-box mm-box--padding-right-3"
       style="margin-left: auto; position: absolute; right: 0px;"
@@ -160,7 +160,7 @@ exports[`Header should match snapshot with token transfer confirmation initiated
 exports[`Header should match snapshot with token transfer confirmation initiated in the wallet 1`] = `
 <div>
   <div
-    class="mm-box mm-box--padding-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-background-default"
+    class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-inline-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-background-default"
     style="z-index: 2;"
   >
     <button
@@ -173,11 +173,11 @@ exports[`Header should match snapshot with token transfer confirmation initiated
         style="mask-image: url('./images/icons/arrow-left.svg');"
       />
     </button>
-    <h3
-      class="mm-box mm-text mm-text--heading-md mm-box--color-inherit"
+    <h4
+      class="mm-box mm-text mm-text--heading-sm mm-box--color-inherit"
     >
       Review
-    </h3>
+    </h4>
     <div
       class="mm-box mm-box--margin-right-1 mm-box--background-color-transparent mm-box--rounded-md"
     >
@@ -220,7 +220,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         class="mm-box mm-box--margin-top-2 mm-box--display-flex"
       >
         <div
-          class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
         >
           <div
             class="flex [&>div]:!rounded-none"
@@ -269,7 +269,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--margin-inline-start-4"
+        class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"

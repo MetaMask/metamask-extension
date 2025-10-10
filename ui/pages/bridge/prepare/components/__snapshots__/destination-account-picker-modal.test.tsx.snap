@@ -43,10 +43,10 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
           >
             <button
               aria-label="Close"
-              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/close.svg');"
               />
             </button>
@@ -88,7 +88,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -157,7 +157,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 </svg>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x0DCD5...3E7bc
@@ -197,7 +197,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -255,7 +255,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0xC5b8d...10aCb
@@ -295,7 +295,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -353,7 +353,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x2f8D4...6572D
@@ -393,7 +393,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -462,7 +462,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 </svg>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x0DCD5...3E7bc
@@ -502,7 +502,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -560,7 +560,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x95222...BAfe6
@@ -600,7 +600,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 2px; padding: 1px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -669,7 +669,7 @@ exports[`DestinationAccountPickerModal should render the modal when an account i
                 </svg>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x0DCD5...3E7bc
@@ -756,10 +756,10 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
           >
             <button
               aria-label="Close"
-              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+              class="mm-box mm-button-icon mm-button-icon--size-md mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/close.svg');"
               />
             </button>
@@ -801,7 +801,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -859,7 +859,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x0DCD5...3E7bc
@@ -899,7 +899,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -957,7 +957,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0xC5b8d...10aCb
@@ -997,7 +997,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -1055,7 +1055,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x2f8D4...6572D
@@ -1095,7 +1095,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -1153,7 +1153,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x0DCD5...3E7bc
@@ -1193,7 +1193,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -1251,7 +1251,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x95222...BAfe6
@@ -1291,7 +1291,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
               style="border-radius: 12px; border-color: #8b99ff; border-width: 0px; padding: 3px; height: 38px;"
             >
               <div
-                class="inline-flex flex-shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+                class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
                 style="min-width: max-content; border-radius: 8px;"
               >
                 <div
@@ -1349,7 +1349,7 @@ exports[`DestinationAccountPickerModal should render the modal when no account i
                 </p>
               </div>
               <p
-                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 data-testid="account-list-address"
               >
                 0x0DCD5...3E7bc

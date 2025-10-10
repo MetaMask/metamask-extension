@@ -55,7 +55,7 @@ import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { MultichainSiteCell } from '../../multichain-site-cell/multichain-site-cell';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
 import { getCaip25CaveatValueFromPermissions } from '../../../../pages/permissions-connect/connect-page/utils';
-import { getCaip25AccountFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
+import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
 import { MultichainEditAccountsPage } from '../multichain-edit-accounts-page/multichain-edit-accounts-page';
 
 export enum MultichainReviewPermissionsPageMode {
@@ -229,7 +229,7 @@ export const MultichainReviewPermissions = () => {
         accountGroupIds.includes(group.id),
       );
 
-      const caipAccountIds = getCaip25AccountFromAccountGroupAndScope(
+      const caipAccountIds = getCaip25AccountIdsFromAccountGroupAndScope(
         accountGroups,
         connectedChainIds,
       );
@@ -352,7 +352,8 @@ export const MultichainReviewPermissions = () => {
     </Page>
   ) : (
     <MultichainEditAccountsPage
-      title={t('connectWithMetaMask')}
+      title={t('editAccounts')}
+      confirmButtonText={t('update')}
       supportedAccountGroups={supportedAccountGroups}
       defaultSelectedAccountGroups={selectedAccountGroupIds}
       onSubmit={handleAccountGroupIdsSelected}

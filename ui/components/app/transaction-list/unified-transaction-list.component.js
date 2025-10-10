@@ -47,12 +47,12 @@ import {
 import {
   Box,
   Button,
+  ButtonVariant,
   Text,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   BadgeWrapper,
   AvatarNetwork,
   AvatarNetworkSize,
-  BadgeWrapperAnchorElementShape,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -104,11 +104,11 @@ import {
   stopIncomingTransactionPolling,
 } from '../../../store/controller-actions/transaction-controller';
 import {
-  selectBridgeHistoryForAccount,
+  selectBridgeHistoryForAccountGroup,
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
 import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
-import NoTransactions from './no-transactions';
+import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
 
 const PAGE_DAYS_INCREMENT = 10;
 
@@ -374,14 +374,17 @@ export const groupAnyTransactionsByDate = (items) =>
   );
 
 function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
-  const filteredEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
-  const filteredNonEvmChainIds =
-    Object.keys(enabledNetworks)
-      .filter((namespace) => namespace !== 'eip155')
-      .reduce((acc, namespace) => {
-        const newAcc = [...acc, ...Object.keys(enabledNetworks[namespace])];
-        return newAcc;
-      }, []) ?? [];
+  const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
+  const filteredUniqueNonEvmChainIds =
+    [
+      ...new Set(
+        Object.keys(enabledNetworks)
+          .filter((namespace) => namespace !== 'eip155')
+          .reduce((acc, namespace) => {
+            return [...acc, ...Object.keys(enabledNetworks[namespace])];
+          }, []),
+      ),
+    ] ?? [];
 
   if (tokenChainIdOverride && !tokenChainIdOverride.startsWith('solana')) {
     return {
@@ -396,8 +399,8 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
     };
   }
   return {
-    evmChainIds: filteredEVMChainIds,
-    nonEvmChainIds: filteredNonEvmChainIds,
+    evmChainIds: filteredUniqueEVMChainIds,
+    nonEvmChainIds: filteredUniqueNonEvmChainIds,
   };
 }
 export default function UnifiedTransactionList({
@@ -421,8 +424,8 @@ export default function UnifiedTransactionList({
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
-  const nonEvmTransactions = useSelector(
-    getSelectedAccountGroupMultichainTransactions,
+  const nonEvmTransactions = useSelector((state) =>
+    getSelectedAccountGroupMultichainTransactions(state, nonEvmChainIds),
   );
 
   const nonEvmTransactionsForToken = useMemo(
@@ -590,9 +593,7 @@ export default function UnifiedTransactionList({
     getSelectedMultichainNetworkConfiguration,
   );
 
-  const bridgeHistoryItems = useSelector((state) =>
-    selectBridgeHistoryForAccount(state, selectedAccount.address),
-  );
+  const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
   const selectedBridgeHistoryItem = useSelector((state) =>
     selectBridgeHistoryItemForTxMetaId(state, selectedTransaction?.id),
   );
@@ -734,7 +735,10 @@ export default function UnifiedTransactionList({
           <RampsCard variant={RAMPS_CARD_VARIANT_TYPES.ACTIVITY} />
         ) : null}
         {processedUnifiedActivityItems.length === 0 ? (
-          <NoTransactions />
+          <TransactionActivityEmptyState
+            className="mx-auto mt-5 mb-6"
+            account={selectedAccount}
+          />
         ) : (
           <Box className="transaction-list__transactions">
             {processedUnifiedActivityItems
@@ -742,10 +746,10 @@ export default function UnifiedTransactionList({
               .map((dateGroup) => (
                 <Fragment key={dateGroup.date}>
                   <Text
-                    paddingTop={4}
+                    paddingTop={3}
                     paddingInline={4}
-                    variant={TextVariant.bodyMd}
-                    color={TextColor.textDefault}
+                    variant={TextVariant.bodyMdMedium}
+                    color={TextColor.textAlternative}
                   >
                     {dateGroup.date}
                   </Text>
@@ -761,11 +765,12 @@ export default function UnifiedTransactionList({
                 display={Display.Flex}
                 justifyContent={JustifyContent.center}
                 alignItems={AlignItems.center}
-                padding={4}
+                paddingInline={4}
+                paddingBottom={4}
               >
                 <Button
                   className="transaction-list__view-more"
-                  type="secondary"
+                  variant={ButtonVariant.Secondary}
                   onClick={viewMore}
                 >
                   {t('viewMore')}
@@ -803,7 +808,6 @@ const MultichainTransactionListItem = ({
         onClick={() => toggleShowDetails(transaction)}
         icon={
           <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
             display={Display.Block}
             badge={
               <AvatarNetwork
@@ -813,6 +817,7 @@ const MultichainTransactionListItem = ({
                 name={transaction.chain}
                 src={networkLogo}
                 borderColor={BackgroundColor.backgroundDefault}
+                borderWidth={2}
               />
             }
           >
@@ -853,7 +858,6 @@ const MultichainTransactionListItem = ({
       onClick={() => toggleShowDetails(transaction)}
       icon={
         <BadgeWrapper
-          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
           display={Display.Block}
           badge={
             <AvatarNetwork
@@ -863,6 +867,7 @@ const MultichainTransactionListItem = ({
               name={transaction.chain}
               src={networkLogo}
               borderColor={BackgroundColor.backgroundDefault}
+              borderWidth={2}
             />
           }
         >
@@ -872,13 +877,12 @@ const MultichainTransactionListItem = ({
       rightContent={
         <Text
           className="activity-list-item__primary-currency"
-          color="text-default"
           data-testid="transaction-list-item-primary-currency"
+          color={TextColor.textDefault}
+          variant={TextVariant.bodyMdMedium}
           ellipsis
-          fontWeight="medium"
           textAlign="right"
           title="Primary Currency"
-          variant="body-lg-medium"
         >
           {amount} {unit}
         </Text>

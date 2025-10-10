@@ -38,7 +38,7 @@ describe('Solana Web Socket', function (this: Suite) {
         assert.equal(
           connectionCount,
           1,
-          `Expected 1 websocket connection, but found ${connectionCount}`,
+          `Expected 1 websocket connections, but found ${connectionCount}`,
         );
       },
     );

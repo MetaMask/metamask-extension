@@ -10,6 +10,7 @@ import browser from 'webextension-polyfill';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom-v5-compat';
 import {
   AlignItems,
   BackgroundColor,
@@ -209,18 +210,15 @@ export const AppHeaderUnlockedContent = ({
     [copied, handleCopyClick, shortenedAddress],
   );
 
-  const handleNetworksClick = useCallback(() => {
-    history.push(
-      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`,
-    );
-  }, [history, selectedMultichainAccountId]);
-
   const multichainAccountAppContent = useMemo(() => {
     const networksLabel =
-      numberOfAccountsInGroup === 1 ? t('network') : t('networks');
+      numberOfAccountsInGroup === 1
+        ? t('networkAddress')
+        : t('networkAddresses', [numberOfAccountsInGroup]);
 
     return (
-      <Box>
+      <Box style={{ overflow: 'hidden' }}>
+        {/* Prevent overflow of account picker by long account names */}
         <Text
           as="div"
           display={Display.Flex}
@@ -248,23 +246,26 @@ export const AppHeaderUnlockedContent = ({
           />
           <>{!isMultichainAccountsState2Enabled && CopyButton}</>
         </Text>
-        <Text
-          color={TextColor.textAlternative}
-          variant={TextVariant.bodyXsMedium}
-          onClick={handleNetworksClick}
+        <Link
+          to={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`}
           data-testid="networks-subtitle-test-id"
-          className="networks-subtitle"
-          paddingInline={2}
         >
-          {`${numberOfAccountsInGroup} ${networksLabel.toLowerCase()}`}
-        </Text>
+          <Text
+            className="networks-subtitle"
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodyXsMedium}
+            paddingInline={2}
+          >
+            {networksLabel}
+          </Text>
+        </Link>
       </Box>
     );
   }, [
     CopyButton,
     accountName,
     disableAccountPicker,
-    handleNetworksClick,
+    selectedMultichainAccountId,
     history,
     isMultichainAccountsState2Enabled,
     numberOfAccountsInGroup,
@@ -350,7 +351,7 @@ export const AppHeaderUnlockedContent = ({
         justifyContent={JustifyContent.flexEnd}
         style={{ marginLeft: 'auto' }}
       >
-        <Box display={Display.Flex} gap={3}>
+        <Box display={Display.Flex} gap={2}>
           {showConnectedStatus && (
             <Box ref={menuRef} data-testid="connection-menu" margin="auto">
               <ConnectedStatusIndicator

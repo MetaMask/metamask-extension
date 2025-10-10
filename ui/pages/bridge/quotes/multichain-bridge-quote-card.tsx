@@ -6,6 +6,7 @@ import {
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { bpsToPercentage } from '../../../ducks/bridge/utils';
 import {
   Text,
   PopoverPosition,
@@ -22,7 +23,7 @@ import {
   getIsSolanaSwap,
   getPriceImpactThresholds,
   getQuoteRequest,
-  getIsToOrFromSolana,
+  getIsToOrFromNonEvm,
   getIsStxEnabled,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -77,7 +78,7 @@ export const MultichainBridgeQuoteCard = ({
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
 
-  const isToOrFromSolana = useSelector(getIsToOrFromSolana);
+  const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -154,7 +155,10 @@ export const MultichainBridgeQuoteCard = ({
             >
               {t('multichainQuoteCardRateExplanation', [
                 new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(0)
-                  ? BRIDGE_MM_FEE_RATE
+                  ? (bpsToPercentage(
+                      // @ts-expect-error: controller types are not up to date yet
+                      activeQuote.quote.feeData.metabridge.quoteBpsFee,
+                    ) ?? BRIDGE_MM_FEE_RATE)
                   : '0',
               ])}
             </Tooltip>
@@ -383,7 +387,7 @@ export const MultichainBridgeQuoteCard = ({
         )}
 
         {/* Recipient */}
-        {isToOrFromSolana && selectedDestinationAccount && (
+        {isToOrFromNonEvm && selectedDestinationAccount && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Text
               variant={TextVariant.bodySm}

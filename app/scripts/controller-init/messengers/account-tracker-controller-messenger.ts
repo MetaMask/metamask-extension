@@ -2,7 +2,10 @@ import { Messenger } from '@metamask/base-controller';
 import {
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
+  NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import {
   AllowedActions,
   AllowedEvents,
@@ -30,6 +33,7 @@ export function getAccountTrackerControllerMessenger(
       'NetworkController:getNetworkClientById',
       'OnboardingController:getState',
       'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
     ],
     allowedEvents: [
       'AccountsController:selectedEvmAccountChange',
@@ -41,7 +45,11 @@ export function getAccountTrackerControllerMessenger(
 
 type AllowedInitializationActions =
   | NetworkControllerGetSelectedNetworkClientAction
-  | NetworkControllerGetStateAction;
+  | NetworkControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction
+  | PreferencesControllerGetStateAction;
+
+type AllowedInitializationEvents = NetworkControllerNetworkDidChangeEvent;
 
 export type AccountTrackerControllerInitMessenger = ReturnType<
   typeof getAccountTrackerControllerInitMessenger
@@ -55,14 +63,19 @@ export type AccountTrackerControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getAccountTrackerControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: Messenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
 ) {
   return messenger.getRestricted({
     name: 'AccountTrackerControllerInit',
     allowedActions: [
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:getState',
+      'RemoteFeatureFlagController:getState',
+      'PreferencesController:getState',
     ],
-    allowedEvents: [],
+    allowedEvents: ['NetworkController:networkDidChange'],
   });
 }
