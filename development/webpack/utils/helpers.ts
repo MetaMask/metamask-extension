@@ -84,22 +84,29 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     'bootstrap',
   ]);
 
-  function addManifestScript(filename: string, opts?: EntryDescription) {
+  function addManifestScript(filename: string) {
     selfContainedScripts.add(filename);
     entry[filename] = {
       chunkLoading: false,
       filename, // output filename
       import: join(appRoot, filename), // the path to the file to use as an entry
-      ...opts,
     };
   }
 
-  function addHtml(filename: string, opts?: EntryDescription) {
+  function addHtml(filename: string) {
     assertValidEntryFileName(filename, appRoot);
-    entry[parse(filename).name] = {
-      import: join(appRoot, filename),
-      ...opts,
-    };
+    const parsedFileName = parse(filename).name;
+    // MV3 background script chunks need to be imported using importScripts
+    // because it is executed in a service worker
+    if (manifest.manifest_version === 3 && parsedFileName === 'background') {
+      entry[parsedFileName] = {
+        chunkLoading: 'import-scripts',
+        filename: 'scripts/background.js',
+        import: join(appRoot, 'scripts/background.js'),
+      };
+    } else {
+      entry[parsedFileName] = join(appRoot, filename);
+    }
   }
 
   // add content_scripts to entries
@@ -143,15 +150,7 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
   for (const filename of readdirSync(appRoot)) {
     // ignore non-htm/html files
     if (/\.html?$/iu.test(filename)) {
-      if (filename === 'background.html') {
-        addManifestScript('background', {
-          chunkLoading: 'import-scripts',
-          filename: 'scripts/background.js',
-          import: join(appRoot, 'scripts/background.js'),
-        });
-      } else {
-        addHtml(filename);
-      }
+      addHtml(filename);
     }
   }
 
