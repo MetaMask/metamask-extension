@@ -367,7 +367,6 @@ import {
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
-import { RewardsControllerInit } from './controller-init/rewards-controller-init';
 import { SwapsControllerInit } from './controller-init/swaps-controller-init';
 import { BridgeControllerInit } from './controller-init/bridge-controller-init';
 import { BridgeStatusControllerInit } from './controller-init/bridge-status-controller-init';
@@ -558,7 +557,6 @@ export default class MetamaskController extends EventEmitter {
       AccountTrackerController: AccountTrackerControllerInit,
       TransactionController: TransactionControllerInit,
       SmartTransactionsController: SmartTransactionsControllerInit,
-      RewardsController: RewardsControllerInit,
       SwapsController: SwapsControllerInit,
       BridgeController: BridgeControllerInit,
       BridgeStatusController: BridgeStatusControllerInit,
@@ -664,7 +662,6 @@ export default class MetamaskController extends EventEmitter {
     this.txController = controllersByName.TransactionController;
     this.smartTransactionsController =
       controllersByName.SmartTransactionsController;
-    this.rewardsController = controllersByName.RewardsController;
     this.swapsController = controllersByName.SwapsController;
     this.bridgeController = controllersByName.BridgeController;
     this.bridgeStatusController = controllersByName.BridgeStatusController;
@@ -1008,7 +1005,6 @@ export default class MetamaskController extends EventEmitter {
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
-      RewardsController: this.rewardsController,
       SwapsController: this.swapsController,
       BridgeController: this.bridgeController,
       BridgeStatusController: this.bridgeStatusController,
@@ -1139,7 +1135,6 @@ export default class MetamaskController extends EventEmitter {
         this.encryptionPublicKeyController,
       ),
       this.signatureController.resetState.bind(this.signatureController),
-      this.rewardsController.resetState.bind(this.rewardsController),
       this.swapsController.resetState.bind(this.swapsController),
       this.bridgeController.resetState.bind(this.bridgeController),
       this.ensController.resetState.bind(this.ensController),
@@ -2877,40 +2872,6 @@ export default class MetamaskController extends EventEmitter {
       updateInterfaceState: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapInterfaceController:updateInterfaceState',
-      ),
-
-      // rewards
-      estimatePoints: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:estimatePoints',
-      ),
-      isRewardsFeatureEnabled: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:isRewardsFeatureEnabled',
-      ),
-      optIn: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:optIn',
-      ),
-      validateReferralCode: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:validateReferralCode',
-      ),
-      linkAccountToSubscriptionCandidate: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:linkAccountToSubscriptionCandidate',
-      ),
-      getCandidateSubscriptionId: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:getCandidateSubscriptionId',
-      ),
-      getOptInStatus: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:getOptInStatus',
-      ),
-      isOptInSupported: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'RewardsController:isOptInSupported',
       ),
 
       // swaps
