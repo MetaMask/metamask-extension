@@ -1,3 +1,4 @@
+import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 
 export enum AssetStandard {
@@ -12,6 +13,7 @@ export const NFT_STANDARDS = [AssetStandard.ERC721, AssetStandard.ERC1155];
 export type Asset = {
   accountAddress?: string;
   accountId?: string;
+  accountType?: KeyringAccountType;
   address?: string;
   assetId?: string;
   balance?: string | number | undefined;

@@ -39,6 +39,7 @@ export const useAccountRecipients = (): Recipient[] => {
           if (shouldInclude) {
             recipients.push({
               accountGroupName,
+              accountType: account.type,
               address: account.address,
               walletName,
             });
