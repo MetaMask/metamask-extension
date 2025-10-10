@@ -278,7 +278,7 @@ export const useShieldSubscriptionPricingFromTokenApproval = ({
 
       // Find the matching plan by comparing approval amounts
       for (let i = 0; i < approvalAmounts.length; i++) {
-        if (approvalAmounts[i].approveAmount === decodedApprovalAmount) {
+        if (approvalAmounts[i]?.approveAmount === decodedApprovalAmount) {
           return pricingPlans?.find((plan) => plan.interval === intervals[i]);
         }
       }
