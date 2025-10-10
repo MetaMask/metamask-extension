@@ -97,11 +97,14 @@ app/scripts/constants/snaps.ts       @MetaMask/core-platform
 ui/components/app/metamask-template-renderer @MetaMask/confirmations @MetaMask/core-platform
 
 # Core Extension UX
-ui/components/app/whats-new-popup     @MetaMask/core-extension-ux
-ui/css                                @MetaMask/core-extension-ux
-ui/pages/home                         @MetaMask/core-extension-ux
-ui/pages/core                         @MetaMask/core-extension-ux
-ui/components/multichain/             @MetaMask/core-extension-ux
+ui/components/app/whats-new-popup               @MetaMask/core-extension-ux
+ui/css                                          @MetaMask/core-extension-ux
+ui/pages/home                                   @MetaMask/core-extension-ux
+ui/pages/core                                   @MetaMask/core-extension-ux
+ui/components/multichain/                       @MetaMask/core-extension-ux
+ui/components/app/transaction-list              @MetaMask/core-extension-ux
+ui/components/app/transaction-list-item-details @MetaMask/core-extension-ux
+ui/components/app/transaction-list-item         @MetaMask/core-extension-ux
 
 # Co-owned by accounts and core-extension-ux
 ui/components/multichain/multi-srp/              @MetaMask/accounts-engineers @MetaMask/core-extension-ux
