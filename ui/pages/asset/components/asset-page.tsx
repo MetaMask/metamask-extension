@@ -110,7 +110,6 @@ const AssetPage = ({
   ) as InternalAccount;
 
   useEffect(() => {
-    console.log('AssetPage useEffect ............');
     endTrace({ name: TraceName.AssetDetails });
   }, []);
 
