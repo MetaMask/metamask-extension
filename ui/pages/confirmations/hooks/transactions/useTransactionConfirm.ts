@@ -21,7 +21,7 @@ import {
   getIsSmartTransaction,
   type SmartTransactionsState,
 } from '../../../../../shared/modules/selectors';
-import { useDecodedTransactionData } from '../../components/confirm/info/hooks/useDecodedTransactionData';
+import { useDecodedTransactionDataValue } from '../../components/confirm/info/hooks/useDecodedTransactionData';
 import { useShieldSubscriptionPricingFromTokenApproval } from '../../../../hooks/subscription/useSubscriptionPricing';
 import { MetaMaskReduxDispatch } from '../../../../store/store';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
@@ -72,13 +72,8 @@ export function useTransactionConfirm() {
     newTransactionMeta.isExternalSign = true;
   }, [newTransactionMeta]);
 
-  const decodeResponse = useDecodedTransactionData({
-    data: newTransactionMeta?.txParams?.data as Hex,
-    to: newTransactionMeta?.txParams?.to as Hex,
-  });
-  const decodedApprovalAmount = decodeResponse?.value?.data[0].params.find(
-    (param) => param.name === 'value',
-  )?.value;
+  const { value: decodedApprovalAmount } =
+    useDecodedTransactionDataValue(newTransactionMeta);
 
   const { productPrice, tokenPrice } =
     useShieldSubscriptionPricingFromTokenApproval({
