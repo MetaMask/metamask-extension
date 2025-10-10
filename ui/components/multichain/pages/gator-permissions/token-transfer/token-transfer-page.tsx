@@ -71,7 +71,7 @@ export const TokenTransferPage = () => {
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
-            color={IconColor.iconDefault}
+            color={IconColor.IconDefault}
             onClick={() => navigate(GATOR_PERMISSIONS)}
             size={ButtonIconSize.Sm}
           />

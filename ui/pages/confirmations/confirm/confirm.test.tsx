@@ -21,14 +21,6 @@ import { SignatureRequestType } from '../types/confirm';
 import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
 
-const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
-  return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockUseNavigate,
-  };
-});
-
 // Mock hideAppHeader to return false so the app header is shown in tests
 jest.mock('../../routes/utils', () => ({
   ...jest.requireActual('../../routes/utils'),

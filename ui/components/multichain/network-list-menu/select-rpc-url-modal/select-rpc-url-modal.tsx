@@ -34,11 +34,13 @@ export const SelectRpcUrlModal = ({
 }) => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const navState = useNavState();
+  const navState = useNavState() as { chainId?: string } | null;
   // Check both location.state (v5 fallback and future v6) and navigation context (HashRouter v5-compat workaround)
   // Only fall back to navState if location.state doesn't exist at all
   const chainId =
-    location.state === undefined ? navState?.chainId : location.state?.chainId;
+    location.state === undefined
+      ? navState?.chainId
+      : (location.state as { chainId?: string })?.chainId;
 
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,

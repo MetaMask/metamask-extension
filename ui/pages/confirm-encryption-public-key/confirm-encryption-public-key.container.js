@@ -26,9 +26,7 @@ function mapStateToProps(state, ownProps) {
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
 
   const {
-    match: {
-      params: { id: approvalId },
-    },
+    params: { id: approvalId } = {},
   } = ownProps;
 
   const txData = unconfirmedTransactions.find((tx) => tx.id === approvalId);

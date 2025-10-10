@@ -12,7 +12,7 @@ import {
 import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
 import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
-import { NavigationStateProvider } from '../contexts/navigation-state';
+import { navigationStateProvider as NavigationStateProvider } from '../contexts/navigation-state';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import ErrorPage from './error-page/error-page.component';
 

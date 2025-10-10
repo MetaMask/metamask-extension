@@ -434,7 +434,7 @@ class SettingsPage extends PureComponent {
       });
     }
 
-    if (isMetaMaskShieldFeatureEnabled) {
+    if (isMetaMaskShieldFeatureEnabled && useExternalServices) {
       tabs.splice(-4, 0, {
         content: t('shieldTx'),
         icon: <Icon name={IconName.ShieldLock} />,
