@@ -204,6 +204,7 @@ export const CHAIN_IDS = {
   KARURA: '0x2ae',
   HEMI: '0xa867',
   MONAD: '0x8f',
+  ELECTRONEUM: '0xcb2e',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -362,6 +363,7 @@ export const ACALA_DISPLAY_NAME = 'Acala';
 export const ACALA_TESTNET_DISPLAY_NAME = 'Acala Testnet';
 export const KARURA_DISPLAY_NAME = 'Karura';
 export const HEMI_DISPLAY_NAME = 'Hemi';
+export const ELECTRONEUM_DISPLAY_NAME = 'Electroneum';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -442,6 +444,7 @@ export const CURRENCY_SYMBOLS = {
   ACALA: 'ACA',
   KARURA: 'KAR',
   HEMI: 'ETH',
+  ELECTRONEUM: 'ETN',
 } as const;
 
 // Non-EVM currency symbols
@@ -652,6 +655,8 @@ export const ACALA_TOKEN_IMAGE_URL = './images/acala-token.svg';
 export const KARURA_IMAGE_URL = './images/karura.svg';
 export const KARURA_TOKEN_IMAGE_URL = './images/karura-token.svg';
 export const HEMI_IMAGE_URL = './images/hemi.svg';
+export const ELECTRONEUM_IMAGE_URL = './images/electroneum.svg';
+export const ELECTRONEUM_TOKEN_IMAGE_URL = './images/electroneum.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -688,12 +693,8 @@ export const TEST_NETWORK_TICKER_MAP: {
     'localhost' | 'mainnet' | 'rpc' | 'linea-mainnet'
   >]: string;
 } = {
-  [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${
-    CURRENCY_SYMBOLS.ETH
-  }`,
-  [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${
-    CURRENCY_SYMBOLS.ETH
-  }`,
+  [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${CURRENCY_SYMBOLS.ETH}`,
+  [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.LINEA_SEPOLIA]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.MEGAETH_TESTNET]: 'MegaETH',
@@ -809,6 +810,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.KARURA]: KARURA_DISPLAY_NAME,
   [CHAIN_IDS.HEMI]: HEMI_DISPLAY_NAME,
+  [CHAIN_IDS.ELECTRONEUM]: ELECTRONEUM_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -962,6 +964,7 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.ACALA_TESTNET]: CURRENCY_SYMBOLS.ACALA,
   [CHAIN_IDS.KARURA]: CURRENCY_SYMBOLS.KARURA,
   [CHAIN_IDS.HEMI]: CURRENCY_SYMBOLS.HEMI,
+  [CHAIN_IDS.ELECTRONEUM]: CURRENCY_SYMBOLS.ELECTRONEUM,
 } as const;
 
 /**
@@ -1129,6 +1132,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_IMAGE_URL,
   [CHAIN_IDS.HEMI]: HEMI_IMAGE_URL,
+  [CHAIN_IDS.ELECTRONEUM]: ELECTRONEUM_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1207,6 +1211,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.HEMI]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ELECTRONEUM]: ELECTRONEUM_TOKEN_IMAGE_URL,
 } as const;
 
 /**
@@ -1234,9 +1239,7 @@ const defaultEtherscanSubdomainPrefix = 'api';
 export const ETHERSCAN_SUPPORTED_NETWORKS = {
   [CHAIN_IDS.GOERLI]: {
     domain: defaultEtherscanDomain,
-    subdomain: `${defaultEtherscanSubdomainPrefix}-${
-      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]
-    }`,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]}`,
   },
   [CHAIN_IDS.MAINNET]: {
     domain: defaultEtherscanDomain,
@@ -1244,9 +1247,7 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
   },
   [CHAIN_IDS.SEPOLIA]: {
     domain: defaultEtherscanDomain,
-    subdomain: `${defaultEtherscanSubdomainPrefix}-${
-      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
-    }`,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-${CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]}`,
   },
   [CHAIN_IDS.LINEA_GOERLI]: {
     domain: 'lineascan.build',
