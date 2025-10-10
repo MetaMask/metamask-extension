@@ -95,13 +95,10 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     }
   }
 
-  function addHtml(filename?: string, opts?: any) {
+  function addHtml(filename?: string) {
     if (filename) {
       assertValidEntryFileName(filename, appRoot);
-      entry[parse(filename).name] = {
-        import: join(appRoot, filename),
-        ...opts,
-      };
+      entry[parse(filename).name] = join(appRoot, filename);
     }
   }
 
