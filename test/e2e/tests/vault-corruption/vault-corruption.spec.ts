@@ -139,10 +139,6 @@ describe('Vault Corruption', function () {
    * This avoids a race condition where Chrome temporarily disables the extension which would cause subsequent steps to fail.
    * We pierce Shadow DOM via executeScript because standard selectors cannot see inside chrome://extensions.
    *
-   * This function does not return any value. It resolves only once the extension
-   * is detected as enabled, and will time out (causing the spec to fail) if that
-   * condition is not met within the configured wait duration.
-   *
    * @param driver - The WebDriver instance.
    * @param extensionId - The extension ID.
    * @returns Promise<void>
@@ -199,7 +195,8 @@ describe('Vault Corruption', function () {
    * background page has reloaded and the UI is available again.
    *
    * @param driver - The WebDriver instance.
-   * @param script - The script to break the DB that will be executed in the background page for MV2 or offscreen page for MV3.
+   * @param script - The script to break the DB that will be executed in the
+   * background page for MV2 or offscreen page for MV3.
    * @param extensionId - The extension ID.
    * @returns The initial first account's address.
    */
@@ -238,9 +235,6 @@ describe('Vault Corruption', function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await waitForEnabledExtensionInChrome(driver, extensionId as string);
     }
-
-    await driver.delay(90000);
-    await driver.delay(90000);
     // get a new tab ready to use (required for Firefox)
     await driver.openNewPage('about:blank');
 
