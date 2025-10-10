@@ -104,6 +104,7 @@ import {
   getShowUpdateModal,
   getShowConnectionsRemovedModal,
   getIsSocialLoginFlow,
+  getShowShieldEntryModalOnce,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -288,7 +289,7 @@ function Home() {
   const showConnectionsRemovedModal = useSelector(
     getShowConnectionsRemovedModal,
   );
-  const showShieldEntryModal = false; // TODO: integrate condition to show shield entry modal
+  const showShieldEntryModal = useSelector(getShowShieldEntryModalOnce);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   // Dispatch functions - equivalent to mapDispatchToProps
