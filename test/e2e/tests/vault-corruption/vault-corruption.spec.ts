@@ -127,8 +127,8 @@ describe('Vault Corruption', function () {
         // the extension has restarted
         return title === WINDOW_TITLES.ExtensionInFullScreenView;
       },
-      // reload and check title as quickly a possible, forever
-      { interval: 0, timeout: Infinity },
+      // reload and check title as quickly a possible
+      { interval: 10, timeout: 10000 },
     );
     await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
   }
