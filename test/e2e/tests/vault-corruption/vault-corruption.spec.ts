@@ -128,9 +128,66 @@ describe('Vault Corruption', function () {
         return title === WINDOW_TITLES.ExtensionInFullScreenView;
       },
       // reload and check title as quickly a possible
-      { interval: 100, timeout: 10000 },
+      { interval: 10, timeout: 10000 },
     );
     await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
+  }
+
+  /**
+   * Wait for MetaMask to be enabled by checking the nested Shadow DOM toggle.
+   *
+   * This avoids a race condition where Chrome temporarily disables the extension which would cause subsequent steps to fail.
+   * We pierce Shadow DOM via executeScript because standard selectors cannot see inside chrome://extensions.
+   *
+   * @param driver - The WebDriver instance.
+   * @param extensionId - The extension ID.
+   * @returns Promise<void>
+   */
+  async function waitForEnabledExtensionInChrome(
+    driver: Driver,
+    extensionId: string,
+  ): Promise<void> {
+    await driver.waitUntil(
+      async () => {
+        const state = await driver.driver.executeScript(function (
+          extId: string,
+        ): boolean | null {
+          try {
+            const mgr = document.querySelector(
+              'extensions-manager',
+            ) as HTMLElement & { shadowRoot: ShadowRoot | null };
+            if (!mgr || !mgr.shadowRoot) {
+              return null;
+            }
+            const root = mgr.shadowRoot;
+            const list = root.querySelector(
+              'extensions-item-list',
+            ) as HTMLElement & { shadowRoot: ShadowRoot | null };
+            if (list && list.shadowRoot) {
+              const item = (list.shadowRoot.querySelector(
+                `extensions-item[id='${extId}']`,
+              ) || list.shadowRoot.querySelector('extensions-item')) as
+                | (HTMLElement & { shadowRoot: ShadowRoot | null })
+                | null;
+              const toggle =
+                item && item.shadowRoot
+                  ? (item.shadowRoot.querySelector(
+                      '#enableToggle',
+                    ) as HTMLElement | null)
+                  : null;
+              if (toggle) {
+                return toggle.hasAttribute('checked');
+              }
+            }
+            return null;
+          } catch (e) {
+            return null;
+          }
+        }, extensionId);
+        return state === true;
+      },
+      { timeout: 10000, interval: 500 },
+    );
   }
 
   /**
@@ -140,9 +197,14 @@ describe('Vault Corruption', function () {
    * @param driver - The WebDriver instance.
    * @param script - The script to break the DB that will be executed in the
    * background page for MV2 or offscreen page for MV3.
+   * @param extensionId - The extension ID.
    * @returns The initial first account's address.
    */
-  async function onboardThenCorruptVault(driver: Driver, script: string) {
+  async function onboardThenCorruptVault(
+    driver: Driver,
+    script: string,
+    extensionId?: string,
+  ) {
     const initialWindow = await driver.driver.getWindowHandle();
 
     // open a spare tab so the browser doesn't exit once we `reload()` the
@@ -260,10 +322,17 @@ describe('Vault Corruption', function () {
   it('recovers metamask vault when primary database is broken but backup is intact', async function () {
     await withFixtures(
       getConfig(this.test?.title),
-      async ({ driver }: { driver: Driver }) => {
+      async ({
+        driver,
+        extensionId,
+      }: {
+        driver: Driver;
+        extensionId: string;
+      }) => {
         const initialFirstAddress = await onboardThenCorruptVault(
           driver,
           breakPrimaryDatabaseOnlyScript,
+          extensionId,
         );
 
         // start recovery
@@ -285,10 +354,17 @@ describe('Vault Corruption', function () {
   it('resets metamask state when both primary and backup databases are broken', async function () {
     await withFixtures(
       getConfig(this.test?.title),
-      async ({ driver }: { driver: Driver }) => {
+      async ({
+        driver,
+        extensionId,
+      }: {
+        driver: Driver;
+        extensionId: string;
+      }) => {
         const initialFirstAddress = await onboardThenCorruptVault(
           driver,
           breakAllDatabasesScript('KeyringController'),
+          extensionId,
         );
 
         // start reset
@@ -315,10 +391,17 @@ describe('Vault Corruption', function () {
     // works too.
     await withFixtures(
       getConfig(this.test?.title),
-      async ({ driver }: { driver: Driver }) => {
+      async ({
+        driver,
+        extensionId,
+      }: {
+        driver: Driver;
+        extensionId: string;
+      }) => {
         const initialFirstAddress = await onboardThenCorruptVault(
           driver,
           breakPrimaryDatabaseOnlyScript,
+          extensionId,
         );
 
         // click recover but dismiss the prompt
@@ -352,10 +435,17 @@ describe('Vault Corruption', function () {
     // this test will run all migrations
     await withFixtures(
       getConfig(this.test?.title),
-      async ({ driver }: { driver: Driver }) => {
+      async ({
+        driver,
+        extensionId,
+      }: {
+        driver: Driver;
+        extensionId: string;
+      }) => {
         const initialFirstAddress = await onboardThenCorruptVault(
           driver,
           breakAllDatabasesScript('meta'),
+          extensionId,
         );
 
         // start recovery
