@@ -33,6 +33,7 @@ import {
   TransactionControllerTransactionSubmittedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
+import { SubscriptionControllerActions } from '@metamask/subscription-controller';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
@@ -61,7 +62,8 @@ type MessengerActions =
   | SwapsControllerSetApproveTxIdAction
   | SwapsControllerSetTradeTxIdAction
   | TransactionControllerEstimateGasAction
-  | TransactionControllerGetStateAction;
+  | TransactionControllerGetStateAction
+  | SubscriptionControllerActions;
 
 type MessengerEvents =
   | TransactionControllerTransactionApprovedEvent
@@ -136,6 +138,7 @@ export function getTransactionControllerInitMessenger(
       'SwapsController:setTradeTxId',
       'TransactionController:estimateGas',
       'TransactionController:getState',
+      'SubscriptionController:getSubscriptionByProduct',
     ],
   });
 }

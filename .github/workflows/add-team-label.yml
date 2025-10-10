@@ -8,6 +8,6 @@ on:
 jobs:
   add-team-label:
     if: ${{ !github.event.pull_request.head.repo.fork }}
-    uses: metamask/github-tools/.github/workflows/add-team-label.yml@18af6e4b56a18230d1792480e249ebc50b324927
+    uses: metamask/github-tools/.github/workflows/add-team-label.yml@7fe185fdb0e60981c898e88d82e44ff33f604daa
     secrets:
       TEAM_LABEL_TOKEN: ${{ secrets.TEAM_LABEL_TOKEN }}
