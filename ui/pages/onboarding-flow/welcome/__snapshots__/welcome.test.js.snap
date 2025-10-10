@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Welcome Page render matches snapshot 1`] = `
+<div>
+  <div
+    class="mm-box welcome-container mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--height-full"
+  >
+    <div
+      data-testid="metamask-wordmark-animation"
+    />
+  </div>
+</div>
+`;

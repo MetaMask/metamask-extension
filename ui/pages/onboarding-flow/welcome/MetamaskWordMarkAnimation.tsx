@@ -4,13 +4,14 @@ import { Box } from '@metamask/design-system-react';
 
 interface MetamaskWordMarkAnimationProps {
   setIsAnimationComplete: (isAnimationComplete: boolean) => void;
+  isAnimationComplete: boolean;
 }
 
 export default function MetamaskWordMarkAnimation({
   setIsAnimationComplete,
+  isAnimationComplete,
 }: MetamaskWordMarkAnimationProps) {
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [isComplete, setIsComplete] = useState(false);
 
   const { rive, RiveComponent } = useRive({
     src: './images/riv_animations/metamask_wordmark.riv',
@@ -32,7 +33,6 @@ export default function MetamaskWordMarkAnimation({
         // Set a timeout after state change to detect animation completion
         // Adjust this timeout to match your animation's actual duration
         animationTimeoutRef.current = setTimeout(() => {
-          setIsComplete(true);
           setIsAnimationComplete(true);
         }, 2500); // Adjust this based on your animation duration (in milliseconds)
       }
@@ -74,7 +74,7 @@ export default function MetamaskWordMarkAnimation({
   return (
     <Box
       className={`riv-animation__wordmark-container ${
-        isComplete ? 'riv-animation__wordmark-container--complete' : ''
+        isAnimationComplete ? 'riv-animation__wordmark-container--complete' : ''
       }`}
     >
       <RiveComponent className="riv-animation__canvas" />

@@ -397,6 +397,7 @@ export default function OnboardingWelcome() {
       {!isLoggingIn && (
         <MetamaskWordMarkAnimation
           setIsAnimationComplete={setIsAnimationComplete}
+          isAnimationComplete={isAnimationComplete}
         />
       )}
 
