@@ -60,9 +60,9 @@ const generateMultichainNetworkMaps = (
     const isEnabled = enabledNetworks.includes(chainId);
 
     if (chainId.startsWith(`${KnownCaipNamespace.Solana}:`)) {
-      networkMaps.solana[chainId] = isEnabled;
+      networkMaps[KnownCaipNamespace.Solana][chainId] = isEnabled;
     } else if (chainId.startsWith(`${KnownCaipNamespace.Bip122}:`)) {
-      networkMaps.bip122[chainId] = isEnabled;
+      networkMaps[KnownCaipNamespace.Bip122][chainId] = isEnabled;
     }
     // Add other network types as needed
   });
