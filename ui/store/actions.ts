@@ -333,6 +333,26 @@ export function createNewVaultAndSyncWithSocial(
 }
 
 /**
+ * Starts polling for the subscriptions.
+ */
+export function subscriptionsStartPolling(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      console.log('[subscriptionsStartPolling]');
+      await submitRequestToBackground('subscriptionsStartPolling');
+    } catch (error) {
+      log.error('[subscriptionsStartPolling] error', error);
+      dispatch(displayWarning(error));
+    }
+  };
+}
+
+/**
  * Fetches user subscriptions.
  *
  * @returns The subscriptions.
