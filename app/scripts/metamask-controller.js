@@ -1529,7 +1529,7 @@ export default class MetamaskController extends EventEmitter {
       const group = this.accountTreeController.getAccountGroupObject(groupId);
       if (group) {
         const snapKeyring = await this.getSnapKeyring();
-        snapKeyring.setSelectedAccounts(group.accounts);
+        await snapKeyring.setSelectedAccounts(group.accounts);
       }
     }
   }
