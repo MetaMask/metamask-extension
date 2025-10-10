@@ -12,11 +12,11 @@ export const DefaultStory = () => (
       address: '0x0',
       decimals: 18,
       symbol: 'USDC',
-      chainId: '0x1',
       conversionRate: {
         usd: '1',
       },
     }}
+    chainId="0x1"
   />
 );
 
