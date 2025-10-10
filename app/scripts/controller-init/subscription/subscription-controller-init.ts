@@ -7,6 +7,7 @@ import {
 import { ControllerInitFunction } from '../types';
 import { SubscriptionControllerInitMessenger } from '../messengers/subscription';
 import { ENVIRONMENT } from '../../../../development/build/constants';
+import { getIsMetaMaskShieldFeatureEnabled } from '../../../../shared/modules/environment';
 
 /**
  * Check if the build is a Development or Test build.
@@ -39,6 +40,10 @@ export const SubscriptionControllerInit: ControllerInitFunction<
     state: persistedState.SubscriptionController,
     subscriptionService,
   });
+
+  if (getIsMetaMaskShieldFeatureEnabled()) {
+    controller.startPolling();
+  }
 
   return {
     controller,

@@ -800,7 +800,16 @@ export default class MetamaskController extends EventEmitter {
       this._onUserOperationTransactionUpdated.bind(this),
     );
 
-    // on/off shield controller based on shield subscription
+    // Start ShieldController if shield subscription is active
+    if (
+      getIsShieldSubscriptionActive(
+        this.subscriptionController.state.subscriptions,
+      )
+    ) {
+      this.shieldController.start();
+    }
+
+    // Update ShieldController when subscription state changes
     this.controllerMessenger.subscribe(
       'SubscriptionController:stateChange',
       previousValueComparator((prevState, currState) => {
@@ -818,8 +827,6 @@ export default class MetamaskController extends EventEmitter {
         }
 
         if (hasActiveShieldSubscription) {
-          // start polling for the subscriptions
-          this.subscriptionController.startPolling();
           this.shieldController.start();
         } else {
           this.shieldController.stop();
