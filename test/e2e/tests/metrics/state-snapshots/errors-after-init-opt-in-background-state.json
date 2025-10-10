@@ -41,6 +41,7 @@
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
     "showPermissionsTour": true,
+    "showShieldEntryModalOnce": "boolean",
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "productTour": "accountIcon",

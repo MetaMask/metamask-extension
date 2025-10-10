@@ -121,6 +121,8 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
@@ -204,6 +206,7 @@ import {
   HYPERLIQUID_ORIGIN,
   METAMASK_REFERRAL_CODE,
 } from '../../shared/constants/referrals';
+import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -797,6 +800,33 @@ export default class MetamaskController extends EventEmitter {
       this._onUserOperationTransactionUpdated.bind(this),
     );
 
+    // on/off shield controller based on shield subscription
+    this.controllerMessenger.subscribe(
+      'SubscriptionController:stateChange',
+      previousValueComparator((prevState, currState) => {
+        // check if the shield subscription was active before the state change
+        const hadSubscriptionPreviously = getIsShieldSubscriptionActive(
+          prevState.subscriptions,
+        );
+        // check if the shield subscription is active after the state change
+        const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
+          currState.subscriptions,
+        );
+        // if the shield subscription is the same before and after the state change, do nothing
+        if (hasActiveShieldSubscription === hadSubscriptionPreviously) {
+          return;
+        }
+
+        if (hasActiveShieldSubscription) {
+          // start polling for the subscriptions
+          this.subscriptionController.startPolling();
+          this.shieldController.start();
+        } else {
+          this.shieldController.stop();
+        }
+      }, this.subscriptionController.state),
+    );
+
     const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
       name: 'PetnamesBridge',
       allowedEvents: [
@@ -819,11 +849,16 @@ export default class MetamaskController extends EventEmitter {
     }).init();
 
     this.getSecurityAlertsConfig = async (url) => {
+      const getShieldSubscription = () =>
+        this.controllerMessenger.call(
+          'SubscriptionController:getSubscriptionByProduct',
+          PRODUCT_TYPES.SHIELD,
+        );
       const getToken = () =>
         this.controllerMessenger.call(
           'AuthenticationController:getBearerToken',
         );
-      return getShieldGatewayConfig(getToken, url);
+      return getShieldGatewayConfig(getToken, getShieldSubscription, url);
     };
 
     this.notificationServicesController.init();
@@ -2680,6 +2715,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.updateNetworkConnectionBanner.bind(
           appStateController,
         ),
+      setShowShieldEntryModalOnce:
+        appStateController.setShowShieldEntryModalOnce.bind(appStateController),
 
       // EnsController
       tryReverseResolveAddress:

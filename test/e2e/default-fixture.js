@@ -125,6 +125,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         newPrivacyPolicyToastShownDate: Date.now(),
         snapsInstallPrivacyWarningShown: true,
         hasShownMultichainAccountsIntroModal: true,
+        showShieldEntryModalOnce: false,
       },
       BridgeController: {},
       CurrencyController: {
