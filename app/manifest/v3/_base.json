@@ -14,7 +14,7 @@
   },
   "author": "https://metamask.io",
   "background": {
-    "service_worker": "scripts/app-init.js"
+    "service_worker": "app-init.js"
   },
   "commands": {
     "_execute_browser_action": {
