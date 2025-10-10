@@ -330,7 +330,7 @@
     "@metamask/name-controller": "^8.0.3",
     "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A24.1.0#~/.yarn/patches/@metamask-network-controller-npm-24.0.1-d913bfdf67.patch",
     "@metamask/network-enablement-controller": "^2.1.0",
-    "@metamask/notification-services-controller": "^18.1.0",
+    "@metamask/notification-services-controller": "^18.2.0",
     "@metamask/object-multiplex": "^2.0.0",
     "@metamask/obs-store": "^9.0.0",
     "@metamask/permission-controller": "^11.0.6",
