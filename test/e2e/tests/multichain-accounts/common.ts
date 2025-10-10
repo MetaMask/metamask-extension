@@ -61,7 +61,6 @@ export async function withMultichainAccountsDesignEnabled(
       fixtures: fixture,
       testSpecificMock,
       title,
-      dapp: true,
       forceBip44Version: state === 2 ? 2 : 0,
       dapp,
       dappPaths,
