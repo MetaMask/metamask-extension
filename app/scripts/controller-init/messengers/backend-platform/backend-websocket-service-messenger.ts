@@ -20,7 +20,9 @@ export function getBackendWebSocketServiceMessenger(
       'AuthenticationController:getBearerToken', // Get auth token (includes wallet unlock check)
     ],
     allowedEvents: [
-      'AuthenticationController:stateChange', // Listen for authentication state (includes wallet lock/unlock)
+      'AuthenticationController:stateChange', // Listen for authentication state (sign in/out)
+      'KeyringController:lock', // Listen for wallet lock
+      'KeyringController:unlock', // Listen for wallet unlock
     ],
   });
 }

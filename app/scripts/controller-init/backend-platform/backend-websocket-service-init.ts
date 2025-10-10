@@ -1,9 +1,11 @@
 import { BackendWebSocketService } from '@metamask/core-backend';
+import type { TraceCallback } from '@metamask/controller-utils';
 import { ControllerInitFunction } from '../types';
 import {
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger,
 } from '../messengers/backend-platform';
+import { trace } from '../../../../shared/lib/trace';
 
 /**
  * Initialize the Backend Platform WebSocket service with authentication support.
@@ -34,7 +36,10 @@ export const BackendWebSocketServiceInit: ControllerInitFunction<
     reconnectDelay: 1000, // Conservative reconnect strategy
     maxReconnectDelay: 30000, // Allow longer delays for backend stability
     requestTimeout: 20000, // Reasonable timeout for backend requests
-    // Feature flag integration - service will check this callback before connecting/reconnecting
+    // Inject the Sentry-backed trace function from extension platform
+    traceFn: trace as TraceCallback,
+    // Feature flag AND app lifecycle integration
+    // Service will check this callback before connecting/reconnecting
     isEnabled: () => {
       try {
         // Check for local environment variable override first (for development)
@@ -43,11 +48,16 @@ export const BackendWebSocketServiceInit: ControllerInitFunction<
           return envOverride === true || envOverride === 'true';
         }
 
-        // Fall back to remote feature flag
         const remoteFeatureFlagState = initMessenger?.call('RemoteFeatureFlagController:getState');
-        return Boolean(
-          remoteFeatureFlagState?.remoteFeatureFlags?.backendWebSocketConnectionEnabled
-        );
+        const { backendWebSocketConnection } = remoteFeatureFlagState?.remoteFeatureFlags || {};
+
+        const result =
+          backendWebSocketConnection &&
+          typeof backendWebSocketConnection === 'object' &&
+          'value' in backendWebSocketConnection &&
+          Boolean(backendWebSocketConnection.value);
+
+        return Boolean(result);
       } catch (error) {
         // If feature flag check fails, default to NOT connecting for safer startup
         console.warn('[BackendWebSocketService] Could not check feature flag, defaulting to NOT connect:', error);

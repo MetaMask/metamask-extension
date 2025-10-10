@@ -132,6 +132,10 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/core-backend": "npm:@metamask-previews/core-backend@1.0.1-preview-0189b42",
+    "@metamask/base-controller": "^8.4.1",
+    "@metamask/controller-utils": "^11.14.1",
+    "@metamask/profile-sync-controller": "^25.1.1",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",
@@ -271,7 +275,7 @@
     "@metamask/address-book-controller": "^6.1.0",
     "@metamask/announcement-controller": "^7.0.3",
     "@metamask/approval-controller": "^7.0.0",
-    "@metamask/assets-controllers": "file:../core/packages/assets-controllers",
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@80.0.0-preview-0189b42",
     "@metamask/base-controller": "^8.3.0",
     "@metamask/bitcoin-wallet-snap": "^1.3.0",
     "@metamask/bridge-controller": "^48.0.0",
@@ -280,7 +284,7 @@
     "@metamask/chain-agnostic-permission": "^1.1.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.14.0",
-    "@metamask/core-backend": "file:../core/packages/core-backend",
+    "@metamask/core-backend": "npm:@metamask-previews/core-backend@1.0.1-preview-0189b42",
     "@metamask/delegation-controller": "^0.7.0",
     "@metamask/delegation-core": "^0.2.0-rc.1",
     "@metamask/delegation-deployments": "^0.11.0",

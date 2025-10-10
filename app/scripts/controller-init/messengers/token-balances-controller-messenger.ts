@@ -13,10 +13,9 @@ import {
   AccountsControllerListAccountsAction,
 } from '@metamask/accounts-controller';
 import {
-  AccountTrackerControllerGetStateAction,
-  AccountTrackerUpdateNativeBalancesAction,
-  AccountTrackerUpdateStakedBalancesAction,
   TokensControllerState,
+  TokenDetectionControllerAddDetectedTokensViaWsAction,
+  GetTokenListState,
 } from '@metamask/assets-controllers';
 import {
   KeyringControllerAccountRemovedEvent,
@@ -24,7 +23,11 @@ import {
   KeyringControllerLockEvent,
 } from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import { AccountTrackerControllerGetStateAction } from '../../controllers/account-tracker-controller';
+import {
+  AccountTrackerControllerGetStateAction,
+  AccountTrackerUpdateNativeBalancesAction,
+  AccountTrackerUpdateStakedBalancesAction,
+} from '../../controllers/account-tracker-controller';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -54,7 +57,9 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetStateAction
   | PreferencesControllerGetStateAction
-  | TokensControllerGetStateAction;
+  | TokensControllerGetStateAction
+  | TokenDetectionControllerAddDetectedTokensViaWsAction
+  | GetTokenListState;
 
 type AllowedEvents =
   | KeyringControllerAccountRemovedEvent
@@ -86,6 +91,8 @@ export function getTokenBalancesControllerMessenger(
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'TokensController:getState',
+      'TokenDetectionController:addDetectedTokensViaWs',
+      'TokenListController:getState',
       'PreferencesController:getState',
       'AccountsController:getSelectedAccount',
       'AccountsController:listAccounts',

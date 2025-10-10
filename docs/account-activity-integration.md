@@ -70,7 +70,7 @@ allowedActions: [
   'AccountsController:getAccountByAddress',
   'AccountsController:getSelectedAccount',
   'TokenBalancesController:updateChainPollingConfigs',
-  'TokenBalancesController:getDefaultPollingInterval',
+  'TokenBalancesController:getChainPollingConfig',
   'AccountActivityService:subscribeAccounts',
   'AccountActivityService:unsubscribeAccounts',
 ],

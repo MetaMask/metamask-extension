@@ -1274,15 +1274,7 @@ export default class MetamaskController extends EventEmitter {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     this.multichainRatesController.stop();
-
-    // Clean up WebSocket connections and account activity subscriptions
-    if (this.controllersByName?.AccountActivityService) {
-      this.controllersByName.AccountActivityService.destroy();
-    }
-    if (this.backendWebSocketService) {
-      this.backendWebSocketService.destroy();
-    }
-
+    this.backendWebSocketService.disconnect()
   }
 
   resetStates(resetMethods) {
@@ -7749,10 +7741,7 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.call('SnapController:setClientActive', open);
 
     // Handle WebSocket connection lifecycle when client opens/closes
-    if (open && this.backendWebSocketService) {
-      // Extension UI opened - ensure WebSocket is connected
-      this.backendWebSocketService.connect()
-    }
+    this.backendWebSocketService.connect()
   }
   /* eslint-enable accessor-pairs */
 
