@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
-import { CaipChainId, NonEmptyArray } from '@metamask/utils';
+import { CaipChainId, NonEmptyArray, Hex } from '@metamask/utils';
 import {
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
@@ -48,6 +48,7 @@ import {
   DisconnectAllModal,
   DisconnectType,
 } from '../../../multichain/disconnect-all-modal/disconnect-all-modal';
+import { DisconnectPermissionsModal } from '../../../multichain/disconnect-permissions-modal/disconnect-permissions-modal';
 import { PermissionsHeader } from '../../../multichain/permissions-header/permissions-header';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
 import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
@@ -60,9 +61,11 @@ import { MultichainEditAccountsPage } from '../multichain-edit-accounts-page/mul
 import {
   AppState,
   getPermissionGroupDetailsByOrigin,
+  getTokenTransferPermissionsByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
+import { useRevokeGatorPermissions } from '../../../../hooks/gator-permissions/useRevokeGatorPermissions';
 
 export enum MultichainReviewPermissionsPageMode {
   Summary = 'summary',
@@ -79,6 +82,8 @@ export const MultichainReviewPermissions = () => {
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
+  const [showDisconnectPermissionsModal, setShowDisconnectPermissionsModal] =
+    useState(false);
   const [pageMode, setPageMode] = useState<MultichainReviewPermissionsPageMode>(
     MultichainReviewPermissionsPageMode.Summary,
   );
@@ -93,7 +98,7 @@ export const MultichainReviewPermissions = () => {
       setShowNetworkToast(showPermittedNetworkToastOpen);
       dispatch(hidePermittedNetworkToast());
     }
-  }, [showPermittedNetworkToastOpen]);
+  }, [showPermittedNetworkToastOpen, dispatch]);
 
   const requestAccountsAndChainPermissions = async () => {
     const requestId = await dispatch(
@@ -129,6 +134,18 @@ export const MultichainReviewPermissions = () => {
       }
     }
     dispatch(hidePermittedNetworkToast());
+  };
+
+  const handleDisconnectClick = () => {
+    setShowDisconnectAllModal(true);
+  };
+
+  const handleSkipPermissions = () => {
+    setShowDisconnectPermissionsModal(false);
+    // Skip permissions and disconnect directly
+    trace({ name: TraceName.DisconnectAllModal });
+    disconnectAllPermissions();
+    endTrace({ name: TraceName.DisconnectAllModal });
   };
 
   const networkConfigurationsByCaipChainId = useSelector(
@@ -250,6 +267,38 @@ export const MultichainReviewPermissions = () => {
     getPermissionGroupDetailsByOrigin(state as AppState, activeTabOrigin),
   );
 
+  // Gator permissions revocation logic
+  const tokenTransferPermissions = useSelector((state: AppState) =>
+    getTokenTransferPermissionsByOrigin(state, activeTabOrigin),
+  );
+
+  // Group permissions by chain ID for proper revocation
+  const permissionsByChainId = useMemo(() => {
+    const grouped: { [chainId: string]: typeof tokenTransferPermissions } = {};
+    tokenTransferPermissions.forEach((permission) => {
+      const { chainId } = permission.permissionResponse;
+      if (!grouped[chainId]) {
+        grouped[chainId] = [];
+      }
+      grouped[chainId].push(permission);
+    });
+    return grouped;
+  }, [tokenTransferPermissions]);
+
+  // Single hook instance for multi-chain support
+  const { revokeGatorPermissionsBatchMultiChain } = useRevokeGatorPermissions({
+    chainId: '0x1', // This will be overridden by the multi-chain function
+  });
+
+  // Format permissions for the DisconnectPermissionsModal
+  const formattedPermissions = useMemo(() => {
+    return tokenTransferPermissions.map((permission) => ({
+      permission,
+      chainId: permission.permissionResponse.chainId,
+      permissionType: permission.permissionResponse.permission.type,
+    }));
+  }, [tokenTransferPermissions]);
+
   const shouldRenderGatorPermissionGroupDetails = useMemo(() => {
     if (!gatorPermissionGroupDetailsMap) {
       return false;
@@ -264,6 +313,53 @@ export const MultichainReviewPermissions = () => {
       !isPermissionGroupDetailsMapEmpty
     );
   }, [gatorPermissionGroupDetailsMap]);
+
+  const handleRemoveAllPermissions = async () => {
+    try {
+      // First, revoke site permissions (accounts and chains)
+      const subject = (subjects as SubjectsType)[activeTabOrigin];
+
+      if (subject) {
+        const permissionMethodNames = Object.values(subject.permissions).map(
+          ({ parentCapability }: { parentCapability: string }) =>
+            parentCapability,
+        ) as string[];
+
+        if (permissionMethodNames.length > 0) {
+          const permissionsRecord = {
+            [activeTabOrigin]: permissionMethodNames as NonEmptyArray<string>,
+          };
+
+          dispatch(removePermissionsFor(permissionsRecord));
+        }
+      }
+
+      // Close the permissions modal immediately for better UX
+      setShowDisconnectPermissionsModal(false);
+
+      // Revoke gator permissions if they exist (run in background)
+      if (tokenTransferPermissions.length > 0) {
+        // Start revocation process in the background (don't await)
+        revokeGatorPermissionsBatchMultiChain(
+          permissionsByChainId as Record<Hex, typeof tokenTransferPermissions>,
+        ).catch((gatorError) => {
+          console.error('Error revoking gator permissions:', gatorError);
+        });
+      }
+
+      // Disconnect immediately
+      trace({ name: TraceName.DisconnectAllModal });
+      disconnectAllPermissions();
+      endTrace({ name: TraceName.DisconnectAllModal });
+    } catch (error) {
+      console.error('Error removing permissions:', error);
+      // Still proceed to disconnect even if revocation fails
+      setShowDisconnectPermissionsModal(false);
+      trace({ name: TraceName.DisconnectAllModal });
+      disconnectAllPermissions();
+      endTrace({ name: TraceName.DisconnectAllModal });
+    }
+  };
 
   return pageMode === MultichainReviewPermissionsPageMode.Summary ? (
     <Page
@@ -310,11 +406,30 @@ export const MultichainReviewPermissions = () => {
               hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
-                trace({ name: TraceName.DisconnectAllModal });
-                disconnectAllPermissions();
+                // Check if there are token transfer permissions
+
                 setShowDisconnectAllModal(false);
-                endTrace({ name: TraceName.DisconnectAllModal });
+                const hasTokenTransferPermissions = Object.values(
+                  gatorPermissionGroupDetailsMap,
+                ).some((details) => details.total > 0);
+
+                if (hasTokenTransferPermissions) {
+                  setShowDisconnectPermissionsModal(true);
+                } else {
+                  trace({ name: TraceName.DisconnectAllModal });
+                  disconnectAllPermissions();
+                  endTrace({ name: TraceName.DisconnectAllModal });
+                }
               }}
+            />
+          ) : null}
+          {showDisconnectPermissionsModal ? (
+            <DisconnectPermissionsModal
+              isOpen={showDisconnectPermissionsModal}
+              onClose={() => setShowDisconnectPermissionsModal(false)}
+              onSkip={handleSkipPermissions}
+              onRemoveAll={handleRemoveAllPermissions}
+              permissions={formattedPermissions}
             />
           ) : null}
         </Content>
@@ -364,7 +479,7 @@ export const MultichainReviewPermissions = () => {
                   variant={ButtonVariant.Secondary}
                   startIconName={IconName.Logout}
                   danger
-                  onClick={() => setShowDisconnectAllModal(true)}
+                  onClick={handleDisconnectClick}
                   data-test-id="disconnect-all"
                 >
                   {t('disconnect')}

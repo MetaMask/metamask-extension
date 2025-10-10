@@ -1734,6 +1734,9 @@
   "customizeYourNotificationsText": {
     "message": "Turn on the types of notifications you want to receive:"
   },
+  "daily": {
+    "message": "daily"
+  },
   "dappSuggested": {
     "message": "Site suggested"
   },
@@ -2005,6 +2008,9 @@
   },
   "disconnectMessage": {
     "message": "This will disconnect you from this site"
+  },
+  "disconnectPermissionsModalTokenTransfers": {
+    "message": "Token transfers"
   },
   "disconnectPrompt": {
     "message": "Disconnect $1"
@@ -2456,6 +2462,18 @@
   },
   "etherscanViewOn": {
     "message": "View on Etherscan"
+  },
+  "everyXDays": {
+    "message": "every $1 days"
+  },
+  "everyXHours": {
+    "message": "every $1 hours"
+  },
+  "everyXMinutes": {
+    "message": "every $1 minutes"
+  },
+  "everyXSeconds": {
+    "message": "every $1 seconds"
   },
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
@@ -3510,6 +3528,9 @@
   "missingSettingRequest": {
     "message": "Request here"
   },
+  "monthly": {
+    "message": "monthly"
+  },
   "more": {
     "message": "more"
   },
@@ -3991,6 +4012,9 @@
   "noOptionsAvailableMessage": {
     "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
   },
+  "noPermissionsFound": {
+    "message": "No permissions found"
+  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
@@ -4391,6 +4415,12 @@
   "other": {
     "message": "other"
   },
+  "otherPermissionsOnSiteDescription": {
+    "message": "The following permissions were also found on this site. Do you want to remove them?"
+  },
+  "otherPermissionsOnSiteTitle": {
+    "message": "Other permissions on this site"
+  },
   "otherSnaps": {
     "message": "other snaps",
     "description": "Used in the 'permission_rpc' message."
@@ -4468,6 +4498,9 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Learn how to cancel or speed up a transaction.",
     "description": "The text for the hyperlink in the pending transaction alert message"
+  },
+  "perSecond": {
+    "message": "per second"
   },
   "permissionDetails": {
     "message": "Permission details"
@@ -5088,6 +5121,9 @@
   "removeAccountModalBannerTitle": {
     "message": "This account will be removed from MetaMask.",
     "description": "Title of a banner alert used on account remove modal."
+  },
+  "removeAll": {
+    "message": "Remove all"
   },
   "removeKeyringSnap": {
     "message": "Removing this Snap removes these accounts from MetaMask:"
@@ -5945,6 +5981,9 @@
   },
   "siweURI": {
     "message": "URL"
+  },
+  "skip": {
+    "message": "Skip"
   },
   "skipDeepLinkInterstitial": {
     "message": "Don't show interstitial screen when opening deep links"
@@ -7181,6 +7220,12 @@
   "tokenStandard": {
     "message": "Token standard"
   },
+  "tokenStream": {
+    "message": "Token Stream"
+  },
+  "tokenSubscription": {
+    "message": "Token Subscription"
+  },
   "tokenSymbol": {
     "message": "Token symbol"
   },
@@ -7711,6 +7756,9 @@
   "websites": {
     "message": "websites",
     "description": "Used in the 'permission_rpc' message."
+  },
+  "weekly": {
+    "message": "weekly"
   },
   "welcomeBack": {
     "message": "Welcome back"
