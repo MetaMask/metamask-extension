@@ -7121,9 +7121,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^14.1.1":
-  version: 14.1.1
-  resolution: "@metamask/phishing-controller@npm:14.1.1"
+"@metamask/phishing-controller@npm:^14.1.2":
+  version: 14.1.2
+  resolution: "@metamask/phishing-controller@npm:14.1.2"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/controller-utils": "npm:^11.14.1"
@@ -7134,7 +7134,7 @@ __metadata:
     punycode: "npm:^2.1.1"
   peerDependencies:
     "@metamask/transaction-controller": ^60.4.0
-  checksum: 10/c1e61a3cadb404a0c74f2d4d8f6b7c1f144563000db701cccf3402a72bfa143ce7e4e3deaa6763882e6e1ea209433aaade9453388324ad90c93a6b289f984e2d
+  checksum: 10/957667c965266767c4da08d630425dd19aa2b655a72e294ee8d63918bae80b48596bae1fafcdbc4ec06b530ece34c9246165a9135f6b75790c9c20c8137b03d0
   languageName: node
   linkType: hard
 
@@ -31403,7 +31403,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/permission-log-controller": "npm:^4.0.0"
     "@metamask/permissions-kernel-snap": "npm:^0.3.0"
-    "@metamask/phishing-controller": "npm:^14.1.1"
+    "@metamask/phishing-controller": "npm:^14.1.2"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.38.0"
