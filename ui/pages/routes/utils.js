@@ -245,7 +245,10 @@ export function hideAppHeader(props) {
   }
 
   const isMultichainAccountDetailsQRCodePage = Boolean(
-    safeMatchPath({ path: ACCOUNT_DETAILS_QR_CODE_ROUTE, end: false }, pathname),
+    safeMatchPath(
+      { path: ACCOUNT_DETAILS_QR_CODE_ROUTE, end: false },
+      pathname,
+    ),
   );
 
   if (isMultichainAccountDetailsQRCodePage) {
@@ -285,7 +288,10 @@ export function hideAppHeader(props) {
   }
 
   const isReviewGatorPermissionsPage = Boolean(
-    safeMatchPath({ path: REVIEW_GATOR_PERMISSIONS_ROUTE, end: false }, pathname),
+    safeMatchPath(
+      { path: REVIEW_GATOR_PERMISSIONS_ROUTE, end: false },
+      pathname,
+    ),
   );
 
   if (isReviewGatorPermissionsPage) {

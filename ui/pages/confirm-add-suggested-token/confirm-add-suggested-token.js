@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
@@ -172,13 +172,12 @@ const ConfirmAddSuggestedToken = () => {
     navigate(mostRecentOverviewPage);
   }, [dispatch, navigate, mostRecentOverviewPage, suggestedTokens]);
 
-  // Call navigate() during the render phase (with an early return) instead of in useEffect,
-  // which guarantees it happens before the component fully renders.
-  // This is a subtle but important behavioral difference between v5's imperative API and v6's declarative state-based navigation
-  if (!suggestedTokens.length) {
-    navigate(mostRecentOverviewPage);
-    return null;
-  }
+  // Navigate in useEffect, not render phase, to avoid v5-compat CompatRouter state update errors
+  useEffect(() => {
+    if (!suggestedTokens.length) {
+      navigate(mostRecentOverviewPage);
+    }
+  }, [navigate, mostRecentOverviewPage, suggestedTokens]);
 
   return (
     <div className={classNames}>

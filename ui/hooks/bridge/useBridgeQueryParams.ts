@@ -120,9 +120,9 @@ export const useBridgeQueryParams = () => {
     };
   }, []);
 
-  const [assetMetadataByAssetId, setAssetMetadataByAssetId] = useState<
-    Awaited<ReturnType<typeof fetchAssetMetadataForAssetIds>> | null
-  >(null);
+  const [assetMetadataByAssetId, setAssetMetadataByAssetId] = useState<Awaited<
+    ReturnType<typeof fetchAssetMetadataForAssetIds>
+  > | null>(null);
 
   useEffect(() => {
     const searchParamsFrom = parseAsset(
