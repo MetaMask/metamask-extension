@@ -1,8 +1,9 @@
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useLocation } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
+import { useSafeNavigation } from '../../hooks/useSafeNavigation';
 import {
   BannerAlert,
   Button,
@@ -86,7 +87,7 @@ function hasDuplicateSymbolAndDiffAddress(suggestedTokens, tokens) {
 const ConfirmAddSuggestedToken = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const { navigate } = useSafeNavigation();
 
   const location = useLocation();
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
@@ -171,16 +172,13 @@ const ConfirmAddSuggestedToken = () => {
     navigate(mostRecentOverviewPage);
   }, [dispatch, navigate, mostRecentOverviewPage, suggestedTokens]);
 
-  const goBackIfNoSuggestedTokensOnFirstRender = () => {
-    if (!suggestedTokens.length) {
-      navigate(mostRecentOverviewPage);
-    }
-  };
-
-  useEffect(() => {
-    goBackIfNoSuggestedTokensOnFirstRender();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Call navigate() during the render phase (with an early return) instead of in useEffect,
+  // which guarantees it happens before the component fully renders.
+  // This is a subtle but important behavioral difference between v5's imperative API and v6's declarative state-based navigation
+  if (!suggestedTokens.length) {
+    navigate(mostRecentOverviewPage);
+    return null;
+  }
 
   return (
     <div className={classNames}>
