@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 
 import { Tag } from '../../../../../components/component-library';
 
