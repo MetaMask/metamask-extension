@@ -33,18 +33,12 @@ export const serviceWorkerPlugin: WebpackPluginInstance = {
           stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONS,
         },
         () => {
-          const serviceWorkerAssets: string[] = [];
           const background = compilation.entrypoints.get('background');
-          const backgroundChunks = background?.chunks ?? [];
-          for (const chunk of backgroundChunks) {
-            for (const file of chunk.files) {
-              serviceWorkerAssets.push(`../${file}`);
-            }
-          }
-          const filenames = serviceWorkerAssets.join(',');
+          const backgroundFiles = background?.getEntrypointChunk().files ?? [];
+          const backgroundFilenames = [...backgroundFiles].join(',');
           const assetName = 'app-init.js';
           const searchValue = 'process.env.FILE_NAMES';
-          const replaceValue = JSON.stringify(filenames);
+          const replaceValue = JSON.stringify(backgroundFilenames);
           compilation.updateAsset(assetName, (source) =>
             replaceSource(source, assetName, searchValue, replaceValue),
           );

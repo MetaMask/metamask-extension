@@ -436,11 +436,6 @@ const config = {
     // and cannot share code with other scripts - as the browser extension
     // platform is responsible for loading them and splitting these files
     // would require updating the manifest to include the other chunks.
-    runtimeChunk: {
-      // casting to string as webpack's types are wrong, `false` is allowed, and
-      // is actually the default value.
-      name: (chunk) => (canBeChunked(chunk) ? 'runtime' : false) as string,
-    },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
       // https://github.com/mozilla/addons-linter/issues/4942

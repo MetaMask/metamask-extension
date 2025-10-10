@@ -83,21 +83,25 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     'bootstrap',
   ]);
 
-  function addManifestScript(filename?: string) {
+  function addManifestScript(filename?: string, opts?: any) {
     if (filename) {
       selfContainedScripts.add(filename);
       entry[filename] = {
         chunkLoading: false,
         filename, // output filename
         import: join(appRoot, filename), // the path to the file to use as an entry
+        ...opts,
       };
     }
   }
 
-  function addHtml(filename?: string) {
+  function addHtml(filename?: string, opts?: any) {
     if (filename) {
       assertValidEntryFileName(filename, appRoot);
-      entry[parse(filename).name] = join(appRoot, filename);
+      entry[parse(filename).name] = {
+        import: join(appRoot, filename),
+        ...opts,
+      };
     }
   }
 
@@ -120,9 +124,17 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
   }
 
   for (const filename of readdirSync(appRoot)) {
-    // ignore non-htm/html files
+    // ignore non-html/html files
     if (/\.html?$/iu.test(filename)) {
-      addHtml(filename);
+      if (filename === 'background.html') {
+        addManifestScript('background', {
+          filename: 'scripts/background.js',
+          import: join(appRoot, 'scripts/background.js'),
+          chunkLoading: 'import-scripts',
+        });
+      } else {
+        addHtml(filename);
+      }
     }
   }
 
