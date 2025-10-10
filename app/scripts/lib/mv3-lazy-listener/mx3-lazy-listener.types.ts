@@ -1,50 +1,49 @@
-import browser from 'webextension-polyfill';
-import type { Events } from 'webextension-polyfill';
+import type { Browser, Events } from 'webextension-polyfill';
 
-type Browser = typeof browser;
+/** Only string keys (avoid number/symbol widening). */
+type StringKeys<Thing> = Extract<keyof Thing, string>;
 
-/**
- * This is used to filter out namespaces that do not have any methods that
- * implement `addListener` and `removeListener` (`Events.Event`).
- */
-type HasEvent<Type> = {
-  [K in keyof Type]: Type[K] extends Events.Event<infer _> ? K : never;
-}[keyof Type];
+/** Keys of T whose values are Events.Event<…> */
+type EventKeys<Thing> = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [K in StringKeys<Thing>]-?: Thing[K] extends Events.Event<any> ? K : never;
+}[StringKeys<Thing>];
 
 /**
- * The names of all properties in `browser.*` that have methods that include
- * `addListener` and `removeListener`.
+ * Browser namespaces that have event keys.
+ * e.g. 'runtime', 'tabs', 'webRequest', etc.
  */
 export type BrowserNamespace = Extract<
   {
-    [N in keyof Browser]: HasEvent<Browser[N]> extends never ? never : N;
+    [Key in keyof Browser]-?: EventKeys<Browser[Key]> extends never
+      ? never
+      : Key;
   }[keyof Browser],
   string
 >;
 
 /**
- * The names of all events in `browser.*` that support `addListener` and `removeListener`.
+ * Event names within a given namespace that are of type Events.Event<…>.
+ * e.g. for 'runtime', this would include `'onMessage'`, `'onInstalled'`, etc.
  */
-export type BrowserEventName<Namespace extends BrowserNamespace> = Extract<
-  Namespace extends any ? HasEvent<Browser[Namespace]> : never,
-  string
+export type BrowserEventName<Namespace extends BrowserNamespace> = EventKeys<
+  Browser[Namespace]
 >;
 
 /**
- * The argument types for the listener function of a given browser.* event.
+ * The listener function type for a given namespace and event name.
+ * (e.g. for `runtime.onMessage`, this would be `(message: any, sender: MessageSender, sendResponse: (response?: any) => void) => void)`
  */
-export type ListenerArguments<
+type EventCallback<
   Namespace extends BrowserNamespace,
   EventName extends BrowserEventName<Namespace>,
-> =
-  Browser[Namespace][EventName] extends Events.Event<infer _>
-    ? Parameters<Browser[Namespace][EventName]['addListener']>
-    : never;
+> = Browser[Namespace][EventName] extends Events.Event<infer Fn> ? Fn : never;
 
 /**
- * The argument types for the callback function of a given browser.* event.
+ * The callback's argument types for a given namespace and event name.
+ * (e.g. for `runtime.onMessage`, this would be `[message: any, sender: MessageSender, sendResponse: (response?: any) => void])`
  */
 export type CallbackArguments<
   Namespace extends BrowserNamespace,
   EventName extends BrowserEventName<Namespace> = BrowserEventName<Namespace>,
-> = Parameters<ListenerArguments<Namespace, EventName>[0]>;
+> = Parameters<EventCallback<Namespace, EventName>>;

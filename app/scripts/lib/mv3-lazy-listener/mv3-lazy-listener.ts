@@ -1,35 +1,62 @@
 import browser from 'webextension-polyfill';
+import type { Events } from 'webextension-polyfill';
 import type {
   BrowserEventName,
   BrowserNamespace,
   CallbackArguments,
-  ListenerArguments,
 } from './mx3-lazy-listener.types';
 
-type Tracker<Namespace extends BrowserNamespace> = {
-  listener: (
-    ...args: CallbackArguments<Namespace, BrowserEventName<Namespace>>
-  ) => void;
-  calls: CallbackArguments<Namespace>[];
+type EventRecord<
+  Namespace extends BrowserNamespace,
+  EventName extends BrowserEventName<Namespace>,
+> = {
+  listener: (...args: CallbackArguments<Namespace, EventName>) => void;
+  calls: CallbackArguments<Namespace, EventName>[];
 };
+
+type NamespaceListenerMap = {
+  get<
+    Namespace extends BrowserNamespace,
+    EventName extends BrowserEventName<Namespace> = BrowserEventName<Namespace>,
+  >(
+    key: Namespace,
+  ): Map<EventName, EventRecord<Namespace, EventName>> | undefined;
+  set<
+    Namespace extends BrowserNamespace,
+    EventName extends BrowserEventName<Namespace> = BrowserEventName<Namespace>,
+  >(
+    key: Namespace,
+    value: Map<EventName, EventRecord<Namespace, EventName>>,
+  ): typeof namespaceListeners;
+};
+
+/**
+ * Get the event object for a given namespace and event name and ensure the
+ * correct type
+ *
+ * @param namespace - the browser.* namespace, e.g. 'runtime'
+ * @param eventName - the event name within that namespace, e.g. 'onMessage'
+ */
+function getEvent<
+  Namespace extends BrowserNamespace,
+  EventName extends BrowserEventName<Namespace>,
+>(namespace: Namespace, eventName: EventName) {
+  const event = browser[namespace][eventName];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return event as typeof event & Events.Event<any>;
+}
 
 /**
  * We keep all of our installed listeners and the events they have received so
  * far in this map.
  */
-const namespaceListeners = (() => {
-  const store = new Map();
-  return {
-    get: <Namespace extends BrowserNamespace>(
-      namespace: Namespace,
-    ): Map<BrowserEventName<Namespace>, Tracker<Namespace>> | undefined =>
-      store.get(namespace),
-    set: <Namespace extends BrowserNamespace>(
-      namespace: Namespace,
-      value: Map<BrowserEventName<Namespace>, Tracker<Namespace>>,
-    ) => store.set(namespace, value),
-  };
-})();
+const namespaceListeners: NamespaceListenerMap = new Map<
+  BrowserNamespace,
+  Map<
+    BrowserEventName<BrowserNamespace>,
+    EventRecord<BrowserNamespace, BrowserEventName<BrowserNamespace>>
+  >
+>();
 
 /**
  * Install listeners for multiple browser.* events.
@@ -41,10 +68,10 @@ export function install<
   Namespace extends BrowserNamespace,
   EventNames extends BrowserEventName<Namespace>[],
 >(namespace: Namespace, eventNames: EventNames) {
-  let runtimeListeners = namespaceListeners.get(namespace);
-  if (!runtimeListeners) {
-    runtimeListeners = new Map();
-    namespaceListeners.set(namespace, runtimeListeners);
+  let listeners = namespaceListeners.get(namespace);
+  if (!listeners) {
+    listeners = new Map();
+    namespaceListeners.set(namespace, listeners);
   }
   for (const eventName of eventNames) {
     type Arguments = CallbackArguments<Namespace, typeof eventName>;
@@ -52,8 +79,8 @@ export function install<
     const listener = (...args: Arguments) => {
       calls.push(args);
     };
-    browser[namespace][eventName].addListener(listener);
-    runtimeListeners.set(eventName, { listener, calls });
+    getEvent(namespace, eventName).addListener(listener);
+    listeners.set(eventName, { listener, calls });
   }
 }
 
@@ -71,24 +98,24 @@ export function addListener<
 >(
   namespace: Namespace,
   eventName: EventName,
-  callback: ListenerArguments<Namespace, EventName>[0],
+  callback: (...args: CallbackArguments<Namespace, EventName>) => void,
 ) {
-  // 1. add the listener for _future_ events
-  // 2. if this is an event we have recorded events for, replay them now
+  const event = getEvent(namespace, eventName);
 
   // 1. install the listener for future events, as requested
-  browser[namespace][eventName].addListener(callback);
+  event.addListener(callback);
 
   // 2. replay old events and stop recording future events
-  const listeners = namespaceListeners.get(namespace);
-  if (listeners) {
-    const event = listeners.get(eventName as any);
-    if (event) {
-      listeners.delete(eventName as any);
-      browser[namespace][eventName].removeListener(event.listener);
-
-      // finally, replay all the events that were recorded for this event
-      event.calls.forEach((args) => callback(...args));
+  const trackers = namespaceListeners.get(namespace);
+  if (trackers) {
+    const tracker = trackers.get(eventName);
+    if (tracker) {
+      trackers.delete(eventName);
+      event.removeListener(tracker.listener);
+      setImmediate(() => {
+        // finally, replay all the events that were recorded for this event
+        tracker.calls.forEach((args) => callback(...args));
+      });
     }
   }
 }
@@ -106,11 +133,32 @@ export function once<
   EventName extends BrowserEventName<Namespace>,
 >(namespace: Namespace, eventName: EventName) {
   return new Promise<CallbackArguments<Namespace, EventName>>((resolve) => {
+    const event = getEvent(namespace, eventName);
     function listener(...args: CallbackArguments<Namespace, EventName>) {
-      browser[namespace][eventName].removeListener(listener);
+      event.removeListener(listener);
       resolve(args);
     }
 
-    addListener(namespace, eventName, listener);
+    const trackers = namespaceListeners.get(namespace);
+    if (trackers) {
+      const tracker = trackers.get(eventName);
+      if (tracker && tracker.calls.length > 0) {
+        // use the first recorded event
+        // @ts-expect-error tracker.calls always has at least one item at this
+        // point
+        resolve(tracker.calls.shift());
+
+        if (tracker.calls.length === 0) {
+          trackers.delete(eventName);
+          event.removeListener(tracker.listener);
+        }
+        return;
+      }
+    }
+    event.addListener(namespace, eventName, listener);
   });
 }
+
+once('runtime', 'onInstalled').then(([details]) => {
+  console.log(details);
+});
