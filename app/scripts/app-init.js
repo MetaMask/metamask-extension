@@ -3,7 +3,7 @@
 // We don't usually `import` files into `app-init.js` because we need to load
 // "chunks" via `importScripts`; but in this case `promise-with-resolvers` file
 // is so small we won't ever have a problem with these two files being "split".
-import { withResolvers } from '../shared/lib/promise-with-resolvers';
+import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 
 // We need to define 'window' in the global scope to use it in the service worker
 globalThis.window = globalThis;
@@ -15,7 +15,7 @@ const { chrome } = globalThis;
 const testMode = process.env.IN_TEST;
 
 /**
- * @type {import('../types/global').StateHooks}
+ * @type {import('../../types/global').StateHooks}
  */
 globalThis.stateHooks = globalThis.stateHooks || {};
 
