@@ -46,9 +46,11 @@ import {
   getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
+  getNetworkEnablementControllerInitMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
+  getNotificationServicesPushControllerInitMessenger,
   getNotificationServicesPushControllerMessenger,
 } from './notifications';
 import { getDeFiPositionsControllerMessenger } from './defi-positions';
@@ -530,7 +532,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   NotificationServicesPushController: {
     getMessenger: getNotificationServicesPushControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getNotificationServicesPushControllerInitMessenger,
   },
   OAuthService: {
     getMessenger: getOAuthServiceMessenger,
@@ -694,6 +696,6 @@ export const CONTROLLER_MESSENGERS = {
   },
   NetworkEnablementController: {
     getMessenger: getNetworkEnablementControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getNetworkEnablementControllerInitMessenger,
   },
 } as const;

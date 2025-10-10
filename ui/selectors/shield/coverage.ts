@@ -20,7 +20,6 @@ export function getCoverageStatus(
 
   return {
     status: result.status,
-    // @ts-expect-error TODO: upgrade types on shield-controller
     reasonCode: result.reasonCode,
   };
 }

@@ -4,7 +4,18 @@ import {
 } from '@metamask/network-enablement-controller';
 import { NetworkState } from '@metamask/network-controller';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
-import { NetworkEnablementControllerMessenger } from '../messengers/assets';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  BtcScope,
+  ///: END:ONLY_INCLUDE_IF
+  SolAccountType,
+  SolScope,
+} from '@metamask/keyring-api';
+import { KnownCaipNamespace } from '@metamask/utils';
+import {
+  NetworkEnablementControllerMessenger,
+  NetworkEnablementControllerInitMessenger,
+} from '../messengers/assets';
 import { ControllerInitFunction } from '../types';
 import {
   CHAIN_IDS,
@@ -113,8 +124,9 @@ const generateDefaultNetworkEnablementControllerState = (
 
 export const NetworkEnablementControllerInit: ControllerInitFunction<
   NetworkEnablementController,
-  NetworkEnablementControllerMessenger
-> = ({ controllerMessenger, persistedState, getController }) => {
+  NetworkEnablementControllerMessenger,
+  NetworkEnablementControllerInitMessenger
+> = ({ controllerMessenger, initMessenger, persistedState, getController }) => {
   const multichainNetworkControllerState = getController(
     'MultichainNetworkController',
   ).state;
@@ -131,6 +143,65 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
       ...persistedState.NetworkEnablementController,
     },
   });
+
+  // TODO: Remove this after BIP-44 rollout.
+  initMessenger.subscribe(
+    'AccountsController:selectedAccountChange',
+    (account) => {
+      if (account.type === SolAccountType.DataAccount) {
+        controller.enableNetworkInNamespace(
+          SolScope.Mainnet,
+          KnownCaipNamespace.Solana,
+        );
+      }
+    },
+  );
+
+  initMessenger.subscribe(
+    'AccountTreeController:selectedAccountGroupChange',
+    () => {
+      const solAccounts = initMessenger.call(
+        'AccountTreeController:getAccountsFromSelectedAccountGroup',
+        {
+          scopes: [SolScope.Mainnet],
+        },
+      );
+
+      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+      const btcAccounts = initMessenger.call(
+        'AccountTreeController:getAccountsFromSelectedAccountGroup',
+        {
+          scopes: [BtcScope.Mainnet],
+        },
+      );
+      ///: END:ONLY_INCLUDE_IF
+
+      const allEnabledNetworks = Object.values(
+        controller.state.enabledNetworkMap,
+      ).reduce((acc, curr) => {
+        return { ...acc, ...curr };
+      }, {});
+
+      if (Object.keys(allEnabledNetworks).length === 1) {
+        const chainId = Object.keys(allEnabledNetworks)[0];
+
+        let shouldEnableMainnetNetworks = false;
+        if (chainId === SolScope.Mainnet && solAccounts.length === 0) {
+          shouldEnableMainnetNetworks = true;
+        }
+
+        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+        if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
+          shouldEnableMainnetNetworks = true;
+        }
+        ///: END:ONLY_INCLUDE_IF
+
+        if (shouldEnableMainnetNetworks) {
+          controller.enableNetwork('0x1');
+        }
+      }
+    },
+  );
 
   return {
     controller,
