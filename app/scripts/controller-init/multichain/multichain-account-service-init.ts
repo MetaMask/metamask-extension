@@ -5,6 +5,9 @@ import {
   AccountProviderWrapper,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain-account-service';
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+///: END:ONLY_INCLUDE_IF
 import { ControllerInitFunction } from '../types';
 import {
   MultichainAccountServiceMessenger,
@@ -16,7 +19,6 @@ import {
   isMultichainAccountsFeatureEnabled,
   MultichainAccountsFeatureFlag,
 } from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
-import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 /**
@@ -25,7 +27,9 @@ import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-
  * @param state - RemoteFeatureFlagController state
  * @returns True if addBitcoinAccount flag is enabled
  */
-function getIsAddBitcoinAccountEnabled(state: RemoteFeatureFlagControllerState): boolean {
+function getIsAddBitcoinAccountEnabled(
+  state: RemoteFeatureFlagControllerState,
+): boolean {
   return Boolean(state?.remoteFeatureFlags?.addBitcoinAccount);
 }
 ///: END:ONLY_INCLUDE_IF
@@ -119,7 +123,9 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
     (state: unknown) => {
-      const newBitcoinEnabled = getIsAddBitcoinAccountEnabled(state as RemoteFeatureFlagControllerState);
+      const newBitcoinEnabled = getIsAddBitcoinAccountEnabled(
+        state as RemoteFeatureFlagControllerState,
+      );
 
       // Defense: Only react if the flag actually changed
       if (newBitcoinEnabled !== currentBitcoinEnabled) {
