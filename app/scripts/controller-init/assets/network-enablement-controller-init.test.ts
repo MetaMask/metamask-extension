@@ -1,86 +1,223 @@
 import { Messenger } from '@metamask/base-controller';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { NetworkEnablementController } from '@metamask/network-enablement-controller';
+import { BtcScope, SolAccountType, SolScope } from '@metamask/keyring-api';
+import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
+import {
+  AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+  AccountTreeControllerSelectedAccountGroupChangeEvent,
+} from '@metamask/account-tree-controller';
+import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
-  NetworkEnablementController,
-} from '@metamask/network-enablement-controller';
-import { getNetworkEnablementControllerMessenger } from '../messengers/assets';
+  getNetworkEnablementControllerInitMessenger,
+  getNetworkEnablementControllerMessenger,
+  NetworkEnablementControllerInitMessenger,
+  NetworkEnablementControllerMessenger,
+} from '../messengers/assets';
 import { NetworkEnablementControllerInit } from './network-enablement-controller-init';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { KnownCaipNamespace } from '@metamask/utils';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
 
 jest.mock('@metamask/network-enablement-controller');
 
-const originalEnv = process.env;
-
-// Mock Type for testing purposes
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type MockVar = any;
-
-function buildInitRequestMock() {
-  const baseControllerMessenger = new Messenger();
-  return {
+function getInitRequestMock(
+  baseMessenger = new Messenger<never, never>(),
+): jest.Mocked<
+  ControllerInitRequest<
+    NetworkEnablementControllerMessenger,
+    NetworkEnablementControllerInitMessenger
+  >
+> {
+  const requestMock = {
     ...buildControllerInitRequestMock(),
-    controllerMessenger: getNetworkEnablementControllerMessenger(
-      baseControllerMessenger,
-    ),
-    initMessenger: undefined,
-    getController: jest.fn(),
+    controllerMessenger: getNetworkEnablementControllerMessenger(baseMessenger),
+    initMessenger: getNetworkEnablementControllerInitMessenger(baseMessenger),
   };
+
+  // @ts-expect-error: Partial mock.
+  requestMock.getController.mockImplementation((controllerName) => {
+    if (controllerName === 'MultichainNetworkController') {
+      return {
+        state: {
+          multichainNetworkConfigurationsByChainId: {
+            [SolScope.Mainnet]: {},
+            [BtcScope.Mainnet]: {},
+          },
+        },
+      };
+    }
+
+    if (controllerName === 'NetworkController') {
+      return {
+        state: {
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {},
+            [CHAIN_IDS.POLYGON]: {},
+            [CHAIN_IDS.SEPOLIA]: {},
+            [CHAIN_IDS.LOCALHOST]: {},
+          },
+        },
+      };
+    }
+
+    throw new Error(`Unexpected controller name: ${controllerName}`);
+  });
+
+  return requestMock;
 }
 
 describe('NetworkEnablementControllerInit', () => {
-  const arrange = () => {
-    const requestMock = buildInitRequestMock();
+  it('initializes the controller', () => {
+    const { controller } =
+      NetworkEnablementControllerInit(getInitRequestMock());
+    expect(controller).toBeInstanceOf(NetworkEnablementController);
+  });
 
-    requestMock.getController.mockImplementation((controllerName: string) => {
-      if (controllerName === 'MultichainNetworkController') {
-        return {
-          state: {
-            multichainNetworkConfigurationsByChainId: {
-              [SolScope.Mainnet]: {},
-              [BtcScope.Mainnet]: {},
-            },
-          },
-        };
-      }
+  it('enables the Solana network when `AccountsController:selectedAccountChange` is emitted', () => {
+    const messenger = new Messenger<
+      never,
+      AccountsControllerSelectedAccountChangeEvent
+    >();
+    const request = getInitRequestMock(messenger);
+    const { controller } = NetworkEnablementControllerInit(request);
 
-      if (controllerName === 'NetworkController') {
-        return {
-          state: {
-            networkConfigurationsByChainId: {
-              [CHAIN_IDS.MAINNET]: {},
-              [CHAIN_IDS.POLYGON]: {},
-              [CHAIN_IDS.SEPOLIA]: {},
-              [CHAIN_IDS.LOCALHOST]: {},
-            },
-          },
-        };
-      }
+    expect(controller.enableNetworkInNamespace).not.toHaveBeenCalled();
+
+    // @ts-expect-error: Partial mock.
+    messenger.publish('AccountsController:selectedAccountChange', {
+      type: SolAccountType.DataAccount,
     });
 
-    return {
-      requestMock,
-      controllerClassMock: jest.mocked(NetworkEnablementController),
+    expect(controller.enableNetworkInNamespace).toHaveBeenCalledWith(
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      'solana',
+    );
+  });
+
+  it('enables the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted, the current chain ID is Solana mainnet, and there are no Solana accounts', () => {
+    const messenger = new Messenger<
+      AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+      AccountTreeControllerSelectedAccountGroupChangeEvent
+    >();
+
+    messenger.registerActionHandler(
+      'AccountTreeController:getAccountsFromSelectedAccountGroup',
+      () => [],
+    );
+
+    const request = getInitRequestMock(messenger);
+    const { controller } = NetworkEnablementControllerInit(request);
+
+    controller.state = {
+      enabledNetworkMap: {
+        solana: { [SolScope.Mainnet]: true },
+      },
     };
-  };
 
-  beforeEach(() => {
-    jest.resetAllMocks();
-    process.env = { ...originalEnv };
+    expect(controller.enableNetwork).not.toHaveBeenCalled();
+
+    messenger.publish(
+      'AccountTreeController:selectedAccountGroupChange',
+      '',
+      '',
+    );
+
+    expect(controller.enableNetwork).toHaveBeenCalledWith('0x1');
   });
 
-  afterEach(() => {
-    process.env = originalEnv;
+  it('enables the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted, the current chain ID is Bitcoin mainnet, and there are no Bitcoin accounts', () => {
+    const messenger = new Messenger<
+      AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+      AccountTreeControllerSelectedAccountGroupChangeEvent
+    >();
+
+    messenger.registerActionHandler(
+      'AccountTreeController:getAccountsFromSelectedAccountGroup',
+      () => [],
+    );
+
+    const request = getInitRequestMock(messenger);
+    const { controller } = NetworkEnablementControllerInit(request);
+
+    controller.state = {
+      enabledNetworkMap: {
+        bitcoin: { [BtcScope.Mainnet]: true },
+      },
+    };
+
+    expect(controller.enableNetwork).not.toHaveBeenCalled();
+
+    messenger.publish(
+      'AccountTreeController:selectedAccountGroupChange',
+      '',
+      '',
+    );
+
+    expect(controller.enableNetwork).toHaveBeenCalledWith('0x1');
   });
 
-  it('returns controller instance', () => {
-    const { requestMock, controllerClassMock } = arrange();
-    const controllerMock = {} as NetworkEnablementController;
-    controllerClassMock.mockReturnValue(controllerMock);
-    const result = NetworkEnablementControllerInit(requestMock);
+  it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted and there are accounts', () => {
+    const messenger = new Messenger<
+      AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+      AccountTreeControllerSelectedAccountGroupChangeEvent
+    >();
 
-    expect(result.controller).toBe(controllerMock);
+    messenger.registerActionHandler(
+      'AccountTreeController:getAccountsFromSelectedAccountGroup',
+      // @ts-expect-error: Partial mock.
+      () => [{ type: SolAccountType.DataAccount }],
+    );
+
+    const request = getInitRequestMock(messenger);
+    const { controller } = NetworkEnablementControllerInit(request);
+
+    controller.state = {
+      enabledNetworkMap: {
+        solana: { [SolScope.Mainnet]: true },
+      },
+    };
+
+    expect(controller.enableNetwork).not.toHaveBeenCalled();
+
+    messenger.publish(
+      'AccountTreeController:selectedAccountGroupChange',
+      '',
+      '',
+    );
+
+    expect(controller.enableNetwork).not.toHaveBeenCalled();
+  });
+
+  it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted and multiple networks are enabled', () => {
+    const messenger = new Messenger<
+      AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+      AccountTreeControllerSelectedAccountGroupChangeEvent
+    >();
+
+    messenger.registerActionHandler(
+      'AccountTreeController:getAccountsFromSelectedAccountGroup',
+      () => [],
+    );
+
+    const request = getInitRequestMock(messenger);
+    const { controller } = NetworkEnablementControllerInit(request);
+
+    controller.state = {
+      enabledNetworkMap: {
+        solana: { [SolScope.Mainnet]: true },
+        bitcoin: { [BtcScope.Mainnet]: true },
+      },
+    };
+
+    expect(controller.enableNetwork).not.toHaveBeenCalled();
+
+    messenger.publish(
+      'AccountTreeController:selectedAccountGroupChange',
+      '',
+      '',
+    );
+
+    expect(controller.enableNetwork).not.toHaveBeenCalled();
   });
 
   it('initialises the controller with the correct networks for prod environment', () => {
@@ -88,11 +225,12 @@ describe('NetworkEnablementControllerInit', () => {
     process.env.METAMASK_ENVIRONMENT = 'production';
     process.env.IN_TEST = '';
 
-    const { requestMock, controllerClassMock } = arrange();
-    NetworkEnablementControllerInit(requestMock);
+    NetworkEnablementControllerInit(getInitRequestMock());
 
-    expect(controllerClassMock).toHaveBeenCalledWith(expect.objectContaining({
-      state: expect.objectContaining({
+    const controllerMock = jest.mocked(NetworkEnablementController);
+    expect(controllerMock).toHaveBeenCalledWith({
+      messenger: expect.any(Object),
+      state: {
         enabledNetworkMap: {
           [KnownCaipNamespace.Eip155]: {
             [CHAIN_IDS.MAINNET]: true,
@@ -107,18 +245,19 @@ describe('NetworkEnablementControllerInit', () => {
             [BtcScope.Mainnet]: true,
           },
         },
-      }),
-    }))
+      },
+    });
   });
 
   it('initialises the controller with the correct networks for IN_TEST environment', () => {
     process.env.IN_TEST = 'true';
 
-    const { requestMock, controllerClassMock } = arrange();
-    NetworkEnablementControllerInit(requestMock);
+    NetworkEnablementControllerInit(getInitRequestMock());
 
-    expect(controllerClassMock).toHaveBeenCalledWith(expect.objectContaining({
-      state: expect.objectContaining({
+    const controllerMock = jest.mocked(NetworkEnablementController);
+    expect(controllerMock).toHaveBeenCalledWith({
+      messenger: expect.any(Object),
+      state: {
         enabledNetworkMap: {
           [KnownCaipNamespace.Eip155]: {
             [CHAIN_IDS.MAINNET]: false,
@@ -133,8 +272,8 @@ describe('NetworkEnablementControllerInit', () => {
             [BtcScope.Mainnet]: false,
           },
         },
-      }),
-    }))
+      },
+    });
   });
 
   it('initialises the controller with the correct networks for DEBUG environment', () => {
@@ -142,11 +281,12 @@ describe('NetworkEnablementControllerInit', () => {
     process.env.METAMASK_ENVIRONMENT = 'production';
     process.env.IN_TEST = '';
 
-    const { requestMock, controllerClassMock } = arrange();
-    NetworkEnablementControllerInit(requestMock);
+    NetworkEnablementControllerInit(getInitRequestMock());
 
-    expect(controllerClassMock).toHaveBeenCalledWith(expect.objectContaining({
-      state: expect.objectContaining({
+    const controllerMock = jest.mocked(NetworkEnablementController);
+    expect(controllerMock).toHaveBeenCalledWith({
+      messenger: expect.any(Object),
+      state: {
         enabledNetworkMap: {
           [KnownCaipNamespace.Eip155]: {
             [CHAIN_IDS.MAINNET]: false,
@@ -161,8 +301,8 @@ describe('NetworkEnablementControllerInit', () => {
             [BtcScope.Mainnet]: false,
           },
         },
-      }),
-    }))
+      },
+    });
   });
 
   it('initialises the controller with the correct networks for test environment', () => {
@@ -170,11 +310,12 @@ describe('NetworkEnablementControllerInit', () => {
     process.env.METAMASK_ENVIRONMENT = 'test';
     process.env.IN_TEST = '';
 
-    const { requestMock, controllerClassMock } = arrange();
-    NetworkEnablementControllerInit(requestMock);
+    NetworkEnablementControllerInit(getInitRequestMock());
 
-    expect(controllerClassMock).toHaveBeenCalledWith(expect.objectContaining({
-      state: expect.objectContaining({
+    const controllerMock = jest.mocked(NetworkEnablementController);
+    expect(controllerMock).toHaveBeenCalledWith({
+      messenger: expect.any(Object),
+      state: {
         enabledNetworkMap: {
           [KnownCaipNamespace.Eip155]: {
             [CHAIN_IDS.MAINNET]: false,
@@ -189,7 +330,7 @@ describe('NetworkEnablementControllerInit', () => {
             [BtcScope.Mainnet]: false,
           },
         },
-      }),
-    }))
+      },
+    });
   });
 });
