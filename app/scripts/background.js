@@ -167,7 +167,7 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-once('onInstalled', handleOnInstalled);
+once('runtime', 'onInstalled', handleOnInstalled);
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -440,7 +440,6 @@ let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
 const handleOnConnect = async (port) => {
-  console.log('Handling connection to port 1...');
   if (
     inTest &&
     getManifestFlags().testing?.simulateUnresponsiveBackground === true
@@ -448,7 +447,6 @@ const handleOnConnect = async (port) => {
     return;
   }
 
-  console.log('Handling connection to port...');
   port.postMessage({
     data: {
       method: BACKGROUND_LIVENESS_METHOD,
@@ -515,24 +513,19 @@ const handleOnConnect = async (port) => {
   }
 };
 const installOnConnectListener = () => {
-  addListener('onConnect', handleOnConnect);
+  addListener('runtime', 'onConnect', handleOnConnect);
 };
 if (
   inTest &&
   getManifestFlags().testing?.simulatedSlowBackgroundLoadingTimeout
 ) {
-  const timeout =
-    getManifestFlags().testing?.simulatedSlowBackgroundLoadingTimeout;
-  console.log(
-    `Simulating slow background \`onConnect\`. Will start listening in ${timeout
-    }ms`,
-  ); // eslint-disable-line no-console
-  setTimeout(installOnConnectListener, timeout);
+  const { simulatedSlowBackgroundLoadingTimeout } = getManifestFlags().testing;
+  setTimeout(installOnConnectListener, simulatedSlowBackgroundLoadingTimeout);
 } else {
   installOnConnectListener();
 }
 
-addListener('onConnectExternal', async (...args) => {
+addListener('runtime', 'onConnectExternal', async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
@@ -1598,7 +1591,7 @@ async function onUpdateAvailable() {
   controller.appStateController.setIsUpdateAvailable(true);
 }
 
-addListener('onUpdateAvailable', onUpdateAvailable);
+addListener('runtime', 'onUpdateAvailable', onUpdateAvailable);
 
 function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {

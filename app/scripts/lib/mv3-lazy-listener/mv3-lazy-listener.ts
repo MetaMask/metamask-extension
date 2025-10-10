@@ -31,6 +31,11 @@ type NamespaceListenerMap = {
 };
 
 /**
+ * @type {import('../../types/global').StateHooks}
+ */
+globalThis.stateHooks = globalThis.stateHooks || {};
+
+/**
  * Get the event object for a given namespace and event name and ensure the
  * correct type
  *
@@ -45,18 +50,20 @@ function getEvent<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return event as typeof event & Events.Event<any>;
 }
-
 /**
  * We keep all of our installed listeners and the events they have received so
  * far in this map.
  */
-const namespaceListeners: NamespaceListenerMap = new Map<
-  BrowserNamespace,
-  Map<
-    BrowserEventName<BrowserNamespace>,
-    EventRecord<BrowserNamespace, BrowserEventName<BrowserNamespace>>
-  >
->();
+const namespaceListeners: NamespaceListenerMap =
+  globalThis.stateHooks.namespaceListeners ||
+  new Map<
+    BrowserNamespace,
+    Map<
+      BrowserEventName<BrowserNamespace>,
+      EventRecord<BrowserNamespace, BrowserEventName<BrowserNamespace>>
+    >
+  >();
+globalThis.stateHooks.namespaceListeners = namespaceListeners;
 
 /**
  * Install listeners for multiple browser.* events.
@@ -144,9 +151,12 @@ export function once<
       const tracker = trackers.get(eventName);
       if (tracker && tracker.calls.length > 0) {
         // use the first recorded event
-        // @ts-expect-error tracker.calls always has at least one item at this
-        // point
-        resolve(tracker.calls.shift());
+        const args = tracker.calls.shift();
+        setImmediate(() => {
+          // @ts-expect-error tracker.calls always has at least one item at this
+          // point
+          resolve(args);
+        });
 
         if (tracker.calls.length === 0) {
           trackers.delete(eventName);
@@ -158,7 +168,3 @@ export function once<
     event.addListener(namespace, eventName, listener);
   });
 }
-
-once('runtime', 'onInstalled').then(([details]) => {
-  console.log(details);
-});

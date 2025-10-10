@@ -5,6 +5,8 @@
 // is so small we won't ever have a problem with these two files being "split".
 import { install } from './lib/mv3-lazy-listener/mv3-lazy-listener';
 
+// this needs to be run early we can begin listening to these browser events
+// as soon as possible
 install('runtime', [
   'onInstalled',
   'onConnect',
