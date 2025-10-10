@@ -5,7 +5,7 @@
 // is so small we won't ever have a problem with these two files being "split".
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
 
-globalThis.document = {};
+// We need to define 'window' in the global scope to use it in the service worker
 globalThis.window = globalThis;
 
 // Represents if importAllScripts has been run
