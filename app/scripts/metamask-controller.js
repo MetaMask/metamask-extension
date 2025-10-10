@@ -72,7 +72,6 @@ import {
   add0x,
   hexToBytes,
   bytesToHex,
-  KnownCaipNamespace,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -121,6 +120,8 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
@@ -204,6 +205,7 @@ import {
   HYPERLIQUID_ORIGIN,
   METAMASK_REFERRAL_CODE,
 } from '../../shared/constants/referrals';
+import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -512,14 +514,6 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
-    // ensure AccountTrackerController updates balances after network change
-    this.controllerMessenger.subscribe(
-      'NetworkController:networkDidChange',
-      () => {
-        this.accountTrackerController.updateAccounts();
-      },
-    );
-
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       ApprovalController: ApprovalControllerInit,
@@ -737,28 +731,6 @@ export default class MetamaskController extends EventEmitter {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
     });
 
-    this.controllerMessenger.subscribe(
-      'RemoteFeatureFlagController:stateChange',
-      (isRpcFailoverEnabled) => {
-        if (isRpcFailoverEnabled) {
-          console.log(
-            'isRpcFailoverEnabled = ',
-            isRpcFailoverEnabled,
-            ', enabling RPC failover',
-          );
-          this.networkController.enableRpcFailover();
-        } else {
-          console.log(
-            'isRpcFailoverEnabled = ',
-            isRpcFailoverEnabled,
-            ', disabling RPC failover',
-          );
-          this.networkController.disableRpcFailover();
-        }
-      },
-      (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
-    );
-
     this.controllerMessenger.subscribe('KeyringController:unlock', () =>
       this._onUnlock(),
     );
@@ -774,19 +746,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    // TODO: Remove this after BIP-44 rollout
-    this.controllerMessenger.subscribe(
-      'AccountsController:selectedAccountChange',
-      (account) => {
-        if (account.type === SolAccountType.DataAccount) {
-          this.networkEnablementController.enableNetworkInNamespace(
-            SolScope.Mainnet,
-            KnownCaipNamespace.Solana,
-          );
-        }
-      },
-    );
-
     this.userOperationController.hub.on(
       'user-operation-added',
       this._onUserOperationAdded.bind(this),
@@ -795,6 +754,33 @@ export default class MetamaskController extends EventEmitter {
     this.userOperationController.hub.on(
       'transaction-updated',
       this._onUserOperationTransactionUpdated.bind(this),
+    );
+
+    // on/off shield controller based on shield subscription
+    this.controllerMessenger.subscribe(
+      'SubscriptionController:stateChange',
+      previousValueComparator((prevState, currState) => {
+        // check if the shield subscription was active before the state change
+        const hadSubscriptionPreviously = getIsShieldSubscriptionActive(
+          prevState.subscriptions,
+        );
+        // check if the shield subscription is active after the state change
+        const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
+          currState.subscriptions,
+        );
+        // if the shield subscription is the same before and after the state change, do nothing
+        if (hasActiveShieldSubscription === hadSubscriptionPreviously) {
+          return;
+        }
+
+        if (hasActiveShieldSubscription) {
+          // start polling for the subscriptions
+          this.subscriptionController.startPolling();
+          this.shieldController.start();
+        } else {
+          this.shieldController.stop();
+        }
+      }, this.subscriptionController.state),
     );
 
     const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
@@ -819,11 +805,16 @@ export default class MetamaskController extends EventEmitter {
     }).init();
 
     this.getSecurityAlertsConfig = async (url) => {
+      const getShieldSubscription = () =>
+        this.controllerMessenger.call(
+          'SubscriptionController:getSubscriptionByProduct',
+          PRODUCT_TYPES.SHIELD,
+        );
       const getToken = () =>
         this.controllerMessenger.call(
           'AuthenticationController:getBearerToken',
         );
-      return getShieldGatewayConfig(getToken, url);
+      return getShieldGatewayConfig(getToken, getShieldSubscription, url);
     };
 
     this.notificationServicesController.init();
@@ -834,79 +825,6 @@ export default class MetamaskController extends EventEmitter {
       'TransactionController:transactionStatusUpdated',
       ({ transactionMeta }) => {
         this._onFinishedTransaction(transactionMeta);
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      'NotificationServicesPushController:onNewNotifications',
-      (notification) => {
-        this.metaMetricsController.trackEvent({
-          category: MetaMetricsEventCategory.PushNotifications,
-          event: MetaMetricsEventName.PushNotificationReceived,
-          properties: {
-            notification_id: notification.id,
-            notification_type: notification.type,
-            chain_id: notification?.chain_id,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      'NotificationServicesPushController:pushNotificationClicked',
-      (notification) => {
-        this.metaMetricsController.trackEvent({
-          category: MetaMetricsEventCategory.PushNotifications,
-          event: MetaMetricsEventName.PushNotificationClicked,
-          properties: {
-            notification_id: notification.id,
-            notification_type: notification.type,
-            chain_id: notification?.chain_id,
-          },
-        });
-      },
-    );
-
-    this.controllerMessenger.subscribe(
-      'AccountTreeController:selectedAccountGroupChange',
-      () => {
-        const solAccounts =
-          this.accountTreeController.getAccountsFromSelectedAccountGroup({
-            scopes: [SolScope.Mainnet],
-          });
-
-        // eslint-disable-next-line no-unused-vars
-        let btcAccounts = [];
-        ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-        btcAccounts =
-          this.accountTreeController.getAccountsFromSelectedAccountGroup({
-            scopes: [BtcScope.Mainnet],
-          });
-        ///: END:ONLY_INCLUDE_IF(bitcoin)
-
-        const allEnabledNetworks = Object.values(
-          this.networkEnablementController.state.enabledNetworkMap,
-        ).reduce((acc, curr) => {
-          return { ...acc, ...curr };
-        }, {});
-
-        if (Object.keys(allEnabledNetworks).length === 1) {
-          const chainId = Object.keys(allEnabledNetworks)[0];
-
-          let shouldEnableMainetNetworks = false;
-          if (chainId === SolScope.Mainnet && solAccounts.length === 0) {
-            shouldEnableMainetNetworks = true;
-          }
-          ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-          if (chainId === BtcScope.Mainnet && btcAccounts.length === 0) {
-            shouldEnableMainetNetworks = true;
-          }
-          ///: END:ONLY_INCLUDE_IF(bitcoin)
-
-          if (shouldEnableMainetNetworks) {
-            this.networkEnablementController.enableNetwork('0x1');
-          }
-        }
       },
     );
 
@@ -2680,6 +2598,8 @@ export default class MetamaskController extends EventEmitter {
         appStateController.updateNetworkConnectionBanner.bind(
           appStateController,
         ),
+      setShowShieldEntryModalOnce:
+        appStateController.setShowShieldEntryModalOnce.bind(appStateController),
 
       // EnsController
       tryReverseResolveAddress:
