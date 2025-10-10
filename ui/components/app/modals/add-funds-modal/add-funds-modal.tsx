@@ -9,8 +9,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { isEqual } from 'lodash';
 import { TokenPaymentInfo } from '@metamask/subscription-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -22,15 +20,7 @@ import {
 } from '../../../component-library';
 import { getBuyableChains } from '../../../../ducks/ramps';
 import useRamps from '../../../../hooks/ramps/useRamps/useRamps';
-import { getIsMultichainAccountsState2Enabled } from '../../../../selectors/multichain-accounts';
-import { getSelectedAccountGroup } from '../../../../selectors/multichain-accounts/account-tree';
-import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../../helpers/constants/routes';
-import {
-  AddressListQueryParams,
-  AddressListSource,
-} from '../../../../pages/multichain-accounts/multichain-account-address-list-page';
 import { ReceiveModal } from '../../../multichain/receive-modal';
-import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import useBridging from '../../../../hooks/bridge/useBridging';
 import {
   MetaMetricsEventCategory,
@@ -41,32 +31,24 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { AggregatorNetwork } from '../../../../ducks/ramps/types';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
+import { Hex } from '@metamask/utils';
 
 const AddFundsModal = ({
   onClose,
   token,
   chainId,
+  payerAddress,
 }: {
   onClose: () => void;
   token: TokenPaymentInfo;
   chainId: string | number;
+  payerAddress: Hex;
 }) => {
   const t = useI18nContext();
   const { openBuyCryptoInPdapp } = useRamps();
-  const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
 
-  // FIXME: This causes re-renders, so use isEqual to avoid this
-  const account = useSelector(getSelectedInternalAccount, isEqual);
-  const { address: selectedAddress } = account;
-
   const buyableChains = useSelector(getBuyableChains);
-
-  // Multichain accounts feature flag and selected account group
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
   const { openBridgeExperience } = useBridging();
 
@@ -115,22 +97,8 @@ const AddFundsModal = ({
       },
     });
 
-    if (isMultichainAccountsState2Enabled && selectedAccountGroup) {
-      // Navigate to the multichain address list page with receive source
-      history.push(
-        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
-      );
-    } else {
-      // Show the traditional receive modal
-      setShowReceiveModal(true);
-    }
-  }, [
-    isMultichainAccountsState2Enabled,
-    selectedAccountGroup,
-    history,
-    chainId,
-    trackEvent,
-  ]);
+    setShowReceiveModal(true);
+  }, [chainId, trackEvent]);
 
   const handleSwapOnClick = useCallback(async () => {
     openBridgeExperience(MetaMetricsSwapsEventSource.TransactionShield, {
@@ -208,7 +176,7 @@ const AddFundsModal = ({
           })}
           {showReceiveModal && (
             <ReceiveModal
-              address={selectedAddress}
+              address={payerAddress}
               onClose={() => setShowReceiveModal(false)}
             />
           )}

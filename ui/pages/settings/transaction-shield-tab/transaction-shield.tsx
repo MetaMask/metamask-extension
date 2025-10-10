@@ -774,6 +774,7 @@ const TransactionShield = () => {
             }}
             token={currentToken}
             chainId={shieldSubscription.paymentMethod.crypto.chainId}
+            payerAddress={shieldSubscription.paymentMethod.crypto.payerAddress}
           />
         )}
     </Box>
