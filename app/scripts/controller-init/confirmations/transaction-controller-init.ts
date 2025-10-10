@@ -12,6 +12,7 @@ import {
   SmartTransactionStatuses,
 } from '@metamask/smart-transactions-controller';
 import { Hex } from '@metamask/utils';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { trace } from '../../../../shared/lib/trace';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
@@ -87,7 +88,12 @@ export const TransactionControllerInit: ControllerInitFunction<
     getSimulationConfig: async (url) => {
       const getToken = () =>
         initMessenger.call('AuthenticationController:getBearerToken');
-      return getShieldGatewayConfig(getToken, url);
+      const getShieldSubscription = () =>
+        initMessenger.call(
+          'SubscriptionController:getSubscriptionByProduct',
+          PRODUCT_TYPES.SHIELD,
+        );
+      return getShieldGatewayConfig(getToken, getShieldSubscription, url);
     },
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,

@@ -136,58 +136,56 @@ describe('SmartTransactionsController Init', () => {
           },
         },
       },
-      getStateUI: jest.fn().mockReturnValue({
-        metamask: {
-          internalAccounts: {
-            selectedAccount: 'account-id',
-            accounts: {
-              'account-id': {
-                id: 'account-id',
-                address: '0x123',
-                metadata: {
-                  name: 'Test Account',
-                },
+      getUIState: jest.fn().mockReturnValue({
+        internalAccounts: {
+          selectedAccount: 'account-id',
+          accounts: {
+            'account-id': {
+              id: 'account-id',
+              address: '0x123',
+              metadata: {
+                name: 'Test Account',
               },
             },
           },
-          preferences: {
-            smartTransactionsOptInStatus: true,
+        },
+        preferences: {
+          smartTransactionsOptInStatus: true,
+        },
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurationsByChainId: {
+          '0x1': {
+            chainId: '0x1',
+            rpcEndpoints: [
+              {
+                networkClientId: 'mainnet',
+                url: 'https://mainnet.infura.io/v3/abc',
+              },
+            ],
           },
-          selectedNetworkClientId: 'mainnet',
-          networkConfigurationsByChainId: {
-            '0x1': {
-              chainId: '0x1',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'mainnet',
-                  url: 'https://mainnet.infura.io/v3/abc',
-                },
-              ],
+        },
+        featureFlags: {
+          smartTransactions: {
+            mobileActive: false,
+            extensionActive: true,
+            extensionReturnTxHashAsap: false,
+          },
+        },
+        swapsState: {
+          swapsFeatureFlags: {
+            ethereum: {
+              extensionActive: true,
+              mobileActive: false,
+              smartTransactions: {
+                expectedDeadline: 45,
+                maxDeadline: 150,
+                extensionReturnTxHashAsap: false,
+              },
             },
-          },
-          featureFlags: {
             smartTransactions: {
               mobileActive: false,
               extensionActive: true,
               extensionReturnTxHashAsap: false,
-            },
-          },
-          swapsState: {
-            swapsFeatureFlags: {
-              ethereum: {
-                extensionActive: true,
-                mobileActive: false,
-                smartTransactions: {
-                  expectedDeadline: 45,
-                  maxDeadline: 150,
-                  extensionReturnTxHashAsap: false,
-                },
-              },
-              smartTransactions: {
-                mobileActive: false,
-                extensionActive: true,
-                extensionReturnTxHashAsap: false,
-              },
             },
           },
         },
@@ -319,7 +317,7 @@ describe('SmartTransactionsController Init', () => {
 
       const result = getFeatureFlags();
 
-      expect(fullRequest.getStateUI).toHaveBeenCalled();
+      expect(fullRequest.getUIState).toHaveBeenCalled();
       expect(result).toHaveProperty('smartTransactions');
       expect(result.smartTransactions).toHaveProperty('extensionActive');
       expect(result.smartTransactions).toHaveProperty('mobileActive');
@@ -334,23 +332,21 @@ describe('SmartTransactionsController Init', () => {
       // To test the null case, we need to make getStateUI return a state
       // that would cause getFeatureFlagsByChainId to return null
       const { fullRequest } = buildInitRequest({
-        getStateUI: jest.fn().mockReturnValue({
-          metamask: {
-            preferences: {},
-            selectedNetworkClientId: 'mainnet',
-            networkConfigurationsByChainId: {
-              '0x1': {
-                chainId: '0x1',
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'mainnet',
-                    url: 'https://mainnet.infura.io/v3/abc',
-                  },
-                ],
-              },
+        getUIState: jest.fn().mockReturnValue({
+          preferences: {},
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                {
+                  networkClientId: 'mainnet',
+                  url: 'https://mainnet.infura.io/v3/abc',
+                },
+              ],
             },
-            // No swapsState to test null case
           },
+          // No swapsState to test null case
         }),
       });
 
@@ -388,34 +384,32 @@ describe('SmartTransactionsController Init', () => {
     it('uses selected account address for metrics', async () => {
       const selectedAddress = '0xselected';
       const { fullRequest } = buildInitRequest({
-        getStateUI: jest.fn().mockReturnValue({
-          metamask: {
-            internalAccounts: {
-              selectedAccount: 'selected-account-id',
-              accounts: {
-                'selected-account-id': {
-                  id: 'selected-account-id',
-                  address: selectedAddress,
-                  metadata: {
-                    name: 'Selected Account',
-                  },
+        getUIState: jest.fn().mockReturnValue({
+          internalAccounts: {
+            selectedAccount: 'selected-account-id',
+            accounts: {
+              'selected-account-id': {
+                id: 'selected-account-id',
+                address: selectedAddress,
+                metadata: {
+                  name: 'Selected Account',
                 },
               },
             },
-            preferences: {
-              smartTransactionsOptInStatus: true,
-            },
-            swapsState: {
-              swapsFeatureFlags: {
-                ethereum: {
-                  extensionActive: true,
-                  mobileActive: false,
-                },
-                smartTransactions: {
-                  mobileActive: false,
-                  extensionActive: true,
-                  extensionReturnTxHashAsap: false,
-                },
+          },
+          preferences: {
+            smartTransactionsOptInStatus: true,
+          },
+          swapsState: {
+            swapsFeatureFlags: {
+              ethereum: {
+                extensionActive: true,
+                mobileActive: false,
+              },
+              smartTransactions: {
+                mobileActive: false,
+                extensionActive: true,
+                extensionReturnTxHashAsap: false,
               },
             },
           },

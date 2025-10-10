@@ -1804,12 +1804,6 @@
         "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
-    "@metamask/preferences-controller": {
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true
-      }
-    },
     "@metamask/profile-sync-controller": {
       "globals": {
         "Buffer.from": true,
@@ -1913,6 +1907,8 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/signature-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -2077,8 +2073,8 @@
         "URL": true
       },
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true
+        "@metamask/controller-utils": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
@@ -2277,10 +2273,9 @@
         "Element": true,
         "HTMLElement": true,
         "ShadowRoot": true,
-        "console.error": true,
-        "console.warn": true,
         "document": true,
-        "navigator.userAgent": true
+        "navigator.userAgent": true,
+        "navigator.userAgentData": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": {
