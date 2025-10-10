@@ -111,17 +111,13 @@ const useBridging = () => {
       dispatch(resetInputFields());
       let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
 
-      // Add query params to the url
-      const queryParams = new URLSearchParams();
+      url += '?';
+      if (srcAssetIdToUse) {
+        url += `${BridgeQueryParams.FROM}=${srcAssetIdToUse}`;
+      }
 
       if (location === MetaMetricsSwapsEventSource.TransactionShield) {
-        queryParams.set('isFromTransactionShield', 'true');
-      }
-      if (srcAssetIdToUse) {
-        queryParams.set(BridgeQueryParams.FROM, srcAssetIdToUse);
-      }
-      if (queryParams.size > 0) {
-        url += `?${queryParams.toString()}`;
+        url += `${srcAssetIdToUse ? '&' : ''}isFromTransactionShield=true`;
       }
 
       history.push(url);
