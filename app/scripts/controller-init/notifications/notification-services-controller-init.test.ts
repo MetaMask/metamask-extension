@@ -9,6 +9,9 @@ import {
 import { NotificationServicesControllerInit } from './notification-services-controller-init';
 
 jest.mock('@metamask/notification-services-controller/notification-services');
+jest.mock('../../../../package.json', () => ({
+  version: '1.2.3',
+}));
 
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<NotificationServicesControllerMessenger>
