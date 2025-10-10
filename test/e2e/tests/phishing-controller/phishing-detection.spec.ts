@@ -42,7 +42,7 @@ describe('Phishing Detection', function (this: Suite) {
       );
       assert.equal(
         METAMASK_HOTLIST_DIFF_URL,
-        'https://phishing-detection.api.cx.metamask.io/v1/diffsSince',
+        'https://phishing-detection.api.cx.metamask.io/v2/diffsSince',
       );
     });
   });
