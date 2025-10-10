@@ -1549,7 +1549,8 @@ describe('MetaMaskController', () => {
           );
 
           expect(
-            metamaskController.keyringController.state.keyrings[1].type,
+            // 0: HD keyring, 1: Snap keyring, 2: Trezor keyring
+            metamaskController.keyringController.state.keyrings[2].type,
           ).toBe(TrezorKeyring.type);
           expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
         });
@@ -1561,7 +1562,8 @@ describe('MetaMaskController', () => {
           );
 
           expect(
-            metamaskController.keyringController.state.keyrings[1].type,
+            // 0: HD keyring, 1: Snap keyring, 2: Ledger keyring
+            metamaskController.keyringController.state.keyrings[2].type,
           ).toBe(LedgerKeyring.type);
           expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
         });
@@ -1695,7 +1697,8 @@ describe('MetaMaskController', () => {
                 );
 
                 expect(
-                  metamaskController.keyringController.state.keyrings[1]
+                  // 0: HD keyring, 1: Snap keyring, 2: Ledger/Trezor keyring
+                  metamaskController.keyringController.state.keyrings[2]
                     .accounts,
                 ).toStrictEqual([
                   KNOWN_PUBLIC_KEY_ADDRESSES[
