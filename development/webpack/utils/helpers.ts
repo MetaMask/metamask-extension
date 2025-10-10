@@ -125,9 +125,9 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     if (/\.html?$/iu.test(filename)) {
       if (filename === 'background.html') {
         addManifestScript('background', {
+          chunkLoading: 'import-scripts',
           filename: 'scripts/background.js',
           import: join(appRoot, 'scripts/background.js'),
-          chunkLoading: 'import-scripts',
         });
       } else {
         addHtml(filename);
