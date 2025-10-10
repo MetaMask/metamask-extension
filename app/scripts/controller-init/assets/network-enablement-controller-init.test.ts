@@ -6,6 +6,8 @@ import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
+import { KnownCaipNamespace } from '@metamask/utils';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
@@ -15,8 +17,6 @@ import {
   NetworkEnablementControllerMessenger,
 } from '../messengers/assets';
 import { NetworkEnablementControllerInit } from './network-enablement-controller-init';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { KnownCaipNamespace } from '@metamask/utils';
 
 jest.mock('@metamask/network-enablement-controller');
 
