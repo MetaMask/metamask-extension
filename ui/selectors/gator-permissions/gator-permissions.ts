@@ -10,6 +10,7 @@ import {
   Signer,
 } from '@metamask/gator-permissions-controller';
 import { Hex } from '@metamask/utils';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 
 export type AppState = {
   metamask: GatorPermissionsControllerState;
@@ -267,23 +268,20 @@ const filterPermissionsByOriginAndType = (
     return [];
   }
 
-  // check if any undefined values are present
-  const allPermissionsAcrossAllChains: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  >[] = Object.values(gatorPermissionsMap[permissionType]).flat();
-  for (const gatorPermission of allPermissionsAcrossAllChains) {
-    if (!gatorPermission) {
-      throw new Error(
-        `Undefined values present in the gatorPermissionsMap for permission type: ${permissionType}`,
-      );
-    }
-  }
+  return Object.values(gatorPermissionsMap[permissionType])
+    .flat() // flatten array of arrays to get permission across all chains
+    .filter((gatorPermission) => {
+      if (!gatorPermission) {
+        throw new Error(
+          `Undefined values present in the gatorPermissionsMap for permission type: ${permissionType}`,
+        );
+      }
 
-  return Object.values(allPermissionsAcrossAllChains).filter(
-    (gatorPermission) =>
-      gatorPermission.siteOrigin.toLowerCase() === siteOrigin.toLowerCase(),
-  );
+      return isEqualCaseInsensitive(
+        decodeURIComponent(gatorPermission.siteOrigin),
+        decodeURIComponent(siteOrigin),
+      );
+    });
 };
 
 /**

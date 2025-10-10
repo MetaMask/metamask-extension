@@ -1240,5 +1240,67 @@ describe('Gator Permissions Selectors', () => {
         );
       });
     });
+
+    describe('URL encoding handling', () => {
+      it('should handle encoded site origin matching', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 1,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'https://example.com',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+          },
+        };
+
+        const result = getPermissionGroupDetailsByOrigin(
+          customState,
+          encodeURIComponent('https://example.com'),
+        );
+
+        expect(result.tokenTransfer.total).toBe(3);
+        expect(result.tokenTransfer.chains).toEqual([MOCK_CHAIN_ID_MAINNET]);
+      });
+
+      it('should handle decoded site origin matching', () => {
+        const customState = {
+          metamask: {
+            gatorPermissionsMapSerialized: JSON.stringify(
+              mockGatorPermissionsStorageEntriesFactory({
+                [MOCK_CHAIN_ID_MAINNET]: {
+                  nativeTokenStream: 1,
+                  nativeTokenPeriodic: 1,
+                  erc20TokenStream: 1,
+                  siteOrigin: 'https://example.com/path%20with%20spaces',
+                },
+              }),
+            ),
+            isGatorPermissionsEnabled: true,
+            isFetchingGatorPermissions: false,
+            isUpdatingGatorPermissions: false,
+            gatorPermissionsProviderSnapId:
+              'local:http://localhost:8080/' as SnapId,
+          },
+        };
+
+        const result = getPermissionGroupDetailsByOrigin(
+          customState,
+          'https://example.com/path with spaces',
+        );
+
+        expect(result.tokenTransfer.total).toBe(3);
+        expect(result.tokenTransfer.chains).toEqual([MOCK_CHAIN_ID_MAINNET]);
+      });
+    });
   });
 });
