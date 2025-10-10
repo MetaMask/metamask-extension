@@ -5690,7 +5690,8 @@
     "message": "Covered"
   },
   "shieldEntryModalAssetCoverage": {
-    "message": "$10,000 asset coverage per transaction"
+    "message": "$1 asset coverage per transaction",
+    "description": "The $1 is the amount of asset coverage per transaction"
   },
   "shieldEntryModalDescription": {
     "message": "Renews at $1/month, cancel anytime. $2",
