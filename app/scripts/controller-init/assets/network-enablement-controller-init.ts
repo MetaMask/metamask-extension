@@ -86,7 +86,10 @@ const generateDefaultNetworkEnablementControllerState = (
         ),
       },
     };
-  } else if (process.env.METAMASK_ENVIRONMENT === 'test') {
+  } else if (
+    process.env.METAMASK_DEBUG ||
+    process.env.METAMASK_ENVIRONMENT === 'test'
+  ) {
     return {
       enabledNetworkMap: {
         [KnownCaipNamespace.Eip155]: generateEVMNetworkMap(
