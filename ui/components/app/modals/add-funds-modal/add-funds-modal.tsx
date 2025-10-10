@@ -42,21 +42,12 @@ import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { AggregatorNetwork } from '../../../../ducks/ramps/types';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 
-export const ADD_FUND_OPTIONS = {
-  buy: 'buy',
-  receive: 'receive',
-  swap: 'swap',
-} as const;
-
-export type AddFundOption =
-  (typeof ADD_FUND_OPTIONS)[keyof typeof ADD_FUND_OPTIONS];
-
 const AddFundsModal = ({
   onClose,
   token,
   chainId,
 }: {
-  onClose: (userSelectedAddFundOption: AddFundOption | null) => void;
+  onClose: () => void;
   token: TokenPaymentInfo;
   chainId: string | number;
 }) => {
@@ -81,9 +72,6 @@ const AddFundsModal = ({
 
   const [showReceiveModal, setShowReceiveModal] = useState(false);
 
-  const [userSelectedAddFundOption, setUserSelectedAddFundOption] =
-    useState<AddFundOption | null>(null);
-
   const isBuyableChain = useMemo(() => {
     if (!chainId) {
       return false;
@@ -95,7 +83,6 @@ const AddFundsModal = ({
   }, [buyableChains, chainId]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
-    setUserSelectedAddFundOption(ADD_FUND_OPTIONS.buy);
     openBuyCryptoInPdapp();
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
@@ -111,10 +98,10 @@ const AddFundsModal = ({
         token_symbol: token.symbol,
       },
     });
+    onClose();
   }, [chainId, openBuyCryptoInPdapp, token.symbol, trackEvent]);
 
   const handleReceiveOnClick = useCallback(() => {
-    setUserSelectedAddFundOption(ADD_FUND_OPTIONS.receive);
     trace({ name: TraceName.ReceiveModal });
     trackEvent({
       event: MetaMetricsEventName.NavReceiveButtonClicked,
@@ -146,17 +133,12 @@ const AddFundsModal = ({
   ]);
 
   const handleSwapOnClick = useCallback(async () => {
-    setUserSelectedAddFundOption(ADD_FUND_OPTIONS.swap);
     openBridgeExperience(MetaMetricsSwapsEventSource.TransactionShield, {
       symbol: token.symbol,
       address: token.address,
       chainId,
     });
   }, [token, openBridgeExperience]);
-
-  const handleClose = useCallback(() => {
-    onClose(userSelectedAddFundOption);
-  }, [onClose, userSelectedAddFundOption]);
 
   const buttonRow = ({
     label,
@@ -193,13 +175,13 @@ const AddFundsModal = ({
   return (
     <Modal
       isOpen
-      onClose={handleClose}
+      onClose={() => undefined}
       data-testid="add-funds-modal"
       className="add-funds-modal"
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={handleClose}>{t('addFunds')}</ModalHeader>
+        <ModalHeader onClose={onClose}>{t('addFunds')}</ModalHeader>
         <ModalBody
           className="add-funds-modal__body"
           paddingLeft={0}
