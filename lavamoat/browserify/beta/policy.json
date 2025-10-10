@@ -1871,8 +1871,6 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/signature-controller": true,
-        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -2038,8 +2036,8 @@
         "URL": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
