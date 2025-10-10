@@ -4,7 +4,6 @@ import { type CaipChainId, type Hex } from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import TokenCell from '../token-cell';
 import {
-  getChainIdsToPoll,
   getEnabledNetworksByNamespace,
   getIsMultichainAccountsState2Enabled,
   getNewTokensImported,
