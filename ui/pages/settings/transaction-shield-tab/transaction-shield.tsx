@@ -3,7 +3,6 @@ import classnames from 'classnames';
 import {
   Product,
   PRODUCT_TYPES,
-  ProductType,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
   SubscriptionStatus,
@@ -72,7 +71,7 @@ const TransactionShield = () => {
     loading: subscriptionsLoading,
   } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
-    'shield' as ProductType,
+    PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
   const isCancelled =

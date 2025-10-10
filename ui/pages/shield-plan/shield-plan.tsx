@@ -2,7 +2,6 @@ import {
   PAYMENT_TYPES,
   PaymentType,
   PRODUCT_TYPES,
-  ProductType,
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
@@ -97,7 +96,7 @@ const ShieldPlan = () => {
     error: subscriptionsError,
   } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
-    'shield' as ProductType,
+    PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
   const isTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
@@ -169,7 +168,7 @@ const ShieldPlan = () => {
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
         await dispatch(
           startSubscriptionWithCard({
-            products: ['shield' as ProductType],
+            products: [PRODUCT_TYPES.SHIELD],
             isTrialRequested: !isTrialed,
             recurringInterval: selectedPlan,
           }),
