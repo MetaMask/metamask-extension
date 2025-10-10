@@ -73,8 +73,8 @@ export function useTransactionConfirm() {
   }, [newTransactionMeta]);
 
   const decodeResponse = useDecodedTransactionData({
-    data: newTransactionMeta.txParams.data as Hex,
-    to: newTransactionMeta.txParams.to as Hex,
+    data: newTransactionMeta?.txParams?.data as Hex,
+    to: newTransactionMeta?.txParams?.to as Hex,
   });
   const decodedApprovalAmount = decodeResponse?.value?.data[0].params.find(
     (param) => param.name === 'value',
