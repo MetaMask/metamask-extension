@@ -34,11 +34,13 @@ export const serviceWorkerPlugin: WebpackPluginInstance = {
         },
         () => {
           const background = compilation.entrypoints.get('background');
-          const backgroundFiles = background?.getEntrypointChunk().files ?? [];
-          const backgroundFilenames = [...backgroundFiles].join(',');
+          const backgroundFiles = background
+            ? [...background.getEntrypointChunk().files]
+            : [];
+          const backgroundFileNames = backgroundFiles.join(',');
           const assetName = 'app-init.js';
           const searchValue = 'process.env.FILE_NAMES';
-          const replaceValue = JSON.stringify(backgroundFilenames);
+          const replaceValue = JSON.stringify(backgroundFileNames);
           compilation.updateAsset(assetName, (source) =>
             replaceSource(source, assetName, searchValue, replaceValue),
           );
