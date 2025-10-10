@@ -5,7 +5,12 @@ import {
 import { NetworkState } from '@metamask/network-controller';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
 import { KnownCaipNamespace } from '@metamask/utils';
-import { SolScope, BtcScope } from '@metamask/keyring-api';
+import {
+  SolScope,
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  BtcScope,
+  ///: END:ONLY_INCLUDE_IF
+} from '@metamask/keyring-api';
 import { NetworkEnablementControllerMessenger } from '../messengers/assets';
 import { ControllerInitFunction } from '../types';
 import {
