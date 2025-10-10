@@ -16,29 +16,29 @@ import {
   type OptInStatusDto,
   CURRENT_SEASON_ID,
 } from './rewards-controller.types';
-import {
-  storeSubscriptionToken,
-  getSubscriptionToken,
-} from './utils/multi-subscription-token-vault';
+// TODO: Re-enable multi-subscription token vault when implemented
+// import {
+//   storeSubscriptionToken,
+//   getSubscriptionToken,
+// } from './utils/multi-subscription-token-vault';
 import log from 'loglevel';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { isAddress as isSolanaAddress } from '@solana/addresses';
-import { isHardwareAccount } from '../../../../util/address';
-import { selectRewardsEnabledFlag } from '../../../../selectors/featureFlagController/rewards';
-import { store } from '../../../../store';
 import {
   CaipAccountId,
   parseCaipChainId,
   toCaipAccountId,
 } from '@metamask/utils';
-import { base58 } from 'ethers/lib/utils';
-import { isNonEvmAddress } from '../../../Multichain/utils';
-import { signSolanaRewardsMessage } from './utils/solana-snap';
+import { base58, isAddress as isEvmAddress } from 'ethers/lib/utils';
+
+import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
+import { isHardwareAccount } from '../../../../ui/pages/multichain-accounts/account-details';
 import {
   AuthorizationFailedError,
   InvalidTimestampError,
-} from './services/rewards-data-service';
-import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
+} from './rewards-data-service';
+import { signSolanaRewardsMessage } from './utils/solana-snap';
+import { getRewardsFeatureFlags } from './feature-flag';
 
 // Re-export the messenger type for convenience
 export type { RewardsControllerMessenger };
@@ -378,7 +378,7 @@ export class RewardsController extends BaseController<
       return `0x${Buffer.from(base58.decode(result.signature)).toString(
         'hex',
       )}`;
-    } else if (!isNonEvmAddress(account.address)) {
+    } else if (isEvmAddress(account.address)) {
       const result = await this.#signEvmMessage(account, message);
       return result;
     }
@@ -412,7 +412,7 @@ export class RewardsController extends BaseController<
    * Handle authentication triggers (account changes, keyring unlock)
    */
   async #handleAuthenticationTrigger(reason?: string): Promise<void> {
-    const rewardsEnabled = selectRewardsEnabledFlag(store.getState());
+    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
 
     if (!rewardsEnabled) {
       return;
@@ -592,15 +592,16 @@ export class RewardsController extends BaseController<
       // Update state with successful authentication
       subscription = loginResponse.subscription;
 
-      // Store the session token for this subscription
-      const { success: tokenStoreSuccess } = await storeSubscriptionToken(
-        subscription.id,
-        loginResponse.sessionId,
-      );
-      if (!tokenStoreSuccess) {
-        log.info('RewardsController: Failed to store session token', account);
-        throw new Error('Failed to store session token');
-      }
+      // TODO: Re-enable multi-subscription token vault when implemented
+      // // Store the session token for this subscription
+      // const { success: tokenStoreSuccess } = await storeSubscriptionToken(
+      //   subscription.id,
+      //   loginResponse.sessionId,
+      // );
+      // if (!tokenStoreSuccess) {
+      //   log.info('RewardsController: Failed to store session token', account);
+      //   throw new Error('Failed to store session token');
+      // }
 
       log.info('RewardsController: Silent auth successful', account);
     } catch (error: unknown) {
@@ -723,14 +724,14 @@ export class RewardsController extends BaseController<
   isOptInSupported(account: InternalAccount): boolean {
     try {
       // Try to check if it's a hardware wallet
-      const isHardware = isHardwareAccount(account.address);
+      const isHardware = isHardwareAccount(account);
       // If it's a hardware wallet, opt-in is not supported
       if (isHardware) {
         return false;
       }
 
       // Check if it's an EVM address (not non-EVM)
-      if (!isNonEvmAddress(account.address)) {
+      if (isEvmAddress(account.address)) {
         return true;
       }
 
@@ -822,7 +823,7 @@ export class RewardsController extends BaseController<
    * @returns Promise<OptInStatusDto> - The opt-in status response
    */
   async getOptInStatus(params: OptInStatusInputDto): Promise<OptInStatusDto> {
-    const rewardsEnabled = selectRewardsEnabledFlag(store.getState());
+    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
     if (!rewardsEnabled) {
       // Return empty arrays when feature flag is disabled
       return {
@@ -951,7 +952,7 @@ export class RewardsController extends BaseController<
   async estimatePoints(
     request: EstimatePointsDto,
   ): Promise<EstimatedPointsDto> {
-    const rewardsEnabled = selectRewardsEnabledFlag(store.getState());
+    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
     if (!rewardsEnabled) return { pointsEstimate: 0, bonusBips: 0 };
     try {
       const estimatedPoints = await this.messagingSystem.call(
@@ -975,7 +976,7 @@ export class RewardsController extends BaseController<
    * @returns boolean - True if rewards feature is enabled, false otherwise
    */
   isRewardsFeatureEnabled(): boolean {
-    return selectRewardsEnabledFlag(store.getState());
+    return getRewardsFeatureFlags().rewardsEnabled;
   }
 
   /**
@@ -988,7 +989,7 @@ export class RewardsController extends BaseController<
     subscriptionId: string,
     seasonId: string = CURRENT_SEASON_ID,
   ): Promise<SeasonStatusState | null> {
-    const rewardsEnabled = selectRewardsEnabledFlag(store.getState());
+    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
     if (!rewardsEnabled) {
       return null;
     }
@@ -1144,7 +1145,7 @@ export class RewardsController extends BaseController<
     account: InternalAccount,
     referralCode?: string,
   ): Promise<string | null> {
-    const rewardsEnabled = selectRewardsEnabledFlag(store.getState());
+    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
     if (!rewardsEnabled) {
       log.info(
         'RewardsController: Rewards feature is disabled, skipping optin',
@@ -1205,18 +1206,19 @@ export class RewardsController extends BaseController<
       'RewardsController: Optin successful, updating controller state...',
     );
 
+    // TODO: Re-enable multi-subscription token vault when implemented
     // Store the subscription token for authenticated requests
-    if (optinResponse.subscription?.id && optinResponse.sessionId) {
-      await storeSubscriptionToken(
-        optinResponse.subscription.id,
-        optinResponse.sessionId,
-      ).catch((error: Error) => {
-        log.error(
-          'RewardsController: Failed to store subscription token:',
-          error,
-        );
-      });
-    }
+    // if (optinResponse.subscription?.id && optinResponse.sessionId) {
+    //   await storeSubscriptionToken(
+    //     optinResponse.subscription.id,
+    //     optinResponse.sessionId,
+    //   ).catch((error: Error) => {
+    //     log.error(
+    //       'RewardsController: Failed to store subscription token:',
+    //       error,
+    //     );
+    //   });
+    // }
 
     // Update state with opt-in response data
     this.update((state) => {
@@ -1247,7 +1249,7 @@ export class RewardsController extends BaseController<
    * @returns Promise<boolean> - True if the code is valid, false otherwise
    */
   async validateReferralCode(code: string): Promise<boolean> {
-    const rewardsEnabled = selectRewardsEnabledFlag(store.getState());
+    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
     if (!rewardsEnabled) {
       return false;
     }
@@ -1281,7 +1283,7 @@ export class RewardsController extends BaseController<
    * @returns Promise<string | null> - The subscription ID or null if none found
    */
   async getCandidateSubscriptionId(): Promise<string | null> {
-    const rewardsEnabled = selectRewardsEnabledFlag(store.getState());
+    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
     if (!rewardsEnabled) {
       return null;
     }
@@ -1346,13 +1348,16 @@ export class RewardsController extends BaseController<
           i < optInStatusResponse.sids.length
             ? optInStatusResponse.sids[i]
             : null;
-        const sessionToken = subscriptionId
-          ? await getSubscriptionToken(subscriptionId)
-          : undefined;
+        // TODO: Re-enable multi-subscription token vault when implemented
+        // const sessionToken = subscriptionId
+        //   ? await getSubscriptionToken(subscriptionId)
+        //   : undefined;
         if (
-          subscriptionId &&
-          Boolean(sessionToken?.token) &&
-          Boolean(sessionToken?.success)
+          subscriptionId
+          // TODO: Re-enable multi-subscription token vault when implemented
+          // &&
+          // Boolean(sessionToken?.token) &&
+          // Boolean(sessionToken?.success)
         ) {
           return subscriptionId;
         }
@@ -1403,7 +1408,7 @@ export class RewardsController extends BaseController<
   async linkAccountToSubscriptionCandidate(
     account: InternalAccount,
   ): Promise<boolean> {
-    const rewardsEnabled = selectRewardsEnabledFlag(store.getState());
+    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
     if (!rewardsEnabled) {
       log.warn('RewardsController: Rewards feature is disabled');
       return false;
@@ -1457,7 +1462,7 @@ export class RewardsController extends BaseController<
             },
             candidateSubscriptionId,
           );
-        } catch (error: Error) {
+        } catch (error) {
           // Check if it's an InvalidTimestampError and we haven't exceeded retry attempts
           if (
             error instanceof InvalidTimestampError &&

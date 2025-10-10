@@ -130,6 +130,7 @@ import {
   getRemoteFeatureFlagControllerInitMessenger,
   getRemoteFeatureFlagControllerMessenger,
 } from './remote-feature-flag-controller-messenger';
+import { getRewardsControllerMessenger } from './rewards-controller-messenger';
 import {
   getSwapsControllerInitMessenger,
   getSwapsControllerMessenger,
@@ -328,6 +329,8 @@ export {
 } from './signature-controller-messenger';
 export type { SubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
+export type { RewardsControllerMessenger } from './rewards-controller-messenger';
+export { getRewardsControllerMessenger } from './rewards-controller-messenger';
 export type {
   SwapsControllerMessenger,
   SwapsControllerInitMessenger,
@@ -616,6 +619,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   SubscriptionService: {
     getMessenger: getSubscriptionServiceMessenger,
+    getInitMessenger: noop,
+  },
+  RewardsController: {
+    getMessenger: getRewardsControllerMessenger,
     getInitMessenger: noop,
   },
   SwapsController: {

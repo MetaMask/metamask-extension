@@ -443,3 +443,6 @@ env:
 
   # Enable new send implementation
   - SEND_REDESIGN_ENABLED: false
+
+  # Rewards
+  - REWARDS_API_URL: 'https://rewards.uat-api.cx.metamask.io'
