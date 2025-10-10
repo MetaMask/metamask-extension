@@ -2950,7 +2950,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
                           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
-                            class="name name__clickable name__recognized_unsaved"
+                            class="name name__recognized_unsaved"
                           >
                             <div
                               class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
