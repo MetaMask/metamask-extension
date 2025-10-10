@@ -73,6 +73,7 @@ import {
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
 import MetaMaskController from './metamask-controller';
+import { KeyringTypes } from '@metamask/keyring-controller';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -5346,7 +5347,9 @@ describe('MetaMaskController', () => {
       await metamaskController._importAccountsWithBalances();
 
       const { keyrings } = metamaskController.keyringController.state;
-      const hdIds = keyrings.map((k) => k.metadata.id);
+      const hdIds = keyrings
+        .filter((keyring) => keyring.metadata.type === KeyringTypes.hd)
+        .map((keyring) => keyring.metadata.id);
       hdIds.forEach((id) => {
         expect(
           metamaskController.discoverAndCreateAccounts,
@@ -5378,7 +5381,9 @@ describe('MetaMaskController', () => {
       await metamaskController._importAccountsWithBalances();
 
       const { keyrings } = metamaskController.keyringController.state;
-      const hdIds = keyrings.map((k) => k.metadata.id);
+      const hdIds = keyrings
+        .filter((keyring) => keyring.metadata.type === KeyringTypes.hd)
+        .map((keyring) => keyring.metadata.id);
       hdIds.forEach((id) => {
         expect(metamaskController._addAccountsWithBalance).toHaveBeenCalledWith(
           id,
