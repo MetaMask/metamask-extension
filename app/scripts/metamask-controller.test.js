@@ -46,6 +46,7 @@ import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-clien
 
 import log from 'loglevel';
 import { parseCaipAccountId } from '@metamask/utils';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
   HardwareDeviceNames,
@@ -74,8 +75,6 @@ import {
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
 import MetaMaskController from './metamask-controller';
-import { KeyringTypes } from '@metamask/keyring-controller';
-import { setSelectedAccount } from '../../ui/store/actions';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -3635,7 +3634,6 @@ describe('MetaMaskController', () => {
           'createAccount',
         );
         mockCreateAccount.mockResolvedValue(undefined);
-
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
