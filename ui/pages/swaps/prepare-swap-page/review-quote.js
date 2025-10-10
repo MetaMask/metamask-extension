@@ -215,13 +215,17 @@ export default function ReviewQuote({
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const quotes = useSelector(getQuotes, isEqual);
-  useEffect(() => {
-    if (!Object.values(quotes).length) {
-      navigate(PREPARE_SWAP_ROUTE);
-    } else if (routeState === 'awaiting') {
-      navigate(AWAITING_SWAP_ROUTE);
-    }
-  }, [navigate, quotes, routeState]);
+
+  // Redirect immediately if no quotes or if awaiting
+  if (!Object.values(quotes).length) {
+    navigate(PREPARE_SWAP_ROUTE);
+    return null;
+  }
+
+  if (routeState === 'awaiting') {
+    navigate(AWAITING_SWAP_ROUTE);
+    return null;
+  }
 
   const quotesLastFetched = useSelector(getQuotesLastFetched);
   const prevQuotesLastFetched = usePrevious(quotesLastFetched);

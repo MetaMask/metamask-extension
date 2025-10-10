@@ -143,14 +143,11 @@ const ConfirmAddSuggestedNFT = () => {
     navigate(mostRecentOverviewPage);
   }, [dispatch, navigate, mostRecentOverviewPage, suggestedNfts]);
 
-  useEffect(() => {
-    const goBackIfNoSuggestedNftsOnFirstRender = () => {
-      if (!suggestedNfts.length) {
-        navigate(mostRecentOverviewPage);
-      }
-    };
-    goBackIfNoSuggestedNftsOnFirstRender();
-  }, [navigate, mostRecentOverviewPage, suggestedNfts]);
+  // Redirect immediately if there are no suggested NFTs
+  if (!suggestedNfts.length) {
+    navigate(mostRecentOverviewPage);
+    return null;
+  }
 
   let origin;
   let link;
