@@ -121,7 +121,7 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
   }
 
   for (const filename of readdirSync(appRoot)) {
-    // ignore non-html/html files
+    // ignore non-htm/html files
     if (/\.html?$/iu.test(filename)) {
       if (filename === 'background.html') {
         addManifestScript('background', {
