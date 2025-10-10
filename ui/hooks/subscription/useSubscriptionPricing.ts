@@ -263,26 +263,24 @@ export const useShieldSubscriptionPricingFromTokenApproval = ({
         paymentTokenAddress: selectedTokenPrice.address as Hex,
         productType: PRODUCT_TYPES.SHIELD,
       };
-      const [monthlyApprovalAmount, yearlyApprovalAmount] = await Promise.all([
-        getSubscriptionCryptoApprovalAmount({
-          ...params,
-          interval: RECURRING_INTERVALS.month,
-        }),
-        getSubscriptionCryptoApprovalAmount({
-          ...params,
-          interval: RECURRING_INTERVALS.year,
-        }),
-      ]);
+      // Get all intervals from RECURRING_INTERVALS
+      const intervals = Object.values(RECURRING_INTERVALS);
 
-      if (monthlyApprovalAmount.approveAmount === decodedApprovalAmount) {
-        return pricingPlans?.find(
-          (plan) => plan.interval === RECURRING_INTERVALS.month,
-        );
-      }
-      if (yearlyApprovalAmount.approveAmount === decodedApprovalAmount) {
-        return pricingPlans?.find(
-          (plan) => plan.interval === RECURRING_INTERVALS.year,
-        );
+      // Fetch approval amounts for all intervals
+      const approvalAmounts = await Promise.all(
+        intervals.map((interval) =>
+          getSubscriptionCryptoApprovalAmount({
+            ...params,
+            interval,
+          }),
+        ),
+      );
+
+      // Find the matching plan by comparing approval amounts
+      for (let i = 0; i < approvalAmounts.length; i++) {
+        if (approvalAmounts[i].approveAmount === decodedApprovalAmount) {
+          return pricingPlans?.find((plan) => plan.interval === intervals[i]);
+        }
       }
     }
 
