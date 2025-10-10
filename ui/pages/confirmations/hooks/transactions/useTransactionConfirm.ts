@@ -89,17 +89,26 @@ export function useTransactionConfirm() {
   const { trialedProducts } = useUserSubscriptions();
   const isTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
 
-  const handleSubscriptionApprove = useCallback(
-    async (transactionId: string) => {
+  /**
+   * Handle shield subscription start after transaction is submitted
+   */
+  const handleShieldSubscriptionStart = useCallback(
+    async (currentTxMeta: TransactionMeta) => {
+      if (currentTxMeta.type !== TransactionType.shieldSubscriptionApprove) {
+        return;
+      }
+
+      // refetch the latest transaction meta to have rawTx available
+      const { id: transactionId } = currentTxMeta;
       const transactions = await getTransactions();
-      const confirmedTx = transactions.find((tx) => tx.id === transactionId);
+      const submittedTx = transactions.find((tx) => tx.id === transactionId);
       if (!productPrice) {
         console.error('Product price not found', transactionId);
         return;
       }
 
-      if (confirmedTx) {
-        const { rawTx } = confirmedTx;
+      if (submittedTx) {
+        const { rawTx } = submittedTx;
         if (rawTx) {
           await dispatch(
             startSubscriptionWithCrypto({
@@ -107,7 +116,7 @@ export function useTransactionConfirm() {
               isTrialRequested: !isTrialed,
               recurringInterval: productPrice.interval,
               billingCycles: productPrice.minBillingCycles,
-              chainId: confirmedTx.chainId,
+              chainId: submittedTx.chainId,
               payerAddress: evmInternalAccount?.address as Hex,
               tokenSymbol: tokenPrice?.symbol as string,
               rawTransaction: rawTx as Hex,
@@ -151,15 +160,13 @@ export function useTransactionConfirm() {
 
     await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
 
-    if (newTransactionMeta.type === TransactionType.shieldSubscriptionApprove) {
-      await handleSubscriptionApprove(newTransactionMeta.id);
-    }
+    await handleShieldSubscriptionStart(newTransactionMeta);
   }, [
     customNonceValue,
     dispatch,
     handleGasless7702,
     handleSmartTransaction,
-    handleSubscriptionApprove,
+    handleShieldSubscriptionStart,
     isSmartTransaction,
     newTransactionMeta,
     selectedGasFeeToken,
