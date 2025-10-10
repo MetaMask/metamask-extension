@@ -3,7 +3,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { NameType } from '@metamask/name-controller';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
@@ -12,10 +11,9 @@ import { RowAlertKey } from '../../../../../components/app/confirm/info/row/cons
 import { genUnapprovedTokenTransferConfirmation } from '../../../../../../test/data/confirmations/token-transfer';
 import {
   TrustSignalDisplayState,
-  useTrustSignal,
+  useTrustSignals,
 } from '../../../../../hooks/useTrustSignals';
 import { getExperience } from '../../../../../../shared/constants/verification';
-import * as useTrustSignalModule from '../../../../../hooks/useTrustSignals';
 import { EXPERIENCES_TYPE } from '../../../../../../shared/constants/first-party-contracts';
 import { useFirstTimeInteractionAlert } from './useFirstTimeInteractionAlert';
 
@@ -23,7 +21,7 @@ jest.mock('../../../../../hooks/useTrustSignals', () => {
   const actual = jest.requireActual('../../../../../hooks/useTrustSignals');
   return {
     ...actual,
-    useTrustSignal: jest.fn(),
+    useTrustSignals: jest.fn(),
   };
 });
 
@@ -49,14 +47,6 @@ const TRANSACTION_META_MOCK = {
   },
   time: new Date().getTime() - 10000,
 } as TransactionMeta;
-
-jest.mock('../../../../../hooks/useTrustSignals', () => {
-  const actual = jest.requireActual('../../../../../hooks/useTrustSignals');
-  return {
-    ...actual,
-    useTrustSignal: jest.fn(),
-  };
-});
 
 function runHook({
   currentConfirmation,
@@ -89,15 +79,17 @@ function runHook({
 }
 
 describe('useFirstTimeInteractionAlert', () => {
-  const mockUseTrustSignal = jest.mocked(useTrustSignal);
+  const mockUseTrustSignals = jest.mocked(useTrustSignals);
   const mockIsFirstPartyContract = jest.mocked(getExperience);
 
   beforeEach(() => {
     jest.resetAllMocks();
-    mockUseTrustSignal.mockReturnValue({
-      state: TrustSignalDisplayState.Unknown,
-      label: null,
-    });
+    mockUseTrustSignals.mockReturnValue([
+      {
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      },
+    ]);
     mockIsFirstPartyContract.mockReturnValue(undefined);
   });
 
@@ -184,11 +176,13 @@ describe('useFirstTimeInteractionAlert', () => {
     ).toEqual([]);
   });
 
-  it.only('returns no alerts if transaction destination is verified', () => {
-    mockUseTrustSignal.mockReturnValue({
-      state: TrustSignalDisplayState.Verified,
-      label: null,
-    });
+  it('returns no alerts if transaction destination is verified', () => {
+    mockUseTrustSignals.mockReturnValue([
+      {
+        state: TrustSignalDisplayState.Verified,
+        label: null,
+      },
+    ]);
 
     const firstTimeConfirmation = {
       ...TRANSACTION_META_MOCK,
@@ -208,10 +202,12 @@ describe('useFirstTimeInteractionAlert', () => {
   });
 
   it('returns no alerts if token transfer recipient is verified', () => {
-    mockUseTrustSignal.mockReturnValue({
-      state: TrustSignalDisplayState.Verified,
-      label: null,
-    });
+    mockUseTrustSignals.mockReturnValue([
+      {
+        state: TrustSignalDisplayState.Verified,
+        label: null,
+      },
+    ]);
 
     const firstTimeConfirmation = {
       ...TRANSACTION_META_MOCK,
@@ -240,15 +236,6 @@ describe('useFirstTimeInteractionAlert', () => {
     const alerts = runHook({
       currentConfirmation: firstTimeConfirmation,
     });
-    const spyOnUseTrustSignal = jest.spyOn(
-      useTrustSignalModule,
-      'useTrustSignal',
-    );
-
-    expect(spyOnUseTrustSignal).toHaveBeenCalledWith(
-      '0xrecipient',
-      NameType.ETHEREUM_ADDRESS,
-    );
 
     expect(alerts).toEqual([
       {
@@ -283,10 +270,12 @@ describe('useFirstTimeInteractionAlert', () => {
     expect(alerts).toEqual([]);
   });
   it('does not return alert when trust signal is still loading', () => {
-    mockUseTrustSignal.mockReturnValue({
-      state: TrustSignalDisplayState.Loading,
-      label: null,
-    });
+    mockUseTrustSignals.mockReturnValue([
+      {
+        state: TrustSignalDisplayState.Loading,
+        label: null,
+      },
+    ]);
 
     const firstTimeConfirmation = {
       ...TRANSACTION_META_MOCK,
@@ -307,10 +296,12 @@ describe('useFirstTimeInteractionAlert', () => {
 
   it('returns alert when trust signal is loaded but address is not verified', () => {
     // Simulate the trust signal being loaded with non-verified result
-    mockUseTrustSignal.mockReturnValue({
-      state: TrustSignalDisplayState.Unknown,
-      label: null,
-    });
+    mockUseTrustSignals.mockReturnValue([
+      {
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      },
+    ]);
 
     const firstTimeConfirmation = {
       ...TRANSACTION_META_MOCK,
@@ -331,10 +322,12 @@ describe('useFirstTimeInteractionAlert', () => {
   });
 
   it('does not return alert when trust signal shows verified address', () => {
-    mockUseTrustSignal.mockReturnValue({
-      state: TrustSignalDisplayState.Verified,
-      label: null,
-    });
+    mockUseTrustSignals.mockReturnValue([
+      {
+        state: TrustSignalDisplayState.Verified,
+        label: null,
+      },
+    ]);
 
     const firstTimeConfirmation = {
       ...TRANSACTION_META_MOCK,

@@ -55,22 +55,6 @@ export function useFirstTimeInteractionAlert(): Alert[] {
     getExperience(txParams?.to as Hex, chainId),
   );
 
-  console.log(
-    'OGO - showAlert',
-    JSON.stringify(
-      {
-        isInternalAccount,
-        isFirstTimeInteraction,
-        isAllAddressesVerified,
-        isFirstPartyContract,
-        hasAnyLoadingTrustSignal,
-        trustSignalResults,
-      },
-      null,
-      2,
-    ),
-  );
-
   const showAlert =
     !isInternalAccount &&
     isFirstTimeInteraction &&
