@@ -7,13 +7,10 @@ import {
 import React from 'react';
 import { isSnapId } from '@metamask/snaps-utils';
 
+import { Text, TextVariant } from '@metamask/design-system-react';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { useConfirmContext } from '../../../../context/confirm';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-  ConfirmInfoRowText,
-} from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoRowUrl } from '../../../../../../components/app/confirm/info/row/url';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -25,10 +22,6 @@ import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { NativeTokenStreamDetails } from './typed-sign-permission/native-token-stream-details';
 import { Erc20TokenPeriodicDetails } from './typed-sign-permission/erc20-token-periodic-details';
 import { Erc20TokenStreamDetails } from './typed-sign-permission/erc20-token-stream-details';
-import {
-  useErc20TokenDetails,
-  useNativeTokenLabel,
-} from './typed-sign-permission/typed-sign-permission-util';
 import { NativeTokenPeriodicDetails } from './typed-sign-permission/native-token-periodic-details';
 
 /**
@@ -49,19 +42,20 @@ const TypedSignPermissionInfo: React.FC = () => {
   }
 
   let permissionDetail: React.ReactNode;
-  let tokenLabel: string | undefined;
 
-  const { expiry } = decodedPermission;
+  const { expiry, chainId } = decodedPermission;
 
   switch (decodedPermission.permission.type) {
     case 'native-token-periodic': {
       const permission =
         decodedPermission.permission as NativeTokenPeriodicPermission;
 
-      tokenLabel = useNativeTokenLabel(decodedPermission.chainId);
-
       permissionDetail = (
-        <NativeTokenPeriodicDetails permission={permission} expiry={expiry} />
+        <NativeTokenPeriodicDetails
+          permission={permission}
+          expiry={expiry}
+          chainId={chainId}
+        />
       );
 
       break;
@@ -70,10 +64,12 @@ const TypedSignPermissionInfo: React.FC = () => {
       const permission =
         decodedPermission.permission as NativeTokenStreamPermission;
 
-      tokenLabel = useNativeTokenLabel(decodedPermission.chainId);
-
       permissionDetail = (
-        <NativeTokenStreamDetails permission={permission} expiry={expiry} />
+        <NativeTokenStreamDetails
+          permission={permission}
+          expiry={expiry}
+          chainId={chainId}
+        />
       );
 
       break;
@@ -82,18 +78,11 @@ const TypedSignPermissionInfo: React.FC = () => {
       const permission =
         decodedPermission.permission as Erc20TokenPeriodicPermission;
 
-      const { label, decimals } = useErc20TokenDetails({
-        tokenAddress: permission.data.tokenAddress,
-        chainId: decodedPermission.chainId,
-      });
-
-      tokenLabel = label;
-
       permissionDetail = (
         <Erc20TokenPeriodicDetails
           permission={permission}
           expiry={expiry}
-          decimals={decimals}
+          chainId={chainId}
         />
       );
 
@@ -103,18 +92,11 @@ const TypedSignPermissionInfo: React.FC = () => {
       const permission =
         decodedPermission.permission as Erc20TokenStreamPermission;
 
-      const { label, decimals } = useErc20TokenDetails({
-        tokenAddress: permission.data.tokenAddress,
-        chainId: decodedPermission.chainId,
-      });
-
-      tokenLabel = label;
-
       permissionDetail = (
         <Erc20TokenStreamDetails
           permission={permission}
-          decimals={decimals}
           expiry={expiry}
+          chainId={chainId}
         />
       );
 
@@ -128,15 +110,20 @@ const TypedSignPermissionInfo: React.FC = () => {
     ? t('requestFromInfoSnap')
     : t('requestFromInfo');
 
-  const {
-    chainId,
-    permission: {
-      data: { tokenAddress },
-    },
-  } = decodedPermission;
-
   return (
     <>
+      <ConfirmInfoSection data-testid="confirmation_justification-section">
+        <ConfirmInfoRow
+          label="Justification"
+          tooltip={t('confirmFieldTooltipJustification')}
+        >
+          <Text variant={TextVariant.BodyMd}>
+            {decodedPermission.permission.justification}
+          </Text>
+        </ConfirmInfoRow>
+
+        <SigningInWithRow />
+      </ConfirmInfoSection>
       <ConfirmInfoSection data-testid="confirmation_permission-section">
         <ConfirmInfoAlertRow
           alertKey={RowAlertKey.RequestFrom}
@@ -146,34 +133,10 @@ const TypedSignPermissionInfo: React.FC = () => {
         >
           <ConfirmInfoRowUrl url={decodedPermission.origin} />
         </ConfirmInfoAlertRow>
+
         <NetworkRow />
-
-        <ConfirmInfoRow
-          label="Token"
-          tooltip="The token that the permission is for"
-        >
-          {tokenLabel ? (
-            <ConfirmInfoRowText text={tokenLabel} />
-          ) : (
-            <ConfirmInfoRowAddress address={tokenAddress} chainId={chainId} />
-          )}
-        </ConfirmInfoRow>
-
-        {tokenLabel && tokenAddress && (
-          <ConfirmInfoRow label="">
-            <ConfirmInfoRowAddress address={tokenAddress} chainId={chainId} />
-          </ConfirmInfoRow>
-        )}
       </ConfirmInfoSection>
-      <ConfirmInfoSection data-testid="confirmation_justification-section">
-        <ConfirmInfoRow
-          label="Justification"
-          tooltip="The justification provided by the website for requesting this permission"
-        >
-          {decodedPermission.permission.justification}
-        </ConfirmInfoRow>
-        <SigningInWithRow />
-      </ConfirmInfoSection>
+
       {permissionDetail}
     </>
   );

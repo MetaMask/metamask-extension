@@ -21,42 +21,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders with all required p
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-1"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-2"
-            class=""
-            data-original-title="0.00000000000000466"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class=""
+                data-original-title="4,660"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  4,660
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -77,42 +87,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders with all required p
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-3"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-4"
-            class=""
-            data-original-title="0.000000000000022136"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-2"
+                class=""
+                data-original-title="22,136"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  22,136
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -131,33 +151,17 @@ exports[`Erc20TokenStreamDetails basic functionality renders with all required p
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-5"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -176,31 +180,15 @@ exports[`Erc20TokenStreamDetails basic functionality renders with all required p
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-6"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
@@ -224,42 +212,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders with all required p
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-7"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-8"
-            class=""
-            data-original-title="0.000000000000039612"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-3"
+                class=""
+                data-original-title="39,612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  39,612
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -280,42 +278,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders with all required p
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-9"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-10"
-            class=""
-            data-original-title="0.0000000034224768"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-4"
+                class=""
+                data-original-title="3,422,476,800"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  3,422,476,800
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -346,27 +354,56 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-36"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-        style="height: 20px; width: 50%;"
-      />
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-15"
+                class=""
+                data-original-title="4,660"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  4,660
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -383,27 +420,56 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-37"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-        style="height: 20px; width: 50%;"
-      />
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-16"
+                class=""
+                data-original-title="22,136"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  22,136
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -418,33 +484,17 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-38"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -463,31 +513,15 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-39"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
@@ -511,27 +545,56 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-40"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-        style="height: 20px; width: 50%;"
-      />
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-17"
+                class=""
+                data-original-title="39,612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  39,612
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -548,27 +611,56 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-41"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
-        style="height: 20px; width: 50%;"
-      />
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-18"
+                class=""
+                data-original-title="3,422,476,800"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  3,422,476,800
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -595,42 +687,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders without expiry 1`] 
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-27"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-28"
-            class=""
-            data-original-title="0.00000000000000466"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-11"
+                class=""
+                data-original-title="4,660"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  4,660
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -651,42 +753,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders without expiry 1`] 
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-29"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-30"
-            class=""
-            data-original-title="0.000000000000022136"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-12"
+                class=""
+                data-original-title="22,136"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  22,136
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -705,33 +817,17 @@ exports[`Erc20TokenStreamDetails basic functionality renders without expiry 1`] 
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-31"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -755,42 +851,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders without expiry 1`] 
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-32"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-33"
-            class=""
-            data-original-title="0.000000000000039612"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-13"
+                class=""
+                data-original-title="39,612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  39,612
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -811,42 +917,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders without expiry 1`] 
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-34"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-35"
-            class=""
-            data-original-title="0.0000000034224768"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-14"
+                class=""
+                data-original-title="3,422,476,800"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  3,422,476,800
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -877,42 +993,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders without initial amo
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-11"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-12"
-            class=""
-            data-original-title="0.000000000000022136"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-5"
+                class=""
+                data-original-title="22,136"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  22,136
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -931,33 +1057,17 @@ exports[`Erc20TokenStreamDetails basic functionality renders without initial amo
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-13"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -976,31 +1086,15 @@ exports[`Erc20TokenStreamDetails basic functionality renders without initial amo
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-14"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
@@ -1024,42 +1118,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders without initial amo
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-15"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-16"
-            class=""
-            data-original-title="0.000000000000039612"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-6"
+                class=""
+                data-original-title="39,612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  39,612
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -1080,42 +1184,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders without initial amo
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-17"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-18"
-            class=""
-            data-original-title="0.0000000034224768"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-7"
+                class=""
+                data-original-title="3,422,476,800"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  3,422,476,800
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -1146,42 +1260,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders without max amount 
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-19"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-20"
-            class=""
-            data-original-title="0.00000000000000466"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-8"
+                class=""
+                data-original-title="4,660"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  4,660
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -1200,33 +1324,17 @@ exports[`Erc20TokenStreamDetails basic functionality renders without max amount 
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-21"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -1245,31 +1353,15 @@ exports[`Erc20TokenStreamDetails basic functionality renders without max amount 
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-22"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
@@ -1293,42 +1385,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders without max amount 
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-23"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-24"
-            class=""
-            data-original-title="0.000000000000039612"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-9"
+                class=""
+                data-original-title="39,612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  39,612
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -1349,42 +1451,52 @@ exports[`Erc20TokenStreamDetails basic functionality renders without max amount 
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-25"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-26"
-            class=""
-            data-original-title="0.0000000034224768"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              &lt;0.000001
+              <div
+                aria-describedby="tippy-tooltip-10"
+                class=""
+                data-original-title="3,422,476,800"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  3,422,476,800
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -1415,42 +1527,52 @@ exports[`Erc20TokenStreamDetails data display renders with different decimal val
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-52"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-53"
-            class=""
-            data-original-title="0.00466"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              0.00466
+              <div
+                aria-describedby="tippy-tooltip-23"
+                class=""
+                data-original-title="4,660"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  4,660
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -1471,42 +1593,52 @@ exports[`Erc20TokenStreamDetails data display renders with different decimal val
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-54"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-55"
-            class=""
-            data-original-title="0.022136"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              0.0221
+              <div
+                aria-describedby="tippy-tooltip-24"
+                class=""
+                data-original-title="22,136"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  22,136
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -1525,33 +1657,17 @@ exports[`Erc20TokenStreamDetails data display renders with different decimal val
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-56"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -1570,31 +1686,15 @@ exports[`Erc20TokenStreamDetails data display renders with different decimal val
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-57"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
@@ -1618,42 +1718,52 @@ exports[`Erc20TokenStreamDetails data display renders with different decimal val
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-58"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-59"
-            class=""
-            data-original-title="0.039612"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              0.0396
+              <div
+                aria-describedby="tippy-tooltip-25"
+                class=""
+                data-original-title="39,612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  39,612
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -1674,42 +1784,52 @@ exports[`Erc20TokenStreamDetails data display renders with different decimal val
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-60"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-61"
-            class=""
-            data-original-title="3,422.4768"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              3,422
+              <div
+                aria-describedby="tippy-tooltip-26"
+                class=""
+                data-original-title="3,422,476,800"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  3,422,476,800
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -1740,42 +1860,52 @@ exports[`Erc20TokenStreamDetails data display renders with zero decimals 1`] = `
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-62"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-63"
-            class=""
-            data-original-title="4,660"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              4,660
+              <div
+                aria-describedby="tippy-tooltip-27"
+                class=""
+                data-original-title="4,660"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  4,660
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -1796,42 +1926,52 @@ exports[`Erc20TokenStreamDetails data display renders with zero decimals 1`] = `
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-64"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-65"
-            class=""
-            data-original-title="22,136"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              22,136
+              <div
+                aria-describedby="tippy-tooltip-28"
+                class=""
+                data-original-title="22,136"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  22,136
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -1850,33 +1990,17 @@ exports[`Erc20TokenStreamDetails data display renders with zero decimals 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-66"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -1895,31 +2019,15 @@ exports[`Erc20TokenStreamDetails data display renders with zero decimals 1`] = `
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-67"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
@@ -1943,42 +2051,52 @@ exports[`Erc20TokenStreamDetails data display renders with zero decimals 1`] = `
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-68"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-69"
-            class=""
-            data-original-title="39,612"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              39,612
+              <div
+                aria-describedby="tippy-tooltip-29"
+                class=""
+                data-original-title="39,612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  39,612
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -1999,42 +2117,52 @@ exports[`Erc20TokenStreamDetails data display renders with zero decimals 1`] = `
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-70"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-71"
-            class=""
-            data-original-title="3,422,476,800"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              3,422,476,800
+              <div
+                aria-describedby="tippy-tooltip-30"
+                class=""
+                data-original-title="3,422,476,800"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  3,422,476,800
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -2065,42 +2193,52 @@ exports[`Erc20TokenStreamDetails edge cases handles very large amounts 1`] = `
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-72"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-73"
-            class=""
-            data-original-title="1,461,501,637,330,902,918,203,684,832,716.283019655932542975"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              1,461,501,637,3...
+              <div
+                aria-describedby="tippy-tooltip-31"
+                class=""
+                data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  1,461,501,637,3...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -2121,42 +2259,52 @@ exports[`Erc20TokenStreamDetails edge cases handles very large amounts 1`] = `
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-74"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-75"
-            class=""
-            data-original-title="1,461,501,637,330,902,918,203,684,832,716.283019655932542975"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              1,461,501,637,3...
+              <div
+                aria-describedby="tippy-tooltip-32"
+                class=""
+                data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  1,461,501,637,3...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -2175,33 +2323,17 @@ exports[`Erc20TokenStreamDetails edge cases handles very large amounts 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Stream start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-76"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -2220,31 +2352,15 @@ exports[`Erc20TokenStreamDetails edge cases handles very large amounts 1`] = `
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-77"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
@@ -2268,42 +2384,52 @@ exports[`Erc20TokenStreamDetails edge cases handles very large amounts 1`] = `
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-78"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-79"
-            class=""
-            data-original-title="1,461,501,637,330,902,918,203,684,832,716.283019655932542975"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              1,461,501,637,3...
+              <div
+                aria-describedby="tippy-tooltip-33"
+                class=""
+                data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  1,461,501,637,3...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>
@@ -2324,42 +2450,52 @@ exports[`Erc20TokenStreamDetails edge cases handles very large amounts 1`] = `
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-80"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex flex-row"
       >
         <div
-          style="min-width: 0;"
+          class="mr-1"
         >
           <div
-            aria-describedby="tippy-tooltip-81"
-            class=""
-            data-original-title="126,273,741,465,390,012,132,798,369,546,686,852.89827257171304"
-            data-tooltipped=""
-            style="display: inline;"
-            tabindex="0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-              style="white-space: pre-wrap;"
+            <div
+              style="min-width: 0;"
             >
-              126,273,741,465...
+              <div
+                aria-describedby="tippy-tooltip-34"
+                class=""
+                data-original-title="126,273,741,465,390,012,132,798,369,546,686,852,898,272,571,713,040,000"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  126,273,741,465...
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
             </p>
           </div>
         </div>

@@ -1,14 +1,23 @@
-import { NativeTokenStreamPermission } from '@metamask/gator-permissions-controller';
-import React from 'react';
-
 import { BigNumber } from 'bignumber.js';
+import { NativeTokenStreamPermission } from '@metamask/gator-permissions-controller';
+import type { Hex } from '@metamask/utils';
+import React from 'react';
+import { DefaultRootState, useSelector } from 'react-redux';
+
 import { DAY } from '../../../../../../../../shared/constants/time';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowDate,
-} from '../../../../../../../components/app/confirm/info/row';
-import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
+import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row';
+import { getNativeTokenInfo } from '../../../../../../../selectors';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { NativeAmountRow } from './native-amount-row';
+import { DateAndTimeRow } from './date-and-time-row';
+
+type NativeTokenInfo = {
+  symbol: string;
+  decimals: number;
+  name: string;
+};
 
 /**
  * Component for displaying native token stream permission details.
@@ -17,69 +26,82 @@ import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/conf
  * @param props - The component props
  * @param props.permission - The native token stream permission data
  * @param props.expiry - The expiration timestamp (null if no expiry)
+ * @param props.chainId - The chain ID for which the permission is being granted.
  * @returns JSX element containing the native token stream permission details
  */
 export const NativeTokenStreamDetails: React.FC<{
   permission: NativeTokenStreamPermission;
+  chainId: Hex;
   expiry: number | null;
-}> = ({ permission, expiry }) => {
+}> = ({ permission, expiry, chainId }) => {
+  const t = useI18nContext();
+
   if (!permission.data.startTime) {
     throw new Error('Start time is required');
   }
   const { initialAmount, maxAmount, amountPerSecond, startTime } =
     permission.data;
 
-  const amountPerSecondBn = new BigNumber(amountPerSecond);
-  const amountPerDay = amountPerSecondBn.mul(DAY / 1000); // DAY is in milliseconds
+  // DAY is in milliseconds, so we divide by 1000 to get seconds
+  const amountPerDay = new BigNumber(amountPerSecond).mul(DAY / 1000);
+
+  const { symbol, decimals } = useSelector<DefaultRootState, NativeTokenInfo>(
+    (state) => getNativeTokenInfo(state, chainId) as NativeTokenInfo,
+  );
+
+  const tokenImageUrl = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
 
   return (
     <>
       <ConfirmInfoSection data-testid="native-token-stream-details-section">
         {initialAmount && (
-          <ConfirmInfoRow
-            label="Initial allowance"
-            tooltip="The initial allowance of the permission"
-          >
-            <ConfirmInfoRowCurrency value={initialAmount} />
-          </ConfirmInfoRow>
+          <NativeAmountRow
+            label={t('confirmFieldInitialAllowance')}
+            value={initialAmount}
+            symbol={symbol}
+            decimals={decimals}
+            imageUrl={tokenImageUrl}
+          />
         )}
-
         {maxAmount && (
-          <ConfirmInfoRow
-            label="Max allowance"
-            tooltip="The maximum allowance of the permission"
-          >
-            <ConfirmInfoRowCurrency value={maxAmount} />
-          </ConfirmInfoRow>
+          <NativeAmountRow
+            label={t('confirmFieldMaxAllowance')}
+            value={maxAmount}
+            symbol={symbol}
+            decimals={decimals}
+            imageUrl={tokenImageUrl}
+          />
         )}
 
-        <ConfirmInfoRow label="Start" tooltip="The start date of the stream">
-          <ConfirmInfoRowDate unixTimestamp={startTime} />
-        </ConfirmInfoRow>
+        <ConfirmInfoRowDivider />
 
+        <DateAndTimeRow
+          timestamp={startTime}
+          label={t('confirmFieldStartDate')}
+        />
         {expiry && (
-          <ConfirmInfoRow
-            label="Expiration"
-            tooltip="The expiration date of the permission"
-          >
-            <ConfirmInfoRowDate unixTimestamp={expiry} />
-          </ConfirmInfoRow>
+          <DateAndTimeRow
+            timestamp={expiry}
+            label={t('confirmFieldExpiration')}
+          />
         )}
       </ConfirmInfoSection>
 
       <ConfirmInfoSection data-testid="native-token-stream-stream-rate-section">
-        <ConfirmInfoRow
-          label="Stream rate"
-          tooltip="The stream rate of the permission"
-        >
-          <ConfirmInfoRowCurrency value={amountPerSecond} />
-        </ConfirmInfoRow>
-        <ConfirmInfoRow
-          label="Available per day"
-          tooltip="The available amount per day"
-        >
-          <ConfirmInfoRowCurrency value={amountPerDay.toString(16)} />
-        </ConfirmInfoRow>
+        <NativeAmountRow
+          label={t('confirmFieldStreamRate')}
+          value={amountPerSecond}
+          symbol={symbol}
+          decimals={decimals}
+          imageUrl={tokenImageUrl}
+        />
+        <NativeAmountRow
+          label={t('confirmFieldAvailablePerDay')}
+          value={amountPerDay}
+          symbol={symbol}
+          decimals={decimals}
+          imageUrl={tokenImageUrl}
+        />
       </ConfirmInfoSection>
     </>
   );

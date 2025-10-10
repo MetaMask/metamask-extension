@@ -1,13 +1,26 @@
+import { Text, TextVariant } from '@metamask/design-system-react';
 import { NativeTokenPeriodicPermission } from '@metamask/gator-permissions-controller';
+import type { Hex } from '@metamask/utils';
 import React from 'react';
 
+import { DefaultRootState, useSelector } from 'react-redux';
 import {
   ConfirmInfoRow,
-  ConfirmInfoRowDate,
+  ConfirmInfoRowDivider,
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
+import { getNativeTokenInfo } from '../../../../../../../selectors';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { formatPeriodDuration } from './typed-sign-permission-util';
+import { DateAndTimeRow } from './date-and-time-row';
+import { NativeAmountRow } from './native-amount-row';
+
+type NativeTokenInfo = {
+  symbol: string;
+  decimals: number;
+  name: string;
+};
 
 /**
  * Component for displaying native token periodic permission details.
@@ -16,53 +29,57 @@ import { formatPeriodDuration } from './typed-sign-permission-util';
  * @param props - The component props
  * @param props.permission - The native token periodic permission data
  * @param props.expiry - The expiration timestamp (null if no expiry)
+ * @param props.chainId - The chain ID for which the permission is being granted.
  * @returns JSX element containing the native token periodic permission details
  */
 export const NativeTokenPeriodicDetails: React.FC<{
   permission: NativeTokenPeriodicPermission;
   expiry: number | null;
-}> = ({ permission, expiry }) => {
+  chainId: Hex;
+}> = ({ permission, expiry, chainId }) => {
+  const t = useI18nContext();
+
   if (!permission.data.startTime) {
     throw new Error('Start time is required');
   }
 
   const { startTime, periodAmount, periodDuration } = permission.data;
 
+  const { symbol, decimals } = useSelector<DefaultRootState, NativeTokenInfo>(
+    (state) => getNativeTokenInfo(state, chainId) as NativeTokenInfo,
+  );
+
+  const tokenImageUrl = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
+
   return (
-    <>
-      <ConfirmInfoSection data-testid="native-token-periodic-details-section">
-        <ConfirmInfoRow
-          label="Allowance amount"
-          tooltip="The amount that can be spent per period"
-        >
-          <ConfirmInfoRowCurrency value={periodAmount} />
-        </ConfirmInfoRow>
+    <ConfirmInfoSection data-testid="native-token-periodic-details-section">
+      <NativeAmountRow
+        label={t('confirmFieldAllowance')}
+        value={periodAmount}
+        symbol={symbol}
+        decimals={decimals}
+        imageUrl={tokenImageUrl}
+      />
 
-        <ConfirmInfoRow
-          label="Frequency"
-          tooltip="The frequency of the permission"
-        >
+      <ConfirmInfoRow label={t('confirmFieldFrequency')}>
+        <Text variant={TextVariant.BodyMd}>
           {formatPeriodDuration(periodDuration)}
-        </ConfirmInfoRow>
+        </Text>
+      </ConfirmInfoRow>
 
-        {startTime && (
-          <ConfirmInfoRow
-            label="Start"
-            tooltip="The start date of the permission"
-          >
-            <ConfirmInfoRowDate unixTimestamp={startTime} />
-          </ConfirmInfoRow>
-        )}
+      <ConfirmInfoRowDivider />
 
-        {expiry && (
-          <ConfirmInfoRow
-            label="Expiration"
-            tooltip="The expiration date of the permission"
-          >
-            <ConfirmInfoRowDate unixTimestamp={expiry} />
-          </ConfirmInfoRow>
-        )}
-      </ConfirmInfoSection>
-    </>
+      <DateAndTimeRow
+        timestamp={startTime}
+        label={t('confirmFieldStartDate')}
+      />
+
+      {expiry && (
+        <DateAndTimeRow
+          timestamp={expiry}
+          label={t('confirmFieldExpiration')}
+        />
+      )}
+    </ConfirmInfoSection>
   );
 };

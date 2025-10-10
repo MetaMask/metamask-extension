@@ -2,14 +2,14 @@ import { Erc20TokenStreamPermission } from '@metamask/gator-permissions-controll
 import React from 'react';
 
 import { BigNumber } from 'bignumber.js';
+import { Hex } from '@metamask/utils';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowDate,
-  ConfirmInfoRowTextTokenUnits,
-} from '../../../../../../../components/app/confirm/info/row';
-import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import { DAY } from '../../../../../../../../shared/constants/time';
+import { fetchErc20Decimals } from '../../../../../utils/token';
+import { useAsyncResult } from '../../../../../../../hooks/useAsync';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
+import { TokenAmountRow } from './token-amount-row';
+import { DateAndTimeRow } from './date-and-time-row';
 
 /**
  * Component for displaying ERC20 token stream permission details.
@@ -18,109 +18,81 @@ import { DAY } from '../../../../../../../../shared/constants/time';
  * @param props - The component props
  * @param props.permission - The ERC20 token stream permission data
  * @param props.expiry - The expiration timestamp (null if no expiry)
- * @param props.decimals
+ * @param props.chainId - The chain ID for which the permission is being granted.
  * @returns JSX element containing the ERC20 token stream permission details
  */
 export const Erc20TokenStreamDetails: React.FC<{
   permission: Erc20TokenStreamPermission;
-  decimals: number | undefined;
+  chainId: Hex;
   expiry: number | null;
-}> = ({ permission, expiry, decimals }) => {
-  const initialAmount =
-    permission.data.initialAmount &&
-    new BigNumber(permission.data.initialAmount);
+}> = ({ permission, expiry, chainId }) => {
+  const t = useI18nContext();
 
-  const maxAmount =
-    permission.data.maxAmount && new BigNumber(permission.data.maxAmount);
+  const { initialAmount, maxAmount, amountPerSecond, startTime } =
+    permission.data;
 
-  const amountPerSecond = new BigNumber(permission.data.amountPerSecond);
-  const amountPerDay = amountPerSecond.mul(DAY / 1000); // DAY is in milliseconds
-
-  if (!permission.data.startTime) {
+  if (!startTime) {
     throw new Error('Start time is required');
   }
 
-  const { startTime } = permission.data;
+  const amountPerDay = new BigNumber(amountPerSecond).mul(DAY / 1000); // DAY is in milliseconds
+
+  const metadataResult = useAsyncResult(() =>
+    fetchErc20Decimals(permission.data.tokenAddress, chainId),
+  );
+
+  const decimals = metadataResult.value;
 
   return (
     <>
       <ConfirmInfoSection data-testid="erc20-token-stream-details-section">
         {initialAmount && (
-          <ConfirmInfoRow
-            label="Initial allowance"
-            tooltip="The initial allowance of the permission"
-          >
-            {decimals === undefined ? (
-              <Skeleton width="50%" height={20} />
-            ) : (
-              <ConfirmInfoRowTextTokenUnits
-                value={initialAmount as BigNumber}
-                decimals={decimals}
-              />
-            )}
-          </ConfirmInfoRow>
+          <TokenAmountRow
+            label={t('confirmFieldInitialAllowance')}
+            value={initialAmount}
+            decimals={decimals}
+            tokenAddress={permission.data.tokenAddress}
+            chainId={chainId}
+          />
         )}
 
         {maxAmount && (
-          <ConfirmInfoRow
-            label="Max allowance"
-            tooltip="The maximum allowance of the permission"
-          >
-            {decimals === undefined ? (
-              <Skeleton width="50%" height={20} />
-            ) : (
-              <ConfirmInfoRowTextTokenUnits
-                value={maxAmount as BigNumber}
-                decimals={decimals}
-              />
-            )}
-          </ConfirmInfoRow>
+          <TokenAmountRow
+            label={t('confirmFieldMaxAllowance')}
+            value={maxAmount}
+            decimals={decimals}
+            tokenAddress={permission.data.tokenAddress}
+            chainId={chainId}
+          />
         )}
 
-        <ConfirmInfoRow
-          label="Stream start"
-          tooltip="The start date of the stream"
-        >
-          <ConfirmInfoRowDate unixTimestamp={startTime} />
-        </ConfirmInfoRow>
-
+        <DateAndTimeRow
+          timestamp={startTime}
+          label={t('confirmFieldStartDate')}
+        />
         {expiry && (
-          <ConfirmInfoRow
-            label="Expiration"
-            tooltip="The expiration date of the permission"
-          >
-            <ConfirmInfoRowDate unixTimestamp={expiry} />
-          </ConfirmInfoRow>
+          <DateAndTimeRow
+            timestamp={expiry}
+            label={t('confirmFieldExpiration')}
+          />
         )}
       </ConfirmInfoSection>
 
       <ConfirmInfoSection data-testid="erc20-token-stream-stream-rate-section">
-        <ConfirmInfoRow
-          label="Stream rate"
-          tooltip="The stream rate of the permission"
-        >
-          {decimals === undefined ? (
-            <Skeleton width="50%" height={20} />
-          ) : (
-            <ConfirmInfoRowTextTokenUnits
-              value={amountPerSecond}
-              decimals={decimals}
-            />
-          )}
-        </ConfirmInfoRow>
-        <ConfirmInfoRow
-          label="Available per day"
-          tooltip="The available amount per day"
-        >
-          {decimals === undefined ? (
-            <Skeleton width="50%" height={20} />
-          ) : (
-            <ConfirmInfoRowTextTokenUnits
-              value={amountPerDay}
-              decimals={decimals}
-            />
-          )}
-        </ConfirmInfoRow>
+        <TokenAmountRow
+          label={t('confirmFieldStreamRate')}
+          value={amountPerSecond}
+          decimals={decimals}
+          tokenAddress={permission.data.tokenAddress}
+          chainId={chainId}
+        />
+        <TokenAmountRow
+          label={t('confirmFieldAvailablePerDay')}
+          value={amountPerDay}
+          decimals={decimals}
+          tokenAddress={permission.data.tokenAddress}
+          chainId={chainId}
+        />
       </ConfirmInfoSection>
     </>
   );

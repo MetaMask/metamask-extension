@@ -1,15 +1,19 @@
-import { Erc20TokenPeriodicPermission } from '@metamask/gator-permissions-controller';
 import React from 'react';
 
-import { BigNumber } from 'bignumber.js';
-import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { Hex } from '@metamask/utils';
+import { Erc20TokenPeriodicPermission } from '@metamask/gator-permissions-controller';
+import { Text, TextVariant } from '@metamask/design-system-react';
 import {
   ConfirmInfoRow,
-  ConfirmInfoRowDate,
-  ConfirmInfoRowTextTokenUnits,
+  ConfirmInfoRowDivider,
 } from '../../../../../../../components/app/confirm/info/row';
-import { Skeleton } from '../../../../../../../components/component-library/skeleton';
+import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { useAsyncResult } from '../../../../../../../hooks/useAsync';
+import { fetchErc20Decimals } from '../../../../../utils/token';
+import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { formatPeriodDuration } from './typed-sign-permission-util';
+import { TokenAmountRow } from './token-amount-row';
+import { DateAndTimeRow } from './date-and-time-row';
 
 /**
  * Component for displaying ERC20 token periodic permission details.
@@ -18,61 +22,56 @@ import { formatPeriodDuration } from './typed-sign-permission-util';
  * @param props - The component props
  * @param props.permission - The ERC20 token periodic permission data
  * @param props.expiry - The expiration timestamp (null if no expiry)
- * @param props.decimals
+ * @param props.chainId - The chain ID for which the permission is being granted.
  * @returns JSX element containing the ERC20 token periodic permission details
  */
 export const Erc20TokenPeriodicDetails: React.FC<{
   permission: Erc20TokenPeriodicPermission;
+  chainId: Hex;
   expiry: number | null;
-  decimals: number | undefined;
-}> = ({ permission, expiry, decimals }) => {
-  const periodAmountBn = new BigNumber(permission.data.periodAmount);
+}> = ({ permission, expiry, chainId }) => {
+  const t = useI18nContext();
 
-  const { periodDuration, startTime } = permission.data;
-
-  if (!startTime) {
+  if (!permission.data.startTime) {
     throw new Error('Start time is required');
   }
 
+  const { periodAmount, periodDuration, startTime } = permission.data;
+
+  const metadataResult = useAsyncResult(() =>
+    fetchErc20Decimals(permission.data.tokenAddress, chainId),
+  );
+
+  const decimals = metadataResult.value;
+
   return (
     <ConfirmInfoSection data-testid="erc20-token-periodic-details-section">
-      <ConfirmInfoRow
-        label="Allowance amount"
-        tooltip="The amount that can be spent per period"
-      >
-        {decimals === undefined ? (
-          <Skeleton width="50%" height={20} />
-        ) : (
-          <ConfirmInfoRowTextTokenUnits
-            value={periodAmountBn}
-            decimals={decimals}
-          />
-        )}
+      <TokenAmountRow
+        label={t('confirmFieldAllowance')}
+        tokenAddress={permission.data.tokenAddress}
+        value={periodAmount}
+        decimals={decimals}
+        chainId={chainId}
+      />
+
+      <ConfirmInfoRow label={t('confirmFieldFrequency')}>
+        <Text variant={TextVariant.BodyMd}>
+          {formatPeriodDuration(periodDuration)}
+        </Text>
       </ConfirmInfoRow>
 
-      <ConfirmInfoRow
-        label="Frequency"
-        tooltip="The frequency of the permission"
-      >
-        {formatPeriodDuration(periodDuration)}
-      </ConfirmInfoRow>
+      <ConfirmInfoRowDivider />
 
-      {startTime && (
-        <ConfirmInfoRow
-          label="Start"
-          tooltip="The start date of the permission"
-        >
-          <ConfirmInfoRowDate unixTimestamp={startTime} />
-        </ConfirmInfoRow>
-      )}
+      <DateAndTimeRow
+        timestamp={startTime}
+        label={t('confirmFieldStartDate')}
+      />
 
       {expiry && (
-        <ConfirmInfoRow
-          label="Expiration"
-          tooltip="The expiration date of the permission"
-        >
-          <ConfirmInfoRowDate unixTimestamp={expiry} />
-        </ConfirmInfoRow>
+        <DateAndTimeRow
+          timestamp={expiry}
+          label={t('confirmFieldExpiration')}
+        />
       )}
     </ConfirmInfoSection>
   );

@@ -196,6 +196,10 @@ const getDescription = (
 
         return t('confirmTitleDescPermitSignature');
       }
+      if ((confirmation as SignatureRequestType).decodedPermission) {
+        return t('confirmTitleDescPermission');
+      }
+
       return t('confirmTitleDescSign');
     case TransactionType.tokenMethodApprove:
       if (isNFT) {
