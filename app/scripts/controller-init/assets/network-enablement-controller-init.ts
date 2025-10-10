@@ -4,7 +4,13 @@ import {
 } from '@metamask/network-enablement-controller';
 import { NetworkState } from '@metamask/network-controller';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
-import { KnownCaipNamespace } from '@metamask/utils';
+import {
+  CaipChainId,
+  CaipNamespace,
+  Hex,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   SolScope,
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -28,12 +34,14 @@ import {
 const generateEVMNetworkMap = (
   networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'],
   enabledChainIds: string[],
-): Record<string, boolean> => {
-  const networkMap: Record<string, boolean> = {};
+): Record<KnownCaipNamespace.Eip155, Record<Hex, boolean>> => {
+  const networkMap: Record<KnownCaipNamespace.Eip155, Record<Hex, boolean>> = {
+    [KnownCaipNamespace.Eip155]: {},
+  };
 
-  // Add all available EVM networks from NetworkController with default disabled status
-  Object.keys(networkConfigurationsByChainId).forEach((chainId) => {
-    networkMap[chainId] = enabledChainIds.includes(chainId);
+  (Object.keys(networkConfigurationsByChainId) as Hex[]).forEach((chainId) => {
+    networkMap[KnownCaipNamespace.Eip155][chainId] =
+      enabledChainIds.includes(chainId);
   });
 
   return networkMap;
@@ -49,22 +57,16 @@ const generateEVMNetworkMap = (
 const generateMultichainNetworkMaps = (
   multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'],
   enabledNetworks: string[] = [],
-): Record<string, Record<string, boolean>> => {
-  const networkMaps: Record<string, Record<string, boolean>> = {
-    [KnownCaipNamespace.Solana]: {},
-    [KnownCaipNamespace.Bip122]: {},
-  };
+): Record<CaipNamespace, Record<CaipChainId, boolean>> => {
+  const networkMaps: Record<CaipNamespace, Record<CaipChainId, boolean>> = {};
 
-  // Organize multichain networks by their prefix/type
-  Object.keys(multichainNetworkConfigurationsByChainId).forEach((chainId) => {
+  (
+    Object.keys(multichainNetworkConfigurationsByChainId) as CaipChainId[]
+  ).forEach((chainId) => {
     const isEnabled = enabledNetworks.includes(chainId);
+    const { namespace } = parseCaipChainId(chainId);
 
-    if (chainId.startsWith(`${KnownCaipNamespace.Solana}:`)) {
-      networkMaps[KnownCaipNamespace.Solana][chainId] = isEnabled;
-    } else if (chainId.startsWith(`${KnownCaipNamespace.Bip122}:`)) {
-      networkMaps[KnownCaipNamespace.Bip122][chainId] = isEnabled;
-    }
-    // Add other network types as needed
+    (networkMaps[namespace] ??= {})[chainId] = isEnabled;
   });
 
   return networkMaps;
@@ -81,10 +83,9 @@ const generateDefaultNetworkEnablementControllerState = (
   if (process.env.IN_TEST) {
     return {
       enabledNetworkMap: {
-        [KnownCaipNamespace.Eip155]: generateEVMNetworkMap(
-          networkConfigurationsByChainId,
-          [CHAIN_IDS.LOCALHOST],
-        ),
+        ...generateEVMNetworkMap(networkConfigurationsByChainId, [
+          CHAIN_IDS.LOCALHOST,
+        ]),
         ...generateMultichainNetworkMaps(
           multichainNetworkConfigurationsByChainId,
           [],
@@ -97,10 +98,9 @@ const generateDefaultNetworkEnablementControllerState = (
   ) {
     return {
       enabledNetworkMap: {
-        [KnownCaipNamespace.Eip155]: generateEVMNetworkMap(
-          networkConfigurationsByChainId,
-          [CHAIN_IDS.SEPOLIA],
-        ),
+        ...generateEVMNetworkMap(networkConfigurationsByChainId, [
+          CHAIN_IDS.SEPOLIA,
+        ]),
         ...generateMultichainNetworkMaps(
           multichainNetworkConfigurationsByChainId,
           [],
@@ -117,7 +117,7 @@ const generateDefaultNetworkEnablementControllerState = (
 
   return {
     enabledNetworkMap: {
-      [KnownCaipNamespace.Eip155]: generateEVMNetworkMap(
+      ...generateEVMNetworkMap(
         networkConfigurationsByChainId,
         FEATURED_NETWORK_CHAIN_IDS,
       ),
