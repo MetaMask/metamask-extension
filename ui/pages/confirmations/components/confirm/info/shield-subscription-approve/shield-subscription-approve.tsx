@@ -36,17 +36,21 @@ const ShieldSubscriptionApproveInfo = () => {
     .div(10 ** (decimals ?? 0))
     .toFixed();
 
-  const { productPrice } = useShieldSubscriptionPricingFromTokenApproval({
-    transactionMeta,
-    decodedApprovalAmount,
-  });
+  const { productPrice, pending: productPricePending } =
+    useShieldSubscriptionPricingFromTokenApproval({
+      transactionMeta,
+      decodedApprovalAmount,
+    });
 
   const { trialedProducts, loading: subscriptionsLoading } =
     useUserSubscriptions();
   const isTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
 
   const isLoading =
-    subscriptionsLoading || decodeResponse?.pending || !decimals;
+    subscriptionsLoading ||
+    decodeResponse?.pending ||
+    !decimals ||
+    productPricePending;
   if (isLoading) {
     return <ShieldSubscriptionApproveLoader />;
   }
