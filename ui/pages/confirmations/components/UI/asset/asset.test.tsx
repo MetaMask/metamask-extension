@@ -65,7 +65,7 @@ describe('TokenAsset', () => {
   it('renders token asset with correct information', () => {
     const { getByText, getByTestId } = render(<Asset asset={mockTokenAsset} />);
 
-    expect(getByTestId('token-asset')).toBeInTheDocument();
+    expect(getByTestId('token-asset-0x1-TEST')).toBeInTheDocument();
     expect(getByText('Test Token')).toBeInTheDocument();
     expect(getByText('TEST')).toBeInTheDocument();
     expect(getByText('$100.00')).toBeInTheDocument();
@@ -78,7 +78,7 @@ describe('TokenAsset', () => {
       <Asset asset={mockTokenAsset} onClick={mockOnClick} />,
     );
 
-    fireEvent.click(getByTestId('token-asset'));
+    fireEvent.click(getByTestId('token-asset-0x1-TEST'));
     expect(mockOnClick).toHaveBeenCalled();
   });
 
@@ -87,7 +87,7 @@ describe('TokenAsset', () => {
       <Asset asset={mockTokenAsset} isSelected={true} />,
     );
 
-    const tokenAsset = getByTestId('token-asset');
+    const tokenAsset = getByTestId('token-asset-0x1-TEST');
     expect(tokenAsset).toHaveStyle(
       'background-color: var(--color-background-hover)',
     );
@@ -99,7 +99,7 @@ describe('TokenAsset', () => {
       <Asset asset={assetWithoutChainId} />,
     );
 
-    expect(getByTestId('token-asset')).toBeInTheDocument();
+    expect(getByTestId('token-asset-undefined-TEST')).toBeInTheDocument();
     expect(queryByRole('img', { name: 'Ethereum' })).not.toBeInTheDocument();
   });
 });
