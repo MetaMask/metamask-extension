@@ -1008,7 +1008,7 @@ function Home() {
   };
 
   if (forgottenPassword) {
-    return <Navigate to={{ pathname: RESTORE_VAULT_ROUTE }} replace />;
+    return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
   } else if (notificationClosing || redirecting) {
     return null;
   }

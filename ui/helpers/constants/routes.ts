@@ -1,5 +1,5 @@
 import { memoize } from 'lodash';
-import { matchPath } from 'react-router-dom-v5-compat';
+import { safeMatchPath } from '../../utils/safeRouteMatching';
 
 type AppRoute = {
   path: string;
@@ -803,7 +803,7 @@ export function matchMultiplePaths(
   options: { exact?: boolean; strict?: boolean } = {},
 ) {
   for (const path of paths) {
-    const match = matchPath(
+    const match = safeMatchPath(
       {
         path,
         end: options.exact,

@@ -1,4 +1,3 @@
-import { matchPath } from 'react-router-dom-v5-compat';
 import { safeMatchPath } from '../../utils/safeRouteMatching';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -86,7 +85,7 @@ function onConfirmPage(props) {
   const { location } = props;
   const pathname = getSafePathname(location);
   return Boolean(
-    matchPath({ path: CONFIRM_TRANSACTION_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: CONFIRM_TRANSACTION_ROUTE, end: false }, pathname),
   );
 }
 
@@ -120,7 +119,7 @@ export function hideAppHeader(props) {
   const pathname = getSafePathname(location);
 
   const isNotificationsPage = Boolean(
-    matchPath({ path: NOTIFICATIONS_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: NOTIFICATIONS_ROUTE, end: false }, pathname),
   );
 
   if (isNotificationsPage) {
@@ -128,7 +127,7 @@ export function hideAppHeader(props) {
   }
 
   const isDeepLinksPage = Boolean(
-    matchPath({ path: DEEP_LINK_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: DEEP_LINK_ROUTE, end: false }, pathname),
   );
 
   if (isDeepLinksPage) {
@@ -136,7 +135,7 @@ export function hideAppHeader(props) {
   }
 
   const isInitializing = Boolean(
-    matchPath({ path: `${ONBOARDING_ROUTE}/*` }, pathname),
+    safeMatchPath({ path: `${ONBOARDING_ROUTE}/*` }, pathname),
   );
 
   if (isInitializing) {
@@ -150,7 +149,7 @@ export function hideAppHeader(props) {
   }
 
   const isPermissionsPage = Boolean(
-    matchPath({ path: PERMISSIONS, end: false }, pathname),
+    safeMatchPath({ path: PERMISSIONS, end: false }, pathname),
   );
 
   if (isPermissionsPage) {
@@ -158,7 +157,7 @@ export function hideAppHeader(props) {
   }
 
   const isConnectionsPage = Boolean(
-    matchPath({ path: CONNECTIONS, end: false }, pathname),
+    safeMatchPath({ path: CONNECTIONS, end: false }, pathname),
   );
 
   if (isConnectionsPage) {
@@ -166,7 +165,7 @@ export function hideAppHeader(props) {
   }
 
   const isReviewPermissionsPgae = Boolean(
-    matchPath({ path: REVIEW_PERMISSIONS, end: false }, pathname),
+    safeMatchPath({ path: REVIEW_PERMISSIONS, end: false }, pathname),
   );
 
   if (isReviewPermissionsPgae) {
@@ -178,18 +177,18 @@ export function hideAppHeader(props) {
   }
 
   const isHandlingPermissionsRequest = Boolean(
-    matchPath({ path: CONNECT_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: CONNECT_ROUTE, end: false }, pathname),
   );
 
   const isMultichainSend = Boolean(
-    matchPath({ path: SEND_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: SEND_ROUTE, end: false }, pathname),
   );
   if (isMultichainSend) {
     return true;
   }
 
   const isStateTwoMultichainAccountDetailsPage = Boolean(
-    matchPath(
+    safeMatchPath(
       { path: MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE, end: false },
       pathname,
     ),
@@ -199,7 +198,7 @@ export function hideAppHeader(props) {
   }
 
   const isStateTwoMultichainWalletDetailsPage = Boolean(
-    matchPath(
+    safeMatchPath(
       { path: MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE, end: false },
       pathname,
     ),
@@ -209,28 +208,28 @@ export function hideAppHeader(props) {
   }
 
   const isWalletDetailsPage = Boolean(
-    matchPath({ path: WALLET_DETAILS_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: WALLET_DETAILS_ROUTE, end: false }, pathname),
   );
   if (isWalletDetailsPage) {
     return true;
   }
 
   const isSnapsHome = Boolean(
-    matchPath({ path: SNAPS_VIEW_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: SNAPS_VIEW_ROUTE, end: false }, pathname),
   );
   if (isSnapsHome) {
     return true;
   }
 
   const isCrossChainSwapsPage = Boolean(
-    matchPath({ path: CROSS_CHAIN_SWAP_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: CROSS_CHAIN_SWAP_ROUTE, end: false }, pathname),
   );
   if (isCrossChainSwapsPage) {
     return true;
   }
 
   const isAssetsPage = Boolean(
-    matchPath({ path: ASSET_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: ASSET_ROUTE, end: false }, pathname),
   );
 
   if (isAssetsPage) {
@@ -238,7 +237,7 @@ export function hideAppHeader(props) {
   }
 
   const isMultichainAccountDetailsPage = Boolean(
-    matchPath({ path: ACCOUNT_DETAILS_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: ACCOUNT_DETAILS_ROUTE, end: false }, pathname),
   );
 
   if (isMultichainAccountDetailsPage) {
@@ -246,7 +245,7 @@ export function hideAppHeader(props) {
   }
 
   const isMultichainAccountDetailsQRCodePage = Boolean(
-    matchPath({ path: ACCOUNT_DETAILS_QR_CODE_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: ACCOUNT_DETAILS_QR_CODE_ROUTE, end: false }, pathname),
   );
 
   if (isMultichainAccountDetailsQRCodePage) {
@@ -254,15 +253,15 @@ export function hideAppHeader(props) {
   }
 
   const isHandlingAddEthereumChainRequest = Boolean(
-    matchPath({ path: CONFIRMATION_V_NEXT_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: CONFIRMATION_V_NEXT_ROUTE, end: false }, pathname),
   );
 
   const isImportSrpPage = Boolean(
-    matchPath({ path: IMPORT_SRP_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: IMPORT_SRP_ROUTE, end: false }, pathname),
   );
 
   const isShieldPlanPage = Boolean(
-    matchPath({ path: SHIELD_PLAN_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: SHIELD_PLAN_ROUTE, end: false }, pathname),
   );
 
   if (isShieldPlanPage) {
@@ -270,7 +269,7 @@ export function hideAppHeader(props) {
   }
 
   const isGatorPermissionsPage = Boolean(
-    matchPath({ path: GATOR_PERMISSIONS, end: false }, pathname),
+    safeMatchPath({ path: GATOR_PERMISSIONS, end: false }, pathname),
   );
 
   if (isGatorPermissionsPage) {
@@ -278,7 +277,7 @@ export function hideAppHeader(props) {
   }
 
   const isGatorPermissionsTokenTransferPage = Boolean(
-    matchPath({ path: TOKEN_TRANSFER_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: TOKEN_TRANSFER_ROUTE, end: false }, pathname),
   );
 
   if (isGatorPermissionsTokenTransferPage) {
@@ -286,7 +285,7 @@ export function hideAppHeader(props) {
   }
 
   const isReviewGatorPermissionsPage = Boolean(
-    matchPath({ path: REVIEW_GATOR_PERMISSIONS_ROUTE, end: false }, pathname),
+    safeMatchPath({ path: REVIEW_GATOR_PERMISSIONS_ROUTE, end: false }, pathname),
   );
 
   if (isReviewGatorPermissionsPage) {
@@ -305,7 +304,7 @@ export function showAppHeader(props) {
   const { location } = props;
   const pathname = getSafePathname(location);
   return Boolean(
-    matchPath(
+    safeMatchPath(
       {
         path: DEFAULT_ROUTE,
         exact: true,

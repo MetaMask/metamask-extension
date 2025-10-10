@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { matchPath } from 'react-router-dom-v5-compat';
+import { safeMatchPath } from '../../../utils/safeRouteMatching';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -63,7 +63,7 @@ export const AppHeader = ({ location }) => {
     SEND_STAGES.ADD_RECIPIENT,
   ].includes(sendStage);
   const isConfirmationPage = Boolean(
-    matchPath(
+    safeMatchPath(
       {
         path: CONFIRM_TRANSACTION_ROUTE,
         end: false,
@@ -72,7 +72,7 @@ export const AppHeader = ({ location }) => {
     ),
   );
   const isSwapsPage = Boolean(
-    matchPath({ path: SWAPS_ROUTE, end: false }, location.pathname),
+    safeMatchPath({ path: SWAPS_ROUTE, end: false }, location.pathname),
   );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);

@@ -82,7 +82,7 @@ const DeFiPage = () => {
   };
 
   if (!protocolPosition) {
-    return <Navigate to={{ pathname: DEFAULT_ROUTE }} />;
+    return <Navigate to={DEFAULT_ROUTE} />;
   }
 
   return (

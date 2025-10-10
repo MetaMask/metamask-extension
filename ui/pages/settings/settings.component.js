@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import {
   Routes as RouterRoutes,
   Route,
-  matchPath,
   Navigate,
 } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
+import { safeMatchPath } from '../../utils/safeRouteMatching';
 
 import {
   SETTINGS_ROUTE,
@@ -73,7 +73,7 @@ const NetworkRouteHandler = ({ onMount }) => {
     onMount();
   }, [onMount]);
 
-  return <Navigate to={{ pathname: DEFAULT_ROUTE }} />;
+  return <Navigate to={DEFAULT_ROUTE} />;
 };
 
 NetworkRouteHandler.propTypes = {
@@ -466,7 +466,7 @@ class SettingsPage extends PureComponent {
           ) {
             return true;
           }
-          return matchPath(key, currentPath);
+          return safeMatchPath({ path: key }, currentPath);
         }}
         onSelect={(key) =>
           navigate(key, {

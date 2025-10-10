@@ -215,18 +215,6 @@ export default function ReviewQuote({
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const quotes = useSelector(getQuotes, isEqual);
-
-  // Redirect immediately if no quotes or if awaiting
-  if (!Object.values(quotes).length) {
-    navigate(PREPARE_SWAP_ROUTE);
-    return null;
-  }
-
-  if (routeState === 'awaiting') {
-    navigate(AWAITING_SWAP_ROUTE);
-    return null;
-  }
-
   const quotesLastFetched = useSelector(getQuotesLastFetched);
   const prevQuotesLastFetched = usePrevious(quotesLastFetched);
 
@@ -1142,6 +1130,20 @@ export default function ReviewQuote({
     rawNetworkFees,
   });
   setIsEstimatedReturnLow(isEstimatedReturnLow);
+
+  // Redirect if no quotes or if awaiting
+  useEffect(() => {
+    if (!Object.values(quotes).length) {
+      navigate(PREPARE_SWAP_ROUTE);
+    } else if (routeState === 'awaiting') {
+      navigate(AWAITING_SWAP_ROUTE);
+    }
+  }, [navigate, quotes, routeState]);
+
+  // Return early if redirecting
+  if (!Object.values(quotes).length || routeState === 'awaiting') {
+    return null;
+  }
 
   return (
     <div className="review-quote">
