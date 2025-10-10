@@ -6,7 +6,9 @@ import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
+  getNotificationServicesPushControllerInitMessenger,
   getNotificationServicesPushControllerMessenger,
+  NotificationServicesPushControllerInitMessenger,
   type NotificationServicesPushControllerMessenger,
 } from '../messengers/notifications';
 import { NotificationServicesPushControllerInit } from './notification-services-push-controller-init';
@@ -14,7 +16,10 @@ import { NotificationServicesPushControllerInit } from './notification-services-
 jest.mock('@metamask/notification-services-controller/push-services');
 
 function buildInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<NotificationServicesPushControllerMessenger>
+  ControllerInitRequest<
+    NotificationServicesPushControllerMessenger,
+    NotificationServicesPushControllerInitMessenger
+  >
 > {
   const baseControllerMessenger = new Messenger();
 
@@ -23,7 +28,9 @@ function buildInitRequestMock(): jest.Mocked<
     controllerMessenger: getNotificationServicesPushControllerMessenger(
       baseControllerMessenger,
     ),
-    initMessenger: undefined,
+    initMessenger: getNotificationServicesPushControllerInitMessenger(
+      baseControllerMessenger,
+    ),
   };
 }
 
