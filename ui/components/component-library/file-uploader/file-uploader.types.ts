@@ -1,4 +1,4 @@
-import React from 'react';
+import PropTypes from 'prop-types';
 import { FileInputProps } from 'react-simple-file-input';
 import { BoxProps } from '@metamask/design-system-react';
 import { HelpTextProps } from '../help-text';
@@ -12,7 +12,7 @@ export type FileUploaderProps = Omit<Partial<BoxProps>, 'children' | 'ref'> & {
   /*
    * Label to be rendered above the FileUploader
    */
-  label?: string | React.ReactNode;
+  label?: string | PropTypes.ReactNodeLike;
   /*
    * Props to be passed to the Label component
    */
@@ -20,7 +20,7 @@ export type FileUploaderProps = Omit<Partial<BoxProps>, 'children' | 'ref'> & {
   /*
    * Help text to be rendered below the File uploader
    */
-  helpText?: string | React.ReactNode;
+  helpText?: string | PropTypes.ReactNodeLike;
   /*
    * Props to be passed to the HelpText component
    */
