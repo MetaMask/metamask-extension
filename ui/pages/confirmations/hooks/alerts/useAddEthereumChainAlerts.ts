@@ -7,6 +7,7 @@ import { DEPRECATED_NETWORKS } from '../../../../../shared/constants/network';
 import { AddEthereumChainContext } from '../../external/add-ethereum-chain/types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSafeChains } from '../../../settings/networks-tab/networks-form/use-safe-chains';
+import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 
 // Ported from templates/add-ethereum-chain.js
 export function useAddEthereumChainAlerts() {
@@ -26,75 +27,128 @@ export function useAddEthereumChainAlerts() {
   }, [safeChains, chainId]);
 
   useEffect(() => {
-    if (!pendingApproval || !matchedChain) {
+    if (!pendingApproval) {
       setAlerts([]);
       return;
     }
 
-    const { requestData } = pendingApproval;
-    const bypassMap = NETWORKS_BYPASSING_VALIDATION as Record<
-      string,
-      { name?: string; symbol?: string; rpcUrl?: string }
-    >;
-    const networkByPassingValidation =
-      bypassMap[requestData.chainId.toLowerCase()] || {};
+    const validate = async () => {
+      const nextAlerts: Alert[] = [];
+      const { requestData } = pendingApproval;
 
-    const nextAlerts: Alert[] = [];
+      // Only proceed with safe chains validation if we have a matched chain
+      if (!matchedChain) {
+        setAlerts(nextAlerts);
+        return;
+      }
 
-    if (
-      matchedChain.name?.toLowerCase() !==
-        requestData.chainName.toLowerCase() &&
-      networkByPassingValidation?.name?.toLowerCase() !==
-        requestData.chainName.toLowerCase()
-    ) {
+      const bypassMap = NETWORKS_BYPASSING_VALIDATION as Record<
+        string,
+        { name?: string; symbol?: string; rpcUrl?: string }
+      >;
+      const networkByPassingValidation =
+        bypassMap[requestData.chainId.toLowerCase()] || {};
+
+      // Default info alert
+      const chainName = matchedChain.name || requestData.chainName;
+      const title = t('allowAddRpc');
+
       nextAlerts.push({
-        key: 'mismatchedNetworkName',
-        message: t('mismatchedNetworkName'),
-        severity: Severity.Warning,
-        field: 'network',
-      });
-    }
-
-    if (
-      matchedChain.nativeCurrency?.symbol?.toLowerCase() !==
-        requestData.ticker?.toLowerCase() &&
-      networkByPassingValidation?.symbol?.toLowerCase() !==
-        requestData.ticker?.toLowerCase()
-    ) {
-      nextAlerts.push({
-        key: 'mismatchedNetworkSymbol',
-        message: t('mismatchedNetworkSymbol'),
-        severity: Severity.Warning,
-        field: 'network',
-      });
-    }
-
-    const { origin } = new URL(requestData.rpcUrl);
-
-    if (
-      !matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin) &&
-      !networkByPassingValidation?.rpcUrl?.includes(origin)
-    ) {
-      nextAlerts.push({
-        key: 'mismatchedRpcUrl',
-        message: t('mismatchedRpcUrl'),
-        severity: Severity.Warning,
+        key: 'allowAddRpc',
+        message: t('allowAddRpcDescription', [chainName]),
+        severity: Severity.Info,
         field: 'rpcUrl',
+        reason: title,
+        inlineAlertText: '',
       });
-    }
 
-    if (
-      (DEPRECATED_NETWORKS as unknown as string[]).includes(requestData.chainId)
-    ) {
-      nextAlerts.push({
-        key: 'deprecatedNetwork',
-        message: t('deprecatedNetwork'),
-        severity: Severity.Warning,
-        field: 'network',
-      });
-    }
+      if (
+        matchedChain.name?.toLowerCase() !==
+          requestData.chainName.toLowerCase() &&
+        networkByPassingValidation?.name?.toLowerCase() !==
+          requestData.chainName.toLowerCase()
+      ) {
+        nextAlerts.push({
+          key: 'mismatchedNetworkName',
+          message: t('mismatchedNetworkName'),
+          severity: Severity.Warning,
+          field: 'network',
+        });
+      }
 
-    setAlerts(nextAlerts);
+      if (
+        matchedChain.nativeCurrency?.symbol?.toLowerCase() !==
+          requestData.ticker?.toLowerCase() &&
+        networkByPassingValidation?.symbol?.toLowerCase() !==
+          requestData.ticker?.toLowerCase()
+      ) {
+        nextAlerts.push({
+          key: 'mismatchedNetworkSymbol',
+          message: t('mismatchedNetworkSymbol'),
+          severity: Severity.Warning,
+          field: 'network',
+        });
+      }
+
+      const { origin } = new URL(requestData.rpcUrl);
+
+      if (
+        !matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin) &&
+        !networkByPassingValidation?.rpcUrl?.includes(origin)
+      ) {
+        nextAlerts.push({
+          key: 'mismatchedRpcUrl',
+          message: t('mismatchedRpcUrl'),
+          severity: Severity.Warning,
+          field: 'rpcUrl',
+        });
+      }
+
+      if (
+        (DEPRECATED_NETWORKS as unknown as string[]).includes(
+          requestData.chainId,
+        )
+      ) {
+        nextAlerts.push({
+          key: 'deprecatedNetwork',
+          message: t('deprecatedNetwork'),
+          severity: Severity.Warning,
+          field: 'network',
+        });
+      }
+
+      try {
+        const endpointChainId = (await jsonRpcRequest(
+          requestData.rpcUrl,
+          'eth_chainId',
+        )) as string;
+
+        if (requestData.chainId !== endpointChainId) {
+          nextAlerts.push({
+            key: 'mismatchedRpcChainId',
+            message: t('mismatchedRpcChainId'),
+            severity: Severity.Warning,
+            field: 'network',
+          });
+        }
+      } catch (err) {
+        console.error(
+          `Request for method 'eth_chainId' on ${requestData.rpcUrl} failed`,
+          err,
+        );
+
+        nextAlerts.push({
+          key: 'errorWhileConnectingToRPC',
+          message: t('errorWhileConnectingToRPC'),
+          severity: Severity.Warning,
+          field: 'rpcUrl',
+        });
+      }
+
+      setAlerts(nextAlerts);
+    };
+
+    validate();
   }, [chainId, matchedChain, pendingApproval, t]);
 
   return alerts;

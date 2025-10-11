@@ -31,16 +31,13 @@ export const AddEthereumChain = () => {
     ? t('updateNetworkConfirmationTitle', [networkConfig.name])
     : t('addNetworkConfirmationTitle', [requestData.chainName]);
 
-  // TODO: Localize
-  const description = 'A site is suggesting additional network details.';
-
   return (
     <>
       <Box className="text-center mb-4 mt-8">
         <Text variant={TextVariant.HeadingLg} className="text-balance mb-2">
           {title}
         </Text>
-        <Text className="text-alternative">{description}</Text>
+        <Text className="text-alternative">{t('addNetworkDescription')}</Text>
       </Box>
 
       <ConfirmInfoSection>
