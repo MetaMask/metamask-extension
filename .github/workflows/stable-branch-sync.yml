@@ -12,6 +12,7 @@ jobs:
   get-next-version:
     name: Get next version vX.Y.Z
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       next-version: ${{ env.NEXT_SEMVER_VERSION }}
     steps:
