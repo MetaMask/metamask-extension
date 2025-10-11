@@ -282,9 +282,7 @@ type StateHooks = {
    * This is set in `app-init.js` to communicate why MetaMask installed or
    * updated. It is handled in `background.js`.
    */
-  onInstalledListener?: Promise<{
-    reason: chrome.runtime.InstalledDetails;
-  }>;
+  onInstalledListener?: Promise<chrome.runtime.InstalledDetails>;
 };
 
 export declare global {
