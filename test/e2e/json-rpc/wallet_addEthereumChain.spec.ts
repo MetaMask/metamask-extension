@@ -580,8 +580,7 @@ describe('Add Ethereum Chain', function () {
     });
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  describe.skip('There are pending confirmation in the old network', function () {
+  describe('There are pending confirmation in the old network', function () {
     it('alert user about pending confirmations', async function () {
       await withFixtures(
         {
@@ -650,21 +649,23 @@ describe('Add Ethereum Chain', function () {
             driver,
           );
           await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
-          await updateNetworkConfirmation.approveUpdateNetwork();
+          await updateNetworkConfirmation.approveUpdateNetworkAndWaitToClose();
+
+          // await updateNetworkConfirmation.approveUpdateNetwork();
           // const networkSwitchAlertModal = new NetworkSwitchAlertModal(driver);
           // await networkSwitchAlertModal.checkPageIsLoaded();
           // await networkSwitchAlertModal.clickShowPendingConfirmationButton();
 
           // user confirms add network confirmation
-          await confirmation.checkPageIsLoaded();
-          await confirmation.clickNextPage();
-          await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
-          await updateNetworkConfirmation.approveUpdateNetwork();
+          // await confirmation.checkPageIsLoaded();
+          // await confirmation.clickNextPage();
+          // await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
+          // await updateNetworkConfirmation.approveUpdateNetworkAndWaitToClose();
           // await networkSwitchAlertModal.checkPageIsLoaded();
           // await networkSwitchAlertModal.clickGotItButton();
 
-          // await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-          // await testDapp.checkPageIsLoaded();
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+          await testDapp.checkPageIsLoaded();
 
           const afterPermittedChains = await getPermittedChains(driver);
           assert.deepEqual(afterPermittedChains, ['0x539', '0x53a']);
