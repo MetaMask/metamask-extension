@@ -20,11 +20,6 @@ class StartOnboardingPage {
   private readonly termsOfUseAgreeButton =
     '[data-testid="terms-of-use-agree-button"]';
 
-  private readonly logInMessage = {
-    text: `Let's get started`,
-    tag: 'h2',
-  };
-
   private readonly createWalletButton =
     '[data-testid="onboarding-create-wallet"]';
 
@@ -86,7 +81,6 @@ class StartOnboardingPage {
   async checkLoginPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.logInMessage,
         this.createWalletButton,
         this.importWalletButton,
       ]);

@@ -33,9 +33,19 @@ export default function MetamaskWordMarkAnimation({
         // Set a timeout after state change to detect animation completion
         // Adjust this timeout to match your animation's actual duration
         animationTimeoutRef.current = setTimeout(() => {
-          setIsAnimationComplete(true);
+          if (!isAnimationComplete) {
+            setIsAnimationComplete(true);
+          }
         }, 2500); // Adjust this based on your animation duration (in milliseconds)
       }
+    },
+    onLoadError: () => {
+      // If animation fails to load (e.g., in E2E tests with network mocking),
+      // immediately show the buttons
+      console.warn(
+        'Rive animation failed to load, showing buttons immediately',
+      );
+      setIsAnimationComplete(true);
     },
   });
 
