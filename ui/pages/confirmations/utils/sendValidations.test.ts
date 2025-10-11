@@ -7,6 +7,7 @@ import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
 import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 import {
   findConfusablesInRecipient,
+  validateBtcAddress,
   validateEvmHexAddress,
   validateSolanaAddress,
 } from './sendValidations';
@@ -179,6 +180,15 @@ describe('SendValidations', () => {
 
       const invalidAddress = 'invalid-address';
       expect(validateSolanaAddress(invalidAddress)).toEqual({
+        error: 'invalidAddress',
+      });
+    });
+  });
+
+  describe('validateBtcAddress', () => {
+    it('returns error for invalid Bitcoin address', async () => {
+      const invalidAddress = 'invalid-address';
+      expect(validateBtcAddress(invalidAddress)).toEqual({
         error: 'invalidAddress',
       });
     });
