@@ -26,7 +26,6 @@ import {
   startOAuthLogin,
   setParticipateInMetaMetrics,
 } from '../../../store/actions';
-// import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -47,8 +46,8 @@ import {
 import WelcomeLogin from './welcome-login';
 import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
 import LoginErrorModal from './login-error-modal';
-import MetamaskWordMarkAnimation from './MetamaskWordMarkAnimation';
-import FoxAppearAnimation from './FoxAppearAnimation';
+import FoxAppearAnimation from './fox-appear-animation';
+import MetaMaskWordMarkAnimation from './metamask-wordmark-animation';
 
 export default function OnboardingWelcome() {
   const dispatch = useDispatch();
@@ -395,7 +394,7 @@ export default function OnboardingWelcome() {
       className="welcome-container"
     >
       {!isLoggingIn && (
-        <MetamaskWordMarkAnimation
+        <MetaMaskWordMarkAnimation
           setIsAnimationComplete={setIsAnimationComplete}
           isAnimationComplete={isAnimationComplete}
         />

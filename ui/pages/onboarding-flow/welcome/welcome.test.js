@@ -25,12 +25,12 @@ jest.mock('react-router-dom-v5-compat', () => {
   };
 });
 
-jest.mock('./FoxAppearAnimation', () => ({
+jest.mock('./fox-appear-animation', () => ({
   __esModule: true,
   default: () => <div data-testid="fox-appear-animation" />,
 }));
 
-jest.mock('./MetamaskWordMarkAnimation', () => ({
+jest.mock('./metamask-wordmark-animation', () => ({
   __esModule: true,
   default: ({ setIsAnimationComplete }) => {
     // Simulate animation completion immediately using setTimeout

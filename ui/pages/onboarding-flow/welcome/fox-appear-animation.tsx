@@ -1,12 +1,14 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useRive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
 import Spinner from '../../../components/ui/spinner';
 
-interface FoxAppearAnimationProps {
+type FoxAppearAnimationProps = {
   isLoader: boolean;
-}
+};
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function FoxAppearAnimation({
   isLoader = false,
 }: FoxAppearAnimationProps) {
