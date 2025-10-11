@@ -70,7 +70,7 @@ describe('Port Stream Chunking', function () {
         if (isFirefox) {
           // Firefox will never be chunked
           assert.strictEqual(
-            events.some((event) => event.category === 'Port Stream Chunked'),
+            events.some((event) => event.event === 'Port Stream Chunked'),
             false,
           );
         } else {
