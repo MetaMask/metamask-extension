@@ -164,7 +164,7 @@ async function addEthereumChainHandler(
 
         // If a featured RPC endpoint exists for this chain, include it and keep it as default
         const featured = FEATURED_RPCS.find((f) => f.chainId === chainId);
-        const featuredDefaultEndpoint = featured
+        const featuredEndpoint = featured
           ? featured.rpcEndpoints[featured.defaultRpcEndpointIndex]
           : undefined;
 
@@ -181,7 +181,7 @@ async function addEthereumChainHandler(
           name: chainName,
           nativeCurrency: ticker,
           rpcEndpoints: [
-            ...(featured ? featuredDefaultEndpoint : []),
+            ...(featured ? featuredEndpoint : []),
             {
               url: firstValidRPCUrl,
               name: chainName,
