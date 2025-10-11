@@ -181,7 +181,7 @@ async function addEthereumChainHandler(
           name: chainName,
           nativeCurrency: ticker,
           rpcEndpoints: [
-            ...(featured ? featuredEndpoint : []),
+            ...(featured ? [featuredEndpoint] : []),
             {
               url: firstValidRPCUrl,
               name: chainName,
@@ -196,17 +196,15 @@ async function addEthereumChainHandler(
   }
 
   const existingNetworkClientId =
-    existingNetwork?.rpcEndpoints[existingNetwork.defaultRpcEndpointIndex]
-      .networkClientId;
+    existingNetwork?.rpcEndpoints?.[existingNetwork.defaultRpcEndpointIndex]
+      ?.networkClientId;
 
   const updatedNetworkClientId =
-    updatedNetwork.rpcEndpoints[updatedNetwork.defaultRpcEndpointIndex]
-      .networkClientId;
+    updatedNetwork?.rpcEndpoints?.[updatedNetwork.defaultRpcEndpointIndex]
+      ?.networkClientId;
 
   // Determines the specific RPC endpoint to use
-  const networkClientId = existingNetwork
-    ? existingNetworkClientId
-    : updatedNetworkClientId;
+  const networkClientId = existingNetworkClientId ?? updatedNetworkClientId;
 
   return switchChain(res, end, chainId, networkClientId, {
     isAddFlow: true,

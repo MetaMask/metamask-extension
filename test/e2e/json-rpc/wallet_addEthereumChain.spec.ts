@@ -649,20 +649,7 @@ describe('Add Ethereum Chain', function () {
             driver,
           );
           await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
-          await updateNetworkConfirmation.approveUpdateNetworkAndWaitToClose();
-
-          // await updateNetworkConfirmation.approveUpdateNetwork();
-          // const networkSwitchAlertModal = new NetworkSwitchAlertModal(driver);
-          // await networkSwitchAlertModal.checkPageIsLoaded();
-          // await networkSwitchAlertModal.clickShowPendingConfirmationButton();
-
-          // user confirms add network confirmation
-          // await confirmation.checkPageIsLoaded();
-          // await confirmation.clickNextPage();
-          // await updateNetworkConfirmation.checkPageIsLoaded('Localhost 8546');
-          // await updateNetworkConfirmation.approveUpdateNetworkAndWaitToClose();
-          // await networkSwitchAlertModal.checkPageIsLoaded();
-          // await networkSwitchAlertModal.clickGotItButton();
+          await updateNetworkConfirmation.approveUpdateNetwork();
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           await testDapp.checkPageIsLoaded();

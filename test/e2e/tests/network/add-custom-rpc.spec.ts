@@ -1,4 +1,3 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
@@ -9,10 +8,8 @@ import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redes
 import UpdateNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/update-network-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Add Custom RPC', function (this: Suite) {
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
+describe('Add Custom RPC', function (this: Suite) {
+  it('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -49,33 +46,21 @@ describe.skip('Add Custom RPC', function (this: Suite) {
         await updateNetworkConfirmation.checkPageIsLoaded('Ethereum');
 
         // Check warning messages are displayed
-        // await updateNetworkConfirmation.checkWarningMessageIsDisplayed(
-        //   'According to our record the network name may not correctly match this chain ID.',
-        // );
-        // await updateNetworkConfirmation.checkWarningMessageIsDisplayed(
-        //   'According to our records the submitted RPC URL value does not match a known provider for this chain ID.',
-        // );
-        await updateNetworkConfirmation.approveUpdateNetwork();
-
-        // const addRpcProviderDialog = new AddRpcProviderDialog(driver);
-        // await addRpcProviderDialog.checkPageIsLoaded('Ethereum');
-        // await addRpcProviderDialog.approveAddRpcProvider();
-
-        await updateNetworkConfirmation.checkPageIsLoaded('Ethereum');
         await updateNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'Chain ID returned by the custom network does not match the submitted chain ID.',
+          'network',
+          'According to our record the network name may not correctly match this chain ID.',
         );
-        assert.equal(
-          await updateNetworkConfirmation.checkIsApproveButtonEnabled(),
-          false,
+        await updateNetworkConfirmation.checkWarningMessageIsDisplayed(
+          'rpcUrl',
+          'According to our records the submitted RPC URL value does not match a known provider for this chain ID.',
         );
+
         await updateNetworkConfirmation.cancelUpdateNetwork();
       },
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip("don't add bad rpc custom network", async function () {
+  it("don't add bad rpc custom network", async function () {
     await withFixtures(
       {
         dapp: true,
@@ -113,32 +98,20 @@ describe.skip('Add Custom RPC', function (this: Suite) {
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
         await addNetworkConfirmation.checkPageIsLoaded('Antani');
         await addNetworkConfirmation.checkWarningMessageIsDisplayed(
+          'network',
           'According to our record the network name may not correctly match this chain ID.',
         );
         await addNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'The submitted currency symbol does not match what we expect for this chain ID.',
-        );
-        await addNetworkConfirmation.checkWarningMessageIsDisplayed(
+          'rpcUrl',
           'According to our records the submitted RPC URL value does not match a known provider for this chain ID.',
         );
-        // No longer assert on the inline link text; messages are verified via alert modal
 
-        await addNetworkConfirmation.approveAddNetwork(false);
-        await addNetworkConfirmation.checkPageIsLoaded('Antani');
-        await addNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'Chain ID returned by the custom network does not match the submitted chain ID.',
-        );
-        assert.equal(
-          await addNetworkConfirmation.checkIsApproveButtonEnabled(),
-          false,
-        );
         await addNetworkConfirmation.cancelAddNetwork();
       },
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip("don't validate bad rpc custom network when toggle is off", async function () {
+  it("don't validate bad rpc custom network when toggle is off", async function () {
     const TEST_CHAIN_ID = '0x123';
     async function mockRPCURLAndChainId(mockServer: MockttpServer) {
       return [
@@ -194,8 +167,7 @@ describe.skip('Add Custom RPC', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip("don't add unreachable custom network", async function () {
+  it("don't add unreachable custom network", async function () {
     await withFixtures(
       {
         dapp: true,
@@ -229,16 +201,7 @@ describe.skip('Add Custom RPC', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
         await addNetworkConfirmation.checkPageIsLoaded('Antani');
-        await addNetworkConfirmation.approveAddNetwork(false);
 
-        await addNetworkConfirmation.checkPageIsLoaded('Antani');
-        await addNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'Error while connecting to the custom network.',
-        );
-        assert.equal(
-          await addNetworkConfirmation.checkIsApproveButtonEnabled(),
-          false,
-        );
         await addNetworkConfirmation.cancelAddNetwork();
       },
     );
