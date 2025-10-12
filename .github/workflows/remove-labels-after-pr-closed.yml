@@ -9,6 +9,7 @@ on:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       issues: write
       pull-requests: write

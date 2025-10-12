@@ -235,6 +235,20 @@ export const NetworkControllerInit: ControllerInitFunction<
     },
   );
 
+  initMessenger.subscribe(
+    'RemoteFeatureFlagController:stateChange',
+    (isRpcFailoverEnabled) => {
+      if (isRpcFailoverEnabled) {
+        console.log('Enabling RPC failover.');
+        controller.enableRpcFailover();
+      } else {
+        console.log('Disabling RPC failover.');
+        controller.disableRpcFailover();
+      }
+    },
+    (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
+  );
+
   controller.initializeProvider();
 
   return {
