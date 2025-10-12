@@ -107,6 +107,7 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
+  showShieldEntryModalOnce: boolean | null;
 };
 
 const controllerName = 'AppStateController';
@@ -244,7 +245,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
-
+  showShieldEntryModalOnce: null,
   ...getInitialStateOverrides(),
 });
 
@@ -545,6 +546,12 @@ const controllerMetadata = {
     anonymous: true,
     usedInUi: true,
     includeInStateLogs: true,
+  },
+  showShieldEntryModalOnce: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
   },
 };
 
@@ -1400,6 +1407,12 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
+    });
+  }
+
+  setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
+    this.update((state) => {
+      state.showShieldEntryModalOnce = showShieldEntryModalOnce;
     });
   }
 }

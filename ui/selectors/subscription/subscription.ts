@@ -4,18 +4,21 @@ import {
   Subscription,
   SubscriptionControllerState,
 } from '@metamask/subscription-controller';
+import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield';
 
-export type BackupState = {
-  metamask: SubscriptionControllerState;
+export type SubscriptionState = {
+  metamask: SubscriptionControllerState & {
+    showShieldEntryModalOnce: boolean | null;
+  };
 };
 
 export function getSubscriptionPricing(
-  state: BackupState,
+  state: SubscriptionState,
 ): PricingResponse | undefined {
   return state.metamask.pricing;
 }
 
-export function getUserSubscriptions(state: BackupState): {
+export function getUserSubscriptions(state: SubscriptionState): {
   customerId?: string;
   subscriptions: Subscription[];
   trialedProducts: ProductType[];
@@ -25,4 +28,16 @@ export function getUserSubscriptions(state: BackupState): {
     subscriptions: state.metamask.subscriptions,
     trialedProducts: state.metamask.trialedProducts,
   };
+}
+
+export function getIsActiveShieldSubscription(
+  state: SubscriptionState,
+): boolean {
+  return getIsShieldSubscriptionActive(state.metamask.subscriptions);
+}
+
+export function getHasShieldEntryModalShownOnce(
+  state: SubscriptionState,
+): boolean {
+  return Boolean(state.metamask.showShieldEntryModalOnce !== null);
 }
