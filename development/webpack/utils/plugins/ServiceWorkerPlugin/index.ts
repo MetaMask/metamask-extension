@@ -1,5 +1,5 @@
 import { type WebpackPluginInstance, sources } from 'webpack';
-import type { ManifestV3 } from '../../helpers';
+import { extensionToJs, type ManifestV3 } from '../../helpers';
 
 export const replaceSource = (
   source: sources.Source,
@@ -42,11 +42,14 @@ export const serviceWorkerPlugin = (
             );
           }
           const background = compilation.entrypoints.get('background');
-          const backgroundFiles = background
-            ? [...background.getEntrypointChunk().files]
-            : [];
+          if (!background) {
+            throw new Error(
+              'Manifest V3 requires an entrypoint named "background" which will be loaded by the service worker',
+            );
+          }
+          const backgroundFiles = [...background.getEntrypointChunk().files];
           const backgroundFileNames = backgroundFiles.join(',');
-          const assetName = manifest.background.service_worker;
+          const assetName = extensionToJs(manifest.background.service_worker);
           const searchValue = 'process.env.FILE_NAMES';
           const replaceValue = JSON.stringify(backgroundFileNames);
           compilation.updateAsset(assetName, (source) =>

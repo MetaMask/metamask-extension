@@ -61,6 +61,13 @@ export const TREZOR_MODULE_RE = new RegExp(
 export const noop = () => undefined;
 
 /**
+ * @param filename
+ * @returns filename with .js extension (.ts | .tsx | .mjs -> .js)
+ */
+export const extensionToJs = (filename: string) =>
+  filename.replace(/\.(ts|tsx|mjs)$/u, '.js');
+
+/**
  * Collects all entry files for use with webpack.
  *
  * TODO: move this logic into the ManifestPlugin
@@ -88,7 +95,7 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     selfContainedScripts.add(filename);
     entry[filename] = {
       chunkLoading: false,
-      filename, // output filename
+      filename: extensionToJs(filename), // output filename with .js extension
       import: join(appRoot, filename), // the path to the file to use as an entry
     };
   }
