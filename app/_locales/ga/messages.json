@@ -1111,7 +1111,7 @@
     "message": "Gnóthach"
   },
   "buy": {
-    "message": "Ceannaigh"
+    "message": "Ordú"
   },
   "buyMoreAsset": {
     "message": "Ceannaigh níos mó $1",
@@ -2524,6 +2524,12 @@
   "fileImportFail": {
     "message": "Nach bhfuil allmhairiú comhaid ag obair? Cliceáil anseo!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "fileUploaderDescription": {
+    "message": "Cliceáil chun uaslódáil nó tarraing agus scaoil"
+  },
+  "fileUploaderInvalidFileTypeError": {
+    "message": "Cineál comhaid neamhbhailí. Uaslódáil formáid comhaid a dtacaítear léi, le do thoil."
   },
   "fileUploaderMaxFileSizeError": {
     "message": "Tá méid an chomhaid níos mó ná $1MB. Uaslódáil comhad níos lú le do thoil.",
@@ -5665,8 +5671,33 @@
   "shieldConfirmMembership": {
     "message": "Deimhnigh ballraíocht"
   },
+  "shieldCoverageAlertMessageChainNotSupported": {
+    "message": "Ní thacaítear leis an slabhra seo, mar sin níl sé faoi chosaint ag Transaction Shield. $1."
+  },
+  "shieldCoverageAlertMessageLearnHowCoverageWorks": {
+    "message": "Foghlaim conas a oibríonn clúdach"
+  },
+  "shieldCoverageAlertMessagePotentialRisks": {
+    "message": "Tá rioscaí féideartha ag baint leis an idirbheart seo, mar sin níl sé faoi chosaint ag Transaction Shield. $1."
+  },
+  "shieldCoverageAlertMessageSignatureNotSupported": {
+    "message": "Ní thacaítear leis an síniú seo, mar sin níl sé faoi chosaint ag Transaction Shield. $1."
+  },
+  "shieldCoverageAlertMessageTitle": {
+    "message": "Níl an t-idirbheart seo clúdaithe"
+  },
+  "shieldCoverageAlertMessageTxTypeNotSupported": {
+    "message": "Ní thacaítear leis an gcineál idirbhirt seo, mar sin níl sé faoi chosaint ag Transaction Shield. $1."
+  },
+  "shieldCoverageAlertMessageUnknown": {
+    "message": "Ní féidir an t-iarratas seo a fhíorú, mar sin níl sé faoi chosaint ag Transaction Shield. $1."
+  },
+  "shieldCovered": {
+    "message": "Clúdaithe"
+  },
   "shieldEntryModalAssetCoverage": {
-    "message": "Clúdach sócmhainne $10,000 in aghaidh an idirbhirt"
+    "message": "Clúdach sócmhainne $1 in aghaidh an idirbhirt"
+    "description": "The $1 is the amount of asset coverage per transaction"
   },
   "shieldEntryModalDescription": {
     "message": "Athnuaitear ar $1/mí, cealaítear am ar bith. $2",
@@ -5689,6 +5720,12 @@
   },
   "shieldEstimatedChangesMonthlyTooltip": {
     "message": "Údaraigh suas le $$1 don bhliain iomlán. Gearrfar $$2 ort gach mí, ní an méid iomlán anois."
+  },
+  "shieldFooterAgreement": {
+    "message": "Trí leanúint ar aghaidh, aontaím le Sciath Idirbhirt $1."
+  },
+  "shieldNotCovered": {
+    "message": "Gan chlúdach"
   },
   "shieldPlanAnnual": {
     "message": "Bliantúil"
