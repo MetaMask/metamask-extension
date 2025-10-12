@@ -9,110 +9,36 @@ import { withResolvers } from '../shared/lib/promise-with-resolvers';
 // @ts-expect-error - typescript doesn't know about this
 globalThis.window = globalThis;
 
-// Represents if importAllScripts has been run
-// eslint-disable-next-line
-let scriptsLoadInitiated = false;
-const { chrome } = globalThis;
-const testMode = process.env.IN_TEST;
-
-/**
- * @type {import('../types/global').StateHooks}
- */
 globalThis.stateHooks = globalThis.stateHooks || {};
 
-interface LoadTimeLog {
-  name: string;
-  value: number;
-  children: LoadTimeLog[];
-  startTime: number;
-  endTime: number;
-}
+const { chrome } = globalThis;
 
-const loadTimeLogs: LoadTimeLog[] = [];
+let runImportScriptsInitiated = false;
 
-// eslint-disable-next-line import/unambiguous
-function tryImport(...fileNames: string[]) {
-  try {
-    const startTime = new Date().getTime();
-    // eslint-disable-next-line
-    importScripts(...fileNames);
-    const endTime = new Date().getTime();
-    loadTimeLogs.push({
-      name: fileNames[0],
-      value: endTime - startTime,
-      children: [],
-      startTime,
-      endTime,
-    });
-    return true;
-  } catch (e) {
-    console.error(e);
-  }
-
-  return false;
-}
-
-function importAllScripts() {
-  // Bail if we've already imported scripts
-  if (scriptsLoadInitiated) {
+function runImportScripts() {
+  // Bail if we've already run importScripts
+  if (runImportScriptsInitiated) {
     return;
   }
-  scriptsLoadInitiated = true;
-  const files: string[] = [];
+  runImportScriptsInitiated = true;
 
-  // In testMode individual files are imported, this is to help capture load time stats
-  const loadFile = (fileName: string) => {
-    if (testMode) {
-      tryImport(fileName);
-    } else {
-      files.push(fileName);
-    }
-  };
+  const startImportScriptsTime = performance.now();
 
-  const startImportScriptsTime = Date.now();
+  importScripts('scripts/background.js');
 
-  // This environment variable is set to a string of comma-separated relative file paths.
-  const rawFileList = process.env.FILE_NAMES;
-  if (!rawFileList) {
-    throw new Error('The FILE_NAMES environment variable is missing');
-  }
-  const fileList = rawFileList.split(',');
-  fileList.forEach((fileName) => loadFile(fileName));
-
-  // Import all required resources
-  tryImport(...files);
-
-  const endImportScriptsTime = Date.now();
+  const endImportScriptsTime = performance.now();
 
   // for performance metrics/reference
   console.log(
-    `SCRIPTS IMPORT COMPLETE in Seconds: ${
-      (Date.now() - startImportScriptsTime) / 1000
-    }`,
+    `importScripts completed in ${
+      (endImportScriptsTime - startImportScriptsTime) / 1000
+    } seconds`,
   );
-
-  // In testMode load time logs are output to console
-  if (testMode) {
-    console.log(
-      `Time for each import: ${JSON.stringify(
-        {
-          name: 'Total',
-          children: loadTimeLogs,
-          startTime: startImportScriptsTime,
-          endTime: endImportScriptsTime,
-          value: endImportScriptsTime - startImportScriptsTime,
-          version: 1,
-        },
-        undefined,
-        '    ',
-      )}`,
-    );
-  }
 }
 
 // Ref: https://stackoverflow.com/questions/66406672/chrome-extension-mv3-modularize-service-worker-js-file
 // eslint-disable-next-line no-undef
-self.addEventListener('install', importAllScripts);
+self.addEventListener('install', runImportScripts);
 
 /*
  * A keepalive message listener to prevent Service Worker getting shut down due to inactivity.
@@ -124,15 +50,15 @@ self.addEventListener('install', importAllScripts);
  * chrome does seems to work in at-least all chromium based browsers
  */
 chrome.runtime.onMessage.addListener(() => {
-  importAllScripts();
+  runImportScripts();
   return false;
 });
 
 /*
  * If the service worker is stopped and restarted, then the 'install' event will not occur
  * and the chrome.runtime.onMessage will only occur if it was a message that restarted the
- * the service worker. To ensure that importAllScripts is called, we need to call it in module
- * scope as below. To avoid having `importAllScripts()` called before installation, we only
+ * the service worker. To ensure that runImportScripts is called, we need to call it in module
+ * scope as below. To avoid having `runImportScripts()` called before installation, we only
  * call it if the serviceWorker state is 'activated'. More on service worker states here:
  * https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker/state. Testing also shows
  * that whenever the already installed service worker is stopped and then restarted, the state
@@ -141,7 +67,7 @@ chrome.runtime.onMessage.addListener(() => {
 // @ts-expect-error - typescript doesn't know about this
 // eslint-disable-next-line no-undef
 if (self.serviceWorker.state === 'activated') {
-  importAllScripts();
+  runImportScripts();
 }
 
 /**
@@ -154,9 +80,8 @@ globalThis.stateHooks.onInstalledListener = deferredOnInstalledListener.promise;
 /**
  * `onInstalled` event handler.
  *
- * On MV3 builds we must listen for this event in `app-init`, otherwise we found
- * that the listener is never called.
- * For MV2 builds, the listener is added in `background.js` instead.
+ * On MV3 builds we must listen for this event in `service-worker`, otherwise the listener is never called.
+ * For MV2 builds, the listener is added in `background` instead.
  */
 chrome.runtime.onInstalled.addListener(function listener(details) {
   chrome.runtime.onInstalled.removeListener(listener);
