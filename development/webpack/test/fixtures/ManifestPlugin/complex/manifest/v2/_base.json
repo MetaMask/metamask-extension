@@ -1,4 +1,7 @@
 {
+  "background": {
+    "page": "background.html"
+  },
   "description": "base description",
   "web_accessible_resources": ["file.png"]
 }

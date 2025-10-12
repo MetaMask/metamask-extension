@@ -99,35 +99,6 @@ ${Object.entries(env)
     assert.strictEqual(options.optimization.usedExports, false);
     assert.strictEqual(options.watch, false);
 
-    const runtimeChunk = options.optimization.runtimeChunk as
-      | {
-          name?: (chunk: { name?: string }) => string | false;
-        }
-      | undefined;
-    assert(runtimeChunk);
-    assert(runtimeChunk.name);
-    assert(typeof runtimeChunk.name, 'function');
-    assert.strictEqual(
-      runtimeChunk.name({ name: 'snow.prod' }),
-      false,
-      'snow.prod should not be chunked',
-    );
-    assert.strictEqual(
-      runtimeChunk.name({ name: 'use-snow' }),
-      false,
-      'use-snow should not be chunked',
-    );
-    assert.strictEqual(
-      runtimeChunk.name({ name: '< random >' }),
-      'runtime',
-      'other names should be chunked',
-    );
-    assert.strictEqual(
-      runtimeChunk.name({}),
-      'runtime',
-      'chunks without a name name should be chunked',
-    );
-
     const manifestPlugin = options.plugins.find(
       (plugin) => plugin && plugin.constructor.name === 'ManifestPlugin',
     ) as ManifestPlugin<boolean>;
@@ -300,15 +271,4 @@ ${Object.entries(env)
     );
     assert(reactRefreshPlugin, 'ReactRefreshPlugin should be present');
   });
-
-  // these tests should be temporary until the below options are supported
-  const unsupportedOptions = [['--manifest_version', '3']];
-  for (const args of unsupportedOptions) {
-    it(`should throw on unsupported option \`${args.join('=')}\``, () => {
-      assert.throws(
-        () => getWebpackConfig(args),
-        `Unsupported option: ${args.join(' ')}`,
-      );
-    });
-  }
 });

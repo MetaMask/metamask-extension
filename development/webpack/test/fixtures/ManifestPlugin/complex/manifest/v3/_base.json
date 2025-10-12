@@ -1,4 +1,7 @@
 {
+  "background": {
+    "service_worker": "service-worker.ts"
+  },
   "description": "base description",
   "manifest_version": 3,
   "web_accessible_resources": [
