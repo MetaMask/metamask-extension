@@ -97,10 +97,7 @@ const plugins: WebpackPluginInstance[] = [
     preprocessorOptions: { useWith: false },
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
-    data: {
-      isTest: args.test,
-      shouldIncludeSnow: args.snow,
-    },
+    data: { isTest: args.test },
     preload: [
       {
         attributes: { as: 'font', crossorigin: true },
