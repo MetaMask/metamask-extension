@@ -3,7 +3,7 @@ import * as reactRedux from 'react-redux';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom-v5-compat';
 import {
   TransactionStatus,
   TransactionType,

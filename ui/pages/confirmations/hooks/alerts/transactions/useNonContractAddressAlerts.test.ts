@@ -7,12 +7,10 @@ import {
 import { waitFor } from '@testing-library/react';
 import { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
-
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
-import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { renderHookWithProvider } from '../../../../../../test/lib/render-helpers';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { Severity } from '../../../../../helpers/constants/design-system';
@@ -27,16 +25,6 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }));
 
-const messageIdMock = '12345';
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => ({
-    id: messageIdMock,
-  }),
-  useLocation: jest.fn(),
-}));
-
 jest.mock('react', () => ({
   ...jest.requireActual('react'),
   useContext: jest.fn(),
@@ -45,7 +33,6 @@ jest.mock('react', () => ({
 jest.mock('./useContractCode', () => ({
   useContractCode: jest.fn(),
 }));
-
 jest.mock('./NonContractAddressAlertMessage', () => ({
   NonContractAddressAlertMessage: () => 'NonContractAddressAlertMessage',
 }));
@@ -76,10 +63,7 @@ function runHook({
     ? getMockConfirmStateForTransaction(currentConfirmation as TransactionMeta)
     : {};
 
-  const response = renderHookWithConfirmContextProvider(
-    useNonContractAddressAlerts,
-    state,
-  );
+  const response = renderHookWithProvider(useNonContractAddressAlerts, state);
 
   return response.result.current;
 }
@@ -88,14 +72,9 @@ describe('useNonContractAddressAlerts', () => {
   const useContextMock = useContext as jest.Mock;
   const useSelectorMock = useSelector as jest.Mock;
   const mockUseContractCode = jest.mocked(useContractCode);
-  const useLocationMock = jest.mocked(useLocation);
 
   beforeEach(() => {
     jest.resetAllMocks();
-
-    useLocationMock.mockReturnValue({
-      search: '',
-    } as unknown as ReturnType<typeof useLocationMock>);
 
     mockUseContractCode.mockImplementation(
       () =>
@@ -256,11 +235,9 @@ describe('useNonContractAddressAlerts', () => {
       return undefined;
     });
 
-    const { result } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithProvider(
       useNonContractAddressAlerts,
-      {
-        currentConfirmation: transaction,
-      },
+      getMockConfirmStateForTransaction(transaction),
     );
 
     expect(result.current).toEqual([]);
@@ -297,11 +274,9 @@ describe('useNonContractAddressAlerts', () => {
       return undefined;
     });
 
-    const { result } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithProvider(
       useNonContractAddressAlerts,
-      {
-        currentConfirmation: transactionWithData,
-      },
+      getMockConfirmStateForTransaction(transactionWithData),
     );
 
     await waitFor(() => {
@@ -350,11 +325,9 @@ describe('useNonContractAddressAlerts', () => {
       return undefined;
     });
 
-    const { result } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithProvider(
       useNonContractAddressAlerts,
-      {
-        currentConfirmation: transactionWithData,
-      },
+      getMockConfirmStateForTransaction(transactionWithData),
     );
 
     await waitFor(() => {
@@ -406,11 +379,9 @@ describe('useNonContractAddressAlerts', () => {
         }) as ReturnType<typeof useContractCode>,
     );
 
-    const { result } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithProvider(
       useNonContractAddressAlerts,
-      {
-        currentConfirmation: transactionWithData,
-      },
+      getMockConfirmStateForTransaction(transactionWithData),
     );
 
     await waitFor(() => {

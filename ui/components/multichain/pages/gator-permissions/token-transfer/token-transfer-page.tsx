@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -30,13 +30,13 @@ import {
 
 export const TokenTransferPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const permissionGroupName = 'token-transfer';
   const permissionGroupDetails = useSelector((state: AppState) =>
     getPermissionGroupDetails(state, permissionGroupName),
   );
   const handlePermissionGroupItemClick = (chainId: Hex) => {
-    history.push(
+    navigate(
       `${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/${permissionGroupName}`,
     );
   };
@@ -72,7 +72,7 @@ export const TokenTransferPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.IconDefault}
-            onClick={() => history.push(GATOR_PERMISSIONS)}
+            onClick={() => navigate(GATOR_PERMISSIONS)}
             size={ButtonIconSize.Sm}
           />
         }

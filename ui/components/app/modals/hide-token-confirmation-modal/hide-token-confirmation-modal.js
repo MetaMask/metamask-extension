@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import * as actions from '../../../../store/actions';
 import Identicon from '../../../ui/identicon';
 import { Button, ButtonVariant, Box } from '../../../component-library';
@@ -19,6 +20,7 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../../../shared/modules/selectors/networks';
+import withRouterHooks from '../../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 
 function mapStateToProps(state) {
   return {
@@ -61,7 +63,7 @@ class HideTokenConfirmationModal extends Component {
       image: PropTypes.string,
       chainId: PropTypes.string,
     }),
-    history: PropTypes.object,
+    navigate: PropTypes.func,
   };
 
   state = {};
@@ -72,7 +74,7 @@ class HideTokenConfirmationModal extends Component {
       token,
       hideToken,
       hideModal,
-      history,
+      navigate,
       networkConfigurationsByChainId,
     } = this.props;
     const { symbol, address, image, chainId: tokenChainId } = token;
@@ -129,7 +131,7 @@ class HideTokenConfirmationModal extends Component {
                 },
               });
               hideToken(address, networkInstanceId);
-              history.push(DEFAULT_ROUTE);
+              navigate(DEFAULT_ROUTE);
             }}
           >
             {this.context.t('hide')}
@@ -140,7 +142,7 @@ class HideTokenConfirmationModal extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+export default compose(
+  withRouterHooks,
+  connect(mapStateToProps, mapDispatchToProps),
 )(HideTokenConfirmationModal);

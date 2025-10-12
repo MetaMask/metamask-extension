@@ -1,10 +1,10 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import type {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
 } from '../../../store/store';
+import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import BackupAndSyncTab from './backup-and-sync-tab.component';
 
 const mapStateToProps = (_state: MetaMaskReduxState) => {
@@ -16,6 +16,6 @@ const mapDispatchToProps = (_dispatch: MetaMaskReduxDispatch) => {
 };
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(BackupAndSyncTab);

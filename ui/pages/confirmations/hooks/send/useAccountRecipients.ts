@@ -5,14 +5,13 @@ import { getWalletsWithAccounts } from '../../../../selectors/multichain-account
 import {
   isEVMAccountForSend,
   isSolanaAccountForSend,
-  isBitcoinAccountForSend,
 } from '../../utils/account';
 import { useSendContext } from '../../context/send';
 import { type Recipient } from './useRecipients';
 import { useSendType } from './useSendType';
 
 export const useAccountRecipients = (): Recipient[] => {
-  const { isEvmSendType, isSolanaSendType, isBitcoinSendType } = useSendType();
+  const { isEvmSendType, isSolanaSendType } = useSendType();
   const { from } = useSendContext();
 
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
@@ -33,8 +32,7 @@ export const useAccountRecipients = (): Recipient[] => {
 
           const shouldInclude =
             (isEvmSendType && isEVMAccountForSend(account)) ||
-            (isSolanaSendType && isSolanaAccountForSend(account)) ||
-            (isBitcoinSendType && isBitcoinAccountForSend(account));
+            (isSolanaSendType && isSolanaAccountForSend(account));
 
           if (shouldInclude) {
             recipients.push({
@@ -48,11 +46,5 @@ export const useAccountRecipients = (): Recipient[] => {
     });
 
     return recipients;
-  }, [
-    from,
-    isEvmSendType,
-    isSolanaSendType,
-    isBitcoinSendType,
-    walletsWithAccounts,
-  ]);
+  }, [walletsWithAccounts, isEvmSendType, isSolanaSendType, from]);
 };

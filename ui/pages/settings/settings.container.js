@@ -32,7 +32,7 @@ import {
   SETTINGS_ROUTE,
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
-  ADD_POPULAR_CUSTOM_NETWORK,
+  ADD_POPULAR_CUSTOM_NETWORK_ROUTE,
   SNAP_SETTINGS_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
   BACKUPANDSYNC_ROUTE,
@@ -51,7 +51,7 @@ import Settings from './settings.component';
 const ROUTES_TO_I18N_KEYS = {
   [ABOUT_US_ROUTE]: 'about',
   [ADD_NETWORK_ROUTE]: 'networks',
-  [ADD_POPULAR_CUSTOM_NETWORK]: 'addNetwork',
+  [ADD_POPULAR_CUSTOM_NETWORK_ROUTE]: 'addNetwork',
   [ADVANCED_ROUTE]: 'advanced',
   [BACKUPANDSYNC_ROUTE]: 'backupAndSync',
   [CONTACT_ADD_ROUTE]: 'newContact',
@@ -97,7 +97,7 @@ const mapStateToProps = (state, ownProps) => {
     Boolean(pathname.match(ADD_NETWORK_ROUTE));
   const addNewNetwork = Boolean(pathname.match(ADD_NETWORK_ROUTE));
   const isAddPopularCustomNetwork = Boolean(
-    pathname.match(ADD_POPULAR_CUSTOM_NETWORK),
+    pathname.match(ADD_POPULAR_CUSTOM_NETWORK_ROUTE),
   );
   const isSnapSettingsRoute = Boolean(pathname.match(SNAP_SETTINGS_ROUTE));
 

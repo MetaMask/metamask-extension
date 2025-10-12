@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 
 import {
   goHome,
@@ -26,9 +26,7 @@ function mapStateToProps(state, ownProps) {
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
 
   const {
-    match: {
-      params: { id: approvalId },
-    },
+    params: { id: approvalId } = {},
   } = ownProps;
 
   const txData = unconfirmedTransactions.find((tx) => tx.id === approvalId);
@@ -66,6 +64,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(ConfirmEncryptionPublicKey);

@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
+import { compose } from 'redux';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   getAccountsWithLabels,
   getLastConnectedInfo,
@@ -34,15 +36,14 @@ import {
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
+  CONNECT_PATHS,
 } from '../../helpers/constants/routes';
 import { getAccountGroupWithInternalAccounts } from '../../selectors/multichain-accounts/account-tree';
 import PermissionApproval from './permissions-connect.component';
 
 const mapStateToProps = (state, ownProps) => {
   const {
-    match: {
-      params: { id: permissionsRequestId },
-    },
+    params: { id: permissionsRequestId },
     location: { pathname },
   } = ownProps;
   let permissionsRequests = getPermissionsRequests(state);
@@ -105,29 +106,42 @@ const mapStateToProps = (state, ownProps) => {
     );
   });
 
-  const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`;
-  const confirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
-  const snapsConnectPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAPS_CONNECT_ROUTE}`;
-  const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
-  const snapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
-  const snapResultPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_RESULT_ROUTE}`;
+  // For nested routing in React Router v6/v5-compat, use relative paths from CONNECT_PATHS
+  // (These are used in <Route path={...}> definitions)
+  const connectPath = '';
+  const confirmPermissionPath = CONNECT_PATHS.CONFIRM_PERMISSIONS;
+  const snapsConnectPath = CONNECT_PATHS.SNAPS_CONNECT;
+  const snapInstallPath = CONNECT_PATHS.SNAP_INSTALL;
+  const snapUpdatePath = CONNECT_PATHS.SNAP_UPDATE;
+  const snapResultPath = CONNECT_PATHS.SNAP_RESULT;
+
+  // For checking location.pathname, we need full absolute paths
+  // (location.pathname is always absolute, e.g., "/connect/123/snap-install")
+  const fullSnapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
+  const fullSnapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
+  const fullSnapResultPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_RESULT_ROUTE}`;
   const isSnapInstallOrUpdateOrResult =
-    pathname === snapInstallPath ||
-    pathname === snapUpdatePath ||
-    pathname === snapResultPath;
+    pathname === fullSnapInstallPath ||
+    pathname === fullSnapUpdatePath ||
+    pathname === fullSnapResultPath;
 
   let totalPages = 1 + isRequestingAccounts;
   totalPages += isSnapInstallOrUpdateOrResult;
   totalPages = totalPages.toString();
 
+  // For page calculation, we need to check against full absolute paths
+  const fullConnectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`;
+  const fullConfirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
+  const fullSnapsConnectPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAPS_CONNECT_ROUTE}`;
+
   let page = '';
-  if (pathname === connectPath) {
+  if (pathname === fullConnectPath) {
     page = '1';
-  } else if (pathname === confirmPermissionPath) {
+  } else if (pathname === fullConfirmPermissionPath) {
     page = isRequestingAccounts ? '2' : '1';
   } else if (isSnapInstallOrUpdateOrResult) {
     page = isRequestingAccounts ? '3' : '2';
-  } else if (pathname === snapsConnectPath) {
+  } else if (pathname === fullSnapsConnectPath) {
     page = 1;
   } else {
     throw new Error('Incorrect path for permissions-connect component');
@@ -187,18 +201,15 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const PermissionApprovalContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
+export default compose(
+  withRouterHooks,
+  connect(mapStateToProps, mapDispatchToProps),
 )(PermissionApproval);
 
-PermissionApprovalContainer.propTypes = {
-  history: PropTypes.object.isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      id: PropTypes.string,
-    }).isRequired,
+PermissionApproval.propTypes = {
+  navigate: PropTypes.func.isRequired,
+  location: PropTypes.object.isRequired,
+  params: PropTypes.shape({
+    id: PropTypes.string,
   }).isRequired,
 };
-
-export default PermissionApprovalContainer;

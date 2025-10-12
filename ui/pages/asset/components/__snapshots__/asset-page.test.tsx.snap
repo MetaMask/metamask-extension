@@ -239,18 +239,14 @@ exports[`AssetPage should render a native asset 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="flex flex-row"
+                class="mm-box mm-box--display-flex"
               >
-                <div
-                  class="flex flex-row gap-2"
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-token-name"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                    data-testid="multichain-token-list-item-token-name"
-                  >
-                    TEST
-                  </p>
-                </div>
+                  TEST
+                </p>
                 <button
                   class="mm-box mm-box--padding-inline-0 mm-box--padding-inline-start-1 mm-box--padding-inline-end-1 mm-box--gap-1 mm-box--background-color-transparent"
                   data-testid="staking-entrypoint-0x1"
@@ -671,18 +667,14 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="flex flex-row"
+                class="mm-box mm-box--display-flex"
               >
-                <div
-                  class="flex flex-row gap-2"
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-token-name"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                    data-testid="multichain-token-list-item-token-name"
-                  >
-                    TEST
-                  </p>
-                </div>
+                  TEST
+                </p>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"
@@ -1148,18 +1140,14 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
             >
               <div
-                class="flex flex-row"
+                class="mm-box mm-box--display-flex"
               >
-                <div
-                  class="flex flex-row gap-2"
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                  data-testid="multichain-token-list-item-token-name"
                 >
-                  <p
-                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-                    data-testid="multichain-token-list-item-token-name"
-                  >
-                    TEST
-                  </p>
-                </div>
+                  TEST
+                </p>
               </div>
               <p
                 class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--color-text-default"

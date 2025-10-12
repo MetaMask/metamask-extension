@@ -19,12 +19,10 @@ export const useContactRecipients = (): Recipient[] => {
     };
   }, []);
 
-  // Contacts are only supported for EVM chains today - hence we only return contacts for EVM chains
   if (isEvmSendType) {
     return addressBook
       .filter((contact) => isEvmAddress(contact.address))
       .map(processContacts);
   }
-
   return [];
 };

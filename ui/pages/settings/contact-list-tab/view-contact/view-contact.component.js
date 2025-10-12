@@ -41,7 +41,7 @@ function ViewContact({
   const [copied, handleCopy] = useCopyToClipboard();
 
   if (!address) {
-    return <Navigate to={{ pathname: listRoute }} />;
+    return <Navigate to={listRoute} />;
   }
 
   return (

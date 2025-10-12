@@ -3,7 +3,7 @@ import { EthScope } from '@metamask/keyring-api';
 import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import { type Hex } from '@metamask/utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useSafeNavigation } from '../../../../hooks/useSafeNavigation';
 import { CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP } from '../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
@@ -24,7 +24,7 @@ import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/us
 
 export const useNetworkItemCallbacks = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const { navigate, setNavState } = useSafeNavigation();
   const isUnlocked = useSelector(getIsUnlocked);
   const currentChainId = useSelector(getSelectedMultichainNetworkChainId);
   const isNetworkDiscoverButtonEnabled = useSelector(
@@ -116,7 +116,7 @@ export const useNetworkItemCallbacks = () => {
               nickname: network.name,
             }),
           );
-          history.push('/edit');
+          navigate('/edit');
         },
         onDiscoverClick: isDiscoverBtnEnabled(hexChainId)
           ? () => {
@@ -128,7 +128,7 @@ export const useNetworkItemCallbacks = () => {
           : undefined,
         onRpcConfigEdit: hasMultiRpcOptions(network)
           ? () => {
-              history.push('/add-rpc');
+              navigate('/add-rpc');
               dispatch(
                 setEditedNetwork({
                   chainId: hexChainId,
@@ -137,19 +137,18 @@ export const useNetworkItemCallbacks = () => {
             }
           : undefined,
         onRpcSelect: () => {
-          history.push('/select-rpc', {
-            chainId: hexChainId,
-          });
+          navigate('/select-rpc', { chainId: hexChainId });
         },
       };
     },
     [
-      currentChainId,
-      dispatch,
-      hasMultiRpcOptions,
       isUnlocked,
+      currentChainId,
       isDiscoverBtnEnabled,
-      history,
+      hasMultiRpcOptions,
+      dispatch,
+      navigate,
+      setNavState,
     ],
   );
 

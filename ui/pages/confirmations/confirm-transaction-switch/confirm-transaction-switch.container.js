@@ -1,4 +1,6 @@
+import { compose } from 'redux';
 import { connect } from 'react-redux';
+import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   getUnapprovedTransactions,
   unconfirmedTransactionsListSelector,
@@ -8,12 +10,10 @@ import ConfirmTransactionSwitch from './confirm-transaction-switch.component';
 
 const mapStateToProps = (state, ownProps) => {
   const unapprovedTxs = getUnapprovedTransactions(state);
-  const {
-    match: { params = {}, url },
-  } = ownProps;
+  const { location, params } = ownProps;
   const confirmTransactionRoute = `${CONFIRM_TRANSACTION_ROUTE}/`;
-  const urlId = url.includes(confirmTransactionRoute)
-    ? url.split(confirmTransactionRoute)[1]
+  const urlId = location.pathname.includes(confirmTransactionRoute)
+    ? location.pathname.split(confirmTransactionRoute)[1]
     : null;
   const { id: paramsId } = params;
   const transactionId = paramsId || urlId;
@@ -29,4 +29,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default connect(mapStateToProps)(ConfirmTransactionSwitch);
+export default compose(
+  withRouterHooks,
+  connect(mapStateToProps),
+)(ConfirmTransactionSwitch);

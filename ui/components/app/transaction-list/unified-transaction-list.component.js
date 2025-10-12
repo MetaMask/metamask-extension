@@ -374,17 +374,14 @@ export const groupAnyTransactionsByDate = (items) =>
   );
 
 function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
-  const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
-  const filteredUniqueNonEvmChainIds =
-    [
-      ...new Set(
-        Object.keys(enabledNetworks)
-          .filter((namespace) => namespace !== 'eip155')
-          .reduce((acc, namespace) => {
-            return [...acc, ...Object.keys(enabledNetworks[namespace])];
-          }, []),
-      ),
-    ] ?? [];
+  const filteredEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
+  const filteredNonEvmChainIds =
+    Object.keys(enabledNetworks)
+      .filter((namespace) => namespace !== 'eip155')
+      .reduce((acc, namespace) => {
+        const newAcc = [...acc, ...Object.keys(enabledNetworks[namespace])];
+        return newAcc;
+      }, []) ?? [];
 
   if (tokenChainIdOverride && !tokenChainIdOverride.startsWith('solana')) {
     return {
@@ -399,8 +396,8 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
     };
   }
   return {
-    evmChainIds: filteredUniqueEVMChainIds,
-    nonEvmChainIds: filteredUniqueNonEvmChainIds,
+    evmChainIds: filteredEVMChainIds,
+    nonEvmChainIds: filteredNonEvmChainIds,
   };
 }
 export default function UnifiedTransactionList({

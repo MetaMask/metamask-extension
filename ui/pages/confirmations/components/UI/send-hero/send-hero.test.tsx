@@ -6,14 +6,6 @@ import configureStore from '../../../../../store/store';
 import { Asset, AssetStandard } from '../../../types/send';
 import { SendHero } from './send-hero';
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-}));
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-}));
-
 jest.mock('../../../../../components/component-library', () => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   AvatarToken: ({ src, name, size, showHalo }: any) => (

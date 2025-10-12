@@ -4,7 +4,6 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configureStore from 'redux-mock-store';
-import { createMemoryHistory } from 'history';
 import {
   TrustSignalDisplayState,
   useTrustSignals,
@@ -17,7 +16,7 @@ import {
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import mockLegacySwapTxGroup from '../../../../test/data/swap/mock-legacy-swap-transaction-group.json';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProviderAndHistory } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
 import { getTokens } from '../../../ducks/metamask/metamask';
@@ -72,6 +71,16 @@ jest.mock('react-redux', () => {
     ...actual,
     useSelector: jest.fn(),
     useDispatch: jest.fn(),
+  };
+});
+
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
   };
 });
 
@@ -160,8 +169,6 @@ const generateUseSelectorRouter = (opts) => (selector) => {
 };
 
 describe('TransactionListItem', () => {
-  const history = createMemoryHistory();
-
   beforeAll(() => {
     useGasFeeEstimates.mockImplementation(
       () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
@@ -173,14 +180,13 @@ describe('TransactionListItem', () => {
         label: null,
       })),
     );
+
+    mockUseLocation.mockReturnValue({ pathname: '' });
   });
 
   afterAll(() => {
     useGasFeeEstimates.mockRestore();
   });
-
-  const renderWithProvider = (component, store) =>
-    renderWithProviderAndHistory(component, store, history);
 
   describe('ActivityListItem interactions', () => {
     it('should show the activity details popover and log metrics when the activity list item is clicked', () => {

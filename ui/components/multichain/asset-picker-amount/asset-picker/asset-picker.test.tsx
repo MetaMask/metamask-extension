@@ -17,12 +17,13 @@ import { ERC20Asset, NativeAsset, NFT } from '../asset-picker-modal/types';
 import { AssetPicker } from './asset-picker';
 
 const unknownChainId = '0x2489078';
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => ({
-    push: jest.fn(),
-  })),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const NATIVE_TICKER = 'NATIVE TICKER';
 const store = (

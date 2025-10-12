@@ -7,7 +7,7 @@ import React, {
   useCallback,
 } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
@@ -187,7 +187,7 @@ export default function ReviewQuote({
   setReceiveToAmount,
   setIsEstimatedReturnLow,
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
@@ -215,14 +215,6 @@ export default function ReviewQuote({
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const quotes = useSelector(getQuotes, isEqual);
-  useEffect(() => {
-    if (!Object.values(quotes).length) {
-      history.push(PREPARE_SWAP_ROUTE);
-    } else if (routeState === 'awaiting') {
-      history.push(AWAITING_SWAP_ROUTE);
-    }
-  }, [history, quotes, routeState]);
-
   const quotesLastFetched = useSelector(getQuotesLastFetched);
   const prevQuotesLastFetched = usePrevious(quotesLastFetched);
 
@@ -1079,23 +1071,23 @@ export default function ReviewQuote({
           signAndSendSwapsSmartTransaction({
             unsignedTransaction,
             trackEvent,
-            history,
+            navigate,
             additionalTrackingParams,
           }),
         );
       } else {
         dispatch(
           signAndSendTransactions(
-            history,
+            navigate,
             trackEvent,
             additionalTrackingParams,
           ),
         );
       }
     } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     } else {
-      history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
+      navigate(`${ASSET_ROUTE}/${destinationToken.address}`);
     }
   };
 
@@ -1138,6 +1130,20 @@ export default function ReviewQuote({
     rawNetworkFees,
   });
   setIsEstimatedReturnLow(isEstimatedReturnLow);
+
+  // Redirect if no quotes or if awaiting
+  useEffect(() => {
+    if (!Object.values(quotes).length) {
+      navigate(PREPARE_SWAP_ROUTE);
+    } else if (routeState === 'awaiting') {
+      navigate(AWAITING_SWAP_ROUTE);
+    }
+  }, [navigate, quotes, routeState]);
+
+  // Return early if redirecting
+  if (!Object.values(quotes).length || routeState === 'awaiting') {
+    return null;
+  }
 
   return (
     <div className="review-quote">

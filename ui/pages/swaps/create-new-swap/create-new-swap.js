@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import isEqual from 'lodash/isEqual';
 
 import Box from '../../../components/ui/box';
@@ -24,7 +24,7 @@ export default function CreateNewSwap({ sensitiveTrackingProperties }) {
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
 
   return (
@@ -39,8 +39,8 @@ export default function CreateNewSwap({ sensitiveTrackingProperties }) {
               hd_entropy_index: hdEntropyIndex,
             },
           });
-          history.push(DEFAULT_ROUTE); // It cleans up Swaps state.
-          await dispatch(navigateBackToPrepareSwap(history));
+          navigate(DEFAULT_ROUTE); // It cleans up Swaps state.
+          await dispatch(navigateBackToPrepareSwap(navigate));
           dispatch(setSwapsFromToken(defaultSwapsToken));
         }}
       >

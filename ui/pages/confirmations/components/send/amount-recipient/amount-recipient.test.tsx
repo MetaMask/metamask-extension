@@ -6,7 +6,7 @@ import {
   EVM_ASSET,
   EVM_NATIVE_ASSET,
 } from '../../../../../../test/data/send/assets';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import * as AmountSelectionMetrics from '../../../hooks/send/metrics/useAmountSelectionMetrics';
 import * as AmountValidation from '../../../hooks/send/useAmountValidation';

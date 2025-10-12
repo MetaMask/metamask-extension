@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
 import { TokenTransferPage } from './token-transfer-page';
@@ -9,6 +9,16 @@ const store = configureStore({
   metamask: {
     ...mockState.metamask,
   },
+});
+
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
 });
 
 describe('Token Transfer Page', () => {

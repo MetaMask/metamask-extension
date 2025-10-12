@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { AccountGroupType } from '@metamask/account-api';
 import { CaipAccountId } from '@metamask/utils';
-import { renderWithProvider } from '../../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { createMockInternalAccount } from '../../../../../test/jest/mocks';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
@@ -10,18 +10,21 @@ import * as actions from '../../../../store/actions';
 import * as hooks from '../../../../hooks/useAccountGroupsForPermissions';
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
 
-jest.mock('react-router-dom', () => ({
-  useHistory: () => ({
-    push: jest.fn(),
-  }),
-  useParams: () => ({ origin: 'https%3A//test.dapp' }),
-  useLocation: () => ({ pathname: '/test', search: '', hash: '', state: null }),
-  matchPath: jest.fn(() => null),
-  withRouter: (Component: React.ComponentType<unknown>) => Component,
-  MemoryRouter: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useParams: () => ({ origin: 'https%3A//test.dapp' }),
+    useLocation: () => ({
+      pathname: '/test',
+      search: '',
+      hash: '',
+      state: null,
+    }),
+    matchPath: jest.fn(() => null),
+  };
+});
 
 jest.mock('../../../../hooks/useAccountGroupsForPermissions', () => ({
   useAccountGroupsForPermissions: jest.fn(() => ({

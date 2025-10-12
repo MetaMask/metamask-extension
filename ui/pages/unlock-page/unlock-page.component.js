@@ -56,13 +56,21 @@ class UnlockPage extends Component {
 
   static propTypes = {
     /**
-     * History router for redirect after action
+     * Navigate function for redirection
      */
-    history: PropTypes.object.isRequired,
+    navigate: PropTypes.func.isRequired,
     /**
      * Location router for redirect after action
      */
     location: PropTypes.object.isRequired,
+    /**
+     * Navigation state from context (HashRouter v5-compat workaround)
+     */
+    navState: PropTypes.object,
+    /**
+     * Clear navigation state from context after use
+     */
+    clearNavState: PropTypes.func.isRequired,
     /**
      * If isUnlocked is true will redirect to most recent route in history
      */
@@ -134,16 +142,24 @@ class UnlockPage extends Component {
   }
 
   UNSAFE_componentWillMount() {
-    const { isUnlocked, history, location } = this.props;
+    const { isUnlocked, navigate, location, navState, clearNavState } =
+      this.props;
 
     if (isUnlocked) {
       // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
       let redirectTo = DEFAULT_ROUTE;
+
+      // Check state first (fallback), then navigation context (HashRouter v5-compat workaround)
       if (location.state?.from?.pathname) {
         const search = location.state.from.search || '';
         redirectTo = location.state.from.pathname + search;
+        clearNavState();
+      } else if (navState?.from?.pathname) {
+        redirectTo = navState.from.pathname + (navState.from.search || '');
+        clearNavState(); // Clean up after use
       }
-      history.push(redirectTo);
+
+      navigate(redirectTo);
     }
   }
 
@@ -386,14 +402,14 @@ class UnlockPage extends Component {
   };
 
   onForgotPasswordOrLoginWithDiffMethods = async () => {
-    const { isSocialLoginFlow, history, isOnboardingCompleted } = this.props;
+    const { isSocialLoginFlow, navigate, isOnboardingCompleted } = this.props;
 
     // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
     // we can redirect to `onboarding_welcome` route to select a different login method
     if (!isOnboardingCompleted && isSocialLoginFlow) {
       await this.props.loginWithDifferentMethod();
       await this.props.forceUpdateMetamaskState();
-      history.replace(ONBOARDING_WELCOME_ROUTE);
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
       return;
     }
 

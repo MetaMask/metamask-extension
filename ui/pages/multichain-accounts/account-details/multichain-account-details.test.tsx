@@ -1,9 +1,8 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
-import { MemoryRouter, Route } from 'react-router-dom';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   MOCK_ACCOUNT_EOA,
   MOCK_ACCOUNT_ERC4337,
@@ -13,6 +12,14 @@ import { MultichainAccountDetails } from './multichain-account-details';
 
 const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
+
+const mockUseParams = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useParams: () => mockUseParams(),
+  };
+});
 
 const createMockState = (address: string, account = MOCK_ACCOUNT_EOA) => ({
   appState: {
@@ -95,21 +102,19 @@ const createMockState = (address: string, account = MOCK_ACCOUNT_EOA) => ({
 });
 
 describe('AccountDetails', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('Account Type Detection', () => {
     it('should render EVM account details for EOA accounts', () => {
+      mockUseParams.mockReturnValue({
+        address: MOCK_ACCOUNT_EOA.address,
+      });
       const state = createMockState(MOCK_ACCOUNT_EOA.address, MOCK_ACCOUNT_EOA);
       const store = mockStore(state);
 
-      renderWithProvider(
-        <MemoryRouter
-          initialEntries={[`/account-details/${MOCK_ACCOUNT_EOA.address}`]}
-        >
-          <Route path="/account-details/:address">
-            <MultichainAccountDetails />
-          </Route>
-        </MemoryRouter>,
-        store,
-      );
+      renderWithProvider(<MultichainAccountDetails />, store);
 
       // Should render the base account details (which includes account name in header and details)
       const accountNameElements = screen.getAllByText('Account 1');
@@ -117,22 +122,16 @@ describe('AccountDetails', () => {
     });
 
     it('should render EVM account details for ERC-4337 accounts', () => {
+      mockUseParams.mockReturnValue({
+        address: MOCK_ACCOUNT_ERC4337.address,
+      });
       const state = createMockState(
         MOCK_ACCOUNT_ERC4337.address,
         MOCK_ACCOUNT_ERC4337,
       );
       const store = mockStore(state);
 
-      renderWithProvider(
-        <MemoryRouter
-          initialEntries={[`/account-details/${MOCK_ACCOUNT_ERC4337.address}`]}
-        >
-          <Route path="/account-details/:address">
-            <MultichainAccountDetails />
-          </Route>
-        </MemoryRouter>,
-        store,
-      );
+      renderWithProvider(<MultichainAccountDetails />, store);
 
       // Should render the base account details (which includes account name in header and details)
       const accountNameElements = screen.getAllByText('Account 2');
@@ -140,24 +139,16 @@ describe('AccountDetails', () => {
     });
 
     it('should render account details for Solana accounts', () => {
+      mockUseParams.mockReturnValue({
+        address: MOCK_ACCOUNT_SOLANA_MAINNET.address,
+      });
       const state = createMockState(
         MOCK_ACCOUNT_SOLANA_MAINNET.address,
         MOCK_ACCOUNT_SOLANA_MAINNET,
       );
       const store = mockStore(state);
 
-      renderWithProvider(
-        <MemoryRouter
-          initialEntries={[
-            `/account-details/${MOCK_ACCOUNT_SOLANA_MAINNET.address}`,
-          ]}
-        >
-          <Route path="/account-details/:address">
-            <MultichainAccountDetails />
-          </Route>
-        </MemoryRouter>,
-        store,
-      );
+      renderWithProvider(<MultichainAccountDetails />, store);
 
       // Should render the base account details (which includes account name in header and details)
       const accountNameElements = screen.getAllByText('Solana Account');

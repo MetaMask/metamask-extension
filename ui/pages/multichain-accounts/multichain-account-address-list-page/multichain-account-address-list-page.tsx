@@ -1,6 +1,10 @@
 import React, { useState, useCallback } from 'react';
 
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import {
+  useNavigate,
+  useLocation,
+  useParams,
+} from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import {
@@ -28,7 +32,7 @@ import {
 
 export const MultichainAccountAddressListPage = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const { accountGroupId } = useParams<{ accountGroupId: string }>();
 
@@ -90,7 +94,7 @@ export const MultichainAccountAddressListPage = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(-1)}
             data-testid="multichain-account-address-list-page-back-button"
           />
         }

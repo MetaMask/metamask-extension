@@ -12,6 +12,7 @@ import {
 import { MetamaskNotificationsProvider } from '../contexts/metamask-notifications';
 import { AssetPollingProvider } from '../contexts/assetPolling';
 import { MetamaskIdentityProvider } from '../contexts/identity';
+import { navigationStateProvider as NavigationStateProvider } from '../contexts/navigation-state';
 import { ShieldSubscriptionProvider } from '../contexts/shield/shield-subscription';
 import ErrorPage from './error-page/error-page.component';
 
@@ -48,23 +49,25 @@ class Index extends PureComponent {
       <Provider store={store}>
         <HashRouter hashType="noslash">
           <CompatRouter>
-            <MetaMetricsProvider>
-              <LegacyMetaMetricsProvider>
-                <I18nProvider>
-                  <LegacyI18nProvider>
-                    <AssetPollingProvider>
-                      <MetamaskIdentityProvider>
-                        <MetamaskNotificationsProvider>
-                          <ShieldSubscriptionProvider>
-                            <Routes />
-                          </ShieldSubscriptionProvider>
-                        </MetamaskNotificationsProvider>
-                      </MetamaskIdentityProvider>
-                    </AssetPollingProvider>
-                  </LegacyI18nProvider>
-                </I18nProvider>
-              </LegacyMetaMetricsProvider>
-            </MetaMetricsProvider>
+            <NavigationStateProvider>
+              <MetaMetricsProvider>
+                <LegacyMetaMetricsProvider>
+                  <I18nProvider>
+                    <LegacyI18nProvider>
+                      <AssetPollingProvider>
+                        <MetamaskIdentityProvider>
+                          <MetamaskNotificationsProvider>
+                            <ShieldSubscriptionProvider>
+                              <Routes />
+                            </ShieldSubscriptionProvider>
+                          </MetamaskNotificationsProvider>
+                        </MetamaskIdentityProvider>
+                      </AssetPollingProvider>
+                    </LegacyI18nProvider>
+                  </I18nProvider>
+                </LegacyMetaMetricsProvider>
+              </MetaMetricsProvider>
+            </NavigationStateProvider>
           </CompatRouter>
         </HashRouter>
       </Provider>

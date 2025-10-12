@@ -1,6 +1,13 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import { Redirect, Route } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  useNavigate,
+  useLocation,
+  Navigate,
+  Route,
+  Routes,
+} from 'react-router-dom-v5-compat';
+import { useNavState } from '../../contexts/navigation-state';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -65,12 +72,92 @@ import {
   SUPPORT_LINK,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/lib/ui-utils';
-import { AccountOverview } from '../../components/multichain/account-overview';
-import { setEditedNetwork } from '../../store/actions';
+import { AccountOverview } from '../../components/multichain';
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  activeTabHasPermissions,
+  getUseExternalServices,
+  getOriginOfCurrentTab,
+  getTotalUnapprovedCount,
+  getWeb3ShimUsageStateForOrigin,
+  getShowWhatsNewPopup,
+  getSortedAnnouncementsToShow,
+  getShowRecoveryPhraseReminder,
+  getShowTermsOfUse,
+  getShowOutdatedBrowserWarning,
+  getNewNetworkAdded,
+  getIsSigningQRHardwareTransaction,
+  getNewNftAddedMessage,
+  getNewTokensImported,
+  getRemoveNftMessage,
+  getApprovalFlows,
+  getNewTokensImportedError,
+  hasPendingApprovals,
+  getSelectedInternalAccount,
+  getEditedNetwork,
+  selectPendingApprovalsForNavigation,
+  getShowUpdateModal,
+  getShowConnectionsRemovedModal,
+  getIsSocialLoginFlow,
+  getShowShieldEntryModalOnce,
+} from '../../selectors';
+import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
+import {
+  attemptCloseNotificationPopup,
+  setConnectedStatusPopoverHasBeenShown,
+  setDefaultHomeActiveTabName,
+  setWeb3ShimUsageAlertDismissed,
+  setAlertEnabledness,
+  setRecoveryPhraseReminderHasBeenShown,
+  setRecoveryPhraseReminderLastShown,
+  setTermsOfUseLastAgreed,
+  setOutdatedBrowserWarningLastShown,
+  setNewNetworkAdded,
+  setNewNftAddedMessage,
+  setRemoveNftMessage,
+  setNewTokensImported,
+  setActiveNetwork,
+  setNewTokensImportedError,
+  setDataCollectionForMarketing,
+  setEditedNetwork,
+  setAccountDetailsAddress,
+  lookupSelectedNetworks,
+} from '../../store/actions';
+import {
+  hideWhatsNewPopup,
+  openBasicFunctionalityModal,
+} from '../../ducks/app/app';
+import {
+  getIsPrimarySeedPhraseBackedUp,
+  getIsSeedlessPasswordOutdated,
+  getWeb3ShimUsageAlertEnabledness,
+} from '../../ducks/metamask/metamask';
+import { fetchBuyableChains } from '../../ducks/ramps';
+// TODO: Remove restricted import
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getIsBrowserDeprecated } from '../../helpers/utils/util';
+import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../shared/constants/app';
+import {
+  AlertTypes,
+  Web3ShimUsageAlertStates,
+} from '../../../shared/constants/alerts';
+import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
+import {
+  getRedirectAfterDefaultPage,
+  clearRedirectAfterDefaultPage,
+} from '../../ducks/history/history';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -93,112 +180,293 @@ function shouldCloseNotificationPopup({
   return shouldClose;
 }
 
-export default class Home extends PureComponent {
-  static contextTypes = {
-    t: PropTypes.func,
-    trackEvent: PropTypes.func,
-  };
+function Home() {
+  const t = useI18nContext();
+  const trackEvent = useContext(MetaMetricsContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const navState = useNavState();
+  const dispatch = useDispatch();
 
-  static propTypes = {
-    history: PropTypes.object,
-    forgottenPassword: PropTypes.bool,
-    setConnectedStatusPopoverHasBeenShown: PropTypes.func,
-    shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
-    isPopup: PropTypes.bool,
-    connectedStatusPopoverHasBeenShown: PropTypes.bool,
-    showRecoveryPhraseReminder: PropTypes.bool.isRequired,
-    showTermsOfUsePopup: PropTypes.bool.isRequired,
-    firstTimeFlowType: PropTypes.string,
-    completedOnboarding: PropTypes.bool,
-    showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
-    announcementsToShow: PropTypes.bool.isRequired,
-    onboardedInThisUISession: PropTypes.bool,
-    showMultiRpcModal: PropTypes.bool.isRequired,
-    showUpdateModal: PropTypes.bool.isRequired,
-    newNetworkAddedConfigurationId: PropTypes.string,
-    isNotification: PropTypes.bool.isRequired,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
-    totalUnapprovedCount: PropTypes.number.isRequired,
-    defaultHomeActiveTabName: PropTypes.string,
-    participateInMetaMetrics: PropTypes.bool.isRequired,
-    onTabClick: PropTypes.func.isRequired,
-    haveSwapsQuotes: PropTypes.bool.isRequired,
-    showAwaitingSwapScreen: PropTypes.bool.isRequired,
-    haveBridgeQuotes: PropTypes.bool.isRequired,
-    setDataCollectionForMarketing: PropTypes.func.isRequired,
-    dataCollectionForMarketing: PropTypes.bool,
-    swapsFetchParams: PropTypes.object,
-    location: PropTypes.object,
-    shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
-    setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
-    originOfCurrentTab: PropTypes.string,
-    disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
-    pendingApprovals: PropTypes.arrayOf(PropTypes.object).isRequired,
-    hasApprovalFlows: PropTypes.bool.isRequired,
-    infuraBlocked: PropTypes.bool.isRequired,
-    setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
-    setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
-    setTermsOfUseLastAgreed: PropTypes.func.isRequired,
-    showOutdatedBrowserWarning: PropTypes.bool.isRequired,
-    setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
-    newNetworkAddedName: PropTypes.string,
-    editedNetwork: PropTypes.object,
-    // This prop is used in the `shouldCloseNotificationPopup` function
-    // eslint-disable-next-line react/no-unused-prop-types
-    isSigningQRHardwareTransaction: PropTypes.bool,
-    newNftAddedMessage: PropTypes.string,
-    setNewNftAddedMessage: PropTypes.func.isRequired,
-    removeNftMessage: PropTypes.string,
-    setRemoveNftMessage: PropTypes.func.isRequired,
-    attemptCloseNotificationPopup: PropTypes.func.isRequired,
-    newTokensImported: PropTypes.string,
-    newTokensImportedError: PropTypes.string,
-    setNewTokensImported: PropTypes.func.isRequired,
-    setNewTokensImportedError: PropTypes.func.isRequired,
-    clearNewNetworkAdded: PropTypes.func,
-    clearEditedNetwork: PropTypes.func,
-    setActiveNetwork: PropTypes.func,
-    hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
-    useExternalServices: PropTypes.bool,
-    setBasicFunctionalityModalOpen: PropTypes.func,
-    fetchBuyableChains: PropTypes.func.isRequired,
-    redirectAfterDefaultPage: PropTypes.object,
-    clearRedirectAfterDefaultPage: PropTypes.func,
-    setAccountDetailsAddress: PropTypes.func,
-    isSeedlessPasswordOutdated: PropTypes.bool,
-    isPrimarySeedPhraseBackedUp: PropTypes.bool,
-    showConnectionsRemovedModal: PropTypes.bool,
-    showShieldEntryModal: PropTypes.bool,
-    isSocialLoginFlow: PropTypes.bool,
-    lookupSelectedNetworks: PropTypes.func.isRequired,
-  };
+  // Redux selectors - equivalent to mapStateToProps
+  const { metamask, appState } = useSelector((state) => state);
+  const {
+    connectedStatusPopoverHasBeenShown,
+    defaultHomeActiveTabName,
+    swapsState,
+    quotes,
+    dataCollectionForMarketing,
+    participateInMetaMetrics,
+    firstTimeFlowType,
+    completedOnboarding,
+    forgottenPassword,
+  } = metamask;
 
-  state = {
-    canShowBlockageNotification: true,
-    notificationClosing: false,
-    redirecting: false,
-  };
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
+  const pendingApprovals = useSelector(selectPendingApprovalsForNavigation);
+  const redirectAfterDefaultPage = useSelector(getRedirectAfterDefaultPage);
 
-  constructor(props) {
-    super(props);
+  const envType = getEnvironmentType();
+  const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
+  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
 
-    const {
-      attemptCloseNotificationPopup,
-      haveSwapsQuotes,
-      haveBridgeQuotes,
+  const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
+  const web3ShimUsageAlertEnabledness = useSelector(
+    getWeb3ShimUsageAlertEnabledness,
+  );
+  const activeTabPermissions = useSelector(activeTabHasPermissions);
+  const web3ShimUsageState = useSelector((state) =>
+    getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab),
+  );
+  const shouldShowWeb3ShimUsageNotification =
+    isPopup &&
+    web3ShimUsageAlertEnabledness &&
+    activeTabPermissions &&
+    web3ShimUsageState === Web3ShimUsageAlertStates.recorded;
+
+  const hasAllowedPopupRedirectApprovals = useSelector((state) =>
+    hasPendingApprovals(state, [
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+      SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+      SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+      SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
+      SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+      ///: END:ONLY_INCLUDE_IF
+    ]),
+  );
+
+  const TEMPORARY_DISABLE_WHATS_NEW = true;
+  const showWhatsNewPopupSelector = useSelector(getShowWhatsNewPopup);
+  const showWhatsNewPopup = TEMPORARY_DISABLE_WHATS_NEW
+    ? false
+    : showWhatsNewPopupSelector;
+
+  const shouldShowSeedPhraseReminderSelector = useSelector((state) =>
+    getShouldShowSeedPhraseReminder(state, selectedAccount),
+  );
+  const shouldShowSeedPhraseReminder =
+    selectedAccount && shouldShowSeedPhraseReminderSelector;
+
+  // All other selectors
+  const useExternalServices = useSelector(getUseExternalServices);
+  const hasApprovalFlows = useSelector(
+    (state) => getApprovalFlows(state)?.length > 0,
+  );
+  const haveSwapsQuotes = Boolean(
+    Object.values(swapsState.quotes || {}).length,
+  );
+  const swapsFetchParams = swapsState.fetchParams;
+  const showAwaitingSwapScreen = swapsState.routeState === 'awaiting';
+  const haveBridgeQuotes = Boolean(Object.values(quotes || {}).length);
+  const infuraBlocked = useSelector(getInfuraBlocked);
+  const announcementsToShow = useSelector(
+    (state) => getSortedAnnouncementsToShow(state).length > 0,
+  );
+  const showRecoveryPhraseReminder = useSelector(getShowRecoveryPhraseReminder);
+  const showTermsOfUsePopup = useSelector(getShowTermsOfUse);
+  const showOutdatedBrowserWarningSelector = useSelector(
+    getShowOutdatedBrowserWarning,
+  );
+  const showOutdatedBrowserWarning =
+    getIsBrowserDeprecated() && showOutdatedBrowserWarningSelector;
+  const newNetworkAddedName = useSelector(getNewNetworkAdded);
+  const editedNetwork = useSelector(getEditedNetwork);
+  const isSigningQRHardwareTransaction = useSelector(
+    getIsSigningQRHardwareTransaction,
+  );
+  const newNftAddedMessage = useSelector(getNewNftAddedMessage);
+  const removeNftMessage = useSelector(getRemoveNftMessage);
+  const newTokensImported = useSelector(getNewTokensImported);
+  const newTokensImportedError = useSelector(getNewTokensImportedError);
+  const { newNetworkAddedConfigurationId, onboardedInThisUISession } = appState;
+  const { showMultiRpcModal } = metamask.preferences;
+  const showUpdateModal = useSelector(getShowUpdateModal);
+  const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
+  const isPrimarySeedPhraseBackedUp = useSelector(
+    getIsPrimarySeedPhraseBackedUp,
+  );
+  const showConnectionsRemovedModal = useSelector(
+    getShowConnectionsRemovedModal,
+  );
+  const showShieldEntryModal = useSelector(getShowShieldEntryModalOnce);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+
+  // Dispatch functions - equivalent to mapDispatchToProps
+  const dispatchSetDataCollectionForMarketing = useCallback(
+    (val) => dispatch(setDataCollectionForMarketing(val)),
+    [dispatch],
+  );
+  const dispatchAttemptCloseNotificationPopup = useCallback(
+    () => dispatch(attemptCloseNotificationPopup()),
+    [dispatch],
+  );
+  const dispatchSetConnectedStatusPopoverHasBeenShown = useCallback(
+    () => dispatch(setConnectedStatusPopoverHasBeenShown()),
+    [dispatch],
+  );
+  const onTabClick = useCallback(
+    (name) => dispatch(setDefaultHomeActiveTabName(name)),
+    [dispatch],
+  );
+  const dispatchSetWeb3ShimUsageAlertDismissed = useCallback(
+    (origin) => dispatch(setWeb3ShimUsageAlertDismissed(origin)),
+    [dispatch],
+  );
+  const disableWeb3ShimUsageAlert = useCallback(
+    () => dispatch(setAlertEnabledness(AlertTypes.web3ShimUsage, false)),
+    [dispatch],
+  );
+  const dispatchHideWhatsNewPopup = useCallback(
+    () => dispatch(hideWhatsNewPopup()),
+    [dispatch],
+  );
+  const dispatchSetRecoveryPhraseReminderHasBeenShown = useCallback(
+    () => dispatch(setRecoveryPhraseReminderHasBeenShown()),
+    [dispatch],
+  );
+  const dispatchSetRecoveryPhraseReminderLastShown = useCallback(
+    (lastShown) => dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
+    [dispatch],
+  );
+  const dispatchSetTermsOfUseLastAgreed = useCallback(
+    (lastAgreed) => dispatch(setTermsOfUseLastAgreed(lastAgreed)),
+    [dispatch],
+  );
+  const dispatchSetOutdatedBrowserWarningLastShown = useCallback(
+    (lastShown) => dispatch(setOutdatedBrowserWarningLastShown(lastShown)),
+    [dispatch],
+  );
+  const dispatchSetNewNftAddedMessage = useCallback(
+    (message) => {
+      dispatch(setRemoveNftMessage(''));
+      dispatch(setNewNftAddedMessage(message));
+    },
+    [dispatch],
+  );
+  const dispatchSetRemoveNftMessage = useCallback(
+    (message) => {
+      dispatch(setNewNftAddedMessage(''));
+      dispatch(setRemoveNftMessage(message));
+    },
+    [dispatch],
+  );
+  const dispatchSetNewTokensImported = useCallback(
+    (newTokens) => dispatch(setNewTokensImported(newTokens)),
+    [dispatch],
+  );
+  const dispatchSetNewTokensImportedError = useCallback(
+    (msg) => dispatch(setNewTokensImportedError(msg)),
+    [dispatch],
+  );
+  const clearNewNetworkAdded = useCallback(
+    () => dispatch(setNewNetworkAdded({})),
+    [dispatch],
+  );
+  const clearEditedNetwork = useCallback(
+    () => dispatch(setEditedNetwork()),
+    [dispatch],
+  );
+  const dispatchSetActiveNetwork = useCallback(
+    (networkConfigurationId) =>
+      dispatch(setActiveNetwork(networkConfigurationId)),
+    [dispatch],
+  );
+  const setBasicFunctionalityModalOpen = useCallback(
+    () => dispatch(openBasicFunctionalityModal()),
+    [dispatch],
+  );
+  const dispatchFetchBuyableChains = useCallback(
+    () => dispatch(fetchBuyableChains()),
+    [dispatch],
+  );
+  const dispatchClearRedirectAfterDefaultPage = useCallback(
+    () => dispatch(clearRedirectAfterDefaultPage()),
+    [dispatch],
+  );
+  const dispatchSetAccountDetailsAddress = useCallback(
+    (address) => dispatch(setAccountDetailsAddress(address)),
+    [dispatch],
+  );
+  const dispatchLookupSelectedNetworks = useCallback(
+    () => dispatch(lookupSelectedNetworks()),
+    [dispatch],
+  );
+
+  const [canShowBlockageNotification, setCanShowBlockageNotification] =
+    useState(true);
+  const [notificationClosing, setNotificationClosing] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
+
+  // Check both router state (v5 fallback) and navigation context (v5-compat with HashRouter)
+  // Only fall back to navState if location.state.stayOnHomePage doesn't exist
+  const stayOnHomePage = Boolean(
+    location?.state?.stayOnHomePage !== null &&
+      location?.state?.stayOnHomePage !== undefined
+      ? location?.state?.stayOnHomePage
+      : navState?.stayOnHomePage,
+  );
+
+  const checkStatusAndNavigate = useCallback(() => {
+    const canRedirect = !isNotification && !stayOnHomePage;
+    if (canRedirect && showAwaitingSwapScreen) {
+      navigate(AWAITING_SWAP_ROUTE);
+    } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
+      navigate(PREPARE_SWAP_ROUTE);
+    } else if (canRedirect && haveBridgeQuotes) {
+      navigate(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
+    } else if (pendingApprovals.length || hasApprovalFlows) {
+      navigateToConfirmation(
+        pendingApprovals?.[0]?.id,
+        pendingApprovals,
+        hasApprovalFlows,
+        navigate,
+      );
+    }
+  }, [
+    isNotification,
+    stayOnHomePage,
+    showAwaitingSwapScreen,
+    haveSwapsQuotes,
+    swapsFetchParams,
+    haveBridgeQuotes,
+    pendingApprovals,
+    hasApprovalFlows,
+    navigate,
+  ]);
+
+  const checkRedirectAfterDefaultPage = useCallback(() => {
+    if (
+      redirectAfterDefaultPage?.shouldRedirect &&
+      redirectAfterDefaultPage?.path
+    ) {
+      // Set the account details address if provided
+      if (redirectAfterDefaultPage?.address) {
+        dispatchSetAccountDetailsAddress(redirectAfterDefaultPage.address);
+      }
+
+      navigate(redirectAfterDefaultPage.path);
+      dispatchClearRedirectAfterDefaultPage();
+    }
+  }, [
+    redirectAfterDefaultPage,
+    navigate,
+    dispatchClearRedirectAfterDefaultPage,
+    dispatchSetAccountDetailsAddress,
+  ]);
+
+  // Initialize state based on props
+  useEffect(() => {
+    const shouldClose = shouldCloseNotificationPopup({
       isNotification,
-      pendingApprovals,
-      showAwaitingSwapScreen,
-      swapsFetchParams,
-      location,
-    } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+      totalUnapprovedCount,
+      hasApprovalFlows,
+      isSigningQRHardwareTransaction,
+    });
 
-    if (shouldCloseNotificationPopup(props)) {
-      this.state.notificationClosing = true;
-      attemptCloseNotificationPopup();
+    if (shouldClose) {
+      setNotificationClosing(true);
+      dispatchAttemptCloseNotificationPopup();
     } else if (
       pendingApprovals.length ||
       (!isNotification &&
@@ -208,139 +476,106 @@ export default class Home extends PureComponent {
           swapsFetchParams ||
           haveBridgeQuotes))
     ) {
-      this.state.redirecting = true;
+      setRedirecting(true);
     }
-  }
+  }, [
+    isNotification,
+    totalUnapprovedCount,
+    hasApprovalFlows,
+    isSigningQRHardwareTransaction,
+    pendingApprovals.length,
+    stayOnHomePage,
+    showAwaitingSwapScreen,
+    haveSwapsQuotes,
+    swapsFetchParams,
+    haveBridgeQuotes,
+    dispatchAttemptCloseNotificationPopup,
+  ]);
 
-  checkStatusAndNavigate() {
-    const {
-      history,
+  // Component did mount equivalent
+  useEffect(() => {
+    checkStatusAndNavigate();
+    dispatchFetchBuyableChains();
+    checkRedirectAfterDefaultPage();
+    dispatchLookupSelectedNetworks();
+  }, [
+    checkStatusAndNavigate,
+    dispatchFetchBuyableChains,
+    checkRedirectAfterDefaultPage,
+    dispatchLookupSelectedNetworks,
+  ]);
+
+  // Handle notification closing
+  useEffect(() => {
+    const shouldClose = shouldCloseNotificationPopup({
       isNotification,
-      haveSwapsQuotes,
-      haveBridgeQuotes,
-      showAwaitingSwapScreen,
-      swapsFetchParams,
-      location,
-      pendingApprovals,
+      totalUnapprovedCount,
       hasApprovalFlows,
-    } = this.props;
-    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
+      isSigningQRHardwareTransaction,
+    });
 
-    const canRedirect = !isNotification && !stayOnHomePage;
-    if (canRedirect && showAwaitingSwapScreen) {
-      history.push(AWAITING_SWAP_ROUTE);
-    } else if (canRedirect && (haveSwapsQuotes || swapsFetchParams)) {
-      history.push(PREPARE_SWAP_ROUTE);
-    } else if (canRedirect && haveBridgeQuotes) {
-      history.push(CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE);
-    } else if (pendingApprovals.length || hasApprovalFlows) {
-      navigateToConfirmation(
-        pendingApprovals?.[0]?.id,
-        pendingApprovals,
-        hasApprovalFlows,
-        history,
-      );
+    if (shouldClose) {
+      setNotificationClosing(true);
     }
-  }
+  }, [
+    isNotification,
+    totalUnapprovedCount,
+    hasApprovalFlows,
+    isSigningQRHardwareTransaction,
+  ]);
 
-  checkRedirectAfterDefaultPage() {
-    const {
-      redirectAfterDefaultPage,
-      history,
-      clearRedirectAfterDefaultPage,
-      setAccountDetailsAddress,
-    } = this.props;
-
-    if (
-      redirectAfterDefaultPage?.shouldRedirect &&
-      redirectAfterDefaultPage?.path
-    ) {
-      // Set the account details address if provided
-      if (redirectAfterDefaultPage?.address) {
-        setAccountDetailsAddress(redirectAfterDefaultPage.address);
-      }
-
-      history.push(redirectAfterDefaultPage.path);
-      clearRedirectAfterDefaultPage();
+  // Handle component updates
+  useEffect(() => {
+    if (notificationClosing) {
+      dispatchAttemptCloseNotificationPopup();
+    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
+      checkStatusAndNavigate();
     }
-  }
 
-  componentDidMount() {
-    this.checkStatusAndNavigate();
+    checkRedirectAfterDefaultPage();
+  }, [
+    notificationClosing,
+    isNotification,
+    hasAllowedPopupRedirectApprovals,
+    checkStatusAndNavigate,
+    checkRedirectAfterDefaultPage,
+    dispatchAttemptCloseNotificationPopup,
+  ]);
 
-    this.props.fetchBuyableChains();
-
-    // Check for redirect after default page
-    this.checkRedirectAfterDefaultPage();
-
-    // Ensure we have up-to-date connectivity statuses for all enabled networks
-    this.props.lookupSelectedNetworks();
-  }
-
-  static getDerivedStateFromProps(props) {
-    if (shouldCloseNotificationPopup(props)) {
-      return { notificationClosing: true };
-    }
-    return null;
-  }
-
-  componentDidUpdate(_prevProps, prevState) {
-    const {
-      attemptCloseNotificationPopup,
-      isNotification,
-      hasAllowedPopupRedirectApprovals,
-      newNetworkAddedConfigurationId,
-      setActiveNetwork,
-      clearNewNetworkAdded,
-    } = this.props;
-
-    const {
-      newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
-    } = _prevProps;
-    const { notificationClosing } = this.state;
-
-    if (
-      newNetworkAddedConfigurationId &&
-      prevNewNetworkAddedConfigurationId !== newNetworkAddedConfigurationId
-    ) {
-      setActiveNetwork(newNetworkAddedConfigurationId);
+  // Handle network changes
+  useEffect(() => {
+    if (newNetworkAddedConfigurationId) {
+      dispatchSetActiveNetwork(newNetworkAddedConfigurationId);
       clearNewNetworkAdded();
     }
+  }, [
+    newNetworkAddedConfigurationId,
+    dispatchSetActiveNetwork,
+    clearNewNetworkAdded,
+  ]);
 
-    if (notificationClosing && !prevState.notificationClosing) {
-      attemptCloseNotificationPopup();
-    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
-      this.checkStatusAndNavigate();
-    }
+  const onRecoveryPhraseReminderClose = useCallback(() => {
+    dispatchSetRecoveryPhraseReminderHasBeenShown(true);
+    dispatchSetRecoveryPhraseReminderLastShown(new Date().getTime());
+  }, [
+    dispatchSetRecoveryPhraseReminderHasBeenShown,
+    dispatchSetRecoveryPhraseReminderLastShown,
+  ]);
 
-    // Check for redirect after default page on updates
-    this.checkRedirectAfterDefaultPage();
-  }
-
-  onRecoveryPhraseReminderClose = () => {
-    const {
-      setRecoveryPhraseReminderHasBeenShown,
-      setRecoveryPhraseReminderLastShown,
-    } = this.props;
-    setRecoveryPhraseReminderHasBeenShown(true);
-    setRecoveryPhraseReminderLastShown(new Date().getTime());
-  };
-
-  onAcceptTermsOfUse = () => {
-    const { setTermsOfUseLastAgreed } = this.props;
-    setTermsOfUseLastAgreed(new Date().getTime());
-    this.context.trackEvent({
+  const onAcceptTermsOfUse = useCallback(() => {
+    dispatchSetTermsOfUseLastAgreed(new Date().getTime());
+    trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.TermsOfUseAccepted,
       properties: {
         location: 'Terms Of Use Popover',
       },
     });
-  };
+  }, [dispatchSetTermsOfUseLastAgreed, trackEvent]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  onSupportLinkClick = () => {
-    this.context.trackEvent(
+  const onSupportLinkClick = useCallback(() => {
+    trackEvent(
       {
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.SupportLinkClicked,
@@ -352,48 +587,20 @@ export default class Home extends PureComponent {
         contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
       },
     );
-  };
+  }, [trackEvent]);
   ///: END:ONLY_INCLUDE_IF
 
-  onOutdatedBrowserWarningClose = () => {
-    const { setOutdatedBrowserWarningLastShown } = this.props;
-    setOutdatedBrowserWarningLastShown(new Date().getTime());
-  };
+  const onOutdatedBrowserWarningClose = useCallback(() => {
+    dispatchSetOutdatedBrowserWarningLastShown(new Date().getTime());
+  }, [dispatchSetOutdatedBrowserWarningLastShown]);
 
-  renderNotifications() {
-    const { t } = this.context;
-
-    const {
-      history,
-      shouldShowSeedPhraseReminder,
-      isPopup,
-      shouldShowWeb3ShimUsageNotification,
-      setWeb3ShimUsageAlertDismissed,
-      originOfCurrentTab,
-      disableWeb3ShimUsageAlert,
-      infuraBlocked,
-      showOutdatedBrowserWarning,
-      newNftAddedMessage,
-      setNewNftAddedMessage,
-      newNetworkAddedName,
-      editedNetwork,
-      removeNftMessage,
-      setRemoveNftMessage,
-      newTokensImported,
-      newTokensImportedError,
-      setNewTokensImported,
-      setNewTokensImportedError,
-      clearNewNetworkAdded,
-      clearEditedNetwork,
-      isPrimarySeedPhraseBackedUp,
-    } = this.props;
-
+  const renderNotifications = () => {
     const onAutoHide = () => {
-      setNewNftAddedMessage('');
-      setRemoveNftMessage('');
-      setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
-      setNewTokensImportedError('');
-      setEditedNetwork();
+      dispatchSetNewNftAddedMessage('');
+      dispatchSetRemoveNftMessage('');
+      dispatchSetNewTokensImported(''); // Added this so we don't see the notif if user does not close it
+      dispatchSetNewTokensImportedError('');
+      clearEditedNetwork();
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -560,7 +767,7 @@ export default class Home extends PureComponent {
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}
                 ariaLabel={t('close')}
-                onClick={() => setNewTokensImported('')}
+                onClick={() => dispatchSetNewTokensImported('')}
                 className="home__new-tokens-imported-notification-close"
               />
             </Box>
@@ -606,7 +813,7 @@ export default class Home extends PureComponent {
           ])}
           ignoreText={t('dismiss')}
           onIgnore={(disable) => {
-            setWeb3ShimUsageAlertDismissed(originOfCurrentTab);
+            dispatchSetWeb3ShimUsageAlertDismissed(originOfCurrentTab);
             if (disable) {
               disableWeb3ShimUsageAlert();
             }
@@ -625,13 +832,13 @@ export default class Home extends PureComponent {
             if (isPopup) {
               global.platform.openExtensionInBrowser(backUpSRPRoute);
             } else {
-              history.push(backUpSRPRoute);
+              navigate(backUpSRPRoute);
             }
           }}
           infoText={t('backupApprovalInfo')}
         />
       ) : null,
-      infuraBlocked && this.state.canShowBlockageNotification ? (
+      infuraBlocked && canShowBlockageNotification ? (
         <HomeNotification
           key="infura-blocked"
           descriptionText={t('infuraBlockedNotification', [
@@ -647,9 +854,7 @@ export default class Home extends PureComponent {
           ])}
           ignoreText={t('dismiss')}
           onIgnore={() => {
-            this.setState({
-              canShowBlockageNotification: false,
-            });
+            setCanShowBlockageNotification(false);
           }}
         />
       ) : null,
@@ -658,7 +863,7 @@ export default class Home extends PureComponent {
           key="outdated-browser-notification"
           descriptionText={outdatedBrowserNotificationDescriptionText}
           acceptText={t('gotIt')}
-          onAccept={this.onOutdatedBrowserWarningClose}
+          onAccept={onOutdatedBrowserWarningClose}
         />
       ) : null,
     ].filter(Boolean);
@@ -666,15 +871,12 @@ export default class Home extends PureComponent {
     return items.length ? (
       <MultipleNotifications>{items}</MultipleNotifications>
     ) : null;
-  }
+  };
 
-  renderOnboardingPopover = () => {
-    const { t } = this.context;
-    const { setDataCollectionForMarketing } = this.props;
-
+  const renderOnboardingPopover = () => {
     const handleClose = () => {
-      setDataCollectionForMarketing(false);
-      this.context.trackEvent({
+      dispatchSetDataCollectionForMarketing(false);
+      trackEvent({
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
@@ -685,8 +887,8 @@ export default class Home extends PureComponent {
     };
 
     const handleConsent = (consent) => {
-      setDataCollectionForMarketing(consent);
-      this.context.trackEvent({
+      dispatchSetDataCollectionForMarketing(consent);
+      trackEvent({
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
@@ -761,13 +963,11 @@ export default class Home extends PureComponent {
     );
   };
 
-  renderPopover = () => {
-    const { setConnectedStatusPopoverHasBeenShown } = this.props;
-    const { t } = this.context;
+  const renderPopover = () => {
     return (
       <Popover
         title={t('whatsThis')}
-        onClose={setConnectedStatusPopoverHasBeenShown}
+        onClose={dispatchSetConnectedStatusPopoverHasBeenShown}
         className="home__connected-status-popover"
         showArrow
         CustomBackground={({ onClose }) => {
@@ -791,7 +991,7 @@ export default class Home extends PureComponent {
             </a>
             <Button
               type="primary"
-              onClick={setConnectedStatusPopoverHasBeenShown}
+              onClick={dispatchSetConnectedStatusPopoverHasBeenShown}
             >
               {t('dismiss')}
             </Button>
@@ -807,131 +1007,107 @@ export default class Home extends PureComponent {
     );
   };
 
-  render() {
-    const {
-      defaultHomeActiveTabName,
-      onTabClick,
-      useExternalServices,
-      setBasicFunctionalityModalOpen,
-      forgottenPassword,
-      participateInMetaMetrics,
-      dataCollectionForMarketing,
-      connectedStatusPopoverHasBeenShown,
-      isPopup,
-      showRecoveryPhraseReminder,
-      showTermsOfUsePopup,
-      showWhatsNewPopup,
-      hideWhatsNewPopup,
-      completedOnboarding,
-      onboardedInThisUISession,
-      announcementsToShow,
-      firstTimeFlowType,
-      newNetworkAddedConfigurationId,
-      showMultiRpcModal,
-      showUpdateModal,
-      isSeedlessPasswordOutdated,
-      isPrimarySeedPhraseBackedUp,
-      showConnectionsRemovedModal,
-      showShieldEntryModal,
-      isSocialLoginFlow,
-    } = this.props;
+  if (forgottenPassword) {
+    return <Navigate to={RESTORE_VAULT_ROUTE} replace />;
+  } else if (notificationClosing || redirecting) {
+    return null;
+  }
 
-    if (forgottenPassword) {
-      return <Redirect to={{ pathname: RESTORE_VAULT_ROUTE }} />;
-    } else if (this.state.notificationClosing || this.state.redirecting) {
-      return null;
-    }
+  const canSeeModals =
+    completedOnboarding &&
+    (!onboardedInThisUISession ||
+      firstTimeFlowType === FirstTimeFlowType.import) &&
+    !newNetworkAddedConfigurationId;
 
-    const canSeeModals =
-      completedOnboarding &&
-      (!onboardedInThisUISession ||
-        firstTimeFlowType === FirstTimeFlowType.import) &&
-      !newNetworkAddedConfigurationId;
+  const showWhatsNew =
+    canSeeModals &&
+    announcementsToShow &&
+    showWhatsNewPopup &&
+    !process.env.IN_TEST;
 
-    const showWhatsNew =
-      canSeeModals &&
-      announcementsToShow &&
-      showWhatsNewPopup &&
-      !process.env.IN_TEST;
+  const showMultiRpcEditModal =
+    canSeeModals && showMultiRpcModal && !showWhatsNew && !process.env.IN_TEST;
 
-    const showMultiRpcEditModal =
-      canSeeModals &&
-      showMultiRpcModal &&
-      !showWhatsNew &&
-      !process.env.IN_TEST;
+  const displayUpdateModal =
+    canSeeModals && showUpdateModal && !showWhatsNew && !showMultiRpcEditModal;
 
-    const displayUpdateModal =
-      canSeeModals &&
-      showUpdateModal &&
-      !showWhatsNew &&
-      !showMultiRpcEditModal;
+  const showTermsOfUse =
+    completedOnboarding &&
+    !onboardedInThisUISession &&
+    showTermsOfUsePopup &&
+    !isSocialLoginFlow;
 
-    const showTermsOfUse =
-      completedOnboarding &&
-      !onboardedInThisUISession &&
-      showTermsOfUsePopup &&
-      !isSocialLoginFlow;
-
-    return (
-      <div className="main-container main-container--has-shadow">
-        <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
+  return (
+    <div className="main-container main-container--has-shadow">
+      <Routes>
+        <Route path={CONNECTED_ROUTE} element={<ConnectedSites />} />
         <Route
           path={CONNECTED_ACCOUNTS_ROUTE}
-          component={ConnectedAccounts}
-          exact
+          element={<ConnectedAccounts />}
         />
-        <div className="home__container">
-          {dataCollectionForMarketing === null &&
-          participateInMetaMetrics === true
-            ? this.renderOnboardingPopover()
-            : null}
-          {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
-          {showMultiRpcEditModal && <MultiRpcEditModal />}
-          {displayUpdateModal && <UpdateModal />}
-          {showWhatsNew ? <WhatsNewModal onClose={hideWhatsNewPopup} /> : null}
-          {!showWhatsNew &&
-          showRecoveryPhraseReminder &&
-          !isPrimarySeedPhraseBackedUp ? (
-            <RecoveryPhraseReminder
-              onConfirm={this.onRecoveryPhraseReminderClose}
-            />
-          ) : null}
-          {showTermsOfUse ? (
-            <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
-          ) : null}
-          {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
-          {showShieldEntryModal && <ShieldEntryModal />}
-          {isPopup && !connectedStatusPopoverHasBeenShown
-            ? this.renderPopover()
-            : null}
-          <div className="home__main-view">
-            <AccountOverview
-              onTabClick={onTabClick}
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-              onSupportLinkClick={this.onSupportLinkClick}
-              ///: END:ONLY_INCLUDE_IF
-              defaultHomeActiveTabName={defaultHomeActiveTabName}
-              useExternalServices={useExternalServices}
-              setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
-            ></AccountOverview>
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
-              <div className="home__support">
-                <BetaHomeFooter />
-              </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              <div className="home__support">
-                <FlaskHomeFooter />
-              </div>
-              ///: END:ONLY_INCLUDE_IF
-            }
-          </div>
-          {this.renderNotifications()}
+      </Routes>
+      <div className="home__container">
+        {dataCollectionForMarketing === null &&
+        participateInMetaMetrics === true
+          ? renderOnboardingPopover()
+          : null}
+        {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
+        {showMultiRpcEditModal && <MultiRpcEditModal />}
+        {displayUpdateModal && <UpdateModal />}
+        {showWhatsNew ? (
+          <WhatsNewModal onClose={dispatchHideWhatsNewPopup} />
+        ) : null}
+        {!showWhatsNew &&
+        showRecoveryPhraseReminder &&
+        !isPrimarySeedPhraseBackedUp ? (
+          <RecoveryPhraseReminder onConfirm={onRecoveryPhraseReminderClose} />
+        ) : null}
+        {showTermsOfUse ? (
+          <TermsOfUsePopup onAccept={onAcceptTermsOfUse} />
+        ) : null}
+        {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
+        {showShieldEntryModal && (
+          <ShieldEntryModal
+            onClose={() => {
+              // TODO: implement
+            }}
+            onGetStarted={() => {
+              // TODO: implement
+            }}
+          />
+        )}
+        {isPopup && !connectedStatusPopoverHasBeenShown
+          ? renderPopover()
+          : null}
+        <div className="home__main-view">
+          <AccountOverview
+            onTabClick={onTabClick}
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+            onSupportLinkClick={onSupportLinkClick}
+            ///: END:ONLY_INCLUDE_IF
+            defaultHomeActiveTabName={defaultHomeActiveTabName}
+            useExternalServices={useExternalServices}
+            setBasicFunctionalityModalOpen={setBasicFunctionalityModalOpen}
+          />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
+            <div className="home__support">
+              <BetaHomeFooter />
+            </div>
+            ///: END:ONLY_INCLUDE_IF
+          }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+            <div className="home__support">
+              <FlaskHomeFooter />
+            </div>
+            ///: END:ONLY_INCLUDE_IF
+          }
         </div>
+        {renderNotifications()}
       </div>
-    );
-  }
+    </div>
+  );
 }
+
+export default Home;
