@@ -188,6 +188,14 @@ jobs:
       validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
     secrets: inherit
 
+  build-test-mv2-webpack:
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-mv2-webpack
+      build-command: yarn build:test:webpack:mv2
+      validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
+    secrets: inherit
+
   run-benchmarks:
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
