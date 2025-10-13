@@ -44,6 +44,7 @@ describe('BridgeControllerInit', () => {
       messenger: expect.any(Object),
       state: undefined,
       clientId: 'extension',
+      clientVersion: 'MOCK_VERSION',
       config: {
         customBridgeApiBaseUrl: BRIDGE_API_BASE_URL,
       },
