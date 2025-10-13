@@ -1344,7 +1344,21 @@ export default class MetamaskController extends EventEmitter {
     if (groupId) {
       const group = this.accountTreeController.getAccountGroupObject(groupId);
       if (group) {
-        await snapKeyring.setSelectedAccounts(group.accounts);
+        // FIXME: For now, only our non-EVM Snaps support this `keyring_setSelectedAccounts`
+        // method. There's also no way to know which optional method is supported on an
+        // account management Snap for now.
+        // Calling this on the SSK has an undesired side-effect on the Snap itself, to avoid
+        // making it fail, we ONLY scope this call to "multichain account groups" which are
+        // backed by non-EVM Snaps.
+        const hasNonEvmAccounts = group.accounts.some((id) => {
+          const account = this.accountsController.getAccount(id);
+
+          return Boolean(account) && !isEvmAccountType(account.type);
+        });
+
+        if (hasNonEvmAccounts) {
+          await snapKeyring.setSelectedAccounts(group.accounts);
+        }
       }
     }
   }
