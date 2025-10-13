@@ -27,6 +27,7 @@ describe('isBlockedUrl', () => {
           lastUpdated: 0,
           name: ListNames.MetaMask,
           c2DomainBlocklist: [],
+          blocklistPaths: {},
         },
       ],
     },
