@@ -49,6 +49,18 @@
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Launch Debug MetaMask Chrome",
+      "request": "launch",
+      "type": "chrome",
+      "runtimeArgs": [
+        "--load-extension=${workspaceFolder}/dist/chrome",
+        "--remote-debugging-port=9222"
+      ],
+      "url": "chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/background.html",
+      "sourceMaps": true,
+      "webRoot": "${workspaceFolder}"
     }
   ],
   "inputs": [

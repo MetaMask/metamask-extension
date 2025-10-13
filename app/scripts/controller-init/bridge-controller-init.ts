@@ -15,7 +15,7 @@ import {
   BridgeControllerMessenger,
 } from './messengers';
 
-type FetchWithCacheOptions = {
+type FetchWithCacheOptions = RequestInit & {
   cacheOptions?: {
     cacheRefreshTime: number;
   };
@@ -49,14 +49,10 @@ export const BridgeControllerInit: ControllerInitFunction<
     getLayer1GasFee: (...args) =>
       transactionController.getLayer1GasFee(...args),
 
-    fetchFn: async (
-      url,
-      {
-        cacheOptions,
-        functionName,
-        ...requestOptions
-      }: FetchWithCacheOptions = {},
-    ) => {
+    fetchFn: async (url, init?) => {
+      const { cacheOptions, functionName, ...requestOptions } =
+        (init as FetchWithCacheOptions) ?? {};
+
       if (functionName === 'fetchBridgeTokens') {
         return await fetchWithCache({
           url: url.toString(),

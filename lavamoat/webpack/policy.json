@@ -935,6 +935,7 @@
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
+        "@metamask/bridge-controller>@microsoft/fetch-event-source": true,
         "@metamask/bridge-controller>bignumber.js": true,
         "lodash": true,
         "reselect": true,
@@ -1003,6 +1004,18 @@
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "lodash": true
+      }
+    },
+    "@metamask/core-backend": {
+      "globals": {
+        "URL": true,
+        "WebSocket": true,
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/utils": true,
+        "uuid": true
       }
     },
     "@metamask/delegation-controller": {
@@ -2175,6 +2188,18 @@
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
+      }
+    },
+    "@metamask/bridge-controller>@microsoft/fetch-event-source": {
+      "globals": {
+        "AbortController": true,
+        "TextDecoder": true,
+        "clearTimeout": true,
+        "document.addEventListener": true,
+        "document.hidden": true,
+        "document.removeEventListener": true,
+        "fetch": true,
+        "setTimeout": true
       }
     },
     "@ngraveio/bc-ur": {
