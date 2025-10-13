@@ -16,6 +16,7 @@ import {
   setOnboardingModalOpen,
 } from '../../../../ducks/rewards';
 import { ModalBody } from '../../../component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 /**
  * OnboardingIntroStep Component
@@ -25,7 +26,7 @@ import { ModalBody } from '../../../component-library';
  */
 const OnboardingIntroStep: React.FC = () => {
   const dispatch = useDispatch();
-
+  const t = useI18nContext();
   /**
    * Handles the confirm/continue button press
    */
@@ -59,14 +60,14 @@ const OnboardingIntroStep: React.FC = () => {
             lineHeight: '1',
           }}
         >
-          Rewards are here
+          {t('rewardsOnboardingIntroTitle')}
         </Text>
       </Box>
       <Text
         variant={TextVariant.BodyMd}
         className={'text-center text-white font-medium'}
       >
-        Earn points for your activity. Advance through levels to unlock rewards.
+        {t('rewardsOnboardingIntroDescription')}
       </Text>
     </Box>
   );
@@ -75,7 +76,10 @@ const OnboardingIntroStep: React.FC = () => {
    * Renders the intro image section
    */
   const renderImage = () => (
-    <Box className="flex justify-center items-center my-4 absolute">
+    <Box
+      className="flex justify-center items-center my-4 absolute"
+      style={{ top: 180 }}
+    >
       <img
         src="/images/rewards/rewards-onboarding-intro.png"
         alt="Rewards onboarding intro"
@@ -89,26 +93,21 @@ const OnboardingIntroStep: React.FC = () => {
    * Renders the action buttons section
    */
   const renderActions = () => (
-    <Box className="flex flex-col justify-end" style={{ height: '75%' }}>
+    <Box className="flex flex-col justify-end flex-1">
       <Button
         size={ButtonSize.Lg}
         onClick={handleNext}
         className="w-full bg-white my-2"
       >
-        <Text
-          variant={TextVariant.BodyMd}
-          className="text-text-default font-medium"
-        >
-          Claim 250 points
-        </Text>
+        {t('rewardsOnboardingIntroStepConfirm')}
       </Button>
       <Button
         size={ButtonSize.Lg}
         onClick={handleClose}
-        className="w-full bg-gray-500 border-gray-500"
+        className="w-full bg-gray-500 border-gray-500 hover:bg-primary-default-hover"
       >
         <Text variant={TextVariant.BodyMd} className="text-white font-medium">
-          Not Now
+          {t('rewardsOnboardingIntroStepSkip')}
         </Text>
       </Button>
     </Box>
@@ -126,7 +125,7 @@ const OnboardingIntroStep: React.FC = () => {
             'url(/images/rewards/rewards-onboarding-intro-bg.png)',
         }}
       >
-        <ModalBody className="w-full h-full pt-8 pb-4">
+        <ModalBody className="w-full h-full pt-8 pb-4 flex flex-col">
           {/* Title Section */}
           {renderTitle()}
 
