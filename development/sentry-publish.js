@@ -74,14 +74,15 @@ async function start() {
   } else {
     // create sentry release
     console.log(`creating Sentry release for "${version}"...`);
-    await runCommand('sentry-cli', ['releases', 'new', version]);
+    const release = `metamask-extension@${version}`;
+    await runCommand('sentry-cli', ['releases', 'new', release]);
     console.log(
       `removing any existing files from Sentry release "${version}"...`,
     );
     await runCommand('sentry-cli', [
       'releases',
       'files',
-      version,
+      release,
       'delete',
       '--all',
     ]);
@@ -97,7 +98,7 @@ async function start() {
   // upload sentry source and sourcemaps
   await runInShell('./development/sentry-upload-artifacts.sh', [
     '--release',
-    version,
+    release,
     ...additionalUploadArgs,
   ]);
 }
