@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import {
   UnifiedSwapBridgeEventName,
   // TODO: update this with all non-EVM chains when bitcoin added.
@@ -13,6 +13,7 @@ import {
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
   AWAITING_SIGNATURES_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { resetBackgroundSwapsState } from '../../store/actions';
 import {
@@ -54,6 +55,12 @@ const CrossChainSwap = () => {
 
   const history = useHistory();
   const dispatch = useDispatch();
+
+  const { search } = useLocation();
+
+  const isFromTransactionShield = new URLSearchParams(search).get(
+    'isFromTransactionShield',
+  );
 
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
@@ -102,10 +109,16 @@ const CrossChainSwap = () => {
 
   const redirectToDefaultRoute = async () => {
     await resetControllerAndInputStates();
-    history.push({
-      pathname: DEFAULT_ROUTE,
-      state: { stayOnHomePage: true },
-    });
+    if (isFromTransactionShield) {
+      history.push({
+        pathname: TRANSACTION_SHIELD_ROUTE,
+      });
+    } else {
+      history.push({
+        pathname: DEFAULT_ROUTE,
+        state: { stayOnHomePage: true },
+      });
+    }
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
   };
