@@ -293,7 +293,29 @@ class Driver {
    */
   async fill(rawLocator, input) {
     const element = await this.findElement(rawLocator);
-    await element.fill(input);
+
+    // To mitigate flakiness when input keys are sent twice
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await element.fill(input);
+
+      try {
+        await this.waitUntil(
+          async () => (await element.getAttribute('value')) === input,
+          { interval: 50, timeout: 1000 },
+        );
+        return element;
+      } catch (e) {
+        // Mismatch; try again if attempts remain.
+      }
+    }
+
+    const current = await element.getAttribute('value');
+    if (current !== input) {
+      throw new Error(
+        `Failed to set exact value after retry. Expected '${input}', got '${current}'.`,
+      );
+    }
+
     return element;
   }
 
