@@ -79,7 +79,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
-import { useSubscriptionPricing } from '../../../hooks/subscription/useSubscriptionPricing';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
@@ -98,8 +97,6 @@ const TransactionShield = () => {
 
   const dispatch = useDispatch();
 
-  // refetch pricing to get the latest pricing (in case user need reapproval transaction)
-  useSubscriptionPricing();
   const {
     customerId,
     subscriptions,
