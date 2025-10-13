@@ -7,20 +7,13 @@ import { handleFetch, HttpError } from '@metamask/controller-utils';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { trace } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { getEnvironmentType } from '../lib/util';
 import { ControllerInitFunction } from './types';
 import {
   BridgeControllerInitMessenger,
   BridgeControllerMessenger,
 } from './messengers';
-import { MINUTE, SECOND } from '../../../shared/constants/time';
-
-type FetchWithCacheOptions = {
-  cacheOptions?: {
-    cacheRefreshTime: number;
-  };
-  functionName?: string;
-};
 
 /**
  * Initialize the bridge controller.
@@ -48,6 +41,7 @@ export const BridgeControllerInit: ControllerInitFunction<
 
     fetchFn: async (url, requestOptions) => {
       const urlString = url.toString();
+      // Cache token list for 10 minutes
       if (urlString.includes('getTokens')) {
         return await fetchWithCache({
           url: urlString,
@@ -56,7 +50,7 @@ export const BridgeControllerInit: ControllerInitFunction<
           functionName: 'fetchBridgeTokens',
         });
       }
-
+      // Cache spot prices for 30 seconds
       if (urlString.includes('spot-prices')) {
         return await fetchWithCache({
           url: urlString,
@@ -65,14 +59,14 @@ export const BridgeControllerInit: ControllerInitFunction<
           functionName: 'fetchAssetExchangeRates',
         });
       }
-
+      // Use handleFetch for getQuote
       if (urlString.includes('getQuote?')) {
         return await handleFetch(url, {
           method: 'GET',
           ...requestOptions,
         });
       }
-
+      // Use fetch for all other requests
       const response = await fetch(url, requestOptions);
       if (!response.ok) {
         throw new HttpError(
