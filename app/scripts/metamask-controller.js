@@ -759,28 +759,18 @@ export default class MetamaskController extends EventEmitter {
     // on/off shield controller based on shield subscription
     this.controllerMessenger.subscribe(
       'SubscriptionController:stateChange',
-      previousValueComparator((prevState, currState) => {
-        // check if the shield subscription was active before the state change
-        const hadSubscriptionPreviously = getIsShieldSubscriptionActive(
-          prevState.subscriptions,
-        );
+      (state) => {
         // check if the shield subscription is active after the state change
         const hasActiveShieldSubscription = getIsShieldSubscriptionActive(
-          currState.subscriptions,
+          state.subscriptions,
         );
-        // if the shield subscription is the same before and after the state change, do nothing
-        if (hasActiveShieldSubscription === hadSubscriptionPreviously) {
-          return;
-        }
 
         if (hasActiveShieldSubscription) {
-          // start polling for the subscriptions
-          this.subscriptionController.startPolling();
           this.shieldController.start();
         } else {
           this.shieldController.stop();
         }
-      }, this.subscriptionController.state),
+      },
     );
 
     const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
@@ -2258,6 +2248,9 @@ export default class MetamaskController extends EventEmitter {
       syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
 
       // subscription
+      subscriptionsStartPolling: this.subscriptionController.startPolling.bind(
+        this.subscriptionController,
+      ),
       getSubscriptions: this.subscriptionController.getSubscriptions.bind(
         this.subscriptionController,
       ),

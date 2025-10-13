@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
   Product,
   PRODUCT_TYPES,
-  ProductType,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
   SubscriptionStatus,
 } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -55,6 +55,21 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { DAY } from '../../../../shared/constants/time';
 import LoadingScreen from '../../../components/ui/loading-screen';
+import {
+  setSecurityAlertsEnabled,
+  setUsePhishDetect,
+  setUseTransactionSimulations,
+} from '../../../store/actions';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  getIsSecurityAlertsEnabled,
+  getUsePhishDetect,
+  getUseTransactionSimulations,
+} from '../../../selectors/selectors';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
@@ -66,13 +81,21 @@ const TransactionShield = () => {
   const navigate = useNavigate();
   const { formatCurrency } = useFormatters();
 
+  const trackEvent = useContext(MetaMetricsContext);
+
+  const securityAlertsEnabled = useSelector(getIsSecurityAlertsEnabled);
+  const usePhishDetect = useSelector(getUsePhishDetect);
+  const useTransactionSimulations = useSelector(getUseTransactionSimulations);
+
+  const dispatch = useDispatch();
+
   const {
     customerId,
     subscriptions,
     loading: subscriptionsLoading,
   } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
-    'shield' as ProductType,
+    PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
   const isCancelled =
@@ -144,11 +167,42 @@ const TransactionShield = () => {
   const showSkeletonLoader = subscriptionsLoading;
 
   useEffect(() => {
-    if (!shieldSubscription) {
+    if (shieldSubscription) {
+      // set security alerts enabled to true
+      if (!securityAlertsEnabled) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.SettingsUpdated,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            blockaid_alerts_enabled: true,
+          },
+        });
+        setSecurityAlertsEnabled(true);
+      }
+
+      // set phishing detection to true
+      if (!usePhishDetect) {
+        dispatch(setUsePhishDetect(true));
+      }
+
+      // set transaction simulations to true
+      if (!useTransactionSimulations) {
+        setUseTransactionSimulations(true);
+      }
+    } else {
       // redirect to shield plan page if user doesn't have a subscription
       navigate(SHIELD_PLAN_ROUTE);
     }
-  }, [navigate, shieldSubscription]);
+  }, [
+    navigate,
+    shieldSubscription,
+    securityAlertsEnabled,
+    usePhishDetect,
+    useTransactionSimulations,
+    dispatch,
+    trackEvent,
+  ]);
 
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
