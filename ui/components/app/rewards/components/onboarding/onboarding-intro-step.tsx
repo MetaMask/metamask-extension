@@ -10,13 +10,13 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { OnboardingStep } from '../../../../ducks/rewards/types';
+import { OnboardingStep } from '../../../../../ducks/rewards/types';
 import {
   setOnboardingActiveStep,
   setOnboardingModalOpen,
-} from '../../../../ducks/rewards';
-import { ModalBody } from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+} from '../../../../../ducks/rewards';
+import { ModalBody } from '../../../../component-library';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 /**
  * OnboardingIntroStep Component
