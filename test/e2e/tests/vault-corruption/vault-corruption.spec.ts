@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import type { WebElement } from 'selenium-webdriver';
 import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
