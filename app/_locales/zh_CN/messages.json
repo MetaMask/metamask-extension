@@ -4077,9 +4077,6 @@
     "message": "$1 图标",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "选择一个选项继续"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "启动扩展程序"
   },
@@ -7155,9 +7152,6 @@
   },
   "welcomeBack": {
     "message": "欢迎回来"
-  },
-  "welcomeToMetaMask": {
-    "message": "让我们开始吧"
   },
   "whatsThis": {
     "message": "这是什么？"

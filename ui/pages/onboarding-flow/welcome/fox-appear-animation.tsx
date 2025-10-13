@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useRive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
 import Spinner from '../../../components/ui/spinner';
@@ -12,8 +12,6 @@ type FoxAppearAnimationProps = {
 export default function FoxAppearAnimation({
   isLoader = false,
 }: FoxAppearAnimationProps) {
-  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
   const { rive, RiveComponent } = useRive({
     src: './images/riv_animations/fox_appear.riv',
     stateMachines: 'FoxRaiseUp',
@@ -30,8 +28,6 @@ export default function FoxAppearAnimation({
     if (rive) {
       // Get the state machine inputs
       const inputs = rive.stateMachineInputs('FoxRaiseUp');
-
-      console.log('inputs', inputs);
 
       if (inputs) {
         // Fire the Start trigger to begin the animation
@@ -54,13 +50,6 @@ export default function FoxAppearAnimation({
         rive.play();
       }
     }
-
-    // Cleanup timeout on unmount
-    return () => {
-      if (animationTimeoutRef.current) {
-        clearTimeout(animationTimeoutRef.current);
-      }
-    };
   }, [rive]);
 
   return (
