@@ -483,7 +483,6 @@ describe('AppStateController', () => {
     it('set the shieldPausedToastLastClickedOrClosed time', async () => {
       await withController(({ controller }) => {
         const mockParams = Date.now();
-
         controller.setShieldPausedToastLastClickedOrClosed(mockParams);
 
         expect(
@@ -498,10 +497,11 @@ describe('AppStateController', () => {
       await withController(({ controller }) => {
         const mockParams = Date.now();
         controller.setShieldEndingToastLastClickedOrClosed(mockParams);
+
+        expect(
+          controller.state.shieldEndingToastLastClickedOrClosed,
+        ).toStrictEqual(null);
       });
-      expect(
-        controller.state.shieldEndingToastLastClickedOrClosed,
-      ).toStrictEqual(mockParams);
     });
   });
 
