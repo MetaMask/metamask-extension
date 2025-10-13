@@ -769,13 +769,11 @@ export const getBridgeQuotes = createSelector(
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
   ],
-  (controllerStates, sortOrder, selectedQuote) => {
-    const quotes = selectBridgeQuotes(controllerStates, {
+  (controllerStates, sortOrder, selectedQuote) =>
+    selectBridgeQuotes(controllerStates, {
       sortOrder,
       selectedQuote,
-    });
-    return quotes;
-  },
+    }),
 );
 
 export const getIsBridgeTx = createDeepEqualSelector(

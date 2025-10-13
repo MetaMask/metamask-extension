@@ -3,7 +3,7 @@ import {
   BridgeController,
   UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
 } from '@metamask/bridge-controller';
-import { HttpError } from '@metamask/controller-utils';
+import { handleFetch, HttpError } from '@metamask/controller-utils';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { trace } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -66,11 +66,18 @@ export const BridgeControllerInit: ControllerInitFunction<
         });
       }
 
+      if (urlString.includes('getQuote?')) {
+        return await handleFetch(url, {
+          method: 'GET',
+          ...requestOptions,
+        });
+      }
+
       const response = await fetch(url, requestOptions);
       if (!response.ok) {
         throw new HttpError(
           response.status,
-          `=====Fetch failed with status '${response.status}' for request ${urlString}`,
+          `Fetch failed with status '${response.status}' for request ${urlString}`,
         );
       }
       return response;

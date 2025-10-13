@@ -133,7 +133,7 @@
   },
   "resolutions": {
     "http-cache-semantics": "^4.1.1",
-    "@metamask/bridge-controller@50.0.0": "npm:@metamask-previews/bridge-controller@50.0.0-preview-5cf3ff79",
+    "@metamask/bridge-controller@^50.0.0": "npm:@metamask-previews/bridge-controller@50.0.0-preview-5cf3ff79",
     "semver-regex": "^3.1.4",
     "base-x@^3.0.x": "^3.0.11",
     "base-x@3.0.9": "^3.0.11",
