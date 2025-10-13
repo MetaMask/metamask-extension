@@ -5651,13 +5651,16 @@
     "message": "Impacted wallet address"
   },
   "shieldClaimInvalidEmail": {
-    "message": "Invalid email"
+    "message": "Please enter a valid email address"
+  },
+  "shieldClaimInvalidRequired": {
+    "message": "This field is required"
   },
   "shieldClaimInvalidTxHash": {
-    "message": "Invalid transaction hash"
+    "message": "Please enter a valid transaction hash"
   },
   "shieldClaimInvalidWalletAddress": {
-    "message": "Invalid wallet address"
+    "message": "Please enter a valid wallet address"
   },
   "shieldClaimReimbursementWalletAddress": {
     "message": "Wallet address for reimbursement"
