@@ -343,7 +343,6 @@ export function subscriptionsStartPolling(): ThunkAction<
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      console.log('[subscriptionsStartPolling]');
       await submitRequestToBackground('subscriptionsStartPolling');
     } catch (error) {
       log.error('[subscriptionsStartPolling] error', error);
