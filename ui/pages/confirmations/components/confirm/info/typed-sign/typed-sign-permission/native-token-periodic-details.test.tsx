@@ -37,6 +37,7 @@ describe('NativeTokenPeriodicDetails', () => {
   const defaultProps = {
     permission: mockPermission,
     expiry: mockDecodedPermission.expiry,
+    chainId: mockDecodedPermission.chainId,
   };
 
   const getMockStore = () => {

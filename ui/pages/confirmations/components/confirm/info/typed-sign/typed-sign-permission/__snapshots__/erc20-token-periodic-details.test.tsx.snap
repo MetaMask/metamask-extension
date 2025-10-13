@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Erc20TokenPeriodicDetails basic functionality renders with all required props 1`] = `
+exports[`Erc20TokenPeriodicDetails basic functionality displays the allowance once token decimals are resolved 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="native-token-periodic-details-section"
+    data-testid="erc20-token-periodic-details-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -36,9 +36,9 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders with all required
               style="min-width: 0;"
             >
               <div
-                aria-describedby="tippy-tooltip-1"
+                aria-describedby="tippy-tooltip-3"
                 class=""
-                data-original-title="4,660"
+                data-original-title="46.6"
                 data-tooltipped=""
                 style="display: inline;"
                 tabindex="0"
@@ -47,7 +47,7 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders with all required
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                   style="white-space: pre-wrap;"
                 >
-                  4,660
+                  46.6
                 </p>
               </div>
             </div>
@@ -90,7 +90,7 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders with all required
         </div>
       </div>
       <p
-        class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
         Every day
       </p>
@@ -160,11 +160,11 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders with all required
 </div>
 `;
 
-exports[`Erc20TokenPeriodicDetails basic functionality renders with undefined decimals (shows skeleton) 1`] = `
+exports[`Erc20TokenPeriodicDetails basic functionality formats the allowance based on the resolved token decimals 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="native-token-periodic-details-section"
+    data-testid="erc20-token-periodic-details-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -196,9 +196,9 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders with undefined de
               style="min-width: 0;"
             >
               <div
-                aria-describedby="tippy-tooltip-3"
+                aria-describedby="tippy-tooltip-4"
                 class=""
-                data-original-title="4,660"
+                data-original-title="4.66"
                 data-tooltipped=""
                 style="display: inline;"
                 tabindex="0"
@@ -207,7 +207,7 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders with undefined de
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                   style="white-space: pre-wrap;"
                 >
-                  4,660
+                  4.66
                 </p>
               </div>
             </div>
@@ -250,7 +250,148 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders with undefined de
         </div>
       </div>
       <p
-        class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Every day
+      </p>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Start date
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-col"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          13 February 2009
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Expiration
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-col"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          14 February 2009
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Erc20TokenPeriodicDetails basic functionality renders with all required props 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="erc20-token-periodic-details-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Allowance
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Frequency
+          </p>
+        </div>
+      </div>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
         Every day
       </p>
@@ -324,7 +465,7 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders without expiry 1`
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="native-token-periodic-details-section"
+    data-testid="erc20-token-periodic-details-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -350,28 +491,9 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders without expiry 1`
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-2"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -410,7 +532,7 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders without expiry 1`
         </div>
       </div>
       <p
-        class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
         Every day
       </p>
@@ -446,326 +568,6 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders without expiry 1`
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
           13 February 2009
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Erc20TokenPeriodicDetails data display renders with different decimal values 1`] = `
-<div>
-  <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="native-token-periodic-details-section"
-  >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Allowance
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-5"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Frequency
-          </p>
-        </div>
-      </div>
-      <p
-        class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-      >
-        Every day
-      </p>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Start date
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-col"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          13 February 2009
-        </p>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Expiration
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-col"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          14 February 2009
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Erc20TokenPeriodicDetails data display renders with zero decimals 1`] = `
-<div>
-  <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="native-token-periodic-details-section"
-  >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Allowance
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-6"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Frequency
-          </p>
-        </div>
-      </div>
-      <p
-        class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
-      >
-        Every day
-      </p>
-    </div>
-    <div
-      style="padding-top: 8px; padding-bottom: 8px;"
-    >
-      <div
-        style="height: 1px; margin-left: -8px; margin-right: -8px;"
-      />
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Start date
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-col"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          13 February 2009
-        </p>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Expiration
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-col"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          14 February 2009
         </p>
       </div>
     </div>
@@ -777,7 +579,7 @@ exports[`Erc20TokenPeriodicDetails edge cases handles very large period amount 1
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="native-token-periodic-details-section"
+    data-testid="erc20-token-periodic-details-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -803,28 +605,9 @@ exports[`Erc20TokenPeriodicDetails edge cases handles very large period amount 1
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-9"
-                class=""
-                data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  1,461,501,637,3...
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -863,7 +646,7 @@ exports[`Erc20TokenPeriodicDetails edge cases handles very large period amount 1
         </div>
       </div>
       <p
-        class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
         Every day
       </p>
@@ -937,7 +720,7 @@ exports[`Erc20TokenPeriodicDetails period duration variations renders with hourl
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="native-token-periodic-details-section"
+    data-testid="erc20-token-periodic-details-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -963,28 +746,9 @@ exports[`Erc20TokenPeriodicDetails period duration variations renders with hourl
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-8"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1023,7 +787,7 @@ exports[`Erc20TokenPeriodicDetails period duration variations renders with hourl
         </div>
       </div>
       <p
-        class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
         Every hour
       </p>
@@ -1097,7 +861,7 @@ exports[`Erc20TokenPeriodicDetails period duration variations renders with weekl
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="native-token-periodic-details-section"
+    data-testid="erc20-token-periodic-details-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1123,28 +887,9 @@ exports[`Erc20TokenPeriodicDetails period duration variations renders with weekl
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-7"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1183,7 +928,7 @@ exports[`Erc20TokenPeriodicDetails period duration variations renders with weekl
         </div>
       </div>
       <p
-        class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
         Every week
       </p>

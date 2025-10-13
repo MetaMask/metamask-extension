@@ -1,9 +1,16 @@
 import { Erc20TokenPeriodicPermission } from '@metamask/gator-permissions-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { waitFor } from '@testing-library/react';
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import * as tokenUtils from '../../../../../utils/token';
 import { Erc20TokenPeriodicDetails } from './erc20-token-periodic-details';
+
+jest.mock('../../../../../utils/token', () => ({
+  ...jest.requireActual('../../../../../utils/token'),
+  fetchErc20Decimals: jest.fn().mockResolvedValue(2),
+}));
 
 describe('Erc20TokenPeriodicDetails', () => {
   const mockDecodedPermission = {
@@ -32,8 +39,8 @@ describe('Erc20TokenPeriodicDetails', () => {
 
   const defaultProps = {
     permission: mockPermission,
-    decimals: 18,
     expiry: mockDecodedPermission.expiry,
+    chainId: mockDecodedPermission.chainId,
   };
 
   const getMockStore = () => {
@@ -62,12 +69,69 @@ describe('Erc20TokenPeriodicDetails', () => {
       expect(container).toMatchSnapshot();
     });
 
-    it('renders with undefined decimals (shows skeleton)', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenPeriodicDetails {...defaultProps} decimals={undefined} />,
+    it('displays the allowance once token decimals are resolved', async () => {
+      const { container, getByTestId } = renderWithConfirmContextProvider(
+        <Erc20TokenPeriodicDetails {...defaultProps} />,
         getMockStore(),
       );
+
+      await waitFor(() => {
+        expect(
+          (tokenUtils as jest.Mocked<typeof tokenUtils>).fetchErc20Decimals,
+        ).toHaveBeenCalled();
+      });
+
       expect(container).toMatchSnapshot();
+
+      const detailsSection = getByTestId(
+        'erc20-token-periodic-details-section',
+      );
+
+      expect(detailsSection).toBeInTheDocument();
+
+      expect(
+        detailsSection?.textContent?.includes('46.6'), // 0x1234 / 10^2
+      ).toBe(true);
+    });
+
+    it('formats the allowance based on the resolved token decimals', async () => {
+      (
+        tokenUtils as jest.Mocked<typeof tokenUtils>
+      ).fetchErc20Decimals.mockResolvedValue(3);
+
+      const { container, getByTestId } = renderWithConfirmContextProvider(
+        <Erc20TokenPeriodicDetails {...defaultProps} />,
+        getMockStore(),
+      );
+
+      await waitFor(() => {
+        expect(
+          (tokenUtils as jest.Mocked<typeof tokenUtils>).fetchErc20Decimals,
+        ).toHaveBeenCalled();
+      });
+
+      expect(container).toMatchSnapshot();
+
+      const detailsSection = getByTestId(
+        'erc20-token-periodic-details-section',
+      );
+
+      expect(detailsSection).toBeInTheDocument();
+
+      expect(
+        detailsSection?.textContent?.includes('4.66'), // 0x1234 / 10^3
+      ).toBe(true);
+    });
+
+    it('displays correct test ID', () => {
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <Erc20TokenPeriodicDetails {...defaultProps} />,
+        getMockStore(),
+      );
+
+      expect(
+        getByTestId('erc20-token-periodic-details-section'),
+      ).toBeInTheDocument();
     });
   });
 
@@ -90,35 +154,6 @@ describe('Erc20TokenPeriodicDetails', () => {
           getMockStore(),
         ),
       ).toThrow('Start time is required');
-    });
-  });
-
-  describe('data display', () => {
-    it('displays correct test ID', () => {
-      const { getByTestId } = renderWithConfirmContextProvider(
-        <Erc20TokenPeriodicDetails {...defaultProps} />,
-        getMockStore(),
-      );
-
-      expect(
-        getByTestId('erc20-token-periodic-details-section'),
-      ).toBeInTheDocument();
-    });
-
-    it('renders with different decimal values', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenPeriodicDetails {...defaultProps} decimals={6} />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
-    });
-
-    it('renders with zero decimals', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenPeriodicDetails {...defaultProps} decimals={0} />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
     });
   });
 

@@ -1,339 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Erc20TokenStreamDetails basic functionality renders with all required props 1`] = `
-<div>
-  <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="erc20-token-stream-details-section"
-  >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Initial allowance
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-1"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Max allowance
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-2"
-                class=""
-                data-original-title="22,136"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  22,136
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Start date
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-col"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          13 February 2009
-        </p>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Expiration
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-col"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          14 February 2009
-        </p>
-      </div>
-    </div>
-  </div>
-  <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="erc20-token-stream-stream-rate-section"
-  >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Stream rate
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-3"
-                class=""
-                data-original-title="39,612"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  39,612
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Available per day
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-4"
-                class=""
-                data-original-title="3,422,476,800"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  3,422,476,800
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Erc20TokenStreamDetails basic functionality renders with undefined decimals (shows skeleton) 1`] = `
+exports[`Erc20TokenStreamDetails basic functionality displays the allowance once token decimals are resolved 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -371,7 +38,7 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
               <div
                 aria-describedby="tippy-tooltip-15"
                 class=""
-                data-original-title="4,660"
+                data-original-title="46.6"
                 data-tooltipped=""
                 style="display: inline;"
                 tabindex="0"
@@ -380,7 +47,7 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                   style="white-space: pre-wrap;"
                 >
-                  4,660
+                  46.6
                 </p>
               </div>
             </div>
@@ -437,7 +104,7 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
               <div
                 aria-describedby="tippy-tooltip-16"
                 class=""
-                data-original-title="22,136"
+                data-original-title="221.36"
                 data-tooltipped=""
                 style="display: inline;"
                 tabindex="0"
@@ -446,7 +113,7 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                   style="white-space: pre-wrap;"
                 >
-                  22,136
+                  221.4
                 </p>
               </div>
             </div>
@@ -562,7 +229,7 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
               <div
                 aria-describedby="tippy-tooltip-17"
                 class=""
-                data-original-title="39,612"
+                data-original-title="396.12"
                 data-tooltipped=""
                 style="display: inline;"
                 tabindex="0"
@@ -571,7 +238,7 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                   style="white-space: pre-wrap;"
                 >
-                  39,612
+                  396.1
                 </p>
               </div>
             </div>
@@ -628,7 +295,7 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
               <div
                 aria-describedby="tippy-tooltip-18"
                 class=""
-                data-original-title="3,422,476,800"
+                data-original-title="34,224,768"
                 data-tooltipped=""
                 style="display: inline;"
                 tabindex="0"
@@ -637,11 +304,601 @@ exports[`Erc20TokenStreamDetails basic functionality renders with undefined deci
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
                   style="white-space: pre-wrap;"
                 >
-                  3,422,476,800
+                  34,224,768
                 </p>
               </div>
             </div>
           </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Erc20TokenStreamDetails basic functionality formats the allowance based on the resolved token decimals 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="erc20-token-stream-details-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Initial allowance
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-19"
+                class=""
+                data-original-title="4.66"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  4.66
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Max allowance
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-20"
+                class=""
+                data-original-title="22.136"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  22.14
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Start date
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-col"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          13 February 2009
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Expiration
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-col"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          14 February 2009
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="erc20-token-stream-stream-rate-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Stream rate
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-21"
+                class=""
+                data-original-title="39.612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  39.61
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Available per day
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+          >
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-22"
+                class=""
+                data-original-title="3,422,476.8"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  3,422,477
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Erc20TokenStreamDetails basic functionality renders with all required props 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="erc20-token-stream-details-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Initial allowance
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Max allowance
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Start date
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-col"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          13 February 2009
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Expiration
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-col"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          14 February 2009
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="erc20-token-stream-stream-rate-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Stream rate
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
+        </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xa0B86...a8e4a
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Available per day
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row"
+      >
+        <div
+          class="mr-1"
+        >
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -696,28 +953,9 @@ exports[`Erc20TokenStreamDetails basic functionality renders without expiry 1`] 
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-11"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -762,28 +1000,9 @@ exports[`Erc20TokenStreamDetails basic functionality renders without expiry 1`] 
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-12"
-                class=""
-                data-original-title="22,136"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  22,136
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -860,28 +1079,9 @@ exports[`Erc20TokenStreamDetails basic functionality renders without expiry 1`] 
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-13"
-                class=""
-                data-original-title="39,612"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  39,612
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -926,28 +1126,9 @@ exports[`Erc20TokenStreamDetails basic functionality renders without expiry 1`] 
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-14"
-                class=""
-                data-original-title="3,422,476,800"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  3,422,476,800
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1002,28 +1183,9 @@ exports[`Erc20TokenStreamDetails basic functionality renders without initial amo
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-5"
-                class=""
-                data-original-title="22,136"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  22,136
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1127,28 +1289,9 @@ exports[`Erc20TokenStreamDetails basic functionality renders without initial amo
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-6"
-                class=""
-                data-original-title="39,612"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  39,612
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1193,28 +1336,9 @@ exports[`Erc20TokenStreamDetails basic functionality renders without initial amo
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-7"
-                class=""
-                data-original-title="3,422,476,800"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  3,422,476,800
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1269,28 +1393,9 @@ exports[`Erc20TokenStreamDetails basic functionality renders without max amount 
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-8"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1394,28 +1499,9 @@ exports[`Erc20TokenStreamDetails basic functionality renders without max amount 
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-9"
-                class=""
-                data-original-title="39,612"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  39,612
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1460,694 +1546,9 @@ exports[`Erc20TokenStreamDetails basic functionality renders without max amount 
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-10"
-                class=""
-                data-original-title="3,422,476,800"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  3,422,476,800
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Erc20TokenStreamDetails data display renders with different decimal values 1`] = `
-<div>
-  <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="erc20-token-stream-details-section"
-  >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Initial allowance
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-23"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Max allowance
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-24"
-                class=""
-                data-original-title="22,136"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  22,136
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Start date
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-col"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          13 February 2009
-        </p>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Expiration
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-col"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          14 February 2009
-        </p>
-      </div>
-    </div>
-  </div>
-  <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="erc20-token-stream-stream-rate-section"
-  >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Stream rate
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-25"
-                class=""
-                data-original-title="39,612"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  39,612
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Available per day
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-26"
-                class=""
-                data-original-title="3,422,476,800"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  3,422,476,800
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-`;
-
-exports[`Erc20TokenStreamDetails data display renders with zero decimals 1`] = `
-<div>
-  <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="erc20-token-stream-details-section"
-  >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Initial allowance
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-27"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Max allowance
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-28"
-                class=""
-                data-original-title="22,136"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  22,136
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Start date
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-col"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          13 February 2009
-        </p>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Expiration
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-col"
-      >
-        <p
-          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
-        >
-          14 February 2009
-        </p>
-      </div>
-    </div>
-  </div>
-  <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="erc20-token-stream-stream-rate-section"
-  >
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Stream rate
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-29"
-                class=""
-                data-original-title="39,612"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  39,612
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
-        >
-          <div
-            class="name name__clickable name__missing"
-          >
-            <span
-              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/question.svg');"
-            />
-            <p
-              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
-            >
-              0xa0B86...a8e4a
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
-    >
-      <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
-      >
-        <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
-        >
-          <p
-            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
-          >
-            Available per day
-          </p>
-        </div>
-      </div>
-      <div
-        class="flex flex-row"
-      >
-        <div
-          class="mr-1"
-        >
-          <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-30"
-                class=""
-                data-original-title="3,422,476,800"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  3,422,476,800
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -2202,28 +1603,9 @@ exports[`Erc20TokenStreamDetails edge cases handles very large amounts 1`] = `
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-31"
-                class=""
-                data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  1,461,501,637,3...
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -2268,28 +1650,9 @@ exports[`Erc20TokenStreamDetails edge cases handles very large amounts 1`] = `
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-32"
-                class=""
-                data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  1,461,501,637,3...
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -2393,28 +1756,9 @@ exports[`Erc20TokenStreamDetails edge cases handles very large amounts 1`] = `
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-33"
-                class=""
-                data-original-title="1,461,501,637,330,902,918,203,684,832,716,283,019,655,932,542,975"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  1,461,501,637,3...
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -2459,28 +1803,9 @@ exports[`Erc20TokenStreamDetails edge cases handles very large amounts 1`] = `
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-34"
-                class=""
-                data-original-title="126,273,741,465,390,012,132,798,369,546,686,852,898,272,571,713,040,000"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  126,273,741,465...
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"

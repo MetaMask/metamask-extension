@@ -127,7 +127,7 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="native-token-periodic-details-section"
+    data-testid="erc20-token-periodic-details-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -153,28 +153,9 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-31"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -213,7 +194,7 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
         </div>
       </div>
       <p
-        class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
         Every week
       </p>
@@ -410,7 +391,7 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
   </div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
-    data-testid="native-token-periodic-details-section"
+    data-testid="erc20-token-periodic-details-section"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -436,28 +417,9 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-34"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -496,7 +458,7 @@ exports[`TypedSignPermissionInfo erc20-token-periodic renders ERC20 token period
         </div>
       </div>
       <p
-        class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
         Every week
       </p>
@@ -692,28 +654,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-37"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -758,28 +701,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-38"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -883,28 +807,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-39"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -949,28 +854,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-40"
-                class=""
-                data-original-title="402,624,000"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  402,624,000
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1148,28 +1034,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-53"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1214,28 +1081,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-54"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1312,28 +1160,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-55"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1378,28 +1207,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-56"
-                class=""
-                data-original-title="402,624,000"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  402,624,000
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1577,28 +1387,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-43"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1702,28 +1493,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-44"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1768,28 +1540,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-45"
-                class=""
-                data-original-title="402,624,000"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  402,624,000
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -1967,28 +1720,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-48"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -2092,28 +1826,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-49"
-                class=""
-                data-original-title="4,660"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  4,660
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -2158,28 +1873,9 @@ exports[`TypedSignPermissionInfo erc20-token-stream renders ERC20 token stream p
           class="mr-1"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
-          >
-            <div
-              style="min-width: 0;"
-            >
-              <div
-                aria-describedby="tippy-tooltip-50"
-                class=""
-                data-original-title="402,624,000"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
-              >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  402,624,000
-                </p>
-              </div>
-            </div>
-          </div>
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 20px; width: 100%;"
+          />
         </div>
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"

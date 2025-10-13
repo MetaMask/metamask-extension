@@ -3,7 +3,7 @@
 exports[`NativeTokenStreamDetails amount calculations calculates daily amount correctly 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-details-section"
   >
     <div
@@ -21,43 +21,56 @@ exports[`NativeTokenStreamDetails amount calculations calculates daily amount co
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-34"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-23"
+                class=""
+                data-original-title="0.00000000000000466"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -75,44 +88,64 @@ exports[`NativeTokenStreamDetails amount calculations calculates daily amount co
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-35"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-24"
+                class=""
+                data-original-title="0.000000000000022136"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -127,33 +160,17 @@ exports[`NativeTokenStreamDetails amount calculations calculates daily amount co
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-36"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -172,37 +189,21 @@ exports[`NativeTokenStreamDetails amount calculations calculates daily amount co
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-37"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-stream-rate-section"
   >
     <div
@@ -220,43 +221,56 @@ exports[`NativeTokenStreamDetails amount calculations calculates daily amount co
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-38"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-25"
+                class=""
+                data-original-title="0.000000000000039612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -274,43 +288,56 @@ exports[`NativeTokenStreamDetails amount calculations calculates daily amount co
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-39"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-26"
+                class=""
+                data-original-title="0.0000000034224768"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
   </div>
@@ -320,7 +347,7 @@ exports[`NativeTokenStreamDetails amount calculations calculates daily amount co
 exports[`NativeTokenStreamDetails basic functionality renders with all required props 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-details-section"
   >
     <div
@@ -338,43 +365,56 @@ exports[`NativeTokenStreamDetails basic functionality renders with all required 
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-1"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class=""
+                data-original-title="0.00000000000000466"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -392,44 +432,64 @@ exports[`NativeTokenStreamDetails basic functionality renders with all required 
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-2"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-2"
+                class=""
+                data-original-title="0.000000000000022136"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -444,33 +504,17 @@ exports[`NativeTokenStreamDetails basic functionality renders with all required 
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-3"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -489,37 +533,21 @@ exports[`NativeTokenStreamDetails basic functionality renders with all required 
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-4"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-stream-rate-section"
   >
     <div
@@ -537,43 +565,56 @@ exports[`NativeTokenStreamDetails basic functionality renders with all required 
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-5"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-3"
+                class=""
+                data-original-title="0.000000000000039612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -591,43 +632,56 @@ exports[`NativeTokenStreamDetails basic functionality renders with all required 
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-6"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-4"
+                class=""
+                data-original-title="0.0000000034224768"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
   </div>
@@ -637,7 +691,7 @@ exports[`NativeTokenStreamDetails basic functionality renders with all required 
 exports[`NativeTokenStreamDetails basic functionality renders without expiry 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-details-section"
   >
     <div
@@ -655,43 +709,56 @@ exports[`NativeTokenStreamDetails basic functionality renders without expiry 1`]
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-17"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-11"
+                class=""
+                data-original-title="0.00000000000000466"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -709,44 +776,64 @@ exports[`NativeTokenStreamDetails basic functionality renders without expiry 1`]
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-18"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-12"
+                class=""
+                data-original-title="0.000000000000022136"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -761,39 +848,23 @@ exports[`NativeTokenStreamDetails basic functionality renders without expiry 1`]
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-19"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-stream-rate-section"
   >
     <div
@@ -811,43 +882,56 @@ exports[`NativeTokenStreamDetails basic functionality renders without expiry 1`]
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-20"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-13"
+                class=""
+                data-original-title="0.000000000000039612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -865,43 +949,56 @@ exports[`NativeTokenStreamDetails basic functionality renders without expiry 1`]
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-21"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-14"
+                class=""
+                data-original-title="0.0000000034224768"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
   </div>
@@ -911,7 +1008,7 @@ exports[`NativeTokenStreamDetails basic functionality renders without expiry 1`]
 exports[`NativeTokenStreamDetails basic functionality renders without initial amount 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-details-section"
   >
     <div
@@ -929,44 +1026,64 @@ exports[`NativeTokenStreamDetails basic functionality renders without initial am
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-7"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-5"
+                class=""
+                data-original-title="0.000000000000022136"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -981,33 +1098,17 @@ exports[`NativeTokenStreamDetails basic functionality renders without initial am
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-8"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -1026,37 +1127,21 @@ exports[`NativeTokenStreamDetails basic functionality renders without initial am
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-9"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-stream-rate-section"
   >
     <div
@@ -1074,43 +1159,56 @@ exports[`NativeTokenStreamDetails basic functionality renders without initial am
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-10"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-6"
+                class=""
+                data-original-title="0.000000000000039612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -1128,43 +1226,56 @@ exports[`NativeTokenStreamDetails basic functionality renders without initial am
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-11"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-7"
+                class=""
+                data-original-title="0.0000000034224768"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
   </div>
@@ -1174,7 +1285,7 @@ exports[`NativeTokenStreamDetails basic functionality renders without initial am
 exports[`NativeTokenStreamDetails basic functionality renders without max amount 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-details-section"
   >
     <div
@@ -1192,44 +1303,64 @@ exports[`NativeTokenStreamDetails basic functionality renders without max amount
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-12"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-8"
+                class=""
+                data-original-title="0.00000000000000466"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1244,33 +1375,17 @@ exports[`NativeTokenStreamDetails basic functionality renders without max amount
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-13"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -1289,37 +1404,21 @@ exports[`NativeTokenStreamDetails basic functionality renders without max amount
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-14"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-stream-rate-section"
   >
     <div
@@ -1337,43 +1436,56 @@ exports[`NativeTokenStreamDetails basic functionality renders without max amount
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-15"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-9"
+                class=""
+                data-original-title="0.000000000000039612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -1391,43 +1503,56 @@ exports[`NativeTokenStreamDetails basic functionality renders without max amount
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-16"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-10"
+                class=""
+                data-original-title="0.0000000034224768"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
   </div>
@@ -1437,7 +1562,7 @@ exports[`NativeTokenStreamDetails basic functionality renders without max amount
 exports[`NativeTokenStreamDetails data display renders with different amount values 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-details-section"
   >
     <div
@@ -1455,43 +1580,56 @@ exports[`NativeTokenStreamDetails data display renders with different amount val
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-28"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="4722.36648287 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            4722.36648287
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-19"
+                class=""
+                data-original-title="4,722.366482869645213696"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  4,722
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -1509,44 +1647,64 @@ exports[`NativeTokenStreamDetails data display renders with different amount val
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-29"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="9444.73296574 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            9444.73296574
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-20"
+                class=""
+                data-original-title="9,444.732965739290427392"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  9,445
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -1561,33 +1719,17 @@ exports[`NativeTokenStreamDetails data display renders with different amount val
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-30"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -1606,37 +1748,21 @@ exports[`NativeTokenStreamDetails data display renders with different amount val
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-31"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-stream-rate-section"
   >
     <div
@@ -1654,43 +1780,56 @@ exports[`NativeTokenStreamDetails data display renders with different amount val
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-32"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="1.1529215 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            1.1529215
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-21"
+                class=""
+                data-original-title="1.152921504606846976"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  1.153
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -1708,43 +1847,56 @@ exports[`NativeTokenStreamDetails data display renders with different amount val
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-33"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="99612.41799803 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            99612.41799803
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-22"
+                class=""
+                data-original-title="99,612.4179980315787264"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  99,612
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
   </div>
@@ -1754,9 +1906,16 @@ exports[`NativeTokenStreamDetails data display renders with different amount val
 exports[`NativeTokenStreamDetails edge cases handles null initial and max amounts 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-details-section"
   >
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
+    </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
@@ -1770,33 +1929,17 @@ exports[`NativeTokenStreamDetails edge cases handles null initial and max amount
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-52"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -1815,37 +1958,21 @@ exports[`NativeTokenStreamDetails edge cases handles null initial and max amount
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-53"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-stream-rate-section"
   >
     <div
@@ -1863,43 +1990,56 @@ exports[`NativeTokenStreamDetails edge cases handles null initial and max amount
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-54"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-35"
+                class=""
+                data-original-title="0.000000000000039612"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -1917,43 +2057,56 @@ exports[`NativeTokenStreamDetails edge cases handles null initial and max amount
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-55"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="<0.000001 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            &lt;0.000001
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-36"
+                class=""
+                data-original-title="0.0000000034224768"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  &lt;0.000001
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
   </div>
@@ -1963,7 +2116,7 @@ exports[`NativeTokenStreamDetails edge cases handles null initial and max amount
 exports[`NativeTokenStreamDetails edge cases handles very large amounts 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-details-section"
   >
     <div
@@ -1981,43 +2134,56 @@ exports[`NativeTokenStreamDetails edge cases handles very large amounts 1`] = `
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-40"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="1461501637330902918203684832716.28301966 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            1461501637330902918203684832716.28301966
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-27"
+                class=""
+                data-original-title="1,461,501,637,330,902,918,203,684,832,716.283019655932542975"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  1,461,501,637,3...
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -2035,44 +2201,64 @@ exports[`NativeTokenStreamDetails edge cases handles very large amounts 1`] = `
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-41"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="1461501637330902918203684832716.28301966 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            1461501637330902918203684832716.28301966
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-28"
+                class=""
+                data-original-title="1,461,501,637,330,902,918,203,684,832,716.283019655932542975"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  1,461,501,637,3...
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -2087,33 +2273,17 @@ exports[`NativeTokenStreamDetails edge cases handles very large amounts 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-42"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -2132,37 +2302,21 @@ exports[`NativeTokenStreamDetails edge cases handles very large amounts 1`] = `
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-43"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-stream-rate-section"
   >
     <div
@@ -2180,43 +2334,56 @@ exports[`NativeTokenStreamDetails edge cases handles very large amounts 1`] = `
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-44"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="1461501637330902918203684832716.28301966 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            1461501637330902918203684832716.28301966
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-29"
+                class=""
+                data-original-title="1,461,501,637,330,902,918,203,684,832,716.283019655932542975"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  1,461,501,637,3...
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -2234,43 +2401,56 @@ exports[`NativeTokenStreamDetails edge cases handles very large amounts 1`] = `
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-45"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="126273741465390012132798369546686852.89827257 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            126273741465390012132798369546686852.89827257
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-30"
+                class=""
+                data-original-title="126,273,741,465,390,012,132,798,369,546,686,852.89827257171304"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  126,273,741,465...
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
   </div>
@@ -2280,7 +2460,7 @@ exports[`NativeTokenStreamDetails edge cases handles very large amounts 1`] = `
 exports[`NativeTokenStreamDetails edge cases handles zero amounts 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-details-section"
   >
     <div
@@ -2298,43 +2478,56 @@ exports[`NativeTokenStreamDetails edge cases handles zero amounts 1`] = `
           >
             Initial allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-46"
-              class=""
-              data-original-title="The initial allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="0 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            0
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-31"
+                class=""
+                data-original-title="0"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  0
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -2352,44 +2545,64 @@ exports[`NativeTokenStreamDetails edge cases handles zero amounts 1`] = `
           >
             Max allowance
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-47"
-              class=""
-              data-original-title="The maximum allowance of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="0 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            0
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-32"
+                class=""
+                data-original-title="0"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  0
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
@@ -2404,33 +2617,17 @@ exports[`NativeTokenStreamDetails edge cases handles zero amounts 1`] = `
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
-            Start
+            Start date
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-48"
-              class=""
-              data-original-title="The start date of the stream"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          13 February 2009, 23:31
+          13 February 2009
         </p>
       </div>
     </div>
@@ -2449,37 +2646,21 @@ exports[`NativeTokenStreamDetails edge cases handles zero amounts 1`] = `
           >
             Expiration
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-49"
-              class=""
-              data-original-title="The expiration date of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+        class="flex flex-col"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-          style="white-space: pre-wrap;"
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          14 February 2009, 23:31
+          14 February 2009
         </p>
       </div>
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="native-token-stream-stream-rate-section"
   >
     <div
@@ -2497,43 +2678,56 @@ exports[`NativeTokenStreamDetails edge cases handles zero amounts 1`] = `
           >
             Stream rate
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-50"
-              class=""
-              data-original-title="The stream rate of the permission"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="0 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            0
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-33"
+                class=""
+                data-original-title="0"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  0
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
     <div
@@ -2551,43 +2745,56 @@ exports[`NativeTokenStreamDetails edge cases handles zero amounts 1`] = `
           >
             Available per day
           </p>
-          <div>
-            <div
-              aria-describedby="tippy-tooltip-51"
-              class=""
-              data-original-title="The available amount per day"
-              data-tooltipped=""
-              style="display: flex;"
-              tabindex="0"
-            >
-              <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                style="mask-image: url('./images/icons/question.svg');"
-              />
-            </div>
-          </div>
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-        style="column-gap: 8px;"
+        class="flex flex-row"
       >
         <div
-          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-          title="0 ETH"
+          class="mr-1"
         >
-          <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-            data-testid="account-value-and-suffix"
+          <div
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
-            0
-          </span>
-          <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
-          >
-            ETH
-          </span>
+            <div
+              style="min-width: 0;"
+            >
+              <div
+                aria-describedby="tippy-tooltip-34"
+                class=""
+                data-original-title="0"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <p
+                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                  style="white-space: pre-wrap;"
+                >
+                  0
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
+        <div
+          class="mr-1"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+          >
+            <img
+              alt="ETH"
+              class="size-full object-contain"
+              src="./images/eth_logo.svg"
+            />
+          </div>
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
   </div>
