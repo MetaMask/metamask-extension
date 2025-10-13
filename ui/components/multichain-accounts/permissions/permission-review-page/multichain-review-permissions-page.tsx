@@ -360,9 +360,8 @@ export const MultichainReviewPermissions = () => {
               selectedAccountGroupIds={selectedAccountGroupIds}
               selectedChainIds={connectedChainIds}
             />
-          ) : (
-            <NoConnectionContent />
-          )}
+          ) : null}
+
           {shouldRenderGatorPermissionGroupDetails
             ? Object.entries(gatorPermissionGroupDetailsMap).map(
                 ([permissionGroupName, details]) => (
@@ -377,6 +376,10 @@ export const MultichainReviewPermissions = () => {
                 ),
               )
             : null}
+
+          { connectedAccountGroups.length === 0  && !shouldRenderGatorPermissionGroupDetails ? (
+            <NoConnectionContent />
+          ) : null}
 
           {showDisconnectAllModal ? (
             <DisconnectAllModal
