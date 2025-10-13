@@ -40,6 +40,7 @@ const maskedBackgroundFields = [
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
   'AppStateController.shieldPausedToastLastClickedOrClosed',
+  'AppStateController.shieldEndingToastLastClickedOrClosed',
   // The value in these properties may change each run
   'AppStateController.fullScreenGasPollTokens',
   'AppStateController.notificationGasPollTokens',

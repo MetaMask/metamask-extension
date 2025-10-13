@@ -102,6 +102,7 @@ export type AppStateControllerState = {
   snapsInstallPrivacyWarningShown?: boolean;
   surveyLinkLastClickedOrClosed: number | null;
   shieldPausedToastLastClickedOrClosed: number | null;
+  shieldEndingToastLastClickedOrClosed: number | null;
   termsOfUseLastAgreed?: number;
   throttledOrigins: ThrottledOrigins;
   timeoutMinutes: number;
@@ -242,6 +243,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   slides: [],
   surveyLinkLastClickedOrClosed: null,
   shieldPausedToastLastClickedOrClosed: null,
+  shieldEndingToastLastClickedOrClosed: null,
   throttledOrigins: {},
   timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
   trezorModel: null,
@@ -519,6 +521,12 @@ const controllerMetadata = {
     anonymous: true,
     usedInUi: true,
   },
+  shieldEndingToastLastClickedOrClosed: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+  },
   termsOfUseLastAgreed: {
     includeInStateLogs: true,
     persist: true,
@@ -765,6 +773,12 @@ export class AppStateController extends BaseController<
   setShieldPausedToastLastClickedOrClosed(time: number): void {
     this.update((state) => {
       state.shieldPausedToastLastClickedOrClosed = time;
+    });
+  }
+
+  setShieldEndingToastLastClickedOrClosed(time: number): void {
+    this.update((state) => {
+      state.shieldEndingToastLastClickedOrClosed = time;
     });
   }
 

@@ -93,6 +93,7 @@ export const SENTRY_BACKGROUND_STATE = {
     updateModalLastDismissedAt: true,
     lastUpdatedAt: true,
     shieldPausedToastLastClickedOrClosed: true,
+    shieldEndingToastLastClickedOrClosed: true,
   },
   MultichainBalancesController: {
     balances: false,

@@ -98,3 +98,9 @@ export function setShieldPausedToastLastClickedOrClosed(time: number) {
     time,
   ]);
 }
+
+export function setShieldEndingToastLastClickedOrClosed(time: number) {
+  submitRequestToBackgroundAndCatch('setShieldEndingToastLastClickedOrClosed', [
+    time,
+  ]);
+}

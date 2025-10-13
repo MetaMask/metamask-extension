@@ -322,6 +322,7 @@
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
   "shieldPausedToastLastClickedOrClosed": null,
+  "shieldEndingToastLastClickedOrClosed": null,
   "showAccountBanner": true,
   "showBetaHeader": false,
   "showNetworkBanner": true,

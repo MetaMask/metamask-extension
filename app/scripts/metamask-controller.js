@@ -2608,6 +2608,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShieldPausedToastLastClickedOrClosed.bind(
           appStateController,
         ),
+      setShieldEndingToastLastClickedOrClosed:
+        appStateController.setShieldEndingToastLastClickedOrClosed.bind(
+          appStateController,
+        ),
 
       // EnsController
       tryReverseResolveAddress:

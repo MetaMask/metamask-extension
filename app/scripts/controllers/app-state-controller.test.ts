@@ -493,6 +493,18 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setShieldEndingToastLastClickedOrClosed', () => {
+    it('set the shieldEndingToastLastClickedOrClosed time', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setShieldEndingToastLastClickedOrClosed(mockParams);
+      });
+      expect(
+        controller.state.shieldEndingToastLastClickedOrClosed,
+      ).toStrictEqual(mockParams);
+    });
+  });
+
   describe('isUpdateAvailable', () => {
     it('defaults to false', async () => {
       await withController(({ controller }) => {
@@ -774,6 +786,7 @@ describe('AppStateController', () => {
               "trezorModel": null,
               "updateModalLastDismissedAt": null,
               "shieldPausedToastLastClickedOrClosed": null,
+              "shieldEndingToastLastClickedOrClosed": null,
             }
           `);
         },
@@ -858,6 +871,7 @@ describe('AppStateController', () => {
               "trezorModel": null,
               "updateModalLastDismissedAt": null,
               "shieldPausedToastLastClickedOrClosed": null,
+              "shieldEndingToastLastClickedOrClosed": null,
             }
           `);
         },
@@ -930,6 +944,7 @@ describe('AppStateController', () => {
               "trezorModel": null,
               "updateModalLastDismissedAt": null,
               "shieldPausedToastLastClickedOrClosed": null,
+              "shieldEndingToastLastClickedOrClosed": null,
             }
           `);
         },
@@ -1013,6 +1028,7 @@ describe('AppStateController', () => {
               "throttledOrigins": {},
               "updateModalLastDismissedAt": null,
               "shieldPausedToastLastClickedOrClosed": null,
+              "shieldEndingToastLastClickedOrClosed": null,
             }
           `);
         },

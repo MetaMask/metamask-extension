@@ -400,7 +400,8 @@
     "isFetchingGatorPermissions": "boolean",
     "gatorPermissionsProviderSnapId": "string",
     "srpSessionData": "object",
-    "shieldPausedToastLastClickedOrClosed": "number"
+    "shieldPausedToastLastClickedOrClosed": "number",
+    "shieldEndingToastLastClickedOrClosed": "number"
   },
   "ramps": "object",
   "send": "object",

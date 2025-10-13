@@ -77,6 +77,7 @@ import {
   selectShowCopyAddressToast,
   selectShowConnectAccountGroupToast,
   selectShowShieldPausedToast,
+  selectShowShieldEndingToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -87,6 +88,7 @@ import {
   setShowPasswordChangeToast,
   setShowCopyAddressToast,
   setShieldPausedToastLastClickedOrClosed,
+  setShieldEndingToastLastClickedOrClosed,
 } from './utils';
 
 export function ToastMaster() {
@@ -114,7 +116,7 @@ export function ToastMaster() {
         <NewSrpAddedToast />
         <CopyAddressToast />
         <ShieldPausedToast />
-        <ShieldCoverageEndingToast />
+        <ShieldEndingToast />
       </ToastContainer>
     );
   }
@@ -565,9 +567,6 @@ function ShieldPausedToast() {
       recurringInterval: shieldSubscription?.interval,
     });
 
-  console.log('check: isPaused', isPaused);
-  console.log('check: showShieldPausedToast', showShieldPausedToast);
-
   return (
     Boolean(isPaused) &&
     showShieldPausedToast && (
@@ -598,8 +597,10 @@ function ShieldPausedToast() {
   );
 }
 
-function ShieldCoverageEndingToast() {
+function ShieldEndingToast() {
   const t = useI18nContext();
+
+  const showShieldEndingToast = useSelector(selectShowShieldEndingToast);
 
   const { subscriptions } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
@@ -620,7 +621,8 @@ function ShieldCoverageEndingToast() {
     });
 
   return (
-    Boolean(isCancelled) && (
+    Boolean(!isCancelled) &&
+    showShieldEndingToast && (
       <Toast
         key="shield-coverage-ending-toast"
         text={t('shieldCoverageEnding')}
@@ -631,6 +633,7 @@ function ShieldCoverageEndingToast() {
         ])}
         actionText={t('shieldCoverageEndingAction')}
         onActionClick={async () => {
+          setShieldEndingToastLastClickedOrClosed(Date.now());
           if (isCryptoPayment) {
             // TODO: handle renew membership crypto
             console.log('renew membership');
@@ -645,7 +648,7 @@ function ShieldCoverageEndingToast() {
             size={IconSize.Lg}
           />
         }
-        onClose={() => console.log('close')}
+        onClose={() => setShieldEndingToastLastClickedOrClosed(Date.now())}
       />
     )
   );
