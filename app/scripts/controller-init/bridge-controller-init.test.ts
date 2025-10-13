@@ -31,6 +31,10 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('BridgeControllerInit', () => {
+  beforeEach(() => {
+    process.env.METAMASK_VERSION = 'MOCK_VERSION';
+  });
+
   it('initializes the controller', () => {
     const { controller } = BridgeControllerInit(getInitRequestMock());
     expect(controller).toBeInstanceOf(BridgeController);
