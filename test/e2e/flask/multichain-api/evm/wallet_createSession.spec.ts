@@ -22,7 +22,7 @@ import {
   type FixtureCallbackArgs,
 } from '../testHelpers';
 
-describe('Multichain API TEST', function () {
+describe('Multichain API', function () {
   describe('Connect wallet to the multichain dapp via `externally_connectable`, call `wallet_createSession` with requested EVM scope that does NOT match one of the users enabled networks', function () {
     it("the specified EVM scopes that do not match the user's configured networks should be treated as if they were not requested", async function () {
       await withFixtures(

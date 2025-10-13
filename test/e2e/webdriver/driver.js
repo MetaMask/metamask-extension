@@ -285,7 +285,7 @@ class Driver {
    *
    * @param {string | object} rawLocator - element locator
    * @param {string} input - The value to fill the element with.
-  * @param {number} [retries=0] - Number of retries; 0 performs no verification.
+   * @param {number} retries - Number of retries, defaults to 0.
    * @returns {Promise<WebElement>} Promise resolving to the filled element
    * @example <caption>Example to fill address in the send transaction screen</caption>
    *          await driver.fill(
