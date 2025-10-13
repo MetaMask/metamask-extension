@@ -21,10 +21,13 @@ describe('Submit Claim Form', () => {
     const { getByTestId } = renderWithProvider(<SubmitClaimForm />, store);
 
     const emailInput = getByTestId('shield-claim-email-input');
+    fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
     fireEvent.blur(emailInput, { target: { value: 'invalid-email' } });
 
     const errorMessage = getByTestId('shield-claim-help-text');
-    expect(errorMessage).toHaveTextContent('Invalid email');
+    expect(errorMessage).toHaveTextContent(
+      'Please enter a valid email address',
+    );
   });
 
   it('should show error when impacted wallet address is invalid', () => {
@@ -33,6 +36,9 @@ describe('Submit Claim Form', () => {
     const impactedWalletAddressInput = getByTestId(
       'shield-claim-impacted-wallet-address-input',
     );
+    fireEvent.change(impactedWalletAddressInput, {
+      target: { value: 'incorrect-address' },
+    });
     fireEvent.blur(impactedWalletAddressInput, {
       target: { value: 'invalid-impacted-wallet-address' },
     });
@@ -40,7 +46,9 @@ describe('Submit Claim Form', () => {
     const errorMessage = getByTestId(
       'shield-claim-impacted-wallet-address-help-text',
     );
-    expect(errorMessage).toHaveTextContent('Invalid wallet address');
+    expect(errorMessage).toHaveTextContent(
+      'Please enter a valid wallet address',
+    );
   });
 
   it('should show error when reimbursement wallet address is invalid', () => {
@@ -49,6 +57,9 @@ describe('Submit Claim Form', () => {
     const reimbursementWalletAddressInput = getByTestId(
       'shield-claim-reimbursement-wallet-address-input',
     );
+    fireEvent.change(reimbursementWalletAddressInput, {
+      target: { value: 'incorrect-address' },
+    });
     fireEvent.blur(reimbursementWalletAddressInput, {
       target: { value: 'invalid-reimbursement-wallet-address' },
     });
@@ -56,7 +67,9 @@ describe('Submit Claim Form', () => {
     const errorMessage = getByTestId(
       'shield-claim-reimbursement-wallet-address-help-text',
     );
-    expect(errorMessage).toHaveTextContent('Invalid wallet address');
+    expect(errorMessage).toHaveTextContent(
+      'Please enter a valid wallet address',
+    );
   });
 
   it('should disable submit button when there are errors', () => {
