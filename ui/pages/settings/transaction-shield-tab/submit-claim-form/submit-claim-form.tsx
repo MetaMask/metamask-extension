@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { isValidHexAddress } from '@metamask/controller-utils';
+import { isValidHexAddress, SECOND } from '@metamask/controller-utils';
 import FileInput from 'react-simple-file-input';
 import { isStrictHexString } from '@metamask/utils';
 import {
@@ -41,6 +41,8 @@ import { useClaimState } from '../../../../hooks/claims/useClaimState';
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
 import { submitShieldClaim } from '../../../../store/actions';
+import { Toast, ToastContainer } from '../../../../components/multichain';
+import LoadingScreen from '../../../../components/ui/loading-screen';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -52,6 +54,11 @@ function isValidTransactionHash(hash: string): boolean {
 const SubmitClaimForm = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const [claimSubmitToast, setClaimSubmitToast] = useState<{
+    text: string;
+    status: 'success' | 'error';
+  } | null>(null);
+  const [claimSubmitLoading, setClaimSubmitLoading] = useState(false);
 
   const {
     email,
@@ -170,20 +177,33 @@ const SubmitClaimForm = () => {
     [setFiles, t],
   );
 
-  const handleSubmitClaim = useCallback(() => {
-    // convert FileList to File[]
-    const filesArray = Array.from(files ?? []);
-
-    dispatch(
-      submitShieldClaim({
-        email,
-        impactedWalletAddress,
-        impactedTxHash,
-        reimbursementWalletAddress,
-        description,
-        files: filesArray,
-      }),
-    );
+  const handleSubmitClaim = useCallback(async () => {
+    try {
+      setClaimSubmitLoading(true);
+      // convert FileList to File[]
+      const filesArray = Array.from(files ?? []);
+      await dispatch(
+        submitShieldClaim({
+          email,
+          impactedWalletAddress,
+          impactedTxHash,
+          reimbursementWalletAddress,
+          description,
+          files: filesArray,
+        }),
+      );
+      setClaimSubmitToast({
+        text: t('shieldClaimSubmitSuccess'),
+        status: 'success',
+      });
+    } catch (error) {
+      setClaimSubmitToast({
+        text: t('shieldClaimSubmitError'),
+        status: 'error',
+      });
+    } finally {
+      setClaimSubmitLoading(false);
+    }
   }, [
     dispatch,
     email,
@@ -192,6 +212,8 @@ const SubmitClaimForm = () => {
     reimbursementWalletAddress,
     description,
     files,
+    t,
+    setClaimSubmitToast,
   ]);
 
   return (
@@ -422,6 +444,32 @@ const SubmitClaimForm = () => {
           {t('shieldClaimSubmit')}
         </Button>
       </Box>
+      {claimSubmitLoading && <LoadingScreen />}
+
+      {claimSubmitToast && (
+        <ToastContainer>
+          <Toast
+            startAdornment={
+              <Icon
+                name={
+                  claimSubmitToast.status === 'success'
+                    ? IconName.Check
+                    : IconName.Danger
+                }
+                color={
+                  claimSubmitToast.status === 'success'
+                    ? IconColor.SuccessDefault
+                    : IconColor.ErrorDefault
+                }
+              />
+            }
+            text={claimSubmitToast.text}
+            autoHideTime={5 * SECOND}
+            onAutoHideToast={() => setClaimSubmitToast(null)}
+            onClose={() => setClaimSubmitToast(null)}
+          />
+        </ToastContainer>
+      )}
     </Box>
   );
 };
