@@ -1,10 +1,13 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
+  PAYMENT_TYPES,
   Product,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
+  SubscriptionCryptoPaymentMethod,
+  TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
@@ -54,6 +57,11 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { DAY } from '../../../../shared/constants/time';
 import LoadingScreen from '../../../components/ui/loading-screen';
+import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
+import {
+  useSubscriptionPaymentMethods,
+  useSubscriptionPricing,
+} from '../../../hooks/subscription/useSubscriptionPricing';
 import {
   setSecurityAlertsEnabled,
   setUsePhishDetect,
@@ -98,6 +106,14 @@ const TransactionShield = () => {
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
+
+  const { subscriptionPricing, loading: subscriptionPricingLoading } =
+    useSubscriptionPricing();
+  const cryptoPaymentMethod = useSubscriptionPaymentMethods(
+    PAYMENT_TYPES.byCrypto,
+    subscriptionPricing,
+  );
+
   const isCancelled =
     shieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
   const isPaused = getIsShieldSubscriptionPaused(subscriptions);
@@ -155,7 +171,7 @@ const TransactionShield = () => {
     openGetSubscriptionBillingPortalResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending;
 
-  const showSkeletonLoader = subscriptionsLoading;
+  const showSkeletonLoader = subscriptionsLoading || subscriptionPricingLoading;
 
   useEffect(() => {
     if (shieldSubscription) {
@@ -198,6 +214,8 @@ const TransactionShield = () => {
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
 
+  const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
+
   const shieldDetails = [
     {
       icon: IconName.ShieldLock,
@@ -216,6 +234,30 @@ const TransactionShield = () => {
     backgroundColor: BackgroundColor.backgroundSection,
     padding: 4,
   };
+
+  const currentToken = useMemo((): TokenPaymentInfo | undefined => {
+    if (
+      !shieldSubscription ||
+      !isCryptoPaymentMethod(shieldSubscription.paymentMethod)
+    ) {
+      return undefined;
+    }
+    const chainPaymentInfo = cryptoPaymentMethod?.chains?.find(
+      (chain) =>
+        chain.chainId ===
+        (shieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod)
+          .crypto.chainId,
+    );
+
+    const token = chainPaymentInfo?.tokens.find(
+      (paymentToken) =>
+        paymentToken.symbol ===
+        (shieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod)
+          .crypto.tokenSymbol,
+    );
+
+    return token;
+  }, [cryptoPaymentMethod, shieldSubscription]);
 
   const buttonRow = (label: string, onClick: () => void, id?: string) => {
     return (
@@ -304,7 +346,7 @@ const TransactionShield = () => {
               if (isInsufficientFundsCrypto) {
                 // TODO: handle add funds crypto
                 // then use subscription controller to trigger subscription check
-                console.log('add funds');
+                setIsAddFundsModalOpen(true);
                 // await dispatch(updateSubscriptionCryptoPaymentMethod({
                 //   ...params,
                 //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
@@ -346,7 +388,7 @@ const TransactionShield = () => {
             if (isCryptoPaymentMethod(shieldSubscription.paymentMethod)) {
               if (isInsufficientFundsCrypto) {
                 // TODO: handle add funds crypto
-                console.log('add funds');
+                setIsAddFundsModalOpen(true);
                 // await dispatch(updateSubscriptionCryptoPaymentMethod({
                 //   ...params,
                 //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
@@ -406,7 +448,7 @@ const TransactionShield = () => {
               if (isCryptoPayment) {
                 if (isInsufficientFundsCrypto) {
                   // TODO: handle add funds crypto
-                  console.log('add funds');
+                  setIsAddFundsModalOpen(true);
                   // await dispatch(updateSubscriptionCryptoPaymentMethod({
                   //   ...params,
                   //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
@@ -455,7 +497,7 @@ const TransactionShield = () => {
             if (isCryptoPaymentMethod(shieldSubscription.paymentMethod)) {
               if (isInsufficientFundsCrypto) {
                 // TODO: handle add funds crypto
-                console.log('add funds');
+                setIsAddFundsModalOpen(true);
                 // await dispatch(updateSubscriptionCryptoPaymentMethod({
                 //   ...params,
                 //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
@@ -767,6 +809,19 @@ const TransactionShield = () => {
         />
       )}
       {loading && <LoadingScreen />}
+      {currentToken &&
+        isAddFundsModalOpen &&
+        shieldSubscription &&
+        isCryptoPaymentMethod(shieldSubscription.paymentMethod) && (
+          <AddFundsModal
+            onClose={() => {
+              setIsAddFundsModalOpen(false);
+            }}
+            token={currentToken}
+            chainId={shieldSubscription.paymentMethod.crypto.chainId}
+            payerAddress={shieldSubscription.paymentMethod.crypto.payerAddress}
+          />
+        )}
     </Box>
   );
 };
