@@ -3153,14 +3153,74 @@ export function getIsWatchEthereumAccountEnabled(state) {
 }
 
 /**
- * Get the state of the `bitcoinSupportEnabled` flag.
+ * Check if addBitcoinAccount feature flag is enabled with proper version check.
+ *
+ * @param {unknown} flagValue - The feature flag value (can be boolean or object with enabled/minVersion)
+ * @returns {boolean} True if flag is enabled and meets minimum version requirement
+ */
+export function isAddBitcoinFlagEnabled(flagValue) {
+  // Default to true if flag is undefined
+  if (flagValue === undefined) {
+    return true;
+  }
+
+  // Simple boolean flag
+  if (typeof flagValue === 'boolean') {
+    return flagValue;
+  }
+
+  // Object with enabled and minVersion properties
+  if (typeof flagValue === 'object' && flagValue !== null) {
+    const { enabled, minVersion } = flagValue;
+
+    // If not enabled, return false
+    if (!enabled) {
+      return false;
+    }
+
+    // If enabled but no minVersion specified, return true
+    if (!minVersion) {
+      return true;
+    }
+
+    // Check if current version meets minimum requirement - Extension: 13.6.0
+    const currentVersion = '13.6.0';
+
+    // Simple version comparison (assumes semver format)
+    const parseVersion = (version) =>
+      version.split('.').map((num) => parseInt(num, 10));
+
+    const [currentMajor, currentMinor, currentPatch] =
+      parseVersion(currentVersion);
+    const [minMajor, minMinor, minPatch] = parseVersion(minVersion);
+
+    if (currentMajor > minMajor) {
+      return true;
+    }
+    if (currentMajor < minMajor) {
+      return false;
+    }
+    if (currentMinor > minMinor) {
+      return true;
+    }
+    if (currentMinor < minMinor) {
+      return false;
+    }
+    return currentPatch >= minPatch;
+  }
+
+  return true; // Default to true for any other cases
+}
+
+/**
+ * Get the state of the `bitcoinSupportEnabled` flag with version check.
  *
  * @param {*} state
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
 export function getIsBitcoinSupportEnabled(state) {
   const { addBitcoinAccount } = getRemoteFeatureFlags(state);
-  return Boolean(addBitcoinAccount);
+  return isAddBitcoinFlagEnabled(addBitcoinAccount);
 }
 
 /**
