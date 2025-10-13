@@ -5,7 +5,7 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
   calcLatestSrcBalance,
-  isSolanaChainId,
+  isNonEvmChainId,
   isCrossChain,
   formatChainIdToHex,
   type GenericQuoteRequest,
@@ -63,7 +63,7 @@ const getBalanceAmount = async ({
   tokenAddress: string;
   chainId: GenericQuoteRequest['srcChainId'];
 }) => {
-  if (isSolanaChainId(chainId) || !selectedAddress) {
+  if (isNonEvmChainId(chainId) || !selectedAddress) {
     return null;
   }
   return (
