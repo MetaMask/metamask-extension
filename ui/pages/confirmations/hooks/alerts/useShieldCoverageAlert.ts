@@ -158,7 +158,6 @@ export function useShieldCoverageAlert(): Alert[] {
         severity = Severity.Danger;
         break;
       default:
-        break;
     }
 
     return [
