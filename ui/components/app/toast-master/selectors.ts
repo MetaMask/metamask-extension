@@ -41,8 +41,8 @@ type State = {
       | 'newPrivacyPolicyToastShownDate'
       | 'onboardingDate'
       | 'surveyLinkLastClickedOrClosed'
-      | 'shieldPausedToastLastClickedOrClosed'
       | 'shieldEndingToastLastClickedOrClosed'
+      | 'shieldPausedToastLastClickedOrClosed'
     >
   >;
 };

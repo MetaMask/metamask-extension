@@ -500,7 +500,7 @@ describe('AppStateController', () => {
 
         expect(
           controller.state.shieldEndingToastLastClickedOrClosed,
-        ).toStrictEqual(null);
+        ).toStrictEqual(mockParams);
       });
     });
   });
@@ -769,6 +769,8 @@ describe('AppStateController', () => {
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
+              "shieldEndingToastLastClickedOrClosed": null,
+              "shieldPausedToastLastClickedOrClosed": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
@@ -785,8 +787,6 @@ describe('AppStateController', () => {
               "timeoutMinutes": 0,
               "trezorModel": null,
               "updateModalLastDismissedAt": null,
-              "shieldPausedToastLastClickedOrClosed": null,
-              "shieldEndingToastLastClickedOrClosed": null,
             }
           `);
         },
@@ -854,6 +854,8 @@ describe('AppStateController', () => {
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
+              "shieldEndingToastLastClickedOrClosed": null,
+              "shieldPausedToastLastClickedOrClosed": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
@@ -870,8 +872,6 @@ describe('AppStateController', () => {
               "timeoutMinutes": 0,
               "trezorModel": null,
               "updateModalLastDismissedAt": null,
-              "shieldPausedToastLastClickedOrClosed": null,
-              "shieldEndingToastLastClickedOrClosed": null,
             }
           `);
         },
@@ -929,6 +929,8 @@ describe('AppStateController', () => {
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
+              "shieldEndingToastLastClickedOrClosed": null,
+              "shieldPausedToastLastClickedOrClosed": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
@@ -943,8 +945,6 @@ describe('AppStateController', () => {
               "timeoutMinutes": 0,
               "trezorModel": null,
               "updateModalLastDismissedAt": null,
-              "shieldPausedToastLastClickedOrClosed": null,
-              "shieldEndingToastLastClickedOrClosed": null,
             }
           `);
         },
@@ -1014,6 +1014,8 @@ describe('AppStateController', () => {
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
+              "shieldEndingToastLastClickedOrClosed": null,
+              "shieldPausedToastLastClickedOrClosed": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
@@ -1027,8 +1029,6 @@ describe('AppStateController', () => {
               "termsOfUseLastAgreed": 1000,
               "throttledOrigins": {},
               "updateModalLastDismissedAt": null,
-              "shieldPausedToastLastClickedOrClosed": null,
-              "shieldEndingToastLastClickedOrClosed": null,
             }
           `);
         },
