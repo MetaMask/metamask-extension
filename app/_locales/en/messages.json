@@ -2009,9 +2009,6 @@
   "disconnectMessage": {
     "message": "This will disconnect you from this site"
   },
-  "disconnectPermissionsModalTokenTransfers": {
-    "message": "Token transfers"
-  },
   "disconnectPrompt": {
     "message": "Disconnect $1"
   },
@@ -4011,9 +4008,6 @@
   },
   "noOptionsAvailableMessage": {
     "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
-  },
-  "noPermissionsFound": {
-    "message": "No permissions found"
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
