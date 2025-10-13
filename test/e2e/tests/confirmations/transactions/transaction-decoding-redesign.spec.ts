@@ -171,6 +171,7 @@ async function mocked4BytesResponse(mockServer: MockttpServer) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x3b4b1381' })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -214,10 +215,13 @@ async function mockedSourcifyResponse(mockServer: MockttpServer) {
     .forGet(
       'https://sourcify.dev/server/files/any/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
     )
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: SOURCIFY_RESPONSE,
-    }));
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: SOURCIFY_RESPONSE,
+      };
+    });
 }
 
 async function mockTokensAndInfura(mockServer: MockttpServer) {
