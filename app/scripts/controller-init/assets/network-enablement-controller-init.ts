@@ -11,7 +11,13 @@ import {
   SolAccountType,
   SolScope,
 } from '@metamask/keyring-api';
-import { KnownCaipNamespace } from '@metamask/utils';
+import {
+  CaipChainId,
+  CaipNamespace,
+  Hex,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 import {
   NetworkEnablementControllerMessenger,
   NetworkEnablementControllerInitMessenger,
@@ -32,12 +38,14 @@ import {
 const generateEVMNetworkMap = (
   networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'],
   enabledChainIds: string[],
-): Record<string, boolean> => {
-  const networkMap: Record<string, boolean> = {};
+): Record<KnownCaipNamespace.Eip155, Record<Hex, boolean>> => {
+  const networkMap: Record<KnownCaipNamespace.Eip155, Record<Hex, boolean>> = {
+    [KnownCaipNamespace.Eip155]: {},
+  };
 
-  // Add all available EVM networks from NetworkController with default disabled status
-  Object.keys(networkConfigurationsByChainId).forEach((chainId) => {
-    networkMap[chainId] = enabledChainIds.includes(chainId);
+  (Object.keys(networkConfigurationsByChainId) as Hex[]).forEach((chainId) => {
+    networkMap[KnownCaipNamespace.Eip155][chainId] =
+      enabledChainIds.includes(chainId);
   });
 
   return networkMap;
@@ -53,22 +61,16 @@ const generateEVMNetworkMap = (
 const generateMultichainNetworkMaps = (
   multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'],
   enabledNetworks: string[] = [],
-): Record<string, Record<string, boolean>> => {
-  const networkMaps: Record<string, Record<string, boolean>> = {
-    solana: {},
-    bitcoin: {},
-  };
+): Record<CaipNamespace, Record<CaipChainId, boolean>> => {
+  const networkMaps: Record<CaipNamespace, Record<CaipChainId, boolean>> = {};
 
-  // Organize multichain networks by their prefix/type
-  Object.keys(multichainNetworkConfigurationsByChainId).forEach((chainId) => {
+  (
+    Object.keys(multichainNetworkConfigurationsByChainId) as CaipChainId[]
+  ).forEach((chainId) => {
     const isEnabled = enabledNetworks.includes(chainId);
+    const { namespace } = parseCaipChainId(chainId);
 
-    if (chainId.startsWith('solana:')) {
-      networkMaps.solana[chainId] = isEnabled;
-    } else if (chainId.startsWith('bip122:')) {
-      networkMaps.bitcoin[chainId] = isEnabled;
-    }
-    // Add other network types as needed
+    (networkMaps[namespace] ??= {})[chainId] = isEnabled;
   });
 
   return networkMaps;
@@ -82,19 +84,16 @@ const generateDefaultNetworkEnablementControllerState = (
   const { multichainNetworkConfigurationsByChainId } =
     multichainNetworkControllerState;
 
-  // Generate multichain network maps (always empty for all environments currently)
-  const multichainMaps = generateMultichainNetworkMaps(
-    multichainNetworkConfigurationsByChainId,
-    [],
-  );
-
   if (process.env.IN_TEST) {
     return {
       enabledNetworkMap: {
-        eip155: generateEVMNetworkMap(networkConfigurationsByChainId, [
+        ...generateEVMNetworkMap(networkConfigurationsByChainId, [
           CHAIN_IDS.LOCALHOST,
         ]),
-        ...multichainMaps,
+        ...generateMultichainNetworkMaps(
+          multichainNetworkConfigurationsByChainId,
+          [],
+        ),
       },
     };
   } else if (
@@ -103,21 +102,33 @@ const generateDefaultNetworkEnablementControllerState = (
   ) {
     return {
       enabledNetworkMap: {
-        eip155: generateEVMNetworkMap(networkConfigurationsByChainId, [
+        ...generateEVMNetworkMap(networkConfigurationsByChainId, [
           CHAIN_IDS.SEPOLIA,
         ]),
-        ...multichainMaps,
+        ...generateMultichainNetworkMaps(
+          multichainNetworkConfigurationsByChainId,
+          [],
+        ),
       },
     };
   }
 
+  const enabledMultichainNetworks: string[] = [SolScope.Mainnet];
+
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  enabledMultichainNetworks.push(BtcScope.Mainnet);
+  ///: END:ONLY_INCLUDE_IF
+
   return {
     enabledNetworkMap: {
-      eip155: generateEVMNetworkMap(
+      ...generateEVMNetworkMap(
         networkConfigurationsByChainId,
         FEATURED_NETWORK_CHAIN_IDS,
       ),
-      ...multichainMaps,
+      ...generateMultichainNetworkMaps(
+        multichainNetworkConfigurationsByChainId,
+        enabledMultichainNetworks,
+      ),
     },
   };
 };

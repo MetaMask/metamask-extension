@@ -3,14 +3,13 @@
 exports[`Toast should render Toast component 1`] = `
 <div>
   <div
-    class="mm-box mm-banner-base toasts-container__banner-base undefined mm-box--padding-3 mm-box--display-flex mm-box--gap-2 mm-box--background-color-background-default"
-    data-theme="light"
+    class="mm-box mm-banner-base toasts-container__banner-base undefined mm-box--padding-3 mm-box--display-flex mm-box--gap-2 mm-box--background-color-background-section mm-box--rounded-xl mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
   >
     <div
       class="mm-box mm-box--min-width-0"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-4"
+        class="mm-box mm-box--display-flex mm-box--gap-3"
       >
         <div
           class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
@@ -59,14 +58,19 @@ exports[`Toast should render Toast component 1`] = `
           class="mm-box"
         >
           <p
-            class="mm-box mm-text toast-text mm-text--body-md mm-box--color-text-default"
+            class="mm-box mm-text toast-text mm-text--body-md-medium mm-box--color-text-default"
           >
             This is the Toast text
           </p>
           <button
-            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            class="inline-flex items-center justify-center px-4 font-medium min-w-20 overflow-hidden relative h-8 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default mt-2 rounded-lg"
+            role="button"
           >
-            Take some action
+            <span
+              class="text-inherit text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
+            >
+              Take some action
+            </span>
           </button>
         </div>
       </div>
@@ -76,7 +80,7 @@ exports[`Toast should render Toast component 1`] = `
       class="mm-box mm-button-icon mm-button-icon--size-sm mm-banner-base__close-button mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
     >
       <span
-        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/close.svg');"
       />
     </button>
