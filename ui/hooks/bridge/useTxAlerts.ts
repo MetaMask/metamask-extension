@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isSolanaChainId } from '@metamask/bridge-controller';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
@@ -19,8 +19,12 @@ export const useTxAlerts = () => {
   const { activeQuote } = useSelector(getBridgeQuotes);
   const { trade } = activeQuote ?? {};
   const account = useSelector(getFromAccount);
+  const abortController = useRef<AbortController>(new AbortController());
 
   useEffect(() => {
+    abortController.current.abort();
+    abortController.current = new AbortController();
+
     if (
       trade &&
       typeof trade === 'string' &&
@@ -30,6 +34,7 @@ export const useTxAlerts = () => {
     ) {
       dispatch(
         setTxAlerts({
+          signal: abortController.current.signal,
           chainId: MultichainNetworks.SOLANA,
           trade,
           accountAddress: account.address,
