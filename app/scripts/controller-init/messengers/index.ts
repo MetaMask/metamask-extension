@@ -27,7 +27,7 @@ import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
   getAccountActivityServiceMessenger,
-} from './backend-platform';
+} from './core-backend';
 import {
   getMultichainBalancesControllerMessenger,
   getMultichainTransactionsControllerMessenger,

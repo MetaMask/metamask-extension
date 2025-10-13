@@ -5,7 +5,7 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import {
   AccountActivityServiceMessenger,
   getAccountActivityServiceMessenger,
-} from '../messengers/backend-platform';
+} from '../messengers/core-backend';
 import { AccountActivityServiceInit } from './account-activity-service-init';
 
 function getInitRequestMock(): jest.Mocked<
@@ -45,6 +45,6 @@ describe('AccountActivityServiceInit', () => {
     const result = AccountActivityServiceInit(getInitRequestMock());
 
     expect(result.memStateKey).toBeNull();
-    expect(result.persistedStateKey).toBe('AccountActivityService');
+    expect(result.persistedStateKey).toBeNull();
   });
 });

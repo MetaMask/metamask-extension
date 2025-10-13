@@ -5,7 +5,7 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import {
   BackendWebSocketServiceMessenger,
   getBackendWebSocketServiceMessenger,
-} from '../messengers/backend-platform';
+} from '../messengers/core-backend';
 import { BackendWebSocketServiceInit } from './backend-websocket-service-init';
 
 function getInitRequestMock(): jest.Mocked<

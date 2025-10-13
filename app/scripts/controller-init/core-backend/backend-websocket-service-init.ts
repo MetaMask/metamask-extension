@@ -4,7 +4,7 @@ import { ControllerInitFunction } from '../types';
 import {
   BackendWebSocketServiceMessenger,
   BackendWebSocketServiceInitMessenger,
-} from '../messengers/backend-platform';
+} from '../messengers/core-backend';
 import { trace } from '../../../../shared/lib/trace';
 
 /**

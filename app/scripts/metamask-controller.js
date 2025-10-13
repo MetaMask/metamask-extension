@@ -329,7 +329,7 @@ import {
 import {
   BackendWebSocketServiceInit,
   AccountActivityServiceInit,
-} from './controller-init/backend-platform';
+} from './controller-init/core-backend';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
@@ -1020,7 +1020,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AccountsController: this.accountsController,
-      AccountActivityService: this.accountActivityService,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
       KeyringController: this.keyringController,

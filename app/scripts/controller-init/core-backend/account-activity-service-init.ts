@@ -1,6 +1,6 @@
 import { AccountActivityService } from '@metamask/core-backend';
 import { ControllerInitFunction } from '../types';
-import { AccountActivityServiceMessenger } from '../messengers/backend-platform';
+import { AccountActivityServiceMessenger } from '../messengers/core-backend';
 
 /**
  * Initialize the Account Activity service.
@@ -19,7 +19,7 @@ export const AccountActivityServiceInit: ControllerInitFunction<
 
   return {
     memStateKey: null,
-    persistedStateKey: 'AccountActivityService',
+    persistedStateKey: null,
     controller,
   };
 };

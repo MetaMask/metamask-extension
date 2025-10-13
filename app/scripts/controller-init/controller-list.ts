@@ -39,7 +39,6 @@ import {
   SnapInsightsController,
   SnapInterfaceController,
 } from '@metamask/snaps-controllers';
-import { BackendWebSocketService } from '@metamask/core-backend';
 import {
   RateLimitController,
   RateLimitedApiMap,
@@ -76,7 +75,7 @@ import {
 } from '@metamask/message-manager';
 import { SignatureController } from '@metamask/signature-controller';
 import { UserOperationController } from '@metamask/user-operation-controller';
-import { AccountActivityService } from '@metamask/core-backend';
+import { AccountActivityService, BackendWebSocketService } from '@metamask/core-backend';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';

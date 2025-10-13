@@ -15,12 +15,9 @@ import {
 import {
   TokensControllerState,
   TokenDetectionControllerAddDetectedTokensViaWsAction,
-  GetTokenListState,
 } from '@metamask/assets-controllers';
 import {
   KeyringControllerAccountRemovedEvent,
-  KeyringControllerUnlockEvent,
-  KeyringControllerLockEvent,
 } from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
@@ -49,25 +46,22 @@ type TokensControllerStateChangeEvent = ControllerStateChangeEvent<
 >;
 
 type AllowedActions =
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetStateAction
+  | TokensControllerGetStateAction
+  | TokenDetectionControllerAddDetectedTokensViaWsAction
+  | PreferencesControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerListAccountsAction
   | AccountTrackerControllerGetStateAction
   | AccountTrackerUpdateNativeBalancesAction
-  | AccountTrackerUpdateStakedBalancesAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetStateAction
-  | PreferencesControllerGetStateAction
-  | TokensControllerGetStateAction
-  | TokenDetectionControllerAddDetectedTokensViaWsAction
-  | GetTokenListState;
+  | AccountTrackerUpdateStakedBalancesAction;
 
 type AllowedEvents =
-  | KeyringControllerAccountRemovedEvent
-  | KeyringControllerUnlockEvent
-  | KeyringControllerLockEvent
-  | NetworkControllerStateChangeEvent
-  | PreferencesControllerStateChangeEvent
   | TokensControllerStateChangeEvent
+  | PreferencesControllerStateChangeEvent
+  | NetworkControllerStateChangeEvent
+  | KeyringControllerAccountRemovedEvent
   | AccountActivityServiceBalanceUpdatedEvent
   | AccountActivityServiceStatusChangedEvent;
 
@@ -88,11 +82,10 @@ export function getTokenBalancesControllerMessenger(
   return messenger.getRestricted({
     name: 'TokenBalancesController',
     allowedActions: [
-      'NetworkController:getState',
       'NetworkController:getNetworkClientById',
+      'NetworkController:getState',
       'TokensController:getState',
       'TokenDetectionController:addDetectedTokensViaWs',
-      'TokenListController:getState',
       'PreferencesController:getState',
       'AccountsController:getSelectedAccount',
       'AccountsController:listAccounts',
@@ -101,12 +94,10 @@ export function getTokenBalancesControllerMessenger(
       'AccountTrackerController:updateStakedBalances',
     ],
     allowedEvents: [
-      'PreferencesController:stateChange',
       'TokensController:stateChange',
+      'PreferencesController:stateChange',
       'NetworkController:stateChange',
       'KeyringController:accountRemoved',
-      'KeyringController:unlock',
-      'KeyringController:lock',
       'AccountActivityService:balanceUpdated',
       'AccountActivityService:statusChanged',
     ],
