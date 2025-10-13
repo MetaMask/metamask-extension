@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Box,
@@ -32,6 +32,16 @@ export default function WelcomeLogin({
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
   const dispatch = useDispatch();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleLogin = useCallback(
     async (loginType: LoginType) => {
@@ -53,11 +63,16 @@ export default function WelcomeLogin({
   ) => {
     if (isSeedlessOnboardingFeatureEnabled) {
       setIsTransitioning(true);
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
       // Wait for fade-out animation
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         setShowLoginOptions(true);
         setLoginOption(option);
         setIsTransitioning(false);
+        timeoutRef.current = null;
       }, 400);
     } else {
       setShowLoginOptions(true);
