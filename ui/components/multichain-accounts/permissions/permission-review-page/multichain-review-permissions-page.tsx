@@ -316,23 +316,9 @@ export const MultichainReviewPermissions = () => {
 
   const handleRemoveAllPermissions = async () => {
     try {
-      // First, revoke site permissions (accounts and chains)
-      const subject = (subjects as SubjectsType)[activeTabOrigin];
-
-      if (subject) {
-        const permissionMethodNames = Object.values(subject.permissions).map(
-          ({ parentCapability }: { parentCapability: string }) =>
-            parentCapability,
-        ) as string[];
-
-        if (permissionMethodNames.length > 0) {
-          const permissionsRecord = {
-            [activeTabOrigin]: permissionMethodNames as NonEmptyArray<string>,
-          };
-
-          dispatch(removePermissionsFor(permissionsRecord));
-        }
-      }
+      trace({ name: TraceName.DisconnectAllModal });
+      disconnectAllPermissions();
+      endTrace({ name: TraceName.DisconnectAllModal });
 
       // Close the permissions modal immediately for better UX
       setShowDisconnectPermissionsModal(false);
@@ -346,18 +332,10 @@ export const MultichainReviewPermissions = () => {
           console.error('Error revoking gator permissions:', gatorError);
         });
       }
-
-      // Disconnect immediately
-      trace({ name: TraceName.DisconnectAllModal });
-      disconnectAllPermissions();
-      endTrace({ name: TraceName.DisconnectAllModal });
     } catch (error) {
       console.error('Error removing permissions:', error);
       // Still proceed to disconnect even if revocation fails
       setShowDisconnectPermissionsModal(false);
-      trace({ name: TraceName.DisconnectAllModal });
-      disconnectAllPermissions();
-      endTrace({ name: TraceName.DisconnectAllModal });
     }
   };
 

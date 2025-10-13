@@ -311,7 +311,13 @@ export function formatGatorAmountLabel(params: {
       // For hex amounts, we need to convert from wei to token units
       const weiAmount = BigInt(amount);
       const divisor = BigInt(10 ** tokenDecimals);
-      numericAmount = Number(weiAmount) / Number(divisor);
+
+      // Use BigInt division to avoid precision loss
+      const quotient = weiAmount / divisor;
+      const remainder = weiAmount % divisor;
+
+      // Convert to number only after BigInt division
+      numericAmount = Number(quotient) + Number(remainder) / Number(divisor);
     } else {
       numericAmount = parseFloat(amount);
       if (Number.isNaN(numericAmount)) {
