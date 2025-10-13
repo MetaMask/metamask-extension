@@ -41,6 +41,7 @@
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
     "showPermissionsTour": true,
+    "showShieldEntryModalOnce": "boolean",
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "productTour": "accountIcon",
@@ -287,7 +288,6 @@
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
-    "showIncomingTransactions": "object",
     "manageInstitutionalWallets": "boolean",
     "referrals": "object"
   },
@@ -295,7 +295,8 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" }
+      "feature3": { "name": "groupC", "value": "valueC" },
+      "sendRedesign": { "enabled": false }
     },
     "cacheTimestamp": "number"
   },

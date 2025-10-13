@@ -1706,6 +1706,7 @@
         "@metamask/notification-services-controller>bignumber.js": true,
         "@metamask/notification-services-controller>firebase": true,
         "loglevel": true,
+        "semver": true,
         "uuid": true
       }
     },
@@ -1825,12 +1826,6 @@
         "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
-    "@metamask/preferences-controller": {
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true
-      }
-    },
     "@metamask/profile-sync-controller": {
       "globals": {
         "Buffer.from": true,
@@ -1934,6 +1929,8 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/signature-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -1994,6 +1991,7 @@
         ]
       },
       "packages": {
+        "@metamask/approval-controller": true,
         "@metamask/base-controller": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/json-rpc-middleware-stream": true,
@@ -2059,6 +2057,7 @@
         "File": true,
         "FileReader": true,
         "TextDecoder": true,
+        "TextEncoder": true,
         "URL": true,
         "console.error": true,
         "console.log": true,
@@ -2096,8 +2095,8 @@
         "URL": true
       },
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true
+        "@metamask/controller-utils": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
@@ -2296,10 +2295,9 @@
         "Element": true,
         "HTMLElement": true,
         "ShadowRoot": true,
-        "console.error": true,
-        "console.warn": true,
         "document": true,
-        "navigator.userAgent": true
+        "navigator.userAgent": true,
+        "navigator.userAgentData": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": {
@@ -5622,7 +5620,7 @@
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
         "react-markdown>unified>is-buffer": true,
-        "react-markdown>unified>is-plain-obj": true,
+        "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }

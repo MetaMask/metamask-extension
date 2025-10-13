@@ -8,7 +8,7 @@ class NonEvmHomepage extends HomePage {
 
   protected readonly sendButton = '[data-testid="coin-overview-send"]';
 
-  protected readonly swapButton = '[data-testid="token-overview-button-swap"]';
+  protected readonly swapButton = '[data-testid="coin-overview-swap"]';
 
   protected readonly balanceDiv =
     '[data-testid="coin-overview__primary-currency"]';
