@@ -4,10 +4,6 @@ on:
   issue_comment:
     types: created
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref_name }}
-  cancel-in-progress: ${{ !contains(github.ref_name, 'release/')}}
-
 jobs:
   is-fork-pull-request:
     name: Determine whether this issue comment was on a pull request from a fork
