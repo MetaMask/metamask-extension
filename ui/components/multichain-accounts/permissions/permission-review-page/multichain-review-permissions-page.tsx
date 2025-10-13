@@ -377,7 +377,8 @@ export const MultichainReviewPermissions = () => {
               )
             : null}
 
-          { connectedAccountGroups.length === 0  && !shouldRenderGatorPermissionGroupDetails ? (
+          {connectedAccountGroups.length === 0 &&
+          !shouldRenderGatorPermissionGroupDetails ? (
             <NoConnectionContent />
           ) : null}
 
