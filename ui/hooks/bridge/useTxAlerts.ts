@@ -19,12 +19,18 @@ export const useTxAlerts = () => {
   const { activeQuote } = useSelector(getBridgeQuotes);
   const { trade } = activeQuote ?? {};
   const account = useSelector(getFromAccount);
-  const abortController = useRef<AbortController>(new AbortController());
+  const abortController = useRef<AbortController | null>(new AbortController());
 
   useEffect(() => {
-    abortController.current.abort();
-    abortController.current = new AbortController();
+    return () => {
+      abortController.current?.abort();
+      abortController.current = null;
+    };
+  }, []);
 
+  useEffect(() => {
+    // Cancel any ongoing request
+    abortController.current?.abort();
     if (
       trade &&
       typeof trade === 'string' &&
@@ -32,6 +38,8 @@ export const useTxAlerts = () => {
       isSolanaChainId(fromChain.chainId) &&
       account?.address
     ) {
+      // Create a new abort controller for the new request
+      abortController.current = new AbortController();
       dispatch(
         setTxAlerts({
           signal: abortController.current.signal,
