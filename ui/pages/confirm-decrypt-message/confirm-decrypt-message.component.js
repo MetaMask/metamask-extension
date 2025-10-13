@@ -390,12 +390,14 @@ Footer.propTypes = {
   }).isRequired,
 };
 
-const ConfirmDecryptMessage = () => {
+const ConfirmDecryptMessage = ({ transactionId: transactionIdProp }) => {
   const t = useI18nContext();
   const [rawMessage, setRawMessage] = useState('');
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const nativeCurrency = useSelector(getNativeCurrency);
-  const { id: approvalId } = useParams();
+  const { id: approvalIdFromParams } = useParams();
+  // Use prop if provided (from conditional rendering), otherwise use useParams
+  const approvalId = transactionIdProp || approvalIdFromParams;
 
   const unconfirmedTransactions = useSelector(
     unconfirmedTransactionsListSelector,
@@ -462,6 +464,14 @@ const ConfirmDecryptMessage = () => {
       />
     </div>
   );
+};
+
+ConfirmDecryptMessage.propTypes = {
+  transactionId: PropTypes.string,
+};
+
+ConfirmDecryptMessage.defaultProps = {
+  transactionId: undefined,
 };
 
 export default ConfirmDecryptMessage;

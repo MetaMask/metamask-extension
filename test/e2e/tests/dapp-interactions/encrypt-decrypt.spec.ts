@@ -45,7 +45,7 @@ describe('Encrypt Decrypt', function (this: Suite) {
     );
   });
 
-  it.only('should encrypt and decrypt multiple messages', async function () {
+  it('should encrypt and decrypt multiple messages', async function () {
     const message2 = 'Hello, Alice!';
     await withFixtures(
       {

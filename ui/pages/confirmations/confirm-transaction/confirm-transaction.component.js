@@ -203,12 +203,13 @@ const ConfirmTransaction = () => {
 
   const { pathname } = location;
 
+  // Pass transactionId as prop because useParams() doesn't work in conditionally rendered components
   if (pathname.includes(DECRYPT_MESSAGE_REQUEST_PATH)) {
-    return <ConfirmDecryptMessage />;
+    return <ConfirmDecryptMessage transactionId={paramsTransactionId} />;
   }
 
   if (pathname.includes(ENCRYPTION_PUBLIC_KEY_REQUEST_PATH)) {
-    return <ConfirmEncryptionPublicKey />;
+    return <ConfirmEncryptionPublicKey transactionId={paramsTransactionId} />;
   }
 
   return <ConfirmTransactionSwitch />;
