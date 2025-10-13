@@ -575,7 +575,7 @@ describe('Phishing Detection', function () {
           {
             fixtures: new FixtureBuilder().build(),
             title: this.test?.fullTitle(),
-            testSpecificMock: async (mockServer: Mockttp) => {
+            testSpecificMock: async (mockServer) => {
               return setupPhishingDetectionMocks(mockServer, {
                 statusCode: 200,
                 blockProvider: BlockProvider.MetaMask,
@@ -603,7 +603,7 @@ describe('Phishing Detection', function () {
           {
             fixtures: new FixtureBuilder().build(),
             title: this.test?.fullTitle(),
-            testSpecificMock: async (mockServer: Mockttp) => {
+            testSpecificMock: async (mockServer) => {
               return setupPhishingDetectionMocks(mockServer, {
                 statusCode: 200,
                 blockProvider: BlockProvider.MetaMask,
@@ -634,7 +634,7 @@ describe('Phishing Detection', function () {
           {
             fixtures: new FixtureBuilder().build(),
             title: this.test?.fullTitle(),
-            testSpecificMock: async (mockServer: Mockttp) => {
+            testSpecificMock: async (mockServer) => {
               return setupPhishingDetectionMocks(mockServer, {
                 statusCode: 200,
                 blockProvider: BlockProvider.MetaMask,
@@ -672,7 +672,7 @@ describe('Phishing Detection', function () {
           {
             fixtures: new FixtureBuilder().build(),
             title: this.test?.fullTitle(),
-            testSpecificMock: async (mockServer: Mockttp) => {
+            testSpecificMock: async (mockServer) => {
               return setupPhishingDetectionMocks(mockServer, {
                 statusCode: 200,
                 blockProvider: BlockProvider.MetaMask,
