@@ -5,6 +5,7 @@ const path = require('node:path');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 
+const { getSentryRelease } = require('../app/scripts/lib/setupSentry');
 const { runCommand, runInShell } = require('./lib/run-command');
 const { getVersion } = require('./lib/get-version');
 const { loadBuildTypesConfig } = require('./lib/build-type');
@@ -63,21 +64,21 @@ async function start() {
   }
 
   const version = getVersion(buildType, buildVersion);
+  const release = getSentryRelease('production', version);
 
-  // check if version exists or not
-  const versionAlreadyExists = await checkIfVersionExists(version);
+  // check if release exists or not
+  const releaseAlreadyExists = await checkIfReleaseExists(release);
   // abort if versions exists
-  if (versionAlreadyExists) {
+  if (releaseAlreadyExists) {
     console.log(
-      `Version "${version}" already exists on Sentry, skipping version creation`,
+      `Release "${release}" already exists on Sentry, skipping creation`,
     );
   } else {
     // create sentry release
-    console.log(`creating Sentry release for "${version}"...`);
-    const release = `metamask-extension@${version}`;
+    console.log(`creating Sentry release for "${release}"...`);
     await runCommand('sentry-cli', ['releases', 'new', release]);
     console.log(
-      `removing any existing files from Sentry release "${version}"...`,
+      `removing any existing files from Sentry release "${release}"...`,
     );
     await runCommand('sentry-cli', [
       'releases',
@@ -109,9 +110,9 @@ async function checkIfAuthWorks() {
   );
 }
 
-async function checkIfVersionExists(version) {
+async function checkIfReleaseExists(release) {
   return await doesNotFail(() =>
-    runCommand('sentry-cli', ['releases', 'info', version]),
+    runCommand('sentry-cli', ['releases', 'info', release]),
   );
 }
 
