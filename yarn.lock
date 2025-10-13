@@ -5440,11 +5440,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@metamask/account-tree-controller@npm:1.4.0"
+"@metamask/account-tree-controller@npm:^1.4.2":
+  version: 1.4.2
+  resolution: "@metamask/account-tree-controller@npm:1.4.2"
   dependencies:
-    "@metamask/base-controller": "npm:^8.4.0"
+    "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
@@ -5460,7 +5460,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/d10e3900e39ba7740935ef0b01935c22132c4ae0817ee25ab5377e2a1e26fa8dcd5572c3f0292a00601b37916d99d4e88503a3df5b9fe15739930446e8f5c438
+  checksum: 10/b1340ed8345a618565f63db3e5c93f5a8313f00cec10ab75136483bdebc10f5a7506c63cda3ae06573133ab2479af2ccf59ea7a456cf71cf2e466ba151ff5dee
   languageName: node
   linkType: hard
 
@@ -6042,10 +6042,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ens-resolver-snap@npm:^0.1.4":
-  version: 0.1.4
-  resolution: "@metamask/ens-resolver-snap@npm:0.1.4"
-  checksum: 10/483fb5c3a3081e064fb69893d2d9497322fb8ab5695d39be8c2f3093dea5d5571d01484862a1e53e298c1ac9510092647116112518d3679afe9f1ec3aa3626a5
+"@metamask/ens-resolver-snap@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/ens-resolver-snap@npm:1.0.0"
+  checksum: 10/c97e0d300a275fac053233391f38d7146a98bb0a49ec8e03a42a27bf4db9864a7f8b2d5b2a9701bcb1dd043d0edf9a9e9f7e52115893db39e51c140e7202e24d
   languageName: node
   linkType: hard
 
@@ -31978,7 +31978,7 @@ __metadata:
     "@material-ui/core": "npm:^4.12.4"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^0.12.0"
-    "@metamask/account-tree-controller": "npm:^1.4.0"
+    "@metamask/account-tree-controller": "npm:^1.4.2"
     "@metamask/account-watcher": "npm:^4.1.3"
     "@metamask/accounts-controller": "npm:^33.1.0"
     "@metamask/address-book-controller": "npm:^6.1.0"
@@ -32004,7 +32004,7 @@ __metadata:
     "@metamask/design-tokens": "npm:^8.1.1"
     "@metamask/eip-5792-middleware": "npm:^1.1.0"
     "@metamask/ens-controller": "npm:^17.0.1"
-    "@metamask/ens-resolver-snap": "npm:^0.1.4"
+    "@metamask/ens-resolver-snap": "npm:^1.0.0"
     "@metamask/error-reporting-service": "npm:^2.2.0"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
