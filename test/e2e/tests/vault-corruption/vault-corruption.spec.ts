@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import type { WebElement } from 'selenium-webdriver';
 import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
@@ -260,10 +261,7 @@ describe('Vault Corruption', function () {
     confirm: boolean;
   }) {
     // click the Recovery/Reset button
-    const recoveryButton = await driver.findClickableElement(
-      '#critical-error-button',
-    );
-    await recoveryButton.click();
+    await driver.clickElement('#critical-error-button');
 
     // Confirm we want to recover/reset.
     const prompt = await driver.driver.switchTo().alert();
@@ -275,14 +273,16 @@ describe('Vault Corruption', function () {
 
     // the button should be disabled while the recovery process is in progress,
     // and enabled if the user dismissed the prompt
-    const isEnabled = await recoveryButton.isEnabled();
-    assert.equal(
-      isEnabled,
-      !confirm,
-      confirm
-        ? 'Recovery button should be disabled when prompt is accepted'
-        : 'Recovery button should be enabled when prompt is dismissed',
-    );
+    const recoveryButton = (await driver.findElement(
+      '#critical-error-button',
+    )) as WebElement & {
+      waitForElementState: (state: string, timeout: number) => Promise<void>;
+    };
+    if (confirm) {
+      await recoveryButton.waitForElementState('disabled', 10000);
+    } else {
+      await recoveryButton.waitForElementState('enabled', 10000);
+    }
   }
 
   /**
