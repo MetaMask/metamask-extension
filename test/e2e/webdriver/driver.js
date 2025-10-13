@@ -285,34 +285,40 @@ class Driver {
    *
    * @param {string | object} rawLocator - element locator
    * @param {string} input - The value to fill the element with.
+  * @param {number} [retries=0] - Number of retries; 0 performs no verification.
    * @returns {Promise<WebElement>} Promise resolving to the filled element
    * @example <caption>Example to fill address in the send transaction screen</caption>
    *          await driver.fill(
    *                'input[data-testid="ens-input"]',
    *                '0xc427D562164062a23a5cFf596A4a3208e72Acd28');
    */
-  async fill(rawLocator, input) {
+  async fill(rawLocator, input, retries = 0) {
     const element = await this.findElement(rawLocator);
 
-    // To mitigate flakiness when input keys are sent twice
-    for (let attempt = 0; attempt < 3; attempt++) {
+    // No verification/retry path (default behavior)
+    if (retries === 0) {
       await element.fill(input);
+      return element;
+    }
 
+    // Verify + retry path
+    for (let attempt = 0; attempt < retries; attempt++) {
+      await element.fill(input);
       try {
         await this.waitUntil(
           async () => (await element.getAttribute('value')) === input,
           { interval: 50, timeout: 1000 },
         );
         return element;
-      } catch (e) {
-        // Mismatch; try again if attempts remain.
+      } catch (_) {
+        // retry if attempts remain
       }
     }
 
     const current = await element.getAttribute('value');
     if (current !== input) {
       throw new Error(
-        `Failed to set exact value after retry. Expected '${input}', got '${current}'.`,
+        `Failed to set exact value after ${retries}. Expected '${input}', got '${current}'.`,
       );
     }
 
