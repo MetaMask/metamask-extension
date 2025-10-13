@@ -20,7 +20,6 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   type BridgeController,
-  isCrossChain,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
