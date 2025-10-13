@@ -15,6 +15,23 @@ export default function MetamaskWordMarkAnimation({
 }: MetamaskWordMarkAnimationProps) {
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // In test environments, skip animation entirely and show buttons immediately
+  // This prevents any Rive initialization and CDN network requests
+  useEffect(() => {
+    if (process.env.IN_TEST) {
+      console.log('Test environment detected, skipping Rive animation');
+      setIsAnimationComplete(true);
+    }
+  }, [setIsAnimationComplete]);
+
+  if (process.env.IN_TEST) {
+    return (
+      <Box
+        className={`riv-animation__wordmark-container riv-animation__wordmark-container--complete`}
+      />
+    );
+  }
+
   const { rive, RiveComponent } = useRive({
     src: './images/riv_animations/metamask_wordmark.riv',
     stateMachines: 'WordmarkBuildUp',
@@ -40,14 +57,6 @@ export default function MetamaskWordMarkAnimation({
           }
         }, 2500); // Adjust this based on your animation duration (in milliseconds)
       }
-    },
-    onLoadError: () => {
-      // If animation fails to load (e.g., in E2E tests with network mocking),
-      // immediately show the buttons
-      console.warn(
-        'Rive animation failed to load, showing buttons immediately',
-      );
-      setIsAnimationComplete(true);
     },
   });
 

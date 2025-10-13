@@ -12,6 +12,17 @@ type FoxAppearAnimationProps = {
 export default function FoxAppearAnimation({
   isLoader = false,
 }: FoxAppearAnimationProps) {
+  // In test environments, skip animation entirely to avoid CDN network requests
+  if (process.env.IN_TEST) {
+    return (
+      <Box
+        className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
+      >
+        {isLoader && <Spinner className="riv-animation__spinner" />}
+      </Box>
+    );
+  }
+
   const { rive, RiveComponent } = useRive({
     src: './images/riv_animations/fox_appear.riv',
     stateMachines: 'FoxRaiseUp',
@@ -50,7 +61,7 @@ export default function FoxAppearAnimation({
         rive.play();
       }
     }
-  }, [rive]);
+  }, [rive, isLoader]);
 
   return (
     <Box
