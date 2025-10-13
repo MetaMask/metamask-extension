@@ -72,8 +72,8 @@
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
     "snapsInstallPrivacyWarningShown": true,
-    "shieldPausedToastLastClickedOrClosed": "number",
-    "shieldEndingToastLastClickedOrClosed": "number"
+    "shieldPausedToastLastClickedOrClosed": "object",
+    "shieldEndingToastLastClickedOrClosed": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
