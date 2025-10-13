@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   getAccountGroupNameByInternalAccount,
-  getIsToOrFromNonEvm,
   getToChain,
 } from '../../../ducks/bridge/selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
@@ -39,29 +38,21 @@ export const useDestinationAccount = () => {
     ),
   );
 
-  const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
-
   useEffect(() => {
-    // Open account picker when bridging between non-EVM and EVM chains and there is no matching account (edge case)
-    // Cases: non-EVM -> EVM, EVM -> non-EVM, or switching between different non-EVM chains
-    const shouldOpenPicker =
-      !defaultInternalDestinationAccount && isToOrFromNonEvm;
-
-    if (shouldOpenPicker) {
+    if (defaultInternalDestinationAccount) {
+      setSelectedDestinationAccount({
+        ...defaultInternalDestinationAccount,
+        isExternal: false,
+        displayName: displayName ?? '',
+      });
+      setIsDestinationAccountPickerOpen(false);
+    } else {
+      // Open account picker when bridging between non-EVM and EVM chains and there is no matching account (edge case)
+      // Cases: non-EVM -> EVM, EVM -> non-EVM, or switching between different non-EVM chains
       setSelectedDestinationAccount(null);
       setIsDestinationAccountPickerOpen(true);
-    } else {
-      setSelectedDestinationAccount(
-        defaultInternalDestinationAccount
-          ? {
-              ...defaultInternalDestinationAccount,
-              isExternal: false,
-              displayName: displayName ?? '',
-            }
-          : null,
-      );
     }
-  }, [defaultInternalDestinationAccount, isToOrFromNonEvm, displayName]);
+  }, [defaultInternalDestinationAccount, displayName]);
 
   return {
     selectedDestinationAccount,
