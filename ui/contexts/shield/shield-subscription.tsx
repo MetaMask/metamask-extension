@@ -13,14 +13,14 @@ import {
   getSelectedInternalAccount,
   getUseExternalServices,
 } from '../../selectors';
-import { useAccountTotalFiatBalance } from '../../hooks/useAccountTotalFiatBalance';
+// import { useAccountTotalFiatBalance } from '../../hooks/useAccountTotalFiatBalance';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/environment';
 import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
-import { SHIELD_MIN_FIAT_BALANCE_THRESHOLD } from '../../../shared/constants/subscriptions';
+// import { SHIELD_MIN_FIAT_BALANCE_THRESHOLD } from '../../../shared/constants/subscriptions';
 
 export const ShieldSubscriptionContext = React.createContext<{
   resetShieldEntryModalShownStatus: () => void;
@@ -65,11 +65,11 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     getHasShieldEntryModalShownOnce,
   );
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const { totalFiatBalance } = useAccountTotalFiatBalance(
-    selectedAccount,
-    false,
-    true, // use USD conversion rate instead of the current currency
-  );
+  // const { totalFiatBalance } = useAccountTotalFiatBalance(
+  //   selectedAccount,
+  //   false,
+  //   true, // use USD conversion rate instead of the current currency
+  // );
 
   /**
    * Check if the user's balance criteria is met to show the shield entry modal.
@@ -83,9 +83,10 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     if (
       !isShieldSubscriptionActive &&
       selectedAccount &&
-      isSignedIn &&
-      totalFiatBalance &&
-      Number(totalFiatBalance) >= SHIELD_MIN_FIAT_BALANCE_THRESHOLD
+      isSignedIn
+      // TODO: disable fiat balance check for shield beta build, remove if outside of beta build
+      // totalFiatBalance &&
+      // Number(totalFiatBalance) >= SHIELD_MIN_FIAT_BALANCE_THRESHOLD
     ) {
       return true;
     }
@@ -95,7 +96,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     isShieldSubscriptionActive,
     selectedAccount,
     isSignedIn,
-    totalFiatBalance,
+    // totalFiatBalance,
   ]);
 
   useEffect(() => {
