@@ -1706,6 +1706,7 @@
         "@metamask/notification-services-controller>bignumber.js": true,
         "@metamask/notification-services-controller>firebase": true,
         "loglevel": true,
+        "semver": true,
         "uuid": true
       }
     },
@@ -1823,12 +1824,6 @@
         "@metamask/ppom-validator>crypto-js": true,
         "@toruslabs/eccrypto>elliptic": true,
         "@metamask/ppom-validator>json-rpc-random-id": true
-      }
-    },
-    "@metamask/preferences-controller": {
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true
       }
     },
     "@metamask/profile-sync-controller": {

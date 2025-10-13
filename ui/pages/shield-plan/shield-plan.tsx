@@ -1,3 +1,5 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import classnames from 'classnames';
 import {
   PAYMENT_TYPES,
   PaymentType,
@@ -8,8 +10,6 @@ import {
 import { TransactionType } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import classnames from 'classnames';
-import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import {
@@ -61,21 +61,21 @@ import {
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import {
-  useUserSubscriptionByProduct,
-  useUserSubscriptions,
-} from '../../hooks/subscription/useSubscription';
-import {
   TokenWithApprovalAmount,
   useAvailableTokenBalances,
   useSubscriptionPaymentMethods,
   useSubscriptionPricing,
   useSubscriptionProductPlans,
 } from '../../hooks/subscription/useSubscriptionPricing';
+import { addTransaction, startSubscriptionWithCard } from '../../store/actions';
+import {
+  useUserSubscriptionByProduct,
+  useUserSubscriptions,
+} from '../../hooks/subscription/useSubscription';
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { selectNetworkConfigurationByChainId } from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
-import { addTransaction, startSubscriptionWithCard } from '../../store/actions';
 import { generateERC20ApprovalData } from '../confirmations/send-legacy/send.utils';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
@@ -85,6 +85,7 @@ const ShieldPlan = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
+
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
     getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
