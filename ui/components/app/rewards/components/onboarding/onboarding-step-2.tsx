@@ -1,16 +1,18 @@
 import { useDispatch } from 'react-redux';
 import React, { useCallback } from 'react';
-import { setOnboardingActiveStep } from '../../../../../ducks/rewards';
-import { OnboardingStep } from '../../../../../ducks/rewards/types';
 import {
   Box,
   Button,
   ButtonSize,
+  ButtonVariant,
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import { setOnboardingActiveStep } from '../../../../../ducks/rewards';
+import { OnboardingStep } from '../../../../../ducks/rewards/types';
 import { ModalBody } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import ProgressIndicator from './ProgressIndicator';
 
 const OnboardingStep2: React.FC = () => {
   const dispatch = useDispatch();
@@ -45,7 +47,7 @@ const OnboardingStep2: React.FC = () => {
   );
 
   const renderStepInfo = () => (
-    <Box className="flex flex-col min-h-30 gap-2">
+    <Box className="flex flex-col min-h-30 gap-2 flex-1 justify-end">
       <Text variant={TextVariant.HeadingLg} className="text-center">
         {t('rewardsOnboardingStep2Title')}
       </Text>
@@ -62,11 +64,12 @@ const OnboardingStep2: React.FC = () => {
    * Renders the action buttons section
    */
   const renderActions = () => (
-    <Box className="flex flex-col justify-end flex-1 mb-2">
+    <Box className="flex flex-col justify-end my-2">
       <Button
+        variant={ButtonVariant.Primary}
         size={ButtonSize.Lg}
         onClick={handleNext}
-        className="w-full bg-white my-2"
+        className="w-full my-2"
       >
         {t('rewardsOnboardingStepConfirm')}
       </Button>
@@ -75,6 +78,9 @@ const OnboardingStep2: React.FC = () => {
 
   return (
     <ModalBody className="w-full h-full pt-8 pb-4 flex flex-col">
+      {/* Progress Indicator */}
+      <ProgressIndicator totalSteps={4} currentStep={2} />
+
       {/* Image Section */}
       {renderStepImage()}
 
