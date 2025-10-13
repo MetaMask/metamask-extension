@@ -768,18 +768,7 @@ export default class MetamaskController extends EventEmitter {
         if (hasActiveShieldSubscription) {
           this.shieldController.start();
         } else {
-          // As of current shield-controller version, stopping the shield controller will throw an error if the controller is not started yet.
-          // So we need to catch the error and ignore it.
-          // TODO: Remove this once the shield-controller version is updated.
-          try {
-            this.shieldController.stop();
-          } catch (error) {
-            // ignore error
-            console.error(
-              '[metamask-controller] ShieldController:stop error',
-              error,
-            );
-          }
+          this.shieldController.stop();
         }
       },
     );
