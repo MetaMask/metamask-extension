@@ -18,6 +18,7 @@ import {
 } from '../../../../../ducks/rewards/selectors';
 import { setOnboardingModalOpen } from '../../../../../ducks/rewards';
 import { OnboardingStep } from '../../../../../ducks/rewards/types';
+import { useTheme } from '../../../../../hooks/useTheme';
 import OnboardingIntroStep from './onboarding-intro-step';
 import OnboardingStep1 from './onboarding-step-1';
 import OnboardingStep2 from './onboarding-step-2';
@@ -29,6 +30,8 @@ export default function OnboardingModal() {
   const isOpen = useSelector(selectOnboardingModalOpen);
   const onboardingStep = useSelector(selectOnboardingActiveStep);
   const dispatch = useDispatch();
+
+  const theme = useTheme();
 
   const handleClose = useCallback(() => {
     dispatch(setOnboardingModalOpen(false));
@@ -70,9 +73,15 @@ export default function OnboardingModal() {
         }}
       >
         <ModalHeader
-          data-theme={ThemeType.dark}
+          data-theme={theme === 'light' ? ThemeType.light : ThemeType.dark}
           closeButtonProps={{
-            className: 'absolute top-2 right-2 z-10',
+            className: 'absolute z-10',
+            style: {
+              top: '24px',
+              right: '12px',
+              display:
+                onboardingStep === OnboardingStep.INTRO ? 'none' : 'block',
+            },
           }}
           paddingBottom={0}
           onClose={handleClose}

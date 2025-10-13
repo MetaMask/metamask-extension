@@ -1,13 +1,12 @@
 import { useDispatch } from 'react-redux';
 import React, { useCallback, useState } from 'react';
-import { setOnboardingActiveStep } from '../../../../../ducks/rewards';
-import { OnboardingStep } from '../../../../../ducks/rewards/types';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   Button,
   ButtonSize,
+  ButtonVariant,
   FontWeight,
   Icon,
   IconColor,
@@ -16,20 +15,21 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
+import { Link } from '@material-ui/core';
 import {
   ModalBody,
   TextField,
   TextFieldSize,
 } from '../../../../component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import useValidateReferralCode from '../../hooks/useValidateReferralCode';
+import { useValidateReferralCode } from '../../hooks/useValidateReferralCode';
 import LoadingIndicator from '../../../../ui/loading-indicator';
 import RewardsErrorBanner from '../RewardsErrorBanner';
 import {
   REWARDS_ONBOARD_OPTIN_LEGAL_LEARN_MORE_URL,
   REWARDS_ONBOARD_TERMS_URL,
 } from './constants';
-import { Link } from '@material-ui/core';
+import ProgressIndicator from './ProgressIndicator';
 
 const OnboardingStep4: React.FC = () => {
   const dispatch = useDispatch();
@@ -66,7 +66,12 @@ const OnboardingStep4: React.FC = () => {
   const renderIcon = () => {
     if (isValidatingReferralCode) {
       return (
-        <LoadingIndicator alt={undefined} title={undefined} isLoading={true} />
+        <LoadingIndicator
+          alt={undefined}
+          title={undefined}
+          isLoading={true}
+          style={{ width: 32, height: 32 }}
+        />
       );
     }
 
@@ -93,19 +98,16 @@ const OnboardingStep4: React.FC = () => {
     return null;
   };
 
-  const renderStepImage = () => (
-    <img
-      src="/images/rewards/rewards-onboarding-step4.png"
-      className="z-10 object-contain self-center my-4"
-      width={100}
-      height={100}
-      alt={t('rewardsOnboardingStep4Title')}
-    />
-  );
-
   const renderStepInfo = () => (
-    <Box className="flex flex-col min-h-30 gap-4">
-      <Text variant={TextVariant.HeadingLg} className="text-center my-2">
+    <Box className="flex flex-col min-h-30 gap-4 flex-1 justify-end">
+      <img
+        src="/images/rewards/rewards-onboarding-step4.png"
+        className="z-10 object-contain self-center my-4"
+        width={100}
+        height={100}
+        alt={t('rewardsOnboardingStep4Title')}
+      />
+      <Text variant={TextVariant.HeadingLg} className="text-center">
         {t('rewardsOnboardingStep4Title')}
       </Text>
       <Text
@@ -157,11 +159,12 @@ const OnboardingStep4: React.FC = () => {
    * Renders the action buttons section
    */
   const renderActions = () => (
-    <Box className="flex flex-col justify-end flex-1 mb-2">
+    <Box className="flex flex-col justify-end my-2">
       <Button
+        variant={ButtonVariant.Primary}
         size={ButtonSize.Lg}
         onClick={handleNext}
-        className="w-full bg-white my-2"
+        className="w-full my-2"
       >
         {t('rewardsOnboardingStepOptIn')}
       </Button>
@@ -209,6 +212,9 @@ const OnboardingStep4: React.FC = () => {
 
   return (
     <ModalBody className="w-full h-full pt-8 pb-4 flex flex-col">
+      {/* Progress Indicator */}
+      <ProgressIndicator totalSteps={4} currentStep={4} />
+
       {/* Error Section */}
       {optinError && (
         <RewardsErrorBanner
@@ -216,9 +222,6 @@ const OnboardingStep4: React.FC = () => {
           description={t('rewardsOnboardingStep4OptInErrorDescription')}
         />
       )}
-
-      {/* Image Section */}
-      {renderStepImage()}
 
       {/* Title Section */}
       {renderStepInfo()}

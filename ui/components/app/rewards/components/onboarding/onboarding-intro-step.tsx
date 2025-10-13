@@ -6,6 +6,7 @@ import {
   BoxFlexDirection,
   Button,
   ButtonSize,
+  ButtonVariant,
   FontFamily,
   Text,
   TextVariant,
@@ -95,11 +96,14 @@ const OnboardingIntroStep: React.FC = () => {
   const renderActions = () => (
     <Box className="flex flex-col justify-end flex-1">
       <Button
+        variant={ButtonVariant.Primary}
         size={ButtonSize.Lg}
         onClick={handleNext}
-        className="w-full bg-white my-2"
+        className="w-full my-2 bg-white"
       >
-        {t('rewardsOnboardingIntroStepConfirm')}
+        <Text variant={TextVariant.BodyMd} className="text-black font-medium">
+          {t('rewardsOnboardingIntroStepConfirm')}
+        </Text>
       </Button>
       <Button
         size={ButtonSize.Lg}
