@@ -230,7 +230,7 @@ describe('Vault Corruption', function () {
     // the previous tab we were using is now closed, so we need to tell Selenium
     // to switch back to the other page (required for Chrome)
     await driver.switchToWindow(initialWindow);
-
+    await driver.delay(5000);
     // Wait for the extension to be re-enabled to mitigate a race condition where Chrome temporarily disables the extension
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       await waitForEnabledExtensionInChrome(driver, extensionId as string);
