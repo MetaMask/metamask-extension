@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom-v5-compat';
 import { Box } from '../../../component-library';
 import {
   BackgroundColor,
@@ -30,7 +30,6 @@ interface PageProps extends StyleUtilityProps {
 export const Page = ({ children, className = '', ...props }: PageProps) => {
   const location = useLocation();
   const hasAppHeader = location?.pathname ? !hideAppHeader({ location }) : true;
-
   const classNames = classnames('multichain-page', {
     'multichain-page--has-app-header': hasAppHeader,
   });

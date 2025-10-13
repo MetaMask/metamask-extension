@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
@@ -229,7 +229,7 @@ export default function ConfirmationPage({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const pendingConfirmations = useSelector(
     getMemoizedUnapprovedTemplatedConfirmations,
   );
@@ -321,7 +321,7 @@ export default function ConfirmationPage({
           },
           t,
           dispatch,
-          history,
+          navigate,
           {
             matchedChain,
             currencySymbolWarning,
@@ -339,7 +339,7 @@ export default function ConfirmationPage({
     pendingConfirmation,
     t,
     dispatch,
-    history,
+    navigate,
     matchedChain,
     currencySymbolWarning,
     trackEvent,
@@ -364,13 +364,13 @@ export default function ConfirmationPage({
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
       redirectToHomeOnZeroConfirmations
     ) {
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     }
   }, [
     pendingConfirmations,
     approvalFlows,
     totalUnapprovedCount,
-    history,
+    navigate,
     redirectToHomeOnZeroConfirmations,
   ]);
 

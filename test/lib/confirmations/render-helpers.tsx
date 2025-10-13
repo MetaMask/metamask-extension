@@ -1,7 +1,10 @@
 import React, { ReactChildren, ReactElement } from 'react';
 
 import { ConfirmContextProvider } from '../../../ui/pages/confirmations/context/confirm';
-import { renderHookWithProvider, renderWithProvider } from '../render-helpers';
+import {
+  renderHookWithProvider,
+  renderWithProvider,
+} from '../render-helpers-navigate';
 
 export function renderWithConfirmContextProvider(
   component: ReactElement,

@@ -1,11 +1,21 @@
 import React from 'react';
 import { Hex } from '@metamask/utils';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { GatorPermissionsPage } from './gator-permissions-page';
 
 const MOCK_CHAIN_ID = '0x1' as Hex;
+
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
 
 mockState.metamask.gatorPermissionsMapSerialized = JSON.stringify({
   'native-token-periodic': {
@@ -51,23 +61,25 @@ const store = configureStore({
 });
 
 describe('Gator Permissions Page', () => {
-  describe('render', () => {
-    it('renders correctly', () => {
-      const { container, getByTestId } = renderWithProvider(
-        <GatorPermissionsPage />,
-        store,
-      );
-      expect(container).toMatchSnapshot();
+  beforeEach(() => {
+    mockUseLocation.mockReturnValue({ pathname: '' });
+  });
 
-      expect(getByTestId('gator-permissions-page')).toBeInTheDocument();
-    });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+  it('renders correctly', () => {
+    const { container, getByTestId } = renderWithProvider(
+      <GatorPermissionsPage />,
+      store,
+    );
+    expect(container).toMatchSnapshot();
 
-    it('renders Gator Permissions page title', () => {
-      const { getByTestId } = renderWithProvider(
-        <GatorPermissionsPage />,
-        store,
-      );
-      expect(getByTestId('gator-permissions-page-title')).toBeInTheDocument();
-    });
+    expect(getByTestId('gator-permissions-page')).toBeInTheDocument();
+  });
+
+  it('renders Gator Permissions page title', () => {
+    const { getByTestId } = renderWithProvider(<GatorPermissionsPage />, store);
+    expect(getByTestId('gator-permissions-page-title')).toBeInTheDocument();
   });
 });

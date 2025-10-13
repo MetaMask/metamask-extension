@@ -37,7 +37,6 @@ export type UseDisplayNameResponse = {
   contractDisplayName?: string;
   image?: string;
   icon?: IconProps | null;
-  isAccount: boolean;
   displayState: TrustSignalDisplayState;
   subtitle?: string | null;
 };
@@ -102,13 +101,12 @@ export function useDisplayNames(
     }
 
     return {
-      contractDisplayName: erc20Token?.name,
-      displayState,
-      hasPetname,
-      icon: trustSignalIcon,
-      image,
-      isAccount: accountGroupName !== null,
       name,
+      hasPetname,
+      contractDisplayName: erc20Token?.name,
+      image,
+      icon: trustSignalIcon,
+      displayState,
       subtitle,
     };
   });

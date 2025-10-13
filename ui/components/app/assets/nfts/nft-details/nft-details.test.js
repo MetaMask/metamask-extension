@@ -1,6 +1,6 @@
 import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom-v5-compat';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import copyToClipboard from 'copy-to-clipboard';
@@ -30,13 +30,11 @@ jest.mock('../../../../../helpers/utils/util', () => ({
 
 jest.mock('copy-to-clipboard');
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
   useLocation: jest.fn(() => ({ search: '' })),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
+  useNavigate: () => mockUseNavigate,
   useParams: jest.fn(),
 }));
 
@@ -98,7 +96,7 @@ describe('NFT Details', () => {
 
     fireEvent.click(backButton);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it(`should call removeAndIgnoreNFT with proper nft details and route to '/' when removing nft`, async () => {
@@ -121,7 +119,7 @@ describe('NFT Details', () => {
       'testNetworkConfigurationId',
     );
     expect(setRemoveNftMessage).toHaveBeenCalledWith('success');
-    expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it(`should call setRemoveNftMessage with error when removeAndIgnoreNft fails and route to '/'`, async () => {
@@ -146,7 +144,7 @@ describe('NFT Details', () => {
       'testNetworkConfigurationId',
     );
     expect(setRemoveNftMessage).toHaveBeenCalledWith('error');
-    expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('should copy nft address', async () => {
@@ -181,8 +179,7 @@ describe('NFT Details', () => {
         type: AssetType.NFT,
         details: { ...nfts[5], tokenId: '1' },
       });
-
-      expect(mockHistoryPush).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         '/send/amount-recipient?asset=0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414&chainId=0x1',
       );
     });

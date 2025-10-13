@@ -7,23 +7,25 @@ import React, {
 } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
-  Switch,
+  Routes,
   Route,
   useLocation,
-  useHistory,
-  Redirect,
-} from 'react-router-dom';
-import { isEqual } from 'lodash';
+  Navigate,
+} from 'react-router-dom-v5-compat';
+import { shuffle, isEqual } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
+import { useSafeNavigation } from '../../hooks/useSafeNavigation';
 
 import {
   getSelectedAccount,
   getIsSwapsChain,
   isHardwareWallet,
   getHardwareWalletType,
+  getTokenList,
   getHDEntropyIndex,
-} from '../../selectors/selectors';
+  getCurrentNetworkTransactions,
+} from '../../selectors';
 import {
   getCurrentChainId,
   getSelectedNetworkClientId,
@@ -47,7 +49,6 @@ import {
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
-import { getCurrentNetworkTransactions } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
@@ -59,10 +60,8 @@ import {
   LOADING_QUOTES_ROUTE,
   SWAPS_ERROR_ROUTE,
   DEFAULT_ROUTE,
-  SWAPS_MAINTENANCE_ROUTE,
   PREPARE_SWAP_ROUTE,
-  SWAPS_NOTIFICATION_ROUTE,
-  CROSS_CHAIN_SWAP_ROUTE,
+  SWAPS_PATHS,
 } from '../../helpers/constants/routes';
 import {
   ERROR_FETCHING_QUOTES,
@@ -80,7 +79,6 @@ import {
 } from '../../store/actions';
 
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
-import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -100,11 +98,12 @@ import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
+import PrepareSwapPage from './prepare-swap-page/prepare-swap-page';
 import NotificationPage from './notification-page/notification-page';
 
 export default function Swap() {
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const { navigate } = useSafeNavigation();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -127,6 +126,8 @@ export default function Swap() {
   const quotes = useSelector(getQuotes, isEqual);
   const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const txList = useSelector(getCurrentNetworkTransactions, shallowEqual);
+  const tokenList = useSelector(getTokenList, isEqual);
+  const shuffledTokensList = shuffle(Object.values(tokenList));
   const tradeTxId = useSelector(getTradeTxId);
   const approveTxId = useSelector(getApproveTxId);
   const aggregatorMetadata = useSelector(getAggregatorMetadata, shallowEqual);
@@ -152,20 +153,18 @@ export default function Swap() {
   useEffect(() => {
     const leaveSwaps = async () => {
       await dispatch(prepareToLeaveSwaps());
-      // We need to wait until "prepareToLeaveSwaps" is done, because otherwise
-      // a user would be redirected from DEFAULT_ROUTE back to Swaps.
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     };
 
     if (!isSwapsChain) {
       leaveSwaps();
     }
-  }, [isSwapsChain, dispatch, history]);
+  }, [isSwapsChain, dispatch, navigate]);
 
-  // This will pre-load gas fees before going to the View Quote page.
   useGasFeeEstimates();
 
-  const { address: selectedAccountAddress } = selectedAccount;
+  const { balance: ethBalance, address: selectedAccountAddress } =
+    selectedAccount;
 
   const approveTxData =
     approveTxId && txList.find(({ id }) => approveTxId === id);
@@ -267,12 +266,10 @@ export default function Swap() {
   }, [dispatch]);
 
   useEffect(() => {
-    // If there is a swapsErrorKey and reviewSwapClicked is false, there was an error in silent quotes prefetching
-    // and we don't want to show the error page in that case, because another API call for quotes can be successful.
     if (swapsErrorKey && !isSwapsErrorRoute && reviewSwapClicked) {
-      history.push(SWAPS_ERROR_ROUTE);
+      navigate(SWAPS_PATHS.ERROR);
     }
-  }, [history, swapsErrorKey, isSwapsErrorRoute, reviewSwapClicked]);
+  }, [navigate, swapsErrorKey, isSwapsErrorRoute, reviewSwapClicked]);
 
   const beforeUnloadEventAddedRef = useRef();
   useEffect(() => {
@@ -345,10 +342,8 @@ export default function Swap() {
 
   const redirectToDefaultRoute = async () => {
     clearTemporaryTokenRef.current();
-    history.push({
-      pathname: DEFAULT_ROUTE,
-      state: { stayOnHomePage: true },
-    });
+    // Set navigation state before navigate (HashRouter in v5-compat doesn't support state)
+    navigate(DEFAULT_ROUTE, { stayOnHomePage: true });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
   };
@@ -410,55 +405,57 @@ export default function Swap() {
           </Box>
         </div>
         <div className="swaps__content">
-          <Switch>
-            <FeatureToggledRoute
-              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
-              flag={swapsEnabled}
-              path={PREPARE_SWAP_ROUTE}
-              exact
-              render={() => (
-                <Redirect
-                  to={{
-                    pathname: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
-                  }}
-                />
-              )}
+          <Routes>
+            <Route
+              path={SWAPS_PATHS.PREPARE}
+              element={
+                swapsEnabled ? (
+                  <PrepareSwapPage
+                    ethBalance={ethBalance}
+                    selectedAccountAddress={selectedAccountAddress}
+                    shuffledTokensList={shuffledTokensList}
+                  />
+                ) : (
+                  <Navigate to={SWAPS_PATHS.MAINTENANCE} replace />
+                )
+              }
             />
             <Route
-              path={SWAPS_ERROR_ROUTE}
-              exact
-              render={() => {
-                if (swapsErrorKey) {
-                  return (
-                    <AwaitingSwap
-                      swapComplete={false}
-                      errorKey={swapsErrorKey}
-                      txHash={tradeTxData?.hash}
-                      txId={tradeTxData?.id}
-                      submittedTime={tradeTxData?.submittedTime}
-                    />
-                  );
-                }
-                return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
-              }}
+              path={SWAPS_PATHS.ERROR}
+              element={
+                swapsErrorKey ? (
+                  <AwaitingSwap
+                    swapComplete={false}
+                    errorKey={swapsErrorKey}
+                    txHash={tradeTxData?.hash}
+                    txId={tradeTxData?.id}
+                    submittedTime={tradeTxData?.submittedTime}
+                  />
+                ) : (
+                  <Navigate to={SWAPS_PATHS.PREPARE} replace />
+                )
+              }
             />
             <Route
-              path={SWAPS_NOTIFICATION_ROUTE}
-              exact
-              render={() => {
-                if (!swapsErrorKey) {
-                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
-                }
-                return <NotificationPage notificationKey={swapsErrorKey} />;
-              }}
+              path={SWAPS_PATHS.NOTIFICATION}
+              element={
+                swapsErrorKey ? (
+                  <NotificationPage notificationKey={swapsErrorKey} />
+                ) : (
+                  <Navigate to={SWAPS_PATHS.PREPARE} replace />
+                )
+              }
             />
-            <FeatureToggledRoute
-              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
-              flag={swapsEnabled}
-              path={LOADING_QUOTES_ROUTE}
-              exact
-              render={() => {
-                return aggregatorMetadata ? (
+            <Route
+              path={SWAPS_PATHS.LOADING_QUOTES}
+              element={(() => {
+                if (!swapsEnabled) {
+                  return <Navigate to={SWAPS_PATHS.MAINTENANCE} replace />;
+                }
+                if (!aggregatorMetadata) {
+                  return <Navigate to={SWAPS_PATHS.PREPARE} replace />;
+                }
+                return (
                   <LoadingQuote
                     loadingComplete={
                       !fetchingQuotes && Boolean(Object.values(quotes).length)
@@ -470,48 +467,38 @@ export default function Swap() {
                         swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR
                       ) {
                         dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
-                        history.push(SWAPS_ERROR_ROUTE);
+                        navigate(SWAPS_PATHS.ERROR);
                       } else {
-                        history.push(PREPARE_SWAP_ROUTE);
+                        navigate(SWAPS_PATHS.PREPARE);
                       }
                     }}
                     aggregatorMetadata={aggregatorMetadata}
                   />
-                ) : (
-                  <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />
                 );
-              }}
+              })()}
             />
             <Route
-              path={SWAPS_MAINTENANCE_ROUTE}
-              exact
-              render={() => {
-                return swapsEnabled === false ? (
+              path={SWAPS_PATHS.MAINTENANCE}
+              element={
+                swapsEnabled === false ? (
                   <AwaitingSwap errorKey={OFFLINE_FOR_MAINTENANCE} />
                 ) : (
-                  <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />
-                );
-              }}
+                  <Navigate to={SWAPS_PATHS.PREPARE} replace />
+                )
+              }
             />
             <Route
-              path={AWAITING_SIGNATURES_ROUTE}
-              exact
-              render={() => {
-                return <AwaitingSignatures />;
-              }}
+              path={SWAPS_PATHS.AWAITING_SIGNATURES}
+              element={<AwaitingSignatures />}
             />
             <Route
-              path={SMART_TRANSACTION_STATUS_ROUTE}
-              exact
-              render={() => {
-                return <SmartTransactionStatus txId={tradeTxData?.id} />;
-              }}
+              path={SWAPS_PATHS.SMART_TRANSACTION_STATUS}
+              element={<SmartTransactionStatus txId={tradeTxData?.id} />}
             />
             <Route
-              path={AWAITING_SWAP_ROUTE}
-              exact
-              render={() => {
-                return routeState === 'awaiting' || tradeTxData ? (
+              path={SWAPS_PATHS.AWAITING_SWAP}
+              element={
+                routeState === 'awaiting' || tradeTxData ? (
                   <AwaitingSwap
                     swapComplete={tradeConfirmed}
                     txHash={tradeTxData?.hash}
@@ -522,11 +509,11 @@ export default function Swap() {
                     }
                   />
                 ) : (
-                  <Redirect to={{ pathname: DEFAULT_ROUTE }} />
-                );
-              }}
+                  <Navigate to={DEFAULT_ROUTE} replace />
+                )
+              }
             />
-          </Switch>
+          </Routes>
         </div>
       </div>
     </div>

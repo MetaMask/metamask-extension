@@ -73,7 +73,7 @@ export default function EditContact({
   };
 
   if (!address) {
-    return <Navigate to={{ pathname: listRoute }} />;
+    return <Navigate to={listRoute} />;
   }
 
   return (

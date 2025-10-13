@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import {
+  useNavigate,
+  useParams,
+  useLocation,
+} from 'react-router-dom-v5-compat';
 import { Nft } from '@metamask/assets-controllers';
 import { toHex } from '@metamask/controller-utils';
 import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
@@ -77,7 +81,8 @@ export default function NftFullImage() {
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (image && isWebUrl(image)) ||
     (imageFromTokenURI && isWebUrl(imageFromTokenURI));
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [visible, setVisible] = useState(false);
 
@@ -86,14 +91,14 @@ export default function NftFullImage() {
   }, []);
 
   const onClose = useCallback(() => {
-    if (history.action === 'PUSH') {
-      // Previous action was a PUSH, so we can navigate back
-      history.goBack();
+    if (location.key && location.key !== 'default') {
+      // There's history to go back to
+      navigate(-1);
     } else {
       // Previous action was a POP or something else, safer to navigate back to asset details
-      history.push(`${ASSET_ROUTE}/${hexChainId}/${asset}/${id}`);
+      navigate(`${ASSET_ROUTE}/${hexChainId}/${asset}/${id}`);
     }
-  }, [asset, hexChainId, history, id]);
+  }, [asset, hexChainId, location.key, navigate, id]);
 
   return (
     <Box className="main-container asset__container">

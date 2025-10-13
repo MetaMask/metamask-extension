@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
@@ -120,7 +120,7 @@ export const TokenListItemComponent = ({
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const getTokenTitle = () => {
     if (isTitleNetworkName) {
@@ -415,7 +415,7 @@ export const TokenListItemComponent = ({
               <ButtonSecondary
                 onClick={() => {
                   dispatch(setEditedNetwork({ chainId }));
-                  history.push(NETWORKS_ROUTE);
+                  navigate(NETWORKS_ROUTE);
                 }}
                 block
               >

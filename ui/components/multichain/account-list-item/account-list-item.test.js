@@ -3,7 +3,7 @@ import React from 'react';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { merge } from 'lodash';
 import { BtcScope } from '@metamask/keyring-api';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';

@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import mockStore from '../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { MetamaskNotificationsProvider } from '../../../../contexts/metamask-notifications/metamask-notifications';
 import TurnOnMetamaskNotifications from './turn-on-metamask-notifications';
 
@@ -13,10 +13,6 @@ jest.mock('react-redux', () => ({
 }));
 
 describe('TurnOnMetamaskNotifications', () => {
-  beforeEach(() => {
-    mockDispatch.mockClear();
-  });
-
   it('renders correctly', () => {
     const { getByText } = renderWithProvider(
       <MetamaskNotificationsProvider>

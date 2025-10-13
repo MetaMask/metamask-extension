@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import {
   CaipAccountId,
   CaipChainId,
@@ -64,7 +64,7 @@ import { SiteCell } from './site-cell/site-cell';
 export const ReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const urlParams = useParams<{ origin: string }>();
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const securedOrigin = decodeURIComponent(urlParams.origin);
@@ -90,7 +90,7 @@ export const ReviewPermissions = () => {
     );
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    history.push(`${CONNECT_ROUTE}/${requestId}`);
+    navigate(`${CONNECT_ROUTE}/${requestId}`);
   };
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973

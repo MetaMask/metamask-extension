@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { isSolanaChainId, isBitcoinChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { useSafeNavigation } from '../../../hooks/useSafeNavigation';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -10,7 +10,10 @@ import {
 } from '../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
-import { setWasTxDeclined } from '../../../ducks/bridge/actions';
+import {
+  setWasTxDeclined,
+  resetBridgeState,
+} from '../../../ducks/bridge/actions';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import {
   getFromAccount,
@@ -52,7 +55,7 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const history = useHistory();
+  const { navigate } = useSafeNavigation();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
@@ -69,7 +72,7 @@ export default function useSubmitBridgeTransaction() {
       );
     }
     if (hardwareWalletUsed) {
-      history.push(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
+      navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }
 
     // Execute transaction(s)
@@ -85,10 +88,9 @@ export default function useSubmitBridgeTransaction() {
           submitBridgeTx(fromAccount.address, quoteResponse, false),
         );
         await dispatch(setDefaultHomeActiveTabName('activity'));
-        history.push({
-          pathname: DEFAULT_ROUTE,
-          state: { stayOnHomePage: true },
-        });
+
+        // Set navigation state before navigate (HashRouter in v5-compat doesn't support state)
+        navigate(DEFAULT_ROUTE, { stayOnHomePage: true });
         return;
       }
 
@@ -103,19 +105,19 @@ export default function useSubmitBridgeTransaction() {
       captureException(e);
       if (hardwareWalletUsed && isHardwareWalletUserRejection(e)) {
         dispatch(setWasTxDeclined(true));
-        history.push(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
+        navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
         await dispatch(setDefaultHomeActiveTabName('activity'));
-        history.push(DEFAULT_ROUTE);
+        navigate(DEFAULT_ROUTE);
       }
       return;
     }
+    // Clear bridge state to prevent navigation back to bridge page
+    dispatch(resetBridgeState());
     // Route user to activity tab on Home page
     await dispatch(setDefaultHomeActiveTabName('activity'));
-    history.push({
-      pathname: DEFAULT_ROUTE,
-      state: { stayOnHomePage: true },
-    });
+    // Set navigation state before navigate (HashRouter in v5-compat doesn't support state)
+    navigate(DEFAULT_ROUTE, { stayOnHomePage: true });
   };
 
   return {

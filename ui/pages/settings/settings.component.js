@@ -3,34 +3,27 @@ import PropTypes from 'prop-types';
 import {
   Routes as RouterRoutes,
   Route,
-  matchPath,
   Navigate,
 } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
+import { safeMatchPath } from '../../utils/safeRouteMatching';
 
 import {
-  ADVANCED_ROUTE,
-  SECURITY_ROUTE,
-  GENERAL_ROUTE,
-  ABOUT_US_ROUTE,
   SETTINGS_ROUTE,
-  NETWORKS_ROUTE,
-  CONTACT_LIST_ROUTE,
-  CONTACT_ADD_ROUTE,
-  CONTACT_EDIT_ROUTE,
-  CONTACT_VIEW_ROUTE,
-  DEVELOPER_OPTIONS_ROUTE,
-  EXPERIMENTAL_ROUTE,
-  ADD_NETWORK_ROUTE,
-  ADD_POPULAR_CUSTOM_NETWORK,
   DEFAULT_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
+  SETTINGS_PATHS,
+  CONTACT_LIST_ROUTE,
+  NETWORKS_ROUTE,
   SNAP_SETTINGS_ROUTE,
-  REVEAL_SRP_LIST_ROUTE,
+  ADVANCED_ROUTE,
   BACKUPANDSYNC_ROUTE,
-  SECURITY_PASSWORD_CHANGE_ROUTE,
+  SECURITY_ROUTE,
+  EXPERIMENTAL_ROUTE,
+  ABOUT_US_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTE,
 } from '../../helpers/constants/routes';
 
@@ -80,7 +73,7 @@ const NetworkRouteHandler = ({ onMount }) => {
     onMount();
   }, [onMount]);
 
-  return <Navigate to={{ pathname: DEFAULT_ROUTE }} />;
+  return <Navigate to={DEFAULT_ROUTE} />;
 };
 
 NetworkRouteHandler.propTypes = {
@@ -398,7 +391,7 @@ class SettingsPage extends PureComponent {
       {
         content: t('general'),
         icon: <Icon name={IconName.Setting} />,
-        key: GENERAL_ROUTE,
+        key: SETTINGS_PATHS.GENERAL,
       },
       ...snapsSettings,
       {
@@ -461,7 +454,10 @@ class SettingsPage extends PureComponent {
       <TabBar
         tabs={tabs}
         isActive={(key) => {
-          if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
+          if (
+            key === SETTINGS_PATHS.GENERAL &&
+            currentPath === SETTINGS_ROUTE
+          ) {
             return true;
           }
           if (
@@ -470,7 +466,7 @@ class SettingsPage extends PureComponent {
           ) {
             return true;
           }
-          return matchPath(key, currentPath);
+          return safeMatchPath({ path: key }, currentPath);
         }}
         onSelect={(key) =>
           navigate(key, {
@@ -485,22 +481,33 @@ class SettingsPage extends PureComponent {
     return (
       <RouterRoutes>
         <Route
-          path={GENERAL_ROUTE}
+          path=""
           element={
             <SettingsTab
               lastFetchedConversionDate={this.state.lastFetchedConversionDate}
             />
           }
         />
-        <Route path={ABOUT_US_ROUTE} element={<InfoTab />} />
         <Route
-          path={`${SNAP_SETTINGS_ROUTE}/:snapId`}
+          path={SETTINGS_PATHS.GENERAL}
+          element={
+            <SettingsTab
+              lastFetchedConversionDate={this.state.lastFetchedConversionDate}
+            />
+          }
+        />
+        <Route path={SETTINGS_PATHS.ABOUT_US} element={<InfoTab />} />
+        <Route
+          path={`${SETTINGS_PATHS.SNAP}/:snapId`}
           element={<SnapSettingsRenderer />}
         />
-        <Route path={ADVANCED_ROUTE} element={<AdvancedTab />} />
-        <Route path={BACKUPANDSYNC_ROUTE} element={<BackupAndSyncTab />} />
+        <Route path={SETTINGS_PATHS.ADVANCED} element={<AdvancedTab />} />
         <Route
-          path={ADD_NETWORK_ROUTE}
+          path={SETTINGS_PATHS.BACKUP_AND_SYNC}
+          element={<BackupAndSyncTab />}
+        />
+        <Route
+          path={SETTINGS_PATHS.ADD_NETWORK}
           element={
             <NetworkRouteHandler
               onMount={() =>
@@ -510,7 +517,7 @@ class SettingsPage extends PureComponent {
           }
         />
         <Route
-          path={NETWORKS_ROUTE}
+          path={SETTINGS_PATHS.NETWORKS}
           element={
             <NetworkRouteHandler
               onMount={() => this.props.toggleNetworkMenu()}
@@ -518,44 +525,52 @@ class SettingsPage extends PureComponent {
           }
         />
         <Route
-          path={ADD_POPULAR_CUSTOM_NETWORK}
+          path={SETTINGS_PATHS.ADD_POPULAR_CUSTOM_NETWORK}
           element={
             <NetworkRouteHandler
               onMount={() => this.props.toggleNetworkMenu()}
             />
           }
         />
-        <Route path={SECURITY_ROUTE} element={<SecurityTab />} />
+        <Route path={SETTINGS_PATHS.SECURITY} element={<SecurityTab />} />
         <Route
-          path={TRANSACTION_SHIELD_ROUTE}
+          path={SETTINGS_PATHS.TRANSACTION_SHIELD}
           element={<TransactionShield />}
         />
         <Route
-          exact
           path={TRANSACTION_SHIELD_CLAIM_ROUTE}
           element={<SubmitClaimForm />}
         />
-        <Route path={EXPERIMENTAL_ROUTE} element={<ExperimentalTab />} />
+        <Route
+          path={SETTINGS_PATHS.EXPERIMENTAL}
+          element={<ExperimentalTab />}
+        />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
           process.env.IN_TEST) && (
           <Route
-            path={DEVELOPER_OPTIONS_ROUTE}
+            path={SETTINGS_PATHS.DEVELOPER_OPTIONS}
             element={<DeveloperOptionsTab />}
           />
         )}
-        <Route path={CONTACT_LIST_ROUTE} element={<ContactListTab />} />
-        <Route path={CONTACT_ADD_ROUTE} element={<ContactListTab />} />
         <Route
-          path={`${CONTACT_EDIT_ROUTE}/:id`}
+          path={SETTINGS_PATHS.CONTACT_LIST}
+          element={<ContactListTab />}
+        />
+        <Route path={SETTINGS_PATHS.CONTACT_ADD} element={<ContactListTab />} />
+        <Route
+          path={`${SETTINGS_PATHS.CONTACT_EDIT}/:id`}
           element={<ContactListTab />}
         />
         <Route
-          path={`${CONTACT_VIEW_ROUTE}/:id`}
+          path={`${SETTINGS_PATHS.CONTACT_VIEW}/:id`}
           element={<ContactListTab />}
         />
-        <Route path={REVEAL_SRP_LIST_ROUTE} element={<RevealSrpList />} />
         <Route
-          path={SECURITY_PASSWORD_CHANGE_ROUTE}
+          path={SETTINGS_PATHS.REVEAL_SRP_LIST}
+          element={<RevealSrpList />}
+        />
+        <Route
+          path={SETTINGS_PATHS.SECURITY_PASSWORD_CHANGE}
           element={<ChangePassword />}
         />
         <Route

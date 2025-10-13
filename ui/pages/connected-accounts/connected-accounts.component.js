@@ -18,7 +18,7 @@ export default function ConnectedAccounts({
   isActiveTabExtension,
   connectAccount,
   connectedAccounts,
-  history,
+  navigate,
   mostRecentOverviewPage,
   permissions = undefined,
   selectedAddress,
@@ -75,7 +75,7 @@ export default function ConnectedAccounts({
         paddingRight: 4,
       }}
       subtitle={subtitle}
-      onClose={() => history.push(mostRecentOverviewPage)}
+      onClose={() => navigate(mostRecentOverviewPage)}
       footerClassName="connected-accounts__footer"
       ConnectedAccountsPermissions={{}}
       footer={
@@ -139,7 +139,7 @@ ConnectedAccounts.propTypes = {
   selectedAddress: PropTypes.string.isRequired,
   removePermittedAccount: PropTypes.func.isRequired,
   setSelectedAccount: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired,
   subjectMetadata: PropTypes.arrayOf(PropTypes.object).isRequired,
   originOfActiveTab: PropTypes.string,
   permissionSubjects: PropTypes.object,

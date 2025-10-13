@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { withRouter } from 'react-router-dom';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 
 import {
   goHome,
@@ -25,13 +25,15 @@ function mapStateToProps(state, ownProps) {
 
   const unconfirmedTransactions = unconfirmedTransactionsListSelector(state);
 
-  const {
-    match: {
-      params: { id: approvalId },
-    },
-  } = ownProps;
+  const { params: { id: approvalId } = {}, transactionId: transactionIdProp } =
+    ownProps;
 
-  const txData = unconfirmedTransactions.find((tx) => tx.id === approvalId);
+  // Use transactionId prop if provided (from conditional rendering), otherwise use params
+  const effectiveApprovalId = transactionIdProp || approvalId;
+
+  const txData = unconfirmedTransactions.find(
+    (tx) => tx.id === effectiveApprovalId,
+  );
 
   const fromAccount = getTargetAccountWithSendEtherInfo(
     state,
@@ -66,6 +68,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(ConfirmEncryptionPublicKey);
