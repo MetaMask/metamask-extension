@@ -206,5 +206,5 @@ export function selectShowCopyAddressToast(
 export function selectClaimSubmitToast(
   state: Pick<State, 'appState'>,
 ): ClaimSubmitToastType | null {
-  return state.appState.showClaimSubmitToast ?? null;
+  return state.appState.showClaimSubmitToast || null;
 }
