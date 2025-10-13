@@ -154,11 +154,15 @@ export class SubscriptionService {
     });
 
     console.log('check: formData', formData);
+    const accessToken = await this.#messenger.call(
+      'AuthenticationController:getBearerToken',
+    );
     return await handleFetch(url, {
       method: 'POST',
       body: formData,
       headers: {
         'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${accessToken}`,
       },
     });
   }
