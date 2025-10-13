@@ -1,4 +1,10 @@
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 import { HandlerType } from '@metamask/snaps-utils';
 import {
@@ -10,10 +16,13 @@ import InstitutionalWalletSnap from '@metamask/institutional-wallet-snap/dist/pr
 import {
   InstitutionalSnapController,
   InstitutionalSnapControllerMessenger,
-  AllowedActions,
-  InstitutionalSnapControllerPublishHookAction,
-  InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
 } from './InstitutionalSnapController';
+
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<InstitutionalSnapControllerMessenger>,
+  MessengerEvents<InstitutionalSnapControllerMessenger>
+>;
 
 describe('InstitutionalSnapController', () => {
   let controller: InstitutionalSnapController;
@@ -89,22 +98,22 @@ describe('InstitutionalSnapController', () => {
   };
 
   beforeEach(() => {
-    const baseMessenger = new Messenger<
-      | AllowedActions
-      | InstitutionalSnapControllerPublishHookAction
-      | InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
-      never
-    >();
+    const baseMessenger: RootMessenger = new Messenger({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
 
-    messenger = baseMessenger.getRestricted({
-      name: 'InstitutionalSnapController',
-      allowedActions: [
+    messenger = new Messenger({
+      namespace: 'InstitutionalSnapController',
+      parent: baseMessenger,
+    });
+    baseMessenger.delegate({
+      messenger,
+      actions: [
         'SnapController:handleRequest',
         'AccountsController:getAccountByAddress',
         'TransactionController:updateCustodialTransaction',
       ],
-      allowedEvents: [],
-    }) as InstitutionalSnapControllerMessenger;
+    });
 
     // Mock messenger calls
     messenger.registerActionHandler = jest.fn();
