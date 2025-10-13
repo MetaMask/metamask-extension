@@ -43,7 +43,10 @@ import { AvatarNetwork, Icon, IconName } from '../../component-library';
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
-import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
+import {
+  PasswordChangeToastType,
+  ClaimSubmitToastType,
+} from '../../../../shared/constants/app-state';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
@@ -60,6 +63,7 @@ import {
   selectPasswordChangeToast,
   selectShowCopyAddressToast,
   selectShowConnectAccountGroupToast,
+  selectClaimSubmitToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -69,6 +73,7 @@ import {
   setShowNewSrpAddedToast,
   setShowPasswordChangeToast,
   setShowCopyAddressToast,
+  setShowClaimSubmitToast,
 } from './utils';
 
 export function ToastMaster() {
@@ -103,6 +108,7 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         <PasswordChangeToast />
+        <ClaimSubmitToast />
       </ToastContainer>
     );
   }
@@ -514,3 +520,50 @@ function CopyAddressToast() {
     )
   );
 }
+
+const ClaimSubmitToast = () => {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showClaimSubmitToast = useSelector(selectClaimSubmitToast);
+  const autoHideToastDelay = 5 * SECOND;
+
+  return (
+    showClaimSubmitToast !== null && (
+      <Toast
+        dataTestId={
+          showClaimSubmitToast === ClaimSubmitToastType.Success
+            ? 'claim-submit-toast-success'
+            : 'claim-submit-toast-error'
+        }
+        key="claim-submit-toast"
+        text={
+          showClaimSubmitToast === ClaimSubmitToastType.Success
+            ? t('shieldClaimSubmitSuccess')
+            : t('shieldClaimSubmitError')
+        }
+        startAdornment={
+          <Icon
+            name={
+              showClaimSubmitToast === ClaimSubmitToastType.Success
+                ? IconName.Check
+                : IconName.Danger
+            }
+            color={
+              showClaimSubmitToast === ClaimSubmitToastType.Success
+                ? IconColor.successDefault
+                : IconColor.errorDefault
+            }
+          />
+        }
+        autoHideTime={autoHideToastDelay}
+        onAutoHideToast={() => {
+          dispatch(setShowClaimSubmitToast(null));
+        }}
+        onClose={() => {
+          dispatch(setShowClaimSubmitToast(null));
+        }}
+      />
+    )
+  );
+};

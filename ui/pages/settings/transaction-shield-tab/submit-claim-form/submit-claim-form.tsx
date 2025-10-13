@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { isValidHexAddress, SECOND } from '@metamask/controller-utils';
+import { isValidHexAddress } from '@metamask/controller-utils';
 import FileInput from 'react-simple-file-input';
 import { isStrictHexString } from '@metamask/utils';
 import {
@@ -41,8 +41,9 @@ import { useClaimState } from '../../../../hooks/claims/useClaimState';
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
 import { submitShieldClaim } from '../../../../store/actions';
-import { Toast, ToastContainer } from '../../../../components/multichain';
 import LoadingScreen from '../../../../components/ui/loading-screen';
+import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
+import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -54,10 +55,6 @@ function isValidTransactionHash(hash: string): boolean {
 const SubmitClaimForm = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const [claimSubmitToast, setClaimSubmitToast] = useState<{
-    text: string;
-    status: 'success' | 'error';
-  } | null>(null);
   const [claimSubmitLoading, setClaimSubmitLoading] = useState(false);
 
   const {
@@ -192,15 +189,9 @@ const SubmitClaimForm = () => {
           files: filesArray,
         }),
       );
-      setClaimSubmitToast({
-        text: t('shieldClaimSubmitSuccess'),
-        status: 'success',
-      });
+      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
     } catch (error) {
-      setClaimSubmitToast({
-        text: t('shieldClaimSubmitError'),
-        status: 'error',
-      });
+      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Errored));
     } finally {
       setClaimSubmitLoading(false);
     }
@@ -212,8 +203,6 @@ const SubmitClaimForm = () => {
     reimbursementWalletAddress,
     description,
     files,
-    t,
-    setClaimSubmitToast,
   ]);
 
   return (
@@ -445,31 +434,6 @@ const SubmitClaimForm = () => {
         </Button>
       </Box>
       {claimSubmitLoading && <LoadingScreen />}
-
-      {claimSubmitToast && (
-        <ToastContainer>
-          <Toast
-            startAdornment={
-              <Icon
-                name={
-                  claimSubmitToast.status === 'success'
-                    ? IconName.Check
-                    : IconName.Danger
-                }
-                color={
-                  claimSubmitToast.status === 'success'
-                    ? IconColor.SuccessDefault
-                    : IconColor.ErrorDefault
-                }
-              />
-            }
-            text={claimSubmitToast.text}
-            autoHideTime={5 * SECOND}
-            onAutoHideToast={() => setClaimSubmitToast(null)}
-            onClose={() => setClaimSubmitToast(null)}
-          />
-        </ToastContainer>
-      )}
     </Box>
   );
 };
