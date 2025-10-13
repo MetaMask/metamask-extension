@@ -7432,3 +7432,39 @@ export async function getLayer1GasFeeValue({
     { chainId, networkClientId, transactionParams },
   ]);
 }
+
+/**
+ * Submits a shield claim.
+ *
+ * @param params - The parameters.
+ * @param params.email - The email.
+ * @param params.impactedWalletAddress - The impacted wallet address.
+ * @param params.impactedTxHash - The impacted transaction hash.
+ * @param params.reimbursementWalletAddress - The reimbursement wallet address.
+ * @param params.description - The description.
+ * @param params.files - The files.
+ * @returns The subscription response.
+ */
+export function submitShieldClaim(params: {
+  email: string;
+  impactedWalletAddress: string;
+  impactedTxHash: string;
+  reimbursementWalletAddress: string;
+  description: string;
+  files: File[];
+}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    try {
+      console.log('check: submitShieldClaim', params);
+      const response = await submitRequestToBackground<void>(
+        'submitShieldClaim',
+        [params],
+      );
+
+      return response;
+    } catch (error) {
+      console.error('[submitShieldClaim] error', error);
+      throw error;
+    }
+  };
+}

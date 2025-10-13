@@ -21,6 +21,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Textarea,
@@ -39,6 +40,7 @@ import { useClaimState } from '../../../../hooks/claims/useClaimState';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
+import { submitShieldClaim } from '../../../../store/actions';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -49,6 +51,7 @@ function isValidTransactionHash(hash: string): boolean {
 
 const SubmitClaimForm = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
 
   const {
     email,
@@ -166,6 +169,30 @@ const SubmitClaimForm = () => {
     },
     [setFiles, t],
   );
+
+  const handleSubmitClaim = useCallback(() => {
+    // convert FileList to File[]
+    const filesArray = Array.from(files ?? []);
+
+    dispatch(
+      submitShieldClaim({
+        email,
+        impactedWalletAddress,
+        impactedTxHash,
+        reimbursementWalletAddress,
+        description,
+        files: filesArray,
+      }),
+    );
+  }, [
+    dispatch,
+    email,
+    impactedTxHash,
+    impactedWalletAddress,
+    reimbursementWalletAddress,
+    description,
+    files,
+  ]);
 
   return (
     <Box
@@ -390,6 +417,7 @@ const SubmitClaimForm = () => {
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           disabled={isInvalidData}
+          onClick={handleSubmitClaim}
         >
           {t('shieldClaimSubmit')}
         </Button>

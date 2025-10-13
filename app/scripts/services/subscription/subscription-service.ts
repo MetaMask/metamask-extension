@@ -4,6 +4,7 @@ import {
   StartSubscriptionRequest,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
+import { handleFetch } from '@metamask/controller-utils';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import {
@@ -126,6 +127,44 @@ export class SubscriptionService {
       'SubscriptionController:getSubscriptions',
     );
     return subscriptions;
+  }
+
+  async submitShieldClaim(params: {
+    email: string;
+    impactedWalletAddress: string;
+    impactedTxHash: string;
+    reimbursementWalletAddress: string;
+    description: string;
+    files: File[];
+  }) {
+    console.log('check: submitShieldClaim', params);
+    const url = 'https://claims.dev-api.cx.metamask.io/claims';
+    const formData = new FormData();
+    formData.append('email', params.email);
+    formData.append('impactedWalletAddress', params.impactedWalletAddress);
+    formData.append('impactedTxHash', params.impactedTxHash);
+    formData.append(
+      'reimbursementWalletAddress',
+      params.reimbursementWalletAddress,
+    );
+    formData.append('description', params.description);
+    // add multiple files to formData
+    params.files.forEach((file) => {
+      formData.append('files', file);
+    });
+
+    console.log('check: formData', formData);
+    const accessToken = await this.#messenger.call(
+      'AuthenticationController:getBearerToken',
+    );
+    return await handleFetch(url, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
   }
 
   async #openAndWaitForTabToClose(params: { url: string; successUrl: string }) {
