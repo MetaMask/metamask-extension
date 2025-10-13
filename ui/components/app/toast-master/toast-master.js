@@ -67,6 +67,7 @@ import {
 } from '../../../hooks/subscription/useSubscription';
 import { isCryptoPaymentMethod } from '../../../pages/settings/transaction-shield-tab/types';
 import { getShortDateFormatterV2 } from '../../../pages/asset/util';
+import { getIsShieldSubscriptionPaused } from '../../../../shared/lib/shield';
 import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,
@@ -549,13 +550,7 @@ function ShieldPausedToast() {
     subscriptions,
   );
 
-  const isPaused =
-    shieldSubscription &&
-    [
-      SUBSCRIPTION_STATUSES.paused,
-      SUBSCRIPTION_STATUSES.pastDue,
-      SUBSCRIPTION_STATUSES.unpaid,
-    ].includes(shieldSubscription.status);
+  const isPaused = getIsShieldSubscriptionPaused(shieldSubscription);
 
   const isCryptoPayment =
     shieldSubscription?.paymentMethod &&

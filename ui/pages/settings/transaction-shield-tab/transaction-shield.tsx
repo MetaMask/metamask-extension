@@ -5,7 +5,6 @@ import {
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
-  SubscriptionStatus,
 } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
@@ -71,6 +70,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
+import { getIsShieldSubscriptionPaused } from '../../../../shared/lib/shield';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
@@ -100,16 +100,7 @@ const TransactionShield = () => {
   );
   const isCancelled =
     shieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
-  const isPaused = Boolean(
-    shieldSubscription &&
-      (
-        [
-          SUBSCRIPTION_STATUSES.paused,
-          SUBSCRIPTION_STATUSES.pastDue,
-          SUBSCRIPTION_STATUSES.unpaid,
-        ] as SubscriptionStatus[]
-      ).includes(shieldSubscription.status),
-  );
+  const isPaused = getIsShieldSubscriptionPaused(subscriptions);
   const isMembershipInactive = isCancelled || isPaused;
   const isSubscriptionEndingSoon = useMemo(() => {
     // show subscription ending soon for crypto payment only with endDate (next billing cycle) for user to send new approve transaction
