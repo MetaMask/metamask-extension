@@ -221,15 +221,5 @@ export function selectShowShieldPausedToast(
 export function selectShowShieldEndingToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
-  if (!state.metamask.shieldEndingToastLastClickedOrClosed) {
-    return true;
-  }
-  // if time is more than 30 days, return true
-  if (
-    Date.now() - state.metamask.shieldEndingToastLastClickedOrClosed >
-    30 * 24 * 60 * 60 * 1000
-  ) {
-    return true;
-  }
-  return false;
+  return !state.metamask.shieldEndingToastLastClickedOrClosed;
 }
