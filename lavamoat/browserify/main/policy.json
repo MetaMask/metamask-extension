@@ -1639,6 +1639,7 @@
         "@metamask/notification-services-controller>bignumber.js": true,
         "@metamask/notification-services-controller>firebase": true,
         "loglevel": true,
+        "semver": true,
         "uuid": true
       }
     },
