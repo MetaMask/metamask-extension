@@ -360,3 +360,51 @@ export const getPermissionGroupDetailsByOrigin = createSelector(
     };
   },
 );
+
+/**
+ * Get all token transfer permissions for a specific site origin.
+ *
+ * @param _state - The current state
+ * @param siteOrigin - The site origin to filter by (e.g., 'https://example.com')
+ * @returns Array of all token transfer permissions for the site origin
+ * @example
+ * const permissions = getTokenTransferPermissionsByOrigin(state, 'https://example.com');
+ *
+ * // [
+ * //   { permissionResponse: { chainId: '0x1', ... }, ... },
+ * //   { permissionResponse: { chainId: '0x89', ... }, ... },
+ * // ]
+ */
+export const getTokenTransferPermissionsByOrigin = createSelector(
+  [
+    getGatorPermissionsMap,
+    (_state: AppState, siteOrigin: string) => siteOrigin,
+  ],
+  (
+    gatorPermissionsMap,
+    siteOrigin,
+  ): StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>[] => {
+    const tokenTransferPermissionTypes: SupportedGatorPermissionType[] = [
+      'native-token-stream',
+      'erc20-token-stream',
+      'native-token-periodic',
+      'erc20-token-periodic',
+    ];
+
+    const allPermissions: StoredGatorPermissionSanitized<
+      Signer,
+      PermissionTypesWithCustom
+    >[] = [];
+
+    tokenTransferPermissionTypes.forEach((permissionType) => {
+      const permissions = filterPermissionsByOriginAndType(
+        gatorPermissionsMap,
+        siteOrigin,
+        permissionType,
+      );
+      allPermissions.push(...permissions);
+    });
+
+    return allPermissions;
+  },
+);
