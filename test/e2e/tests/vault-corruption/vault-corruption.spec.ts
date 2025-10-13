@@ -271,17 +271,13 @@ describe('Vault Corruption', function () {
       await prompt.dismiss();
     }
 
-    // the button should be disabled while the recovery process is in progress,
-    // and enabled if the user dismissed the prompt
-    const recoveryButton = (await driver.findElement(
-      '#critical-error-button',
-    )) as WebElement & {
-      waitForElementState: (state: string, timeout: number) => Promise<void>;
-    };
     if (confirm) {
-      await recoveryButton.waitForElementState('disabled', 10000);
+      // the button should be disabled if the user confirmed the prompt, but given this is a transient state that goes very fast
+      // it can cause a race condition where the element becomes stale, so we check directly that the element is not present as that's a stable state that occurs eventually
+      await driver.assertElementNotPresent('#critical-error-button');
     } else {
-      await recoveryButton.waitForElementState('enabled', 10000);
+      // the button should be enabled if the user dismissed the prompt
+      await driver.findClickableElement('#critical-error-button');
     }
   }
 
