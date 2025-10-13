@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import React, { useCallback } from 'react';
-import { setOnboardingActiveStep } from '../../../../ducks/rewards';
-import { OnboardingStep } from '../../../../ducks/rewards/types';
+import { setOnboardingActiveStep } from '../../../../../ducks/rewards';
+import { OnboardingStep } from '../../../../../ducks/rewards/types';
 import {
   Box,
   Button,
@@ -9,16 +9,16 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { ModalBody } from '../../../component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { ModalBody } from '../../../../component-library';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-const OnboardingStep1: React.FC = () => {
+const OnboardingStep3: React.FC = () => {
   const dispatch = useDispatch();
 
   const t = useI18nContext();
 
   const handleNext = useCallback(() => {
-    dispatch(setOnboardingActiveStep(OnboardingStep.STEP_2));
+    dispatch(setOnboardingActiveStep(OnboardingStep.STEP_4));
   }, [dispatch]);
 
   const renderStepImage = () => (
@@ -32,28 +32,28 @@ const OnboardingStep1: React.FC = () => {
         style={{ left: 0 }}
       >
         <path
-          d="M 302.98438 0 L 213.17773 113.25586 L 162.85742 113.25586 L 162.85742 224.83594 L 162.84766 224.83594 L 162.84766 113.09766 L 62.902344 113.09766 L -37.042969 226.49805 L -37.042969 339.89844 L 62.902344 339.89844 L 162.8125 226.53711 L 162.8125 339.9707 L 212.77539 339.9707 L 212.77539 340.4043 L 302.69336 453.79883 L 392.61523 453.79883 L 392.61523 340.4043 L 361.58008 301.26758 L 361.58008 224.83594 L 304.5332 224.83594 L 392.90625 113.39453 L 392.90625 0 L 302.98438 0 z "
+          d="M 294.88086 0 L 197.81836 90.767578 L 197.81836 181.53516 L 294.88086 181.53516 L 294.93555 181.48438 L 294.93555 181.54102 L 197.94922 181.54102 L 197.94922 272 L 99 272 L 0 362.99805 L 0 454 L 99 454 L 198 362.99805 L 198 362.81641 L 294.84375 272.27148 L 294.93555 272.27148 L 294.93555 362.11914 L 392 362.11914 L 392 181.35938 L 295.06836 181.35938 L 391.94336 90.767578 L 391.94336 0 L 294.88086 0 z "
           fill="var(--color-background-muted)"
         />
       </svg>
 
       <img
-        src="/images/rewards/rewards-onboarding-step1.png"
+        src="/images/rewards/rewards-onboarding-step3.png"
         className="w-full z-10 object-contain"
       />
     </>
   );
 
   const renderStepInfo = () => (
-    <Box className="flex-col min-h-30">
-      <Text variant={TextVariant.HeadingLg} className="text-center my-2">
-        {t('rewardsOnboardingStep1Title')}
+    <Box className="flex flex-col min-h-30 gap-2">
+      <Text variant={TextVariant.HeadingLg} className="text-center">
+        {t('rewardsOnboardingStep3Title')}
       </Text>
       <Text
         variant={TextVariant.BodyMd}
-        className="text-center text-alternative my-2"
+        className="text-center text-alternative"
       >
-        {t('rewardsOnboardingStep1Description')}
+        {t('rewardsOnboardingStep3Description')}
       </Text>
     </Box>
   );
@@ -87,4 +87,4 @@ const OnboardingStep1: React.FC = () => {
   );
 };
 
-export default OnboardingStep1;
+export default OnboardingStep3;

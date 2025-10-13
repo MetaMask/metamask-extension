@@ -359,6 +359,30 @@ export declare global {
 }
 // #endregion
 
+// #region Global Engine
+// Minimal ambient declaration for the UI's global `Engine` usage.
+// Provides a lightweight type for `controllerMessenger.call(...)` so
+// TypeScript can resolve `Engine` without explicit imports in UI code.
+export declare global {
+  type GlobalControllerMessenger = {
+    // Accepts string-based action names like 'RewardsController:validateReferralCode'
+    // and any additional arguments.
+    // Return type is intentionally broad to avoid over-constraining UI usage.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    call: (type: string, ...args: any[]) => any;
+    // Optional helpers commonly present on messengers
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    subscribe?: (...args: any[]) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    publish?: (...args: any[]) => void;
+  };
+
+  var Engine: {
+    controllerMessenger: GlobalControllerMessenger;
+  };
+}
+// #endregion
+
 // #region used in jest tests to ignore unhandled rejections
 declare global {
   namespace NodeJS {

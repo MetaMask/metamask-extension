@@ -6,20 +6,23 @@ import {
   ModalHeader,
   ModalOverlay,
   ModalContentSize,
-} from '../../../component-library';
-import { ThemeType } from '../../../../../shared/constants/preferences';
+} from '../../../../component-library';
+import { ThemeType } from '../../../../../../shared/constants/preferences';
 import {
   AlignItems,
   JustifyContent,
-} from '../../../../helpers/constants/design-system';
+} from '../../../../../helpers/constants/design-system';
 import {
   selectOnboardingModalOpen,
   selectOnboardingActiveStep,
-} from '../../../../ducks/rewards/selectors';
-import { setOnboardingModalOpen } from '../../../../ducks/rewards';
-import { OnboardingStep } from '../../../../ducks/rewards/types';
+} from '../../../../../ducks/rewards/selectors';
+import { setOnboardingModalOpen } from '../../../../../ducks/rewards';
+import { OnboardingStep } from '../../../../../ducks/rewards/types';
 import OnboardingIntroStep from './onboarding-intro-step';
 import OnboardingStep1 from './onboarding-step-1';
+import OnboardingStep2 from './onboarding-step-2';
+import OnboardingStep3 from './onboarding-step-3';
+import OnboardingStep4 from './onboarding-step-4';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingModal() {
@@ -37,6 +40,12 @@ export default function OnboardingModal() {
         return <OnboardingIntroStep />;
       case OnboardingStep.STEP_1:
         return <OnboardingStep1 />;
+      case OnboardingStep.STEP_2:
+        return <OnboardingStep2 />;
+      case OnboardingStep.STEP_3:
+        return <OnboardingStep3 />;
+      case OnboardingStep.STEP_4:
+        return <OnboardingStep4 />;
       default:
         return <OnboardingIntroStep />;
     }
