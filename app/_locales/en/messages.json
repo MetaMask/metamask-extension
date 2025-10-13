@@ -5680,6 +5680,12 @@
   "shieldClaimSubmit": {
     "message": "Submit a claim"
   },
+  "shieldClaimSubmitError": {
+    "message": "Claim submission failed"
+  },
+  "shieldClaimSubmitSuccess": {
+    "message": "Claim submitted successfully"
+  },
   "shieldConfirmMembership": {
     "message": "Confirm membership"
   },

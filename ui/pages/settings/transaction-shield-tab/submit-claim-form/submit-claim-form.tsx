@@ -41,6 +41,9 @@ import { useClaimState } from '../../../../hooks/claims/useClaimState';
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
 import { submitShieldClaim } from '../../../../store/actions';
+import LoadingScreen from '../../../../components/ui/loading-screen';
+import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
+import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -52,6 +55,7 @@ function isValidTransactionHash(hash: string): boolean {
 const SubmitClaimForm = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const [claimSubmitLoading, setClaimSubmitLoading] = useState(false);
 
   const {
     email,
@@ -170,20 +174,27 @@ const SubmitClaimForm = () => {
     [setFiles, t],
   );
 
-  const handleSubmitClaim = useCallback(() => {
-    // convert FileList to File[]
-    const filesArray = Array.from(files ?? []);
-
-    dispatch(
-      submitShieldClaim({
-        email,
-        impactedWalletAddress,
-        impactedTxHash,
-        reimbursementWalletAddress,
-        description,
-        files: filesArray,
-      }),
-    );
+  const handleSubmitClaim = useCallback(async () => {
+    try {
+      setClaimSubmitLoading(true);
+      // convert FileList to File[]
+      const filesArray = Array.from(files ?? []);
+      await dispatch(
+        submitShieldClaim({
+          email,
+          impactedWalletAddress,
+          impactedTxHash,
+          reimbursementWalletAddress,
+          description,
+          files: filesArray,
+        }),
+      );
+      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
+    } catch (error) {
+      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Errored));
+    } finally {
+      setClaimSubmitLoading(false);
+    }
   }, [
     dispatch,
     email,
@@ -422,6 +433,7 @@ const SubmitClaimForm = () => {
           {t('shieldClaimSubmit')}
         </Button>
       </Box>
+      {claimSubmitLoading && <LoadingScreen />}
     </Box>
   );
 };
