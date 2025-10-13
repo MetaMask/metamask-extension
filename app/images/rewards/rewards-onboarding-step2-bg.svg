@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="393"
+   height="454"
+   viewBox="0 0 393 454"
+   version="1.1"
+   id="svg1012"
+   sodipodi:docname="rewards-bg-3.svg"
+   inkscape:version="1.1.2 (b8e25be8, 2022-02-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1016" />
+  <sodipodi:namedview
+     id="namedview1014"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="1.9229075"
+     inkscape:cx="94.128293"
+     inkscape:cy="233.24055"
+     inkscape:window-width="2065"
+     inkscape:window-height="1081"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg1012" />
+  <path
+     id="path996"
+     d="M 257.61523 0 L 121.50195 136.11328 L 121.50195 272.51562 L 30.742188 272.51562 L 30.742188 363.25781 L 166.87109 363.25781 L 166.87109 454 L 302.98438 454 L 393.72852 363.25781 L 393.71289 363.25781 L 393.71289 272.51562 L 393.73047 272.51562 L 302.79492 227.04688 L 393.73047 136.11328 L 393.73047 0 L 257.61523 0 z M 30.742188 363.25781 L -60 363.25781 L -60 454 L 30.742188 454 L 30.742188 363.25781 z M -59.998047 45.660156 L -14.626953 136.40234 L 121.48633 136.40234 L 76.115234 45.660156 L -59.998047 45.660156 z M 121.48633 181.76953 L 30.744141 272.51367 L 121.48633 272.51367 L 121.48633 181.76953 z M 212.24414 272.36914 L 212.24414 272.51562 L 165.20898 272.51562 L 212.24414 272.36914 z " />
+</svg>
