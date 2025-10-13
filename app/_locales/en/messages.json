@@ -2525,6 +2525,12 @@
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
   },
+  "fileUploaderDescription": {
+    "message": "Click to upload or drag and drop"
+  },
+  "fileUploaderInvalidFileTypeError": {
+    "message": "Invalid file type. Please upload a supported file format."
+  },
   "fileUploaderMaxFileSizeError": {
     "message": "File size exceeds $1MB. Please upload a smaller file.",
     "description": "$1 is the maximum file size in MB"
