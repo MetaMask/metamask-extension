@@ -16,7 +16,10 @@ import { ENVIRONMENT } from '../../../../development/build/constants';
 function isDevOrTestBuild() {
   return (
     process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING ||
+    // TODO: use dev for beta build, remove if outside of beta build
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.STAGING ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.OTHER
   );
 }
 
