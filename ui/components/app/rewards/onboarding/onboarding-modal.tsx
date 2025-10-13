@@ -19,6 +19,7 @@ import {
 import { setOnboardingModalOpen } from '../../../../ducks/rewards';
 import { OnboardingStep } from '../../../../ducks/rewards/types';
 import OnboardingIntroStep from './onboarding-intro-step';
+import OnboardingStep1 from './onboarding-step-1';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OnboardingModal() {
@@ -34,6 +35,8 @@ export default function OnboardingModal() {
     switch (onboardingStep) {
       case OnboardingStep.INTRO:
         return <OnboardingIntroStep />;
+      case OnboardingStep.STEP_1:
+        return <OnboardingStep1 />;
       default:
         return <OnboardingIntroStep />;
     }
@@ -60,7 +63,7 @@ export default function OnboardingModal() {
         <ModalHeader
           data-theme={ThemeType.dark}
           closeButtonProps={{
-            className: 'absolute top-2 right-2',
+            className: 'absolute top-2 right-2 z-10',
           }}
           paddingBottom={0}
           onClose={handleClose}
