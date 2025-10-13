@@ -41,6 +41,7 @@ type State = {
       | 'newPrivacyPolicyToastShownDate'
       | 'onboardingDate'
       | 'surveyLinkLastClickedOrClosed'
+      | 'shieldPausedToastLastClickedOrClosed'
     >
   >;
 };
@@ -191,4 +192,31 @@ export function selectShowCopyAddressToast(
   state: Pick<State, 'appState'>,
 ): boolean {
   return Boolean(state.appState.showCopyAddressToast);
+}
+
+/**
+ * Retrieves user preference to see the "Shield Payment Declined" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowShieldPausedToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  console.log(
+    'check: shieldPausedToastLastClickedOrClosed',
+    state.metamask.shieldPausedToastLastClickedOrClosed,
+  );
+  if (!state.metamask.shieldPausedToastLastClickedOrClosed) {
+    return true;
+  }
+  // if time is more than 30 days, return true
+  if (
+    Date.now() - state.metamask.shieldPausedToastLastClickedOrClosed >
+    30 * 24 * 60 * 60 * 1000
+  ) {
+    return true;
+  }
+
+  return false;
 }

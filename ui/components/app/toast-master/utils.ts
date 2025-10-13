@@ -92,3 +92,9 @@ export function setShowCopyAddressToast(value: boolean) {
     payload: value,
   };
 }
+
+export function setShieldPausedToastLastClickedOrClosed(time: number) {
+  submitRequestToBackgroundAndCatch('setShieldPausedToastLastClickedOrClosed', [
+    time,
+  ]);
+}

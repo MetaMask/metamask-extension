@@ -76,6 +76,7 @@ import {
   selectPasswordChangeToast,
   selectShowCopyAddressToast,
   selectShowConnectAccountGroupToast,
+  selectShowShieldPausedToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -85,6 +86,7 @@ import {
   setShowNewSrpAddedToast,
   setShowPasswordChangeToast,
   setShowCopyAddressToast,
+  setShieldPausedToastLastClickedOrClosed,
 } from './utils';
 
 export function ToastMaster() {
@@ -111,7 +113,7 @@ export function ToastMaster() {
         <PermittedNetworkToast />
         <NewSrpAddedToast />
         <CopyAddressToast />
-        <ShieldPaymentDeclinedToast />
+        <ShieldPausedToast />
         <ShieldCoverageEndingToast />
       </ToastContainer>
     );
@@ -533,8 +535,10 @@ function CopyAddressToast() {
   );
 }
 
-function ShieldPaymentDeclinedToast() {
+function ShieldPausedToast() {
   const t = useI18nContext();
+
+  const showShieldPausedToast = useSelector(selectShowShieldPausedToast);
 
   const { subscriptions } = useUserSubscriptions();
 
@@ -561,14 +565,19 @@ function ShieldPaymentDeclinedToast() {
       recurringInterval: shieldSubscription?.interval,
     });
 
+  console.log('check: isPaused', isPaused);
+  console.log('check: showShieldPausedToast', showShieldPausedToast);
+
   return (
-    Boolean(isPaused) && (
+    Boolean(isPaused) &&
+    showShieldPausedToast && (
       <Toast
         key="shield-payment-declined-toast"
         text={t('shieldPaymentDeclined')}
         description={t('shieldPaymentDeclinedDescription')}
         actionText={t('shieldPaymentDeclinedAction')}
         onActionClick={async () => {
+          setShieldPausedToastLastClickedOrClosed(Date.now());
           if (isCryptoPayment) {
             // TODO: handle add funds crypto
             console.log('add funds');
@@ -583,7 +592,7 @@ function ShieldPaymentDeclinedToast() {
             size={IconSize.Lg}
           />
         }
-        onClose={() => console.log('close')}
+        onClose={() => setShieldPausedToastLastClickedOrClosed(Date.now())}
       />
     )
   );

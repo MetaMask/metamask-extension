@@ -101,6 +101,7 @@ export type AppStateControllerState = {
   slides: CarouselSlide[];
   snapsInstallPrivacyWarningShown?: boolean;
   surveyLinkLastClickedOrClosed: number | null;
+  shieldPausedToastLastClickedOrClosed: number | null;
   termsOfUseLastAgreed?: number;
   throttledOrigins: ThrottledOrigins;
   timeoutMinutes: number;
@@ -240,6 +241,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   showTestnetMessageInDropdown: true,
   slides: [],
   surveyLinkLastClickedOrClosed: null,
+  shieldPausedToastLastClickedOrClosed: null,
   throttledOrigins: {},
   timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
   trezorModel: null,
@@ -511,6 +513,12 @@ const controllerMetadata = {
     anonymous: true,
     usedInUi: true,
   },
+  shieldPausedToastLastClickedOrClosed: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+  },
   termsOfUseLastAgreed: {
     includeInStateLogs: true,
     persist: true,
@@ -751,6 +759,12 @@ export class AppStateController extends BaseController<
   setNewPrivacyPolicyToastShownDate(time: number): void {
     this.update((state) => {
       state.newPrivacyPolicyToastShownDate = time;
+    });
+  }
+
+  setShieldPausedToastLastClickedOrClosed(time: number): void {
+    this.update((state) => {
+      state.shieldPausedToastLastClickedOrClosed = time;
     });
   }
 

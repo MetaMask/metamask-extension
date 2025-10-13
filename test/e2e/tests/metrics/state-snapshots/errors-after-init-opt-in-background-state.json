@@ -71,7 +71,8 @@
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
-    "snapsInstallPrivacyWarningShown": true
+    "snapsInstallPrivacyWarningShown": true,
+    "shieldPausedToastLastClickedOrClosed": "number"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
