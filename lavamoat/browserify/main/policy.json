@@ -1626,10 +1626,10 @@
     },
     "@metamask/phishing-controller": {
       "globals": {
+        "PathTrie_1.matchedPathPrefix": true,
         "TextEncoder": true,
         "URL": true,
         "console.error": true,
-        "console.warn": true,
         "fetch": true
       },
       "packages": {
