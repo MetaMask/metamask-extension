@@ -616,7 +616,7 @@ function ShieldEndingToast() {
     });
 
   return (
-    Boolean(!isCancelled) &&
+    Boolean(isCancelled) &&
     showShieldEndingToast && (
       <Toast
         key="shield-coverage-ending-toast"
