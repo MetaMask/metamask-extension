@@ -1009,7 +1009,8 @@ export default class MetamaskController extends EventEmitter {
      * On chrome profile re-start, they will be re-initialized.
      */
     const resetOnRestartStore = {
-      AccountTracker: this.accountTrackerController,
+      // TODO Review if this is needed
+      // AccountTracker: this.accountTrackerController,
       TokenRatesController: this.tokenRatesController,
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
@@ -1134,9 +1135,10 @@ export default class MetamaskController extends EventEmitter {
 
     // if this is the first time, clear the state of by calling these methods
     const resetMethods = [
-      this.accountTrackerController.resetState.bind(
-        this.accountTrackerController,
-      ),
+      // TODO Review if this is needed
+      // this.accountTrackerController.resetState.bind(
+      //   this.accountTrackerController,
+      // ),
       this.decryptMessageController.resetState.bind(
         this.decryptMessageController,
       ),
@@ -3002,10 +3004,9 @@ export default class MetamaskController extends EventEmitter {
         tokenRatesController.stopPollingByPollingToken.bind(
           tokenRatesController,
         ),
-      accountTrackerStartPolling:
-        accountTrackerController.startPollingByNetworkClientId.bind(
-          accountTrackerController,
-        ),
+      accountTrackerStartPolling: accountTrackerController.startPolling.bind(
+        accountTrackerController,
+      ),
       accountTrackerStopPollingByPollingToken:
         accountTrackerController.stopPollingByPollingToken.bind(
           accountTrackerController,
@@ -4381,7 +4382,8 @@ export default class MetamaskController extends EventEmitter {
       this.accountOrderController.updateHiddenAccountsList([]);
 
       // clear accounts in AccountTrackerController
-      this.accountTrackerController.clearAccounts();
+      // TODO Review if this is needed
+      // this.accountTrackerController.clearAccounts();
 
       this.txController.clearUnapprovedTransactions();
 
@@ -4687,6 +4689,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {Provider} provider - The provider instance to use when asking the network
    */
   async getBalance(address, provider) {
+    // TODO We should not rely on global chain id
     const accounts =
       this.accountTrackerController.state.accountsByChainId[
         this.#getGlobalChainId()
@@ -4778,7 +4781,8 @@ export default class MetamaskController extends EventEmitter {
 
       // Updating accounts in this.accountTrackerController before starting UI syncing ensure that
       // state has account balance before it is synced with UI
-      await this.accountTrackerController.updateAccountsAllActiveNetworks();
+      // TODO Review if this is needed
+      // await this.accountTrackerController.updateAccountsAllActiveNetworks();
     } finally {
       this._startUISync();
     }
@@ -4908,14 +4912,15 @@ export default class MetamaskController extends EventEmitter {
 
         // Merge with existing accounts
         // and make sure addresses are not repeated
-        const oldAccounts = await this.keyringController.getAccounts();
+        // const oldAccounts = await this.keyringController.getAccounts();
 
-        const accountsToTrack = [
-          ...new Set(
-            oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())),
-          ),
-        ];
-        this.accountTrackerController.syncWithAddresses(accountsToTrack);
+        // const accountsToTrack = [
+        //   ...new Set(
+        //     oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())),
+        //   ),
+        // ];
+        // TODO Review how we handle this
+        // this.accountTrackerController.syncWithAddresses(accountsToTrack);
         return accounts;
       },
     );
@@ -5211,6 +5216,7 @@ export default class MetamaskController extends EventEmitter {
 
     const internalAccountCount = internalAccounts.length;
 
+    // TODO We should not rely on global chain id
     const accountsForCurrentChain =
       this.accountTrackerController.state.accountsByChainId[
         this.#getGlobalChainId()
@@ -7381,7 +7387,8 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    this.accountTrackerController.syncWithAddresses(addresses);
+    // TODO Review how we handle this
+    // this.accountTrackerController.syncWithAddresses(addresses);
   }
 
   /**
@@ -7669,10 +7676,11 @@ export default class MetamaskController extends EventEmitter {
       networkClientId,
       txParams: { from },
     } = transactionMeta;
-    this.accountTrackerController.updateAccountByAddress({
-      address: from,
-      networkClientId,
-    });
+    // TODO Review how we handle this
+    // this.accountTrackerController.updateAccountByAddress({
+    //   address: from,
+    //   networkClientId,
+    // });
   }
 
   toggleExternalServices(useExternal) {
