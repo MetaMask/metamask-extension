@@ -6,7 +6,10 @@ import { useHistory, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import { AvatarAccountSize } from '@metamask/design-system-react';
-import { SUBSCRIPTION_STATUSES } from '@metamask/subscription-controller';
+import {
+  PRODUCT_TYPES,
+  SUBSCRIPTION_STATUSES,
+} from '@metamask/subscription-controller';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
@@ -536,7 +539,7 @@ function ShieldPaymentDeclinedToast() {
   const { subscriptions } = useUserSubscriptions();
 
   const shieldSubscription = useUserSubscriptionByProduct(
-    'shield',
+    PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
 
@@ -559,7 +562,7 @@ function ShieldPaymentDeclinedToast() {
     });
 
   return (
-    isPaused && (
+    Boolean(isPaused) && (
       <Toast
         key="shield-payment-declined-toast"
         text={t('shieldPaymentDeclined')}
@@ -591,7 +594,7 @@ function ShieldCoverageEndingToast() {
 
   const { subscriptions } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
-    'shield',
+    PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
   const isCancelled =
@@ -608,7 +611,7 @@ function ShieldCoverageEndingToast() {
     });
 
   return (
-    isCancelled && (
+    Boolean(isCancelled) && (
       <Toast
         key="shield-coverage-ending-toast"
         text={t('shieldCoverageEnding')}
