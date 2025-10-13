@@ -17,6 +17,7 @@ export const DefaultStory = () => (
       },
     }}
     chainId="0x1"
+    payerAddress="0x0"
   />
 );
 

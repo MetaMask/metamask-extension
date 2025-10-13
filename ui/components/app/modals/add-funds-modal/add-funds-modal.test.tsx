@@ -38,6 +38,7 @@ describe('Add funds modal Component', () => {
           },
         }}
         chainId="0x1"
+        payerAddress="0x0"
       />,
       mockStore,
     );

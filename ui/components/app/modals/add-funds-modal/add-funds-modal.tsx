@@ -10,6 +10,7 @@ import {
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import { TokenPaymentInfo } from '@metamask/subscription-controller';
+import { Hex } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Modal,
@@ -31,7 +32,6 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { hexToDecimal } from '../../../../../shared/modules/conversion.utils';
 import { AggregatorNetwork } from '../../../../ducks/ramps/types';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
-import { Hex } from '@metamask/utils';
 
 const AddFundsModal = ({
   onClose,
