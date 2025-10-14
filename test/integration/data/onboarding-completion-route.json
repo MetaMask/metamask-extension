@@ -321,6 +321,8 @@
   "selectedAddress": "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
+  "shieldEndingToastLastClickedOrClosed": null,
+  "shieldPausedToastLastClickedOrClosed": null,
   "showAccountBanner": true,
   "showBetaHeader": false,
   "showNetworkBanner": true,
