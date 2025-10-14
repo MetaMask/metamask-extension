@@ -5,7 +5,7 @@ const path = require('node:path');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 
-const { getSentryRelease } = require('../app/scripts/lib/setupSentry');
+const { getSentryRelease } = require('../shared/lib/sentry-release');
 const { runCommand, runInShell } = require('./lib/run-command');
 const { getVersion } = require('./lib/get-version');
 const { loadBuildTypesConfig } = require('./lib/build-type');

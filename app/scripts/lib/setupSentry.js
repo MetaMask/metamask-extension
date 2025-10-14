@@ -7,6 +7,7 @@ import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
+import { getSentryRelease } from '../../../shared/lib/sentry-release';
 
 let installType = 'unknown';
 
@@ -571,12 +572,4 @@ function getEventType(event) {
   }
 
   return 'Event';
-}
-
-export function getSentryRelease(environment, version) {
-  const packageName =
-    environment === 'production'
-      ? 'metamask-extension'
-      : `metamask-extension-${environment}`;
-  return `${packageName}@${version}`;
 }
