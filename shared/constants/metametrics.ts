@@ -1045,6 +1045,7 @@ export enum MetaMetricsSwapsEventSource {
   MainView = 'Main View',
   TokenView = 'Token View',
   ActivityTabEmptyState = 'Activity Tab Empty State',
+  TransactionShield = 'Transaction Shield',
 }
 
 export enum MetaMetricsTokenEventSource {
