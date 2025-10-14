@@ -10,6 +10,7 @@ import {
   PRODUCT_TYPES,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
@@ -25,6 +26,7 @@ import {
   DEFAULT_ROUTE,
   REVIEW_PERMISSIONS,
   SETTINGS_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -63,9 +65,7 @@ import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-
 import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
-  useUpdateSubscriptionCardPaymentMethod,
 } from '../../../hooks/subscription/useSubscription';
-import { isCryptoPaymentMethod } from '../../../pages/settings/transaction-shield-tab/types';
 import { getShortDateFormatterV2 } from '../../../pages/asset/util';
 import { getIsShieldSubscriptionPaused } from '../../../../shared/lib/shield';
 import {
@@ -540,6 +540,7 @@ function CopyAddressToast() {
 
 function ShieldPausedToast() {
   const t = useI18nContext();
+  const navigate = useNavigate();
 
   const showShieldPausedToast = useSelector(selectShowShieldPausedToast);
 
@@ -552,16 +553,6 @@ function ShieldPausedToast() {
 
   const isPaused = getIsShieldSubscriptionPaused(shieldSubscription);
 
-  const isCryptoPayment =
-    shieldSubscription?.paymentMethod &&
-    isCryptoPaymentMethod(shieldSubscription?.paymentMethod);
-
-  const [executeUpdateSubscriptionCardPaymentMethod] =
-    useUpdateSubscriptionCardPaymentMethod({
-      subscriptionId: shieldSubscription?.id,
-      recurringInterval: shieldSubscription?.interval,
-    });
-
   return (
     Boolean(isPaused) &&
     showShieldPausedToast && (
@@ -572,12 +563,7 @@ function ShieldPausedToast() {
         actionText={t('shieldPaymentDeclinedAction')}
         onActionClick={async () => {
           setShieldPausedToastLastClickedOrClosed(Date.now());
-          if (isCryptoPayment) {
-            // TODO: handle add funds crypto
-            console.log('add funds');
-          } else {
-            await executeUpdateSubscriptionCardPaymentMethod();
-          }
+          navigate(TRANSACTION_SHIELD_ROUTE);
         }}
         startAdornment={
           <Icon
@@ -594,6 +580,7 @@ function ShieldPausedToast() {
 
 function ShieldEndingToast() {
   const t = useI18nContext();
+  const navigate = useNavigate();
 
   const showShieldEndingToast = useSelector(selectShowShieldEndingToast);
 
@@ -604,16 +591,6 @@ function ShieldEndingToast() {
   );
   const isCancelled =
     shieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
-
-  const isCryptoPayment =
-    shieldSubscription?.paymentMethod &&
-    isCryptoPaymentMethod(shieldSubscription?.paymentMethod);
-
-  const [executeUpdateSubscriptionCardPaymentMethod] =
-    useUpdateSubscriptionCardPaymentMethod({
-      subscriptionId: shieldSubscription?.id,
-      recurringInterval: shieldSubscription?.interval,
-    });
 
   return (
     Boolean(isCancelled) &&
@@ -629,12 +606,7 @@ function ShieldEndingToast() {
         actionText={t('shieldCoverageEndingAction')}
         onActionClick={async () => {
           setShieldEndingToastLastClickedOrClosed(Date.now());
-          if (isCryptoPayment) {
-            // TODO: handle renew membership crypto
-            console.log('renew membership');
-          } else {
-            executeUpdateSubscriptionCardPaymentMethod();
-          }
+          navigate(TRANSACTION_SHIELD_ROUTE);
         }}
         startAdornment={
           <Icon
