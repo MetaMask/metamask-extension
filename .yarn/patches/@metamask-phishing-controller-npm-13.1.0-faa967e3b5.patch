@@ -429,6 +429,44 @@ index eb660e86f4067babdc22a208a13a0c603301ecba..087ecb5dba38dbbb87f73e352b1656ac
          c2DomainBlocklist: c2DomainBlocklistResponse
              ? c2DomainBlocklistResponse.recentlyAdded
              : [],
+diff --git a/dist/PhishingController.d.cts b/dist/PhishingController.d.cts
+index 83717b0baaf6e2f866116492c6d826e18fb9dae6..bc69944cd12008047cf80503c61e4ab3340eaa82 100644
+--- a/dist/PhishingController.d.cts
++++ b/dist/PhishingController.d.cts
+@@ -1,5 +1,6 @@
+ import type { ControllerGetStateAction, ControllerStateChangeEvent, RestrictedMessenger } from "@metamask/base-controller";
+ import { BaseController } from "@metamask/base-controller";
++import { type PathTrie } from "./PathTrie.cjs";
+ import { type PhishingDetectorResult, type PhishingDetectionScanResult } from "./types.cjs";
+ import { type UrlScanCacheEntry } from "./UrlScanCache.cjs";
+ export declare const PHISHING_CONFIG_BASE_URL = "https://phishing-detection.api.cx.metamask.io";
+@@ -84,6 +85,7 @@ export type PhishingStalelist = {
+ export type PhishingListState = {
+     allowlist: string[];
+     blocklist: string[];
++    blocklistPaths: PathTrie;
+     c2DomainBlocklist: string[];
+     fuzzylist: string[];
+     tolerance: number;
+diff --git a/dist/PhishingController.d.mts b/dist/PhishingController.d.mts
+index ddcea5ee26e1f2ab12b21175cd07e7e57b1c6e83..a9301b1b6056950004d24a3805dbd50aa5098d04 100644
+--- a/dist/PhishingController.d.mts
++++ b/dist/PhishingController.d.mts
+@@ -1,5 +1,6 @@
+ import type { ControllerGetStateAction, ControllerStateChangeEvent, RestrictedMessenger } from "@metamask/base-controller";
+ import { BaseController } from "@metamask/base-controller";
++import { type PathTrie } from "./PathTrie.mjs";
+ import { type PhishingDetectorResult, type PhishingDetectionScanResult } from "./types.mjs";
+ import { type UrlScanCacheEntry } from "./UrlScanCache.mjs";
+ export declare const PHISHING_CONFIG_BASE_URL = "https://phishing-detection.api.cx.metamask.io";
+@@ -84,6 +85,7 @@ export type PhishingStalelist = {
+ export type PhishingListState = {
+     allowlist: string[];
+     blocklist: string[];
++    blocklistPaths: PathTrie;
+     c2DomainBlocklist: string[];
+     fuzzylist: string[];
+     tolerance: number;
 diff --git a/dist/PhishingController.mjs b/dist/PhishingController.mjs
 index e4bb6908a916af4b01341928a3bf3b4bd5366120..5c7bb4e6a07fa9a3983b2ff4ac7ef9ced6cc59bb 100644
 --- a/dist/PhishingController.mjs

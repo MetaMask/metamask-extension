@@ -6904,7 +6904,7 @@ __metadata:
 
 "@metamask/phishing-controller@patch:@metamask/phishing-controller@npm%3A13.1.0#~/.yarn/patches/@metamask-phishing-controller-npm-13.1.0-faa967e3b5.patch":
   version: 13.1.0
-  resolution: "@metamask/phishing-controller@patch:@metamask/phishing-controller@npm%3A13.1.0#~/.yarn/patches/@metamask-phishing-controller-npm-13.1.0-faa967e3b5.patch::version=13.1.0&hash=aacf08"
+  resolution: "@metamask/phishing-controller@patch:@metamask/phishing-controller@npm%3A13.1.0#~/.yarn/patches/@metamask-phishing-controller-npm-13.1.0-faa967e3b5.patch::version=13.1.0&hash=c2fa33"
   dependencies:
     "@metamask/base-controller": "npm:^8.0.1"
     "@metamask/controller-utils": "npm:^11.11.0"
@@ -6913,7 +6913,7 @@ __metadata:
     ethereum-cryptography: "npm:^2.1.2"
     fastest-levenshtein: "npm:^1.0.16"
     punycode: "npm:^2.1.1"
-  checksum: 10/f85d79ade7ab77f4bbfae8c524a0fb01df2c888b87b7a9d86818f70e6f5e10db3b502e6de37a5fb9727d93e4564486c0d72479e5e886f5a60bd56a3bc6e853ec
+  checksum: 10/a7594d084f74af1469af86fe09093cc1e7d9a5c56a49369f2cfdc14ac86b9500d65bda0081a03154a635280feb017ba9727e9f1e6619246415cd8140d1effed2
   languageName: node
   linkType: hard
 
