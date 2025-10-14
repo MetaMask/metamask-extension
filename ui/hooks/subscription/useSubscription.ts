@@ -7,10 +7,8 @@ import {
   Subscription,
   SubscriptionEligibility,
 } from '@metamask/subscription-controller';
-import {
-  getIsActiveShieldSubscription,
-  getUserSubscriptions,
-} from '../../selectors/subscription';
+import log from 'loglevel';
+import { getUserSubscriptions } from '../../selectors/subscription';
 import {
   cancelSubscription,
   getSubscriptionBillingPortalUrl,
@@ -23,6 +21,7 @@ import { useAsyncCallback, useAsyncResult } from '../useAsync';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield';
 
 export const useUserSubscriptions = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
@@ -128,19 +127,36 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
  */
 export const useSubscriptionEligibility = (product: ProductType) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const isShieldSubscriptionActive = useSelector(getIsActiveShieldSubscription);
   const isSignedIn = useSelector(selectIsSignedIn);
   const isUnlocked = useSelector(getIsUnlocked);
 
   const getSubscriptionEligibility = useCallback(async (): Promise<
     SubscriptionEligibility | undefined
   > => {
-    if (isShieldSubscriptionActive || !isSignedIn || !isUnlocked) {
+    try {
+      // if user is not signed in or unlocked, return undefined
+      if (!isSignedIn || !isUnlocked) {
+        return undefined;
+      }
+
+      // get the subscriptions before making the eligibility request
+      const subscriptions = await dispatch(getSubscriptions());
+      const isShieldSubscriptionActive =
+        getIsShieldSubscriptionActive(subscriptions);
+
+      if (!isShieldSubscriptionActive) {
+        // only if shield subscription is not active, get the eligibility
+        const eligibilities = await dispatch(getSubscriptionsEligibilities());
+        return eligibilities.find(
+          (eligibility) => eligibility.product === product,
+        );
+      }
+      return undefined;
+    } catch (error) {
+      log.error('[useSubscriptionEligibility] error', error);
       return undefined;
     }
-    const eligibilities = await dispatch(getSubscriptionsEligibilities());
-    return eligibilities.find((eligibility) => eligibility.product === product);
-  }, [dispatch, isShieldSubscriptionActive, product, isSignedIn, isUnlocked]);
+  }, [isSignedIn, isUnlocked, dispatch, product]);
 
   return {
     getSubscriptionEligibility,
