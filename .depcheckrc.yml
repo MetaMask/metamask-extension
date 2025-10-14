@@ -28,6 +28,8 @@ ignores:
   - '@metamask/test-dapp'
   - '@metamask/test-dapp-multichain'
   - '@metamask/test-dapp-solana'
+  - '@metamask/snap-simple-keyring-site'
+  - '@metamask/snap-account-abstraction-keyring-site'
   - '@metamask/design-tokens' # Only imported in index.css
   - '@tsconfig/node22' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`
