@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import * as actions from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
@@ -23,6 +23,12 @@ describe('Shield Entry Modal', () => {
         selectedAccount: '',
       },
       metaMetricsId: '0x00000000',
+    },
+    appState: {
+      showShieldEntryModalOnce: {
+        show: true,
+        shouldSubmitEvents: false,
+      },
     },
   };
   const mockStore = configureMockStore([thunk])(mockState);
@@ -50,7 +56,7 @@ describe('Shield Entry Modal', () => {
     expect(setShowShieldEntryModalOnceStub).toHaveBeenCalledWith(false);
   });
 
-  it('should call onGetStarted when the get started button is clicked', () => {
+  it('should call onGetStarted when the get started button is clicked', async () => {
     const { getByTestId } = renderWithProvider(<ShieldEntryModal />, mockStore);
 
     const getStartedButton = getByTestId(
@@ -59,6 +65,8 @@ describe('Shield Entry Modal', () => {
 
     fireEvent.click(getStartedButton);
     expect(setShowShieldEntryModalOnceStub).toHaveBeenCalledWith(false);
-    expect(mockUseNavigate).toHaveBeenCalledWith(SHIELD_PLAN_ROUTE);
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(SHIELD_PLAN_ROUTE);
+    });
   });
 });
