@@ -699,7 +699,7 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
 }
 
 export function getCrossChainMetaMaskCachedBalances(state) {
-  const allAccountsByChainId = state.metamask.accountsByChainId;
+  const allAccountsByChainId = state.metamask.accountsByChainId || {};
   return Object.keys(allAccountsByChainId).reduce((acc, topLevelKey) => {
     acc[topLevelKey] = Object.keys(allAccountsByChainId[topLevelKey]).reduce(
       (innerAcc, innerKey) => {

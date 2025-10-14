@@ -210,6 +210,7 @@ export const CoinOverview = ({
   isSwapsChain,
   isSigningEnabled,
 }: CoinOverviewProps) => {
+  console.log('DEBUG TTTTT COIN OVERVIEW');
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);
 
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);

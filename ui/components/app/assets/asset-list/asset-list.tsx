@@ -55,6 +55,7 @@ const AssetList = ({
   showTokensLinks,
   safeChains,
 }: AssetListProps) => {
+  console.log('DEBUG TTTTT ASSET LIST');
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const isEvm = useSelector(getMultichainIsEvm);
   // NOTE: Since we can parametrize it now, we keep the original behavior

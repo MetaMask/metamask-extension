@@ -136,7 +136,7 @@ const mapStateToProps = (state) => {
   const shouldShowSeedPhraseReminder =
     selectedAccount && getShouldShowSeedPhraseReminder(state, selectedAccount);
 
-  return {
+  const props = {
     useExternalServices: getUseExternalServices(state),
     isBasicConfigurationModalOpen: appState.showBasicFunctionalityModal,
     forgottenPassword,
@@ -188,10 +188,11 @@ const mapStateToProps = (state) => {
     showShieldEntryModal: getShowShieldEntryModalOnce(state),
     isSocialLoginFlow: getIsSocialLoginFlow(state),
   };
+  return props;
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
+  const props = {
     setDataCollectionForMarketing: (val) =>
       dispatch(setDataCollectionForMarketing(val)),
     attemptCloseNotificationPopup: () => attemptCloseNotificationPopup(),
@@ -245,6 +246,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setAccountDetailsAddress(address)),
     lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
   };
+  return props;
 };
 
 export default compose(
