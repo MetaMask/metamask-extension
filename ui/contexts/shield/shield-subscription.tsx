@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PRODUCT_TYPES, Subscription } from '@metamask/subscription-controller';
 import {
+  useSubscriptionEligibility,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
@@ -20,7 +21,6 @@ import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
-import { SHIELD_MIN_FIAT_BALANCE_THRESHOLD } from '../../../shared/constants/subscriptions';
 
 export const ShieldSubscriptionContext = React.createContext<{
   resetShieldEntryModalShownStatus: () => void;
@@ -65,6 +65,8 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     getHasShieldEntryModalShownOnce,
   );
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { getSubscriptionEligibility: getShieldSubscriptionEligibility } =
+    useSubscriptionEligibility(PRODUCT_TYPES.SHIELD);
   const { totalFiatBalance } = useAccountTotalFiatBalance(
     selectedAccount,
     false,
@@ -79,13 +81,19 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
    * - User has a balance greater than the minimum fiat balance threshold (1K USD)
    * - User has not shown the shield entry modal before
    */
-  const getIsUserBalanceCriteriaMet = useCallback(() => {
+  const getIsUserBalanceCriteriaMet = useCallback(async () => {
+    if (isShieldSubscriptionActive || !selectedAccount || !isSignedIn) {
+      return false;
+    }
+
+    const shieldSubscriptionEligibility =
+      await getShieldSubscriptionEligibility();
     if (
-      !isShieldSubscriptionActive &&
-      selectedAccount &&
-      isSignedIn &&
+      shieldSubscriptionEligibility?.canSubscribe &&
+      shieldSubscriptionEligibility?.canViewEntryModal &&
+      shieldSubscriptionEligibility?.minBalanceUSD &&
       totalFiatBalance &&
-      Number(totalFiatBalance) >= SHIELD_MIN_FIAT_BALANCE_THRESHOLD
+      Number(totalFiatBalance) >= shieldSubscriptionEligibility.minBalanceUSD
     ) {
       return true;
     }
@@ -93,27 +101,30 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     return false;
   }, [
     isShieldSubscriptionActive,
+    getShieldSubscriptionEligibility,
     selectedAccount,
     isSignedIn,
     totalFiatBalance,
   ]);
 
   useEffect(() => {
-    if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
-      return;
-    }
-
-    if (isShieldSubscriptionActive) {
-      // if user has subscribed to shield, set the shield entry modal shown status to false
-      // means we will not show the shield entry modal again
-      dispatch(setShowShieldEntryModalOnce(false));
-    } else if (!hasShieldEntryModalShownOnce) {
-      // shield entry modal has been shown before,
-      const isUserBalanceCriteriaMet = getIsUserBalanceCriteriaMet();
-      if (isUserBalanceCriteriaMet) {
-        dispatch(setShowShieldEntryModalOnce(true));
+    (async () => {
+      if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
+        return;
       }
-    }
+
+      if (isShieldSubscriptionActive) {
+        // if user has subscribed to shield, set the shield entry modal shown status to false
+        // means we will not show the shield entry modal again
+        dispatch(setShowShieldEntryModalOnce(false));
+      } else if (!hasShieldEntryModalShownOnce) {
+        // shield entry modal has been shown before,
+        const isUserBalanceCriteriaMet = await getIsUserBalanceCriteriaMet();
+        if (isUserBalanceCriteriaMet) {
+          dispatch(setShowShieldEntryModalOnce(true));
+        }
+      }
+    })();
   }, [
     dispatch,
     isMetaMaskShieldFeatureEnabled,

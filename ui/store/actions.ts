@@ -351,6 +351,23 @@ export function subscriptionsStartPolling(): ThunkAction<
   };
 }
 
+export function getSubscriptionsEligibilities(): ThunkAction<
+  SubscriptionEligibility[],
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      return await submitRequestToBackground('getSubscriptionsEligibilities');
+    } catch (error) {
+      log.error('[getSubscriptionsEligibilities] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
 /**
  * Fetches user subscriptions.
  *

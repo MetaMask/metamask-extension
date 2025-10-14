@@ -7389,6 +7389,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/polling-controller@npm:^14.0.1":
+  version: 14.0.1
+  resolution: "@metamask/polling-controller@npm:14.0.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/utils": "npm:^11.8.1"
+    "@types/uuid": "npm:^8.3.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^24.0.0
+  checksum: 10/72f8e4f9ceb728fb1c2dc43b2226a6ec03cc6f588a1d2ffff34eadc3fee2c9ba4473e9eca6aac2b2514c7f7905d48bb218253db198b751dd804f1f75cb74d3c9
+  languageName: node
+  linkType: hard
+
 "@metamask/post-message-stream@npm:^10.0.0":
   version: 10.0.0
   resolution: "@metamask/post-message-stream@npm:10.0.0"
@@ -7977,17 +7993,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/subscription-controller@npm:1.0.0"
+"@metamask/subscription-controller@file:./subscription-controller.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 1.0.1
+  resolution: "@metamask/subscription-controller@file:./subscription-controller.tgz#./subscription-controller.tgz::hash=d57ba5&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/base-controller": "npm:^8.4.0"
-    "@metamask/controller-utils": "npm:^11.14.0"
-    "@metamask/polling-controller": "npm:^14.0.0"
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/polling-controller": "npm:^14.0.1"
     "@metamask/utils": "npm:^11.8.1"
   peerDependencies:
     "@metamask/profile-sync-controller": ^25.0.0
-  checksum: 10/45a360de296134bdb34d4d47a56463917fc6386dc7916e6cc30aad6b952e8343be174593d1c1b5afccdc2708cc1ea37e89d41c74408f4507c92d1d5501f1e1c1
+  checksum: 10/47f8b01ff7e503c2be3d465557f8cef8375fc50d72d3cbeeddd5610ec90865dd099920aedf95852baa3926f065ea22363d4e867d20bb55415a0940ce0c9d99e6
   languageName: node
   linkType: hard
 
@@ -32016,7 +32032,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.4.2"
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:^1.0.0"
+    "@metamask/subscription-controller": ./subscription-controller.tgz
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"

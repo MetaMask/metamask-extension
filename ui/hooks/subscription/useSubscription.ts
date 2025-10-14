@@ -1,21 +1,27 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   PAYMENT_TYPES,
   ProductType,
   RecurringInterval,
   Subscription,
+  SubscriptionEligibility,
 } from '@metamask/subscription-controller';
-import { getUserSubscriptions } from '../../selectors/subscription';
+import {
+  getIsActiveShieldSubscription,
+  getUserSubscriptions,
+} from '../../selectors/subscription';
 import {
   cancelSubscription,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
+  getSubscriptionsEligibilities,
   unCancelSubscription,
   updateSubscriptionCardPaymentMethod,
 } from '../../store/actions';
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
 import { MetaMaskReduxDispatch } from '../../store/store';
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
 
 export const useUserSubscriptions = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
@@ -104,4 +110,30 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
       }),
     );
   }, [dispatch, subscriptionId, recurringInterval]);
+};
+
+/**
+ * Hook to get the eligibility of a subscription for a given product.
+ *
+ * @param product - The product to get the eligibility for.
+ * @returns An object with the getSubscriptionEligibility function.
+ */
+export const useSubscriptionEligibility = (product: ProductType) => {
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const isShieldSubscriptionActive = useSelector(getIsActiveShieldSubscription);
+  const isSignedIn = useSelector(selectIsSignedIn);
+
+  const getSubscriptionEligibility = useCallback(async (): Promise<
+    SubscriptionEligibility | undefined
+  > => {
+    if (isShieldSubscriptionActive || !isSignedIn) {
+      return undefined;
+    }
+    const eligibilities = await dispatch(getSubscriptionsEligibilities());
+    return eligibilities.find((eligibility) => eligibility.product === product);
+  }, [dispatch, isShieldSubscriptionActive, product, isSignedIn]);
+
+  return {
+    getSubscriptionEligibility,
+  };
 };
