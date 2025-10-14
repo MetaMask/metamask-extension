@@ -3168,6 +3168,8 @@ export function isBitcoinAccountsFlagEnabled(flagValue) {
   return isBitcoinFeatureEnabled(flagValue);
 }
 
+///: END:ONLY_INCLUDE_IF
+
 /**
  * Get the state of the `bitcoinSupportEnabled` flag with version check.
  * Uses bitcoinAccounts feature flag.
@@ -3176,10 +3178,14 @@ export function isBitcoinAccountsFlagEnabled(flagValue) {
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
 export function getIsBitcoinSupportEnabled(state) {
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const { bitcoinAccounts } = getRemoteFeatureFlags(state);
   return isBitcoinAccountsFlagEnabled(bitcoinAccounts);
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(!bitcoin)
+  return false;
+  ///: END:ONLY_INCLUDE_IF
 }
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Get the state of the `solanaSupportEnabled` remote feature flag.
