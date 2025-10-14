@@ -9,6 +9,6 @@ export function getSentryRelease(environment, version) {
   const packageName =
     environment === 'production'
       ? 'metamask-extension'
-      : `metamask-extension-${environment}`;
+      : `metamask-extension-test`;
   return `${packageName}@${version}`;
 }
