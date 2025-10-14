@@ -3,6 +3,14 @@ import { fireEvent, renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import SubmitClaimForm from './submit-claim-form';
 
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
 describe('Submit Claim Form', () => {
   let store: ReturnType<typeof configureStore>;
 
