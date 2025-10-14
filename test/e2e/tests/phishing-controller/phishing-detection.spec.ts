@@ -5,11 +5,7 @@ import { createDeferredPromise } from '@metamask/utils';
 import { until } from 'selenium-webdriver';
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import {
-  withFixtures,
-  createWebSocketConnection,
-  veryLargeDelayMs,
-} from '../../helpers';
+import { withFixtures, createWebSocketConnection } from '../../helpers';
 import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
@@ -67,9 +63,6 @@ describe('Phishing Detection', function (this: Suite) {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-
-        // To mitigate a race condition where 2 requests are made to the localhost:8080 which triggers a page refresh
-        await driver.delay(veryLargeDelayMs);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
 
         // we need to wait for this selector to mitigate a race condition on the phishing page site

@@ -1,5 +1,6 @@
 import { WebElement } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
+import { veryLargeDelayMs } from '../../helpers';
 
 class PhishingWarningPage {
   private readonly driver: Driver;
@@ -31,6 +32,8 @@ class PhishingWarningPage {
   }
 
   async checkPageIsLoaded(): Promise<void> {
+    // To mitigate a race condition where 2 requests are made to the localhost:8080 which triggers a page refresh
+    await this.driver.delay(veryLargeDelayMs);
     try {
       await this.driver.waitForSelector(this.phishingWarningPageTitle);
     } catch (e) {
