@@ -4,6 +4,7 @@ import {
   UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
 } from '@metamask/bridge-controller';
 import { handleFetch, HttpError } from '@metamask/controller-utils';
+import { TransactionController } from '@metamask/transaction-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
 import { trace } from '../../../shared/lib/trace';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -29,11 +30,14 @@ export const BridgeControllerInit: ControllerInitFunction<
   BridgeControllerMessenger,
   BridgeControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, getController }) => {
-  const transactionController = getController('TransactionController');
+  const transactionController = getController(
+    'TransactionController',
+  ) as TransactionController;
 
   const controller = new BridgeController({
     messenger: controllerMessenger,
     clientId: BridgeClientId.EXTENSION,
+    clientVersion: process.env.METAMASK_VERSION,
 
     // TODO: Remove once TransactionController exports this action type.
     getLayer1GasFee: (...args) =>
