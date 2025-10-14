@@ -304,7 +304,7 @@ describe('NetworkListMenu', () => {
     const networkItems = document.querySelectorAll(
       '.multichain-network-list-item',
     );
-    expect(networkItems).toHaveLength(4);
+    expect(networkItems).toHaveLength(5); // 4 EVM networks + 1 Bitcoin network
 
     const selectedNodes = document.querySelectorAll(
       '.multichain-network-list-item--selected',

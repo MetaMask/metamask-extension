@@ -21,7 +21,60 @@ import {
 } from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
 
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import { isAddBitcoinFlagEnabled } from '../../../../ui/selectors/selectors';
+// Version-aware Bitcoin flag checking
+function isAddBitcoinFlagEnabled(flagValue: unknown): boolean {
+  // Default to true if flag is undefined
+  if (flagValue === undefined) {
+    return true;
+  }
+
+  // Simple boolean flag
+  if (typeof flagValue === 'boolean') {
+    return flagValue;
+  }
+
+  // Object with enabled and minVersion properties
+  if (typeof flagValue === 'object' && flagValue !== null) {
+    const { enabled, minVersion } = flagValue as { enabled?: boolean; minVersion?: string };
+
+    // If not enabled, return false
+    if (!enabled) {
+      return false;
+    }
+
+    // If enabled but no minVersion specified, return true
+    if (!minVersion) {
+      return true;
+    }
+
+    // Check if current version meets minimum requirement - Extension: 13.6.0
+    const currentVersion = '13.6.0'; // TODO: Get from package.json or build config
+
+    // Simple version comparison (assumes semver format)
+    const parseVersion = (version: string) =>
+      version.split('.').map((num) => parseInt(num, 10));
+
+    const [currentMajor, currentMinor, currentPatch] =
+      parseVersion(currentVersion);
+    const [minMajor, minMinor, minPatch] = parseVersion(minVersion);
+
+    if (currentMajor > minMajor) {
+      return true;
+    }
+    if (currentMajor < minMajor) {
+      return false;
+    }
+    if (currentMinor > minMinor) {
+      return true;
+    }
+    if (currentMinor < minMinor) {
+      return false;
+    }
+    return currentPatch >= minPatch;
+  }
+
+  return true; // Default to true for any other cases
+}
 ///: END:ONLY_INCLUDE_IF
 
 /**
@@ -112,7 +165,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   // Subscribe to RemoteFeatureFlagsController:stateChange for runtime control
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
-    (state: unknown) => {
+    async (state: unknown) => {
       const newBitcoinEnabled = isAddBitcoinFlagEnabled(
         (state as RemoteFeatureFlagControllerState)?.remoteFeatureFlags?.addBitcoinAccount,
       );
@@ -124,12 +177,70 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
         // Enable/disable Bitcoin provider based on feature flag
         btcProvider.setEnabled(newBitcoinEnabled);
 
-        // Only sync when disabling to hide accounts (no need when enabling)
         if (!newBitcoinEnabled) {
-          const wallets = controller.getMultichainAccountWallets();
-          for (const wallet of wallets) {
-            wallet.sync();
+          // When disabled: remove Bitcoin accounts completely
+          console.log('🗑️ Removing Bitcoin accounts from wallet...');
+
+          try {
+            const wallets = controller.getMultichainAccountWallets();
+            const bitcoinAccounts: any[] = [];
+
+            for (const wallet of wallets) {
+              const groups = wallet.getMultichainAccountGroups();
+              for (const group of groups) {
+                const accounts = group.getAccounts();
+                const btcAccountsInGroup = accounts.filter((account: any) =>
+                  account.type?.startsWith('bip122:') // All Bitcoin account types
+                );
+                bitcoinAccounts.push(...btcAccountsInGroup);
+              }
+            }
+
+            console.log(`🗑️ Found ${bitcoinAccounts.length} Bitcoin accounts to remove`);
+
+            // Remove Bitcoin accounts from their keyrings
+            for (const bitcoinAccount of bitcoinAccounts) {
+              try {
+                // Get all snap keyrings and check each one for this account
+                const snapKeyrings = controllerMessenger.call('KeyringController:getKeyringsByType', 'Snap Keyring');
+
+                for (const snapKeyring of snapKeyrings) {
+                  // Cast snapKeyring to access its properties
+                  const keyring = snapKeyring as any;
+                  // Use the keyring ID from the metadata or a generated one
+                  const keyringId = keyring.id || `snap-${keyring.accounts?.[0]}` || 'unknown';
+
+                  try {
+                    await controllerMessenger.call('KeyringController:withKeyring',
+                      { id: keyringId },
+                      async ({ keyring }: { keyring: any }) => {
+                        // Only remove if this keyring contains the account
+                        if (keyring.accounts && keyring.accounts.includes(bitcoinAccount.address)) {
+                          await keyring.removeAccount(bitcoinAccount.address);
+                          console.log(`🗑️ Removed Bitcoin account: ${bitcoinAccount.address.slice(0, 8)}... from keyring ${keyringId}`);
+                        }
+                      }
+                    );
+                  } catch (keyringError) {
+                    // Try with the keyring object itself if ID approach fails
+                    console.warn(`Keyring ID approach failed for ${keyringId}, trying direct approach:`, keyringError);
+                  }
+                }
+              } catch (error) {
+                console.warn(`Failed to remove Bitcoin account ${bitcoinAccount.address}:`, error);
+              }
+            }
+
+            console.log('✅ Bitcoin accounts completely removed from wallet');
+          } catch (error) {
+            console.error('Failed to remove Bitcoin accounts:', error);
           }
+        } else {
+          // When enabled: trigger alignment to create Bitcoin accounts for existing wallets
+          console.log('✅ Bitcoin provider enabled - creating accounts for existing wallets');
+          controller.alignWallets().catch((error) => {
+            console.error('Failed to align wallets after enabling Bitcoin provider:', error);
+          });
         }
       }
     },
