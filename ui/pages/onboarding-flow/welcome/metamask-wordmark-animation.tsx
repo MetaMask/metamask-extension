@@ -1,6 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { useRive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
+import { useTheme } from '../../../hooks/useTheme';
+import { ThemeType } from '../../../../shared/constants/preferences';
 
 type MetamaskWordMarkAnimationProps = {
   setIsAnimationComplete: (isAnimationComplete: boolean) => void;
@@ -14,6 +16,7 @@ export default function MetamaskWordMarkAnimation({
   isAnimationComplete,
 }: MetamaskWordMarkAnimationProps) {
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const theme = useTheme();
 
   // In test environments, skip animation entirely and show buttons immediately
   // This prevents any Rive initialization and CDN network requests
@@ -69,7 +72,7 @@ export default function MetamaskWordMarkAnimation({
       if (inputs) {
         // Set the Dark toggle based on system preference or default to true (dark mode)
         const darkToggle = inputs.find((input) => input.name === 'Dark');
-        if (darkToggle) {
+        if (darkToggle && theme === ThemeType.dark) {
           darkToggle.value = true;
         }
 

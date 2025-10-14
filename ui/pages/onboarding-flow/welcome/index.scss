@@ -5,6 +5,10 @@
 // startup.
 @use "react-responsive-carousel/lib/styles/carousel";
 
+/* stylelint-disable color-no-hex */
+$welcome-bg-light: #fff2eb;
+/* stylelint-enable color-no-hex */
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -29,6 +33,16 @@
   }
 }
 
+@keyframes slideUpSmooth {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-20px);
+  }
+}
+
 .riv-animation {
   &__wordmark-container {
     height: 200px;
@@ -39,11 +53,10 @@
     align-items: center;
     margin-top: -100px;
     margin-bottom: 20px;
-    transition: transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: transform;
 
     &--complete {
-      transform: translateY(-20px);
-      margin-top: 0;
+      animation: slideUpSmooth 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
   }
 
@@ -192,7 +205,11 @@
     }
 
     &-text {
-      background-color: var(--color-accent02-dark);
+      background-color: $welcome-bg-light;
+
+      @media (prefers-color-scheme: dark) {
+        background-color: var(--color-accent02-dark);
+      }
     }
   }
 
