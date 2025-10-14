@@ -556,6 +556,7 @@ export const CANTO_IMAGE_URL = './images/canto.svg';
 export const CONFLUX_ESPACE_IMAGE_URL = './images/conflux.svg';
 export const CORE_BLOCKCHAIN_MAINNET_IMAGE_URL = './images/core.svg';
 export const CRONOS_IMAGE_URL = './images/cronos.svg';
+export const CRONOS_NATIVE_TOKEN_IMAGE_URL = './images/cronos-native.svg';
 export const DEXALOT_SUBNET_IMAGE_URL = './images/dexalut-subnet.svg';
 export const DFK_CHAIN_IMAGE_URL = './images/dfk.png';
 export const DOGECHAIN_IMAGE_URL = './images/dogechain.jpeg';
@@ -1213,6 +1214,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.FRAX]: FRAX_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ACALA]: ACALA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.CRONOS]: CRONOS_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.HEMI]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LUKSO]: LUKSO_NATIVE_TOKEN_IMAGE_URL,
