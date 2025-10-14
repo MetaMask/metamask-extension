@@ -43,6 +43,15 @@ export type TokenWithApprovalAmount = (
   };
 };
 
+/**
+ * get user available token balances for starting subscription
+ *
+ * @param params
+ * @param params.paymentChains - The payment chains info.
+ * @param params.price - The product price.
+ * @param params.productType - The product type.
+ * @returns The available token balances.
+ */
 export const useAvailableTokenBalances = (params: {
   paymentChains?: ChainPaymentInfo[];
   price?: ProductPrice;
