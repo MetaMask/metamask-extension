@@ -36,7 +36,7 @@ describe('Phishing Detection', function () {
       );
       assert.equal(
         METAMASK_HOTLIST_DIFF_URL,
-        'https://phishing-detection.api.cx.metamask.io/v2/diffsSince',
+        'https://phishing-detection.api.cx.metamask.io/v1/diffsSince',
       );
     });
   });
@@ -50,8 +50,6 @@ describe('Phishing Detection', function () {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
-            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -87,8 +85,6 @@ describe('Phishing Detection', function () {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
             blocklist: [IFRAMED_HOSTNAME],
-            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -133,21 +129,9 @@ describe('Phishing Detection', function () {
           title: this.test.fullTitle(),
           dappPaths: ['./tests/phishing-controller/mock-page-with-iframe'],
         }),
-        async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
-          await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
-          // we don't expect the iframe because early-phishing-detection redirects
-          // the top level frame automatically.
-          await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
-          const phishingWarningPage = new PhishingWarningPage(driver);
-          await phishingWarningPage.checkPageIsLoaded();
-          await phishingWarningPage.clickProceedAnywayButton();
-          await driver.waitForWindowWithTitleToBePresent(
-            WINDOW_TITLES.TestDApp,
-            15000,
-          );
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-        },
+        // we don't expect the iframe because early-phishing-detection redirects
+        // the top level frame automatically.
+        getTest(false),
       );
     });
 
@@ -173,8 +157,6 @@ describe('Phishing Detection', function () {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
-            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -226,8 +208,6 @@ describe('Phishing Detection', function () {
           setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
-            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-            blocklistPaths: [],
           });
           mockConfigLookupOnWarningPage(mockServer, { statusCode: 500 });
         },
@@ -263,8 +243,6 @@ describe('Phishing Detection', function () {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
             blocklist: [phishingSite.hostname],
-            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -299,8 +277,6 @@ describe('Phishing Detection', function () {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
-            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -345,9 +321,6 @@ describe('Phishing Detection', function () {
           await mockServer.forAnyWebSocket().thenEcho();
           await setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
-            blocklist: ['127.0.0.1'],
-            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -389,9 +362,6 @@ describe('Phishing Detection', function () {
           await mockServer.forAnyWebSocket().thenEcho();
           await setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
-            blocklist: ['127.0.0.1'],
-            c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -513,8 +483,6 @@ describe('Phishing Detection', function () {
             await setupPhishingDetectionMocks(mockServer, {
               blockProvider: BlockProvider.MetaMask,
               blocklist: [blocked],
-              c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-              blocklistPaths: [],
             });
           },
         },
@@ -566,148 +534,5 @@ describe('Phishing Detection', function () {
         });
       });
     }
-  });
-
-  describe('Path-based URLs', function () {
-    describe('blocklisted paths', function () {
-      it('displays the MetaMask Phishing Detection page when accessing a blocklisted path', async function () {
-        await withFixtures(
-          {
-            fixtures: new FixtureBuilder().build(),
-            title: this.test?.fullTitle(),
-            testSpecificMock: async (mockServer) => {
-              return setupPhishingDetectionMocks(mockServer, {
-                statusCode: 200,
-                blockProvider: BlockProvider.MetaMask,
-                blocklist: [],
-                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-                blocklistPaths: ['127.0.0.1/path1'],
-              });
-            },
-            dapp: true,
-            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
-          },
-          async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
-
-            await driver.openNewPage('http://127.0.0.1:8080/path1/');
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
-            const phishingWarningPage = new PhishingWarningPage(driver);
-            await phishingWarningPage.checkPageIsLoaded();
-          },
-        );
-      });
-
-      it('blocks access to blocklisted subpaths', async function () {
-        await withFixtures(
-          {
-            fixtures: new FixtureBuilder().build(),
-            title: this.test?.fullTitle(),
-            testSpecificMock: async (mockServer) => {
-              return setupPhishingDetectionMocks(mockServer, {
-                statusCode: 200,
-                blockProvider: BlockProvider.MetaMask,
-                blocklist: [],
-                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-                blocklistPaths: ['127.0.0.1/path1'],
-              });
-            },
-            dapp: true,
-            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
-          },
-          async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
-
-            await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
-
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
-            const phishingWarningPage = new PhishingWarningPage(driver);
-            await phishingWarningPage.checkPageIsLoaded();
-          },
-        );
-      });
-    });
-
-    describe('whitelisted paths', function () {
-      it('does not display the MetaMask Phishing Detection page when accessing a whitelisted path', async function () {
-        await withFixtures(
-          {
-            fixtures: new FixtureBuilder().build(),
-            title: this.test?.fullTitle(),
-            testSpecificMock: async (mockServer) => {
-              return setupPhishingDetectionMocks(mockServer, {
-                statusCode: 200,
-                blockProvider: BlockProvider.MetaMask,
-                blocklist: [],
-                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-                blocklistPaths: ['127.0.0.1/path1'],
-              });
-            },
-            dapp: true,
-            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
-          },
-          async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
-
-            await driver.openNewPage('http://127.0.0.1:8080/path1/');
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
-            const phishingWarningPage = new PhishingWarningPage(driver);
-            await phishingWarningPage.checkPageIsLoaded();
-            await phishingWarningPage.clickProceedAnywayButton();
-
-            // Wait for navigation to complete
-            await driver.waitForWindowWithTitleToBePresent(
-              'Mock E2E Phishing Page: Path 1',
-              15000,
-            );
-            await driver.switchToWindowWithTitle(
-              'Mock E2E Phishing Page: Path 1',
-            );
-          },
-        );
-      });
-
-      it('when the subpath is whitelisted, the phishing warning page is not displayed for the blocklisted path and all subpaths', async function () {
-        await withFixtures(
-          {
-            fixtures: new FixtureBuilder().build(),
-            title: this.test?.fullTitle(),
-            testSpecificMock: async (mockServer) => {
-              return setupPhishingDetectionMocks(mockServer, {
-                statusCode: 200,
-                blockProvider: BlockProvider.MetaMask,
-                blocklist: [],
-                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
-                blocklistPaths: ['127.0.0.1/path1'],
-              });
-            },
-            dapp: true,
-            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
-          },
-          async ({ driver }) => {
-            await loginWithBalanceValidation(driver);
-
-            await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
-            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
-            const phishingWarningPage = new PhishingWarningPage(driver);
-            await phishingWarningPage.checkPageIsLoaded();
-            await phishingWarningPage.clickProceedAnywayButton();
-            await driver.waitForWindowWithTitleToBePresent(
-              'Mock E2E Phishing Page: Path 2',
-              15000,
-            );
-            await driver.switchToWindowWithTitle(
-              'Mock E2E Phishing Page: Path 2',
-            );
-
-            await driver.openNewPage('http://127.0.0.1:8080/path1');
-            await driver.wait(
-              until.titleIs('Mock E2E Phishing Page: Path 1'),
-              10000,
-            );
-          },
-        );
-      });
-    });
   });
 });
