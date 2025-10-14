@@ -354,8 +354,9 @@ function maybeDetectPhishing(theController) {
         blockedUrl = details.initiator;
       }
 
+      const blockedHostname = new URL(blockedUrl).hostname;
+
       if (!isFirefox) {
-        const blockedHostname = new URL(blockedUrl).hostname;
         theController.metaMetricsController.trackEvent(
           {
             // should we differentiate between background redirection and content script redirection?
@@ -378,8 +379,8 @@ function maybeDetectPhishing(theController) {
         );
       }
       const querystring = new URLSearchParams({
-        hostname: blockedUrl,
-        href: blockedUrl,
+        hostname: blockedHostname, // used for creating the EPD issue title (false positive report)
+        href: blockedUrl, // used for displaying the URL on the phsihing warning page + proceed anyway URL
       });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
