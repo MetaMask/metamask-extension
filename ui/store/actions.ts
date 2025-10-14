@@ -28,7 +28,7 @@ import {
 import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
-import { NonEmptyArray } from '@metamask/controller-utils';
+import { NonEmptyArray, handleFetch } from '@metamask/controller-utils';
 import {
   SetNameRequest,
   UpdateProposedNamesRequest,
@@ -7445,26 +7445,49 @@ export async function getLayer1GasFeeValue({
  * @param params.files - The files.
  * @returns The subscription response.
  */
-export function submitShieldClaim(params: {
+export async function submitShieldClaim(params: {
   email: string;
   impactedWalletAddress: string;
   impactedTransactionHash: string;
   reimbursementWalletAddress: string;
   caseDescription: string;
-  files: File[];
-}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    try {
-      console.log('check: submitShieldClaim', params);
-      const response = await submitRequestToBackground<void>(
-        'submitShieldClaim',
-        [params],
-      );
-
-      return response;
-    } catch (error) {
-      console.error('[submitShieldClaim] error', error);
-      throw error;
+  files?: FileList;
+}) {
+  try {
+    const url = 'https://claims.dev-api.cx.metamask.io/claims';
+    const formData = new FormData();
+    formData.append('email', params.email);
+    formData.append('impactedWalletAddress', params.impactedWalletAddress);
+    formData.append('impactedTxHash', params.impactedTransactionHash);
+    formData.append(
+      'reimbursementWalletAddress',
+      params.reimbursementWalletAddress,
+    );
+    formData.append('description', params.caseDescription);
+    // TODO: temporary value for signature, update to correct signature after implement signature verification
+    formData.append(
+      'signature',
+      '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
+    );
+    formData.append('timestamp', Date.now().toString());
+    if (params.files) {
+      formData.append('attachments', params.files);
     }
-  };
+
+    const accessToken =
+      await submitRequestToBackground<string>('getBearerToken');
+
+    const response = await handleFetch(url, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response;
+  } catch (error) {
+    console.error('[submitShieldClaim] error', error);
+    throw error;
+  }
 }
