@@ -4432,6 +4432,9 @@
   "padlock": {
     "message": "Padlock"
   },
+  "paidByMetaMask": {
+    "message": "Paid by MetaMask"
+  },
   "participateInMetaMetrics": {
     "message": "Participate in MetaMetrics"
   },

@@ -116,20 +116,27 @@ export class Delegation7702PublishHook {
 
     const isGaslessSwap = transactionMeta.isGasFeeIncluded;
 
-    if ((!selectedGasFeeToken || !gasFeeTokens?.length) && !isGaslessSwap) {
+    const isSponsored = Boolean(transactionMeta.isGasFeeSponsored);
+
+    if (
+      (!selectedGasFeeToken || !gasFeeTokens?.length) &&
+      !isGaslessSwap &&
+      !isSponsored
+    ) {
       log('Skipping as no selected gas fee token');
       return EMPTY_RESULT;
     }
 
-    const gasFeeToken = isGaslessSwap
-      ? undefined
-      : gasFeeTokens?.find(
-          (token) =>
-            token.tokenAddress.toLowerCase() ===
-            selectedGasFeeToken?.toLowerCase(),
-        );
+    const gasFeeToken =
+      isGaslessSwap || isSponsored
+        ? undefined
+        : gasFeeTokens?.find(
+            (token) =>
+              token.tokenAddress.toLowerCase() ===
+              selectedGasFeeToken?.toLowerCase(),
+          );
 
-    if (!gasFeeToken && !isGaslessSwap) {
+    if (!gasFeeToken && !isGaslessSwap && !isSponsored) {
       throw new Error('Selected gas fee token not found');
     }
 
@@ -137,7 +144,8 @@ export class Delegation7702PublishHook {
       parseInt(transactionMeta.chainId, 16),
     );
     const delegationManagerAddress = delegationEnvironment.DelegationManager;
-    const includeTransfer = !isGaslessSwap;
+    const includeTransfer =
+      !isGaslessSwap && !transactionMeta.isGasFeeSponsored;
 
     if (includeTransfer && (!gasFeeToken || gasFeeToken === undefined)) {
       throw new Error('Gas fee token not found');
