@@ -19,9 +19,9 @@ import {
   isMultichainAccountsFeatureEnabled,
   MultichainAccountsFeatureFlag,
 } from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { isBitcoinFeatureEnabled } from '../../../../shared/lib/multichain-feature-flags';
 
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 // Use shared Bitcoin feature flag utility
 const isAddBitcoinFlagEnabled = isBitcoinFeatureEnabled;
 ///: END:ONLY_INCLUDE_IF
@@ -102,9 +102,17 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     'RemoteFeatureFlagController:getState',
   );
 
-  // Set initial state based on addBitcoinAccount feature flag
-  const isAddBitcoinAccountEnabled = isAddBitcoinFlagEnabled(
-    initialRemoteFeatureFlagsState?.remoteFeatureFlags?.addBitcoinAccount,
+  // Helper to check both bitcoinAccounts and legacy addBitcoinAccount flags
+  const checkBitcoinFeatureFlag = (remoteFeatureFlags: any) => {
+    return (
+      isAddBitcoinFlagEnabled(remoteFeatureFlags?.bitcoinAccounts) ||
+      isAddBitcoinFlagEnabled(remoteFeatureFlags?.addBitcoinAccount) // Legacy fallback
+    );
+  };
+
+  // Set initial state based on bitcoinAccounts feature flag
+  const isAddBitcoinAccountEnabled = checkBitcoinFeatureFlag(
+    initialRemoteFeatureFlagsState?.remoteFeatureFlags,
   );
   btcProvider.setEnabled(isAddBitcoinAccountEnabled);
 
@@ -112,9 +120,8 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
     (state: unknown) => {
-      const newBitcoinEnabled = isAddBitcoinFlagEnabled(
-        (state as RemoteFeatureFlagControllerState)?.remoteFeatureFlags
-          ?.addBitcoinAccount,
+      const newBitcoinEnabled = checkBitcoinFeatureFlag(
+        (state as RemoteFeatureFlagControllerState)?.remoteFeatureFlags,
       );
 
       // Enable/disable Bitcoin provider based on feature flag

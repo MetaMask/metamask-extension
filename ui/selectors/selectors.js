@@ -3187,13 +3187,17 @@ export function isAddBitcoinFlagEnabled(flagValue) {
 
 /**
  * Get the state of the `bitcoinSupportEnabled` flag with version check.
+ * Uses bitcoinAccounts flag with fallback to legacy addBitcoinAccount.
  *
  * @param {*} state
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
 export function getIsBitcoinSupportEnabled(state) {
-  const { addBitcoinAccount } = getRemoteFeatureFlags(state);
-  return isAddBitcoinFlagEnabled(addBitcoinAccount);
+  const { bitcoinAccounts, addBitcoinAccount } = getRemoteFeatureFlags(state);
+  return (
+    isAddBitcoinFlagEnabled(bitcoinAccounts) ||
+    isAddBitcoinFlagEnabled(addBitcoinAccount) // Legacy fallback
+  );
 }
 
 /**
