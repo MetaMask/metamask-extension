@@ -128,7 +128,7 @@ describe('Vault Corruption', function () {
         return title === WINDOW_TITLES.ExtensionInFullScreenView;
       },
       // reload and check title as quickly a possible
-      { interval: 10, timeout: 10000 },
+      { interval: 100, timeout: 10000 },
     );
     await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
   }
@@ -197,10 +197,12 @@ describe('Vault Corruption', function () {
 
     // Confirm we want to recover/reset.
     const prompt = await driver.driver.switchTo().alert();
+    await driver.delay(2000);
     if (confirm) {
       await prompt.accept();
     } else {
       await prompt.dismiss();
+      await driver.delay(2000);
     }
 
     if (confirm) {
