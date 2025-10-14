@@ -103,7 +103,7 @@ class TestDappMultichain {
   }
 
   async fillExtensionIdInput(extensionId: string) {
-    await this.driver.fill(this.extensionIdInput, extensionId, 3);
+    await this.driver.fill(this.extensionIdInput, extensionId, { retries: 3 });
   }
 
   /**
