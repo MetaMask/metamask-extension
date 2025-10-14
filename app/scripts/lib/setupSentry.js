@@ -5,9 +5,9 @@ import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
+import { getSentryRelease } from '../../../shared/lib/sentry-release';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
 import { filterEvents } from './sentry-filter-events';
-import { getSentryRelease } from '../../../shared/lib/sentry-release';
 
 let installType = 'unknown';
 
