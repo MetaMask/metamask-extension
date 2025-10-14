@@ -1,20 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { isValidHexAddress } from '@metamask/controller-utils';
-import FileInput from 'react-simple-file-input';
 import { isStrictHexString } from '@metamask/utils';
 import {
   Box,
-  BoxBackgroundColor,
   Button,
-  ButtonIcon,
-  ButtonIconSize,
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   Text,
   TextButton,
   TextButtonSize,
@@ -46,6 +38,7 @@ import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
 import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
+import { FileUploader } from '../../../../components/component-library/file-uploader';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -189,35 +182,6 @@ const SubmitClaimForm = () => {
       }));
     }
   }, [impactedTransactionHash, t]);
-
-  const addFile = useCallback(
-    (newFiles: FileList) => {
-      setErrors((state) => ({
-        ...state,
-        files: undefined,
-      }));
-
-      const dt = new DataTransfer();
-      // filter out files exceeding 5MB
-      Array.from(newFiles).forEach((file) => {
-        if (file.size <= MAX_FILE_SIZE) {
-          dt.items.add(file);
-        } else {
-          setErrors((state) => ({
-            ...state,
-            files: {
-              key: 'files',
-              msg: t('fileUploaderMaxFileSizeError', [1]),
-            },
-          }));
-        }
-      });
-
-      // save file to state
-      setFiles(dt.files);
-    },
-    [setFiles, t],
-  );
 
   const validateDescription = useCallback(() => {
     setErrors((state) => ({
@@ -410,89 +374,16 @@ const SubmitClaimForm = () => {
           </Text>
         )}
       </Box>
-      <Box>
-        <Text
-          variant={TextVariant.BodyMd}
-          fontWeight={FontWeight.Medium}
-          className="mb-1"
-        >
-          {t('shieldClaimFileUploader')}
-        </Text>
-        <FileInput
-          id="upload-images-file-uploader"
-          data-testid="upload-images-file-uploader"
-          multiple
-          onChange={(inputFiles) => addFile(inputFiles)}
-          accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
-          value={''}
-          style={{ color: 'transparent' }}
-        />
-        <Text
-          variant={TextVariant.BodySm}
-          color={
-            errors.files ? TextColor.ErrorDefault : TextColor.TextAlternative
-          }
-          className="mt-0.5"
-        >
-          {errors.files
-            ? errors.files.msg
-            : t('shieldClaimFileUploaderHelpText')}
-        </Text>
-
-        {files && (
-          <Box
-            gap={2}
-            marginTop={4}
-            className="settings-page__content-item-col"
-          >
-            {Array.from(files).map((file) => (
-              <Box
-                key={file.name}
-                className="flex items-center rounded-lg py-1 px-2"
-                backgroundColor={BoxBackgroundColor.BackgroundSection}
-              >
-                <Icon
-                  name={
-                    file.type.includes('image') ? IconName.Image : IconName.File
-                  }
-                  size={IconSize.Lg}
-                  color={IconColor.IconDefault}
-                  className="mr-2"
-                />
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextDefault}
-                >
-                  {file.name}
-                </Text>
-                <ButtonIcon
-                  iconName={IconName.Close}
-                  size={ButtonIconSize.Sm}
-                  color={IconColor.IconDefault}
-                  ariaLabel={t('delete')}
-                  onClick={() => {
-                    setFiles(
-                      (() => {
-                        setErrors((state) => ({
-                          ...state,
-                          files: undefined,
-                        }));
-
-                        const dt = new DataTransfer();
-                        Array.from(files)
-                          .filter((f) => f.name !== file.name)
-                          .forEach((f) => dt.items.add(f));
-                        return dt.files;
-                      })(),
-                    );
-                  }}
-                  className="ml-auto"
-                />
-              </Box>
-            ))}
-          </Box>
-        )}
-      </Box>
+      <FileUploader
+        id="upload-images-file-uploader"
+        data-testid="upload-images-file-uploader"
+        label={t('shieldClaimFileUploader')}
+        onChange={(inputFiles) => setFiles(inputFiles as FileList)}
+        accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
+        acceptText={t('shieldClaimFileUploaderAcceptText')}
+        helpText={t('shieldClaimFileUploaderHelpText')}
+        maxFileSize={MAX_FILE_SIZE}
+      />
       <Box className="settings-page__content-item-col">
         <Button
           data-testid="shield-claim-submit-button"
