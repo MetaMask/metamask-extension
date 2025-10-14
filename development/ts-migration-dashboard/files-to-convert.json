@@ -804,8 +804,6 @@
   "ui/components/ui/definition-list/definition-list.js",
   "ui/components/ui/definition-list/definition-list.stories.js",
   "ui/components/ui/definition-list/index.js",
-  "ui/components/ui/dialog/dialog.stories.js",
-  "ui/components/ui/dialog/index.js",
   "ui/components/ui/disclosure/disclosure.js",
   "ui/components/ui/disclosure/disclosure.stories.js",
   "ui/components/ui/disclosure/index.js",
