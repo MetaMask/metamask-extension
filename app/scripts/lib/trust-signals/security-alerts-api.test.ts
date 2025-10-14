@@ -1,7 +1,10 @@
 import nock from 'nock';
 import { SECOND } from '../../../../shared/constants/time';
+import {
+  SupportedEVMChain,
+  ResultType,
+} from '../../../../shared/lib/trust-signals';
 import { scanAddress, scanAddressAndAddToCache } from './security-alerts-api';
-import { SupportedEVMChain, ResultType } from './types';
 
 const TEST_ADDRESS = '0x1234567890123456789012345678901234567890';
 const TEST_CHAIN = SupportedEVMChain.Ethereum;

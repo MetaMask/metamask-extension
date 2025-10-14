@@ -7,7 +7,7 @@ import {
   ScanAddressRequest,
   ScanAddressResponse,
   SupportedEVMChain,
-} from './types';
+} from '../../../../shared/lib/trust-signals';
 
 const TIMEOUT = 5 * SECOND;
 const ENDPOINT_ADDRESS_SCAN = 'address/evm/scan';
