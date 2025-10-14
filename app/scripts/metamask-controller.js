@@ -2601,6 +2601,14 @@ export default class MetamaskController extends EventEmitter {
         ),
       setShowShieldEntryModalOnce:
         appStateController.setShowShieldEntryModalOnce.bind(appStateController),
+      setShieldPausedToastLastClickedOrClosed:
+        appStateController.setShieldPausedToastLastClickedOrClosed.bind(
+          appStateController,
+        ),
+      setShieldEndingToastLastClickedOrClosed:
+        appStateController.setShieldEndingToastLastClickedOrClosed.bind(
+          appStateController,
+        ),
 
       // EnsController
       tryReverseResolveAddress:
