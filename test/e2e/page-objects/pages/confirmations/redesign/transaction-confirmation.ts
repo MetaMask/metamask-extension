@@ -79,14 +79,16 @@ class TransactionConfirmation extends Confirmation {
     text: tEn('review') as string,
   };
 
-  private readonly estimatedSimulationDetails = (type: string) => {
-    const css = '[data-testid="simulation-details-layout"]';
+  private readonly simulationDetailsLayout: RawLocator =
+    '[data-testid="simulation-details-layout"]';
+
+  private readonly estimatedSimulationDetails = (type: string): RawLocator => {
     if (type === '') {
-      return css;
+      return this.simulationDetailsLayout;
     }
 
     return {
-      css,
+      css: this.simulationDetailsLayout.toString(),
       text: type,
     };
   };
@@ -94,7 +96,7 @@ class TransactionConfirmation extends Confirmation {
   private readonly outgoingIncomingSimulationDetails = (
     isOutgoing: boolean,
     index: number,
-  ) => {
+  ): RawLocator => {
     const listTestId = isOutgoing
       ? 'simulation-rows-outgoing'
       : 'simulation-rows-incoming';
@@ -130,7 +132,7 @@ class TransactionConfirmation extends Confirmation {
     const css = this.outgoingIncomingSimulationDetails(isOutgoing, index);
 
     console.log(
-      `Checking balance change ${css} with text ${displayAmount} is displayed on transaction confirmation page.`,
+      `Checking balance change ${css.toString()} with text ${displayAmount} is displayed on transaction confirmation page.`,
     );
     await this.driver.findElement({
       css,
@@ -138,7 +140,7 @@ class TransactionConfirmation extends Confirmation {
     });
 
     console.log(
-      `Checking balance change ${css} with text ${assetName}  is displayed on transaction confirmation page.`,
+      `Checking balance change ${css.toString()} with text ${assetName}  is displayed on transaction confirmation page.`,
     );
     await this.driver.findElement({
       css,
