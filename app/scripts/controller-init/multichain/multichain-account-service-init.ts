@@ -53,27 +53,33 @@ function isAddBitcoinFlagEnabled(flagValue: unknown): boolean {
     // Check if current version meets minimum requirement - get from process or package.json
     const currentVersion = process.env.npm_package_version || '13.6.0';
 
-    // Simple version comparison (assumes semver format)
-    const parseVersion = (version: string) =>
-      version.split('.').map((num) => parseInt(num, 10));
+    try {
+      // Use semver comparison if available, fallback to simple comparison
+      const semver = require('semver');
+      return semver.gte(currentVersion, minVersion);
+    } catch {
+      // Fallback to simple version comparison
+      const parseVersion = (version: string) =>
+        version.split('.').map((num) => parseInt(num, 10));
 
-    const [currentMajor, currentMinor, currentPatch] =
-      parseVersion(currentVersion);
-    const [minMajor, minMinor, minPatch] = parseVersion(minVersion);
+      const [currentMajor, currentMinor, currentPatch] =
+        parseVersion(currentVersion);
+      const [minMajor, minMinor, minPatch] = parseVersion(minVersion);
 
-    if (currentMajor > minMajor) {
-      return true;
+      if (currentMajor > minMajor) {
+        return true;
+      }
+      if (currentMajor < minMajor) {
+        return false;
+      }
+      if (currentMinor > minMinor) {
+        return true;
+      }
+      if (currentMinor < minMinor) {
+        return false;
+      }
+      return currentPatch >= minPatch;
     }
-    if (currentMajor < minMajor) {
-      return false;
-    }
-    if (currentMinor > minMinor) {
-      return true;
-    }
-    if (currentMinor < minMinor) {
-      return false;
-    }
-    return currentPatch >= minPatch;
   }
 
   return true; // Default to true for any other cases
