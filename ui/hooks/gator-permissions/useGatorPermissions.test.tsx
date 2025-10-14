@@ -372,4 +372,58 @@ describe('useGatorPermissions', () => {
     expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
     expect(result.current.loading).toBe(false);
   });
+
+  it('should not set hasFetchedRef flag when fetch fails', async () => {
+    // Create store with no cached data
+    const emptyStore = mockStore({
+      metamask: {
+        gatorPermissionsMapSerialized: '', // Will be caught by try-catch
+        isGatorPermissionsEnabled: false,
+        isFetchingGatorPermissions: false,
+      },
+    });
+
+    // Mock fetch to always fail
+    mockFetchAndUpdateGatorPermissions.mockRejectedValue(
+      new Error('Fetch failed'),
+    );
+
+    const { result } = renderHook(() => useGatorPermissions(), {
+      wrapper: ({ children }) => (
+        <Provider store={emptyStore}>{children}</Provider>
+      ),
+    });
+
+    // Wait for fetch to complete
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    // Should have error and loading should be false
+    expect(result.current.error).toBeDefined();
+    expect(result.current.loading).toBe(false);
+    expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
+
+    // The key test: if we change a dependency and re-render, it should try to fetch again
+    // because hasFetchedRef should still be false (not set on failure)
+    const { rerender } = renderHook(
+      () => useGatorPermissions({ refreshInBackground: false }),
+      {
+        wrapper: ({ children }) => (
+          <Provider store={emptyStore}>{children}</Provider>
+        ),
+      },
+    );
+
+    // Change refreshInBackground to trigger effect re-run
+    rerender();
+
+    // Wait for potential retry
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    // Should have attempted fetch again (total of 2 calls)
+    expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(2);
+  });
 });

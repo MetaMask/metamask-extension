@@ -101,8 +101,14 @@ export function useGatorPermissions(
       setLoading(false);
     } else if (!hasFetchedRef.current) {
       // Only fetch once on mount
-      hasFetchedRef.current = true;
-      fetchGatorPermissions();
+      fetchGatorPermissions()
+        .then(() => {
+          // Mark as fetched only after successful fetch
+          hasFetchedRef.current = true;
+        })
+        .catch(() => {
+          // Don't set the flag on failure, allowing retries
+        });
     }
 
     return () => {
