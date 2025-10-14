@@ -6,6 +6,8 @@ import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
+import { KnownCaipNamespace } from '@metamask/utils';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
@@ -37,7 +39,10 @@ function getInitRequestMock(
     if (controllerName === 'MultichainNetworkController') {
       return {
         state: {
-          multichainNetworkConfigurationsByChainId: {},
+          multichainNetworkConfigurationsByChainId: {
+            [SolScope.Mainnet]: {},
+            [BtcScope.Mainnet]: {},
+          },
         },
       };
     }
@@ -45,7 +50,12 @@ function getInitRequestMock(
     if (controllerName === 'NetworkController') {
       return {
         state: {
-          networkConfigurationsByChainId: {},
+          networkConfigurationsByChainId: {
+            [CHAIN_IDS.MAINNET]: {},
+            [CHAIN_IDS.POLYGON]: {},
+            [CHAIN_IDS.SEPOLIA]: {},
+            [CHAIN_IDS.LOCALHOST]: {},
+          },
         },
       };
     }
@@ -61,22 +71,6 @@ describe('NetworkEnablementControllerInit', () => {
     const { controller } =
       NetworkEnablementControllerInit(getInitRequestMock());
     expect(controller).toBeInstanceOf(NetworkEnablementController);
-  });
-
-  it('passes the proper arguments to the controller', () => {
-    NetworkEnablementControllerInit(getInitRequestMock());
-
-    const controllerMock = jest.mocked(NetworkEnablementController);
-    expect(controllerMock).toHaveBeenCalledWith({
-      messenger: expect.any(Object),
-      state: {
-        enabledNetworkMap: {
-          bitcoin: {},
-          eip155: {},
-          solana: {},
-        },
-      },
-    });
   });
 
   it('enables the Solana network when `AccountsController:selectedAccountChange` is emitted', () => {
@@ -224,5 +218,119 @@ describe('NetworkEnablementControllerInit', () => {
     );
 
     expect(controller.enableNetwork).not.toHaveBeenCalled();
+  });
+
+  it('initialises the controller with the correct networks for prod environment', () => {
+    process.env.METAMASK_DEBUG = '';
+    process.env.METAMASK_ENVIRONMENT = 'production';
+    process.env.IN_TEST = '';
+
+    NetworkEnablementControllerInit(getInitRequestMock());
+
+    const controllerMock = jest.mocked(NetworkEnablementController);
+    expect(controllerMock).toHaveBeenCalledWith({
+      messenger: expect.any(Object),
+      state: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.POLYGON]: true,
+            [CHAIN_IDS.SEPOLIA]: false,
+            [CHAIN_IDS.LOCALHOST]: false,
+          },
+          [KnownCaipNamespace.Solana]: {
+            [SolScope.Mainnet]: true,
+          },
+          [KnownCaipNamespace.Bip122]: {
+            [BtcScope.Mainnet]: true,
+          },
+        },
+      },
+    });
+  });
+
+  it('initialises the controller with the correct networks for IN_TEST environment', () => {
+    process.env.IN_TEST = 'true';
+
+    NetworkEnablementControllerInit(getInitRequestMock());
+
+    const controllerMock = jest.mocked(NetworkEnablementController);
+    expect(controllerMock).toHaveBeenCalledWith({
+      messenger: expect.any(Object),
+      state: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            [CHAIN_IDS.MAINNET]: false,
+            [CHAIN_IDS.POLYGON]: false,
+            [CHAIN_IDS.SEPOLIA]: false,
+            [CHAIN_IDS.LOCALHOST]: true,
+          },
+          [KnownCaipNamespace.Solana]: {
+            [SolScope.Mainnet]: false,
+          },
+          [KnownCaipNamespace.Bip122]: {
+            [BtcScope.Mainnet]: false,
+          },
+        },
+      },
+    });
+  });
+
+  it('initialises the controller with the correct networks for DEBUG environment', () => {
+    process.env.METAMASK_DEBUG = 'true';
+    process.env.METAMASK_ENVIRONMENT = 'production';
+    process.env.IN_TEST = '';
+
+    NetworkEnablementControllerInit(getInitRequestMock());
+
+    const controllerMock = jest.mocked(NetworkEnablementController);
+    expect(controllerMock).toHaveBeenCalledWith({
+      messenger: expect.any(Object),
+      state: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            [CHAIN_IDS.MAINNET]: false,
+            [CHAIN_IDS.POLYGON]: false,
+            [CHAIN_IDS.SEPOLIA]: true,
+            [CHAIN_IDS.LOCALHOST]: false,
+          },
+          [KnownCaipNamespace.Solana]: {
+            [SolScope.Mainnet]: false,
+          },
+          [KnownCaipNamespace.Bip122]: {
+            [BtcScope.Mainnet]: false,
+          },
+        },
+      },
+    });
+  });
+
+  it('initialises the controller with the correct networks for test environment', () => {
+    process.env.METAMASK_DEBUG = '';
+    process.env.METAMASK_ENVIRONMENT = 'test';
+    process.env.IN_TEST = '';
+
+    NetworkEnablementControllerInit(getInitRequestMock());
+
+    const controllerMock = jest.mocked(NetworkEnablementController);
+    expect(controllerMock).toHaveBeenCalledWith({
+      messenger: expect.any(Object),
+      state: {
+        enabledNetworkMap: {
+          [KnownCaipNamespace.Eip155]: {
+            [CHAIN_IDS.MAINNET]: false,
+            [CHAIN_IDS.POLYGON]: false,
+            [CHAIN_IDS.SEPOLIA]: true,
+            [CHAIN_IDS.LOCALHOST]: false,
+          },
+          [KnownCaipNamespace.Solana]: {
+            [SolScope.Mainnet]: false,
+          },
+          [KnownCaipNamespace.Bip122]: {
+            [BtcScope.Mainnet]: false,
+          },
+        },
+      },
+    });
   });
 });

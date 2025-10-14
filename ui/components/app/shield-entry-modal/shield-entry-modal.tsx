@@ -94,7 +94,7 @@ export default function ShieldEntryModal() {
             <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
               <AvatarIcon size={AvatarIconSize.Sm} iconName={IconName.Plant} />
               <Text variant={TextVariant.bodySm}>
-                {t('shieldEntryModalAssetCoverage')}
+                {t('shieldEntryModalAssetCoverage', ['$10,000'])}
               </Text>
             </Box>
             <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>

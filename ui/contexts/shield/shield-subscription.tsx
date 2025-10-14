@@ -5,7 +5,10 @@ import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
-import { setShowShieldEntryModalOnce } from '../../store/actions';
+import {
+  setShowShieldEntryModalOnce,
+  subscriptionsStartPolling,
+} from '../../store/actions';
 import {
   getSelectedInternalAccount,
   getUseExternalServices,
@@ -119,6 +122,13 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     hasShieldEntryModalShownOnce,
     isBasicFunctionalityEnabled,
   ]);
+
+  useEffect(() => {
+    if (selectedAccount && isSignedIn) {
+      // start polling for the subscriptions
+      dispatch(subscriptionsStartPolling());
+    }
+  }, [isSignedIn, selectedAccount, dispatch]);
 
   const resetShieldEntryModalShownStatus = useCallback(() => {
     if (!isShieldSubscriptionActive) {

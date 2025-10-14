@@ -1,14 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
+  PAYMENT_TYPES,
   Product,
   PRODUCT_TYPES,
-  ProductType,
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
+  SubscriptionCryptoPaymentMethod,
   SubscriptionStatus,
+  TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -55,6 +58,26 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { DAY } from '../../../../shared/constants/time';
 import LoadingScreen from '../../../components/ui/loading-screen';
+import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
+import {
+  useSubscriptionPaymentMethods,
+  useSubscriptionPricing,
+} from '../../../hooks/subscription/useSubscriptionPricing';
+import {
+  setSecurityAlertsEnabled,
+  setUsePhishDetect,
+  setUseTransactionSimulations,
+} from '../../../store/actions';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  getIsSecurityAlertsEnabled,
+  getUsePhishDetect,
+  getUseTransactionSimulations,
+} from '../../../selectors/selectors';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
@@ -66,15 +89,31 @@ const TransactionShield = () => {
   const navigate = useNavigate();
   const { formatCurrency } = useFormatters();
 
+  const trackEvent = useContext(MetaMetricsContext);
+
+  const securityAlertsEnabled = useSelector(getIsSecurityAlertsEnabled);
+  const usePhishDetect = useSelector(getUsePhishDetect);
+  const useTransactionSimulations = useSelector(getUseTransactionSimulations);
+
+  const dispatch = useDispatch();
+
   const {
     customerId,
     subscriptions,
     loading: subscriptionsLoading,
   } = useUserSubscriptions();
   const shieldSubscription = useUserSubscriptionByProduct(
-    'shield' as ProductType,
+    PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
+
+  const { subscriptionPricing, loading: subscriptionPricingLoading } =
+    useSubscriptionPricing();
+  const cryptoPaymentMethod = useSubscriptionPaymentMethods(
+    PAYMENT_TYPES.byCrypto,
+    subscriptionPricing,
+  );
+
   const isCancelled =
     shieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
   const isPaused = Boolean(
@@ -141,17 +180,50 @@ const TransactionShield = () => {
     openGetSubscriptionBillingPortalResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending;
 
-  const showSkeletonLoader = subscriptionsLoading;
+  const showSkeletonLoader = subscriptionsLoading || subscriptionPricingLoading;
 
   useEffect(() => {
-    if (!shieldSubscription) {
+    if (shieldSubscription) {
+      // set security alerts enabled to true
+      if (!securityAlertsEnabled) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.SettingsUpdated,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            blockaid_alerts_enabled: true,
+          },
+        });
+        setSecurityAlertsEnabled(true);
+      }
+
+      // set phishing detection to true
+      if (!usePhishDetect) {
+        dispatch(setUsePhishDetect(true));
+      }
+
+      // set transaction simulations to true
+      if (!useTransactionSimulations) {
+        setUseTransactionSimulations(true);
+      }
+    } else {
       // redirect to shield plan page if user doesn't have a subscription
       navigate(SHIELD_PLAN_ROUTE);
     }
-  }, [navigate, shieldSubscription]);
+  }, [
+    navigate,
+    shieldSubscription,
+    securityAlertsEnabled,
+    usePhishDetect,
+    useTransactionSimulations,
+    dispatch,
+    trackEvent,
+  ]);
 
   const [isCancelMembershipModalOpen, setIsCancelMembershipModalOpen] =
     useState(false);
+
+  const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
   const shieldDetails = [
     {
@@ -171,6 +243,30 @@ const TransactionShield = () => {
     backgroundColor: BackgroundColor.backgroundSection,
     padding: 4,
   };
+
+  const currentToken = useMemo((): TokenPaymentInfo | undefined => {
+    if (
+      !shieldSubscription ||
+      !isCryptoPaymentMethod(shieldSubscription.paymentMethod)
+    ) {
+      return undefined;
+    }
+    const chainPaymentInfo = cryptoPaymentMethod?.chains?.find(
+      (chain) =>
+        chain.chainId ===
+        (shieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod)
+          .crypto.chainId,
+    );
+
+    const token = chainPaymentInfo?.tokens.find(
+      (paymentToken) =>
+        paymentToken.symbol ===
+        (shieldSubscription.paymentMethod as SubscriptionCryptoPaymentMethod)
+          .crypto.tokenSymbol,
+    );
+
+    return token;
+  }, [cryptoPaymentMethod, shieldSubscription]);
 
   const buttonRow = (label: string, onClick: () => void, id?: string) => {
     return (
@@ -259,7 +355,7 @@ const TransactionShield = () => {
               if (isInsufficientFundsCrypto) {
                 // TODO: handle add funds crypto
                 // then use subscription controller to trigger subscription check
-                console.log('add funds');
+                setIsAddFundsModalOpen(true);
                 // await dispatch(updateSubscriptionCryptoPaymentMethod({
                 //   ...params,
                 //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
@@ -301,7 +397,7 @@ const TransactionShield = () => {
             if (isCryptoPaymentMethod(shieldSubscription.paymentMethod)) {
               if (isInsufficientFundsCrypto) {
                 // TODO: handle add funds crypto
-                console.log('add funds');
+                setIsAddFundsModalOpen(true);
                 // await dispatch(updateSubscriptionCryptoPaymentMethod({
                 //   ...params,
                 //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
@@ -361,7 +457,7 @@ const TransactionShield = () => {
               if (isCryptoPayment) {
                 if (isInsufficientFundsCrypto) {
                   // TODO: handle add funds crypto
-                  console.log('add funds');
+                  setIsAddFundsModalOpen(true);
                   // await dispatch(updateSubscriptionCryptoPaymentMethod({
                   //   ...params,
                   //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
@@ -410,7 +506,7 @@ const TransactionShield = () => {
             if (isCryptoPaymentMethod(shieldSubscription.paymentMethod)) {
               if (isInsufficientFundsCrypto) {
                 // TODO: handle add funds crypto
-                console.log('add funds');
+                setIsAddFundsModalOpen(true);
                 // await dispatch(updateSubscriptionCryptoPaymentMethod({
                 //   ...params,
                 //   rawTransaction: undefined // no raw transaction to trigger server to check for new funded balance
@@ -722,6 +818,19 @@ const TransactionShield = () => {
         />
       )}
       {loading && <LoadingScreen />}
+      {currentToken &&
+        isAddFundsModalOpen &&
+        shieldSubscription &&
+        isCryptoPaymentMethod(shieldSubscription.paymentMethod) && (
+          <AddFundsModal
+            onClose={() => {
+              setIsAddFundsModalOpen(false);
+            }}
+            token={currentToken}
+            chainId={shieldSubscription.paymentMethod.crypto.chainId}
+            payerAddress={shieldSubscription.paymentMethod.crypto.payerAddress}
+          />
+        )}
     </Box>
   );
 };
