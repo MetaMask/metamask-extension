@@ -20,7 +20,6 @@ import {
   MultichainAccountsFeatureFlag,
 } from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
 import { isBitcoinFeatureEnabled } from '../../../../shared/lib/multichain-feature-flags';
-import { removeChainAccounts, CHAIN_CONFIGS } from '../../../../shared/lib/multichain-account-management';
 
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 // Use shared Bitcoin feature flag utility
@@ -109,57 +108,19 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   );
   btcProvider.setEnabled(isAddBitcoinAccountEnabled);
 
-  // Track current state to prevent unnecessary work
-  let currentBitcoinEnabled = isAddBitcoinAccountEnabled;
-  let pendingBitcoinRemoval = false;
-
   // Subscribe to RemoteFeatureFlagsController:stateChange for runtime control
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
-    async (state: unknown) => {
+    (state: unknown) => {
       const newBitcoinEnabled = isAddBitcoinFlagEnabled(
         (state as RemoteFeatureFlagControllerState)?.remoteFeatureFlags
           ?.addBitcoinAccount,
       );
 
-      // Defense: Only react if the flag actually changed
-      if (newBitcoinEnabled !== currentBitcoinEnabled) {
-        currentBitcoinEnabled = newBitcoinEnabled;
-
-        // Enable/disable Bitcoin provider based on feature flag
-        btcProvider.setEnabled(newBitcoinEnabled);
-
-        if (!newBitcoinEnabled) {
-          // When disabled: remove Bitcoin accounts using generic chain management
-          const keyringState = controllerMessenger.call('KeyringController:getState');
-          if (keyringState.isUnlocked) {
-            await removeChainAccounts(CHAIN_CONFIGS.bitcoin, controller, controllerMessenger);
-          } else {
-            pendingBitcoinRemoval = true;
-          }
-        } else {
-          // When enabled: trigger alignment to create Bitcoin accounts for existing wallets
-          pendingBitcoinRemoval = false;
-          console.log(
-            '✅ Bitcoin provider enabled - creating accounts for existing wallets',
-          );
-          controller.alignWallets().catch((error) => {
-            console.error(
-              'Failed to align wallets after enabling Bitcoin provider:',
-              error,
-            );
-          });
-        }
-      }
+      // Enable/disable Bitcoin provider based on feature flag
+      btcProvider.setEnabled(newBitcoinEnabled);
     },
   );
-
-  controllerMessenger.subscribe('KeyringController:stateChange', async (keyringState: any) => {
-    if (keyringState.isUnlocked && pendingBitcoinRemoval) {
-      pendingBitcoinRemoval = false;
-      await removeChainAccounts(CHAIN_CONFIGS.bitcoin, controller, controllerMessenger);
-    }
-  });
   ///: END:ONLY_INCLUDE_IF
 
   return {
