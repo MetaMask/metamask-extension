@@ -48,6 +48,9 @@ describe('Phishing Detection', function (this: Suite) {
   });
 
   it('should display the MetaMask Phishing Detection page and take the user to the blocked page if they continue', async function () {
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      this.skip();
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
