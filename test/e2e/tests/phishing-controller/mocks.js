@@ -2,7 +2,6 @@ const {
   METAMASK_STALELIST_URL,
   METAMASK_HOTLIST_DIFF_URL,
   C2_DOMAIN_BLOCKLIST_URL,
-  ListNames,
   BlockProvider,
 } = require('./helpers');
 
@@ -20,13 +19,10 @@ const defaultStalelist = {
   version: 2,
   tolerance: 2,
   lastUpdated,
-  eth_phishing_detect_config: {
-    fuzzylist: [],
-    allowlist: [],
-    blocklist: [],
-    c2DomainBlocklist: [],
-    name: ListNames.MetaMask,
-  },
+  fuzzylist: [],
+  allowlist: [],
+  blocklist: [],
+  blocklistPaths: [],
 };
 
 const emptyHtmlPage = (blockProvider) => `<!DOCTYPE html>
@@ -51,6 +47,7 @@ const emptyHtmlPage = (blockProvider) => `<!DOCTYPE html>
  * @param {number} mockPhishingConfigResponseConfig.statusCode - The status code for the response.
  * @param {string[]} mockPhishingConfigResponseConfig.blocklist - The blocklist for the response.
  * @param {string[]} mockPhishingConfigResponseConfig.c2DomainBlocklist - The c2DomainBlocklist for the response.
+ * @param {string[]} mockPhishingConfigResponseConfig.blocklistPaths - The blocklistPaths for the response.
  * @param {BlockProvider} mockPhishingConfigResponseConfig.blockProvider - The name of the provider who blocked the page.
  * configuration lookup performed by the warning page.
  */
@@ -62,11 +59,10 @@ async function setupPhishingDetectionMocks(
     c2DomainBlocklist = [
       'a379a6f6eeafb9a55e378c118034e2751e682fab9f2d30ab13d2125586ce1947',
     ],
+    blocklistPaths = [],
     blockProvider = BlockProvider.MetaMask,
   },
 ) {
-  const blockProviderConfig = resolveProviderConfigName(blockProvider);
-
   const response =
     statusCode >= 400
       ? { statusCode }
@@ -75,11 +71,8 @@ async function setupPhishingDetectionMocks(
           json: {
             data: {
               ...defaultStalelist,
-              [blockProviderConfig]: {
-                ...defaultStalelist[blockProviderConfig],
-                blocklist,
-                c2DomainBlocklist,
-              },
+              blocklist,
+              blocklistPaths,
             },
           },
         };
@@ -97,6 +90,7 @@ async function setupPhishingDetectionMocks(
       };
     });
 
+  defaultC2DomainBlocklist.recentlyAdded.push(...c2DomainBlocklist);
   await mockServer.forGet(C2_DOMAIN_BLOCKLIST_URL).thenCallback(() => {
     return {
       statusCode: 200,
@@ -165,18 +159,6 @@ async function mockEmptyStalelistAndHotlist(mockServer) {
         json: defaultHotlist,
       };
     });
-}
-
-/**
- *
- * @param {BlockProvider} providerName - The name of the provider who issued the block.
- * @returns {string} The name of the phishing config in the response.
- */
-function resolveProviderConfigName(providerName) {
-  if (providerName.toLowerCase() === BlockProvider.MetaMask) {
-    return 'eth_phishing_detect_config';
-  }
-  throw new Error(`Unknown provider: ${providerName}`);
 }
 
 module.exports = {

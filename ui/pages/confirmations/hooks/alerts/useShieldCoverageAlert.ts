@@ -147,17 +147,28 @@ export function useShieldCoverageAlert(): Alert[] {
       return [];
     }
 
+    let severity = Severity.Info;
+    let inlineAlertText = t('shieldNotCovered');
+    switch (status) {
+      case 'covered':
+        severity = Severity.Success;
+        inlineAlertText = t('shieldCovered');
+        break;
+      case 'malicious':
+        severity = Severity.Danger;
+        break;
+      default:
+    }
+
     return [
       {
         key: 'shieldCoverageAlert',
         reason: t('shieldCoverageAlertMessageTitle'),
         field: RowAlertKey.ShieldFooterCoverageIndicator,
-        severity: status === 'covered' ? Severity.Success : Severity.Info,
+        severity,
         content: ShieldCoverageAlertMessage(modalBodyStr),
         isBlocking: false,
-        inlineAlertText: t(
-          status === 'covered' ? 'shieldCovered' : 'shieldNotCovered',
-        ),
+        inlineAlertText,
         showArrow: false,
         isOpenModalOnClick: status !== 'covered',
       },

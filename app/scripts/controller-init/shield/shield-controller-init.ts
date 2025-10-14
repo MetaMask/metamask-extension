@@ -4,7 +4,6 @@ import {
   ShieldRemoteBackend,
 } from '@metamask/shield-controller';
 import { ControllerInitFunction } from '../types';
-import { getIsMetaMaskShieldFeatureEnabled } from '../../../../shared/modules/environment';
 import { ShieldControllerInitMessenger } from '../messengers/shield/shield-controller-messenger';
 
 export const ShieldControllerInit: ControllerInitFunction<
@@ -35,10 +34,6 @@ export const ShieldControllerInit: ControllerInitFunction<
       baseUrl,
     }),
   });
-
-  if (getIsMetaMaskShieldFeatureEnabled()) {
-    controller.start();
-  }
 
   return {
     controller,

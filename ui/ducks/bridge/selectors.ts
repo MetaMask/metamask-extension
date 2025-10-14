@@ -624,8 +624,6 @@ export const getFromTokenConversionRate = createSelector(
           ),
           nativeAssetRate,
         );
-        // Bitcoin doesn't have separate currency/USD rates in the rates object
-        // So we use the native asset rate for both
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
           Number(nativeToCurrencyRate),
@@ -973,11 +971,16 @@ export const getIsToOrFromNonEvm = createSelector(
       return false;
     }
 
-    const fromChainIsNonEvm = isNonEvmChain(fromChain.chainId);
-    const toChainIsNonEvm = isNonEvmChain(toChain.chainId);
+    // Parse the CAIP chain IDs to get their namespaces
+    const fromCaipChainId = formatChainIdToCaip(fromChain.chainId);
+    const toCaipChainId = formatChainIdToCaip(toChain.chainId);
 
-    // Return true if one chain is non-EVM and the other is EVM
-    return fromChainIsNonEvm !== toChainIsNonEvm;
+    const { namespace: fromNamespace } = parseCaipChainId(fromCaipChainId);
+    const { namespace: toNamespace } = parseCaipChainId(toCaipChainId);
+
+    // Return true if chains are in different namespaces
+    // This covers EVM <> non-EVM as well as non-EVM <> non-EVM (e.g., Solana <> Bitcoin)
+    return fromNamespace !== toNamespace;
   },
 );
 
