@@ -7456,7 +7456,11 @@ export async function submitShieldClaim(params: {
   caseDescription: string;
   files?: FileList;
 }) {
-  const url = 'https://claims.dev-api.cx.metamask.io/claims';
+  const baseUrl =
+    process.env.SHIELD_CLAIMS_API_URL ??
+    'https://claims.dev-api.cx.metamask.io';
+
+  const claimsUrl = `${baseUrl}/claims`;
   const formData = new FormData();
   formData.append('email', params.email);
   formData.append('impactedWalletAddress', params.impactedWalletAddress);
@@ -7482,7 +7486,7 @@ export async function submitShieldClaim(params: {
 
   const accessToken = await submitRequestToBackground<string>('getBearerToken');
 
-  const response = await fetch(url, {
+  const response = await fetch(claimsUrl, {
     method: 'POST',
     body: formData,
     headers: {
