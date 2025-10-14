@@ -231,18 +231,14 @@ const SubmitClaimForm = () => {
   const handleSubmitClaim = useCallback(async () => {
     try {
       setClaimSubmitLoading(true);
-      // convert FileList to File[]
-      const filesArray = Array.from(files ?? []);
-      await dispatch(
-        submitShieldClaim({
-          email,
-          impactedWalletAddress,
-          impactedTransactionHash,
-          reimbursementWalletAddress,
-          caseDescription,
-          files: filesArray,
-        }),
-      );
+      await submitShieldClaim({
+        email,
+        impactedWalletAddress,
+        impactedTransactionHash,
+        reimbursementWalletAddress,
+        caseDescription,
+        files,
+      });
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
       navigate(TRANSACTION_SHIELD_ROUTE);
     } catch (error) {

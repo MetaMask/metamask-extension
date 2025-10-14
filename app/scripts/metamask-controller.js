@@ -2288,9 +2288,6 @@ export default class MetamaskController extends EventEmitter {
         this.SubscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
           this.SubscriptionService,
         ),
-      submitShieldClaim: this.SubscriptionService.submitShieldClaim.bind(
-        this.SubscriptionService,
-      ),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -3091,6 +3088,9 @@ export default class MetamaskController extends EventEmitter {
         authenticationController.getUserProfileLineage.bind(
           authenticationController,
         ),
+      getBearerToken: authenticationController.getBearerToken.bind(
+        authenticationController,
+      ),
 
       // UserStorageController
       setIsBackupAndSyncFeatureEnabled:
