@@ -33,11 +33,6 @@ export default function WalletReadyAnimation() {
     }
   }, [rive]);
 
-  // In test environments, skip animation entirely to avoid CDN network requests
-  if (process.env.IN_TEST) {
-    return <Box className="riv-animation__wallet-ready-container"></Box>;
-  }
-
   return (
     <Box className="riv-animation__wallet-ready-container">
       <RiveComponent className="riv-animation__canvas" />

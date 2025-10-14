@@ -259,7 +259,9 @@ export default function CreationSuccessful() {
           {renderSettingsActions}
         </Box>
       )}
-      {!isFromSetiingsSRPBackup && <WalletReadyAnimation />}
+      {!isFromSetiingsSRPBackup && !process.env.IN_TEST && (
+        <WalletReadyAnimation />
+      )}
       {!isFromSetiingsSRPBackup && (
         <Text className="title">{t('yourWalletIsReady')}</Text>
       )}
