@@ -344,7 +344,7 @@ function maybeDetectPhishing(theController) {
 
       // Determine the block reason based on the type
       let blockReason;
-      let blockedUrl = hostname;
+      let blockedUrl = href;
       if (phishingTestResponse?.result && blockedRequestResponse.result) {
         blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
       } else if (phishingTestResponse?.result) {
@@ -355,15 +355,16 @@ function maybeDetectPhishing(theController) {
       }
 
       if (!isFirefox) {
+        const blockedHostname = new URL(blockedUrl).hostname;
         theController.metaMetricsController.trackEvent(
           {
             // should we differentiate between background redirection and content script redirection?
             event: MetaMetricsEventName.PhishingPageDisplayed,
             category: MetaMetricsEventCategory.Phishing,
             properties: {
-              url: blockedUrl,
+              url: blockedHostname,
               referrer: {
-                url: blockedUrl,
+                url: blockedHostname,
               },
               reason: blockReason,
               requestDomain: blockedRequestResponse.result
@@ -376,7 +377,10 @@ function maybeDetectPhishing(theController) {
           },
         );
       }
-      const querystring = new URLSearchParams({ hostname, href });
+      const querystring = new URLSearchParams({
+        hostname: blockedUrl,
+        href: blockedUrl,
+      });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
       const redirectHref = redirectUrl.toString();
