@@ -74,6 +74,13 @@ import {
   Subscription,
   UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
+import {
+  GenericQuoteRequest,
+  L1GasFees,
+  NonEvmFees,
+  QuoteResponse,
+} from '@metamask/bridge-controller';
+
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -7431,4 +7438,10 @@ export async function getLayer1GasFeeValue({
   return await submitRequestToBackground('getLayer1GasFee', [
     { chainId, networkClientId, transactionParams },
   ]);
+}
+
+export async function fetchQuotes(
+  quoteRequest: GenericQuoteRequest,
+): Promise<QuoteResponse[]> {
+  return await submitRequestToBackground('fetchQuotes', [quoteRequest]);
 }

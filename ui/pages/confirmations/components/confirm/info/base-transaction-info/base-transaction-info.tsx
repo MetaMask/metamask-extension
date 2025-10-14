@@ -6,6 +6,9 @@ import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
 import { TransactionDetails } from '../shared/transaction-details/transaction-details';
 import { TransactionAccountDetails } from '../batch/transaction-account-details';
 import { BatchSimulationDetails } from '../batch/batch-simulation-details/batch-simulation-details';
+import { DappSwapComparisonBanner } from '../shared/dapp-swap-comparison-banner/dapp-swap-comparison-banner';
+
+const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
 
 const BaseTransactionInfo = () => {
   const { currentConfirmation: transactionMeta } =
@@ -17,6 +20,9 @@ const BaseTransactionInfo = () => {
 
   return (
     <>
+      {transactionMeta.origin === DAPP_SWAP_COMPARISON_ORIGIN && (
+        <DappSwapComparisonBanner />
+      )}
       <TransactionAccountDetails />
       <BatchSimulationDetails />
       <TransactionDetails />
