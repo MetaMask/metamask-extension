@@ -5689,6 +5689,9 @@
   "shieldClaimSubmitSuccess": {
     "message": "Claim submitted successfully"
   },
+  "shieldClaimSubmitSuccessDescription": {
+    "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
+  },
   "shieldConfirmMembership": {
     "message": "Confirm membership"
   },

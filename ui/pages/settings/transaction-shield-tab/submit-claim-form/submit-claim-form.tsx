@@ -22,6 +22,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Textarea,
@@ -44,6 +45,7 @@ import { submitShieldClaim } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
+import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -55,6 +57,7 @@ function isValidTransactionHash(hash: string): boolean {
 const SubmitClaimForm = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [claimSubmitLoading, setClaimSubmitLoading] = useState(false);
 
   const {
@@ -241,6 +244,7 @@ const SubmitClaimForm = () => {
         }),
       );
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
+      navigate(TRANSACTION_SHIELD_ROUTE);
     } catch (error) {
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Errored));
     } finally {
@@ -254,6 +258,7 @@ const SubmitClaimForm = () => {
     reimbursementWalletAddress,
     caseDescription,
     files,
+    navigate,
   ]);
 
   return (

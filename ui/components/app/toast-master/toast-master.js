@@ -542,12 +542,17 @@ const ClaimSubmitToast = () => {
             ? t('shieldClaimSubmitSuccess')
             : t('shieldClaimSubmitError')
         }
+        description={
+          showClaimSubmitToast === ClaimSubmitToastType.Success
+            ? t('shieldClaimSubmitSuccessDescription')
+            : undefined
+        }
         startAdornment={
           <Icon
             name={
               showClaimSubmitToast === ClaimSubmitToastType.Success
-                ? IconName.Check
-                : IconName.Danger
+                ? IconName.CheckBold
+                : IconName.CircleX
             }
             color={
               showClaimSubmitToast === ClaimSubmitToastType.Success
