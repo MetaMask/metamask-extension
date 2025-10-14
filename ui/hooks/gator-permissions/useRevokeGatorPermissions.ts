@@ -64,57 +64,69 @@ export function useRevokeGatorPermissions({
 
   // Monitor transaction status and call submitRevocation when confirmed
   useEffect(() => {
-    pendingRevocations.forEach(async (permissionContext, txId) => {
-      const transaction = transactions.find(
-        (tx: TransactionMeta) => tx.id === txId,
-      );
+    if (pendingRevocations.size === 0) {
+      return;
+    }
 
-      if (!transaction) {
-        return;
-      }
-
-      if (transaction.status === TransactionStatus.confirmed) {
-        console.log(
-          `🎉 Transaction ${txId} confirmed! Submitting revocation...`,
+    // Add a delay to reduce RPC rate limiting
+    const checkTransactions = async () => {
+      for (const [txId, permissionContext] of pendingRevocations) {
+        const transaction = transactions.find(
+          (tx: TransactionMeta) => tx.id === txId,
         );
-        try {
-          await submitRevocation({ permissionContext });
+
+        if (!transaction) {
+          continue;
+        }
+
+        if (transaction.status === TransactionStatus.confirmed) {
           console.log(
-            '✅ Revocation submitted successfully after transaction confirmation',
+            `🎉 Transaction ${txId} confirmed! Submitting revocation...`,
           );
-        } catch (error) {
-          console.error(
-            '❌ Failed to submit revocation after confirmation:',
-            error instanceof Error ? error.message : String(error),
+          try {
+            await submitRevocation({ permissionContext });
+            console.log(
+              '✅ Revocation submitted successfully after transaction confirmation',
+            );
+          } catch (error) {
+            console.error(
+              '❌ Failed to submit revocation after confirmation:',
+              error instanceof Error ? error.message : String(error),
+            );
+            console.error(
+              'Error stack:',
+              error instanceof Error ? error.stack : undefined,
+            );
+          } finally {
+            // Clean up the pending revocation
+            setPendingRevocations((prev) => {
+              const newMap = new Map(prev);
+              newMap.delete(txId);
+              return newMap;
+            });
+          }
+        } else if (
+          transaction.status === TransactionStatus.failed ||
+          transaction.status === TransactionStatus.rejected ||
+          transaction.status === TransactionStatus.dropped
+        ) {
+          console.log(
+            `❌ Transaction ${txId} failed/rejected/dropped. Cleaning up...`,
           );
-          console.error(
-            'Error stack:',
-            error instanceof Error ? error.stack : undefined,
-          );
-        } finally {
-          // Clean up the pending revocation
+          // Clean up failed transactions
           setPendingRevocations((prev) => {
             const newMap = new Map(prev);
             newMap.delete(txId);
             return newMap;
           });
         }
-      } else if (
-        transaction.status === TransactionStatus.failed ||
-        transaction.status === TransactionStatus.rejected ||
-        transaction.status === TransactionStatus.dropped
-      ) {
-        console.log(
-          `❌ Transaction ${txId} failed/rejected/dropped. Cleaning up...`,
-        );
-        // Clean up failed transactions
-        setPendingRevocations((prev) => {
-          const newMap = new Map(prev);
-          newMap.delete(txId);
-          return newMap;
-        });
+
+        // Add small delay between checking transactions
+        await new Promise((resolve) => setTimeout(resolve, 100));
       }
-    });
+    };
+
+    checkTransactions();
   }, [transactions, pendingRevocations]);
 
   /**
