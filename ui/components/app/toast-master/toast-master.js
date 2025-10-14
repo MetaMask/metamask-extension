@@ -6,10 +6,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import { AvatarAccountSize } from '@metamask/design-system-react';
-import {
-  PRODUCT_TYPES,
-  SUBSCRIPTION_STATUSES,
-} from '@metamask/subscription-controller';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
@@ -67,8 +64,10 @@ import {
   useUserSubscriptions,
 } from '../../../hooks/subscription/useSubscription';
 import { getShortDateFormatterV2 } from '../../../pages/asset/util';
-import { getIsShieldSubscriptionPaused } from '../../../../shared/lib/shield';
-import { isCryptoPaymentMethod } from '../../../pages/settings/transaction-shield-tab/types';
+import {
+  getIsShieldSubscriptionEndingSoon,
+  getIsShieldSubscriptionPaused,
+} from '../../../../shared/lib/shield';
 import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,
@@ -590,16 +589,11 @@ function ShieldEndingToast() {
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
-  const isCancelled =
-    shieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
-
-  const isCryptoPayment =
-    shieldSubscription?.paymentMethod &&
-    isCryptoPaymentMethod(shieldSubscription?.paymentMethod);
+  const isSubscriptionEndingSoon =
+    getIsShieldSubscriptionEndingSoon(subscriptions);
 
   return (
-    Boolean(isCancelled) &&
-    isCryptoPayment &&
+    isSubscriptionEndingSoon &&
     showShieldEndingToast && (
       <Toast
         key="shield-coverage-ending-toast"
