@@ -1928,6 +1928,68 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
+
+    // Helper function to check if balances are zero across all controllers
+    const hasZeroBalances = () => {
+      // Check TokenBalancesController - tokenBalances should be empty or all zero
+      const tokenBalances = this.tokenBalancesController.state.tokenBalances || {};
+      const hasTokenBalances = Object.keys(tokenBalances).some(address => {
+        const addressBalances = tokenBalances[address] || {};
+        return Object.keys(addressBalances).length > 0;
+      });
+
+      // Check MultichainBalancesController - balances should be empty or all zero
+      const multichainBalances = this.multichainBalancesController?.state?.balances || {};
+      const hasMultichainBalances = Object.keys(multichainBalances).some(accountId => {
+        const accountBalances = multichainBalances[accountId] || {};
+        return Object.keys(accountBalances).length > 0;
+      });
+
+      // Check AccountTrackerController - native ETH balances should be zero
+      const currentChainId = this.#getGlobalChainId();
+      const nativeBalances = this.accountTrackerController.state.accountsByChainId?.[currentChainId] || {};
+      const hasNativeBalances = Object.keys(nativeBalances).some(address => {
+        const balance = nativeBalances[address]?.balance;
+        return balance && balance !== '0x0' && balance !== '0x';
+      });
+
+      return !hasTokenBalances && !hasMultichainBalances && !hasNativeBalances;
+    };
+
+    // Only subscribe to notifications if wallet has zero balances
+    if (hasZeroBalances()) {
+      console.log('🎯 Wallet has zero balances - Setting up wallet funds obtained detection');
+      // Subscribe to notifications list updates to detect wallet funds obtained events
+      this.controllerMessenger.subscribe(
+        METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
+        (notifications) => {
+          // Check for new ERC20_RECEIVED or ETH_RECEIVED notifications
+          const newWalletFundsObtainedNotifications = notifications.filter(
+            (notification) =>
+              (notification.type === TRIGGER_TYPES.ERC20_RECEIVED || notification.type === TRIGGER_TYPES.ETH_RECEIVED) &&
+              !notification.isRead // Only process unread (new) notifications
+          );
+
+          newWalletFundsObtainedNotifications.forEach((notification) => {
+            const notificationType = notification.type === TRIGGER_TYPES.ERC20_RECEIVED ? 'ERC20' : 'ETH';
+
+            console.log(`🎉 Wallet Funds Obtained Event Detected!`, {
+              type: notificationType,
+              notificationId: notification.id,
+              triggerType: notification.type,
+              createdAt: notification.createdAt,
+              chainId: notification.chain_id,
+              notification,
+            });
+
+            // TODO: Add actual wallet funds obtained event tracking here
+            // This is where you would integrate with your analytics/tracking system
+          });
+        },
+      );
+    } else {
+      console.log('💰 Wallet has existing balances - Skipping wallet funds obtained detection setup');
+    }
   }
 
   /**
