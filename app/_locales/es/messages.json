@@ -7092,24 +7092,11 @@
     "message": "$1 puedes guardar esta frase de forma segura para nunca perder el acceso a tu dinero.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Puedes hacer una copia de seguridad de tus billeteras o ver tu frase secreta de recuperación en Configuración > Seguridad y contraseña."
-  },
   "walletReadyLoseSrp": {
     "message": "Si pierdes tu frase secreta de recuperación, no podrás usar tu billetera."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Esta frase secreta de recuperación puede ayudarte a recuperar el acceso si alguna vez olvidas tu contraseña o pierdes el acceso a tu inicio de sesión."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Si no realizas una copia de seguridad de tu frase secreta de recuperación, perderás el acceso a tus fondos si no puedes acceder a la aplicación o cambias de dispositivo."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Puedes iniciar sesión en tu billetera en cualquier momento con tu cuenta de $1 y la contraseña.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Si olvidas tu contraseña, no podrás acceder a tu billetera."
   },
   "wantToAddThisNetwork": {
     "message": "¿Desea añadir esta red?"
@@ -7215,8 +7202,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "¡Mantén segura tu frase secreta de recuperación!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Te lo recordaremos más tarde"
   }
 }

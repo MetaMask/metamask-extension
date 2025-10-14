@@ -7092,24 +7092,11 @@
     "message": "$1 Sie können diese Phrase sicher aufbewahren, damit Sie nie den Zugriff auf Ihr Geld verlieren.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Sie können Ihre Wallets sichern oder Ihre geheime Wiederherstellungsphrase unter Einstellungen > Sicherheit und Passwort anzeigen."
-  },
   "walletReadyLoseSrp": {
     "message": "Wenn Sie Ihre geheime Wiederherstellungsphrase verlieren, können Sie Ihre Wallet nicht mehr verwenden."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Mit dieser geheimen Wiederherstellungsphrase können Sie den Zugriff wiedererlangen, wenn Sie Ihr Passwort vergessen oder den Zugriff auf Ihre Anmeldung verlieren."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Wenn Sie Ihre geheime Wiederherstellungsphrase nicht sichern, verlieren Sie bei einem Zugriffsverlust der App oder einem Gerätewechsel auch den Zugriff auf Ihr Guthaben."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Sie können sich jederzeit mit Ihrem $1-Konto und -Passwort bei Ihrer Wallet anmelden.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Wenn Sie Ihr Passwort vergessen, können Sie nicht auf Ihre Wallet zugreifen."
   },
   "wantToAddThisNetwork": {
     "message": "Möchten Sie dieses Netzwerk hinzufügen?"
@@ -7215,8 +7202,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Bewahren Sie Ihre geheime Wiederherstellungsphrase sicher auf!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Wir erinnern Sie später"
   }
 }

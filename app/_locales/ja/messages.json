@@ -7092,24 +7092,11 @@
     "message": "$1 ご自身の資金にアクセスできなくなることを防ぐため、このフレーズは安全に保管しましょう。",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "ウォレットのバックアップやシークレットリカバリーフレーズの確認は、「設定」>「セキュリティとパスワード」から行うことができます。"
-  },
   "walletReadyLoseSrp": {
     "message": "シークレットリカバリーフレーズを忘れた場合、ウォレットにアクセスできなくなります。"
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "このシークレットリカバリーフレーズは、パスワードを忘れた場合やログイン情報にアクセスできなくなった場合に、アクセスを回復するのに役立ちます。"
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "シークレットリカバリーフレーズをバックアップしなかった場合、アプリにログインできなくなったり、新しいデバイスに変えたりした際に、資金にアクセスできなくなります。"
-  },
-  "walletReadySocialDetails1": {
-    "message": "ウォレットには、$1のアカウントとパスワードを使っていつでもログインすることができます。",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "パスワードを忘れた場合、ウォレットにアクセスできなくなります。"
   },
   "wantToAddThisNetwork": {
     "message": "このネットワークを追加しますか？"
@@ -7215,8 +7202,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "シークレットリカバリーフレーズは安全に保管してください。"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "後ほどお知らせします"
   }
 }

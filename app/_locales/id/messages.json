@@ -7092,24 +7092,11 @@
     "message": "$1 Anda dapat menyimpan frasa ini dengan aman sehingga Anda tidak akan pernah kehilangan akses ke uang Anda.",
     "description": "$1 is the link to Learn how"
   },
-  "walletReadyLearnRemind": {
-    "message": "Anda dapat mencadangkan dompet atau melihat Frasa Pemulihan Rahasia di Pengaturan > Keamanan & Kata Sandi."
-  },
   "walletReadyLoseSrp": {
     "message": "Jika kehilangan Frasa Pemulihan Rahasia, Anda tidak dapat menggunakan dompet."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Frasa Pemulihan Rahasia ini dapat membantu Anda mendapatkan kembali akses jika lupa kata sandi atau kehilangan akses login Anda."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Jika Anda tidak mencadangkan Frasa Pemulihan Rahasia, Anda akan kehilangan akses ke dana Anda apabila terkunci dari aplikasi atau mendapatkan perangkat baru."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Anda dapat masuk ke dompet setiap saat dengan akun $1 dan kata sandi Anda.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Jika lupa kata sandi, Anda tidak dapat mengakses dompet."
   },
   "wantToAddThisNetwork": {
     "message": "Ingin menambahkan jaringan ini?"
@@ -7215,8 +7202,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Jaga agar Frasa Pemulihan Rahasia tetap aman!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Kami akan mengingatkan Anda nanti"
   }
 }
