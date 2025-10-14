@@ -23,7 +23,6 @@ const selectors = {
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
   buttonText: { css: '[data-testid="auto-lockout-button"]', text: 'Gem' },
   dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'p' },
-  discoverText: { text: 'खोजें', tag: 'a' },
   headerText: { text: 'الإعدادات', tag: 'h3' },
 };
 
@@ -192,14 +191,6 @@ describe('Settings - general tab', function (this: Suite) {
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
-        const isDiscoverButtonTextChanged = await driver.isElementPresent(
-          selectors.discoverText,
-        );
-        assert.equal(
-          isDiscoverButtonTextChanged,
-          true,
-          'Language change is not reflected in headers',
-        );
       },
     );
   });

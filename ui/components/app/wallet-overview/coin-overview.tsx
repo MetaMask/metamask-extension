@@ -1,5 +1,5 @@
-import React, { useContext, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import React, { useContext } from 'react';
 import classnames from 'classnames';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
@@ -10,20 +10,12 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
-  ButtonLink,
   IconName,
 } from '../../component-library';
 import {
   JustifyContent,
-  TextVariant,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 
 import { I18nContext } from '../../../contexts/i18n';
 import Tooltip from '../../ui/tooltip';
@@ -36,9 +28,6 @@ import {
   getIsTestnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getChainIdsToPoll,
-  getDataCollectionForMarketing,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
   getEnabledNetworksByNamespace,
   isGlobalNetworkSelectorRemoved,
   getIsMultichainAccountsState2Enabled,
@@ -214,12 +203,6 @@ export const CoinOverview = ({
 
   const t: ReturnType<typeof useI18nContext> = useContext(I18nContext);
 
-  const trackEvent = useContext(MetaMetricsContext);
-
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-
   const dispatch = useDispatch();
 
   const { privacyMode, showNativeTokenAsMainBalance } =
@@ -236,85 +219,35 @@ export const CoinOverview = ({
     getIsMultichainAccountsState2Enabled,
   );
 
-  const anyEnabledNetworksAreAvailable = useSelector(
-    selectAnyEnabledNetworksAreAvailable,
-  );
-
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
   };
 
-  const handlePortfolioOnClick = useCallback(() => {
-    const url = getPortfolioUrl(
-      'explore/tokens',
-      'ext_portfolio_button',
-      metaMetricsId,
-      isMetaMetricsEnabled,
-      isMarketingEnabled,
-    );
-    global.platform.openTab({ url });
-    trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PortfolioLinkClicked,
-      properties: {
-        location: 'Home',
-        text: 'Portfolio',
-      },
-    });
-  }, [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, trackEvent]);
-
   const renderPercentageAndAmountChange = () => {
-    const renderPortfolioButton = () => {
-      return (
-        <ButtonLink
-          endIconName={IconName.Export}
-          onClick={handlePortfolioOnClick}
-          as="a"
-          data-testid="portfolio-link"
-          textProps={{ variant: TextVariant.bodyMdMedium }}
-        >
-          {t('discover')}
-        </ButtonLink>
-      );
-      return null;
-    };
-
-    const renderNativeTokenView = () => {
-      const value =
-        tokensMarketData?.[getNativeTokenAddress(chainId as Hex)]
-          ?.pricePercentChange1d;
-      return (
-        <Skeleton
-          isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(value)}
-        >
-          <Box className="wallet-overview__currency-wrapper">
-            <PercentageAndAmountChange value={value} />
-            {renderPortfolioButton()}
-          </Box>
-        </Skeleton>
-      );
-    };
+    const renderNativeTokenView = () => (
+      <Box className="wallet-overview__currency-wrapper">
+        <PercentageAndAmountChange
+          value={
+            tokensMarketData?.[getNativeTokenAddress(chainId as Hex)]
+              ?.pricePercentChange1d
+          }
+        />
+      </Box>
+    );
 
     const renderAggregatedView = () => (
       <Box className="wallet-overview__currency-wrapper">
         {isTokenNetworkFilterEqualCurrentNetwork ? (
-          <AggregatedPercentageOverview
-            portfolioButton={renderPortfolioButton}
-          />
+          <AggregatedPercentageOverview />
         ) : (
-          <AggregatedPercentageOverviewCrossChains
-            portfolioButton={renderPortfolioButton}
-          />
+          <AggregatedPercentageOverviewCrossChains />
         )}
       </Box>
     );
 
     const renderNonEvmView = () => (
       <Box className="wallet-overview__currency-wrapper">
-        <AggregatedMultichainPercentageOverview
-          privacyMode={privacyMode}
-          portfolioButton={renderPortfolioButton}
-        />
+        <AggregatedMultichainPercentageOverview privacyMode={privacyMode} />
       </Box>
     );
 
@@ -322,10 +255,7 @@ export const CoinOverview = ({
     if (isMultichainAccountsState2Enabled) {
       return (
         <Box className="wallet-overview__currency-wrapper">
-          <AccountGroupBalanceChange
-            period="1d"
-            portfolioButton={renderPortfolioButton}
-          />
+          <AccountGroupBalanceChange period="1d" />
         </Box>
       );
     }

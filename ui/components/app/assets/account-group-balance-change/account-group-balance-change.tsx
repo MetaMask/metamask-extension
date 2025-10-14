@@ -18,14 +18,13 @@ import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
 export type AccountGroupBalanceChangeProps = {
   period: BalanceChangePeriod;
-  portfolioButton: () => JSX.Element | null;
 };
 
 const balanceAmountSpanStyle = { whiteSpace: 'pre' } as const;
 
 const AccountGroupBalanceChangeComponent: React.FC<
   AccountGroupBalanceChangeProps
-> = ({ period, portfolioButton }) => {
+> = ({ period }) => {
   const { privacyMode, color, amountChange, percentChange } =
     useAccountGroupBalanceDisplay(period);
   const { formatCurrency, formatPercentWithMinThreshold } = useFormatters();
@@ -61,7 +60,6 @@ const AccountGroupBalanceChangeComponent: React.FC<
           {`(${formatPercentWithMinThreshold(percentChange, { signDisplay: 'always' })})`}
         </SensitiveText>
       </Box>
-      {portfolioButton()}
     </Skeleton>
   );
 };

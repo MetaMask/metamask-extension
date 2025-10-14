@@ -5,7 +5,7 @@ import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import { withBtcAccountSnap } from './common-btc';
 
 describe('BTC Account - Overview', function (this: Suite) {
-  it('has balance displayed and has portfolio button enabled for BTC accounts', async function () {
+  it('has balance displayed for BTC accounts', async function () {
     await withBtcAccountSnap(async (driver) => {
       const homePage = new BitcoinHomepage(driver);
       await homePage.checkPageIsLoaded();
@@ -14,7 +14,6 @@ describe('BTC Account - Overview', function (this: Suite) {
       assert.equal(await homePage.checkIsBridgeButtonEnabled(), false);
       assert.equal(await homePage.checkIsBuySellButtonEnabled(), true);
       assert.equal(await homePage.checkIsReceiveButtonEnabled(), true);
-      await homePage.checkPortfolioLinkIsDisplayed();
 
       /* To be reactivated once we use a regtest network instead of mocked data
       await homePage.checkIsExpectedBitcoinBalanceDisplayed(
