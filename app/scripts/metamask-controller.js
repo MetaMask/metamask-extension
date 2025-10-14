@@ -2292,6 +2292,10 @@ export default class MetamaskController extends EventEmitter {
         this.SubscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
           this.SubscriptionService,
         ),
+      submitSubscriptionUserEvents:
+        this.subscriptionController.submitUserEvent.bind(
+          this.subscriptionController,
+        ),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),

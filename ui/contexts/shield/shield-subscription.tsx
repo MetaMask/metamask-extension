@@ -93,7 +93,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       shieldSubscriptionEligibility?.canViewEntryModal &&
       shieldSubscriptionEligibility?.minBalanceUSD &&
       totalFiatBalance &&
-      Number(totalFiatBalance) >= shieldSubscriptionEligibility.minBalanceUSD
+      Number(totalFiatBalance) >= shieldSubscriptionEligibility?.minBalanceUSD
     ) {
       return true;
     }
@@ -121,7 +121,8 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
         // shield entry modal has been shown before,
         const isUserBalanceCriteriaMet = await getIsUserBalanceCriteriaMet();
         if (isUserBalanceCriteriaMet) {
-          dispatch(setShowShieldEntryModalOnce(true));
+          const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
+          dispatch(setShowShieldEntryModalOnce(true, shouldSubmitUserEvents));
         }
       }
     })();
