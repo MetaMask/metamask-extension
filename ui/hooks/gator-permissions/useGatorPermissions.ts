@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { GatorPermissionsMap } from '@metamask/gator-permissions-controller';
 import { fetchAndUpdateGatorPermissions } from '../../store/controller-actions/gator-permissions-controller';
@@ -49,14 +49,21 @@ export function useGatorPermissions(
   const dispatch = useDispatch();
 
   // Get cached data from Redux immediately
-  const cachedData = useSelector((state: AppState) =>
-    getGatorPermissionsMap(state),
-  );
+  // Handle deserialization errors gracefully
+  const cachedData = useSelector((state: AppState) => {
+    try {
+      return getGatorPermissionsMap(state);
+    } catch (err) {
+      // If deserialization fails, return undefined (no cache)
+      return undefined;
+    }
+  });
 
   // Only show loading on initial load when no cache exists
   const [loading, setLoading] = useState<boolean>(!cachedData);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [error, setError] = useState<Error | undefined>(undefined);
+  const hasFetchedRef = useRef<boolean>(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -92,14 +99,19 @@ export function useGatorPermissions(
     // Skip fetch if we have cached data and background refresh is disabled
     if (cachedData && !refreshInBackground) {
       setLoading(false);
-    } else {
+    } else if (!hasFetchedRef.current) {
+      // Only fetch once on mount
+      hasFetchedRef.current = true;
       fetchGatorPermissions();
     }
 
     return () => {
       cancelled = true;
     };
-  }, [dispatch, cachedData, refreshInBackground]);
+    // Note: cachedData is intentionally excluded from dependencies to prevent infinite loop
+    // when fetchAndUpdateGatorPermissions updates the Redux store
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, refreshInBackground]);
 
   return {
     data: cachedData,
