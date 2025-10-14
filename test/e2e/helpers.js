@@ -317,6 +317,16 @@ async function withFixtures(options, testSuite) {
               'public',
             );
             break;
+          case 'snap-account-abstraction-keyring':
+            dappDirectory = path.resolve(
+              __dirname,
+              '..',
+              '..',
+              'node_modules',
+              '@metamask/snap-account-abstraction-keyring-site',
+              'public',
+            );
+            break;
           case 'test-dapp':
             dappDirectory = path.resolve(
               __dirname,
