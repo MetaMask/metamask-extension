@@ -122,7 +122,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
             return token;
           });
-
       },
     );
     const accountAssets = sortAssets(
