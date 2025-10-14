@@ -279,21 +279,67 @@ async function withFixtures(options, testSuite) {
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
         numberOfDapps = dappOptions.numberOfDapps;
+        // Note: We don't cap numberOfDapps here even if dappPaths is shorter,
+        // because tests may need multiple dapps where some use default paths
+      } else if (dappPaths && Array.isArray(dappPaths)) {
+        numberOfDapps = dappPaths.length;
+      } else {
+        // Default to 1 dapp when dapp=true but no specific configuration
+        numberOfDapps = 1;
       }
+
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
-        if (dappPath || (dappPaths && dappPaths[i])) {
-          dappDirectory = path.resolve(__dirname, dappPath || dappPaths[i]);
+        let currentDappPath;
+        if (dappPath) {
+          // Single dappPath takes precedence
+          currentDappPath = dappPath;
+        } else if (
+          dappPaths &&
+          Array.isArray(dappPaths) &&
+          i < dappPaths.length
+        ) {
+          // Use dappPaths[i] if within bounds
+          currentDappPath = dappPaths[i];
         } else {
-          dappDirectory = path.resolve(
-            __dirname,
-            '..',
-            '..',
-            'node_modules',
-            '@metamask',
-            'test-dapp',
-            'dist',
-          );
+          // Fallback to default
+          currentDappPath = 'test-dapp';
+        }
+
+        switch (currentDappPath) {
+          case 'snap-simple-keyring-site':
+            dappDirectory = path.resolve(
+              __dirname,
+              '..',
+              '..',
+              'node_modules',
+              '@metamask/snap-simple-keyring-site',
+              'public',
+            );
+            break;
+          case 'snap-account-abstraction-keyring':
+            dappDirectory = path.resolve(
+              __dirname,
+              '..',
+              '..',
+              'node_modules',
+              '@metamask/snap-account-abstraction-keyring-site',
+              'public',
+            );
+            break;
+          case 'test-dapp':
+            dappDirectory = path.resolve(
+              __dirname,
+              '..',
+              '..',
+              'node_modules',
+              '@metamask/test-dapp',
+              'dist',
+            );
+            break;
+          default:
+            dappDirectory = path.resolve(__dirname, currentDappPath);
+            break;
         }
         dappServer.push(
           createStaticServer({ public: dappDirectory, ...staticServerOptions }),

@@ -151,6 +151,10 @@ import {
 import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 
+/**
+ * @typedef {import('../../ui/store/store').MetaMaskReduxState} MetaMaskReduxState
+ */
+
 // Re-export this file so we don't have to update all references
 // TODO: Update all references
 export { getEnabledNetworks };
@@ -281,6 +285,10 @@ export const getPendingTokens = (state) => state.appState.pendingTokens;
 
 export function getShowConnectionsRemovedModal(state) {
   return state.appState.showConnectionsRemovedModal;
+}
+
+export function getShowShieldEntryModalOnce(state) {
+  return state.metamask.showShieldEntryModalOnce;
 }
 
 /** `metamask` slice selectors */
@@ -1911,6 +1919,12 @@ export function getSwapsDefaultToken(state, overrideChainId = null) {
   };
 }
 
+/**
+ * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
+ * @param state - The Redux state
+ * @param {string} [overrideChainId] - (Optional) The chainId to check
+ * @returns {boolean} Whether the chainId is a swaps chain
+ */
 export function getIsSwapsChain(state, overrideChainId) {
   const currentChainId = getCurrentChainId(state);
   const chainId = overrideChainId ?? currentChainId;
@@ -1922,6 +1936,12 @@ export function getIsSwapsChain(state, overrideChainId) {
     : ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId);
 }
 
+/**
+ * @deprecated Check if chainId is in ALLOWED_BRIDGE_CHAIN_IDS constant instead
+ * @param state - The Redux state
+ * @param overrideChainId - The chainId to check
+ * @returns {boolean} Whether the chainId is a bridge chain
+ */
 export function getIsBridgeChain(state, overrideChainId) {
   const account = getSelectedInternalAccount(state);
   const { chainId: selectedMultiChainId, isEvmNetwork } = getMultichainNetwork(
@@ -3015,6 +3035,16 @@ export function getIsSecurityAlertsEnabled(state) {
 }
 
 /**
+ * To get the `getUsePhishDetect` value which determines whether phishing detection is enabled
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUsePhishDetect(state) {
+  return state.metamask.usePhishDetect;
+}
+
+/**
  * Gets the cached address security alert response for a given address
  *
  * @param {*} state
@@ -4032,3 +4062,11 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) => remoteFeatureFlags?.nonZeroUnusedApprovals ?? [],
 );
+
+/**
+ * @param {MetaMaskReduxState} state - The Redux state
+ * @returns {import('../../shared/constants/app-state').NetworkConnectionBanner}
+ */
+export function getNetworkConnectionBanner(state) {
+  return state.metamask.networkConnectionBanner;
+}

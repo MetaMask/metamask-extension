@@ -4,7 +4,6 @@ import { type CaipChainId, type Hex } from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import TokenCell from '../token-cell';
 import {
-  getChainIdsToPoll,
   getEnabledNetworksByNamespace,
   getIsMultichainAccountsState2Enabled,
   getNewTokensImported,
@@ -13,7 +12,6 @@ import {
   getTokenSortConfig,
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
-import { useTokenBalances as pollAndUpdateEvmBalances } from '../../../../hooks/useTokenBalances';
 import { useNetworkFilter } from '../hooks';
 import { type TokenWithFiatAmount } from '../types';
 import { filterAssets } from '../util/filter';
@@ -46,7 +44,6 @@ type TokenListProps = {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
-  const chainIdsToPoll = useSelector(getChainIdsToPoll);
   const newTokensImported = useSelector(getNewTokensImported);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
@@ -56,10 +53,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     getTokenBalancesEvm(state, selectedAccount.address),
   );
   const trackEvent = useContext(MetaMetricsContext);
-  // EVM specific tokenBalance polling, updates state via polling loop per chainId
-  pollAndUpdateEvmBalances({
-    chainIds: chainIdsToPoll as Hex[],
-  });
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
 
@@ -109,7 +102,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
           const token: TokenWithFiatAmount = {
             ...asset,
             tokenFiatAmount: asset.fiat?.balance,
-            primary: '',
             secondary: null,
             title: asset.name,
             address:

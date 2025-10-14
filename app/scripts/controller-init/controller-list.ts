@@ -34,6 +34,7 @@ import {
   CronjobController,
   ExecutionService,
   JsonSnapsRegistry,
+  MultichainRouter,
   SnapController,
   SnapInsightsController,
   SnapInterfaceController,
@@ -64,6 +65,17 @@ import { BridgeStatusController } from '@metamask/bridge-status-controller';
 import { ApprovalController } from '@metamask/approval-controller';
 import { NetworkEnablementController } from '@metamask/network-enablement-controller';
 import { PermissionLogController } from '@metamask/permission-log-controller';
+import { AnnouncementController } from '@metamask/announcement-controller';
+import { PhishingController } from '@metamask/phishing-controller';
+import { LoggingController } from '@metamask/logging-controller';
+import { ErrorReportingService } from '@metamask/error-reporting-service';
+import { AddressBookController } from '@metamask/address-book-controller';
+import {
+  DecryptMessageManager,
+  EncryptionPublicKeyManager,
+} from '@metamask/message-manager';
+import { SignatureController } from '@metamask/signature-controller';
+import { UserOperationController } from '@metamask/user-operation-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -76,12 +88,24 @@ import AccountTrackerController from '../controllers/account-tracker-controller'
 import { AppStateController } from '../controllers/app-state-controller';
 import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
 import { SubscriptionService } from '../services/subscription/subscription-service';
+import { AccountOrderController } from '../controllers/account-order';
+import { AlertController } from '../controllers/alert-controller';
+import { MetaMetricsDataDeletionController } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
+import AppMetadataController from '../controllers/app-metadata';
+import DecryptMessageController from '../controllers/decrypt-message';
+import EncryptionPublicKeyController from '../controllers/encryption-public-key';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
  */
 export type Controller =
+  | AccountOrderController
   | AccountTrackerController
+  | AccountsController
+  | AddressBookController
+  | AlertController
+  | AnnouncementController
+  | AppMetadataController
   | ApprovalController
   | AppStateController
   | AuthenticationController
@@ -89,20 +113,28 @@ export type Controller =
   | BridgeStatusController
   | CronjobController
   | CurrencyRateController
+  | DecryptMessageController
+  | DecryptMessageManager
   | DelegationController
   | DeFiPositionsController
+  | EncryptionPublicKeyController
+  | EncryptionPublicKeyManager
   | EnsController
+  | ErrorReportingService
   | ExecutionService
   | GasFeeController
   | GatorPermissionsController
   | JsonSnapsRegistry
   | KeyringController
+  | LoggingController
   | MetaMetricsController
+  | MetaMetricsDataDeletionController
   | MultichainAssetsController
   | MultichainAssetsRatesController
   | MultichainBalancesController
   | MultichainTransactionsController
   | MultichainNetworkController
+  | MultichainRouter
   | NameController
   | NetworkController
   | NetworkOrderController
@@ -115,6 +147,7 @@ export type Controller =
       CaveatSpecificationConstraint
     >
   | PermissionLogController
+  | PhishingController
   | PPOMController
   | PreferencesController
   | RateLimitController<RateLimitedApiMap>
@@ -123,6 +156,7 @@ export type Controller =
   | SeedlessOnboardingController<EncryptionKey>
   | SelectedNetworkController
   | ShieldController
+  | SignatureController
   | SmartTransactionsController
   | SnapController
   | SnapInterfaceController
@@ -139,6 +173,7 @@ export type Controller =
   | TokensController
   | TransactionController
   | InstitutionalSnapController
+  | UserOperationController
   | UserStorageController
   | TokenRatesController
   | NftController
@@ -153,8 +188,13 @@ export type Controller =
  * Flat state object for all controllers supporting or required by modular initialization.
  * e.g. `{ transactions: [] }`.
  */
-export type ControllerFlatState = AccountsController['state'] &
+export type ControllerFlatState = AccountOrderController['state'] &
+  AccountsController['state'] &
+  AlertController['state'] &
   AccountTreeController['state'] &
+  AddressBookController['state'] &
+  AnnouncementController['state'] &
+  AppMetadataController['state'] &
   ApprovalController['state'] &
   AppStateController['state'] &
   AuthenticationController['state'] &
@@ -169,7 +209,9 @@ export type ControllerFlatState = AccountsController['state'] &
   GatorPermissionsController['state'] &
   JsonSnapsRegistry['state'] &
   KeyringController['state'] &
+  LoggingController['state'] &
   MetaMetricsController['state'] &
+  MetaMetricsDataDeletionController['state'] &
   MultichainAssetsController['state'] &
   MultichainAssetsRatesController['state'] &
   MultichainBalancesController['state'] &
@@ -184,6 +226,7 @@ export type ControllerFlatState = AccountsController['state'] &
     CaveatSpecificationConstraint
   >['state'] &
   PermissionLogController['state'] &
+  PhishingController['state'] &
   PPOMController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &
@@ -191,6 +234,7 @@ export type ControllerFlatState = AccountsController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   SelectedNetworkController['state'] &
   ShieldController['state'] &
+  SignatureController['state'] &
   SmartTransactionsController['state'] &
   SnapController['state'] &
   SnapInsightsController['state'] &
@@ -202,6 +246,7 @@ export type ControllerFlatState = AccountsController['state'] &
   TokenListController['state'] &
   TokensController['state'] &
   TransactionController['state'] &
+  UserOperationController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &

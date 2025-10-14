@@ -7,7 +7,7 @@ import {
 import { BlockExplorerUrl, ChainId } from '@metamask/controller-utils';
 import { hasProperty } from '@metamask/utils';
 import { SECOND } from '../../../shared/constants/time';
-import { getIsQuicknodeEndpointUrl } from '../lib/network-controller/utils';
+import { getIsQuicknodeEndpointUrl } from '../../../shared/lib/network-utils';
 import {
   onRpcEndpointDegraded,
   onRpcEndpointUnavailable,
@@ -233,6 +233,20 @@ export const NetworkControllerInit: ControllerInitFunction<
         ),
       });
     },
+  );
+
+  initMessenger.subscribe(
+    'RemoteFeatureFlagController:stateChange',
+    (isRpcFailoverEnabled) => {
+      if (isRpcFailoverEnabled) {
+        console.log('Enabling RPC failover.');
+        controller.enableRpcFailover();
+      } else {
+        console.log('Disabling RPC failover.');
+        controller.disableRpcFailover();
+      }
+    },
+    (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
   );
 
   controller.initializeProvider();

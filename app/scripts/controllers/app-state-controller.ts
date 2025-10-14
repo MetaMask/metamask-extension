@@ -36,6 +36,7 @@ import { SecurityAlertResponse } from '../lib/ppom/types';
 import {
   AccountOverviewTabKey,
   CarouselSlide,
+  NetworkConnectionBanner,
 } from '../../../shared/constants/app-state';
 import type {
   ThrottledOrigins,
@@ -78,6 +79,7 @@ export type AppStateControllerState = {
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
   lastViewedUserSurvey: number | null;
+  networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
   nftsDetectionNoticeDismissed: boolean;
@@ -105,6 +107,7 @@ export type AppStateControllerState = {
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
+  showShieldEntryModalOnce: boolean | null;
 };
 
 const controllerName = 'AppStateController';
@@ -191,6 +194,7 @@ type AppStateControllerInitState = Partial<
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
     | 'currentExtensionPopupId'
+    | 'networkConnectionBanner'
   >
 >;
 
@@ -241,7 +245,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
-
+  showShieldEntryModalOnce: null,
   ...getInitialStateOverrides(),
 });
 
@@ -258,6 +262,9 @@ function getInitialStateOverrides() {
     currentExtensionPopupId: 0,
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
+    networkConnectionBanner: {
+      status: 'unknown' as const,
+    },
   };
 }
 
@@ -370,6 +377,12 @@ const controllerMetadata = {
     includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
+  },
+  networkConnectionBanner: {
+    includeInStateLogs: false,
+    persist: false,
+    anonymous: false,
     usedInUi: true,
   },
   newPrivacyPolicyToastClickedOrClosed: {
@@ -533,6 +546,12 @@ const controllerMetadata = {
     anonymous: true,
     usedInUi: true,
     includeInStateLogs: true,
+  },
+  showShieldEntryModalOnce: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
   },
 };
 
@@ -1095,6 +1114,19 @@ export class AppStateController extends BaseController<
   }
 
   /**
+   * Updates the network connection banner state
+   *
+   * @param networkConnectionBanner - The new banner state
+   */
+  updateNetworkConnectionBanner(
+    networkConnectionBanner: AppStateControllerState['networkConnectionBanner'],
+  ): void {
+    this.update((state) => {
+      state.networkConnectionBanner = networkConnectionBanner;
+    });
+  }
+
+  /**
    * Sets whether the Account Banner should be shown
    *
    * @param showAccountBanner
@@ -1375,6 +1407,12 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
+    });
+  }
+
+  setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
+    this.update((state) => {
+      state.showShieldEntryModalOnce = showShieldEntryModalOnce;
     });
   }
 }

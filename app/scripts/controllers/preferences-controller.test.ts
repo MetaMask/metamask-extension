@@ -113,6 +113,29 @@ const setupController = ({
 };
 
 describe('preferences controller', () => {
+  describe('initialization and merging', () => {
+    it('defaults avatarType to maskicon', () => {
+      const { controller } = setupController({});
+      expect(controller.state.preferences.avatarType).toBe('maskicon');
+    });
+
+    it('preserves existing avatarType', () => {
+      const { controller } = setupController({});
+      const defaultPreferences = controller.state.preferences;
+
+      const { controller: mergedController } = setupController({
+        state: {
+          preferences: {
+            ...defaultPreferences,
+            avatarType: 'jazzicon',
+          },
+        },
+      });
+
+      expect(mergedController.state.preferences.avatarType).toBe('jazzicon');
+    });
+  });
+
   describe('useBlockie', () => {
     it('defaults useBlockie to false', () => {
       const { controller } = setupController({});
@@ -874,29 +897,6 @@ describe('preferences controller', () => {
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
           },
-          "showIncomingTransactions": {
-            "0x1": true,
-            "0x13881": true,
-            "0x38": true,
-            "0x5": true,
-            "0x504": true,
-            "0x505": true,
-            "0x507": true,
-            "0x531": true,
-            "0x61": true,
-            "0x64": true,
-            "0x89": true,
-            "0xa": true,
-            "0xa869": true,
-            "0xa86a": true,
-            "0xaa36a7": true,
-            "0xaa37dc": true,
-            "0xe704": true,
-            "0xe705": true,
-            "0xe708": true,
-            "0xfa": true,
-            "0xfa2": true,
-          },
           "theme": "os",
           "use4ByteResolution": true,
           "useAddressBarEnsResolution": true,
@@ -973,29 +973,6 @@ describe('preferences controller', () => {
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
-          "showIncomingTransactions": {
-            "0x1": true,
-            "0x13881": true,
-            "0x38": true,
-            "0x5": true,
-            "0x504": true,
-            "0x505": true,
-            "0x507": true,
-            "0x531": true,
-            "0x61": true,
-            "0x64": true,
-            "0x89": true,
-            "0xa": true,
-            "0xa869": true,
-            "0xa86a": true,
-            "0xaa36a7": true,
-            "0xaa37dc": true,
-            "0xe704": true,
-            "0xe705": true,
-            "0xe708": true,
-            "0xfa": true,
-            "0xfa2": true,
-          },
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -1079,29 +1056,6 @@ describe('preferences controller', () => {
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
-          "showIncomingTransactions": {
-            "0x1": true,
-            "0x13881": true,
-            "0x38": true,
-            "0x5": true,
-            "0x504": true,
-            "0x505": true,
-            "0x507": true,
-            "0x531": true,
-            "0x61": true,
-            "0x64": true,
-            "0x89": true,
-            "0xa": true,
-            "0xa869": true,
-            "0xa86a": true,
-            "0xaa36a7": true,
-            "0xaa37dc": true,
-            "0xe704": true,
-            "0xe705": true,
-            "0xe708": true,
-            "0xfa": true,
-            "0xfa2": true,
-          },
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -1185,29 +1139,6 @@ describe('preferences controller', () => {
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
-          "showIncomingTransactions": {
-            "0x1": true,
-            "0x13881": true,
-            "0x38": true,
-            "0x5": true,
-            "0x504": true,
-            "0x505": true,
-            "0x507": true,
-            "0x531": true,
-            "0x61": true,
-            "0x64": true,
-            "0x89": true,
-            "0xa": true,
-            "0xa869": true,
-            "0xa86a": true,
-            "0xaa36a7": true,
-            "0xaa37dc": true,
-            "0xe704": true,
-            "0xe705": true,
-            "0xe708": true,
-            "0xfa": true,
-            "0xfa2": true,
-          },
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",

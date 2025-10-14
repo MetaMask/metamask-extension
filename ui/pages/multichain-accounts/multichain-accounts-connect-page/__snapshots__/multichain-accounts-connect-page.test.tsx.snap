@@ -178,7 +178,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                     style="flex-shrink: 0;"
                   >
                     <p
-                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
+                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
                     >
                       0.00
@@ -420,7 +420,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                     style="flex-shrink: 0;"
                   >
                     <p
-                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
+                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
                     >
                       0.00
@@ -662,7 +662,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                     style="flex-shrink: 0;"
                   >
                     <p
-                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-box--margin-right-2 mm-box--color-text-default"
+                      class="mm-box mm-text multichain-account-cell__account-balance mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--color-text-default"
                       data-testid="balance-display"
                     >
                       0.00
