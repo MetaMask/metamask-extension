@@ -57,10 +57,3 @@ export function isMultichainFeatureEnabled(flagValue: unknown): boolean {
 export function isBitcoinFeatureEnabled(flagValue: unknown): boolean {
   return isMultichainFeatureEnabled(flagValue);
 }
-
-/**
- * Future Tron feature flag checker (placeholder)
- */
-export function isTronFeatureEnabled(flagValue: unknown): boolean {
-  return isMultichainFeatureEnabled(flagValue);
-}
