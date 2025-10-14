@@ -74,22 +74,6 @@ export default {
       </Provider>
     ),
   ],
-  argTypes: {
-    editGasMode: {
-      control: { type: 'select' },
-      options: [
-        EditGasModes.modifyInPlace,
-        EditGasModes.swaps,
-        EditGasModes.speedUp,
-        EditGasModes.cancel,
-      ],
-      description: 'The mode for editing gas fees',
-    },
-    balanceError: {
-      control: { type: 'boolean' },
-      description: 'Whether to show insufficient funds error',
-    },
-  },
 };
 
 export const Default = {
