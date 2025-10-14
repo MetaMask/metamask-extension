@@ -34,6 +34,9 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+import { isBitcoinFeatureEnabled } from '../../shared/lib/multichain-feature-flags';
+///: END:ONLY_INCLUDE_IF
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
@@ -3153,35 +3156,18 @@ export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 /**
- * Check if addBitcoinAccount feature flag is enabled with proper version check.
+ * Check if bitcoinAccounts feature flag is enabled with proper version check.
+ * Uses shared multichain feature flag utility - no duplicate logic.
  *
- * @param {unknown} flagValue - The feature flag value (can be boolean or object with enabled/minVersion)
+ * @param {unknown} flagValue - The feature flag value
  * @returns {boolean} True if flag is enabled and meets minimum version requirement
  */
-export function isAddBitcoinFlagEnabled(flagValue) {
-  if (!flagValue || !packageJson.version) {
-    return false;
-  }
-
-  // Simple boolean flag
-  if (typeof flagValue === 'boolean') {
-    return flagValue;
-  }
-
-  // Object with enabled and minVersion properties
-  if (typeof flagValue === 'object' && flagValue !== null) {
-    const { enabled, minVersion } = flagValue;
-
-    if (!enabled || !minVersion) {
-      return false;
-    }
-
-    return semver.gte(packageJson.version, minVersion);
-  }
-
-  return false;
+export function isBitcoinAccountsFlagEnabled(flagValue) {
+  return isBitcoinFeatureEnabled(flagValue);
 }
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Get the state of the `bitcoinSupportEnabled` flag with version check.
@@ -3190,10 +3176,12 @@ export function isAddBitcoinFlagEnabled(flagValue) {
  * @param {*} state
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
+///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 export function getIsBitcoinSupportEnabled(state) {
   const { bitcoinAccounts } = getRemoteFeatureFlags(state);
-  return isAddBitcoinFlagEnabled(bitcoinAccounts);
+  return isBitcoinAccountsFlagEnabled(bitcoinAccounts);
 }
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Get the state of the `solanaSupportEnabled` remote feature flag.

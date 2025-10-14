@@ -23,7 +23,7 @@ import {
 import { isBitcoinFeatureEnabled } from '../../../../shared/lib/multichain-feature-flags';
 
 // Use shared Bitcoin feature flag utility
-const isAddBitcoinFlagEnabled = isBitcoinFeatureEnabled;
+const isBitcoinAccountsFlagEnabled = isBitcoinFeatureEnabled;
 ///: END:ONLY_INCLUDE_IF
 
 /**
@@ -103,21 +103,21 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   );
 
   // Set initial state based on bitcoinAccounts feature flag
-  const isAddBitcoinAccountEnabled = isAddBitcoinFlagEnabled(
+  const areBitcoinAccountsEnabled = isBitcoinAccountsFlagEnabled(
     initialRemoteFeatureFlagsState?.remoteFeatureFlags?.bitcoinAccounts,
   );
-  btcProvider.setEnabled(isAddBitcoinAccountEnabled);
+  btcProvider.setEnabled(areBitcoinAccountsEnabled);
 
   // Subscribe to RemoteFeatureFlagsController:stateChange for runtime control
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
     (state: unknown) => {
-      const newBitcoinEnabled = isAddBitcoinFlagEnabled(
+      const areBitcoinAccountsEnabled = isBitcoinAccountsFlagEnabled(
         (state as RemoteFeatureFlagControllerState)?.remoteFeatureFlags?.bitcoinAccounts,
       );
 
       // Enable/disable Bitcoin provider based on feature flag
-      btcProvider.setEnabled(newBitcoinEnabled);
+      btcProvider.setEnabled(areBitcoinAccountsEnabled);
     },
   );
   ///: END:ONLY_INCLUDE_IF
