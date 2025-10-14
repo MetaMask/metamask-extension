@@ -68,6 +68,7 @@ import {
 } from '../../../hooks/subscription/useSubscription';
 import { getShortDateFormatterV2 } from '../../../pages/asset/util';
 import { getIsShieldSubscriptionPaused } from '../../../../shared/lib/shield';
+import { isCryptoPaymentMethod } from '../../../pages/settings/transaction-shield-tab/types';
 import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,
@@ -592,8 +593,13 @@ function ShieldEndingToast() {
   const isCancelled =
     shieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
 
+  const isCryptoPayment =
+    shieldSubscription?.paymentMethod &&
+    isCryptoPaymentMethod(shieldSubscription?.paymentMethod);
+
   return (
     Boolean(isCancelled) &&
+    isCryptoPayment &&
     showShieldEndingToast && (
       <Toast
         key="shield-coverage-ending-toast"

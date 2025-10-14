@@ -204,20 +204,15 @@ export function selectShowCopyAddressToast(
 export function selectShowShieldPausedToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
-  if (!state.metamask.shieldPausedToastLastClickedOrClosed) {
-    return true;
-  }
-  // if time is more than 30 days, return true
-  if (
-    Date.now() - state.metamask.shieldPausedToastLastClickedOrClosed >
-    30 * 24 * 60 * 60 * 1000
-  ) {
-    return true;
-  }
-
-  return false;
+  return !state.metamask.shieldPausedToastLastClickedOrClosed;
 }
 
+/**
+ * Retrieves user preference to see the "Shield Coverage Ending" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
 export function selectShowShieldEndingToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
