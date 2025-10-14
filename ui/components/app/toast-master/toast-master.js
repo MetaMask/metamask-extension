@@ -528,6 +528,16 @@ const ClaimSubmitToast = () => {
   const showClaimSubmitToast = useSelector(selectClaimSubmitToast);
   const autoHideToastDelay = 5 * SECOND;
 
+  const description = useMemo(() => {
+    if (showClaimSubmitToast === ClaimSubmitToastType.Success) {
+      return t('shieldClaimSubmitSuccessDescription');
+    }
+    if (showClaimSubmitToast === ClaimSubmitToastType.Errored) {
+      return '';
+    }
+    return showClaimSubmitToast;
+  }, [showClaimSubmitToast, t]);
+
   return (
     showClaimSubmitToast !== null && (
       <Toast
@@ -542,11 +552,7 @@ const ClaimSubmitToast = () => {
             ? t('shieldClaimSubmitSuccess')
             : t('shieldClaimSubmitError')
         }
-        description={
-          showClaimSubmitToast === ClaimSubmitToastType.Success
-            ? t('shieldClaimSubmitSuccessDescription')
-            : undefined
-        }
+        description={description}
         startAdornment={
           <Icon
             name={

@@ -28,7 +28,7 @@ import {
 import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
-import { NonEmptyArray, handleFetch } from '@metamask/controller-utils';
+import { NonEmptyArray } from '@metamask/controller-utils';
 import {
   SetNameRequest,
   UpdateProposedNamesRequest,
@@ -167,7 +167,10 @@ import {
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
-import type { NetworkConnectionBanner } from '../../shared/constants/app-state';
+import {
+  ClaimSubmitToastType,
+  type NetworkConnectionBanner,
+} from '../../shared/constants/app-state';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -7453,41 +7456,43 @@ export async function submitShieldClaim(params: {
   caseDescription: string;
   files?: FileList;
 }) {
-  try {
-    const url = 'https://claims.dev-api.cx.metamask.io/claims';
-    const formData = new FormData();
-    formData.append('email', params.email);
-    formData.append('impactedWalletAddress', params.impactedWalletAddress);
-    formData.append('impactedTxHash', params.impactedTransactionHash);
-    formData.append(
-      'reimbursementWalletAddress',
-      params.reimbursementWalletAddress,
-    );
-    formData.append('description', params.caseDescription);
-    // TODO: temporary value for signature, update to correct signature after implement signature verification
-    formData.append(
-      'signature',
-      '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
-    );
-    formData.append('timestamp', Date.now().toString());
-    if (params.files) {
-      formData.append('attachments', params.files);
-    }
-
-    const accessToken =
-      await submitRequestToBackground<string>('getBearerToken');
-
-    const response = await handleFetch(url, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    return response;
-  } catch (error) {
-    console.error('[submitShieldClaim] error', error);
-    throw error;
+  const url = 'https://claims.dev-api.cx.metamask.io/claims';
+  const formData = new FormData();
+  formData.append('email', params.email);
+  formData.append('impactedWalletAddress', params.impactedWalletAddress);
+  formData.append('impactedTxHash', params.impactedTransactionHash);
+  formData.append(
+    'reimbursementWalletAddress',
+    params.reimbursementWalletAddress,
+  );
+  formData.append('description', params.caseDescription);
+  // TODO: temporary value for signature, update to correct signature after implement signature verification
+  formData.append(
+    'signature',
+    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
+  );
+  formData.append('timestamp', Date.now().toString());
+  if (params.files) {
+    formData.append('attachments', params.files);
   }
+
+  const accessToken = await submitRequestToBackground<string>('getBearerToken');
+
+  const response = await fetch(url, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorMessage = await response.json();
+    if (errorMessage.message) {
+      throw new Error(errorMessage.message);
+    }
+    throw new Error(ClaimSubmitToastType.Errored);
+  }
+
+  return ClaimSubmitToastType.Success;
 }
