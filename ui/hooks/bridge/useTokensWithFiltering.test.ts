@@ -24,7 +24,13 @@ const mockFetchBridgeTokens = jest.fn().mockResolvedValue({
 });
 jest.mock('@metamask/bridge-controller', () => ({
   ...jest.requireActual('@metamask/bridge-controller'),
-  fetchBridgeTokens: (c: string) => mockFetchBridgeTokens(c),
+  fetchBridgeTokens: (
+    c: string,
+    _clientId: string,
+    _fetchFn: unknown,
+    _bridgeApiBaseUrl: string,
+    _clientVersion?: string,
+  ) => mockFetchBridgeTokens(c),
 }));
 
 const mockFetchTopAssetsList = jest.fn().mockResolvedValue([
