@@ -3167,7 +3167,6 @@ export function getIsWatchEthereumAccountEnabled(state) {
 export function isBitcoinAccountsFlagEnabled(flagValue) {
   return isBitcoinFeatureEnabled(flagValue);
 }
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Get the state of the `bitcoinSupportEnabled` flag with version check.
@@ -3176,7 +3175,6 @@ export function isBitcoinAccountsFlagEnabled(flagValue) {
  * @param {*} state
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 export function getIsBitcoinSupportEnabled(state) {
   const { bitcoinAccounts } = getRemoteFeatureFlags(state);
   return isBitcoinAccountsFlagEnabled(bitcoinAccounts);

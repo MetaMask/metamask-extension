@@ -1,5 +1,4 @@
 import semver from 'semver';
-import packageJson from '../../package.json';
 
 /**
  * Generic feature flag type for multichain features (Bitcoin, Tron, etc.)
@@ -10,18 +9,26 @@ export type MultichainFeatureFlag = {
   minimumVersion?: string; // Alternative naming
 };
 
-const APP_VERSION = packageJson.version;
-
 /**
  * Generic helper to check if a multichain feature flag is enabled with version gating.
  * Follows the same pattern as multichain-accounts feature flag.
  * Can be used for Bitcoin, Tron, or any future blockchain integrations.
  *
  * @param flagValue - The feature flag value (boolean or object with enabled/minVersion)
- * @returns boolean - True if the feature is enabled and meets version requirements
+ * @returns True if the feature is enabled and meets version requirements
  */
 export function isMultichainFeatureEnabled(flagValue: unknown): boolean {
-  if (!flagValue || !APP_VERSION) {
+  // Get app version dynamically to avoid circular imports
+  let appVersion: string;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    appVersion = require('../../package.json').version;
+  } catch {
+    // Fallback if package.json can't be loaded
+    return false;
+  }
+
+  if (!flagValue || !appVersion) {
     return false;
   }
 
@@ -45,7 +52,12 @@ export function isMultichainFeatureEnabled(flagValue: unknown): boolean {
       return false; // Require version for safety
     }
 
-    return semver.gte(APP_VERSION, versionToCheck);
+    try {
+      return semver.gte(appVersion, versionToCheck);
+    } catch {
+      // If version comparison fails, default to false for safety
+      return false;
+    }
   }
 
   return false;
@@ -53,7 +65,20 @@ export function isMultichainFeatureEnabled(flagValue: unknown): boolean {
 
 /**
  * Bitcoin-specific feature flag checker
+ *
+ * @param flagValue - The feature flag value
+ * @returns True if Bitcoin feature is enabled
  */
 export function isBitcoinFeatureEnabled(flagValue: unknown): boolean {
+  return isMultichainFeatureEnabled(flagValue);
+}
+
+/**
+ * Tron-specific feature flag checker (placeholder for future use)
+ *
+ * @param flagValue - The feature flag value
+ * @returns True if Tron feature is enabled
+ */
+export function isTronFeatureEnabled(flagValue: unknown): boolean {
   return isMultichainFeatureEnabled(flagValue);
 }

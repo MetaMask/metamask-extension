@@ -112,12 +112,13 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
     (state: unknown) => {
-      const areBitcoinAccountsEnabled = isBitcoinAccountsFlagEnabled(
-        (state as RemoteFeatureFlagControllerState)?.remoteFeatureFlags?.bitcoinAccounts,
+      const bitcoinAccountsEnabled = isBitcoinAccountsFlagEnabled(
+        (state as RemoteFeatureFlagControllerState)?.remoteFeatureFlags
+          ?.bitcoinAccounts,
       );
 
       // Enable/disable Bitcoin provider based on feature flag
-      btcProvider.setEnabled(areBitcoinAccountsEnabled);
+      btcProvider.setEnabled(bitcoinAccountsEnabled);
     },
   );
   ///: END:ONLY_INCLUDE_IF
