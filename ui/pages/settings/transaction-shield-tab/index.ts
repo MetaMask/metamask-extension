@@ -1,1 +1,1 @@
-export { default as TransactionShield } from './transaction-shield';
+export { default } from './transaction-shield';

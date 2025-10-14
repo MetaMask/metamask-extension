@@ -128,7 +128,7 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
           : BackgroundColor.transparent
       }
       className="send-asset"
-      data-testid="token-asset"
+      data-testid={`token-asset-${chainId}-${symbol}`}
       display={Display.Flex}
       onClick={onClick}
       paddingTop={3}

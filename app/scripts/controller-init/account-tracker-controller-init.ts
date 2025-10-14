@@ -34,13 +34,6 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
     'Block tracker is required to initialize AccountTrackerController.',
   );
 
-  // Get feature flag for account API balances
-  const remoteFeatureFlagState = initMessenger.call(
-    'RemoteFeatureFlagController:getState',
-  );
-  const featureFlagForAccountApiBalances =
-    remoteFeatureFlagState?.remoteFeatureFlags?.accountApiBalances ?? [];
-
   const controller = new AccountTrackerController({
     state: { accounts: {} },
     messenger: controllerMessenger,
@@ -59,8 +52,21 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
         ? config.rpcUrl
         : config.type;
     },
-    // Account API configuration - chain IDs supported by feature flag
-    useAccountApiBalances: featureFlagForAccountApiBalances as string[],
+    accountsApiChainIds: () => {
+      const state = initMessenger.call('RemoteFeatureFlagController:getState');
+
+      const featureFlagForAccountApiBalances =
+        state?.remoteFeatureFlags?.assetsAccountApiBalances;
+
+      return Array.isArray(featureFlagForAccountApiBalances)
+        ? (featureFlagForAccountApiBalances as string[])
+        : [];
+    },
+  });
+
+  // Ensure `AccountTrackerController` updates balances after network change.
+  initMessenger.subscribe('NetworkController:networkDidChange', () => {
+    controller.updateAccounts();
   });
 
   return {
