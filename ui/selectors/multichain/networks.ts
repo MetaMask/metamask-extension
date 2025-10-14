@@ -131,12 +131,20 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
       // This is not ideal but since there are only two non EVM networks
       // we can just filter them out based on the support enabled
       const { bitcoinEnabled, solanaEnabled } = isNonEvmNetworksEnabled;
-      if (bitcoinEnabled && multichainNetworkConfigurationsByChainId && multichainNetworkConfigurationsByChainId[BtcScope.Mainnet]) {
+      if (
+        bitcoinEnabled &&
+        multichainNetworkConfigurationsByChainId &&
+        multichainNetworkConfigurationsByChainId[BtcScope.Mainnet]
+      ) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
           multichainNetworkConfigurationsByChainId[BtcScope.Mainnet];
       }
 
-      if (bitcoinEnabled && isBitcoinTestnetSupportEnabled && multichainNetworkConfigurationsByChainId) {
+      if (
+        bitcoinEnabled &&
+        isBitcoinTestnetSupportEnabled &&
+        multichainNetworkConfigurationsByChainId
+      ) {
         if (multichainNetworkConfigurationsByChainId[BtcScope.Testnet]) {
           filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Testnet] =
             multichainNetworkConfigurationsByChainId[BtcScope.Testnet];
@@ -147,12 +155,21 @@ export const getNonEvmMultichainNetworkConfigurationsByChainId =
         }
       }
 
-      if (solanaEnabled && multichainNetworkConfigurationsByChainId && multichainNetworkConfigurationsByChainId[SolScope.Mainnet]) {
+      if (
+        solanaEnabled &&
+        multichainNetworkConfigurationsByChainId &&
+        multichainNetworkConfigurationsByChainId[SolScope.Mainnet]
+      ) {
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
           multichainNetworkConfigurationsByChainId[SolScope.Mainnet];
       }
 
-      if (solanaEnabled && isSolanaTestnetSupportEnabled && multichainNetworkConfigurationsByChainId && multichainNetworkConfigurationsByChainId[SolScope.Devnet]) {
+      if (
+        solanaEnabled &&
+        isSolanaTestnetSupportEnabled &&
+        multichainNetworkConfigurationsByChainId &&
+        multichainNetworkConfigurationsByChainId[SolScope.Devnet]
+      ) {
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] =
           multichainNetworkConfigurationsByChainId[SolScope.Devnet];
       }

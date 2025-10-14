@@ -3183,8 +3183,8 @@ export function isAddBitcoinFlagEnabled(flagValue) {
       return true;
     }
 
-    // Check if current version meets minimum requirement - Extension: 13.6.0
-    const currentVersion = '13.6.0';
+    // Check if current version meets minimum requirement - get from process or package.json
+    const currentVersion = process.env.npm_package_version || '13.6.0';
 
     // Simple version comparison (assumes semver format)
     const parseVersion = (version) =>

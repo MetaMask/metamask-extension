@@ -35,10 +35,13 @@ function isAddBitcoinFlagEnabled(flagValue: unknown): boolean {
 
   // Object with enabled and minVersion properties
   if (typeof flagValue === 'object' && flagValue !== null) {
-    const { enabled, minVersion } = flagValue as { enabled?: boolean; minVersion?: string };
+    const { enabled, minVersion } = flagValue as {
+      enabled?: boolean;
+      minVersion?: string;
+    };
 
-    // If not enabled, return false
-    if (!enabled) {
+    // If enabled is false, return false
+    if (enabled === false) {
       return false;
     }
 
@@ -47,8 +50,8 @@ function isAddBitcoinFlagEnabled(flagValue: unknown): boolean {
       return true;
     }
 
-    // Check if current version meets minimum requirement - Extension: 13.6.0
-    const currentVersion = '13.6.0'; // TODO: Get from package.json or build config
+    // Check if current version meets minimum requirement - get from process or package.json
+    const currentVersion = process.env.npm_package_version || '13.6.0';
 
     // Simple version comparison (assumes semver format)
     const parseVersion = (version: string) =>
@@ -167,7 +170,8 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     'RemoteFeatureFlagController:stateChange',
     async (state: unknown) => {
       const newBitcoinEnabled = isAddBitcoinFlagEnabled(
-        (state as RemoteFeatureFlagControllerState)?.remoteFeatureFlags?.addBitcoinAccount,
+        (state as RemoteFeatureFlagControllerState)?.remoteFeatureFlags
+          ?.addBitcoinAccount,
       );
 
       // Defense: Only react if the flag actually changed
@@ -183,51 +187,73 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
 
           try {
             const wallets = controller.getMultichainAccountWallets();
-            const bitcoinAccounts: any[] = [];
+            const bitcoinAccounts: { type?: string; address: string }[] = [];
 
             for (const wallet of wallets) {
               const groups = wallet.getMultichainAccountGroups();
               for (const group of groups) {
                 const accounts = group.getAccounts();
-                const btcAccountsInGroup = accounts.filter((account: any) =>
-                  account.type?.startsWith('bip122:') // All Bitcoin account types
+                const btcAccountsInGroup = accounts.filter(
+                  (account: { type?: string }) =>
+                    account.type?.startsWith('bip122:'), // All Bitcoin account types
                 );
                 bitcoinAccounts.push(...btcAccountsInGroup);
               }
             }
 
-            console.log(`🗑️ Found ${bitcoinAccounts.length} Bitcoin accounts to remove`);
+            console.log(
+              `🗑️ Found ${bitcoinAccounts.length} Bitcoin accounts to remove`,
+            );
 
             // Remove Bitcoin accounts from their keyrings
             for (const bitcoinAccount of bitcoinAccounts) {
               try {
                 // Get all snap keyrings and check each one for this account
-                const snapKeyrings = controllerMessenger.call('KeyringController:getKeyringsByType', 'Snap Keyring');
+                const snapKeyrings = controllerMessenger.call(
+                  'KeyringController:getKeyringsByType',
+                  'Snap Keyring',
+                );
 
-                for (const snapKeyring of snapKeyrings) {
-                  // Cast snapKeyring to access its properties
-                  const keyring = snapKeyring as any;
-                  // Use the keyring ID from the metadata or a generated one
-                  const keyringId = keyring.id || `snap-${keyring.accounts?.[0]}` || 'unknown';
+        for (const snapKeyring of snapKeyrings) {
+          // Cast snapKeyring to access its properties
+          const keyringObj = snapKeyring as {
+            id?: string;
+            accounts?: string[];
+            [key: string]: unknown;
+          };
+          // Use the keyring ID from the metadata or a generated one
+          const keyringId =
+            keyringObj.id ||
+            (keyringObj.accounts?.[0] ? `snap-${keyringObj.accounts[0]}` : null) ||
+            'unknown';
 
                   try {
-                    await controllerMessenger.call('KeyringController:withKeyring',
-                      { id: keyringId },
-                      async ({ keyring }: { keyring: any }) => {
-                        // Only remove if this keyring contains the account
-                        if (keyring.accounts && keyring.accounts.includes(bitcoinAccount.address)) {
+            await controllerMessenger.call(
+              'KeyringController:withKeyring',
+              { id: keyringId },
+              async ({ keyring }: { keyring: any }) => {
+                // Only remove if this keyring contains the account
+                if (keyring.accounts?.includes(bitcoinAccount.address)) {
                           await keyring.removeAccount(bitcoinAccount.address);
-                          console.log(`🗑️ Removed Bitcoin account: ${bitcoinAccount.address.slice(0, 8)}... from keyring ${keyringId}`);
+                          console.log(
+                            `🗑️ Removed Bitcoin account: ${bitcoinAccount.address.slice(0, 8)}... from keyring ${keyringId}`,
+                          );
                         }
-                      }
+                      },
                     );
                   } catch (keyringError) {
                     // Try with the keyring object itself if ID approach fails
-                    console.warn(`Keyring ID approach failed for ${keyringId}, trying direct approach:`, keyringError);
+                    console.warn(
+                      `Keyring ID approach failed for ${keyringId}, trying direct approach:`,
+                      keyringError,
+                    );
                   }
                 }
               } catch (error) {
-                console.warn(`Failed to remove Bitcoin account ${bitcoinAccount.address}:`, error);
+                console.warn(
+                  `Failed to remove Bitcoin account ${bitcoinAccount.address}:`,
+                  error,
+                );
               }
             }
 
@@ -237,9 +263,14 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
           }
         } else {
           // When enabled: trigger alignment to create Bitcoin accounts for existing wallets
-          console.log('✅ Bitcoin provider enabled - creating accounts for existing wallets');
+          console.log(
+            '✅ Bitcoin provider enabled - creating accounts for existing wallets',
+          );
           controller.alignWallets().catch((error) => {
-            console.error('Failed to align wallets after enabling Bitcoin provider:', error);
+            console.error(
+              'Failed to align wallets after enabling Bitcoin provider:',
+              error,
+            );
           });
         }
       }
