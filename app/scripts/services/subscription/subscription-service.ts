@@ -142,12 +142,18 @@ export class SubscriptionService {
     const formData = new FormData();
     formData.append('email', params.email);
     formData.append('impactedWalletAddress', params.impactedWalletAddress);
-    formData.append('impactedTransactionHash', params.impactedTransactionHash);
+    formData.append('impactedTxHash', params.impactedTransactionHash);
     formData.append(
       'reimbursementWalletAddress',
       params.reimbursementWalletAddress,
     );
-    formData.append('caseDescription', params.caseDescription);
+    formData.append('description', params.caseDescription);
+    // TODO: temporary value for signature, update to correct signature after implement signature verification
+    formData.append(
+      'signature',
+      '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
+    );
+    formData.append('timestamp', Date.now().toString());
     // add multiple files to formData
     params.files.forEach((file) => {
       formData.append('attachments', file);
@@ -161,7 +167,6 @@ export class SubscriptionService {
       method: 'POST',
       body: formData,
       headers: {
-        'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${accessToken}`,
       },
     });
