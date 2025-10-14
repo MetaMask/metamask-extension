@@ -31,12 +31,13 @@ import {
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { scanAddressAndAddToCache } from '../trust-signals/security-alerts-api';
-import { mapChainIdToSupportedEVMChain } from '../trust-signals/trust-signals-util';
 import {
-  GetAddressSecurityAlertResponse,
+  mapChainIdToSupportedEVMChain,
   AddAddressSecurityAlertResponse,
+  GetAddressSecurityAlertResponse,
   ScanAddressResponse,
-} from '../trust-signals/types';
+  createCacheKey,
+} from '../../../../shared/lib/trust-signals';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -261,11 +262,8 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     return;
   }
 
-  const createCacheKey = (address: string) =>
-    `${supportedEVMChain}:${address.toLowerCase()}`;
-
   const getAddressSecurityAlertResponseWithChain = (address: string) => {
-    const cacheKey = createCacheKey(address);
+    const cacheKey = createCacheKey(supportedEVMChain, address);
     return getSecurityAlertResponse(cacheKey);
   };
 
@@ -273,7 +271,7 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     address: string,
     response: ScanAddressResponse,
   ) => {
-    const cacheKey = createCacheKey(address);
+    const cacheKey = createCacheKey(supportedEVMChain, address);
     return addSecurityAlertResponse(cacheKey, response);
   };
 

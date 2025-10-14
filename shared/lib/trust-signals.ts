@@ -87,6 +87,10 @@ export function mapChainIdToSupportedEVMChain(
   return CHAIN_IDS_LOWERCASED[chainId.toLowerCase()];
 }
 
+export function createCacheKey(chain: SupportedEVMChain, address: string) {
+  return `${chain.toLowerCase()}:${address.toLowerCase()}`;
+}
+
 export enum ResultType {
   Malicious = 'Malicious',
   Warning = 'Warning',

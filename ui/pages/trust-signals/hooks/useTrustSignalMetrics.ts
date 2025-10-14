@@ -11,6 +11,7 @@ import type {
 } from '../../confirmations/types/confirm';
 import {
   ResultType,
+  createCacheKey,
   mapChainIdToSupportedEVMChain,
 } from '../../../../shared/lib/trust-signals';
 import { useTransactionEventFragment } from '../../confirmations/hooks/useTransactionEventFragment';
@@ -72,7 +73,7 @@ export function useTrustSignalMetrics() {
       return undefined;
     }
 
-    const cacheKey = `${supportedEVMChain}:${addressToCheck.toLowerCase()}`;
+    const cacheKey = createCacheKey(supportedEVMChain, addressToCheck);
     return getAddressSecurityAlertResponse(state, cacheKey);
   });
 

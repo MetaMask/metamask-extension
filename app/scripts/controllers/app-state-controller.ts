@@ -47,7 +47,7 @@ import {
   CachedScanAddressResponse,
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
-} from '../lib/trust-signals/types';
+} from '../../../shared/lib/trust-signals';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,

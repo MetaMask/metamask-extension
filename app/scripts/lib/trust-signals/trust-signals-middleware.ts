@@ -96,8 +96,8 @@ function handleEthSendTransaction(
     return;
   }
 
-  const chainId = mapChainIdToSupportedEVMChain(rawChainId);
-  if (!chainId) {
+  const supportedEVMChain = mapChainIdToSupportedEVMChain(rawChainId);
+  if (!supportedEVMChain) {
     console.error('Unsupported chainId:', rawChainId);
     return;
   }
@@ -106,7 +106,7 @@ function handleEthSendTransaction(
     to,
     appStateController.getAddressSecurityAlertResponse,
     appStateController.addAddressSecurityAlertResponse,
-    chainId,
+    supportedEVMChain,
   ).catch((error) => {
     console.error(
       '[createTrustSignalsMiddleware] error scanning address for transaction:',
@@ -144,8 +144,8 @@ function handleEthSignTypedData(
     return;
   }
 
-  const chainId = mapChainIdToSupportedEVMChain(rawChainId);
-  if (!chainId) {
+  const supportedEVMChain = mapChainIdToSupportedEVMChain(rawChainId);
+  if (!supportedEVMChain) {
     console.error('Unsupported chainId:', rawChainId);
     return;
   }
@@ -154,7 +154,7 @@ function handleEthSignTypedData(
     verifyingContract,
     appStateController.getAddressSecurityAlertResponse,
     appStateController.addAddressSecurityAlertResponse,
-    chainId,
+    supportedEVMChain,
   ).catch((error) => {
     console.error(
       '[createTrustSignalsMiddleware] error scanning address for signature:',

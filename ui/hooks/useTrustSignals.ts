@@ -3,6 +3,7 @@ import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
 import {
   ResultType,
+  createCacheKey,
   mapChainIdToSupportedEVMChain,
 } from '../../shared/lib/trust-signals';
 import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
@@ -48,7 +49,6 @@ export function useTrustSignals(
         };
       }
 
-      // If no chainId provided or chainId is not supported, return Unknown
       if (!chainId) {
         return {
           state: TrustSignalDisplayState.Unknown,
@@ -64,7 +64,7 @@ export function useTrustSignals(
         };
       }
 
-      const cacheKey = `${supportedEVMChain}:${value.toLowerCase()}`;
+      const cacheKey = createCacheKey(supportedEVMChain, value);
 
       const securityAlertResponse = getAddressSecurityAlertResponse(
         state,
