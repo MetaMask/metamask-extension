@@ -5647,6 +5647,9 @@
   "shieldClaimFileUploader": {
     "message": "Image Upload"
   },
+  "shieldClaimFileUploaderAcceptText": {
+    "message": "PDF, PNG, JPG (MAX. 5MB)"
+  },
   "shieldClaimFileUploaderHelpText": {
     "message": "If you have any additional evidence, please upload it here."
   },
