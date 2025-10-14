@@ -7472,8 +7472,12 @@ export async function submitShieldClaim(params: {
     '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
   );
   formData.append('timestamp', Date.now().toString());
+
+  // add files to form data
   if (params.files) {
-    formData.append('attachments', params.files);
+    Array.from(params.files).forEach((file) => {
+      formData.append('attachments', file, file.name);
+    });
   }
 
   const accessToken = await submitRequestToBackground<string>('getBearerToken');
