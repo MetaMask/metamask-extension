@@ -34,6 +34,7 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
+import packageJson from '../../package.json';
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
@@ -3185,8 +3186,7 @@ export function isAddBitcoinFlagEnabled(flagValue) {
     }
 
     // Check if current version meets minimum requirement - get from package.json
-    const { version: currentPackageVersion } = require('../../package.json');
-    const currentVersion = currentPackageVersion;
+    const currentVersion = packageJson.version;
 
     try {
       // Use semver comparison if available, fallback to simple comparison

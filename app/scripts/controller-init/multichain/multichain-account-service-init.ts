@@ -19,6 +19,7 @@ import {
   isMultichainAccountsFeatureEnabled,
   MultichainAccountsFeatureFlag,
 } from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
+import packageJson from '../../../../package.json';
 
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 // Version-aware Bitcoin flag checking
@@ -51,8 +52,7 @@ function isAddBitcoinFlagEnabled(flagValue: unknown): boolean {
     }
 
     // Check if current version meets minimum requirement - get from package.json
-    const { version: packageVersion } = require('../../../../package.json');
-    const currentVersion = packageVersion;
+    const currentVersion = packageJson.version;
 
     try {
       // Use semver comparison if available, fallback to simple comparison
