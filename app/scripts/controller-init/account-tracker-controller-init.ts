@@ -55,8 +55,17 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
     accountsApiChainIds: () => {
       const state = initMessenger.call('RemoteFeatureFlagController:getState');
 
-      const featureFlagForAccountApiBalances =
-        state?.remoteFeatureFlags?.assetsAccountApiBalances;
+      const featureFlagForAccountApiBalances = [
+        '0x1',
+        '0xe708',
+        '0x38',
+        '0x89',
+        '0x2105',
+        '0xa',
+        '0xa4b1',
+        '0x531',
+        '0x82750',
+      ];
 
       return Array.isArray(featureFlagForAccountApiBalances)
         ? (featureFlagForAccountApiBalances as string[])
