@@ -34,7 +34,7 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
-import packageJson from '../../package.json';
+import { isBitcoinFeatureEnabled } from '../../shared/lib/multichain-feature-flags';
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
@@ -3161,9 +3161,8 @@ export function getIsWatchEthereumAccountEnabled(state) {
  * @returns {boolean} True if flag is enabled and meets minimum version requirement
  */
 export function isAddBitcoinFlagEnabled(flagValue) {
-  // Default to true if flag is undefined
-  if (flagValue === undefined) {
-    return true;
+  if (!flagValue || !packageJson.version) {
+    return false;
   }
 
   // Simple boolean flag
@@ -3175,48 +3174,15 @@ export function isAddBitcoinFlagEnabled(flagValue) {
   if (typeof flagValue === 'object' && flagValue !== null) {
     const { enabled, minVersion } = flagValue;
 
-    // If not enabled, return false
-    if (!enabled) {
+
+    if (!enabled || !minVersion) {
       return false;
     }
 
-    // If enabled but no minVersion specified, return true
-    if (!minVersion) {
-      return true;
-    }
-
-    // Check if current version meets minimum requirement - get from package.json
-    const currentVersion = packageJson.version;
-
-    try {
-      // Use semver comparison if available, fallback to simple comparison
-      return semver.gte(currentVersion, minVersion);
-    } catch {
-      // Fallback to simple version comparison
-      const parseVersion = (version) =>
-        version.split('.').map((num) => parseInt(num, 10));
-
-      const [currentMajor, currentMinor, currentPatch] =
-        parseVersion(currentVersion);
-      const [minMajor, minMinor, minPatch] = parseVersion(minVersion);
-
-      if (currentMajor > minMajor) {
-        return true;
-      }
-      if (currentMajor < minMajor) {
-        return false;
-      }
-      if (currentMinor > minMinor) {
-        return true;
-      }
-      if (currentMinor < minMinor) {
-        return false;
-      }
-      return currentPatch >= minPatch;
-    }
+    return semver.gte(packageJson.version, minVersion);
   }
 
-  return true; // Default to true for any other cases
+  return false;
 }
 
 /**
