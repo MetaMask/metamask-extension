@@ -142,10 +142,7 @@ describe('Vault Corruption', function () {
    * background page for MV2 or offscreen page for MV3.
    * @returns The initial first account's address.
    */
-  async function onboardThenCorruptVault(
-    driver: Driver,
-    script: string,
-  ) {
+  async function onboardThenCorruptVault(driver: Driver, script: string) {
     const initialWindow = await driver.driver.getWindowHandle();
 
     // open a spare tab so the browser doesn't exit once we `reload()` the
