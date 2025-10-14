@@ -7439,18 +7439,18 @@ export async function getLayer1GasFeeValue({
  * @param params - The parameters.
  * @param params.email - The email.
  * @param params.impactedWalletAddress - The impacted wallet address.
- * @param params.impactedTxHash - The impacted transaction hash.
+ * @param params.impactedTransactionHash - The impacted transaction hash.
  * @param params.reimbursementWalletAddress - The reimbursement wallet address.
- * @param params.description - The description.
+ * @param params.caseDescription - The description.
  * @param params.files - The files.
  * @returns The subscription response.
  */
 export function submitShieldClaim(params: {
   email: string;
   impactedWalletAddress: string;
-  impactedTxHash: string;
+  impactedTransactionHash: string;
   reimbursementWalletAddress: string;
-  description: string;
+  caseDescription: string;
   files: File[];
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {

@@ -132,9 +132,9 @@ export class SubscriptionService {
   async submitShieldClaim(params: {
     email: string;
     impactedWalletAddress: string;
-    impactedTxHash: string;
+    impactedTransactionHash: string;
     reimbursementWalletAddress: string;
-    description: string;
+    caseDescription: string;
     files: File[];
   }) {
     console.log('check: submitShieldClaim', params);
@@ -142,15 +142,15 @@ export class SubscriptionService {
     const formData = new FormData();
     formData.append('email', params.email);
     formData.append('impactedWalletAddress', params.impactedWalletAddress);
-    formData.append('impactedTxHash', params.impactedTxHash);
+    formData.append('impactedTransactionHash', params.impactedTransactionHash);
     formData.append(
       'reimbursementWalletAddress',
       params.reimbursementWalletAddress,
     );
-    formData.append('description', params.description);
+    formData.append('caseDescription', params.caseDescription);
     // add multiple files to formData
     params.files.forEach((file) => {
-      formData.append('files', file);
+      formData.append('attachments', file);
     });
 
     console.log('check: formData', formData);
