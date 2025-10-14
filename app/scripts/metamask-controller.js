@@ -433,6 +433,8 @@ export default class MetamaskController extends EventEmitter {
   constructor(opts) {
     super();
 
+    // test
+
     const { isFirstMetaMaskControllerSetup } = opts;
 
     this.defaultMaxListeners = 20;
