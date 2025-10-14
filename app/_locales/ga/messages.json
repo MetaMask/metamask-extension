@@ -5697,7 +5697,7 @@
   },
   "shieldEntryModalAssetCoverage": {
     "message": "Clúdach sócmhainne $1 in aghaidh an idirbhirt",
-    "description": "The $1 is the amount of asset coverage per transaction",
+    "description": "The $1 is the amount of asset coverage per transaction"
   },
   "shieldEntryModalDescription": {
     "message": "Athnuaitear ar $1/mí, cealaítear am ar bith. $2",
