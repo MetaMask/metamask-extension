@@ -72,6 +72,7 @@ import {
   ProductType,
   RecurringInterval,
   Subscription,
+  UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
@@ -332,6 +333,25 @@ export function createNewVaultAndSyncWithSocial(
 }
 
 /**
+ * Starts polling for the subscriptions.
+ */
+export function subscriptionsStartPolling(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('subscriptionsStartPolling');
+    } catch (error) {
+      log.error('[subscriptionsStartPolling] error', error);
+      dispatch(displayWarning(error));
+    }
+  };
+}
+
+/**
  * Fetches user subscriptions.
  *
  * @returns The subscriptions.
@@ -397,13 +417,18 @@ export function startSubscriptionWithCard(params: {
   recurringInterval: RecurringInterval;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    const currentTab = await global.platform.currentTab();
-    const subscriptions = await submitRequestToBackground<Subscription[]>(
-      'startSubscriptionWithCard',
-      [params, currentTab?.id],
-    );
+    try {
+      const currentTab = await global.platform.currentTab();
+      const subscriptions = await submitRequestToBackground<Subscription[]>(
+        'startSubscriptionWithCard',
+        [params, currentTab?.id],
+      );
 
-    return subscriptions;
+      return subscriptions;
+    } catch (error) {
+      console.error('[startSubscriptionWithCard] error', error);
+      throw error;
+    }
   };
 }
 
@@ -420,6 +445,34 @@ export function updateSubscriptionCardPaymentMethod(params: {
     );
 
     return subscriptions;
+  };
+}
+
+export function startSubscriptionWithCrypto(params: {
+  products: ProductType[];
+  isTrialRequested: boolean;
+  recurringInterval: RecurringInterval;
+  billingCycles: number;
+  chainId: Hex;
+  payerAddress: Hex;
+  tokenSymbol: string;
+  rawTransaction: Hex;
+}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    return await submitRequestToBackground<Subscription[]>(
+      'startSubscriptionWithCrypto',
+      [params],
+    );
+  };
+}
+
+export function updateSubscriptionCryptoPaymentMethod(
+  params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('updateSubscriptionCryptoPaymentMethod', [
+      params,
+    ]);
   };
 }
 
@@ -451,6 +504,30 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
       [],
     );
     return res;
+  };
+}
+
+export function setShowShieldEntryModalOnce(
+  payload: boolean | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setShowShieldEntryModalOnce', [payload]);
+      dispatch(setShowShieldEntryModalOnceAction(payload));
+    } catch (error) {
+      log.error('[setShowShieldEntryModalOnce] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+export function setShowShieldEntryModalOnceAction(
+  payload: boolean | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return {
+    type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
+    payload,
   };
 }
 

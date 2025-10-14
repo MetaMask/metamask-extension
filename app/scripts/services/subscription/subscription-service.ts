@@ -43,7 +43,7 @@ export class SubscriptionService {
   }
 
   async updateSubscriptionCardPaymentMethod(
-    params: UpdatePaymentMethodOpts,
+    params: Extract<UpdatePaymentMethodOpts, { paymentType: 'card' }>,
     currentTabId?: number,
   ) {
     const { paymentType } = params;
@@ -70,6 +70,26 @@ export class SubscriptionService {
       // open extension browser shield settings if open from pop up (no current tab)
       this.#platform.openExtensionInBrowser('/settings/transaction-shield');
     }
+
+    const subscriptions = await this.#messenger.call(
+      'SubscriptionController:getSubscriptions',
+    );
+
+    return subscriptions;
+  }
+
+  async updateSubscriptionCryptoPaymentMethod(
+    params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
+  ) {
+    const { paymentType } = params;
+    if (paymentType !== PAYMENT_TYPES.byCrypto) {
+      throw new Error('Only crypto payment type is supported');
+    }
+
+    await this.#messenger.call(
+      'SubscriptionController:updatePaymentMethod',
+      params,
+    );
 
     const subscriptions = await this.#messenger.call(
       'SubscriptionController:getSubscriptions',
