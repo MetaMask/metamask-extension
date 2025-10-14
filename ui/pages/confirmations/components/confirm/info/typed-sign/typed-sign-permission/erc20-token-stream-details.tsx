@@ -4,6 +4,7 @@ import React from 'react';
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
+import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row';
 import { DAY } from '../../../../../../../../shared/constants/time';
 import { fetchErc20Decimals } from '../../../../../utils/token';
 import { useAsyncResult } from '../../../../../../../hooks/useAsync';
@@ -65,6 +66,8 @@ export const Erc20TokenStreamDetails: React.FC<{
             chainId={chainId}
           />
         )}
+
+        <ConfirmInfoRowDivider />
 
         <DateAndTimeRow
           timestamp={startTime}
