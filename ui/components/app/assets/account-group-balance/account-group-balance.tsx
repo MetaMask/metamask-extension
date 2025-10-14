@@ -7,24 +7,15 @@ import {
   AlignItems,
   Display,
   FlexWrap,
-  IconColor,
-  JustifyContent,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  SensitiveText,
-  IconName,
-} from '../../../component-library';
+import { Box, SensitiveText } from '../../../component-library';
 import {
   getPreferences,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Skeleton } from '../../../component-library/skeleton';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 
@@ -41,7 +32,6 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
 }) => {
   const { privacyMode } = useSelector(getPreferences);
   const { formatCurrency } = useFormatters();
-  const t = useI18nContext();
 
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
   const fallbackCurrency = useSelector(getCurrentCurrency);
@@ -76,21 +66,12 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
           variant={TextVariant.inherit}
           isHidden={privacyMode}
           data-testid="account-value-and-suffix"
+          onClick={handleSensitiveToggle}
+          className="cursor-pointer transition-colors duration-200 hover:text-text-alternative"
         >
           {/* We should always show something but the check is just to appease TypeScript */}
           {total === undefined ? null : formatCurrency(total, currency)}
         </SensitiveText>
-
-        <ButtonIcon
-          color={IconColor.iconAlternative}
-          marginLeft={2}
-          size={ButtonIconSize.Md}
-          onClick={handleSensitiveToggle}
-          iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
-          justifyContent={JustifyContent.center}
-          ariaLabel={t('hideSentitiveInfo')}
-          data-testid="sensitive-toggle"
-        />
       </Box>
     </Skeleton>
   );
