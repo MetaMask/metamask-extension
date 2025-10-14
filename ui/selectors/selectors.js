@@ -34,7 +34,6 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
-import { isBitcoinFeatureEnabled } from '../../shared/lib/multichain-feature-flags';
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
@@ -3174,7 +3173,6 @@ export function isAddBitcoinFlagEnabled(flagValue) {
   if (typeof flagValue === 'object' && flagValue !== null) {
     const { enabled, minVersion } = flagValue;
 
-
     if (!enabled || !minVersion) {
       return false;
     }
@@ -3187,17 +3185,14 @@ export function isAddBitcoinFlagEnabled(flagValue) {
 
 /**
  * Get the state of the `bitcoinSupportEnabled` flag with version check.
- * Uses bitcoinAccounts flag with fallback to legacy addBitcoinAccount.
+ * Uses bitcoinAccounts feature flag.
  *
  * @param {*} state
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
 export function getIsBitcoinSupportEnabled(state) {
-  const { bitcoinAccounts, addBitcoinAccount } = getRemoteFeatureFlags(state);
-  return (
-    isAddBitcoinFlagEnabled(bitcoinAccounts) ||
-    isAddBitcoinFlagEnabled(addBitcoinAccount) // Legacy fallback
-  );
+  const { bitcoinAccounts } = getRemoteFeatureFlags(state);
+  return isAddBitcoinFlagEnabled(bitcoinAccounts);
 }
 
 /**
