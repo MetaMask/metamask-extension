@@ -113,6 +113,7 @@ type FilterPredicate = (
  * - all other tokens
  *
  * @param chainId - the selected src/dest chainId
+ * @param selectedToken - the selected token to show at the top of the token list
  * @param tokenToExclude - a token to exclude from the token list, usually the token being swapped from
  * @param tokenToExclude.symbol
  * @param tokenToExclude.address
@@ -121,6 +122,7 @@ type FilterPredicate = (
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
+  selectedToken?: BridgeToken,
   tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
   accountAddress?: string,
 ) => {
@@ -256,6 +258,25 @@ export const useTokensWithFiltering = (
           return;
         }
 
+        // Yield selected token first if it's defined
+        if (selectedToken) {
+          const token = buildTokenData(
+            chainId,
+            tokenList[selectedToken.address] ?? {
+              symbol: selectedToken.symbol,
+              address: selectedToken.address,
+              decimals: selectedToken.decimals,
+              iconUrl: selectedToken.image,
+              name: selectedToken.symbol,
+              occurrences: selectedToken.occurrences ?? 1,
+              aggregators: selectedToken.aggregators ?? [],
+            },
+          );
+          if (token) {
+            yield token;
+          }
+        }
+
         // Yield multichain tokens with balances and are not blocked
         for (const token of multichainTokensWithBalance) {
           if (
@@ -354,6 +375,7 @@ export const useTokensWithFiltering = (
       chainId,
       tokenList,
       tokenToExclude,
+      selectedToken,
     ],
   );
   return {
