@@ -1,5 +1,4 @@
 import React, { useCallback, useRef, useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 
 import {
   Modal,
@@ -9,48 +8,44 @@ import {
   ModalBody,
   ModalContentSize,
   Text,
-  TextField,
   IconName,
   ButtonIcon,
   ButtonIconSize,
-  TextFieldSize,
   HelpText,
   HelpTextSeverity,
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  Box,
 } from '../../../../../components/component-library';
 import {
-  BlockSize,
+  TextColor,
   TextVariant,
-  AlignItems,
-  Display,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
-import { useRecipientValidation } from '../../../hooks/send/validations/useRecipientValidation';
+import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useSendContext } from '../../../context/send';
 import { useRecipients } from '../../../hooks/send/useRecipients';
-import { getUseBlockie } from '../../../../../selectors';
 import { RecipientList } from '../recipient-list';
+import { RecipientInput } from '../recipient-input';
 
-export const Recipient = () => {
+export const Recipient = ({
+  recipientValidationResult,
+}: {
+  recipientValidationResult: ReturnType<typeof useRecipientValidation>;
+}) => {
   const {
-    recipientConfusableCharacters,
     recipientError,
     recipientWarning,
     recipientResolvedLookup,
-  } = useRecipientValidation();
-  const hasConfusableCharacters =
-    recipientConfusableCharacters && recipientConfusableCharacters.length > 0;
+    toAddressValidated,
+    resolutionProtocol,
+  } = recipientValidationResult;
   const t = useI18nContext();
   const [isRecipientModalOpen, setIsRecipientModalOpen] = useState(false);
-  const { to, updateTo } = useSendContext();
-  const [localValue, setLocalValue] = useState(to || '');
-  const { captureRecipientSelected } = useRecipientSelectionMetrics();
+  const { to, updateTo, updateToResolved } = useSendContext();
+  const {
+    setRecipientInputMethodSelectContact,
+    setRecipientInputMethodSelectAccount,
+  } = useRecipientSelectionMetrics();
   const recipients = useRecipients();
-  const useBlockie = useSelector(getUseBlockie);
   const recipientInputRef = useRef<HTMLInputElement>(null);
   const closeRecipientModal = useCallback(() => {
     setIsRecipientModalOpen(false);
@@ -61,99 +56,61 @@ export const Recipient = () => {
     setIsRecipientModalOpen(true);
   }, []);
 
-  const onToChange = useCallback(
+  const onRecipientSelectedFromModal = useCallback(
     (address: string) => {
-      const toAddress = address;
-      setLocalValue(toAddress);
-      updateTo(toAddress);
+      const isRecipientContact = recipients.some(
+        (recipient) =>
+          recipient.address.toLowerCase() === address.toLowerCase() &&
+          recipient.isContact,
+      );
+      if (isRecipientContact) {
+        setRecipientInputMethodSelectContact();
+      } else {
+        setRecipientInputMethodSelectAccount();
+      }
+
+      updateTo(address);
     },
-    [updateTo],
+    [
+      recipients,
+      updateTo,
+      setRecipientInputMethodSelectContact,
+      setRecipientInputMethodSelectAccount,
+    ],
   );
-
-  const captureMetrics = useCallback(() => {
-    if (!to) {
-      return;
-    }
-    captureRecipientSelected();
-  }, [captureRecipientSelected, to]);
-
-  const clearRecipient = useCallback(() => {
-    setLocalValue('');
-    updateTo('');
-  }, [updateTo]);
 
   useEffect(() => {
-    if (recipientResolvedLookup) {
-      updateTo(recipientResolvedLookup);
-    }
-  }, [recipientResolvedLookup, updateTo]);
-
-  const matchingRecipient = recipients.find(
-    (recipient) => recipient.address.toLowerCase() === to?.toLowerCase(),
-  );
+    updateToResolved(recipientResolvedLookup);
+  }, [recipientResolvedLookup, updateToResolved]);
 
   return (
     <>
       <Text variant={TextVariant.bodyMdMedium} paddingBottom={1}>
         {t('to')}
       </Text>
-      <TextField
-        error={Boolean(recipientError)}
-        startAccessory={
-          matchingRecipient ? (
-            <Box
-              alignItems={AlignItems.center}
-              display={Display.Flex}
-              paddingLeft={2}
-            >
-              <AvatarAccount
-                address={matchingRecipient.address}
-                size={AvatarAccountSize.Sm}
-                variant={
-                  useBlockie
-                    ? AvatarAccountVariant.Blockies
-                    : AvatarAccountVariant.Jazzicon
-                }
-              />
-            </Box>
-          ) : null
-        }
-        endAccessory={
-          <ButtonIcon
-            ariaLabel={to ? 'Clear recipient' : 'Open recipient modal'}
-            data-testid={
-              to ? 'clear-recipient-btn' : 'open-recipient-modal-btn'
-            }
-            iconName={to ? IconName.Close : IconName.Book}
-            onClick={to ? clearRecipient : openRecipientModal}
-            size={ButtonIconSize.Sm}
-          />
-        }
-        onChange={(e) => onToChange(e.target.value)}
-        onBlur={captureMetrics}
-        ref={recipientInputRef}
-        value={localValue}
-        width={BlockSize.Full}
-        size={TextFieldSize.Lg}
+      <RecipientInput
+        openRecipientModal={openRecipientModal}
+        recipientInputRef={recipientInputRef}
+        recipientValidationResult={recipientValidationResult}
       />
-      {recipientError && (
+      {to === toAddressValidated && recipientError && (
         <HelpText severity={HelpTextSeverity.Danger} marginTop={1}>
           {recipientError}
         </HelpText>
       )}
-      {recipientWarning && (
+      {to === toAddressValidated && recipientWarning && (
         <HelpText severity={HelpTextSeverity.Warning} marginTop={1}>
           {recipientWarning}
-          {hasConfusableCharacters &&
-            ` (${recipientConfusableCharacters
-              .map(({ point, similarTo }) => t('similarTo', [point, similarTo]))
-              .join(', ')})`}
         </HelpText>
       )}
-      {recipientResolvedLookup && (
-        <HelpText severity={HelpTextSeverity.Info} marginTop={1}>
-          {t('resolvedLookup', [recipientResolvedLookup])}
-        </HelpText>
+      {to === toAddressValidated && recipientResolvedLookup && (
+        <Text
+          color={TextColor.textAlternative}
+          marginTop={1}
+          variant={TextVariant.bodyXs}
+        >
+          {t('resolutionProtocol', [resolutionProtocol ?? ''])}
+        </Text>
       )}
       <Modal
         isClosedOnEscapeKey={true}
@@ -176,10 +133,10 @@ export const Recipient = () => {
           >
             {t('selectRecipient')}
           </ModalHeader>
-          <ModalBody>
+          <ModalBody paddingRight={0} paddingLeft={0}>
             <RecipientList
               hideModal={closeRecipientModal}
-              onToChange={onToChange}
+              onToChange={onRecipientSelectedFromModal}
             />
           </ModalBody>
         </ModalContent>

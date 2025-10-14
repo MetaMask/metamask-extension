@@ -1,62 +1,23 @@
 import React from 'react';
 
-import {
-  BackgroundColor,
-  AlignItems,
-  BlockSize,
-  JustifyContent,
-  FlexDirection,
-  Display,
-} from '../../../helpers/constants/design-system';
-import { Box } from '../../../components/component-library';
+import { SendPage } from '../../../components/multichain/pages/send';
 import { SendContextProvider } from '../context/send';
 import { SendMetricsContextProvider } from '../context/send-metrics';
-import { Header } from '../components/send/header';
+import { useRedesignedSendFlow } from '../hooks/useRedesignedSendFlow';
 import { SendInner } from './send-inner';
 
-const SendContainer = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <Box
-      alignItems={AlignItems.center}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      className="redesigned__send__container"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      height={BlockSize.Full}
-      justifyContent={JustifyContent.center}
-      style={{ flex: '1 0 auto', minHeight: 0 }}
-      width={BlockSize.Full}
-    >
-      <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
-        className="redesigned__send__wrapper"
-        display={Display.Flex}
-        height={BlockSize.Full}
-        justifyContent={JustifyContent.center}
-        width={BlockSize.Full}
-      >
-        <Box
-          className="redesigned__send__content"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          height={BlockSize.Full}
-          style={{ maxWidth: '650px' }}
-          width={BlockSize.Full}
-        >
-          <Header />
-          {children}
-        </Box>
-      </Box>
-    </Box>
-  );
-};
+export const Send = () => {
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
-export const Send = () => (
-  <SendContextProvider>
-    <SendMetricsContextProvider>
-      <SendContainer>
-        <SendInner />
-      </SendContainer>
-    </SendMetricsContextProvider>
-  </SendContextProvider>
-);
+  if (isSendRedesignEnabled) {
+    return (
+      <SendContextProvider>
+        <SendMetricsContextProvider>
+          <SendInner />
+        </SendMetricsContextProvider>
+      </SendContextProvider>
+    );
+  }
+
+  return <SendPage />;
+};

@@ -19,11 +19,10 @@
     },
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": {
-      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
-      "enabledNetworkMap": {
-        "eip155": "object",
-        "solana": "object"
-      }
+      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+    },
+    "NetworkEnablementController": {
+      "enabledNetworkMap": { "eip155": "object", "solana": "object" }
     },
     "AccountOrderController": {
       "pinnedAccountList": {},
@@ -40,12 +39,14 @@
       "popupGasPollTokens": "object",
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
+      "showShieldEntryModalOnce": "boolean",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
       "isRampCardClosed": false,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
-      "snapsInstallPrivacyWarningShown": true
+      "snapsInstallPrivacyWarningShown": true,
+      "hasShownMultichainAccountsIntroModal": "boolean"
     },
     "BridgeController": {},
     "CurrencyController": {
@@ -135,7 +136,7 @@
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
       "isMultiAccountBalancesEnabled": "boolean",
-      "showIncomingTransactions": "object"
+      "referrals": "object"
     },
     "SelectedNetworkController": { "domains": "object" },
     "SmartTransactionsController": {

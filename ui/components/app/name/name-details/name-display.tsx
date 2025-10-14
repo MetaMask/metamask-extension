@@ -28,8 +28,9 @@ const NameDisplay = memo(
     variation,
     handleClick,
     showFullName = false,
+    ...props
   }: NameDisplayProps) => {
-    const { name, image, icon, displayState } = useDisplayName({
+    const { name, image, icon, displayState, isAccount } = useDisplayName({
       value,
       type,
       preferContractSymbol,
@@ -43,7 +44,7 @@ const NameDisplay = memo(
           <Icon
             name={icon.name}
             className="name__icon"
-            size={IconSize.Md}
+            size={IconSize.Sm}
             color={icon.color}
           />
         );
@@ -53,23 +54,29 @@ const NameDisplay = memo(
         return <Identicon address={value} diameter={16} image={image} />;
       }
 
-      return <PreferredAvatar address={value} size={AvatarAccountSize.Xs} />;
+      return (
+        <PreferredAvatar
+          className="rounded-md"
+          address={value}
+          size={AvatarAccountSize.Xs}
+        />
+      );
     };
 
     const renderName = () => {
       if (!name) {
-        return <FormattedName value={value} type={type} />;
+        return <FormattedName value={value} type={type} {...props} />;
       }
 
       if (showFullName) {
         return (
-          <Text className="name__name" variant={TextVariant.bodyMd}>
+          <Text className="name__name" variant={TextVariant.bodyMd} {...props}>
             {name}
           </Text>
         );
       }
 
-      return <ShortenedName name={name} />;
+      return <ShortenedName name={name} {...props} />;
     };
 
     return (
@@ -78,7 +85,7 @@ const NameDisplay = memo(
           name: true,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          name__clickable: Boolean(handleClick),
+          name__clickable: Boolean(handleClick) && !isAccount,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           name__saved: displayState === TrustSignalDisplayState.Petname,

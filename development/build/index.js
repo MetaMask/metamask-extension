@@ -150,6 +150,8 @@ async function defineAndRunBuildTasks() {
       'logEncryptedVault',
       // Globals used by `react-dom`
       'getSelection',
+      // globals `opera` needs to function
+      'opr',
     ];
 
     if (
@@ -166,6 +168,7 @@ async function defineAndRunBuildTasks() {
         'browser', // for testing vault corruption
         'chrome', // for testing vault corruption
         `indexedDB`, // for testing vault corruption
+        'devicePixelRatio', // for using snap simple keyring site
       ];
     }
 

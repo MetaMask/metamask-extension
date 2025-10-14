@@ -17,4 +17,19 @@ export type MultichainAccountMenuProps = {
    * If not provided, falls back to BackgroundColor.backgroundMuted
    */
   buttonBackgroundColor?: BackgroundColor;
+
+  /**
+   * Optional callback for account rename action.
+   */
+  handleAccountRenameAction?: (accountGroupId: AccountGroupId) => void;
+
+  /**
+   * Whether the menu popover is open.
+   */
+  isOpen?: boolean;
+
+  /**
+   * Callback to toggle the menu popover open/closed state.
+   */
+  onToggle?: () => void;
 };

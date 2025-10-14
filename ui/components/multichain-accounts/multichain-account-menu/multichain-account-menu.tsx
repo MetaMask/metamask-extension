@@ -1,9 +1,10 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Box,
   Icon,
   IconName,
+  ModalFocus,
   Popover,
   PopoverPosition,
 } from '../../component-library';
@@ -27,14 +28,16 @@ export const MultichainAccountMenu = ({
   accountGroupId,
   isRemovable,
   buttonBackgroundColor,
+  handleAccountRenameAction,
+  isOpen = false,
+  onToggle,
 }: MultichainAccountMenuProps) => {
   const history = useHistory();
   const popoverRef = useRef<HTMLDivElement>(null);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-  const togglePopover = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
-    setIsPopoverOpen(!isPopoverOpen);
+  const togglePopover = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    onToggle?.();
   };
 
   const menuConfig = useMemo(() => {
@@ -45,9 +48,11 @@ export const MultichainAccountMenu = ({
     };
 
     const handleAccountRenameClick = (mouseEvent: React.MouseEvent) => {
-      // TODO: Implement account rename click handling
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
+      if (handleAccountRenameAction) {
+        handleAccountRenameAction(accountGroupId);
+      }
     };
 
     const handleAccountAddressesClick = (mouseEvent: React.MouseEvent) => {
@@ -85,7 +90,6 @@ export const MultichainAccountMenu = ({
         textKey: 'rename',
         iconName: IconName.Edit,
         onClick: handleAccountRenameClick,
-        disabled: true,
       },
       {
         textKey: 'addresses',
@@ -116,7 +120,7 @@ export const MultichainAccountMenu = ({
     }
 
     return baseMenuItems;
-  }, [accountGroupId, history, isRemovable]);
+  }, [accountGroupId, handleAccountRenameAction, history, isRemovable]);
 
   return (
     <>
@@ -140,13 +144,18 @@ export const MultichainAccountMenu = ({
       </Box>
       <Popover
         className="multichain-account-cell-popover-menu"
-        isOpen={isPopoverOpen}
+        isOpen={isOpen}
         position={PopoverPosition.LeftStart}
         referenceElement={popoverRef.current}
         matchWidth={false}
         borderRadius={BorderRadius.LG}
+        isPortal
+        flip
+        onClickOutside={onToggle}
       >
-        <MultichainAccountMenuItems menuConfig={menuConfig} />
+        <ModalFocus restoreFocus initialFocusRef={popoverRef}>
+          <MultichainAccountMenuItems menuConfig={menuConfig} />
+        </ModalFocus>
       </Popover>
     </>
   );

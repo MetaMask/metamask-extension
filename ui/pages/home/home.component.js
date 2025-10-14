@@ -56,7 +56,7 @@ import {
   AWAITING_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
@@ -147,7 +147,7 @@ export default class Home extends PureComponent {
     editedNetwork: PropTypes.object,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
-    isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
+    isSigningQRHardwareTransaction: PropTypes.bool,
     newNftAddedMessage: PropTypes.string,
     setNewNftAddedMessage: PropTypes.func.isRequired,
     removeNftMessage: PropTypes.string,
@@ -172,6 +172,7 @@ export default class Home extends PureComponent {
     showConnectionsRemovedModal: PropTypes.bool,
     showShieldEntryModal: PropTypes.bool,
     isSocialLoginFlow: PropTypes.bool,
+    lookupSelectedNetworks: PropTypes.func.isRequired,
   };
 
   state = {
@@ -271,6 +272,9 @@ export default class Home extends PureComponent {
 
     // Check for redirect after default page
     this.checkRedirectAfterDefaultPage();
+
+    // Ensure we have up-to-date connectivity statuses for all enabled networks
+    this.props.lookupSelectedNetworks();
   }
 
   static getDerivedStateFromProps(props) {
@@ -617,7 +621,7 @@ export default class Home extends PureComponent {
           descriptionText={t('backupApprovalNotice')}
           acceptText={t('backupNow')}
           onAccept={() => {
-            const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
+            const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
             if (isPopup) {
               global.platform.openExtensionInBrowser(backUpSRPRoute);
             } else {
@@ -896,16 +900,7 @@ export default class Home extends PureComponent {
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
-          {showShieldEntryModal && (
-            <ShieldEntryModal
-              onClose={() => {
-                // TODO: implement
-              }}
-              onGetStarted={() => {
-                // TODO: implement
-              }}
-            />
-          )}
+          {showShieldEntryModal && <ShieldEntryModal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}

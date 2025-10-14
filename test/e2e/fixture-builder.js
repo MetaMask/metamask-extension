@@ -4,12 +4,18 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
-const {
-  ETHERSCAN_SUPPORTED_CHAIN_IDS,
-} = require('@metamask/preferences-controller');
 const { mockNetworkStateOld } = require('../stub/networks');
 
-const { CHAIN_IDS } = require('../../shared/constants/network');
+const {
+  ARBITRUM_DISPLAY_NAME,
+  AVALANCHE_DISPLAY_NAME,
+  BNB_DISPLAY_NAME,
+  CHAIN_IDS,
+  LOCALHOST_DISPLAY_NAME,
+  OPTIMISM_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+  ZK_SYNC_ERA_DISPLAY_NAME,
+} = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const {
   DAPP_URL,
@@ -38,19 +44,22 @@ function onboardingFixture() {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         showTestnetMessageInDropdown: true,
         trezorModel: null,
+        hasShownMultichainAccountsIntroModal: true,
+        showShieldEntryModalOnce: false,
       },
       NetworkController: {
         ...mockNetworkStateOld({
           id: 'networkConfigurationId',
           chainId: CHAIN_IDS.LOCALHOST,
-          nickname: 'Localhost 8545',
+          nickname: LOCALHOST_DISPLAY_NAME,
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           blockExplorerUrl: undefined,
         }),
         providerConfig: { id: 'networkConfigurationId' },
       },
-      NetworkOrderController: {
+      NetworkOrderController: {},
+      NetworkEnablementController: {
         enabledNetworkMap: {
           eip155: {
             [CHAIN_IDS.LOCALHOST]: true,
@@ -92,6 +101,7 @@ function onboardingFixture() {
           },
           tokenNetworkFilter: {},
           shouldShowAggregatedBalancePopover: true,
+          avatarType: 'maskicon',
         },
         useExternalServices: true,
         theme: 'light',
@@ -102,30 +112,6 @@ function onboardingFixture() {
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
         isMultiAccountBalancesEnabled: true,
-        showIncomingTransactions: {
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MEGAETH_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MONAD_TESTNET]: true,
-        },
       },
       SelectedNetworkController: {
         domains: {},
@@ -204,7 +190,7 @@ class FixtureBuilder {
       networkOrder: this.fixture.data.NetworkOrderController?.networkOrder,
     });
     // Replace instead of merge for enabledNetworkMap
-    this.fixture.data.NetworkOrderController.enabledNetworkMap = data;
+    this.fixture.data.NetworkEnablementController.enabledNetworkMap = data;
     return this;
   }
 
@@ -316,7 +302,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.BSC,
-          nickname: 'Binance Chain',
+          nickname: BNB_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://bsc-dataseed.binance.org',
           ticker: 'BNB',
@@ -348,7 +334,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.LINEA_MAINNET,
-          nickname: 'Localhost 8545',
+          nickname: LOCALHOST_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
@@ -364,7 +350,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.OPTIMISM,
-          nickname: 'Localhost 8545',
+          nickname: LOCALHOST_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -380,7 +366,7 @@ class FixtureBuilder {
       networkConfigurations: {
         networkConfigurationId: {
           chainId: CHAIN_IDS.POLYGON,
-          nickname: 'Polygon Mainnet',
+          nickname: POLYGON_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.infura.io',
           ticker: 'ETH',
@@ -1941,7 +1927,7 @@ class FixtureBuilder {
       networkConfigurations: {
         'op-mainnet': {
           chainId: CHAIN_IDS.OPTIMISM,
-          nickname: 'OP Mainnet',
+          nickname: OPTIMISM_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.optimism.io',
           ticker: 'ETH',
@@ -1949,7 +1935,7 @@ class FixtureBuilder {
         },
         'polygon-mainnet': {
           chainId: CHAIN_IDS.POLYGON,
-          nickname: 'Polygon Mainnet',
+          nickname: POLYGON_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://polygon-rpc.com',
           ticker: 'MATIC',
@@ -1957,7 +1943,7 @@ class FixtureBuilder {
         },
         'arbitrum-one': {
           chainId: CHAIN_IDS.ARBITRUM,
-          nickname: 'Arbitrum One',
+          nickname: ARBITRUM_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://arb1.arbitrum.io/rpc',
           ticker: 'ETH',
@@ -1965,7 +1951,7 @@ class FixtureBuilder {
         },
         'avalanche-mainnet': {
           chainId: CHAIN_IDS.AVALANCHE,
-          nickname: 'Avalanche Network C-Chain',
+          nickname: AVALANCHE_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
           ticker: 'AVAX',
@@ -1973,7 +1959,7 @@ class FixtureBuilder {
         },
         'bnb-mainnet': {
           chainId: CHAIN_IDS.BSC,
-          nickname: 'BNB Chain',
+          nickname: BNB_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://bsc-dataseed.binance.org',
           ticker: 'BNB',
@@ -1981,7 +1967,7 @@ class FixtureBuilder {
         },
         'zksync-mainnet': {
           chainId: CHAIN_IDS.ZKSYNC_ERA,
-          nickname: 'zkSync Era',
+          nickname: ZK_SYNC_ERA_DISPLAY_NAME,
           rpcPrefs: {},
           rpcUrl: 'https://mainnet.era.zksync.io',
           ticker: 'ETH',
@@ -2078,19 +2064,15 @@ class FixtureBuilder {
 
   withBackupAndSyncSettings(options = {}) {
     const {
-      isProfileSyncingEnabled = true,
+      isBackupAndSyncEnabled = true,
       isAccountSyncingEnabled = true,
-      isProfileSyncingUpdateLoading = false,
-      isAccountSyncingUpdateLoading = false,
-      hasAccountSyncingSyncedAtLeastOnce = false,
+      isBackupAndSyncUpdateLoading = false,
     } = options;
 
     merge(this.fixture.data.UserStorageController, {
-      isProfileSyncingEnabled,
+      isBackupAndSyncEnabled,
       isAccountSyncingEnabled,
-      isProfileSyncingUpdateLoading,
-      isAccountSyncingUpdateLoading,
-      hasAccountSyncingSyncedAtLeastOnce,
+      isBackupAndSyncUpdateLoading,
     });
     return this;
   }

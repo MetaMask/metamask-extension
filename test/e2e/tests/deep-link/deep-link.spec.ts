@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import type { Mockttp } from 'mockttp';
-import { withFixtures } from '../../helpers';
+import { Browser } from 'selenium-webdriver';
+import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import DeepLink from '../../page-objects/pages/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -17,6 +18,8 @@ import {
   signDeepLink,
   generateECDSAKeyPair,
 } from './helpers';
+
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
 type LocalNode = Ganache | Anvil;
 
@@ -141,7 +144,16 @@ describe('Deep Link', function () {
           if (isInvalidRoute) {
             console.log('Getting error text for invalid route');
             const text = await deepLink.getDescriptionText();
-            assert.equal(text, "We can't find the page you are looking for.");
+            assert.equal(
+              text,
+              `We can't find the page you are looking for.${
+                isSigned
+                  ? `
+Update to the latest version of MetaMask
+and we'll take you to the right place.`
+                  : ''
+              }`,
+            );
           }
 
           console.log('Clicking continue button');
@@ -207,6 +219,41 @@ describe('Deep Link', function () {
 
         await driver.waitForUrl({
           url: `${BaseUrl.Portfolio}/buy`,
+        });
+      },
+    );
+  });
+
+  it('handles /perps route redirect', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        const rawUrl = `https://link.metamask.io/perps`;
+        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+
+        // test signed flow
+        await driver.openNewURL(signedUrl);
+
+        const url = new URL(signedUrl);
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/perps${url.search}`,
+        });
+
+        await driver.navigate();
+        homePage.checkPageIsLoaded();
+
+        // test unsigned flow
+        await driver.openNewURL(rawUrl);
+
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/perps`,
         });
       },
     );
@@ -376,6 +423,74 @@ describe('Deep Link', function () {
         // make sure the home page has loaded!
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+      },
+    );
+  });
+
+  it('handles dapps that open MM via window.open', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        // use our dummy page to drive the new window
+        await driver.openNewURL(TEST_PAGE);
+
+        const dappWindowHandle = await driver.driver.getWindowHandle();
+        // simulate a dapp calling `window.open('https://link.metamask.io/home')`
+        const windowOpened = await driver.executeScript(
+          `
+          globalThis.testWindow = window.open('https://link.metamask.io/home', '_blank');
+          return globalThis.testWindow != null;
+          `,
+        );
+        assert.strictEqual(windowOpened, true, 'window.open failed');
+
+        driver.delay(1000); // give the window a second to open
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        const metamaskWindowHandle = await driver.driver.getWindowHandle();
+
+        // wait for the homepage to load in this new window
+        const deepLink = new DeepLink(driver);
+        await deepLink.checkPageIsLoaded();
+        const initialUrlStr = await driver.getCurrentUrl();
+        const initialUrl = new URL(initialUrlStr);
+        assert.equal(initialUrl.pathname, `/home.html`);
+        assert.equal(initialUrl.hash, '#link?u=%2Fhome');
+        assert.equal(initialUrl.search, '');
+
+        await driver.switchToWindow(dappWindowHandle);
+
+        const hackUrl = new URL(initialUrl);
+        hackUrl.hash = '#notifications';
+        // if we are testing Firefox, make sure `testWindow` is unset, FF
+        // doesn't allow cross-origin access to the extension's window by
+        // default
+        if (isFirefox) {
+          // globalThis.testWindow is unset in Firefox. Neat!
+          await driver.executeScript(`return globalThis.testWindow == null;`);
+        } else {
+          // on chrome, the location change is ignored due to the
+          // `cross_origin_opener_policy` set in the manifest.json
+          await driver.executeScript(
+            `globalThis.testWindow.location.href = ${JSON.stringify(hackUrl)};`,
+          );
+        }
+
+        // go back to the Metamask window.
+        await driver.switchToWindow(metamaskWindowHandle);
+
+        const finalUrlStr = await driver.getCurrentUrl();
+        assert.equal(finalUrlStr, initialUrlStr);
       },
     );
   });

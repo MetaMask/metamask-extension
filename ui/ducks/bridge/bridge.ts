@@ -5,10 +5,11 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
   calcLatestSrcBalance,
-  isSolanaChainId,
+  isNonEvmChainId,
   isCrossChain,
   formatChainIdToHex,
   type GenericQuoteRequest,
+  type QuoteResponse,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
@@ -62,7 +63,7 @@ const getBalanceAmount = async ({
   tokenAddress: string;
   chainId: GenericQuoteRequest['srcChainId'];
 }) => {
-  if (isSolanaChainId(chainId) || !selectedAddress) {
+  if (isNonEvmChainId(chainId) || !selectedAddress) {
     return null;
   }
   return (
@@ -108,8 +109,9 @@ const bridgeSlice = createSlice({
       if (
         state.fromToken?.assetId &&
         state.toToken?.assetId &&
-        state.fromToken.assetId.toLowerCase() ===
-          state.toToken.assetId.toLowerCase()
+        // TODO: determine if this is necessary.
+        state.fromToken.assetId?.toLowerCase() ===
+          state.toToken.assetId?.toLowerCase()
       ) {
         state.toToken = null;
       }
@@ -144,6 +146,14 @@ const bridgeSlice = createSlice({
     resetInputFields: () => ({
       ...initialState,
     }),
+    restoreQuoteRequestFromState: (
+      state,
+      { payload: quote }: { payload: QuoteResponse['quote'] },
+    ) => {
+      state.fromToken = toBridgeToken(quote.srcAsset);
+      state.toToken = toBridgeToken(quote.destAsset);
+      state.toChainId = formatChainIdToCaip(quote.destChainId);
+    },
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;
     },

@@ -32,6 +32,7 @@ import {
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -71,8 +72,9 @@ import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
-import { TransactionShield } from './transaction-shield-tab';
 import ClaimsList from './transaction-shield-tab/claims-list';
+import TransactionShield from './transaction-shield-tab';
+import SubmitClaimForm from './transaction-shield-tab/submit-claim-form';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -204,7 +206,7 @@ class SettingsPage extends PureComponent {
                     color={Color.iconDefault}
                     onClick={() => navigate(backRoute)}
                     display={[Display.Flex, Display.None]}
-                    size={ButtonIconSize.Sm}
+                    size={ButtonIconSize.Md}
                   />
                 )}
               </>
@@ -222,7 +224,7 @@ class SettingsPage extends PureComponent {
                   navigate(mostRecentOverviewPage);
                 }
               }}
-              size={ButtonIconSize.Sm}
+              size={ButtonIconSize.Md}
               marginLeft="auto"
             />
           </div>
@@ -441,7 +443,7 @@ class SettingsPage extends PureComponent {
       });
     }
 
-    if (isMetaMaskShieldFeatureEnabled) {
+    if (isMetaMaskShieldFeatureEnabled && useExternalServices) {
       tabs.splice(-4, 0, {
         content: t('shieldTx'),
         icon: <Icon name={IconName.ShieldLock} />,
@@ -533,6 +535,11 @@ class SettingsPage extends PureComponent {
         <Route
           path={TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE}
           element={<ClaimsList />}
+        />
+        <Route
+          path={TRANSACTION_SHIELD_CLAIM_ROUTE}
+          element={<SubmitClaimForm />}
+          exact
         />
         <Route path={EXPERIMENTAL_ROUTE} element={<ExperimentalTab />} />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||

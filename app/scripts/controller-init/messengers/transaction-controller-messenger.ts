@@ -4,12 +4,20 @@ import {
 } from '@metamask/accounts-controller';
 import { ApprovalControllerActions } from '@metamask/approval-controller';
 import { Messenger } from '@metamask/base-controller';
+import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
+import {
+  KeyringControllerSignEip7702AuthorizationAction,
+  KeyringControllerSignTypedMessageAction,
+} from '@metamask/keyring-controller';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetEIP1559CompatibilityAction,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
+import type { AuthenticationController } from '@metamask/profile-sync-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
 import {
   TransactionControllerEstimateGasAction,
   TransactionControllerGetStateAction,
@@ -25,22 +33,15 @@ import {
   TransactionControllerTransactionSubmittedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
-import { SmartTransactionsControllerSmartTransactionEvent } from '@metamask/smart-transactions-controller';
-import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import {
-  KeyringControllerSignEip7702AuthorizationAction,
-  KeyringControllerSignTypedMessageAction,
-} from '@metamask/keyring-controller';
-import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
-import type { AuthenticationController } from '@metamask/profile-sync-controller';
+import { SubscriptionControllerActions } from '@metamask/subscription-controller';
+import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
   SwapsControllerSetTradeTxIdAction,
 } from '../../controllers/swaps/swaps.types';
-import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import {
-  InstitutionalSnapControllerPublishHookAction,
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
+  InstitutionalSnapControllerPublishHookAction,
 } from './accounts/institutional-snap-controller-messenger';
 
 type MessengerActions =
@@ -61,7 +62,8 @@ type MessengerActions =
   | SwapsControllerSetApproveTxIdAction
   | SwapsControllerSetTradeTxIdAction
   | TransactionControllerEstimateGasAction
-  | TransactionControllerGetStateAction;
+  | TransactionControllerGetStateAction
+  | SubscriptionControllerActions;
 
 type MessengerEvents =
   | TransactionControllerTransactionApprovedEvent
@@ -105,6 +107,7 @@ export function getTransactionControllerInitMessenger(
   return messenger.getRestricted({
     name: 'TransactionControllerInit',
     allowedEvents: [
+      'SmartTransactionsController:smartTransaction',
       'TransactionController:transactionApproved',
       'TransactionController:transactionConfirmed',
       'TransactionController:transactionDropped',
@@ -115,7 +118,6 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:transactionSubmitted',
       'TransactionController:postTransactionBalanceUpdated',
       'TransactionController:unapprovedTransactionAdded',
-      'SmartTransactionsController:smartTransaction',
     ],
     allowedActions: [
       'ApprovalController:acceptRequest',
@@ -136,6 +138,7 @@ export function getTransactionControllerInitMessenger(
       'SwapsController:setTradeTxId',
       'TransactionController:estimateGas',
       'TransactionController:getState',
+      'SubscriptionController:getSubscriptionByProduct',
     ],
   });
 }

@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { getCompletedOnboarding } from '../ducks/metamask/metamask';
 
 type UseMultiPollingOptions<PollingInput> = {
   startPolling: (input: PollingInput) => Promise<string>;
@@ -12,9 +14,15 @@ type UseMultiPollingOptions<PollingInput> = {
 const useMultiPolling = <PollingInput>(
   usePollingOptions: UseMultiPollingOptions<PollingInput>,
 ) => {
+  const completedOnboarding = useSelector(getCompletedOnboarding);
   const pollingTokens = useRef<Map<string, string>>(new Map());
 
   useEffect(() => {
+    if (!completedOnboarding) {
+      // don't start polling if no selected account or onboarding is not completed yet
+      return;
+    }
+
     // start new polls
     for (const input of usePollingOptions.input) {
       const key = JSON.stringify(input);
@@ -36,7 +44,10 @@ const useMultiPolling = <PollingInput>(
         pollingTokens.current.delete(inputKey);
       }
     }
-  }, [usePollingOptions.input && JSON.stringify(usePollingOptions.input)]);
+  }, [
+    completedOnboarding,
+    usePollingOptions.input && JSON.stringify(usePollingOptions.input),
+  ]);
 
   // stop all polling on dismount
   useEffect(() => {

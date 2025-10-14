@@ -4,7 +4,7 @@ import {
   TransactionContainerType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAlertMetrics } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../components/app/alert-system/inline-alert';
@@ -214,7 +214,7 @@ const LegacyHeader = () => {
         <Icon
           name={IconName.Question}
           marginLeft={1}
-          color={IconColor.iconMuted}
+          color={IconColor.iconAlternative}
           size={IconSize.Sm}
         />
       </Tooltip>
@@ -278,7 +278,9 @@ const SimulationDetailsLayout: React.FC<{
             ? BorderColor.transparent
             : BorderColor.borderDefault
         }
-        padding={3}
+        paddingInline={3}
+        paddingTop={1}
+        paddingBottom={2}
         margin={isTransactionsRedesign ? null : 4}
         gap={3}
       >
@@ -303,7 +305,9 @@ const SimulationDetailsLayout: React.FC<{
           ? BorderColor.transparent
           : BorderColor.borderDefault
       }
-      padding={3}
+      paddingInline={3}
+      paddingTop={1}
+      paddingBottom={2}
       margin={isTransactionsRedesign ? null : 4}
       gap={3}
     >
@@ -465,15 +469,14 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
     >
       <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={3}>
         {staticRows.map((staticRow, index) => (
-          <>
+          <Fragment key={index}>
             <BalanceChangeList
-              key={index}
               heading={staticRow.label}
               balanceChanges={staticRow.balanceChanges}
               labelColor={getAlertTextColors(selectedAlertSeverity)}
             />
             <BalanceChangesAlert transactionId={transactionId} />
-          </>
+          </Fragment>
         ))}
         <BalanceChangeList
           heading={t('simulationDetailsOutgoingHeading')}

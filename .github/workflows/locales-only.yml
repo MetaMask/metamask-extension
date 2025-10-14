@@ -12,6 +12,7 @@ jobs:
     # For the `pull_request` event, the branch is `github.head_ref``.
     if: ${{ github.head_ref == 'l10n_crowdin_action' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -20,7 +21,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Get changed files with git diff
         run: yarn tsx .github/scripts/git-diff-default-branch.ts

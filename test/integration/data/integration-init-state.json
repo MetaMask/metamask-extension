@@ -315,6 +315,7 @@
     "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": 0.0017123,
     "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": 1.8e-9
   },
+  "coverageResults": {},
   "currencyRates": {
     "ETH": {
       "conversionRate": 556.12
@@ -619,7 +620,10 @@
       "accounts": [
         "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
         "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
-      ]
+      ],
+      "metadata": {
+        "id": "01JKAF3DSGM3AB87EM9N0K41AJ"
+      }
     },
     {
       "type": "Ledger Hardware",
@@ -735,6 +739,9 @@
       "name": "Sepolia",
       "nativeCurrency": "SepoliaETH"
     }
+  },
+  "networkConnectionBanner": {
+    "status": "unknown"
   },
   "networksMetadata": {
     "goerli-network-id": {
@@ -1125,6 +1132,7 @@
       "subjectType": "snap"
     }
   },
+  "subscriptions": [],
   "swapsState": {
     "quotes": {},
     "quotesPollingLimitEnabled": false,

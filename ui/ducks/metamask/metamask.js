@@ -162,6 +162,9 @@ export default function reduceMetamask(state = initialState, action) {
         isUnlocked: false,
         onboardingTabs: {},
         seedPhraseBackedUp: null,
+        // reset metametrics optin status
+        participateInMetaMetrics: null,
+        metaMetricsId: null,
       };
     }
 
@@ -183,6 +186,12 @@ export default function reduceMetamask(state = initialState, action) {
         nodeAuthTokens: undefined,
       };
     }
+
+    case actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE:
+      return {
+        ...metamaskState,
+        showShieldEntryModalOnce: action.payload,
+      };
 
     default:
       return metamaskState;
@@ -611,6 +620,12 @@ export function doesUserHaveALedgerAccount(state) {
   });
 }
 
+/**
+ * Select the current fiat currency code (ISO 4217 like 'USD').
+ *
+ * @param {object} state - Redux state
+ * @returns {string} The current fiat currency code
+ */
 export function getCurrentCurrency(state) {
   return state.metamask.currentCurrency;
 }

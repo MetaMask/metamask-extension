@@ -30,8 +30,14 @@ const getMetamask = (state: NotificationAppState) => ({
 export function getIsNotificationEnabledByDefaultFeatureFlag(
   state: NotificationAppState,
 ) {
-  const { assetsEnableNotificationsByDefault } = getRemoteFeatureFlags(state);
-  return Boolean(assetsEnableNotificationsByDefault);
+  const { assetsEnableNotificationsByDefaultV2 } = getRemoteFeatureFlags(state);
+  const result =
+    assetsEnableNotificationsByDefaultV2 &&
+    typeof assetsEnableNotificationsByDefaultV2 === 'object' &&
+    'value' in assetsEnableNotificationsByDefaultV2 &&
+    Boolean(assetsEnableNotificationsByDefaultV2.value);
+
+  return Boolean(result);
 }
 
 /**
@@ -42,7 +48,9 @@ export function getIsNotificationEnabledByDefaultFeatureFlag(
  */
 export const getMetamaskNotifications = createSelector(
   [getMetamask],
-  (metamask): Notification[] => metamask.metamaskNotificationsList,
+  (metamask): Notification[] => {
+    return metamask.metamaskNotificationsList;
+  },
 );
 
 /**

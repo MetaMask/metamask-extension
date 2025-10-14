@@ -41,6 +41,7 @@ permissions:
 jobs:
   prep-deps:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -48,7 +49,7 @@ jobs:
           is-high-risk-environment: false
           cache-node-modules: true
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       # Need to cache `.metamask` folder for the anvil binary
       - name: Cache .metamask folder
@@ -71,13 +72,14 @@ jobs:
     needs:
       - prep-deps
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Check circular dependencies
         run: yarn circular-deps:check
@@ -93,15 +95,10 @@ jobs:
       - prep-deps
     uses: ./.github/workflows/test-storybook.yml
 
-  validate-lavamoat-policy-build:
+  validate-lavamoat-policies:
     needs:
       - prep-deps
-    uses: ./.github/workflows/validate-lavamoat-policy-build.yml
-
-  validate-lavamoat-policy-webapp:
-    needs:
-      - prep-deps
-    uses: ./.github/workflows/validate-lavamoat-policy-webapp.yml
+    uses: ./.github/workflows/validate-lavamoat-policies.yml
 
   build-dist-browserify:
     uses: ./.github/workflows/run-build.yml
@@ -208,6 +205,7 @@ jobs:
     needs:
       - build-dist-browserify
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
@@ -217,7 +215,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -242,7 +240,7 @@ jobs:
 
   page-load-benchmark-pr:
     needs:
-      - build-dist-browserify
+      - build-test-browserify
     if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
     uses: ./.github/workflows/page-load-benchmark-pr.yml
     with:
@@ -273,14 +271,18 @@ jobs:
     uses: ./.github/workflows/e2e-chrome.yml
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   e2e-firefox:
     needs:
       - needs-e2e
       - build-test-mv2-browserify
+      - build-test-webpack
       - build-test-flask-mv2-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   build-storybook:
     name: Build storybook
@@ -299,13 +301,14 @@ jobs:
       - prep-deps
       - build-dist-browserify
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -328,6 +331,7 @@ jobs:
       - prep-deps
       - build-dist-browserify
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       GOOGLE_PROD_CLIENT_ID: 00000000000
@@ -343,7 +347,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4
@@ -403,13 +407,13 @@ jobs:
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - lint-workflows
       - test-lint
       - repository-health-checks
       - test-storybook
-      - validate-lavamoat-policy-build
-      - validate-lavamoat-policy-webapp
+      - validate-lavamoat-policies
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-beta-browserify
@@ -422,9 +426,6 @@ jobs:
       - build-test-flask-mv2-browserify
       - build-test-webpack
       - run-tests
-      - needs-e2e
-      - e2e-chrome
-      - e2e-firefox
       - build-storybook
       - build-ts-migration-dashboard
       - build-source-map-explorer
@@ -440,15 +441,34 @@ jobs:
     name: All jobs pass
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - all-jobs-completed
+      - needs-e2e
+      - e2e-chrome
+      - e2e-firefox
     steps:
       - name: Check that all jobs have passed
         run: |
-          passed="${{ needs.all-jobs-completed.outputs.PASSED }}"
-          if [[ $passed != "true" ]]; then
+          # Check if all non-E2E jobs passed
+          if [[ "${{ needs.all-jobs-completed.outputs.PASSED }}" != "true" ]]; then
+            echo "Non-E2E jobs failed"
             exit 1
           fi
+
+          # Check E2E jobs only if they should have run
+          if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
+            if [[ "${{ needs.e2e-chrome.result }}" == "failure" ]]; then
+              echo "E2E Chrome tests failed"
+              exit 1
+            fi
+            if [[ "${{ needs.e2e-firefox.result }}" == "failure" ]]; then
+              echo "E2E Firefox tests failed"
+              exit 1
+            fi
+          fi
+
+          echo "All required jobs passed"
 
   log-merge-group-failure:
     name: Log merge group failure

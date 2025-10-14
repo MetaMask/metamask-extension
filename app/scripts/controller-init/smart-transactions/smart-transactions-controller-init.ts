@@ -7,44 +7,44 @@ import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constant
 import { getFeatureFlagsByChainId } from '../../../../shared/modules/selectors';
 import { type ProviderConfigState } from '../../../../shared/modules/selectors/networks';
 import { type FeatureFlagsMetaMaskState } from '../../../../shared/modules/selectors/feature-flags';
-import type {
-  MetaMetricsEventPayload,
-  MetaMetricsEventOptions,
-} from '../../../../shared/constants/metametrics';
 import type { FeatureFlags } from '../../lib/smart-transaction/smart-transactions';
 import { ControllerInitFunction, ControllerInitRequest } from '../types';
-import { SmartTransactionsControllerMessenger } from '../messengers/smart-transactions-controller-messenger';
-import { ControllerFlatState } from '../controller-list';
+import {
+  SmartTransactionsControllerInitMessenger,
+  SmartTransactionsControllerMessenger,
+} from '../messengers/smart-transactions-controller-messenger';
+// This import is only used for the type.
+// eslint-disable-next-line import/no-restricted-paths
+import type { MetaMaskReduxState } from '../../../../ui/store/store';
 
-type SmartTransactionsControllerInitRequest =
-  ControllerInitRequest<SmartTransactionsControllerMessenger> & {
-    getStateUI: () => { metamask: ControllerFlatState };
-    getGlobalNetworkClientId: () => string;
-    getAccountType: (address: string) => Promise<string>;
-    getDeviceModel: (address: string) => Promise<string>;
-    getHardwareTypeForMetric: (address: string) => Promise<string>;
-    trace: TraceCallback;
-    trackEvent: (
-      payload: MetaMetricsEventPayload,
-      options?: MetaMetricsEventOptions,
-    ) => void;
-  };
+type SmartTransactionsControllerInitRequest = ControllerInitRequest<
+  SmartTransactionsControllerMessenger,
+  SmartTransactionsControllerInitMessenger
+> & {
+  getUIState: () => MetaMaskReduxState['metamask'];
+  getGlobalNetworkClientId: () => string;
+  getAccountType: (address: string) => Promise<string>;
+  getDeviceModel: (address: string) => Promise<string>;
+  getHardwareTypeForMetric: (address: string) => Promise<string>;
+  trace: TraceCallback;
+};
 
 export const SmartTransactionsControllerInit: ControllerInitFunction<
   SmartTransactionsController,
-  SmartTransactionsControllerMessenger
+  SmartTransactionsControllerMessenger,
+  SmartTransactionsControllerInitMessenger
 > = (request) => {
   const {
     controllerMessenger,
+    initMessenger,
     getController,
     persistedState,
-    getStateUI,
+    getUIState,
     getGlobalNetworkClientId,
     getAccountType,
     getDeviceModel,
     getHardwareTypeForMetric,
     trace,
-    trackEvent,
   } = request as SmartTransactionsControllerInitRequest;
 
   const transactionController = getController(
@@ -61,7 +61,10 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
       ),
     confirmExternalTransaction: (...args) =>
       transactionController.confirmExternalTransaction(...args),
-    trackMetaMetricsEvent: trackEvent as ConstructorParameters<
+    trackMetaMetricsEvent: initMessenger.call.bind(
+      initMessenger,
+      'MetaMetricsController:trackEvent',
+    ) as ConstructorParameters<
       typeof SmartTransactionsController
     >[0]['trackMetaMetricsEvent'],
     state: persistedState.SmartTransactionsController,
@@ -73,17 +76,14 @@ export const SmartTransactionsControllerInit: ControllerInitFunction<
     updateTransaction: (...args) =>
       transactionController.updateTransaction(...args),
     getFeatureFlags: () => {
-      const state = getStateUI();
+      const state = { metamask: getUIState() };
       return getFeatureFlagsByChainId(
         state as unknown as ProviderConfigState & FeatureFlagsMetaMaskState,
       ) as unknown as FeatureFlags;
     },
     getMetaMetricsProps: async () => {
-      const { metamask } = getStateUI();
-      const { internalAccounts } = metamask as Pick<
-        ControllerFlatState,
-        'internalAccounts'
-      >;
+      const metamask = getUIState();
+      const { internalAccounts } = metamask;
       const selectedAccountId = internalAccounts?.selectedAccount;
       const selectedAccount = selectedAccountId
         ? internalAccounts?.accounts?.[selectedAccountId]
