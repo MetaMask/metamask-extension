@@ -3,11 +3,13 @@ import { SECOND } from '../../../../shared/constants/time';
 import {
   SupportedEVMChain,
   ResultType,
+  createCacheKey,
 } from '../../../../shared/lib/trust-signals';
 import { scanAddress, scanAddressAndAddToCache } from './security-alerts-api';
 
 const TEST_ADDRESS = '0x1234567890123456789012345678901234567890';
 const TEST_CHAIN = SupportedEVMChain.Ethereum;
+const TEST_CACHE_KEY = createCacheKey(TEST_CHAIN, TEST_ADDRESS);
 
 const RESPONSE_MOCK = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -133,7 +135,7 @@ describe('Security Alerts API', () => {
 
       expect(result).toEqual(cachedResponse);
       expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
-        TEST_ADDRESS,
+        TEST_CACHE_KEY,
       );
       expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
     });
@@ -158,7 +160,7 @@ describe('Security Alerts API', () => {
 
       expect(result).toEqual(cachedLoadingResponse);
       expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
-        TEST_ADDRESS,
+        TEST_CACHE_KEY,
       );
       // Should not make any API calls or update cache when loading state is cached
       expect(addAddressSecurityAlertResponseMock).not.toHaveBeenCalled();
@@ -183,13 +185,13 @@ describe('Security Alerts API', () => {
 
       expect(result).toEqual(RESPONSE_MOCK);
       expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
-        TEST_ADDRESS,
+        TEST_CACHE_KEY,
       );
       // Should be called twice: once for loading state, once for result
       expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
       expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
         1,
-        TEST_ADDRESS,
+        TEST_CACHE_KEY,
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Loading,
@@ -198,7 +200,7 @@ describe('Security Alerts API', () => {
       );
       expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
         2,
-        TEST_ADDRESS,
+        TEST_CACHE_KEY,
         RESPONSE_MOCK,
       );
       expect(scope.isDone()).toBe(true);
@@ -219,13 +221,13 @@ describe('Security Alerts API', () => {
       ).rejects.toThrow('Network error');
 
       expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
-        TEST_ADDRESS,
+        TEST_CACHE_KEY,
       );
       // Should be called twice: once for loading state, once for clearing on error
       expect(addAddressSecurityAlertResponseMock).toHaveBeenCalledTimes(2);
       expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
         1,
-        TEST_ADDRESS,
+        TEST_CACHE_KEY,
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.Loading,
@@ -234,7 +236,7 @@ describe('Security Alerts API', () => {
       );
       expect(addAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
         2,
-        TEST_ADDRESS,
+        TEST_CACHE_KEY,
         {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: ResultType.ErrorResult,
