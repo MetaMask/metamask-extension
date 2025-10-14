@@ -1762,18 +1762,6 @@
         "uuid": true
       }
     },
-    "@metamask/subscription-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
     "@metamask/post-message-stream": {
       "globals": {
         "MessageEvent.prototype": true,
@@ -2077,7 +2065,7 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/subscription-controller>@metamask/polling-controller": true
+        "@metamask/bridge-controller>@metamask/polling-controller": true
       }
     },
     "@metamask/seedless-onboarding-controller>@metamask/toprf-secure-backup": {
