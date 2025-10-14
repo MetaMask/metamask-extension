@@ -22,15 +22,23 @@ import {
 import { useAsyncCallback, useAsyncResult } from '../useAsync';
 import { MetaMaskReduxDispatch } from '../../store/store';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
+import { getIsUnlocked } from '../../ducks/metamask/metamask';
 
 export const useUserSubscriptions = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const isSignedIn = useSelector(selectIsSignedIn);
   const { customerId, subscriptions, trialedProducts } =
     useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
+    if (!isSignedIn) {
+      return {
+        pending: true,
+        error: undefined,
+      };
+    }
     return await dispatch(getSubscriptions());
-  }, [dispatch]);
+  }, [dispatch, isSignedIn]);
 
   return {
     customerId,
@@ -122,16 +130,17 @@ export const useSubscriptionEligibility = (product: ProductType) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isShieldSubscriptionActive = useSelector(getIsActiveShieldSubscription);
   const isSignedIn = useSelector(selectIsSignedIn);
+  const isUnlocked = useSelector(getIsUnlocked);
 
   const getSubscriptionEligibility = useCallback(async (): Promise<
     SubscriptionEligibility | undefined
   > => {
-    if (isShieldSubscriptionActive || !isSignedIn) {
+    if (isShieldSubscriptionActive || !isSignedIn || !isUnlocked) {
       return undefined;
     }
     const eligibilities = await dispatch(getSubscriptionsEligibilities());
     return eligibilities.find((eligibility) => eligibility.product === product);
-  }, [dispatch, isShieldSubscriptionActive, product, isSignedIn]);
+  }, [dispatch, isShieldSubscriptionActive, product, isSignedIn, isUnlocked]);
 
   return {
     getSubscriptionEligibility,

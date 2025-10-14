@@ -1,12 +1,19 @@
 import { Mockttp } from 'mockttp';
+import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ShieldPlanPage from '../../page-objects/pages/settings/shield-plan-page';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
+import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 
 async function mockSubscriptionApiCalls(mockServer: Mockttp) {
+  const userStorageMockttpController = new UserStorageMockttpController();
+  userStorageMockttpController.setupPath(
+    USER_STORAGE_FEATURE_NAMES.accounts,
+    mockServer,
+  );
   return [
     await mockServer
       .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
@@ -47,6 +54,23 @@ async function mockSubscriptionApiCalls(mockServer: Mockttp) {
             type: 'card',
           },
         ],
+      }),
+    await mockServer
+      .forGet(
+        'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
+      )
+      .thenJson(200, [
+        {
+          canSubscribe: true,
+          canViewEntryModal: true,
+          minBalanceUSD: 1000,
+          product: 'shield',
+        },
+      ]),
+    await mockServer
+      .forPost('https://subscription.dev-api.cx.metamask.io/v1/user-events')
+      .thenJson(200, {
+        status: 'success',
       }),
   ];
 }
