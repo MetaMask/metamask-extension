@@ -40,7 +40,7 @@ import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state'
 import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 
-const MAX_FILE_SIZE = 1 * 1024 * 1024;
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 function isValidTransactionHash(hash: string): boolean {
   // Check if it's exactly 66 characters (0x + 64 hex chars)
