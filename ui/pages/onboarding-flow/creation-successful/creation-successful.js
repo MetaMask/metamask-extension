@@ -271,6 +271,7 @@ export default function CreationSuccessful() {
             onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
             textAlign={TextAlign.Center}
             width={BlockSize.Full}
+            data-testid="manage-default-settings"
           >
             {t('manageDefaultSettings')}
           </Button>
