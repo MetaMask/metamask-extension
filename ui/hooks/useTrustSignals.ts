@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
-// eslint-disable-next-line import/no-restricted-paths
-import { ResultType } from '../../app/scripts/lib/trust-signals/types';
-// eslint-disable-next-line import/no-restricted-paths
-import { mapChainIdToSupportedEVMChain } from '../../app/scripts/lib/trust-signals/trust-signals-util';
+import {
+  ResultType,
+  mapChainIdToSupportedEVMChain,
+} from '../../shared/lib/trust-signals';
 import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
 
 export type UseTrustSignalRequest = {

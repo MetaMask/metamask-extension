@@ -7,8 +7,7 @@ import {
 } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';
 import { unapprovedTypedSignMsgV4 } from '../../../../test/data/confirmations/typed_sign';
-// eslint-disable-next-line import/no-restricted-paths
-import { ResultType } from '../../../../app/scripts/lib/trust-signals/types';
+import { ResultType } from '../../../../shared/lib/trust-signals';
 import * as useTransactionEventFragmentHook from '../../confirmations/hooks/useTransactionEventFragment';
 import * as useSignatureEventFragmentHook from '../../confirmations/hooks/useSignatureEventFragment';
 import { useTrustSignalMetrics } from './useTrustSignalMetrics';

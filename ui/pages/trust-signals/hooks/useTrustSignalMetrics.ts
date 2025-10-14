@@ -9,10 +9,10 @@ import type {
   Confirmation,
   SignatureRequestType,
 } from '../../confirmations/types/confirm';
-// eslint-disable-next-line import/no-restricted-paths
-import { ResultType } from '../../../../app/scripts/lib/trust-signals/types';
-// eslint-disable-next-line import/no-restricted-paths
-import { mapChainIdToSupportedEVMChain } from '../../../../app/scripts/lib/trust-signals/trust-signals-util';
+import {
+  ResultType,
+  mapChainIdToSupportedEVMChain,
+} from '../../../../shared/lib/trust-signals';
 import { useTransactionEventFragment } from '../../confirmations/hooks/useTransactionEventFragment';
 import { useSignatureEventFragment } from '../../confirmations/hooks/useSignatureEventFragment';
 

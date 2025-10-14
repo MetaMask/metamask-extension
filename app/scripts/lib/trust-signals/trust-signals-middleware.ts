@@ -8,6 +8,7 @@ import type { AppStateController } from '../../controllers/app-state-controller'
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { isSecurityAlertsAPIEnabled } from '../ppom/security-alerts-api';
+import { mapChainIdToSupportedEVMChain } from '../../../../shared/lib/trust-signals';
 import { scanAddressAndAddToCache } from './security-alerts-api';
 import {
   hasValidTypedDataParams,
@@ -17,7 +18,6 @@ import {
   isSecurityAlertsEnabledByUser,
   isConnected,
   connectScreenHasBeenPrompted,
-  mapChainIdToSupportedEVMChain,
 } from './trust-signals-util';
 
 export type TrustSignalsMiddlewareRequest = JsonRpcRequest & {
