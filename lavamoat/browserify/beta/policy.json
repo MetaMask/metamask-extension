@@ -897,6 +897,7 @@
     },
     "@metamask/base-controller": {
       "globals": {
+        "console.error": true,
         "setTimeout": true
       },
       "packages": {
@@ -905,6 +906,7 @@
     },
     "@metamask/smart-transactions-controller>@metamask/polling-controller>@metamask/base-controller": {
       "globals": {
+        "console.error": true,
         "setTimeout": true
       },
       "packages": {
