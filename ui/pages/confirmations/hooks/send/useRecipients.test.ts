@@ -46,8 +46,49 @@ describe('useRecipients', () => {
     const { result } = renderHookWithProvider(() => useRecipients(), mockState);
 
     expect(result.current).toEqual([
-      ...mockContactRecipients,
       ...mockAccountRecipients,
+      ...mockContactRecipients,
+    ]);
+  });
+
+  it('it returns unique recipients', () => {
+    const mockAccountRecipients: Recipient[] = [
+      {
+        address: '0x5678901234',
+        walletName: 'Wallet 1',
+        accountGroupName: 'Account 1',
+      },
+      {
+        address: '0xfedcba5678',
+        walletName: 'Wallet 2',
+        accountGroupName: 'Account 2',
+      },
+    ];
+
+    const mockContactRecipients: Recipient[] = [
+      { address: '0x1234567890', contactName: 'Contact 1' },
+      { address: '0xabcdef1234', contactName: 'Contact 2' },
+      {
+        address: '0x1234567890',
+        walletName: 'Wallet 11',
+        accountGroupName: 'Account 11',
+      },
+      {
+        address: '0x5678901234',
+        walletName: 'Wallet 12',
+        accountGroupName: 'Account 12',
+      },
+    ];
+
+    mockUseContactRecipients.mockReturnValue(mockContactRecipients);
+    mockUseAccountRecipients.mockReturnValue(mockAccountRecipients);
+
+    const { result } = renderHookWithProvider(() => useRecipients(), mockState);
+
+    expect(result.current).toEqual([
+      ...mockAccountRecipients,
+      mockContactRecipients[0],
+      mockContactRecipients[1],
     ]);
   });
 
