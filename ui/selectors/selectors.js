@@ -287,6 +287,10 @@ export function getShowConnectionsRemovedModal(state) {
   return state.appState.showConnectionsRemovedModal;
 }
 
+export function getShowShieldEntryModalOnce(state) {
+  return state.metamask.showShieldEntryModalOnce;
+}
+
 /** `metamask` slice selectors */
 
 export function getNetworkIdentifier(state) {
@@ -3031,7 +3035,17 @@ export function getIsSecurityAlertsEnabled(state) {
 }
 
 /**
- * Gets the cached address security alert response for a given cache key
+ * To get the `getUsePhishDetect` value which determines whether phishing detection is enabled
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUsePhishDetect(state) {
+  return state.metamask.usePhishDetect;
+}
+
+/**
+ * Gets the cached address security alert response for a given address
  *
  * @param {*} state
  * @param {string} cacheKey - The cache key in format "chainId:address" to get security alert for
