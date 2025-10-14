@@ -96,14 +96,6 @@
     padding-bottom: 3px;
   }
 
-  &__item-name {
-    /*rtl:ignore*/
-    direction: ltr;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
   &__labels {
     display: flex;
     justify-content: space-between;
