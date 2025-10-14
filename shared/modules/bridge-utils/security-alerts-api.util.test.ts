@@ -16,9 +16,12 @@ import {
 const originalEnv = process.env;
 const BASE_URL = 'https://api.example.com';
 
+let signal: AbortSignal;
+
 describe('Security alerts utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    signal = new AbortController().signal;
     process.env = { ...originalEnv };
     process.env.SECURITY_ALERTS_API_ENABLED = 'true';
     process.env.SECURITY_ALERTS_API_URL = BASE_URL;
@@ -75,6 +78,7 @@ describe('Security alerts utils', () => {
       process.env.SECURITY_ALERTS_API_ENABLED = 'false';
 
       const result = await fetchTxAlerts({
+        signal,
         chainId: mockChainId,
         trade: mockTrade,
         accountAddress: mockAccountAddress,
@@ -88,6 +92,7 @@ describe('Security alerts utils', () => {
 
       await expect(
         fetchTxAlerts({
+          signal,
           chainId: mockChainId,
           trade: mockTrade,
           accountAddress: mockAccountAddress,
@@ -99,6 +104,7 @@ describe('Security alerts utils', () => {
       const unsupportedChainId = '0x1342134' as never;
 
       const result = await fetchTxAlerts({
+        signal,
         chainId: unsupportedChainId,
         trade: mockTrade,
         accountAddress: mockAccountAddress,
@@ -124,6 +130,7 @@ describe('Security alerts utils', () => {
         .reply(200, mockResponse);
 
       await fetchTxAlerts({
+        signal,
         chainId: mockChainId,
         trade: mockTrade,
         accountAddress: mockAccountAddress,
@@ -147,6 +154,7 @@ describe('Security alerts utils', () => {
       nock(BASE_URL).post('/solana/message/scan').reply(200, mockResponse);
 
       const result = await fetchTxAlerts({
+        signal,
         chainId: mockChainId,
         trade: mockTrade,
         accountAddress: mockAccountAddress,
@@ -170,6 +178,7 @@ describe('Security alerts utils', () => {
       nock(BASE_URL).post('/solana/message/scan').reply(200, mockResponse);
 
       const result = await fetchTxAlerts({
+        signal,
         chainId: mockChainId,
         trade: mockTrade,
         accountAddress: mockAccountAddress,
@@ -194,6 +203,7 @@ describe('Security alerts utils', () => {
       nock(BASE_URL).post('/solana/message/scan').reply(200, mockResponse);
 
       const result = await fetchTxAlerts({
+        signal,
         chainId: mockChainId,
         trade: mockTrade,
         accountAddress: mockAccountAddress,
@@ -218,6 +228,7 @@ describe('Security alerts utils', () => {
       nock(BASE_URL).post('/solana/message/scan').reply(200, mockResponse);
 
       const result = await fetchTxAlerts({
+        signal,
         chainId: mockChainId,
         trade: mockTrade,
         accountAddress: mockAccountAddress,
@@ -231,6 +242,7 @@ describe('Security alerts utils', () => {
 
       await expect(
         fetchTxAlerts({
+          signal,
           chainId: mockChainId,
           trade: mockTrade,
           accountAddress: mockAccountAddress,
@@ -255,6 +267,7 @@ describe('Security alerts utils', () => {
       } as unknown as Response);
 
       await fetchTxAlerts({
+        signal,
         chainId: mockChainId,
         trade: mockTrade,
         accountAddress: mockAccountAddress,
@@ -278,6 +291,7 @@ describe('Security alerts utils', () => {
 
       // Test with Ethereum mainnet
       await fetchTxAlerts({
+        signal,
         chainId: CHAIN_IDS.MAINNET,
         trade: mockTrade,
         accountAddress: mockAccountAddress,
