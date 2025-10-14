@@ -6,6 +6,12 @@ export const ActiveSubscriptionStatuses: string[] = [
   SUBSCRIPTION_STATUSES.provisional,
 ];
 
+export const PausedSubscriptionStatuses: string[] = [
+  SUBSCRIPTION_STATUSES.paused,
+  SUBSCRIPTION_STATUSES.pastDue,
+  SUBSCRIPTION_STATUSES.unpaid,
+];
+
 /**
  * The minimum fiat (USD) balance threshold for the shield entry modal to be shown
  */

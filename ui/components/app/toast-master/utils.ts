@@ -105,3 +105,15 @@ export function setShowClaimSubmitToast(
     payload: value,
   };
 }
+
+export function setShieldPausedToastLastClickedOrClosed(time: number) {
+  submitRequestToBackgroundAndCatch('setShieldPausedToastLastClickedOrClosed', [
+    time,
+  ]);
+}
+
+export function setShieldEndingToastLastClickedOrClosed(time: number) {
+  submitRequestToBackgroundAndCatch('setShieldEndingToastLastClickedOrClosed', [
+    time,
+  ]);
+}
