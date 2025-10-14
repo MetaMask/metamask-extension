@@ -25,7 +25,7 @@ import {
   ResultType,
   AddAddressSecurityAlertResponse,
   GetAddressSecurityAlertResponse,
-} from '../trust-signals/types';
+} from '../../../../shared/lib/trust-signals';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
