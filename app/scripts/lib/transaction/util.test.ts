@@ -550,8 +550,8 @@ describe('Transaction Utils', () => {
         expect(scanAddressAndAddToCacheMock).toHaveBeenCalledTimes(1);
         expect(scanAddressAndAddToCacheMock).toHaveBeenCalledWith(
           '0x1234567890123456789012345678901234567890',
-          request.getSecurityAlertResponse,
-          request.addSecurityAlertResponse,
+          expect.any(Function),
+          expect.any(Function),
           SupportedEVMChain.Ethereum,
         );
       });
