@@ -4,7 +4,7 @@ import type { Browser, Events } from 'webextension-polyfill';
 type StringKeys<Thing> = Extract<keyof Thing, string>;
 
 /** Keys of T whose values are Events.Event<…> */
-type EventKeys<Thing> = {
+export type EventKeys<Thing> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [K in StringKeys<Thing>]-?: Thing[K] extends Events.Event<any> ? K : never;
 }[StringKeys<Thing>];
@@ -47,3 +47,24 @@ export type CallbackArguments<
   Namespace extends BrowserNamespace,
   EventName extends BrowserEventName<Namespace> = BrowserEventName<Namespace>,
 > = Parameters<EventCallback<Namespace, EventName>>;
+
+/**
+ * Represents a namespace + eventName pair for listener registration.
+ */
+export type NamespaceEventPair = {
+  namespace: BrowserNamespace;
+  eventNames: BrowserEventName<BrowserNamespace>[];
+  eventName: BrowserEventName<BrowserNamespace>;
+};
+
+/**
+ * Strongly-typed version for generic use (for internal typing, not for user input)
+ */
+export type NamespaceEventPairTyped<
+  Namespace extends BrowserNamespace = BrowserNamespace,
+  EventNames extends
+    BrowserEventName<Namespace>[] = BrowserEventName<Namespace>[],
+> = {
+  namespace: Namespace;
+  eventNames: EventNames;
+};

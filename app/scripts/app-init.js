@@ -1,18 +1,20 @@
 // This file is used only for manifest version 3
 
 // We don't usually `import` files into `app-init.js` because we need to load
-// "chunks" via `importScripts`; but in this case `mv3-lazy-listener` file
+// "chunks" via `importScripts`; but in this case `extension-lazy-listener` file
 // is so small we won't ever have a problem with these two files being "split".
-import { install } from './lib/mv3-lazy-listener/mv3-lazy-listener';
+import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 
 // this needs to be run early we can begin listening to these browser events
 // as soon as possible
-install('runtime', [
-  'onInstalled',
-  'onConnect',
-  'onMessage',
-  'onMessageExternal',
-]);
+const listener = new ExtensionLazyListener([{
+  namespace: 'runtime',
+  eventNames: ['onInstalled',
+    'onConnect',
+    'onMessage',
+    'onMessageExternal',
+  ]
+}]);
 
 const { chrome } = globalThis;
 
@@ -20,6 +22,8 @@ const { chrome } = globalThis;
  * @type {import('../../types/global').StateHooks}
  */
 globalThis.stateHooks = globalThis.stateHooks || {};
+
+globalThis.stateHooks.lazyListener = listener;
 
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
@@ -118,8 +122,7 @@ function importAllScripts() {
 
   // for performance metrics/reference
   console.log(
-    `SCRIPTS IMPORT COMPLETE in Seconds: ${
-      (Date.now() - startImportScriptsTime) / 1000
+    `SCRIPTS IMPORT COMPLETE in Seconds: ${(Date.now() - startImportScriptsTime) / 1000
     }`,
   );
 
