@@ -36,7 +36,7 @@ import {
 
 export default function OnboardingAppHeader({ isWelcomePage }) {
   const dispatch = useDispatch();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);
   const localeOptions = locales.map((locale) => {
@@ -45,6 +45,12 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
       value: locale.code,
     };
   });
+
+  const searchParams = new URLSearchParams(search);
+  const isFromReminder = searchParams.get('isFromReminder');
+  const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
+
+  const isFromSetiingsSRPBackup = isFromReminder || isFromSettingsSecurity;
 
   return (
     <Box
@@ -71,7 +77,8 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
           <MetaFoxLogo unsetIconHeight isOnboarding />
         )}
 
-        {pathname === ONBOARDING_COMPLETION_ROUTE ? (
+        {pathname === ONBOARDING_COMPLETION_ROUTE &&
+        !isFromSetiingsSRPBackup ? (
           <Box
             paddingTop={12}
             className="onboarding-app-header__banner-tip-container"
