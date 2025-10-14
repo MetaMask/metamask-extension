@@ -1,5 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import { Meta, StoryObj } from '@storybook/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
@@ -22,15 +23,20 @@ const store = configureStore({
   },
 });
 
-// Custom TransactionModalContextProvider that sets editGasFee as current modal
-const MockTransactionModalProvider = ({ children }) => {
+type MockTransactionModalProviderProps = {
+  children: React.ReactNode;
+};
+
+const MockTransactionModalProvider: React.FC<
+  MockTransactionModalProviderProps
+> = ({ children }) => {
   return (
     <TransactionModalContext.Provider
       value={{
-        closeModal: () => {},
-        closeAllModals: () => {},
+        closeModal: () => undefined,
+        closeAllModals: () => undefined,
         currentModal: 'editGasFee',
-        openModal: () => {},
+        openModal: () => undefined,
         openModalCount: 1,
       }}
     >
@@ -54,21 +60,22 @@ const createTransaction = (editGasMode = EditGasModes.modifyInPlace) => ({
   editGasMode,
 });
 
-export default {
+interface StoryArgs {
+  editGasMode: EditGasModes;
+}
+
+const meta: Meta<StoryArgs> = {
   title: 'Pages/Confirmations/Components/EditGasFeePopover',
   component: EditGasFeePopover,
   decorators: [
-    (Story, { args }) => (
+    (Story, context) => (
       <Provider store={store}>
         <MockTransactionModalProvider>
           <GasFeeContextProvider
-            transaction={createTransaction(args.editGasMode)}
-            editGasMode={args.editGasMode}
-            balanceError={args.balanceError}
+            transaction={createTransaction(context.args.editGasMode)}
+            editGasMode={context.args.editGasMode}
           >
-            <div style={{ width: '400px', height: '600px' }}>
-              <Story />
-            </div>
+            <Story />
           </GasFeeContextProvider>
         </MockTransactionModalProvider>
       </Provider>
@@ -76,9 +83,12 @@ export default {
   ],
 };
 
-export const Default = {
+export default meta;
+
+type Story = StoryObj<StoryArgs>;
+
+export const Default: Story = {
   args: {
     editGasMode: EditGasModes.modifyInPlace,
-    balanceError: false,
   },
 };
