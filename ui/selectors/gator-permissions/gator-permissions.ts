@@ -65,6 +65,74 @@ function getGatorPermissionsCountAcrossAllChainsByPermissionType(
 }
 
 /**
+ * Get the actual list of gator permissions for a specific permission type across all chains.
+ *
+ * @param gatorPermissionsMap - The gator permissions map
+ * @param permissionType - The permission type to get permissions for (e.g. 'native-token-stream')
+ * @returns The list of gator permissions for the permission type across all chains
+ */
+function getGatorPermissionsListAcrossAllChainsByPermissionType(
+  gatorPermissionsMap: GatorPermissionsMap,
+  permissionType: SupportedGatorPermissionType,
+) {
+  return Object.values(gatorPermissionsMap[permissionType]).flat();
+}
+
+/**
+ * Get aggregated list of gator permissions for all chains.
+ *
+ * @param _state - The current state
+ * @param aggregatedPermissionType - The aggregated permission type to get permissions for (e.g. 'token-transfer' is a combination of the token streams and token subscriptions types)
+ * @returns A aggregated list of gator permissions.
+ */
+export const getAggregatedGatorPermissionsListAcrossAllChains = createSelector(
+  [
+    getGatorPermissionsMap,
+    (_state: AppState, aggregatedPermissionType: string) =>
+      aggregatedPermissionType,
+  ],
+  (gatorPermissionsMap, aggregatedPermissionType) => {
+    switch (aggregatedPermissionType) {
+      case 'token-transfer': {
+        const nativeTokenStreams =
+          getGatorPermissionsListAcrossAllChainsByPermissionType(
+            gatorPermissionsMap,
+            'native-token-stream',
+          );
+
+        const erc20TokenStreams =
+          getGatorPermissionsListAcrossAllChainsByPermissionType(
+            gatorPermissionsMap,
+            'erc20-token-stream',
+          );
+
+        const nativeTokenPeriodicPermissions =
+          getGatorPermissionsListAcrossAllChainsByPermissionType(
+            gatorPermissionsMap,
+            'native-token-periodic',
+          );
+
+        const erc20TokenPeriodicPermissions =
+          getGatorPermissionsListAcrossAllChainsByPermissionType(
+            gatorPermissionsMap,
+            'erc20-token-periodic',
+          );
+
+        return [
+          ...nativeTokenStreams,
+          ...erc20TokenStreams,
+          ...nativeTokenPeriodicPermissions,
+          ...erc20TokenPeriodicPermissions,
+        ];
+      }
+      default: {
+        return [];
+      }
+    }
+  },
+);
+
+/**
  * Get aggregated list of gator permissions for all chains.
  *
  * @param _state - The current state

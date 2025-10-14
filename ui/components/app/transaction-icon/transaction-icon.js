@@ -32,6 +32,7 @@ const COLOR_MAP = {
   [TransactionStatus.dropped]: IconColor.errorDefault,
   [TransactionStatus.failed]: IconColor.errorDefault,
   [TransactionStatus.rejected]: IconColor.errorDefault,
+  [TransactionStatus.signed]: IconColor.primaryDefault, // Add signed status
   [TransactionStatus.submitted]: IconColor.primaryDefault,
   [TransactionStatus.unapproved]: IconColor.primaryDefault,
 };
@@ -40,6 +41,7 @@ const BACKGROUND_COLOR_MAP = {
   [TransactionGroupStatus.pending]: BackgroundColor.primaryMuted,
   [TransactionGroupStatus.cancelled]: BackgroundColor.errorMuted,
   [TransactionStatus.approved]: BackgroundColor.primaryMuted,
+  [TransactionStatus.signed]: BackgroundColor.primaryMuted, // Add signed status
   [TransactionStatus.dropped]: BackgroundColor.errorMuted,
   [TransactionStatus.failed]: BackgroundColor.errorMuted,
   [TransactionStatus.rejected]: BackgroundColor.errorMuted,
@@ -88,6 +90,7 @@ TransactionIcon.propTypes = {
     TransactionStatus.dropped,
     TransactionStatus.failed,
     TransactionStatus.rejected,
+    TransactionStatus.signed, // Add signed status to allowed props
     TransactionStatus.submitted,
     TransactionStatus.unapproved,
   ]).isRequired,

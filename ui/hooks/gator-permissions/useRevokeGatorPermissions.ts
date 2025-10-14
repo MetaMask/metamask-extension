@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import {
   TransactionMeta,
   TransactionType,
+  TransactionStatus,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { decodeDelegations } from '@metamask/delegation-core';
@@ -15,6 +16,7 @@ import { addTransaction } from '../../store/actions';
 import {
   getInternalAccounts,
   selectDefaultRpcEndpointByChainId,
+  getTransactions,
 } from '../../selectors';
 import { useConfirmationNavigation } from '../../pages/confirmations/hooks/useConfirmationNavigation';
 import {
@@ -22,6 +24,7 @@ import {
   Delegation,
 } from '../../../shared/lib/delegation/delegation';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { submitRevocation } from '../../store/controller-actions/gator-permissions-controller';
 
 export type RevokeGatorPermissionArgs = {
   accountAddress: Hex;
@@ -45,15 +48,74 @@ export function useRevokeGatorPermissions({
   onRedirect?: () => void;
 }) {
   const [transactionId, setTransactionId] = useState<string | undefined>();
+  const [pendingRevocations, setPendingRevocations] = useState<
+    Map<string, Hex>
+  >(new Map());
   const { confirmations, navigateToId } = useConfirmationNavigation();
   const internalAccounts = useSelector(getInternalAccounts);
   const defaultRpcEndpoint = useSelector((state) =>
     selectDefaultRpcEndpointByChainId(state, chainId),
   );
+  const transactions = useSelector(getTransactions);
 
   const isRedirectPending = confirmations.some(
     (conf) => conf.id === transactionId,
   );
+
+  // Monitor transaction status and call submitRevocation when confirmed
+  useEffect(() => {
+    pendingRevocations.forEach(async (permissionContext, txId) => {
+      const transaction = transactions.find(
+        (tx: TransactionMeta) => tx.id === txId,
+      );
+
+      if (!transaction) {
+        return;
+      }
+
+      if (transaction.status === TransactionStatus.confirmed) {
+        console.log(
+          `🎉 Transaction ${txId} confirmed! Submitting revocation...`,
+        );
+        try {
+          await submitRevocation({ permissionContext });
+          console.log(
+            '✅ Revocation submitted successfully after transaction confirmation',
+          );
+        } catch (error) {
+          console.error(
+            '❌ Failed to submit revocation after confirmation:',
+            error instanceof Error ? error.message : String(error),
+          );
+          console.error(
+            'Error stack:',
+            error instanceof Error ? error.stack : undefined,
+          );
+        } finally {
+          // Clean up the pending revocation
+          setPendingRevocations((prev) => {
+            const newMap = new Map(prev);
+            newMap.delete(txId);
+            return newMap;
+          });
+        }
+      } else if (
+        transaction.status === TransactionStatus.failed ||
+        transaction.status === TransactionStatus.rejected ||
+        transaction.status === TransactionStatus.dropped
+      ) {
+        console.log(
+          `❌ Transaction ${txId} failed/rejected/dropped. Cleaning up...`,
+        );
+        // Clean up failed transactions
+        setPendingRevocations((prev) => {
+          const newMap = new Map(prev);
+          newMap.delete(txId);
+          return newMap;
+        });
+      }
+    });
+  }, [transactions, pendingRevocations]);
 
   /**
    * Extracts the delegation from the gator permission encoded context.
@@ -237,6 +299,18 @@ export function useRevokeGatorPermissions({
       if (!transactionMeta.id) {
         throw new Error('No transaction id found');
       }
+
+      // Add transaction to pending revocations for monitoring
+      console.log('📝 Adding transaction to pending revocations:', {
+        transactionId: transactionMeta.id,
+        permissionContext,
+      });
+
+      setPendingRevocations((prev) => {
+        const newMap = new Map(prev);
+        newMap.set(transactionMeta.id, permissionContext);
+        return newMap;
+      });
 
       return transactionMeta;
     },

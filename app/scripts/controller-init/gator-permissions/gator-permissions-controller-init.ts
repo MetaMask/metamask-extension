@@ -59,6 +59,7 @@ export const GatorPermissionsControllerInit: ControllerInitFunction<
     api: {
       fetchAndUpdateGatorPermissions:
         controller.fetchAndUpdateGatorPermissions.bind(controller),
+      submitRevocation: controller.submitRevocation.bind(controller),
     },
   };
 };

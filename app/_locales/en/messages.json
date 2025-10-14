@@ -3991,6 +3991,9 @@
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
+  "noTokenTransferPermissions": {
+    "message": "No token transfer permissions found"
+  },
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
   },
