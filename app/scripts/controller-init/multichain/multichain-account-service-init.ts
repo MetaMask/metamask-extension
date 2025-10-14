@@ -50,8 +50,9 @@ function isAddBitcoinFlagEnabled(flagValue: unknown): boolean {
       return true;
     }
 
-    // Check if current version meets minimum requirement - get from process or package.json
-    const currentVersion = process.env.npm_package_version || '13.6.0';
+    // Check if current version meets minimum requirement - get from package.json
+    const { version: packageVersion } = require('../../../../package.json');
+    const currentVersion = packageVersion;
 
     try {
       // Use semver comparison if available, fallback to simple comparison

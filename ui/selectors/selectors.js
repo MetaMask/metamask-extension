@@ -33,6 +33,7 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
@@ -3183,12 +3184,12 @@ export function isAddBitcoinFlagEnabled(flagValue) {
       return true;
     }
 
-    // Check if current version meets minimum requirement - get from process or package.json
-    const currentVersion = process.env.npm_package_version || '13.6.0';
+    // Check if current version meets minimum requirement - get from package.json
+    const { version: currentPackageVersion } = require('../../package.json');
+    const currentVersion = currentPackageVersion;
 
     try {
       // Use semver comparison if available, fallback to simple comparison
-      const semver = require('semver');
       return semver.gte(currentVersion, minVersion);
     } catch {
       // Fallback to simple version comparison
