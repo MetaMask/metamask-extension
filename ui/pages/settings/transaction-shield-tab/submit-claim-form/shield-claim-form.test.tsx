@@ -30,7 +30,7 @@ describe('Submit Claim Form', () => {
 
     const emailInput = getByTestId('shield-claim-email-input');
     fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
-    fireEvent.blur(emailInput, { target: { value: 'invalid-email' } });
+    fireEvent.blur(emailInput);
 
     const errorMessage = getByTestId('shield-claim-help-text');
     expect(errorMessage).toHaveTextContent(
@@ -47,9 +47,7 @@ describe('Submit Claim Form', () => {
     fireEvent.change(impactedWalletAddressInput, {
       target: { value: 'incorrect-address' },
     });
-    fireEvent.blur(impactedWalletAddressInput, {
-      target: { value: 'invalid-impacted-wallet-address' },
-    });
+    fireEvent.blur(impactedWalletAddressInput);
 
     const errorMessage = getByTestId(
       'shield-claim-impacted-wallet-address-help-text',
@@ -68,9 +66,7 @@ describe('Submit Claim Form', () => {
     fireEvent.change(reimbursementWalletAddressInput, {
       target: { value: 'incorrect-address' },
     });
-    fireEvent.blur(reimbursementWalletAddressInput, {
-      target: { value: 'invalid-reimbursement-wallet-address' },
-    });
+    fireEvent.blur(reimbursementWalletAddressInput);
 
     const errorMessage = getByTestId(
       'shield-claim-reimbursement-wallet-address-help-text',
