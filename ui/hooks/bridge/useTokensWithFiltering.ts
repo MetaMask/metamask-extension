@@ -183,6 +183,7 @@ export const useTokensWithFiltering = (
           });
         },
         BRIDGE_API_BASE_URL,
+        process.env.METAMASK_VERSION,
       );
     }, [chainId, isTokenListCached]);
 
