@@ -103,6 +103,12 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
 
         // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
         return assets
+          .filter((asset) => {
+            if (shouldHideZeroBalanceTokens && asset.balance === '0') {
+              return false;
+            }
+            return true;
+          })
           .map((asset) => {
             const token: TokenWithFiatAmount = {
               ...asset,
@@ -115,13 +121,8 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
             };
 
             return token;
-          })
-          .filter((asset) => {
-            if (shouldHideZeroBalanceTokens && asset.balance === '0') {
-              return false;
-            }
-            return true;
           });
+
       },
     );
     const accountAssets = sortAssets(
