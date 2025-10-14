@@ -25,6 +25,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import { useTheme } from '../../../hooks/useTheme';
 import { LOGIN_TYPE, LoginType, LoginOptionType, LOGIN_OPTION } from './types';
 
 export const SocialButton = React.forwardRef(
@@ -43,7 +44,6 @@ export const SocialButton = React.forwardRef(
         variant={ButtonVariant.Primary}
         size={ButtonSize.Lg}
         block
-        data-theme={ThemeType.dark}
         {...props}
       >
         <Box
@@ -71,7 +71,7 @@ export default function LoginOptions({
   handleLogin: (loginType: LoginType) => void;
 }) {
   const t = useI18nContext();
-
+  const theme = useTheme();
   return (
     <Box>
       <SocialButton
@@ -140,7 +140,7 @@ export default function LoginOptions({
         </Text>
       </Box>
       <Button
-        data-theme={ThemeType.light}
+        data-theme={theme === ThemeType.dark ? ThemeType.light : ThemeType.dark}
         data-testid={
           loginOption === LOGIN_OPTION.EXISTING
             ? 'onboarding-import-with-srp-button'
@@ -160,6 +160,7 @@ export default function LoginOptions({
         fontWeight={FontWeight.Medium}
         textAlign={TextAlign.Center}
         paddingTop={8}
+        color={TextColor.textDefault}
         width={BlockSize.Full}
         margin={'auto'}
       >

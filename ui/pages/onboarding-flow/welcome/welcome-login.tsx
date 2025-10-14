@@ -15,6 +15,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIsSeedlessOnboardingFeatureEnabled } from '../../../../shared/modules/environment';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { setTermsOfUseLastAgreed } from '../../../store/actions';
+import { useTheme } from '../../../hooks/useTheme';
 import LoginOptions from './login-options';
 import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 
@@ -33,6 +34,7 @@ export default function WelcomeLogin({
     getIsSeedlessOnboardingFeatureEnabled();
   const dispatch = useDispatch();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const theme = useTheme();
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -103,7 +105,6 @@ export default function WelcomeLogin({
             }`}
           >
             <Button
-              data-theme={ThemeType.dark}
               data-testid="onboarding-create-wallet"
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
@@ -115,7 +116,9 @@ export default function WelcomeLogin({
               {t('onboardingCreateWallet')}
             </Button>
             <Button
-              data-theme={ThemeType.light}
+              data-theme={
+                theme === ThemeType.dark ? ThemeType.light : ThemeType.dark
+              }
               data-testid="onboarding-import-wallet"
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}

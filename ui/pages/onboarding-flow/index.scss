@@ -9,6 +9,10 @@
 @import 'pin-extension/index';
 @import 'metametrics/index';
 
+/* stylelint-disable color-no-hex */
+$welcome-bg-light: #fff2eb;
+/* stylelint-enable color-no-hex */
+
 .onboarding-flow {
   &--welcome-banner {
     background: url('/images/welcome-banner.png') no-repeat calc(50% + 500px) 160px;
@@ -16,7 +20,11 @@
   }
 
   &--welcome-login {
-    background-color: var(--color-accent02-dark);
+    background-color: $welcome-bg-light;
+
+    @media (prefers-color-scheme: dark) {
+      background-color: var(--color-accent02-dark);
+    }
   }
 
   &__container {

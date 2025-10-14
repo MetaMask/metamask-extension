@@ -20,7 +20,6 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   type BridgeController,
-  isCrossChain,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
@@ -274,6 +273,7 @@ const PrepareBridgePage = ({
     isLoading: isToTokensLoading,
   } = useTokensWithFiltering(
     toChain?.chainId ?? fromChain?.chainId,
+    toToken,
     fromChain?.chainId === toChain?.chainId && fromToken && fromChain
       ? (() => {
           // Determine the address format based on chain type
@@ -661,7 +661,9 @@ const PrepareBridgePage = ({
 
                 setRotateSwitchTokens(!rotateSwitchTokens);
 
-                if (!isSwap) {
+                if (isSwap) {
+                  dispatch(setFromToken(toToken));
+                } else {
                   // Handle account switching for Solana
                   dispatch(
                     setFromChain({
@@ -705,13 +707,7 @@ const PrepareBridgePage = ({
               },
               header: t('yourNetworks'),
             }}
-            customTokenListGenerator={
-              toChain &&
-              fromChain &&
-              isCrossChain(fromChain.chainId, toChain.chainId)
-                ? toTokenListGenerator
-                : undefined
-            }
+            customTokenListGenerator={toTokenListGenerator}
             amountInFiat={
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
               // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
