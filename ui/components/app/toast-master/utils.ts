@@ -97,7 +97,9 @@ export function setShowCopyAddressToast(value: boolean) {
   };
 }
 
-export function setShowClaimSubmitToast(value: ClaimSubmitToastType | null) {
+export function setShowClaimSubmitToast(
+  value: ClaimSubmitToastType | string | null,
+) {
   return {
     type: SET_SHOW_CLAIM_SUBMIT_TOAST,
     payload: value,

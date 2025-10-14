@@ -242,7 +242,14 @@ const SubmitClaimForm = () => {
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
       navigate(TRANSACTION_SHIELD_ROUTE);
     } catch (error) {
-      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Errored));
+      const { message } = error as Error;
+      dispatch(
+        setShowClaimSubmitToast(
+          message === ClaimSubmitToastType.Errored
+            ? ClaimSubmitToastType.Errored
+            : message,
+        ),
+      );
     } finally {
       setClaimSubmitLoading(false);
     }
