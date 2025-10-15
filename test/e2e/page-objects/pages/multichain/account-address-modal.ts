@@ -1,17 +1,19 @@
-
 import { Driver } from '../../../webdriver/driver';
 
-class accountAddressModal {
+class AccountAddressModal {
   private driver: Driver;
 
-  private readonly accountAddress =
-    '[data-testid="account-address"]';
+  private readonly accountAddress = '[data-testid="account-address"]';
+
+  private readonly backButton = '[aria-label="Close"]';
+
+  private readonly viewOnEtherscanButton = {
+    css: 'button',
+    text: 'View on Etherscan',
+  };
 
   private readonly viewOnEtherscanLink =
     '[data-testid="view-address-on-etherscan"]';
-
-  private readonly backButton =
-    '[aria-label="Close"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -21,7 +23,7 @@ class accountAddressModal {
     try {
       await this.driver.waitForMultipleSelectors([
         this.accountAddress,
-        this.viewOnEtherscanLink
+        this.viewOnEtherscanLink,
       ]);
     } catch (e) {
       console.log(
@@ -30,7 +32,8 @@ class accountAddressModal {
       );
       throw e;
     }
-    console.log('Address list modal is loaded');
+    await this.driver.delay(1000);
+    console.log('Account address modal is loaded');
   }
 
   /**
@@ -46,10 +49,16 @@ class accountAddressModal {
    * Go back
    */
   async goBack(): Promise<void> {
-    await this.driver.clickElement(
-      this.backButton,
-    );
+    await this.driver.clickElement(this.backButton);
+  }
+
+  /**
+   * Verify the View on Etherscan button is present
+   */
+  async checkViewOnEtherscanButton(): Promise<void> {
+    console.log('Verifying View on Etherscan button');
+    await this.driver.findElement(this.viewOnEtherscanButton);
   }
 }
 
-export default accountAddressModal;
+export default AccountAddressModal;

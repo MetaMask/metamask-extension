@@ -31,7 +31,10 @@ class AccountListPage {
   private readonly accountMenuButton =
     '[data-testid="account-list-menu-details"]';
 
-  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
+  private readonly accountDetailsTab = {
+    text: 'Account details',
+    tag: 'button',
+  };
 
   private readonly accountNameInput = '#account-name';
 
@@ -145,9 +148,6 @@ class AccountListPage {
   private readonly removeAccountButton =
     '[data-testid="account-list-menu-remove"]';
 
-  private readonly showQRCodeButton =
-    'button[data-testid="multichain-address-row-qr-button"]';
-
   private readonly removeAccountConfirmButton = {
     text: 'Remove',
     tag: 'button',
@@ -228,10 +228,7 @@ class AccountListPage {
             this.multichainAccountOptionsMenuButton,
           ]
         : [this.createAccountButton, this.accountOptionsMenuButton];
-      await this.driver.waitForMultipleSelectors(selectorsToWaitFor, {
-        timeout: 30000,
-        state: 'visible',
-      });
+      await this.driver.waitForMultipleSelectors(selectorsToWaitFor);
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
@@ -564,18 +561,6 @@ class AccountListPage {
   }
 
   /**
-   * Open multichain QR Code dialog.
-   *
-   * @param options - Options for opening QR Code dialog
-   * @param options.index - Optional index if there are multiple networks
-   */
-  async clickShowQR(options?: { index?: number }): Promise<void> {
-    console.log(`Open multichain QR Code dialog`);
-    const QRCoddes = await this.driver.findElements(this.showQRCodeButton);
-    await QRCoddes[options?.index ?? 0].click();
-  }
-
-  /**
    * Open the account options menu for the specified account.
    *
    * @param accountLabel - The label of the account to open the options menu for.
@@ -585,7 +570,7 @@ class AccountListPage {
       `Open account options in account list for account ${accountLabel}`,
     );
     await this.driver.clickElement(
-      `button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} Options"]`,
+      `button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} options"]`,
     );
   }
 
@@ -1053,6 +1038,14 @@ class AccountListPage {
     await showAccountsButton.click();
 
     await this.driver.findNestedElement(selectedSrp, {
+      text: accountName,
+      tag: 'p',
+    });
+  }
+
+  async checkAccountNameIsDisplayed(accountName: string): Promise<void> {
+    console.log(`Check that account name ${accountName} is displayed`);
+    await this.driver.waitForSelector({
       text: accountName,
       tag: 'p',
     });

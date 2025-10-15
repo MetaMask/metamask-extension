@@ -1,4 +1,3 @@
-
 import { Driver } from '../../../webdriver/driver';
 
 class PrivateKeyModal {
@@ -7,11 +6,9 @@ class PrivateKeyModal {
   private readonly privateKeyPasswordInput =
     '[data-testid="multichain-private-key-password-input"]';
 
-  private readonly confirmButton =
-    '[data-testid="confirm-button"]';
+  private readonly confirmButton = '[data-testid="confirm-button"]';
 
-  private readonly backButton =
-    '[aria-label="Close"]';
+  private readonly backButton = '[aria-label="Close"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -21,7 +18,7 @@ class PrivateKeyModal {
     try {
       await this.driver.waitForMultipleSelectors([
         this.privateKeyPasswordInput,
-        this.confirmButton
+        this.confirmButton,
       ]);
     } catch (e) {
       console.log(
@@ -35,20 +32,18 @@ class PrivateKeyModal {
 
   /**
    * Enter Password
+   *
+   * @param password
    */
   async typePassword(password: string): Promise<void> {
-    await this.driver.fill(
-      this.privateKeyPasswordInput, password
-    );
+    await this.driver.fill(this.privateKeyPasswordInput, password);
   }
 
   /**
    * Confirm button
    */
   async clickConfirm(): Promise<void> {
-    await this.driver.clickElement(
-      this.confirmButton,
-    );
+    await this.driver.clickElement(this.confirmButton);
   }
 }
 

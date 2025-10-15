@@ -12,7 +12,8 @@ class MultichainAccountDetailsPage {
   // Account information section
   private readonly accountAvatar = '[data-testid="avatar"]';
 
-  private readonly accountNameRow = '[data-testid="account-details-row-value-account-name"]'; // First row is account name
+  private readonly accountNameRow =
+    '[data-testid="account-details-row-value-account-name"]'; // First row is account name
 
   private readonly accountAddressRow =
     '.multichain-account-details__row:nth-of-type(2)'; // Second row is address
@@ -78,6 +79,7 @@ class MultichainAccountDetailsPage {
     tag: 'button',
     text: 'View on explorer',
   };
+
   private readonly networksRow = { text: 'Networks' };
 
   private readonly privateKeyRow = { text: 'Private key' };
