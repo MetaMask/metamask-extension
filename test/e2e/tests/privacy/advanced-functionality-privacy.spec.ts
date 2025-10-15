@@ -117,6 +117,7 @@ describe('MetaMask onboarding ', function () {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('42,500.00', '$');
+        await homePage.clickSkipShieldModalButton();
         await homePage.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openAccountMenu();

@@ -106,7 +106,6 @@ describe('Wallet Created Events', function () {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -121,7 +120,7 @@ describe('Wallet Created Events', function () {
         assert.equal(events.length, 6);
 
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-          assert.equal(events[0].event, 'Wallet Setup Started');
+          assert.equal(events[0].event, 'Wallet Creation Attempted');
           assert.deepStrictEqual(events[0].properties, {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -135,6 +134,7 @@ describe('Wallet Created Events', function () {
             environment_type: 'fullscreen',
             locale: 'en',
           });
+          assert.equal(events[1].event, 'SRP Revealed');
           assert.deepStrictEqual(events[1].properties, {
             category: 'Onboarding',
             locale: 'en',
@@ -148,6 +148,7 @@ describe('Wallet Created Events', function () {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
           });
+          assert.equal(events[2].event, 'SRP Backup Confirm Display');
           assert.ok(
             events[2].properties.category === 'Onboarding' &&
               events[2].properties.chain_id === '0x1' &&
@@ -156,6 +157,7 @@ describe('Wallet Created Events', function () {
               (events[2].properties.hd_entropy_index === 0 ||
                 events[2].properties.hd_entropy_index === undefined),
           );
+          assert.equal(events[3].event, 'SRP Backup Confirmed');
           assert.ok(
             events[3].properties.category === 'Onboarding' &&
               events[3].properties.chain_id === '0x1' &&
@@ -164,18 +166,16 @@ describe('Wallet Created Events', function () {
               (events[3].properties.hd_entropy_index === 0 ||
                 events[3].properties.hd_entropy_index === undefined),
           );
+          assert.equal(events[4].event, 'Wallet Created');
           assert.ok(
             events[4].properties.category === 'Onboarding' &&
               events[4].properties.chain_id === '0x1' &&
               events[4].properties.environment_type === 'fullscreen' &&
               events[4].properties.locale === 'en' &&
-              (events[4].properties.hd_entropy_index === 0 ||
-                events[4].properties.hd_entropy_index === undefined),
+              events[4].properties.biometrics_enabled === false,
           );
-          assert.deepStrictEqual(events[65].properties, {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            biometrics_enabled: false,
+          assert.equal(events[5].event, 'Wallet Setup Completed');
+          assert.deepStrictEqual(events[5].properties, {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: 'metamask',
@@ -187,25 +187,12 @@ describe('Wallet Created Events', function () {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             environment_type: 'fullscreen',
-          });
-          assert.deepStrictEqual(events[6].properties, {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             wallet_setup_type: 'new',
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             new_wallet: true,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: 'metamask',
-            category: 'Onboarding',
-            locale: 'en',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '0x1',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: 'fullscreen',
           });
         }
       },
