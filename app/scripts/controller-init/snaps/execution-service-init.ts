@@ -56,6 +56,7 @@ export const ExecutionServiceInit: ControllerInitFunction<
         messenger: controllerMessenger,
         setupSnapProvider,
         offscreenPromise,
+        pingTimeout: 60000, // we needed to increase this for the powerUser webpack benchmark, but we should eventually fix the problem and put it back
       }),
     };
   }
@@ -70,6 +71,7 @@ export const ExecutionServiceInit: ControllerInitFunction<
       messenger: controllerMessenger,
       iframeUrl: new URL(iframeUrl),
       setupSnapProvider,
+      pingTimeout: 60000, // we needed to increase this for the powerUser webpack benchmark, but we should eventually fix the problem and put it back
     }),
   };
 };

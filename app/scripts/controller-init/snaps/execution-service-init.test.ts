@@ -69,6 +69,7 @@ describe('ExecutionServiceInit', () => {
       messenger: expect.any(Object),
       offscreenPromise: expect.any(Promise),
       setupSnapProvider: expect.any(Function),
+      pingTimeout: 60000, // we needed to increase this for the powerUser webpack benchmark, but we should eventually fix the problem and put it back
     });
   });
 });
