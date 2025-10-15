@@ -2330,6 +2330,10 @@ export default class MetamaskController extends EventEmitter {
       subscriptionsStartPolling: this.subscriptionController.startPolling.bind(
         this.subscriptionController,
       ),
+      getSubscriptionsEligibilities:
+        this.subscriptionController.getSubscriptionsEligibilities.bind(
+          this.subscriptionController,
+        ),
       getSubscriptions: this.subscriptionController.getSubscriptions.bind(
         this.subscriptionController,
       ),
@@ -2366,6 +2370,10 @@ export default class MetamaskController extends EventEmitter {
       updateSubscriptionCryptoPaymentMethod:
         this.SubscriptionService.updateSubscriptionCryptoPaymentMethod.bind(
           this.SubscriptionService,
+        ),
+      submitSubscriptionUserEvents:
+        this.subscriptionController.submitUserEvent.bind(
+          this.subscriptionController,
         ),
 
       // hardware wallets
