@@ -46,7 +46,6 @@ export const AccountOverviewTabs = ({
   showActivity,
   showDefi,
 }: AccountOverviewTabsProps) => {
-  console.log('DEBUG TTTTT ACCOUNT OVERVIEW TABS');
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);

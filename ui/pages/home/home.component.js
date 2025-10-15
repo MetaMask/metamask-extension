@@ -266,7 +266,6 @@ export default class Home extends PureComponent {
   }
 
   componentDidMount() {
-    console.log('DEBUG XXXX HOME COMPONENT DID MOUNT');
     this.checkStatusAndNavigate();
 
     this.props.fetchBuyableChains();
