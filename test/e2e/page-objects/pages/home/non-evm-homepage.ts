@@ -19,13 +19,13 @@ class NonEvmHomepage extends HomePage {
     await super.checkPageIsLoaded();
     await this.driver.delay(regularDelayMs); // workaround to avoid flakiness
     if (amount) {
-      await this.driver.wait(async () => {
-        await this.driver.waitForSelector({
+      await this.driver.waitForSelector(
+        {
+          css: this.balanceDiv,
           text: `${amount}`,
-          tag: 'span',
-        });
-        return true;
-      }, 60000);
+        },
+        { timeout: 30000 },
+      );
     }
   }
 
@@ -62,16 +62,16 @@ class NonEvmHomepage extends HomePage {
   async checkGetBalance(balance: string, token: string = 'SOL'): Promise<void> {
     await this.driver.waitForSelector(
       {
+        css: this.balanceDiv,
         text: balance,
-        tag: 'span',
       },
       { timeout: 30000 },
     );
 
     await this.driver.waitForSelector(
       {
+        css: this.balanceDiv,
         text: token,
-        tag: 'span',
       },
       { timeout: 30000 },
     );

@@ -1297,6 +1297,44 @@ export default class MetamaskController extends EventEmitter {
     }
     return snapKeyring;
   }
+
+  /**
+   * Get the snap keyring instance if available.
+   *
+   * @returns {SnapKeyring}
+   */
+  getSnapKeyringIfAvailable() {
+    // Check if the controller has been unlocked, otherwise this will throw.
+    if (this.keyringController.isUnlocked()) {
+      // TODO: Use `withKeyring` instead
+      const [snapKeyring] = this.keyringController.getKeyringsByType(
+        KeyringType.snap,
+      );
+
+      return snapKeyring;
+    }
+    return undefined;
+  }
+
+  /**
+   * Forward currently selected account group to the Snap keyring.
+   *
+   * @param snapKeyring - Snap keyring instance or undefined if not available.
+   * @param groupId - Currently selected account group.
+   */
+  async forwardSelectedAccountGroupToSnapKeyring(snapKeyring, groupId) {
+    if (!snapKeyring) {
+      // Nothing to forward if the Snap keyring is not available.
+      return;
+    }
+
+    if (groupId) {
+      const group = this.accountTreeController.getAccountGroupObject(groupId);
+      if (group) {
+        await snapKeyring.setSelectedAccounts(group.accounts);
+      }
+    }
+  }
   ///: END:ONLY_INCLUDE_IF
 
   trackInsightSnapView(snapId) {
@@ -1601,7 +1639,15 @@ export default class MetamaskController extends EventEmitter {
     // wallet_notify for solana accountChanged when selected account group changes
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
-      () => {
+      (groupId) => {
+        // TODO: Move this logic to the SnapKeyring directly.
+        // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
+        // eslint-disable-next-line no-void
+        void this.forwardSelectedAccountGroupToSnapKeyring(
+          this.getSnapKeyringIfAvailable(),
+          groupId,
+        );
+
         const [account] =
           this.accountTreeController.getAccountsFromSelectedAccountGroup({
             scopes: [SolScope.Mainnet],
@@ -1644,6 +1690,23 @@ export default class MetamaskController extends EventEmitter {
               }
             }
           }
+        }
+      },
+    );
+
+    // TODO: Move this logic to the SnapKeyring directly.
+    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
+    this.controllerMessenger.subscribe(
+      `${this.multichainAccountService.name}:multichainAccountGroupUpdated`,
+      (group) => {
+        // If the current group gets updated, then maybe there are more accounts being "selected"
+        // now, so we have to forward them to the Snap keyring too!
+        if (this.accountTreeController.getSelectedAccountGroup() === group.id) {
+          // eslint-disable-next-line no-void
+          void this.forwardSelectedAccountGroupToSnapKeyring(
+            this.getSnapKeyringIfAvailable(),
+            group.id,
+          );
         }
       },
     );
@@ -4029,6 +4092,12 @@ export default class MetamaskController extends EventEmitter {
       await this.accountsController.updateAccounts();
       // Then we can build the initial tree.
       this.accountTreeController.init();
+      // TODO: Move this logic to the SnapKeyring directly.
+      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
+      await this.forwardSelectedAccountGroupToSnapKeyring(
+        await this.getSnapKeyring(),
+        this.accountTreeController.getSelectedAccountGroup(),
+      );
 
       return primaryKeyring;
     } finally {
@@ -4412,6 +4481,12 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
       this.accountTreeController.reinit();
+      // TODO: Move this logic to the SnapKeyring directly.
+      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
+      await this.forwardSelectedAccountGroupToSnapKeyring(
+        await this.getSnapKeyring(),
+        this.accountTreeController.getSelectedAccountGroup(),
+      );
 
       if (completedOnboarding) {
         if (this.isMultichainAccountsFeatureState2Enabled()) {
@@ -4766,6 +4841,12 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
+    // TODO: Move this logic to the SnapKeyring directly.
+    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
+    await this.forwardSelectedAccountGroupToSnapKeyring(
+      await this.getSnapKeyring(),
+      this.accountTreeController.getSelectedAccountGroup(),
+    );
   }
 
   async _loginUser(password) {
