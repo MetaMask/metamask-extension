@@ -1,6 +1,6 @@
 import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
-import { ResultType, SupportedEVMChain } from '../../shared/lib/trust-signals';
+import { ResultType } from '../../shared/lib/trust-signals';
 import {
   useTrustSignal,
   useTrustSignals,
@@ -18,12 +18,15 @@ jest.mock('../selectors', () => ({
   getAddressSecurityAlertResponse: jest.fn(),
 }));
 
-jest.mock('../../shared/lib/trust-signals', () => ({
-  ...jest.requireActual('../../shared/lib/trust-signals'),
-  mapChainIdToSupportedEVMChain: jest
-    .fn()
-    .mockReturnValue(SupportedEVMChain.Ethereum),
-}));
+jest.mock('../../shared/lib/trust-signals', () => {
+  const actual = jest.requireActual('../../shared/lib/trust-signals');
+  return {
+    ...actual,
+    mapChainIdToSupportedEVMChain: jest
+      .fn()
+      .mockReturnValue(actual.SupportedEVMChain.Ethereum),
+  };
+});
 
 const VALUE_MOCK = '0x1234567890123456789012345678901234567890';
 const VALUE_MOCK_2 = '0x9876543210987654321098765432109876543210';
@@ -49,7 +52,11 @@ describe('useTrustSignals', () => {
         label: TRUST_LABEL_MOCK,
       });
 
-      const result = useTrustSignal(VALUE_MOCK, NameType.ETHEREUM_ADDRESS);
+      const result = useTrustSignal(
+        VALUE_MOCK,
+        NameType.ETHEREUM_ADDRESS,
+        '0x1',
+      );
 
       expect(result).toStrictEqual({
         state: TrustSignalDisplayState.Malicious,
@@ -72,6 +79,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -85,7 +93,7 @@ describe('useTrustSignals', () => {
 
         expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
           undefined,
-          VALUE_MOCK,
+          `ethereum:${VALUE_MOCK.toLowerCase()}`,
         );
       });
 
@@ -101,6 +109,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -125,6 +134,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -149,6 +159,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -173,6 +184,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -194,6 +206,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -217,6 +230,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -238,6 +252,7 @@ describe('useTrustSignals', () => {
           {
             value: '',
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -257,6 +272,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -281,6 +297,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -314,10 +331,12 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
           {
             value: VALUE_MOCK_2,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -337,12 +356,12 @@ describe('useTrustSignals', () => {
         expect(getAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
           1,
           undefined,
-          VALUE_MOCK,
+          `ethereum:${VALUE_MOCK.toLowerCase()}`,
         );
         expect(getAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
           2,
           undefined,
-          VALUE_MOCK_2,
+          `ethereum:${VALUE_MOCK_2.toLowerCase()}`,
         );
       });
 
@@ -367,10 +386,12 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
           {
             value: 'test.eth',
             type: NameType.ETHEREUM_ADDRESS, // Using ETHEREUM_ADDRESS as it's the only supported type
+            chainId: '0x1',
           },
         ];
 

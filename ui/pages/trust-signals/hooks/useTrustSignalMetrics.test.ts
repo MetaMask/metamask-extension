@@ -30,7 +30,7 @@ const SECURITY_ALERT_RESPONSE_MOCK = {
 };
 
 const contractInteraction = genUnapprovedContractInteractionConfirmation({
-  chainId: '0x5',
+  chainId: '0x1',
 });
 const TX_STATE_MOCK_NO_ALERT = getMockConfirmStateForTransaction(
   { ...contractInteraction, id: OWNER_ID_MOCK } as TransactionMeta,
@@ -43,19 +43,24 @@ const TX_STATE_MOCK = getMockConfirmStateForTransaction(
   {
     metamask: {
       addressSecurityAlertResponses: {
-        [TARGET_ADDRESS_MOCK.toLowerCase()]: SECURITY_ALERT_RESPONSE_MOCK,
+        [`ethereum:${TARGET_ADDRESS_MOCK.toLowerCase()}`]:
+          SECURITY_ALERT_RESPONSE_MOCK,
       },
     },
   },
 );
 
-const signatureRequest = { ...unapprovedTypedSignMsgV4, id: OWNER_ID_MOCK };
+const signatureRequest = {
+  ...unapprovedTypedSignMsgV4,
+  id: OWNER_ID_MOCK,
+  chainId: '0x1',
+};
 const SIGNATURE_STATE_MOCK = getMockTypedSignConfirmStateForRequest(
   signatureRequest,
   {
     metamask: {
       addressSecurityAlertResponses: {
-        [SIGNATURE_VERIFYING_CONTRACT_MOCK.toLowerCase()]:
+        [`ethereum:${SIGNATURE_VERIFYING_CONTRACT_MOCK.toLowerCase()}`]:
           SECURITY_ALERT_RESPONSE_MOCK,
       },
     },
