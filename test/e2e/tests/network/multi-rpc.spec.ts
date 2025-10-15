@@ -203,7 +203,7 @@ describe('MultiRpc:', function (this: Suite) {
     );
   });
 
-  it('should select rpc from edit menu', async function () {
+  it('should select rpc from edit menu ', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
