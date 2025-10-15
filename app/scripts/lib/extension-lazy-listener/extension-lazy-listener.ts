@@ -6,16 +6,9 @@ import type {
   CallbackArguments,
   EventCallback,
   NamespaceListenerMap,
+  NamespaceEventPair,
   Options,
 } from './extension-lazy-listener.types';
-
-type NamespaceEventPair<
-  Namespace extends BrowserNamespace,
-  EventNames extends BrowserEventName<Namespace>[],
-> = {
-  namespace: Namespace;
-  eventNames: EventNames;
-};
 
 /**
  * A utility to lazily listen to browser extension events, buffering calls until
@@ -97,9 +90,9 @@ export class ExtensionLazyListener {
       this.namespaceListeners.set(namespace, listeners);
     }
     for (const eventName of eventNames) {
-      type Arguments = CallbackArguments<Namespace, typeof eventName>;
-      const calls: Arguments[] = [];
-      const listener = (...args: Arguments) => calls.push(args);
+      type Args = CallbackArguments<Namespace, typeof eventName>;
+      const calls: Args[] = [];
+      const listener = (...args: Args): void => void calls.push(args);
       this.#getEvent(namespace, eventName).addListener(listener);
       listeners.set(eventName, { listener, calls });
     }
