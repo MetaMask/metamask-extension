@@ -2665,11 +2665,15 @@
   "gasUsed": {
     "message": "Gas used"
   },
-  "gatorPermissionDailyRedemption": {
+  "gatorPermissionCustomFrequency": {
+    "message": "Custom",
+    "description": "Time period for custom recurring permissions redemption"
+  },
+  "gatorPermissionDailyFrequency": {
     "message": "Daily",
     "description": "Time period for daily recurring permissions redemption"
   },
-  "gatorPermissionMonthlyRedemption": {
+  "gatorPermissionMonthlyFrequency": {
     "message": "Monthly",
     "description": "Time period for monthly recurring permissions redemption"
   },
@@ -2681,9 +2685,33 @@
     "message": "Period",
     "description": "Label for the period of a token stream permission"
   },
-  "gatorPermissionWeeklyRedemption": {
+  "gatorPermissionWeeklyFrequency": {
     "message": "Weekly",
     "description": "Time period for weekly recurring permissions redemption"
+  },
+  "gatorPermissionsExpirationDate": {
+    "message": "Expiration date",
+    "description": "Label for the expiration date of a permission"
+  },
+  "gatorPermissionsInitialAllowance": {
+    "message": "Initial allowance",
+    "description": "Label for the initial allowance of a permission"
+  },
+  "gatorPermissionsMaxAllowance": {
+    "message": "Max allowance",
+    "description": "Label for the max allowance of a permission"
+  },
+  "gatorPermissionsStartDate": {
+    "message": "Start date",
+    "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStreamRate": {
+    "message": "Stream rate",
+    "description": "Label for the stream rate of a permission"
+  },
+  "gatorPermissionsStreamingAmountLabel": {
+    "message": "Streaming amount",
+    "description": "Label for the stream rate of a permission"
   },
   "general": {
     "message": "General"
