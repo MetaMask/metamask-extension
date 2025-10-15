@@ -2,12 +2,25 @@ import {
   AuthenticationControllerState,
   Controller as AuthenticationController,
 } from '@metamask/profile-sync-controller/auth';
-import { Platform } from '@metamask/profile-sync-controller/sdk';
+import { Env, Platform } from '@metamask/profile-sync-controller/sdk';
 import { ControllerInitFunction } from '../types';
 import {
   AuthenticationControllerInitMessenger,
   AuthenticationControllerMessenger,
 } from '../messengers/identity';
+import { ENVIRONMENT } from '../../../../development/build/constants';
+
+/**
+ * Check if the build is a Development or Test build.
+ *
+ * @returns true if the build is a Development or Test build, false otherwise
+ */
+function isDevOrTestBuild() {
+  return (
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
+  );
+}
 
 /**
  * Initialize the Authentication controller.
@@ -33,6 +46,9 @@ export const AuthenticationControllerInit: ControllerInitFunction<
         'MetaMetricsController:getMetaMetricsId',
       ),
       agent: Platform.EXTENSION,
+    },
+    config: {
+      env: isDevOrTestBuild() ? Env.DEV : Env.PRD,
     },
   });
 
