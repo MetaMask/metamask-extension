@@ -217,8 +217,8 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
-            addBitcoinAccount: false,
+            solanaAccounts: { enabled: false, minimumVersion: '13.7.0' },
+            bitcoinAccounts: { enabled: false, minimumVersion: '13.7.0' },
           },
         },
       };

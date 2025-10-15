@@ -21,7 +21,7 @@ export function isMultichainFeatureEnabled(flagValue: unknown): boolean {
   // Get app version dynamically to avoid circular imports
   let appVersion: string;
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, node/global-require
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, node/global-require, @typescript-eslint/no-require-imports
     appVersion = require('../../package.json').version;
   } catch {
     // Fallback if package.json can't be loaded

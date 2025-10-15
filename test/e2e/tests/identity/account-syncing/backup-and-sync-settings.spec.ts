@@ -20,7 +20,6 @@ import {
 import { arrangeTestUtils } from './helpers';
 
 describe('Backup and Sync Settings', function () {
-
   const arrange = async () => {
     const unencryptedAccounts = accountsToMockForAccountsSync;
     const mockedAccountSyncResponse = await getAccountsSyncMockResponse();
