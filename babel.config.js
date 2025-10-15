@@ -3,7 +3,10 @@ const path = require('path');
 const ReactCompilerConfig = {
   target: '17',
   sources: (filename) => {
-    return filename.indexOf('ui/') !== -1;
+    return (
+      filename.indexOf('ui/') !== -1 &&
+      filename.indexOf('ui/pages/confirmations') === -1
+    );
   },
 };
 
