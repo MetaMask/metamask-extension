@@ -26,6 +26,7 @@ jobs:
   resolve-bases:
     # Determines if the release is hotfix or not based on semver. Then sets the appropriate base branches for the checkout and release PR.
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       checkout_base: ${{ steps.out.outputs.checkout_base }}
       release_base: ${{ steps.out.outputs.release_base }}
@@ -57,6 +58,7 @@ jobs:
   resolve-previous-ref:
     needs: resolve-bases
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       previous_ref: ${{ steps.out.outputs.previous_ref }}
     steps:
