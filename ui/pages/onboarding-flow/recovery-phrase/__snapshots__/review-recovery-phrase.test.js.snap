@@ -42,7 +42,7 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
         class="mm-box mm-box--margin-bottom-6"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
+          class="mm-box mm-text recovery-phrase__details mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
         >
           <span>
              
@@ -334,7 +334,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
         class="mm-box mm-box--margin-bottom-6"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
+          class="mm-box mm-text recovery-phrase__details mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
         >
           <span>
              
@@ -633,7 +633,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
         class="mm-box mm-box--margin-bottom-6"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
+          class="mm-box mm-text recovery-phrase__details mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
         >
           <span>
              

@@ -217,6 +217,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
             marginBottom={6}
+            className="recovery-phrase__details"
           >
             {t('seedPhraseReviewDetails', [
               <ButtonLink

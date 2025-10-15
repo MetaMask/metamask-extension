@@ -5,6 +5,10 @@
     grid-template-columns: 0.25fr 3.5fr 0.25fr;
   }
 
+  &__details {
+    word-break: break-all;
+  }
+
   &__chips {
     grid-template-columns: 1fr 1fr 1fr;
 
