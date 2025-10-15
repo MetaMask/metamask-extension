@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.4.2",
+  "version": "13.4.3",
   "private": true,
   "repository": {
     "type": "git",
@@ -242,7 +242,8 @@
     "jsonpath-plus": "^10.3.0",
     "@endo/env-options@npm:^1.1.11": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@endo/env-options@npm:^1.1.7": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
-    "@endo/env-options@npm:^1.1.8": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch"
+    "@endo/env-options@npm:^1.1.8": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
+    "@metamask/phishing-controller@npm:^13.1.0": "patch:@metamask/phishing-controller@npm%3A13.1.0#~/.yarn/patches/@metamask-phishing-controller-npm-13.1.0-faa967e3b5.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -329,7 +330,7 @@
     "@metamask/obs-store": "^9.0.0",
     "@metamask/permission-controller": "^11.0.6",
     "@metamask/permission-log-controller": "^4.0.0",
-    "@metamask/phishing-controller": "^13.1.0",
+    "@metamask/phishing-controller": "patch:@metamask/phishing-controller@npm%3A13.1.0#~/.yarn/patches/@metamask-phishing-controller-npm-13.1.0-faa967e3b5.patch",
     "@metamask/post-message-stream": "^10.0.0",
     "@metamask/ppom-validator": "0.38.0",
     "@metamask/preinstalled-example-snap": "^0.7.1",
@@ -472,7 +473,7 @@
     "@metamask/eth-json-rpc-provider": "^4.1.6",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/foundryup": "^1.0.1",
-    "@metamask/phishing-warning": "^5.0.1",
+    "@metamask/phishing-warning": "^5.1.0",
     "@metamask/preferences-controller": "^17.0.0",
     "@metamask/superstruct": "^3.2.1",
     "@metamask/test-bundler": "^1.0.0",

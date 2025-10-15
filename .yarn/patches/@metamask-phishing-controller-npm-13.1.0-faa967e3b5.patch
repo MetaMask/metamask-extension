@@ -1,0 +1,937 @@
+diff --git a/dist/PathTrie.cjs b/dist/PathTrie.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..6bac8b1bbaaff70013e79128554919ffd57f4627
+--- /dev/null
++++ b/dist/PathTrie.cjs
+@@ -0,0 +1,169 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.deepCopyPathTrie = exports.convertListToTrie = exports.matchedPathPrefix = exports.deleteFromTrie = exports.insertToTrie = exports.isTerminal = void 0;
++const utils_1 = require("./utils.cjs");
++const isTerminal = (node) => {
++    if (!node || typeof node !== 'object') {
++        return false;
++    }
++    return Object.keys(node).length === 0;
++};
++exports.isTerminal = isTerminal;
++/**
++ * Insert a URL into the trie.
++ *
++ * @param url - The URL to insert into the trie.
++ * @param pathTrie - The trie to insert the URL into.
++ */
++const insertToTrie = (url, pathTrie) => {
++    const { hostname, pathComponents } = (0, utils_1.getHostnameAndPathComponents)(url);
++    if (pathComponents.length === 0 || !hostname) {
++        return;
++    }
++    const lowerHostname = hostname.toLowerCase();
++    if (!pathTrie[lowerHostname]) {
++        pathTrie[lowerHostname] = {};
++    }
++    let curr = pathTrie[lowerHostname];
++    for (let i = 0; i < pathComponents.length; i++) {
++        const pathComponent = pathComponents[i];
++        const isLast = i === pathComponents.length - 1;
++        const exists = curr[pathComponent] !== undefined;
++        if (exists) {
++            if (!isLast && (0, exports.isTerminal)(curr[pathComponent])) {
++                return;
++            }
++            if (isLast) {
++                // Prune descendants if the current path component is not terminal
++                if (!(0, exports.isTerminal)(curr[pathComponent])) {
++                    curr[pathComponent] = {};
++                }
++                return;
++            }
++            curr = curr[pathComponent];
++            continue;
++        }
++        if (isLast) {
++            curr[pathComponent] = {};
++            return;
++        }
++        const next = {};
++        curr[pathComponent] = next;
++        curr = next;
++    }
++};
++exports.insertToTrie = insertToTrie;
++/**
++ * Delete a URL from the trie.
++ *
++ * @param url - The URL to delete from the trie.
++ * @param pathTrie - The trie to delete the URL from.
++ */
++const deleteFromTrie = (url, pathTrie) => {
++    const { hostname, pathComponents } = (0, utils_1.getHostnameAndPathComponents)(url);
++    const lowerHostname = hostname.toLowerCase();
++    if (pathComponents.length === 0 || !pathTrie[lowerHostname]) {
++        return;
++    }
++    const pathToNode = [
++        { node: pathTrie, key: lowerHostname },
++    ];
++    let curr = pathTrie[lowerHostname];
++    for (const pathComponent of pathComponents) {
++        if (!curr[pathComponent]) {
++            return;
++        }
++        pathToNode.push({ node: curr, key: pathComponent });
++        curr = curr[pathComponent];
++    }
++    const lastEntry = pathToNode[pathToNode.length - 1];
++    delete lastEntry.node[lastEntry.key];
++    for (let i = pathToNode.length - 2; i >= 0; i--) {
++        const { node, key } = pathToNode[i];
++        if ((0, exports.isTerminal)(node[key])) {
++            delete node[key];
++        }
++        else {
++            break;
++        }
++    }
++};
++exports.deleteFromTrie = deleteFromTrie;
++/**
++ * Get the concatenated hostname and path components all the way down to the
++ * terminal node in the trie that is prefixed in the passed URL. It will only
++ * return a string if the terminal node in the trie is contained in the passed
++ * URL.
++ *
++ * @param url - The URL to check.
++ * @param pathTrie - The trie to check the URL in.
++ * @returns The matched path prefix, or null if no match is found.
++ */
++const matchedPathPrefix = (url, pathTrie) => {
++    const { hostname, pathComponents } = (0, utils_1.getHostnameAndPathComponents)(url);
++    const lowerHostname = hostname.toLowerCase();
++    if (pathComponents.length === 0 || !hostname || !pathTrie[lowerHostname]) {
++        return null;
++    }
++    let matchedPath = `${hostname}/`;
++    let curr = pathTrie[lowerHostname];
++    for (const pathComponent of pathComponents) {
++        if (!curr[pathComponent]) {
++            return null;
++        }
++        curr = curr[pathComponent];
++        // If we've reached a terminal node, then we can return the matched path.
++        if ((0, exports.isTerminal)(curr)) {
++            matchedPath += pathComponent;
++            return matchedPath;
++        }
++        matchedPath += `${pathComponent}/`;
++    }
++    return null;
++};
++exports.matchedPathPrefix = matchedPathPrefix;
++/**
++ * Converts a list ofpaths into a PathTrie structure. This assumes that the
++ * entries are only hostname+pathname format.
++ *
++ * @param paths - Array of hostname+pathname
++ * @returns PathTrie structure for efficient path checking
++ */
++const convertListToTrie = (paths = []) => {
++    const pathTrie = {};
++    if (!paths || !Array.isArray(paths)) {
++        return pathTrie;
++    }
++    for (const path of paths) {
++        (0, exports.insertToTrie)(path, pathTrie);
++    }
++    return pathTrie;
++};
++exports.convertListToTrie = convertListToTrie;
++/**
++ * Creates a deep copy of a PathNode structure.
++ *
++ * @param original - The original PathNode to copy.
++ * @returns A deep copy of the PathNode.
++ */
++const deepCopyPathNode = (original) => {
++    const copy = {};
++    for (const [key, childNode] of Object.entries(original)) {
++        copy[key] = deepCopyPathNode(childNode);
++    }
++    return copy;
++};
++/**
++ * Creates a deep copy of a PathTrie structure.
++ *
++ * @param original - The original PathTrie to copy.
++ * @returns A deep copy of the PathTrie.
++ */
++const deepCopyPathTrie = (original) => {
++    if (!original) {
++        return {};
++    }
++    return deepCopyPathNode(original);
++};
++exports.deepCopyPathTrie = deepCopyPathTrie;
++//# sourceMappingURL=PathTrie.cjs.map
+\ No newline at end of file
+diff --git a/dist/PathTrie.mjs b/dist/PathTrie.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..ca466f9ee66877701d1ed831de36845cda8d7039
+--- /dev/null
++++ b/dist/PathTrie.mjs
+@@ -0,0 +1,160 @@
++import { getHostnameAndPathComponents } from "./utils.mjs";
++export const isTerminal = (node) => {
++    if (!node || typeof node !== 'object') {
++        return false;
++    }
++    return Object.keys(node).length === 0;
++};
++/**
++ * Insert a URL into the trie.
++ *
++ * @param url - The URL to insert into the trie.
++ * @param pathTrie - The trie to insert the URL into.
++ */
++export const insertToTrie = (url, pathTrie) => {
++    const { hostname, pathComponents } = getHostnameAndPathComponents(url);
++    if (pathComponents.length === 0 || !hostname) {
++        return;
++    }
++    const lowerHostname = hostname.toLowerCase();
++    if (!pathTrie[lowerHostname]) {
++        pathTrie[lowerHostname] = {};
++    }
++    let curr = pathTrie[lowerHostname];
++    for (let i = 0; i < pathComponents.length; i++) {
++        const pathComponent = pathComponents[i];
++        const isLast = i === pathComponents.length - 1;
++        const exists = curr[pathComponent] !== undefined;
++        if (exists) {
++            if (!isLast && isTerminal(curr[pathComponent])) {
++                return;
++            }
++            if (isLast) {
++                // Prune descendants if the current path component is not terminal
++                if (!isTerminal(curr[pathComponent])) {
++                    curr[pathComponent] = {};
++                }
++                return;
++            }
++            curr = curr[pathComponent];
++            continue;
++        }
++        if (isLast) {
++            curr[pathComponent] = {};
++            return;
++        }
++        const next = {};
++        curr[pathComponent] = next;
++        curr = next;
++    }
++};
++/**
++ * Delete a URL from the trie.
++ *
++ * @param url - The URL to delete from the trie.
++ * @param pathTrie - The trie to delete the URL from.
++ */
++export const deleteFromTrie = (url, pathTrie) => {
++    const { hostname, pathComponents } = getHostnameAndPathComponents(url);
++    const lowerHostname = hostname.toLowerCase();
++    if (pathComponents.length === 0 || !pathTrie[lowerHostname]) {
++        return;
++    }
++    const pathToNode = [
++        { node: pathTrie, key: lowerHostname },
++    ];
++    let curr = pathTrie[lowerHostname];
++    for (const pathComponent of pathComponents) {
++        if (!curr[pathComponent]) {
++            return;
++        }
++        pathToNode.push({ node: curr, key: pathComponent });
++        curr = curr[pathComponent];
++    }
++    const lastEntry = pathToNode[pathToNode.length - 1];
++    delete lastEntry.node[lastEntry.key];
++    for (let i = pathToNode.length - 2; i >= 0; i--) {
++        const { node, key } = pathToNode[i];
++        if (isTerminal(node[key])) {
++            delete node[key];
++        }
++        else {
++            break;
++        }
++    }
++};
++/**
++ * Get the concatenated hostname and path components all the way down to the
++ * terminal node in the trie that is prefixed in the passed URL. It will only
++ * return a string if the terminal node in the trie is contained in the passed
++ * URL.
++ *
++ * @param url - The URL to check.
++ * @param pathTrie - The trie to check the URL in.
++ * @returns The matched path prefix, or null if no match is found.
++ */
++export const matchedPathPrefix = (url, pathTrie) => {
++    const { hostname, pathComponents } = getHostnameAndPathComponents(url);
++    const lowerHostname = hostname.toLowerCase();
++    if (pathComponents.length === 0 || !hostname || !pathTrie[lowerHostname]) {
++        return null;
++    }
++    let matchedPath = `${hostname}/`;
++    let curr = pathTrie[lowerHostname];
++    for (const pathComponent of pathComponents) {
++        if (!curr[pathComponent]) {
++            return null;
++        }
++        curr = curr[pathComponent];
++        // If we've reached a terminal node, then we can return the matched path.
++        if (isTerminal(curr)) {
++            matchedPath += pathComponent;
++            return matchedPath;
++        }
++        matchedPath += `${pathComponent}/`;
++    }
++    return null;
++};
++/**
++ * Converts a list ofpaths into a PathTrie structure. This assumes that the
++ * entries are only hostname+pathname format.
++ *
++ * @param paths - Array of hostname+pathname
++ * @returns PathTrie structure for efficient path checking
++ */
++export const convertListToTrie = (paths = []) => {
++    const pathTrie = {};
++    if (!paths || !Array.isArray(paths)) {
++        return pathTrie;
++    }
++    for (const path of paths) {
++        insertToTrie(path, pathTrie);
++    }
++    return pathTrie;
++};
++/**
++ * Creates a deep copy of a PathNode structure.
++ *
++ * @param original - The original PathNode to copy.
++ * @returns A deep copy of the PathNode.
++ */
++const deepCopyPathNode = (original) => {
++    const copy = {};
++    for (const [key, childNode] of Object.entries(original)) {
++        copy[key] = deepCopyPathNode(childNode);
++    }
++    return copy;
++};
++/**
++ * Creates a deep copy of a PathTrie structure.
++ *
++ * @param original - The original PathTrie to copy.
++ * @returns A deep copy of the PathTrie.
++ */
++export const deepCopyPathTrie = (original) => {
++    if (!original) {
++        return {};
++    }
++    return deepCopyPathNode(original);
++};
++//# sourceMappingURL=PathTrie.mjs.map
+\ No newline at end of file
+diff --git a/dist/PhishingController.cjs b/dist/PhishingController.cjs
+index eb660e86f4067babdc22a208a13a0c603301ecba..087ecb5dba38dbbb87f73e352b1656acbeb9be13 100644
+--- a/dist/PhishingController.cjs
++++ b/dist/PhishingController.cjs
+@@ -16,13 +16,14 @@ exports.PhishingController = exports.phishingListKeyNameMap = exports.ListNames
+ const base_controller_1 = require("@metamask/base-controller");
+ const controller_utils_1 = require("@metamask/controller-utils");
+ const punycode_js_1 = require("punycode/punycode.js");
++const PathTrie_1 = require("./PathTrie.cjs");
+ const PhishingDetector_1 = require("./PhishingDetector.cjs");
+ const types_1 = require("./types.cjs");
+ const UrlScanCache_1 = require("./UrlScanCache.cjs");
+ const utils_1 = require("./utils.cjs");
+ exports.PHISHING_CONFIG_BASE_URL = 'https://phishing-detection.api.cx.metamask.io';
+ exports.METAMASK_STALELIST_FILE = '/v1/stalelist';
+-exports.METAMASK_HOTLIST_DIFF_FILE = '/v1/diffsSince';
++exports.METAMASK_HOTLIST_DIFF_FILE = '/v2/diffsSince';
+ exports.CLIENT_SIDE_DETECION_BASE_URL = 'https://client-side-detection.api.cx.metamask.io';
+ exports.C2_DOMAIN_BLOCKLIST_ENDPOINT = '/v1/request-blocklist';
+ exports.PHISHING_DETECTION_BASE_URL = 'https://dapp-scanning.api.cx.metamask.io';
+@@ -67,6 +68,7 @@ const controllerName = 'PhishingController';
+ const metadata = {
+     phishingLists: { persist: true, anonymous: false },
+     whitelist: { persist: true, anonymous: false },
++    whitelistPaths: { persist: true, anonymous: false },
+     hotlistLastFetched: { persist: true, anonymous: false },
+     stalelistLastFetched: { persist: true, anonymous: false },
+     c2DomainBlocklistLastFetched: { persist: true, anonymous: false },
+@@ -80,6 +82,7 @@ const getDefaultState = () => {
+     return {
+         phishingLists: [],
+         whitelist: [],
++        whitelistPaths: {},
+         hotlistLastFetched: 0,
+         stalelistLastFetched: 0,
+         c2DomainBlocklistLastFetched: 0,
+@@ -454,6 +457,10 @@ class PhishingController extends base_controller_1.BaseController {
+     test(origin) {
+         const punycodeOrigin = (0, punycode_js_1.toASCII)(origin);
+         const hostname = (0, utils_1.getHostnameFromUrl)(punycodeOrigin);
++        const hostnameWithPaths = hostname + (0, utils_1.getPathnameFromUrl)(origin);
++        if ((0, PathTrie_1.matchedPathPrefix)(hostnameWithPaths, this.state.whitelistPaths)) {
++            return { result: false, type: types_1.PhishingDetectorResultType.All };
++        }
+         if (this.state.whitelist.includes(hostname || punycodeOrigin)) {
+             return { result: false, type: types_1.PhishingDetectorResultType.All }; // Same as whitelisted match returned by detector.check(...).
+         }
+@@ -485,8 +492,19 @@ class PhishingController extends base_controller_1.BaseController {
+     bypass(origin) {
+         const punycodeOrigin = (0, punycode_js_1.toASCII)(origin);
+         const hostname = (0, utils_1.getHostnameFromUrl)(punycodeOrigin);
+-        const { whitelist } = this.state;
+-        if (whitelist.includes(hostname || punycodeOrigin)) {
++        const hostnameWithPaths = hostname + (0, utils_1.getPathnameFromUrl)(origin);
++        const { whitelist, whitelistPaths } = this.state;
++        const whitelistPath = (0, PathTrie_1.matchedPathPrefix)(hostnameWithPaths, whitelistPaths);
++        if (whitelist.includes(hostname || punycodeOrigin) || whitelistPath) {
++            return;
++        }
++        // If the origin was blocked by a path, then we only want to add it to the whitelistPaths since
++        // other paths with the same hostname may not be blocked.
++        const blockingPath = __classPrivateFieldGet(this, _PhishingController_detector, "f").blockingPath(origin);
++        if (blockingPath) {
++            this.update((draftState) => {
++                (0, PathTrie_1.insertToTrie)(blockingPath, draftState.whitelistPaths);
++            });
+             return;
+         }
+         this.update((draftState) => {
+@@ -593,11 +611,14 @@ async function _PhishingController_updateStalelist() {
+     if (!stalelistResponse || !hotlistDiffsResponse) {
+         return;
+     }
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    const { eth_phishing_detect_config, ...partialState } = stalelistResponse.data;
+     const metamaskListState = {
+-        ...eth_phishing_detect_config,
+-        ...partialState,
++        allowlist: stalelistResponse.data.allowlist,
++        fuzzylist: stalelistResponse.data.fuzzylist,
++        tolerance: stalelistResponse.data.tolerance,
++        version: stalelistResponse.data.version,
++        lastUpdated: stalelistResponse.data.lastUpdated,
++        blocklist: stalelistResponse.data.blocklist,
++        blocklistPaths: (0, PathTrie_1.convertListToTrie)(stalelistResponse.data.blocklistPaths),
+         c2DomainBlocklist: c2DomainBlocklistResponse
+             ? c2DomainBlocklistResponse.recentlyAdded
+             : [],
+diff --git a/dist/PhishingController.d.cts b/dist/PhishingController.d.cts
+index 83717b0baaf6e2f866116492c6d826e18fb9dae6..bc69944cd12008047cf80503c61e4ab3340eaa82 100644
+--- a/dist/PhishingController.d.cts
++++ b/dist/PhishingController.d.cts
+@@ -1,5 +1,6 @@
+ import type { ControllerGetStateAction, ControllerStateChangeEvent, RestrictedMessenger } from "@metamask/base-controller";
+ import { BaseController } from "@metamask/base-controller";
++import { type PathTrie } from "./PathTrie.cjs";
+ import { type PhishingDetectorResult, type PhishingDetectionScanResult } from "./types.cjs";
+ import { type UrlScanCacheEntry } from "./UrlScanCache.cjs";
+ export declare const PHISHING_CONFIG_BASE_URL = "https://phishing-detection.api.cx.metamask.io";
+@@ -84,6 +85,7 @@ export type PhishingStalelist = {
+ export type PhishingListState = {
+     allowlist: string[];
+     blocklist: string[];
++    blocklistPaths: PathTrie;
+     c2DomainBlocklist: string[];
+     fuzzylist: string[];
+     tolerance: number;
+diff --git a/dist/PhishingController.d.mts b/dist/PhishingController.d.mts
+index ddcea5ee26e1f2ab12b21175cd07e7e57b1c6e83..a9301b1b6056950004d24a3805dbd50aa5098d04 100644
+--- a/dist/PhishingController.d.mts
++++ b/dist/PhishingController.d.mts
+@@ -1,5 +1,6 @@
+ import type { ControllerGetStateAction, ControllerStateChangeEvent, RestrictedMessenger } from "@metamask/base-controller";
+ import { BaseController } from "@metamask/base-controller";
++import { type PathTrie } from "./PathTrie.mjs";
+ import { type PhishingDetectorResult, type PhishingDetectionScanResult } from "./types.mjs";
+ import { type UrlScanCacheEntry } from "./UrlScanCache.mjs";
+ export declare const PHISHING_CONFIG_BASE_URL = "https://phishing-detection.api.cx.metamask.io";
+@@ -84,6 +85,7 @@ export type PhishingStalelist = {
+ export type PhishingListState = {
+     allowlist: string[];
+     blocklist: string[];
++    blocklistPaths: PathTrie;
+     c2DomainBlocklist: string[];
+     fuzzylist: string[];
+     tolerance: number;
+diff --git a/dist/PhishingController.mjs b/dist/PhishingController.mjs
+index e4bb6908a916af4b01341928a3bf3b4bd5366120..5c7bb4e6a07fa9a3983b2ff4ac7ef9ced6cc59bb 100644
+--- a/dist/PhishingController.mjs
++++ b/dist/PhishingController.mjs
+@@ -14,13 +14,14 @@ import { BaseController } from "@metamask/base-controller";
+ import { safelyExecute, safelyExecuteWithTimeout } from "@metamask/controller-utils";
+ import $punycodepunycodejs from "punycode/punycode.js";
+ const { toASCII } = $punycodepunycodejs;
++import { convertListToTrie, insertToTrie, matchedPathPrefix } from "./PathTrie.mjs";
+ import { PhishingDetector } from "./PhishingDetector.mjs";
+ import { PhishingDetectorResultType, RecommendedAction } from "./types.mjs";
+ import { DEFAULT_URL_SCAN_CACHE_MAX_SIZE, DEFAULT_URL_SCAN_CACHE_TTL, UrlScanCache } from "./UrlScanCache.mjs";
+-import { applyDiffs, fetchTimeNow, getHostnameFromUrl, roundToNearestMinute, getHostnameFromWebUrl } from "./utils.mjs";
++import { applyDiffs, fetchTimeNow, getHostnameFromUrl, roundToNearestMinute, getHostnameFromWebUrl, getPathnameFromUrl } from "./utils.mjs";
+ export const PHISHING_CONFIG_BASE_URL = 'https://phishing-detection.api.cx.metamask.io';
+ export const METAMASK_STALELIST_FILE = '/v1/stalelist';
+-export const METAMASK_HOTLIST_DIFF_FILE = '/v1/diffsSince';
++export const METAMASK_HOTLIST_DIFF_FILE = '/v2/diffsSince';
+ export const CLIENT_SIDE_DETECION_BASE_URL = 'https://client-side-detection.api.cx.metamask.io';
+ export const C2_DOMAIN_BLOCKLIST_ENDPOINT = '/v1/request-blocklist';
+ export const PHISHING_DETECTION_BASE_URL = 'https://dapp-scanning.api.cx.metamask.io';
+@@ -65,6 +66,7 @@ const controllerName = 'PhishingController';
+ const metadata = {
+     phishingLists: { persist: true, anonymous: false },
+     whitelist: { persist: true, anonymous: false },
++    whitelistPaths: { persist: true, anonymous: false },
+     hotlistLastFetched: { persist: true, anonymous: false },
+     stalelistLastFetched: { persist: true, anonymous: false },
+     c2DomainBlocklistLastFetched: { persist: true, anonymous: false },
+@@ -78,6 +80,7 @@ const getDefaultState = () => {
+     return {
+         phishingLists: [],
+         whitelist: [],
++        whitelistPaths: {},
+         hotlistLastFetched: 0,
+         stalelistLastFetched: 0,
+         c2DomainBlocklistLastFetched: 0,
+@@ -452,6 +455,10 @@ export class PhishingController extends BaseController {
+     test(origin) {
+         const punycodeOrigin = toASCII(origin);
+         const hostname = getHostnameFromUrl(punycodeOrigin);
++        const hostnameWithPaths = hostname + getPathnameFromUrl(origin);
++        if (matchedPathPrefix(hostnameWithPaths, this.state.whitelistPaths)) {
++            return { result: false, type: PhishingDetectorResultType.All };
++        }
+         if (this.state.whitelist.includes(hostname || punycodeOrigin)) {
+             return { result: false, type: PhishingDetectorResultType.All }; // Same as whitelisted match returned by detector.check(...).
+         }
+@@ -483,8 +490,19 @@ export class PhishingController extends BaseController {
+     bypass(origin) {
+         const punycodeOrigin = toASCII(origin);
+         const hostname = getHostnameFromUrl(punycodeOrigin);
+-        const { whitelist } = this.state;
+-        if (whitelist.includes(hostname || punycodeOrigin)) {
++        const hostnameWithPaths = hostname + getPathnameFromUrl(origin);
++        const { whitelist, whitelistPaths } = this.state;
++        const whitelistPath = matchedPathPrefix(hostnameWithPaths, whitelistPaths);
++        if (whitelist.includes(hostname || punycodeOrigin) || whitelistPath) {
++            return;
++        }
++        // If the origin was blocked by a path, then we only want to add it to the whitelistPaths since
++        // other paths with the same hostname may not be blocked.
++        const blockingPath = __classPrivateFieldGet(this, _PhishingController_detector, "f").blockingPath(origin);
++        if (blockingPath) {
++            this.update((draftState) => {
++                insertToTrie(blockingPath, draftState.whitelistPaths);
++            });
+             return;
+         }
+         this.update((draftState) => {
+@@ -590,11 +608,14 @@ async function _PhishingController_updateStalelist() {
+     if (!stalelistResponse || !hotlistDiffsResponse) {
+         return;
+     }
+-    // TODO: Either fix this lint violation or explain why it's necessary to ignore.
+-    const { eth_phishing_detect_config, ...partialState } = stalelistResponse.data;
+     const metamaskListState = {
+-        ...eth_phishing_detect_config,
+-        ...partialState,
++        allowlist: stalelistResponse.data.allowlist,
++        fuzzylist: stalelistResponse.data.fuzzylist,
++        tolerance: stalelistResponse.data.tolerance,
++        version: stalelistResponse.data.version,
++        lastUpdated: stalelistResponse.data.lastUpdated,
++        blocklist: stalelistResponse.data.blocklist,
++        blocklistPaths: convertListToTrie(stalelistResponse.data.blocklistPaths),
+         c2DomainBlocklist: c2DomainBlocklistResponse
+             ? c2DomainBlocklistResponse.recentlyAdded
+             : [],
+diff --git a/dist/PhishingDetector.cjs b/dist/PhishingDetector.cjs
+index ef3873125d6a7884e5365abfda6e01fdbea98140..2cf7aecaee99e64b34352fe4ac982a9e218c28b9 100644
+--- a/dist/PhishingDetector.cjs
++++ b/dist/PhishingDetector.cjs
+@@ -14,6 +14,7 @@ var _PhishingDetector_instances, _PhishingDetector_configs, _PhishingDetector_le
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.PhishingDetector = void 0;
+ const fastest_levenshtein_1 = require("fastest-levenshtein");
++const PathTrie_1 = require("./PathTrie.cjs");
+ const types_1 = require("./types.cjs");
+ const utils_1 = require("./utils.cjs");
+ class PhishingDetector {
+@@ -42,7 +43,6 @@ class PhishingDetector {
+                 (0, utils_1.getDefaultPhishingDetectorConfig)({
+                     allowlist: opts.whitelist,
+                     blocklist: opts.blacklist,
+-                    c2DomainBlocklist: opts.c2DomainBlocklist,
+                     fuzzylist: opts.fuzzylist,
+                     tolerance: opts.tolerance,
+                 }),
+@@ -76,6 +76,18 @@ class PhishingDetector {
+         }
+         return result;
+     }
++    blockingPath(url) {
++        for (const { blocklistPaths } of __classPrivateFieldGet(this, _PhishingDetector_configs, "f")) {
++            if (!blocklistPaths || Object.keys(blocklistPaths).length === 0) {
++                continue;
++            }
++            const matchedPath = (0, PathTrie_1.matchedPathPrefix)(url, blocklistPaths);
++            if (matchedPath) {
++                return matchedPath;
++            }
++        }
++        return null;
++    }
+     /**
+      * Checks if a URL is blocked against the hashed request blocklist.
+      * This is done by hashing the URL's hostname and checking it against the hashed request blocklist.
+@@ -171,7 +183,7 @@ _PhishingDetector_configs = new WeakMap(), _PhishingDetector_legacyConfig = new
+     try {
+         domain = new URL(url).hostname;
+     }
+-    catch (error) {
++    catch {
+         return {
+             result: false,
+             type: types_1.PhishingDetectorResultType.All,
+@@ -179,6 +191,21 @@ _PhishingDetector_configs = new WeakMap(), _PhishingDetector_legacyConfig = new
+     }
+     const fqdn = domain.endsWith('.') ? domain.slice(0, -1) : domain;
+     const source = (0, utils_1.domainToParts)(fqdn);
++    for (const { blocklistPaths, name, version } of __classPrivateFieldGet(this, _PhishingDetector_configs, "f")) {
++        if (!blocklistPaths || Object.keys(blocklistPaths).length === 0) {
++            continue;
++        }
++        const pathMatch = (0, PathTrie_1.matchedPathPrefix)(url, blocklistPaths);
++        if (pathMatch) {
++            return {
++                match: pathMatch,
++                name,
++                result: true,
++                type: types_1.PhishingDetectorResultType.Blocklist,
++                version: version === undefined ? version : String(version),
++            };
++        }
++    }
+     for (const { allowlist, name, version } of __classPrivateFieldGet(this, _PhishingDetector_configs, "f")) {
+         // if source matches allowlist hostname (or subdomain thereof), PASS
+         const allowlistMatch = (0, utils_1.matchPartsAgainstList)(source, allowlist);
+diff --git a/dist/PhishingDetector.mjs b/dist/PhishingDetector.mjs
+index 3421038a19779ae403ebdd6ece83917cdc3f75f0..c660236243ca2a7c5d141890df3382a562fec6b1 100644
+--- a/dist/PhishingDetector.mjs
++++ b/dist/PhishingDetector.mjs
+@@ -11,6 +11,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ };
+ var _PhishingDetector_instances, _PhishingDetector_configs, _PhishingDetector_legacyConfig, _PhishingDetector_check;
+ import { distance } from "fastest-levenshtein";
++import { matchedPathPrefix } from "./PathTrie.mjs";
+ import { PhishingDetectorResultType } from "./types.mjs";
+ import { domainPartsToDomain, domainPartsToFuzzyForm, domainToParts, generateParentDomains, getDefaultPhishingDetectorConfig, getHostnameFromUrl, matchPartsAgainstList, processConfigs, sha256Hash } from "./utils.mjs";
+ export class PhishingDetector {
+@@ -39,7 +40,6 @@ export class PhishingDetector {
+                 getDefaultPhishingDetectorConfig({
+                     allowlist: opts.whitelist,
+                     blocklist: opts.blacklist,
+-                    c2DomainBlocklist: opts.c2DomainBlocklist,
+                     fuzzylist: opts.fuzzylist,
+                     tolerance: opts.tolerance,
+                 }),
+@@ -73,6 +73,24 @@ export class PhishingDetector {
+         }
+         return result;
+     }
++    /**
++     * Gets the specific terminal path from blocklistPaths that is blocking a URL.
++     *
++     * @param url - The URL to check.
++     * @returns The terminal path that is blocking the URL, or null if not blocked.
++     */
++    blockingPath(url) {
++        for (const { blocklistPaths } of __classPrivateFieldGet(this, _PhishingDetector_configs, "f")) {
++            if (!blocklistPaths || Object.keys(blocklistPaths).length === 0) {
++                continue;
++            }
++            const matchedPath = matchedPathPrefix(url, blocklistPaths);
++            if (matchedPath) {
++                return matchedPath;
++            }
++        }
++        return null;
++    }
+     /**
+      * Checks if a URL is blocked against the hashed request blocklist.
+      * This is done by hashing the URL's hostname and checking it against the hashed request blocklist.
+@@ -167,7 +185,7 @@ _PhishingDetector_configs = new WeakMap(), _PhishingDetector_legacyConfig = new
+     try {
+         domain = new URL(url).hostname;
+     }
+-    catch (error) {
++    catch {
+         return {
+             result: false,
+             type: PhishingDetectorResultType.All,
+@@ -175,6 +193,21 @@ _PhishingDetector_configs = new WeakMap(), _PhishingDetector_legacyConfig = new
+     }
+     const fqdn = domain.endsWith('.') ? domain.slice(0, -1) : domain;
+     const source = domainToParts(fqdn);
++    for (const { blocklistPaths, name, version } of __classPrivateFieldGet(this, _PhishingDetector_configs, "f")) {
++        if (!blocklistPaths || Object.keys(blocklistPaths).length === 0) {
++            continue;
++        }
++        const pathMatch = matchedPathPrefix(url, blocklistPaths);
++        if (pathMatch) {
++            return {
++                match: pathMatch,
++                name,
++                result: true,
++                type: PhishingDetectorResultType.Blocklist,
++                version: version === undefined ? version : String(version),
++            };
++        }
++    }
+     for (const { allowlist, name, version } of __classPrivateFieldGet(this, _PhishingDetector_configs, "f")) {
+         // if source matches allowlist hostname (or subdomain thereof), PASS
+         const allowlistMatch = matchPartsAgainstList(source, allowlist);
+diff --git a/dist/utils.cjs b/dist/utils.cjs
+index aec18d0178cdd810d219695cbee9a6420b2ac75f..5f7ac8e2019adfdfa83c4c7d8f94fb679122b918 100644
+--- a/dist/utils.cjs
++++ b/dist/utils.cjs
+@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.generateParentDomains = exports.getHostnameFromWebUrl = exports.getHostnameFromUrl = exports.sha256Hash = exports.matchPartsAgainstList = exports.domainPartsToFuzzyForm = exports.domainPartsToDomain = exports.processConfigs = exports.getDefaultPhishingDetectorConfig = exports.processDomainList = exports.domainToParts = exports.validateConfig = exports.applyDiffs = exports.roundToNearestMinute = exports.fetchTimeNow = void 0;
+ const utils_1 = require("@noble/hashes/utils");
+ const sha256_1 = require("ethereum-cryptography/sha256");
++const PathTrie_1 = require("./PathTrie.cjs");
+ const PhishingController_1 = require("./PhishingController.cjs");
+ const DEFAULT_TOLERANCE = 3;
+ /**
+@@ -35,6 +36,26 @@ const splitStringByPeriod = (stringToSplit) => {
+         stringToSplit.slice(periodIndex + 1),
+     ];
+ };
++const getHostnameAndPathComponents = (url) => {
++    const urlWithProtocol = url.startsWith('http') ? url : `https://${url}`;
++    try {
++        const { hostname, pathname } = new URL(urlWithProtocol);
++        return {
++            hostname: hostname.toLowerCase(),
++            pathComponents: pathname
++                .split('/')
++                .filter(Boolean)
++                .map((component) => decodeURIComponent(component)),
++        };
++    }
++    catch {
++        return {
++            hostname: '',
++            pathComponents: [],
++        };
++    }
++};
++exports.getHostnameAndPathComponents = getHostnameAndPathComponents;
+ /**
+  * Determines which diffs are applicable to the listState, then applies those diffs.
+  *
+@@ -61,13 +82,24 @@ const applyDiffs = (listState, hotlistDiffs, listKey, recentlyAddedC2Domains = [
+         fuzzylist: new Set(listState.fuzzylist),
+         c2DomainBlocklist: new Set(listState.c2DomainBlocklist),
+     };
++    // deep copy of blocklistPaths to avoid mutating the original
++    const newBlocklistPaths = (0, PathTrie_1.deepCopyPathTrie)(listState.blocklistPaths);
+     for (const { isRemoval, targetList, url, timestamp } of diffsToApply) {
+         const targetListType = splitStringByPeriod(targetList)[1];
+         if (timestamp > latestDiffTimestamp) {
+             latestDiffTimestamp = timestamp;
+         }
+         if (isRemoval) {
+-            listSets[targetListType].delete(url);
++            if (targetListType === 'blocklistPaths') {
++                (0, PathTrie_1.deleteFromTrie)(url, newBlocklistPaths);
++            }
++            else {
++                listSets[targetListType].delete(url);
++            }
++            continue;
++        }
++        if (targetListType === 'blocklistPaths') {
++            (0, PathTrie_1.insertToTrie)(url, newBlocklistPaths);
+         }
+         else {
+             listSets[targetListType].add(url);
+@@ -86,6 +118,7 @@ const applyDiffs = (listState, hotlistDiffs, listKey, recentlyAddedC2Domains = [
+         allowlist: Array.from(listSets.allowlist),
+         blocklist: Array.from(listSets.blocklist),
+         fuzzylist: Array.from(listSets.fuzzylist),
++        blocklistPaths: newBlocklistPaths,
+         version: listState.version,
+         name: PhishingController_1.phishingListKeyNameMap[listKey],
+         tolerance: listState.tolerance,
+@@ -148,17 +181,20 @@ exports.processDomainList = processDomainList;
+  * @param override - the optional override for the configuration.
+  * @param override.allowlist - the optional allowlist to override.
+  * @param override.blocklist - the optional blocklist to override.
+- * @param override.c2DomainBlocklist - the optional c2DomainBlocklist to override.
+  * @param override.fuzzylist - the optional fuzzylist to override.
+  * @param override.tolerance - the optional tolerance to override.
+  * @returns the default phishing detector configuration.
+  */
+-const getDefaultPhishingDetectorConfig = ({ allowlist = [], blocklist = [], fuzzylist = [], tolerance = DEFAULT_TOLERANCE, }) => ({
+-    allowlist: (0, exports.processDomainList)(allowlist),
+-    blocklist: (0, exports.processDomainList)(blocklist),
+-    fuzzylist: (0, exports.processDomainList)(fuzzylist),
+-    tolerance,
+-});
++const getDefaultPhishingDetectorConfig = ({ allowlist = [], blocklist = [], fuzzylist = [], tolerance = DEFAULT_TOLERANCE, }) => {
++    return {
++        allowlist: (0, exports.processDomainList)(allowlist),
++        // We can assume that blocklist is already separated into hostname-only entries
++        // and hostname+path entries so we do not need to separate it again.
++        blocklist: (0, exports.processDomainList)(blocklist),
++        fuzzylist: (0, exports.processDomainList)(fuzzylist),
++        tolerance,
++    };
++};
+ exports.getDefaultPhishingDetectorConfig = getDefaultPhishingDetectorConfig;
+ /**
+  * Processes the configurations for the phishing detector, filtering out any invalid configs.
+@@ -275,6 +311,16 @@ const getHostnameFromWebUrl = (url) => {
+     return [hostname || '', Boolean(hostname)];
+ };
+ exports.getHostnameFromWebUrl = getHostnameFromWebUrl;
++const getPathnameFromUrl = (url) => {
++    try {
++        const { pathname } = new URL(url);
++        return pathname;
++    }
++    catch {
++        return '';
++    }
++};
++exports.getPathnameFromUrl = getPathnameFromUrl;
+ /**
+  * Generates all possible parent domains up to a specified limit.
+  *
+diff --git a/dist/utils.mjs b/dist/utils.mjs
+index e6fdc66cac65ccc610c8a886081729e4b35e3fec..d3f3ff57194da1449a445bb6648cd863c85d99d1 100644
+--- a/dist/utils.mjs
++++ b/dist/utils.mjs
+@@ -1,5 +1,6 @@
+ import { bytesToHex } from "@noble/hashes/utils";
+ import { sha256 } from "ethereum-cryptography/sha256";
++import { deleteFromTrie, insertToTrie, deepCopyPathTrie } from "./PathTrie.mjs";
+ import { ListKeys, phishingListKeyNameMap } from "./PhishingController.mjs";
+ const DEFAULT_TOLERANCE = 3;
+ /**
+@@ -30,6 +31,25 @@ const splitStringByPeriod = (stringToSplit) => {
+         stringToSplit.slice(periodIndex + 1),
+     ];
+ };
++export const getHostnameAndPathComponents = (url) => {
++    const urlWithProtocol = url.startsWith('http') ? url : `https://${url}`;
++    try {
++        const { hostname, pathname } = new URL(urlWithProtocol);
++        return {
++            hostname: hostname.toLowerCase(),
++            pathComponents: pathname
++                .split('/')
++                .filter(Boolean)
++                .map((component) => decodeURIComponent(component)),
++        };
++    }
++    catch {
++        return {
++            hostname: '',
++            pathComponents: [],
++        };
++    }
++};
+ /**
+  * Determines which diffs are applicable to the listState, then applies those diffs.
+  *
+@@ -56,13 +76,24 @@ export const applyDiffs = (listState, hotlistDiffs, listKey, recentlyAddedC2Doma
+         fuzzylist: new Set(listState.fuzzylist),
+         c2DomainBlocklist: new Set(listState.c2DomainBlocklist),
+     };
++    // deep copy of blocklistPaths to avoid mutating the original
++    const newBlocklistPaths = deepCopyPathTrie(listState.blocklistPaths);
+     for (const { isRemoval, targetList, url, timestamp } of diffsToApply) {
+         const targetListType = splitStringByPeriod(targetList)[1];
+         if (timestamp > latestDiffTimestamp) {
+             latestDiffTimestamp = timestamp;
+         }
+         if (isRemoval) {
+-            listSets[targetListType].delete(url);
++            if (targetListType === 'blocklistPaths') {
++                deleteFromTrie(url, newBlocklistPaths);
++            }
++            else {
++                listSets[targetListType].delete(url);
++            }
++            continue;
++        }
++        if (targetListType === 'blocklistPaths') {
++            insertToTrie(url, newBlocklistPaths);
+         }
+         else {
+             listSets[targetListType].add(url);
+@@ -81,6 +112,7 @@ export const applyDiffs = (listState, hotlistDiffs, listKey, recentlyAddedC2Doma
+         allowlist: Array.from(listSets.allowlist),
+         blocklist: Array.from(listSets.blocklist),
+         fuzzylist: Array.from(listSets.fuzzylist),
++        blocklistPaths: newBlocklistPaths,
+         version: listState.version,
+         name: phishingListKeyNameMap[listKey],
+         tolerance: listState.tolerance,
+@@ -139,17 +171,20 @@ export const processDomainList = (list) => {
+  * @param override - the optional override for the configuration.
+  * @param override.allowlist - the optional allowlist to override.
+  * @param override.blocklist - the optional blocklist to override.
+- * @param override.c2DomainBlocklist - the optional c2DomainBlocklist to override.
+  * @param override.fuzzylist - the optional fuzzylist to override.
+  * @param override.tolerance - the optional tolerance to override.
+  * @returns the default phishing detector configuration.
+  */
+-export const getDefaultPhishingDetectorConfig = ({ allowlist = [], blocklist = [], fuzzylist = [], tolerance = DEFAULT_TOLERANCE, }) => ({
+-    allowlist: processDomainList(allowlist),
+-    blocklist: processDomainList(blocklist),
+-    fuzzylist: processDomainList(fuzzylist),
+-    tolerance,
+-});
++export const getDefaultPhishingDetectorConfig = ({ allowlist = [], blocklist = [], fuzzylist = [], tolerance = DEFAULT_TOLERANCE, }) => {
++    return {
++        allowlist: processDomainList(allowlist),
++        // We can assume that blocklist is already separated into hostname-only entries
++        // and hostname+path entries so we do not need to separate it again.
++        blocklist: processDomainList(blocklist),
++        fuzzylist: processDomainList(fuzzylist),
++        tolerance,
++    };
++};
+ /**
+  * Processes the configurations for the phishing detector, filtering out any invalid configs.
+  *
+@@ -258,6 +293,15 @@ export const getHostnameFromWebUrl = (url) => {
+     const hostname = getHostnameFromUrl(url);
+     return [hostname || '', Boolean(hostname)];
+ };
++export const getPathnameFromUrl = (url) => {
++    try {
++        const { pathname } = new URL(url);
++        return pathname;
++    }
++    catch {
++        return '';
++    }
++};
+ /**
+  * Generates all possible parent domains up to a specified limit.
+  *

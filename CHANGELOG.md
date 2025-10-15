@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.4.3]
+### Fixed
+- Adds path-based blocking for URLs (#36634)
+
 ## [13.4.2]
 ### Fixed
 - Fixes ci pipeline issue preventing production build creation (#36624)
@@ -648,7 +652,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.4.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.4.3...HEAD
+[13.4.3]: https://github.com/MetaMask/metamask-extension/compare/v13.4.2...v13.4.3
 [13.4.2]: https://github.com/MetaMask/metamask-extension/compare/v13.4.1...v13.4.2
 [13.4.1]: https://github.com/MetaMask/metamask-extension/compare/v13.4.0...v13.4.1
 [13.4.0]: https://github.com/MetaMask/metamask-extension/compare/v13.3.2...v13.4.0

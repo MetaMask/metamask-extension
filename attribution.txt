@@ -26838,7 +26838,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/base-controller
-8.3.0 <https://github.com/MetaMask/core>
+8.4.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -26991,7 +26991,7 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 ******************************
 
 @metamask/controller-utils
-11.12.0 <https://github.com/MetaMask/core>
+11.14.1 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2018 MetaMask
@@ -30199,7 +30199,7 @@ If you have any questions, comments or interest in pursuing any other use cases,
 ******************************
 
 @metamask/messenger
-0.2.0 <https://github.com/MetaMask/core>
+0.3.0 <https://github.com/MetaMask/core>
 MIT License
 
 Copyright (c) 2025 MetaMask
@@ -32119,7 +32119,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/utils
-11.7.0 <https://github.com/MetaMask/utils>
+11.8.1 <https://github.com/MetaMask/utils>
 ISC License
 
 Copyright (c) 2022 MetaMask

@@ -5536,13 +5536,13 @@ __metadata:
   linkType: hard
 
 "@metamask/base-controller@npm:^8.0.0, @metamask/base-controller@npm:^8.0.1, @metamask/base-controller@npm:^8.1.0, @metamask/base-controller@npm:^8.2.0, @metamask/base-controller@npm:^8.3.0":
-  version: 8.3.0
-  resolution: "@metamask/base-controller@npm:8.3.0"
+  version: 8.4.1
+  resolution: "@metamask/base-controller@npm:8.4.1"
   dependencies:
-    "@metamask/messenger": "npm:^0.2.0"
-    "@metamask/utils": "npm:^11.4.2"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
     immer: "npm:^9.0.6"
-  checksum: 10/f4dec29cbf984e38c8dab331a7b98ad3ebb81d1e64d25f28e01025a0e7b4b4f6ead9e5b830852b7eabd8ad971753868a932dc2d0076f4bd3eec415d8604eb7a4
+  checksum: 10/d720638b6a640f43e06b37bd77b7291be20df2f3cc89ab571ee47c895313ba2521cd49e6dede02dd7e06971c351f88eec2c39b65d8f46ba09492d89131d640b9
   languageName: node
   linkType: hard
 
@@ -5649,12 +5649,12 @@ __metadata:
   linkType: hard
 
 "@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.10.0, @metamask/controller-utils@npm:^11.11.0, @metamask/controller-utils@npm:^11.12.0, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.6.0, @metamask/controller-utils@npm:^11.9.0":
-  version: 11.12.0
-  resolution: "@metamask/controller-utils@npm:11.12.0"
+  version: 11.14.1
+  resolution: "@metamask/controller-utils@npm:11.14.1"
   dependencies:
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/ethjs-unit": "npm:^0.3.0"
-    "@metamask/utils": "npm:^11.4.2"
+    "@metamask/utils": "npm:^11.8.1"
     "@spruceid/siwe-parser": "npm:2.1.0"
     "@types/bn.js": "npm:^5.1.5"
     bignumber.js: "npm:^9.1.2"
@@ -5665,7 +5665,7 @@ __metadata:
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-  checksum: 10/e3cdc3f8f6d7bd8c30c9f3faba63a0323b2f87057b62d05d5ed46f5eec17d221cb1a846d5d57f269f1b7352f89a0be286d6c60ce397592084f38f7880234f994
+  checksum: 10/b00e2ba24a0903ec06c00de4506c789a717ecba3510244cc58435d26c990680e88d884ce417ba39e5cb3b8f7f16f3f42bdc77f284af248b7d1bd60abb80a836c
   languageName: node
   linkType: hard
 
@@ -6559,10 +6559,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/messenger@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/messenger@npm:0.2.0"
-  checksum: 10/48f682d9cde1208fbda0936022dea37acc3828cc221203b5f917df25c131d9a250dc5e86e9263f5dba8ee7c05adc6752a68dfb57da7d297f95f38b052f4fe5c1
+"@metamask/messenger@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/messenger@npm:0.3.0"
+  checksum: 10/84e9f4193646d749c7260a4958b13974b3c8738cc2e414116279ed31734e1edba687ff56ddbfdb75033bce30aaa9eeb7c391bccb87a66dbc99a902882271f673
   languageName: node
   linkType: hard
 
@@ -6887,7 +6887,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^13.1.0":
+"@metamask/phishing-controller@npm:13.1.0":
   version: 13.1.0
   resolution: "@metamask/phishing-controller@npm:13.1.0"
   dependencies:
@@ -6902,9 +6902,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-warning@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@metamask/phishing-warning@npm:5.0.1"
+"@metamask/phishing-controller@patch:@metamask/phishing-controller@npm%3A13.1.0#~/.yarn/patches/@metamask-phishing-controller-npm-13.1.0-faa967e3b5.patch":
+  version: 13.1.0
+  resolution: "@metamask/phishing-controller@patch:@metamask/phishing-controller@npm%3A13.1.0#~/.yarn/patches/@metamask-phishing-controller-npm-13.1.0-faa967e3b5.patch::version=13.1.0&hash=c2fa33"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/controller-utils": "npm:^11.11.0"
+    "@noble/hashes": "npm:^1.4.0"
+    "@types/punycode": "npm:^2.1.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    fastest-levenshtein: "npm:^1.0.16"
+    punycode: "npm:^2.1.1"
+  checksum: 10/a7594d084f74af1469af86fe09093cc1e7d9a5c56a49369f2cfdc14ac86b9500d65bda0081a03154a635280feb017ba9727e9f1e6619246415cd8140d1effed2
+  languageName: node
+  linkType: hard
+
+"@metamask/phishing-warning@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@metamask/phishing-warning@npm:5.1.0"
   dependencies:
     "@metamask/design-tokens": "npm:^7.1.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
@@ -6913,7 +6928,7 @@ __metadata:
     punycode: "npm:^2.3.1"
     readable-stream: "npm:^3.6.2"
     ses: "npm:^1.1.0"
-  checksum: 10/fdcb5c7398b68adbcd15876c39516c7cf93b810d08e85dc60ee459dab7ee83a41d4248a2332c772a562dc3652f34eed0eb1af982ad486f81a70089e1ec520e31
+  checksum: 10/64c01a4a9ec1b6604f8ea532673b0f71d2884c543fc6daad2b3d5395599373f90a4dd220195da7b58f1b98202b546b6f8f7e67091e1543237f04589c933bb840
   languageName: node
   linkType: hard
 
@@ -7555,9 +7570,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.7.0":
-  version: 11.7.0
-  resolution: "@metamask/utils@npm:11.7.0"
+"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.7.0, @metamask/utils@npm:^11.8.1":
+  version: 11.8.1
+  resolution: "@metamask/utils@npm:11.8.1"
   dependencies:
     "@ethereumjs/tx": "npm:^4.2.0"
     "@metamask/superstruct": "npm:^3.1.0"
@@ -7570,7 +7585,7 @@ __metadata:
     pony-cause: "npm:^2.1.10"
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
-  checksum: 10/0f31783f357d1043d0e83af3a7af1e686f56c821e9acc650d71c02f5ea8ee7d5868aa09d240b179305893be05d5a406ccfdd9a8c534d265d6b821c383f51ace1
+  checksum: 10/efd3aab7f86b4a74d396cf1d5fc76e748ff78906802fdc15ec9ce2d1a9bd6b035e8e036ea93eb6b9ea33782c70adb9000772eb7a5e0164e8e9e2ebb077dca3ab
   languageName: node
   linkType: hard
 
@@ -31773,8 +31788,8 @@ __metadata:
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^11.0.6"
     "@metamask/permission-log-controller": "npm:^4.0.0"
-    "@metamask/phishing-controller": "npm:^13.1.0"
-    "@metamask/phishing-warning": "npm:^5.0.1"
+    "@metamask/phishing-controller": "patch:@metamask/phishing-controller@npm%3A13.1.0#~/.yarn/patches/@metamask-phishing-controller-npm-13.1.0-faa967e3b5.patch"
+    "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.38.0"
     "@metamask/preferences-controller": "npm:^17.0.0"
