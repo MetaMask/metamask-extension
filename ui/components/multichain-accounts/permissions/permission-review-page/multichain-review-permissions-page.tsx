@@ -246,24 +246,24 @@ export const MultichainReviewPermissions = () => {
     [activeTabOrigin, connectedChainIds, dispatch, supportedAccountGroups],
   );
 
-  const gatorPermissionGroupDetailsMap = useSelector((state) =>
+  const gatorPermissionsGroupMetaData = useSelector((state) =>
     getPermissionMetaDataByOrigin(state as AppState, activeTabOrigin),
   );
 
   const shouldRenderGatorPermissionGroupDetails = useMemo(() => {
-    if (!gatorPermissionGroupDetailsMap) {
+    if (!gatorPermissionsGroupMetaData) {
       return false;
     }
 
     const isPermissionGroupDetailsMapEmpty = Object.values(
-      gatorPermissionGroupDetailsMap,
+      gatorPermissionsGroupMetaData,
     ).every((details) => details.count === 0);
 
     return (
       isGatorPermissionsRevocationFeatureEnabled() &&
       !isPermissionGroupDetailsMapEmpty
     );
-  }, [gatorPermissionGroupDetailsMap]);
+  }, [gatorPermissionsGroupMetaData]);
 
   return pageMode === MultichainReviewPermissionsPageMode.Summary ? (
     <Page
@@ -290,7 +290,7 @@ export const MultichainReviewPermissions = () => {
             <NoConnectionContent />
           )}
           {shouldRenderGatorPermissionGroupDetails
-            ? Object.entries(gatorPermissionGroupDetailsMap).map(
+            ? Object.entries(gatorPermissionsGroupMetaData).map(
                 ([permissionGroupName, details]) => (
                   <PermissionsCell
                     key={permissionGroupName}

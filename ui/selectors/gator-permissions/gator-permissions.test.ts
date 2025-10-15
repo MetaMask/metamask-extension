@@ -12,7 +12,7 @@ import { SnapId } from '@metamask/snaps-sdk';
 import {
   getGatorPermissionsMap,
   getAggregatedGatorPermissionsCountAcrossAllChains,
-  getPermissionGroupDetails,
+  getPermissionGroupMetaData,
   getPermissionMetaDataByOrigin,
 } from './gator-permissions';
 
@@ -578,10 +578,10 @@ describe('Gator Permissions Selectors', () => {
     });
   });
 
-  describe('getPermissionGroupDetails', () => {
+  describe('getPermissionGroupMetaData', () => {
     describe('token-transfer permission group', () => {
       it('should return correct permission group details for token-transfer with all permission types', () => {
-        const result = getPermissionGroupDetails(mockState, 'token-transfer');
+        const result = getPermissionGroupMetaData(mockState, 'token-transfer');
 
         // Expected: 2 chains, each with 3 permissions (1 native-token-stream + 1 native-token-periodic + 1 erc20-token-stream)
         expect(result).toEqual([
@@ -629,7 +629,7 @@ describe('Gator Permissions Selectors', () => {
           },
         };
 
-        const result = getPermissionGroupDetails(emptyState, 'token-transfer');
+        const result = getPermissionGroupMetaData(emptyState, 'token-transfer');
         expect(result).toEqual([]);
       });
 
@@ -663,7 +663,10 @@ describe('Gator Permissions Selectors', () => {
           },
         };
 
-        const result = getPermissionGroupDetails(customState, 'token-transfer');
+        const result = getPermissionGroupMetaData(
+          customState,
+          'token-transfer',
+        );
 
         expect(result).toEqual([
           {
@@ -707,7 +710,10 @@ describe('Gator Permissions Selectors', () => {
           },
         };
 
-        const result = getPermissionGroupDetails(customState, 'token-transfer');
+        const result = getPermissionGroupMetaData(
+          customState,
+          'token-transfer',
+        );
 
         expect(result).toEqual([
           {
@@ -751,7 +757,10 @@ describe('Gator Permissions Selectors', () => {
           },
         };
 
-        const result = getPermissionGroupDetails(customState, 'token-transfer');
+        const result = getPermissionGroupMetaData(
+          customState,
+          'token-transfer',
+        );
 
         expect(result).toEqual([
           {
@@ -795,7 +804,10 @@ describe('Gator Permissions Selectors', () => {
           },
         };
 
-        const result = getPermissionGroupDetails(customState, 'token-transfer');
+        const result = getPermissionGroupMetaData(
+          customState,
+          'token-transfer',
+        );
 
         expect(result).toEqual([
           {
@@ -812,7 +824,7 @@ describe('Gator Permissions Selectors', () => {
 
     describe('unknown permission group names', () => {
       it('should return empty array for permission group that are not supported', () => {
-        const result = getPermissionGroupDetails(
+        const result = getPermissionGroupMetaData(
           mockState,
           'unknown-permission-group',
         );
@@ -845,7 +857,10 @@ describe('Gator Permissions Selectors', () => {
           },
         };
 
-        const result = getPermissionGroupDetails(customState, 'token-transfer');
+        const result = getPermissionGroupMetaData(
+          customState,
+          'token-transfer',
+        );
 
         // Expected: Mainnet: 2 + 1 + 1 = 4
         expect(result).toEqual([
@@ -886,7 +901,10 @@ describe('Gator Permissions Selectors', () => {
           },
         };
 
-        const result = getPermissionGroupDetails(customState, 'token-transfer');
+        const result = getPermissionGroupMetaData(
+          customState,
+          'token-transfer',
+        );
 
         // Expected: Mainnet: 5 + 3 + 2 = 10, Polygon: 1 + 0 + 4 = 5
         expect(result).toEqual([
