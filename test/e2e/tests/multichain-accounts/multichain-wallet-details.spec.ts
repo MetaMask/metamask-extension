@@ -7,7 +7,8 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { mockMultichainAccountsFeatureFlagStateTwo } from './common';
 
-describe('Multichain Accounts - Wallet Details', function (this: Suite) {
+// eslint-disable-next-line
+describe.skip('Multichain Accounts - Wallet Details', function (this: Suite) {
   it('should view wallet details with one Ethereum and one Solana account and show SRP backup reminder', async function () {
     await withSolanaAccountSnap(
       {

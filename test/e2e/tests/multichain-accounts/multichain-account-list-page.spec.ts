@@ -33,7 +33,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
       },
     );
   });
-  // eslint-disable-next-line
+  
   it('displays wallet for Snap Keyring', async function () {
     await withMultichainAccountsDesignEnabled(
       {
