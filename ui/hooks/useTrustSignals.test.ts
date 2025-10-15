@@ -1,6 +1,10 @@
 import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
-import { ResultType } from '../../shared/lib/trust-signals';
+import {
+  ResultType,
+  SupportedEVMChain,
+  mapChainIdToSupportedEVMChain,
+} from '../../shared/lib/trust-signals';
 import {
   useTrustSignal,
   useTrustSignals,
@@ -22,9 +26,7 @@ jest.mock('../../shared/lib/trust-signals', () => {
   const actual = jest.requireActual('../../shared/lib/trust-signals');
   return {
     ...actual,
-    mapChainIdToSupportedEVMChain: jest
-      .fn()
-      .mockReturnValue(actual.SupportedEVMChain.Ethereum),
+    mapChainIdToSupportedEVMChain: jest.fn(),
   };
 });
 
@@ -38,9 +40,15 @@ describe('useTrustSignals', () => {
   const getAddressSecurityAlertResponseMock = jest.mocked(
     getAddressSecurityAlertResponse,
   );
+  const mapChainIdToSupportedEVMChainMock = jest.mocked(
+    mapChainIdToSupportedEVMChain,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
+    mapChainIdToSupportedEVMChainMock.mockReturnValue(
+      SupportedEVMChain.Ethereum,
+    );
   });
 
   describe('useTrustSignal', () => {
