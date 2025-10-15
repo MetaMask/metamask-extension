@@ -39,6 +39,7 @@ export default function FoxAppearAnimation({
     if (rive) {
       // Get the state machine inputs
       const inputs = rive.stateMachineInputs('FoxRaiseUp');
+      console.log('inputs', inputs);
 
       if (inputs) {
         // Fire the Start trigger to begin the animation
@@ -51,7 +52,9 @@ export default function FoxAppearAnimation({
         // Fire the Loader trigger to show loading animation
         // (Fox moves to center and looks left/right with blinks)
         if (isLoader) {
-          const loaderTrigger = inputs.find((input) => input.name === 'Loader');
+          const loaderTrigger = inputs.find(
+            (input) => input.name === 'Loader2',
+          );
           if (loaderTrigger) {
             loaderTrigger.fire();
           }
