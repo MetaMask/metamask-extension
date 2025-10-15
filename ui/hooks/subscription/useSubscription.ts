@@ -140,6 +140,8 @@ export const useSubscriptionEligibility = (product: ProductType) => {
       }
 
       // get the subscriptions before making the eligibility request
+      // here, we cannot `useUserSubscriptions` hook as the hook's initial state has empty subscriptions array and loading state is false
+      // that mistakenly makes `user does not have a subscription` and triggers the eligibility request
       const subscriptions = await dispatch(getSubscriptions());
       const isShieldSubscriptionActive =
         getIsShieldSubscriptionActive(subscriptions);
