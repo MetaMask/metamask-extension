@@ -73,7 +73,7 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
    * - User has a balance greater than the minimum fiat balance threshold (1K USD)
    * - User has not shown the shield entry modal before
    */
-  const getIsUserBalanceCriteriaMet = useCallback(async () => {
+  const evaluateShieldEntryPointModal = useCallback(async () => {
     try {
       if (isShieldSubscriptionActive) {
         dispatch(setShowShieldEntryModalOnce(false));
@@ -118,11 +118,11 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       return;
     }
 
-    getIsUserBalanceCriteriaMet();
+    evaluateShieldEntryPointModal();
   }, [
     dispatch,
     isMetaMaskShieldFeatureEnabled,
-    getIsUserBalanceCriteriaMet,
+    evaluateShieldEntryPointModal,
     isBasicFunctionalityEnabled,
   ]);
 
