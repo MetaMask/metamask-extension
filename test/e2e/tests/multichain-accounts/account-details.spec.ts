@@ -26,7 +26,7 @@ const importedAccount = {
 };
 
 describe('Multichain Accounts - Account Details', function (this: Suite) {
-  describe.skip('Base screen', function () {
+  describe('Base screen', function () {
     it('displays account details page with all required elements', async function () {
       await withMultichainAccountsDesignEnabled(
         {
@@ -37,10 +37,15 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await accountListPage.checkPageIsLoaded({
             isMultichainAccountsState2Enabled: true,
           });
-          await accountListPage.openMultichainAccountMenu({ accountLabel: account1.name});
-          await accountListPage.clickMultichainAccountMenuItem('Account details');
+          await accountListPage.openMultichainAccountMenu({
+            accountLabel: account1.name,
+          });
+          await accountListPage.clickMultichainAccountMenuItem(
+            'Account details',
+          );
 
           const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+          await accountDetailsPage.checkPageIsLoaded();
           const headerName = await accountDetailsPage.getAccountName();
           if (headerName !== account1.name) {
             throw new Error(
@@ -64,13 +69,14 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await accountDetailsPage.clickNetworksRow();
           const addressListModal = new AddressListModal(driver);
 
-          const visibleNetworks = ['Ethereum','Linea', 'Base'];
+          const visibleNetworks = ['Ethereum', 'Linea', 'Base'];
           for (const networkName of visibleNetworks) {
             await addressListModal.checkNetworkNameisDisplayed(networkName);
           }
 
-          await addressListModal.clickQRbutton()
+          await addressListModal.clickQRbutton();
           const accountAddressModal = new AccountAddressModal(driver);
+          await accountAddressModal.checkPageIsLoaded();
           const address = await accountAddressModal.getAccountAddress();
           if (address.toUpperCase() !== account1.address.toUpperCase()) {
             throw new Error(
@@ -78,7 +84,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
             );
           }
 
-          await accountAddressModal.goBack()
+          await accountAddressModal.goBack();
           await addressListModal.goBack();
 
           const walletName = await accountDetailsPage.getWalletName();
@@ -92,7 +98,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
     });
   });
 
-  describe.skip('Rename', function () {
+  describe('Rename', function () {
     it('renames account successfully', async function () {
       await withMultichainAccountsDesignEnabled(
         {
@@ -104,7 +110,9 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await accountListPage.checkPageIsLoaded({
             isMultichainAccountsState2Enabled: true,
           });
-          await accountListPage.openMultichainAccountMenu({ accountLabel: account1.name});
+          await accountListPage.openMultichainAccountMenu({
+            accountLabel: account1.name,
+          });
           await accountListPage.clickMultichainAccountMenuItem('Rename');
           const accountDetailsPage = new MultichainAccountDetailsPage(driver);
 
@@ -123,7 +131,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
     });
   });
 
-  describe.skip('View private key', function () {
+  describe('View private key', function () {
     it('shows private key when requested', async function () {
       await withMultichainAccountsDesignEnabled(
         {
@@ -134,8 +142,12 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await accountListPage.checkPageIsLoaded({
             isMultichainAccountsState2Enabled: true,
           });
-          await accountListPage.openMultichainAccountMenu({ accountLabel: account1.name});
-          await accountListPage.clickMultichainAccountMenuItem('Account details');
+          await accountListPage.openMultichainAccountMenu({
+            accountLabel: account1.name,
+          });
+          await accountListPage.clickMultichainAccountMenuItem(
+            'Account details',
+          );
 
           const accountDetailsPage = new MultichainAccountDetailsPage(driver);
           await accountDetailsPage.clickPrivateKeyRow();
@@ -149,7 +161,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
     });
   });
 
-  describe.skip('Delete private key account', function () {
+  describe('Delete private key account', function () {
     it('removes imported private key account successfully', async function () {
       await withImportedAccount(
         {
@@ -161,8 +173,12 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await accountListPage.checkPageIsLoaded({
             isMultichainAccountsState2Enabled: true,
           });
-          await accountListPage.openMultichainAccountMenu({ accountLabel: importedAccount.name});
-          await accountListPage.clickMultichainAccountMenuItem('Account details');
+          await accountListPage.openMultichainAccountMenu({
+            accountLabel: importedAccount.name,
+          });
+          await accountListPage.clickMultichainAccountMenuItem(
+            'Account details',
+          );
 
           const accountDetailsPage = new MultichainAccountDetailsPage(driver);
           await accountDetailsPage.checkPageIsLoaded();
@@ -179,7 +195,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
     });
   });
 
-  describe.skip('Wallet property', function () {
+  describe('Wallet property', function () {
     it('navigates to wallet details when wallet row is clicked', async function () {
       await withMultichainAccountsDesignEnabled(
         {
@@ -191,8 +207,12 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await accountListPage.checkPageIsLoaded({
             isMultichainAccountsState2Enabled: true,
           });
-          await accountListPage.openMultichainAccountMenu({ accountLabel: account1.name});
-          await accountListPage.clickMultichainAccountMenuItem('Account details');
+          await accountListPage.openMultichainAccountMenu({
+            accountLabel: account1.name,
+          });
+          await accountListPage.clickMultichainAccountMenuItem(
+            'Account details',
+          );
 
           const accountDetailsPage = new MultichainAccountDetailsPage(driver);
           await accountDetailsPage.clickWalletRow();
@@ -204,7 +224,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
     });
   });
 
-  describe.skip('Share or show address', function () {
+  describe('Share or show address', function () {
     it('shows share modal with QR code and checksummed address', async function () {
       await withMultichainAccountsDesignEnabled(
         {
@@ -216,7 +236,9 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await accountListPage.checkPageIsLoaded({
             isMultichainAccountsState2Enabled: true,
           });
-          await accountListPage.openMultichainAccountMenu({ accountLabel: account1.name});
+          await accountListPage.openMultichainAccountMenu({
+            accountLabel: account1.name,
+          });
           await accountListPage.clickMultichainAccountMenuItem('Addresses');
 
           const addressListModal = new AddressListModal(driver);
@@ -246,38 +268,23 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await accountListPage.checkPageIsLoaded({
             isMultichainAccountsState2Enabled: true,
           });
-          await accountListPage.openMultichainAccountMenu({ accountLabel: account1.name});
-          await accountListPage.clickMultichainAccountMenuItem('Account details');
+          await accountListPage.openMultichainAccountMenu({
+            accountLabel: account1.name,
+          });
+          await accountListPage.clickMultichainAccountMenuItem('Addresses');
 
-          const accountDetailsPage = new MultichainAccountDetailsPage(driver);
-          await accountDetailsPage.clickPrivateKeyRow();
+          const addressListModal = new AddressListModal(driver);
+          await addressListModal.checkPageIsLoaded();
+          await addressListModal.clickCopyButton();
 
-          const privateKeyModal = new PrivateKeyModal(driver);
-          await privateKeyModal.checkPageIsLoaded();
-          await privateKeyModal.typePassword(WALLET_PASSWORD);
-          await privateKeyModal.clickConfirm();
-
-          const copyButton = await driver.findElement(
-            '[data-testid="multichain-address-row-copy-button"]',
-          );
-
-          /* BUGBUG
-          await copyButton.click()
-          const clipboardData = await driver.executeScript(
-            `return navigator.clipboard.readText()`,
-          );
-          if (clipboardData !== account1.address) {
-            throw new Error(
-              `Expected address "${account1.address}" in clipboard but got "${clipboardData}"`,
-            );
-          }
-          */
+          // Verify UI feedback for copy action
+          await addressListModal.verifyCopyButtonFeedback();
         },
       );
     });
   });
 
-  describe.skip('View on etherscan', function () {
+  describe('View on etherscan', function () {
     it('navigates to etherscan when view on etherscan is clicked', async function () {
       await withMultichainAccountsDesignEnabled(
         {
@@ -289,31 +296,22 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
           await accountListPage.checkPageIsLoaded({
             isMultichainAccountsState2Enabled: true,
           });
-          await accountListPage.openMultichainAccountMenu({ accountLabel: account1.name});
-          await accountListPage.clickMultichainAccountMenuItem('Account details');
+          await accountListPage.openMultichainAccountMenu({
+            accountLabel: account1.name,
+          });
+          await accountListPage.clickMultichainAccountMenuItem(
+            'Account details',
+          );
 
           const accountDetailsPage = new MultichainAccountDetailsPage(driver);
           await accountDetailsPage.clickNetworksRow();
 
           const addressListModal = new AddressListModal(driver);
-          await addressListModal.clickQRbutton()
+          await addressListModal.clickQRbutton();
 
           const accountAddressModal = new AccountAddressModal(driver);
           await accountAddressModal.checkPageIsLoaded();
-
-          const viewOnExplorerButton = await driver.findElement({
-            css: 'button',
-            text: 'View on Etherscan',
-          });
-
-          const explorerLink =
-            await viewOnExplorerButton.getAttribute('data-testid');
-
-          if (!explorerLink.includes('view-address-on-etherscan')) {
-            throw new Error(
-              `Expected link to include "view-address-on-etherscan" but got "${explorerLink}"`,
-            );
-          }
+          await accountAddressModal.checkViewOnEtherscanButton();
         },
       );
     });

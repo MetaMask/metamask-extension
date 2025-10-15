@@ -31,7 +31,10 @@ class AccountListPage {
   private readonly accountMenuButton =
     '[data-testid="account-list-menu-details"]';
 
-  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
+  private readonly accountDetailsTab = {
+    text: 'Account details',
+    tag: 'button',
+  };
 
   private readonly accountNameInput = '#account-name';
 
@@ -567,7 +570,7 @@ class AccountListPage {
       `Open account options in account list for account ${accountLabel}`,
     );
     await this.driver.clickElement(
-      `button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} Options"]`,
+      `button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} options"]`,
     );
   }
 
@@ -1035,6 +1038,14 @@ class AccountListPage {
     await showAccountsButton.click();
 
     await this.driver.findNestedElement(selectedSrp, {
+      text: accountName,
+      tag: 'p',
+    });
+  }
+
+  async checkAccountNameIsDisplayed(accountName: string): Promise<void> {
+    console.log(`Check that account name ${accountName} is displayed`);
+    await this.driver.waitForSelector({
       text: accountName,
       tag: 'p',
     });
