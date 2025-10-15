@@ -67,7 +67,10 @@ export default function OnboardingWelcome() {
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
-  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
+  const isTestEnvironment = Boolean(process.env.IN_TEST);
+  // In test environments, skip animations and show buttons immediately
+  const [isAnimationComplete, setIsAnimationComplete] =
+    useState(isTestEnvironment);
 
   const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
   // Don't allow users to come back to this screen after they
@@ -393,7 +396,7 @@ export default function OnboardingWelcome() {
       width={BlockSize.Full}
       className="welcome-container"
     >
-      {!isLoggingIn && (
+      {!isLoggingIn && !isTestEnvironment && (
         <MetaMaskWordMarkAnimation
           setIsAnimationComplete={setIsAnimationComplete}
           isAnimationComplete={isAnimationComplete}
@@ -404,7 +407,7 @@ export default function OnboardingWelcome() {
         <>
           <WelcomeLogin onLogin={handleLogin} />
 
-          <FoxAppearAnimation />
+          {!isTestEnvironment && <FoxAppearAnimation />}
 
           {loginError !== null && (
             <LoginErrorModal
@@ -415,7 +418,7 @@ export default function OnboardingWelcome() {
         </>
       )}
 
-      {isLoggingIn && <FoxAppearAnimation isLoader />}
+      {isLoggingIn && !isTestEnvironment && <FoxAppearAnimation isLoader />}
     </Box>
   );
 }

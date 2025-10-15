@@ -16,10 +16,9 @@ export default function MetamaskWordMarkAnimation({
   setIsAnimationComplete,
   isAnimationComplete,
 }: MetamaskWordMarkAnimationProps) {
-  const isTestEnvironment = process.env.IN_TEST;
-
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const theme = useTheme();
+  const isTestEnvironment = Boolean(process.env.IN_TEST);
 
   const { rive, RiveComponent } = useRive({
     src: isTestEnvironment
@@ -91,6 +90,20 @@ export default function MetamaskWordMarkAnimation({
       setIsAnimationComplete(true);
     }
   }, [isTestEnvironment, setIsAnimationComplete]);
+
+  // Fallback: Ensure animation completes even if Rive fails to load
+  // This handles e2e test scenarios where WASM may be blocked
+  useEffect(() => {
+    if (!isTestEnvironment && !isAnimationComplete) {
+      const fallbackTimeout = setTimeout(() => {
+        console.log('Animation fallback timeout triggered');
+        setIsAnimationComplete(true);
+      }, 3000); // 3 second fallback timeout
+
+      return () => clearTimeout(fallbackTimeout);
+    }
+    return undefined;
+  }, [isTestEnvironment, isAnimationComplete, setIsAnimationComplete]);
 
   if (isTestEnvironment) {
     return (

@@ -12,7 +12,7 @@ type FoxAppearAnimationProps = {
 export default function FoxAppearAnimation({
   isLoader = false,
 }: FoxAppearAnimationProps) {
-  const isTestEnvironment = process.env.IN_TEST;
+  const isTestEnvironment = Boolean(process.env.IN_TEST);
 
   const { rive, RiveComponent } = useRive({
     src: isTestEnvironment ? '' : './images/riv_animations/fox_appear.riv',
