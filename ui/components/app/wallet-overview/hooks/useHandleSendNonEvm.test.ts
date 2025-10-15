@@ -70,7 +70,7 @@ const mockState = {
     selectedMultichainNetworkChainId: SolScope.Mainnet,
     isEvmSelected: false,
     remoteFeatureFlags: {
-      addSolanaAccount: true,
+      solanaAccounts: { enabled: true, minimumVersion: '13.7.0' },
       bitcoinAccounts: { enabled: true, minimumVersion: '13.7.0' },
     },
   },

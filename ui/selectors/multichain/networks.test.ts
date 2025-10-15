@@ -134,7 +134,7 @@ const mockEvmNetworksWithOldConfig: Record<Hex, NetworkConfiguration> = {
 const mockState: TestState = {
   metamask: {
     remoteFeatureFlags: {
-      addSolanaAccount: true,
+      solanaAccounts: { enabled: true, minimumVersion: '13.7.0' },
       solanaTestnetsEnabled: true,
       bitcoinTestnetsEnabled: false,
       bitcoinAccounts: { enabled: true, minimumVersion: '13.7.0' },
@@ -196,7 +196,7 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
+            solanaAccounts: { enabled: false, minimumVersion: '13.7.0' },
           },
         },
       };
@@ -285,7 +285,7 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
+            solanaAccounts: { enabled: false, minimumVersion: '13.7.0' },
             bitcoinAccounts: { enabled: true, minimumVersion: '13.7.0' },
           },
           internalAccounts: {
@@ -322,7 +322,7 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
+            solanaAccounts: { enabled: false, minimumVersion: '13.7.0' },
             bitcoinAccounts: { enabled: true, minimumVersion: '13.7.0' },
           },
           internalAccounts: {

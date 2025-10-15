@@ -3195,8 +3195,13 @@ export function getIsBitcoinSupportEnabled(state) {
  * @returns The state of the `solanaSupportEnabled` remote feature flag.
  */
 export function getIsSolanaSupportEnabled(state) {
-  const { addSolanaAccount } = getRemoteFeatureFlags(state);
-  return Boolean(addSolanaAccount);
+  ///: BEGIN:ONLY_INCLUDE_IF(solana)
+  const { solanaAccounts } = getRemoteFeatureFlags(state);
+  return solanaAccounts?.enabled === true;
+  ///: END:ONLY_INCLUDE_IF
+
+  // When solana is not enabled, always return false
+  return false;
 }
 
 /**
