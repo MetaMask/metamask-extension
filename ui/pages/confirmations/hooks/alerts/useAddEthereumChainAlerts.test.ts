@@ -20,16 +20,16 @@ const mockSafeChains = [
   },
 ];
 
+const mockUseConfirmContext = jest.fn();
+const mockJsonRpcRequest = jest.fn();
+
+const renderHookWithWait = async () => {
+  const hookResult = renderHook(() => useAddEthereumChainAlerts());
+  await hookResult.waitForNextUpdate();
+  return hookResult;
+};
+
 describe('useAddEthereumChainAlerts', () => {
-  const mockUseConfirmContext = jest.fn();
-  const mockJsonRpcRequest = jest.fn();
-
-  const renderHookWithWait = async () => {
-    const hookResult = renderHook(() => useAddEthereumChainAlerts());
-    await hookResult.waitForNextUpdate();
-    return hookResult;
-  };
-
   beforeEach(() => {
     jest
       .spyOn(confirmContext, 'useConfirmContext')
@@ -72,17 +72,11 @@ describe('useAddEthereumChainAlerts', () => {
       currentConfirmation: {
         requestData: {
           chainId: '0x1234',
-          chainName: 'Unknown',
-          rpcUrl: 'https://unknown.rpc',
-          ticker: 'UNK',
         },
       },
     });
 
     const { result } = renderHook(() => useAddEthereumChainAlerts());
-
-    // Wait for async validation to complete
-    await new Promise((resolve) => setTimeout(resolve, 10));
 
     expect(result.current).toEqual([]);
   });
@@ -94,7 +88,6 @@ describe('useAddEthereumChainAlerts', () => {
           chainId: '0x1',
           chainName: 'Not Ethereum',
           rpcUrl: 'https://mainnet.infura.io/v3/abc',
-          ticker: 'ETH',
         },
       },
     });
@@ -142,7 +135,6 @@ describe('useAddEthereumChainAlerts', () => {
           chainId: '0x1',
           chainName: 'Ethereum',
           rpcUrl: 'https://example.com/rpc',
-          ticker: 'ETH',
         },
       },
     });
@@ -166,7 +158,6 @@ describe('useAddEthereumChainAlerts', () => {
           chainId: '0x5',
           chainName: 'Goerli',
           rpcUrl: 'https://goerli.infura.io/v3/abc',
-          ticker: 'ETH',
         },
       },
     });
@@ -191,7 +182,6 @@ describe('useAddEthereumChainAlerts', () => {
           chainId: '0x1', // Ethereum chain ID
           chainName: 'Ethereum',
           rpcUrl: 'https://polygon-rpc.com',
-          ticker: 'ETH',
         },
       },
     });
