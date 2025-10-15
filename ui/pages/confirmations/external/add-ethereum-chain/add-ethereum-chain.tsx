@@ -8,6 +8,8 @@ import {
   Text,
   TextVariant,
   Icon,
+  AvatarNetwork,
+  AvatarNetworkSize,
 } from '@metamask/design-system-react';
 import { IconName as LegacyIconName } from '../../../../components/component-library';
 import { TextColor } from '../../../../helpers/constants/design-system';
@@ -20,6 +22,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { stripProtocol } from '../../utils/confirm';
 import { AddEthereumChainContext } from './types';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 
 export const AddEthereumChain = () => {
   const t = useI18nContext();
@@ -31,6 +34,9 @@ export const AddEthereumChain = () => {
   const title = networkConfig
     ? t('updateNetworkConfirmationTitle', [networkConfig.name])
     : t('addNetworkConfirmationTitle', [requestData.chainName]);
+
+  const networkImageUrl =
+    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[requestData.chainId];
 
   return (
     <>
@@ -60,7 +66,14 @@ export const AddEthereumChain = () => {
           alertKey="network"
           ownerId={currentConfirmation.id}
         >
-          <Text>{requestData.chainName}</Text>
+          <Box className="flex items-center gap-1">
+            <AvatarNetwork
+              size={AvatarNetworkSize.Xs}
+              src={networkImageUrl}
+              name={requestData.chainName}
+            />
+            <Text>{requestData.chainName}</Text>
+          </Box>
         </ConfirmInfoAlertRow>
 
         <ConfirmInfoAlertRow
