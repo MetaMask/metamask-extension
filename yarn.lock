@@ -10335,24 +10335,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rive-app/canvas-lite@npm:2.31.6":
-  version: 2.31.6
-  resolution: "@rive-app/canvas-lite@npm:2.31.6"
-  checksum: 10/0e20bcd1c61e7e5c8b5f63d4cb71377806a283544c88066906f87c146b2c79c80565af4ce849fd47d3e2f9475cbbb0b2130aa89adbe9397182e2918081622547
-  languageName: node
-  linkType: hard
-
 "@rive-app/canvas@npm:2.31.5":
   version: 2.31.5
   resolution: "@rive-app/canvas@npm:2.31.5"
   checksum: 10/5b1cdb87a21c4b02ef500325b2081a573748821634789f2cc4b3d78894e0d92c6fac4bbc8eec57db8198eb3491f8b4ed3d154ccf02ac80946d920b5c71d74c85
-  languageName: node
-  linkType: hard
-
-"@rive-app/canvas@npm:2.31.6":
-  version: 2.31.6
-  resolution: "@rive-app/canvas@npm:2.31.6"
-  checksum: 10/b23b47cedc3b92ea817fab3af5596899309dbbdac27f38b3862bc700c136bfef4a3dacb787f7f4e4a3a9b62f97f9b028339353a721c2193025174421ced39d62
   languageName: node
   linkType: hard
 
@@ -10382,20 +10368,6 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
   checksum: 10/dc501d3fb58b284734b730bce1c479a80c2e84309189369430e92d94792f65780fe0480b33df419349ea3e4e249cf1e2e475143c948c579d4086e2564843a4ff
-  languageName: node
-  linkType: hard
-
-"@rive-app/webgl2@npm:2.31.6":
-  version: 2.31.6
-  resolution: "@rive-app/webgl2@npm:2.31.6"
-  checksum: 10/500d0cc9d7356bf75792648710e3c6c05b9741a25c7513939695a1815b26c6760f4a29b6aeab5b21ce1f339c38c89f7cad591d14aec7a399473d7afd73cf7813
-  languageName: node
-  linkType: hard
-
-"@rive-app/webgl@npm:2.31.6":
-  version: 2.31.6
-  resolution: "@rive-app/webgl@npm:2.31.6"
-  checksum: 10/8bf41003ac05403dfc24b001779a6ae48e5535184f33535ebdcd0fc4b7d49b2e661aadf7bc0131fa7d1f257871b0312f1a9951259f5c7c91024b38d099d1474b
   languageName: node
   linkType: hard
 
@@ -32438,7 +32410,6 @@ __metadata:
     remove-trailing-slash: "npm:^0.1.1"
     reselect: "npm:^5.1.1"
     resolve-url-loader: "npm:^3.1.5"
-    rive-react: "npm:^4.23.4"
     sass-embedded: "npm:^1.71.0"
     sass-loader: "npm:^14.1.1"
     schema-utils: "npm:^4.2.0"
@@ -38244,20 +38215,6 @@ __metadata:
     "@xrplf/isomorphic": "npm:^1.0.0"
     ripple-address-codec: "npm:^5.0.0"
   checksum: 10/401ade8b179b8693f9689457346a5f0b5b7d789bb88613f27917c2a1ef907edc23bb1902ba5e8158dcd303e462f160e39897047fb778227af2dc6fab8897f503
-  languageName: node
-  linkType: hard
-
-"rive-react@npm:^4.23.4":
-  version: 4.23.4
-  resolution: "rive-react@npm:4.23.4"
-  dependencies:
-    "@rive-app/canvas": "npm:2.31.6"
-    "@rive-app/canvas-lite": "npm:2.31.6"
-    "@rive-app/webgl": "npm:2.31.6"
-    "@rive-app/webgl2": "npm:2.31.6"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0
-  checksum: 10/3fe6b82ac63afb98d137fd31e27bdaa90cdf341a0f17303cc1ad1e3776e1d686dab9854b830608fc7fbb3fcaeb8dda43756f6ea6a25f4bd7d16dbdafb2b6c6fb
   languageName: node
   linkType: hard
 
