@@ -34,7 +34,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
     );
   });
   // eslint-disable-next-line
-  it.skip('displays wallet for Snap Keyring', async function () {
+  it('displays wallet for Snap Keyring', async function () {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
@@ -42,8 +42,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         dapp: true,
         dappPaths: ['snap-simple-keyring-site'],
         testSpecificMock: async (mockServer) => {
-          await mockSnapSimpleKeyringAndSite(mockServer);
-          return mockMultichainAccountsFeatureFlagStateTwo(mockServer);
+          return mockSnapSimpleKeyringAndSite(mockServer);
         },
         state: 2,
       },

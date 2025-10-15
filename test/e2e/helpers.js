@@ -58,6 +58,7 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 const {
   mockMultichainAccountsFeatureFlagDisabled,
   mockMultichainAccountsFeatureFlagStateOne,
+  mockMultichainAccountsFeatureFlagStateTwo,
 } = require('./tests/multichain-accounts/feature-flag-mocks');
 
 /**
@@ -378,6 +379,7 @@ async function withFixtures(options, testSuite) {
       await mockMultichainAccountsFeatureFlagStateOne(mockServer);
     } else {
       console.log('BIP-44 state 2 enabled');
+      await mockMultichainAccountsFeatureFlagStateTwo(mockServer)
     }
 
     // Decide between the regular setupMocking and the passThrough version
