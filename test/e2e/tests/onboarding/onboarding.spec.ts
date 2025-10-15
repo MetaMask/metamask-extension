@@ -109,7 +109,7 @@ describe('MetaMask onboarding', function () {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('85,000.00', '$');
       },
     );
   });
@@ -239,6 +239,7 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.clickSkipShieldModalButton();
         await switchToNetworkFromSendFlow(driver, networkName);
         await homePage.checkAddNetworkMessageIsDisplayed(networkName);
 

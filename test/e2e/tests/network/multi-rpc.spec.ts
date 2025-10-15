@@ -109,6 +109,7 @@ describe('MultiRpc:', function (this: Suite) {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.clickSkipShieldModalButton();
         await homePage.checkExpectedBalanceIsDisplayed('42,500.00', '$');
 
         await switchToEditRPCViaGlobalMenuNetworks(driver);
