@@ -7486,6 +7486,7 @@ export async function submitShieldClaim(params: {
 
   const accessToken = await submitRequestToBackground<string>('getBearerToken');
 
+  // we do the request here instead of background controllers because files are not serializable
   const response = await fetch(claimsUrl, {
     method: 'POST',
     body: formData,
