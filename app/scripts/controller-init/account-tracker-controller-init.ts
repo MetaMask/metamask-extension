@@ -14,7 +14,6 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
   const getAssetsContractController = () =>
     getController('AssetsContractController');
 
-  console.log('DEBUG AccountTrackerControllerInit 1');
   const controller = new AccountTrackerController({
     state: persistedState.AccountTrackerController,
     messenger: controllerMessenger,
@@ -46,8 +45,6 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
         : [];
     },
   });
-
-  console.log('DEBUG AccountTrackerControllerInit 2');
 
   // Ensure `AccountTrackerController` updates balances after network change.
   // initMessenger.subscribe('NetworkController:networkDidChange', () => {
