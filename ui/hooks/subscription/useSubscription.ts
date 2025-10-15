@@ -31,10 +31,7 @@ export const useUserSubscriptions = () => {
 
   const result = useAsyncResult(async () => {
     if (!isSignedIn) {
-      return {
-        pending: true,
-        error: undefined,
-      };
+      return undefined;
     }
     return await dispatch(getSubscriptions());
   }, [dispatch, isSignedIn]);

@@ -63,7 +63,7 @@ export default function ShieldEntryModal() {
   };
 
   const handleOnGetStarted = async () => {
-    await handleOnClose();
+    handleOnClose();
     navigate(SHIELD_PLAN_ROUTE);
   };
 

@@ -114,13 +114,11 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   ]);
 
   useEffect(() => {
-    (async () => {
-      if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
-        return;
-      }
+    if (!isMetaMaskShieldFeatureEnabled || !isBasicFunctionalityEnabled) {
+      return;
+    }
 
-      getIsUserBalanceCriteriaMet();
-    })();
+    getIsUserBalanceCriteriaMet();
   }, [
     dispatch,
     isMetaMaskShieldFeatureEnabled,
