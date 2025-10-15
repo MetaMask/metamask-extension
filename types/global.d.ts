@@ -278,20 +278,11 @@ type StateHooks = {
   throwTestError?: (msg?: string) => void;
   captureTestError?: (msg?: string) => Promise<void>;
   captureBackgroundError?: (msg?: string) => Promise<void>;
+
   /**
-   * This is set in `app-init.js` to communicate why MetaMask installed or
-   * updated. It is handled in `background.js`.
+   * This is set in `app-init.js`
    */
-  onInstalledListener?: Promise<{
-    reason: chrome.runtime.InstalledDetails;
-  }>;
-  /**
-   * This is set in `app-init.js` to make sure we handle early UI connections.
-   * It is handled in `background.js`.
-   */
-  onConnectListener?: Promise<{
-    port: chrome.runtime.Port;
-  }>;
+  lazyListener: import('../lib/extension-lazy-listener/extension-lazy-listener').ExtensionLazyListener;
 };
 
 export declare global {

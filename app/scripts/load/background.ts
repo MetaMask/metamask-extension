@@ -1,8 +1,9 @@
 // currently only used in webpack build.
 
+import browser from 'webextension-polyfill';
 import { ExtensionLazyListener } from '../lib/extension-lazy-listener/extension-lazy-listener';
 
-globalThis.stateHooks.lazyListener = new ExtensionLazyListener();
+globalThis.stateHooks.lazyListener = new ExtensionLazyListener(browser);
 
 import '../background';
 

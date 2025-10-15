@@ -5,18 +5,16 @@
 // is so small we won't ever have a problem with these two files being "split".
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 
+const { chrome } = globalThis;
+
 // this needs to be run early we can begin listening to these browser events
 // as soon as possible
-const listener = new ExtensionLazyListener([{
-  namespace: 'runtime',
-  eventNames: ['onInstalled',
-    'onConnect',
-    'onMessage',
-    'onMessageExternal',
-  ]
-}]);
-
-const { chrome } = globalThis;
+const listener = new ExtensionLazyListener(chrome, [
+  {
+    namespace: 'runtime',
+    eventNames: ['onInstalled', 'onConnect', 'onMessage', 'onMessageExternal'],
+  },
+]);
 
 /**
  * @type {import('../../types/global').StateHooks}

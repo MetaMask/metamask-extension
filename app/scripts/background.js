@@ -97,7 +97,7 @@ import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferra
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
  */
 
-const lazyListener = globalThis.stateHooks.lazyListener;
+const { lazyListener } = globalThis.stateHooks;
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
