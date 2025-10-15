@@ -10,6 +10,28 @@ export type MultichainFeatureFlag = {
 };
 
 /**
+ * Get app version from multiple sources with robust fallbacks.
+ * Works in both development and bundled production environments.
+ */
+function getAppVersion(): string | null {
+  // Try process.env first (available in build environments)
+  if (process.env.npm_package_version) {
+    return process.env.npm_package_version;
+  }
+
+  // Try require as fallback (works in development)
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, node/global-require, @typescript-eslint/no-require-imports
+    return require('../../package.json').version;
+  } catch {
+    // In bundled environments where package.json is not available,
+    // we should have the version available via process.env
+    console.warn('Unable to determine app version for feature flag evaluation');
+    return null;
+  }
+}
+
+/**
  * Generic helper to check if a multichain feature flag is enabled with version gating.
  * Follows the same pattern as multichain-accounts feature flag.
  * Can be used for Bitcoin, Tron, or any future blockchain integrations.
@@ -18,15 +40,7 @@ export type MultichainFeatureFlag = {
  * @returns True if the feature is enabled and meets version requirements
  */
 export function isMultichainFeatureEnabled(flagValue: unknown): boolean {
-  // Get app version dynamically to avoid circular imports
-  let appVersion: string;
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, node/global-require, @typescript-eslint/no-require-imports
-    appVersion = require('../../package.json').version;
-  } catch {
-    // Fallback if package.json can't be loaded
-    return false;
-  }
+  const appVersion = getAppVersion();
 
   if (!flagValue || !appVersion) {
     return false;

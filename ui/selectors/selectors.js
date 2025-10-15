@@ -3182,9 +3182,10 @@ export function getIsBitcoinSupportEnabled(state) {
   const { bitcoinAccounts } = getRemoteFeatureFlags(state);
   return isBitcoinAccountsFlagEnabled(bitcoinAccounts);
   ///: END:ONLY_INCLUDE_IF
-
+  ///: BEGIN:ONLY_INCLUDE_IF(!bitcoin)
   // When bitcoin is not enabled, always return false
   return false;
+  ///: END:ONLY_INCLUDE_IF
 }
 
 /**

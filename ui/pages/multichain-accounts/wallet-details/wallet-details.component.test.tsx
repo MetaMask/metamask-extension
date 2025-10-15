@@ -76,8 +76,14 @@ jest.mock('../../../store/actions', () => ({
 
 jest.mock('../../../selectors', () => ({
   getMetaMaskHdKeyrings: jest.fn(),
-  getIsBitcoinSupportEnabled: jest.fn(() => true),
-  getIsSolanaSupportEnabled: jest.fn(() => true),
+  getIsBitcoinSupportEnabled: jest.fn(
+    (state) =>
+      state.metamask.remoteFeatureFlags.bitcoinAccounts?.enabled === true,
+  ),
+  getIsSolanaSupportEnabled: jest.fn(
+    (state) =>
+      state.metamask.remoteFeatureFlags.solanaAccounts?.enabled === true,
+  ),
 }));
 
 jest.mock('react-router-dom', () => ({
