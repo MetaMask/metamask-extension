@@ -206,7 +206,7 @@ describe('useRecipientValidation', () => {
     jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
       validateName: () =>
         Promise.resolve({
-          error: 'ensUnknownError',
+          error: 'nameResolutionFailedError',
         }),
     });
 
