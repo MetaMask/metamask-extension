@@ -88,6 +88,16 @@ export function isBitcoinFeatureEnabled(flagValue: unknown): boolean {
 }
 
 /**
+ * Solana-specific feature flag checker
+ *
+ * @param flagValue - The feature flag value
+ * @returns True if Solana feature is enabled
+ */
+export function isSolanaFeatureEnabled(flagValue: unknown): boolean {
+  return isMultichainFeatureEnabled(flagValue);
+}
+
+/**
  * Tron-specific feature flag checker (placeholder for future use)
  *
  * @param flagValue - The feature flag value
