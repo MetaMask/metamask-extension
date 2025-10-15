@@ -54,7 +54,6 @@ export const TransactionActivityEmptyState: React.FC<
     openBridgeExperience(
       MetaMetricsSwapsEventSource.ActivityTabEmptyState,
       undefined, // No specific token
-      true, // isSwap = true
     );
   }, [openBridgeExperience]);
 

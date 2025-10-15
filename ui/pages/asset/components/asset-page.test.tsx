@@ -362,17 +362,17 @@ describe('AssetPage', () => {
     );
   });
 
-  it('should show the Bridge button if chain id is supported', async () => {
+  it('should show the Swap button if chain id is supported', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       store,
     );
-    const bridgeButton = queryByTestId('token-overview-bridge');
-    expect(bridgeButton).toBeInTheDocument();
-    expect(bridgeButton).not.toBeDisabled();
+    const swapButton = queryByTestId('token-overview-swap');
+    expect(swapButton).toBeInTheDocument();
+    expect(swapButton).not.toBeDisabled();
   });
 
-  it('should not render Bridge button on testnet chains', async () => {
+  it('should render Swap button on testnet chains', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -383,9 +383,9 @@ describe('AssetPage', () => {
         },
       }),
     );
-    // bridge button is hidden on unified and testnet chains.
-    const bridgeButton = queryByTestId('token-overview-bridge');
-    expect(bridgeButton).toBeNull();
+    const swapButton = queryByTestId('token-overview-swap');
+    expect(swapButton).toBeInTheDocument();
+    expect(swapButton).not.toBeDisabled();
   });
 
   it('should render the network name', async () => {

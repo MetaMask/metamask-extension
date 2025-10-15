@@ -88,7 +88,7 @@ type WithControllerOptions = {
   useExternalServices?: boolean;
   getNetworkClientById?: jest.Mock;
   getSelectedAccount?: jest.Mock;
-  useAccountApiBalances?: string[];
+  accountsApiChainIds?: () => string[];
 } & Partial<AccountTrackerControllerOptions>;
 
 type WithControllerCallback<ReturnValue> = ({
@@ -117,7 +117,7 @@ async function withController<ReturnValue>(
     useExternalServices = false,
     getNetworkClientById,
     getSelectedAccount,
-    useAccountApiBalances = ['0x1'],
+    accountsApiChainIds = () => ['0x1'],
     ...accountTrackerOptions
   } = rest;
   const { provider } = createTestProviderTools({
@@ -211,7 +211,7 @@ async function withController<ReturnValue>(
     provider: provider as Provider,
     blockTracker: blockTrackerStub as unknown as BlockTracker,
     getNetworkIdentifier: jest.fn(),
-    useAccountApiBalances,
+    accountsApiChainIds,
     messenger: messenger.getRestricted({
       name: 'AccountTrackerController',
       allowedActions: [
@@ -621,7 +621,7 @@ describe('AccountTrackerController', () => {
           completedOnboarding: true,
           useExternalServices: false,
           useMultiAccountBalanceChecker: false,
-          useAccountApiBalances: [],
+          accountsApiChainIds: () => [],
           state: {
             accounts: {
               [SELECTED_ADDRESS]: { address: SELECTED_ADDRESS, balance: '0x0' },
@@ -1226,7 +1226,7 @@ describe('AccountTrackerController', () => {
             completedOnboarding: true,
             useMultiAccountBalanceChecker: true,
             useExternalServices: true,
-            useAccountApiBalances: ['0x1'],
+            accountsApiChainIds: () => ['0x1'],
             state: {
               accounts: {
                 [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
@@ -1264,7 +1264,7 @@ describe('AccountTrackerController', () => {
             completedOnboarding: true,
             useMultiAccountBalanceChecker: true,
             useExternalServices: true,
-            useAccountApiBalances: ['0x1'],
+            accountsApiChainIds: () => ['0x1'],
             state: {
               accounts: {
                 [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
@@ -1300,7 +1300,7 @@ describe('AccountTrackerController', () => {
             completedOnboarding: true,
             useMultiAccountBalanceChecker: true,
             useExternalServices: true,
-            useAccountApiBalances: ['0x1'],
+            accountsApiChainIds: () => ['0x1'],
             state: {
               accounts: {
                 [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
@@ -1334,7 +1334,7 @@ describe('AccountTrackerController', () => {
             completedOnboarding: true,
             useMultiAccountBalanceChecker: true,
             useExternalServices: true,
-            useAccountApiBalances: ['0x1'],
+            accountsApiChainIds: () => ['0x1'],
             state: {
               accounts: {
                 [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
@@ -1368,7 +1368,7 @@ describe('AccountTrackerController', () => {
             completedOnboarding: true,
             useMultiAccountBalanceChecker: true,
             useExternalServices: false, // disabled
-            useAccountApiBalances: ['0x1'],
+            accountsApiChainIds: () => ['0x1'],
             state: {
               accounts: {
                 [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
@@ -1400,7 +1400,7 @@ describe('AccountTrackerController', () => {
             completedOnboarding: true,
             useMultiAccountBalanceChecker: true,
             useExternalServices: true,
-            useAccountApiBalances: ['0x1'], // Only Ethereum supported
+            accountsApiChainIds: () => ['0x1'], // Only Ethereum supported
             state: {
               accounts: {
                 [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
@@ -1434,7 +1434,7 @@ describe('AccountTrackerController', () => {
             completedOnboarding: true,
             useMultiAccountBalanceChecker: true,
             useExternalServices: true,
-            useAccountApiBalances: ['0x1', '0x38', '0xe708'],
+            accountsApiChainIds: () => ['0x1', '0x38', '0xe708'],
             state: {
               accounts: {
                 [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: '0x0' },
@@ -1501,7 +1501,7 @@ describe('AccountTrackerController', () => {
             completedOnboarding: true,
             useMultiAccountBalanceChecker: true,
             useExternalServices: true,
-            useAccountApiBalances: ['0x1'],
+            accountsApiChainIds: () => ['0x1'],
             state: {
               accounts: Object.fromEntries(
                 addresses.map((address) => [

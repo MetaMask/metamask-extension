@@ -15,13 +15,14 @@ const REDESIGN_USER_TRANSACTION_TYPES = [
   TransactionType.contractInteraction,
   TransactionType.deployContract,
   TransactionType.revokeDelegation,
+  TransactionType.shieldSubscriptionApprove,
+  TransactionType.simpleSend,
   TransactionType.tokenMethodApprove,
   TransactionType.tokenMethodIncreaseAllowance,
+  TransactionType.tokenMethodSafeTransferFrom,
   TransactionType.tokenMethodSetApprovalForAll,
   TransactionType.tokenMethodTransfer,
   TransactionType.tokenMethodTransferFrom,
-  TransactionType.tokenMethodSafeTransferFrom,
-  TransactionType.simpleSend,
 ];
 
 /** List of transaction types that support the redesigned confirmation flow for developers */
