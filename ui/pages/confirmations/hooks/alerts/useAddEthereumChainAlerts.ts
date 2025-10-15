@@ -60,6 +60,7 @@ export function useAddEthereumChainAlerts() {
         field: 'rpcUrl',
         reason: title,
         inlineAlertText: '',
+        showArrow: false,
       });
 
       if (
@@ -73,6 +74,8 @@ export function useAddEthereumChainAlerts() {
           message: t('mismatchedNetworkName'),
           severity: Severity.Warning,
           field: 'network',
+          inlineAlertText: '',
+          showArrow: false,
         });
       }
 
@@ -87,6 +90,8 @@ export function useAddEthereumChainAlerts() {
           message: t('mismatchedNetworkSymbol'),
           severity: Severity.Warning,
           field: 'network',
+          inlineAlertText: '',
+          showArrow: false,
         });
       }
 
@@ -101,6 +106,8 @@ export function useAddEthereumChainAlerts() {
           message: t('mismatchedRpcUrl'),
           severity: Severity.Warning,
           field: 'rpcUrl',
+          inlineAlertText: '',
+          showArrow: false,
         });
       }
 
@@ -114,6 +121,8 @@ export function useAddEthereumChainAlerts() {
           message: t('deprecatedNetwork'),
           severity: Severity.Warning,
           field: 'network',
+          inlineAlertText: '',
+          showArrow: false,
         });
       }
 
@@ -129,6 +138,8 @@ export function useAddEthereumChainAlerts() {
             message: t('mismatchedRpcChainId'),
             severity: Severity.Warning,
             field: 'network',
+            inlineAlertText: '',
+            showArrow: false,
           });
         }
       } catch (err) {
@@ -142,6 +153,8 @@ export function useAddEthereumChainAlerts() {
           message: t('errorWhileConnectingToRPC'),
           severity: Severity.Warning,
           field: 'rpcUrl',
+          inlineAlertText: '',
+          showArrow: false,
         });
       }
 
