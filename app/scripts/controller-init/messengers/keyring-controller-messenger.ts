@@ -2,7 +2,7 @@ import { Messenger } from '@metamask/base-controller';
 import {
   AllowedActions,
   AllowedEvents,
-} from '../../controllers/account-tracker-controller';
+} from '../../controllers/account-tracker-controller-bk';
 import { AppStateControllerRequestQrCodeScanAction } from '../../controllers/app-state-controller';
 
 export type KeyringControllerMessenger = ReturnType<

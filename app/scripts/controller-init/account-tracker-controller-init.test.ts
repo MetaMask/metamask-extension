@@ -4,7 +4,7 @@ import {
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import AccountTrackerController from '../controllers/account-tracker-controller';
+import AccountTrackerController from '@metamask/assets-controllers';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
