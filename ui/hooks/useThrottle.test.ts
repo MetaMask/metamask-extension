@@ -2,7 +2,6 @@ import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
 import { useThrottle } from './useThrottle';
 
-
 describe('useThrottle', () => {
   beforeEach(() => {
     // Mock timers for testing
@@ -22,10 +21,11 @@ describe('useThrottle', () => {
 
   it('should throttle value updates', () => {
     const { result, rerender } = renderHook(
-      ({ value, limit }: { value: string; limit: number }) => useThrottle(value, limit),
+      ({ value, limit }: { value: string; limit: number }) =>
+        useThrottle(value, limit),
       {
         initialProps: { value: 'initial', limit: 1000 },
-      }
+      },
     );
 
     // Change value immediately
@@ -47,10 +47,11 @@ describe('useThrottle', () => {
 
   it('should handle multiple rapid value changes', () => {
     const { result, rerender } = renderHook(
-      ({ value, limit }: { value: string; limit: number }) => useThrottle(value, limit),
+      ({ value, limit }: { value: string; limit: number }) =>
+        useThrottle(value, limit),
       {
         initialProps: { value: 'initial', limit: 1000 },
-      }
+      },
     );
 
     // Make multiple rapid changes
@@ -70,10 +71,11 @@ describe('useThrottle', () => {
 
   it('should work with different data types', () => {
     const { result, rerender } = renderHook(
-      ({ value, limit }: { value: number; limit: number }) => useThrottle(value, limit),
+      ({ value, limit }: { value: number; limit: number }) =>
+        useThrottle(value, limit),
       {
         initialProps: { value: 0, limit: 500 },
-      }
+      },
     );
 
     rerender({ value: 42, limit: 500 });
@@ -90,10 +92,11 @@ describe('useThrottle', () => {
     const updatedObj = { name: 'updated' };
 
     const { result, rerender } = renderHook(
-      ({ value, limit }: { value: { name: string }; limit: number }) => useThrottle(value, limit),
+      ({ value, limit }: { value: { name: string }; limit: number }) =>
+        useThrottle(value, limit),
       {
         initialProps: { value: initialObj, limit: 1000 },
-      }
+      },
     );
 
     rerender({ value: updatedObj, limit: 1000 });
@@ -107,10 +110,11 @@ describe('useThrottle', () => {
 
   it('should handle zero limit', () => {
     const { result, rerender } = renderHook(
-      ({ value, limit }: { value: string; limit: number }) => useThrottle(value, limit),
+      ({ value, limit }: { value: string; limit: number }) =>
+        useThrottle(value, limit),
       {
         initialProps: { value: 'initial', limit: 0 },
-      }
+      },
     );
 
     rerender({ value: 'updated', limit: 0 });
@@ -135,10 +139,11 @@ describe('useThrottle', () => {
 
   it('should handle changing limit values', () => {
     const { result, rerender } = renderHook(
-      ({ value, limit }: { value: string; limit: number }) => useThrottle(value, limit),
+      ({ value, limit }: { value: string; limit: number }) =>
+        useThrottle(value, limit),
       {
         initialProps: { value: 'initial', limit: 2000 },
-      }
+      },
     );
 
     // Change value with long limit
@@ -157,10 +162,11 @@ describe('useThrottle', () => {
 
   it('should handle null and undefined values', () => {
     const { result, rerender } = renderHook(
-      ({ value, limit }: { value: null | undefined; limit: number }) => useThrottle(value, limit),
+      ({ value, limit }: { value: null | undefined; limit: number }) =>
+        useThrottle(value, limit),
       {
         initialProps: { value: null as null | undefined, limit: 1000 },
-      }
+      },
     );
 
     rerender({ value: undefined, limit: 1000 });
