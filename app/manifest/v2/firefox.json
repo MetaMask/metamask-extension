@@ -18,6 +18,5 @@
     "default_title": "MetaMask",
     "default_popup": "popup.html"
   },
-  "content_security_policy": "frame-ancestors 'none'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval'; object-src 'none'; font-src 'self';",
   "manifest_version": 2
 }
