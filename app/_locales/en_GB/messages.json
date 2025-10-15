@@ -3729,6 +3729,9 @@
   "nameProvider_token": {
     "message": "MetaMask"
   },
+  "nameResolutionFailedError": {
+    "message": "No address resolution found for this name."
+  },
   "nameSetPlaceholder": {
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
