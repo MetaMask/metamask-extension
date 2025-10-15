@@ -1,9 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
 import { ApprovalType } from '@metamask/controller-utils';
-import { useAddEthereumChain } from './useAddEthereumChain';
-import { useConfirmContext } from '../context/confirm';
 import * as actions from '../../../store/actions';
+import { useConfirmContext } from '../context/confirm';
+import { useAddEthereumChain } from './useAddEthereumChain';
 
 const mockDispatch = jest.fn();
 

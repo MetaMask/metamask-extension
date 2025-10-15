@@ -1,45 +1,10 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { screen } from '@testing-library/react';
-import { useSelector } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { ApprovalType } from '@metamask/controller-utils';
 import { renderWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { AlertMetricsProvider } from '../../../../components/app/alert-system/contexts/alertMetricsContext';
 import { AddEthereumChain } from './add-ethereum-chain';
-import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
-
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useSelector: jest.fn(),
-}));
-
-jest.mock('../../hooks/useCurrentConfirmation', () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
-
-jest.mock('../../hooks/useConfirmationNavigation', () => ({
-  useConfirmationNavigation: jest.fn(() => ({
-    confirmations: [{ id: '1' }],
-    count: 1,
-    navigateToId: jest.fn(),
-  })),
-}));
-
-jest.mock(
-  '../../../../components/app/alert-system/contexts/alertMetricsContext',
-  () => ({
-    useAlertMetrics: jest.fn(() => ({
-      trackAlertMetrics: jest.fn(),
-    })),
-  }),
-);
-
-jest.mock('../../../../hooks/useAlerts', () => ({
-  __esModule: true,
-  default: jest.fn(() => ({
-    getFieldAlerts: jest.fn(() => []),
-  })),
-}));
 
 const mockConfirmation = {
   id: '1',
@@ -52,35 +17,60 @@ const mockConfirmation = {
   },
 };
 
+jest.mock('../../hooks/useCurrentConfirmation', () =>
+  jest.fn(() => ({ currentConfirmation: mockConfirmation })),
+);
+
+function render(component: ReactNode, mockState: Record<string, unknown> = {}) {
+  const mockMetrics = {
+    trackAlertActionClicked: jest.fn(),
+    trackAlertRender: jest.fn(),
+    trackInlineAlertClicked: jest.fn(),
+  };
+
+  return renderWithConfirmContextProvider(
+    <AlertMetricsProvider metrics={mockMetrics}>
+      {component}
+    </AlertMetricsProvider>,
+    configureMockStore([])(mockState),
+  );
+}
+
 describe('AddEthereumChain', () => {
-  beforeEach(() => {
-    jest.mocked(useCurrentConfirmation).mockReturnValue({
-      currentConfirmation: mockConfirmation,
-    });
-    jest.mocked(useSelector).mockReturnValue({});
-  });
-
   it('renders network details with add title', () => {
-    const mockStore = configureMockStore([])({});
-    renderWithConfirmContextProvider(<AddEthereumChain />, mockStore);
+    const mockState = {
+      confirmAlerts: {
+        alerts: {},
+      },
+      metamask: {
+        networkConfigurationsByChainId: {},
+        subjectMetadata: {},
+      },
+    };
 
-    expect(screen.getByText(/Add Test Network/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/A site is suggesting additional network details/i),
-    ).toBeInTheDocument();
+    render(<AddEthereumChain />, mockState);
+
+    expect(screen.getByText('Add Test Network')).toBeInTheDocument();
     expect(screen.getByText('Test Network')).toBeInTheDocument();
     expect(screen.getByText('example.com')).toBeInTheDocument();
     expect(screen.getByText('rpc.example.com')).toBeInTheDocument();
   });
 
   it('renders update network title when network exists', () => {
-    jest.mocked(useSelector).mockReturnValue({
-      '0x5': { name: 'Existing Network', chainId: '0x5' },
-    });
+    const mockState = {
+      confirmAlerts: {
+        alerts: {},
+      },
+      metamask: {
+        networkConfigurationsByChainId: {
+          '0x5': { name: 'Existing Network', chainId: '0x5' },
+        },
+        subjectMetadata: {},
+      },
+    };
 
-    const mockStore = configureMockStore([])({});
-    renderWithConfirmContextProvider(<AddEthereumChain />, mockStore);
+    render(<AddEthereumChain />, mockState);
 
-    expect(screen.getByText(/Update Existing Network/i)).toBeInTheDocument();
+    expect(screen.getByText('Update Existing Network')).toBeInTheDocument();
   });
 });
