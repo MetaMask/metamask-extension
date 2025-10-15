@@ -16,6 +16,7 @@ import {
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   isCrossChain,
+  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType } from '@metamask/keyring-api';
@@ -522,6 +523,30 @@ export const getFromTokenConversionRate = createSelector(
           Number(nativeToUsdRate),
         );
       }
+
+      if (
+        isBitcoinChainId(fromChain.chainId) &&
+        nativeAssetId &&
+        tokenAssetId
+      ) {
+        // For Bitcoin tokens, we use the conversion rates provided by the multichain rates controller
+        const nativeAssetRate = Number(
+          conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
+        );
+        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
+          Number(
+            conversionRates?.[tokenAssetId]?.rate ??
+              fromTokenExchangeRate ??
+              null,
+          ),
+          nativeAssetRate,
+        );
+        return exchangeRatesFromNativeAndCurrencyRates(
+          tokenToNativeAssetRate,
+          Number(nativeToCurrencyRate),
+          Number(nativeToUsdRate),
+        );
+      }
       // For EVM tokens, we use the market data to get the exchange rate
       const tokenToNativeAssetRate =
         exchangeRateFromMarketData(
@@ -830,11 +855,16 @@ export const getIsToOrFromSolana = createSelector(
       return false;
     }
 
-    const fromChainIsSolana = isSolanaChainId(fromChain.chainId);
-    const toChainIsSolana = isSolanaChainId(toChain.chainId);
+    // Parse the CAIP chain IDs to get their namespaces
+    const fromCaipChainId = formatChainIdToCaip(fromChain.chainId);
+    const toCaipChainId = formatChainIdToCaip(toChain.chainId);
 
-    // Only return true if either chain is Solana and the other is EVM
-    return toChainIsSolana !== fromChainIsSolana;
+    const { namespace: fromNamespace } = parseCaipChainId(fromCaipChainId);
+    const { namespace: toNamespace } = parseCaipChainId(toCaipChainId);
+
+    // Return true if chains are in different namespaces
+    // This covers EVM <> non-EVM as well as non-EVM <> non-EVM (e.g., Solana <> Bitcoin)
+    return fromNamespace !== toNamespace;
   },
 );
 
