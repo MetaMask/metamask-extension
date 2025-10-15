@@ -103,10 +103,10 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   );
 
   // Set initial state based on bitcoinAccounts feature flag
-  const areBitcoinAccountsEnabled = isBitcoinAccountsFlagEnabled(
+  let currentBitcoinEnabled = isBitcoinAccountsFlagEnabled(
     initialRemoteFeatureFlagsState?.remoteFeatureFlags?.bitcoinAccounts,
   );
-  btcProvider.setEnabled(areBitcoinAccountsEnabled);
+  btcProvider.setEnabled(currentBitcoinEnabled);
 
   // Subscribe to RemoteFeatureFlagsController:stateChange for runtime control
   controllerMessenger.subscribe(
@@ -117,8 +117,25 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
           ?.bitcoinAccounts,
       );
 
-      // Enable/disable Bitcoin provider based on feature flag
-      btcProvider.setEnabled(bitcoinAccountsEnabled);
+      // Only react if the flag actually changed
+      if (bitcoinAccountsEnabled !== currentBitcoinEnabled) {
+        currentBitcoinEnabled = bitcoinAccountsEnabled;
+
+        // Enable/disable Bitcoin provider based on feature flag
+        btcProvider.setEnabled(bitcoinAccountsEnabled);
+
+        // Trigger wallet alignment when Bitcoin accounts are enabled
+        // This will create Bitcoin accounts for existing wallets
+        if (bitcoinAccountsEnabled) {
+          controller.alignWallets().catch((error) => {
+            console.error(
+              'Failed to align wallets after enabling Bitcoin provider:',
+              error,
+            );
+          });
+        }
+        // Note: When disabled, no action needed as the provider won't create new accounts
+      }
     },
   );
   ///: END:ONLY_INCLUDE_IF
