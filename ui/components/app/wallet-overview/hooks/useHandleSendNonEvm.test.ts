@@ -71,7 +71,7 @@ const mockState = {
     isEvmSelected: false,
     remoteFeatureFlags: {
       addSolanaAccount: true,
-      addBitcoinAccount: true,
+      bitcoinAccounts: { enabled: true, minimumVersion: '13.7.0' },
     },
   },
 };

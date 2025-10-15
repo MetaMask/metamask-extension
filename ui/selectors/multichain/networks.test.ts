@@ -31,9 +31,7 @@ import {
 
 // Mock the main selectors to avoid circular dependency
 jest.mock('../selectors', () => ({
-  getIsBitcoinSupportEnabled: jest.fn(
-    (state) => state.metamask.remoteFeatureFlags.addBitcoinAccount,
-  ),
+  getIsBitcoinSupportEnabled: jest.fn(() => true),
   getIsSolanaSupportEnabled: jest.fn(
     (state) => state.metamask.remoteFeatureFlags.addSolanaAccount,
   ),
@@ -135,7 +133,7 @@ const mockState: TestState = {
       addSolanaAccount: true,
       solanaTestnetsEnabled: true,
       bitcoinTestnetsEnabled: false,
-      addBitcoinAccount: true,
+      bitcoinAccounts: { enabled: true, minimumVersion: '13.7.0' },
     },
     multichainNetworkConfigurationsByChainId: {
       ...mockNonEvmNetworks,
@@ -277,7 +275,7 @@ describe('Multichain network selectors', () => {
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
             addSolanaAccount: false,
-            addBitcoinAccount: true,
+            bitcoinAccounts: { enabled: true, minimumVersion: '13.7.0' },
           },
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
@@ -314,7 +312,7 @@ describe('Multichain network selectors', () => {
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
             addSolanaAccount: false,
-            addBitcoinAccount: true,
+            bitcoinAccounts: { enabled: true, minimumVersion: '13.7.0' },
           },
           internalAccounts: {
             ...mockState.metamask.internalAccounts,

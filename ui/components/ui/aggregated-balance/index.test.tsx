@@ -77,7 +77,7 @@ const mockMetamaskStore = {
   cryptocurrencies: [Cryptocurrency.Solana],
   remoteFeatureFlags: {
     addSolanaAccount: true,
-    addBitcoinAccount: true,
+    bitcoinAccounts: { enabled: true, minimumVersion: '13.7.0' },
   },
 };
 
