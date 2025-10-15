@@ -101,7 +101,7 @@ export const selectPendingApproval = createDeepEqualSelector(
 
 export const getApprovalsByOrigin = (
   state: ApprovalsMetaMaskState,
-  origin: string,
+  origin: string | undefined,
 ) => {
   const pendingApprovals = getPendingApprovals(state);
 

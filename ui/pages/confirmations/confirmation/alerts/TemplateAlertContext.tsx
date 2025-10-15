@@ -36,7 +36,7 @@ export const TemplateAlertContextProvider: React.FC<{
   const pendingConfirmation =
     pendingConfirmations?.find(
       (confirmation) => confirmation.id === confirmationId,
-    ) ?? pendingConfirmations[0];
+    ) ?? pendingConfirmations?.[0];
 
   const [isAlertsModalVisible, setIsAlertsModalVisible] = useState(false);
   const alertOwnerId = pendingConfirmation?.id;
