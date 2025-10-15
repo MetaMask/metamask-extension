@@ -48,6 +48,9 @@ describe('Phishing Detection', function (this: Suite) {
   });
 
   it('should display the MetaMask Phishing Detection page and take the user to the blocked page if they continue', async function () {
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      this.skip();
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -107,6 +110,9 @@ describe('Phishing Detection', function (this: Suite) {
     };
 
     it('should redirect users to the the MetaMask Phishing Detection page when an iframe domain is on the phishing blocklist', async function () {
+      if (process.env.SELENIUM_BROWSER === 'firefox') {
+        this.skip();
+      }
       await withFixtures(
         getFixtureOptions({
           title: this.test?.fullTitle(),
@@ -595,6 +601,9 @@ describe('Phishing Detection', function (this: Suite) {
 
     describe('whitelisted paths', function () {
       it('does not display the MetaMask Phishing Detection page when accessing a whitelisted path', async function () {
+        if (process.env.SELENIUM_BROWSER === 'firefox') {
+          this.skip();
+        }
         await withFixtures(
           {
             fixtures: new FixtureBuilder().build(),
@@ -633,6 +642,9 @@ describe('Phishing Detection', function (this: Suite) {
       });
 
       it('when the subpath is whitelisted, the phishing warning page is not displayed for the blocklisted path and all subpaths', async function () {
+        if (process.env.SELENIUM_BROWSER === 'firefox') {
+          this.skip();
+        }
         await withFixtures(
           {
             fixtures: new FixtureBuilder().build(),

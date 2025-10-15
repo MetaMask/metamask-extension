@@ -73,6 +73,7 @@ import {
   RecurringInterval,
   Subscription,
   UpdatePaymentMethodOpts,
+  SubmitUserEventRequest,
 } from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
@@ -352,6 +353,49 @@ export function subscriptionsStartPolling(): ThunkAction<
 }
 
 /**
+ * Fetches the subscription eligibilities.
+ *
+ * @returns The subscription eligibilities.
+ */
+export function getSubscriptionsEligibilities(): ThunkAction<
+  SubscriptionEligibility[],
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      return await submitRequestToBackground('getSubscriptionsEligibilities');
+    } catch (error) {
+      log.error('[getSubscriptionsEligibilities] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+/**
+ * Submits a user event.
+ *
+ * @param eventRequest - The event request.
+ * @returns resolved promise.
+ */
+export function submitSubscriptionUserEvents(
+  eventRequest: SubmitUserEventRequest,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('submitSubscriptionUserEvents', [
+        eventRequest,
+      ]);
+    } catch (error) {
+      log.error('[submitSubscriptionUserEvents] error', error);
+      dispatch(displayWarning(error));
+    }
+  };
+}
+
+/**
  * Fetches user subscriptions.
  *
  * @returns The subscriptions.
@@ -508,12 +552,18 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
 }
 
 export function setShowShieldEntryModalOnce(
-  payload: boolean | null,
+  show: boolean | null,
+  shouldSubmitEvents: boolean = false,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setShowShieldEntryModalOnce', [payload]);
-      dispatch(setShowShieldEntryModalOnceAction(payload));
+      await submitRequestToBackground('setShowShieldEntryModalOnce', [show]);
+      dispatch(
+        setShowShieldEntryModalOnceAction({
+          show: Boolean(show),
+          shouldSubmitEvents,
+        }),
+      );
     } catch (error) {
       log.error('[setShowShieldEntryModalOnce] error', error);
       dispatch(displayWarning(error));
@@ -522,9 +572,10 @@ export function setShowShieldEntryModalOnce(
   };
 }
 
-export function setShowShieldEntryModalOnceAction(
-  payload: boolean | null,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function setShowShieldEntryModalOnceAction(payload: {
+  show: boolean;
+  shouldSubmitEvents: boolean;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
     type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
     payload,
