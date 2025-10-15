@@ -355,6 +355,8 @@ describe('toast display', () => {
             rate: '1.00',
           },
       },
+      shieldEndingToastLastClickedOrClosed: null,
+      shieldPausedToastLastClickedOrClosed: null,
     },
     activeTab: {
       id: 2143026027,
