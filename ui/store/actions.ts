@@ -168,7 +168,10 @@ import {
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
-import type { NetworkConnectionBanner } from '../../shared/constants/app-state';
+import {
+  ClaimSubmitToastType,
+  type NetworkConnectionBanner,
+} from '../../shared/constants/app-state';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -7482,4 +7485,74 @@ export async function getLayer1GasFeeValue({
   return await submitRequestToBackground('getLayer1GasFee', [
     { chainId, networkClientId, transactionParams },
   ]);
+}
+
+/**
+ * Submits a shield claim.
+ *
+ * @param params - The parameters.
+ * @param params.email - The email.
+ * @param params.impactedWalletAddress - The impacted wallet address.
+ * @param params.impactedTransactionHash - The impacted transaction hash.
+ * @param params.reimbursementWalletAddress - The reimbursement wallet address.
+ * @param params.caseDescription - The description.
+ * @param params.files - The files.
+ * @returns The subscription response.
+ */
+export async function submitShieldClaim(params: {
+  email: string;
+  impactedWalletAddress: string;
+  impactedTransactionHash: string;
+  reimbursementWalletAddress: string;
+  caseDescription: string;
+  files?: FileList;
+}) {
+  const baseUrl =
+    process.env.SHIELD_CLAIMS_API_URL ??
+    'https://claims.dev-api.cx.metamask.io';
+
+  const claimsUrl = `${baseUrl}/claims`;
+  const formData = new FormData();
+  formData.append('email', params.email);
+  formData.append('impactedWalletAddress', params.impactedWalletAddress);
+  formData.append('impactedTxHash', params.impactedTransactionHash);
+  formData.append(
+    'reimbursementWalletAddress',
+    params.reimbursementWalletAddress,
+  );
+  formData.append('description', params.caseDescription);
+  // TODO: temporary value for signature, update to correct signature after implement signature verification
+  formData.append(
+    'signature',
+    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
+  );
+  formData.append('timestamp', Date.now().toString());
+
+  // add files to form data
+  if (params.files) {
+    Array.from(params.files).forEach((file) => {
+      formData.append('attachments', file, file.name);
+    });
+  }
+
+  const accessToken = await submitRequestToBackground<string>('getBearerToken');
+
+  // we do the request here instead of background controllers because files are not serializable
+  const response = await fetch(claimsUrl, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorMessage = await response.json();
+    if (errorMessage.message) {
+      throw new Error(errorMessage.message);
+    }
+    throw new Error(ClaimSubmitToastType.Errored);
+  }
+
+  return ClaimSubmitToastType.Success;
 }
