@@ -143,7 +143,7 @@ async function bridgeUserActions(): Promise<{
       const quotePage = new BridgeQuotePage(driver);
 
       const timestampBeforeLoadPage = new Date();
-      await homePage.startBridgeFlow();
+      await homePage.startSwapFlow();
       const timestampAfterLoadPage = new Date();
 
       loadPage =

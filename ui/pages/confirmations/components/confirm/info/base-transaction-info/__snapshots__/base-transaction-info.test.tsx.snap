@@ -253,12 +253,17 @@ exports[`<BaseTransactionInfo /> renders component for contract interaction requ
       <div
         class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
-          data-testid="gas-fee-token-fee"
+        <div
+          class="mm-box"
+          style="margin-top: 0px;"
         >
-           
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
+            data-testid="gas-fee-token-fee"
+          >
+             
+          </p>
+        </div>
       </div>
     </div>
     <div

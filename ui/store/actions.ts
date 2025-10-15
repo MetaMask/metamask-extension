@@ -50,7 +50,7 @@ import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
-import { Patch } from 'immer';
+import { Immer, Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -66,11 +66,13 @@ import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
   BillingPortalResponse,
   GetCryptoApproveTransactionRequest,
+  GetCryptoApproveTransactionResponse,
   PaymentType,
   PricingResponse,
   ProductType,
   RecurringInterval,
   Subscription,
+  UpdatePaymentMethodOpts,
 } from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
@@ -331,6 +333,25 @@ export function createNewVaultAndSyncWithSocial(
 }
 
 /**
+ * Starts polling for the subscriptions.
+ */
+export function subscriptionsStartPolling(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('subscriptionsStartPolling');
+    } catch (error) {
+      log.error('[subscriptionsStartPolling] error', error);
+      dispatch(displayWarning(error));
+    }
+  };
+}
+
+/**
  * Fetches user subscriptions.
  *
  * @returns The subscriptions.
@@ -374,7 +395,7 @@ export function getSubscriptionPricing(): ThunkAction<
  */
 export async function getSubscriptionCryptoApprovalAmount(
   params: GetCryptoApproveTransactionRequest,
-): Promise<string> {
+): Promise<GetCryptoApproveTransactionResponse> {
   return await submitRequestToBackground<string>(
     'getSubscriptionCryptoApprovalAmount',
     [params],
@@ -396,13 +417,18 @@ export function startSubscriptionWithCard(params: {
   recurringInterval: RecurringInterval;
 }): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    const currentTab = await global.platform.currentTab();
-    const subscriptions = await submitRequestToBackground<Subscription[]>(
-      'startSubscriptionWithCard',
-      [params, currentTab?.id],
-    );
+    try {
+      const currentTab = await global.platform.currentTab();
+      const subscriptions = await submitRequestToBackground<Subscription[]>(
+        'startSubscriptionWithCard',
+        [params, currentTab?.id],
+      );
 
-    return subscriptions;
+      return subscriptions;
+    } catch (error) {
+      console.error('[startSubscriptionWithCard] error', error);
+      throw error;
+    }
   };
 }
 
@@ -419,6 +445,34 @@ export function updateSubscriptionCardPaymentMethod(params: {
     );
 
     return subscriptions;
+  };
+}
+
+export function startSubscriptionWithCrypto(params: {
+  products: ProductType[];
+  isTrialRequested: boolean;
+  recurringInterval: RecurringInterval;
+  billingCycles: number;
+  chainId: Hex;
+  payerAddress: Hex;
+  tokenSymbol: string;
+  rawTransaction: Hex;
+}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    return await submitRequestToBackground<Subscription[]>(
+      'startSubscriptionWithCrypto',
+      [params],
+    );
+  };
+}
+
+export function updateSubscriptionCryptoPaymentMethod(
+  params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('updateSubscriptionCryptoPaymentMethod', [
+      params,
+    ]);
   };
 }
 
@@ -450,6 +504,30 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
       [],
     );
     return res;
+  };
+}
+
+export function setShowShieldEntryModalOnce(
+  payload: boolean | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('setShowShieldEntryModalOnce', [payload]);
+      dispatch(setShowShieldEntryModalOnceAction(payload));
+    } catch (error) {
+      log.error('[setShowShieldEntryModalOnce] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+export function setShowShieldEntryModalOnceAction(
+  payload: boolean | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return {
+    type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
+    payload,
   };
 }
 
@@ -7198,34 +7276,14 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
   ]);
 }
 
-/**
- * Apply the state patches from the background.
- * Intentionally not using immer as a temporary measure to avoid
- * freezing the resulting state and requiring further fixes
- * to remove direct state mutations.
- *
- * @param oldState - The current state.
- * @param patches - The patches to apply.
- * Only supports 'replace' operations with a single path element.
- * @returns The new state.
- */
 function applyPatches(
   oldState: Record<string, unknown>,
   patches: Patch[],
 ): Record<string, unknown> {
-  const newState = { ...oldState };
+  const immer = new Immer();
+  immer.setAutoFreeze(false);
 
-  for (const patch of patches) {
-    const { op, path, value } = patch;
-
-    if (op === 'replace') {
-      newState[path[0]] = value;
-    } else {
-      throw new Error(`Unsupported patch operation: ${op}`);
-    }
-  }
-
-  return newState;
+  return immer.applyPatches(oldState, patches);
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)

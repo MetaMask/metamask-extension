@@ -42,11 +42,8 @@ export const RecipientInput = ({
   recipientInputRef: React.RefObject<HTMLInputElement>;
   recipientValidationResult: ReturnType<typeof useRecipientValidation>;
 }) => {
-  const {
-    captureRecipientSelected,
-    setRecipientInputMethodManual,
-    setRecipientInputMethodPasted,
-  } = useRecipientSelectionMetrics();
+  const { setRecipientInputMethodManual, setRecipientInputMethodPasted } =
+    useRecipientSelectionMetrics();
   const recipients = useRecipients();
   const t = useI18nContext();
   const { to, updateTo } = useSendContext();
@@ -58,18 +55,18 @@ export const RecipientInput = ({
   } = recipientValidationResult;
 
   const onToChange = useCallback(
-    (address: string) => {
-      updateTo(address);
-      setRecipientInputMethodManual();
-    },
-    [updateTo, setRecipientInputMethodManual],
-  );
+    (e) => {
+      if (e.nativeEvent.inputType === 'insertFromPaste') {
+        setRecipientInputMethodPasted();
+      } else {
+        setRecipientInputMethodManual();
+      }
 
-  const captureRecipientSelectedEvent = useCallback(() => {
-    if (to) {
-      captureRecipientSelected();
-    }
-  }, [captureRecipientSelected, to]);
+      const address = e.target.value;
+      updateTo(address);
+    },
+    [updateTo, setRecipientInputMethodManual, setRecipientInputMethodPasted],
+  );
 
   const clearRecipient = useCallback(() => {
     updateTo('');
@@ -122,7 +119,7 @@ export const RecipientInput = ({
                 />
               ) : (
                 <Text variant={TextVariant.bodyMd}>
-                  (recipientName ?? resolvedAddress)
+                  {recipientName ?? resolvedAddress}
                 </Text>
               )}
               {recipientName && (
@@ -157,9 +154,7 @@ export const RecipientInput = ({
               />
             ) : null
           }
-          onChange={(e) => onToChange(e.target.value)}
-          onBlur={captureRecipientSelectedEvent}
-          onPaste={setRecipientInputMethodPasted}
+          onChange={onToChange}
           placeholder={t('recipientPlaceholder')}
           ref={recipientInputRef}
           value={to}

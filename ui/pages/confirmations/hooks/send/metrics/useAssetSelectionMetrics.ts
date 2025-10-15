@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { useCallback, useContext } from 'react';
+import { isAddress as isEvmAddress } from 'ethers/lib/utils';
 
 import {
   MetaMetricsEventCategory,
@@ -10,7 +12,6 @@ import {
   useSendMetricsContext,
 } from '../../../context/send-metrics';
 import { Asset } from '../../../types/send';
-import { useSendType } from '../useSendType';
 import { useSendAssets } from '../useSendAssets';
 
 const ASSET_TYPE = {
@@ -29,7 +30,6 @@ export const useAssetSelectionMetrics = () => {
     setAssetFilterMethod,
     setAssetListSize,
   } = useSendMetricsContext();
-  const { isEvmSendType } = useSendType();
 
   const addAssetFilterMethod = useCallback(
     (filterMethod: string) => {
@@ -66,6 +66,9 @@ export const useAssetSelectionMetrics = () => {
         assetType = ASSET_TYPE.NATIVE;
       }
 
+      const tokenAddress = sendAsset?.address || sendAsset?.assetId;
+      const isEvmSend = isEvmAddress(tokenAddress as string);
+
       const allAssets = [...tokens, ...nfts];
       const position =
         allAssets.findIndex((asset) => {
@@ -94,32 +97,19 @@ export const useAssetSelectionMetrics = () => {
         event: MetaMetricsEventName.SendAssetSelected,
         category: MetaMetricsEventCategory.Send,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: accountType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_type: assetType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_list_position: position,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           asset_list_size: assetListSize,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: isEvmSendType ? sendAsset?.chainId : undefined,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id_caip: isEvmSendType ? undefined : sendAsset?.chainId,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: sendAsset?.chainId,
+          chain_id_caip: isEvmSend
+            ? `eip155:${parseInt(sendAsset?.chainId as string, 16)}`
+            : sendAsset?.chainId,
           filter_method: assetFilterMethod,
         },
       });
     },
-    [
-      accountType,
-      assetFilterMethod,
-      assetListSize,
-      isEvmSendType,
-      trackEvent,
-      tokens,
-      nfts,
-    ],
+    [accountType, assetFilterMethod, assetListSize, trackEvent, tokens, nfts],
   );
 
   return {

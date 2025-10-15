@@ -54,7 +54,7 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
 const BUY_BUTTON = 'coin-overview-buy';
 const BTC_OVERVIEW_BRIDGE = 'coin-overview-bridge';
 const BTC_OVERVIEW_RECEIVE = 'coin-overview-receive';
-const BTC_OVERVIEW_SWAP = 'token-overview-button-swap';
+const BTC_OVERVIEW_SWAP = 'coin-overview-swap';
 const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
 
@@ -423,7 +423,7 @@ describe('NonEvmOverview', () => {
     expect(mockTrackEvent).toHaveBeenCalledTimes(1);
     expect(mockTrackEvent).toHaveBeenCalledWith(
       {
-        event: MetaMetricsEventName.NavSendButtonClicked,
+        event: MetaMetricsEventName.SendStarted,
         category: MetaMetricsEventCategory.Navigation,
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

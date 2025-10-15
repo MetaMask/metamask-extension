@@ -42,7 +42,6 @@ export const Recipient = ({
   const [isRecipientModalOpen, setIsRecipientModalOpen] = useState(false);
   const { to, updateTo, updateToResolved } = useSendContext();
   const {
-    captureRecipientSelected,
     setRecipientInputMethodSelectContact,
     setRecipientInputMethodSelectAccount,
   } = useRecipientSelectionMetrics();
@@ -62,7 +61,7 @@ export const Recipient = ({
       const isRecipientContact = recipients.some(
         (recipient) =>
           recipient.address.toLowerCase() === address.toLowerCase() &&
-          recipient.contactName,
+          recipient.isContact,
       );
       if (isRecipientContact) {
         setRecipientInputMethodSelectContact();
@@ -71,14 +70,12 @@ export const Recipient = ({
       }
 
       updateTo(address);
-      captureRecipientSelected();
     },
     [
-      captureRecipientSelected,
       recipients,
+      updateTo,
       setRecipientInputMethodSelectContact,
       setRecipientInputMethodSelectAccount,
-      updateTo,
     ],
   );
 

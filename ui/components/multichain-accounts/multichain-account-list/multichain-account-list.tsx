@@ -38,6 +38,7 @@ import {
 import {
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
+  getPreferences,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
@@ -72,6 +73,7 @@ export const MultichainAccountList = ({
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const allBalances = useSelector(selectBalanceForAllWallets);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const { privacyMode } = useSelector(getPreferences);
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
@@ -190,6 +192,7 @@ export const MultichainAccountList = ({
                     groupId as AccountGroupId,
                   )}
                   onClick={handleAccountClickToUse}
+                  privacyMode={privacyMode}
                   startAccessory={
                     showAccountCheckbox ? (
                       <Box marginRight={4}>
@@ -251,6 +254,7 @@ export const MultichainAccountList = ({
     allBalances,
     formatCurrencyWithMinThreshold,
     selectedAccountGroupsSet,
+    privacyMode,
     showAccountCheckbox,
     handleAccountRenameAction,
     handleMenuToggle,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { useCallback, useContext } from 'react';
 
 import {
@@ -40,14 +41,12 @@ export const useRecipientSelectionMetrics = () => {
       event: MetaMetricsEventName.SendRecipientSelected,
       category: MetaMetricsEventCategory.Send,
       properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: accountType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         input_method: recipientInputMethod,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id: isEvmSendType ? chainId : undefined,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        chain_id_caip: isEvmSendType ? undefined : chainId,
+        chain_id: chainId,
+        chain_id_caip: isEvmSendType
+          ? `eip155:${parseInt(chainId as string, 16)}`
+          : chainId,
       },
     });
   }, [accountType, chainId, isEvmSendType, recipientInputMethod, trackEvent]);

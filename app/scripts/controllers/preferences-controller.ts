@@ -14,10 +14,7 @@ import {
   RestrictedMessenger,
 } from '@metamask/base-controller';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
-import {
-  ETHERSCAN_SUPPORTED_CHAIN_IDS,
-  type PreferencesState,
-} from '@metamask/preferences-controller';
+import { type PreferencesState } from '@metamask/preferences-controller';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -132,6 +129,7 @@ export type PreferencesControllerState = Omit<
   | 'dismissSmartAccountSuggestionEnabled'
   | 'smartAccountOptIn'
   | 'smartAccountOptInForAccounts'
+  | 'showIncomingTransactions'
 > & {
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
@@ -225,30 +223,6 @@ export const getDefaultPreferencesControllerState =
     },
     securityAlertsEnabled: true,
     selectedAddress: '',
-    // TODO: Delete this state, it's currently unused
-    showIncomingTransactions: {
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
-      [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEI]: true,
-    },
     snapRegistryList: {},
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     snapsAddSnapAccountModalDismissed: false,
@@ -405,12 +379,6 @@ const controllerMetadata = {
     anonymous: false,
     usedInUi: true,
   },
-  showIncomingTransactions: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
   snapRegistryList: {
     includeInStateLogs: true,
     persist: true,
@@ -535,14 +503,22 @@ export class PreferencesController extends BaseController<
    * @param options.state - The initial controller state
    */
   constructor({ messenger, state }: PreferencesControllerOptions) {
+    const defaultState = getDefaultPreferencesControllerState();
+
+    const mergedState = {
+      ...defaultState,
+      ...state,
+      preferences: {
+        ...defaultState.preferences,
+        ...state?.preferences,
+      },
+    };
+
     super({
       messenger,
       metadata: controllerMetadata,
       name: controllerName,
-      state: {
-        ...getDefaultPreferencesControllerState(),
-        ...state,
-      },
+      state: mergedState,
     });
 
     this.messagingSystem.subscribe(

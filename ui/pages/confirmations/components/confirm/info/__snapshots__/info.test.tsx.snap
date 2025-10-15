@@ -305,12 +305,17 @@ exports[`Info renders info section for approve request 1`] = `
       <div
         class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
-          data-testid="gas-fee-token-fee"
+        <div
+          class="mm-box"
+          style="margin-top: 0px;"
         >
-           
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
+            data-testid="gas-fee-token-fee"
+          >
+             
+          </p>
+        </div>
       </div>
     </div>
     <div
@@ -610,12 +615,17 @@ exports[`Info renders info section for contract interaction request 1`] = `
       <div
         class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
-          data-testid="gas-fee-token-fee"
+        <div
+          class="mm-box"
+          style="margin-top: 0px;"
         >
-           
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
+            data-testid="gas-fee-token-fee"
+          >
+             
+          </p>
+        </div>
       </div>
     </div>
     <div
@@ -1073,12 +1083,17 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
       <div
         class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
-          data-testid="gas-fee-token-fee"
+        <div
+          class="mm-box"
+          style="margin-top: 0px;"
         >
-           
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
+            data-testid="gas-fee-token-fee"
+          >
+             
+          </p>
+        </div>
       </div>
     </div>
     <div
@@ -1954,13 +1969,13 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -2008,13 +2023,13 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -2153,13 +2168,13 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>
@@ -2207,13 +2222,13 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
           title="<0.000001 ETH"
         >
           <span
-            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             data-testid="account-value-and-suffix"
           >
             &lt;0.000001
           </span>
           <span
-            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+            class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
           >
             ETH
           </span>

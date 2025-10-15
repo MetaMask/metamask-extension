@@ -101,7 +101,7 @@ describe('Bridge tests', function (this: Suite) {
 
         // Navigate to Bridge page
         const homePage = new HomePage(driver);
-        await homePage.startBridgeFlow();
+        await homePage.startSwapFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
         await bridgePage.enterBridgeQuote({

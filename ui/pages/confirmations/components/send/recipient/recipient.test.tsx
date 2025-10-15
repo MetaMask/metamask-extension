@@ -182,21 +182,6 @@ describe('Recipient', () => {
     expect(queryByText('SELECTRECIPIENT')).not.toBeInTheDocument();
   });
 
-  it('captures metrics on input blur when to value exists', () => {
-    mockUseSendContext.mockReturnValue({
-      to: '0x1234567890abcdef',
-      updateTo: mockUpdateTo,
-      updateToResolved: jest.fn(),
-    } as unknown as ReturnType<typeof useSendContext>);
-
-    const { getByRole } = renderComponent();
-    const input = getByRole('textbox');
-
-    fireEvent.blur(input);
-
-    expect(mockCaptureRecipientSelected).toHaveBeenCalledTimes(1);
-  });
-
   it('blurs input when opening modal', () => {
     mockUseRecipients.mockReturnValue(mockRecipients);
     const { getByTestId, getByRole } = renderComponent();
@@ -263,6 +248,7 @@ describe('Recipient', () => {
       expect(mockUpdateTo).toHaveBeenCalledWith(
         '0x1234567890abcdef1234567890abcdef12345678',
       );
+      expect(mockSetRecipientInputMethodSelectAccount).toHaveBeenCalled();
     });
   });
 });

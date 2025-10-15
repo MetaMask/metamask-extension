@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { unlockWallet } from '../../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
@@ -28,8 +28,12 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
           const contractAddress = await (
             contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
@@ -41,8 +45,8 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
 
           await testDapp.clickERC721MintButton();
 
-          await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
-
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+          await confirmation.checkPageIsLoaded();
           await confirmation.clickAdvancedDetailsButton();
           await confirmation.clickScrollToBottomButton();
           await confirmation.verifyAdvancedDetailsIsDisplayed('4Bytes');
@@ -62,8 +66,8 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await unlockWallet(driver);
+      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver, localNodes?.[0]);
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
@@ -74,8 +78,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
         await testDapp.clickERC721MintButton();
-        await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickAdvancedDetailsButton();
         await confirmation.clickScrollToBottomButton();
         await confirmation.verifyAdvancedDetailsIsDisplayed('Sourcify');
@@ -93,8 +98,8 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({ driver, contractRegistry }: TestSuiteArguments) => {
-        await unlockWallet(driver);
+      async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
+        await loginWithBalanceValidation(driver, localNodes?.[0]);
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
@@ -105,8 +110,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
 
         await testDapp.clickERC721MintButton();
-        await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickAdvancedDetailsButton();
         await confirmation.clickScrollToBottomButton();
         await confirmation.verifyAdvancedDetailsHexDataIsDisplayed();
@@ -134,7 +140,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
 
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, localNodes?.[0]);
         const contractAddress = '0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B';
 
         const confirmation = new TransactionConfirmation(driver);
@@ -148,8 +154,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
         );
 
-        await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
+        await confirmation.checkPageIsLoaded();
         await confirmation.clickAdvancedDetailsButton();
         await confirmation.clickScrollToBottomButton();
         await confirmation.verifyUniswapDecodedTransactionAdvancedDetails();

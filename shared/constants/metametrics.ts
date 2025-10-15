@@ -789,6 +789,7 @@ export enum MetaMetricsEventName {
   RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SettingsUpdated = 'Settings Updated',
+  SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',
@@ -1044,6 +1045,7 @@ export enum MetaMetricsSwapsEventSource {
   MainView = 'Main View',
   TokenView = 'Token View',
   ActivityTabEmptyState = 'Activity Tab Empty State',
+  TransactionShield = 'Transaction Shield',
 }
 
 export enum MetaMetricsTokenEventSource {
