@@ -37,9 +37,7 @@ import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
 import { isBitcoinFeatureEnabled } from '../../shared/lib/multichain-feature-flags';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(solana)
 import { isMultichainFeatureEnabled } from '../../shared/lib/multichain-feature-flags';
-///: END:ONLY_INCLUDE_IF
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
@@ -3185,10 +3183,9 @@ export function getIsBitcoinSupportEnabled(state) {
   const { bitcoinAccounts } = getRemoteFeatureFlags(state);
   return isBitcoinAccountsFlagEnabled(bitcoinAccounts);
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(!bitcoin)
+
   // When bitcoin is not enabled, always return false
   return false;
-  ///: END:ONLY_INCLUDE_IF
 }
 
 /**
@@ -3197,7 +3194,6 @@ export function getIsBitcoinSupportEnabled(state) {
  * @param {*} state
  * @returns The state of the `solanaSupportEnabled` remote feature flag.
  */
-///: BEGIN:ONLY_INCLUDE_IF(solana)
 /**
  * Check if solanaAccounts feature flag is enabled with proper version check.
  * Uses shared multichain feature flag utility for consistency with Bitcoin.
@@ -3208,7 +3204,6 @@ export function getIsBitcoinSupportEnabled(state) {
 export function isSolanaAccountsFlagEnabled(flagValue) {
   return isMultichainFeatureEnabled(flagValue);
 }
-///: END:ONLY_INCLUDE_IF
 
 /**
  * Get the state of the `solanaSupportEnabled` remote feature flag.
@@ -3218,13 +3213,8 @@ export function isSolanaAccountsFlagEnabled(flagValue) {
  * @returns The state of the `solanaSupportEnabled` remote feature flag.
  */
 export function getIsSolanaSupportEnabled(state) {
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
   const { solanaAccounts } = getRemoteFeatureFlags(state);
   return isSolanaAccountsFlagEnabled(solanaAccounts);
-  ///: END:ONLY_INCLUDE_IF
-
-  // When solana is not enabled, always return false
-  return false;
 }
 
 /**
