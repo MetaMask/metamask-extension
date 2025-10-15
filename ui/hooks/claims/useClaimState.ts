@@ -4,10 +4,11 @@ export const useClaimState = () => {
   const [email, setEmail] = useState<string>('');
   const [impactedWalletAddress, setImpactedWalletAddress] =
     useState<string>('');
-  const [impactedTxHash, setImpactedTxHash] = useState<string>('');
+  const [impactedTransactionHash, setImpactedTransactionHash] =
+    useState<string>('');
   const [reimbursementWalletAddress, setReimbursementWalletAddress] =
     useState<string>('');
-  const [description, setDescription] = useState<string>('');
+  const [caseDescription, setCaseDescription] = useState<string>('');
   const [files, setFiles] = useState<FileList>();
 
   return {
@@ -15,20 +16,20 @@ export const useClaimState = () => {
     setEmail,
     impactedWalletAddress,
     setImpactedWalletAddress,
-    impactedTxHash,
-    setImpactedTxHash,
+    impactedTransactionHash,
+    setImpactedTransactionHash,
     reimbursementWalletAddress,
     setReimbursementWalletAddress,
-    description,
-    setDescription,
+    caseDescription,
+    setCaseDescription,
     files,
     setFiles,
     clear: () => {
       setEmail('');
       setImpactedWalletAddress('');
-      setImpactedTxHash('');
+      setImpactedTransactionHash('');
       setReimbursementWalletAddress('');
-      setDescription('');
+      setCaseDescription('');
       setFiles(undefined);
     },
   };
