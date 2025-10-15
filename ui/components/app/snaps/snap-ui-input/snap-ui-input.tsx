@@ -21,7 +21,7 @@ export type SnapUIInputProps = {
 };
 
 /**
- * Clamps a number between optional minimum and maximum values.
+ * Clamp a number between optional minimum and maximum values.
  *
  * @param inputValue - The number to clamp.
  * @param minimum - The optional minimum value.
