@@ -3,13 +3,12 @@ import { useSelector } from 'react-redux';
 import type { Hex } from 'viem';
 import {
   Box,
-  IconSize,
-  IconName,
   Text,
   TextVariant,
-  Icon,
   AvatarNetwork,
   AvatarNetworkSize,
+  AvatarFavicon,
+  AvatarFaviconSize,
 } from '@metamask/design-system-react';
 import { IconName as LegacyIconName } from '../../../../components/component-library';
 import { TextColor } from '../../../../helpers/constants/design-system';
@@ -18,6 +17,7 @@ import { ConfirmInfoRow } from '../../../../components/app/confirm/info/row';
 import { useConfirmContext } from '../../context/confirm';
 import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
+import { getSubjectMetadata } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { stripProtocol } from '../../utils/confirm';
@@ -30,6 +30,7 @@ export const AddEthereumChain = () => {
   const { requestData, origin } = currentConfirmation;
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const networkConfig = networkConfigurations[requestData.chainId as Hex];
+  const subjectMetadata = useSelector(getSubjectMetadata);
 
   const title = networkConfig
     ? t('updateNetworkConfirmationTitle', [networkConfig.name])
@@ -53,7 +54,11 @@ export const AddEthereumChain = () => {
           color={TextColor.textAlternative}
         >
           <Box className="flex gap-1 items-center">
-            <Icon name={IconName.Global} size={IconSize.Sm} />
+            <AvatarFavicon
+              size={AvatarFaviconSize.Sm}
+              src={subjectMetadata[origin]?.iconUrl}
+              name={origin}
+            />
             <Text>{stripProtocol(origin)}</Text>
           </Box>
         </ConfirmInfoRow>
