@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
+import { NameType } from '@metamask/name-controller';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
@@ -10,13 +10,13 @@ import {
 } from '../../../../../shared/modules/transaction.utils';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import {
+  useTrustSignal,
+  TrustSignalDisplayState,
+} from '../../../../hooks/useTrustSignals';
 import { useSpenderAlerts } from './useSpenderAlerts';
 
 // Mock dependencies
-jest.mock('react-redux', () => ({
-  useSelector: jest.fn(),
-}));
-
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
 }));
@@ -30,7 +30,27 @@ jest.mock('../../../../../shared/modules/transaction.utils', () => ({
   parseTypedDataMessage: jest.fn(),
 }));
 
-const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
+jest.mock('../../../../hooks/useTrustSignals', () => ({
+  useTrustSignal: jest.fn(),
+  TrustSignalDisplayState: {
+    Loading: 'loading',
+    Malicious: 'malicious',
+    Petname: 'petname',
+    Verified: 'verified',
+    Warning: 'warning',
+    Recognized: 'recognized',
+    Unknown: 'unknown',
+  },
+}));
+
+// eslint-disable-next-line import/no-restricted-paths
+jest.mock('../../../../../app/scripts/lib/ppom/security-alerts-api', () => ({
+  isSecurityAlertsAPIEnabled: jest.fn(() => true),
+}));
+
+const mockUseTrustSignal = useTrustSignal as jest.MockedFunction<
+  typeof useTrustSignal
+>;
 const mockUseI18nContext = useI18nContext as jest.MockedFunction<
   typeof useI18nContext
 >;
@@ -54,7 +74,10 @@ describe('useSpenderAlerts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseI18nContext.mockReturnValue(mockT);
-    mockUseSelector.mockReturnValue(undefined);
+    mockUseTrustSignal.mockReturnValue({
+      state: TrustSignalDisplayState.Unknown,
+      label: null,
+    });
   });
 
   describe('approval transactions', () => {
@@ -78,15 +101,18 @@ describe('useSpenderAlerts', () => {
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
       });
 
-      // Mock malicious security alert response
-      mockUseSelector.mockReturnValue({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        result_type: 'Malicious',
+      // Mock malicious trust signal response
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
         label: 'Known malicious address',
       });
 
       const { result } = renderHook(() => useSpenderAlerts());
 
+      expect(mockUseTrustSignal).toHaveBeenCalledWith(
+        MOCK_SPENDER_ADDRESS,
+        NameType.ETHEREUM_ADDRESS,
+      );
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual({
         actions: [],
@@ -96,6 +122,46 @@ describe('useSpenderAlerts', () => {
         message: 'alertMessageAddressTrustSignalMalicious',
         reason: 'nameModalTitleMalicious',
         severity: Severity.Danger,
+      });
+    });
+
+    it('should return alert for warning spender in tokenMethodApprove', () => {
+      // Mock transaction data
+      const mockTransaction = {
+        id: MOCK_TRANSACTION_ID,
+        type: TransactionType.tokenMethodApprove,
+        txParams: {
+          data: '0xapprovedata',
+        },
+      };
+
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockTransaction,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      });
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
+      });
+
+      // Mock warning trust signal response
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Warning,
+        label: 'Potentially suspicious address',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toEqual({
+        actions: [],
+        field: RowAlertKey.Spender,
+        isBlocking: false,
+        key: 'spenderTrustSignalWarning',
+        message: 'alertMessageAddressTrustSignal',
+        reason: 'nameModalTitleWarning',
+        severity: Severity.Warning,
       });
     });
 
@@ -118,11 +184,10 @@ describe('useSpenderAlerts', () => {
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
       });
 
-      // Mock benign security alert response
-      mockUseSelector.mockReturnValue({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        result_type: 'Benign',
-        label: '',
+      // Mock benign trust signal response (verified/unknown)
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Verified,
+        label: 'Verified contract',
       });
 
       const { result } = renderHook(() => useSpenderAlerts());
@@ -159,10 +224,9 @@ describe('useSpenderAlerts', () => {
         types: {},
       });
 
-      // Mock malicious security alert response
-      mockUseSelector.mockReturnValue({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        result_type: 'Malicious',
+      // Mock malicious trust signal response
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
         label: 'Phishing address',
       });
 
@@ -177,6 +241,53 @@ describe('useSpenderAlerts', () => {
         message: 'alertMessageAddressTrustSignalMalicious',
         reason: 'nameModalTitleMalicious',
         severity: Severity.Danger,
+      });
+    });
+
+    it('should return warning alert for warning spender in permit signature', () => {
+      const mockPermitData = JSON.stringify({
+        domain: { name: 'Token', version: '1' },
+        message: { spender: MOCK_SPENDER_ADDRESS },
+        types: {},
+      });
+
+      const mockSignatureRequest = {
+        id: MOCK_TRANSACTION_ID,
+        type: 'eth_signTypedData',
+        msgParams: {
+          data: mockPermitData,
+        },
+      };
+
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockSignatureRequest,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      });
+      mockParseTypedDataMessage.mockReturnValue({
+        primaryType: 'Permit',
+        message: { spender: MOCK_SPENDER_ADDRESS },
+        domain: { name: 'Token', version: '1' },
+        types: {},
+      });
+
+      // Mock warning trust signal response
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Warning,
+        label: 'Suspicious activity detected',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toEqual({
+        actions: [],
+        field: RowAlertKey.Spender,
+        isBlocking: false,
+        key: 'spenderTrustSignalWarning',
+        message: 'alertMessageAddressTrustSignal',
+        reason: 'nameModalTitleWarning',
+        severity: Severity.Warning,
       });
     });
 
@@ -241,7 +352,7 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(0);
     });
 
-    it('should return empty array when no security alert response', () => {
+    it('should return empty array for unknown trust signal state', () => {
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
@@ -260,8 +371,11 @@ describe('useSpenderAlerts', () => {
         spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
       });
 
-      // No security alert response
-      mockUseSelector.mockReturnValue(undefined);
+      // Mock unknown trust signal response
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      });
 
       const { result } = renderHook(() => useSpenderAlerts());
 

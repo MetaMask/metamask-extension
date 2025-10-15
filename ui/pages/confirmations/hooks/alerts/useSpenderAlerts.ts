@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-
+import { NameType } from '@metamask/name-controller';
 import {
   TransactionMeta,
   TransactionType,
@@ -15,29 +14,33 @@ import {
   parseApprovalTransactionData,
 } from '../../../../../shared/modules/transaction.utils';
 import { PRIMARY_TYPES_PERMIT } from '../../../../../shared/constants/signatures';
-import { getAddressSecurityAlertResponse } from '../../../../selectors';
 import {
   Alert,
   AlertSeverity,
 } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
+import {
+  useTrustSignal,
+  TrustSignalDisplayState,
+} from '../../../../hooks/useTrustSignals';
+// eslint-disable-next-line import/no-restricted-paths
+import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
 
 /**
- * Hook to generate alerts for malicious spender addresses in approval transactions and permit signatures.
+ * Hook to generate alerts for spender addresses in approval transactions and permit signatures.
+ * Supports both warning and malicious states using the trust signals system.
  *
- * @returns Array of alerts for malicious spender addresses
+ * @returns Array of alerts for spender addresses
  */
 export function useSpenderAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
-  const spenderAlert = useMemo(() => {
+  const spenderAddress = useMemo(() => {
     if (!currentConfirmation) {
       return null;
     }
-
-    let spenderAddress: string | undefined;
 
     // Handle approval transactions
     if (
@@ -55,7 +58,7 @@ export function useSpenderAlerts(): Alert[] {
         const approvalData = parseApprovalTransactionData(
           txData as `0x${string}`,
         );
-        spenderAddress = approvalData?.spender;
+        return approvalData?.spender || null;
       }
     }
     // Handle permit signatures
@@ -72,46 +75,48 @@ export function useSpenderAlerts(): Alert[] {
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if (PRIMARY_TYPES_PERMIT.includes(primaryType as any)) {
-          spenderAddress = typedDataMessage.message?.spender;
+          return typedDataMessage.message?.spender || null;
         }
       }
     }
 
-    if (!spenderAddress) {
-      return null;
-    }
-
-    return { spenderAddress };
+    return null;
   }, [currentConfirmation]);
 
-  // Get security alert response for the spender address
-  const securityAlertResponse = useSelector((state) =>
-    spenderAlert?.spenderAddress
-      ? getAddressSecurityAlertResponse(state, spenderAlert.spenderAddress)
-      : undefined,
+  const { state: trustSignalDisplayState } = useTrustSignal(
+    spenderAddress || '',
+    NameType.ETHEREUM_ADDRESS,
   );
 
   return useMemo(() => {
-    if (!spenderAlert?.spenderAddress || !securityAlertResponse) {
+    if (!spenderAddress || !isSecurityAlertsAPIEnabled()) {
       return [];
     }
 
-    // Only show alert for malicious addresses
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    if (securityAlertResponse.result_type !== 'Malicious') {
-      return [];
+    const alerts: Alert[] = [];
+
+    if (trustSignalDisplayState === TrustSignalDisplayState.Malicious) {
+      alerts.push({
+        actions: [],
+        field: RowAlertKey.Spender,
+        isBlocking: false,
+        key: 'spenderTrustSignalMalicious',
+        message: t('alertMessageAddressTrustSignalMalicious'),
+        reason: t('nameModalTitleMalicious'),
+        severity: Severity.Danger as AlertSeverity,
+      });
+    } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
+      alerts.push({
+        actions: [],
+        field: RowAlertKey.Spender,
+        isBlocking: false,
+        key: 'spenderTrustSignalWarning',
+        message: t('alertMessageAddressTrustSignal'),
+        reason: t('nameModalTitleWarning'),
+        severity: Severity.Warning as AlertSeverity,
+      });
     }
 
-    const alert: Alert = {
-      actions: [],
-      field: RowAlertKey.Spender,
-      isBlocking: false,
-      key: 'spenderTrustSignalMalicious',
-      message: t('alertMessageAddressTrustSignalMalicious'),
-      reason: t('nameModalTitleMalicious'),
-      severity: Severity.Danger as AlertSeverity,
-    };
-
-    return [alert];
-  }, [t, spenderAlert?.spenderAddress, securityAlertResponse]);
+    return alerts;
+  }, [spenderAddress, trustSignalDisplayState, t]);
 }
