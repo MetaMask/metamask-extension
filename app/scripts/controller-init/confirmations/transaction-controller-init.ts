@@ -1,6 +1,5 @@
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import {
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
