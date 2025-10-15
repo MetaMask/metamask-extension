@@ -800,6 +800,11 @@ class AccountListPage {
     await this.driver.waitForSelector(this.walletDetailsButton);
   }
 
+  async checkAddWalletButttonIsDisplayed(): Promise<void> {
+    console.log('Check add wallet button is displayed');
+    await this.driver.waitForSelector(this.addMultichainWalletButton);
+  }
+
   async clickWalletDetailsButton(): Promise<void> {
     console.log('Click wallet details button');
     await this.driver.clickElement(this.walletDetailsButton);

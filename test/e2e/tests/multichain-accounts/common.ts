@@ -11,8 +11,11 @@ import {
 } from '../../page-objects/flows/login.flow';
 import { MockedEndpoint } from '../../mock-e2e';
 
-export const FEATURE_FLAGS_URL =
-  'https://client-config.api.cx.metamask.io/v1/flags';
+import {
+  mockMultichainAccountsFeatureFlagDisabled,
+  mockMultichainAccountsFeatureFlag,
+  mockMultichainAccountsFeatureFlagStateTwo,
+} from './feature-flag-mocks';
 
 export enum AccountType {
   MultiSRP = 'multi-srp',
@@ -20,65 +23,17 @@ export enum AccountType {
   HardwareWallet = 'hardware-wallet',
 }
 
-export const mockMultichainAccountsFeatureFlag = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(FEATURE_FLAGS_URL)
-    .withQuery({
-      client: 'extension',
-      distribution: 'main',
-      environment: 'dev',
-    })
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: [
-          {
-            enableMultichainAccounts: {
-              enabled: true,
-              featureVersion: '1',
-              minimumVersion: '12.19.0',
-            },
-          },
-        ],
-      };
-    });
-
-export const mockMultichainAccountsFeatureFlagStateTwo = (
-  mockServer: Mockttp,
-) =>
-  mockServer
-    .forGet(FEATURE_FLAGS_URL)
-    .withQuery({
-      client: 'extension',
-      distribution: 'main',
-      environment: 'dev',
-    })
-    .thenCallback(() => {
-      return {
-        ok: true,
-        statusCode: 200,
-        json: [
-          {
-            enableMultichainAccountsState2: {
-              enabled: true,
-              featureVersion: '2',
-              minimumVersion: '12.19.0',
-            },
-          },
-        ],
-      };
-    });
-
 export async function withMultichainAccountsDesignEnabled(
   {
     title,
-    testSpecificMock = mockMultichainAccountsFeatureFlag,
+    testSpecificMock,
     accountType = AccountType.MultiSRP,
     state = 2,
+    dapp,
+    dappPaths,
   }: {
     title?: string;
-    testSpecificMock?: (mockServer: Mockttp) => Promise<MockedEndpoint>;
+    testSpecificMock?: (mockServer: Mockttp) => Promise<MockedEndpoint | MockedEndpoint[]>;
     accountType?: AccountType;
     state?: number;
     dapp?: boolean;
@@ -107,6 +62,7 @@ export async function withMultichainAccountsDesignEnabled(
       fixtures: fixture,
       testSpecificMock,
       title,
+      forceBip44Version: state === 2 ? 2 : 0,
       dapp,
       dappPaths,
     },
@@ -144,7 +100,7 @@ const DUMMY_PRIVATE_KEY =
 export async function withImportedAccount(
   options: {
     title?: string;
-    testSpecificMock?: (mockServer: Mockttp) => Promise<MockedEndpoint>;
+    testSpecificMock?: (mockServer: Mockttp) => Promise<MockedEndpoint | MockedEndpoint[]>;
     privateKey?: string;
   },
   test: (driver: Driver) => Promise<void>,
@@ -161,3 +117,9 @@ export async function withImportedAccount(
     await test(driver);
   });
 }
+
+export {
+  mockMultichainAccountsFeatureFlagDisabled,
+  mockMultichainAccountsFeatureFlag,
+  mockMultichainAccountsFeatureFlagStateTwo,
+};

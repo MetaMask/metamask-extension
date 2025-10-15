@@ -5,20 +5,21 @@ import WalletDetailsPage from '../../page-objects/pages/wallet-details-page';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { withSolanaAccountSnap } from '../solana/common-solana';
-import { mockMultichainAccountsFeatureFlag } from './common';
+import { mockMultichainAccountsFeatureFlagStateTwo } from './common';
 
 describe('Multichain Accounts - Wallet Details', function (this: Suite) {
   it('should view wallet details with one Ethereum and one Solana account and show SRP backup reminder', async function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
+        state: 2,
         numberOfAccounts: 1,
         withFixtureBuilder: (builder) =>
           builder.withKeyringControllerMultiSRP().withPreferencesController({
             dismissSeedBackUpReminder: false,
           }),
         withCustomMocks: async (mockServer: Mockttp) => {
-          return mockMultichainAccountsFeatureFlag(mockServer);
+          return mockMultichainAccountsFeatureFlagStateTwo(mockServer);
         },
       },
       async (driver: Driver) => {
@@ -50,7 +51,7 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
         withFixtureBuilder: (builder) =>
           builder.withKeyringControllerMultiSRP(),
         withCustomMocks: async (mockServer: Mockttp) => {
-          return mockMultichainAccountsFeatureFlag(mockServer);
+          return mockMultichainAccountsFeatureFlagStateTwo(mockServer);
         },
       },
       async (driver: Driver) => {
