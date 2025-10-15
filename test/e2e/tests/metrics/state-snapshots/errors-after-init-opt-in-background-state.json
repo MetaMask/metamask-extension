@@ -295,10 +295,19 @@
   },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
-      "feature1": true,
-      "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" },
-      "sendRedesign": { "enabled": false }
+      "enableMultichainAccounts": {
+        "enabled": false,
+        "featureVersion": "0",
+        "minimumVersion": "12.19.0"
+      },
+      "enableMultichainAccountsState2": {
+        "enabled": false,
+        "featureVersion": "0",
+        "minimumVersion": "12.19.0"
+      },
+      "sendRedesign": {
+        "enabled": false
+      }
     },
     "cacheTimestamp": "number"
   },

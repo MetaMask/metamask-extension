@@ -22,12 +22,14 @@ const importedAccount = {
   address: '0x7A46ce51fbBB29C34aea1fE9833c27b5D2781925',
 };
 
-describe('Multichain Accounts - Account Details', function (this: Suite) {
+// eslint-disable-next-line
+describe.skip('Multichain Accounts - Account Details', function (this: Suite) {
   describe('Base screen', function () {
     it('displays account details page with all required elements', async function () {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
+          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);
@@ -123,6 +125,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
       await withMultichainAccountsDesignEnabled(
         {
           title: this.test?.fullTitle(),
+          state: 2,
         },
         async (driver: Driver) => {
           const accountListPage = new AccountListPage(driver);

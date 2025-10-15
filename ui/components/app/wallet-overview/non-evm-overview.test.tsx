@@ -51,6 +51,11 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   })),
 }));
 
+// Mock getIsMultichainAccountsState2Enabled to false
+jest.mock('../../../selectors/multichain-accounts/feature-flags', () => ({
+  getIsMultichainAccountsState2Enabled: jest.fn(() => false),
+}));
+
 const BUY_BUTTON = 'coin-overview-buy';
 const BTC_OVERVIEW_BRIDGE = 'coin-overview-bridge';
 const BTC_OVERVIEW_RECEIVE = 'coin-overview-receive';

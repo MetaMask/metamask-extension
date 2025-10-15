@@ -2,7 +2,7 @@ import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import DeFiTab from '../../../page-objects/pages/defi-tab';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
 import { mockDefiPositionsFailure } from '../../confirmations/helpers';
 
@@ -14,9 +14,10 @@ describe('View DeFi error state', function () {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockDefiPositionsFailure,
+        forceBip44Version: 2,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithoutBalanceValidation(driver);
 
         await new Homepage(driver).goToDeFiTab();
 
