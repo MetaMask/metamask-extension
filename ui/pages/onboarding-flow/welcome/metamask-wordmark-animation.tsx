@@ -17,28 +17,14 @@ export default function MetamaskWordMarkAnimation({
 }: MetamaskWordMarkAnimationProps) {
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const theme = useTheme();
-
-  // In test environments, skip animation entirely and show buttons immediately
-  // This prevents any Rive initialization and CDN network requests
-  useEffect(() => {
-    if (process.env.IN_TEST) {
-      console.log('Test environment detected, skipping Rive animation');
-      setIsAnimationComplete(true);
-    }
-  }, [setIsAnimationComplete]);
-
-  if (process.env.IN_TEST) {
-    return (
-      <Box
-        className={`riv-animation__wordmark-container riv-animation__wordmark-container--complete`}
-      />
-    );
-  }
+  const isTestEnvironment = Boolean(process.env.IN_TEST);
 
   const { rive, RiveComponent } = useRive({
-    src: './images/riv_animations/metamask_wordmark.riv',
+    src: isTestEnvironment
+      ? ''
+      : './images/riv_animations/metamask_wordmark.riv',
     stateMachines: 'WordmarkBuildUp',
-    enableRiveAssetCDN: true,
+    enableRiveAssetCDN: !isTestEnvironment,
     autoplay: false,
     layout: new Layout({
       fit: Fit.Contain,
@@ -93,7 +79,38 @@ export default function MetamaskWordMarkAnimation({
         clearTimeout(animationTimeoutRef.current);
       }
     };
-  }, [rive]);
+  }, [rive, theme]);
+
+  // In test environments, skip animation entirely and show buttons immediately
+  // This prevents any Rive initialization and CDN network requests
+  useEffect(() => {
+    if (isTestEnvironment) {
+      console.log('Test environment detected, skipping Rive animation');
+      setIsAnimationComplete(true);
+    }
+  }, [isTestEnvironment, setIsAnimationComplete]);
+
+  // Fallback: Ensure animation completes even if Rive fails to load
+  // This handles e2e test scenarios where WASM may be blocked
+  useEffect(() => {
+    if (!isTestEnvironment && !isAnimationComplete) {
+      const fallbackTimeout = setTimeout(() => {
+        console.log('Animation fallback timeout triggered');
+        setIsAnimationComplete(true);
+      }, 3000); // 3 second fallback timeout
+
+      return () => clearTimeout(fallbackTimeout);
+    }
+    return undefined;
+  }, [isTestEnvironment, isAnimationComplete, setIsAnimationComplete]);
+
+  if (isTestEnvironment) {
+    return (
+      <Box
+        className={`riv-animation__wordmark-container riv-animation__wordmark-container--complete`}
+      />
+    );
+  }
 
   return (
     <Box

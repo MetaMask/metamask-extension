@@ -67,9 +67,10 @@ export default function OnboardingWelcome() {
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
-  const isTestEnvironment = process.env.IN_TEST;
+  const isTestEnvironment = Boolean(process.env.IN_TEST);
+  // In test environments, skip animations and show buttons immediately
   const [isAnimationComplete, setIsAnimationComplete] =
-    useState(!isTestEnvironment);
+    useState(isTestEnvironment);
 
   const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
   // Don't allow users to come back to this screen after they
