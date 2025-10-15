@@ -6,6 +6,7 @@ export type Recipient = {
   address: string;
   contactName?: string;
   isContact?: boolean;
+  seedIcon?: string;
   walletName?: string;
 };
 

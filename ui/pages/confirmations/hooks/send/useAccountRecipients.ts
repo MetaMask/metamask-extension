@@ -10,10 +10,12 @@ import {
 import { useSendContext } from '../../context/send';
 import { type Recipient } from './useRecipients';
 import { useSendType } from './useSendType';
+import { useRecipientSeedIconMap } from './useRecipientSeedIconMap';
 
 export const useAccountRecipients = (): Recipient[] => {
   const { isEvmSendType, isSolanaSendType, isBitcoinSendType } = useSendType();
   const { from } = useSendContext();
+  const { seedAddressMap } = useRecipientSeedIconMap();
 
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
 
@@ -38,6 +40,7 @@ export const useAccountRecipients = (): Recipient[] => {
 
           if (shouldInclude) {
             recipients.push({
+              seedIcon: seedAddressMap.get(account.address.toLowerCase()),
               accountGroupName,
               address: account.address,
               walletName,
@@ -53,6 +56,7 @@ export const useAccountRecipients = (): Recipient[] => {
     isEvmSendType,
     isSolanaSendType,
     isBitcoinSendType,
+    seedAddressMap,
     walletsWithAccounts,
   ]);
 };
