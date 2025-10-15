@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { SubscriptionUserEvent } from '@metamask/subscription-controller';
+import log from 'loglevel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -46,13 +47,18 @@ export default function ShieldEntryModal() {
   );
 
   const handleOnClose = async () => {
-    dispatch(setShowShieldEntryModalOnce(false));
-    if (shouldSubmitEvent) {
-      await dispatch(
-        submitSubscriptionUserEvents({
-          event: SubscriptionUserEvent.ShieldEntryModalViewed,
-        }),
-      );
+    try {
+      if (shouldSubmitEvent) {
+        await dispatch(
+          submitSubscriptionUserEvents({
+            event: SubscriptionUserEvent.ShieldEntryModalViewed,
+          }),
+        );
+      }
+    } catch (error) {
+      log.warn('[handleOnClose] error', error);
+    } finally {
+      dispatch(setShowShieldEntryModalOnce(false));
     }
   };
 

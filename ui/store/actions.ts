@@ -391,7 +391,6 @@ export function submitSubscriptionUserEvents(
     } catch (error) {
       log.error('[submitSubscriptionUserEvents] error', error);
       dispatch(displayWarning(error));
-      throw error;
     }
   };
 }
