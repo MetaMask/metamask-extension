@@ -5,9 +5,6 @@
 // startup.
 @use "react-responsive-carousel/lib/styles/carousel";
 
-/* stylelint-disable color-no-hex */
-$welcome-bg-light: #fff2eb;
-/* stylelint-enable color-no-hex */
 
 @keyframes fadeInUp {
   from {
@@ -167,7 +164,7 @@ $welcome-bg-light: #fff2eb;
     left: 0;
 
     &--fade-in {
-      animation: slideInFromRight 0.5s ease-in forwards;
+      animation: slideInFromRight 0.2s ease-in forwards;
     }
   }
 
@@ -205,7 +202,7 @@ $welcome-bg-light: #fff2eb;
     }
 
     &-text {
-      background-color: $welcome-bg-light;
+      background-color: var(--welcome-bg-light);
 
       @media (prefers-color-scheme: dark) {
         background-color: var(--color-accent02-dark);

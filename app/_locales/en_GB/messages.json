@@ -3696,6 +3696,9 @@
   "nameProvider_token": {
     "message": "MetaMask"
   },
+  "nameResolutionFailedError": {
+    "message": "No address resolution found for this name."
+  },
   "nameSetPlaceholder": {
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
@@ -4440,6 +4443,9 @@
   },
   "padlock": {
     "message": "Padlock"
+  },
+  "paidByMetaMask": {
+    "message": "Paid by MetaMask"
   },
   "participateInMetaMetrics": {
     "message": "Participate in MetaMetrics"
@@ -5701,6 +5707,16 @@
   "shieldCoverageAlertMessageUnknown": {
     "message": "This request can't be verified, so it isn't protected by Transaction Shield. $1."
   },
+  "shieldCoverageEnding": {
+    "message": "Shield coverage ends soon"
+  },
+  "shieldCoverageEndingAction": {
+    "message": "Renew"
+  },
+  "shieldCoverageEndingDescription": {
+    "message": "Membership ends on $1.",
+    "description": "The $1 is the date"
+  },
   "shieldCovered": {
     "message": "Covered"
   },
@@ -5735,6 +5751,15 @@
   },
   "shieldNotCovered": {
     "message": "Not covered"
+  },
+  "shieldPaymentDeclined": {
+    "message": "Shield payment declined"
+  },
+  "shieldPaymentDeclinedAction": {
+    "message": "Add funds"
+  },
+  "shieldPaymentDeclinedDescription": {
+    "message": "Insufficient token balance. Please try again to resume coverage."
   },
   "shieldPlanAnnual": {
     "message": "Annual"
