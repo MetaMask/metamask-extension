@@ -248,19 +248,15 @@ export const NetworkListItem = ({
               {name}
             </Text>
           </Tooltip>
-          {isNetworkGasSponsored(chainId) && (
-          <Text
-              marginLeft={2}
-              variant={TextVariant.bodySm}
-              color={TextColor.textDefault}
-              borderColor={BorderColor.borderDefault}
-              paddingLeft={1}
-              paddingRight={1}
-            >
-              {t('noNetworkFee')}
-            </Text>
-          )}
         </Box>
+        {isNetworkGasSponsored(chainId) && (
+          <Text
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+          >
+            {t('noNetworkFee')}
+          </Text>
+        )}
         {rpcEndpoint && (
           <Box
             className="multichain-network-list-item__rpc-endpoint"
