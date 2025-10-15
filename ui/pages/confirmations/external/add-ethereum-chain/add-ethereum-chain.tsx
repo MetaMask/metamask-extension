@@ -18,6 +18,7 @@ import { ConfirmInfoAlertRow } from '../../../../components/app/confirm/info/row
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { stripProtocol } from '../../utils/confirm';
 import { AddEthereumChainContext } from './types';
 
 export const AddEthereumChain = () => {
@@ -47,7 +48,7 @@ export const AddEthereumChain = () => {
         >
           <Box className="flex gap-1 items-center">
             <Icon name={IconName.Global} size={IconSize.Sm} />
-            <Text>{origin}</Text>
+            <Text>{stripProtocol(origin)}</Text>
           </Box>
         </ConfirmInfoRow>
       </ConfirmInfoSection>
@@ -70,7 +71,7 @@ export const AddEthereumChain = () => {
           alertKey="rpcUrl"
           ownerId={currentConfirmation.id}
         >
-          <Text>{requestData.rpcUrl}</Text>
+          <Text>{stripProtocol(requestData.rpcUrl)}</Text>
         </ConfirmInfoAlertRow>
       </ConfirmInfoSection>
 
