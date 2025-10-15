@@ -19,7 +19,9 @@ function getAppVersion(): string | null {
   } catch {
     // In bundled environments where package.json is not available,
     // default to assuming version requirements are met to avoid blocking features
-    console.warn('Unable to determine app version for feature flag evaluation - assuming requirements met');
+    console.warn(
+      'Unable to determine app version for feature flag evaluation - assuming requirements met',
+    );
     return '99.99.99'; // High version number to pass version checks
   }
 }
@@ -67,32 +69,5 @@ export function isMultichainFeatureEnabled(flagValue: unknown): boolean {
   return false;
 }
 
-/**
- * Bitcoin-specific feature flag checker
- *
- * @param flagValue - The feature flag value
- * @returns True if Bitcoin feature is enabled
- */
-export function isBitcoinFeatureEnabled(flagValue: unknown): boolean {
-  return isMultichainFeatureEnabled(flagValue);
-}
-
-/**
- * Solana-specific feature flag checker
- *
- * @param flagValue - The feature flag value
- * @returns True if Solana feature is enabled
- */
-export function isSolanaFeatureEnabled(flagValue: unknown): boolean {
-  return isMultichainFeatureEnabled(flagValue);
-}
-
-/**
- * Tron-specific feature flag checker (placeholder for future use)
- *
- * @param flagValue - The feature flag value
- * @returns True if Tron feature is enabled
- */
-export function isTronFeatureEnabled(flagValue: unknown): boolean {
-  return isMultichainFeatureEnabled(flagValue);
-}
+// Export the generic function for direct use - no need for blockchain-specific wrappers
+// Individual files can import and use isMultichainFeatureEnabled directly

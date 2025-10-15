@@ -20,10 +20,7 @@ import {
   MultichainAccountsFeatureFlag,
 } from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
 ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import { isBitcoinFeatureEnabled } from '../../../../shared/lib/multichain-feature-flags';
-
-// Use shared Bitcoin feature flag utility
-const isBitcoinAccountsFlagEnabled = isBitcoinFeatureEnabled;
+import { isMultichainFeatureEnabled } from '../../../../shared/lib/multichain-feature-flags';
 ///: END:ONLY_INCLUDE_IF
 
 /**
@@ -97,36 +94,35 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
   );
 
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  // Handle Bitcoin provider feature flag
+  // Handle Bitcoin provider feature flag using previousValueComparator pattern
   const initialRemoteFeatureFlagsState = initMessenger.call(
     'RemoteFeatureFlagController:getState',
   );
 
   // Set initial state based on bitcoinAccounts feature flag
-  let currentBitcoinEnabled = isBitcoinAccountsFlagEnabled(
+  const initialBitcoinEnabled = isMultichainFeatureEnabled(
     initialRemoteFeatureFlagsState?.remoteFeatureFlags?.bitcoinAccounts,
   );
-  btcProvider.setEnabled(currentBitcoinEnabled);
+  btcProvider.setEnabled(initialBitcoinEnabled);
 
-  // Subscribe to RemoteFeatureFlagsController:stateChange for runtime control
+  // Subscribe to RemoteFeatureFlagsController:stateChange with previousValueComparator
   controllerMessenger.subscribe(
     'RemoteFeatureFlagController:stateChange',
-    (state: unknown) => {
-      const bitcoinAccountsEnabled = isBitcoinAccountsFlagEnabled(
-        (state as RemoteFeatureFlagControllerState)?.remoteFeatureFlags
-          ?.bitcoinAccounts,
+    previousValueComparator((prevState, currState) => {
+      const prevBitcoinEnabled = isMultichainFeatureEnabled(
+        prevState?.remoteFeatureFlags?.bitcoinAccounts,
+      );
+      const currBitcoinEnabled = isMultichainFeatureEnabled(
+        currState?.remoteFeatureFlags?.bitcoinAccounts,
       );
 
-      // Only react if the flag actually changed
-      if (bitcoinAccountsEnabled !== currentBitcoinEnabled) {
-        currentBitcoinEnabled = bitcoinAccountsEnabled;
-
+      if (prevBitcoinEnabled !== currBitcoinEnabled) {
         // Enable/disable Bitcoin provider based on feature flag
-        btcProvider.setEnabled(bitcoinAccountsEnabled);
+        btcProvider.setEnabled(currBitcoinEnabled);
 
         // Trigger wallet alignment when Bitcoin accounts are enabled
         // This will create Bitcoin accounts for existing wallets
-        if (bitcoinAccountsEnabled) {
+        if (currBitcoinEnabled) {
           controller.alignWallets().catch((error) => {
             console.error(
               'Failed to align wallets after enabling Bitcoin provider:',
@@ -136,7 +132,9 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
         }
         // Note: When disabled, no action needed as the provider won't create new accounts
       }
-    },
+
+      return true;
+    }, initialRemoteFeatureFlagsState),
   );
   ///: END:ONLY_INCLUDE_IF
 

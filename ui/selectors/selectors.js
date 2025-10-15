@@ -34,9 +34,6 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import { isBitcoinFeatureEnabled } from '../../shared/lib/multichain-feature-flags';
-///: END:ONLY_INCLUDE_IF
 import { isMultichainFeatureEnabled } from '../../shared/lib/multichain-feature-flags';
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
@@ -3157,20 +3154,6 @@ export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-/**
- * Check if bitcoinAccounts feature flag is enabled with proper version check.
- * Uses shared multichain feature flag utility - no duplicate logic.
- *
- * @param {unknown} flagValue - The feature flag value
- * @returns {boolean} True if flag is enabled and meets minimum version requirement
- */
-export function isBitcoinAccountsFlagEnabled(flagValue) {
-  return isBitcoinFeatureEnabled(flagValue);
-}
-
-///: END:ONLY_INCLUDE_IF
-
 /**
  * Get the state of the `bitcoinSupportEnabled` flag with version check.
  * Uses bitcoinAccounts feature flag.
@@ -3181,7 +3164,7 @@ export function isBitcoinAccountsFlagEnabled(flagValue) {
 export function getIsBitcoinSupportEnabled(state) {
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const { bitcoinAccounts } = getRemoteFeatureFlags(state);
-  return isBitcoinAccountsFlagEnabled(bitcoinAccounts);
+  return isMultichainFeatureEnabled(bitcoinAccounts);
   ///: END:ONLY_INCLUDE_IF
 
   // When bitcoin is not enabled, always return false
@@ -3194,16 +3177,6 @@ export function getIsBitcoinSupportEnabled(state) {
  * @param {*} state
  * @returns The state of the `solanaSupportEnabled` remote feature flag.
  */
-/**
- * Check if solanaAccounts feature flag is enabled with proper version check.
- * Uses shared multichain feature flag utility for consistency with Bitcoin.
- *
- * @param {unknown} flagValue - The feature flag value
- * @returns {boolean} True if flag is enabled and meets minimum version requirement
- */
-export function isSolanaAccountsFlagEnabled(flagValue) {
-  return isMultichainFeatureEnabled(flagValue);
-}
 
 /**
  * Get the state of the `solanaSupportEnabled` remote feature flag.
@@ -3214,7 +3187,7 @@ export function isSolanaAccountsFlagEnabled(flagValue) {
  */
 export function getIsSolanaSupportEnabled(state) {
   const { solanaAccounts } = getRemoteFeatureFlags(state);
-  return isSolanaAccountsFlagEnabled(solanaAccounts);
+  return isMultichainFeatureEnabled(solanaAccounts);
 }
 
 /**
