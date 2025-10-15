@@ -5,7 +5,9 @@ import {
   PAYMENT_TYPES,
   PRODUCT_TYPES,
   Subscription,
+  SUBSCRIPTION_STATUSES,
   SubscriptionCryptoPaymentMethod,
+  SubscriptionStatus,
 } from '@metamask/subscription-controller';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../hooks/useTokenBalances';
 import {
@@ -82,7 +84,15 @@ const useShieldAddFundTrigger = (
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
 
   // TODO: update to correct subscription status after implementation
-  const isSubscriptionPaused = true;
+  const isSubscriptionPaused =
+    shieldSubscription &&
+    (
+      [
+        SUBSCRIPTION_STATUSES.paused,
+        SUBSCRIPTION_STATUSES.pastDue,
+        SUBSCRIPTION_STATUSES.unpaid,
+      ] as SubscriptionStatus[]
+    ).includes(shieldSubscription.status);
 
   const { subscriptionPricing } = useSubscriptionPricing();
   const pricingPlans = useSubscriptionProductPlans(
