@@ -25,7 +25,7 @@ export enum AccountType {
 export async function withMultichainAccountsDesignEnabled(
   {
     title,
-    testSpecificMock = mockMultichainAccountsFeatureFlag,
+    testSpecificMock,
     accountType = AccountType.MultiSRP,
     state = 2,
   }: {

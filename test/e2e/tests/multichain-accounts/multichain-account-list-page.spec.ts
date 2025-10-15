@@ -11,38 +11,12 @@ import {
   withMultichainAccountsDesignEnabled,
 } from './common';
 
-// eslint-disable-next-line
-describe.skip('Multichain Accounts - Multichain accounts list page', function (this: Suite) {
-  it('displays basic wallets and accounts', async function () {
-    await withMultichainAccountsDesignEnabled(
-      {
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockMultichainAccountsFeatureFlagStateTwo,
-        state: 2,
-      },
-      async (driver: Driver) => {
-        const accountListPage = new AccountListPage(driver);
-
-        // Ensure that wallet information is displayed
-        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
-        await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 2');
-
-        // Ensure that accounts within the wallets are displayed
-        await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
-        await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
-        // FIXME: Account index are scoped per wallet now, so we have now easy way
-        // to check for "Wallet 2" accounts.
-        // await accountListPage.checkMultichainAccountNameDisplayed('Account 2');
-      },
-    );
-  });
-
+describe('Multichain Accounts - Multichain accounts list page', function (this: Suite) {
   it('displays wallet and accounts for hardware wallet', async function () {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.HardwareWallet,
-        testSpecificMock: mockMultichainAccountsFeatureFlagStateTwo,
         state: 2,
       },
       async (driver: Driver) => {
@@ -59,8 +33,8 @@ describe.skip('Multichain Accounts - Multichain accounts list page', function (t
       },
     );
   });
-
-  it('displays wallet for Snap Keyring', async function () {
+  // eslint-disable-next-line
+  it.skip('displays wallet for Snap Keyring', async function () {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
