@@ -1014,6 +1014,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     this.store.updateStructure({
+      AccountTrackerController: this.accountTrackerController,
       AccountsController: this.accountsController,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
@@ -1062,6 +1063,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.memStore = new ComposableObservableStore({
       config: {
+        AccountTrackerController: this.accountTrackerController,
         AccountsController: this.accountsController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
