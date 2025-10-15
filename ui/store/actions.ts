@@ -560,7 +560,7 @@ export function setShowShieldEntryModalOnce(
       await submitRequestToBackground('setShowShieldEntryModalOnce', [show]);
       dispatch(
         setShowShieldEntryModalOnceAction({
-          show,
+          show: Boolean(show),
           shouldSubmitEvents,
         }),
       );
