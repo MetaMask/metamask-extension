@@ -28941,7 +28941,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ******************************
 
 @metamask/eth-block-tracker
-12.0.1 <https://github.com/MetaMask/eth-block-tracker>
+12.2.1 <https://github.com/MetaMask/eth-block-tracker>
 MIT License
 
 Copyright (c) 2018 MetaMask
