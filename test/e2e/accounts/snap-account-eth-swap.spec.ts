@@ -13,8 +13,6 @@ import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { Mockttp } from '../mock-e2e';
 import { mockSnapSimpleKeyringAndSite } from '../tests/account/snap-keyring-site-mocks';
 
-// test
-
 const DAI = 'DAI';
 const TEST_ETH = 'TESTETH';
 
