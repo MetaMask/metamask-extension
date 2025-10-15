@@ -13,7 +13,7 @@ import {
   getGatorPermissionsMap,
   getAggregatedGatorPermissionsCountAcrossAllChains,
   getPermissionGroupDetails,
-  getPermissionGroupDetailsByOrigin,
+  getPermissionMetaDataByOrigin,
 } from './gator-permissions';
 
 const MOCK_CHAIN_ID_MAINNET = '0x1' as Hex;
@@ -587,11 +587,11 @@ describe('Gator Permissions Selectors', () => {
         expect(result).toEqual([
           {
             chainId: MOCK_CHAIN_ID_MAINNET,
-            total: 3,
+            count: 3,
           },
           {
             chainId: MOCK_CHAIN_ID_POLYGON,
-            total: 3,
+            count: 3,
           },
         ]);
       });
@@ -668,11 +668,11 @@ describe('Gator Permissions Selectors', () => {
         expect(result).toEqual([
           {
             chainId: MOCK_CHAIN_ID_MAINNET,
-            total: 6,
+            count: 6,
           },
           {
             chainId: MOCK_CHAIN_ID_POLYGON,
-            total: 3,
+            count: 3,
           },
         ]);
       });
@@ -712,11 +712,11 @@ describe('Gator Permissions Selectors', () => {
         expect(result).toEqual([
           {
             chainId: MOCK_CHAIN_ID_MAINNET,
-            total: 3,
+            count: 3,
           },
           {
             chainId: MOCK_CHAIN_ID_POLYGON,
-            total: 3,
+            count: 3,
           },
         ]);
       });
@@ -756,11 +756,11 @@ describe('Gator Permissions Selectors', () => {
         expect(result).toEqual([
           {
             chainId: MOCK_CHAIN_ID_MAINNET,
-            total: 4,
+            count: 4,
           },
           {
             chainId: MOCK_CHAIN_ID_POLYGON,
-            total: 2,
+            count: 2,
           },
         ]);
       });
@@ -800,11 +800,11 @@ describe('Gator Permissions Selectors', () => {
         expect(result).toEqual([
           {
             chainId: MOCK_CHAIN_ID_MAINNET,
-            total: 3,
+            count: 3,
           },
           {
             chainId: MOCK_CHAIN_ID_POLYGON,
-            total: 3,
+            count: 3,
           },
         ]);
       });
@@ -851,7 +851,7 @@ describe('Gator Permissions Selectors', () => {
         expect(result).toEqual([
           {
             chainId: MOCK_CHAIN_ID_MAINNET,
-            total: 4,
+            count: 4,
           },
         ]);
       });
@@ -892,70 +892,70 @@ describe('Gator Permissions Selectors', () => {
         expect(result).toEqual([
           {
             chainId: MOCK_CHAIN_ID_MAINNET,
-            total: 10,
+            count: 10,
           },
           {
             chainId: MOCK_CHAIN_ID_POLYGON,
-            total: 5,
+            count: 5,
           },
         ]);
       });
     });
   });
 
-  describe('getPermissionGroupDetailsByOrigin', () => {
+  describe('getPermissionMetaDataByOrigin', () => {
     describe('token transfer permissions by origin', () => {
       it('should return correct token transfer details for a site origin with permissions', () => {
-        const result = getPermissionGroupDetailsByOrigin(
+        const result = getPermissionMetaDataByOrigin(
           mockState,
           'http://localhost:8000',
         );
 
         expect(result).toEqual({
           tokenTransfer: {
-            total: 3,
+            count: 3,
             chains: [MOCK_CHAIN_ID_MAINNET],
           },
         });
       });
 
       it('should return correct token transfer details for different site origin', () => {
-        const result = getPermissionGroupDetailsByOrigin(
+        const result = getPermissionMetaDataByOrigin(
           mockState,
           'http://localhost:8001',
         );
 
         expect(result).toEqual({
           tokenTransfer: {
-            total: 3,
+            count: 3,
             chains: [MOCK_CHAIN_ID_POLYGON],
           },
         });
       });
 
       it('should return empty details for site origin with no permissions', () => {
-        const result = getPermissionGroupDetailsByOrigin(
+        const result = getPermissionMetaDataByOrigin(
           mockState,
           'https://nonexistent.com',
         );
 
         expect(result).toEqual({
           tokenTransfer: {
-            total: 0,
+            count: 0,
             chains: [],
           },
         });
       });
 
       it('should handle case-insensitive site origin matching', () => {
-        const result = getPermissionGroupDetailsByOrigin(
+        const result = getPermissionMetaDataByOrigin(
           mockState,
           'HTTP://LOCALHOST:8000',
         );
 
         expect(result).toEqual({
           tokenTransfer: {
-            total: 3,
+            count: 3,
             chains: [MOCK_CHAIN_ID_MAINNET],
           },
         });
@@ -991,14 +991,14 @@ describe('Gator Permissions Selectors', () => {
           },
         };
 
-        const result = getPermissionGroupDetailsByOrigin(
+        const result = getPermissionMetaDataByOrigin(
           customState,
           'http://example.com',
         );
 
         expect(result).toEqual({
           tokenTransfer: {
-            total: 7,
+            count: 7,
             chains: [MOCK_CHAIN_ID_MAINNET, MOCK_CHAIN_ID_POLYGON],
           },
         });
@@ -1037,14 +1037,14 @@ describe('Gator Permissions Selectors', () => {
           },
         };
 
-        const result = getPermissionGroupDetailsByOrigin(
+        const result = getPermissionMetaDataByOrigin(
           emptyState,
           'http://localhost:8000',
         );
 
         expect(result).toEqual({
           tokenTransfer: {
-            total: 0,
+            count: 0,
             chains: [],
           },
         });
@@ -1090,7 +1090,7 @@ describe('Gator Permissions Selectors', () => {
         };
 
         expect(() => {
-          getPermissionGroupDetailsByOrigin(
+          getPermissionMetaDataByOrigin(
             stateWithUndefined,
             'http://localhost:8000',
           );
@@ -1137,7 +1137,7 @@ describe('Gator Permissions Selectors', () => {
         };
 
         expect(() => {
-          getPermissionGroupDetailsByOrigin(
+          getPermissionMetaDataByOrigin(
             stateWithUndefined,
             'http://localhost:8000',
           );
@@ -1184,7 +1184,7 @@ describe('Gator Permissions Selectors', () => {
         };
 
         expect(() => {
-          getPermissionGroupDetailsByOrigin(
+          getPermissionMetaDataByOrigin(
             stateWithUndefined,
             'http://localhost:8000',
           );
@@ -1231,7 +1231,7 @@ describe('Gator Permissions Selectors', () => {
         };
 
         expect(() => {
-          getPermissionGroupDetailsByOrigin(
+          getPermissionMetaDataByOrigin(
             stateWithUndefined,
             'http://localhost:8000',
           );
@@ -1263,12 +1263,12 @@ describe('Gator Permissions Selectors', () => {
           },
         };
 
-        const result = getPermissionGroupDetailsByOrigin(
+        const result = getPermissionMetaDataByOrigin(
           customState,
           encodeURIComponent('https://example.com'),
         );
 
-        expect(result.tokenTransfer.total).toBe(3);
+        expect(result.tokenTransfer.count).toBe(3);
         expect(result.tokenTransfer.chains).toEqual([MOCK_CHAIN_ID_MAINNET]);
       });
 
@@ -1293,12 +1293,12 @@ describe('Gator Permissions Selectors', () => {
           },
         };
 
-        const result = getPermissionGroupDetailsByOrigin(
+        const result = getPermissionMetaDataByOrigin(
           customState,
           'https://example.com/path with spaces',
         );
 
-        expect(result.tokenTransfer.total).toBe(3);
+        expect(result.tokenTransfer.count).toBe(3);
         expect(result.tokenTransfer.chains).toEqual([MOCK_CHAIN_ID_MAINNET]);
       });
     });

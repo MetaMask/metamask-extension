@@ -59,7 +59,7 @@ import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shar
 import { MultichainEditAccountsPage } from '../multichain-edit-accounts-page/multichain-edit-accounts-page';
 import {
   AppState,
-  getPermissionGroupDetailsByOrigin,
+  getPermissionMetaDataByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
@@ -247,7 +247,7 @@ export const MultichainReviewPermissions = () => {
   );
 
   const gatorPermissionGroupDetailsMap = useSelector((state) =>
-    getPermissionGroupDetailsByOrigin(state as AppState, activeTabOrigin),
+    getPermissionMetaDataByOrigin(state as AppState, activeTabOrigin),
   );
 
   const shouldRenderGatorPermissionGroupDetails = useMemo(() => {
@@ -257,7 +257,7 @@ export const MultichainReviewPermissions = () => {
 
     const isPermissionGroupDetailsMapEmpty = Object.values(
       gatorPermissionGroupDetailsMap,
-    ).every((details) => details.total === 0);
+    ).every((details) => details.count === 0);
 
     return (
       isGatorPermissionsRevocationFeatureEnabled() &&
@@ -296,7 +296,7 @@ export const MultichainReviewPermissions = () => {
                     key={permissionGroupName}
                     nonTestNetworks={nonTestNetworks}
                     testNetworks={testNetworks}
-                    totalCount={details.total}
+                    totalCount={details.count}
                     chainIds={details.chains}
                     paddingTop={connectedAccountGroups.length === 0 ? 4 : 0}
                   />
