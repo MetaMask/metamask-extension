@@ -14,7 +14,6 @@ describe('useAccountAddressSeedIconMap', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // Set a default empty return
     mockGetAccountGroupWithInternalAccounts.mockReturnValue([]);
   });
 
