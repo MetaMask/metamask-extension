@@ -3,6 +3,7 @@ import type { Browser, Events } from 'webextension-polyfill';
 /**
  * Represents any Events.Event event in the `browser` namespace.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyEvent = Events.Event<(...args: any[]) => void>;
 
 /**
@@ -27,7 +28,7 @@ export type BrowserEventName<Namespace extends BrowserNamespace> =
 
 export type EventCallback<
   Namespace extends BrowserNamespace,
-  EventName extends BrowserEventName<Namespace>,
+  EventName extends keyof Browser[Namespace],
 > =
   Browser[Namespace][EventName] extends Events.Event<infer Callback>
     ? Callback
@@ -35,24 +36,40 @@ export type EventCallback<
 
 export type CallbackArguments<
   Namespace extends BrowserNamespace,
-  EventName extends BrowserEventName<Namespace> = BrowserEventName<Namespace>,
+  EventName extends keyof Browser[Namespace] = keyof Browser[Namespace],
 > = Parameters<EventCallback<Namespace, EventName>>;
 
 type EventRecord<
   Namespace extends BrowserNamespace,
-  EventName extends BrowserEventName<Namespace>,
+  EventName extends keyof Browser[Namespace],
 > = {
   listener: (...args: CallbackArguments<Namespace, EventName>) => void;
   calls: CallbackArguments<Namespace, EventName>[];
 };
 
+type TupleThing = {
+  [Namespace in keyof Browser]: EventKeys<Namespace> extends never
+    ? never
+    : [
+        Namespace,
+        {
+          [EventName in keyof Browser[Namespace]]: Browser[Namespace][EventName] extends AnyEvent
+            ? Map<
+                EventName,
+                Namespace extends BrowserNamespace
+                  ? EventRecord<
+                      Namespace,
+                      EventName & BrowserEventName<Namespace>
+                    >
+                  : never
+              >
+            : never;
+        }[keyof Browser[Namespace]],
+      ];
+}[keyof Browser];
+
 export type NamespaceListenerMap = {
-  [Symbol.iterator](): IterableIterator<
-    [
-      BrowserNamespace,
-      Map<BrowserEventName<BrowserNamespace>, EventRecord<any, any>>,
-    ]
-  >;
+  [Symbol.iterator](): IterableIterator<TupleThing>;
   get<
     Namespace extends BrowserNamespace,
     EventName extends BrowserEventName<Namespace> = BrowserEventName<Namespace>,

@@ -1,5 +1,5 @@
-import type { Browser } from 'webextension-polyfill';
-import type { Events } from 'webextension-polyfill';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import type { Browser, Events } from 'webextension-polyfill';
 import type {
   BrowserEventName,
   BrowserNamespace,
@@ -23,6 +23,7 @@ type NamespaceEventPair<
  */
 export class ExtensionLazyListener {
   private browser: Browser;
+
   private namespaceListeners: NamespaceListenerMap = new Map();
 
   /**
@@ -47,6 +48,9 @@ export class ExtensionLazyListener {
       // we have a memory leak. Lets warn in the console and give developers
       // clear instructions on how to investigate why this has happened.
       for (const [namespace, listeners] of this.namespaceListeners) {
+        if (!listeners) {
+          return;
+        }
         for (const [eventName, { calls }] of listeners) {
           const message = `ExtensionLazyListener: Possible memory leak detected. The event "${namespace}.${eventName}" has been listened to, but no application code has added a listener after ${timeout}ms. There are currently ${calls.length} buffered calls. If you are a developer of this extension, please ensure that you have added a listener for this event. If you are a user of this extension, please report this warning to the developers of the extension.`;
           if (process.env.IN_TEST) {
@@ -80,6 +84,8 @@ export class ExtensionLazyListener {
    * calls until a real listener is added.
    *
    * @param pair - The namespace and event names to start listening to.
+   * @param pair.namespace
+   * @param pair.eventNames
    */
   #startListening<
     Namespace extends BrowserNamespace,
@@ -158,7 +164,7 @@ export class ExtensionLazyListener {
    *
    * @param namespace - The browser namespace, e.g., 'runtime', 'tabs', etc.
    * @param eventName - The event name within the namespace, e.g., 'onMessage', 'onInstalled', etc.
-   * @returns - A promise that resolves with the event callback arguments.
+   * @returns A promise that resolves with the event callback arguments.
    */
   public once<
     Namespace extends BrowserNamespace,

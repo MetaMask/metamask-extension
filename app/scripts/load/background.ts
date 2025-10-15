@@ -3,9 +3,9 @@
 import browser from 'webextension-polyfill';
 import { ExtensionLazyListener } from '../lib/extension-lazy-listener/extension-lazy-listener';
 
-globalThis.stateHooks.lazyListener = new ExtensionLazyListener(browser);
-
 import '../background';
+
+globalThis.stateHooks.lazyListener = new ExtensionLazyListener(browser);
 
 if (process.env.IN_TEST) {
   // only used for testing
