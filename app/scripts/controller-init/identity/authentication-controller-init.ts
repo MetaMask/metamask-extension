@@ -2,7 +2,7 @@ import {
   AuthenticationControllerState,
   Controller as AuthenticationController,
 } from '@metamask/profile-sync-controller/auth';
-import { Platform } from '@metamask/profile-sync-controller/sdk';
+import { Env, Platform } from '@metamask/profile-sync-controller/sdk';
 import { ControllerInitFunction } from '../types';
 import {
   AuthenticationControllerInitMessenger,
@@ -33,6 +33,9 @@ export const AuthenticationControllerInit: ControllerInitFunction<
         'MetaMetricsController:getMetaMetricsId',
       ),
       agent: Platform.EXTENSION,
+    },
+    config: {
+      env: Env.DEV,
     },
   });
 
