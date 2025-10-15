@@ -252,7 +252,7 @@ export const FileUploader = ({
           {error || helpText}
         </HelpText>
       )}
-      {files && files?.length > 0 && (
+      {files && (
         <Box flexDirection={BoxFlexDirection.Column} gap={2} marginTop={4}>
           {Array.from(files).map((file) => (
             <Box
