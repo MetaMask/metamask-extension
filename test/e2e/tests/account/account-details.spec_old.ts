@@ -83,7 +83,6 @@ describe('Show account details', function () {
           expectedPrivateKey:
             '7c9529a67102755b7e6102d6d950ac5d5863c98713805cec576b945b15b71eac',
         });
-        throw new Error('CIAO');
       },
     );
   });

@@ -78,7 +78,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       },
       async (driver: Driver) => {
         await installSnapSimpleKeyring(driver);
-        await driver.delay(1000000);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
         await snapSimpleKeyringPage.createNewAccount();
 
