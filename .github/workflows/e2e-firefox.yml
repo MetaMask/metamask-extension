@@ -46,6 +46,7 @@ jobs:
       - test-e2e-firefox-browserify
       - test-e2e-firefox-flask
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: ${{ !cancelled() }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

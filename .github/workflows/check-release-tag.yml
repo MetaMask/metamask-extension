@@ -17,6 +17,7 @@ jobs:
     # Only run on PRs targeting stable
     if: github.base_ref == 'stable'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       pull-requests: read
