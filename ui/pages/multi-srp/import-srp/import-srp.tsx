@@ -44,7 +44,6 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
 import ShowHideToggle from '../../../components/ui/show-hide-toggle';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   getMetaMaskHdKeyrings,
   getIsSocialLoginFlow,
@@ -63,7 +62,6 @@ const defaultNumberOfWords = 12;
 export const ImportSrp = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
@@ -80,7 +78,6 @@ export const ImportSrp = () => {
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
   const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
-  const newHdEntropyIndex = hdKeyrings.length;
 
   const [loading, setLoading] = useState(false);
 
