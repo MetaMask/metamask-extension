@@ -7,6 +7,20 @@ import type {
   EventKeys,
 } from './extension-lazy-listener.types';
 
+// Create a type that maps BrowserNamespace to its event names
+type NamespaceEvents = {
+  [K in keyof Browser]: EventKeys<Browser[K]> extends never
+    ? never
+    : {
+        namespace: K;
+        eventNames: {
+          [P in keyof Browser[K]]: Browser[K][P] extends Events.Event<any>
+            ? P
+            : never;
+        }[keyof Browser[K]][];
+      };
+}[keyof Browser][];
+
 type EventRecord<
   Namespace extends BrowserNamespace,
   EventName extends BrowserEventName<Namespace>,
@@ -44,18 +58,15 @@ export class ExtensionLazyListener {
   private namespaceListeners: NamespaceListenerMap = new Map();
 
   constructor(events: NamespaceEvents = []) {
-    // iterator over the entries of the events object
-    events.forEach((event) =>
-      this._install(
-        event as {
-          namespace: typeof event.namespace;
-          eventNames: BrowserEventName<typeof event.namespace>[];
-        },
-      ),
-    );
+    for (const { namespace, eventNames } of events) {
+      this.#startListening({
+        namespace,
+        eventNames: eventNames as BrowserEventName<typeof namespace>[],
+      });
+    }
   }
 
-  private _install<
+  #startListening<
     Namespace extends BrowserNamespace,
     EventNames extends BrowserEventName<Namespace>[],
   >({
@@ -92,15 +103,14 @@ export class ExtensionLazyListener {
     eventName: EventName,
     callback: (...args: CallbackArguments<Namespace, EventName>) => void,
   ) {
-    (getEvent as any)(namespace, eventName).addListener(callback);
+    const event = getEvent(namespace, eventName);
+    event.addListener(callback);
     const trackers = this.namespaceListeners.get(namespace);
     if (trackers) {
       const tracker = trackers.get(eventName);
       if (tracker) {
         trackers.delete(eventName);
-        (getEvent as any)(namespace, eventName).removeListener(
-          tracker.listener,
-        );
+        event.removeListener(tracker.listener);
         setImmediate(() => {
           tracker.calls.forEach((args) =>
             callback(...(args as CallbackArguments<Namespace, EventName>)),
@@ -115,7 +125,7 @@ export class ExtensionLazyListener {
     EventName extends BrowserEventName<Namespace>,
   >(namespace: Namespace, eventName: EventName) {
     return new Promise<CallbackArguments<Namespace, EventName>>((resolve) => {
-      const event = (getEvent as any)(namespace, eventName);
+      const event = getEvent(namespace, eventName);
       function listener(...args: CallbackArguments<Namespace, EventName>) {
         event.removeListener(listener);
         resolve(args);
@@ -123,34 +133,28 @@ export class ExtensionLazyListener {
       const trackers = this.namespaceListeners.get(namespace);
       if (trackers) {
         const tracker = trackers.get(eventName);
-        if (tracker && tracker.calls.length > 0) {
-          const args = tracker.calls.shift();
-          setImmediate(() => {
-            resolve((args || []) as CallbackArguments<Namespace, EventName>);
-          });
-          if ('removeListener' in event) {
-            event.removeListener(tracker.listener);
+        if (tracker?.calls.length) {
+          // Use setImmediate to ensure the promise resolves asynchronously
+          // just like it would if the event were emitted "naturally" after
+          // calling `once(...)`
+          setImmediate(
+            resolve,
+            tracker.calls.shift() as CallbackArguments<Namespace, EventName>,
+          );
+          // we don't need our lazy listener anymore, since we know we have
+          // application code that is capable of listening on its own. We _do_
+          // keep any remaining `tracker.calls` around though, since we're only
+          // consuming one call here, and there may be more to consume later.
+          event.removeListener(tracker.listener);
+          if (tracker.calls.length === 0) {
+            // if the tracker has no more calls, we can remove it
+            trackers.delete(eventName);
           }
-        } else {
-          event.addListener(listener);
+          return;
         }
-      } else {
-        event.addListener(listener);
       }
+
+      event.addListener(listener);
     });
   }
 }
-
-// Create a type that maps BrowserNamespace to its event names
-export type NamespaceEvents = {
-  [K in keyof Browser]: EventKeys<Browser[K]> extends never
-    ? never
-    : {
-        namespace: K;
-        eventNames: {
-          [P in keyof Browser[K]]: Browser[K][P] extends Events.Event<any>
-            ? P
-            : never;
-        }[keyof Browser[K]][];
-      };
-}[keyof Browser][];
