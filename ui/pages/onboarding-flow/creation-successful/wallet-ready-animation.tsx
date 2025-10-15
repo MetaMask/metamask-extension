@@ -8,7 +8,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WalletReadyAnimation() {
   const theme = useTheme();
-  const isTestEnvironment = process.env.IN_TEST;
+  const isTestEnvironment = Boolean(process.env.IN_TEST);
 
   const { rive, RiveComponent } = useRive({
     src: isTestEnvironment ? '' : './images/riv_animations/wallet_ready.riv',

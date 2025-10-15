@@ -63,6 +63,7 @@ export default function CreationSuccessful() {
   );
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const isTestEnvironment = Boolean(process.env.IN_TEST);
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -259,7 +260,7 @@ export default function CreationSuccessful() {
           {renderSettingsActions}
         </Box>
       )}
-      {!isFromSetiingsSRPBackup && !process.env.IN_TEST && (
+      {!isFromSetiingsSRPBackup && !isTestEnvironment && (
         <WalletReadyAnimation />
       )}
       {!isFromSetiingsSRPBackup && (
