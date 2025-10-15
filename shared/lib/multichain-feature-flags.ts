@@ -1,30 +1,18 @@
 import semver from 'semver';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires, node/global-require, @typescript-eslint/no-require-imports
+const packageJson = require('../../package.json') as { version: string };
+
 /**
  * Generic feature flag type for multichain features (Bitcoin, Tron, etc.)
+ * Follows the same pattern as MultichainAccountsFeatureFlag
  */
 export type MultichainFeatureFlag = {
   enabled: boolean;
-  minimumVersion?: string;
+  minimumVersion: string | null;
 };
 
-/**
- * Get app version from package.json with fallback handling.
- * Works in both development and bundled production environments.
- */
-function getAppVersion(): string | null {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, node/global-require, @typescript-eslint/no-require-imports
-    return require('../../package.json').version;
-  } catch {
-    // In bundled environments where package.json is not available,
-    // default to assuming version requirements are met to avoid blocking features
-    console.warn(
-      'Unable to determine app version for feature flag evaluation - assuming requirements met',
-    );
-    return '99.99.99'; // High version number to pass version checks
-  }
-}
+const APP_VERSION = packageJson.version;
 
 /**
  * Generic helper to check if a multichain feature flag is enabled with version gating.
@@ -35,9 +23,7 @@ function getAppVersion(): string | null {
  * @returns True if the feature is enabled and meets version requirements
  */
 export function isMultichainFeatureEnabled(flagValue: unknown): boolean {
-  const appVersion = getAppVersion();
-
-  if (!flagValue || !appVersion) {
+  if (!flagValue || !APP_VERSION) {
     return false;
   }
 
@@ -59,7 +45,7 @@ export function isMultichainFeatureEnabled(flagValue: unknown): boolean {
     }
 
     try {
-      return semver.gte(appVersion, minimumVersion);
+      return semver.gte(APP_VERSION, minimumVersion);
     } catch {
       // If version comparison fails, default to false for safety
       return false;

@@ -3162,13 +3162,13 @@ export function getIsWatchEthereumAccountEnabled(state) {
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
 export function getIsBitcoinSupportEnabled(state) {
+  // When bitcoin is not enabled, always return false
+  let enabled = false;
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
   const { bitcoinAccounts } = getRemoteFeatureFlags(state);
-  return isMultichainFeatureEnabled(bitcoinAccounts);
+  enabled = isMultichainFeatureEnabled(bitcoinAccounts);
   ///: END:ONLY_INCLUDE_IF
-
-  // When bitcoin is not enabled, always return false
-  return false;
+  return enabled;
 }
 
 /**
