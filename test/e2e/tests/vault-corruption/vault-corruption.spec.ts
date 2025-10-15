@@ -166,7 +166,6 @@ describe('Vault Corruption', function () {
     await driver.executeAsyncScript(script);
     await driver.delay(2000);
 
-
     // the previous tab we were using is now closed, so we need to tell Selenium
     // to switch back to the other page (required for Chrome)
     await driver.switchToWindow(initialWindow);
@@ -336,7 +335,6 @@ describe('Vault Corruption', function () {
           waitForControllers: false,
         });
         await driver.delay(2000);
-
 
         // make sure the button can be clicked yet again; dismiss the prompt
         await clickRecover({ driver, confirm: false });
