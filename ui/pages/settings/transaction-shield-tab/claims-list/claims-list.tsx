@@ -76,14 +76,14 @@ const ClaimsList = () => {
         <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
           <Text
             variant={TextVariant.bodyMdMedium}
-            color={TextColor.textAlternativeSoft}
+            color={TextColor.textAlternative}
           >
             {t('viewDetails')}
           </Text>
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Md}
-            color={IconColor.iconAlternativeSoft}
+            color={IconColor.iconAlternative}
           />
         </Box>
       </Box>

@@ -21,12 +21,15 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Textarea,
   TextareaResize,
 } from '../../../../components/component-library/textarea';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   FormTextField,
   FormTextFieldSize,
 } from '../../../../components/component-library';
@@ -39,6 +42,7 @@ import { useClaimState } from '../../../../hooks/claims/useClaimState';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
+import { TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE } from '../../../../helpers/constants/routes';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -49,6 +53,7 @@ function isValidTransactionHash(hash: string): boolean {
 
 const SubmitClaimForm = () => {
   const t = useI18nContext();
+  const navigate = useNavigate();
 
   const {
     email,
@@ -174,6 +179,15 @@ const SubmitClaimForm = () => {
       padding={4}
       gap={4}
     >
+      <BannerAlert
+        severity={BannerAlertSeverity.Info}
+        title="You have claims that are pending approval."
+        description="Your claims is being reviewed by our team. We will notify you when it has been approved by email."
+        actionButtonLabel="View claims"
+        actionButtonOnClick={() => {
+          navigate(TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE);
+        }}
+      />
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {t('shieldClaimDetails', [
           <TextButton key="here-link" className="min-w-0" asChild>
