@@ -809,7 +809,6 @@ export default class Home extends PureComponent {
   };
 
   render() {
-    console.log('DEBUG TTTTT HOME RENDER');
     const {
       defaultHomeActiveTabName,
       onTabClick,

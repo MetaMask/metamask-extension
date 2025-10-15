@@ -32,7 +32,6 @@ export const AccountOverviewLayout = ({
   children,
   ...tabsProps
 }: AccountOverviewLayoutProps) => {
-  console.log('DEBUG TTTTT ACCOUNT OVERVIEW LAYOUT');
   const dispatch = useDispatch();
   const isLoading = useSelector(getAppIsLoading);
   const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
