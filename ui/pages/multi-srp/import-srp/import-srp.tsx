@@ -104,32 +104,10 @@ export const ImportSrp = () => {
 
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
-      const result = (await dispatch(
-        importMnemonicToVault(joinedSrp),
-      )) as unknown as {
-        newAccountAddress: string;
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        discoveredAccounts: { Bitcoin: number; Solana: number };
-      };
-
-      const { discoveredAccounts } = result;
+      await dispatch(importMnemonicToVault(joinedSrp));
 
       // Clear the secret recovery phrase after importing
       setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));
-
-      // Track the event with the discovered accounts
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      trackEvent({
-        event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: newHdEntropyIndex,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_bitcoin_accounts_discovered: discoveredAccounts?.Bitcoin,
-        },
-      });
     }
 
     history.push(DEFAULT_ROUTE);
