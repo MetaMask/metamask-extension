@@ -164,13 +164,17 @@ describe('Vault Corruption', function () {
 
     // use the home page to destroy the vault
     await driver.executeAsyncScript(script);
+    await driver.delay(2000);
+
 
     // the previous tab we were using is now closed, so we need to tell Selenium
     // to switch back to the other page (required for Chrome)
     await driver.switchToWindow(initialWindow);
+    await driver.delay(2000);
 
     // get a new tab ready to use (required for Firefox)
     await driver.openNewPage('about:blank');
+    await driver.delay(2000);
 
     // wait for the background page to reload
     await waitForVaultRestorePage(driver);
@@ -288,11 +292,14 @@ describe('Vault Corruption', function () {
           breakAllDatabasesScript('KeyringController'),
         );
 
+        await driver.delay(2000);
+
         // start reset
         await clickRecover({ driver, confirm: true });
 
         // Now onboard again, like a first-time user :-(
         await onboard(driver);
+        await driver.delay(2000);
 
         // make sure the account is different than the first time we onboarded
         const newFirstAddress = await getFirstAddress(driver);
@@ -317,6 +324,7 @@ describe('Vault Corruption', function () {
           driver,
           breakPrimaryDatabaseOnlyScript,
         );
+        await driver.delay(2000);
 
         // click recover but dismiss the prompt
         await clickRecover({ driver, confirm: false });
@@ -327,6 +335,8 @@ describe('Vault Corruption', function () {
         await driver.navigate(PAGES.HOME, {
           waitForControllers: false,
         });
+        await driver.delay(2000);
+
 
         // make sure the button can be clicked yet again; dismiss the prompt
         await clickRecover({ driver, confirm: false });
@@ -354,6 +364,7 @@ describe('Vault Corruption', function () {
           driver,
           breakAllDatabasesScript('meta'),
         );
+        await driver.delay(2000);
 
         // start recovery
         await clickRecover({ driver, confirm: true });
