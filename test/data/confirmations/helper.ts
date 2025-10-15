@@ -216,3 +216,22 @@ export const getMockTokenTransferConfirmState = ({
     }),
   );
 };
+
+export const getMockAddEthereumChainConfirmState = () => ({
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    pendingApprovals: {
+      '1': {
+        id: '1',
+        type: ApprovalType.AddEthereumChain,
+        requestData: {
+          chainId: '0x5',
+          chainName: 'Test Network',
+          rpcUrl: 'https://rpc.example.com',
+        },
+        origin: 'https://example.com',
+      },
+    },
+  },
+});
