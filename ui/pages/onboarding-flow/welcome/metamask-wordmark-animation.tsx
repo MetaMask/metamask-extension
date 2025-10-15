@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useRef, useEffect } from 'react';
 import { useRive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
@@ -15,30 +16,17 @@ export default function MetamaskWordMarkAnimation({
   setIsAnimationComplete,
   isAnimationComplete,
 }: MetamaskWordMarkAnimationProps) {
+  const isTestEnvironment = process.env.IN_TEST;
+
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const theme = useTheme();
 
-  // In test environments, skip animation entirely and show buttons immediately
-  // This prevents any Rive initialization and CDN network requests
-  useEffect(() => {
-    if (process.env.IN_TEST) {
-      console.log('Test environment detected, skipping Rive animation');
-      setIsAnimationComplete(true);
-    }
-  }, [setIsAnimationComplete]);
-
-  if (process.env.IN_TEST) {
-    return (
-      <Box
-        className={`riv-animation__wordmark-container riv-animation__wordmark-container--complete`}
-      />
-    );
-  }
-
   const { rive, RiveComponent } = useRive({
-    src: './images/riv_animations/metamask_wordmark.riv',
+    src: isTestEnvironment
+      ? ''
+      : './images/riv_animations/metamask_wordmark.riv',
     stateMachines: 'WordmarkBuildUp',
-    enableRiveAssetCDN: true,
+    enableRiveAssetCDN: !isTestEnvironment,
     autoplay: false,
     layout: new Layout({
       fit: Fit.Contain,
@@ -93,7 +81,24 @@ export default function MetamaskWordMarkAnimation({
         clearTimeout(animationTimeoutRef.current);
       }
     };
-  }, [rive]);
+  }, [rive, theme]);
+
+  // In test environments, skip animation entirely and show buttons immediately
+  // This prevents any Rive initialization and CDN network requests
+  useEffect(() => {
+    if (isTestEnvironment) {
+      console.log('Test environment detected, skipping Rive animation');
+      setIsAnimationComplete(true);
+    }
+  }, [isTestEnvironment, setIsAnimationComplete]);
+
+  if (isTestEnvironment) {
+    return (
+      <Box
+        className={`riv-animation__wordmark-container riv-animation__wordmark-container--complete`}
+      />
+    );
+  }
 
   return (
     <Box
