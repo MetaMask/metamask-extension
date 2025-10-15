@@ -39,7 +39,6 @@ export default function FoxAppearAnimation({
     if (rive) {
       // Get the state machine inputs
       const inputs = rive.stateMachineInputs('FoxRaiseUp');
-      console.log('inputs', inputs);
 
       if (inputs) {
         // Fire the Start trigger to begin the animation
