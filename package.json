@@ -280,7 +280,7 @@
     "@metamask/chain-agnostic-permission": "^1.1.0",
     "@metamask/contract-metadata": "^2.5.0",
     "@metamask/controller-utils": "^11.14.0",
-    "@metamask/core-backend": "^2.0.0",
+    "@metamask/core-backend": "^2.1.0",
     "@metamask/delegation-controller": "^0.7.0",
     "@metamask/delegation-core": "^0.2.0-rc.1",
     "@metamask/delegation-deployments": "^0.11.0",

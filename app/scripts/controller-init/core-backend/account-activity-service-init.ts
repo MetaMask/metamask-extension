@@ -1,4 +1,6 @@
 import { AccountActivityService } from '@metamask/core-backend';
+import { TraceCallback } from '@metamask/controller-utils';
+import { trace } from '../../../../shared/lib/trace';
 import { ControllerInitFunction } from '../types';
 import { AccountActivityServiceMessenger } from '../messengers/core-backend';
 
@@ -15,6 +17,7 @@ export const AccountActivityServiceInit: ControllerInitFunction<
 > = ({ controllerMessenger }) => {
   const controller = new AccountActivityService({
     messenger: controllerMessenger,
+    traceFn: trace as TraceCallback,
   });
 
   return {

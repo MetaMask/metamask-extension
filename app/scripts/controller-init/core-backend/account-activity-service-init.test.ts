@@ -9,6 +9,7 @@ import {
 import { AccountActivityServiceInit } from './account-activity-service-init';
 
 jest.mock('@metamask/core-backend');
+jest.mock('../../../../shared/lib/trace');
 
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<AccountActivityServiceMessenger>
@@ -34,12 +35,13 @@ describe('AccountActivityServiceInit', () => {
     expect(controller).toBeInstanceOf(AccountActivityService);
   });
 
-  it('passes the messenger to the controller', () => {
+  it('passes the messenger and traceFn to the controller', () => {
     AccountActivityServiceInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(AccountActivityService);
     expect(controllerMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
+      traceFn: expect.any(Function),
     });
   });
 

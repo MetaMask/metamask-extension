@@ -5788,9 +5788,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/core-backend@npm:2.0.0"
+"@metamask/core-backend@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/core-backend@npm:2.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/controller-utils": "npm:^11.14.1"
@@ -5800,7 +5800,7 @@ __metadata:
   peerDependencies:
     "@metamask/accounts-controller": ^33.1.0
     "@metamask/keyring-controller": ^23.0.0
-  checksum: 10/5cade0573623ab003ec409b6aaa1e4046914b121b0a565c50f5040dd831dc282816379639c7d8d9a4ed270821774359eaf83978c05b9cc5e43f2ae295772baa9
+  checksum: 10/7dce39ab1d433013491c36737767edf1ff7e3fdf3793bc8612d47e8d8e4d454e9d921ec5e0cc6d79c809a31d0e0491560d45d245b2c3bd61f139b305a77e63a4
   languageName: node
   linkType: hard
 
@@ -31922,7 +31922,7 @@ __metadata:
     "@metamask/chain-agnostic-permission": "npm:^1.1.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.14.0"
-    "@metamask/core-backend": "npm:^2.0.0"
+    "@metamask/core-backend": "npm:^2.1.0"
     "@metamask/delegation-controller": "npm:^0.7.0"
     "@metamask/delegation-core": "npm:^0.2.0-rc.1"
     "@metamask/delegation-deployments": "npm:^0.11.0"
