@@ -12,6 +12,7 @@ const REMOVE_KEYS = [
   'unencryptedSnapStates',
   'phishingLists',
   'whitelist',
+  'whitelistPaths',
   'hotlistLastFetched',
   'stalelistLastFetched',
   'c2DomainBlocklistLastFetched',
