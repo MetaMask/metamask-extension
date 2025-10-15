@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
@@ -43,11 +37,7 @@ import { clearClipboard } from '../../../helpers/utils/util';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
 import ShowHideToggle from '../../../components/ui/show-hide-toggle';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  getMetaMaskHdKeyrings,
-  getIsSocialLoginFlow,
-} from '../../../selectors';
+import { getIsSocialLoginFlow } from '../../../selectors';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
@@ -77,7 +67,6 @@ export const ImportSrp = () => {
   );
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
-  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
 
   const [loading, setLoading] = useState(false);
 
