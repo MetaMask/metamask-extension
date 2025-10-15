@@ -29,7 +29,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useRecipients } from '../../../hooks/send/useRecipients';
-import { useRecipientSeedIconMap } from '../../../hooks/send/useRecipientSeedIconMap';
+import { useAccountAddressSeedIconMap } from '../../../hooks/send/useAccountAddressSeedIconMap';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { useSendContext } from '../../../context/send';
 import { ConfusableRecipientName } from './confusable-recipient-name';
@@ -48,7 +48,7 @@ export const RecipientInput = ({
   const recipients = useRecipients();
   const t = useI18nContext();
   const { to, updateTo } = useSendContext();
-  const { seedAddressMap } = useRecipientSeedIconMap();
+  const { accountAddressSeedIconMap } = useAccountAddressSeedIconMap();
   const {
     recipientConfusableCharacters,
     recipientError,
@@ -108,7 +108,7 @@ export const RecipientInput = ({
           <Box alignItems={AlignItems.center} display={Display.Flex}>
             <PreferredAvatar
               address={
-                seedAddressMap.get(to?.toLowerCase() as string) ?? to ?? ''
+                accountAddressSeedIconMap.get(to?.toLowerCase() as string) ?? to ?? ''
               }
               size={AvatarAccountSize.Md}
             />

@@ -15,9 +15,9 @@ jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../hooks/send/metrics/useRecipientSelectionMetrics');
 jest.mock('../../../context/send');
 jest.mock('../../../hooks/send/useRecipients');
-jest.mock('../../../hooks/send/useRecipientSeedIconMap', () => ({
-  useRecipientSeedIconMap: jest.fn().mockReturnValue({
-    seedAddressMap: new Map(),
+jest.mock('../../../hooks/send/useAccountAddressSeedIconMap', () => ({
+  useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
+    accountAddressSeedIconMap: new Map(),
   }),
 }));
 

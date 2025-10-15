@@ -2,12 +2,12 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getAccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 
-export const useRecipientSeedIconMap = () => {
+export const useAccountAddressSeedIconMap = () => {
   const accountGroupsWithAddresses = useSelector(
     getAccountGroupWithInternalAccounts,
   );
 
-  const seedAddressMap = useMemo(() => {
+  const accountAddressSeedIconMap = useMemo(() => {
     const map = new Map<string, string>();
 
     accountGroupsWithAddresses.forEach((accountGroup) => {
@@ -27,5 +27,5 @@ export const useRecipientSeedIconMap = () => {
     return map;
   }, [accountGroupsWithAddresses]);
 
-  return { seedAddressMap };
+  return { accountAddressSeedIconMap };
 };

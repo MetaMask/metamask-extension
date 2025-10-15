@@ -2,11 +2,11 @@ import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import * as accountTreeSelectors from '../../../../selectors/multichain-accounts/account-tree';
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
-import { useRecipientSeedIconMap } from './useRecipientSeedIconMap';
+import { useAccountAddressSeedIconMap } from './useAccountAddressSeedIconMap';
 
 jest.mock('../../../../selectors/multichain-accounts/account-tree');
 
-describe('useRecipientSeedIconMap', () => {
+describe('useAccountAddressSeedIconMap', () => {
   const mockGetAccountGroupWithInternalAccounts = jest.spyOn(
     accountTreeSelectors,
     'getAccountGroupWithInternalAccounts',
@@ -33,18 +33,18 @@ describe('useRecipientSeedIconMap', () => {
     );
 
     const { result } = renderHookWithProvider(
-      () => useRecipientSeedIconMap(),
+      () => useAccountAddressSeedIconMap(),
       mockState,
     );
 
-    expect(result.current.seedAddressMap.size).toBe(2);
+    expect(result.current.accountAddressSeedIconMap.size).toBe(2);
     expect(
-      result.current.seedAddressMap.get(
+      result.current.accountAddressSeedIconMap.get(
         '0x1234567890abcdef1234567890abcdef12345678',
       ),
     ).toBe('0x1234567890abcdef1234567890abcdef12345678');
     expect(
-      result.current.seedAddressMap.get(
+      result.current.accountAddressSeedIconMap.get(
         '0xabcdef1234567890abcdef1234567890abcdef12',
       ),
     ).toBe('0xABCDEF1234567890ABCDEF1234567890ABCDEF12');
@@ -72,33 +72,33 @@ describe('useRecipientSeedIconMap', () => {
     );
 
     const { result } = renderHookWithProvider(
-      () => useRecipientSeedIconMap(),
+      () => useAccountAddressSeedIconMap(),
       mockState,
     );
 
-    expect(result.current.seedAddressMap.size).toBe(5);
+    expect(result.current.accountAddressSeedIconMap.size).toBe(5);
     expect(
-      result.current.seedAddressMap.get(
+      result.current.accountAddressSeedIconMap.get(
         '0x1111111111111111111111111111111111111111',
       ),
     ).toBe('0x1111111111111111111111111111111111111111');
     expect(
-      result.current.seedAddressMap.get(
+      result.current.accountAddressSeedIconMap.get(
         '0x2222222222222222222222222222222222222222',
       ),
     ).toBe('0x1111111111111111111111111111111111111111');
     expect(
-      result.current.seedAddressMap.get(
+      result.current.accountAddressSeedIconMap.get(
         '0x3333333333333333333333333333333333333333',
       ),
     ).toBe('0x1111111111111111111111111111111111111111');
     expect(
-      result.current.seedAddressMap.get(
+      result.current.accountAddressSeedIconMap.get(
         '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
       ),
     ).toBe('0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     expect(
-      result.current.seedAddressMap.get(
+      result.current.accountAddressSeedIconMap.get(
         '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
       ),
     ).toBe('0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
@@ -106,11 +106,11 @@ describe('useRecipientSeedIconMap', () => {
 
   it('returns empty map when no account groups exist', () => {
     const { result } = renderHookWithProvider(
-      () => useRecipientSeedIconMap(),
+      () => useAccountAddressSeedIconMap(),
       mockState,
     );
 
-    expect(result.current.seedAddressMap.size).toBe(0);
+    expect(result.current.accountAddressSeedIconMap.size).toBe(0);
   });
 
   it('handles account groups with empty accounts array', () => {
@@ -128,13 +128,13 @@ describe('useRecipientSeedIconMap', () => {
     );
 
     const { result } = renderHookWithProvider(
-      () => useRecipientSeedIconMap(),
+      () => useAccountAddressSeedIconMap(),
       mockState,
     );
 
-    expect(result.current.seedAddressMap.size).toBe(1);
+    expect(result.current.accountAddressSeedIconMap.size).toBe(1);
     expect(
-      result.current.seedAddressMap.get(
+      result.current.accountAddressSeedIconMap.get(
         '0x1111111111111111111111111111111111111111',
       ),
     ).toBe('0x1111111111111111111111111111111111111111');
@@ -155,18 +155,18 @@ describe('useRecipientSeedIconMap', () => {
     );
 
     const { result } = renderHookWithProvider(
-      () => useRecipientSeedIconMap(),
+      () => useAccountAddressSeedIconMap(),
       mockState,
     );
 
-    expect(result.current.seedAddressMap.size).toBe(2);
+    expect(result.current.accountAddressSeedIconMap.size).toBe(2);
     expect(
-      result.current.seedAddressMap.get(
+      result.current.accountAddressSeedIconMap.get(
         '0xabcdef1234567890abcdef1234567890abcdef12',
       ),
     ).toBe('0xAbCdEf1234567890AbCdEf1234567890AbCdEf12');
     expect(
-      result.current.seedAddressMap.get(
+      result.current.accountAddressSeedIconMap.get(
         '0x1234567890abcdef1234567890abcdef12345678',
       ),
     ).toBe('0xAbCdEf1234567890AbCdEf1234567890AbCdEf12');

@@ -6,12 +6,12 @@ import { AddressBookEntry } from '@metamask/address-book-controller';
 import { getCompleteAddressBook } from '../../../../selectors';
 import { type Recipient } from './useRecipients';
 import { useSendType } from './useSendType';
-import { useRecipientSeedIconMap } from './useRecipientSeedIconMap';
+import { useAccountAddressSeedIconMap } from './useAccountAddressSeedIconMap';
 
 export const useContactRecipients = (): Recipient[] => {
   const { isEvmSendType } = useSendType();
   const addressBook = useSelector(getCompleteAddressBook);
-  const { seedAddressMap } = useRecipientSeedIconMap();
+  const { accountAddressSeedIconMap } = useAccountAddressSeedIconMap();
 
   const processContacts = useCallback(
     (contact: AddressBookEntry) => {
@@ -19,10 +19,10 @@ export const useContactRecipients = (): Recipient[] => {
         address: contact.address,
         contactName: contact.name,
         isContact: true,
-        seedIcon: seedAddressMap.get(contact.address.toLowerCase()),
+        seedIcon: accountAddressSeedIconMap.get(contact.address.toLowerCase()),
       };
     },
-    [seedAddressMap],
+    [accountAddressSeedIconMap],
   );
 
   // Contacts are only supported for EVM chains today - hence we only return contacts for EVM chains

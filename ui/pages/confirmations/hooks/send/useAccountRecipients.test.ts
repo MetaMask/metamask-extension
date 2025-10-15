@@ -13,9 +13,9 @@ jest.mock('./useSendType');
 jest.mock('../../../../selectors/multichain-accounts/account-tree');
 jest.mock('../../context/send');
 jest.mock('../../utils/account');
-jest.mock('./useRecipientSeedIconMap', () => ({
-  useRecipientSeedIconMap: jest.fn().mockReturnValue({
-    seedAddressMap: new Map(),
+jest.mock('./useAccountAddressSeedIconMap', () => ({
+  useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
+    accountAddressSeedIconMap: new Map(),
   }),
 }));
 

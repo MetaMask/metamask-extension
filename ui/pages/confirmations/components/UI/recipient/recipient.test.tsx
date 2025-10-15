@@ -5,9 +5,9 @@ import configureStore from '../../../../../store/store';
 import mockDefaultState from '../../../../../../test/data/mock-state.json';
 import { Recipient } from './recipient';
 
-jest.mock('../../../hooks/send/useRecipientSeedIconMap', () => ({
-  useRecipientSeedIconMap: jest.fn().mockReturnValue({
-    seedAddressMap: new Map(),
+jest.mock('../../../hooks/send/useAccountAddressSeedIconMap', () => ({
+  useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
+    accountAddressSeedIconMap: new Map(),
   }),
 }));
 
