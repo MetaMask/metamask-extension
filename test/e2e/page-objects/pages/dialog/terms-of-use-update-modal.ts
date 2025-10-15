@@ -39,16 +39,10 @@ class TermsOfUseUpdateModal {
 
   async confirmAcceptTermsOfUseUpdate() {
     console.log('Click to confirm acceptance of terms of use update');
-
-    try {
-      await this.driver.clickElementAndWaitToDisappear(
-        this.popoverScrollButton,
-        5000,
-      );
-    } catch (e) {
-      console.log('The scroll button did not disappear, continuing...');
-    }
-
+    await this.driver.clickElementAndWaitToDisappear(
+      this.popoverScrollButton,
+      5000,
+    );
     await this.driver.clickElement(this.termsOfUseCheckbox);
     await this.driver.clickElementAndWaitToDisappear(this.acceptButton, 5000);
   }

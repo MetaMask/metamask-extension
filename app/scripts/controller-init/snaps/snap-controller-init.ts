@@ -116,6 +116,7 @@ export const SnapControllerInit: ControllerInitFunction<
       ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       forcePreinstalledSnaps,
       ///: END:ONLY_INCLUDE_IF
+      useCaip25Permission: true,
     },
 
     // @ts-expect-error: `encryptorFactory` is not compatible with the expected

@@ -1,5 +1,4 @@
 import { Suite } from 'mocha';
-import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
@@ -17,7 +16,7 @@ import {
   signTypedDataV4WithSnapAccount,
   signTypedDataWithSnapAccount,
 } from '../../page-objects/flows/sign.flow';
-import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
+import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Snap Account Signatures', function (this: Suite) {
   this.timeout(500000); // This test is very long, so we need an unusually high timeout
@@ -32,15 +31,8 @@ describe('Snap Account Signatures', function (this: Suite) {
       await withFixtures(
         {
           dapp: true,
-          dappPaths: ['test-dapp', 'snap-simple-keyring-site'],
           fixtures: new FixtureBuilder().build(),
-          testSpecificMock: async (mockServer: Mockttp) => {
-            const snapMocks = await mockSnapSimpleKeyringAndSite(
-              mockServer,
-              8081,
-            );
-            return snapMocks;
-          },
+          testSpecificMock: mockSimpleKeyringSnap,
           title,
         },
         async ({ driver }: { driver: Driver }) => {

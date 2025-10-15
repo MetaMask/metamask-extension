@@ -1,4 +1,5 @@
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { renderHook } from '@testing-library/react-hooks';
+
 import useMultiPolling from './useMultiPolling';
 
 describe('useMultiPolling', () => {
@@ -13,18 +14,12 @@ describe('useMultiPolling', () => {
     const mockStopPollingByPollingToken = jest.fn();
     const inputs = ['foo', 'bar'];
 
-    const { unmount, rerender } = renderHookWithProvider(
-      () =>
-        useMultiPolling({
-          startPolling: mockStartPolling,
-          stopPollingByPollingToken: mockStopPollingByPollingToken,
-          input: inputs,
-        }),
-      {
-        metamask: {
-          completedOnboarding: true,
-        },
-      },
+    const { unmount, rerender } = renderHook(() =>
+      useMultiPolling({
+        startPolling: mockStartPolling,
+        stopPollingByPollingToken: mockStopPollingByPollingToken,
+        input: inputs,
+      }),
     );
 
     // All inputs should start polling
@@ -35,8 +30,7 @@ describe('useMultiPolling', () => {
 
     // Remove one input, and add another
     inputs[0] = 'baz';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rerender({ input: inputs } as any);
+    rerender({ input: inputs });
     expect(mockStopPollingByPollingToken).toHaveBeenCalledWith('foo_token');
     expect(mockStartPolling).toHaveBeenCalledWith('baz');
 

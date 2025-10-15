@@ -76,7 +76,6 @@ describe('MultichainAccountServiceInit', () => {
 
     expect(accountTreeControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      providers: expect.any(Array),
     });
   });
 });

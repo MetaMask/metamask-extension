@@ -109,9 +109,8 @@ const bridgeSlice = createSlice({
       if (
         state.fromToken?.assetId &&
         state.toToken?.assetId &&
-        // TODO: determine if this is necessary.
-        state.fromToken.assetId?.toLowerCase() ===
-          state.toToken.assetId?.toLowerCase()
+        state.fromToken.assetId.toLowerCase() ===
+          state.toToken.assetId.toLowerCase()
       ) {
         state.toToken = null;
       }

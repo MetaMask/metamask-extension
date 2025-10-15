@@ -9,7 +9,6 @@ import {
   getConfirmationExchangeRates,
   getNativeCurrencyImage,
   getTokenList,
-  getUSDConversionRate,
 } from '../selectors';
 import {
   getValueFromWeiHex,
@@ -29,20 +28,10 @@ import { useTokenTracker } from './useTokenBalances';
 export const useAccountTotalFiatBalance = (
   account,
   shouldHideZeroBalanceTokens,
-  /**
-   * The optional parameter to use USD conversion rate instead of the current currency.
-   * If not provided, fallback to the current currency.
-   */
-  useUSD = false,
 ) => {
   const currentChainId = useSelector(getCurrentChainId);
-  let conversionRate = useSelector(getConversionRate);
-  const usdConversionRate = useSelector(getUSDConversionRate);
-  let currentCurrency = useSelector(getCurrentCurrency);
-  if (useUSD) {
-    conversionRate = usdConversionRate;
-    currentCurrency = 'usd';
-  }
+  const conversionRate = useSelector(getConversionRate);
+  const currentCurrency = useSelector(getCurrentCurrency);
 
   const contractExchangeRates = useSelector(
     getTokenExchangeRates,

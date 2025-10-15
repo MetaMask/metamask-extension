@@ -1,9 +1,17 @@
-import { AnnouncementMap } from '@metamask/announcement-controller';
-
 type NotificationImage = {
   src: string;
   width?: string;
   height?: string;
+};
+
+type UINotification = {
+  id: number;
+  date: string | null;
+  image?: NotificationImage;
+};
+
+type UINotifications = {
+  [key: number]: UINotification;
 };
 
 export type TranslationFunction = (key: string) => string;
@@ -44,4 +52,4 @@ export type TranslatedUINotifications = {
 };
 
 // If in the future we need to add a new notification, we can do it here
-export const UI_NOTIFICATIONS: AnnouncementMap = {};
+export const UI_NOTIFICATIONS: UINotifications = {};

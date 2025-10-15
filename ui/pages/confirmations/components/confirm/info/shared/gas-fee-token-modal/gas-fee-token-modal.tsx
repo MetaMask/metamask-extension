@@ -207,7 +207,9 @@ function NativeToggle({
         <Icon
           name={IconName.Wallet}
           size={IconSize.Sm}
-          color={isFuture ? IconColor.iconAlternative : IconColor.infoDefault}
+          color={
+            isFuture ? IconColor.iconAlternativeSoft : IconColor.infoDefault
+          }
           margin={2}
         />
       </NativeToggleOption>

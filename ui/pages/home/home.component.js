@@ -147,7 +147,7 @@ export default class Home extends PureComponent {
     editedNetwork: PropTypes.object,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
-    isSigningQRHardwareTransaction: PropTypes.bool,
+    isSigningQRHardwareTransaction: PropTypes.bool.isRequired,
     newNftAddedMessage: PropTypes.string,
     setNewNftAddedMessage: PropTypes.func.isRequired,
     removeNftMessage: PropTypes.string,
@@ -900,7 +900,16 @@ export default class Home extends PureComponent {
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
-          {showShieldEntryModal && <ShieldEntryModal />}
+          {showShieldEntryModal && (
+            <ShieldEntryModal
+              onClose={() => {
+                // TODO: implement
+              }}
+              onGetStarted={() => {
+                // TODO: implement
+              }}
+            />
+          )}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}

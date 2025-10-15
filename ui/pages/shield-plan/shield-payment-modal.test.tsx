@@ -23,12 +23,7 @@ const defaultProps = {
     balance: '100',
     string: '100',
     decimals: 18,
-    approvalAmount: {
-      approveAmount: '100',
-      chainId: '0x1',
-      paymentAddress: '0x0000000000000000000000000000000000000001',
-      paymentTokenAddress: '0x0000000000000000000000000000000000000002',
-    },
+    approvalAmount: '100',
   } as TokenWithApprovalAmount,
   onAssetChange: jest.fn(),
 };

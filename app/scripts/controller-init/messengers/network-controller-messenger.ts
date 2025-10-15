@@ -1,13 +1,9 @@
-import {
-  ControllerStateChangeEvent,
-  Messenger,
-} from '@metamask/base-controller';
+import { Messenger } from '@metamask/base-controller';
 import type { ErrorReportingServiceCaptureExceptionAction } from '@metamask/error-reporting-service';
 import {
   NetworkControllerRpcEndpointDegradedEvent,
   NetworkControllerRpcEndpointUnavailableEvent,
 } from '@metamask/network-controller';
-import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import {
   MetaMetricsControllerGetMetaMetricsIdAction,
   MetaMetricsControllerTrackEventAction,
@@ -41,11 +37,7 @@ type AllowedInitializationActions =
 
 type AllowedInitializationEvents =
   | NetworkControllerRpcEndpointUnavailableEvent
-  | NetworkControllerRpcEndpointDegradedEvent
-  | ControllerStateChangeEvent<
-      'RemoteFeatureFlagController',
-      RemoteFeatureFlagControllerState
-    >;
+  | NetworkControllerRpcEndpointDegradedEvent;
 
 export type NetworkControllerInitMessenger = ReturnType<
   typeof getNetworkControllerInitMessenger
@@ -73,7 +65,6 @@ export function getNetworkControllerInitMessenger(
     allowedEvents: [
       'NetworkController:rpcEndpointUnavailable',
       'NetworkController:rpcEndpointDegraded',
-      'RemoteFeatureFlagController:stateChange',
     ],
   });
 }

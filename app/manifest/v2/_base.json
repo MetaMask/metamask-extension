@@ -31,7 +31,14 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": ["scripts/contentscript.js", "scripts/inpage.js"],
+      "js": [
+        "scripts/disable-console.js",
+        "scripts/lockdown-install.js",
+        "scripts/lockdown-run.js",
+        "scripts/lockdown-more.js",
+        "scripts/contentscript.js",
+        "scripts/inpage.js"
+      ],
       "run_at": "document_start",
       "all_frames": true
     },

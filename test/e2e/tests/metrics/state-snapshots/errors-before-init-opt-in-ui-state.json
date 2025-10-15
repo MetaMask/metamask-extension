@@ -39,7 +39,6 @@
       "popupGasPollTokens": "object",
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
-      "showShieldEntryModalOnce": "boolean",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
       "isRampCardClosed": false,
@@ -136,6 +135,7 @@
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
       "isMultiAccountBalancesEnabled": "boolean",
+      "showIncomingTransactions": "object",
       "referrals": "object"
     },
     "SelectedNetworkController": { "domains": "object" },

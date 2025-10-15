@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {
   Display,
@@ -131,7 +130,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
               helpTextProps?.className ?? '',
             )}
           >
-            {helpText as PropTypes.ReactNodeLike}
+            {helpText}
           </HelpText>
         )}
       </Box>

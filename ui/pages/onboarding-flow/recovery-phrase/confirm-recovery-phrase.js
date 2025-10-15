@@ -220,7 +220,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
               ariaLabel={t('back')}
             />
             <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-              {t('confirmRecoveryPhraseTitleSettings')}
+              {t('confirmRecoveryPhraseTitle')}
             </Text>
             <ButtonIcon
               iconName={IconName.Close}

@@ -1,9 +1,8 @@
-import { Json, createProjectLogger } from '@metamask/utils';
+import { createProjectLogger } from '@metamask/utils';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
-import { uniq } from 'lodash';
 import ComposableObservableStore from './ComposableObservableStore';
-import { sanitizePatches, sanitizeUIState } from './state-utils';
+import { sanitizeUIState } from './state-utils';
 
 const log = createProjectLogger('patch-store');
 
@@ -12,12 +11,12 @@ export class PatchStore {
 
   private observableStore: ComposableObservableStore;
 
-  private pendingPatches: Patch[] = [];
+  private pendingPatches: Map<string, Patch> = new Map();
 
   private listener: (request: {
     controllerKey: string;
-    oldState: Record<string, Json>;
-    newState: Record<string, Json>;
+    oldState: Record<string, unknown>;
+    newState: Record<string, unknown>;
   }) => void;
 
   constructor(observableStore: ComposableObservableStore) {
@@ -31,9 +30,9 @@ export class PatchStore {
   }
 
   flushPendingPatches(): Patch[] {
-    const patches = this.pendingPatches;
+    const patches = [...this.pendingPatches.values()];
 
-    this.pendingPatches = [];
+    this.pendingPatches.clear();
 
     for (const patch of patches) {
       log('Flushed', patch.path.join('.'), this.id, patch);
@@ -48,30 +47,15 @@ export class PatchStore {
   }
 
   private _onStateChange({
-    newState,
     oldState,
-    patches: eventPatches,
+    newState,
   }: {
     controllerKey: string;
-    oldState: Record<string, Json>;
-    newState: Record<string, Json>;
-    patches?: Patch[];
+    oldState: Record<string, unknown>;
+    newState: Record<string, unknown>;
   }) {
-    let patches = [];
-
-    if (eventPatches) {
-      const normalizedPatches = this._normalizeEventPatches(
-        eventPatches,
-        oldState,
-      );
-
-      patches = sanitizePatches(normalizedPatches ?? []);
-    } else {
-      const sanitizedNewState = sanitizeUIState(newState);
-
-      patches = this._generatePatches(oldState, sanitizedNewState);
-    }
-
+    const sanitizedNewState = sanitizeUIState(newState);
+    const patches = this._generatePatches(oldState, sanitizedNewState);
     const isInitialized = Boolean(newState.vault);
 
     if (isInitialized) {
@@ -89,15 +73,15 @@ export class PatchStore {
     for (const patch of patches) {
       const path = patch.path.join('.');
 
-      this.pendingPatches.push(patch);
+      this.pendingPatches.set(path, patch);
 
-      log('Added', path, this.id, patch);
+      log('Updated', path, this.id, patch);
     }
   }
 
   private _generatePatches(
-    oldState: Record<string, Json>,
-    newState: Record<string, Json>,
+    oldState: Record<string, unknown>,
+    newState: Record<string, unknown>,
   ): Patch[] {
     return Object.keys(newState)
       .map((key) => {
@@ -115,36 +99,5 @@ export class PatchStore {
         };
       })
       .filter(Boolean) as Patch[];
-  }
-
-  /**
-   * Normalize patches from a controller.
-   * Converts any root-level patches into multiple property patches
-   * to prevent removing state from other controllers.
-   *
-   * @param eventPatches - Patches from the controller.
-   * @param oldState - The previous state of the controller.
-   * @returns
-   */
-  private _normalizeEventPatches(
-    eventPatches: Patch[] | undefined,
-    oldState: Record<string, Json>,
-  ): Patch[] | undefined {
-    return eventPatches?.flatMap((patch) => {
-      if (patch.path.length > 0) {
-        return [patch];
-      }
-
-      const stateProperties = uniq([
-        ...Object.keys(oldState),
-        ...Object.keys(patch.value),
-      ]);
-
-      return stateProperties.map((key) => ({
-        op: key in patch.value ? 'replace' : 'remove',
-        path: [key],
-        ...(key in patch.value ? { value: patch.value[key] } : {}),
-      }));
-    });
   }
 }

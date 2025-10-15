@@ -5,7 +5,7 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
-import { SolScope, BtcScope } from '@metamask/keyring-api';
+import { SolScope } from '@metamask/keyring-api';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { BigNumber } from 'bignumber.js';
 import { AssetType } from '../../shared/constants/transaction';
@@ -122,49 +122,31 @@ export const useMultichainBalances = (
       SolScope.Mainnet,
     ),
   );
-  const bitcoinAccount = useSelector((state) =>
-    getInternalAccountByGroupAndCaip(
-      state,
-      accountGroupIdToUse,
-      BtcScope.Mainnet,
-    ),
-  );
 
   // EVM balances
   const evmBalancesWithFiatByChainId = useSelector((state) =>
     getTokenBalancesEvm(state, evmAccount?.address),
   );
-  // Solana balances
-  const solanaBalancesWithFiat = useNonEvmAssetsWithBalances(solanaAccount?.id);
-  // Bitcoin balances
-  const bitcoinBalancesWithFiat = useNonEvmAssetsWithBalances(
-    bitcoinAccount?.id,
+  // Non-EVM balances
+  const nonEvmBalancesWithFiatByChainId = useNonEvmAssetsWithBalances(
+    solanaAccount?.id,
   );
 
   // return TokenWithFiat sorted by fiat balance amount
   const assetsWithBalance = useMemo(() => {
-    return [
-      ...evmBalancesWithFiatByChainId,
-      ...solanaBalancesWithFiat,
-      ...bitcoinBalancesWithFiat,
-    ]
+    return [...evmBalancesWithFiatByChainId, ...nonEvmBalancesWithFiatByChainId]
       .map((token) => ({
         ...token,
         type: token.isNative ? AssetType.native : AssetType.token,
       }))
       .sort((a, b) => (b.tokenFiatAmount ?? 0) - (a.tokenFiatAmount ?? 0));
-  }, [
-    evmBalancesWithFiatByChainId,
-    solanaBalancesWithFiat,
-    bitcoinBalancesWithFiat,
-  ]);
+  }, [evmBalancesWithFiatByChainId, nonEvmBalancesWithFiatByChainId]);
 
   // return total fiat balances by chainId/caipChainId
   const balanceByChainId = useMemo(() => {
     return [
       ...evmBalancesWithFiatByChainId,
-      ...solanaBalancesWithFiat,
-      ...bitcoinBalancesWithFiat,
+      ...nonEvmBalancesWithFiatByChainId,
     ].reduce((acc: Record<Hex | CaipChainId, number>, tokenWithBalanceData) => {
       if (!acc[tokenWithBalanceData.chainId]) {
         acc[tokenWithBalanceData.chainId] = 0;
@@ -173,11 +155,7 @@ export const useMultichainBalances = (
         tokenWithBalanceData.tokenFiatAmount ?? 0;
       return acc;
     }, {});
-  }, [
-    evmBalancesWithFiatByChainId,
-    solanaBalancesWithFiat,
-    bitcoinBalancesWithFiat,
-  ]);
+  }, [evmBalancesWithFiatByChainId, nonEvmBalancesWithFiatByChainId]);
 
   return { assetsWithBalance, balanceByChainId };
 };

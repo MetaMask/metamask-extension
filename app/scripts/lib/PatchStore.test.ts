@@ -1,7 +1,6 @@
-import { Patch } from 'immer';
 import ComposableObservableStore from './ComposableObservableStore';
 import { PatchStore } from './PatchStore';
-import { sanitizePatches, sanitizeUIState } from './state-utils';
+import { sanitizeUIState } from './state-utils';
 
 jest.mock('./state-utils');
 
@@ -16,28 +15,24 @@ function triggerStateChange(
   composableStoreMock: jest.Mocked<ComposableObservableStore>,
   oldState: Record<string, unknown>,
   newState: Record<string, unknown>,
-  patches?: Patch[],
 ) {
   composableStoreMock.on.mock.calls[0][1]({
     controllerKey: 'test-controller',
-    newState,
     oldState,
-    patches,
+    newState,
   });
 }
 
 describe('PatchStore', () => {
   const sanitizeUIStateMock = jest.mocked(sanitizeUIState);
-  const sanitizePatchesMock = jest.mocked(sanitizePatches);
 
   beforeEach(() => {
     jest.resetAllMocks();
     sanitizeUIStateMock.mockImplementation((state) => state);
-    sanitizePatchesMock.mockImplementation((patches) => patches);
   });
 
   describe('flushPendingPatches', () => {
-    it('returns top level patches for composable store events', () => {
+    it('returns pending patches created by composable store events', () => {
       const composableStoreMock = createComposableStoreMock();
       const patchStore = new PatchStore(composableStoreMock);
 
@@ -170,142 +165,6 @@ describe('PatchStore', () => {
           op: 'replace',
           path: ['isInitialized'],
           value: true,
-        },
-      ]);
-    });
-
-    it('returns patches from composable store events if provided', () => {
-      const composableStoreMock = createComposableStoreMock();
-      const patchStore = new PatchStore(composableStoreMock);
-
-      triggerStateChange(
-        composableStoreMock,
-        { test1: 'value1' },
-        { test1: 'value2' },
-        [
-          {
-            op: 'add',
-            path: ['test3'],
-            value: 'value3',
-          },
-          {
-            op: 'remove',
-            path: ['test4'],
-            value: 'value4',
-          },
-        ],
-      );
-
-      triggerStateChange(
-        composableStoreMock,
-        { test2: true },
-        { test2: false },
-      );
-
-      const patches = patchStore.flushPendingPatches();
-
-      expect(patches).toEqual([
-        {
-          op: 'add',
-          path: ['test3'],
-          value: 'value3',
-        },
-        {
-          op: 'remove',
-          path: ['test4'],
-          value: 'value4',
-        },
-        {
-          op: 'replace',
-          path: ['test2'],
-          value: false,
-        },
-      ]);
-    });
-
-    it('sanitizes patches if provided on event', () => {
-      sanitizePatchesMock.mockReturnValue([
-        {
-          op: 'add',
-          path: ['test5'],
-          value: 'value5',
-        },
-      ]);
-
-      const composableStoreMock = createComposableStoreMock();
-      const patchStore = new PatchStore(composableStoreMock);
-
-      triggerStateChange(
-        composableStoreMock,
-        { test1: 'value1' },
-        { test1: 'value2' },
-        [
-          {
-            op: 'add',
-            path: ['test3'],
-            value: 'value3',
-          },
-          {
-            op: 'remove',
-            path: ['test4'],
-            value: 'value4',
-          },
-        ],
-      );
-
-      const patches = patchStore.flushPendingPatches();
-
-      expect(patches).toEqual([
-        {
-          op: 'add',
-          path: ['test5'],
-          value: 'value5',
-        },
-      ]);
-    });
-
-    it('generates multiple patches if patch has no path', () => {
-      const composableStoreMock = createComposableStoreMock();
-      const patchStore = new PatchStore(composableStoreMock);
-
-      triggerStateChange(
-        composableStoreMock,
-        { test1: 'value1', test2: { test3: 'value2' }, test3: 'value3' },
-        { test1: 'value4', test2: { test3: 'value5', test4: 'value6' } },
-        [
-          {
-            op: 'replace',
-            path: [],
-            value: {
-              test1: 'value4',
-              test2: { test3: 'value5' },
-              test4: 'value6',
-            },
-          },
-        ],
-      );
-
-      const patches = patchStore.flushPendingPatches();
-
-      expect(patches).toEqual([
-        {
-          op: 'replace',
-          path: ['test1'],
-          value: 'value4',
-        },
-        {
-          op: 'replace',
-          path: ['test2'],
-          value: { test3: 'value5' },
-        },
-        {
-          op: 'remove',
-          path: ['test3'],
-        },
-        {
-          op: 'replace',
-          path: ['test4'],
-          value: 'value6',
         },
       ]);
     });

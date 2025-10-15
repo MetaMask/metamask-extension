@@ -9,6 +9,7 @@ import {
   OriginalRequest,
 } from '@metamask/message-manager';
 import type {
+  EncryptionPublicKeyManagerMessenger,
   EncryptionPublicKeyManagerState,
   EncryptionPublicKeyManagerUnapprovedMessageAddedEvent,
 } from '@metamask/message-manager';
@@ -24,6 +25,7 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
 const controllerName = 'EncryptionPublicKeyController';
+const managerName = 'EncryptionPublicKeyManager';
 const methodNameGetEncryptionPublicKey = 'eth_getEncryptionPublicKey';
 
 const stateMetadata = {
@@ -85,9 +87,9 @@ type EncryptionPublicKeyManagerStateChange = {
   payload: [EncryptionPublicKeyManagerState, Patch[]];
 };
 
-export type AllowedActions = AddApprovalRequest | AcceptRequest | RejectRequest;
+type AllowedActions = AddApprovalRequest | AcceptRequest | RejectRequest;
 
-export type AllowedEvents =
+type AllowedEvents =
   | EncryptionPublicKeyManagerStateChange
   | EncryptionPublicKeyManagerUnapprovedMessageAddedEvent;
 
@@ -111,7 +113,7 @@ export type EncryptionPublicKeyControllerOptions = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metricsEvent: (payload: any, options?: any) => void;
-  manager: EncryptionPublicKeyManager;
+  managerMessenger: EncryptionPublicKeyManagerMessenger;
 };
 
 /**
@@ -145,11 +147,11 @@ export default class EncryptionPublicKeyController extends BaseController<
    * @param options.getAccountKeyringType - Callback to get the keyring type.
    * @param options.getState - Callback to retrieve all user state.
    * @param options.metricsEvent - A function for emitting a metric event.
-   * @param options.manager - A reference to the encryption public key manager.
+   * @param options.managerMessenger
    */
   constructor({
     messenger,
-    manager,
+    managerMessenger,
     getEncryptionPublicKey,
     getAccountKeyringType,
     getState,
@@ -166,10 +168,13 @@ export default class EncryptionPublicKeyController extends BaseController<
     this._getAccountKeyringType = getAccountKeyringType;
     this._getState = getState;
     this._metricsEvent = metricsEvent;
-    this._encryptionPublicKeyManager = manager;
+    this._encryptionPublicKeyManager = new EncryptionPublicKeyManager({
+      additionalFinishStatuses: ['received'],
+      messenger: managerMessenger,
+    });
 
     this.messagingSystem.subscribe(
-      'EncryptionPublicKeyManager:unapprovedMessage',
+      `${managerName}:unapprovedMessage`,
       this._requestApproval.bind(this),
     );
 
@@ -354,7 +359,7 @@ export default class EncryptionPublicKeyController extends BaseController<
     ) => void,
   ) {
     controllerMessenger.subscribe(
-      'EncryptionPublicKeyManager:stateChange',
+      `${managerName}:stateChange`,
       (state: MessageManagerState<AbstractMessage>) => {
         const newMessages = this._migrateMessages(
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973

@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { Driver } from '../../webdriver/driver';
-import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
+import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { WINDOW_TITLES } from '../../helpers';
@@ -79,10 +79,8 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.SSK,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
         testSpecificMock: async (mockServer) => {
-          await mockSnapSimpleKeyringAndSite(mockServer);
+          await mockSimpleKeyringSnap(mockServer);
           return mockMultichainAccountsFeatureFlag(mockServer);
         },
       },

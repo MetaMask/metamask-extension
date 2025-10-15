@@ -46,9 +46,7 @@ class ActivityListPage {
     tag: 'button',
   };
 
-  private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
-
-  private readonly speedupModalButton = '[data-testid="speedup-button"]';
+  private readonly speedupButton = '[data-testid="speedup-button"]';
 
   private readonly confirmTransactionReplacementButton = {
     text: 'Submit',
@@ -188,10 +186,6 @@ class ActivityListPage {
 
   async checkNoTxInActivity(): Promise<void> {
     await this.driver.assertElementNotPresent(this.completedTransactions);
-  }
-
-  async checkSpeedUpInlineButtonIsPresent(): Promise<void> {
-    await this.driver.waitForSelector(this.speedupInlineButton);
   }
 
   /**
@@ -396,7 +390,7 @@ class ActivityListPage {
   }
 
   async clickSpeedUpTransaction() {
-    await this.driver.clickElement(this.speedupModalButton);
+    await this.driver.clickElement(this.speedupButton);
   }
 
   async clickConfirmTransactionReplacement() {

@@ -190,7 +190,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               ariaLabel={t('back')}
             />
             <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
-              {t('seedPhraseReviewTitleSettings')}
+              {t('seedPhraseReviewTitle')}
             </Text>
             <ButtonIcon
               iconName={IconName.Close}

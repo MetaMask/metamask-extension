@@ -7,16 +7,14 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
+import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
 describe('Create Snap Account', function (this: Suite) {
   it('create Snap account with custom name input ends in approval success', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
+        testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -39,10 +37,8 @@ describe('Create Snap Account', function (this: Suite) {
   it('creates multiple Snap accounts with increasing numeric suffixes', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
+        testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -79,10 +75,8 @@ describe('Create Snap Account', function (this: Suite) {
   it('create Snap account canceling on confirmation screen results in error on Snap', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
+        testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -115,10 +109,8 @@ describe('Create Snap Account', function (this: Suite) {
   it('create Snap account canceling on fill name screen results in error on Snap', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSnapSimpleKeyringAndSite,
+        testSpecificMock: mockSimpleKeyringSnap,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

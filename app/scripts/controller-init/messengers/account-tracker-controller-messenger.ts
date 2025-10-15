@@ -2,7 +2,6 @@ import { Messenger } from '@metamask/base-controller';
 import {
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerGetStateAction,
-  NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
@@ -49,8 +48,6 @@ type AllowedInitializationActions =
   | RemoteFeatureFlagControllerGetStateAction
   | PreferencesControllerGetStateAction;
 
-type AllowedInitializationEvents = NetworkControllerNetworkDidChangeEvent;
-
 export type AccountTrackerControllerInitMessenger = ReturnType<
   typeof getAccountTrackerControllerInitMessenger
 >;
@@ -63,10 +60,7 @@ export type AccountTrackerControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getAccountTrackerControllerInitMessenger(
-  messenger: Messenger<
-    AllowedInitializationActions,
-    AllowedInitializationEvents
-  >,
+  messenger: Messenger<AllowedInitializationActions, never>,
 ) {
   return messenger.getRestricted({
     name: 'AccountTrackerControllerInit',
@@ -76,6 +70,6 @@ export function getAccountTrackerControllerInitMessenger(
       'RemoteFeatureFlagController:getState',
       'PreferencesController:getState',
     ],
-    allowedEvents: ['NetworkController:networkDidChange'],
+    allowedEvents: [],
   });
 }

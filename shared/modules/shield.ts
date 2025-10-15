@@ -1,17 +1,11 @@
-import { Subscription } from '@metamask/subscription-controller';
-import { getIsShieldSubscriptionActive } from '../lib/shield';
+import { getIsMetaMaskShieldFeatureEnabled } from './environment';
 
 export async function getShieldGatewayConfig(
   getToken: () => Promise<string>,
-  getShieldSubscription: () => Subscription | undefined,
   url: string,
 ): Promise<{ newUrl: string; authorization: string | undefined }> {
-  const shieldSubscription = getShieldSubscription();
-  const isShieldSubscriptionActive = shieldSubscription
-    ? getIsShieldSubscriptionActive(shieldSubscription)
-    : false;
-
-  if (!isShieldSubscriptionActive) {
+  const isShieldEnabled = getIsMetaMaskShieldFeatureEnabled();
+  if (!isShieldEnabled) {
     return {
       newUrl: url,
       authorization: undefined,

@@ -125,9 +125,7 @@ describe('DecryptMessageController', () => {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metricsEvent: metricsEventMock as any,
-      manager: new DecryptMessageManager({
-        messenger: managerMessengerMock,
-      }),
+      managerMessenger: managerMessengerMock,
     } as DecryptMessageControllerOptions);
   });
 

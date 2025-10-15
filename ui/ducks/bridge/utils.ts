@@ -17,7 +17,7 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
   isNativeAddress,
-  isNonEvmChainId,
+  isSolanaChainId,
   formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
@@ -29,9 +29,6 @@ import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/brid
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { TokenPayload, BridgeToken } from './types';
-
-// Re-export isNonEvmChainId from bridge-controller for backward compatibility
-export { isNonEvmChainId as isNonEvmChain } from '@metamask/bridge-controller';
 
 /**
  * Safely gets the native token name for a given chainId.
@@ -252,11 +249,9 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
   const caipChainId = formatChainIdToCaip(chainId);
   // If the token is native, return the SVG image asset
   if (isNativeAddress(address)) {
-    // Non-EVM chains (Solana, Bitcoin) use MULTICHAIN_TOKEN_IMAGE_MAP
-    if (isNonEvmChainId(chainId)) {
+    if (isSolanaChainId(chainId)) {
       return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
     }
-    // EVM chains use CHAIN_ID_TOKEN_IMAGE_MAP
     return CHAIN_ID_TOKEN_IMAGE_MAP[
       formatChainIdToHex(chainId) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
     ];

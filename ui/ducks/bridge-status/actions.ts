@@ -11,9 +11,8 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
   args?: T,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    const result = await submitRequestToBackground(bridgeAction, args);
+    await submitRequestToBackground(bridgeAction, args);
     await forceUpdateMetamaskState(dispatch);
-    return result;
   };
 };
 

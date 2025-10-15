@@ -7,27 +7,18 @@ import {
   deleteRegToken,
   createSubscribeToPushNotifications,
 } from '@metamask/notification-services-controller/push-services/web';
-import { hasProperty } from '@metamask/utils';
 import { ControllerInitFunction } from '../types';
-import type {
-  NotificationServicesPushControllerMessenger,
-  NotificationServicesPushControllerInitMessenger,
-} from '../messengers/notifications';
+import { type NotificationServicesPushControllerMessenger } from '../messengers/notifications';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import {
   onPushNotificationClicked,
   onPushNotificationReceived,
 } from '../../controllers/push-notifications';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 
 export const NotificationServicesPushControllerInit: ControllerInitFunction<
   NotificationServicesPushController,
-  NotificationServicesPushControllerMessenger,
-  NotificationServicesPushControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, persistedState }) => {
+  NotificationServicesPushControllerMessenger
+> = ({ controllerMessenger, persistedState }) => {
   const controller = new NotificationServicesPushController({
     messenger: controllerMessenger,
     state: {
@@ -60,48 +51,6 @@ export const NotificationServicesPushControllerInit: ControllerInitFunction<
       },
     },
   });
-
-  initMessenger.subscribe(
-    'NotificationServicesPushController:onNewNotifications',
-    (notification) => {
-      const chainId = hasProperty(notification, 'chain_id')
-        ? (notification.chain_id as number)
-        : null;
-
-      initMessenger.call('MetaMetricsController:trackEvent', {
-        category: MetaMetricsEventCategory.PushNotifications,
-        event: MetaMetricsEventName.PushNotificationReceived,
-        properties: {
-          /* eslint-disable @typescript-eslint/naming-convention */
-          notification_id: notification.id,
-          notification_type: notification.type,
-          chain_id: chainId,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
-      });
-    },
-  );
-
-  initMessenger.subscribe(
-    'NotificationServicesPushController:pushNotificationClicked',
-    (notification) => {
-      const chainId = hasProperty(notification, 'chain_id')
-        ? (notification.chain_id as number)
-        : null;
-
-      initMessenger.call('MetaMetricsController:trackEvent', {
-        category: MetaMetricsEventCategory.PushNotifications,
-        event: MetaMetricsEventName.PushNotificationClicked,
-        properties: {
-          /* eslint-disable @typescript-eslint/naming-convention */
-          notification_id: notification.id,
-          notification_type: notification.type,
-          chain_id: chainId,
-          /* eslint-enable @typescript-eslint/naming-convention */
-        },
-      });
-    },
-  );
 
   return {
     controller,

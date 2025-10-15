@@ -88,7 +88,7 @@ export class AccountOrderController extends BaseController<
     state,
   }: {
     messenger: AccountOrderControllerMessenger;
-    state?: Partial<AccountOrderControllerState>;
+    state?: AccountOrderControllerState;
   }) {
     // Call the constructor of BaseControllerV2
     super({

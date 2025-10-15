@@ -38,7 +38,6 @@ import {
   BACKUPANDSYNC_ROUTE,
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
@@ -66,7 +65,6 @@ const ROUTES_TO_I18N_KEYS = {
   [REVEAL_SRP_LIST_ROUTE]: 'revealSecretRecoveryPhrase',
   [SECURITY_PASSWORD_CHANGE_ROUTE]: 'securityChangePassword',
   [SECURITY_ROUTE]: 'securityAndPrivacy',
-  [TRANSACTION_SHIELD_CLAIM_ROUTE]: 'shieldClaim',
   [TRANSACTION_SHIELD_ROUTE]: 'shieldTx',
 };
 
@@ -90,7 +88,7 @@ const mapStateToProps = (state, ownProps) => {
     pathname.match(SECURITY_PASSWORD_CHANGE_ROUTE),
   );
   const isTransactionShieldPage = Boolean(
-    pathname.startsWith(TRANSACTION_SHIELD_ROUTE),
+    pathname.match(TRANSACTION_SHIELD_ROUTE),
   );
   const isNetworksFormPage =
     Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||

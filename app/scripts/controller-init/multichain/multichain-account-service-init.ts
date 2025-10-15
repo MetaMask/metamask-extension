@@ -1,9 +1,4 @@
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  BtcAccountProvider,
-  ///: END:ONLY_INCLUDE_IF
-  MultichainAccountService,
-} from '@metamask/multichain-account-service';
+import { MultichainAccountService } from '@metamask/multichain-account-service';
 import { ControllerInitFunction } from '../types';
 import {
   MultichainAccountServiceMessenger,
@@ -31,11 +26,6 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
 > = ({ controllerMessenger, initMessenger }) => {
   const controller = new MultichainAccountService({
     messenger: controllerMessenger,
-    providers: [
-      ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-      new BtcAccountProvider(controllerMessenger),
-      ///: END:ONLY_INCLUDE_IF
-    ],
   });
 
   const preferencesState = initMessenger.call('PreferencesController:getState');

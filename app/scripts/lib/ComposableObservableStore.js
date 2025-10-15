@@ -71,7 +71,6 @@ export default class ComposableObservableStore extends ObservableStore {
               this.#onStateChange(
                 key,
                 getPersistentState(state, config[key].metadata),
-                patches,
               );
             }
           },
@@ -79,7 +78,7 @@ export default class ComposableObservableStore extends ObservableStore {
       } else {
         this.controllerMessenger.subscribe(
           `${store.name}:stateChange`,
-          (state, patches) => this.#onStateChange(key, state, patches),
+          (state) => this.#onStateChange(key, state),
         );
       }
 
@@ -114,12 +113,12 @@ export default class ComposableObservableStore extends ObservableStore {
     return flatState;
   }
 
-  #onStateChange(controllerKey, newState, patches) {
+  #onStateChange(controllerKey, newState) {
     const oldState = this.getState()[controllerKey];
 
     this.updateState({ [controllerKey]: newState });
 
-    this.emit('stateChange', { controllerKey, newState, oldState, patches });
+    this.emit('stateChange', { oldState, newState, controllerKey });
   }
 
   /**

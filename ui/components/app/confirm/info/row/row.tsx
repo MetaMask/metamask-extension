@@ -47,7 +47,6 @@ export type ConfirmInfoRowProps = {
   tooltipIcon?: IconName;
   tooltipIconColor?: IconColor;
   variant?: ConfirmInfoRowVariant;
-  labelChildrenStyleOverride?: React.CSSProperties;
 };
 
 const BACKGROUND_COLORS = {
@@ -93,7 +92,6 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   tooltipIcon,
   tooltipIconColor,
   onClick,
-  labelChildrenStyleOverride,
 }) => {
   const [expanded, setExpanded] = useState(!collapsed);
 
@@ -158,11 +156,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           onClick={onClick}
           className={onClick && 'hoverable'}
         >
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            style={labelChildrenStyleOverride}
-          >
+          <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
               {label}
             </Text>

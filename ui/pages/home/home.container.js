@@ -27,7 +27,6 @@ import {
   getShowUpdateModal,
   getShowConnectionsRemovedModal,
   getIsSocialLoginFlow,
-  getShowShieldEntryModalOnce,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -185,7 +184,8 @@ const mapStateToProps = (state) => {
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isPrimarySeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
     showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
-    showShieldEntryModal: getShowShieldEntryModalOnce(state),
+    // TODO: integrate condition to show shield entry modal
+    showShieldEntryModal: false,
     isSocialLoginFlow: getIsSocialLoginFlow(state),
   };
 };

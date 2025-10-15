@@ -3,10 +3,7 @@
 // @ts-ignore
 import { confusables } from 'unicode-confusables';
 
-import {
-  isBtcMainnetAddress,
-  isSolanaAddress,
-} from '../../../../shared/lib/multichain/accounts';
+import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
 import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 import { RecipientValidationResult } from '../types/send';
 
@@ -80,7 +77,7 @@ export const validateEvmHexAddress = async (
     );
     if (tokenDetails?.standard) {
       return {
-        error: 'tokenContractError',
+        error: 'invalidAddress',
       };
     }
   }
@@ -102,16 +99,6 @@ export const validateSolanaAddress = (address: string) => {
   }
 
   if (!isSolanaAddress(address)) {
-    return {
-      error: 'invalidAddress',
-    };
-  }
-
-  return {};
-};
-
-export const validateBtcAddress = (address: string) => {
-  if (!isBtcMainnetAddress(address)) {
     return {
       error: 'invalidAddress',
     };

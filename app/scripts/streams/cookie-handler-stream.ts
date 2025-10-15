@@ -37,6 +37,7 @@ function setupCookieHandlerStreamsFromOrigin(origin: string): void {
   const cookieHandlerPageStream = new WindowPostMessageStream({
     name: CONTENT_SCRIPT,
     target: 'CookieHandlerPage',
+    targetWindow: window,
     targetOrigin: origin,
   });
 

@@ -5,7 +5,6 @@ ignores:
   #
 
   - '@lavamoat/snow'
-  - '@lavamoat/webpack'
   - '@lavamoat/allow-scripts'
   - '@babel/runtime'
   - '@fortawesome/fontawesome-free'
@@ -28,7 +27,6 @@ ignores:
   - '@metamask/test-dapp'
   - '@metamask/test-dapp-multichain'
   - '@metamask/test-dapp-solana'
-  - '@metamask/snap-simple-keyring-site'
   - '@metamask/design-tokens' # Only imported in index.css
   - '@tsconfig/node22' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`

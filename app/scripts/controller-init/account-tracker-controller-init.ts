@@ -64,11 +64,6 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
     },
   });
 
-  // Ensure `AccountTrackerController` updates balances after network change.
-  initMessenger.subscribe('NetworkController:networkDidChange', () => {
-    controller.updateAccounts();
-  });
-
   return {
     persistedStateKey: null,
     memStateKey: null,

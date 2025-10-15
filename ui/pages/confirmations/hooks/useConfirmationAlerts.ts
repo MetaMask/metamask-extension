@@ -21,7 +21,6 @@ import { useSelectedAccountAlerts } from './alerts/useSelectedAccountAlerts';
 import { useAddressTrustSignalAlerts } from './alerts/useAddressTrustSignalAlerts';
 import { useOriginTrustSignalAlerts } from './alerts/useOriginTrustSignalAlerts';
 import { useTokenTrustSignalAlerts } from './alerts/useTokenTrustSignalAlerts';
-import { useShieldCoverageAlert } from './alerts/useShieldCoverageAlert';
 
 function useSignatureAlerts(): Alert[] {
   const accountMismatchAlerts = useAccountMismatchAlerts();
@@ -45,7 +44,6 @@ function useTransactionAlerts(): Alert[] {
   const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const resimulationAlert = useResimulationAlert();
-  const shieldCoverageAlert = useShieldCoverageAlert();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
   const tokenTrustSignalAlerts = useTokenTrustSignalAlerts();
 
@@ -62,7 +60,6 @@ function useTransactionAlerts(): Alert[] {
       ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
       ...resimulationAlert,
-      ...shieldCoverageAlert,
       ...signingOrSubmittingAlerts,
       ...tokenTrustSignalAlerts,
     ],
@@ -78,7 +75,6 @@ function useTransactionAlerts(): Alert[] {
       nonContractAddressAlerts,
       pendingTransactionAlerts,
       resimulationAlert,
-      shieldCoverageAlert,
       signingOrSubmittingAlerts,
       tokenTrustSignalAlerts,
     ],

@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { By, Key } from 'selenium-webdriver';
+import { By } from 'selenium-webdriver';
 import { tEn } from '../../../../../lib/i18n-helpers';
 import { Driver } from '../../../../webdriver/driver';
 import { RawLocator } from '../../../common';
@@ -195,11 +195,7 @@ class TransactionConfirmation extends Confirmation {
   }
 
   async clickAdvancedDetailsButton() {
-    // Instead of clicking the button, we use sendKeys to avoid flakiness when a tooltip appears overlaying the button
-    const advancedDetailsButton = await this.driver.findElement(
-      this.advancedDetailsButton,
-    );
-    await advancedDetailsButton.sendKeys(Key.ENTER);
+    await this.driver.clickElement(this.advancedDetailsButton);
   }
 
   async clickCustomNonceButton() {

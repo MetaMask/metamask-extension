@@ -2,11 +2,7 @@ import { ReactNode } from 'react';
 import { SecurityProvider } from '../../../shared/constants/security-provider';
 import { Severity } from '../../helpers/constants/design-system';
 
-export type AlertSeverity =
-  | Severity.Danger
-  | Severity.Info
-  | Severity.Success
-  | Severity.Warning;
+export type AlertSeverity = Severity.Danger | Severity.Warning | Severity.Info;
 
 /**
  * A confirmable alert to be displayed in the UI.
@@ -28,25 +24,15 @@ export type Alert = {
   field?: string;
 
   /**
-   * Optional text to override the default on the inline alert.
+   * The unique key of the alert.
    */
-  inlineAlertText?: string;
+  key: string;
 
   /**
    * Whether the alert is a blocker and un-acknowledgeable, preventing the user
    * from proceeding and relying on actions to proceed. The default is `false`.
    */
   isBlocking?: boolean;
-
-  /**
-   * Whether the modal is opened when the inline alert is clicked.
-   */
-  isOpenModalOnClick?: boolean;
-
-  /**
-   * The unique key of the alert.
-   */
-  key: string;
 
   /**
    * The security provider associated with the alert.
@@ -59,19 +45,14 @@ export type Alert = {
   reason?: string;
 
   /**
-   * URL to report issue.
-   */
-  reportUrl?: string;
-
-  /**
    * The severity of the alert.
    */
   severity: AlertSeverity;
 
   /**
-   * Whether to show the arrow icon on the inline alert.
+   * URL to report issue.
    */
-  showArrow?: boolean;
+  reportUrl?: string;
 } & MessageOrContent;
 
 type MessageOrContent =

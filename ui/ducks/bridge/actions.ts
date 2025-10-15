@@ -4,7 +4,7 @@ import {
   BridgeUserAction,
   formatChainIdToCaip,
   isNativeAddress,
-  getNativeAssetForChainId,
+  isSolanaChainId,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
@@ -31,7 +31,7 @@ import {
   setEVMSrcNativeBalance,
 } from './bridge';
 import type { TokenPayload } from './types';
-import { isNetworkAdded, isNonEvmChain } from './utils';
+import { isNetworkAdded } from './utils';
 
 const {
   setToChainId,
@@ -160,12 +160,9 @@ export const setFromChain = ({
     if (!networkConfig) {
       return;
     }
-
-    // Check for ALL non-EVM chains
-    const isNonEvm = isNonEvmChain(networkConfig.chainId);
-
+    const isSolana = isSolanaChainId(networkConfig.chainId);
     // Set the src network
-    if (isNonEvm) {
+    if (isSolana) {
       dispatch(setActiveNetworkWithError(networkConfig.chainId));
     } else {
       const networkId = isNetworkAdded(networkConfig)
@@ -176,25 +173,12 @@ export const setFromChain = ({
         dispatch(setActiveNetworkWithError(networkId));
       }
     }
-
-    // Set the src token - if no token provided, set native token for non-EVM chains
+    // Set the src token
     if (token) {
       dispatch(setFromToken(token));
-    } else if (isNonEvm) {
-      // Auto-select native token for non-EVM chains when switching
-      const nativeAsset = getNativeAssetForChainId(networkConfig.chainId);
-      if (nativeAsset) {
-        dispatch(
-          setFromToken({
-            ...nativeAsset,
-            chainId: networkConfig.chainId,
-          }),
-        );
-      }
     }
-
-    // Fetch the native balance (EVM only)
-    if (selectedAccount && !isNonEvm) {
+    // Fetch the native EVM balance
+    if (selectedAccount && !isSolana) {
       trace({
         name: TraceName.BridgeBalancesUpdated,
         data: {

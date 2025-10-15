@@ -1,52 +1,55 @@
 import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
+import {
+  getGlobalProperties,
+  testIntrinsic,
+} from '../../../helpers/protect-intrinsics-helpers';
 import { withFixtures } from '../../helpers';
 import { PAGES, Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 
-// Detect scuttling by prodding globals until found
-// This for loop is likely running only once, unless the first global it finds is in the exceptions list. The test is immune to changes to scuttling exceptions.
-function assertScuttling() {
-  try {
-    // eslint-disable-next-line guard-for-in
-    for (const i in globalThis) {
-      // @ts-expect-error we only want to trigger a getter if any
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      globalThis[i];
-    }
-  } catch (e) {
-    if (
-      (e as Error).message.includes(
-        'of globalThis is inaccessible under scuttling mode',
-      )
-    ) {
-      return;
-    }
-  }
-  throw Error('Scuttling is not in effect');
-}
+const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
 
-// This is enough of a proof that lockdown is in effect and the shared prototypes are also hardened.
-function assertLockdown() {
-  if (
-    !(
-      Object.isFrozen(window.Object) &&
-      Object.isFrozen(window.Object.prototype) &&
-      Object.isFrozen(window.Function) &&
-      Object.isFrozen(window.Function.prototype) &&
-      Function.prototype.constructor !== window.Function // this is proof that repairIntrinsics part of lockdown worked
-    )
-  ) {
-    throw Error('Lockdown is not in effect');
-  }
-}
+/**
+ * This script iterates over all named intrinsics and tests that they are locked
+ * down per ses/lockdown.
+ *
+ * We set globalThis to window in Firefox because the test fails otherwise.
+ * We believe this is due to some Selenium-related shenanigans. In the browser,
+ * this behavior is not a problem.
+ */
+const lockdownTestScript = `
+${isFirefox ? 'globalThis = window;' : ''}
 
-const testCode = `
-${assertLockdown.toString()};
-assertLockdown();
-${assertScuttling.toString()};
-assertScuttling();
-return true;
+const assert = {
+  equal: (value, comparison, message) => {
+    if (value !== comparison) {
+      throw new Error(message || 'not equal');
+    }
+  },
+  ok: (value, message) => {
+    if (!value) {
+      throw new Error(message || 'not ok');
+    }
+  },
+};
+
+${getGlobalProperties.toString()}
+
+${testIntrinsic.toString()}
+
+try {
+  getGlobalProperties().forEach((propertyName) => {
+    console.log('Testing intrinsic:', propertyName);
+    testIntrinsic(propertyName);
+  })
+  console.log('Lockdown test successful!');
+  return true;
+} catch (error) {
+  console.log('Lockdown test failed.', error);
+  return false;
+}
 `;
 
 describe('lockdown', function (this: Mocha.Suite) {
@@ -58,9 +61,10 @@ describe('lockdown', function (this: Mocha.Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate(PAGES.HOME);
-        assert(
-          await driver.executeScript(testCode),
-          'Expected script execution to be complete. driver.executeScript might have failed silently.',
+        assert.equal(
+          await driver.executeScript(lockdownTestScript),
+          true,
+          'The UI environment should be locked down.',
         );
       },
     );
@@ -70,10 +74,7 @@ describe('lockdown', function (this: Mocha.Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ignoredConsoleErrors: [
-          'Error: Could not establish connection.',
-          'Error: Premature close', // issue #35241
-        ],
+        ignoredConsoleErrors: ['Error: Could not establish connection.'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -83,9 +84,11 @@ describe('lockdown', function (this: Mocha.Suite) {
         } else {
           await driver.navigate(PAGES.BACKGROUND);
         }
-        assert(
-          await driver.executeScript(testCode),
-          'Expected script execution to be complete. driver.executeScript might have failed silently.',
+        await driver.delay(1000);
+        assert.equal(
+          await driver.executeScript(lockdownTestScript),
+          true,
+          'The background environment should be locked down.',
         );
       },
     );

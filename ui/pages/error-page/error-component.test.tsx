@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 import '@testing-library/jest-dom';
 import browser from 'webextension-polyfill';
 import { fireEvent } from '@testing-library/react';
-import thunk from 'redux-thunk';
-import configureMockState from 'redux-mock-store';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -12,8 +10,6 @@ import { getParticipateInMetaMetrics } from '../../selectors';
 import { getMessage } from '../../helpers/utils/i18n-helper';
 // eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../app/_locales/en/messages.json';
-import { getUserSubscriptions } from '../../selectors/subscription';
-import mockState from '../../../test/data/mock-state.json';
 import ErrorPage from './error-page.component';
 
 jest.mock('../../hooks/useI18nContext', () => ({
@@ -49,13 +45,6 @@ describe('ErrorPage', () => {
     useSelectorMock.mockImplementation((selector) => {
       if (selector === getParticipateInMetaMetrics) {
         return true;
-      }
-      if (selector === getUserSubscriptions) {
-        return {
-          customerId: 'test-shield-customer-id',
-          subscriptions: [],
-          trialedProducts: [],
-        };
       }
       return undefined;
     });
@@ -167,13 +156,11 @@ describe('ErrorPage', () => {
 
   it('should open the support consent modal when the "Contact Support" button is clicked', () => {
     window.open = jest.fn();
-    const store = configureMockState([thunk])(mockState);
 
     const { getByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <ErrorPage error={MockError} />
       </MetaMetricsContext.Provider>,
-      store,
     );
 
     const contactSupportButton = getByTestId(

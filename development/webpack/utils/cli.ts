@@ -330,20 +330,12 @@ function getOptions(
       group: toOrange('Security:'),
       type: 'boolean',
     },
-    lavamoatDebug: {
-      alias: 'u',
+    lockdown: {
+      alias: 'k',
       array: false,
-      default: false,
-      description:
-        'Enables/disables LavaMoat debug mode (ignored if `lavamoat` is not enabled)',
-      group: toOrange('Security:'),
-      type: 'boolean',
-    },
-    generatePolicy: {
-      alias: 'g',
-      array: false,
-      default: false,
-      description: 'Generate the LavaMoat policy',
+      default: isProduction,
+      defaultDescription: prodDefaultDesc,
+      description: 'Enable/disable runtime hardening (also see --snow)',
       group: toOrange('Security:'),
       type: 'boolean',
     },
@@ -389,10 +381,9 @@ Watch: ${args.watch}
 Cache: ${args.cache}
 Progress: ${args.progress}
 Zip: ${args.zip}
-LavaMoat: ${args.lavamoat}
-LavaMoat debug: ${args.lavamoatDebug}
-Generate policy: ${args.generatePolicy}
 Snow: ${args.snow}
+LavaMoat: ${args.lavamoat}
+Lockdown: ${args.lockdown}
 Sentry: ${args.sentry}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}

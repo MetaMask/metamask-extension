@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import {
-  JustifyContent,
   Severity,
   TextColor,
 } from '../../../../../../helpers/constants/design-system';
-import useAlerts from '../../../../../../hooks/useAlerts';
-import { Box } from '../../../../../component-library';
-import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsContext';
 import InlineAlert from '../../../../alert-system/inline-alert/inline-alert';
-import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
+import useAlerts from '../../../../../../hooks/useAlerts';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowProps,
   ConfirmInfoRowVariant,
 } from '../row';
+import { Box } from '../../../../../component-library';
+import { MultipleAlertModal } from '../../../../alert-system/multiple-alert-modal';
+import { useAlertMetrics } from '../../../../alert-system/contexts/alertMetricsContext';
 
 export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
@@ -51,10 +50,6 @@ export const ConfirmInfoAlertRow = ({
   const hasFieldAlert = fieldAlerts.length > 0;
   const selectedAlertSeverity = fieldAlerts[0]?.severity;
   const selectedAlertKey = fieldAlerts[0]?.key;
-  const selectedAlertShowArrow = fieldAlerts[0]?.showArrow;
-  const selectedAlertInlineAlertText = fieldAlerts[0]?.inlineAlertText;
-  const selectedAlertIsOpenModalOnClick =
-    fieldAlerts[0]?.isOpenModalOnClick ?? true;
 
   const [alertModalVisible, setAlertModalVisible] = useState<boolean>(false);
 
@@ -67,19 +62,12 @@ export const ConfirmInfoAlertRow = ({
     trackInlineAlertClicked(selectedAlertKey);
   };
 
-  const onClickHandler =
-    hasFieldAlert && selectedAlertIsOpenModalOnClick
-      ? handleInlineAlertClick
-      : undefined;
   const confirmInfoRowProps = {
     ...rowProperties,
     style: { background: 'transparent', ...rowProperties.style },
     color: getAlertTextColors(variant ?? selectedAlertSeverity),
     variant,
-    onClick: onClickHandler,
-    labelChildrenStyleOverride: rowProperties.labelChildren
-      ? { justifyContent: JustifyContent.center }
-      : {},
+    onClick: hasFieldAlert ? handleInlineAlertClick : undefined,
   };
 
   if (isShownWithAlertsOnly && !hasFieldAlert) {
@@ -88,30 +76,9 @@ export const ConfirmInfoAlertRow = ({
 
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
-      <InlineAlert
-        severity={selectedAlertSeverity}
-        showArrow={selectedAlertShowArrow}
-        textOverride={selectedAlertInlineAlertText}
-        onClick={onClickHandler}
-      />
+      <InlineAlert severity={selectedAlertSeverity} />
     </Box>
   ) : null;
-
-  let confirmInfoRow: React.ReactNode;
-  if (confirmInfoRowProps.labelChildren) {
-    confirmInfoRow = (
-      <ConfirmInfoRow
-        {...rowProperties}
-        labelChildren={rowProperties.labelChildren}
-      >
-        {inlineAlert}
-      </ConfirmInfoRow>
-    );
-  } else {
-    confirmInfoRow = (
-      <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />
-    );
-  }
 
   return (
     <>
@@ -125,7 +92,7 @@ export const ConfirmInfoAlertRow = ({
           skipAlertNavigation={true}
         />
       )}
-      {confirmInfoRow}
+      <ConfirmInfoRow {...confirmInfoRowProps} labelChildren={inlineAlert} />
     </>
   );
 };
