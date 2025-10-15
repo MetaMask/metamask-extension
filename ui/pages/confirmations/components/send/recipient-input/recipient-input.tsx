@@ -108,7 +108,9 @@ export const RecipientInput = ({
           <Box alignItems={AlignItems.center} display={Display.Flex}>
             <PreferredAvatar
               address={
-                accountAddressSeedIconMap.get(to?.toLowerCase() as string) ?? to ?? ''
+                accountAddressSeedIconMap.get(to?.toLowerCase() as string) ??
+                to ??
+                ''
               }
               size={AvatarAccountSize.Md}
             />
