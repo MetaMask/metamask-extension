@@ -15,6 +15,12 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+// Mock getIsMultichainAccountsState1Enabled to false
+jest.mock('../../../selectors/multichain-accounts/feature-flags', () => ({
+  getIsMultichainAccountsState1Enabled: jest.fn(() => false),
+  getIsMultichainAccountsState2Enabled: jest.fn(() => false),
+}));
+
 const account = {
   ...mockState.metamask.internalAccounts.accounts[
     'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'

@@ -43,6 +43,12 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+// Mock getIsMultichainAccountsState2Enabled to false
+jest.mock('../../../selectors/multichain-accounts/feature-flags', () => ({
+  getIsMultichainAccountsState2Enabled: jest.fn(() => false),
+  getIsMultichainAccountsState1Enabled: jest.fn(() => false),
+}));
+
 type TestState = {
   metamask: AccountsControllerState &
     AccountTreeControllerState &
