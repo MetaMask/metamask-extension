@@ -138,7 +138,7 @@ export const getDataFromSwap = (
 
 export const getBestQuote = (quotes: QuoteResponse[]) => {
   let selectedQuoteIndex = -1;
-  let highestMinDestTokenAmount = '0';
+  let highestMinDestTokenAmount = '-1';
 
   quotes.forEach((quote, index) => {
     if (
