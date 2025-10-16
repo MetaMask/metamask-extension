@@ -1,7 +1,6 @@
 import semver from 'semver';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires, node/global-require, @typescript-eslint/no-require-imports
-const packageJson = require('../../package.json') as { version: string };
+import packageJson from '../../package.json';
 
 /**
  * Generic feature flag type for multichain features (Bitcoin, Tron, etc.)
