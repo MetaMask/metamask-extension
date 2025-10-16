@@ -32,7 +32,7 @@ import {
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_NEW_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -537,7 +537,7 @@ class SettingsPage extends PureComponent {
           element={<ClaimsList />}
         />
         <Route
-          path={TRANSACTION_SHIELD_CLAIM_ROUTE}
+          path={TRANSACTION_SHIELD_CLAIM_NEW_ROUTE}
           element={<SubmitClaimForm />}
           exact
         />

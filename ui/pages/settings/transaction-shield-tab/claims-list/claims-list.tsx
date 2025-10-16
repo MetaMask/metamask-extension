@@ -1,137 +1,165 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Tag } from '../../../../components/component-library';
+import {
+  BackgroundColor,
+  BorderRadius,
+  BorderStyle,
+  TextColor,
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useAsyncResult } from '../../../../hooks/useAsync';
+import { getShieldClaims } from '../../../../store/actions';
 import {
   Box,
+  BoxBackgroundColor,
+  Text,
+  TextColor as DsTextColor,
+  TextVariant,
   Icon,
   IconName,
   IconSize,
-  Tag,
-  Text,
-} from '../../../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  BorderStyle,
-  Display,
-  FlexDirection,
   IconColor,
-  JustifyContent,
-  TextColor,
-  TextTransform,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-
-const CLAIM_STATUS = {
-  COMPLETED: 'completed',
-  REJECTED: 'rejected',
-} as const;
-
-type ClaimStatus = (typeof CLAIM_STATUS)[keyof typeof CLAIM_STATUS];
+} from '@metamask/design-system-react';
+import { ShieldClaim, CLAIM_STATUS, ClaimStatus } from '../types';
 
 const ClaimsList = () => {
   const t = useI18nContext();
+  const claimsResult = useAsyncResult<ShieldClaim[]>(
+    () => getShieldClaims(),
+    [],
+  );
+
+  const pendingClaims = useMemo(() => {
+    return (
+      claimsResult.value?.filter(
+        (claim) => claim.status === CLAIM_STATUS.PENDING,
+      ) ?? []
+    );
+  }, [claimsResult.value]);
+
+  const historyClaims = useMemo(() => {
+    return (
+      claimsResult.value?.filter(
+        (claim) => claim.status !== CLAIM_STATUS.PENDING,
+      ) ?? []
+    );
+  }, [claimsResult.value]);
 
   const claimItem = (id: string, label: string, status?: ClaimStatus) => {
     return (
       <Box
-        as="button"
+        asChild
+        key={id}
         data-testid={`claim-item-${id}`}
-        display={Display.Flex}
-        backgroundColor={BackgroundColor.backgroundSection}
-        padding={4}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-        width={BlockSize.Full}
-        borderRadius={BorderRadius.LG}
+        backgroundColor={BoxBackgroundColor.BackgroundSection}
+        className="claim-item flex items-center justify-between w-full p-4 rounded-lg"
         onClick={() => {}}
       >
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-          <Text variant={TextVariant.bodyMdMedium}>{label}</Text>
-          {status && (
-            <Tag
-              borderStyle={BorderStyle.none}
-              borderRadius={BorderRadius.SM}
-              label={
-                status === CLAIM_STATUS.COMPLETED
-                  ? t('completed')
-                  : t('rejected')
-              }
-              backgroundColor={
-                status === CLAIM_STATUS.COMPLETED
-                  ? BackgroundColor.successMuted
-                  : BackgroundColor.errorMuted
-              }
-              labelProps={{
-                color:
+        <button>
+          <Box className="flex items-center gap-2">
+            <Text variant={TextVariant.BodyMd}>{label}</Text>
+            {status && (
+              <Tag
+                borderStyle={BorderStyle.none}
+                borderRadius={BorderRadius.SM}
+                label={
                   status === CLAIM_STATUS.COMPLETED
-                    ? TextColor.successDefault
-                    : TextColor.errorDefault,
-              }}
-            />
-          )}
-        </Box>
+                    ? t('completed')
+                    : t('rejected')
+                }
+                backgroundColor={
+                  status === CLAIM_STATUS.COMPLETED
+                    ? BackgroundColor.successMuted
+                    : BackgroundColor.errorMuted
+                }
+                labelProps={{
+                  color:
+                    status === CLAIM_STATUS.COMPLETED
+                      ? TextColor.successDefault
+                      : TextColor.errorDefault,
+                }}
+              />
+            )}
+          </Box>
 
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textAlternative}
-          >
-            {t('viewDetails')}
-          </Text>
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Md}
-            color={IconColor.iconAlternative}
-          />
-        </Box>
+          <Box className="flex items-center gap-2">
+            <Text
+              variant={TextVariant.BodyMd}
+              color={DsTextColor.TextAlternative}
+            >
+              {t('viewDetails')}
+            </Text>
+            <Icon
+              name={IconName.ArrowRight}
+              size={IconSize.Md}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
+        </button>
       </Box>
     );
   };
 
+  // Handle loading state
+  if (claimsResult.status === 'pending') {
+    return (
+      <Box
+        className="claims-list-page flex items-center justify-center w-full p-4"
+        data-testid="claims-list-page"
+      >
+        <Text variant={TextVariant.BodyMd}>{t('loading')}</Text>
+      </Box>
+    );
+  }
+
+  // Handle error state
+  if (claimsResult.status === 'error') {
+    return (
+      <Box
+        className="claims-list-page flex items-center justify-center w-full p-4"
+        data-testid="claims-list-page"
+      >
+        <Text variant={TextVariant.BodyMd} color={DsTextColor.ErrorDefault}>
+          {t('errorLoadingClaims')}
+        </Text>
+      </Box>
+    );
+  }
+
   return (
-    <Box
-      className="claims-list-page"
-      data-testid="claims-list-page"
-      width={BlockSize.Full}
-    >
-      <Box paddingTop={4} paddingLeft={4} paddingRight={4} paddingBottom={0}>
-        <Text
-          marginBottom={2}
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
-          textTransform={TextTransform.Uppercase}
-        >
-          {t('shieldClaimsPendingTitle')}
-        </Text>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={2}
-        >
-          {claimItem('3', 'Claims #0003')}
-          {claimItem('4', 'Claims #0004')}
+    <Box className="claims-list-page w-full" data-testid="claims-list-page">
+      {pendingClaims.length > 0 && (
+        <Box className="pt-4 px-4 pb-0">
+          <Text
+            className="mb-2 uppercase"
+            variant={TextVariant.BodyMd}
+            color={DsTextColor.TextAlternative}
+          >
+            {t('shieldClaimsPendingTitle')}
+          </Text>
+          <Box className="flex flex-col gap-2">
+            {pendingClaims.map((claim) =>
+              claimItem(claim.id, claim.description, claim.status),
+            )}
+          </Box>
         </Box>
-      </Box>
-      <Box paddingTop={4} paddingLeft={4} paddingRight={4} paddingBottom={0}>
-        <Text
-          marginBottom={2}
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
-          textTransform={TextTransform.Uppercase}
-        >
-          {t('shieldClaimsHistoryTitle')}
-        </Text>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={2}
-        >
-          {claimItem('1', 'Claims #0001', CLAIM_STATUS.COMPLETED)}
-          {claimItem('2', 'Claims #0002', CLAIM_STATUS.REJECTED)}
+      )}
+      {historyClaims.length > 0 && (
+        <Box className="pt-4 px-4 pb-0">
+          <Text
+            className="mb-2 uppercase"
+            variant={TextVariant.BodyMd}
+            color={DsTextColor.TextAlternative}
+          >
+            {t('shieldClaimsHistoryTitle')}
+          </Text>
+          <Box className="flex flex-col gap-2">
+            {historyClaims.map((claim) =>
+              claimItem(claim.id, claim.description, claim.status),
+            )}
+          </Box>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 };

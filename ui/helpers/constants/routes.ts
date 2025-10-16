@@ -17,9 +17,11 @@ export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
 export const TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE =
-  '/settings/transaction-shield/claims-list';
-export const TRANSACTION_SHIELD_CLAIM_ROUTE =
-  '/settings/transaction-shield/submit-claim';
+  '/settings/transaction-shield/claims';
+export const TRANSACTION_SHIELD_CLAIM_NEW_ROUTE =
+  '/settings/transaction-shield/claims/new-claim';
+export const TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE =
+  '/settings/transaction-shield/claims/view-claim';
 export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
 export const NETWORKS_ROUTE = '/settings/networks';
