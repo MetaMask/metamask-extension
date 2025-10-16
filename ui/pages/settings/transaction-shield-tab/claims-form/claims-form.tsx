@@ -60,7 +60,7 @@ function isValidTransactionHash(hash: string): boolean {
   return hash.length === 66 && isStrictHexString(hash);
 }
 
-const SubmitClaimForm = () => {
+const ClaimsForm = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -506,4 +506,4 @@ const SubmitClaimForm = () => {
   );
 };
 
-export default SubmitClaimForm;
+export default ClaimsForm;
