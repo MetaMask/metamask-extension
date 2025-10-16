@@ -79,13 +79,19 @@ jest.mock('../../../selectors', () => ({
   getIsBitcoinSupportEnabled: jest.fn(
     (state) => {
       const { bitcoinAccounts } = state.metamask.remoteFeatureFlags;
-      return bitcoinAccounts?.enabled === true && bitcoinAccounts?.minimumVersion <= '13.6.0';
+      if (!bitcoinAccounts?.enabled) return false;
+      if (!bitcoinAccounts?.minimumVersion) return false;
+      // Check if current app version (13.6.0) >= minimum required version
+      return '13.6.0' >= bitcoinAccounts.minimumVersion;
     },
   ),
   getIsSolanaSupportEnabled: jest.fn(
     (state) => {
       const { solanaAccounts } = state.metamask.remoteFeatureFlags;
-      return solanaAccounts?.enabled === true && solanaAccounts?.minimumVersion <= '13.6.0';
+      if (!solanaAccounts?.enabled) return false;
+      if (!solanaAccounts?.minimumVersion) return false;
+      // Check if current app version (13.6.0) >= minimum required version
+      return '13.6.0' >= solanaAccounts.minimumVersion;
     },
   ),
 }));
