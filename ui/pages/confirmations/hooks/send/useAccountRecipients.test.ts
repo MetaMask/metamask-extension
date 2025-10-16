@@ -13,6 +13,11 @@ jest.mock('./useSendType');
 jest.mock('../../../../selectors/multichain-accounts/account-tree');
 jest.mock('../../context/send');
 jest.mock('../../utils/account');
+jest.mock('./useAccountAddressSeedIconMap', () => ({
+  useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
+    accountAddressSeedIconMap: new Map(),
+  }),
+}));
 
 const mockUseSendType = jest.spyOn(useSendTypeModule, 'useSendType');
 const mockGetWalletsWithAccounts = jest.spyOn(
