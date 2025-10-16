@@ -234,6 +234,7 @@ describe('useDappSwapComparisonInfo', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenLastCalledWith(
       {
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           dapp_swap_comparison: {
             loading: 'true',
           },
@@ -259,12 +260,19 @@ describe('useDappSwapComparisonInfo', () => {
       {
         properties: {
           dapp_swap_comparison: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             swap_dapp_from_token_simulated_value_usd: '0.00999804',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             swap_dapp_minimum_received_value_usd: '0.00975',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             swap_dapp_network_fee_usd: '0.00000000071308200417',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             swap_dapp_to_token_simulated_value_usd: '0.009994',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             swap_mm_from_token_simulated_value_usd: '0.00999804',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             swap_mm_minimum_received_value_usd: '0.010881',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             swap_mm_network_fee_usd: '0.00000000267110239774',
             swap_mm_to_token_simulated_value_usd: '0.011104',
           },
