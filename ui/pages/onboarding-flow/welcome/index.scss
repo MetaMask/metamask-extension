@@ -9,7 +9,7 @@
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.6);
+    transform: translateY(5px) scale(0.8);
   }
 
   to {
@@ -18,25 +18,25 @@
   }
 }
 
-@keyframes slideInFromRight {
+@keyframes fadeInUpSmooth {
   from {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translateY(5px) scale(0.95);
   }
 
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 @keyframes slideUpSmooth {
   from {
-    transform: translateY(0);
+    transform: translateY(90px);
   }
 
   to {
-    transform: translateY(-20px);
+    transform: translateY(-60px);
   }
 }
 
@@ -48,12 +48,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: -100px;
-    margin-bottom: 20px;
     will-change: transform;
+    transform: translateY(90px);
+
 
     &--complete {
-      animation: slideUpSmooth 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      animation: slideUpSmooth 0.6s ease-out forwards;
     }
   }
 
@@ -71,21 +71,16 @@
     pointer-events: none;
 
     &--loader {
-      height: 400px;
-      width: 100%;
-      max-width: 1280px;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.8s ease-out 0.5s forwards;
+      height: 550px;
+      width: 550px;
+      max-width: 550px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 10px;
-      margin-top: -100px;
+      margin-top: -250px;
     }
   }
-
 
   &__canvas {
     height: 100%;
@@ -93,13 +88,26 @@
   }
 
   &__spinner {
-    height: 30px;
-    width: 30px;
+    width: 2rem;
+    height: 2rem;
+    align-self: center;
+    margin-top: -130px;
   }
 }
 
 .welcome-container {
   position: relative;
+
+  &__wordmark-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &--complete {
+      animation: slideUpSmooth 1s ease-out forwards;
+    }
+  }
 }
 
 .welcome-banner {
@@ -139,15 +147,6 @@
 
 
   &__cta {
-    width: 100%;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: fadeInUp 0.8s ease-out 0.5s forwards;
-    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
-    position: absolute;
-    top: 0;
-    left: 0;
-
     &--fade-out {
       opacity: 0 !important;
       transform: translateX(-30px) !important;
@@ -164,7 +163,7 @@
     left: 0;
 
     &--fade-in {
-      animation: slideInFromRight 0.2s ease-in forwards;
+      animation: fadeInUpSmooth 0.2s ease-in-out forwards;
     }
   }
 
