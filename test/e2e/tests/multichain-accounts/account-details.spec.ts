@@ -243,6 +243,7 @@ describe('Multichain Accounts - Account Details', function (this: Suite) {
 
           const addressListModal = new AddressListModal(driver);
           await addressListModal.clickQRbutton();
+          await driver.delay(1000);
 
           const accountAddressModal = new AccountAddressModal(driver);
           const address = await accountAddressModal.getAccountAddress();

@@ -570,7 +570,7 @@ class AccountListPage {
       `Open account options in account list for account ${accountLabel}`,
     );
     await this.driver.clickElement(
-      `button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} options"]`,
+      `button[data-testid="account-list-item-menu-button"][aria-label="${accountLabel} Options"]`,
     );
   }
 
