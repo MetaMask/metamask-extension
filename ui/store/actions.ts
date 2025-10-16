@@ -793,23 +793,14 @@ export function createNewVaultAndRestore(
   };
 }
 
-export function importMnemonicToVault(mnemonic: string): ThunkAction<
-  Promise<{
-    newAccountAddress: string;
-    discoveredAccounts: { bitcoin: number; solana: number };
-  }>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function importMnemonicToVault(
+  mnemonic: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.importMnemonicToVault`);
 
-    return new Promise<{
-      newAccountAddress: string;
-      discoveredAccounts: { bitcoin: number; solana: number };
-    }>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'importMnemonicToVault',
         [mnemonic],
