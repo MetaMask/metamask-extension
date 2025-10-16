@@ -952,7 +952,9 @@ export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
   (internalAccounts, accounts) => {
     return internalAccounts.map((internalAccount) => ({
       ...internalAccount,
-      ...accounts[internalAccount.address],
+      ...(internalAccount?.address
+        ? accounts[internalAccount.address] || {}
+        : {}),
     }));
   },
 );
