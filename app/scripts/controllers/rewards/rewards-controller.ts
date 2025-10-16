@@ -1,10 +1,5 @@
 /* eslint-disable jsdoc/require-param */
 import { BaseController } from '@metamask/base-controller';
-// TODO: Re-enable multi-subscription token vault when implemented
-// import {
-//   storeSubscriptionToken,
-//   getSubscriptionToken,
-// } from './utils/multi-subscription-token-vault';
 import log from 'loglevel';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { isAddress as isSolanaAddress } from '@solana/addresses';
@@ -107,6 +102,12 @@ const metadata = {
     anonymous: false,
     usedInUi: true,
   },
+  subscriptionTokens: {
+    includeInStateLogs: false,
+    persist: true,
+    anonymous: true,
+    usedInUi: false,
+  },
   rewardsEnabled: {
     includeInStateLogs: true,
     persist: false,
@@ -128,6 +129,7 @@ export const getRewardsControllerDefaultState = (): RewardsControllerState => ({
   activeBoosts: {},
   unlockedRewards: {},
   pointsEvents: {},
+  subscriptionTokens: {},
   rewardsEnabled: false,
 });
 
@@ -465,6 +467,12 @@ export class RewardsController extends BaseController<
     return false;
   }
 
+  #storeSubscriptionToken(subscriptionId: string, token: string): void {
+    this.update((state: RewardsControllerState) => {
+      state.subscriptionTokens[subscriptionId] = token;
+    });
+  }
+
   /**
    * Perform silent authentication for the given address
    */
@@ -602,15 +610,8 @@ export class RewardsController extends BaseController<
       subscription = loginResponse.subscription;
 
       // TODO: Re-enable multi-subscription token vault when implemented
-      // // Store the session token for this subscription
-      // const { success: tokenStoreSuccess } = await storeSubscriptionToken(
-      //   subscription.id,
-      //   loginResponse.sessionId,
-      // );
-      // if (!tokenStoreSuccess) {
-      //   log.info('RewardsController: Failed to store session token', account);
-      //   throw new Error('Failed to store session token');
-      // }
+      // Store the session token for this subscription
+      this.#storeSubscriptionToken(subscription.id, loginResponse.sessionId);
 
       log.info('RewardsController: Silent auth successful', account);
     } catch (error: unknown) {
@@ -1223,17 +1224,12 @@ export class RewardsController extends BaseController<
 
     // TODO: Re-enable multi-subscription token vault when implemented
     // Store the subscription token for authenticated requests
-    // if (optinResponse.subscription?.id && optinResponse.sessionId) {
-    //   await storeSubscriptionToken(
-    //     optinResponse.subscription.id,
-    //     optinResponse.sessionId,
-    //   ).catch((error: Error) => {
-    //     log.error(
-    //       'RewardsController: Failed to store subscription token:',
-    //       error,
-    //     );
-    //   });
-    // }
+    if (optinResponse.subscription?.id && optinResponse.sessionId) {
+      this.#storeSubscriptionToken(
+        optinResponse.subscription.id,
+        optinResponse.sessionId,
+      );
+    }
 
     // Update state with opt-in response data
     this.update((state) => {
@@ -1367,17 +1363,10 @@ export class RewardsController extends BaseController<
           i < optInStatusResponse.sids.length
             ? optInStatusResponse.sids[i]
             : null;
-        // TODO: Re-enable multi-subscription token vault when implemented
-        // const sessionToken = subscriptionId
-        //   ? await getSubscriptionToken(subscriptionId)
-        //   : undefined;
-        if (
-          subscriptionId
-          // TODO: Re-enable multi-subscription token vault when implemented
-          // &&
-          // Boolean(sessionToken?.token) &&
-          // Boolean(sessionToken?.success)
-        ) {
+        const sessionToken = subscriptionId
+          ? this.state.subscriptionTokens[subscriptionId]
+          : undefined;
+        if (subscriptionId && Boolean(sessionToken)) {
           return subscriptionId;
         }
         try {

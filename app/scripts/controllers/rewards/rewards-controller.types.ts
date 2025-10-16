@@ -644,6 +644,7 @@ export type RewardsControllerState = {
   activeBoosts: { [compositeId: string]: ActiveBoostsState };
   unlockedRewards: { [compositeId: string]: UnlockedRewardsState };
   pointsEvents: { [compositeId: string]: PointsEventsDtoState };
+  subscriptionTokens: { [subscriptionId: string]: string };
   rewardsEnabled: boolean;
 };
 
