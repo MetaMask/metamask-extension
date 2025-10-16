@@ -8,6 +8,7 @@ import { AddEthereumChainContext } from '../../external/add-ethereum-chain/types
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSafeChains } from '../../../settings/networks-tab/networks-form/use-safe-chains';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 
 // Ported from templates/add-ethereum-chain.js
 export function useAddEthereumChainAlerts() {
@@ -57,7 +58,7 @@ export function useAddEthereumChainAlerts() {
         key: 'allowAddRpc',
         message: t('allowAddRpcDescription', [chainName]),
         severity: Severity.Info,
-        field: 'rpcUrl',
+        field: RowAlertKey.RpcUrl,
         reason: title,
         inlineAlertText: '',
         showArrow: false,
@@ -73,7 +74,7 @@ export function useAddEthereumChainAlerts() {
           key: 'mismatchedNetworkName',
           message: t('mismatchedNetworkName'),
           severity: Severity.Warning,
-          field: 'network',
+          field: RowAlertKey.ChainName,
           inlineAlertText: '',
           showArrow: false,
         });
@@ -89,7 +90,7 @@ export function useAddEthereumChainAlerts() {
           key: 'mismatchedNetworkSymbol',
           message: t('mismatchedNetworkSymbol'),
           severity: Severity.Warning,
-          field: 'network',
+          field: RowAlertKey.ChainName,
           inlineAlertText: '',
           showArrow: false,
         });
@@ -105,7 +106,7 @@ export function useAddEthereumChainAlerts() {
           key: 'mismatchedRpcUrl',
           message: t('mismatchedRpcUrl'),
           severity: Severity.Warning,
-          field: 'rpcUrl',
+          field: RowAlertKey.RpcUrl,
           inlineAlertText: '',
           showArrow: false,
         });
@@ -120,7 +121,7 @@ export function useAddEthereumChainAlerts() {
           key: 'deprecatedNetwork',
           message: t('deprecatedNetwork'),
           severity: Severity.Warning,
-          field: 'network',
+          field: RowAlertKey.ChainName,
           inlineAlertText: '',
           showArrow: false,
         });
@@ -137,7 +138,7 @@ export function useAddEthereumChainAlerts() {
             key: 'mismatchedRpcChainId',
             message: t('mismatchedRpcChainId'),
             severity: Severity.Warning,
-            field: 'network',
+            field: RowAlertKey.ChainName,
             inlineAlertText: '',
             showArrow: false,
           });
@@ -152,7 +153,7 @@ export function useAddEthereumChainAlerts() {
           key: 'errorWhileConnectingToRPC',
           message: t('errorWhileConnectingToRPC'),
           severity: Severity.Warning,
-          field: 'rpcUrl',
+          field: RowAlertKey.RpcUrl,
           inlineAlertText: '',
           showArrow: false,
         });
