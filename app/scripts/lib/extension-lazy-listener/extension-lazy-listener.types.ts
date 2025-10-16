@@ -9,30 +9,49 @@ type StringKeys<Type> = Extract<keyof Type, string>;
 /**
  * Represents any event in the `Events.Event` type.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type AnyEvent = Events.Event<(...args: any[]) => unknown>;
+/**
+ * Returns true for events whose callback return type includes void (either exactly void or a union containing void).
+ */
+type HasVoid<Type> = [Extract<Type, void>] extends [never] ? false : true;
+
+/**
+ * Predicate for permitted events: the underlying callback may return void or a union containing void.
+ */
+export type AnyEvent<
+  NamespaceKey extends keyof Browser,
+  EventName extends keyof Browser[NamespaceKey],
+> =
+  Browser[NamespaceKey][EventName] extends Events.Event<
+    (...args: infer _Args) => infer ReturnType
+  >
+    ? HasVoid<ReturnType> extends true
+      ? true
+      : never
+    : never;
 
 /**
  * Extracts the keys of events from a specific namespace in the `Browser` object.
  *
  * @template NamespaceKey - The key of the namespace in the `Browser` object.
  */
-type EventKeys<NamespaceKey extends keyof Browser> = Extract<
-  StringKeys<Browser[NamespaceKey]>,
-  {
-    [Key in StringKeys<
-      Browser[NamespaceKey]
-    >]: Browser[NamespaceKey][Key] extends AnyEvent ? Key : never;
-  }[StringKeys<Browser[NamespaceKey]>]
->;
+type EventKeys<NamespaceKey extends keyof Browser> = {
+  [Key in StringKeys<Browser[NamespaceKey]>]: true extends AnyEvent<
+    NamespaceKey,
+    Key
+  >
+    ? Key
+    : never;
+}[StringKeys<Browser[NamespaceKey]>];
 
 /**
  * Represents the name of an event in a specific namespace of the `Browser` object.
  *
  * @template NamespaceKey - The key of the namespace in the `Browser` object.
  */
-export type BrowserEventName<NamespaceKey extends keyof Browser> =
-  EventKeys<NamespaceKey>;
+export type BrowserEventName<NamespaceKey extends keyof Browser> = Extract<
+  EventKeys<NamespaceKey>,
+  string
+>;
 
 /**
  * Extracts the callback type for a specific event in a namespace of the `Browser` object.
@@ -44,8 +63,13 @@ export type EventCallback<
   NamespaceKey extends keyof Browser,
   EventName extends keyof Browser[NamespaceKey],
 > =
-  Browser[NamespaceKey][EventName] extends Events.Event<infer CallbackType>
-    ? CallbackType
+  true extends AnyEvent<NamespaceKey, EventName>
+    ? Browser[NamespaceKey][EventName] extends Events.Event<infer CallbackType>
+      ? CallbackType extends (...args: infer P) => unknown
+        ? // Coerce any allowed callback (void or void-union) to a strictly void-returning version
+          (...args: P) => void
+        : never
+      : never
     : never;
 
 /**
@@ -56,7 +80,7 @@ export type EventCallback<
  */
 export type CallbackArguments<
   NamespaceKey extends keyof Browser,
-  EventName extends keyof Browser[NamespaceKey] = keyof Browser[NamespaceKey],
+  EventName extends keyof Browser[NamespaceKey],
 > = Parameters<EventCallback<NamespaceKey, EventName>>;
 
 /**
@@ -65,12 +89,18 @@ export type CallbackArguments<
  * @template NamespaceKey - The key of the namespace in the `Browser` object.
  * @template EventName - The name of the event in the namespace.
  */
-type EventRecord<
-  NamespaceKey extends keyof Browser,
-  EventName extends keyof Browser[NamespaceKey],
-> = {
-  listener: EventCallback<NamespaceKey, EventName>;
-  calls: CallbackArguments<NamespaceKey, EventName>[];
+// Bivariant listener helper to ease storage in a Map with heterogeneous parameter tuples.
+// (Parameter bivariance is acceptable here because we never invoke a stored listener with
+// arguments for a different event key.)
+type BivariantListener<Args extends unknown[]> = {
+  bivarianceHack(...args: Args): void;
+}['bivarianceHack'];
+
+type EventRecord = {
+  // Stored in a widened, bivariant form to avoid parameter tuple unification issues across heterogeneous events.
+  listener: BivariantListener<unknown[]>;
+  // Calls stored erasing the precise tuple type; callers re-narrow at usage sites.
+  calls: unknown[];
 };
 
 /**
@@ -90,7 +120,7 @@ export type BrowserNamespace = {
  */
 type NamespaceEventMap<NamespaceKey extends keyof Browser> = Map<
   BrowserEventName<NamespaceKey>,
-  EventRecord<NamespaceKey, BrowserEventName<NamespaceKey>>
+  EventRecord
 >;
 
 /**
@@ -105,7 +135,7 @@ type TupleThing = {
 /**
  * Represents a map of namespace listeners, allowing retrieval and setting of event maps for namespaces.
  */
-export interface NamespaceListenerMap extends Iterable<TupleThing> {
+export type NamespaceListenerMap = {
   /**
    * Retrieves the event map for a specific namespace.
    *
@@ -126,8 +156,8 @@ export interface NamespaceListenerMap extends Iterable<TupleThing> {
   set<NamespaceKey extends BrowserNamespace>(
     ns: NamespaceKey,
     value: NamespaceEventMap<NamespaceKey>,
-  ): this;
-}
+  ): NamespaceListenerMap;
+} & Iterable<TupleThing>;
 
 /**
  * Represents the options for initializing the `ExtensionLazyListener`.
@@ -143,10 +173,7 @@ export type Options = {
       };
 }[keyof Browser][];
 
-export type NamespaceEventPair<
-  Namespace extends BrowserNamespace,
-  EventNames extends BrowserEventName<Namespace>[],
-> = {
+export type NamespaceEventPair<Namespace extends BrowserNamespace> = {
   namespace: Namespace;
-  eventNames: EventNames;
+  eventNames: BrowserEventName<Namespace>[];
 };
