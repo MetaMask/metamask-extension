@@ -108,7 +108,9 @@ const TransactionShield = () => {
   );
 
   const { subscriptionPricing, loading: subscriptionPricingLoading } =
-    useSubscriptionPricing();
+    useSubscriptionPricing({
+      refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
+    });
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
     PAYMENT_TYPES.byCrypto,
     subscriptionPricing,

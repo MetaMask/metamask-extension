@@ -117,7 +117,9 @@ const ShieldPlan = () => {
     subscriptionPricing,
     loading: subscriptionPricingLoading,
     error: subscriptionPricingError,
-  } = useSubscriptionPricing();
+  } = useSubscriptionPricing({
+    refetch: true, // always fetch latest price
+  });
 
   const pricingPlans = useSubscriptionProductPlans(
     PRODUCT_TYPES.SHIELD,
