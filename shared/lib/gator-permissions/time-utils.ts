@@ -1,29 +1,9 @@
-import { DAY, THIRTY_DAYS, WEEK } from '../../constants/time';
-
-/**
- * An enum representing the time periods for which the stream rate can be calculated.
- */
-export enum TimePeriod {
-  DAILY = 'Daily',
-  WEEKLY = 'Weekly',
-  MONTHLY = 'Monthly',
-}
+import { DAY, FORTNIGHT, MONTH, WEEK, YEAR } from '../../constants/time';
 
 export type GatorPermissionRule = {
   type: string;
   isAdjustmentAllowed: boolean;
-  data: Record<string, any>;
-};
-
-/**
- * A mapping of time periods to their equivalent seconds.
- */
-export const TIME_PERIOD_TO_SECONDS: Record<TimePeriod, bigint> = {
-  [TimePeriod.DAILY]: 60n * 60n * 24n, // 86,400(seconds)
-  [TimePeriod.WEEKLY]: 60n * 60n * 24n * 7n, // 604,800(seconds)
-  // Monthly is difficult because months are not consistent in length.
-  // We approximate by calculating the number of seconds in 1/12th of a year.
-  [TimePeriod.MONTHLY]: (60n * 60n * 24n * 365n) / 12n, // 2,629,760(seconds)
+  data: Record<string, unknown>;
 };
 
 /**
@@ -40,8 +20,12 @@ export function getPeriodFrequencyValueTranslationKey(
     return 'gatorPermissionDailyFrequency';
   } else if (periodDurationMs === WEEK) {
     return 'gatorPermissionWeeklyFrequency';
-  } else if (periodDurationMs === THIRTY_DAYS) {
+  } else if (periodDurationMs === FORTNIGHT) {
+    return 'gatorPermissionFortnightlyFrequency';
+  } else if (periodDurationMs === MONTH) {
     return 'gatorPermissionMonthlyFrequency';
+  } else if (periodDurationMs === YEAR) {
+    return 'gatorPermissionAnnualFrequency';
   }
   return 'gatorPermissionCustomFrequency';
 }
@@ -83,5 +67,5 @@ export const extractExpiryToReadableDate = (
     return convertTimestampToReadableDate(expiry.data.timestamp as number);
   }
 
-  return 'No expiry';
+  return '';
 };

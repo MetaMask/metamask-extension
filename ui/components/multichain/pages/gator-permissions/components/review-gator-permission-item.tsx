@@ -1,4 +1,6 @@
 import React, { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import {
   BoxFlexDirection,
   IconColor,
@@ -11,7 +13,6 @@ import {
   BoxAlignItems,
   Text,
   ButtonIcon,
-  Icon,
   AvatarNetwork,
   AvatarNetworkSize,
   ButtonIconSize,
@@ -34,12 +35,21 @@ import {
   convertTimestampToReadableDate,
   getPeriodFrequencyValueTranslationKey,
   extractExpiryToReadableDate,
+  GatorPermissionRule,
 } from '../../../../../../shared/lib/gator-permissions';
-import { useGatorTokenInfo } from '../../../../../hooks/gator-permissions/useGatorTokenInfo';
-import { Hex } from 'viem';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { Numeric } from '../../../../../../shared/modules/Numeric';
+import {
+  getNativeTokenInfo,
+  selectERC20TokensByChain,
+} from '../../../../../selectors/selectors';
+import { getTokenMetadata } from '../../../../../helpers/utils/token-util';
+
+type TokenMetadata = {
+  symbol: string;
+  decimals: number;
+};
 
 type ReviewGatorPermissionItemProps = {
   /**
@@ -85,23 +95,45 @@ export const ReviewGatorPermissionItem = ({
 }: ReviewGatorPermissionItemProps) => {
   const t = useI18nContext();
   const { permissionResponse, siteOrigin } = gatorPermission;
-
-  const chainId = permissionResponse.chainId;
+  const [chainId] = permissionResponse.chainId;
   const permissionType = permissionResponse.permission.type;
   const permissionAccount = permissionResponse.address || '0x';
+  const tokenAddress = permissionResponse.permission.data.tokenAddress as
+    | Hex
+    | undefined;
 
-  const networkImageUrl = getImageForChainId(chainId);
   const [isExpanded, setIsExpanded] = useState(false);
+  const tokensByChain = useSelector(selectERC20TokensByChain);
+  const nativeTokenMetadata = useSelector((state) =>
+    getNativeTokenInfo(state, chainId),
+  ) as TokenMetadata;
 
-  const getDecimalizedHexValue = (value: Hex, assetDecimals: number) =>
-    new Numeric(value, 16).toBase(10).shiftedBy(assetDecimals).toString();
-
-  const { loading: gatorTokenInfoLoading, data: gatorTokenInfo } =
-    useGatorTokenInfo(
-      permissionType,
-      chainId,
-      permissionResponse.permission.data.tokenAddress as string,
-    );
+  const tokenMetadata: TokenMetadata = useMemo(() => {
+    if (tokenAddress) {
+      const tokenListForChain = tokensByChain?.[chainId]?.data || {};
+      const foundTokenMetadata = getTokenMetadata(
+        tokenAddress,
+        tokenListForChain,
+      );
+      if (foundTokenMetadata) {
+        return {
+          symbol: foundTokenMetadata.symbol || 'Unknown Token',
+          decimals: foundTokenMetadata.decimals || 18,
+        };
+      }
+      console.warn(
+        `Token metadata not found for address: ${tokenAddress} for chain: ${chainId}`,
+      );
+      return {
+        symbol: 'Unknown Token',
+        decimals: 18,
+      };
+    }
+    return {
+      symbol: nativeTokenMetadata.symbol,
+      decimals: nativeTokenMetadata.decimals,
+    };
+  }, [tokensByChain, chainId, tokenAddress, nativeTokenMetadata]);
 
   /**
    * Handles the click event for the expand/collapse button
@@ -111,24 +143,49 @@ export const ReviewGatorPermissionItem = ({
   };
 
   /**
+   * Converts a hex value to a decimal value
+   *
+   * @param value - The hex value to convert
+   * @param decimals - The number of decimals to shift the value by
+   * @returns The decimal value
+   */
+  const getDecimalizedHexValue = (value: Hex, decimals: number) =>
+    new Numeric(value, 16).toBase(10).shiftedBy(decimals).toString();
+
+  /**
+   * Returns the expiration date from the rules
+   *
+   * @param rules - The rules to extract the expiration from
+   * @returns The expiration date
+   */
+  const getExpirationDate = (rules: GatorPermissionRule[]): string => {
+    // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller so we can have stronger typing
+    if (!rules) {
+      return t('gatorPermissionNoExpiration');
+    }
+    if (rules.length === 0) {
+      return t('gatorPermissionNoExpiration');
+    }
+    return extractExpiryToReadableDate(rules);
+  };
+
+  /**
    * Returns the token stream permission details
-   * @param assetDecimals - The number of decimal places the token uses
-   * @param tokenSymbol - The symbol of the token
+   *
    * @param permission - The stream permission data
    * @returns The permission details
    */
   const getTokenStreamPermissionDetails = (
-    assetDecimals: number,
-    tokenSymbol: string,
     permission: NativeTokenStreamPermission | Erc20TokenStreamPermission,
   ): PermissionDetails => {
+    const { symbol, decimals } = tokenMetadata;
     return {
       amountLabel: {
         translationKey: 'gatorPermissionsStreamingAmountLabel',
         value: `${getDecimalizedHexValue(
           permission.data.amountPerSecond,
-          assetDecimals,
-        )} ${tokenSymbol}`,
+          decimals,
+        )} ${symbol}`,
       },
       frequencyLabel: {
         translationKey: 'gatorPermissionTokenStreamFrequencyLabel',
@@ -137,45 +194,43 @@ export const ReviewGatorPermissionItem = ({
       expandedDetails: {
         gatorPermissionsInitialAllowance: `${getDecimalizedHexValue(
           permission.data.initialAmount || '0x0',
-          assetDecimals,
-        )} ${tokenSymbol}`,
+          decimals,
+        )} ${symbol}`,
         gatorPermissionsMaxAllowance: `${getDecimalizedHexValue(
           permission.data.maxAmount || '0x0',
-          assetDecimals,
-        )} ${tokenSymbol}`,
+          decimals,
+        )} ${symbol}`,
         gatorPermissionsStartDate: convertTimestampToReadableDate(
           permission.data.startTime as number,
         ),
-        gatorPermissionsExpirationDate: extractExpiryToReadableDate(
-          (permission as any).rules || [],
-        ), // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller
+        gatorPermissionsExpirationDate: getExpirationDate(
+          (permission as unknown as { rules: GatorPermissionRule[] }).rules,
+        ),
         gatorPermissionsStreamRate: `${getDecimalizedHexValue(
           permission.data.amountPerSecond,
-          assetDecimals,
-        )} ${tokenSymbol}/sec`,
+          decimals,
+        )} ${symbol}/sec`,
       },
     };
   };
 
   /**
    * Returns the token periodic permission details
-   * @param assetDecimals - The number of decimal places the token uses
-   * @param tokenSymbol - The symbol of the token
+   *
    * @param permission - The periodic permission data
    * @returns The permission details
    */
   const getTokenPeriodicPermissionDetails = (
-    assetDecimals: number,
-    tokenSymbol: string,
     permission: NativeTokenPeriodicPermission | Erc20TokenPeriodicPermission,
   ): PermissionDetails => {
+    const { symbol, decimals } = tokenMetadata;
     return {
       amountLabel: {
         translationKey: 'amount',
         value: `${getDecimalizedHexValue(
           permission.data.periodAmount,
-          assetDecimals,
-        )} ${tokenSymbol}`,
+          decimals,
+        )} ${symbol}`,
       },
       frequencyLabel: {
         translationKey: 'gatorPermissionTokenPeriodicFrequencyLabel',
@@ -187,129 +242,30 @@ export const ReviewGatorPermissionItem = ({
         gatorPermissionsStartDate: convertTimestampToReadableDate(
           permission.data.startTime ?? 0,
         ),
-        gatorPermissionsExpirationDate: extractExpiryToReadableDate(
-          (permissionResponse.permission as any).rules || [],
-        ), // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller
+        gatorPermissionsExpirationDate: getExpirationDate(
+          (permission as unknown as { rules: GatorPermissionRule[] }).rules,
+        ),
       },
     };
   };
 
   /**
    * Returns the permission details
+   *
    * @returns The permission details
    */
   const permissionDetails = useMemo((): PermissionDetails => {
-    const { symbol, decimals } = gatorTokenInfo || {};
     switch (permissionType) {
       case 'native-token-stream':
       case 'erc20-token-stream':
-        return getTokenStreamPermissionDetails(
-          decimals || 0,
-          symbol || 'Unknown Token',
-          permissionResponse.permission,
-        );
+        return getTokenStreamPermissionDetails(permissionResponse.permission);
       case 'native-token-periodic':
       case 'erc20-token-periodic':
-        return getTokenPeriodicPermissionDetails(
-          decimals || 0,
-          symbol || 'Unknown Token',
-          permissionResponse.permission,
-        );
+        return getTokenPeriodicPermissionDetails(permissionResponse.permission);
       default:
         throw new Error(`Invalid permission type: ${permissionType}`);
     }
-  }, [permissionType, permissionResponse]);
-
-  /**
-   * Renders the expanded permission details
-   * @param expandedPermissionSecondaryDetails - The expanded permission secondary details
-   * @returns The expanded permission details
-   */
-  const renderExpandedPermissionDetails = (
-    expandedPermissionSecondaryDetails: PermissionExpandedDetails,
-  ) => {
-    return (
-      <>
-        {/* Network name row */}
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.Between}
-          style={{ flex: '1', alignSelf: 'center' }}
-          gap={4}
-          marginTop={2}
-        >
-          <Text
-            textAlign={TextAlign.Left}
-            color={TextColor.TextAlternative}
-            variant={TextVariant.BodyMd}
-          >
-            {t('networks')}
-          </Text>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            alignItems={BoxAlignItems.Baseline}
-            justifyContent={BoxJustifyContent.End}
-            style={{ flex: '1', alignSelf: 'center' }}
-            gap={2}
-          >
-            <AvatarNetwork
-              src={networkImageUrl}
-              name={chainId}
-              size={AvatarNetworkSize.Xs}
-            />
-            <Text
-              textAlign={TextAlign.Right}
-              color={TextColor.TextAlternative}
-              variant={TextVariant.BodyMd}
-            >
-              {networkName}
-            </Text>
-          </Box>
-        </Box>
-
-        {/* Expanded permission secondary details */}
-        {Object.entries(expandedPermissionSecondaryDetails).map(
-          ([key, value]) => {
-            return (
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                justifyContent={BoxJustifyContent.Between}
-                style={{ flex: '1', alignSelf: 'center' }}
-                gap={4}
-                marginTop={2}
-              >
-                <Text
-                  textAlign={TextAlign.Left}
-                  color={TextColor.TextAlternative}
-                  variant={TextVariant.BodyMd}
-                >
-                  {t(key)}
-                </Text>
-                <Text
-                  textAlign={TextAlign.Right}
-                  color={TextColor.TextAlternative}
-                  variant={TextVariant.BodyMd}
-                >
-                  {value}
-                </Text>
-              </Box>
-            );
-          },
-        )}
-      </>
-    );
-  };
-
-  if (gatorTokenInfoLoading || !gatorTokenInfo) {
-    return (
-      <Box
-        justifyContent={BoxJustifyContent.Center}
-        alignItems={BoxAlignItems.Center}
-      >
-        <Icon name={IconName.Loading} />
-      </Box>
-    );
-  }
+  }, [permissionType, permissionResponse, tokenMetadata]);
 
   return (
     <Card
@@ -346,6 +302,7 @@ export const ReviewGatorPermissionItem = ({
         </Box>
       </Box>
 
+      {/* Permission details */}
       <Box backgroundColor={BoxBackgroundColor.BackgroundDefault}>
         {/* Amount Row */}
         <Box
@@ -442,7 +399,7 @@ export const ReviewGatorPermissionItem = ({
         </Box>
       </Box>
 
-      {/* Expand/Collapse view */}
+      {/* Expanded permission details */}
       <Box>
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -470,8 +427,76 @@ export const ReviewGatorPermissionItem = ({
             />
           </Box>
         </Box>
-        {isExpanded &&
-          renderExpandedPermissionDetails(permissionDetails.expandedDetails)}
+
+        {isExpanded && (
+          <>
+            {/* Network name row */}
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              style={{ flex: '1', alignSelf: 'center' }}
+              gap={4}
+              marginTop={2}
+            >
+              <Text
+                textAlign={TextAlign.Left}
+                color={TextColor.TextAlternative}
+                variant={TextVariant.BodyMd}
+              >
+                {t('networks')}
+              </Text>
+              <Box
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Baseline}
+                justifyContent={BoxJustifyContent.End}
+                style={{ flex: '1', alignSelf: 'center' }}
+                gap={2}
+              >
+                <AvatarNetwork
+                  src={getImageForChainId(chainId)}
+                  name={chainId}
+                  size={AvatarNetworkSize.Xs}
+                />
+                <Text
+                  textAlign={TextAlign.Right}
+                  color={TextColor.TextAlternative}
+                  variant={TextVariant.BodyMd}
+                >
+                  {networkName}
+                </Text>
+              </Box>
+            </Box>
+
+            {Object.entries(permissionDetails.expandedDetails).map(
+              ([key, value]) => {
+                return (
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    justifyContent={BoxJustifyContent.Between}
+                    style={{ flex: '1', alignSelf: 'center' }}
+                    gap={4}
+                    marginTop={2}
+                  >
+                    <Text
+                      textAlign={TextAlign.Left}
+                      color={TextColor.TextAlternative}
+                      variant={TextVariant.BodyMd}
+                    >
+                      {t(key)}
+                    </Text>
+                    <Text
+                      textAlign={TextAlign.Right}
+                      color={TextColor.TextAlternative}
+                      variant={TextVariant.BodyMd}
+                    >
+                      {value}
+                    </Text>
+                  </Box>
+                );
+              },
+            )}
+          </>
+        )}
       </Box>
     </Card>
   );

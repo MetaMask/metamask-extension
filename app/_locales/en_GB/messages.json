@@ -2683,6 +2683,10 @@
   "gasUsed": {
     "message": "Gas used"
   },
+  "gatorPermissionAnnualFrequency": {
+    "message": "Yearly",
+    "description": "Time period for annual recurring permissions redemption"
+  },
   "gatorPermissionCustomFrequency": {
     "message": "Custom",
     "description": "Time period for custom recurring permissions redemption"
@@ -2691,9 +2695,17 @@
     "message": "Daily",
     "description": "Time period for daily recurring permissions redemption"
   },
+  "gatorPermissionFortnightlyFrequency": {
+    "message": "Bi-Weekly",
+    "description": "Time period for fortnightly recurring permissions redemption"
+  },
   "gatorPermissionMonthlyFrequency": {
     "message": "Monthly",
     "description": "Time period for monthly recurring permissions redemption"
+  },
+  "gatorPermissionNoExpiration": {
+    "message": "No expiration",
+    "description": "Label for a permission with no expiration"
   },
   "gatorPermissionTokenPeriodicFrequencyLabel": {
     "message": "Transfer Window",
