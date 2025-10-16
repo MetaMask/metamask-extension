@@ -18,7 +18,10 @@ import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
 } from '@metamask/network-controller';
-import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import {
+  RemoteFeatureFlagControllerStateChangeEvent,
+  RemoteFeatureFlagControllerGetStateAction,
+} from '@metamask/remote-feature-flag-controller';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -40,7 +43,7 @@ type Events =
   | KeyringControllerStateChangeEvent
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
-  | { type: 'RemoteFeatureFlagController:stateChange'; payload: [unknown] };
+  | RemoteFeatureFlagControllerStateChangeEvent;
 
 export type MultichainAccountServiceMessenger = ReturnType<
   typeof getMultichainAccountServiceMessenger
