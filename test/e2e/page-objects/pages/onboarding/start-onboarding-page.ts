@@ -92,7 +92,6 @@ class StartOnboardingPage {
   }
 
   async createWalletWithSrp(socialLoginEnabled = true): Promise<void> {
-    await this.driver.delay(largeDelayMs);
     await this.driver.clickElement(this.createWalletButton);
     if (socialLoginEnabled) {
       await this.driver.clickElement(this.onboardingCreateWithSrpButton);
