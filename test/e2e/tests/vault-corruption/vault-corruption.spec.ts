@@ -205,10 +205,11 @@ describe('Vault Corruption', function () {
       await prompt.accept();
     } else {
       await prompt.dismiss();
-      await driver.delay(2000);
     }
 
     if (confirm) {
+      await driver.delay(2000);
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
       // the button should be disabled if the user confirmed the prompt, but given this is a transient state that goes very fast
       // it can cause a race condition where the element becomes stale, so we check directly that the element is not present as that's a stable state that occurs eventually
       await driver.assertElementNotPresent('#critical-error-button');
@@ -291,14 +292,11 @@ describe('Vault Corruption', function () {
           breakAllDatabasesScript('KeyringController'),
         );
 
-        await driver.delay(2000);
-
         // start reset
         await clickRecover({ driver, confirm: true });
 
         // Now onboard again, like a first-time user :-(
         await onboard(driver);
-        await driver.delay(2000);
 
         // make sure the account is different than the first time we onboarded
         const newFirstAddress = await getFirstAddress(driver);
@@ -323,7 +321,6 @@ describe('Vault Corruption', function () {
           driver,
           breakPrimaryDatabaseOnlyScript,
         );
-        await driver.delay(2000);
 
         // click recover but dismiss the prompt
         await clickRecover({ driver, confirm: false });
@@ -334,7 +331,6 @@ describe('Vault Corruption', function () {
         await driver.navigate(PAGES.HOME, {
           waitForControllers: false,
         });
-        await driver.delay(2000);
 
         // make sure the button can be clicked yet again; dismiss the prompt
         await clickRecover({ driver, confirm: false });
@@ -362,7 +358,6 @@ describe('Vault Corruption', function () {
           driver,
           breakAllDatabasesScript('meta'),
         );
-        await driver.delay(2000);
 
         // start recovery
         await clickRecover({ driver, confirm: true });
