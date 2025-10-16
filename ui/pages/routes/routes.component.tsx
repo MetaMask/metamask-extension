@@ -94,6 +94,7 @@ import {
   getPendingApprovals,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
+import { getApprovalFlows } from '../../selectors/approvals';
 import {
   hideImportNftsModal,
   hideIpfsModal,
@@ -117,6 +118,7 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
+import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
 
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -397,6 +399,7 @@ export default function Routes() {
   );
   const pendingApprovals = useAppSelector(getPendingApprovals);
   const transactionsMetadata = useAppSelector(getUnapprovedTransactions);
+  const approvalFlows = useAppSelector(getApprovalFlows);
 
   const shouldShowSeedPhraseReminder = useAppSelector((state) =>
     getShouldShowSeedPhraseReminder(state, account),
@@ -544,6 +547,18 @@ export default function Routes() {
       dispatch(setCurrentCurrency('usd'));
     }
   }, [currentCurrency, dispatch]);
+
+  // Navigate to confirmations when there are pending approvals (from any page)
+  useEffect(() => {
+    if (pendingApprovals.length > 0 || approvalFlows?.length > 0) {
+      navigateToConfirmation(
+        pendingApprovals[0]?.id,
+        pendingApprovals,
+        Boolean(approvalFlows?.length),
+        history,
+      );
+    }
+  }, [pendingApprovals, approvalFlows, history]);
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;
