@@ -1460,6 +1460,7 @@ export class AppStateController extends BaseController<
    *
    * @param tabData - The active tab data
    */
+
   setAppActiveTab(tabData: {
     id: number;
     title: string;
@@ -1472,6 +1473,9 @@ export class AppStateController extends BaseController<
   }): void {
     this.update((state) => {
       state.appActiveTab = tabData;
+    });
+  }
+
   setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
     this.update((state) => {
       state.showShieldEntryModalOnce = showShieldEntryModalOnce;
