@@ -93,7 +93,7 @@ const ShieldPlan = () => {
   const {
     subscriptions,
     trialedProducts,
-    loading: subscriptionsLoading,
+    // loading: subscriptionsLoading,
     error: subscriptionsError,
   } = useUserSubscriptions({
     refetch: true, // always fetch latest subscriptions state in shield plan screen
@@ -117,7 +117,7 @@ const ShieldPlan = () => {
 
   const {
     subscriptionPricing,
-    loading: subscriptionPricingLoading,
+    // loading: subscriptionPricingLoading,
     error: subscriptionPricingError,
   } = useSubscriptionPricing({
     refetch: true, // always fetch latest price
@@ -228,10 +228,7 @@ const ShieldPlan = () => {
       subscriptionPricing,
     ]);
 
-  const loading =
-    subscriptionsLoading ||
-    subscriptionPricingLoading ||
-    subscriptionResult.pending;
+  const loading = !subscriptionPricing || subscriptionResult.pending;
   const error =
     subscriptionsError || subscriptionPricingError || subscriptionResult.error;
 
