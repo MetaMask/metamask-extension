@@ -1,11 +1,11 @@
 import { Erc20TokenStreamPermission } from '@metamask/gator-permissions-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { waitFor } from '@testing-library/react';
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import * as tokenUtils from '../../../../../utils/token';
 import { Erc20TokenStreamDetails } from './erc20-token-stream-details';
-import { waitFor } from '@testing-library/react';
 
 jest.mock('../../../../../utils/token', () => ({
   ...jest.requireActual('../../../../../utils/token'),

@@ -41,6 +41,8 @@ export const formatPeriodDuration = (periodSeconds: number) => {
       return 'Monthly';
     case YEAR:
       return 'Yearly';
+    default:
+      break;
   }
 
   const periods: string[] = [];
