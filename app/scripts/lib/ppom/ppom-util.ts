@@ -203,6 +203,7 @@ function normalizePPOMRequest(
   // That is why we extract the actual origin from the decoded permission.
   let actualOrigin = origin;
   if (
+    controllerObject &&
     'decodedPermission' in controllerObject &&
     controllerObject.decodedPermission?.origin
   ) {
