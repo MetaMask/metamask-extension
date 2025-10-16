@@ -967,18 +967,6 @@
         "lodash": true
       }
     },
-    "@metamask/core-backend": {
-      "globals": {
-        "URL": true,
-        "WebSocket": true,
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/utils": true,
-        "uuid": true
-      }
-    },
     "@metamask/delegation-controller": {
       "packages": {
         "@metamask/base-controller": true,
