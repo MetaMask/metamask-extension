@@ -1622,7 +1622,6 @@ export async function withSolanaAccountSnap(
         // - If this flag is not set, the slides count will be 4.
         // - If this flag is set, the slides count will be 5.
         remoteFeatureFlags: {
-          addSolanaAccount: true, // NOTE: Will be deprecated soon.
           solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
           bridgeConfig: showSnapConfirmation
             ? featureFlagsWithSnapConfirmation
