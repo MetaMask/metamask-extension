@@ -259,6 +259,7 @@ describe('useDappSwapComparisonInfo', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenLastCalledWith(
       {
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           dapp_swap_comparison: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             swap_dapp_from_token_simulated_value_usd: '0.00999804',
