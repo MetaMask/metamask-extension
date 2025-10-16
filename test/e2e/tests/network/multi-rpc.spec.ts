@@ -43,15 +43,13 @@ describe('MultiRpc:', function (this: Suite) {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkController({
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-            },
             networkConfigurationsByChainId: {
               '0x539': {
                 blockExplorerUrls: ['https://etherscan.io/'],
                 chainId: '0x539',
                 defaultBlockExplorerUrlIndex: 0,
                 defaultRpcEndpointIndex: 0,
+                lastUpdatedAt: 1760599304062,
                 name: 'Localhost 8545',
                 nativeCurrency: 'ETH',
                 rpcEndpoints: [
@@ -67,10 +65,14 @@ describe('MultiRpc:', function (this: Suite) {
                 chainId: '0xa4b1',
                 defaultBlockExplorerUrlIndex: 0,
                 defaultRpcEndpointIndex: 0,
+                lastUpdatedAt: 1760599304062,
                 name: 'Arbitrum One',
                 nativeCurrency: 'ETH',
                 rpcEndpoints: [
                   {
+                    failoverUrls: [
+                      'https://purple-young-mansion.arbitrum-mainnet.quiknode.pro/f48c5cbfd1f5b39f0e5542d3b23c181b4085a2b5/',
+                    ],
                     networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
                     type: 'custom',
                     url: 'https://arbitrum-mainnet.infura.io/',
@@ -98,7 +100,11 @@ describe('MultiRpc:', function (this: Suite) {
                 status: 'available',
               },
             },
-            selectedNetworkClientId: 'networkConfigurationId',
+            mainnet: {
+              EIPS: { 1559: true },
+              status: 'available',
+            },
+            selectedNetworkClientId: 'mainnet',
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -110,7 +116,7 @@ describe('MultiRpc:', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.clickSkipShieldModalButton();
-        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('85,000.00', '$');
 
         await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
@@ -155,56 +161,29 @@ describe('MultiRpc:', function (this: Suite) {
             providerConfig: {
               rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
             },
-            networkConfigurationsByChainId: {
-              '0x539': {
-                blockExplorerUrls: ['https://etherscan.io/'],
-                chainId: '0x539',
-                defaultBlockExplorerUrlIndex: 0,
-                defaultRpcEndpointIndex: 0,
-                name: 'Localhost 8545',
-                nativeCurrency: 'ETH',
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'networkConfigurationId',
-                    type: 'custom',
-                    url: 'http://localhost:8545',
-                  },
-                ],
-              },
-              '0xa4b1': {
-                blockExplorerUrls: ['https://explorer.arbitrum.io'],
-                chainId: '0xa4b1',
-                defaultBlockExplorerUrlIndex: 0,
-                defaultRpcEndpointIndex: 0,
-                name: 'Arbitrum One',
-                nativeCurrency: 'ETH',
-                rpcEndpoints: [
-                  {
-                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                    type: 'custom',
-                    url: 'https://arbitrum-mainnet.infura.io/',
-                  },
-                  {
-                    name: 'Arbitrum mainnet 2',
-                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                    type: 'custom',
-                    url: 'https://responsive-rpc.test/',
-                  },
-                ],
-              },
-            },
-            networksMetadata: {
+            networkConfigurations: {
               networkConfigurationId: {
-                EIPS: { 1559: true },
-                status: 'available',
+                chainId: '0x539',
+                nickname: 'Localhost 8545',
+                rpcUrl: 'http://localhost:8545',
+                ticker: 'ETH',
+                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
               },
               '2ce66016-8aab-47df-b27f-318c80865eb0': {
-                EIPS: { 1559: true },
-                status: 'available',
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
+                nickname: 'Arbitrum mainnet',
+                rpcPrefs: {},
+                rpcUrl: 'https://arbitrum-mainnet.infura.io',
+                ticker: 'ETH',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
-                EIPS: { 1559: true },
-                status: 'available',
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb1',
+                nickname: 'Arbitrum mainnet 2',
+                rpcPrefs: {},
+                rpcUrl: 'https://responsive-rpc.test/',
+                ticker: 'ETH',
               },
             },
             selectedNetworkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
@@ -280,56 +259,29 @@ describe('MultiRpc:', function (this: Suite) {
             providerConfig: {
               rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
             },
-            networkConfigurationsByChainId: {
-              '0x539': {
-                blockExplorerUrls: ['https://etherscan.io/'],
-                chainId: '0x539',
-                defaultBlockExplorerUrlIndex: 0,
-                defaultRpcEndpointIndex: 0,
-                name: 'Localhost 8545',
-                nativeCurrency: 'ETH',
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'networkConfigurationId',
-                    type: 'custom',
-                    url: 'http://localhost:8545',
-                  },
-                ],
-              },
-              '0xa4b1': {
-                blockExplorerUrls: ['https://explorer.arbitrum.io'],
-                chainId: '0xa4b1',
-                defaultBlockExplorerUrlIndex: 0,
-                defaultRpcEndpointIndex: 0,
-                name: 'Arbitrum One',
-                nativeCurrency: 'ETH',
-                rpcEndpoints: [
-                  {
-                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                    type: 'custom',
-                    url: 'https://arbitrum-mainnet.infura.io/',
-                  },
-                  {
-                    name: 'Arbitrum mainnet 2',
-                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                    type: 'custom',
-                    url: 'https://responsive-rpc.test/',
-                  },
-                ],
-              },
-            },
-            networksMetadata: {
+            networkConfigurations: {
               networkConfigurationId: {
-                EIPS: { 1559: true },
-                status: 'available',
+                chainId: '0x539',
+                nickname: 'Localhost 8545',
+                rpcUrl: 'http://localhost:8545',
+                ticker: 'ETH',
+                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
               },
               '2ce66016-8aab-47df-b27f-318c80865eb0': {
-                EIPS: { 1559: true },
-                status: 'available',
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
+                nickname: 'Arbitrum mainnet',
+                rpcPrefs: {},
+                rpcUrl: 'https://arbitrum-mainnet.infura.io',
+                ticker: 'ETH',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
-                EIPS: { 1559: true },
-                status: 'available',
+                chainId: '0xa4b1',
+                id: '2ce66016-8aab-47df-b27f-318c80865eb1',
+                nickname: 'Arbitrum mainnet 2',
+                rpcPrefs: {},
+                rpcUrl: 'https://responsive-rpc.test/',
+                ticker: 'ETH',
               },
             },
             selectedNetworkClientId: 'networkConfigurationId',
