@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -7,21 +8,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [13.4.3]
+
 ### Fixed
+
 - Adds path-based blocking for URLs (#36634)
 
 ## [13.4.2]
+
 ### Fixed
+
 - Fixes ci pipeline issue preventing production build creation (#36624)
 
 ## [13.4.1]
+
 ### Fixed
+
 - Fixes the issue where new Trezor hardware wallet users are unable to connect (#36425)
 - Fixes issue with polycon not being set as default for existing users (#36553)
 - Fixes intermittent connection and signing errors with Lattice1 hardware wallets by improving message validation (#36306)
 
 ## [13.4.0]
+
 ### Added
+
 - feat: adds verified trust signal to dapp connection page (#35760)
 - feat: hides bridge recipient picker until there is an active bridge quote (#35821)
 - feat: implements bridge destination account picker modal (#35819)
@@ -58,6 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: adds metametrics toggle and delete metametrics data button in default settings (#36275)
 
 ### Fixed
+
 - fix: fixes a bug that was causing to show spam Solana transactions in the activity list (#35695)
 - fix: fixes an issue that was causing to show an empty symbol instead of UNKNOWN in activity list for Solana tokens with no metadata (#35695)
 - fix: adds UI adjustments for multichain accounts features (#35839)
@@ -108,18 +118,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: fixes issue where simulations results are shown with wrong decimals on some networks (#36346)
 
 ## [13.3.2]
+
 ### Fixed
+
 - fix: fixes ci pipeline issue preventing production build creation (#36291)
 
 ## [13.3.1]
+
 ### Fixed
+
 - fix: fixes issues with balances not updating on Solana (#36129)
 - fix: improves Solana account synchronization and WebSocket subscriptions (#36129)
 - fix: adds multichain asset prices polling to ensure Solana chart always displays up-to-date price data (#36175)
 - fix: adds support for signing transactions where the fee payer differs from the user's account (#36251)
 
 ## [13.3.0]
+
 ### Added
+
 - feat: improve new send flow, by merging amount and recipient pages, and by adding the possibility to navigate back to the page when needed (#35416)
 - feat: improve new send flow, by adding Solana compatibility (#35361)
 - feat: improve new send flow, by adding amount fiat conversion and validation functions (#35346)
@@ -137,6 +153,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: add checkbox for emitting error report to Sentry when restarting MetaMask from error page (#35619)
 
 ### Changed
+
 - update: display the number of account group instead of addresses for a connected dapp (#35427)
 - update: improve multichain address list by filtering out test networks and refining layout (#35380)
 - update: batch RPC requests for native and ERC20 tokens into a single request to reduce the total number of RPC calls and improve performance (#35283)
@@ -145,6 +162,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update: deprecate carousel slides (#35109)
 
 ### Fixed
+
 - fix: solve some security vulnerabilities caused by out of date dependencies (#34364)
 - fix: resolve visual bug when very long URLs get displayed on the MetaMask warning page (#35179)
 - fix: avoid race condition where the password is being changed while the wallet is locked (#35022)
@@ -162,19 +180,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: fixes an issue with first-time interaction alerts displaying on verified contract addresses (#35331)
 
 ## [13.2.3]
+
 ### Fixed
+
 - fix: fixes bridging on https://portfolio.metamask.io (#35755)
 
 ## [13.2.2]
+
 ### Fixed
+
 - fix: fixes issue related to `Routes` component that was leading the app to occasionally crash and force reinstall for some users (#35587)
 
 ## [13.2.1]
+
 ### Fixed
+
 - fix: update the Solana snap to latest version (#35642)
 
 ## [13.2.0]
+
 ### Added
+
 - feat: enable Linea for Smart Transactions (#35117)
 - feat: add discover button for Solana network in the network list (#34498)
 - feat: add account switching functionality for the multichain accounts (#34989)
@@ -191,6 +217,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: unblock gas station for Base network and more accurate `alternateGasFee` capability (#34733)
 
 ### Changed
+
 - update: remove the Solana modal from the initial flow (#34988)
 - update: disable transaction resubmission (#35028)
 - update: update `SEI` network's name from `Sei Network` to `Sei Mainnet` (#34930)
@@ -198,6 +225,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update: removed the `socialLoginEmail` from the state-logs export (settings -> advanced -> download state-logs), instead of masking the value (#35170)
 
 ### Fixed
+
 - fix: ensure text doesn't go beyond component boundaries when user is prompted to add a network (#34824)
 - fix: skip metametrics screen if user already chose an option (#35036)
 - fix: disable the hover state when SnapUISelector is disabled (#34964)
@@ -219,17 +247,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: ensure the dapp-connected network remains unchanged when the global network RPC endpoint is switched (#35487)
 
 ## [13.1.2]
+
 ### Fixed
+
 - fix: fixes a performance issue by closing all Solana WebSocket connections whenever the client becomes inactive (#35359)
 - fix: fixes a performance issue by only opening Solana WebSocket connections if client is active (#35392)
 
 ## [13.1.1]
+
 ### Fixed
+
 - fix: remove the Solana new feature modal from the onboarding flow (#34988)
 - fix: hide swap fee info line if quote does not include a MetaMask fee (#35278)
 
 ## [13.1.0]
+
 ### Added
+
 - feat: inform users using social login when their password got updated in another instance of the wallet (#34757)
 - feat: use websockets instead of polling to automatically update Solana transactions and token balances (#34620)
 - feat: enable notifications by default for users (#34693)
@@ -238,6 +272,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: Add buttons to test error capture (#34386)
 
 ### Changed
+
 - update: more seamless and user-friendly experience for users interacting with Trezor devices (#33834)
 - update: adopt fixed spacing between the account avatar and its details rows (#34689)
 - update: polish welcome page copywriting and styles (#34621)
@@ -259,6 +294,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update: update `form-data` to address advisory (#34480)
 
 ### Fixed
+
 - fix: hide bridge button on testnet for unified ui (#34700)
 - fix: display multichain accounts in the right order on account list (#34756)
 - fix: stop showing all enabled networks when an additional network permission request is prompted by a dapp (#34651)
@@ -297,13 +333,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: ensures that user's email is removed from the state logs, which are downloadable from advanced settings page (#35119)
 
 ## [13.0.1]
+
 ### Fixed
+
 - fix: invalid refresh token error thrown when wallet was locked before some background requests completed (#34961)
 - fix: bridging to Solana without a Solana account failing on legacy extensions (#34943)
 - fix: polling rate being set to 1 minute instead of 10 minutes (#34883)
 
 ## [13.0.0]
+
 ### Added
+
 - feat: prefill token in unified swaps experience (#34038)
 - feat: 2.13 seedlessonboardingcontroller 2.2.0 update (#34240)
 - feat(INFRA-2772): add failure notifications for nightly build failures (#34345)
@@ -336,6 +376,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: add loader for onboarding unlock (#34518)
 
 ### Changed
+
 - update: change homepage button colors and header styling (#34209)
 - update: remove unified swaps legacy and portfolio fallbacks (#34290)
 - update: change ui's background communications to use a single notification listener instead of two (#33211)
@@ -348,6 +389,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - update: add Cubist to the list of supported institutional wallet (#34761)
 
 ### Fixed
+
 - fix: align asset page buttons and fix homepage scrolling (#34342)
 - fix: password form terms social and srp (#34350)
 - fix: show contacts for all chains (#34307)
@@ -452,11 +494,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: add logic to revert state for smart contract account toggle if there is a blockchain state mismatch (#34745)
 
 ## [12.23.1]
+
 ### Fixed
+
 - fix: ensure "Update extension to the latest version" button in the update prompt work in browser-action popup (#34372)
 
 ## [12.23.0]
+
 ### Added
+
 - feat: gasIncluded swaps cp-12-23.0 (#33988)
 - feat: unskipeed send flow Solana tests (#34036)
 - feat: add e2e tests for Ledger personal sign functionality (#34002)
@@ -505,6 +551,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - feat: validate same origin domain for signIn for Solana (#33982)
 
 ### Changed
+
 - Update: the button component to be monochromatic (#33847)
 - Update: design tokens v8: font family change CentraNo1 to Geist and new background colors (#33764)
 - Update: update message when there is no DeFi positions wording (#34229)
@@ -512,6 +559,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Set confirm srp quiz word to readonly (#34225)
 
 ### Fixed
+
 - fix: solve when private key import field to always be in error state (#34050)
 - fix: regression of lanchdarkly flag key (#34045)
 - fix: solve `Error: Ledger: Unknown error while signing transaction` (#33581)
@@ -556,20 +604,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: migrate BSC network RPC from bsc-dataseed.binance.org to bsc infura (#33997)
 
 ## [12.22.3]
+
 ### Fixed
+
 - fix: resolve infinite loading on spending cap when selected chain differs from dapp (#34355)
 - fix: prevent frequent writes while the wallet UI is closed (#34413, #34465, #34506, #34473, #34474)
 
 ## [12.22.2]
+
 ### Fixed
+
 - Fix crash on older browsers (#34255)
 
 ## [12.22.1]
+
 ### Fixed
+
 - Display sent amounts from the active swap quote when showing approval warnings to prevent parsing non-numerical inputs (#34156)
 
 ## [12.22.0]
+
 ### Added
+
 - New onboarding flow (#33704 and others)
 - Added basic functionality banner in the carousel (#33095)
 - New Multichain Accounts List Menu (#33657)
@@ -606,6 +662,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use the new afterAdd hook to update the transaction when remote mode is available (#33115)
 
 ### Changed
+
 - Updated OP logo (#33399)
 - Updated connection background and fixed design nits (#33100)
 - Adapt the styles of the price chart loading and empty states (#33139)
@@ -614,6 +671,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated the NetworkController to enable Base network by default (#33448)
 
 ### Fixed
+
 - Update link to MetaMask CLA (#30940)
 - Fixed a case where non-unique words in confirm seed phrase would break the SRP quiz (#33781)
 - Display "Switch back" instead of "Switch" for smart accounts (#33724)
@@ -648,7 +706,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve useSnapAssetDisplay performance (#33138)
 
 ## [12.20.1]
+
 ### Changed
+
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
