@@ -350,11 +350,18 @@ function maybeDetectPhishing(theController) {
       } else if (phishingTestResponse?.result) {
         blockReason = phishingTestResponse.type;
       } else {
+        // Override the blocked URL to the initiator URL if the request was flagged by c2 detection
         blockReason = blockedRequestResponse.type;
         blockedUrl = details.initiator;
       }
 
-      const blockedHostname = new URL(blockedUrl).hostname;
+      let blockedHostname;
+      try {
+        blockedHostname = new URL(blockedUrl).hostname;
+      } catch {
+        // If blockedUrl is null or undefined, fall back to the original URL's hostname
+        blockedHostname = hostname;
+      }
 
       if (!isFirefox) {
         theController.metaMetricsController.trackEvent(
