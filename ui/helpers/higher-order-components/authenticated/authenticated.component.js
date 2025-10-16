@@ -25,6 +25,6 @@ Authenticated.propTypes = {
   isUnlocked: PropTypes.bool,
   completedOnboarding: PropTypes.bool,
   path: PropTypes.string,
-  component: PropTypes.object,
+  component: PropTypes.function,
   exact: PropTypes.bool,
 };
