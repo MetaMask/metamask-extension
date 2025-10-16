@@ -134,6 +134,10 @@ type AppState = {
   showConnectionsRemovedModal: boolean;
   showCopyAddressToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;
+  shieldEntryModal?: {
+    show: boolean;
+    shouldSubmitEvents: boolean;
+  };
 };
 
 export type AppSliceState = {
@@ -796,6 +800,13 @@ export default function reduceApp(
       return {
         ...appState,
         showConnectionsRemovedModal: action.value,
+      };
+    case actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE:
+      return {
+        ...appState,
+        shieldEntryModal: {
+          ...action.payload,
+        },
       };
 
     default:

@@ -15,6 +15,11 @@ jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../hooks/send/metrics/useRecipientSelectionMetrics');
 jest.mock('../../../context/send');
 jest.mock('../../../hooks/send/useRecipients');
+jest.mock('../../../hooks/send/useAccountAddressSeedIconMap', () => ({
+  useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
+    accountAddressSeedIconMap: new Map(),
+  }),
+}));
 
 describe('RecipientInput', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
