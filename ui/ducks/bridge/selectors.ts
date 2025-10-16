@@ -328,19 +328,27 @@ export const getToChain = createSelector(
     (state: BridgeAppState) => state.bridge?.toChainId,
   ],
   (fromChain, toChains, toChainId) => {
+    // If user has explicitly selected a destination, use it
     if (toChainId) {
       return toChains.find(
         ({ chainId }) =>
           chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
       );
     }
-    // Don't default to fromChain if it's not in the available destinations
-    // (e.g., Bitcoin can't bridge to Bitcoin)
+
+    // Check if source chain can be used as destination
+    // (Bitcoin can't bridge to Bitcoin, for example)
     const isFromChainAvailable = toChains.some(
       ({ chainId }) => chainId === fromChain?.chainId,
     );
-    // If fromChain is not available, return the first available chain (mainnet)
-    return isFromChainAvailable ? fromChain : toChains[0];
+
+    if (isFromChainAvailable) {
+      return fromChain;
+    }
+
+    // Source chain not available - default to first available destination
+    // Return undefined if no destinations available
+    return toChains.length > 0 ? toChains[0] : undefined;
   },
 );
 
