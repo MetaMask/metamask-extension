@@ -1,23 +1,30 @@
+import { BigNumber } from 'bignumber.js';
+import {
+  ContractExchangeRates,
+  getNativeTokenAddress,
+} from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
+import { QuoteResponse } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import { fetchQuotes } from '../../../../../../store/actions';
+import { fetchTokenExchangeRates } from '../../../../../../helpers/utils/util';
+import { useAsyncResult } from '../../../../../../hooks/useAsync';
+import { fetchAllErc20Decimals } from '../../../../utils/token';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import {
   getDataFromSwap,
   getBestQuote,
-  getPercentageValue,
-  getPercentageGasDifference,
+  getTokenValueFromRecord,
 } from '../dapp-swap-comparison-utils';
-import { useConversionRate } from './useConversionRate';
 
 export function useDappSwapComparisonInfo() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { getConversionRateForToken } = useConversionRate();
   const {
     chainId,
+    gasUsed,
     id: transactionId,
     simulationData,
     txParams,
@@ -29,6 +36,7 @@ export function useDappSwapComparisonInfo() {
 
   const captureDappSwapComparisonMetricsProperties = useCallback(
     (properties: Record<string, string>) => {
+      console.log('--------------------------------', properties);
       updateTransactionEventFragment(
         {
           properties: {
@@ -41,61 +49,145 @@ export function useDappSwapComparisonInfo() {
     [transactionId, updateTransactionEventFragment],
   );
 
-  useEffect(() => {
+  const { quotesInput, amountMin, erc20TokenAddresses } = useMemo(() => {
+    return getDataFromSwap(chainId, amount, data);
+  }, [chainId, amount, data]);
+
+  const { value: erc20FiatRates } = useAsyncResult<ContractExchangeRates>(
+    () => fetchTokenExchangeRates('usd', erc20TokenAddresses, chainId),
+    [JSON.stringify(erc20TokenAddresses), chainId],
+  );
+
+  const { value: erc20Decimals } = useAsyncResult<
+    Record<Hex, number>
+  >(async () => {
+    const result = await fetchAllErc20Decimals(
+      erc20TokenAddresses as Hex[],
+      chainId,
+    );
+    return { ...result, [getNativeTokenAddress(chainId)]: 18 };
+  }, [JSON.stringify(erc20TokenAddresses), chainId]);
+
+  const getUSDValue = useCallback(
+    (amount: string, tokenAddress: Hex) => {
+      if (!erc20Decimals || !erc20FiatRates) {
+        return '0';
+      }
+      const decimals = new BigNumber(
+        Math.pow(10, getTokenValueFromRecord(erc20Decimals, tokenAddress)),
+      );
+      const conversionRate = new BigNumber(
+        getTokenValueFromRecord(
+          erc20FiatRates as Record<Hex, number>,
+          tokenAddress,
+        ),
+      );
+      return new BigNumber(amount ?? 0)
+        .dividedBy(decimals)
+        .times(conversionRate)
+        .toString(10);
+    },
+    [JSON.stringify(erc20Decimals), JSON.stringify(erc20FiatRates)],
+  );
+
+  const { value: quotes } = useAsyncResult<
+    QuoteResponse[] | undefined
+  >(async () => {
+    if (!quotesInput || !amountMin) {
+      return undefined;
+    }
+
     captureDappSwapComparisonMetricsProperties({ loading: 'true' });
 
-    const { quotesInput, amountMin } = getDataFromSwap(chainId, amount, data);
-    if (!quotesInput || !amountMin) {
+    return await fetchQuotes(quotesInput);
+  }, [
+    amountMin,
+    captureDappSwapComparisonMetricsProperties,
+    JSON.stringify(quotesInput),
+  ]);
+
+  useEffect(() => {
+    if (
+      !amountMin ||
+      !erc20Decimals ||
+      !erc20FiatRates ||
+      !quotes ||
+      !quotesInput
+    ) {
       return;
     }
 
-    fetchQuotes(quotesInput).then((quotes) => {
-      const selectedQuoteIndex = getBestQuote(quotes);
+    const selectedQuoteIndex = getBestQuote(quotes);
+    const selectedQuote = quotes[selectedQuoteIndex];
 
-      const sourceTokenRate = getConversionRateForToken(
-        quotesInput.srcTokenAddress as Hex,
-        chainId,
-      );
+    const { destTokenAddress, srcTokenAmount, srcTokenAddress } = quotesInput;
+    const {
+      approval,
+      quote: { destTokenAmount, minDestTokenAmount },
+      trade,
+    } = selectedQuote;
+    const totalGasInQuote =
+      (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
+      (trade?.effectiveGas ?? trade?.gasLimit ?? 0);
 
-      const destinationTokenRate = getConversionRateForToken(
-        quotesInput.destTokenAddress as Hex,
-        chainId,
-      );
+    const { tokenBalanceChanges } = simulationData ?? {};
+    const destTokenBalanceChange = new BigNumber(
+      tokenBalanceChanges
+        ?.find(
+          (tbc) =>
+            tbc.address?.toLowerCase() === destTokenAddress?.toLowerCase(),
+        )
+        ?.difference.toString() ?? '0x0',
+      16,
+    )
+      .toNumber()
+      .toString();
 
-      console.log(
-        '--------------------------------',
-        sourceTokenRate,
-        destinationTokenRate,
-      );
+    const nativeTokenAddress = getNativeTokenAddress(chainId);
 
-      const percentageChangeInTokenAmount = getPercentageValue(
-        quotes[selectedQuoteIndex].quote.destTokenAmount,
+    captureDappSwapComparisonMetricsProperties({
+      swap_dapp_from_token_simulated_value_usd: getUSDValue(
+        srcTokenAmount,
+        srcTokenAddress as Hex,
+      ),
+      swap_dapp_to_token_simulated_value_usd: getUSDValue(
+        destTokenBalanceChange,
+        destTokenAddress as Hex,
+      ),
+      swap_dapp_minimum_received_value_usd: getUSDValue(
         amountMin,
-      );
-
-      const percentageChangeInTokenMinAmount = getPercentageValue(
-        quotes[selectedQuoteIndex].quote.minDestTokenAmount,
-        amountMin,
-      );
-
-      const percentageChangeInGas = getPercentageGasDifference(
-        quotes[selectedQuoteIndex],
-        gas as Hex,
-      );
-
-      captureDappSwapComparisonMetricsProperties({
-        percentage_change_in_token_amount: percentageChangeInTokenAmount,
-        percentage_change_in_token_min_amount: percentageChangeInTokenMinAmount,
-        percentage_change_in_gas: percentageChangeInGas,
-      });
+        destTokenAddress as Hex,
+      ),
+      swap_dapp_network_fee_usd: getUSDValue(
+        new BigNumber(gasUsed ?? gas ?? '0x0', 16).toNumber().toString(),
+        nativeTokenAddress,
+      ),
+      swap_mm_from_token_simulated_value_usd: getUSDValue(
+        srcTokenAmount,
+        srcTokenAddress as Hex,
+      ),
+      swap_mm_to_token_simulated_value_usd: getUSDValue(
+        destTokenAmount,
+        destTokenAddress as Hex,
+      ),
+      swap_mm_minimum_received_value_usd: getUSDValue(
+        minDestTokenAmount,
+        destTokenAddress as Hex,
+      ),
+      swap_mm_network_fee_usd: getUSDValue(
+        totalGasInQuote.toString(),
+        nativeTokenAddress,
+      ),
     });
   }, [
-    amount,
+    amountMin,
     captureDappSwapComparisonMetricsProperties,
     chainId,
-    data,
+    erc20FiatRates,
+    erc20Decimals,
     gas,
-    getConversionRateForToken,
+    gasUsed,
+    quotesInput,
     simulationData,
   ]);
 }

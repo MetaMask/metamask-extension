@@ -83,6 +83,7 @@ export const getDataFromSwap = (
 ) => {
   let quotesInput;
   let amountMin;
+  let erc20TokenAddresses = [];
   const { commandBytes, inputs } = parseTransactionData(data);
 
   const sweepIndex = commandBytes.findIndex(
@@ -92,6 +93,7 @@ export const getDataFromSwap = (
   if (sweepIndex >= 0) {
     const words = getWordsFromInput(inputs[sweepIndex]);
     amountMin = wordToAmount(words[2]);
+    erc20TokenAddresses.push(wordToAddress(words[0]));
     quotesInput = {
       walletAddress: wordToAddress(words[1]),
       srcChainId: chainId,
@@ -110,6 +112,8 @@ export const getDataFromSwap = (
     if (seaportIndex >= 0) {
       const words = getWordsFromInput(inputs[seaportIndex]);
       amountMin = wordToAmount(words[13]);
+      erc20TokenAddresses.push(wordToAddress(words[10]));
+      erc20TokenAddresses.push(wordToAddress(words[16]));
       quotesInput = {
         walletAddress: wordToAddress(words[28]),
         srcChainId: chainId,
@@ -123,7 +127,7 @@ export const getDataFromSwap = (
     }
   }
 
-  return { quotesInput, amountMin };
+  return { quotesInput, amountMin, erc20TokenAddresses };
 };
 
 export const getBestQuote = (quotes: QuoteResponse[]) => {
@@ -144,15 +148,6 @@ export const getBestQuote = (quotes: QuoteResponse[]) => {
   return selectedQuoteIndex;
 };
 
-export const getPercentageValue = (value: string, baseValue: string) => {
-  return new Numeric(value, 10)
-    .minus(new Numeric(baseValue, 10))
-    .divide(new Numeric(baseValue, 10))
-    .times(100, 10)
-    .toNumber()
-    .toFixed(2);
-};
-
 export const getPercentageGasDifference = (quote: QuoteResponse, gas: Hex) => {
   const totalGasInQuote =
     (quote.approval?.gasLimit ?? 0) + (quote.trade?.gasLimit ?? 0);
@@ -164,4 +159,14 @@ export const getPercentageGasDifference = (quote: QuoteResponse, gas: Hex) => {
       totalGasInCurrentTransaction) *
     100
   ).toFixed(2);
+};
+
+export const getTokenValueFromRecord = (
+  record: Record<Hex, number>,
+  tokenAddress: Hex,
+): number => {
+  const address = Object.keys(record).find((key) => {
+    return key.toLowerCase() === tokenAddress.toLowerCase();
+  });
+  return address ? (record[address as Hex] ?? 0) : 0;
 };
