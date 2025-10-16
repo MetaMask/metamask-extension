@@ -4580,12 +4580,12 @@ __metadata:
   linkType: hard
 
 "@jridgewell/trace-mapping@npm:^0.3.12, @jridgewell/trace-mapping@npm:^0.3.18, @jridgewell/trace-mapping@npm:^0.3.24, @jridgewell/trace-mapping@npm:^0.3.25, @jridgewell/trace-mapping@npm:^0.3.28, @jridgewell/trace-mapping@npm:^0.3.9":
-  version: 0.3.31
-  resolution: "@jridgewell/trace-mapping@npm:0.3.31"
+  version: 0.3.30
+  resolution: "@jridgewell/trace-mapping@npm:0.3.30"
   dependencies:
     "@jridgewell/resolve-uri": "npm:^3.1.0"
     "@jridgewell/sourcemap-codec": "npm:^1.4.14"
-  checksum: 10/da0283270e691bdb5543806077548532791608e52386cfbbf3b9e8fb00457859d1bd01d512851161c886eb3a2f3ce6fd9bcf25db8edf3bddedd275bd4a88d606
+  checksum: 10/f9fabe1122058f4fedc242bdc43fcaacb6b222c6fb712b7904c37704dcb16e50e07ca137ff99043da44292b18a8720296ff97f7703e960678b8ef51d0db4d250
   languageName: node
   linkType: hard
 
@@ -4822,22 +4822,6 @@ __metadata:
   version: 0.3.2
   resolution: "@kurkle/color@npm:0.3.2"
   checksum: 10/079c4b7688061070f1d570cee4cf0e7c4085867b940688ff80356a56825a5ace7077257c9ec5863eb344a8eae78379388ab57cdf9d75c491389fad56f411cd43
-  languageName: node
-  linkType: hard
-
-"@kwsites/file-exists@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@kwsites/file-exists@npm:1.1.1"
-  dependencies:
-    debug: "npm:^4.1.1"
-  checksum: 10/4ff945de7293285133aeae759caddc71e73c4a44a12fac710fdd4f574cce2671a3f89d8165fdb03d383cfc97f3f96f677d8de3c95133da3d0e12a123a23109fe
-  languageName: node
-  linkType: hard
-
-"@kwsites/promise-deferred@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "@kwsites/promise-deferred@npm:1.1.1"
-  checksum: 10/07455477a0123d9a38afb503739eeff2c5424afa8d3dbdcc7f9502f13604488a4b1d9742fc7288832a52a6422cf1e1c0a1d51f69a39052f14d27c9a0420b6629
   languageName: node
   linkType: hard
 
@@ -5666,16 +5650,6 @@ __metadata:
   bin:
     auto-changelog: dist/cli.mjs
   checksum: 10/ee9f651c313a2377a21a304383f56f1872b4ce6411a0b61cf0b70b23bff9d3204332cd5a052cdfcaf363ce15424a7a1fdbde99a6b4352f2472fbe6b6d27c5791
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:^7.0.1":
-  version: 7.1.1
-  resolution: "@metamask/base-controller@npm:7.1.1"
-  dependencies:
-    "@metamask/utils": "npm:^11.0.1"
-    immer: "npm:^9.0.6"
-  checksum: 10/d45abc9e0f3f42a0ea7f0a52734f3749fafc5fefc73608230ab0815578e83a9fc28fe57dc7000f6f8df2cdcee5b53f68bb971091075bec9de6b7f747de627c60
   languageName: node
   linkType: hard
 
@@ -7375,22 +7349,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^12.0.0":
-  version: 12.0.3
-  resolution: "@metamask/polling-controller@npm:12.0.3"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.5.0"
-    "@metamask/utils": "npm:^11.1.0"
-    "@types/uuid": "npm:^8.3.0"
-    fast-json-stable-stringify: "npm:^2.1.0"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/network-controller": ^22.0.0
-  checksum: 10/4eb410beaa6f8ff2e089f9aa9eee9ad730d70a596c839df2f4c1aa873466722f4dc95e9cf1c68c055d89c7222d4476241c1d1c45d9b2583ac245cd8fa08144ab
-  languageName: node
-  linkType: hard
-
 "@metamask/polling-controller@npm:^14.0.0, @metamask/polling-controller@npm:^14.0.1":
   version: 14.0.1
   resolution: "@metamask/polling-controller@npm:14.0.1"
@@ -7715,9 +7673,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^18.1.0":
-  version: 18.1.0
-  resolution: "@metamask/smart-transactions-controller@npm:18.1.0"
+"@metamask/smart-transactions-controller@npm:^19.2.1":
+  version: 19.2.1
+  resolution: "@metamask/smart-transactions-controller@npm:19.2.1"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -7725,23 +7683,29 @@ __metadata:
     "@ethersproject/bytes": "npm:^5.7.0"
     "@ethersproject/keccak256": "npm:^5.8.0"
     "@ethersproject/transactions": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^7.0.1"
+    "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/controller-utils": "npm:^11.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^4.1.6"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/polling-controller": "npm:^12.0.0"
+    "@metamask/polling-controller": "npm:^14.0.0"
     bignumber.js: "npm:^9.0.1"
     fast-json-patch: "npm:^3.1.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@metamask/network-controller": ^24.0.0
-    "@metamask/transaction-controller": ^42.0.0
+    "@metamask/transaction-controller": ^60.4.0
   peerDependenciesMeta:
     "@metamask/accounts-controller":
       optional: true
     "@metamask/approval-controller":
       optional: true
-  checksum: 10/9b675afcd7ad444ce4af62aaf2dd9154960e49c52de8d1f08bf9638a25bb35c88da4774e481916769bb26786f4f311447d6e2f54cf38be3b1703645495c693ea
+    "@metamask/eth-block-tracker":
+      optional: true
+    "@metamask/gas-fee-controller":
+      optional: true
+    "@metamask/remote-feature-flag-controller":
+      optional: true
+  checksum: 10/d26e8ca743a30d7587887d4d7e9fbcb695030e1386a9efe258aeb397c43e99310a465fa9426f584b03d87295093e1d42842f5939e1d24ee66b18764af1690e9f
   languageName: node
   linkType: hard
 
@@ -8098,9 +8062,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^60.2.0, @metamask/transaction-controller@npm:^60.6.0":
-  version: 60.6.0
-  resolution: "@metamask/transaction-controller@npm:60.6.0"
+"@metamask/transaction-controller@npm:^60.2.0, @metamask/transaction-controller@npm:^60.7.0":
+  version: 60.7.0
+  resolution: "@metamask/transaction-controller@npm:60.7.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -8109,8 +8073,8 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@ethersproject/wallet": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^8.4.0"
-    "@metamask/controller-utils": "npm:^11.14.0"
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/nonce-tracker": "npm:^6.0.0"
@@ -8130,7 +8094,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^24.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/c23f146d625fc92093361785950cd950421615f91e781950a66e61f8c689806e61c7db03bd3cecf7b44fa4406c12204ad7e69f9b40c18062f77f14175ee7bf2a
+  checksum: 10/5aa7b5479094f9e12813b3b18c13513ef2e68519afe753657ab23c594b88c7e3d42c740621d7e952cd966efea797dd6de3e15f127578b02c275084ed6ada48fe
   languageName: node
   linkType: hard
 
@@ -32037,7 +32001,7 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^24.0.0"
     "@metamask/shield-controller": "npm:^0.3.2"
     "@metamask/signature-controller": "npm:^34.0.0"
-    "@metamask/smart-transactions-controller": "npm:^18.1.0"
+    "@metamask/smart-transactions-controller": "npm:^19.2.1"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.0.0"
     "@metamask/snaps-controllers": "npm:^15.0.1"
@@ -32054,14 +32018,13 @@ __metadata:
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
-    "@metamask/transaction-controller": "npm:^60.6.0"
+    "@metamask/transaction-controller": "npm:^60.7.0"
     "@metamask/user-operation-controller": "npm:^39.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"
     "@noble/ciphers": "npm:^1.3.0"
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.3.3"
-    "@octokit/core": "npm:^3.6.0"
     "@octokit/types": "npm:^14.0.0"
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/mock-server": "npm:^1.7.5"
@@ -32332,7 +32295,6 @@ __metadata:
     serve-handler: "npm:^6.1.2"
     ses: "npm:^1.1.0"
     sharp: "npm:^0.34.2"
-    simple-git: "npm:^3.20.0"
     single-call-balance-checker-abi: "npm:^1.0.0"
     sinon: "npm:^9.0.0"
     source-map: "npm:^0.7.4"
@@ -39254,17 +39216,6 @@ __metadata:
     once: "npm:^1.3.1"
     simple-concat: "npm:^1.0.0"
   checksum: 10/93f1b32319782f78f2f2234e9ce34891b7ab6b990d19d8afefaa44423f5235ce2676aae42d6743fecac6c8dfff4b808d4c24fe5265be813d04769917a9a44f36
-  languageName: node
-  linkType: hard
-
-"simple-git@npm:^3.20.0":
-  version: 3.20.0
-  resolution: "simple-git@npm:3.20.0"
-  dependencies:
-    "@kwsites/file-exists": "npm:^1.1.1"
-    "@kwsites/promise-deferred": "npm:^1.1.1"
-    debug: "npm:^4.3.4"
-  checksum: 10/fabfdbabfec8c7a7484d22d0218fb4ff9c8acdecaadc34c4655cd10f2aacd40bd656284abdf1613831b692d7fe1be58314b23e9f1adfe380f2b910622cc2468e
   languageName: node
   linkType: hard
 
