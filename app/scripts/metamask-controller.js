@@ -4784,6 +4784,7 @@ export default class MetamaskController extends EventEmitter {
       this.accountTrackerController.state.accountsByChainId[
         this.#getGlobalChainId()
       ];
+    // TODO - Checksum?
     const cached = accounts?.[address];
 
     if (cached && cached.balance) {
@@ -7675,6 +7676,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       // Other dependencies
       getAccountBalance: (account, chainId) =>
+        // TODO - Checksum?
         this.accountTrackerController.state.accountsByChainId?.[chainId]?.[
           account
         ]?.balance,
