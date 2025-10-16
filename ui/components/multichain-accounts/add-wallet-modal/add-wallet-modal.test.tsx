@@ -7,6 +7,10 @@ import {
   CONNECT_HARDWARE_ROUTE,
   IMPORT_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
+import {
+  getIsAddSnapAccountEnabled,
+  getIsWatchEthereumAccountEnabled,
+} from '../../../selectors';
 import { AddWalletModal } from './add-wallet-modal';
 
 const mockHistoryPush = jest.fn();
@@ -119,5 +123,49 @@ describe('AddWalletModal', () => {
     renderWithProvider(<AddWalletModal isOpen={true} onClose={mockOnClose} />);
 
     expect(screen.getByText('manageInstitutionalWallets')).toBeInTheDocument();
+  });
+
+  it('renders the add snap account option when addSnapAccountEnabled is true', () => {
+    mockUseSelector.mockImplementation((selector) => {
+      return selector === getIsAddSnapAccountEnabled;
+    });
+
+    // Mock platform.openTab
+    // @ts-expect-error mocking platform
+    global.platform = {
+      ...global.platform,
+      openTab: jest.fn(),
+    };
+
+    renderWithProvider(<AddWalletModal isOpen={true} onClose={mockOnClose} />);
+
+    const snapAccountOption = screen.getByTestId(
+      'add-wallet-modal-snap-account',
+    );
+
+    expect(snapAccountOption).toBeInTheDocument();
+    expect(screen.getByText('settingAddSnapAccount')).toBeInTheDocument();
+
+    fireEvent.click(snapAccountOption);
+
+    expect(global.platform.openTab).toHaveBeenCalled();
+  });
+
+  it('renders the watch Ethereum account option when isAddWatchEthereumAccountEnabled is true', () => {
+    mockUseSelector.mockImplementation((selector) => {
+      return selector === getIsWatchEthereumAccountEnabled;
+    });
+
+    const mockTrackEvent = jest.fn();
+    jest.spyOn(React, 'useContext').mockImplementation(() => mockTrackEvent);
+
+    renderWithProvider(<AddWalletModal isOpen={true} onClose={mockOnClose} />);
+
+    const watchAccountOption = screen.getByTestId(
+      'add-wallet-modal-watch-ethereum-account',
+    );
+
+    expect(watchAccountOption).toBeInTheDocument();
+    expect(screen.getByText('addEthereumWatchOnlyAccount')).toBeInTheDocument();
   });
 });

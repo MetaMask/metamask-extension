@@ -75,6 +75,7 @@ import {
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
+  REVIEW_GATOR_PERMISSIONS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -292,6 +293,13 @@ const TokenTransferPage = mmLazy(
   (() =>
     import(
       '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+const ReviewGatorPermissionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
     )) as unknown as DynamicImportType,
 );
 const Connections = mmLazy(
@@ -645,6 +653,11 @@ export default function Routes() {
           <Authenticated
             path={TOKEN_TRANSFER_ROUTE}
             component={TokenTransferPage}
+            exact
+          />
+          <Authenticated
+            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
+            component={ReviewGatorPermissionsPage}
             exact
           />
           <Authenticated
