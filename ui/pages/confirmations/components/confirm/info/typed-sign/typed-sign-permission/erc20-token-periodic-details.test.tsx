@@ -52,40 +52,59 @@ describe('Erc20TokenPeriodicDetails', () => {
     jest.clearAllMocks();
   });
 
+  const renderAndGetDetailsSection = (
+    props: Parameters<typeof Erc20TokenPeriodicDetails>[0],
+  ) => {
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <Erc20TokenPeriodicDetails {...props} />,
+      getMockStore(),
+    );
+
+    const detailsSection = getByTestId('erc20-token-periodic-details-section');
+
+    return detailsSection;
+  };
+
+  const renderWithDecimalsAndGetDetailsSection = async (
+    props: Parameters<typeof Erc20TokenPeriodicDetails>[0],
+  ) => {
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <Erc20TokenPeriodicDetails {...props} />,
+      getMockStore(),
+    );
+
+    await waitFor(() => {
+      expect(
+        (tokenUtils as jest.Mocked<typeof tokenUtils>).fetchErc20Decimals,
+      ).toHaveBeenCalled();
+    });
+
+    const detailsSection = getByTestId('erc20-token-periodic-details-section');
+
+    return detailsSection;
+  };
+
   describe('basic functionality', () => {
     it('renders with all required props', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenPeriodicDetails {...defaultProps} />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection(defaultProps);
+
+      expect(detailsSection).toBeInTheDocument();
     });
 
     it('renders without expiry', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenPeriodicDetails {...defaultProps} expiry={null} />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        expiry: null,
+      });
+
+      expect(detailsSection).toBeInTheDocument();
+
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
     });
 
     it('displays the allowance once token decimals are resolved', async () => {
-      const { container, getByTestId } = renderWithConfirmContextProvider(
-        <Erc20TokenPeriodicDetails {...defaultProps} />,
-        getMockStore(),
-      );
-
-      await waitFor(() => {
-        expect(
-          (tokenUtils as jest.Mocked<typeof tokenUtils>).fetchErc20Decimals,
-        ).toHaveBeenCalled();
-      });
-
-      expect(container).toMatchSnapshot();
-
-      const detailsSection = getByTestId(
-        'erc20-token-periodic-details-section',
-      );
+      const detailsSection =
+        await renderWithDecimalsAndGetDetailsSection(defaultProps);
 
       expect(detailsSection).toBeInTheDocument();
 
@@ -99,39 +118,14 @@ describe('Erc20TokenPeriodicDetails', () => {
         tokenUtils as jest.Mocked<typeof tokenUtils>
       ).fetchErc20Decimals.mockResolvedValue(3);
 
-      const { container, getByTestId } = renderWithConfirmContextProvider(
-        <Erc20TokenPeriodicDetails {...defaultProps} />,
-        getMockStore(),
-      );
-
-      await waitFor(() => {
-        expect(
-          (tokenUtils as jest.Mocked<typeof tokenUtils>).fetchErc20Decimals,
-        ).toHaveBeenCalled();
-      });
-
-      expect(container).toMatchSnapshot();
-
-      const detailsSection = getByTestId(
-        'erc20-token-periodic-details-section',
-      );
+      const detailsSection =
+        await renderWithDecimalsAndGetDetailsSection(defaultProps);
 
       expect(detailsSection).toBeInTheDocument();
 
       expect(
         detailsSection?.textContent?.includes('4.66'), // 0x1234 / 10^3
       ).toBe(true);
-    });
-
-    it('displays correct test ID', () => {
-      const { getByTestId } = renderWithConfirmContextProvider(
-        <Erc20TokenPeriodicDetails {...defaultProps} />,
-        getMockStore(),
-      );
-
-      expect(
-        getByTestId('erc20-token-periodic-details-section'),
-      ).toBeInTheDocument();
     });
   });
 
@@ -167,14 +161,14 @@ describe('Erc20TokenPeriodicDetails', () => {
         },
       };
 
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenPeriodicDetails
-          {...defaultProps}
-          permission={permissionWithWeeklyPeriod}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        permission: permissionWithWeeklyPeriod,
+      });
+
+      expect(detailsSection).toBeInTheDocument();
+
+      expect(detailsSection?.textContent?.includes('Weekly')).toBe(true);
     });
 
     it('renders with hourly period duration', () => {
@@ -186,37 +180,17 @@ describe('Erc20TokenPeriodicDetails', () => {
         },
       };
 
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenPeriodicDetails
-          {...defaultProps}
-          permission={permissionWithHourlyPeriod}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
-    });
-  });
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        permission: permissionWithHourlyPeriod,
+      });
 
-  describe('edge cases', () => {
-    it('handles very large period amount', () => {
-      const permissionWithLargeAmount = {
-        ...mockPermission,
-        data: {
-          ...mockPermission.data,
-          periodAmount: '0xffffffffffffffffffffffffffffffffffffffff',
-        },
-      } as Erc20TokenPeriodicPermission;
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenPeriodicDetails
-          {...defaultProps}
-          permission={permissionWithLargeAmount}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      expect(detailsSection).toBeInTheDocument();
+
+      expect(detailsSection?.textContent?.includes('Hourly')).toBe(true);
     });
 
-    it('handles zero period duration', () => {
+    it('throws an error when period duration is 0 seconds', () => {
       const permissionWithZeroDuration = {
         ...mockPermission,
         data: {

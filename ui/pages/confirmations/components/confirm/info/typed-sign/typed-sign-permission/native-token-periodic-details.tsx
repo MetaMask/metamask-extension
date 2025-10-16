@@ -40,6 +40,8 @@ export const NativeTokenPeriodicDetails: React.FC<{
   const t = useI18nContext();
 
   if (!permission.data.startTime) {
+    // This should never happen - validation should protect against it. This
+    // check is here as a type guard.
     throw new Error('Start time is required');
   }
 

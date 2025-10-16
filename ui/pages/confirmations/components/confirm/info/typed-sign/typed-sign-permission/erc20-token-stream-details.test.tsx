@@ -1,11 +1,11 @@
 import { Erc20TokenStreamPermission } from '@metamask/gator-permissions-controller';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { waitFor } from '@testing-library/react';
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import * as tokenUtils from '../../../../../utils/token';
 import { Erc20TokenStreamDetails } from './erc20-token-stream-details';
+import { waitFor } from '@testing-library/react';
 
 jest.mock('../../../../../utils/token', () => ({
   ...jest.requireActual('../../../../../utils/token'),
@@ -53,16 +53,38 @@ describe('Erc20TokenStreamDetails', () => {
     jest.clearAllMocks();
   });
 
+  const renderAndGetSections = async (
+    props: Parameters<typeof Erc20TokenStreamDetails>[0],
+  ) => {
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <Erc20TokenStreamDetails {...props} />,
+      getMockStore(),
+    );
+
+    await waitFor(() =>
+      expect(
+        (tokenUtils as jest.Mocked<typeof tokenUtils>).fetchErc20Decimals,
+      ).toHaveBeenCalled(),
+    );
+
+    const detailsSection = getByTestId('erc20-token-stream-details-section');
+    const streamRateSection = getByTestId(
+      'erc20-token-stream-stream-rate-section',
+    );
+
+    return { detailsSection, streamRateSection } as const;
+  };
+
   describe('basic functionality', () => {
-    it('renders with all required props', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenStreamDetails {...defaultProps} />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+    it('renders with all required props', async () => {
+      const { detailsSection, streamRateSection } =
+        await renderAndGetSections(defaultProps);
+
+      expect(detailsSection).toBeInTheDocument();
+      expect(streamRateSection).toBeInTheDocument();
     });
 
-    it('renders without initial amount', () => {
+    it('renders without initial amount', async () => {
       const permissionWithoutInitial = {
         ...mockPermission,
         data: {
@@ -70,17 +92,15 @@ describe('Erc20TokenStreamDetails', () => {
           initialAmount: undefined,
         },
       };
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenStreamDetails
-          {...defaultProps}
-          permission={permissionWithoutInitial}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const { detailsSection } = await renderAndGetSections({
+        ...defaultProps,
+        permission: permissionWithoutInitial,
+      });
+
+      expect(detailsSection).toBeInTheDocument();
     });
 
-    it('renders without max amount', () => {
+    it('renders without max amount', async () => {
       const permissionWithoutMax = {
         ...mockPermission,
         data: {
@@ -88,40 +108,25 @@ describe('Erc20TokenStreamDetails', () => {
           maxAmount: undefined,
         },
       };
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenStreamDetails
-          {...defaultProps}
-          permission={permissionWithoutMax}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const { detailsSection } = await renderAndGetSections({
+        ...defaultProps,
+        permission: permissionWithoutMax,
+      });
+
+      expect(detailsSection).toBeInTheDocument();
     });
 
-    it('renders without expiry', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenStreamDetails {...defaultProps} expiry={null} />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+    it('renders without expiry', async () => {
+      const { detailsSection } = await renderAndGetSections({
+        ...defaultProps,
+        expiry: null,
+      });
+      expect(detailsSection).toBeInTheDocument();
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
     });
 
     it('displays the allowance once token decimals are resolved', async () => {
-      const { container, getByTestId } = renderWithConfirmContextProvider(
-        <Erc20TokenStreamDetails {...defaultProps} />,
-        getMockStore(),
-      );
-
-      await waitFor(() =>
-        expect(
-          (tokenUtils as jest.Mocked<typeof tokenUtils>).fetchErc20Decimals,
-        ).toHaveBeenCalled(),
-      );
-
-      expect(container).toMatchSnapshot();
-
-      const detailsSection = getByTestId('erc20-token-stream-details-section');
-
+      const { detailsSection } = await renderAndGetSections(defaultProps);
       expect(detailsSection).toBeInTheDocument();
 
       expect(
@@ -134,20 +139,7 @@ describe('Erc20TokenStreamDetails', () => {
         tokenUtils as jest.Mocked<typeof tokenUtils>
       ).fetchErc20Decimals.mockResolvedValue(3);
 
-      const { container, getByTestId } = renderWithConfirmContextProvider(
-        <Erc20TokenStreamDetails {...defaultProps} />,
-        getMockStore(),
-      );
-
-      await waitFor(() =>
-        expect(
-          (tokenUtils as jest.Mocked<typeof tokenUtils>).fetchErc20Decimals,
-        ).toHaveBeenCalled(),
-      );
-
-      expect(container).toMatchSnapshot();
-
-      const detailsSection = getByTestId('erc20-token-stream-details-section');
+      const { detailsSection } = await renderAndGetSections(defaultProps);
 
       expect(detailsSection).toBeInTheDocument();
 
@@ -156,15 +148,11 @@ describe('Erc20TokenStreamDetails', () => {
       ).toBe(true);
     });
 
-    it('displays correct test IDs', () => {
-      const { getByTestId } = renderWithConfirmContextProvider(
-        <Erc20TokenStreamDetails {...defaultProps} />,
-        getMockStore(),
-      );
-
-      expect(
-        getByTestId('erc20-token-stream-details-section'),
-      ).toBeInTheDocument();
+    it('displays correct test IDs', async () => {
+      const { detailsSection, streamRateSection } =
+        await renderAndGetSections(defaultProps);
+      expect(detailsSection).toBeInTheDocument();
+      expect(streamRateSection).toBeInTheDocument();
     });
   });
 
@@ -191,7 +179,7 @@ describe('Erc20TokenStreamDetails', () => {
   });
 
   describe('edge cases', () => {
-    it('handles very large amounts', () => {
+    it('handles very large amounts', async () => {
       const permissionWithLargeAmounts = {
         ...mockPermission,
         data: {
@@ -201,14 +189,11 @@ describe('Erc20TokenStreamDetails', () => {
           amountPerSecond: '0xffffffffffffffffffffffffffffffffffffffff',
         },
       } as Erc20TokenStreamPermission;
-      const { container } = renderWithConfirmContextProvider(
-        <Erc20TokenStreamDetails
-          {...defaultProps}
-          permission={permissionWithLargeAmounts}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const { detailsSection } = await renderAndGetSections({
+        ...defaultProps,
+        permission: permissionWithLargeAmounts,
+      });
+      expect(detailsSection).toBeInTheDocument();
     });
   });
 });

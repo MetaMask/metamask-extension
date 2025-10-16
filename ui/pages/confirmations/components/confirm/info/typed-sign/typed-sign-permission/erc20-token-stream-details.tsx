@@ -33,6 +33,8 @@ export const Erc20TokenStreamDetails: React.FC<{
     permission.data;
 
   if (!startTime) {
+    // This should never happen - validation should protect against it. This
+    // check is here as a type guard.
     throw new Error('Start time is required');
   }
 

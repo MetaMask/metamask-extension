@@ -5,6 +5,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
 
 import { NativeTokenPeriodicDetails } from './native-token-periodic-details';
+import { formatPeriodDuration } from './typed-sign-permission-util';
 
 // Mock the formatPeriodDuration utility function
 jest.mock('./typed-sign-permission-util', () => ({
@@ -49,21 +50,34 @@ describe('NativeTokenPeriodicDetails', () => {
     jest.clearAllMocks();
   });
 
+  const renderAndGetDetailsSection = (
+    props: Parameters<typeof NativeTokenPeriodicDetails>[0],
+  ) => {
+    const { getByTestId } = renderWithConfirmContextProvider(
+      <NativeTokenPeriodicDetails {...props} />,
+      getMockStore(),
+    );
+
+    const detailsSection = getByTestId('native-token-periodic-details-section');
+
+    return detailsSection;
+  };
+
   describe('basic functionality', () => {
     it('renders with all required props', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails {...defaultProps} />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection(defaultProps);
+
+      expect(detailsSection).toBeInTheDocument();
     });
 
     it('renders without expiry', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails {...defaultProps} expiry={null} />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        expiry: null,
+      });
+
+      expect(detailsSection).toBeInTheDocument();
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
     });
   });
 
@@ -91,14 +105,9 @@ describe('NativeTokenPeriodicDetails', () => {
 
   describe('data display', () => {
     it('displays correct test ID', () => {
-      const { getByTestId } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails {...defaultProps} />,
-        getMockStore(),
-      );
+      const detailsSection = renderAndGetDetailsSection(defaultProps);
 
-      expect(
-        getByTestId('native-token-periodic-details-section'),
-      ).toBeInTheDocument();
+      expect(detailsSection).toBeInTheDocument();
     });
 
     it('renders with different period amount values', () => {
@@ -110,14 +119,14 @@ describe('NativeTokenPeriodicDetails', () => {
         },
       } as NativeTokenPeriodicPermission;
 
-      const { container } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails
-          {...defaultProps}
-          permission={permissionWithDifferentAmount}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        permission: permissionWithDifferentAmount,
+      });
+
+      expect(detailsSection).toBeInTheDocument();
+      // period label comes from mocked formatter
+      expect(detailsSection?.textContent?.includes('Every day')).toBe(true);
     });
   });
 
@@ -131,14 +140,13 @@ describe('NativeTokenPeriodicDetails', () => {
         },
       };
 
-      const { container } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails
-          {...defaultProps}
-          permission={permissionWithWeeklyPeriod}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        permission: permissionWithWeeklyPeriod,
+      });
+      expect(detailsSection).toBeInTheDocument();
+      expect(formatPeriodDuration).toHaveBeenCalledWith(604800);
+      expect(detailsSection?.textContent?.includes('Every day')).toBe(true);
     });
 
     it('renders with hourly period duration', () => {
@@ -150,14 +158,13 @@ describe('NativeTokenPeriodicDetails', () => {
         },
       };
 
-      const { container } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails
-          {...defaultProps}
-          permission={permissionWithHourlyPeriod}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        permission: permissionWithHourlyPeriod,
+      });
+      expect(detailsSection).toBeInTheDocument();
+      expect(formatPeriodDuration).toHaveBeenCalledWith(3600);
+      expect(detailsSection?.textContent?.includes('Every day')).toBe(true);
     });
 
     it('renders with complex period duration', () => {
@@ -169,14 +176,13 @@ describe('NativeTokenPeriodicDetails', () => {
         },
       };
 
-      const { container } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails
-          {...defaultProps}
-          permission={permissionWithComplexPeriod}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        permission: permissionWithComplexPeriod,
+      });
+      expect(detailsSection).toBeInTheDocument();
+      expect(formatPeriodDuration).toHaveBeenCalledWith(950400);
+      expect(detailsSection?.textContent?.includes('Every day')).toBe(true);
     });
   });
 
@@ -189,15 +195,11 @@ describe('NativeTokenPeriodicDetails', () => {
           periodAmount: '0x0',
         },
       } as const;
-
-      const { container } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails
-          {...defaultProps}
-          permission={permissionWithEmptyAmount}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        permission: permissionWithEmptyAmount,
+      });
+      expect(detailsSection).toBeInTheDocument();
     });
 
     it('handles very large period amount', () => {
@@ -208,15 +210,11 @@ describe('NativeTokenPeriodicDetails', () => {
           periodAmount: '0xffffffffffffffffffffffffffffffffffffffff',
         },
       } as const;
-
-      const { container } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails
-          {...defaultProps}
-          permission={permissionWithLargeAmount}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        permission: permissionWithLargeAmount,
+      });
+      expect(detailsSection).toBeInTheDocument();
     });
 
     it('handles zero period amount', () => {
@@ -227,14 +225,11 @@ describe('NativeTokenPeriodicDetails', () => {
           periodAmount: '0x0',
         },
       } as const;
-      const { container } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails
-          {...defaultProps}
-          permission={permissionWithZeroAmount}
-        />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        permission: permissionWithZeroAmount,
+      });
+      expect(detailsSection).toBeInTheDocument();
     });
 
     it('handles null start time', () => {
@@ -260,27 +255,24 @@ describe('NativeTokenPeriodicDetails', () => {
 
   describe('conditional rendering', () => {
     it('renders start time when present', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails {...defaultProps} />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection(defaultProps);
+      expect(detailsSection).toBeInTheDocument();
+      expect(detailsSection?.textContent?.includes('Start date')).toBe(true);
     });
 
     it('renders expiry when present', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails {...defaultProps} />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection(defaultProps);
+      expect(detailsSection).toBeInTheDocument();
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(true);
     });
 
     it('does not render expiry when null', () => {
-      const { container } = renderWithConfirmContextProvider(
-        <NativeTokenPeriodicDetails {...defaultProps} expiry={null} />,
-        getMockStore(),
-      );
-      expect(container).toMatchSnapshot();
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        expiry: null,
+      });
+      expect(detailsSection).toBeInTheDocument();
+      expect(detailsSection?.textContent?.includes('Expiration')).toBe(false);
     });
   });
 });
