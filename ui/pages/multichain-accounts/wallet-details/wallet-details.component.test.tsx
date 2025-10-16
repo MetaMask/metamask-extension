@@ -76,28 +76,8 @@ jest.mock('../../../store/actions', () => ({
 
 jest.mock('../../../selectors', () => ({
   getMetaMaskHdKeyrings: jest.fn(),
-  getIsBitcoinSupportEnabled: jest.fn((state) => {
-    const { bitcoinAccounts } = state.metamask.remoteFeatureFlags;
-    if (!bitcoinAccounts?.enabled) {
-      return false;
-    }
-    if (!bitcoinAccounts?.minimumVersion) {
-      return false;
-    }
-    // Check if current app version (13.6.0) >= minimum required version
-    return bitcoinAccounts.minimumVersion <= '13.6.0';
-  }),
-  getIsSolanaSupportEnabled: jest.fn((state) => {
-    const { solanaAccounts } = state.metamask.remoteFeatureFlags;
-    if (!solanaAccounts?.enabled) {
-      return false;
-    }
-    if (!solanaAccounts?.minimumVersion) {
-      return false;
-    }
-    // Check if current app version (13.6.0) >= minimum required version
-    return solanaAccounts.minimumVersion <= '13.6.0';
-  }),
+  getIsBitcoinSupportEnabled: jest.fn(() => true),
+  getIsSolanaSupportEnabled: jest.fn(() => true),
 }));
 
 jest.mock('react-router-dom', () => ({
