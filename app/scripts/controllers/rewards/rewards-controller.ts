@@ -16,7 +16,7 @@ import {
 import { base58, isAddress as isEvmAddress } from 'ethers/lib/utils';
 
 import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
-import { isHardwareAccount } from '../../../../ui/pages/multichain-accounts/account-details';
+import { isHardwareAccount } from '../../../../shared/lib/accounts';
 import {
   type RewardsControllerState,
   type RewardsAccountState,
@@ -576,7 +576,7 @@ export class RewardsController extends BaseController<
             error instanceof InvalidTimestampError &&
             retryAttempt < MAX_RETRY_ATTEMPTS
           ) {
-            retryAttempt++;
+            retryAttempt += 1;
             log.info(
               'RewardsController: Retrying silent auth with server timestamp',
               { originalTimestamp: ts, newTimestamp: error.timestamp },
@@ -901,7 +901,10 @@ export class RewardsController extends BaseController<
             if (caipAccount) {
               this.update((state: RewardsControllerState) => {
                 // Update or create account state with fresh opt-in status and subscription ID
-                if (!state.accounts[caipAccount]) {
+                if (state.accounts[caipAccount]) {
+                  state.accounts[caipAccount].hasOptedIn = hasOptedIn;
+                  state.accounts[caipAccount].subscriptionId = subscriptionId;
+                } else {
                   state.accounts[caipAccount] = {
                     account: caipAccount,
                     hasOptedIn,
@@ -909,9 +912,6 @@ export class RewardsController extends BaseController<
                     perpsFeeDiscount: null,
                     lastPerpsDiscountRateFetched: null,
                   };
-                } else {
-                  state.accounts[caipAccount].hasOptedIn = hasOptedIn;
-                  state.accounts[caipAccount].subscriptionId = subscriptionId;
                 }
 
                 if (state.activeAccount?.account === caipAccount) {
@@ -930,15 +930,15 @@ export class RewardsController extends BaseController<
       let freshIndex = 0;
 
       for (let i = 0; i < params.addresses.length; i++) {
-        if (cachedOptInResults[i] !== null) {
-          // Use cached result
-          finalOptInResults[i] = cachedOptInResults[i] as boolean;
-          finalSubscriptionIds[i] = cachedSubscriptionIds[i];
-        } else {
+        if (cachedOptInResults[i] === null) {
           // Use fresh result
           finalOptInResults[i] = freshOptInResults[freshIndex];
           finalSubscriptionIds[i] = freshSubscriptionIds[freshIndex];
-          freshIndex++;
+          freshIndex += 1;
+        } else {
+          // Use cached result
+          finalOptInResults[i] = cachedOptInResults[i] as boolean;
+          finalSubscriptionIds[i] = cachedSubscriptionIds[i];
         }
       }
 
@@ -992,8 +992,9 @@ export class RewardsController extends BaseController<
 
   /**
    * Get season status with caching
-   * @param seasonId - The ID of the season to get status for
+   *
    * @param subscriptionId - The subscription ID for authentication
+   * @param seasonId - The ID of the season to get status for
    * @returns Promise<SeasonStatusState> - The season status data
    */
   async getSeasonStatus(
@@ -1009,7 +1010,9 @@ export class RewardsController extends BaseController<
       ttl: SEASON_STATUS_CACHE_THRESHOLD_MS,
       readCache: (key) => {
         const cached = this.state.seasonStatuses[key] || undefined;
-        if (!cached) return;
+        if (!cached) {
+          return undefined;
+        }
         log.info(
           'RewardsController: Using cached season status data for',
           subscriptionId,
@@ -1053,13 +1056,14 @@ export class RewardsController extends BaseController<
                   const accounts = await this.messagingSystem.call(
                     'AccountsController:listMultichainAccounts',
                   );
-                  const convertInternalAccountToCaipAccountId =
-                    this.convertInternalAccountToCaipAccountId;
-                  const intAccountForSub = accounts.find((acc: any) => {
-                    const accCaipId =
-                      convertInternalAccountToCaipAccountId(acc);
-                    return accCaipId === accountForSub.account;
-                  });
+                  const { convertInternalAccountToCaipAccountId } = this;
+                  const intAccountForSub = accounts.find(
+                    (acc: InternalAccount) => {
+                      const accCaipId =
+                        convertInternalAccountToCaipAccountId(acc);
+                      return accCaipId === accountForSub.account;
+                    },
+                  );
                   if (intAccountForSub) {
                     log.info(
                       'RewardsController: Attempting to reauth with any valid account after 403 error',
@@ -1197,7 +1201,7 @@ export class RewardsController extends BaseController<
           error instanceof InvalidTimestampError &&
           retryAttempt < MAX_RETRY_ATTEMPTS
         ) {
-          retryAttempt++;
+          retryAttempt += 1;
           log.info('RewardsController: Retrying with server timestamp', {
             originalTimestamp: ts,
             newTimestamp: error.timestamp,
@@ -1350,9 +1354,13 @@ export class RewardsController extends BaseController<
       );
       let silentAuthAttempts = 0;
       for (let i = 0; i < supportedAccounts.length; i++) {
-        if (silentAuthAttempts > maxSilentAuthAttempts) break;
+        if (silentAuthAttempts > maxSilentAuthAttempts) {
+          break;
+        }
         const account = supportedAccounts[i];
-        if (!account || optInStatusResponse.ois[i] === false) continue;
+        if (!account || optInStatusResponse.ois[i] === false) {
+          continue;
+        }
         // Defensive: Ensure sids is an array and i is within bounds
         let subscriptionId =
           Array.isArray(optInStatusResponse?.sids) &&
@@ -1373,7 +1381,7 @@ export class RewardsController extends BaseController<
           return subscriptionId;
         }
         try {
-          silentAuthAttempts++;
+          silentAuthAttempts += 1;
           subscriptionId = await this.#performSilentAuth(
             account,
             false, // shouldBecomeActiveAccount = false
@@ -1479,7 +1487,7 @@ export class RewardsController extends BaseController<
             error instanceof InvalidTimestampError &&
             retryAttempt < MAX_RETRY_ATTEMPTS
           ) {
-            retryAttempt++;
+            retryAttempt += 1;
             log.info('RewardsController: Retrying with server timestamp', {
               originalTimestamp: ts,
               newTimestamp: error.timestamp,
