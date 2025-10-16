@@ -18,7 +18,10 @@ import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
 } from '@metamask/network-controller';
-import { RemoteFeatureFlagControllerStateChangeEvent } from '@metamask/remote-feature-flag-controller';
+import {
+  RemoteFeatureFlagControllerStateChangeEvent,
+  RemoteFeatureFlagControllerGetStateAction,
+} from '@metamask/remote-feature-flag-controller';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
