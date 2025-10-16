@@ -5131,10 +5131,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Ini adalah $1 milik Anda. Tuliskan dalam urutan yang benar dan simpan dengan aman. Jika seseorang memiliki Frasa Pemulihan Rahasia ini, maka orang tersebut dapat mengakses dompet Anda. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Jangan pernah membaginya dengan siapa pun."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Simpan Frasa Pemulihan Rahasia"

@@ -5131,10 +5131,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Αυτή είναι η $1 σας. Γράψτε τη με τη σωστή σειρά και φυλάξτε την κάπου με ασφάλεια. Αν κάποιος διαθέτει τη Μυστική Φράση Ανάκτησής σας, μπορεί να έχει πρόσβαση στο πορτοφόλι σας. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Μην την κοινοποιήσετε ποτέ σε κανέναν."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Αποθηκεύστε τη Μυστική Φράση Ανάκτησης"

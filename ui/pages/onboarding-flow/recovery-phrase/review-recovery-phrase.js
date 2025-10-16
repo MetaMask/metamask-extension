@@ -28,7 +28,6 @@ import {
   BlockSize,
   TextColor,
   IconColor,
-  FontWeight,
   Display,
   FlexDirection,
   AlignItems,
@@ -217,7 +216,6 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             variant={TextVariant.bodyMd}
             color={TextColor.textAlternative}
             marginBottom={6}
-            className="recovery-phrase__details"
           >
             {t('seedPhraseReviewDetails', [
               <ButtonLink
@@ -227,13 +225,6 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               >
                 {t('secretRecoveryPhrase')}
               </ButtonLink>,
-              <Text
-                key="seedPhraseReviewDetails2"
-                fontWeight={FontWeight.Medium}
-                color={TextColor.textAlternative}
-              >
-                {t('seedPhraseReviewDetails2')}
-              </Text>,
             ])}
           </Text>
         </Box>

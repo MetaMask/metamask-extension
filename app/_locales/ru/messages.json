@@ -5131,10 +5131,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Это ваша $1. Запишите ее в правильном порядке и сохраните в безопасности. Если кто-либо узнает вашу секретную фразу для восстановления, он сможет получить доступ к вашему кошельку. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Никогда не передавайте ее никому."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Сохраните свою секретную фразу для восстановления"

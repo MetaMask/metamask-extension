@@ -5131,10 +5131,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Esta é a sua $1. Anote-a na ordem correta e guarde-a em um lugar seguro. Se alguém tiver sua Frase de Recuperação Secreta, poderá acessar sua carteira. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Não a compartilhe com ninguém, nunca."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Salve sua Frase de Recuperação Secreta"

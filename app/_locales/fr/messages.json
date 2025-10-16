@@ -5131,10 +5131,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "Il s’agit de votre $1. Notez-la correctement et conservez-la en lieu sûr. Si quelqu’un connait votre phrase secrète de récupération, il peut accéder à votre portefeuille. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Ne la divulguez jamais à une autre personne."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "Sauvegardez votre phrase secrète de récupération"

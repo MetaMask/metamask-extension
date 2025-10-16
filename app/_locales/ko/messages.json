@@ -5131,10 +5131,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "이것이 회원님의 $1입니다. 올바른 순서로 적어두고 안전하게 보관하세요. 누군가 비밀복구구문을 알게 되면 지갑에 접근할 수 있습니다. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "절대 누구와도 공유하지 마세요."
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "비밀복구구문을 저장하세요"

@@ -5131,10 +5131,7 @@
   },
   "seedPhraseReviewDetails": {
     "message": "これがお客様の$1です。正しい順番で書き留め、安全に保管してください。誰かがシークレットリカバリーフレーズを入手した場合、ウォレットへのアクセスが可能となってしまいます。$2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "絶対に誰にも教えないでください。"
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "シークレットリカバリーフレーズを保管してください"
