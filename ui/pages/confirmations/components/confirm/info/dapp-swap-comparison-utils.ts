@@ -47,11 +47,17 @@ const getWordsFromInput = (input: string) => {
   return input?.slice(2).match(/.{1,64}/gu) ?? [];
 };
 
-const wordToAddress = (word: string) => {
+const wordToAddress = (word?: string) => {
+  if (!word) {
+    return '';
+  }
   return addHexPrefix(word?.slice(24));
 };
 
-const wordToAmount = (word: string) => {
+const wordToAmount = (word?: string) => {
+  if (!word) {
+    return '';
+  }
   const amount = word?.replace(/^0+/u, '');
   return addHexPrefix(amount);
 };
@@ -93,13 +99,13 @@ export const getDataFromSwap = (
   if (sweepIndex >= 0) {
     const words = getWordsFromInput(inputs[sweepIndex]);
     amountMin = wordToAmount(words[2]);
-    erc20TokenAddresses.push(wordToAddress(words[0] ?? ''));
+    erc20TokenAddresses.push(wordToAddress(words[0]));
     quotesInput = {
       walletAddress: wordToAddress(words[1]),
       srcChainId: chainId,
       destChainId: chainId,
       srcTokenAddress: getNativeTokenAddress(chainId),
-      destTokenAddress: wordToAddress(words[0] ?? ''),
+      destTokenAddress: wordToAddress(words[0]),
       srcTokenAmount: amount ?? '0x0',
       gasIncluded: false,
       gasIncluded7702: false,
