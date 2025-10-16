@@ -130,7 +130,10 @@ import {
   getRemoteFeatureFlagControllerInitMessenger,
   getRemoteFeatureFlagControllerMessenger,
 } from './remote-feature-flag-controller-messenger';
-import { getRewardsControllerMessenger } from './rewards-controller-messenger';
+import {
+  getRewardsControllerInitMessenger,
+  getRewardsControllerMessenger,
+} from './rewards-controller-messenger';
 import {
   getSwapsControllerInitMessenger,
   getSwapsControllerMessenger,
@@ -623,7 +626,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   RewardsController: {
     getMessenger: getRewardsControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getRewardsControllerInitMessenger,
   },
   SwapsController: {
     getMessenger: getSwapsControllerMessenger,

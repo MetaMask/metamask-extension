@@ -1,21 +1,5 @@
 /* eslint-disable jsdoc/require-param */
 import { BaseController } from '@metamask/base-controller';
-import {
-  type RewardsControllerState,
-  type RewardsAccountState,
-  type LoginResponseDto,
-  type EstimatePointsDto,
-  type EstimatedPointsDto,
-  type SeasonDtoState,
-  type SeasonStatusState,
-  type SeasonTierState,
-  type SeasonTierDto,
-  type SeasonStatusDto,
-  type SubscriptionDto,
-  type OptInStatusInputDto,
-  type OptInStatusDto,
-  CURRENT_SEASON_ID,
-} from './rewards-controller.types';
 // TODO: Re-enable multi-subscription token vault when implemented
 // import {
 //   storeSubscriptionToken,
@@ -34,11 +18,26 @@ import { base58, isAddress as isEvmAddress } from 'ethers/lib/utils';
 import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
 import { isHardwareAccount } from '../../../../ui/pages/multichain-accounts/account-details';
 import {
+  type RewardsControllerState,
+  type RewardsAccountState,
+  type LoginResponseDto,
+  type EstimatePointsDto,
+  type EstimatedPointsDto,
+  type SeasonDtoState,
+  type SeasonStatusState,
+  type SeasonTierState,
+  type SeasonTierDto,
+  type SeasonStatusDto,
+  type SubscriptionDto,
+  type OptInStatusInputDto,
+  type OptInStatusDto,
+  CURRENT_SEASON_ID,
+} from './rewards-controller.types';
+import {
   AuthorizationFailedError,
   InvalidTimestampError,
 } from './rewards-data-service';
 import { signSolanaRewardsMessage } from './utils/solana-snap';
-import { getRewardsFeatureFlags } from './feature-flag';
 
 // Re-export the messenger type for convenience
 export type { RewardsControllerMessenger };
@@ -108,6 +107,12 @@ const metadata = {
     anonymous: false,
     usedInUi: true,
   },
+  rewardsEnabled: {
+    includeInStateLogs: true,
+    persist: false,
+    anonymous: false,
+    usedInUi: true,
+  },
 };
 
 /**
@@ -123,6 +128,7 @@ export const getRewardsControllerDefaultState = (): RewardsControllerState => ({
   activeBoosts: {},
   unlockedRewards: {},
   pointsEvents: {},
+  rewardsEnabled: false,
 });
 
 export const defaultRewardsControllerState = getRewardsControllerDefaultState();
@@ -225,9 +231,11 @@ export class RewardsController extends BaseController<
   constructor({
     messenger,
     state,
+    rewardsEnabled,
   }: {
     messenger: RewardsControllerMessenger;
     state?: Partial<RewardsControllerState>;
+    rewardsEnabled: boolean;
   }) {
     super({
       name: controllerName,
@@ -236,6 +244,7 @@ export class RewardsController extends BaseController<
       state: {
         ...defaultRewardsControllerState,
         ...state,
+        rewardsEnabled,
       },
     });
 
@@ -412,7 +421,7 @@ export class RewardsController extends BaseController<
    * Handle authentication triggers (account changes, keyring unlock)
    */
   async #handleAuthenticationTrigger(reason?: string): Promise<void> {
-    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
+    const { rewardsEnabled } = this.state;
 
     if (!rewardsEnabled) {
       return;
@@ -823,7 +832,7 @@ export class RewardsController extends BaseController<
    * @returns Promise<OptInStatusDto> - The opt-in status response
    */
   async getOptInStatus(params: OptInStatusInputDto): Promise<OptInStatusDto> {
-    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
+    const { rewardsEnabled } = this.state;
     if (!rewardsEnabled) {
       // Return empty arrays when feature flag is disabled
       return {
@@ -952,8 +961,10 @@ export class RewardsController extends BaseController<
   async estimatePoints(
     request: EstimatePointsDto,
   ): Promise<EstimatedPointsDto> {
-    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
-    if (!rewardsEnabled) return { pointsEstimate: 0, bonusBips: 0 };
+    const { rewardsEnabled } = this.state;
+    if (!rewardsEnabled) {
+      return { pointsEstimate: 0, bonusBips: 0 };
+    }
     try {
       const estimatedPoints = await this.messagingSystem.call(
         'RewardsDataService:estimatePoints',
@@ -976,7 +987,7 @@ export class RewardsController extends BaseController<
    * @returns boolean - True if rewards feature is enabled, false otherwise
    */
   isRewardsFeatureEnabled(): boolean {
-    return getRewardsFeatureFlags().rewardsEnabled;
+    return this.state.rewardsEnabled;
   }
 
   /**
@@ -989,7 +1000,7 @@ export class RewardsController extends BaseController<
     subscriptionId: string,
     seasonId: string = CURRENT_SEASON_ID,
   ): Promise<SeasonStatusState | null> {
-    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
+    const { rewardsEnabled } = this.state;
     if (!rewardsEnabled) {
       return null;
     }
@@ -1145,7 +1156,7 @@ export class RewardsController extends BaseController<
     account: InternalAccount,
     referralCode?: string,
   ): Promise<string | null> {
-    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
+    const { rewardsEnabled } = this.state;
     if (!rewardsEnabled) {
       log.info(
         'RewardsController: Rewards feature is disabled, skipping optin',
@@ -1249,7 +1260,7 @@ export class RewardsController extends BaseController<
    * @returns Promise<boolean> - True if the code is valid, false otherwise
    */
   async validateReferralCode(code: string): Promise<boolean> {
-    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
+    const { rewardsEnabled } = this.state;
     if (!rewardsEnabled) {
       return false;
     }
@@ -1283,7 +1294,7 @@ export class RewardsController extends BaseController<
    * @returns Promise<string | null> - The subscription ID or null if none found
    */
   async getCandidateSubscriptionId(): Promise<string | null> {
-    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
+    const { rewardsEnabled } = this.state;
     if (!rewardsEnabled) {
       return null;
     }
@@ -1408,7 +1419,7 @@ export class RewardsController extends BaseController<
   async linkAccountToSubscriptionCandidate(
     account: InternalAccount,
   ): Promise<boolean> {
-    const rewardsEnabled = getRewardsFeatureFlags().rewardsEnabled;
+    const { rewardsEnabled } = this.state;
     if (!rewardsEnabled) {
       log.warn('RewardsController: Rewards feature is disabled');
       return false;

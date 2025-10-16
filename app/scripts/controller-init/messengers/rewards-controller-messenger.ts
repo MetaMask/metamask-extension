@@ -10,6 +10,7 @@ import {
   AccountsControllerSelectedAccountChangeEvent,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   RewardsDataServiceGetPointsEventsAction,
   RewardsDataServiceGetPointsEventsLastUpdatedAction,
@@ -106,5 +107,21 @@ export function getRewardsControllerMessenger(
       'AccountsController:selectedAccountChange',
       'KeyringController:unlock',
     ],
+  });
+}
+
+type AllowedInitializationActions = RemoteFeatureFlagControllerGetStateAction;
+
+export type RewardsControllerInitMessenger = ReturnType<
+  typeof getRewardsControllerInitMessenger
+>;
+
+export function getRewardsControllerInitMessenger(
+  messenger: Messenger<AllowedInitializationActions, never>,
+) {
+  return messenger.getRestricted({
+    name: 'RewardsControllerInit',
+    allowedActions: ['RemoteFeatureFlagController:getState'],
+    allowedEvents: [],
   });
 }
