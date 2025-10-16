@@ -8,6 +8,7 @@ import {
   SubscriptionCryptoPaymentMethod,
   SubscriptionStatus,
 } from '@metamask/subscription-controller';
+import log from 'loglevel';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../hooks/useTokenBalances';
 import {
   useUserSubscriptionByProduct,
@@ -17,9 +18,7 @@ import {
   getSubscriptions,
   updateSubscriptionCryptoPaymentMethod,
 } from '../../store/actions';
-import {
-  getSelectedAccount,
-} from '../../selectors';
+import { getSelectedAccount } from '../../selectors';
 import {
   useSubscriptionPaymentMethods,
   useSubscriptionPricing,
@@ -31,7 +30,6 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 import { calculateSubscriptionRemainingBillingCycles } from '../../../shared/modules/shield';
 import { useThrottle } from '../../hooks/useThrottle';
 import { MINUTE } from '../../../shared/constants/time';
-import log from 'loglevel';
 
 const SHIELD_ADD_FUND_TRIGGER_INTERVAL = 5 * MINUTE;
 
