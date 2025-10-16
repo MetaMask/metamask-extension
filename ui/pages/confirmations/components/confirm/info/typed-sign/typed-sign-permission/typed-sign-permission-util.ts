@@ -6,6 +6,9 @@ import {
   HOUR,
   WEEK,
   SECOND,
+  FORTNIGHT,
+  MONTH,
+  YEAR,
 } from '../../../../../../../../shared/constants/time';
 import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../../../selectors/assets';
@@ -22,26 +25,22 @@ export const formatPeriodDuration = (periodSeconds: number) => {
     throw new Error('Cannot format period duration of 0 seconds');
   }
 
+  // multiply by 1000 to convert to milliseconds
   let periodMilliseconds = periodSeconds * SECOND;
 
-  if (periodMilliseconds === WEEK) {
-    return 'Every week';
-  }
-
-  if (periodMilliseconds === DAY) {
-    return 'Every day';
-  }
-
-  if (periodMilliseconds === HOUR) {
-    return 'Every hour';
-  }
-
-  if (periodMilliseconds === MINUTE) {
-    return 'Every minute';
-  }
-
-  if (periodMilliseconds === SECOND) {
-    return 'Every second';
+  switch (periodMilliseconds) {
+    case HOUR:
+      return 'Hourly';
+    case DAY:
+      return 'Daily';
+    case WEEK:
+      return 'Weekly';
+    case FORTNIGHT:
+      return 'Bi-Weekly';
+    case MONTH:
+      return 'Monthly';
+    case YEAR:
+      return 'Yearly';
   }
 
   const periods: string[] = [];

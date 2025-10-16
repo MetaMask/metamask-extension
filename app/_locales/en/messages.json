@@ -5686,6 +5686,9 @@
   "shieldClaimFileUploader": {
     "message": "Image Upload"
   },
+  "shieldClaimFileUploaderAcceptText": {
+    "message": "PDF, PNG, JPG (MAX. 5MB)"
+  },
   "shieldClaimFileUploaderHelpText": {
     "message": "If you have any additional evidence, please upload it here."
   },
@@ -5702,13 +5705,16 @@
     "message": "Impacted wallet address"
   },
   "shieldClaimInvalidEmail": {
-    "message": "Invalid email"
+    "message": "Please enter a valid email address"
+  },
+  "shieldClaimInvalidRequired": {
+    "message": "This field is required"
   },
   "shieldClaimInvalidTxHash": {
-    "message": "Invalid transaction hash"
+    "message": "Please enter a valid transaction hash"
   },
   "shieldClaimInvalidWalletAddress": {
-    "message": "Invalid wallet address"
+    "message": "Please enter a valid wallet address"
   },
   "shieldClaimReimbursementWalletAddress": {
     "message": "Wallet address for reimbursement"
@@ -5718,6 +5724,15 @@
   },
   "shieldClaimSubmit": {
     "message": "Submit a claim"
+  },
+  "shieldClaimSubmitError": {
+    "message": "Claim submission failed"
+  },
+  "shieldClaimSubmitSuccess": {
+    "message": "Claim submitted successfully"
+  },
+  "shieldClaimSubmitSuccessDescription": {
+    "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
   },
   "shieldConfirmMembership": {
     "message": "Confirm membership"

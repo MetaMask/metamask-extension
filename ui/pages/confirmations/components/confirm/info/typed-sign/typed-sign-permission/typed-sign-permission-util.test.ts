@@ -17,19 +17,24 @@ describe('typed-sign-permission-util', () => {
   });
 
   describe('formatPeriodDuration', () => {
-    it('returns "Every week" for WEEK duration', () => {
+    it('returns "Weekly" for WEEK duration', () => {
       const result = formatPeriodDuration(604800);
-      expect(result).toEqual('Every week');
+      expect(result).toEqual('Weekly');
     });
 
-    it('returns "Every day" for DAY duration', () => {
+    it('returns "Daily" for DAY duration', () => {
       const result = formatPeriodDuration(86400);
-      expect(result).toEqual('Every day');
+      expect(result).toEqual('Daily');
+    });
+
+    it('formats bi-weekly correctly', () => {
+      const result = formatPeriodDuration(1209600);
+      expect(result).toEqual('Bi-Weekly');
     });
 
     it('formats multiple weeks correctly', () => {
-      const result = formatPeriodDuration(1209600);
-      expect(result).toEqual('Every 2 weeks');
+      const result = formatPeriodDuration(1814400);
+      expect(result).toEqual('Every 3 weeks');
     });
 
     it('formats weeks and days correctly', () => {
@@ -70,9 +75,9 @@ describe('typed-sign-permission-util', () => {
     });
 
     it('handles single units correctly', () => {
-      expect(formatPeriodDuration(3600)).toEqual('Every hour');
-      expect(formatPeriodDuration(60)).toEqual('Every minute');
-      expect(formatPeriodDuration(1)).toEqual('Every second');
+      expect(formatPeriodDuration(3600)).toEqual('Hourly');
+      expect(formatPeriodDuration(60)).toEqual('Every 1 minute');
+      expect(formatPeriodDuration(1)).toEqual('Every 1 second');
     });
 
     it('throws an error when period duration is 0 seconds', () => {
@@ -95,7 +100,7 @@ describe('typed-sign-permission-util', () => {
 
     it('handles very large durations', () => {
       const result = formatPeriodDuration(31536000);
-      expect(result).toEqual('Every 52 weeks and 1 day');
+      expect(result).toEqual('Yearly');
     });
   });
 

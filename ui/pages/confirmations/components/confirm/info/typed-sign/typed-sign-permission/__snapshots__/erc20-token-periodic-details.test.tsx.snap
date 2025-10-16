@@ -92,7 +92,7 @@ exports[`Erc20TokenPeriodicDetails basic functionality displays the allowance on
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
-        Every day
+        Daily
       </p>
     </div>
     <div
@@ -252,7 +252,7 @@ exports[`Erc20TokenPeriodicDetails basic functionality formats the allowance bas
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
-        Every day
+        Daily
       </p>
     </div>
     <div
@@ -393,7 +393,7 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders with all required
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
-        Every day
+        Daily
       </p>
     </div>
     <div
@@ -534,7 +534,7 @@ exports[`Erc20TokenPeriodicDetails basic functionality renders without expiry 1`
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
-        Every day
+        Daily
       </p>
     </div>
     <div
@@ -648,7 +648,7 @@ exports[`Erc20TokenPeriodicDetails edge cases handles very large period amount 1
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
-        Every day
+        Daily
       </p>
     </div>
     <div
@@ -789,7 +789,7 @@ exports[`Erc20TokenPeriodicDetails period duration variations renders with hourl
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
-        Every hour
+        Hourly
       </p>
     </div>
     <div
@@ -930,7 +930,7 @@ exports[`Erc20TokenPeriodicDetails period duration variations renders with weekl
       <p
         class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
       >
-        Every week
+        Weekly
       </p>
     </div>
     <div
