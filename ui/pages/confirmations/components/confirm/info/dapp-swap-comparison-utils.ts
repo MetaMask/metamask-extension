@@ -43,39 +43,6 @@ export const ABI = [
   },
 ];
 
-export const getWordsFromInput = (input: string) => {
-  return input.slice(2).match(/.{1,64}/g) as string[];
-};
-
-export const wordToAddress = (word: string) => {
-  return addHexPrefix(word.slice(24));
-};
-
-export const wordToAmount = (word: string) => {
-  const amount = word.replace(/^0+/, '');
-  return addHexPrefix(amount);
-};
-
-export const parseTransactionData = (data?: string) => {
-  const contractInterface = new Interface(ABI);
-
-  let parsedTransactionData: TransactionDescription;
-
-  try {
-    parsedTransactionData = contractInterface.parseTransaction({
-      data: data as Hex,
-    });
-  } catch (error) {
-    return { inputs: [], commandBytes: [] };
-  }
-
-  const commands = parsedTransactionData.args.commands as string;
-  const inputs = parsedTransactionData.args.inputs as string[];
-  const commandBytes = commands.slice(2).match(/.{1,2}/gu) as string[];
-
-  return { inputs, commandBytes };
-};
-
 export const getDataFromSwap = (
   chainId: Hex,
   amount?: string,
@@ -83,7 +50,7 @@ export const getDataFromSwap = (
 ) => {
   let quotesInput;
   let amountMin;
-  let erc20TokenAddresses = [];
+  const erc20TokenAddresses = [];
   const { commandBytes, inputs } = parseTransactionData(data);
 
   const sweepIndex = commandBytes.findIndex(
@@ -148,19 +115,6 @@ export const getBestQuote = (quotes: QuoteResponse[]) => {
   return selectedQuoteIndex;
 };
 
-export const getPercentageGasDifference = (quote: QuoteResponse, gas: Hex) => {
-  const totalGasInQuote =
-    (quote.approval?.gasLimit ?? 0) + (quote.trade?.gasLimit ?? 0);
-
-  const totalGasInCurrentTransaction = new Numeric(gas ?? '0x0', 16).toNumber();
-
-  return (
-    ((totalGasInQuote - totalGasInCurrentTransaction) /
-      totalGasInCurrentTransaction) *
-    100
-  ).toFixed(2);
-};
-
 export const getTokenValueFromRecord = (
   record: Record<Hex, number>,
   tokenAddress: Hex,
@@ -169,4 +123,37 @@ export const getTokenValueFromRecord = (
     return key.toLowerCase() === tokenAddress.toLowerCase();
   });
   return address ? (record[address as Hex] ?? 0) : 0;
+};
+
+const getWordsFromInput = (input: string) => {
+  return input.slice(2).match(/.{1,64}/gu) as string[];
+};
+
+const wordToAddress = (word: string) => {
+  return addHexPrefix(word.slice(24));
+};
+
+const wordToAmount = (word: string) => {
+  const amount = word.replace(/^0+/u, '');
+  return addHexPrefix(amount);
+};
+
+const parseTransactionData = (data?: string) => {
+  const contractInterface = new Interface(ABI);
+
+  let parsedTransactionData: TransactionDescription;
+
+  try {
+    parsedTransactionData = contractInterface.parseTransaction({
+      data: data as Hex,
+    });
+  } catch (error) {
+    return { inputs: [], commandBytes: [] };
+  }
+
+  const commands = parsedTransactionData.args.commands as string;
+  const inputs = parsedTransactionData.args.inputs as string[];
+  const commandBytes = commands.slice(2).match(/.{1,2}/gu) as string[];
+
+  return { inputs, commandBytes };
 };

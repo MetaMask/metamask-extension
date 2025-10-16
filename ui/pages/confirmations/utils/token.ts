@@ -70,27 +70,6 @@ export const memoizedGetTokenStandardAndDetails = memoize(
 );
 
 /**
- * Fetches the decimals for the given token addresses.
- *
- * @param addresses - The array ofethereum token contract address. Addresses are expected to be in hex format.
- * @param chainId - ChainId on which we need to check token. It is expected to be in hex format.
- */
-export const fetchAllErc20Decimals = async (
-  addresses: Hex[],
-  chainId: Hex,
-): Promise<Record<Hex, number>> => {
-  const uniqueAddresses = [
-    ...new Set(addresses.map((address) => address.toLowerCase() as Hex)),
-  ];
-  const allDecimals = await Promise.all(
-    uniqueAddresses.map((address) => fetchErc20Decimals(address, chainId)),
-  );
-  return Object.fromEntries(
-    allDecimals.map((decimals, i) => [uniqueAddresses[i], decimals]),
-  );
-};
-
-/**
  * Fetches the decimals for the given token address.
  *
  * @param address - The ethereum token contract address. It is expected to be in hex format.
@@ -116,4 +95,25 @@ export const fetchErc20Decimals = async (
   } catch {
     return ERC20_DEFAULT_DECIMALS;
   }
+};
+
+/**
+ * Fetches the decimals for the given token addresses.
+ *
+ * @param addresses - The array ofethereum token contract address. Addresses are expected to be in hex format.
+ * @param chainId - ChainId on which we need to check token. It is expected to be in hex format.
+ */
+export const fetchAllErc20Decimals = async (
+  addresses: Hex[],
+  chainId: Hex,
+): Promise<Record<Hex, number>> => {
+  const uniqueAddresses = [
+    ...new Set(addresses.map((address) => address.toLowerCase() as Hex)),
+  ];
+  const allDecimals = await Promise.all(
+    uniqueAddresses.map((address) => fetchErc20Decimals(address, chainId)),
+  );
+  return Object.fromEntries(
+    allDecimals.map((decimals, i) => [uniqueAddresses[i], decimals]),
+  );
 };

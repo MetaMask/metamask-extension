@@ -40,6 +40,7 @@ export function useDappSwapComparisonInfo() {
       updateTransactionEventFragment(
         {
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             dapp_swap_comparison: properties,
           },
         },
@@ -69,7 +70,7 @@ export function useDappSwapComparisonInfo() {
   }, [JSON.stringify(erc20TokenAddresses), chainId]);
 
   const getUSDValue = useCallback(
-    (amount: string, tokenAddress: Hex) => {
+    (tokenAmount: string, tokenAddress: Hex) => {
       if (!erc20Decimals || !erc20FiatRates) {
         return '0';
       }
@@ -82,7 +83,7 @@ export function useDappSwapComparisonInfo() {
           tokenAddress,
         ),
       );
-      return new BigNumber(amount ?? 0)
+      return new BigNumber(tokenAmount ?? 0)
         .dividedBy(decimals)
         .times(conversionRate)
         .toString(10);
@@ -146,34 +147,42 @@ export function useDappSwapComparisonInfo() {
     const nativeTokenAddress = getNativeTokenAddress(chainId);
 
     captureDappSwapComparisonMetricsProperties({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_dapp_from_token_simulated_value_usd: getUSDValue(
         srcTokenAmount,
         srcTokenAddress as Hex,
       ),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_dapp_to_token_simulated_value_usd: getUSDValue(
         destTokenBalanceChange,
         destTokenAddress as Hex,
       ),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_dapp_minimum_received_value_usd: getUSDValue(
         amountMin,
         destTokenAddress as Hex,
       ),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_dapp_network_fee_usd: getUSDValue(
         new BigNumber(gasUsed ?? gas ?? '0x0', 16).toNumber().toString(),
         nativeTokenAddress,
       ),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_mm_from_token_simulated_value_usd: getUSDValue(
         srcTokenAmount,
         srcTokenAddress as Hex,
       ),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_mm_to_token_simulated_value_usd: getUSDValue(
         destTokenAmount,
         destTokenAddress as Hex,
       ),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_mm_minimum_received_value_usd: getUSDValue(
         minDestTokenAmount,
         destTokenAddress as Hex,
       ),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_mm_network_fee_usd: getUSDValue(
         totalGasInQuote.toString(),
         nativeTokenAddress,
@@ -187,6 +196,8 @@ export function useDappSwapComparisonInfo() {
     erc20Decimals,
     gas,
     gasUsed,
+    getUSDValue,
+    quotes,
     quotesInput,
     simulationData,
   ]);
