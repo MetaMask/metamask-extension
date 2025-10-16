@@ -3159,11 +3159,10 @@ export function getIsWatchEthereumAccountEnabled(state) {
 }
 
 /**
- * Get the state of the `bitcoinSupportEnabled` flag with version check.
- * Uses bitcoinAccounts feature flag.
+ * Get the state of the `bitcoinAccounts` feature flag with version check.
  *
  * @param {*} _state
- * @returns The state of the `bitcoinSupportEnabled` flag.
+ * @returns The state of the `bitcoinAccounts` feature flag.
  */
 export function getIsBitcoinSupportEnabled(
   // Use `_` prefix to avoid lint issue if `bitcoin` code-fence is not enabled
@@ -3179,18 +3178,10 @@ export function getIsBitcoinSupportEnabled(
 }
 
 /**
- * Get the state of the `solanaSupportEnabled` remote feature flag.
+ * Get the state of the `solanaAccounts` feature flag with version check.
  *
  * @param {*} state
- * @returns The state of the `solanaSupportEnabled` remote feature flag.
- */
-
-/**
- * Get the state of the `solanaSupportEnabled` remote feature flag.
- * Uses solanaAccounts feature flag with proper version validation.
- *
- * @param {*} state
- * @returns The state of the `solanaSupportEnabled` remote feature flag.
+ * @returns The state of the `solanaAccounts` feature flag.
  */
 export function getIsSolanaSupportEnabled(state) {
   const { solanaAccounts } = getRemoteFeatureFlags(state);
