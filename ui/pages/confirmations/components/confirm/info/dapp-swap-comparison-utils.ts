@@ -75,8 +75,8 @@ const parseTransactionData = (data?: string) => {
     return { inputs: [], commandBytes: [] };
   }
 
-  const commands = parsedTransactionData.args.commands;
-  const inputs = parsedTransactionData.args.inputs;
+  const { commands } = parsedTransactionData.args;
+  const { inputs } = parsedTransactionData.args;
   const commandBytes = commands.slice(2).match(/.{1,2}/gu) ?? [];
 
   return { inputs, commandBytes };
