@@ -23,6 +23,7 @@ import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { stripProtocol } from '../../utils/confirm';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
 import { AddEthereumChainContext } from './types';
+import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 
 export const AddEthereumChain = () => {
   const t = useI18nContext();
@@ -68,7 +69,7 @@ export const AddEthereumChain = () => {
         <ConfirmInfoAlertRow
           label={t('network')}
           color={TextColor.textAlternative}
-          alertKey="network"
+          alertKey={RowAlertKey.ChainName}
           ownerId={currentConfirmation.id}
         >
           <Box className="flex items-center gap-1">
@@ -86,7 +87,7 @@ export const AddEthereumChain = () => {
           color={TextColor.textAlternative}
           tooltip={t('networkURLDefinition')}
           tooltipIcon={LegacyIconName.Question}
-          alertKey="rpcUrl"
+          alertKey={RowAlertKey.RpcUrl}
           ownerId={currentConfirmation.id}
         >
           <Text>{stripProtocol(requestData.rpcUrl)}</Text>

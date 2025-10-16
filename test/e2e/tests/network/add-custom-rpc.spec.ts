@@ -2,11 +2,11 @@ import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
-// import AddRpcProviderDialog from '../../page-objects/pages/dialog/add-rpc-provider';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
 import UpdateNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/update-network-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { RowAlertKey } from '../../../../ui/components/app/confirm/info/row/constants';
 
 describe('Add Custom RPC', function (this: Suite) {
   it('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
@@ -47,11 +47,11 @@ describe('Add Custom RPC', function (this: Suite) {
 
         // Check warning messages are displayed
         await updateNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'network',
+          RowAlertKey.ChainName,
           'According to our record the network name may not correctly match this chain ID.',
         );
         await updateNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'rpcUrl',
+          RowAlertKey.RpcUrl,
           'According to our records the submitted RPC URL value does not match a known provider for this chain ID.',
         );
 
@@ -98,11 +98,11 @@ describe('Add Custom RPC', function (this: Suite) {
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
         await addNetworkConfirmation.checkPageIsLoaded('Antani');
         await addNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'network',
+          RowAlertKey.ChainName,
           'According to our record the network name may not correctly match this chain ID.',
         );
         await addNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'rpcUrl',
+          RowAlertKey.RpcUrl,
           'According to our records the submitted RPC URL value does not match a known provider for this chain ID.',
         );
 

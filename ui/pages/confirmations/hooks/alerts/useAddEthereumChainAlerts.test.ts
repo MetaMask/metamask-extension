@@ -193,7 +193,7 @@ describe('useAddEthereumChainAlerts', () => {
         expect.objectContaining({
           key: 'mismatchedRpcChainId',
           severity: Severity.Warning,
-          field: 'network',
+          field: 'chainName',
         }),
       ]),
     );
