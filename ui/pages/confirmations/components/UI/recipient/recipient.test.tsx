@@ -5,6 +5,12 @@ import configureStore from '../../../../../store/store';
 import mockDefaultState from '../../../../../../test/data/mock-state.json';
 import { Recipient } from './recipient';
 
+jest.mock('../../../hooks/send/useAccountAddressSeedIconMap', () => ({
+  useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
+    accountAddressSeedIconMap: new Map(),
+  }),
+}));
+
 const mockContactRecipient = {
   address: '0x1234567890abcdef1234567890abcdef12345678',
   contactName: 'John Doe',
