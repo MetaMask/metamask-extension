@@ -108,7 +108,7 @@ const mockBuyableChainsEvmOnly = defaultBuyableChains.filter(
 const mockMetamaskStore = {
   ...mockState.metamask,
   remoteFeatureFlags: {
-    bitcoinAccounts: { enabled: true, minimumVersion: '13.7.0' },
+    bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
     bridgeConfig: {
       support: true,
     },
