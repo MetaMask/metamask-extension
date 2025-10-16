@@ -101,14 +101,18 @@ const TransactionShield = () => {
     customerId,
     subscriptions,
     loading: subscriptionsLoading,
-  } = useUserSubscriptions();
+  } = useUserSubscriptions({
+    refetch: true, // always fetch latest subscriptions state in settings screen
+  });
   const shieldSubscription = useUserSubscriptionByProduct(
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
 
   const { subscriptionPricing, loading: subscriptionPricingLoading } =
-    useSubscriptionPricing();
+    useSubscriptionPricing({
+      refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
+    });
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
     PAYMENT_TYPES.byCrypto,
     subscriptionPricing,

@@ -249,10 +249,11 @@ export class Delegation7702PublishHook {
   ): ExecutionStruct[][] {
     const { txParams } = transactionMeta;
     const { data, to, value } = txParams;
+    const normalizedData = this.#normalizeCallData(data);
     const userExecution: ExecutionStruct = {
       target: to as Hex,
       value: BigInt((value as Hex) ?? '0x0'),
-      callData: (data as Hex) ?? EMPTY_HEX,
+      callData: normalizedData,
     };
 
     if (!includeTransfer) {
@@ -310,6 +311,7 @@ export class Delegation7702PublishHook {
 
     const { txParams } = transactionMeta;
     const { to, value, data } = txParams;
+    const normalizedData = this.#normalizeCallData(data);
 
     if (includeTransfer && gasFeeToken !== undefined) {
       const { tokenAddress, recipient, amount } = gasFeeToken;
@@ -323,12 +325,17 @@ export class Delegation7702PublishHook {
           amount,
           to,
           (value as Hex) ?? '0x0',
-          data,
+          normalizedData,
         );
       }
     } else if (to !== undefined) {
       // contract deployments can't be delegated
-      caveatBuilder.addCaveat(exactExecution, to, value ?? '0x0', data ?? '0x');
+      caveatBuilder.addCaveat(
+        exactExecution,
+        to,
+        value ?? '0x0',
+        normalizedData,
+      );
     }
 
     // the relay may only execute this delegation once for security reasons
@@ -396,5 +403,31 @@ export class Delegation7702PublishHook {
       s,
       yParity,
     };
+  }
+
+  #normalizeCallData(data: unknown): Hex {
+    if (typeof data !== 'string' || data.length === 0) {
+      return EMPTY_HEX;
+    }
+
+    const hasHexPrefix = data.slice(0, 2).toLowerCase() === '0x';
+    const normalizedData = data.toLowerCase();
+    const prefixed = hasHexPrefix
+      ? `0x${normalizedData.slice(2)}`
+      : `0x${normalizedData}`;
+    const hexBody = prefixed.slice(2);
+
+    if (hexBody.length === 0) {
+      return EMPTY_HEX;
+    }
+
+    if (hexBody.length % 2 !== 0) {
+      // The EVM works with byte arrays, and each byte is represented by exactly
+      // two hexadecimal characters. Ensure the hex string is byte-aligned by
+      // prefixing a leading zero.
+      return this.#normalizeCallData(`0x0${hexBody}`);
+    }
+
+    return prefixed as Hex;
   }
 }
