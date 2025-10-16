@@ -50,7 +50,9 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
+  PLATFORM_FIREFOX,
 } from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
@@ -364,7 +366,9 @@ export const GlobalMenu = ({
         {t('allPermissions')}
       </MenuItem>
 
-      {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
+      {/* Toggle between popup and sidepanel not in firefox */}
+      {getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN &&
+      getBrowserName() !== PLATFORM_FIREFOX ? (
         <MenuItem
           iconName={IconName.Expand}
           onClick={async () => {
@@ -382,7 +386,29 @@ export const GlobalMenu = ({
         >
           {isSidePanelDefault ? t('popupView') : t('sidePanelView')}
         </MenuItem>
-      )}
+      ) : null}
+
+      {/* Firefox: Show expand view button in popup */}
+      {getBrowserName() === PLATFORM_FIREFOX &&
+      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? (
+        <MenuItem
+          iconName={IconName.Expand}
+          onClick={() => {
+            global?.platform?.openExtensionInBrowser?.();
+            trackEvent({
+              event: MetaMetricsEventName.AppWindowExpanded,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: METRICS_LOCATION,
+              },
+            });
+            closeMenu();
+          }}
+          data-testid="global-menu-expand-view"
+        >
+          {t('expandView')}
+        </MenuItem>
+      ) : null}
       <MenuItem
         data-testid="global-menu-networks"
         iconName={IconName.Hierarchy}

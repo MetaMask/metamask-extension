@@ -1581,19 +1581,22 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
-browser.runtime.onInstalled.addListener(() => {
-  browser.contextMenus.create({
-    id: 'openSidePanel',
-    title: 'MetaMask Sidepanel',
-    contexts: ['all'],
+// Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
+if (browser.contextMenus && browser.sidePanel) {
+  browser.runtime.onInstalled.addListener(() => {
+    browser.contextMenus.create({
+      id: 'openSidePanel',
+      title: 'MetaMask Sidepanel',
+      contexts: ['all'],
+    });
   });
-});
-browser.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === 'openSidePanel') {
-    // This will open the panel in all the pages on the current window.
-    browser.sidePanel.open({ windowId: tab.windowId });
-  }
-});
+  browser.contextMenus.onClicked.addListener((info, tab) => {
+    if (info.menuItemId === 'openSidePanel') {
+      // This will open the panel in all the pages on the current window.
+      browser.sidePanel.open({ windowId: tab.windowId });
+    }
+  });
+}
 
 // // On first install, open a new tab with MetaMask
 // async function onInstall() {
