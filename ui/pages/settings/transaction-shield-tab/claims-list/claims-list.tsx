@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   Box,
   BoxBackgroundColor,
@@ -19,51 +19,30 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useAsyncResult } from '../../../../hooks/useAsync';
-import { getShieldClaims } from '../../../../store/actions';
-import { ShieldClaim, CLAIM_STATUS, ClaimStatus } from '../types';
-import { TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE } from '../../../../helpers/constants/routes';
+import { useClaims } from '../../../../contexts/claims/claims';
+import { CLAIM_STATUS, ClaimStatus } from '../types';
+import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 
 const ClaimsList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const { pendingClaims, historyClaims, isLoading, error } = useClaims();
 
-  const claimsResult = useAsyncResult<ShieldClaim[]>(
-    () => getShieldClaims(),
-    [],
-  );
-
-  const pendingClaims = useMemo(() => {
-    return (
-      claimsResult.value?.filter(
-        (claim) => claim.status === CLAIM_STATUS.PENDING,
-      ) ?? []
-    );
-  }, [claimsResult.value]);
-
-  const historyClaims = useMemo(() => {
-    return (
-      claimsResult.value?.filter(
-        (claim) => claim.status !== CLAIM_STATUS.PENDING,
-      ) ?? []
-    );
-  }, [claimsResult.value]);
-
-  const claimItem = (intercomId: string, status?: ClaimStatus) => {
+  const claimItem = (claimId: string, status?: ClaimStatus) => {
     return (
       <Box
         asChild
-        key={intercomId}
-        data-testid={`claim-item-${intercomId}`}
+        key={claimId}
+        data-testid={`claim-item-${claimId}`}
         backgroundColor={BoxBackgroundColor.BackgroundSection}
         className="claim-item flex items-center justify-between w-full p-4 rounded-lg"
         onClick={() => {
-          navigate(`${TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE}/${intercomId}`);
+          navigate(`${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL}/${claimId}`);
         }}
       >
         <button>
           <Box className="flex items-center gap-2">
-            <Text variant={TextVariant.BodyMd}>Claim #{intercomId}</Text>
+            <Text variant={TextVariant.BodyMd}>Claim #{claimId}</Text>
             {status && (
               <Tag
                 borderStyle={BorderStyle.none}
@@ -107,7 +86,7 @@ const ClaimsList = () => {
   };
 
   // Handle loading state
-  if (claimsResult.status === 'pending') {
+  if (isLoading) {
     return (
       <Box
         className="claims-list-page flex items-center justify-center w-full p-4"
@@ -119,7 +98,7 @@ const ClaimsList = () => {
   }
 
   // Handle error state
-  if (claimsResult.status === 'error') {
+  if (error) {
     return (
       <Box
         className="claims-list-page flex items-center justify-center w-full p-4"
@@ -144,9 +123,7 @@ const ClaimsList = () => {
             {t('shieldClaimsPendingTitle')}
           </Text>
           <Box className="flex flex-col gap-2">
-            {pendingClaims.map((claim) =>
-              claimItem(claim.intercomId, claim.status),
-            )}
+            {pendingClaims.map((claim) => claimItem(claim.id, claim.status))}
           </Box>
         </Box>
       )}
@@ -160,9 +137,7 @@ const ClaimsList = () => {
             {t('shieldClaimsHistoryTitle')}
           </Text>
           <Box className="flex flex-col gap-2">
-            {historyClaims.map((claim) =>
-              claimItem(claim.intercomId, claim.status),
-            )}
+            {historyClaims.map((claim) => claimItem(claim.id, claim.status))}
           </Box>
         </Box>
       )}

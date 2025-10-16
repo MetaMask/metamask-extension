@@ -26,6 +26,7 @@ import {
   useNavigate,
 } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useClaims } from '../../../../contexts/claims/claims';
 import {
   Textarea,
   TextareaResize,
@@ -45,11 +46,7 @@ import { useClaimState } from '../../../../hooks/claims/useClaimState';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
-import {
-  TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE,
-  TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE,
-  TRANSACTION_SHIELD_ROUTE,
-} from '../../../../helpers/constants/routes';
+import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 import { submitShieldClaim } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
@@ -68,11 +65,15 @@ const SubmitClaimForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { refetchClaims } = useClaims();
   const [isSubmittingClaim, setIsSubmittingClaim] = useState(false);
 
   const isClaimViewPage = useMemo(() => {
     return Boolean(
-      matchPath(`${TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE}/:uniqueId`, pathname),
+      matchPath(
+        `${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL}/:uniqueId`,
+        pathname,
+      ),
     );
   }, [pathname]);
 
@@ -233,7 +234,9 @@ const SubmitClaimForm = () => {
         files,
       });
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
-      navigate(TRANSACTION_SHIELD_ROUTE);
+      // update claims
+      await refetchClaims();
+      navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
     } catch (error) {
       const { message } = error as Error;
       dispatch(
@@ -255,6 +258,7 @@ const SubmitClaimForm = () => {
     caseDescription,
     files,
     navigate,
+    refetchClaims,
   ]);
 
   return (
@@ -271,7 +275,7 @@ const SubmitClaimForm = () => {
           description="Your claims is being reviewed by our team. We will notify you when it has been approved by email."
           actionButtonLabel="View claims"
           actionButtonOnClick={() => {
-            navigate(TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE);
+            navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
           }}
         />
       )}
@@ -481,7 +485,7 @@ const SubmitClaimForm = () => {
             data-testid="shield-claim-back-button"
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Lg}
-            onClick={() => navigate(TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE)}
+            onClick={() => navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE)}
           >
             {t('back')}
           </Button>

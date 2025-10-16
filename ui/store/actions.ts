@@ -7608,12 +7608,12 @@ export async function getShieldClaims() {
 }
 
 // TODO: move to controller
-export async function getShieldClaimDetails(intercomId: string) {
+export async function getShieldClaimDetails(claimId: string) {
   const baseUrl =
     process.env.SHIELD_CLAIMS_API_URL ??
     'https://claims.dev-api.cx.metamask.io';
 
-  const claimsUrl = `${baseUrl}/claims/byIntercomId/${intercomId}`;
+  const claimsUrl = `${baseUrl}/claims/byId/${claimId}`;
   const accessToken = await submitRequestToBackground<string>('getBearerToken');
 
   const response = await fetch(claimsUrl, {

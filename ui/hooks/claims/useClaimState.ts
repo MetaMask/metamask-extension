@@ -22,12 +22,12 @@ export const useClaimState = (isClaimViewPage: boolean = false) => {
     [],
   );
 
-  const intercomId = pathname.split('/').pop();
+  const claimId = pathname.split('/').pop();
 
   const claimDetailsResult = useAsyncResult<ShieldClaim | null>(async () => {
-    if (isClaimViewPage && intercomId) {
+    if (isClaimViewPage && claimId) {
       try {
-        const claim = await getShieldClaimDetails(intercomId as string);
+        const claim = await getShieldClaimDetails(claimId as string);
         return claim;
       } catch (error) {
         console.error(error);
@@ -35,7 +35,7 @@ export const useClaimState = (isClaimViewPage: boolean = false) => {
       }
     }
     return null;
-  }, [isClaimViewPage, intercomId]);
+  }, [isClaimViewPage, claimId]);
 
   useEffect(() => {
     if (claimDetailsResult.value) {

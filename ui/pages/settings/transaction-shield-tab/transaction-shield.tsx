@@ -49,7 +49,7 @@ import {
 import { getShortDateFormatterV2 } from '../../asset/util';
 import {
   SHIELD_PLAN_ROUTE,
-  TRANSACTION_SHIELD_CLAIM_NEW_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from '../../../helpers/constants/routes';
 import { getProductPrice } from '../../shield-plan/utils';
 import Tooltip from '../../../components/ui/tooltip';
@@ -703,7 +703,7 @@ const TransactionShield = () => {
         {/* TODO: implement logic to allow submitting case until after 21 days of last active subscription */}
         {!isCancelled &&
           buttonRow(t('shieldTxMembershipSubmitCase'), () => {
-            navigate(TRANSACTION_SHIELD_CLAIM_NEW_ROUTE);
+            navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
           })}
         {!isMembershipInactive &&
           shieldSubscription?.cancelAtPeriodEnd &&
