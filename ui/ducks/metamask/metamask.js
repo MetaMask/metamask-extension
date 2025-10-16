@@ -187,12 +187,6 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
-    case actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE:
-      return {
-        ...metamaskState,
-        showShieldEntryModalOnce: action.payload,
-      };
-
     default:
       return metamaskState;
   }

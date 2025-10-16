@@ -73,6 +73,7 @@ import {
   RecurringInterval,
   Subscription,
   UpdatePaymentMethodOpts,
+  SubmitUserEventRequest,
 } from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
@@ -167,7 +168,10 @@ import {
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
-import type { NetworkConnectionBanner } from '../../shared/constants/app-state';
+import {
+  ClaimSubmitToastType,
+  type NetworkConnectionBanner,
+} from '../../shared/constants/app-state';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -333,6 +337,68 @@ export function createNewVaultAndSyncWithSocial(
 }
 
 /**
+ * Starts polling for the subscriptions.
+ */
+export function subscriptionsStartPolling(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('subscriptionsStartPolling');
+    } catch (error) {
+      log.error('[subscriptionsStartPolling] error', error);
+      dispatch(displayWarning(error));
+    }
+  };
+}
+
+/**
+ * Fetches the subscription eligibilities.
+ *
+ * @returns The subscription eligibilities.
+ */
+export function getSubscriptionsEligibilities(): ThunkAction<
+  SubscriptionEligibility[],
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      return await submitRequestToBackground('getSubscriptionsEligibilities');
+    } catch (error) {
+      log.error('[getSubscriptionsEligibilities] error', error);
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+/**
+ * Submits a user event.
+ *
+ * @param eventRequest - The event request.
+ * @returns resolved promise.
+ */
+export function submitSubscriptionUserEvents(
+  eventRequest: SubmitUserEventRequest,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('submitSubscriptionUserEvents', [
+        eventRequest,
+      ]);
+    } catch (error) {
+      log.error('[submitSubscriptionUserEvents] error', error);
+      dispatch(displayWarning(error));
+    }
+  };
+}
+
+/**
  * Fetches user subscriptions.
  *
  * @returns The subscriptions.
@@ -489,12 +555,18 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
 }
 
 export function setShowShieldEntryModalOnce(
-  payload: boolean | null,
+  show: boolean | null,
+  shouldSubmitEvents: boolean = false,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setShowShieldEntryModalOnce', [payload]);
-      dispatch(setShowShieldEntryModalOnceAction(payload));
+      await submitRequestToBackground('setShowShieldEntryModalOnce', [show]);
+      dispatch(
+        setShowShieldEntryModalOnceAction({
+          show: Boolean(show),
+          shouldSubmitEvents,
+        }),
+      );
     } catch (error) {
       log.error('[setShowShieldEntryModalOnce] error', error);
       dispatch(displayWarning(error));
@@ -503,9 +575,10 @@ export function setShowShieldEntryModalOnce(
   };
 }
 
-export function setShowShieldEntryModalOnceAction(
-  payload: boolean | null,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function setShowShieldEntryModalOnceAction(payload: {
+  show: boolean;
+  shouldSubmitEvents: boolean;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
     type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
     payload,
@@ -715,23 +788,14 @@ export function createNewVaultAndRestore(
   };
 }
 
-export function importMnemonicToVault(mnemonic: string): ThunkAction<
-  Promise<{
-    newAccountAddress: string;
-    discoveredAccounts: { bitcoin: number; solana: number };
-  }>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function importMnemonicToVault(
+  mnemonic: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.importMnemonicToVault`);
 
-    return new Promise<{
-      newAccountAddress: string;
-      discoveredAccounts: { bitcoin: number; solana: number };
-    }>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'importMnemonicToVault',
         [mnemonic],
@@ -7412,4 +7476,74 @@ export async function getLayer1GasFeeValue({
   return await submitRequestToBackground('getLayer1GasFee', [
     { chainId, networkClientId, transactionParams },
   ]);
+}
+
+/**
+ * Submits a shield claim.
+ *
+ * @param params - The parameters.
+ * @param params.email - The email.
+ * @param params.impactedWalletAddress - The impacted wallet address.
+ * @param params.impactedTransactionHash - The impacted transaction hash.
+ * @param params.reimbursementWalletAddress - The reimbursement wallet address.
+ * @param params.caseDescription - The description.
+ * @param params.files - The files.
+ * @returns The subscription response.
+ */
+export async function submitShieldClaim(params: {
+  email: string;
+  impactedWalletAddress: string;
+  impactedTransactionHash: string;
+  reimbursementWalletAddress: string;
+  caseDescription: string;
+  files?: FileList;
+}) {
+  const baseUrl =
+    process.env.SHIELD_CLAIMS_API_URL ??
+    'https://claims.dev-api.cx.metamask.io';
+
+  const claimsUrl = `${baseUrl}/claims`;
+  const formData = new FormData();
+  formData.append('email', params.email);
+  formData.append('impactedWalletAddress', params.impactedWalletAddress);
+  formData.append('impactedTxHash', params.impactedTransactionHash);
+  formData.append(
+    'reimbursementWalletAddress',
+    params.reimbursementWalletAddress,
+  );
+  formData.append('description', params.caseDescription);
+  // TODO: temporary value for signature, update to correct signature after implement signature verification
+  formData.append(
+    'signature',
+    '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef12',
+  );
+  formData.append('timestamp', Date.now().toString());
+
+  // add files to form data
+  if (params.files) {
+    Array.from(params.files).forEach((file) => {
+      formData.append('attachments', file, file.name);
+    });
+  }
+
+  const accessToken = await submitRequestToBackground<string>('getBearerToken');
+
+  // we do the request here instead of background controllers because files are not serializable
+  const response = await fetch(claimsUrl, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorMessage = await response.json();
+    if (errorMessage.message) {
+      throw new Error(errorMessage.message);
+    }
+    throw new Error(ClaimSubmitToastType.Errored);
+  }
+
+  return ClaimSubmitToastType.Success;
 }

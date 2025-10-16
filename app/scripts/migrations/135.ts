@@ -1,6 +1,6 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
-import type { SmartTransaction } from '@metamask/smart-transactions-controller/dist/types';
+import type { SmartTransaction } from '@metamask/smart-transactions-controller';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 

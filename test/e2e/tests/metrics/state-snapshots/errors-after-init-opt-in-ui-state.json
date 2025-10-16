@@ -69,6 +69,7 @@
     "showNewSrpAddedToast": "boolean",
     "showPasswordChangeToast": null,
     "showCopyAddressToast": "boolean",
+    "showClaimSubmitToast": null,
     "showSupportDataConsentModal": "boolean",
     "showConnectionsRemovedModal": "boolean"
   },
@@ -399,7 +400,9 @@
     "gatorPermissionsMapSerialized": "string",
     "isFetchingGatorPermissions": "boolean",
     "gatorPermissionsProviderSnapId": "string",
-    "srpSessionData": "object"
+    "srpSessionData": "object",
+    "shieldEndingToastLastClickedOrClosed": "object",
+    "shieldPausedToastLastClickedOrClosed": "object"
   },
   "ramps": "object",
   "send": "object",
