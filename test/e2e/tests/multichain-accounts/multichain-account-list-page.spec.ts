@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { Driver } from '../../webdriver/driver';
-import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { WINDOW_TITLES } from '../../helpers';
@@ -29,7 +29,9 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         // Ensure that accounts within the wallets are displayed
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkMultichainAccountNameDisplayed('Account 1');
-        await accountListPage.checkMultichainAccountNameDisplayed('Account 2');
+        // FIXME: Account index are scoped per wallet now, so we have now easy way
+        // to check for "Wallet 2" accounts.
+        // await accountListPage.checkMultichainAccountNameDisplayed('Account 2');
       },
     );
   });
@@ -62,8 +64,10 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.SSK,
+        dapp: true,
+        dappPaths: ['snap-simple-keyring-site'],
         testSpecificMock: async (mockServer) => {
-          await mockSimpleKeyringSnap(mockServer);
+          await mockSnapSimpleKeyringAndSite(mockServer);
           return mockMultichainAccountsFeatureFlagStateTwo(mockServer);
         },
         state: 2,

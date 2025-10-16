@@ -938,9 +938,6 @@
   "securityAndPrivacy": {
     "message": "安全＆隱私"
   },
-  "seedPhraseIntroTitle": {
-    "message": "保護您的錢包"
-  },
   "seedPhraseReq": {
     "message": "助憶詞為 12, 15, 18, 21 或 24 個單字"
   },
@@ -997,9 +994,6 @@
   },
   "signed": {
     "message": "已簽署"
-  },
-  "skipAccountSecurity": {
-    "message": "Skip Account Security?"
   },
   "somethingWentWrong": {
     "message": "糟糕！出了點問題。"
@@ -1080,9 +1074,6 @@
     "message": "允許這個網站切換網路？"
   },
   "switchNetwork": {
-    "message": "切換網路"
-  },
-  "switchNetworks": {
     "message": "切換網路"
   },
   "switchToThisAccount": {

@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
+import { DeleteRegulationStatus } from '../../../../shared/constants/metametrics';
 import {
   AllowedActions,
   MetaMetricsDataDeletionController,
@@ -118,6 +119,108 @@ describe('MetaMetricsDataDeletionController', () => {
         metaMetricsDataDeletionTimestamp: expect.any(Number),
         metaMetricsDataDeletionStatus: 'UNKNOWN',
       });
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const { controller } = setupController({
+        options: {
+          state: {
+            // Populate optional properties to ensure they show up in snapshot
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Unknown,
+          },
+        },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'anonymous',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "metaMetricsDataDeletionId": null,
+          "metaMetricsDataDeletionStatus": "UNKNOWN",
+          "metaMetricsDataDeletionTimestamp": 0,
+        }
+      `);
+    });
+
+    it('includes expected state in state logs', () => {
+      const { controller } = setupController({
+        options: {
+          state: {
+            // Populate optional properties to ensure they show up in snapshot
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Unknown,
+          },
+        },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "metaMetricsDataDeletionId": null,
+          "metaMetricsDataDeletionStatus": "UNKNOWN",
+          "metaMetricsDataDeletionTimestamp": 0,
+        }
+      `);
+    });
+
+    it('persists expected state', () => {
+      const { controller } = setupController({
+        options: {
+          state: {
+            // Populate optional properties to ensure they show up in snapshot
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Unknown,
+          },
+        },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "metaMetricsDataDeletionId": null,
+          "metaMetricsDataDeletionStatus": "UNKNOWN",
+          "metaMetricsDataDeletionTimestamp": 0,
+        }
+      `);
+    });
+
+    it('exposes expected state to UI', () => {
+      const { controller } = setupController({
+        options: {
+          state: {
+            // Populate optional properties to ensure they show up in snapshot
+            metaMetricsDataDeletionStatus: DeleteRegulationStatus.Unknown,
+          },
+        },
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "metaMetricsDataDeletionId": null,
+          "metaMetricsDataDeletionStatus": "UNKNOWN",
+          "metaMetricsDataDeletionTimestamp": 0,
+        }
+      `);
     });
   });
 });

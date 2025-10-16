@@ -220,8 +220,12 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndRestore('test@123', TEST_SEED);
       const result2 = metamaskController.keyringController.state;
 
+      expect(result1.keyrings).toHaveLength(2);
+      expect(result1.keyrings[0].metadata.id).toBe(mockULIDs[0]); // 0: Primary HD keyring
+      expect(result1.keyrings[1].metadata.id).toBe(mockULIDs[1]); // 1: Snap keyring
+
       // On restore, a new keyring metadata is generated.
-      expect(result1.keyrings[0].metadata.id).toBe(mockULIDs[0]);
+      const ulidNewIndex = 2;
       expect(result2).toStrictEqual({
         ...result1,
         keyrings: [
@@ -229,7 +233,14 @@ describe('MetaMaskController', function () {
             ...result1.keyrings[0],
             metadata: {
               ...result1.keyrings[0].metadata,
-              id: mockULIDs[1],
+              id: mockULIDs[ulidNewIndex + 0], // 0: New primary HD keyring
+            },
+          },
+          {
+            ...result1.keyrings[1],
+            metadata: {
+              ...result1.keyrings[1].metadata,
+              id: mockULIDs[ulidNewIndex + 1], // 1: New Snap keyring
             },
           },
         ],
@@ -329,6 +340,9 @@ describe('MetaMaskController', function () {
           configuration: { chainId: '0xa' },
         })
         .mockReturnValueOnce({
+          configuration: { chainId: '0xa' },
+        })
+        .mockReturnValueOnce({
           networkConfigurationsByChainId: {
             '0xa': {
               nativeCurrency: 'ETH',
@@ -343,7 +357,7 @@ describe('MetaMaskController', function () {
         decimals,
         networkClientId: 'networkClientId1',
       });
-      expect(callSpy.mock.calls[0]).toStrictEqual([
+      expect(callSpy.mock.calls[1]).toStrictEqual([
         'NetworkController:getNetworkClientById',
         'networkClientId1',
       ]);
@@ -813,6 +827,9 @@ describe('MetaMaskController', function () {
             'submitPassword',
           )
           .mockResolvedValue();
+
+        // We now need the Snap keyring after unlocking the wallet.
+        jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
 
         const syncAndUnlockResult =
           await metamaskController.syncPasswordAndUnlockWallet(password);

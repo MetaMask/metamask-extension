@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { NameType } from '@metamask/name-controller';
+import { fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -21,6 +22,10 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => jest.fn(),
 }));
+
+jest.mock('./name-details/name-details', () => {
+  return <div data-testid="name-details">NameDetails</div>;
+});
 
 const ADDRESS_NO_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54977';
 const ADDRESS_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54979';
@@ -50,6 +55,7 @@ describe('Name', () => {
         name: IconName.Question,
         color: undefined,
       },
+      isAccount: false,
     });
 
     const { container } = renderWithProvider(
@@ -73,6 +79,7 @@ describe('Name', () => {
         name: IconName.Question,
         color: undefined,
       },
+      isAccount: false,
     });
 
     const { container } = renderWithProvider(
@@ -96,6 +103,7 @@ describe('Name', () => {
         name: IconName.VerifiedFilled,
         color: IconColor.infoDefault,
       },
+      isAccount: false,
     });
 
     const { container } = renderWithProvider(
@@ -119,6 +127,7 @@ describe('Name', () => {
         name: IconName.VerifiedFilled,
         color: IconColor.infoDefault,
       },
+      isAccount: false,
     });
 
     const { container } = renderWithProvider(
@@ -143,6 +152,7 @@ describe('Name', () => {
         name: IconName.VerifiedFilled,
         color: IconColor.infoDefault,
       },
+      isAccount: false,
     });
 
     const { container } = renderWithProvider(
@@ -155,6 +165,34 @@ describe('Name', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('prevents opening name details modal for account', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: SAVED_NAME_MOCK,
+      hasPetname: true,
+      image: 'test-image',
+      displayState: TrustSignalDisplayState.Petname,
+      icon: {
+        name: IconName.VerifiedFilled,
+        color: IconColor.infoDefault,
+      },
+      isAccount: true,
+    });
+
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <Name
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
+        data-testid="name-component"
+      />,
+      store,
+    );
+
+    const nameComponent = getByTestId('name-component');
+    fireEvent.click(nameComponent);
+    expect(queryByTestId('name-details')).toBeNull();
   });
 
   describe('metrics', () => {
@@ -177,6 +215,7 @@ describe('Name', () => {
             name: IconName.VerifiedFilled,
             color: IconColor.infoDefault,
           },
+          isAccount: false,
         });
 
         renderWithProvider(

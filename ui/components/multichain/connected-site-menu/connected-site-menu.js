@@ -23,8 +23,8 @@ import {
   IconSize,
 } from '../../component-library';
 import {
+  getAllPermittedAccounts,
   getOriginOfCurrentTab,
-  getPermittedAccountsByOrigin,
   getSubjectMetadata,
 } from '../../../selectors';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
@@ -39,10 +39,11 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
 
   const subjectMetadata = useSelector(getSubjectMetadata);
   const connectedOrigin = useSelector(getOriginOfCurrentTab);
-  const permittedAccountsByOrigin = useSelector(getPermittedAccountsByOrigin);
+  const permittedAccountsByOrigin = useSelector((state) =>
+    getAllPermittedAccounts(state, connectedOrigin),
+  );
   const dappActiveNetwork = useSelector(getDappActiveNetwork);
-  const currentTabHasNoAccounts =
-    !permittedAccountsByOrigin[connectedOrigin]?.length;
+  const currentTabHasNoAccounts = !permittedAccountsByOrigin?.length;
   const connectedSubjectsMetadata = subjectMetadata[connectedOrigin];
 
   // Get network image URL for the badge

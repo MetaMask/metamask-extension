@@ -85,9 +85,10 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
     <Popover
       referenceElement={referenceElement?.current}
       isOpen={isOpen}
-      style={{ width: '256px' }}
+      style={{ width: '260px' }}
       onClickOutside={onClose}
       data-testid="connected-site-popover"
+      paddingTop={3}
       paddingLeft={0}
       paddingRight={0}
       offset={[8, 8]}
@@ -158,7 +159,10 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
         </Box>
         {!isConnected && (
           <Box paddingLeft={4} paddingRight={4} paddingTop={2}>
-            <Text variant={TextVariant.bodyMd}>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
               {t('connectionPopoverDescription')}
             </Text>
             <ButtonLink
@@ -170,7 +174,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
             </ButtonLink>
           </Box>
         )}
-        <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+        <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
           <ButtonSecondary
             block
             onClick={() => {

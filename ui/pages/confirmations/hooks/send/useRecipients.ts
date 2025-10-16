@@ -5,12 +5,25 @@ export type Recipient = {
   accountGroupName?: string;
   address: string;
   contactName?: string;
+  isContact?: boolean;
   walletName?: string;
 };
 
 export const useRecipients = (): Recipient[] => {
-  const contactRecipients = useContactRecipients();
   const accountRecipients = useAccountRecipients();
+  const contactRecipients = useContactRecipients();
 
-  return [...contactRecipients, ...accountRecipients];
+  const recipients = [...accountRecipients];
+
+  contactRecipients.forEach((recipient) => {
+    if (
+      !recipients.some(
+        (r) => r.address.toLowerCase() === recipient.address.toLowerCase(),
+      )
+    ) {
+      recipients.push(recipient);
+    }
+  });
+
+  return recipients;
 };

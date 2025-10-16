@@ -1,10 +1,10 @@
 import React from 'react';
 import { screen, fireEvent, act, within } from '@testing-library/react';
 import {
+  AccountGroupId,
   AccountGroupType,
   AccountWalletType,
   toAccountWalletId,
-  toDefaultAccountGroupId,
 } from '@metamask/account-api';
 import { AccountTreeWallets } from '../../../selectors/multichain-accounts/account-tree.types';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -15,18 +15,6 @@ import {
   MultichainAccountList,
   MultichainAccountListProps,
 } from './multichain-account-list';
-
-const mockHistoryPush = jest.fn();
-
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
-  return {
-    ...original,
-    useHistory: () => ({
-      push: mockHistoryPush,
-    }),
-  };
-});
 
 jest.mock('../../../store/actions', () => {
   const actualActions = jest.requireActual('../../../store/actions');
@@ -53,6 +41,13 @@ const mockSetAccountGroupName = jest.requireMock(
 const mockSetSelectedMultichainAccount = jest.requireMock(
   '../../../store/actions',
 ).setSelectedMultichainAccount;
+
+const popoverOpenSelector = '.mm-popover--open';
+const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
+const modalHeaderSelector = '.mm-modal-header';
+const walletHeaderTestId = 'multichain-account-tree-wallet-header';
+const accountNameInputTestId = 'account-name-input';
+
 const mockWalletOneEntropySource = '01JKAF3DSGM3AB87EM9N0K41AJ';
 const mockWalletTwoEntropySource = '01JKAF3PJ247KAM6C03G5Q0NP8';
 
@@ -60,12 +55,12 @@ const walletOneId = toAccountWalletId(
   AccountWalletType.Entropy,
   mockWalletOneEntropySource,
 );
-const walletOneGroupId = toDefaultAccountGroupId(walletOneId);
+const walletOneGroupId = `${walletOneId}/0` as AccountGroupId;
 const walletTwoId = toAccountWalletId(
   AccountWalletType.Entropy,
   mockWalletTwoEntropySource,
 );
-const walletTwoGroupId = toDefaultAccountGroupId(walletTwoId);
+const walletTwoGroupId = `${walletTwoId}/0` as AccountGroupId;
 
 const mockWallets = {
   [walletOneId]: {
@@ -77,6 +72,7 @@ const mockWallets = {
         id: mockWalletOneEntropySource,
       },
     },
+    status: 'ready',
     groups: {
       [walletOneGroupId]: {
         id: walletOneGroupId,
@@ -126,8 +122,8 @@ describe('MultichainAccountList', () => {
     selectedAccountGroups: [walletOneGroupId],
   };
 
-  const renderComponent = (props = {}) => {
-    const store = configureStore(mockDefaultState);
+  const renderComponent = (props = {}, state = mockDefaultState) => {
+    const store = configureStore(state);
 
     return renderWithProvider(
       <MultichainAccountList {...defaultProps} {...props} />,
@@ -145,9 +141,7 @@ describe('MultichainAccountList', () => {
     expect(screen.getByText('Wallet 1')).toBeInTheDocument();
     expect(screen.getByText('Wallet 2')).toBeInTheDocument();
 
-    const walletHeaders = screen.getAllByTestId(
-      'multichain-account-tree-wallet-header',
-    );
+    const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
     expect(walletHeaders).toHaveLength(2);
 
     expect(
@@ -178,16 +172,23 @@ describe('MultichainAccountList', () => {
   });
 
   it('marks only the selected account with a check icon and dispatches action on click', () => {
-    renderComponent();
+    const { history } = renderComponent();
+    const mockHistoryPush = jest.spyOn(history, 'push');
 
-    // Check that the correct account is initially selected
-    const selectedAccountIcon = screen.getByTestId(
-      `multichain-account-cell-${walletOneGroupId}-selected-icon`,
-    );
-    expect(selectedAccountIcon).toBeInTheDocument();
+    // With default props, checkboxes should not be shown (showAccountCheckbox defaults to false)
+    // Check that no checkboxes are present
+    const checkboxes = screen.queryAllByRole('checkbox');
+    expect(checkboxes).toHaveLength(0);
+
+    // Selected icon should be present for the selected account
+    expect(
+      screen.getByTestId(
+        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
+      ),
+    ).toBeInTheDocument();
     expect(
       screen.queryByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-icon`,
+        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
       ),
     ).not.toBeInTheDocument();
 
@@ -207,14 +208,19 @@ describe('MultichainAccountList', () => {
   it('updates selected account when selectedAccountGroup changes', () => {
     const { rerender } = renderComponent();
 
+    // With default props, no checkboxes should be shown (showAccountCheckbox defaults to false)
+    let checkboxes = screen.queryAllByRole('checkbox');
+    expect(checkboxes).toHaveLength(0);
+
+    // Selected icon should be present for the selected account
     expect(
       screen.getByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-icon`,
+        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
       ),
     ).toBeInTheDocument();
     expect(
       screen.queryByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-icon`,
+        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
       ),
     ).not.toBeInTheDocument();
 
@@ -226,21 +232,44 @@ describe('MultichainAccountList', () => {
       />,
     );
 
-    // Now wallet two should be selected (has selected icon)
+    // Still no checkboxes should be present
+    checkboxes = screen.queryAllByRole('checkbox');
+    expect(checkboxes).toHaveLength(0);
+
+    // Now wallet two should have the selected icon
     expect(
       screen.queryByTestId(
-        `multichain-account-cell-${walletOneGroupId}-selected-icon`,
+        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
       ),
     ).not.toBeInTheDocument();
     expect(
       screen.getByTestId(
-        `multichain-account-cell-${walletTwoGroupId}-selected-icon`,
+        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
       ),
     ).toBeInTheDocument();
   });
 
+  it('shows no checkboxes and no selected icons when selectedAccountGroups is empty', () => {
+    renderComponent({ selectedAccountGroups: [] });
+
+    // No checkboxes should be present
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
+
+    // No selected icons should be present since no accounts are marked as selected
+    expect(
+      screen.queryByTestId(
+        `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
+      ),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(
+        `multichain-account-cell-${walletTwoGroupId}-selected-indicator`,
+      ),
+    ).not.toBeInTheDocument();
+  });
+
   it('handles multiple account groups within a single wallet', () => {
-    const secondGroupId = `${walletOneId}/group2`;
+    const secondGroupId = `${walletOneId}/1`;
     const multiGroupWallets = {
       [walletOneId]: {
         ...mockWallets[walletOneId],
@@ -253,16 +282,28 @@ describe('MultichainAccountList', () => {
             metadata: {
               name: 'Account 2 from wallet 1',
             },
+            accounts: ['784225f4-d30b-4e77-a900-c8bbce735b88'],
           },
         },
       },
     };
 
-    renderComponent({ wallets: multiGroupWallets });
+    renderComponent(
+      { wallets: multiGroupWallets },
+      {
+        ...mockDefaultState,
+        metamask: {
+          ...mockDefaultState.metamask,
+          accountTree: {
+            ...mockDefaultState.metamask.accountTree,
+            // @ts-expect-error - multiGroupWallets does not follow the exact structure due to test simplification
+            wallets: multiGroupWallets,
+          },
+        },
+      },
+    );
 
-    expect(
-      screen.queryAllByTestId('multichain-account-tree-wallet-header'),
-    ).toHaveLength(1);
+    expect(screen.queryAllByTestId(walletHeaderTestId)).toHaveLength(1);
     expect(
       screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
     ).toBeInTheDocument();
@@ -278,9 +319,7 @@ describe('MultichainAccountList', () => {
     renderComponent();
 
     // Find the menu button for the first account and click it
-    const menuButton = document.querySelector(
-      '.multichain-account-cell-popover-menu-button',
-    );
+    const menuButton = document.querySelector(menuButtonSelector);
     expect(menuButton).toBeInTheDocument();
 
     await act(async () => {
@@ -290,7 +329,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Find the popover
-    const popover = document.querySelector('.mm-popover--open');
+    const popover = document.querySelector(popoverOpenSelector);
     expect(popover).toBeInTheDocument();
 
     // Find all menu items within the popover
@@ -311,7 +350,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Verify the modal is open by finding the modal header
-    const modalHeader = document.querySelector('.mm-modal-header');
+    const modalHeader = document.querySelector(modalHeaderSelector);
     expect(modalHeader).toBeInTheDocument();
 
     // Find the header text inside the modal
@@ -321,7 +360,7 @@ describe('MultichainAccountList', () => {
     }
 
     // Find the actual input element directly
-    const inputContainer = screen.getByTestId('account-name-input');
+    const inputContainer = screen.getByTestId(accountNameInputTestId);
     // Get the input element inside the container using a more direct selector
     const inputElement = inputContainer.querySelector('input');
     expect(inputElement).toBeInTheDocument();
@@ -352,16 +391,16 @@ describe('MultichainAccountList', () => {
     );
 
     // Verify the modal is closed after submission
-    expect(screen.queryByTestId('account-name-input')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(accountNameInputTestId),
+    ).not.toBeInTheDocument();
   });
 
   it('opens account rename modal and closes it without saving', async () => {
     renderComponent();
 
     // Find the menu button for the first account and click it
-    const menuButton = document.querySelector(
-      '.multichain-account-cell-popover-menu-button',
-    );
+    const menuButton = document.querySelector(menuButtonSelector);
     expect(menuButton).toBeInTheDocument();
 
     await act(async () => {
@@ -371,7 +410,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Find the popover
-    const popover = document.querySelector('.mm-popover--open');
+    const popover = document.querySelector(popoverOpenSelector);
     expect(popover).toBeInTheDocument();
 
     // Find all menu items within the popover
@@ -392,7 +431,7 @@ describe('MultichainAccountList', () => {
     });
 
     // Verify that the modal is open
-    const modalHeader = document.querySelector('.mm-modal-header');
+    const modalHeader = document.querySelector(modalHeaderSelector);
     expect(modalHeader).toBeInTheDocument();
 
     // Find the close button by aria-label
@@ -404,7 +443,274 @@ describe('MultichainAccountList', () => {
     });
 
     // Verify the modal is closed and action was not called
-    expect(screen.queryByTestId('account-name-input')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(accountNameInputTestId),
+    ).not.toBeInTheDocument();
     expect(mockSetAccountGroupName).not.toHaveBeenCalled();
+  });
+
+  describe('Menu state management', () => {
+    it('opens menu for specific account when menu button is clicked', async () => {
+      renderComponent();
+
+      // Initially no menus should be open
+      expect(
+        document.querySelector(popoverOpenSelector),
+      ).not.toBeInTheDocument();
+
+      // Click first account's menu button
+      const firstMenuButton = document.querySelector(menuButtonSelector);
+      expect(firstMenuButton).toBeInTheDocument();
+
+      await act(async () => {
+        if (firstMenuButton) {
+          fireEvent.click(firstMenuButton);
+        }
+      });
+
+      // Menu should now be open
+      expect(document.querySelector(popoverOpenSelector)).toBeInTheDocument();
+    });
+
+    it('closes menu when same menu button is clicked twice', async () => {
+      renderComponent();
+
+      const menuButton = document.querySelector(menuButtonSelector);
+      expect(menuButton).toBeInTheDocument();
+
+      // Click to open
+      await act(async () => {
+        if (menuButton) {
+          fireEvent.click(menuButton);
+        }
+      });
+      expect(document.querySelector(popoverOpenSelector)).toBeInTheDocument();
+
+      // Click again to close
+      await act(async () => {
+        if (menuButton) {
+          fireEvent.click(menuButton);
+        }
+      });
+      expect(
+        document.querySelector(popoverOpenSelector),
+      ).not.toBeInTheDocument();
+    });
+
+    it('switches between menus when different menu buttons are clicked', async () => {
+      renderComponent();
+
+      const menuButtons = document.querySelectorAll(menuButtonSelector);
+      expect(menuButtons.length).toBeGreaterThanOrEqual(2);
+
+      // Click first menu button
+      await act(async () => {
+        fireEvent.click(menuButtons[0]);
+      });
+
+      const openPopover = document.querySelector(popoverOpenSelector);
+      expect(openPopover).toBeInTheDocument();
+
+      // Click second menu button
+      await act(async () => {
+        fireEvent.click(menuButtons[1]);
+      });
+
+      // Should still have exactly one open popover (switched to second menu)
+      const openPopovers = document.querySelectorAll(popoverOpenSelector);
+      expect(openPopovers).toHaveLength(1);
+    });
+  });
+
+  describe('Checkbox functionality', () => {
+    it('displays checkboxes when showAccountCheckbox is true', () => {
+      renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: true,
+      });
+
+      // Check that checkboxes are rendered for both accounts
+      const checkboxes = screen.getAllByRole('checkbox');
+      expect(checkboxes).toHaveLength(2);
+    });
+
+    it('does not display checkboxes when showAccountCheckbox is false', () => {
+      renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: false,
+      });
+
+      // Check that no checkboxes are rendered
+      const checkboxes = screen.queryAllByRole('checkbox');
+      expect(checkboxes).toHaveLength(0);
+    });
+
+    it('shows correct checkbox states based on selected accounts', () => {
+      renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: true,
+      });
+
+      const checkboxes = screen.getAllByRole('checkbox');
+
+      // First checkbox (wallet one) should be checked
+      expect(checkboxes[0]).toBeChecked();
+
+      // Second checkbox (wallet two) should not be checked
+      expect(checkboxes[1]).not.toBeChecked();
+    });
+
+    it('shows correct checkbox states when multiple accounts are selected', () => {
+      renderComponent({
+        selectedAccountGroups: [walletOneGroupId, walletTwoGroupId],
+        showAccountCheckbox: true,
+      });
+
+      const checkboxes = screen.getAllByRole('checkbox');
+
+      // Both checkboxes should be checked
+      expect(checkboxes[0]).toBeChecked();
+      expect(checkboxes[1]).toBeChecked();
+    });
+
+    it('handles checkbox click to select unselected account', () => {
+      const { history } = renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: true,
+      });
+      const mockHistoryPush = jest.spyOn(history, 'push');
+
+      const checkboxes = screen.getAllByRole('checkbox');
+
+      // Click the unchecked checkbox (wallet two)
+      fireEvent.click(checkboxes[1]);
+
+      // Verify that the action was dispatched with the correct account group ID
+      expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
+        walletTwoGroupId,
+      );
+      expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+
+    it('handles checkbox click to deselect selected account', () => {
+      const { history } = renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: true,
+      });
+      const mockHistoryPush = jest.spyOn(history, 'push');
+
+      const checkboxes = screen.getAllByRole('checkbox');
+
+      // Click the checked checkbox (wallet one)
+      fireEvent.click(checkboxes[0]);
+
+      // Verify that the action was dispatched with the correct account group ID
+      expect(mockSetSelectedMultichainAccount).toHaveBeenCalledWith(
+        walletOneGroupId,
+      );
+      expect(mockHistoryPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    });
+
+    it('updates checkbox states when selectedAccountGroups prop changes', () => {
+      const { rerender } = renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: true,
+      });
+
+      let checkboxes = screen.getAllByRole('checkbox');
+      expect(checkboxes[0]).toBeChecked();
+      expect(checkboxes[1]).not.toBeChecked();
+
+      // Change selection to wallet two
+      rerender(
+        <MultichainAccountList
+          wallets={mockWallets}
+          selectedAccountGroups={[walletTwoGroupId]}
+          showAccountCheckbox={true}
+        />,
+      );
+
+      checkboxes = screen.getAllByRole('checkbox');
+      expect(checkboxes[0]).not.toBeChecked();
+      expect(checkboxes[1]).toBeChecked();
+    });
+
+    it('removes checkboxes when showAccountCheckbox becomes false', () => {
+      const { rerender } = renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: true,
+      });
+
+      // Initially checkboxes should be present
+      expect(screen.getAllByRole('checkbox')).toHaveLength(2);
+
+      // Change showAccountCheckbox to false
+      rerender(
+        <MultichainAccountList
+          wallets={mockWallets}
+          selectedAccountGroups={[walletOneGroupId]}
+          showAccountCheckbox={false}
+        />,
+      );
+
+      // Checkboxes should be removed
+      expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
+    });
+
+    it('shows checkboxes when showAccountCheckbox becomes true', () => {
+      const { rerender } = renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: false,
+      });
+
+      // Initially no checkboxes should be present
+      expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
+
+      // Change showAccountCheckbox to true
+      rerender(
+        <MultichainAccountList
+          wallets={mockWallets}
+          selectedAccountGroups={[walletOneGroupId]}
+          showAccountCheckbox={true}
+        />,
+      );
+
+      // Checkboxes should now be present
+      expect(screen.getAllByRole('checkbox')).toHaveLength(2);
+      expect(screen.getAllByRole('checkbox')[0]).toBeChecked();
+      expect(screen.getAllByRole('checkbox')[1]).not.toBeChecked();
+    });
+
+    it('checkboxes and selected icons are mutually exclusive', () => {
+      const { rerender } = renderComponent({
+        selectedAccountGroups: [walletOneGroupId],
+        showAccountCheckbox: false,
+      });
+
+      // With checkboxes disabled, selected icon should be visible
+      expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
+      expect(
+        screen.getByTestId(
+          `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
+        ),
+      ).toBeInTheDocument();
+
+      // Enable checkboxes
+      rerender(
+        <MultichainAccountList
+          wallets={mockWallets}
+          selectedAccountGroups={[walletOneGroupId]}
+          showAccountCheckbox={true}
+        />,
+      );
+
+      // Now checkboxes should be visible and selected icon should be hidden
+      expect(screen.getAllByRole('checkbox')).toHaveLength(2);
+      expect(
+        screen.queryByTestId(
+          `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
+        ),
+      ).not.toBeInTheDocument();
+    });
   });
 });

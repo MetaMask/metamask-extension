@@ -1,10 +1,10 @@
-import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
+import { USER_STORAGE_GROUPS_FEATURE_KEY } from '@metamask/account-tree-controller';
+import { Driver } from '../../../webdriver/driver';
 import {
+  AsEnum,
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
-  AsEnum,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import { Driver } from '../../../webdriver/driver';
 
 export const arrangeTestUtils = (
   driver: Driver,
@@ -44,7 +44,7 @@ export const arrangeTestUtils = (
     await driver.waitUntil(
       async () => {
         const accounts = userStorageMockttpController.paths.get(
-          USER_STORAGE_FEATURE_NAMES.accounts,
+          USER_STORAGE_GROUPS_FEATURE_KEY,
         )?.response;
         return accounts?.length === expectedNumber;
       },

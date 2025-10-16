@@ -32,6 +32,55 @@ describe('Multichain API', function () {
     DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   );
 
+  describe('Calling `wallet_invokeMethod` with permissions granted from EIP-1193 provider', function () {
+    it('should allow the request to be made', async function () {
+      await withFixtures(
+        {
+          title: this.test?.fullTitle(),
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerTripleNode()
+            .build(),
+          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+        },
+        async ({ driver, extensionId }: FixtureCallbackArgs) => {
+          await loginWithBalanceValidation(driver);
+
+          const testDapp = new TestDappMultichain(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
+
+          const requestAccountRequest: string = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'eth_requestAccounts',
+          });
+
+          driver.executeScript(
+            `return window.ethereum.request(${requestAccountRequest})`,
+          );
+
+          await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          const connectAccountConfirmation = new ConnectAccountConfirmation(
+            driver,
+          );
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.confirmConnect();
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
+
+          await testDapp.connectExternallyConnectable(extensionId);
+          await testDapp.invokeMethodAndCheckResult({
+            scope: 'eip155:1337',
+            method: 'eth_getBalance',
+            expectedResult: DEFAULT_INITIAL_BALANCE_HEX,
+          });
+        },
+      );
+    });
+  });
+
   describe('Calling `wallet_invokeMethod` on the same dapp across three different connected chains', function () {
     describe('Read operations: calling different methods on each connected scope', function () {
       it('Should match selected method to the expected output', async function () {
@@ -155,10 +204,10 @@ describe('Multichain API', function () {
                 true,
               );
               await confirmation.checkNetworkIsDisplayed('Localhost 7777');
-              await confirmation.clickFooterConfirmButton();
+              await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
             } else {
               await confirmation.checkNetworkIsDisplayed('Localhost 7777');
-              await confirmation.clickFooterConfirmButton();
+              await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
               // third confirmation page should display Account 2 as sender account
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -168,7 +217,7 @@ describe('Multichain API', function () {
                 true,
               );
               await confirmation.checkNetworkIsDisplayed('Localhost 8546');
-              await confirmation.clickFooterConfirmButton();
+              await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
             }
           },
         );
@@ -352,7 +401,7 @@ describe('Multichain API', function () {
               driver,
             );
             await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
-            await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+            await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
@@ -427,7 +476,7 @@ describe('Multichain API', function () {
               driver,
             );
             await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
-            await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+            await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,

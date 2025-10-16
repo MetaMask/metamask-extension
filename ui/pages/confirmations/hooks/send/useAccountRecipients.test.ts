@@ -24,6 +24,9 @@ const mockIsEVMAccountForSend = jest.mocked(accountUtils.isEVMAccountForSend);
 const mockIsSolanaAccountForSend = jest.mocked(
   accountUtils.isSolanaAccountForSend,
 );
+const mockIsBitcoinAccountForSend = jest.mocked(
+  accountUtils.isBitcoinAccountForSend,
+);
 
 describe('useAccountRecipients', () => {
   const mockWalletsWithAccounts = {
@@ -107,6 +110,40 @@ describe('useAccountRecipients', () => {
     } as unknown as ReturnType<typeof useSendType>);
     mockIsEVMAccountForSend.mockReturnValue(false);
     mockIsSolanaAccountForSend.mockReturnValue(true);
+
+    const { result } = renderHookWithProvider(
+      () => useAccountRecipients(),
+      mockState,
+    );
+
+    expect(result.current).toEqual([
+      {
+        accountGroupName: 'Account Group 1',
+        address: '0x1234567890abcdef1234567890abcdef12345678',
+        walletName: 'MetaMask Wallet',
+      },
+      {
+        accountGroupName: 'Account Group 1',
+        address: '0xabcdef1234567890abcdef1234567890abcdef12',
+        walletName: 'MetaMask Wallet',
+      },
+      {
+        accountGroupName: 'Account Group 2',
+        address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
+        walletName: 'Hardware Wallet',
+      },
+    ]);
+  });
+
+  it('returns Bitcoin account recipients when isBitcoinSendType is true', () => {
+    mockUseSendType.mockReturnValue({
+      isEvmSendType: false,
+      isSolanaSendType: false,
+      isBitcoinSendType: true,
+    } as unknown as ReturnType<typeof useSendType>);
+    mockIsEVMAccountForSend.mockReturnValue(false);
+    mockIsSolanaAccountForSend.mockReturnValue(false);
+    mockIsBitcoinAccountForSend.mockReturnValue(true);
 
     const { result } = renderHookWithProvider(
       () => useAccountRecipients(),

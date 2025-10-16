@@ -43,7 +43,7 @@ jobs:
       test-suite-name: test-e2e-chrome-webpack
       build-artifact: build-test-webpack
       build-command: yarn build:test:webpack
-      test-command: yarn test:e2e:chrome:webpack
+      test-command: yarn test:e2e:chrome
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 

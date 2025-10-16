@@ -1,4 +1,8 @@
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
+import {
+  BaseController,
+  RestrictedMessenger,
+  StateMetadata,
+} from '@metamask/base-controller';
 
 // Unique name for the controller
 const controllerName = 'AccountOrderController';
@@ -47,14 +51,18 @@ const defaultState = {
 };
 
 // Metadata for the controller state
-const metadata = {
+const metadata: StateMetadata<AccountOrderControllerState> = {
   pinnedAccountList: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
   hiddenAccountList: {
+    includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
   },
 };
 
@@ -80,7 +88,7 @@ export class AccountOrderController extends BaseController<
     state,
   }: {
     messenger: AccountOrderControllerMessenger;
-    state?: AccountOrderControllerState;
+    state?: Partial<AccountOrderControllerState>;
   }) {
     // Call the constructor of BaseControllerV2
     super({

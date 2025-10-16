@@ -11,7 +11,7 @@ import {
 describe('MultichainAccountCell', () => {
   const store = configureStore(mockDefaultState);
   const defaultProps: MultichainAccountCellProps = {
-    accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
+    accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
     accountName: 'Test Account',
     balance: '$2,400.00',
     endAccessory: <span data-testid="end-accessory">More</span>,
@@ -31,7 +31,7 @@ describe('MultichainAccountCell', () => {
 
     expect(
       screen.queryByTestId(
-        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
+        `multichain-account-cell-${defaultProps.accountId}-selected-indicator`,
       ),
     ).not.toBeInTheDocument();
   });
@@ -44,19 +44,9 @@ describe('MultichainAccountCell', () => {
 
     expect(
       screen.getByTestId(
-        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
+        `multichain-account-cell-${defaultProps.accountId}-selected-indicator`,
       ),
     ).toBeInTheDocument();
-
-    const selectedAvatarContainer = document.querySelector(
-      '.multichain-account-cell__account-avatar',
-    );
-    expect(selectedAvatarContainer).toHaveClass(
-      'mm-box--border-color-primary-default',
-    );
-    expect(selectedAvatarContainer).not.toHaveClass(
-      'mm-box--border-color-transparent',
-    );
   });
 
   it('handles click events and applies pointer cursor when onClick is provided', () => {
@@ -120,14 +110,9 @@ describe('MultichainAccountCell', () => {
     expect(screen.getByTestId('end-accessory')).toBeInTheDocument();
     expect(
       screen.getByTestId(
-        `multichain-account-cell-${defaultProps.accountId}-selected-icon`,
+        `multichain-account-cell-${defaultProps.accountId}-selected-indicator`,
       ),
     ).toBeInTheDocument();
-
-    const avatarContainer = document.querySelector(
-      '.multichain-account-cell__account-avatar',
-    );
-    expect(avatarContainer).toHaveClass('mm-box--border-color-primary-default');
 
     const cellElement = screen.getByTestId(
       `multichain-account-cell-${defaultProps.accountId}`,
@@ -136,5 +121,62 @@ describe('MultichainAccountCell', () => {
 
     fireEvent.click(cellElement);
     expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders startAccessory when provided', () => {
+    const startAccessoryElement = (
+      <span data-testid="start-accessory">Start</span>
+    );
+
+    renderWithProvider(
+      <MultichainAccountCell
+        {...defaultProps}
+        startAccessory={startAccessoryElement}
+      />,
+      store,
+    );
+
+    expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
+    expect(screen.getByText('Start')).toBeInTheDocument();
+  });
+
+  it('hides selected bar when startAccessory is present', () => {
+    // Arrange
+    const startAccessoryElement = (
+      <span data-testid="start-accessory">Start</span>
+    );
+
+    renderWithProvider(
+      <MultichainAccountCell
+        {...defaultProps}
+        startAccessory={startAccessoryElement}
+        selected={true}
+      />,
+      store,
+    );
+
+    expect(screen.getByTestId('start-accessory')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId(
+        `multichain-account-cell-${defaultProps.accountId}-selected-indicator`,
+      ),
+    ).not.toBeInTheDocument();
+  });
+
+  it('hides balance value when privacy mode is enabled', () => {
+    const props = {
+      ...defaultProps,
+      privacyMode: true,
+    };
+
+    renderWithProvider(<MultichainAccountCell {...props} />, store);
+
+    expect(screen.queryByText('$2,400.00')).not.toBeInTheDocument();
+
+    const balanceContainer = screen.getByTestId('balance-display');
+
+    expect(balanceContainer).toBeInTheDocument();
+    expect(balanceContainer.textContent).not.toContain('$2,400.00');
+    expect(balanceContainer.textContent).toMatch(/^[•]+$/u);
   });
 });
