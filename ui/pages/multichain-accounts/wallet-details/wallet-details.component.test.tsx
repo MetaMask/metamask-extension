@@ -77,12 +77,16 @@ jest.mock('../../../store/actions', () => ({
 jest.mock('../../../selectors', () => ({
   getMetaMaskHdKeyrings: jest.fn(),
   getIsBitcoinSupportEnabled: jest.fn(
-    (state) =>
-      state.metamask.remoteFeatureFlags.bitcoinAccounts?.enabled === true,
+    (state) => {
+      const { bitcoinAccounts } = state.metamask.remoteFeatureFlags;
+      return bitcoinAccounts?.enabled === true && bitcoinAccounts?.minimumVersion <= '13.6.0';
+    },
   ),
   getIsSolanaSupportEnabled: jest.fn(
-    (state) =>
-      state.metamask.remoteFeatureFlags.solanaAccounts?.enabled === true,
+    (state) => {
+      const { solanaAccounts } = state.metamask.remoteFeatureFlags;
+      return solanaAccounts?.enabled === true && solanaAccounts?.minimumVersion <= '13.6.0';
+    },
   ),
 }));
 
