@@ -53,22 +53,6 @@ jest.mock(
 
 jest.mock('../../../hooks/useOriginThrottling');
 
-jest.mock('../info/hooks/useDecodedTransactionData', () => ({
-  useDecodedTransactionDataValue: jest.fn(() => ({
-    decodedResponse: {
-      pending: false,
-      value: {
-        data: [
-          {
-            params: [{ name: 'value', value: '96000000000000000000' }],
-          },
-        ],
-      },
-    },
-    value: '96000000000000000000',
-  })),
-}));
-
 jest.mock('../../../../../hooks/subscription/useSubscriptionPricing', () => {
   return {
     useShieldSubscriptionPricingFromTokenApproval: jest.fn(() => ({

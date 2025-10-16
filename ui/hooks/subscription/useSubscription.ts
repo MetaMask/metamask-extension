@@ -26,15 +26,16 @@ import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield';
 export const useUserSubscriptions = () => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isSignedIn = useSelector(selectIsSignedIn);
+  const isUnlocked = useSelector(getIsUnlocked);
   const { customerId, subscriptions, trialedProducts } =
     useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
-    if (!isSignedIn) {
+    if (!isSignedIn || !isUnlocked) {
       return undefined;
     }
     return await dispatch(getSubscriptions());
-  }, [dispatch, isSignedIn]);
+  }, [dispatch, isSignedIn, isUnlocked]);
 
   return {
     customerId,

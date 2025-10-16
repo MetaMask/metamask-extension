@@ -15,10 +15,7 @@ import { DecodedTransactionDataSource } from '../../../../../../../shared/types/
 import { decodeTransactionData } from '../../../../../../store/actions';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import {
-  useDecodedTransactionData,
-  useDecodedTransactionDataValue,
-} from './useDecodedTransactionData';
+import { useDecodedTransactionData } from './useDecodedTransactionData';
 
 jest.mock('../../../../../../store/actions', () => ({
   ...jest.requireActual('../../../../../../store/actions'),
@@ -204,137 +201,6 @@ describe('useDecodedTransactionData', () => {
       chainId: CHAIN_ID_MOCK,
       contractAddress: CONTRACT_ADDRESS_MOCK,
       transactionData: TRANSACTION_DATA_UNISWAP,
-    });
-  });
-});
-
-describe('useDecodedTransactionDataValue', () => {
-  const decodeTransactionDataMock = jest.mocked(decodeTransactionData);
-
-  beforeEach(() => {
-    jest.resetAllMocks();
-  });
-
-  it('returns undefined value when no transactionMeta provided', async () => {
-    const { result } = renderHookWithConfirmContextProvider(
-      () => useDecodedTransactionDataValue(),
-      getMockConfirmStateForTransaction({
-        id: '123',
-        chainId: CHAIN_ID_MOCK,
-        type: TransactionType.contractInteraction,
-        status: TransactionStatus.unapproved,
-        txParams: {
-          data: TRANSACTION_DATA_UNISWAP,
-          to: CONTRACT_ADDRESS_MOCK,
-        } as TransactionParams,
-      }),
-    );
-
-    await act(() => {
-      // Ignore
-    });
-
-    expect(result.current).toEqual({
-      decodeResponse: expect.objectContaining({
-        pending: false,
-        value: undefined,
-      }),
-      value: undefined,
-    });
-  });
-
-  it('returns undefined value when no param with name "value" found', async () => {
-    const mockDecodeResponse = {
-      data: [
-        {
-          name: 'someFunction',
-          params: [
-            { name: 'param1', type: 'address', value: '0x123' },
-            { name: 'param2', type: 'uint256', value: '100' },
-          ],
-        },
-      ],
-      source: DecodedTransactionDataSource.Sourcify,
-    };
-
-    decodeTransactionDataMock.mockResolvedValue(mockDecodeResponse);
-
-    const transactionMeta = {
-      id: '123',
-      chainId: CHAIN_ID_MOCK as Hex,
-      type: TransactionType.contractInteraction,
-      status: TransactionStatus.unapproved,
-      networkClientId: 'mainnet',
-      time: Date.now(),
-      txParams: {
-        data: TRANSACTION_DATA_UNISWAP,
-        to: CONTRACT_ADDRESS_MOCK,
-      } as TransactionParams,
-    };
-
-    const { result } = renderHookWithConfirmContextProvider(
-      () => useDecodedTransactionDataValue(transactionMeta),
-      getMockConfirmStateForTransaction(transactionMeta),
-    );
-
-    await act(() => {
-      // Ignore
-    });
-
-    expect(result.current).toEqual({
-      decodeResponse: expect.objectContaining({
-        pending: false,
-        value: mockDecodeResponse,
-      }),
-      value: undefined,
-    });
-  });
-
-  it('returns the value when param with name "value" is found', async () => {
-    const mockDecodeResponse = {
-      data: [
-        {
-          name: 'someFunction',
-          params: [
-            { name: 'param1', type: 'address', value: '0x123' },
-            { name: 'value', type: 'uint256', value: '1000' },
-            { name: 'param2', type: 'bytes32', value: '0x456' },
-          ],
-        },
-      ],
-      source: DecodedTransactionDataSource.Sourcify,
-    };
-
-    decodeTransactionDataMock.mockResolvedValue(mockDecodeResponse);
-
-    const transactionMeta = {
-      id: '123',
-      chainId: CHAIN_ID_MOCK as Hex,
-      type: TransactionType.contractInteraction,
-      status: TransactionStatus.unapproved,
-      networkClientId: 'mainnet',
-      time: Date.now(),
-      txParams: {
-        data: TRANSACTION_DATA_UNISWAP,
-        to: CONTRACT_ADDRESS_MOCK,
-      } as TransactionParams,
-    };
-
-    const { result } = renderHookWithConfirmContextProvider(
-      () => useDecodedTransactionDataValue(transactionMeta),
-      getMockConfirmStateForTransaction(transactionMeta),
-    );
-
-    await act(() => {
-      // Ignore
-    });
-
-    expect(result.current).toEqual({
-      decodeResponse: expect.objectContaining({
-        pending: false,
-        value: mockDecodeResponse,
-      }),
-      value: '1000',
     });
   });
 });

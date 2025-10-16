@@ -17,6 +17,9 @@ jest.mock('../hooks/useDecodedTransactionData', () => ({
       ],
     },
   })),
+}));
+
+jest.mock('../../../../../../hooks/useDecodedTransactionData', () => ({
   useDecodedTransactionDataValue: jest.fn(() => ({
     decodedResponse: {
       pending: false,
