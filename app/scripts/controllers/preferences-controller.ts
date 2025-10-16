@@ -154,7 +154,7 @@ export type PreferencesControllerState = Omit<
   useCurrencyRateCheck: boolean;
   useExternalNameSources: boolean;
   useExternalServices: boolean;
-  // ACCOUNTTRACKER TODO: Change this to isMultiAccountBalancesEnabled
+  isMultiAccountBalancesEnabled: boolean;
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
   referrals: {
@@ -184,8 +184,6 @@ export const getDefaultPreferencesControllerState =
     // ENS decentralized website resolution
     ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
     isIpfsGatewayEnabled: true,
-    // from core PreferencesController
-    isMultiAccountBalancesEnabled: true,
     knownMethodData: {},
     // Ledger transport type is deprecated. We currently only support webhid
     // on chrome, and u2f on firefox.
@@ -238,6 +236,8 @@ export const getDefaultPreferencesControllerState =
     // Whenever useExternalServices is false, certain features will be disabled.
     // The flag is true by Default, meaning the toggle is ON by default.
     useExternalServices: true,
+    // from core PreferencesController
+    isMultiAccountBalancesEnabled: true,
     useMultiAccountBalanceChecker: true,
     useNftDetection: true,
     usePhishDetect: true,
@@ -318,12 +318,6 @@ const controllerMetadata = {
     includeInStateLogs: true,
     persist: true,
     anonymous: false,
-    usedInUi: true,
-  },
-  isMultiAccountBalancesEnabled: {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
     usedInUi: true,
   },
   knownMethodData: {
@@ -441,6 +435,12 @@ const controllerMetadata = {
     anonymous: false,
     usedInUi: true,
   },
+  isMultiAccountBalancesEnabled: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+  },
   useMultiAccountBalanceChecker: {
     includeInStateLogs: true,
     persist: true,
@@ -513,6 +513,10 @@ export class PreferencesController extends BaseController<
         ...defaultState.preferences,
         ...state?.preferences,
       },
+      // TODO ACT MIGRATION CLEANUP - These two properties are the same, we only need isMultiAccountBalancesEnabled to keep it compatible with core PreferencesController
+      isMultiAccountBalancesEnabled:
+        state?.useMultiAccountBalanceChecker ??
+        defaultState.isMultiAccountBalancesEnabled,
     };
 
     super({
@@ -574,6 +578,7 @@ export class PreferencesController extends BaseController<
   setUseMultiAccountBalanceChecker(val: boolean): void {
     this.update((state) => {
       state.useMultiAccountBalanceChecker = val;
+      state.isMultiAccountBalancesEnabled = val;
     });
   }
 
