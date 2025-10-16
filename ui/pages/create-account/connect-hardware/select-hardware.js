@@ -905,7 +905,7 @@ export default class SelectHardware extends Component {
               onClick={() => {
                 this.context.trackEvent({
                   category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked Keycard Shell Learn More',
+                  event: 'Clicked Keycard Shell Buy Now',
                 });
                 openWindow(HardwareAffiliateLinks.KShell);
               }}
