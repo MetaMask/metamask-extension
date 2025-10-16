@@ -8,7 +8,7 @@ import packageJson from '../../package.json';
  */
 export type MultichainFeatureFlag = {
   enabled: boolean;
-  minimumVersion: string | null;
+  minimumVersion: string;
 };
 
 const APP_VERSION = packageJson.version;
@@ -36,11 +36,8 @@ export function isMultichainFeatureEnabled(flagValue: unknown): boolean {
     const flag = flagValue as MultichainFeatureFlag;
     const { enabled, minimumVersion } = flag;
 
-    if (!enabled) {
+    if (!enabled || !minimumVersion) {
       return false;
-    }
-    if (!minimumVersion) {
-      return false; // Require version for safety
     }
 
     try {
