@@ -91,16 +91,11 @@ const ClaimsForm = () => {
     files,
     setFiles,
     uploadedFiles,
-    loadingClaimDetails,
   } = useClaimState(isClaimViewPage);
 
   const [errors, setErrors] = useState<
     Record<string, { key: string; msg: string } | undefined>
   >({});
-
-  const showLoader = useMemo(() => {
-    return isSubmittingClaim || loadingClaimDetails;
-  }, [isSubmittingClaim, loadingClaimDetails]);
 
   const validateEmail = useCallback(() => {
     if (email) {
@@ -501,7 +496,7 @@ const ClaimsForm = () => {
           </Button>
         )}
       </Box>
-      {showLoader && <LoadingScreen />}
+      {isSubmittingClaim && <LoadingScreen />}
     </Box>
   );
 };

@@ -1,14 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useAsyncResult } from '../useAsync';
-import {
-  ShieldClaim,
-  ShieldClaimAttachment,
-} from '../../pages/settings/transaction-shield-tab/types';
-import { getShieldClaimDetails } from '../../store/actions';
+import { ShieldClaimAttachment } from '../../pages/settings/transaction-shield-tab/types';
+import { useClaims } from '../../contexts/claims/claims';
 
 export const useClaimState = (isClaimViewPage: boolean = false) => {
   const { pathname } = useLocation();
+  const { claims } = useClaims();
   const [email, setEmail] = useState<string>('');
   const [impactedWalletAddress, setImpactedWalletAddress] =
     useState<string>('');
@@ -24,31 +21,19 @@ export const useClaimState = (isClaimViewPage: boolean = false) => {
 
   const claimId = pathname.split('/').pop();
 
-  const claimDetailsResult = useAsyncResult<ShieldClaim | null>(async () => {
+  useEffect(() => {
     if (isClaimViewPage && claimId) {
-      try {
-        const claim = await getShieldClaimDetails(claimId as string);
-        return claim;
-      } catch (error) {
-        console.error(error);
-        return null;
+      const claimDetails = claims.find((claim) => claim.id === claimId);
+      if (claimDetails) {
+        setEmail(claimDetails.email);
+        setImpactedWalletAddress(claimDetails.impactedWalletAddress);
+        setImpactedTransactionHash(claimDetails.impactedTxHash);
+        setReimbursementWalletAddress(claimDetails.reimbursementWalletAddress);
+        setCaseDescription(claimDetails.description);
+        setUploadedFiles(claimDetails.attachments);
       }
     }
-    return null;
-  }, [isClaimViewPage, claimId]);
-
-  useEffect(() => {
-    if (claimDetailsResult.value) {
-      setEmail(claimDetailsResult.value.email);
-      setImpactedWalletAddress(claimDetailsResult.value.impactedWalletAddress);
-      setImpactedTransactionHash(claimDetailsResult.value.impactedTxHash);
-      setReimbursementWalletAddress(
-        claimDetailsResult.value.reimbursementWalletAddress,
-      );
-      setCaseDescription(claimDetailsResult.value.description);
-      setUploadedFiles(claimDetailsResult.value.attachments);
-    }
-  }, [claimDetailsResult.value]);
+  }, [isClaimViewPage, claimId, claims]);
 
   return {
     email,
@@ -64,7 +49,6 @@ export const useClaimState = (isClaimViewPage: boolean = false) => {
     files,
     setFiles,
     uploadedFiles,
-    loadingClaimDetails: claimDetailsResult.status === 'pending',
     clear: () => {
       setEmail('');
       setImpactedWalletAddress('');
