@@ -89,7 +89,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         chainId
       ] as unknown as SavedGasFees | undefined;
     },
-    getSimulationConfig: async (url) => {
+    getSimulationConfig: async (url, opts) => {
       const getToken = () =>
         initMessenger.call('AuthenticationController:getBearerToken');
       const getShieldSubscription = () =>
@@ -97,7 +97,10 @@ export const TransactionControllerInit: ControllerInitFunction<
           'SubscriptionController:getSubscriptionByProduct',
           PRODUCT_TYPES.SHIELD,
         );
-      return getShieldGatewayConfig(getToken, getShieldSubscription, url);
+      const origin = opts?.txMeta?.origin;
+      return getShieldGatewayConfig(getToken, getShieldSubscription, url, {
+        origin,
+      });
     },
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
