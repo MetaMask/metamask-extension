@@ -12,6 +12,7 @@ import AccountDetailsModal from '../../page-objects/pages/dialog/account-details
 import LoginPage from '../../page-objects/pages/login-page';
 
 describe('Vault Corruption', function () {
+  this.timeout(120000); // This test is very long, so we need an unusually high timeout
   /**
    * Script template to simulate a broken database.
    *
