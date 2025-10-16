@@ -17,7 +17,6 @@ import type {
   TokenListMap,
   TokenListToken,
 } from '@metamask/assets-controllers';
-import { BtcAccountType } from '@metamask/keyring-api';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { useMultichainBalances } from '../useMultichainBalances';
@@ -38,6 +37,7 @@ import type {
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { BridgeToken } from '../../ducks/bridge/types';
+import { getInternalAccountsByScope } from '../../selectors/accounts';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
@@ -133,6 +133,20 @@ export const useTokensWithFiltering = (
 
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances(accountAddress);
+
+  // Get Bitcoin account for the selected chain to access its account type
+  // Match by address to ensure we get the correct account type for the specific account
+  const bitcoinAccount = useSelector((state: BridgeAppState) => {
+    if (!chainId || !isBitcoinChainId(chainId) || !accountAddress) {
+      return undefined;
+    }
+    const caipChainId = formatChainIdToCaip(chainId);
+    const accounts = getInternalAccountsByScope(state, caipChainId);
+    // Find the specific account that matches the accountAddress
+    return accounts.find(
+      (acc) => acc.address.toLowerCase() === accountAddress.toLowerCase(),
+    );
+  });
 
   const cachedTokens = useSelector(
     (state: BridgeAppState) => state.metamask.tokensChainsCache,
@@ -314,9 +328,10 @@ export const useTokensWithFiltering = (
                       token.address,
                       formatChainIdToCaip(token.chainId),
                     )),
-                ...(isBitcoinChainId(token.chainId) && {
-                  accountType: BtcAccountType.P2wpkh,
-                }),
+                ...(isBitcoinChainId(token.chainId) &&
+                  bitcoinAccount?.type && {
+                    accountType: bitcoinAccount.type,
+                  }),
               };
             } else {
               yield {
@@ -380,6 +395,7 @@ export const useTokensWithFiltering = (
       tokenList,
       tokenToExclude,
       selectedToken,
+      bitcoinAccount,
     ],
   );
   return {
