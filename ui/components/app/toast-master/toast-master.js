@@ -51,7 +51,10 @@ import {
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
-import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
+import {
+  PasswordChangeToastType,
+  ClaimSubmitToastType,
+} from '../../../../shared/constants/app-state';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
@@ -77,6 +80,7 @@ import {
   selectPasswordChangeToast,
   selectShowCopyAddressToast,
   selectShowConnectAccountGroupToast,
+  selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
 } from './selectors';
@@ -88,6 +92,7 @@ import {
   setShowNewSrpAddedToast,
   setShowPasswordChangeToast,
   setShowCopyAddressToast,
+  setShowClaimSubmitToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
 } from './utils';
@@ -126,6 +131,7 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         <PasswordChangeToast />
+        <ClaimSubmitToast />
       </ToastContainer>
     );
   }
@@ -537,6 +543,64 @@ function CopyAddressToast() {
     )
   );
 }
+
+const ClaimSubmitToast = () => {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showClaimSubmitToast = useSelector(selectClaimSubmitToast);
+  const autoHideToastDelay = 5 * SECOND;
+
+  const description = useMemo(() => {
+    if (showClaimSubmitToast === ClaimSubmitToastType.Success) {
+      return t('shieldClaimSubmitSuccessDescription');
+    }
+    if (showClaimSubmitToast === ClaimSubmitToastType.Errored) {
+      return '';
+    }
+    return showClaimSubmitToast;
+  }, [showClaimSubmitToast, t]);
+
+  return (
+    showClaimSubmitToast !== null && (
+      <Toast
+        dataTestId={
+          showClaimSubmitToast === ClaimSubmitToastType.Success
+            ? 'claim-submit-toast-success'
+            : 'claim-submit-toast-error'
+        }
+        key="claim-submit-toast"
+        text={
+          showClaimSubmitToast === ClaimSubmitToastType.Success
+            ? t('shieldClaimSubmitSuccess')
+            : t('shieldClaimSubmitError')
+        }
+        description={description}
+        startAdornment={
+          <Icon
+            name={
+              showClaimSubmitToast === ClaimSubmitToastType.Success
+                ? IconName.CheckBold
+                : IconName.CircleX
+            }
+            color={
+              showClaimSubmitToast === ClaimSubmitToastType.Success
+                ? IconColor.successDefault
+                : IconColor.errorDefault
+            }
+          />
+        }
+        autoHideTime={autoHideToastDelay}
+        onAutoHideToast={() => {
+          dispatch(setShowClaimSubmitToast(null));
+        }}
+        onClose={() => {
+          dispatch(setShowClaimSubmitToast(null));
+        }}
+      />
+    )
+  );
+};
 
 function ShieldPausedToast() {
   const t = useI18nContext();
