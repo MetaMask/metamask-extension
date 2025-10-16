@@ -1,7 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
+import { SubscriptionUserEvent } from '@metamask/subscription-controller';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import * as actions from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
@@ -24,14 +25,24 @@ describe('Shield Entry Modal', () => {
       },
       metaMetricsId: '0x00000000',
     },
+    appState: {
+      shieldEntryModal: {
+        show: true,
+        shouldSubmitEvents: false,
+      },
+    },
   };
   const mockStore = configureMockStore([thunk])(mockState);
-  let setShowShieldEntryModalOnceStub: jest.SpyInstance;
+  let setShowShieldEntryModalOnceSpy: jest.SpyInstance;
+  let submitSubscriptionUserEventsSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.resetAllMocks();
-    setShowShieldEntryModalOnceStub = jest
+    setShowShieldEntryModalOnceSpy = jest
       .spyOn(actions, 'setShowShieldEntryModalOnce')
+      .mockReturnValueOnce(jest.fn().mockResolvedValueOnce(true));
+    submitSubscriptionUserEventsSpy = jest
+      .spyOn(actions, 'submitSubscriptionUserEvents')
       .mockReturnValueOnce(jest.fn().mockResolvedValueOnce(true));
   });
 
@@ -47,10 +58,10 @@ describe('Shield Entry Modal', () => {
 
     const skipButton = getByTestId('shield-entry-modal-skip-button');
     fireEvent.click(skipButton);
-    expect(setShowShieldEntryModalOnceStub).toHaveBeenCalledWith(false);
+    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
   });
 
-  it('should call onGetStarted when the get started button is clicked', () => {
+  it('should call onGetStarted when the get started button is clicked', async () => {
     const { getByTestId } = renderWithProvider(<ShieldEntryModal />, mockStore);
 
     const getStartedButton = getByTestId(
@@ -58,7 +69,35 @@ describe('Shield Entry Modal', () => {
     );
 
     fireEvent.click(getStartedButton);
-    expect(setShowShieldEntryModalOnceStub).toHaveBeenCalledWith(false);
-    expect(mockUseNavigate).toHaveBeenCalledWith(SHIELD_PLAN_ROUTE);
+    expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
+    await waitFor(() => {
+      expect(mockUseNavigate).toHaveBeenCalledWith(SHIELD_PLAN_ROUTE);
+    });
+  });
+
+  it('should submit user event when `shieldEntryModal.shouldSubmitEvents` is true', async () => {
+    const customStore = configureMockStore([thunk])({
+      ...mockState,
+      appState: {
+        ...mockState.appState,
+        shieldEntryModal: {
+          ...mockState.appState.shieldEntryModal,
+          shouldSubmitEvents: true,
+        },
+      },
+    });
+    const { getByTestId } = renderWithProvider(
+      <ShieldEntryModal />,
+      customStore,
+    );
+
+    const skipButton = getByTestId('shield-entry-modal-skip-button');
+    fireEvent.click(skipButton);
+    await waitFor(() => {
+      expect(submitSubscriptionUserEventsSpy).toHaveBeenCalledWith({
+        event: SubscriptionUserEvent.ShieldEntryModalViewed,
+      });
+      expect(setShowShieldEntryModalOnceSpy).toHaveBeenCalledWith(false);
+    });
   });
 });

@@ -93,21 +93,26 @@ export const useAssetSelectionMetrics = () => {
           );
         }) + 1;
 
-      trackEvent({
-        event: MetaMetricsEventName.SendAssetSelected,
-        category: MetaMetricsEventCategory.Send,
-        properties: {
-          account_type: accountType,
-          asset_type: assetType,
-          asset_list_position: position,
-          asset_list_size: assetListSize,
-          chain_id: sendAsset?.chainId,
-          chain_id_caip: isEvmSend
-            ? `eip155:${parseInt(sendAsset?.chainId as string, 16)}`
-            : sendAsset?.chainId,
-          filter_method: assetFilterMethod,
+      trackEvent(
+        {
+          event: MetaMetricsEventName.SendAssetSelected,
+          category: MetaMetricsEventCategory.Send,
+          properties: {
+            account_type: accountType,
+            asset_type: assetType,
+            asset_list_position: position,
+            asset_list_size: assetListSize,
+            chain_id: sendAsset?.chainId,
+            chain_id_caip: isEvmSend
+              ? `eip155:${parseInt(sendAsset?.chainId as string, 16)}`
+              : sendAsset?.chainId,
+            filter_method: assetFilterMethod,
+          },
         },
-      });
+        {
+          excludeMetaMetricsId: false,
+        },
+      );
     },
     [accountType, assetFilterMethod, assetListSize, trackEvent, tokens, nfts],
   );

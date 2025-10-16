@@ -28,9 +28,8 @@ export const getEstimatedTotalGas = (
   if (!gasFeeEstimates) {
     return new Numeric('0', 10);
   }
-  const {
-    medium: { suggestedMaxFeePerGas },
-  } = gasFeeEstimates;
+  const { medium: { suggestedMaxFeePerGas } = { suggestedMaxFeePerGas: 0 } } =
+    gasFeeEstimates;
   const totalGas = new Numeric(
     suggestedMaxFeePerGas * NATIVE_TRANSFER_GAS_LIMIT,
     10,

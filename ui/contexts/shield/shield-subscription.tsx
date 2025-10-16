@@ -1,10 +1,8 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { PRODUCT_TYPES, Subscription } from '@metamask/subscription-controller';
-import {
-  useUserSubscriptionByProduct,
-  useUserSubscriptions,
-} from '../../hooks/subscription/useSubscription';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import log from 'loglevel';
+import { useSubscriptionEligibility } from '../../hooks/subscription/useSubscription';
 import {
   setShowShieldEntryModalOnce,
   subscriptionsStartPolling,
@@ -20,14 +18,13 @@ import {
   getHasShieldEntryModalShownOnce,
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
-import { SHIELD_MIN_FIAT_BALANCE_THRESHOLD } from '../../../shared/constants/subscriptions';
+import { getIsUnlocked } from '../../ducks/metamask/metamask';
 
 export const ShieldSubscriptionContext = React.createContext<{
   resetShieldEntryModalShownStatus: () => void;
   setShieldEntryModalShownStatus: (
     showShieldEntryModalOnce: boolean | null,
   ) => void;
-  shieldSubscription: Subscription | undefined;
 }>({
   resetShieldEntryModalShownStatus: () => {
     // Default empty function
@@ -35,7 +32,6 @@ export const ShieldSubscriptionContext = React.createContext<{
   setShieldEntryModalShownStatus: () => {
     // Default empty function
   },
-  shieldSubscription: undefined,
 });
 
 export const useShieldSubscriptionContext = () => {
@@ -54,17 +50,15 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
     useSelector(getUseExternalServices),
   );
   const isMetaMaskShieldFeatureEnabled = getIsMetaMaskShieldFeatureEnabled();
+  const isUnlocked = useSelector(getIsUnlocked);
   const isSignedIn = useSelector(selectIsSignedIn);
-  const { subscriptions } = useUserSubscriptions();
-  const shieldSubscription = useUserSubscriptionByProduct(
-    PRODUCT_TYPES.SHIELD,
-    subscriptions,
-  );
   const isShieldSubscriptionActive = useSelector(getIsActiveShieldSubscription);
   const hasShieldEntryModalShownOnce = useSelector(
     getHasShieldEntryModalShownOnce,
   );
   const selectedAccount = useSelector(getSelectedInternalAccount);
+  const { getSubscriptionEligibility: getShieldSubscriptionEligibility } =
+    useSubscriptionEligibility(PRODUCT_TYPES.SHIELD);
   const { totalFiatBalance } = useAccountTotalFiatBalance(
     selectedAccount,
     false,
@@ -79,23 +73,44 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
    * - User has a balance greater than the minimum fiat balance threshold (1K USD)
    * - User has not shown the shield entry modal before
    */
-  const getIsUserBalanceCriteriaMet = useCallback(() => {
-    if (
-      !isShieldSubscriptionActive &&
-      selectedAccount &&
-      isSignedIn &&
-      totalFiatBalance &&
-      Number(totalFiatBalance) >= SHIELD_MIN_FIAT_BALANCE_THRESHOLD
-    ) {
-      return true;
-    }
+  const evaluateShieldEntryPointModal = useCallback(async () => {
+    try {
+      if (isShieldSubscriptionActive) {
+        dispatch(setShowShieldEntryModalOnce(false));
+        return;
+      } else if (
+        !selectedAccount ||
+        !isSignedIn ||
+        !isUnlocked ||
+        hasShieldEntryModalShownOnce
+      ) {
+        return;
+      }
 
-    return false;
+      const shieldSubscriptionEligibility =
+        await getShieldSubscriptionEligibility();
+      if (
+        shieldSubscriptionEligibility?.canSubscribe &&
+        shieldSubscriptionEligibility?.canViewEntryModal &&
+        shieldSubscriptionEligibility?.minBalanceUSD &&
+        totalFiatBalance &&
+        Number(totalFiatBalance) >= shieldSubscriptionEligibility?.minBalanceUSD
+      ) {
+        const shouldSubmitUserEvents = true; // submits `shield_entry_modal_viewed` event
+        dispatch(setShowShieldEntryModalOnce(true, shouldSubmitUserEvents));
+      }
+    } catch (error) {
+      log.warn('[getIsUserBalanceCriteriaMet] error', error);
+    }
   }, [
     isShieldSubscriptionActive,
+    getShieldSubscriptionEligibility,
     selectedAccount,
     isSignedIn,
+    isUnlocked,
     totalFiatBalance,
+    hasShieldEntryModalShownOnce,
+    dispatch,
   ]);
 
   useEffect(() => {
@@ -103,32 +118,20 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       return;
     }
 
-    if (isShieldSubscriptionActive) {
-      // if user has subscribed to shield, set the shield entry modal shown status to false
-      // means we will not show the shield entry modal again
-      dispatch(setShowShieldEntryModalOnce(false));
-    } else if (!hasShieldEntryModalShownOnce) {
-      // shield entry modal has been shown before,
-      const isUserBalanceCriteriaMet = getIsUserBalanceCriteriaMet();
-      if (isUserBalanceCriteriaMet) {
-        dispatch(setShowShieldEntryModalOnce(true));
-      }
-    }
+    evaluateShieldEntryPointModal();
   }, [
     dispatch,
     isMetaMaskShieldFeatureEnabled,
-    isShieldSubscriptionActive,
-    getIsUserBalanceCriteriaMet,
-    hasShieldEntryModalShownOnce,
+    evaluateShieldEntryPointModal,
     isBasicFunctionalityEnabled,
   ]);
 
   useEffect(() => {
-    if (selectedAccount && isSignedIn) {
+    if (selectedAccount && isSignedIn && isUnlocked) {
       // start polling for the subscriptions
       dispatch(subscriptionsStartPolling());
     }
-  }, [isSignedIn, selectedAccount, dispatch]);
+  }, [isSignedIn, selectedAccount, dispatch, isUnlocked]);
 
   const resetShieldEntryModalShownStatus = useCallback(() => {
     if (!isShieldSubscriptionActive) {
@@ -139,7 +142,13 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
   const setShieldEntryModalShownStatus = useCallback(
     (showShieldEntryModalOnce: boolean | null) => {
       if (!isShieldSubscriptionActive) {
-        dispatch(setShowShieldEntryModalOnce(showShieldEntryModalOnce));
+        const shouldSubmitUserEvents = Boolean(showShieldEntryModalOnce); // submits `shield_entry_modal_viewed` event
+        dispatch(
+          setShowShieldEntryModalOnce(
+            showShieldEntryModalOnce,
+            shouldSubmitUserEvents,
+          ),
+        );
       }
     },
     [dispatch, isShieldSubscriptionActive],
@@ -150,7 +159,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       value={{
         resetShieldEntryModalShownStatus,
         setShieldEntryModalShownStatus,
-        shieldSubscription,
       }}
     >
       {children}

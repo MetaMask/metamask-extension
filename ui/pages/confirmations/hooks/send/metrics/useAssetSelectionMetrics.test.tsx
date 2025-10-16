@@ -238,19 +238,24 @@ describe('useAssetSelectionMetrics', () => {
 
       result.current.captureAssetSelected(EVM_ASSET);
 
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: 'Send Asset Selected',
-        category: 'Send',
-        properties: {
-          account_type: 'MetaMask',
-          asset_type: 'token',
-          asset_list_position: 1,
-          asset_list_size: '5',
-          chain_id: 5,
-          chain_id_caip: 'eip155:5',
-          filter_method: [AssetFilterMethod.None],
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        {
+          event: 'Send Asset Selected',
+          category: 'Send',
+          properties: {
+            account_type: 'MetaMask',
+            asset_type: 'token',
+            asset_list_position: 1,
+            asset_list_size: '5',
+            chain_id: 5,
+            chain_id_caip: 'eip155:5',
+            filter_method: [AssetFilterMethod.None],
+          },
         },
-      });
+        {
+          excludeMetaMetricsId: false,
+        },
+      );
     });
 
     it('tracks native asset selection with correct properties', () => {
@@ -265,19 +270,24 @@ describe('useAssetSelectionMetrics', () => {
 
       result.current.captureAssetSelected(nativeAsset);
 
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: 'Send Asset Selected',
-        category: 'Send',
-        properties: {
-          account_type: 'MetaMask',
-          asset_type: 'native',
-          asset_list_position: 2,
-          asset_list_size: '5',
-          chain_id: 5,
-          chain_id_caip: 'eip155:5',
-          filter_method: [AssetFilterMethod.None],
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        {
+          event: 'Send Asset Selected',
+          category: 'Send',
+          properties: {
+            account_type: 'MetaMask',
+            asset_type: 'native',
+            asset_list_position: 2,
+            asset_list_size: '5',
+            chain_id: 5,
+            chain_id_caip: 'eip155:5',
+            filter_method: [AssetFilterMethod.None],
+          },
         },
-      });
+        {
+          excludeMetaMetricsId: false,
+        },
+      );
     });
 
     it('tracks NFT asset selection with correct properties', () => {
@@ -290,19 +300,24 @@ describe('useAssetSelectionMetrics', () => {
 
       result.current.captureAssetSelected(MOCK_NFT1155);
 
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: 'Send Asset Selected',
-        category: 'Send',
-        properties: {
-          account_type: 'MetaMask',
-          asset_type: 'nft',
-          asset_list_position: 3,
-          asset_list_size: '5',
-          chain_id: 8453,
-          chain_id_caip: 'eip155:33875',
-          filter_method: [AssetFilterMethod.None],
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        {
+          event: 'Send Asset Selected',
+          category: 'Send',
+          properties: {
+            account_type: 'MetaMask',
+            asset_type: 'nft',
+            asset_list_position: 3,
+            asset_list_size: '5',
+            chain_id: 8453,
+            chain_id_caip: 'eip155:33875',
+            filter_method: [AssetFilterMethod.None],
+          },
         },
-      });
+        {
+          excludeMetaMetricsId: false,
+        },
+      );
     });
 
     it('uses chain_id_caip for non-EVM assets', () => {
@@ -315,19 +330,24 @@ describe('useAssetSelectionMetrics', () => {
 
       result.current.captureAssetSelected(SOLANA_NATIVE_ASSET);
 
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: 'Send Asset Selected',
-        category: 'Send',
-        properties: {
-          account_type: 'MetaMask',
-          asset_type: 'native',
-          asset_list_position: 0,
-          asset_list_size: '5',
-          chain_id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          chain_id_caip: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          filter_method: [AssetFilterMethod.None],
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        {
+          event: 'Send Asset Selected',
+          category: 'Send',
+          properties: {
+            account_type: 'MetaMask',
+            asset_type: 'native',
+            asset_list_position: 0,
+            asset_list_size: '5',
+            chain_id: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            chain_id_caip: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            filter_method: [AssetFilterMethod.None],
+          },
         },
-      });
+        {
+          excludeMetaMetricsId: false,
+        },
+      );
     });
 
     it('calculates correct position for asset not in list', () => {
@@ -347,19 +367,24 @@ describe('useAssetSelectionMetrics', () => {
 
       result.current.captureAssetSelected(unknownAsset);
 
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        event: 'Send Asset Selected',
-        category: 'Send',
-        properties: {
-          account_type: 'MetaMask',
-          asset_type: 'token',
-          asset_list_position: 0,
-          asset_list_size: '5',
-          chain_id: 1,
-          chain_id_caip: 1,
-          filter_method: [AssetFilterMethod.None],
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        {
+          event: 'Send Asset Selected',
+          category: 'Send',
+          properties: {
+            account_type: 'MetaMask',
+            asset_type: 'token',
+            asset_list_position: 0,
+            asset_list_size: '5',
+            chain_id: 1,
+            chain_id_caip: 1,
+            filter_method: [AssetFilterMethod.None],
+          },
         },
-      });
+        {
+          excludeMetaMetricsId: false,
+        },
+      );
     });
   });
 

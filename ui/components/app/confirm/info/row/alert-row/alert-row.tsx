@@ -14,12 +14,15 @@ import {
   ConfirmInfoRowProps,
   ConfirmInfoRowVariant,
 } from '../row';
+import { Skeleton } from '../../../../../component-library/skeleton';
 
 export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
   alertKey: string;
   ownerId: string;
   /** Determines whether to display the row only when an alert is present. */
   isShownWithAlertsOnly?: boolean;
+  /** Show skeleton loader if alert is not yet loaded. */
+  showAlertLoader?: boolean;
 };
 
 export function getAlertTextColors(
@@ -43,6 +46,7 @@ export const ConfirmInfoAlertRow = ({
   ownerId,
   variant,
   isShownWithAlertsOnly = false,
+  showAlertLoader = false,
   ...rowProperties
 }: ConfirmInfoAlertRowProps) => {
   const { trackInlineAlertClicked } = useAlertMetrics();
@@ -86,6 +90,12 @@ export const ConfirmInfoAlertRow = ({
     return null;
   }
 
+  const inlineAlertLoader = showAlertLoader ? (
+    <Box marginLeft={1} className="flex-grow justify-items-end">
+      <Skeleton width="50%" height={26} />
+    </Box>
+  ) : null;
+
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
       <InlineAlert
@@ -95,7 +105,9 @@ export const ConfirmInfoAlertRow = ({
         onClick={onClickHandler}
       />
     </Box>
-  ) : null;
+  ) : (
+    inlineAlertLoader
+  );
 
   let confirmInfoRow: React.ReactNode;
   if (confirmInfoRowProps.labelChildren) {

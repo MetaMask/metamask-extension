@@ -18,7 +18,7 @@ export const useNameValidation = () => {
 
         if (resolutions.length === 0) {
           return {
-            error: 'ensUnknownError',
+            error: 'nameResolutionFailedError',
           };
         }
 
@@ -33,7 +33,7 @@ export const useNameValidation = () => {
       }
 
       return {
-        error: 'ensUnknownError',
+        error: 'nameResolutionFailedError',
       };
     },
     [fetchResolutions],

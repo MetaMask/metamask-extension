@@ -1,26 +1,20 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { isValidHexAddress } from '@metamask/controller-utils';
-import FileInput from 'react-simple-file-input';
 import { isStrictHexString } from '@metamask/utils';
 import {
   Box,
-  BoxBackgroundColor,
   Button,
-  ButtonIcon,
-  ButtonIconSize,
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   Text,
   TextButton,
   TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Textarea,
@@ -39,6 +33,12 @@ import { useClaimState } from '../../../../hooks/claims/useClaimState';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
+import { submitShieldClaim } from '../../../../store/actions';
+import LoadingScreen from '../../../../components/ui/loading-screen';
+import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
+import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
+import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
+import { FileUploader } from '../../../../components/component-library/file-uploader';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -49,18 +49,21 @@ function isValidTransactionHash(hash: string): boolean {
 
 const SubmitClaimForm = () => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [claimSubmitLoading, setClaimSubmitLoading] = useState(false);
 
   const {
     email,
     setEmail,
     impactedWalletAddress,
     setImpactedWalletAddress,
-    impactedTxHash,
-    setImpactedTxHash,
+    impactedTransactionHash,
+    setImpactedTransactionHash,
     reimbursementWalletAddress,
     setReimbursementWalletAddress,
-    description,
-    setDescription,
+    caseDescription,
+    setCaseDescription,
     files,
     setFiles,
   } = useClaimState();
@@ -70,43 +73,70 @@ const SubmitClaimForm = () => {
   >({});
 
   const validateEmail = useCallback(() => {
-    const isEmailValid = isValidEmail(email);
-    setErrors((state) => ({
-      ...state,
-      email: isEmailValid
-        ? undefined
-        : { key: 'email', msg: t('shieldClaimInvalidEmail') },
-    }));
+    if (email) {
+      const isEmailValid = isValidEmail(email);
+      setErrors((state) => ({
+        ...state,
+        email: isEmailValid
+          ? undefined
+          : { key: 'email', msg: t('shieldClaimInvalidEmail') },
+      }));
+    } else {
+      setErrors((state) => ({
+        ...state,
+        email: { key: 'email', msg: t('shieldClaimInvalidRequired') },
+      }));
+    }
   }, [t, email]);
 
   const validateImpactedWalletAddress = useCallback(() => {
-    const isImpactedWalletAddressValid = isValidHexAddress(
-      impactedWalletAddress,
-    );
-    setErrors((state) => ({
-      ...state,
-      impactedWalletAddress: isImpactedWalletAddressValid
-        ? undefined
-        : {
-            key: 'impactedWalletAddress',
-            msg: t('shieldClaimInvalidWalletAddress'),
-          },
-    }));
+    if (impactedWalletAddress) {
+      const isImpactedWalletAddressValid = isValidHexAddress(
+        impactedWalletAddress,
+      );
+      setErrors((state) => ({
+        ...state,
+        impactedWalletAddress: isImpactedWalletAddressValid
+          ? undefined
+          : {
+              key: 'impactedWalletAddress',
+              msg: t('shieldClaimInvalidWalletAddress'),
+            },
+      }));
+    } else {
+      setErrors((state) => ({
+        ...state,
+        impactedWalletAddress: {
+          key: 'impactedWalletAddress',
+          msg: t('shieldClaimInvalidRequired'),
+        },
+      }));
+    }
   }, [impactedWalletAddress, t]);
 
   const validateReimbursementWalletAddress = useCallback(() => {
-    const isReimbursementWalletAddressValid = isValidHexAddress(
-      reimbursementWalletAddress,
-    );
-    setErrors((state) => ({
-      ...state,
-      reimbursementWalletAddress: isReimbursementWalletAddressValid
-        ? undefined
-        : {
-            key: 'reimbursementWalletAddress',
-            msg: t('shieldClaimInvalidWalletAddress'),
-          },
-    }));
+    if (reimbursementWalletAddress) {
+      const isReimbursementWalletAddressValid = isValidHexAddress(
+        reimbursementWalletAddress,
+      );
+      setErrors((state) => ({
+        ...state,
+        reimbursementWalletAddress: isReimbursementWalletAddressValid
+          ? undefined
+          : {
+              key: 'reimbursementWalletAddress',
+              msg: t('shieldClaimInvalidWalletAddress'),
+            },
+      }));
+    } else {
+      setErrors((state) => ({
+        ...state,
+        reimbursementWalletAddress: {
+          key: 'reimbursementWalletAddress',
+          msg: t('shieldClaimInvalidRequired'),
+        },
+      }));
+    }
   }, [reimbursementWalletAddress, t]);
 
   const isInvalidData = useMemo(() => {
@@ -114,58 +144,89 @@ const SubmitClaimForm = () => {
       Object.values(errors).some((error) => error !== undefined) ||
       !email ||
       !impactedWalletAddress ||
-      !impactedTxHash ||
+      !impactedTransactionHash ||
       !reimbursementWalletAddress ||
-      !description
+      !caseDescription
     );
   }, [
     errors,
     email,
     impactedWalletAddress,
-    impactedTxHash,
+    impactedTransactionHash,
     reimbursementWalletAddress,
-    description,
+    caseDescription,
   ]);
 
   const validateImpactedTxHash = useCallback(() => {
-    const isImpactedTxHashValid = isValidTransactionHash(impactedTxHash);
+    if (impactedTransactionHash) {
+      const isImpactedTxHashValid = isValidTransactionHash(
+        impactedTransactionHash,
+      );
 
-    setErrors((state) => ({
-      ...state,
-      impactedTxHash: isImpactedTxHashValid
-        ? undefined
-        : { key: 'impactedTxHash', msg: t('shieldClaimInvalidTxHash') },
-    }));
-  }, [impactedTxHash, t]);
-
-  const addFile = useCallback(
-    (newFiles: FileList) => {
       setErrors((state) => ({
         ...state,
-        files: undefined,
-      }));
-
-      const dt = new DataTransfer();
-      // filter out files exceeding 5MB
-      Array.from(newFiles).forEach((file) => {
-        if (file.size <= MAX_FILE_SIZE) {
-          dt.items.add(file);
-        } else {
-          setErrors((state) => ({
-            ...state,
-            files: {
-              key: 'files',
-              msg: t('fileUploaderMaxFileSizeError', [1]),
+        impactedTransactionHash: isImpactedTxHashValid
+          ? undefined
+          : {
+              key: 'impactedTransactionHash',
+              msg: t('shieldClaimInvalidTxHash'),
             },
-          }));
-        }
-      });
+      }));
+    } else {
+      setErrors((state) => ({
+        ...state,
+        impactedTransactionHash: {
+          key: 'impactedTransactionHash',
+          msg: t('shieldClaimInvalidRequired'),
+        },
+      }));
+    }
+  }, [impactedTransactionHash, t]);
 
-      // save file to state
-      setFiles(dt.files);
-    },
-    [setFiles, t],
-  );
+  const validateDescription = useCallback(() => {
+    setErrors((state) => ({
+      ...state,
+      caseDescription: caseDescription
+        ? undefined
+        : { key: 'caseDescription', msg: t('shieldClaimInvalidRequired') },
+    }));
+  }, [caseDescription, t]);
+
+  const handleSubmitClaim = useCallback(async () => {
+    try {
+      setClaimSubmitLoading(true);
+      await submitShieldClaim({
+        email,
+        impactedWalletAddress,
+        impactedTransactionHash,
+        reimbursementWalletAddress,
+        caseDescription,
+        files,
+      });
+      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
+      navigate(TRANSACTION_SHIELD_ROUTE);
+    } catch (error) {
+      const { message } = error as Error;
+      dispatch(
+        setShowClaimSubmitToast(
+          message === ClaimSubmitToastType.Errored
+            ? ClaimSubmitToastType.Errored
+            : message,
+        ),
+      );
+    } finally {
+      setClaimSubmitLoading(false);
+    }
+  }, [
+    dispatch,
+    email,
+    impactedTransactionHash,
+    impactedWalletAddress,
+    reimbursementWalletAddress,
+    caseDescription,
+    files,
+    navigate,
+  ]);
 
   return (
     <Box
@@ -231,8 +292,8 @@ const SubmitClaimForm = () => {
         label={`${t('shieldClaimImpactedTxHash')}*`}
         placeholder={'e.g. a1084235686add...q46q8wurgw'}
         helpText={
-          errors.impactedTxHash ? (
-            errors.impactedTxHash?.msg
+          errors.impactedTransactionHash ? (
+            errors.impactedTransactionHash?.msg
           ) : (
             <Text
               variant={TextVariant.BodySm}
@@ -252,10 +313,10 @@ const SubmitClaimForm = () => {
         id="impacted-tx-hash"
         name="impacted-tx-hash"
         size={FormTextFieldSize.Lg}
-        onChange={(e) => setImpactedTxHash(e.target.value)}
+        onChange={(e) => setImpactedTransactionHash(e.target.value)}
         onBlur={() => validateImpactedTxHash()}
-        value={impactedTxHash}
-        error={Boolean(errors.impactedTxHash)}
+        value={impactedTransactionHash}
+        error={Boolean(errors.impactedTransactionHash)}
         required
         width={BlockSize.Full}
       />
@@ -291,109 +352,50 @@ const SubmitClaimForm = () => {
         <Textarea
           id="description"
           name="description"
-          onChange={(e) => setDescription(e.target.value)}
-          value={description}
+          onChange={(e) => setCaseDescription(e.target.value)}
+          onBlur={() => validateDescription()}
+          value={caseDescription}
+          error={Boolean(errors.caseDescription)}
           width={BlockSize.Full}
           rows={4}
           resize={TextareaResize.Vertical}
           borderRadius={BorderRadius.LG}
           paddingTop={3}
           paddingBottom={3}
+          maxLength={2000}
         />
-      </Box>
-      <Box>
-        <Text
-          variant={TextVariant.BodyMd}
-          fontWeight={FontWeight.Medium}
-          className="mb-1"
-        >
-          {t('shieldClaimFileUploader')}
-        </Text>
-        <FileInput
-          id="upload-images-file-uploader"
-          data-testid="upload-images-file-uploader"
-          multiple
-          onChange={(inputFiles) => addFile(inputFiles)}
-          accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
-          value={''}
-          style={{ color: 'transparent' }}
-        />
-        <Text
-          variant={TextVariant.BodySm}
-          color={
-            errors.files ? TextColor.ErrorDefault : TextColor.TextAlternative
-          }
-          className="mt-0.5"
-        >
-          {errors.files
-            ? errors.files.msg
-            : t('shieldClaimFileUploaderHelpText')}
-        </Text>
-
-        {files && (
-          <Box
-            gap={2}
-            marginTop={4}
-            className="settings-page__content-item-col"
+        {errors.caseDescription && (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.ErrorDefault}
+            className="mt-0.5"
           >
-            {Array.from(files).map((file) => (
-              <Box
-                key={file.name}
-                className="flex items-center rounded-lg py-1 px-2"
-                backgroundColor={BoxBackgroundColor.BackgroundSection}
-              >
-                <Icon
-                  name={
-                    file.type.includes('image') ? IconName.Image : IconName.File
-                  }
-                  size={IconSize.Lg}
-                  color={IconColor.IconDefault}
-                  className="mr-2"
-                />
-                <Text
-                  variant={TextVariant.BodySm}
-                  color={TextColor.TextDefault}
-                >
-                  {file.name}
-                </Text>
-                <ButtonIcon
-                  iconName={IconName.Close}
-                  size={ButtonIconSize.Sm}
-                  color={IconColor.IconDefault}
-                  ariaLabel={t('delete')}
-                  onClick={() => {
-                    setFiles(
-                      (() => {
-                        setErrors((state) => ({
-                          ...state,
-                          files: undefined,
-                        }));
-
-                        const dt = new DataTransfer();
-                        Array.from(files)
-                          .filter((f) => f.name !== file.name)
-                          .forEach((f) => dt.items.add(f));
-                        return dt.files;
-                      })(),
-                    );
-                  }}
-                  className="ml-auto"
-                />
-              </Box>
-            ))}
-          </Box>
+            {errors.caseDescription.msg}
+          </Text>
         )}
       </Box>
+      <FileUploader
+        id="upload-images-file-uploader"
+        data-testid="upload-images-file-uploader"
+        label={t('shieldClaimFileUploader')}
+        onChange={(inputFiles) => setFiles(inputFiles as FileList)}
+        accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
+        acceptText={t('shieldClaimFileUploaderAcceptText')}
+        helpText={t('shieldClaimFileUploaderHelpText')}
+        maxFileSize={MAX_FILE_SIZE}
+      />
       <Box className="settings-page__content-item-col">
         <Button
           data-testid="shield-claim-submit-button"
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
           disabled={isInvalidData}
+          onClick={handleSubmitClaim}
         >
           {t('shieldClaimSubmit')}
         </Button>
       </Box>
+      {claimSubmitLoading && <LoadingScreen />}
     </Box>
   );
 };

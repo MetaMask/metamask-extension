@@ -69,6 +69,7 @@
     "showNewSrpAddedToast": "boolean",
     "showPasswordChangeToast": null,
     "showCopyAddressToast": "boolean",
+    "showClaimSubmitToast": null,
     "showSupportDataConsentModal": "boolean",
     "showConnectionsRemovedModal": "boolean"
   },
