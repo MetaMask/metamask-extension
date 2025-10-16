@@ -7,7 +7,6 @@ import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-
 import { WINDOW_TITLES } from '../../helpers';
 import {
   AccountType,
-  mockMultichainAccountsFeatureFlagStateTwo,
   withMultichainAccountsDesignEnabled,
 } from './common';
 
@@ -33,7 +32,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
       },
     );
   });
-  
+
   it('displays wallet for Snap Keyring', async function () {
     await withMultichainAccountsDesignEnabled(
       {

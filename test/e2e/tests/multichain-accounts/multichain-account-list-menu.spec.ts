@@ -5,7 +5,6 @@ import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { WINDOW_TITLES } from '../../helpers';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { AccountType, withMultichainAccountsDesignEnabled } from './common';
 
 describe('Multichain Accounts - Account tree', function (this: Suite) {
@@ -102,7 +101,9 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         // await accountListPage.checkMultichainAccountBalanceDisplayed('$42,500.00');
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
-        await accountListPage.checkAccountDisplayedInAccountList('Snap Account 1');
+        await accountListPage.checkAccountDisplayedInAccountList(
+          'Snap Account 1',
+        );
         await accountListPage.checkNumberOfAvailableAccounts(3);
       },
     );

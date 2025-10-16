@@ -33,7 +33,9 @@ export async function withMultichainAccountsDesignEnabled(
     dappPaths,
   }: {
     title?: string;
-    testSpecificMock?: (mockServer: Mockttp) => Promise<MockedEndpoint | MockedEndpoint[]>;
+    testSpecificMock?: (
+      mockServer: Mockttp,
+    ) => Promise<MockedEndpoint | MockedEndpoint[]>;
     accountType?: AccountType;
     state?: number;
     dapp?: boolean;
@@ -100,7 +102,9 @@ const DUMMY_PRIVATE_KEY =
 export async function withImportedAccount(
   options: {
     title?: string;
-    testSpecificMock?: (mockServer: Mockttp) => Promise<MockedEndpoint | MockedEndpoint[]>;
+    testSpecificMock?: (
+      mockServer: Mockttp,
+    ) => Promise<MockedEndpoint | MockedEndpoint[]>;
     privateKey?: string;
   },
   test: (driver: Driver) => Promise<void>,

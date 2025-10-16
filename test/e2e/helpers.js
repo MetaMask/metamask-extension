@@ -371,7 +371,6 @@ async function withFixtures(options, testSuite) {
 
     if (forceBip44Version === 0) {
       console.log('Applying multichain accounts feature flag disabled mock');
-      await mockMultichainAccountsFeatureFlagDisabled(mockServer);
     } else if (forceBip44Version === 1) {
       console.log(
         'Applying multichain accounts state 1 feature state 1 enabled mock',
@@ -379,7 +378,7 @@ async function withFixtures(options, testSuite) {
       await mockMultichainAccountsFeatureFlagStateOne(mockServer);
     } else {
       console.log('BIP-44 state 2 enabled');
-      await mockMultichainAccountsFeatureFlagStateTwo(mockServer)
+      await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
     }
 
     // Decide between the regular setupMocking and the passThrough version
