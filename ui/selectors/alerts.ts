@@ -3,13 +3,14 @@ import {
   Alert,
   ConfirmAlertsState,
 } from '../ducks/confirm-alerts/confirm-alerts';
+import { EMPTY_ARRAY } from './shared';
 
 export type AlertsState = {
   confirmAlerts: ConfirmAlertsState;
 };
 
 export function selectAlerts(state: AlertsState, ownerId: string): Alert[] {
-  return state.confirmAlerts?.alerts[ownerId] ?? [];
+  return state.confirmAlerts?.alerts[ownerId] ?? EMPTY_ARRAY;
 }
 
 export const selectGeneralAlerts = createSelector(
