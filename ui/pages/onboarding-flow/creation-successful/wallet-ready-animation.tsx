@@ -26,11 +26,6 @@ export default function WalletReadyAnimation() {
     if (rive) {
       const inputs = rive.stateMachineInputs('OnboardingLoader');
       if (inputs) {
-        const startTrigger = inputs.find((input) => input.name === 'Start');
-        if (startTrigger) {
-          startTrigger.fire();
-        }
-
         const darkToggle = inputs.find((input) => input.name === 'Dark mode');
         if (darkToggle && theme === ThemeType.dark) {
           darkToggle.value = true;
@@ -38,12 +33,10 @@ export default function WalletReadyAnimation() {
           darkToggle.value = false;
         }
 
-        const endTrigger = inputs.find((input) => input.name === 'End');
-        setTimeout(() => {
-          if (endTrigger) {
-            endTrigger.fire();
-          }
-        }, 1000);
+        const endTrigger = inputs.find((input) => input.name === 'Only_End');
+        if (endTrigger) {
+          endTrigger.fire();
+        }
 
         // Play the state machine
         rive.play();
