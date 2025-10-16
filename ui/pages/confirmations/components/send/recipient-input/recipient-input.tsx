@@ -55,6 +55,8 @@ export const RecipientInput = ({
     recipientResolvedLookup,
     toAddressValidated,
   } = recipientValidationResult;
+  const avatarSeedAddress =
+    accountAddressSeedIconMap.get(to?.toLowerCase() as string) ?? to ?? '';
 
   const onToChange = useCallback(
     (e) => {
@@ -107,11 +109,7 @@ export const RecipientInput = ({
         >
           <Box alignItems={AlignItems.center} display={Display.Flex}>
             <PreferredAvatar
-              address={
-                accountAddressSeedIconMap.get(to?.toLowerCase() as string) ??
-                to ??
-                ''
-              }
+              address={avatarSeedAddress}
               size={AvatarAccountSize.Md}
             />
             <Box
