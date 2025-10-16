@@ -164,16 +164,13 @@ describe('Vault Corruption', function () {
 
     // use the home page to destroy the vault
     await driver.executeAsyncScript(script);
-    await driver.delay(2000);
 
     // the previous tab we were using is now closed, so we need to tell Selenium
     // to switch back to the other page (required for Chrome)
     await driver.switchToWindow(initialWindow);
-    await driver.delay(2000);
 
     // get a new tab ready to use (required for Firefox)
     await driver.openNewPage('about:blank');
-    await driver.delay(2000);
 
     // wait for the background page to reload
     await waitForVaultRestorePage(driver);
@@ -200,7 +197,6 @@ describe('Vault Corruption', function () {
 
     // Confirm we want to recover/reset.
     const prompt = await driver.driver.switchTo().alert();
-    await driver.delay(2000);
     if (confirm) {
       await prompt.accept();
     } else {
@@ -208,8 +204,18 @@ describe('Vault Corruption', function () {
     }
 
     if (confirm) {
+      // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing to window to become stale
       await driver.delay(2000);
-      await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
+      try {
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+      } catch (error) {
+        // to mitigate a race condition where the tab is closed after confirming (issue #36916)
+        await driver.openNewPage('about:blank');
+        await driver.navigate();
+      }
       // the button should be disabled if the user confirmed the prompt, but given this is a transient state that goes very fast
       // it can cause a race condition where the element becomes stale, so we check directly that the element is not present as that's a stable state that occurs eventually
       await driver.assertElementNotPresent('#critical-error-button');
