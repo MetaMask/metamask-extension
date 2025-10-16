@@ -11,7 +11,6 @@ import { CaveatTypes } from '../../../shared/constants/permissions';
 import { switchToEditRPCViaGlobalMenuNetworks } from '../page-objects/flows/network.flow';
 import AddNetworkConfirmation from '../page-objects/pages/confirmations/redesign/add-network-confirmations';
 import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
-// import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch-alert-modal';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import UpdateNetworkConfirmation from '../page-objects/pages/confirmations/redesign/update-network-confirmation';
