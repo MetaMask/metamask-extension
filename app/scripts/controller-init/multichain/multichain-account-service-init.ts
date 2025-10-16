@@ -5,9 +5,6 @@ import {
   AccountProviderWrapper,
   ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain-account-service';
-///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
-///: END:ONLY_INCLUDE_IF
 import { ControllerInitFunction } from '../types';
 import {
   MultichainAccountServiceMessenger,
