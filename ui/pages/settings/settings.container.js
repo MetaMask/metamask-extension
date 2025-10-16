@@ -40,6 +40,7 @@ import {
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE,
   TRANSACTION_SHIELD_CLAIM_NEW_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
@@ -111,6 +112,11 @@ const mapStateToProps = (state, ownProps) => {
   // if pathname is `REVEAL_SRP_LIST_ROUTE` and socialLoginEnabled rename the tab title to "Manage recovery methods"
   if (isRevealSrpListPage && socialLoginEnabled) {
     pathnameI18nKey = 'securitySrpWalletRecovery';
+  }
+
+  // If pathname is `TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE` rename the tab title to "Claim details"
+  if (pathname.startsWith(TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE)) {
+    pathnameI18nKey = 'shieldClaimsListTitle';
   }
 
   let backRoute = SETTINGS_ROUTE;

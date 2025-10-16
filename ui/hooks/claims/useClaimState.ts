@@ -1,6 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useAsyncResult } from '../useAsync';
+import {
+  ShieldClaim,
+  ShieldClaimAttachment,
+} from '../../pages/settings/transaction-shield-tab/types';
+import { getShieldClaimDetails } from '../../store/actions';
 
-export const useClaimState = () => {
+export const useClaimState = (isClaimViewPage: boolean = false) => {
+  const { pathname } = useLocation();
   const [email, setEmail] = useState<string>('');
   const [impactedWalletAddress, setImpactedWalletAddress] =
     useState<string>('');
@@ -10,6 +18,37 @@ export const useClaimState = () => {
     useState<string>('');
   const [caseDescription, setCaseDescription] = useState<string>('');
   const [files, setFiles] = useState<FileList>();
+  const [uploadedFiles, setUploadedFiles] = useState<ShieldClaimAttachment[]>(
+    [],
+  );
+
+  const intercomId = pathname.split('/').pop();
+
+  const claimDetailsResult = useAsyncResult<ShieldClaim | null>(async () => {
+    if (isClaimViewPage && intercomId) {
+      try {
+        const claim = await getShieldClaimDetails(intercomId as string);
+        return claim;
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    }
+    return null;
+  }, [isClaimViewPage, intercomId]);
+
+  useEffect(() => {
+    if (claimDetailsResult.value) {
+      setEmail(claimDetailsResult.value.email);
+      setImpactedWalletAddress(claimDetailsResult.value.impactedWalletAddress);
+      setImpactedTransactionHash(claimDetailsResult.value.impactedTxHash);
+      setReimbursementWalletAddress(
+        claimDetailsResult.value.reimbursementWalletAddress,
+      );
+      setCaseDescription(claimDetailsResult.value.description);
+      setUploadedFiles(claimDetailsResult.value.attachments);
+    }
+  }, [claimDetailsResult.value]);
 
   return {
     email,
@@ -24,6 +63,8 @@ export const useClaimState = () => {
     setCaseDescription,
     files,
     setFiles,
+    uploadedFiles,
+    loadingClaimDetails: claimDetailsResult.status === 'pending',
     clear: () => {
       setEmail('');
       setImpactedWalletAddress('');

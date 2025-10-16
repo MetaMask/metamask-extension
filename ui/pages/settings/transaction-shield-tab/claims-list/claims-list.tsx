@@ -21,9 +21,13 @@ import {
   IconColor,
 } from '@metamask/design-system-react';
 import { ShieldClaim, CLAIM_STATUS, ClaimStatus } from '../types';
+import { useNavigate } from 'react-router-dom-v5-compat';
+import { TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 
 const ClaimsList = () => {
   const t = useI18nContext();
+  const navigate = useNavigate();
+
   const claimsResult = useAsyncResult<ShieldClaim[]>(
     () => getShieldClaims(),
     [],
@@ -45,19 +49,21 @@ const ClaimsList = () => {
     );
   }, [claimsResult.value]);
 
-  const claimItem = (id: string, label: string, status?: ClaimStatus) => {
+  const claimItem = (intercomId: string, status?: ClaimStatus) => {
     return (
       <Box
         asChild
-        key={id}
-        data-testid={`claim-item-${id}`}
+        key={intercomId}
+        data-testid={`claim-item-${intercomId}`}
         backgroundColor={BoxBackgroundColor.BackgroundSection}
         className="claim-item flex items-center justify-between w-full p-4 rounded-lg"
-        onClick={() => {}}
+        onClick={() => {
+          navigate(`${TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE}/${intercomId}`);
+        }}
       >
         <button>
           <Box className="flex items-center gap-2">
-            <Text variant={TextVariant.BodyMd}>{label}</Text>
+            <Text variant={TextVariant.BodyMd}>Claim #{intercomId}</Text>
             {status && (
               <Tag
                 borderStyle={BorderStyle.none}
@@ -139,7 +145,7 @@ const ClaimsList = () => {
           </Text>
           <Box className="flex flex-col gap-2">
             {pendingClaims.map((claim) =>
-              claimItem(claim.id, claim.description, claim.status),
+              claimItem(claim.intercomId, claim.status),
             )}
           </Box>
         </Box>
@@ -155,7 +161,7 @@ const ClaimsList = () => {
           </Text>
           <Box className="flex flex-col gap-2">
             {historyClaims.map((claim) =>
-              claimItem(claim.id, claim.description, claim.status),
+              claimItem(claim.intercomId, claim.status),
             )}
           </Box>
         </Box>

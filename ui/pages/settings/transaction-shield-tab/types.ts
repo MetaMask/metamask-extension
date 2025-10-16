@@ -25,7 +25,7 @@ export const CLAIM_STATUS = {
 
 export type ClaimStatus = (typeof CLAIM_STATUS)[keyof typeof CLAIM_STATUS];
 
-type ShieldClaimAttachment = {
+export type ShieldClaimAttachment = {
   key: string;
   mimetype: string;
   publicUrl: string;

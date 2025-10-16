@@ -33,6 +33,7 @@ import {
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE,
   TRANSACTION_SHIELD_CLAIM_NEW_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
@@ -538,6 +539,11 @@ class SettingsPage extends PureComponent {
         />
         <Route
           path={TRANSACTION_SHIELD_CLAIM_NEW_ROUTE}
+          element={<SubmitClaimForm />}
+          exact
+        />
+        <Route
+          path={`${TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE}/:claimId`}
           element={<SubmitClaimForm />}
           exact
         />

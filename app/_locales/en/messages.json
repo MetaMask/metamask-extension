@@ -5637,15 +5637,6 @@
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Signature and transaction requests"
   },
-  "shieldClaimsHistoryTitle": {
-    "message": "CLAIM HISTORY"
-  },
-  "shieldClaimsListTitle": {
-    "message": "Claim details"
-  },
-  "shieldClaimsPendingTitle": {
-    "message": "PENDING CLAIMS"
-  },
   "shieldClaim": {
     "message": "Submit a claim"
   },
@@ -5654,6 +5645,10 @@
   },
   "shieldClaimDetails": {
     "message": "You may file a single claim per incident within 21 days of the incident. View the full coverage policy $1.",
+    "description": "The $1 is a link to the full coverage policy"
+  },
+  "shieldClaimDetailsViewClaims": {
+    "message": "This claim is being reviewed by our team. We will notify you when it has been approved by email. View the full coverage policy $1.",
     "description": "The $1 is a link to the full coverage policy"
   },
   "shieldClaimEmail": {
@@ -5712,6 +5707,15 @@
   },
   "shieldClaimSubmitSuccessDescription": {
     "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
+  },
+  "shieldClaimsHistoryTitle": {
+    "message": "CLAIM HISTORY"
+  },
+  "shieldClaimsListTitle": {
+    "message": "Claim details"
+  },
+  "shieldClaimsPendingTitle": {
+    "message": "PENDING CLAIMS"
   },
   "shieldConfirmMembership": {
     "message": "Confirm membership"

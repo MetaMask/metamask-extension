@@ -7556,3 +7556,89 @@ export async function submitShieldClaim(params: {
 
   return ClaimSubmitToastType.Success;
 }
+
+export async function getShieldClaims() {
+  const baseUrl =
+    process.env.SHIELD_CLAIMS_API_URL ??
+    'https://claims.dev-api.cx.metamask.io';
+
+  const claimsUrl = `${baseUrl}/claims`;
+  const accessToken = await submitRequestToBackground<string>('getBearerToken');
+
+  const response = await fetch(claimsUrl, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  console.log('check: response', response.json());
+  return response.json();
+
+  // TODO: remove this
+  // return [
+  //   {
+  //     id: '05fa245a-1a4d-427a-b4bb-c8d409c05c38',
+  //     createdAt: '2025-10-15T07:42:23.278Z',
+  //     updatedAt: '2025-10-15T07:42:25.275Z',
+  //     email: 'chai@tor.us',
+  //     impactedWalletAddress: '0xaf78221abbc720e9d13e26342c2d0e319054b4fe',
+  //     impactedTxHash:
+  //       '0x7810c18e855c31dea8a199a676da4283959f0e219d1b296e0c610a8674d8471c',
+  //     reimbursementWalletAddress: '0xaf78221abbc720e9d13e26342c2d0e319054b4fe',
+  //     description: "Lost money :'(",
+  //     attachments: [
+  //       {
+  //         acl: 'private',
+  //         key: '384b783e-1c19-4609-a744-52839b66d447_wallet-qr-0xe30d1F.png',
+  //         etag: '"3d5370802e1acc446ec2968e05795f49"',
+  //         size: 3704,
+  //         bucket: 'mmcx-shield-claims-api-attachments-dev',
+  //         encoding: '7bit',
+  //         location:
+  //           'https://mmcx-shield-claims-api-attachments-dev.s3.us-east-2.amazonaws.com/384b783e-1c19-4609-a744-52839b66d447_wallet-qr-0xe30d1F.png',
+  //         metadata: {},
+  //         mimetype: 'image/png',
+  //         fieldname: 'attachments',
+  //         publicUrl:
+  //           'https://d15yzz7vdc6cyk.cloudfront.net/384b783e-1c19-4609-a744-52839b66d447_wallet-qr-0xe30d1F.png',
+  //         versionId: 'JpGxYE53kU_F38reenAKcz89XPsiUkpd',
+  //         contentType: 'image/png',
+  //         originalname: 'wallet-qr-0xe30d1F.png',
+  //         storageClass: 'STANDARD',
+  //         contentEncoding: null,
+  //         contentDisposition: null,
+  //         serverSideEncryption: null,
+  //       },
+  //     ],
+  //     intercomId: '43018518',
+  //   },
+  // ];
+}
+
+// TODO: move to controller
+export async function getShieldClaimDetails(intercomId: string) {
+  const baseUrl =
+    process.env.SHIELD_CLAIMS_API_URL ??
+    'https://claims.dev-api.cx.metamask.io';
+
+  const claimsUrl = `${baseUrl}/claims/byIntercomId/${intercomId}`;
+  const accessToken = await submitRequestToBackground<string>('getBearerToken');
+
+  const response = await fetch(claimsUrl, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    const errorMessage = await response.json();
+    if (errorMessage.message) {
+      throw new Error(errorMessage.message);
+    }
+    throw new Error(ClaimSubmitToastType.Errored);
+  }
+
+  return response.json();
+}

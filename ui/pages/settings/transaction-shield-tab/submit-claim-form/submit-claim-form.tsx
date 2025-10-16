@@ -3,18 +3,28 @@ import { isValidHexAddress } from '@metamask/controller-utils';
 import { isStrictHexString } from '@metamask/utils';
 import {
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
   Button,
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  IconName,
+  Icon,
   Text,
   TextButton,
   TextButtonSize,
   TextColor,
   TextVariant,
+  IconSize,
 } from '@metamask/design-system-react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import {
+  matchPath,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Textarea,
@@ -36,6 +46,7 @@ import { useClaimState } from '../../../../hooks/claims/useClaimState';
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
 import {
+  TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE,
   TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../../../helpers/constants/routes';
@@ -56,7 +67,14 @@ const SubmitClaimForm = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [claimSubmitLoading, setClaimSubmitLoading] = useState(false);
+  const { pathname } = useLocation();
+  const [isSubmittingClaim, setIsSubmittingClaim] = useState(false);
+
+  const isClaimViewPage = useMemo(() => {
+    return Boolean(
+      matchPath(`${TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE}/:claimId`, pathname),
+    );
+  }, [pathname]);
 
   const {
     email,
@@ -71,11 +89,17 @@ const SubmitClaimForm = () => {
     setCaseDescription,
     files,
     setFiles,
-  } = useClaimState();
+    uploadedFiles,
+    loadingClaimDetails,
+  } = useClaimState(isClaimViewPage);
 
   const [errors, setErrors] = useState<
     Record<string, { key: string; msg: string } | undefined>
   >({});
+
+  const showLoader = useMemo(() => {
+    return isSubmittingClaim || loadingClaimDetails;
+  }, [isSubmittingClaim, loadingClaimDetails]);
 
   const validateEmail = useCallback(() => {
     if (email) {
@@ -199,7 +223,7 @@ const SubmitClaimForm = () => {
 
   const handleSubmitClaim = useCallback(async () => {
     try {
-      setClaimSubmitLoading(true);
+      setIsSubmittingClaim(true);
       await submitShieldClaim({
         email,
         impactedWalletAddress,
@@ -220,7 +244,7 @@ const SubmitClaimForm = () => {
         ),
       );
     } finally {
-      setClaimSubmitLoading(false);
+      setIsSubmittingClaim(false);
     }
   }, [
     dispatch,
@@ -240,21 +264,28 @@ const SubmitClaimForm = () => {
       padding={4}
       gap={4}
     >
-      <BannerAlert
-        severity={BannerAlertSeverity.Info}
-        title="You have claims that are pending approval."
-        description="Your claims is being reviewed by our team. We will notify you when it has been approved by email."
-        actionButtonLabel="View claims"
-        actionButtonOnClick={() => {
-          navigate(TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE);
-        }}
-      />
+      {!isClaimViewPage && (
+        <BannerAlert
+          severity={BannerAlertSeverity.Info}
+          title="You have claims that are pending approval."
+          description="Your claims is being reviewed by our team. We will notify you when it has been approved by email."
+          actionButtonLabel="View claims"
+          actionButtonOnClick={() => {
+            navigate(TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE);
+          }}
+        />
+      )}
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-        {t('shieldClaimDetails', [
-          <TextButton key="here-link" className="min-w-0" asChild>
-            <a href="#">{t('here')}</a>
-          </TextButton>,
-        ])}
+        {t(
+          isClaimViewPage
+            ? 'shieldClaimDetailsViewClaims'
+            : 'shieldClaimDetails',
+          [
+            <TextButton key="here-link" className="min-w-0" asChild>
+              <a href="#">{t('here')}</a>
+            </TextButton>,
+          ],
+        )}
       </Text>
       <FormTextField
         label={`${t('shieldClaimEmail')}*`}
@@ -276,6 +307,7 @@ const SubmitClaimForm = () => {
         error={Boolean(errors.email)}
         required
         width={BlockSize.Full}
+        readOnly={isClaimViewPage}
       />
       <FormTextField
         label={`${t('shieldClaimImpactedWalletAddress')}*`}
@@ -301,6 +333,7 @@ const SubmitClaimForm = () => {
         error={Boolean(errors.impactedWalletAddress)}
         required
         width={BlockSize.Full}
+        readOnly={isClaimViewPage}
       />
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
@@ -333,6 +366,7 @@ const SubmitClaimForm = () => {
         error={Boolean(errors.impactedTransactionHash)}
         required
         width={BlockSize.Full}
+        readOnly={isClaimViewPage}
       />
       <FormTextField
         label={`${t('shieldClaimReimbursementWalletAddress')}*`}
@@ -358,6 +392,7 @@ const SubmitClaimForm = () => {
         error={Boolean(errors.reimbursementWalletAddress)}
         required
         width={BlockSize.Full}
+        readOnly={isClaimViewPage}
       />
       <Box gap={2}>
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
@@ -377,6 +412,7 @@ const SubmitClaimForm = () => {
           paddingTop={3}
           paddingBottom={3}
           maxLength={2000}
+          readOnly={isClaimViewPage}
         />
         {errors.caseDescription && (
           <Text
@@ -388,28 +424,80 @@ const SubmitClaimForm = () => {
           </Text>
         )}
       </Box>
-      <FileUploader
-        id="upload-images-file-uploader"
-        data-testid="upload-images-file-uploader"
-        label={t('shieldClaimFileUploader')}
-        onChange={(inputFiles) => setFiles(inputFiles as FileList)}
-        accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
-        acceptText={t('shieldClaimFileUploaderAcceptText')}
-        helpText={t('shieldClaimFileUploaderHelpText')}
-        maxFileSize={MAX_FILE_SIZE}
-      />
+      {isClaimViewPage ? (
+        <Box gap={2}>
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {t('shieldClaimFileUploader')}
+          </Text>
+          <Box flexDirection={BoxFlexDirection.Column} gap={2} marginTop={4}>
+            {uploadedFiles.map((file) => (
+              <Box
+                asChild
+                key={file.key}
+                alignItems={BoxAlignItems.Center}
+                flexDirection={BoxFlexDirection.Row}
+                backgroundColor={BoxBackgroundColor.BackgroundSection}
+                paddingTop={2}
+                paddingBottom={2}
+                paddingLeft={4}
+                paddingRight={4}
+                gap={2}
+                className="rounded-lg"
+              >
+                <a
+                  href={file.publicUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon
+                    name={
+                      file.mimetype?.includes('image')
+                        ? IconName.Image
+                        : IconName.File
+                    }
+                    size={IconSize.Lg}
+                  />
+                  <Text variant={TextVariant.BodySm}>{file.originalname}</Text>
+                </a>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+      ) : (
+        <FileUploader
+          id="upload-images-file-uploader"
+          data-testid="upload-images-file-uploader"
+          label={t('shieldClaimFileUploader')}
+          onChange={(inputFiles) => setFiles(inputFiles as FileList)}
+          accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
+          acceptText={t('shieldClaimFileUploaderAcceptText')}
+          helpText={t('shieldClaimFileUploaderHelpText')}
+          maxFileSize={MAX_FILE_SIZE}
+        />
+      )}
       <Box className="settings-page__content-item-col">
-        <Button
-          data-testid="shield-claim-submit-button"
-          variant={ButtonVariant.Primary}
-          size={ButtonSize.Lg}
-          disabled={isInvalidData}
-          onClick={handleSubmitClaim}
-        >
-          {t('shieldClaimSubmit')}
-        </Button>
+        {isClaimViewPage ? (
+          <Button
+            data-testid="shield-claim-back-button"
+            variant={ButtonVariant.Secondary}
+            size={ButtonSize.Lg}
+            onClick={() => navigate(TRANSACTION_SHIELD_CLAIMS_LIST_ROUTE)}
+          >
+            {t('back')}
+          </Button>
+        ) : (
+          <Button
+            data-testid="shield-claim-submit-button"
+            variant={ButtonVariant.Primary}
+            size={ButtonSize.Lg}
+            disabled={isInvalidData}
+            onClick={handleSubmitClaim}
+          >
+            {t('shieldClaimSubmit')}
+          </Button>
+        )}
       </Box>
-      {claimSubmitLoading && <LoadingScreen />}
+      {showLoader && <LoadingScreen />}
     </Box>
   );
 };
