@@ -20,7 +20,6 @@ import {
   getCurrentNetwork,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
-  getEnabledNetworksByNamespace,
   getSelectedMultichainNetworkChainId,
   getEnabledNetworks,
 } from '../../../selectors';
@@ -39,6 +38,7 @@ import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
   getIsEvmMultichainNetworkSelected,
+  getAllEnabledNetworksForAllNamespaces,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getSelectedMultichainNetworkConfiguration,
   ///: END:ONLY_INCLUDE_IF
@@ -374,14 +374,17 @@ export const groupAnyTransactionsByDate = (items) =>
   );
 
 function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
-  const filteredEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
-  const filteredNonEvmChainIds =
-    Object.keys(enabledNetworks)
-      .filter((namespace) => namespace !== 'eip155')
-      .reduce((acc, namespace) => {
-        const newAcc = [...acc, ...Object.keys(enabledNetworks[namespace])];
-        return newAcc;
-      }, []) ?? [];
+  const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
+  const filteredUniqueNonEvmChainIds =
+    [
+      ...new Set(
+        Object.keys(enabledNetworks)
+          .filter((namespace) => namespace !== 'eip155')
+          .reduce((acc, namespace) => {
+            return [...acc, ...Object.keys(enabledNetworks[namespace])];
+          }, []),
+      ),
+    ] ?? [];
 
   if (tokenChainIdOverride && !tokenChainIdOverride.startsWith('solana')) {
     return {
@@ -396,8 +399,8 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
     };
   }
   return {
-    evmChainIds: filteredEVMChainIds,
-    nonEvmChainIds: filteredNonEvmChainIds,
+    evmChainIds: filteredUniqueEVMChainIds,
+    nonEvmChainIds: filteredUniqueNonEvmChainIds,
   };
 }
 export default function UnifiedTransactionList({
@@ -449,25 +452,22 @@ export default function UnifiedTransactionList({
 
   const isEvmNetwork = useSelector(getIsEvmMultichainNetworkSelected);
 
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const enabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
   );
 
   const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
-    if (!enabledNetworksByNamespace || !currentMultichainChainId) {
+    if (!currentMultichainChainId) {
       return unfilteredCompletedTransactionsAllChains;
     }
 
     // If no networks are enabled for this namespace, return empty array
-    if (Object.keys(enabledNetworksByNamespace).length === 0) {
+    if (enabledNetworksForAllNamespaces.length === 0) {
       return [];
     }
-
-    // Get the list of enabled chain IDs for this namespace
-    const enabledChainIds = Object.keys(enabledNetworksByNamespace).filter(
-      (enabledChainId) => enabledNetworksByNamespace[enabledChainId],
-    );
 
     const transactionsToFilter = unfilteredCompletedTransactionsAllChains;
 
@@ -475,17 +475,24 @@ export default function UnifiedTransactionList({
     const filteredTransactions = transactionsToFilter.filter(
       (transactionGroup) => {
         const transactionChainId = transactionGroup.initialTransaction?.chainId;
-        const isIncluded = enabledChainIds.includes(transactionChainId);
+        const isIncluded =
+          enabledNetworksForAllNamespaces.includes(transactionChainId);
         return isIncluded;
       },
     );
 
     return filteredTransactions;
   }, [
-    enabledNetworksByNamespace,
+    enabledNetworksForAllNamespaces,
     currentMultichainChainId,
     unfilteredCompletedTransactionsAllChains,
   ]);
+
+  const enabledNonEvmChainIds = useMemo(() => {
+    return nonEvmChainIds.filter((chainId) =>
+      enabledNetworksForAllNamespaces.includes(chainId),
+    );
+  }, [nonEvmChainIds, enabledNetworksForAllNamespaces]);
 
   const unifiedActivityItems = useMemo(() => {
     return buildUnifiedActivityItems(
@@ -496,7 +503,7 @@ export default function UnifiedTransactionList({
         hideTokenTransactions,
         tokenAddress,
         evmChainIds,
-        nonEvmChainIds,
+        nonEvmChainIds: enabledNonEvmChainIds,
       },
     );
   }, [
@@ -506,6 +513,7 @@ export default function UnifiedTransactionList({
     hideTokenTransactions,
     tokenAddress,
     evmChainIds,
+    enabledNonEvmChainIds,
   ]);
   const groupedUnifiedActivityItems =
     groupAnyTransactionsByDate(unifiedActivityItems);

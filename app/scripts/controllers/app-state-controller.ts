@@ -111,12 +111,15 @@ export type AppStateControllerState = {
   slides: CarouselSlide[];
   snapsInstallPrivacyWarningShown?: boolean;
   surveyLinkLastClickedOrClosed: number | null;
+  shieldEndingToastLastClickedOrClosed: number | null;
+  shieldPausedToastLastClickedOrClosed: number | null;
   termsOfUseLastAgreed?: number;
   throttledOrigins: ThrottledOrigins;
   timeoutMinutes: number;
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
+  showShieldEntryModalOnce: boolean | null;
 };
 
 const controllerName = 'AppStateController';
@@ -250,12 +253,14 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   showTestnetMessageInDropdown: true,
   slides: [],
   surveyLinkLastClickedOrClosed: null,
+  shieldEndingToastLastClickedOrClosed: null,
+  shieldPausedToastLastClickedOrClosed: null,
   throttledOrigins: {},
   timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
-
+  showShieldEntryModalOnce: null,
   ...getInitialStateOverrides(),
 });
 
@@ -527,6 +532,18 @@ const controllerMetadata = {
     anonymous: true,
     usedInUi: true,
   },
+  shieldEndingToastLastClickedOrClosed: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+  },
+  shieldPausedToastLastClickedOrClosed: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+  },
   termsOfUseLastAgreed: {
     includeInStateLogs: true,
     persist: true,
@@ -562,6 +579,12 @@ const controllerMetadata = {
     anonymous: true,
     usedInUi: true,
     includeInStateLogs: true,
+  },
+  showShieldEntryModalOnce: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
   },
 };
 
@@ -761,6 +784,18 @@ export class AppStateController extends BaseController<
   setNewPrivacyPolicyToastShownDate(time: number): void {
     this.update((state) => {
       state.newPrivacyPolicyToastShownDate = time;
+    });
+  }
+
+  setShieldPausedToastLastClickedOrClosed(time: number): void {
+    this.update((state) => {
+      state.shieldPausedToastLastClickedOrClosed = time;
+    });
+  }
+
+  setShieldEndingToastLastClickedOrClosed(time: number): void {
+    this.update((state) => {
+      state.shieldEndingToastLastClickedOrClosed = time;
     });
   }
 
@@ -1437,6 +1472,9 @@ export class AppStateController extends BaseController<
   }): void {
     this.update((state) => {
       state.appActiveTab = tabData;
+  setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
+    this.update((state) => {
+      state.showShieldEntryModalOnce = showShieldEntryModalOnce;
     });
   }
 }

@@ -906,16 +906,7 @@ export default class Home extends PureComponent {
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
-          {showShieldEntryModal && (
-            <ShieldEntryModal
-              onClose={() => {
-                // TODO: implement
-              }}
-              onGetStarted={() => {
-                // TODO: implement
-              }}
-            />
-          )}
+          {showShieldEntryModal && <ShieldEntryModal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}

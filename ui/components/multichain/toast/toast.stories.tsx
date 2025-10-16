@@ -4,7 +4,6 @@ import {
   AvatarAccount,
   AvatarAccountSize,
 } from '@metamask/design-system-react';
-import { BorderColor } from '../../../helpers/constants/design-system';
 import { Toast } from '.';
 
 const [chaosAccount] = Object.values(
@@ -28,6 +27,9 @@ export default {
     text: {
       control: 'text',
     },
+    description: {
+      control: 'text',
+    },
     actionText: {
       control: 'text',
     },
@@ -46,6 +48,7 @@ export default {
       />
     ),
     text: 'This is the Toast text',
+    description: 'This is the Toast description',
     actionText: 'Take some action',
     onActionClick: () => undefined,
     onClose: () => undefined,
