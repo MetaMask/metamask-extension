@@ -36,7 +36,6 @@ export function useDappSwapComparisonInfo() {
 
   const captureDappSwapComparisonMetricsProperties = useCallback(
     (properties: Record<string, string>) => {
-      console.log('--------------------------------', properties);
       updateTransactionEventFragment(
         {
           properties: {
@@ -112,14 +111,13 @@ export function useDappSwapComparisonInfo() {
       !amountMin ||
       !erc20Decimals ||
       !erc20FiatRates ||
-      !quotes ||
+      !quotes?.length ||
       !quotesInput
     ) {
       return;
     }
 
-    const selectedQuoteIndex = getBestQuote(quotes);
-    const selectedQuote = quotes[selectedQuoteIndex];
+    const selectedQuote = getBestQuote(quotes) as QuoteResponse;
 
     const { destTokenAddress, srcTokenAmount, srcTokenAddress } = quotesInput;
     const {

@@ -43,6 +43,39 @@ export const ABI = [
   },
 ];
 
+const getWordsFromInput = (input: string) => {
+  return input.slice(2).match(/.{1,64}/gu) as string[];
+};
+
+const wordToAddress = (word: string) => {
+  return addHexPrefix(word.slice(24));
+};
+
+const wordToAmount = (word: string) => {
+  const amount = word.replace(/^0+/u, '');
+  return addHexPrefix(amount);
+};
+
+const parseTransactionData = (data?: string) => {
+  const contractInterface = new Interface(ABI);
+
+  let parsedTransactionData: TransactionDescription;
+
+  try {
+    parsedTransactionData = contractInterface.parseTransaction({
+      data: data as Hex,
+    });
+  } catch (error) {
+    return { inputs: [], commandBytes: [] };
+  }
+
+  const commands = parsedTransactionData.args.commands as string;
+  const inputs = parsedTransactionData.args.inputs as string[];
+  const commandBytes = commands.slice(2).match(/.{1,2}/gu) as string[];
+
+  return { inputs, commandBytes };
+};
+
 export const getDataFromSwap = (
   chainId: Hex,
   amount?: string,
@@ -112,7 +145,7 @@ export const getBestQuote = (quotes: QuoteResponse[]) => {
     }
   });
 
-  return selectedQuoteIndex;
+  return selectedQuoteIndex > -1 ? quotes[selectedQuoteIndex] : undefined;
 };
 
 export const getTokenValueFromRecord = (
@@ -123,37 +156,4 @@ export const getTokenValueFromRecord = (
     return key.toLowerCase() === tokenAddress.toLowerCase();
   });
   return address ? (record[address as Hex] ?? 0) : 0;
-};
-
-const getWordsFromInput = (input: string) => {
-  return input.slice(2).match(/.{1,64}/gu) as string[];
-};
-
-const wordToAddress = (word: string) => {
-  return addHexPrefix(word.slice(24));
-};
-
-const wordToAmount = (word: string) => {
-  const amount = word.replace(/^0+/u, '');
-  return addHexPrefix(amount);
-};
-
-const parseTransactionData = (data?: string) => {
-  const contractInterface = new Interface(ABI);
-
-  let parsedTransactionData: TransactionDescription;
-
-  try {
-    parsedTransactionData = contractInterface.parseTransaction({
-      data: data as Hex,
-    });
-  } catch (error) {
-    return { inputs: [], commandBytes: [] };
-  }
-
-  const commands = parsedTransactionData.args.commands as string;
-  const inputs = parsedTransactionData.args.inputs as string[];
-  const commandBytes = commands.slice(2).match(/.{1,2}/gu) as string[];
-
-  return { inputs, commandBytes };
 };
