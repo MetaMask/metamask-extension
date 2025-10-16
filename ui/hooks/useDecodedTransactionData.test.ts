@@ -6,15 +6,18 @@ import {
 } from '@metamask/transaction-controller';
 
 import { Hex } from '@metamask/utils';
+import { renderHook } from '@testing-library/react-hooks';
+import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { decodeTransactionData } from '../store/actions';
+import {
+  TRANSACTION_DATA_UNISWAP,
+  TRANSACTION_DECODE_SOURCIFY,
+} from '../../test/data/confirmations/transaction-decode';
+import { DecodedTransactionDataSource } from '../../shared/types';
 import {
   useDecodedTransactionData,
   useDecodedTransactionDataValue,
 } from './useDecodedTransactionData';
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
-import { decodeTransactionData } from '../store/actions';
-import { TRANSACTION_DATA_UNISWAP, TRANSACTION_DECODE_SOURCIFY } from '../../test/data/confirmations/transaction-decode';
-import { renderHook } from '@testing-library/react-hooks';
-import { DecodedTransactionDataSource } from '../../shared/types';
 
 jest.mock('../store/actions', () => ({
   ...jest.requireActual('../store/actions'),
@@ -24,11 +27,13 @@ jest.mock('../store/actions', () => ({
 const CONTRACT_ADDRESS_MOCK = '0x123';
 const CHAIN_ID_MOCK = '0x5';
 
-async function runHook(
-  { data, to, chainId }: { data?: Hex; to?: Hex; chainId?: Hex } = {},
-) {
-  const response = renderHook(
-    () => useDecodedTransactionData({ data, to, chainId }),
+async function runHook({
+  data,
+  to,
+  chainId,
+}: { data?: Hex; to?: Hex; chainId?: Hex } = {}) {
+  const response = renderHook(() =>
+    useDecodedTransactionData({ data, to, chainId }),
   );
 
   await act(() => {
@@ -49,13 +54,11 @@ describe('useDecodedTransactionData', () => {
   it.each([undefined, null, '', '0x', '0X'])(
     'returns undefined if transaction data is %s',
     async (data: string | null | undefined) => {
-      const result = await runHook(
-        {
-          chainId: CHAIN_ID_MOCK,
-          data: data as Hex,
-          to: CONTRACT_ADDRESS_MOCK,
-        },
-      );
+      const result = await runHook({
+        chainId: CHAIN_ID_MOCK,
+        data: data as Hex,
+        to: CONTRACT_ADDRESS_MOCK,
+      });
 
       expect(result).toEqual(
         expect.objectContaining({
@@ -67,13 +70,11 @@ describe('useDecodedTransactionData', () => {
   );
 
   it('returns undefined if no transaction to', async () => {
-    const result = await runHook(
-      {
-        chainId: CHAIN_ID_MOCK,
-        data: TRANSACTION_DATA_UNISWAP,
-        to: undefined,
-      },
-    );
+    const result = await runHook({
+      chainId: CHAIN_ID_MOCK,
+      data: TRANSACTION_DATA_UNISWAP,
+      to: undefined,
+    });
 
     expect(result).toEqual(
       expect.objectContaining({
@@ -86,13 +87,11 @@ describe('useDecodedTransactionData', () => {
   it('returns the decoded data', async () => {
     decodeTransactionDataMock.mockResolvedValue(TRANSACTION_DECODE_SOURCIFY);
 
-    const result = await runHook(
-      {
-        data: TRANSACTION_DATA_UNISWAP,
-        to: CONTRACT_ADDRESS_MOCK,
-        chainId: CHAIN_ID_MOCK,
-      },
-    );
+    const result = await runHook({
+      data: TRANSACTION_DATA_UNISWAP,
+      to: CONTRACT_ADDRESS_MOCK,
+      chainId: CHAIN_ID_MOCK,
+    });
 
     expect(result).toEqual(
       expect.objectContaining({
@@ -188,8 +187,8 @@ describe('useDecodedTransactionDataValue', () => {
       } as TransactionParams,
     };
 
-    const { result } = renderHook(
-      () => useDecodedTransactionDataValue(transactionMeta),
+    const { result } = renderHook(() =>
+      useDecodedTransactionDataValue(transactionMeta),
     );
 
     await act(() => {
@@ -235,8 +234,8 @@ describe('useDecodedTransactionDataValue', () => {
       } as TransactionParams,
     };
 
-    const { result } = renderHook(
-      () => useDecodedTransactionDataValue(transactionMeta),
+    const { result } = renderHook(() =>
+      useDecodedTransactionDataValue(transactionMeta),
     );
 
     await act(() => {

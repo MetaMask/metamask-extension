@@ -2,10 +2,10 @@ import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useMemo } from 'react';
-import { AsyncResult, useAsyncResult } from './useAsync';
 import { DecodedTransactionDataResponse } from '../../shared/types';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { decodeTransactionData } from '../store/actions';
+import { AsyncResult, useAsyncResult } from './useAsync';
 
 export function useDecodedTransactionData({
   data,
@@ -17,12 +17,7 @@ export function useDecodedTransactionData({
   chainId?: Hex;
 } = {}): AsyncResult<DecodedTransactionDataResponse | undefined> {
   return useAsyncResult(async () => {
-    if (
-      !data ||
-      !hasTransactionData(data) ||
-      !to ||
-      !chainId
-    ) {
+    if (!data || !hasTransactionData(data) || !to || !chainId) {
       return undefined;
     }
 
