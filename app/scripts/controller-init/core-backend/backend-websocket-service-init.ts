@@ -1,5 +1,4 @@
 import { BackendWebSocketService } from '@metamask/core-backend';
-import type { TraceCallback } from '@metamask/controller-utils';
 import { ControllerInitFunction } from '../types';
 import {
   BackendWebSocketServiceMessenger,
@@ -39,22 +38,12 @@ export const BackendWebSocketServiceInit: ControllerInitFunction<
     maxReconnectDelay: 30000, // Allow longer delays for backend stability
     requestTimeout: 20000, // Reasonable timeout for backend requests
     // Inject the Sentry-backed trace function from extension platform
-    traceFn: trace as TraceCallback,
+    // @ts-expect-error: Types of `TraceRequest` are not the same.
+    traceFn: trace,
     // Feature flag AND app lifecycle integration
     // Service will check this callback before connecting/reconnecting
     isEnabled: () => {
       try {
-        // Check for local environment variable override first (for development)
-        const envOverride = process.env
-          .MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED as
-          | string
-          | boolean
-          | null
-          | undefined;
-        if (envOverride !== null && envOverride !== undefined) {
-          return envOverride === true || envOverride === 'true';
-        }
-
         const remoteFeatureFlagState = initMessenger?.call(
           'RemoteFeatureFlagController:getState',
         );

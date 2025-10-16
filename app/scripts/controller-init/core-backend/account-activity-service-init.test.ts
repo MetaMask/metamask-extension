@@ -1,11 +1,11 @@
-import { AccountActivityService } from '@metamask/core-backend';
+import {
+  AccountActivityService,
+  AccountActivityServiceMessenger,
+} from '@metamask/core-backend';
 import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import {
-  AccountActivityServiceMessenger,
-  getAccountActivityServiceMessenger,
-} from '../messengers/core-backend';
+import { getAccountActivityServiceMessenger } from '../messengers/core-backend';
 import { AccountActivityServiceInit } from './account-activity-service-init';
 
 jest.mock('@metamask/core-backend');

@@ -7,4 +7,3 @@ export type {
   BackendWebSocketServiceInitMessenger,
 } from './backend-websocket-service-messenger';
 export { getAccountActivityServiceMessenger } from './account-activity-service-messenger';
-export type { AccountActivityServiceMessenger } from './account-activity-service-messenger';

@@ -1,11 +1,5 @@
-import {
-  type AccountActivityServiceMessenger as BackendPlatformAccountActivityServiceMessenger,
-  ACCOUNT_ACTIVITY_SERVICE_ALLOWED_ACTIONS,
-  ACCOUNT_ACTIVITY_SERVICE_ALLOWED_EVENTS,
-} from '@metamask/core-backend';
-
-export type AccountActivityServiceMessenger =
-  BackendPlatformAccountActivityServiceMessenger;
+import { AccountActivityServiceMessenger } from '@metamask/core-backend';
+import { BaseControllerMessenger } from '../../types';
 
 /**
  * Get a restricted messenger for the Account Activity service. This is scoped to the
@@ -15,12 +9,25 @@ export type AccountActivityServiceMessenger =
  * @returns The restricted messenger.
  */
 export function getAccountActivityServiceMessenger(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  messenger: any, // Using any to avoid type conflicts with the main messenger
-): BackendPlatformAccountActivityServiceMessenger {
+  messenger: BaseControllerMessenger,
+): AccountActivityServiceMessenger {
   return messenger.getRestricted({
     name: 'AccountActivityService',
-    allowedActions: [...ACCOUNT_ACTIVITY_SERVICE_ALLOWED_ACTIONS],
-    allowedEvents: [...ACCOUNT_ACTIVITY_SERVICE_ALLOWED_EVENTS],
+    allowedActions: [
+      'AccountsController:getSelectedAccount',
+      'BackendWebSocketService:connect',
+      'BackendWebSocketService:disconnect',
+      'BackendWebSocketService:subscribe',
+      'BackendWebSocketService:getConnectionInfo',
+      'BackendWebSocketService:channelHasSubscription',
+      'BackendWebSocketService:getSubscriptionsByChannel',
+      'BackendWebSocketService:findSubscriptionsByChannelPrefix',
+      'BackendWebSocketService:addChannelCallback',
+      'BackendWebSocketService:removeChannelCallback',
+    ],
+    allowedEvents: [
+      'AccountsController:selectedAccountChange',
+      'BackendWebSocketService:connectionStateChanged',
+    ],
   });
 }

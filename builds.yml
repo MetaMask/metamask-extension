@@ -246,11 +246,6 @@ env:
   # Core Backend Services
   ###
   - MM_BACKEND_WEBSOCKET_URL: wss://gateway.api.cx.metamask.io/v1
-  # Backend WebSocket Connection Feature Flag
-  # Set to "true" to enable, "false" to disable, "null" to use remote feature flags
-  # Local development: Set in .metamaskrc to override
-  # Production: Uses remote feature flags when null
-  - MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED: null
 
   ###
   # Notifications Feature

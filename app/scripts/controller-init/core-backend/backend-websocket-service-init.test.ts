@@ -92,46 +92,7 @@ describe('BackendWebSocketServiceInit', () => {
   });
 
   describe('isEnabled callback', () => {
-    it('returns false when feature flag is disabled and no env override', () => {
-      // Ensure env var is not set
-      const originalEnv = process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-      delete process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-
-      BackendWebSocketServiceInit(getInitRequestMock());
-
-      const { isEnabled } = jest.mocked(BackendWebSocketService).mock
-        .calls[0][0];
-
-      // When env var is undefined, the check envOverride != null is false,
-      // so it falls through to feature flag logic which returns false (feature flag is disabled in mock)
-      expect(isEnabled).toBeDefined();
-      expect(isEnabled?.()).toBe(false);
-
-      // Restore
-      if (originalEnv !== undefined) {
-        process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = originalEnv;
-      }
-    });
-
-    it('returns true when environment variable is set to true', () => {
-      const originalEnv = process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-      process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = 'true';
-
-      BackendWebSocketServiceInit(getInitRequestMock());
-
-      const { isEnabled } = jest.mocked(BackendWebSocketService).mock
-        .calls[0][0];
-
-      expect(isEnabled).toBeDefined();
-      expect(isEnabled?.()).toBe(true);
-
-      process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = originalEnv;
-    });
-
-    it('returns false when environment variable is set to false', () => {
-      const originalEnv = process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-      process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = 'false';
-
+    it('returns false when feature flag is disabled', () => {
       BackendWebSocketServiceInit(getInitRequestMock());
 
       const { isEnabled } = jest.mocked(BackendWebSocketService).mock
@@ -139,8 +100,6 @@ describe('BackendWebSocketServiceInit', () => {
 
       expect(isEnabled).toBeDefined();
       expect(isEnabled?.()).toBe(false);
-
-      process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = originalEnv;
     });
 
     it('returns false when feature flag check fails', () => {
@@ -167,48 +126,7 @@ describe('BackendWebSocketServiceInit', () => {
       expect(isEnabled?.()).toBe(false);
     });
 
-    it('returns true when environment variable is set to boolean true', () => {
-      const originalEnv = process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-      // @ts-expect-error - Testing with boolean value
-      process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = true;
-
-      BackendWebSocketServiceInit(getInitRequestMock());
-
-      const constructorArgs = jest.mocked(BackendWebSocketService).mock
-        .calls[0][0];
-      const { isEnabled } = constructorArgs;
-
-      expect(isEnabled).toBeDefined();
-      expect(isEnabled?.()).toBe(true);
-
-      process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = originalEnv;
-    });
-
-    it('returns false when environment variable is any other value', () => {
-      const originalEnv = process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-      process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = 'something-else';
-
-      BackendWebSocketServiceInit(getInitRequestMock());
-
-      const { isEnabled } = jest.mocked(BackendWebSocketService).mock
-        .calls[0][0];
-
-      expect(isEnabled).toBeDefined();
-      expect(isEnabled?.()).toBe(false);
-
-      // Cleanup - delete if original was undefined, otherwise restore
-      if (originalEnv === undefined) {
-        delete process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-      } else {
-        process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = originalEnv;
-      }
-    });
-
-    it('returns true when feature flag is enabled and no env override', () => {
-      const originalEnv = process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-      // Delete env var so it doesn't override the feature flag
-      delete process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-
+    it('returns true when feature flag is enabled', () => {
       const baseMessenger = new Messenger<ActionConstraint, never>();
       baseMessenger.registerActionHandler(
         'RemoteFeatureFlagController:getState',
@@ -236,55 +154,9 @@ describe('BackendWebSocketServiceInit', () => {
 
       expect(isEnabled).toBeDefined();
       expect(isEnabled?.()).toBe(true);
-
-      if (originalEnv !== undefined) {
-        process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = originalEnv;
-      }
-    });
-
-    it('returns false when feature flag is disabled and no env override', () => {
-      const originalEnv = process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-      // Delete env var so it doesn't override the feature flag
-      delete process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-
-      const baseMessenger = new Messenger<ActionConstraint, never>();
-      baseMessenger.registerActionHandler(
-        'RemoteFeatureFlagController:getState',
-        () =>
-          ({
-            remoteFeatureFlags: {
-              backendWebSocketConnection: {
-                value: false,
-              },
-            },
-          }) as never,
-      );
-
-      const requestMock = {
-        ...buildControllerInitRequestMock(),
-        controllerMessenger: getBackendWebSocketServiceMessenger(baseMessenger),
-        initMessenger: getBackendWebSocketServiceInitMessenger(baseMessenger),
-      };
-
-      BackendWebSocketServiceInit(requestMock);
-
-      const constructorArgs = jest.mocked(BackendWebSocketService).mock
-        .calls[0][0];
-      const { isEnabled } = constructorArgs;
-
-      expect(isEnabled).toBeDefined();
-      expect(isEnabled?.()).toBe(false);
-
-      if (originalEnv !== undefined) {
-        process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = originalEnv;
-      }
     });
 
     it('returns false when feature flag object does not have value property', () => {
-      const originalEnv = process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-      // Delete env var so it doesn't override the feature flag check
-      delete process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-
       const baseMessenger = new Messenger<ActionConstraint, never>();
       baseMessenger.registerActionHandler(
         'RemoteFeatureFlagController:getState',
@@ -313,17 +185,9 @@ describe('BackendWebSocketServiceInit', () => {
 
       expect(isEnabled).toBeDefined();
       expect(isEnabled?.()).toBe(false);
-
-      if (originalEnv !== undefined) {
-        process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = originalEnv;
-      }
     });
 
     it('returns false when feature flag is not an object', () => {
-      const originalEnv = process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-      // Delete env var so it doesn't override the feature flag check
-      delete process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-
       const baseMessenger = new Messenger<ActionConstraint, never>();
       baseMessenger.registerActionHandler(
         'RemoteFeatureFlagController:getState',
@@ -349,17 +213,9 @@ describe('BackendWebSocketServiceInit', () => {
 
       expect(isEnabled).toBeDefined();
       expect(isEnabled?.()).toBe(false);
-
-      if (originalEnv !== undefined) {
-        process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = originalEnv;
-      }
     });
 
     it('returns false when remoteFeatureFlags is missing', () => {
-      const originalEnv = process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-      // Delete env var so it doesn't override the feature flag check
-      delete process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-
       const baseMessenger = new Messenger<ActionConstraint, never>();
       baseMessenger.registerActionHandler(
         'RemoteFeatureFlagController:getState',
@@ -383,17 +239,9 @@ describe('BackendWebSocketServiceInit', () => {
 
       expect(isEnabled).toBeDefined();
       expect(isEnabled?.()).toBe(false);
-
-      if (originalEnv !== undefined) {
-        process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = originalEnv;
-      }
     });
 
     it('logs warning when feature flag check fails', () => {
-      const originalEnv = process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-      // Delete env var so it doesn't short-circuit to env override path
-      delete process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED;
-
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
       const baseMessenger = new Messenger<ActionConstraint, never>();
@@ -425,10 +273,6 @@ describe('BackendWebSocketServiceInit', () => {
       );
 
       consoleWarnSpy.mockRestore();
-
-      if (originalEnv !== undefined) {
-        process.env.MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED = originalEnv;
-      }
     });
   });
 });

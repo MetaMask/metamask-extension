@@ -10,11 +10,6 @@ SEEDLESS_ONBOARDING_ENABLED='false'
 ; Set this to `true` to enable Metamask Shield
 METAMASK_SHIELD_ENABLED='false'
 
-; Backend WebSocket Connection Feature Flag
-; Set to 'true' to enable WebSocket connection, 'false' to disable
-; Comment out or set to empty to use remote feature flags
-;MM_BACKEND_WEBSOCKET_CONNECTION_ENABLED='true'
-
 ; Backend WebSocket URL
 ; Uses production API endpoint by default (same as builds.yml)
 ;MM_BACKEND_WEBSOCKET_URL='wss://gateway.api.cx.metamask.io/v1'
