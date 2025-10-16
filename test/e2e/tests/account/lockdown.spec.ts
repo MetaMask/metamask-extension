@@ -57,7 +57,7 @@ describe('lockdown', function (this: Mocha.Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await driver.navigate(PAGES.HOME);
+        await driver.navigate(PAGES.SIDEPANEL);
         assert(
           await driver.executeScript(testCode),
           'Expected script execution to be complete. driver.executeScript might have failed silently.',

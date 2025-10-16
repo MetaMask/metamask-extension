@@ -18,7 +18,7 @@ describe('Critical errors', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate(PAGES.HOME, { waitForControllers: false });
+        await driver.navigate(PAGES.SIDEPANEL, { waitForControllers: false });
 
         // Wait until 10 second timer expires
         await driver.delay(10_000);

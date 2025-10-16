@@ -31,6 +31,15 @@ const PAGES = {
 };
 
 /**
+ * Check if the current browser is Firefox
+ *
+ * @returns {boolean} true if Firefox, false otherwise
+ */
+function isFirefox() {
+  return process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+}
+
+/**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
  *
@@ -1002,15 +1011,25 @@ class Driver {
    * Navigates to the specified page within a browser session.
    *
    * @param {string} [page] - its optional parameter to specify the page you want to navigate.
-   * Defaults to home if no other page is specified.
+   * Defaults to sidepanel for Chrome/Edge/Brave, home for Firefox (which doesn't support sidepanel).
    * @param {object} [options] - optional parameter to specify additional options.
    * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
    * Defaults to true.
    * @returns {Promise} promise resolves when the page has finished loading
    * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
    */
-  async navigate(page = PAGES.SIDEPANEL, { waitForControllers = true } = {}) {
-    const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
+  async navigate(page, { waitForControllers = true } = {}) {
+    // Default to SIDEPANEL for Chrome/Edge/Brave, HOME for Firefox
+    let targetPage = page || (isFirefox() ? PAGES.HOME : PAGES.SIDEPANEL);
+
+    // Firefox doesn't support sidepanel, so redirect to HOME
+    if (targetPage === PAGES.SIDEPANEL && isFirefox()) {
+      targetPage = PAGES.HOME;
+    }
+
+    const response = await this.driver.get(
+      `${this.extensionUrl}/${targetPage}.html`,
+    );
     // Wait for asynchronous JavaScript to load
     if (waitForControllers) {
       await this.waitForControllersLoaded();
@@ -1778,4 +1797,4 @@ function sanitizeTestTitle(testTitle) {
   return sanitized;
 }
 
-module.exports = { Driver, PAGES, errorMessages };
+module.exports = { Driver, PAGES, errorMessages, isFirefox };
