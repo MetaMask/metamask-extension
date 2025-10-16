@@ -354,6 +354,13 @@ function getUIState(flatState: ControllerFlatState) {
   return { metamask: flatState };
 }
 
+async function isSendBundleSupportedForNonGaslessTransaction(chainId: Hex) {
+  if (chainId === '0xe708') {
+    return false;
+  }
+  return true;
+}
+
 export async function publishHook({
   flatState,
   initMessenger,
@@ -374,6 +381,10 @@ export async function publishHook({
   const sendBundleSupport = await isSendBundleSupported(
     transactionMeta.chainId,
   );
+  const sendBundleSupportForNonGaslessTransaction =
+    await isSendBundleSupportedForNonGaslessTransaction(
+      transactionMeta.chainId,
+    );
 
   if (
     !isSmartTransaction ||
@@ -394,9 +405,15 @@ export async function publishHook({
     // else, fall back to regular regular transaction submission
   }
 
+  const isGaslessTransaction =
+    transactionMeta.selectedGasFeeToken !== undefined;
+
   if (
     isSmartTransaction &&
-    (sendBundleSupport || transactionMeta.selectedGasFeeToken === undefined)
+    ((sendBundleSupport && isGaslessTransaction) ||
+      (sendBundleSupport &&
+        sendBundleSupportForNonGaslessTransaction &&
+        !isGaslessTransaction))
   ) {
     const result = await submitSmartTransactionHook({
       transactionMeta,
