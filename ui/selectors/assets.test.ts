@@ -484,9 +484,7 @@ describe('getMultichainNativeAssetType', () => {
       selectedMultichainNetworkChainId: SolScope.Mainnet,
       isEvmSelected: false,
       remoteFeatureFlags: {
-        addSolanaAccount: true, // NOTE: Will soon be deprecated.
         solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
-        addBitcoinAccount: true, // NOTE: Will soon be deprecated.
         bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
       },
     },
