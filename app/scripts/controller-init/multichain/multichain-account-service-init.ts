@@ -46,7 +46,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       btcProvider,
       ///: END:ONLY_INCLUDE_IF
-    ].filter(Boolean),
+    ]
   });
 
   const preferencesState = initMessenger.call('PreferencesController:getState');
