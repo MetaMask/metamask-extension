@@ -77,8 +77,6 @@ import {
 } from '@metamask/subscription-controller';
 import {
   GenericQuoteRequest,
-  L1GasFees,
-  NonEvmFees,
   QuoteResponse,
 } from '@metamask/bridge-controller';
 
