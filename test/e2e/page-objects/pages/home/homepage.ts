@@ -135,7 +135,7 @@ class HomePage {
   }
 
   async clickSkipShieldModalButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
+    await this.driver.clickElementSafe(
       this.skipShieldModalButton,
     );
   }
