@@ -1,5 +1,3 @@
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import {
   type PublishBatchHookRequest,
@@ -10,6 +8,10 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import {
+  SmartTransactionsController,
+  SmartTransactionStatuses,
+} from '@metamask/smart-transactions-controller';
 import { Hex } from '@metamask/utils';
 import { trace } from '../../../../shared/lib/trace';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
