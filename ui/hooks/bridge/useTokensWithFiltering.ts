@@ -17,6 +17,7 @@ import type {
   TokenListMap,
   TokenListToken,
 } from '@metamask/assets-controllers';
+import { BtcAccountType } from '@metamask/keyring-api';
 import { AssetType } from '../../../shared/constants/transaction';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { useMultichainBalances } from '../useMultichainBalances';
@@ -313,6 +314,9 @@ export const useTokensWithFiltering = (
                       token.address,
                       formatChainIdToCaip(token.chainId),
                     )),
+                ...(isBitcoinChainId(token.chainId) && {
+                  accountType: BtcAccountType.P2wpkh,
+                }),
               };
             } else {
               yield {

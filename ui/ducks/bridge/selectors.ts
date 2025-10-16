@@ -327,13 +327,21 @@ export const getToChain = createSelector(
     getToChains,
     (state: BridgeAppState) => state.bridge?.toChainId,
   ],
-  (fromChain, toChains, toChainId) =>
-    toChainId
-      ? toChains.find(
-          ({ chainId }) =>
-            chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
-        )
-      : fromChain,
+  (fromChain, toChains, toChainId) => {
+    if (toChainId) {
+      return toChains.find(
+        ({ chainId }) =>
+          chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
+      );
+    }
+    // Don't default to fromChain if it's not in the available destinations
+    // (e.g., Bitcoin can't bridge to Bitcoin)
+    const isFromChainAvailable = toChains.some(
+      ({ chainId }) => chainId === fromChain?.chainId,
+    );
+    // If fromChain is not available, return the first available chain (mainnet)
+    return isFromChainAvailable ? fromChain : toChains[0];
+  },
 );
 
 export const getDefaultTokenPair = createDeepEqualSelector(
