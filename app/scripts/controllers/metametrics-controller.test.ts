@@ -12,7 +12,7 @@ import {
 } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
-import { Messenger } from '@metamask/base-controller';
+import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
 import { merge } from 'lodash';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
@@ -2051,6 +2051,117 @@ describe('MetaMetricsController', function () {
           expect(hdKeyringCount).toBe(scenario.expectedCount);
         });
       });
+    });
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', async () => {
+      await withController(
+        // Set `fragments` to an empty object to override complex default `fragments` mock state
+        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        { options: { state: { fragments: {} } } },
+        ({ controller }) => {
+          expect(
+            deriveStateFromMetadata(
+              controller.state,
+              controller.metadata,
+              'anonymous',
+            ),
+          ).toMatchInlineSnapshot(`
+            {
+              "latestNonAnonymousEventTimestamp": 0,
+              "marketingCampaignCookieId": null,
+              "metaMetricsId": "0xabc",
+              "participateInMetaMetrics": true,
+            }
+          `);
+        },
+      );
+    });
+
+    it('includes expected state in state logs', async () => {
+      await withController(
+        // Set `fragments` to an empty object to override complex default `fragments` mock state
+        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        { options: { state: { fragments: {} } } },
+        ({ controller }) => {
+          expect(
+            deriveStateFromMetadata(
+              controller.state,
+              controller.metadata,
+              'includeInStateLogs',
+            ),
+          ).toMatchInlineSnapshot(`
+            {
+              "dataCollectionForMarketing": null,
+              "eventsBeforeMetricsOptIn": [],
+              "fragments": {},
+              "latestNonAnonymousEventTimestamp": 0,
+              "marketingCampaignCookieId": null,
+              "metaMetricsId": "0xabc",
+              "participateInMetaMetrics": true,
+              "segmentApiCalls": {},
+              "tracesBeforeMetricsOptIn": [],
+              "traits": {},
+            }
+          `);
+        },
+      );
+    });
+
+    it('persists expected state', async () => {
+      await withController(
+        // Set `fragments` to an empty object to override complex default `fragments` mock state
+        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        { options: { state: { fragments: {} } } },
+        ({ controller }) => {
+          expect(
+            deriveStateFromMetadata(
+              controller.state,
+              controller.metadata,
+              'persist',
+            ),
+          ).toMatchInlineSnapshot(`
+            {
+              "dataCollectionForMarketing": null,
+              "eventsBeforeMetricsOptIn": [],
+              "fragments": {},
+              "latestNonAnonymousEventTimestamp": 0,
+              "marketingCampaignCookieId": null,
+              "metaMetricsId": "0xabc",
+              "participateInMetaMetrics": true,
+              "segmentApiCalls": {},
+              "tracesBeforeMetricsOptIn": [],
+              "traits": {},
+            }
+          `);
+        },
+      );
+    });
+
+    it('exposes expected state to UI', async () => {
+      await withController(
+        // Set `fragments` to an empty object to override complex default `fragments` mock state
+        // that also updates the `latestNonAnonymousEventTimestamp` timestamp.
+        { options: { state: { fragments: {} } } },
+        ({ controller }) => {
+          expect(
+            deriveStateFromMetadata(
+              controller.state,
+              controller.metadata,
+              'usedInUi',
+            ),
+          ).toMatchInlineSnapshot(`
+            {
+              "dataCollectionForMarketing": null,
+              "fragments": {},
+              "latestNonAnonymousEventTimestamp": 0,
+              "metaMetricsId": "0xabc",
+              "participateInMetaMetrics": true,
+            }
+          `);
+        },
+      );
     });
   });
 });

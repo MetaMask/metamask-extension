@@ -347,7 +347,7 @@ export type SwapsControllerOptions = {
     },
     factor: number,
   ) => Promise<{ gasLimit: string; simulationFails: boolean }>;
-  fetchTradesInfo: typeof defaultFetchTradesInfo;
+  fetchTradesInfo?: typeof defaultFetchTradesInfo;
   getLayer1GasFee: (params: {
     transactionParams: TransactionParams;
     networkClientId: NetworkClientId;

@@ -14,8 +14,6 @@ import {
   hideWarning,
   checkIsSeedlessPasswordOutdated,
   importMnemonicToVault,
-  lockAccountSyncing,
-  unlockAccountSyncing,
 } from '../../../store/actions';
 import {
   Text,
@@ -110,7 +108,8 @@ export const ImportSrp = () => {
         importMnemonicToVault(joinedSrp),
       )) as unknown as {
         newAccountAddress: string;
-        discoveredAccounts: { bitcoin: number; solana: number };
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        discoveredAccounts: { Bitcoin: number; Solana: number };
       };
 
       const { discoveredAccounts } = result;
@@ -126,9 +125,9 @@ export const ImportSrp = () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: newHdEntropyIndex,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_solana_accounts_discovered: discoveredAccounts?.solana,
+          number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_bitcoin_accounts_discovered: discoveredAccounts?.bitcoin,
+          number_of_bitcoin_accounts_discovered: discoveredAccounts?.Bitcoin,
         },
       });
     }
@@ -380,6 +379,7 @@ export const ImportSrp = () => {
                     flexDirection={FlexDirection.Row}
                     alignItems={AlignItems.center}
                     width={BlockSize.Full}
+                    paddingRight={2}
                   >
                     <TextField
                       id={id}
@@ -470,7 +470,6 @@ export const ImportSrp = () => {
               trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
-                await dispatch(lockAccountSyncing());
                 await importWallet();
               } catch (e) {
                 setSrpError(
@@ -481,7 +480,6 @@ export const ImportSrp = () => {
               } finally {
                 setLoading(false);
                 endTrace({ name: TraceName.ImportSrp });
-                await dispatch(unlockAccountSyncing());
               }
             }}
           >

@@ -22,6 +22,8 @@ export { getSnapInsightsControllerMessenger } from './snap-insights-controller-m
 export type { SnapInsightsControllerMessenger } from './snap-insights-controller-messenger';
 export { getSnapInterfaceControllerMessenger } from './snap-interface-controller-messenger';
 export type { SnapInterfaceControllerMessenger } from './snap-interface-controller-messenger';
+export { getSnapsNameProviderMessenger } from './snaps-name-provider-messenger';
+export type { SnapsNameProviderMessenger } from './snaps-name-provider-messenger';
 export { getSnapsRegistryMessenger } from './snaps-registry-messenger';
 export type { SnapsRegistryMessenger } from './snaps-registry-messenger';
 export { getWebSocketServiceMessenger } from './websocket-service-messenger';

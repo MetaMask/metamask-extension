@@ -14,13 +14,13 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  AlignItems,
   BackgroundColor,
   BlockSize,
   BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
+  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
@@ -52,7 +52,6 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
-  const [showAll, setShowAll] = useState(false);
   const [misSpelledWords, setMisSpelledWords] = useState<string[]>([]);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
@@ -266,149 +265,110 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
 
   return (
     <>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        backgroundColor={BackgroundColor.backgroundSection}
-        borderRadius={BorderRadius.SM}
-        className="srp-input-import__container"
-      >
-        {draftSrp.length > 0 ? (
-          <Box padding={4} style={{ flex: 1 }}>
-            <Box
-              display={Display.Grid}
-              className="srp-input-import__words-list"
-              gap={2}
-            >
-              {draftSrp.map((word, index) => {
-                const displayAsText =
-                  showAll &&
-                  !(word.active || misSpelledWords.includes(word.word));
-
-                return displayAsText ? (
-                  <Box
-                    data-testid={`import-srp__srp-word-${index}`}
-                    className="srp-input-import__text"
-                    as="button"
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
-                    backgroundColor={BackgroundColor.backgroundDefault}
-                    borderColor={BorderColor.borderMuted}
-                    borderRadius={BorderRadius.LG}
-                    paddingInline={2}
-                    paddingTop={1}
-                    paddingBottom={1}
-                    gap={1}
-                    onClick={() => {
-                      onWordFocus(word.id);
-                    }}
-                  >
-                    <Text
-                      color={TextColor.textAlternative}
-                      textAlign={TextAlign.Left}
-                      className="srp-input-import__word-index"
-                    >
-                      {index + 1}.
-                    </Text>
-                    <Text>{word.word}</Text>
-                  </Box>
-                ) : (
-                  <TextField
-                    inputProps={{
-                      ref: (el) => {
-                        if (el) {
-                          srpRefs.current[word.id] = el;
-                        }
-                      },
-                    }}
-                    testId={`import-srp__srp-word-${index}`}
-                    key={word.id}
-                    error={misSpelledWords.includes(word.word)}
-                    value={word.word}
-                    type={
-                      word.active ||
-                      showAll ||
-                      misSpelledWords.includes(word.word)
-                        ? TextFieldType.Text
-                        : TextFieldType.Password
-                    }
-                    startAccessory={
-                      <Text
-                        color={TextColor.textAlternative}
-                        textAlign={TextAlign.Left}
-                        className="srp-input-import__word-index"
-                      >
-                        {index + 1}.
-                      </Text>
-                    }
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      handleChange(word.id, e.target.value)
-                    }
-                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        nextWord(word.id);
-                      }
-                      if (e.key === 'Backspace' && word.word.length === 0) {
-                        e.preventDefault();
-                        deleteWord(word.id);
-                      }
-                    }}
-                    onFocus={() => {
-                      onWordFocus(word.id);
-                    }}
-                    onBlur={() => {
-                      setWordInactive(word.id);
-                    }}
-                  />
-                );
-              })}
-            </Box>
-          </Box>
-        ) : (
-          <Box
-            padding={4}
-            className="srp-input-import__srp-note"
-            style={{ flex: 1 }}
-          >
-            <Textarea
-              data-testid="srp-input-import__srp-note"
-              borderColor={BorderColor.transparent}
-              backgroundColor={BackgroundColor.transparent}
-              width={BlockSize.Full}
-              placeholder={t('onboardingSrpInputPlaceholder')}
-              rows={7}
-              resize={TextareaResize.None}
-              value={firstWord}
-              paddingTop={0}
-              paddingBottom={0}
-              paddingLeft={0}
-              paddingRight={0}
-              onChange={(e) => setFirstWord(e.target.value)}
-              onKeyDown={handleOnKeyDown}
-              onPaste={handleOnPaste}
-            />
-          </Box>
-        )}
-
+      <Box>
         <Box
-          display={Display.Grid}
-          gap={0}
-          className="srp-input-import__actions"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          backgroundColor={BackgroundColor.backgroundSection}
+          borderRadius={BorderRadius.LG}
+          className="srp-input-import__container"
         >
-          <Button
-            variant={ButtonVariant.Link}
-            onClick={() => setShowAll(!showAll)}
-          >
-            {showAll
-              ? t('onboardingSrpInputHideAll')
-              : t('onboardingSrpInputShowAll')}
-          </Button>
+          {draftSrp.length > 0 ? (
+            <Box padding={4} style={{ flex: 1 }}>
+              <Box
+                display={Display.Grid}
+                className="srp-input-import__words-list"
+                gap={2}
+              >
+                {draftSrp.map((word, index) => {
+                  return (
+                    <TextField
+                      inputProps={{
+                        ref: (el) => {
+                          if (el) {
+                            srpRefs.current[word.id] = el;
+                          }
+                        },
+                      }}
+                      testId={`import-srp__srp-word-${index}`}
+                      key={word.id}
+                      error={misSpelledWords.includes(word.word)}
+                      value={word.word}
+                      type={
+                        word.active || misSpelledWords.includes(word.word)
+                          ? TextFieldType.Text
+                          : TextFieldType.Password
+                      }
+                      startAccessory={
+                        <Text
+                          color={TextColor.textAlternative}
+                          textAlign={TextAlign.Left}
+                          className="srp-input-import__word-index"
+                        >
+                          {index + 1}.
+                        </Text>
+                      }
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleChange(word.id, e.target.value)
+                      }
+                      onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          nextWord(word.id);
+                        }
+                        if (e.key === 'Backspace' && word.word.length === 0) {
+                          e.preventDefault();
+                          deleteWord(word.id);
+                        }
+                      }}
+                      onFocus={() => {
+                        onWordFocus(word.id);
+                      }}
+                      onBlur={() => {
+                        setWordInactive(word.id);
+                      }}
+                    />
+                  );
+                })}
+              </Box>
+            </Box>
+          ) : (
+            <Box
+              padding={4}
+              className="srp-input-import__srp-note"
+              style={{ flex: 1 }}
+              borderRadius={BorderRadius.LG}
+            >
+              <Textarea
+                data-testid="srp-input-import__srp-note"
+                borderColor={BorderColor.transparent}
+                backgroundColor={BackgroundColor.transparent}
+                width={BlockSize.Full}
+                placeholder={t('onboardingSrpInputPlaceholder')}
+                rows={7}
+                resize={TextareaResize.None}
+                value={firstWord}
+                paddingTop={0}
+                paddingBottom={0}
+                paddingLeft={0}
+                paddingRight={0}
+                onChange={(e) => setFirstWord(e.target.value)}
+                onKeyDown={handleOnKeyDown}
+                onPaste={handleOnPaste}
+              />
+            </Box>
+          )}
+        </Box>
+        <Box
+          display={Display.Flex}
+          className="srp-input-import__actions"
+          justifyContent={JustifyContent.flexEnd}
+          paddingRight={2}
+        >
           {draftSrp.length > 0 ? (
             <Button
               variant={ButtonVariant.Link}
               onClick={async () => {
-                setShowAll(false);
                 setDraftSrp([]);
               }}
             >

@@ -1,12 +1,8 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import {
-  createDappTransaction,
-  DAPP_URL,
-  unlockWallet,
-  WINDOW_TITLES,
-} from '../../../helpers';
+import { unlockWallet } from '../../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
@@ -143,11 +139,14 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
 
         const confirmation = new TransactionConfirmation(driver);
 
-        await createDappTransaction(driver, {
+        const transaction = {
           data: TRANSACTION_DATA_UNISWAP,
           to: contractAddress,
           from: publicAddress,
-        });
+        };
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
+        );
 
         await driver.waitAndSwitchToWindowWithTitle(3, WINDOW_TITLES.Dialog);
 

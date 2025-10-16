@@ -25,6 +25,12 @@ export type SkeletonStyleUtilityProps = Omit<
    * The children of the Skeleton
    */
   children?: React.ReactNode;
+  /**
+   * Whether to show the skeleton loading state or the actual content.
+   * When true, shows skeleton.
+   * When false, shows just the children content.
+   */
+  isLoading?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

@@ -36,10 +36,24 @@ const CONFIRMATIONS_WITH_NEW_HEADER = [
 
 const Header = () => {
   const { networkImageUrl, networkDisplayName } = useConfirmationNetworkInfo();
-  const { senderAddress: fromAddress, senderName: fromName } =
-    useConfirmationRecipientInfo();
+  const {
+    senderAddress: fromAddress,
+    senderName: fromName,
+    walletName,
+    isBIP44,
+    hasMoreThanOneWallet,
+  } = useConfirmationRecipientInfo();
 
   const { currentConfirmation } = useConfirmContext<Confirmation>();
+  let secondaryText;
+
+  if (isBIP44) {
+    if (hasMoreThanOneWallet) {
+      secondaryText = walletName;
+    }
+  } else {
+    secondaryText = networkDisplayName;
+  }
 
   const DefaultHeader = (
     <Box
@@ -52,15 +66,17 @@ const Header = () => {
       <Box alignItems={AlignItems.flexStart} display={Display.Flex} padding={4}>
         <Box display={Display.Flex} marginTop={2}>
           <PreferredAvatar address={fromAddress} />
-          <AvatarNetwork
-            src={networkImageUrl}
-            name={networkDisplayName}
-            size={AvatarNetworkSize.Xs}
-            backgroundColor={getAvatarNetworkColor(networkDisplayName)}
-            className="confirm_header__avatar-network"
-          />
+          {!isBIP44 && (
+            <AvatarNetwork
+              src={networkImageUrl}
+              name={networkDisplayName}
+              size={AvatarNetworkSize.Xs}
+              backgroundColor={getAvatarNetworkColor(networkDisplayName)}
+              className="confirm_header__avatar-network"
+            />
+          )}
         </Box>
-        <Box marginInlineStart={4}>
+        <Box marginInlineStart={4} marginTop={secondaryText ? 0 : 3}>
           <Text
             color={TextColor.textDefault}
             variant={TextVariant.bodyMdMedium}
@@ -68,12 +84,14 @@ const Header = () => {
           >
             {fromName}
           </Text>
-          <Text
-            color={TextColor.textAlternative}
-            data-testid="header-network-display-name"
-          >
-            {networkDisplayName}
-          </Text>
+          {secondaryText && (
+            <Text
+              color={TextColor.textAlternative}
+              data-testid="header-network-display-name"
+            >
+              {secondaryText}
+            </Text>
+          )}
         </Box>
       </Box>
       <Box alignItems={AlignItems.flexEnd} display={Display.Flex} padding={4}>

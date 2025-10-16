@@ -79,7 +79,7 @@ const mapStateToProps = (state, ownProps) => {
   const snapsMetadata = getSnapsMetadata(state);
   const conversionDate = currencyRates[ticker]?.conversionDate;
 
-  const pathNameTail = pathname.match(/[^/]+$/u)[0];
+  const pathNameTail = pathname.match(/[^/]+$/u)?.[0] || '';
   const isAddressEntryPage = pathNameTail.includes('0x');
   const isAddContactPage = Boolean(pathname.match(CONTACT_ADD_ROUTE));
   const isEditContactPage = Boolean(pathname.match(CONTACT_EDIT_ROUTE));

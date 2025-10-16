@@ -49,19 +49,29 @@ import {
 import { InterfaceState } from '@metamask/snaps-sdk';
 import { KeyringObject, KeyringTypes } from '@metamask/keyring-controller';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
-import {
-  USER_STORAGE_FEATURE_NAMES,
-  UserProfileLineage,
-} from '@metamask/profile-sync-controller/sdk';
+import { UserProfileLineage } from '@metamask/profile-sync-controller/sdk';
 import { Patch } from 'immer';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
+import {
+  BillingPortalResponse,
+  GetCryptoApproveTransactionRequest,
+  PaymentType,
+  PricingResponse,
+  ProductType,
+  RecurringInterval,
+  Subscription,
+} from '@metamask/subscription-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -155,6 +165,7 @@ import {
 } from '../pages/confirmations/selectors/preferences';
 import { setShowNewSrpAddedToast } from '../components/app/toast-master/utils';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
+import type { NetworkConnectionBanner } from '../../shared/constants/app-state';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -302,7 +313,11 @@ export function createNewVaultAndSyncWithSocial(
         seedPhrase,
         primaryKeyring.metadata.id,
       );
+
       dispatch(hideWarning());
+      // force update the state after creating the vault
+      await forceUpdateMetamaskState(dispatch);
+
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -312,6 +327,129 @@ export function createNewVaultAndSyncWithSocial(
         throw error;
       }
     }
+  };
+}
+
+/**
+ * Fetches user subscriptions.
+ *
+ * @returns The subscriptions.
+ */
+export function getSubscriptions(): ThunkAction<
+  Subscription[],
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    return await submitRequestToBackground('getSubscriptions');
+  };
+}
+
+/**
+ * Fetches the subscription pricing.
+ *
+ * @returns The subscription pricing.
+ */
+export function getSubscriptionPricing(): ThunkAction<
+  PricingResponse,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    return await submitRequestToBackground<PricingResponse>(
+      'getSubscriptionPricing',
+    );
+  };
+}
+
+/**
+ * Get crypto total amount needed for a subscription.
+ *
+ * @param params - The parameters.
+ * @param params.price - The price.
+ * @param params.tokenPaymentInfo - The token payment info.
+ * @returns The subscription crypto approval amount.
+ */
+export async function getSubscriptionCryptoApprovalAmount(
+  params: GetCryptoApproveTransactionRequest,
+): Promise<string> {
+  return await submitRequestToBackground<string>(
+    'getSubscriptionCryptoApprovalAmount',
+    [params],
+  );
+}
+
+/**
+ * Starts a subscription with a card.
+ *
+ * @param params - The parameters.
+ * @param params.products - The list of products.
+ * @param params.isTrialRequested - Is trial requested.
+ * @param params.recurringInterval - The recurring interval.
+ * @returns The subscription response.
+ */
+export function startSubscriptionWithCard(params: {
+  products: ProductType[];
+  isTrialRequested: boolean;
+  recurringInterval: RecurringInterval;
+}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const currentTab = await global.platform.currentTab();
+    const subscriptions = await submitRequestToBackground<Subscription[]>(
+      'startSubscriptionWithCard',
+      [params, currentTab?.id],
+    );
+
+    return subscriptions;
+  };
+}
+
+export function updateSubscriptionCardPaymentMethod(params: {
+  paymentType: Extract<PaymentType, 'card'>;
+  subscriptionId: string;
+  recurringInterval: RecurringInterval;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const currentTab = await global.platform.currentTab();
+    const subscriptions = await submitRequestToBackground(
+      'updateSubscriptionCardPaymentMethod',
+      [params, currentTab?.id],
+    );
+
+    return subscriptions;
+  };
+}
+
+export function cancelSubscription(params: {
+  subscriptionId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('cancelSubscription', [params]);
+  };
+}
+
+export function unCancelSubscription(params: {
+  subscriptionId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('unCancelSubscription', [params]);
+  };
+}
+
+export function getSubscriptionBillingPortalUrl(): ThunkAction<
+  BillingPortalResponse,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    const res = await submitRequestToBackground<BillingPortalResponse>(
+      'getSubscriptionBillingPortalUrl',
+      [],
+    );
+    return res;
   };
 }
 
@@ -601,6 +739,10 @@ export function createNewVaultAndGetSeedPhrase(
     try {
       await createNewVault(password);
       const seedPhrase = await getSeedPhrase(password);
+
+      // force update the state after creating the vault
+      await forceUpdateMetamaskState(dispatch);
+
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -2575,7 +2717,9 @@ export function setShowSupportDataConsentModal(show: boolean) {
 }
 
 export function clearProductTour() {
-  return submitRequestToBackground('setProductTour', ['']);
+  return async () => {
+    return submitRequestToBackground('setProductTour', ['']);
+  };
 }
 export function addToken(
   {
@@ -4340,12 +4484,16 @@ export function setUseCurrencyRateCheck(
 // MultichainAssetsRatesController
 export function fetchHistoricalPricesForAsset(
   address: CaipAssetType,
+  internalAccount: InternalAccount,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.fetchHistoricalPricesForAsset`);
-    await submitRequestToBackground('fetchHistoricalPricesForAsset', [address]);
+    await submitRequestToBackground('fetchHistoricalPricesForAsset', [
+      address,
+      internalAccount,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -4943,44 +5091,33 @@ export function updateAccountsList(
  * This method updates the enabledNetworkMap to mark specified networks as enabled.
  * It can handle both a single chain ID or an array of chain IDs.
  *
- * @deprecated - this unsafely sets the EnabledNetworkMap,
- * - we want to have better control on how we enable networks (either single network or all, not in between)
- * Please use controller-actions/network-order-controller.ts actions
- * @param chainIds - A single chainId (e.g. 'eip155:1') or an array of chain IDs
- * to be enabled. All other networks will be implicitly disabled.
- * @param networkId - The CAIP-2 chain ID of the currently selected network
+ * Sets the enabled networks in the controller state.
+ * Only a single network or all networks can be enabled at once, not an arbitrary subset.
+ * Uses actions from controller-actions/network-order-controller.ts for better control.
+ *
+ * @param chainId - A single chainId (e.g. 'eip155:1') to be enabled. All other networks will be implicitly disabled.
  */
 export function setEnabledNetworks(
-  chainIds: string[],
-  networkId: CaipNamespace,
+  chainId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('setEnabledNetworks', [
-      chainIds,
-      networkId,
-    ]);
+    await submitRequestToBackground('setEnabledNetworks', [chainId]);
   };
 }
 
 /**
- * Sets the enabled networks in the controller state with multichain account behavior.
- * This method updates the enabledNetworkMap to mark specified networks as enabled
- * and disables all networks in other namespaces (multichain account exclusive behavior).
- * It can handle both a single chain ID or an array of chain IDs.
+ * Enables all popular networks in the controller state.
  *
- * @param chainIds - A single CaipChainId (e.g. 'eip155:1') or an array of chain IDs
- * to be enabled. All other networks will be implicitly disabled.
- * @param namespace - The caip-2 namespace of the currently selected network (e.g. 'eip155' or 'solana')
+ * @returns callback to enable all popular networks.
  */
-export function setEnabledNetworksMultichain(
-  chainIds: string[],
-  namespace: CaipNamespace,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function setEnabledAllPopularNetworks(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   return async () => {
-    await submitRequestToBackground('setEnabledNetworksMultichain', [
-      chainIds,
-      namespace,
-    ]);
+    await submitRequestToBackground('setEnabledAllPopularNetworks');
   };
 }
 
@@ -5666,6 +5803,15 @@ export async function tokenBalancesStopPollingByPollingToken(
   await removePollingTokenFromAppState(pollingToken);
 }
 
+export async function updateBalancesFoAccounts(
+  chainIds: string[],
+  queryAllAccounts: boolean,
+): Promise<void> {
+  await submitRequestToBackground('updateBalances', [
+    { chainIds, queryAllAccounts },
+  ]);
+}
+
 /**
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
@@ -6153,6 +6299,16 @@ export function hideNetworkBanner() {
   return submitRequestToBackground('setShowNetworkBanner', [false]);
 }
 
+export function updateNetworkConnectionBanner(
+  networkConnectionBanner: NetworkConnectionBanner,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateNetworkConnectionBanner', [
+      networkConnectionBanner,
+    ]);
+  };
+}
+
 /**
  * Sends the background state the networkClientId and domain upon network switch
  *
@@ -6325,6 +6481,16 @@ export async function getNetworkConfigurationByNetworkClientId(
     console.error(error);
   }
   return networkConfiguration;
+}
+
+/**
+ * Gathers metadata (primarily connectivity status) about the globally selected
+ * network as well as each enabled network and persists it to state.
+ */
+export function lookupSelectedNetworks() {
+  return async () => {
+    await submitRequestToBackground('lookupSelectedNetworks');
+  };
 }
 
 export function updateProposedNames(
@@ -6705,14 +6871,14 @@ export function deleteNotificationsById(
 }
 
 /**
- * Synchronizes accounts data with user storage between devices.
+ * Synchronizes account tree data with user storage between devices.
  *
  * This function sends a request to the background script to sync accounts data and update the state accordingly.
  * If the operation encounters an error, it logs the error message and rethrows the error to ensure it is handled appropriately.
  *
  * @returns A thunk action that, when dispatched, attempts to synchronize accounts data with user storage between devices.
  */
-export function syncInternalAccountsWithUserStorage(): ThunkAction<
+export function syncAccountTreeWithUserStorage(): ThunkAction<
   void,
   MetaMaskReduxState,
   unknown,
@@ -6723,68 +6889,12 @@ export function syncInternalAccountsWithUserStorage(): ThunkAction<
   return async () => {
     try {
       const response = await submitRequestToBackground(
-        'syncInternalAccountsWithUserStorage',
+        'syncAccountTreeWithUserStorage',
       );
       return response;
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
-    }
-  };
-}
-
-/**
- * "Locks" account syncing by setting the necessary flags in UserStorageController.
- * This is used to temporarily prevent account syncing from listening to accounts being changed, and the downward sync to happen.
- *
- * @returns
- */
-export function lockAccountSyncing(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    try {
-      await submitRequestToBackground(
-        'setIsAccountSyncingReadyToBeDispatched',
-        [false],
-      );
-      await submitRequestToBackground('setHasAccountSyncingSyncedAtLeastOnce', [
-        false,
-      ]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-  };
-}
-
-/**
- * "Unlocks" account syncing by setting the necessary flags in UserStorageController.
- * This is used to resume account syncing after it has been locked.
- * This will trigger a downward sync if this is called after a lockAccountSyncing call.
- *
- * @returns
- */
-export function unlockAccountSyncing(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    try {
-      await submitRequestToBackground('setHasAccountSyncingSyncedAtLeastOnce', [
-        true,
-      ]);
-      return await submitRequestToBackground(
-        'setIsAccountSyncingReadyToBeDispatched',
-        [true],
-      );
-    } catch (error) {
-      return getErrorMessage(error);
     }
   };
 }
@@ -6807,11 +6917,14 @@ export function deleteAccountSyncingDataFromUserStorage(): ThunkAction<
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async () => {
     try {
-      const response = await submitRequestToBackground(
-        'deleteAccountSyncingDataFromUserStorage',
-        [USER_STORAGE_FEATURE_NAMES.accounts],
-      );
-      return response;
+      await Promise.all([
+        submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
+          USER_STORAGE_GROUPS_FEATURE_KEY,
+        ]),
+        submitRequestToBackground('deleteAccountSyncingDataFromUserStorage', [
+          USER_STORAGE_WALLETS_FEATURE_KEY,
+        ]),
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
       throw error;
@@ -6997,6 +7110,14 @@ export function setConfirmationAdvancedDetailsOpen(value: boolean) {
   return setPreference('showConfirmationAdvancedDetails', value);
 }
 
+export function setMultichainAccountsIntroModalShown(value: boolean) {
+  return async () => {
+    await submitRequestToBackground('setHasShownMultichainAccountsIntroModal', [
+      value,
+    ]);
+  };
+}
+
 export async function getNextAvailableAccountName(
   keyring?: KeyringTypes,
 ): Promise<string> {
@@ -7039,6 +7160,11 @@ export async function multichainUpdateTransactions(
     accountId,
   ]);
 }
+
+export async function alignMultichainWallets(): Promise<void> {
+  return await submitRequestToBackground<void>('alignMultichainWallets', []);
+}
+
 ///: END:ONLY_INCLUDE_IF
 
 export async function getLastInteractedConfirmationInfo(): Promise<
@@ -7221,16 +7347,6 @@ export async function getERC1155BalanceOf(
     userAddress,
     tokenAddress,
     tokenId,
-    networkClientId,
-  ]);
-}
-
-export async function getERC721AssetSymbol(
-  checksummedAddress: string,
-  networkClientId: string,
-): Promise<string> {
-  return await submitRequestToBackground<string>('getERC721AssetSymbol', [
-    checksummedAddress,
     networkClientId,
   ]);
 }

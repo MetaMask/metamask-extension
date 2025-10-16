@@ -1,9 +1,10 @@
 import { Suite } from 'mocha';
 import { Driver } from '../webdriver/driver';
-import { withFixtures } from '../helpers';
+import { withFixtures, WINDOW_TITLES } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
+import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockGetEntropySnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -45,7 +46,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
         );
 
         // Select entropy source SRP 1, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
+        await testSnaps.selectEntropySource(
           'getEntropyDropDown',
           'SRP 1 (primary)',
         );
@@ -58,10 +59,8 @@ describe('Test Snap getEntropy', function (this: Suite) {
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
-          'getEntropyDropDown',
-          'SRP 2',
-        );
+        await testSnaps.selectEntropySource('getEntropyDropDown', 'SRP 2');
+
         await testSnaps.scrollAndClickButton('signEntropyMessageButton');
         await switchAndApproveDialogSwitchToTestSnap(driver);
         await testSnaps.checkMessageResultSpan(
@@ -70,16 +69,18 @@ describe('Test Snap getEntropy', function (this: Suite) {
         );
 
         // Select entropy source invalid, enter a message, sign, approve and validate the result
-        await testSnaps.scrollAndSelectEntropySource(
-          'getEntropyDropDown',
-          'Invalid',
-        );
+        await testSnaps.selectEntropySource('getEntropyDropDown', 'Invalid');
+
         await testSnaps.scrollAndClickButton('signEntropyMessageButton');
-        await switchAndApproveDialogSwitchToTestSnap(driver);
-        await driver.waitForAlert(
-          'Entropy source with ID "invalid" not found.',
-        );
-        await driver.closeAlertPopup();
+
+        const snapInstall = new SnapInstall(driver);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await snapInstall.clickApproveButton();
+
+        await driver.waitForBrowserAlert({
+          text: 'Entropy source with ID "invalid" not found.',
+          windowTitle: WINDOW_TITLES.TestSnaps,
+        });
       },
     );
   });

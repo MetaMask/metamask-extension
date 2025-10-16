@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { AccountGroupId } from '@metamask/account-api';
 import { AvatarAccountSize } from '@metamask/design-system-react';
-
 import {
   BackgroundColor,
   BorderRadius,
@@ -16,7 +16,11 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
+import {
+  AccountGroupWithInternalAccounts,
+  MultichainAccountsState,
+} from '../../../selectors/multichain-accounts/account-tree.types';
+import { getIconSeedAddressByAccountGroupId } from '../../../selectors/multichain-accounts/account-tree';
 import { SiteCellConnectionListItem } from '../../multichain/pages/review-permissions-page/site-cell/site-cell-connection-list-item';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../selectors/selectors.types';
 import { MultichainSiteCellTooltip } from './tool-tip/multichain-site-cell-tooltip';
@@ -47,6 +51,21 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];
+  const seedAddressIcon = useSelector((state: MultichainAccountsState) => {
+    // Only get seed address if we have a valid account group ID
+    if (selectedAccountGroupIds.length > 0 && selectedAccountGroupIds[0]) {
+      try {
+        return getIconSeedAddressByAccountGroupId(
+          state,
+          selectedAccountGroupIds[0],
+        );
+      } catch (error) {
+        // Handle case where account group is not found or has no accounts
+        return '';
+      }
+    }
+    return '';
+  });
 
   const [showEditNetworksModal, setShowEditNetworksModal] = useState(false);
 
@@ -82,6 +101,16 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
     });
   };
 
+  const accountMessageConnectedState = useMemo(() => {
+    return selectedAccountGroupIds.length === 1
+      ? t('connectedWithAccountName', [
+          supportedAccountGroups.find(
+            (account) => account.id === selectedAccountGroupIds[0],
+          )?.metadata.name || '',
+        ])
+      : t('connectedWithAccount', [selectedAccountGroupIds.length]);
+  }, [selectedAccountGroupIds, supportedAccountGroups, t]);
+
   return (
     <>
       <Box
@@ -93,9 +122,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
         <SiteCellConnectionListItem
           title={t('accountsPermissionsTitle')}
           iconName={IconName.Eye}
-          connectedMessage={t('requestingFor', [
-            selectedAccountGroupIds.length,
-          ])}
+          connectedMessage={accountMessageConnectedState}
           unconnectedMessage={t('requestingFor', [
             selectedAccountGroupIds.length,
           ])}
@@ -106,11 +133,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           content={
             selectedAccountGroupIds.length === 1 ? (
               <PreferredAvatar
-                address={
-                  supportedAccountGroups.find(
-                    (account) => account.id === selectedAccountGroupIds[0],
-                  )?.accounts[0].address || ''
-                }
+                address={seedAddressIcon}
                 size={AvatarAccountSize.Xs}
               />
             ) : (
@@ -126,9 +149,7 @@ export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
           title={t('permission_walletSwitchEthereumChain')}
           iconName={IconName.Global}
           connectedMessage={t('connectedWithNetwork', [selectedChainIdsLength])}
-          unconnectedMessage={t('requestingForNetwork', [
-            selectedChainIdsLength,
-          ])}
+          unconnectedMessage={t('requestingFor')}
           isConnectFlow={isConnectFlow}
           onClick={handleOpenNetworksModal}
           paddingTopValue={2}

@@ -1,6 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
 import {
-  NetworkConfiguration,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkRemovedEvent,
   NetworkControllerSetActiveNetworkAction,
@@ -8,8 +7,6 @@ import {
   NetworkState,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { KnownCaipNamespace } from '@metamask/utils';
-import { SolScope } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   NetworkOrderController,
@@ -25,17 +22,6 @@ describe('NetworkOrderController - constructor', () => {
 
     expect(controller.state).toStrictEqual({
       orderedNetworkList: [],
-      enabledNetworkMap: {
-        [KnownCaipNamespace.Eip155]: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-          [CHAIN_IDS.BASE]: true,
-        },
-        [KnownCaipNamespace.Solana]: {
-          [SolScope.Mainnet]: true,
-        },
-        [KnownCaipNamespace.Bip122]: {},
-      },
     });
   });
 
@@ -44,92 +30,12 @@ describe('NetworkOrderController - constructor', () => {
     const controller = new NetworkOrderController({
       messenger: mocks.messenger,
       state: {
-        enabledNetworkMap: {},
         orderedNetworkList: [],
       },
     });
 
     expect(controller.state).toStrictEqual({
-      enabledNetworkMap: {},
       orderedNetworkList: [],
-    });
-  });
-
-  it('removes network from enabled map when NetworkController:networkRemoved event is emitted', () => {
-    const mocks = arrangeMockMessenger();
-    const controller = new NetworkOrderController({
-      messenger: mocks.messenger,
-      state: {
-        orderedNetworkList: [],
-        enabledNetworkMap: {
-          [KnownCaipNamespace.Eip155]: {
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.LINEA_MAINNET]: true,
-            [CHAIN_IDS.BASE]: true,
-          },
-          [KnownCaipNamespace.Solana]: {
-            [SolScope.Mainnet]: true,
-          },
-          [KnownCaipNamespace.Bip122]: {},
-        },
-      },
-    });
-
-    mocks.globalMessenger.publish('NetworkController:networkRemoved', {
-      chainId: CHAIN_IDS.BASE,
-    } as unknown as NetworkConfiguration);
-
-    expect(controller.state.enabledNetworkMap).toStrictEqual({
-      [KnownCaipNamespace.Eip155]: {
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: true,
-        // Base has been removed
-      },
-      [KnownCaipNamespace.Solana]: {
-        [SolScope.Mainnet]: true,
-      },
-      [KnownCaipNamespace.Bip122]: {},
-    });
-
-    mocks.globalMessenger.publish('NetworkController:networkRemoved', {
-      chainId: SolScope.Mainnet,
-    } as unknown as NetworkConfiguration);
-
-    expect(controller.state.enabledNetworkMap).toStrictEqual({
-      [KnownCaipNamespace.Eip155]: {
-        [CHAIN_IDS.MAINNET]: true,
-        [CHAIN_IDS.LINEA_MAINNET]: true,
-        // Base has been removed
-      },
-      [KnownCaipNamespace.Solana]: {
-        // Sol mainnet has been removed
-      },
-      [KnownCaipNamespace.Bip122]: {},
-    });
-  });
-
-  it('removes a network but fallbacks to Ethereum when NetworkCnotroller:networkRemoved event is emitted', () => {
-    const mocks = arrangeMockMessenger();
-    const controller = new NetworkOrderController({
-      messenger: mocks.messenger,
-      state: {
-        orderedNetworkList: [],
-        enabledNetworkMap: {
-          [KnownCaipNamespace.Eip155]: {
-            [CHAIN_IDS.LINEA_MAINNET]: true, // Only has linea enabled
-          },
-        },
-      },
-    });
-
-    mocks.globalMessenger.publish('NetworkController:networkRemoved', {
-      chainId: CHAIN_IDS.LINEA_MAINNET,
-    } as unknown as NetworkConfiguration);
-
-    expect(controller.state.enabledNetworkMap).toStrictEqual({
-      [KnownCaipNamespace.Eip155]: {
-        [CHAIN_IDS.MAINNET]: true, // Mainnet was added added as a fallback as no networks were selected
-      },
     });
   });
 
@@ -139,14 +45,6 @@ describe('NetworkOrderController - constructor', () => {
       messenger: mocks.messenger,
       state: {
         orderedNetworkList: [],
-        enabledNetworkMap: {
-          [KnownCaipNamespace.Eip155]: {
-            [CHAIN_IDS.MAINNET]: true,
-          },
-          [KnownCaipNamespace.Solana]: {
-            [SolScope.Mainnet]: true,
-          },
-        },
       },
     });
 
@@ -187,16 +85,6 @@ describe('NetworkOrderController - constructor', () => {
       messenger: mocks.messenger,
       state: {
         orderedNetworkList: [],
-        enabledNetworkMap: {
-          [KnownCaipNamespace.Eip155]: {
-            [CHAIN_IDS.MAINNET]: true,
-            [CHAIN_IDS.LINEA_MAINNET]: true,
-          },
-          [KnownCaipNamespace.Solana]: {
-            [SolScope.Mainnet]: true,
-          },
-          [KnownCaipNamespace.Bip122]: {},
-        },
       },
     });
 
@@ -209,6 +97,80 @@ describe('NetworkOrderController - constructor', () => {
       mockNetworkState,
       [],
     );
+  });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      const { messenger } = arrangeMockMessenger();
+      const controller = new NetworkOrderController({
+        messenger,
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'anonymous',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "orderedNetworkList": [],
+        }
+      `);
+    });
+
+    it('includes expected state in state logs', () => {
+      const { messenger } = arrangeMockMessenger();
+      const controller = new NetworkOrderController({
+        messenger,
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'includeInStateLogs',
+        ),
+      ).toMatchInlineSnapshot(`{}`);
+    });
+
+    it('persists expected state', () => {
+      const { messenger } = arrangeMockMessenger();
+      const controller = new NetworkOrderController({
+        messenger,
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'persist',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "orderedNetworkList": [],
+        }
+      `);
+    });
+
+    it('exposes expected state to UI', () => {
+      const { messenger } = arrangeMockMessenger();
+      const controller = new NetworkOrderController({
+        messenger,
+      });
+
+      expect(
+        deriveStateFromMetadata(
+          controller.state,
+          controller.metadata,
+          'usedInUi',
+        ),
+      ).toMatchInlineSnapshot(`
+        {
+          "orderedNetworkList": [],
+        }
+      `);
+    });
   });
 });
 

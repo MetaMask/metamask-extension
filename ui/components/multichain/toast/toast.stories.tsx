@@ -1,6 +1,9 @@
 import React from 'react';
 import testData from '../../../../.storybook/test-data';
-import { AvatarAccount, AvatarAccountSize } from '../../component-library';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+} from '@metamask/design-system-react';
 import { BorderColor } from '../../../helpers/constants/design-system';
 import { Toast } from '.';
 
@@ -40,7 +43,6 @@ export default {
       <AvatarAccount
         address={CHAOS_ACCOUNT.address}
         size={AvatarAccountSize.Md}
-        borderColor={BorderColor.transparent}
       />
     ),
     text: 'This is the Toast text',

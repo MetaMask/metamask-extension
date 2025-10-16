@@ -42,8 +42,8 @@ import {
   getEnabledNetworksByNamespace,
   isGlobalNetworkSelectorRemoved,
   getIsMultichainAccountsState2Enabled,
+  selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
-import Spinner from '../../ui/spinner';
 
 import { PercentageAndAmountChange } from '../../multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change';
 import { AccountGroupBalance } from '../assets/account-group-balance/account-group-balance';
@@ -60,6 +60,8 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountT
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
+import { Skeleton } from '../../component-library/skeleton';
+import { isZeroAmount } from '../../../helpers/utils/number-utils';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -123,6 +125,10 @@ export const LegacyAggregatedBalance = ({
     formattedTokensWithBalancesPerChain,
   );
 
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
+  );
+
   const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
     ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
     : showNativeTokenAsMainBalance;
@@ -135,10 +141,6 @@ export const LegacyAggregatedBalance = ({
     balanceToDisplay = balance;
   } else {
     balanceToDisplay = totalFiatBalance;
-  }
-
-  if (!balanceToDisplay) {
-    return <Spinner className="loading-overlay__spinner" />;
   }
 
   /**
@@ -159,7 +161,12 @@ export const LegacyAggregatedBalance = ({
   };
 
   return (
-    <>
+    <Skeleton
+      isLoading={
+        !anyEnabledNetworksAreAvailable && isZeroAmount(balanceToDisplay)
+      }
+      marginBottom={1}
+    >
       <UserPreferencedCurrencyDisplay
         style={{ display: 'contents' }}
         account={account}
@@ -187,7 +194,7 @@ export const LegacyAggregatedBalance = ({
         ariaLabel="Sensitive toggle"
         data-testid="sensitive-toggle"
       />
-    </>
+    </Skeleton>
   );
 };
 
@@ -229,6 +236,10 @@ export const CoinOverview = ({
     getIsMultichainAccountsState2Enabled,
   );
 
+  const anyEnabledNetworksAreAvailable = useSelector(
+    selectAnyEnabledNetworksAreAvailable,
+  );
+
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
   };
@@ -268,33 +279,42 @@ export const CoinOverview = ({
       return null;
     };
 
-    const renderNativeTokenView = () => (
-      <Box className="wallet-overview__currency-wrapper">
-        <PercentageAndAmountChange
-          value={
-            tokensMarketData?.[getNativeTokenAddress(chainId as Hex)]
-              ?.pricePercentChange1d
-          }
-        />
-        {renderPortfolioButton()}
-      </Box>
-    );
+    const renderNativeTokenView = () => {
+      const value =
+        tokensMarketData?.[getNativeTokenAddress(chainId as Hex)]
+          ?.pricePercentChange1d;
+      return (
+        <Skeleton
+          isLoading={!anyEnabledNetworksAreAvailable && isZeroAmount(value)}
+        >
+          <Box className="wallet-overview__currency-wrapper">
+            <PercentageAndAmountChange value={value} />
+            {renderPortfolioButton()}
+          </Box>
+        </Skeleton>
+      );
+    };
 
     const renderAggregatedView = () => (
       <Box className="wallet-overview__currency-wrapper">
         {isTokenNetworkFilterEqualCurrentNetwork ? (
-          <AggregatedPercentageOverview />
+          <AggregatedPercentageOverview
+            portfolioButton={renderPortfolioButton}
+          />
         ) : (
-          <AggregatedPercentageOverviewCrossChains />
+          <AggregatedPercentageOverviewCrossChains
+            portfolioButton={renderPortfolioButton}
+          />
         )}
-        {renderPortfolioButton()}
       </Box>
     );
 
     const renderNonEvmView = () => (
       <Box className="wallet-overview__currency-wrapper">
-        <AggregatedMultichainPercentageOverview privacyMode={privacyMode} />
-        {renderPortfolioButton()}
+        <AggregatedMultichainPercentageOverview
+          privacyMode={privacyMode}
+          portfolioButton={renderPortfolioButton}
+        />
       </Box>
     );
 
@@ -302,8 +322,10 @@ export const CoinOverview = ({
     if (isMultichainAccountsState2Enabled) {
       return (
         <Box className="wallet-overview__currency-wrapper">
-          <AccountGroupBalanceChange period="1d" />
-          {renderPortfolioButton()}
+          <AccountGroupBalanceChange
+            period="1d"
+            portfolioButton={renderPortfolioButton}
+          />
         </Box>
       );
     }

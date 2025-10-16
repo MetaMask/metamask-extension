@@ -32,6 +32,7 @@ jest.mock('../../../../hooks/useAccountGroupsForPermissions', () => ({
 }));
 
 jest.mock('../../../../store/actions', () => ({
+  forceUpdateMetamaskState: jest.fn(),
   hidePermittedNetworkToast: jest.fn(() => ({
     type: 'HIDE_PERMITTED_NETWORK_TOAST',
   })),
@@ -66,6 +67,7 @@ const mockAccountGroups = [
       hidden: false,
     },
     walletName: 'Test Wallet 1',
+    walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ' as const,
   },
   {
     id: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0' as const,
@@ -83,7 +85,8 @@ const mockAccountGroups = [
       pinned: false,
       hidden: false,
     },
-    walletName: 'Test Wallet 1',
+    walletName: 'Test Wallet 2',
+    walletId: 'entropy:01JKAF3PJ247KAM6C03G5Q0NP8' as const,
   },
 ];
 
@@ -171,6 +174,11 @@ describe('MultichainReviewPermissions', () => {
         existingConnectedCaipAccountIds: [
           expectedCaipAccountIds[0] as CaipAccountId, // First account from first group
         ],
+        connectedAccountGroupWithRequested: [mockAccountGroups[0]],
+        caipAccountIdsOfConnectedAndRequestedAccountGroups: [
+          expectedCaipAccountIds[0] as CaipAccountId,
+        ],
+        selectedAndRequestedAccountGroups: mockAccountGroups,
       });
     });
 
@@ -265,7 +273,7 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      expect(getByText('Connect with MetaMask')).toBeInTheDocument();
+      expect(getByText('Edit accounts')).toBeInTheDocument();
     });
 
     it('handles deselecting all accounts', async () => {

@@ -1,7 +1,7 @@
 import AddTokensModal from '../../page-objects/pages/dialog/add-tokens';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { withFixtures, openDapp, WINDOW_TITLES, DAPP_URL } from '../../helpers';
+import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -22,8 +22,8 @@ describe('Multiple ERC20 Watch Asset', function () {
         await loginWithBalanceValidation(driver, localNodes[0]);
         const contracts = contractRegistry.getAllDeployedContractAddresses();
 
-        await openDapp(driver, undefined, DAPP_URL);
         const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
 
         // Watch all 3 tokens

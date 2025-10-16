@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import {
   AccountGroupId,
@@ -7,7 +13,7 @@ import {
 } from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Text } from '../../component-library';
+import { Box, Checkbox, Text } from '../../component-library';
 
 import {
   AlignItems,
@@ -24,7 +30,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { endTrace, trace } from '../../../../shared/lib/trace';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
@@ -32,32 +38,31 @@ import {
 import {
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
+  getPreferences,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';
 import { MultichainAccountEditModal } from '../multichain-account-edit-modal';
+import { selectBalanceForAllWallets } from '../../../selectors/assets';
+import { useFormatters } from '../../../hooks/useFormatters';
 
 export type MultichainAccountListProps = {
   wallets: AccountTreeWallets;
   selectedAccountGroups: AccountGroupId[];
   handleAccountClick?: (accountGroupId: AccountGroupId) => void;
-  formattedAccountGroupBalancesByWallet?: Partial<{
-    [walletId: string]: Partial<{
-      [groupId: string]: string; // display balance
-    }>;
-  }>;
   isInSearchMode?: boolean;
   displayWalletHeader?: boolean;
+  showAccountCheckbox?: boolean;
 };
 
 export const MultichainAccountList = ({
   wallets,
   selectedAccountGroups,
   handleAccountClick,
-  formattedAccountGroupBalancesByWallet,
   isInSearchMode = false,
   displayWalletHeader = true,
+  showAccountCheckbox = false,
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -65,12 +70,22 @@ export const MultichainAccountList = ({
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,
   );
+  const { formatCurrencyWithMinThreshold } = useFormatters();
+  const allBalances = useSelector(selectBalanceForAllWallets);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const { privacyMode } = useSelector(getPreferences);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.AccountList });
+  }, []);
 
   const [isAccountRenameModalOpen, setIsAccountRenameModalOpen] =
     useState(false);
 
   const [renameAccountGroupId, setRenameAccountGroupId] = useState(undefined);
+
+  const [openMenuAccountId, setOpenMenuAccountId] =
+    useState<AccountGroupId | null>(null);
 
   const handleAccountRenameActionModalClose = useCallback(() => {
     setIsAccountRenameModalOpen(false);
@@ -81,9 +96,17 @@ export const MultichainAccountList = ({
     (accountGroupId) => {
       setRenameAccountGroupId(accountGroupId);
       setIsAccountRenameModalOpen(true);
+      setOpenMenuAccountId(null);
     },
     [setIsAccountRenameModalOpen, setRenameAccountGroupId],
   );
+
+  const handleMenuToggle = useCallback((accountGroupId: AccountGroupId) => {
+    // If the same menu is clicked, close it, otherwise open the new one
+    setOpenMenuAccountId((current) =>
+      current === accountGroupId ? null : accountGroupId,
+    );
+  }, []);
 
   // Convert selectedAccountGroups array to Set for O(1) lookup
   const selectedAccountGroupsSet = useMemo(
@@ -140,7 +163,6 @@ export const MultichainAccountList = ({
             <Text
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textMuted}
-              style={{ fontWeight: '600' }}
             >
               {walletName}
             </Text>
@@ -150,32 +172,54 @@ export const MultichainAccountList = ({
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
             // If prop is provided, attempt render balance. Otherwise do not render balance.
-            const balanceText = formattedAccountGroupBalancesByWallet
-              ? (formattedAccountGroupBalancesByWallet?.[walletId]?.[groupId] ??
-                undefined)
-              : '';
+            const account = allBalances?.wallets?.[walletId]?.groups?.[groupId];
+            const balance = account?.totalBalanceInUserCurrency ?? 0;
+            const currency = account?.userCurrency ?? '';
 
             // TODO: Implement logic for removable accounts
             const isRemovable = false;
 
             return [
-              <MultichainAccountCell
+              <Box
+                className="multichain-account-menu-popover__list--menu-item"
                 key={`multichain-account-cell-${groupId}`}
-                accountId={groupId as AccountGroupId}
-                accountName={groupData.metadata.name}
-                balance={balanceText ?? ''}
-                selected={selectedAccountGroupsSet.has(
-                  groupId as AccountGroupId,
-                )}
-                onClick={handleAccountClickToUse}
-                endAccessory={
-                  <MultichainAccountMenu
-                    accountGroupId={groupId as AccountGroupId}
-                    isRemovable={isRemovable}
-                    handleAccountRenameAction={handleAccountRenameAction}
-                  />
-                }
-              />,
+              >
+                <MultichainAccountCell
+                  accountId={groupId as AccountGroupId}
+                  accountName={groupData.metadata.name}
+                  balance={formatCurrencyWithMinThreshold(balance, currency)}
+                  selected={selectedAccountGroupsSet.has(
+                    groupId as AccountGroupId,
+                  )}
+                  onClick={handleAccountClickToUse}
+                  privacyMode={privacyMode}
+                  startAccessory={
+                    showAccountCheckbox ? (
+                      <Box marginRight={4}>
+                        <Checkbox
+                          isChecked={selectedAccountGroupsSet.has(
+                            groupId as AccountGroupId,
+                          )}
+                          onChange={() => {
+                            handleAccountClickToUse(groupId as AccountGroupId);
+                          }}
+                        />
+                      </Box>
+                    ) : undefined
+                  }
+                  endAccessory={
+                    <MultichainAccountMenu
+                      accountGroupId={groupId as AccountGroupId}
+                      isRemovable={isRemovable}
+                      handleAccountRenameAction={handleAccountRenameAction}
+                      isOpen={openMenuAccountId === groupId}
+                      onToggle={() =>
+                        handleMenuToggle(groupId as AccountGroupId)
+                      }
+                    />
+                  }
+                />
+              </Box>,
             ];
           },
         );
@@ -205,10 +249,16 @@ export const MultichainAccountList = ({
     defaultHomeActiveTabName,
     dispatch,
     history,
-    formattedAccountGroupBalancesByWallet,
     isInSearchMode,
     displayWalletHeader,
+    allBalances,
+    formatCurrencyWithMinThreshold,
     selectedAccountGroupsSet,
+    privacyMode,
+    showAccountCheckbox,
+    handleAccountRenameAction,
+    handleMenuToggle,
+    openMenuAccountId,
   ]);
 
   return (

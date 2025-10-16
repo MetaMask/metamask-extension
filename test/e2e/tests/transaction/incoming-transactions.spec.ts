@@ -186,7 +186,9 @@ describe('Incoming Transactions', function () {
     );
   });
 
-  it('does nothing if preference disabled', async function () {
+  // https://github.com/MetaMask/metamask-extension/issues/36566
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('does nothing if preference disabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()

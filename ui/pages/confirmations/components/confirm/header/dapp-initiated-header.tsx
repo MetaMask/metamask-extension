@@ -22,10 +22,12 @@ export const DAppInitiatedHeader = () => {
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       backgroundColor={BackgroundColor.backgroundDefault}
-      padding={3}
+      paddingInline={3}
+      paddingTop={4}
+      paddingBottom={4}
       style={{ zIndex: 2, position: 'relative' }}
     >
-      <Text variant={TextVariant.headingMd} color={TextColor.inherit}>
+      <Text variant={TextVariant.headingSm} color={TextColor.inherit}>
         {t('transferRequest')}
       </Text>
       <Box

@@ -9,6 +9,11 @@ import { useSendType } from './useSendType';
 
 jest.mock('./useSendType');
 jest.mock('../../../../selectors');
+jest.mock('./useAccountAddressSeedIconMap', () => ({
+  useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
+    accountAddressSeedIconMap: new Map(),
+  }),
+}));
 jest.mock('ethers/lib/utils');
 jest.mock('@metamask/bridge-controller');
 
@@ -60,10 +65,12 @@ describe('useContactRecipients', () => {
       {
         address: '0x1234567890abcdef1234567890abcdef12345678',
         contactName: 'John Doe',
+        isContact: true,
       },
       {
         address: '0xabcdef1234567890abcdef1234567890abcdef12',
         contactName: 'Bob Wilson',
+        isContact: true,
       },
     ]);
   });
@@ -84,6 +91,7 @@ describe('useContactRecipients', () => {
       {
         address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
         contactName: 'Jane Smith',
+        isContact: true,
       },
     ]);
   });
@@ -135,6 +143,7 @@ describe('useContactRecipients', () => {
       {
         address: '0x1234567890abcdef1234567890abcdef12345678',
         contactName: 'John Doe',
+        isContact: true,
       },
     ]);
   });

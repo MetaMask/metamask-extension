@@ -15,28 +15,26 @@ describe('NetworkConstants', () => {
   });
 
   it('returns network name for chain ids', () => {
-    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARBITRUM]).toBe('Arbitrum One');
-    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.AVALANCHE]).toBe(
-      'Avalanche Network C-Chain',
-    );
-    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.BSC]).toBe('Binance Smart Chain');
-    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]).toBe('Ethereum Mainnet');
-    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.LINEA_MAINNET]).toBe('Linea Mainnet');
-    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM]).toBe('OP Mainnet');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.ARBITRUM]).toBe('Arbitrum');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.AVALANCHE]).toBe('Avalanche');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.BSC]).toBe('BNB Chain');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.MAINNET]).toBe('Ethereum');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.LINEA_MAINNET]).toBe('Linea');
+    expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM]).toBe('OP');
     expect(NETWORK_TO_NAME_MAP[CHAIN_IDS.POLYGON]).toBe('Polygon');
   });
   describe('popularNetwork', () => {
     it('should have correct chainIds for all popular network', () => {
       const expectedChainIds: { [key: string]: string } = {
-        'Arbitrum One': CHAIN_IDS.ARBITRUM,
-        'Avalanche Network C-Chain': CHAIN_IDS.AVALANCHE,
-        'Binance Smart Chain': CHAIN_IDS.BSC,
-        'OP Mainnet': CHAIN_IDS.OPTIMISM,
-        'Polygon Mainnet': CHAIN_IDS.POLYGON,
-        'zkSync Era Mainnet': CHAIN_IDS.ZKSYNC_ERA,
-        'Base Mainnet': CHAIN_IDS.BASE,
-        'Linea Mainnet': CHAIN_IDS.LINEA_MAINNET,
-        'Sei Mainnet': CHAIN_IDS.SEI,
+        Arbitrum: CHAIN_IDS.ARBITRUM,
+        Avalanche: CHAIN_IDS.AVALANCHE,
+        'BNB Chain': CHAIN_IDS.BSC,
+        OP: CHAIN_IDS.OPTIMISM,
+        Polygon: CHAIN_IDS.POLYGON,
+        'zkSync Era': CHAIN_IDS.ZKSYNC_ERA,
+        Base: CHAIN_IDS.BASE,
+        Linea: CHAIN_IDS.LINEA_MAINNET,
+        Sei: CHAIN_IDS.SEI,
       };
 
       FEATURED_RPCS.forEach((rpc) => {

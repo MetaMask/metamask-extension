@@ -148,7 +148,7 @@ describe('Multichain API', function () {
       },
       async ({ driver, extensionId }: FixtureCallbackArgs) => {
         const requestScopesToNetworkMap = {
-          'eip155:1': 'Ethereum Mainnet',
+          'eip155:1': 'Ethereum',
           'eip155:59141': 'Linea Sepolia',
         };
         const requestScopes = Object.keys(requestScopesToNetworkMap);

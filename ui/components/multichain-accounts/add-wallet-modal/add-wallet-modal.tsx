@@ -16,6 +16,7 @@ import {
   BoxBorderColor,
 } from '@metamask/design-system-react';
 
+import { useSelector } from 'react-redux';
 import {
   Modal,
   ModalOverlay,
@@ -35,6 +36,8 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getManageInstitutionalWallets } from '../../../selectors';
+import { INSTITUTIONAL_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
 
 export type AddWalletModalProps = Omit<
   ModalProps,
@@ -58,6 +61,9 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
 }) => {
   const t = useI18nContext();
   const history = useHistory();
+  const institutionalWalletsEnabled = useSelector(
+    getManageInstitutionalWallets,
+  );
 
   const walletOptions: WalletOption[] = [
     {
@@ -78,6 +84,18 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       iconName: IconName.Hardware,
       route: CONNECT_HARDWARE_ROUTE,
     },
+    ...(institutionalWalletsEnabled
+      ? [
+          {
+            id: 'institutional-wallet',
+            titleKey: 'manageInstitutionalWallets',
+            iconName: IconName.Add,
+            route: `/snaps/view/${encodeURIComponent(
+              INSTITUTIONAL_WALLET_SNAP_ID,
+            )}`,
+          },
+        ]
+      : []),
   ];
 
   const handleOptionClick = (option: WalletOption) => {
@@ -124,11 +142,12 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
               borderColor={BoxBorderColor.BorderMuted}
               className="hover:bg-background-default-hover cursor-pointer transition-all duration-200 w-full text-left outline-none focus:outline-none focus:shadow-none focus-visible:shadow-[inset_0_0_0_2px_var(--color-primary-default)]"
               tabIndex={0}
+              data-testid={`add-wallet-modal-${option.id}`}
             >
               <Icon
                 name={option.iconName}
                 size={IconSize.Md}
-                color={IconColor.IconMuted}
+                color={IconColor.IconAlternative}
               />
               <Text
                 variant={TextVariant.BodyMd}

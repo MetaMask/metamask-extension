@@ -35,6 +35,7 @@ import {
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
 } from '../../helpers/constants/routes';
+import { getAccountGroupWithInternalAccounts } from '../../selectors/multichain-accounts/account-tree';
 import PermissionApproval from './permissions-connect.component';
 
 const mapStateToProps = (state, ownProps) => {
@@ -145,6 +146,7 @@ const mapStateToProps = (state, ownProps) => {
     permissionsRequest,
     permissionsRequestId,
     accounts: accountsWithLabels,
+    accountGroups: getAccountGroupWithInternalAccounts(state),
     currentAddress,
     origin,
     newAccountNumber: accountsWithLabels.length + 1,

@@ -103,23 +103,25 @@ type FilterPredicate = (
  * - all other tokens
  *
  * @param chainId - the selected src/dest chainId
+ * @param selectedToken - the selected token to show at the top of the token list
  * @param tokenToExclude - a token to exclude from the token list, usually the token being swapped from
  * @param tokenToExclude.symbol
  * @param tokenToExclude.address
  * @param tokenToExclude.chainId
- * @param accountId - the accountId to use for the token list
+ * @param accountAddress - the account address used for balances
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
+  selectedToken?: BridgeToken,
   tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
-  accountId?: string,
+  accountAddress?: string,
 ) => {
   const topAssetsFromFeatureFlags = useSelector((state: BridgeAppState) =>
     getTopAssetsFromFeatureFlags(state, chainId),
   );
 
   const { assetsWithBalance: multichainTokensWithBalance } =
-    useMultichainBalances(accountId);
+    useMultichainBalances(accountAddress);
 
   const cachedTokens = useSelector(
     (state: BridgeAppState) => state.metamask.tokensChainsCache,
@@ -232,6 +234,25 @@ export const useTokensWithFiltering = (
           return;
         }
 
+        // Yield selected token first if it's defined
+        if (selectedToken) {
+          const token = buildTokenData(
+            chainId,
+            tokenList[selectedToken.address] ?? {
+              symbol: selectedToken.symbol,
+              address: selectedToken.address,
+              decimals: selectedToken.decimals,
+              iconUrl: selectedToken.image,
+              name: selectedToken.symbol,
+              occurrences: selectedToken.occurrences ?? 1,
+              aggregators: selectedToken.aggregators ?? [],
+            },
+          );
+          if (token) {
+            yield token;
+          }
+        }
+
         // Yield multichain tokens with balances and are not blocked
         for (const token of multichainTokensWithBalance) {
           if (
@@ -241,7 +262,10 @@ export const useTokensWithFiltering = (
               token.chainId,
             )
           ) {
-            if (isNativeAddress(token.address) || token.isNative) {
+            if (
+              (isNativeAddress(token.address) || token.isNative) &&
+              !isSolanaChainId(token.chainId)
+            ) {
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
@@ -329,6 +353,7 @@ export const useTokensWithFiltering = (
       chainId,
       tokenList,
       tokenToExclude,
+      selectedToken,
     ],
   );
   return {

@@ -65,6 +65,7 @@ import { CreateNamedSnapAccount } from '../../multichain/create-named-snap-accou
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import { Skeleton } from '../../component-library/skeleton';
 ///: END:ONLY_INCLUDE_IF
+import { HyperliquidReferralConsent } from '../../../pages/core/hyperliquid-referral-consent';
 
 export const safeComponentList = {
   a: 'a',
@@ -84,6 +85,7 @@ export const safeComponentList = {
   DefinitionList,
   div: 'div',
   FormTextField,
+  HyperliquidReferralConsent,
   i: 'i',
   MetaMaskTranslation,
   NetworkDisplay,

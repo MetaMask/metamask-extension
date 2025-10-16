@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { HistoricalPriceValue } from '@metamask/snaps-sdk';
-import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import {
+  CaipAssetType,
+  CaipChainId,
+  Hex,
+  isCaipChainId,
+} from '@metamask/utils';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +21,7 @@ import {
 import { fetchHistoricalPricesForAsset } from '../../../store/actions';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 
 export type HistoricalPrices = {
   /** The prices data points. Is an empty array if the prices could not be loaded. */
@@ -186,6 +193,13 @@ const useHistoricalPricesNonEvm = ({
 
   const dispatch = useDispatch();
 
+  const internalAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(
+      state,
+      isCaipChainId(chainId) ? chainId : toEvmCaipChainId(chainId),
+    ),
+  );
+
   /**
    * Fetch the prices by dispatching an action and then updating the redux state.
    * So we follow up with an other effect that will respond on the redux state update and set the prices locally in this hook.
@@ -201,7 +215,12 @@ const useHistoricalPricesNonEvm = ({
     const fetchPrices = async () => {
       setLoading(true);
       try {
-        await dispatch(fetchHistoricalPricesForAsset(address as CaipAssetType));
+        await dispatch(
+          fetchHistoricalPricesForAsset(
+            address as CaipAssetType,
+            internalAccount,
+          ),
+        );
       } catch (error) {
         console.error(
           'Error fetching historical prices for %s on %s',
@@ -219,7 +238,7 @@ const useHistoricalPricesNonEvm = ({
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     const intervalId = setInterval(fetchPrices, 60000); // Refresh every minute
     return () => clearInterval(intervalId); // Cleanup on unmount
-  }, [isEvm, chainId, address, dispatch]);
+  }, [isEvm, chainId, address, internalAccount, dispatch]);
 
   // Retrieve the prices from the state
   useEffect(() => {

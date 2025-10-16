@@ -32,6 +32,7 @@ export default function PasswordForm({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [passwordLengthError, setPasswordLengthError] = useState(false);
 
   const handlePasswordChange = useCallback(
     (passwordInput: string) => {
@@ -43,6 +44,7 @@ export default function PasswordForm({
       setPassword(passwordInput);
 
       setConfirmPasswordError(confirmError);
+      setPasswordLengthError(false);
     },
     [confirmPassword, t],
   );
@@ -72,6 +74,14 @@ export default function PasswordForm({
     }
   }, [password, confirmPassword, onChange]);
 
+  const handlePasswordBlur = useCallback(() => {
+    if (password.length < PASSWORD_MIN_LENGTH) {
+      setPasswordLengthError(true);
+    } else {
+      setPasswordLengthError(false);
+    }
+  }, [password.length]);
+
   return (
     <Box>
       <FormTextField
@@ -89,10 +99,12 @@ export default function PasswordForm({
           handlePasswordChange(e.target.value);
         }}
         helpTextProps={{
-          color: TextColor.textAlternative,
+          color: TextColor.textMuted,
           'data-testid': 'short-password-error',
         }}
         helpText={t('passwordNotLongEnough')}
+        onBlur={handlePasswordBlur}
+        error={passwordLengthError}
         endAccessory={
           <ButtonIcon
             iconName={showPassword ? IconName.EyeSlash : IconName.Eye}

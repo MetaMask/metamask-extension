@@ -925,7 +925,7 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Suspicious address')).toBeInTheDocument();
+      expect(getByText('Address Needs Review')).toBeInTheDocument();
     });
 
     it('renders verified state correctly', () => {

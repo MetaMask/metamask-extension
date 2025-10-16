@@ -2,6 +2,11 @@ import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  ProductType,
+  SUBSCRIPTION_STATUSES,
+  SubscriptionStatus,
+} from '@metamask/subscription-controller';
+import {
   useUnreadNotificationsCounter,
   useReadNotificationsCounter,
 } from '../../../hooks/metamask-notifications/useCounter';
@@ -13,6 +18,7 @@ import {
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   PERMISSIONS,
+  GATOR_PERMISSIONS,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
@@ -31,6 +37,7 @@ import {
   IconName,
   Popover,
   PopoverPosition,
+  Tag,
 } from '../../component-library';
 
 import { MenuItem } from '../../ui/menu';
@@ -59,15 +66,25 @@ import {
 } from '../../../selectors';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   BorderColor,
+  BorderRadius,
   BorderStyle,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
+import {
+  useUserSubscriptionByProduct,
+  useUserSubscriptions,
+} from '../../../hooks/subscription/useSubscription';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -91,6 +108,20 @@ export const GlobalMenu = ({
 
   const { notificationsUnreadCount } = useUnreadNotificationsCounter();
   const { notificationsReadCount } = useReadNotificationsCounter();
+
+  const { subscriptions } = useUserSubscriptions();
+  const shieldSubscription = useUserSubscriptionByProduct(
+    'shield' as ProductType,
+    subscriptions,
+  );
+
+  const isActiveShieldSubscription = (
+    [
+      SUBSCRIPTION_STATUSES.active,
+      SUBSCRIPTION_STATUSES.trialing,
+      SUBSCRIPTION_STATUSES.provisional,
+    ] as SubscriptionStatus[]
+  ).includes(shieldSubscription?.status as SubscriptionStatus);
 
   const account = useSelector(getSelectedInternalAccount);
 
@@ -207,8 +238,8 @@ export const GlobalMenu = ({
         overflow: 'hidden',
         minWidth: 225,
       }}
-      borderStyle={BorderStyle.none}
-      position={PopoverPosition.Auto}
+      offset={[0, 8]}
+      position={PopoverPosition.BottomEnd}
     >
       {basicFunctionality && (
         <>
@@ -229,11 +260,6 @@ export const GlobalMenu = ({
               <NotificationsTagCounter />
             </Box>
           </MenuItem>
-          <Box
-            borderColor={BorderColor.borderMuted}
-            width={BlockSize.Full}
-            style={{ height: '1px', borderBottomWidth: 0 }}
-          ></Box>
         </>
       )}
       {account && (
@@ -258,9 +284,13 @@ export const GlobalMenu = ({
         style={{ height: '1px', borderBottomWidth: 0 }}
       ></Box>
       <MenuItem
+        to={
+          isGatorPermissionsRevocationFeatureEnabled()
+            ? GATOR_PERMISSIONS
+            : PERMISSIONS
+        }
         iconName={IconName.SecurityTick}
         onClick={() => {
-          history.push(PERMISSIONS);
           trackEvent({
             event: MetaMetricsEventName.NavPermissionsOpened,
             category: MetaMetricsEventCategory.Navigation,
@@ -306,11 +336,9 @@ export const GlobalMenu = ({
         {t('networks')}
       </MenuItem>
       <MenuItem
+        to={SNAPS_ROUTE}
         iconName={IconName.Snaps}
-        onClick={() => {
-          history.push(SNAPS_ROUTE);
-          closeMenu();
-        }}
+        onClick={closeMenu}
         showInfoDot={snapsUpdatesAvailable}
       >
         {t('snaps')}
@@ -338,13 +366,35 @@ export const GlobalMenu = ({
         }}
         data-testid="global-menu-support"
       >
-        {supportText}
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          {supportText}
+          {isActiveShieldSubscription && (
+            <Tag
+              label={t('priority')}
+              labelProps={{
+                variant: TextVariant.bodySmMedium,
+                color: TextColor.successDefault,
+              }}
+              startIconName={IconName.Sparkle}
+              startIconProps={{
+                color: IconColor.successDefault,
+              }}
+              borderStyle={BorderStyle.none}
+              borderRadius={BorderRadius.LG}
+              backgroundColor={BackgroundColor.successMuted}
+            />
+          )}
+        </Box>
       </MenuItem>
       <MenuItem
+        to={SETTINGS_ROUTE}
         iconName={IconName.Setting}
         disabled={hasUnapprovedTransactions}
         onClick={() => {
-          history.push(SETTINGS_ROUTE);
           trackEvent({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.NavSettingsOpened,
@@ -359,11 +409,11 @@ export const GlobalMenu = ({
         {t('settings')}
       </MenuItem>
       <MenuItem
+        to={DEFAULT_ROUTE}
         ref={lastItemRef} // ref for last item in GlobalMenu
         iconName={IconName.Lock}
         onClick={() => {
           dispatch(lockMetamask(t('lockMetaMaskLoadingMessage')));
-          history.push(DEFAULT_ROUTE);
           trackEvent({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.AppLocked,

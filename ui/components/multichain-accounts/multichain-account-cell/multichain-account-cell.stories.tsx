@@ -9,7 +9,7 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Box, Icon, IconName } from '../../component-library';
+import { Box, Icon, IconName, Checkbox } from '../../component-library';
 
 // End accessory
 const MoreOptionsAccessory = () => (
@@ -22,6 +22,17 @@ const MoreOptionsAccessory = () => (
     padding={1}
   >
     <Icon name={IconName.MoreVertical} />
+  </Box>
+);
+
+const CheckboxAccessory = ({ checked = false }: { checked?: boolean }) => (
+  <Box
+    display={Display.Flex}
+    alignItems={AlignItems.center}
+    justifyContent={JustifyContent.center}
+    marginRight={2}
+  >
+    <Checkbox isChecked={checked} />
   </Box>
 );
 
@@ -54,6 +65,11 @@ export default {
       control: false,
       description: 'Optional click handler for the cell',
       action: 'clicked',
+    },
+    startAccessory: {
+      control: false,
+      description:
+        'Optional component to display at the start of the cell (e.g., checkbox, radio button)',
     },
     endAccessory: {
       control: false,
@@ -132,6 +148,25 @@ SelectedAndClickable.args = {
   onClick: () => console.log('Selected account cell clicked'),
 };
 
+export const WithCheckboxAccessory = Template.bind({});
+WithCheckboxAccessory.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Account with Checkbox',
+  balance: '$2,400.00',
+  startAccessory: <CheckboxAccessory checked={false} />,
+  endAccessory: <MoreOptionsAccessory />,
+};
+
+export const WithCheckedCheckboxAccessory = Template.bind({});
+WithCheckedCheckboxAccessory.args = {
+  accountId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  accountName: 'Selected Account with Checkbox',
+  balance: '$2,400.00',
+  startAccessory: <CheckboxAccessory checked={true} />,
+  endAccessory: <MoreOptionsAccessory />,
+  selected: true,
+};
+
 export const MultipleAccounts: StoryFn<typeof MultichainAccountCell> = () => (
   <div style={{ width: '360px', margin: '0 auto' }}>
     <MultichainAccountCell
@@ -154,21 +189,32 @@ export const MultipleAccounts: StoryFn<typeof MultichainAccountCell> = () => (
       accountName="Trading"
       balance="$22,400.00"
       onClick={() => console.log('Trading account clicked')}
+      startAccessory={<CheckboxAccessory checked={true} />}
+      endAccessory={<MoreOptionsAccessory />}
+    />
+  </div>
+);
+
+export const MultipleAccountsWithStartAccessories: StoryFn<
+  typeof MultichainAccountCell
+> = () => (
+  <div style={{ width: '360px', margin: '0 auto' }}>
+    <MultichainAccountCell
+      accountId="entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
+      accountName="Unchecked Account"
+      balance="$2,400.00"
+      onClick={() => console.log('Unchecked account clicked')}
+      startAccessory={<CheckboxAccessory checked={false} />}
       endAccessory={<MoreOptionsAccessory />}
     />
     <MultichainAccountCell
       accountId="entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-      accountName="Second trading account"
-      balance="$178,256,100.00"
-      onClick={() => console.log('Second trading account clicked')}
+      accountName="Checked Account"
+      balance="$105,400,720.00"
+      onClick={() => console.log('Checked account clicked')}
+      startAccessory={<CheckboxAccessory checked={true} />}
       endAccessory={<MoreOptionsAccessory />}
-    />
-    <MultichainAccountCell
-      accountId="entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0"
-      accountName="Second savings account"
-      balance="1722.943 ETH"
-      onClick={() => console.log('Second savings account clicked')}
-      endAccessory={<MoreOptionsAccessory />}
+      selected={true}
     />
   </div>
 );

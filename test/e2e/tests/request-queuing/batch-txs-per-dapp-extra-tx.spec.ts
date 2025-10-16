@@ -86,6 +86,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await driver.executeScript(
           `window.ethereum.request(${switchEthereumChainRequest})`,
         );
+        await secondTestDapp.checkNetworkIsConnected('0x53a');
 
         // Dapp 1 send 2 tx
         await driver.switchToWindowWithUrl(DAPP_URL);
@@ -94,21 +95,25 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
         await firstTestDapp.clickSimpleSendButton();
 
         await driver.waitUntilXWindowHandles(4);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkPageNumbers(1, 2);
 
         // Dapp 2 send 2 tx
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
         await secondTestDapp.checkNetworkIsConnected('0x53a');
         await secondTestDapp.clickSimpleSendButton();
         await secondTestDapp.clickSimpleSendButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkPageNumbers(1, 4);
 
         // Dapp 1 send 1 tx
         await driver.switchToWindowWithUrl(DAPP_URL);
         await firstTestDapp.checkNetworkIsConnected('0x539');
         await firstTestDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.checkPageIsLoaded();
 
         // Verify we're on the first confirmation of 5
         await transactionConfirmation.checkPageNumbers(1, 5);
@@ -118,7 +123,9 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks', fun
 
         // Navigate to next confirmation
         await transactionConfirmation.clickNextPage();
+        await transactionConfirmation.checkPageNumbers(2, 5);
         await transactionConfirmation.clickNextPage();
+        await transactionConfirmation.checkPageNumbers(3, 5);
 
         // Verify we're now on Localhost 8546 network
         await transactionConfirmation.checkNetworkIsDisplayed('Localhost 8546');

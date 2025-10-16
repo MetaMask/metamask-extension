@@ -11,7 +11,6 @@ import { ACCOUNT_TYPE } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import { DEFAULT_SOLANA_WS_MOCKS } from './mocks/websocketDefaultMocks';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -1276,6 +1275,9 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
     })
+    // FIXME: This mock is too generic and will conflict with `mockGetAccountInfoDevnet` sometimes.
+    // It should probably be reworked so it add some filtering constraints to not conflict with the
+    // other mock.
     /* .withJsonBodyIncluding({
       params: [
         '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
@@ -1550,6 +1552,7 @@ export async function withSolanaAccountSnap(
     showSnapConfirmation = false,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
+    mockTokenAccountAccountInfo = true,
     mockZeroBalance,
     numberOfAccounts = 1,
     mockSwapUSDtoSOL,
@@ -1567,6 +1570,7 @@ export async function withSolanaAccountSnap(
     numberOfAccounts?: number;
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
+    mockTokenAccountAccountInfo?: boolean;
     mockZeroBalance?: boolean;
     sendFailedTransaction?: boolean;
     mockSwapUSDtoSOL?: boolean;
@@ -1612,10 +1616,6 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       dapp: true,
-      withSolanaWebSocket: {
-        server: true,
-        mocks: DEFAULT_SOLANA_WS_MOCKS,
-      },
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
         // component, which will impact to the slides count.
@@ -1672,7 +1672,13 @@ export async function withSolanaAccountSnap(
           await mockPriceApiExchangeRates(mockServer),
           await mockClientSideDetectionApi(mockServer),
           await mockPhishingDetectionApi(mockServer),
-          await mockGetTokenAccountInfo(mockServer),
+        );
+
+        if (mockTokenAccountAccountInfo) {
+          await mockGetTokenAccountInfo(mockServer);
+        }
+
+        mockList.push(
           await mockTokenApiMainnetTest(mockServer),
           await mockAccountsApi(mockServer),
           await mockGetMultipleAccounts(mockServer),

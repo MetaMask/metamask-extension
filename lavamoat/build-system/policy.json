@@ -2372,7 +2372,7 @@
         "didYouMean": "write"
       }
     },
-    "sinon>diff": {
+    "ts-node>diff": {
       "globals": {
         "setTimeout": true
       }
@@ -8080,7 +8080,7 @@
         "jsdom>acorn": true,
         "ts-node>arg": true,
         "ts-node>create-require": true,
-        "sinon>diff": true,
+        "ts-node>diff": true,
         "ts-node>make-error": true,
         "ts-node>v8-compile-cache-lib": true,
         "ts-node>yn": true
@@ -8212,7 +8212,7 @@
         "react-markdown>unified>bail": true,
         "react-markdown>unified>extend": true,
         "react-markdown>unified>is-buffer": true,
-        "react-markdown>unified>is-plain-obj": true,
+        "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
       }

@@ -8,6 +8,7 @@ import { setBackgroundConnection } from '../../../../../store/background-connect
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import NftsTab from '.';
 
 const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
@@ -188,7 +189,7 @@ const render = ({
       },
       internalAccounts: {
         accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': createMockInternalAccount({
             address: selectedAddress,
             id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             metadata: {
@@ -200,7 +201,7 @@ const render = ({
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
-          },
+          }),
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
