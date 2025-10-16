@@ -48,11 +48,11 @@ const getWordsFromInput = (input: string) => {
 };
 
 const wordToAddress = (word: string) => {
-  return addHexPrefix(word.slice(24));
+  return addHexPrefix(word?.slice(24));
 };
 
 const wordToAmount = (word: string) => {
-  const amount = word.replace(/^0+/u, '');
+  const amount = word?.replace(/^0+/u, '');
   return addHexPrefix(amount);
 };
 
