@@ -45,6 +45,7 @@ export const Amount = ({
   const [fiatMode, setFiatMode] = useState(false);
   const {
     conversionSupportedForAsset,
+    fiatCurrencyName,
     getFiatValue,
     getFiatDisplayValue,
     getNativeValue,
@@ -154,7 +155,9 @@ export const Amount = ({
         value={amount}
         endAccessory={
           <Box display={Display.Flex}>
-            <Text>{asset?.symbol}</Text>
+            <Text>
+              {fiatMode ? fiatCurrencyName?.toUpperCase() : asset?.symbol}
+            </Text>
             {conversionSupportedForAsset && (
               <ButtonIcon
                 ariaLabel="toggle fiat mode"

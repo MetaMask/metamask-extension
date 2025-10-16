@@ -9,6 +9,7 @@ import {
   getNewTokensImported,
   getPreferences,
   getSelectedAccount,
+  getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
@@ -51,6 +52,9 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const selectedAccount = useSelector(getSelectedAccount);
   const evmBalances = useSelector((state) =>
     getTokenBalancesEvm(state, selectedAccount.address),
+  );
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
   );
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -98,22 +102,28 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         }
 
         // Mapping necessary to comply with the type. Fields will be overriden with useTokenDisplayInfo
-        return assets.map((asset) => {
-          const token: TokenWithFiatAmount = {
-            ...asset,
-            tokenFiatAmount: asset.fiat?.balance,
-            secondary: null,
-            title: asset.name,
-            address:
-              'address' in asset ? asset.address : (asset.assetId as Hex),
-            chainId: asset.chainId as Hex,
-          };
+        return assets
+          .filter((asset) => {
+            if (shouldHideZeroBalanceTokens && asset.balance === '0') {
+              return false;
+            }
+            return true;
+          })
+          .map((asset) => {
+            const token: TokenWithFiatAmount = {
+              ...asset,
+              tokenFiatAmount: asset.fiat?.balance,
+              secondary: null,
+              title: asset.name,
+              address:
+                'address' in asset ? asset.address : (asset.assetId as Hex),
+              chainId: asset.chainId as Hex,
+            };
 
-          return token;
-        });
+            return token;
+          });
       },
     );
-
     const accountAssets = sortAssets(
       [...accountAssetsPreSort],
       tokenSortConfig,

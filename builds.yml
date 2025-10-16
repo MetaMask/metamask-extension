@@ -77,7 +77,30 @@ buildTypes:
 
   experimental:
     id: 12
-    extends: main
+    features:
+      - build-experimental
+      - build-main
+      - keyring-snaps
+      - multi-srp
+      - multichain
+    env:
+      - INFURA_EXPERIMENTAL_PROJECT_ID
+      - SEGMENT_EXPERIMENTAL_WRITE_KEY
+      - INFURA_ENV_KEY_REF: INFURA_EXPERIMENTAL_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_EXPERIMENTAL_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      # for seedless onboarding (social login)
+      - GOOGLE_EXPERIMENTAL_CLIENT_ID
+      - APPLE_EXPERIMENTAL_CLIENT_ID
+      - GOOGLE_CLIENT_ID_REF: GOOGLE_EXPERIMENTAL_CLIENT_ID
+      - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
+    isPrerelease: true
+    manifestOverrides: false
+    buildNameOverride: MetaMask Experimental
 
   flask:
     id: 15
@@ -170,6 +193,7 @@ features:
         dest: snaps/permissions-kernel-snap.json
       - src: ./node_modules/@metamask/gator-permissions-snap/dist/preinstalled-snap.json
         dest: snaps/gator-permissions-snap.json
+  build-experimental:
 
 # Env variables that are required for all types of builds
 #
@@ -409,6 +433,8 @@ env:
   - SHIELD_GATEWAY_URL: 'https://shield-gateway.dev-api.cx.metamask.io'
   # URL of Shield rule engine
   - SHIELD_RULE_ENGINE_URL: 'https://ruleset-engine.dev-api.cx.metamask.io'
+  # URL of Shield claims API
+  - SHIELD_CLAIMS_API_URL: 'https://claims.dev-api.cx.metamask.io'
 
   # Snaps
   # This should only be used for local testing, and should not be enabled in any
