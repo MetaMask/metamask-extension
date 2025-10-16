@@ -7559,15 +7559,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^1.6.0":
-  version: 1.6.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:1.6.0"
+"@metamask/remote-feature-flag-controller@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "@metamask/remote-feature-flag-controller@npm:1.9.0"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.5.0"
-    "@metamask/utils": "npm:^11.2.0"
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/utils": "npm:^11.8.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/a9ba0b4c28861ae7106dbc8d1ffe073b13ecfd80f38fc6807409a3e6bec0ee484e0e1c856919310e73273ab330db69dde424292ff6b82eb6adf6bc67222c9f28
+  checksum: 10/f691d9e3932245cc6cb5665fd75ee9b68879c813c02c36d360ebec32c423bf8707ffd364939d0d87b9940727d46aabedadf5e34c7d64799b7ad29201b137dafa
   languageName: node
   linkType: hard
 
@@ -31997,7 +31997,7 @@ __metadata:
     "@metamask/profile-sync-controller": "npm:^25.1.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^6.0.3"
-    "@metamask/remote-feature-flag-controller": "npm:^1.6.0"
+    "@metamask/remote-feature-flag-controller": "npm:^1.9.0"
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
