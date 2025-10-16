@@ -543,7 +543,7 @@ class SettingsPage extends PureComponent {
           exact
         />
         <Route
-          path={`${TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE}/:claimId`}
+          path={`${TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE}/:uniqueId`}
           element={<SubmitClaimForm />}
           exact
         />

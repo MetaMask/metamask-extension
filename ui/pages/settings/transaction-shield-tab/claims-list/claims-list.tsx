@@ -1,14 +1,4 @@
 import React, { useMemo } from 'react';
-import { Tag } from '../../../../components/component-library';
-import {
-  BackgroundColor,
-  BorderRadius,
-  BorderStyle,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useAsyncResult } from '../../../../hooks/useAsync';
-import { getShieldClaims } from '../../../../store/actions';
 import {
   Box,
   BoxBackgroundColor,
@@ -20,8 +10,18 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
-import { ShieldClaim, CLAIM_STATUS, ClaimStatus } from '../types';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import { Tag } from '../../../../components/component-library';
+import {
+  BackgroundColor,
+  BorderRadius,
+  BorderStyle,
+  TextColor,
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useAsyncResult } from '../../../../hooks/useAsync';
+import { getShieldClaims } from '../../../../store/actions';
+import { ShieldClaim, CLAIM_STATUS, ClaimStatus } from '../types';
 import { TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 
 const ClaimsList = () => {

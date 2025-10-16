@@ -72,7 +72,7 @@ const SubmitClaimForm = () => {
 
   const isClaimViewPage = useMemo(() => {
     return Boolean(
-      matchPath(`${TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE}/:claimId`, pathname),
+      matchPath(`${TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE}/:uniqueId`, pathname),
     );
   }, [pathname]);
 
