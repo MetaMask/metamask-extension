@@ -590,7 +590,7 @@
     "message": "Add RPC"
   },
   "allowAddRpcDescription": {
-    "message": "Allow the site to add a RPC URL for $1.\n\nSet your preferred RPC anything by going to Networks in Settings",
+    "message": "Allow the site to add a RPC URL for $1.\n\nSet your preferred RPC anytime by going to Networks in Settings",
     "description": "$1 is the chain name"
   },
   "allowNotifications": {

@@ -181,7 +181,7 @@ async function addEthereumChainHandler(
           name: chainName,
           nativeCurrency: ticker,
           rpcEndpoints: [
-            ...(featured ? [featuredEndpoint] : []),
+            ...(featuredEndpoint ? [featuredEndpoint] : []),
             {
               url: firstValidRPCUrl,
               name: chainName,
