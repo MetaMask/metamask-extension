@@ -1141,7 +1141,19 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: { subscriptions: [], trialedProducts: [] },
+        json: [],
+      };
+    });
+
+  await server
+    .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          subscriptions: [],
+          trialedProducts: [],
+        },
       };
     });
 
