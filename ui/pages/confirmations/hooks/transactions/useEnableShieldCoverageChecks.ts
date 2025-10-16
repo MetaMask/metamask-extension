@@ -1,17 +1,16 @@
+import { useMemo } from 'react';
 import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
 import { getIsShieldSubscriptionActive } from '../../../../../shared/lib/shield';
 
 export const useEnableShieldCoverageChecks = () => {
-  const {
-    subscriptions,
-    loading: subscriptionsLoading,
-    error: subscriptionsError,
-  } = useUserSubscriptions();
+  // NOTE: no need to wait for subscriptions loading here since user subscriptions is already loaded in the background
+  const { subscriptions } = useUserSubscriptions({
+    refetch: false,
+  });
 
-  const hasUserSubscribedToShield =
-    !subscriptionsLoading &&
-    !subscriptionsError &&
-    getIsShieldSubscriptionActive(subscriptions);
+  const hasUserSubscribedToShield = useMemo(() => {
+    return getIsShieldSubscriptionActive(subscriptions);
+  }, [subscriptions]);
 
   return hasUserSubscribedToShield;
 };
