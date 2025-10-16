@@ -7,18 +7,24 @@ import { AddressBookEntry } from '@metamask/address-book-controller';
 import { getCompleteAddressBook } from '../../../../selectors';
 import { type Recipient } from './useRecipients';
 import { useSendType } from './useSendType';
+import { useAccountAddressSeedIconMap } from './useAccountAddressSeedIconMap';
 
 export const useContactRecipients = (): Recipient[] => {
   const { isEvmSendType, isSolanaSendType } = useSendType();
   const addressBook = useSelector(getCompleteAddressBook);
+  const { accountAddressSeedIconMap } = useAccountAddressSeedIconMap();
 
-  const processContacts = useCallback((contact: AddressBookEntry) => {
-    return {
-      address: contact.address,
-      contactName: contact.name,
-      isContact: true,
-    };
-  }, []);
+  const processContacts = useCallback(
+    (contact: AddressBookEntry) => {
+      return {
+        address: contact.address,
+        contactName: contact.name,
+        isContact: true,
+        seedIcon: accountAddressSeedIconMap.get(contact.address.toLowerCase()),
+      };
+    },
+    [accountAddressSeedIconMap],
+  );
 
   if (isEvmSendType) {
     return addressBook

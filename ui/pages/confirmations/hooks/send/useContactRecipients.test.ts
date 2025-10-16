@@ -9,6 +9,11 @@ import { useSendType } from './useSendType';
 
 jest.mock('./useSendType');
 jest.mock('../../../../selectors');
+jest.mock('./useAccountAddressSeedIconMap', () => ({
+  useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
+    accountAddressSeedIconMap: new Map(),
+  }),
+}));
 jest.mock('ethers/lib/utils');
 jest.mock('@metamask/bridge-controller');
 
