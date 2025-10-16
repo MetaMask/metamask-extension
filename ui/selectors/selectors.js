@@ -132,6 +132,7 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
+import { EMPTY_ARRAY } from './shared';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -1286,7 +1287,7 @@ export const selectNftsByChainId = createSelector(
   (state) => state.metamask.allNfts,
   (_state, chainId) => chainId,
   (selectedAccount, nfts, chainId) => {
-    return nfts?.[selectedAccount.address]?.[chainId] ?? [];
+    return nfts?.[selectedAccount.address]?.[chainId] ?? EMPTY_ARRAY;
   },
 );
 
@@ -4064,7 +4065,8 @@ export function getShowUpdateModal(state) {
  */
 export const selectNonZeroUnusedApprovalsAllowList = createSelector(
   getRemoteFeatureFlags,
-  (remoteFeatureFlags) => remoteFeatureFlags?.nonZeroUnusedApprovals ?? [],
+  (remoteFeatureFlags) =>
+    remoteFeatureFlags?.nonZeroUnusedApprovals ?? EMPTY_ARRAY,
 );
 
 /**
