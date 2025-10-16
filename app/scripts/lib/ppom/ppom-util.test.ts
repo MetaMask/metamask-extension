@@ -11,6 +11,7 @@ import {
   SignatureController,
   SignatureControllerState,
   SignatureRequest,
+  SignatureRequestType,
   SignatureStateChange,
 } from '@metamask/signature-controller';
 import { Hex, JsonRpcRequest } from '@metamask/utils';
@@ -43,6 +44,10 @@ const TRANSACTION_ID_MOCK = '123';
 const CHAIN_ID_MOCK = '0x1' as Hex;
 const GAS_MOCK = '0x1234';
 const GAS_PRICE_MOCK = '0x5678';
+
+// Mock data for permission origin tests
+const PERMISSION_ORIGIN_MOCK = 'https://malicious-site.com';
+const GATOR_SNAP_ORIGIN_MOCK = 'local:http://localhost:8082';
 
 const REQUEST_MOCK = {
   method: 'eth_signTypedData_v4',
@@ -473,6 +478,168 @@ describe('PPOM Utils', () => {
         ...request,
         test1: undefined,
         test2: undefined,
+      });
+    });
+
+    describe('permission origin handling', () => {
+      it('uses decodedPermission.origin for permission requests', async () => {
+        const request = {
+          ...REQUEST_MOCK,
+          method: 'eth_signTypedData_v4',
+          origin: GATOR_SNAP_ORIGIN_MOCK, // Gator snap origin
+        };
+
+        const signatureRequestWithPermission = {
+          id: 'test-id',
+          chainId: '0x1',
+          networkClientId: 'test-network',
+          status: 'unapproved',
+          time: Date.now(),
+          type: SignatureRequestType.TypedSign,
+          messageParams: {
+            from: '0x123',
+            data: 'test-data',
+          },
+          decodedPermission: {
+            origin: PERMISSION_ORIGIN_MOCK, // Actual malicious domain
+            permission: {
+              type: 'native-token-stream',
+              data: {
+                initialAmount: '0x1234',
+                maxAmount: '0x1234',
+                amountPerSecond: '0x1234',
+                startTime: 123456789,
+              },
+              justification: 'Test permission',
+            },
+            chainId: '0x1',
+            signer: {
+              type: 'account',
+              data: { address: '0x123' },
+            },
+            expiry: 123456789,
+          },
+        } as SignatureRequest;
+
+        updateSecurityAlertResponseMock.mockResolvedValue(
+          signatureRequestWithPermission,
+        );
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.objectContaining({
+            origin: PERMISSION_ORIGIN_MOCK, // Should use permission origin
+          }),
+        );
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.not.objectContaining({
+            origin: GATOR_SNAP_ORIGIN_MOCK, // Should not use Gator snap origin
+          }),
+        );
+      });
+
+      it('falls back to request origin for non-permission requests', async () => {
+        const requestOrigin = 'https://dapp.com';
+        const request = {
+          ...REQUEST_MOCK,
+          method: 'eth_signTypedData_v4',
+          origin: requestOrigin,
+        };
+
+        const signatureRequestWithoutPermission = {
+          id: 'test-id',
+          chainId: '0x1',
+          networkClientId: 'test-network',
+          status: 'unapproved',
+          time: Date.now(),
+          type: SignatureRequestType.TypedSign,
+          messageParams: {
+            from: '0x123',
+            data: 'test-data',
+          },
+          // No decodedPermission
+        } as SignatureRequest;
+
+        updateSecurityAlertResponseMock.mockResolvedValue(
+          signatureRequestWithoutPermission,
+        );
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.objectContaining({
+            origin: requestOrigin, // Should use request origin
+          }),
+        );
+      });
+
+      it('handles malicious domain detection for permission requests', async () => {
+        const maliciousDomain = 'https://phishing-site.com';
+        const request = {
+          ...REQUEST_MOCK,
+          method: 'eth_signTypedData_v4',
+          origin: GATOR_SNAP_ORIGIN_MOCK,
+        };
+
+        const signatureRequestWithMaliciousPermission = {
+          id: 'test-id',
+          chainId: '0x1',
+          networkClientId: 'test-network',
+          status: 'unapproved',
+          time: Date.now(),
+          type: SignatureRequestType.TypedSign,
+          messageParams: {
+            from: '0x123',
+            data: 'test-data',
+          },
+          decodedPermission: {
+            origin: maliciousDomain, // Malicious domain
+            permission: {
+              type: 'native-token-stream',
+              data: {
+                initialAmount: '0x1234',
+                maxAmount: '0x1234',
+                amountPerSecond: '0x1234',
+                startTime: 123456789,
+              },
+              justification: 'Suspicious permission request',
+            },
+            chainId: '0x1',
+            signer: {
+              type: 'account',
+              data: { address: '0x123' },
+            },
+            expiry: 123456789,
+          },
+        } as SignatureRequest;
+
+        updateSecurityAlertResponseMock.mockResolvedValue(
+          signatureRequestWithMaliciousPermission,
+        );
+
+        await validateRequestWithPPOM({
+          ...validateRequestWithPPOMOptionsBase,
+          ppomController,
+          request,
+        });
+
+        expect(ppom.validateJsonRpc).toHaveBeenCalledTimes(1);
+        expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
+          expect.objectContaining({
+            origin: maliciousDomain, // Should validate against malicious domain
+          }),
+        );
       });
     });
   });

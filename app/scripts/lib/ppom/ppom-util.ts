@@ -199,12 +199,22 @@ function normalizePPOMRequest(
   const { delegationMock, id, jsonrpc, method, origin, params } =
     normalizedRequest;
 
+  // In case of gator permissions the origin is always gator snap.
+  // That is why we extract the actual origin from the decoded permission.
+  let actualOrigin = origin;
+  if (
+    'decodedPermission' in controllerObject &&
+    controllerObject.decodedPermission?.origin
+  ) {
+    actualOrigin = controllerObject.decodedPermission.origin;
+  }
+
   return {
     delegationMock,
     id,
     jsonrpc,
     method,
-    origin,
+    origin: actualOrigin, // Use permission origin if available
     params,
   };
 }
