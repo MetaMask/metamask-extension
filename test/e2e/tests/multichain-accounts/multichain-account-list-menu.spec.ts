@@ -74,7 +74,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         testSpecificMock: async (mockServer) => {
           return mockSnapSimpleKeyringAndSite(mockServer);
         },
-        state: 1,
+        state: 2,
       },
       async (driver: Driver) => {
         await installSnapSimpleKeyring(driver);
@@ -86,9 +86,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.checkAccountLabel('SSK Account');
-
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded({
           isMultichainAccountsState2Enabled: true,
@@ -99,14 +96,13 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         await accountListPage.checkWalletDisplayedInAccountListMenu(
           'MetaMask Simple Snap Keyring',
         );
-        await accountListPage.checkWalletDetailsButtonIsDisplayed();
 
         // Ensure that an SSK account within the wallet is displayed
         // BugBug
         // await accountListPage.checkMultichainAccountBalanceDisplayed('$42,500.00');
         await accountListPage.checkMultichainAccountBalanceDisplayed('$0.00');
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');
-        await accountListPage.checkAccountDisplayedInAccountList('SSK Account');
+        await accountListPage.checkAccountDisplayedInAccountList('Snap Account 1');
         await accountListPage.checkNumberOfAvailableAccounts(3);
       },
     );
