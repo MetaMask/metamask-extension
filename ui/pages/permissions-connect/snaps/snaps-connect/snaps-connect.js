@@ -58,7 +58,7 @@ export default function SnapsConnect({
     useState(!isPreinstalled && !snapsInstallPrivacyWarningShown);
 
   const onCancel = useCallback(() => {
-    rejectConnection(request.metadata.id);
+    rejectConnection(request?.metadata?.id);
   }, [request, rejectConnection]);
 
   const onConnect = useCallback(() => {
