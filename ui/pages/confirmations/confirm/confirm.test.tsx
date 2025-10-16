@@ -23,7 +23,6 @@ import * as actions from '../../../store/actions';
 import { useAssetDetails } from '../hooks/useAssetDetails';
 import { SignatureRequestType } from '../types/confirm';
 import { memoizedGetTokenStandardAndDetails } from '../utils/token';
-import { useShieldSubscriptionPricingFromTokenApproval } from '../../../hooks/subscription/useSubscriptionPricing';
 import Confirm from './confirm';
 
 jest.mock('../hooks/useAssetDetails', () => ({
@@ -38,25 +37,6 @@ jest.mock('../hooks/gas/useIsGaslessLoading', () => ({
     return { isGaslessLoading: false };
   },
 }));
-
-const mockProductPrice: ProductPrice = {
-  interval: 'month',
-  minBillingCycles: 12,
-  unitAmount: 8000000,
-  unitDecimals: 6,
-  currency: 'usd',
-  trialPeriodDays: 7,
-};
-const mockTokenPaymentInfo: TokenPaymentInfo = {
-  address: '0x0000000000000000000000000000000000000000',
-  symbol: 'usdc',
-  decimals: 6,
-  conversionRate: { usd: '1' },
-};
-jest.mock('../../../hooks/subscription/useSubscriptionPricing');
-const mockedUseShieldSubscriptionPricingFromTokenApproval = jest.mocked(
-  useShieldSubscriptionPricingFromTokenApproval,
-);
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => {
@@ -92,14 +72,6 @@ describe('Confirm', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       decimals: '4' as any,
     }));
-
-    mockedUseShieldSubscriptionPricingFromTokenApproval.mockImplementation(
-      () => ({
-        productPrice: mockProductPrice,
-        pending: false,
-        tokenPrice: mockTokenPaymentInfo,
-      }),
-    );
   });
 
   it('should render', () => {

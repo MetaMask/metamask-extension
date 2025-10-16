@@ -97,8 +97,6 @@ const TransactionShield = () => {
 
   const dispatch = useDispatch();
 
-  // refetch pricing to get the latest pricing (in case user need reapproval transaction)
-  useSubscriptionPricing();
   const {
     customerId,
     subscriptions,

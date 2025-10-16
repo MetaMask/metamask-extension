@@ -13,10 +13,9 @@ import {
   getIsSmartTransaction,
   type SmartTransactionsState,
 } from '../../../../../shared/modules/selectors';
-import { MetaMaskReduxDispatch } from '../../../../store/store';
 
 export function useTransactionConfirm() {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
   const { currentConfirmation: transactionMeta } =

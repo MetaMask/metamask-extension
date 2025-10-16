@@ -19,14 +19,6 @@ jest.mock('../../../../store/actions', () => ({
   updateAndApproveTx: jest.fn(),
 }));
 
-const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
-  return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockUseNavigate,
-  };
-});
-
 const CUSTOM_NONCE_VALUE = '1234';
 
 const TRANSACTION_META_MOCK =

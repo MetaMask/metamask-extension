@@ -53,30 +53,6 @@ jest.mock(
 
 jest.mock('../../../hooks/useOriginThrottling');
 
-jest.mock('../../../../../hooks/subscription/useSubscriptionPricing', () => {
-  return {
-    useShieldSubscriptionPricingFromTokenApproval: jest.fn(() => ({
-      productPrice: undefined,
-      pending: false,
-    })),
-  };
-});
-
-jest.mock('../../../hooks/transactions/useEnableShieldCoverageChecks', () => {
-  return {
-    useEnableShieldCoverageChecks: jest.fn(() => false),
-  };
-});
-
-const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
-  const actual = jest.requireActual('react-router-dom-v5-compat');
-  return {
-    ...actual,
-    useNavigate: () => mockUseNavigate,
-  };
-});
-
 const render = (args?: Record<string, unknown>) => {
   const store = configureStore(args ?? getMockPersonalSignConfirmState());
 

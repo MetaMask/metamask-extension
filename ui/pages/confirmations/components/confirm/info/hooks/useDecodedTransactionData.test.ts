@@ -11,7 +11,6 @@ import {
   TRANSACTION_DATA_UNISWAP,
   TRANSACTION_DECODE_SOURCIFY,
 } from '../../../../../../../test/data/confirmations/transaction-decode';
-import { DecodedTransactionDataSource } from '../../../../../../../shared/types/transaction-decode';
 import { decodeTransactionData } from '../../../../../../store/actions';
 import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
