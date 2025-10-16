@@ -24,7 +24,7 @@ import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield';
 
 export const useUserSubscriptions = (
-  { refetch }: { refetch?: boolean } = { refetch: true },
+  { refetch }: { refetch?: boolean } = { refetch: false },
 ) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isSignedIn = useSelector(selectIsSignedIn);

@@ -101,7 +101,9 @@ const TransactionShield = () => {
     customerId,
     subscriptions,
     loading: subscriptionsLoading,
-  } = useUserSubscriptions();
+  } = useUserSubscriptions({
+    refetch: true, // always fetch latest subscriptions state in settings screen
+  });
   const shieldSubscription = useUserSubscriptionByProduct(
     PRODUCT_TYPES.SHIELD,
     subscriptions,

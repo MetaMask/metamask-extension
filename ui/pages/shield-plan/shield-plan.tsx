@@ -95,7 +95,9 @@ const ShieldPlan = () => {
     trialedProducts,
     loading: subscriptionsLoading,
     error: subscriptionsError,
-  } = useUserSubscriptions();
+  } = useUserSubscriptions({
+    refetch: true, // always fetch latest subscriptions state in shield plan screen
+  });
   const shieldSubscription = useUserSubscriptionByProduct(
     PRODUCT_TYPES.SHIELD,
     subscriptions,
