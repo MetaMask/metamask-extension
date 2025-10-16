@@ -47,11 +47,16 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 />
               </div>
             </div>
-            <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
+            <div
+              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
             >
-              metamask.github.io
-            </h2>
+              <h2
+                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+                style="word-break: break-word; white-space: normal;"
+              >
+                metamask.github.io
+              </h2>
+            </div>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center"
             >
@@ -289,11 +294,16 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 />
               </div>
             </div>
-            <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
+            <div
+              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
             >
-              metamask.github.io
-            </h2>
+              <h2
+                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+                style="word-break: break-word; white-space: normal;"
+              >
+                metamask.github.io
+              </h2>
+            </div>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center"
             >
@@ -531,11 +541,16 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 />
               </div>
             </div>
-            <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
+            <div
+              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
             >
-              metamask.github.io
-            </h2>
+              <h2
+                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+                style="word-break: break-word; white-space: normal;"
+              >
+                metamask.github.io
+              </h2>
+            </div>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center"
             >

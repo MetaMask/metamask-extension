@@ -2,11 +2,6 @@ import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  ProductType,
-  SUBSCRIPTION_STATUSES,
-  SubscriptionStatus,
-} from '@metamask/subscription-controller';
-import {
   useUnreadNotificationsCounter,
   useReadNotificationsCounter,
 } from '../../../hooks/metamask-notifications/useCounter';
@@ -80,11 +75,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
-import {
-  useUserSubscriptionByProduct,
-  useUserSubscriptions,
-} from '../../../hooks/subscription/useSubscription';
+import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
+import { getIsShieldSubscriptionActive } from '../../../../shared/lib/shield';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -110,18 +103,8 @@ export const GlobalMenu = ({
   const { notificationsReadCount } = useReadNotificationsCounter();
 
   const { subscriptions } = useUserSubscriptions();
-  const shieldSubscription = useUserSubscriptionByProduct(
-    'shield' as ProductType,
-    subscriptions,
-  );
-
-  const isActiveShieldSubscription = (
-    [
-      SUBSCRIPTION_STATUSES.active,
-      SUBSCRIPTION_STATUSES.trialing,
-      SUBSCRIPTION_STATUSES.provisional,
-    ] as SubscriptionStatus[]
-  ).includes(shieldSubscription?.status as SubscriptionStatus);
+  const isActiveShieldSubscription =
+    getIsShieldSubscriptionActive(subscriptions);
 
   const account = useSelector(getSelectedInternalAccount);
 
