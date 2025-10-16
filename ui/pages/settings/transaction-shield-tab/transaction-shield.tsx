@@ -7,7 +7,6 @@ import {
   RECURRING_INTERVALS,
   SUBSCRIPTION_STATUSES,
   SubscriptionCryptoPaymentMethod,
-  SubscriptionStatus,
   TokenPaymentInfo,
 } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom-v5-compat';
@@ -56,7 +55,6 @@ import { getProductPrice } from '../../shield-plan/utils';
 import Tooltip from '../../../components/ui/tooltip';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useFormatters } from '../../../hooks/useFormatters';
-import { DAY } from '../../../../shared/constants/time';
 import LoadingScreen from '../../../components/ui/loading-screen';
 import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
 import {
@@ -79,10 +77,12 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
+import {
+  getIsShieldSubscriptionEndingSoon,
+  getIsShieldSubscriptionPaused,
+} from '../../../../shared/lib/shield';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
-
-const SUBSCRIPTION_ENDING_SOON_DAYS = DAY;
 
 const TransactionShield = () => {
   const t = useI18nContext();
@@ -101,14 +101,18 @@ const TransactionShield = () => {
     customerId,
     subscriptions,
     loading: subscriptionsLoading,
-  } = useUserSubscriptions();
+  } = useUserSubscriptions({
+    refetch: true, // always fetch latest subscriptions state in settings screen
+  });
   const shieldSubscription = useUserSubscriptionByProduct(
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
 
   const { subscriptionPricing, loading: subscriptionPricingLoading } =
-    useSubscriptionPricing();
+    useSubscriptionPricing({
+      refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
+    });
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
     PAYMENT_TYPES.byCrypto,
     subscriptionPricing,
@@ -116,27 +120,10 @@ const TransactionShield = () => {
 
   const isCancelled =
     shieldSubscription?.status === SUBSCRIPTION_STATUSES.canceled;
-  const isPaused = Boolean(
-    shieldSubscription &&
-      (
-        [
-          SUBSCRIPTION_STATUSES.paused,
-          SUBSCRIPTION_STATUSES.pastDue,
-          SUBSCRIPTION_STATUSES.unpaid,
-        ] as SubscriptionStatus[]
-      ).includes(shieldSubscription.status),
-  );
+  const isPaused = getIsShieldSubscriptionPaused(subscriptions);
   const isMembershipInactive = isCancelled || isPaused;
-  const isSubscriptionEndingSoon = useMemo(() => {
-    // show subscription ending soon for crypto payment only with endDate (next billing cycle) for user to send new approve transaction
-    if (!shieldSubscription?.endDate) {
-      return false;
-    }
-    return (
-      new Date(shieldSubscription.endDate).getTime() - Date.now() <
-      SUBSCRIPTION_ENDING_SOON_DAYS
-    );
-  }, [shieldSubscription]);
+  const isSubscriptionEndingSoon =
+    getIsShieldSubscriptionEndingSoon(subscriptions);
 
   // user can cancel subscription if not canceled and not cancel at period end
   const canCancel = !isCancelled && !shieldSubscription?.cancelAtPeriodEnd;

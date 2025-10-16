@@ -51,6 +51,9 @@ class TransactionConfirmation extends Confirmation {
   private readonly gasFeeFiatText: RawLocator =
     '[data-testid="native-currency"]';
 
+  private readonly paidByMetaMaskNotice: RawLocator =
+    '[data-testid="paid-by-meta-mask"]';
+
   private readonly gasFeeText: RawLocator = '[data-testid="first-gas-field"]';
 
   private readonly gasFeeTokenArrow: RawLocator =
@@ -131,6 +134,13 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.findElement({
       css: this.gasFeeTokenFeeText,
       text: amountFiat,
+    });
+  }
+
+  async checkPaidByMetaMask() {
+    await this.driver.findElement({
+      css: this.paidByMetaMaskNotice,
+      text: tEn('paidByMetaMask') as string,
     });
   }
 

@@ -61,7 +61,7 @@ class HomePage {
   private readonly portfolioLink = '[data-testid="portfolio-link"]';
 
   private readonly privacyBalanceToggle = {
-    testId: 'sensitive-toggle',
+    testId: 'account-value-and-suffix',
   };
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
