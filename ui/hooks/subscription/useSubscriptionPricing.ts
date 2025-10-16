@@ -171,33 +171,24 @@ export const useAvailableTokenBalances = (params: {
 /**
  * Use this hook to get the subscription pricing.
  *
- * @param refetch - Whether to refetch the subscription pricing from api.
+ * @param options - The options for the hook.
+ * @param options.refetch - Whether to refetch the subscription pricing from api.
  * @returns The subscription pricing.
  */
-export const useSubscriptionPricing = (refetch = true) => {
+export const useSubscriptionPricing = (
+  { refetch }: { refetch?: boolean } = { refetch: false },
+) => {
   const dispatch = useDispatch();
   const subscriptionPricing = useSelector(getSubscriptionPricing);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        if (!refetch) {
-          return;
-        }
-        setLoading(true);
-        await dispatch(getSubscriptionPricingAction());
-      } catch (err) {
-        log.error('[useSubscriptionPricing] error', err);
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [refetch, dispatch]);
+  const { pending, error } = useAsyncResult(async () => {
+    if (!refetch) {
+      return undefined;
+    }
+    return await dispatch(getSubscriptionPricingAction());
+  }, [dispatch, refetch]);
 
-  return { subscriptionPricing, loading, error };
+  return { subscriptionPricing, loading: pending, error };
 };
 
 export const useSubscriptionProductPlans = (
@@ -230,19 +221,16 @@ export const useSubscriptionPaymentMethods = (
  * @param params - The parameters for the hook.
  * @param params.transactionMeta - The transaction meta.
  * @param params.decodedApprovalAmount - The decoded approval amount.
- * @param params.refetchPricing - Whether to refetch the subscription pricing from api.
  * @returns The product price.
  */
 export const useShieldSubscriptionPricingFromTokenApproval = ({
   transactionMeta,
   decodedApprovalAmount,
-  refetchPricing = false,
 }: {
   transactionMeta?: TransactionMeta;
   decodedApprovalAmount?: string;
-  refetchPricing?: boolean;
 }) => {
-  const { subscriptionPricing } = useSubscriptionPricing(refetchPricing); // shouldn't refetch pricing here since we are using the cached pricing from shield plan screen to compare price amount
+  const { subscriptionPricing } = useSubscriptionPricing(); // shouldn't refetch pricing here since we are using the cached pricing from shield plan screen to compare price amount
   const pricingPlans = useSubscriptionProductPlans(
     PRODUCT_TYPES.SHIELD,
     subscriptionPricing,
