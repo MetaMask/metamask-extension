@@ -31,7 +31,7 @@ export function useDappSwapComparisonInfo() {
   } = currentConfirmation ?? {
     txParams: {},
   };
-  const { data, gas, value: amount } = txParams ?? {};
+  const { data, gas, maxFeePerGas, value: amount } = txParams ?? {};
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const captureDappSwapComparisonMetricsProperties = useCallback(
@@ -125,22 +125,28 @@ export function useDappSwapComparisonInfo() {
       quote: { destTokenAmount, minDestTokenAmount },
       trade,
     } = selectedQuote;
-    const totalGasInQuote =
-      (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
-      (trade?.effectiveGas ?? trade?.gasLimit ?? 0);
+
+    const totalGasInQuote = new BigNumber(maxFeePerGas ?? '0x0', 16)
+      .times(
+        new BigNumber(
+          (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
+            (trade?.effectiveGas ?? trade?.gasLimit ?? 0),
+          10,
+        ),
+      )
+      .toString(10);
+
+    const totalGasInConfirmation = new BigNumber(maxFeePerGas ?? '0x0', 16)
+      .times(new BigNumber(gasUsed ?? gas ?? '0x0', 16))
+      .toString(10);
 
     const { tokenBalanceChanges } = simulationData ?? {};
     const destTokenBalanceChange = new BigNumber(
-      tokenBalanceChanges
-        ?.find(
-          (tbc) =>
-            tbc.address?.toLowerCase() === destTokenAddress?.toLowerCase(),
-        )
-        ?.difference.toString() ?? '0x0',
+      tokenBalanceChanges?.find(
+        (tbc) => tbc.address?.toLowerCase() === destTokenAddress?.toLowerCase(),
+      )?.difference ?? '0x0',
       16,
-    )
-      .toNumber()
-      .toString();
+    ).toString(10);
 
     const nativeTokenAddress = getNativeTokenAddress(chainId);
 
@@ -162,7 +168,7 @@ export function useDappSwapComparisonInfo() {
       ),
       // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_dapp_network_fee_usd: getUSDValue(
-        new BigNumber(gasUsed ?? gas ?? '0x0', 16).toNumber().toString(),
+        totalGasInConfirmation,
         nativeTokenAddress,
       ),
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -181,10 +187,7 @@ export function useDappSwapComparisonInfo() {
         destTokenAddress as Hex,
       ),
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_mm_network_fee_usd: getUSDValue(
-        totalGasInQuote.toString(),
-        nativeTokenAddress,
-      ),
+      swap_mm_network_fee_usd: getUSDValue(totalGasInQuote, nativeTokenAddress),
     });
   }, [
     amountMin,
@@ -197,6 +200,7 @@ export function useDappSwapComparisonInfo() {
     getUSDValue,
     quotes,
     quotesInput,
+    maxFeePerGas,
     simulationData,
   ]);
 }
