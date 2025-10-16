@@ -196,11 +196,15 @@ describe('Vault Corruption', function () {
     await driver.clickElement('#critical-error-button');
 
     // Confirm we want to recover/reset.
+    console.log('===== Critical error clicked');
     const prompt = await driver.driver.switchTo().alert();
     if (confirm) {
+      console.log('===== Confirming prompt');
       await prompt.accept();
+      console.log('===== Prompt confirmed');
     } else {
       await prompt.dismiss();
+      console.log('===== Prompt dismissed');
     }
 
     if (confirm) {
