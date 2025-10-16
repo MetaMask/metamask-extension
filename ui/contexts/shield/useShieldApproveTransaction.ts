@@ -1,22 +1,28 @@
-import { useDispatch, useSelector } from "react-redux";
-import { getSignedTransactions } from "../../selectors";
-import { TransactionMeta, TransactionType } from "@metamask/transaction-controller";
-import { useCallback, useEffect, useMemo } from "react";
-import { RootState } from "../../pages/confirmations/selectors/preferences";
-import { getInternalAccountBySelectedAccountGroupAndCaip } from "../../selectors/multichain-accounts/account-tree";
-import { useNavigate } from "react-router-dom-v5-compat";
-import { useShieldSubscriptionPricingFromTokenApproval } from "../../hooks/subscription/useSubscriptionPricing";
-import { useUserSubscriptions } from "../../hooks/subscription/useSubscription";
-import { PRODUCT_TYPES } from "@metamask/subscription-controller";
-import { MetaMaskReduxDispatch } from "../../store/store";
-import { getSubscriptions, startSubscriptionWithCrypto } from "../../store/actions";
-import { TRANSACTION_SHIELD_ROUTE } from "../../helpers/constants/routes";
-import { Hex } from "viem";
-import log from "loglevel";
-import { selectIsSignedIn } from "../../selectors/identity/authentication";
-import { getIsUnlocked } from "../../ducks/metamask/metamask";
-import { useDecodedTransactionDataValue } from "../../hooks/useDecodedTransactionData";
-import { getIsShieldSubscriptionActive } from "../../../shared/lib/shield";
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom-v5-compat';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { Hex } from 'viem';
+import log from 'loglevel';
+import { getSignedTransactions } from '../../selectors';
+import { RootState } from '../../pages/confirmations/selectors/preferences';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { useShieldSubscriptionPricingFromTokenApproval } from '../../hooks/subscription/useSubscriptionPricing';
+import { useUserSubscriptions } from '../../hooks/subscription/useSubscription';
+import { MetaMaskReduxDispatch } from '../../store/store';
+import {
+  getSubscriptions,
+  startSubscriptionWithCrypto,
+} from '../../store/actions';
+import { TRANSACTION_SHIELD_ROUTE } from '../../helpers/constants/routes';
+import { selectIsSignedIn } from '../../selectors/identity/authentication';
+import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { useDecodedTransactionDataValue } from '../../hooks/useDecodedTransactionData';
+import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield';
 
 /**
  * Hook to handle shield subscription after subscription crypto approval transaction is signed
@@ -36,11 +42,16 @@ export const useShieldApproveTransaction = () => {
   );
   // check if there is a shield approve transaction signed
   const shieldApproveTransaction = useMemo(() => {
-    return signedTransactions.find((transaction) => transaction.type === TransactionType.shieldSubscriptionApprove);
+    return signedTransactions.find(
+      (transaction) =>
+        transaction.type === TransactionType.shieldSubscriptionApprove,
+    );
   }, [signedTransactions]);
 
-  const { decodeResponse: { pending: decodedApprovalAmountPending }, value: decodedApprovalAmount } =
-    useDecodedTransactionDataValue(shieldApproveTransaction);
+  const {
+    decodeResponse: { pending: decodedApprovalAmountPending },
+    value: decodedApprovalAmount,
+  } = useDecodedTransactionDataValue(shieldApproveTransaction);
 
   const { productPrice, tokenPrice } =
     useShieldSubscriptionPricingFromTokenApproval({
@@ -50,7 +61,10 @@ export const useShieldApproveTransaction = () => {
 
   const { trialedProducts, subscriptions } = useUserSubscriptions();
   const isTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
-  const isActiveShieldSubscription = useMemo(() => getIsShieldSubscriptionActive(subscriptions), [subscriptions]);
+  const isActiveShieldSubscription = useMemo(
+    () => getIsShieldSubscriptionActive(subscriptions),
+    [subscriptions],
+  );
 
   /**
    * Handle shield subscription start after transaction is submitted
@@ -101,10 +115,7 @@ export const useShieldApproveTransaction = () => {
           );
         }
       } else {
-        log.error(
-          'Subscription approve transaction not found',
-          transactionId,
-        );
+        log.error('Subscription approve transaction not found', transactionId);
       }
     },
     [
@@ -118,12 +129,25 @@ export const useShieldApproveTransaction = () => {
   );
 
   useEffect(() => {
-    if (!isSignedIn || !isUnlocked || !shieldApproveTransaction || isActiveShieldSubscription || decodedApprovalAmountPending) {
+    if (
+      !isSignedIn ||
+      !isUnlocked ||
+      !shieldApproveTransaction ||
+      isActiveShieldSubscription ||
+      decodedApprovalAmountPending
+    ) {
       return;
     }
 
     handleShieldSubscriptionStart(shieldApproveTransaction).catch((error) => {
       log.error('Error handling shield subscription start', error);
     });
-  }, [isSignedIn, isUnlocked, isActiveShieldSubscription, shieldApproveTransaction, handleShieldSubscriptionStart, decodedApprovalAmountPending]);
+  }, [
+    isSignedIn,
+    isUnlocked,
+    isActiveShieldSubscription,
+    shieldApproveTransaction,
+    handleShieldSubscriptionStart,
+    decodedApprovalAmountPending,
+  ]);
 };
