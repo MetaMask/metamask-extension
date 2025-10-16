@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { ShieldClaimAttachment } from '../../pages/settings/transaction-shield-tab/types';
 import { useClaims } from '../../contexts/claims/claims';
 
-export const useClaimState = (isClaimViewPage: boolean = false) => {
+export const useClaimState = (isView: boolean = false) => {
   const { pathname } = useLocation();
   const { claims } = useClaims();
   const [email, setEmail] = useState<string>('');
@@ -22,7 +22,7 @@ export const useClaimState = (isClaimViewPage: boolean = false) => {
   const claimId = pathname.split('/').pop();
 
   useEffect(() => {
-    if (isClaimViewPage && claimId) {
+    if (isView && claimId) {
       const claimDetails = claims.find((claim) => claim.id === claimId);
       if (claimDetails) {
         setEmail(claimDetails.email);
@@ -33,7 +33,7 @@ export const useClaimState = (isClaimViewPage: boolean = false) => {
         setUploadedFiles(claimDetails.attachments);
       }
     }
-  }, [isClaimViewPage, claimId, claims]);
+  }, [isView, claimId, claims]);
 
   return {
     email,

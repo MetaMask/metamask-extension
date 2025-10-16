@@ -6,7 +6,10 @@ import React, {
   useMemo,
   ReactNode,
 } from 'react';
-import { ShieldClaim, CLAIM_STATUS } from '../../pages/settings/transaction-shield-tab/types';
+import {
+  ShieldClaim,
+  CLAIM_STATUS,
+} from '../../pages/settings/transaction-shield-tab/types';
 import { getShieldClaims } from '../../store/actions';
 
 type ClaimsContextType = {
@@ -78,4 +81,3 @@ export const useClaims = (): ClaimsContextType => {
   }
   return context;
 };
-

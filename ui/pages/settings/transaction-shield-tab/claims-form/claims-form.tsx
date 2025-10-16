@@ -20,11 +20,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { useDispatch } from 'react-redux';
-import {
-  matchPath,
-  useLocation,
-  useNavigate,
-} from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
 import {
@@ -60,22 +56,12 @@ function isValidTransactionHash(hash: string): boolean {
   return hash.length === 66 && isStrictHexString(hash);
 }
 
-const ClaimsForm = () => {
+const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { pathname } = useLocation();
   const { refetchClaims } = useClaims();
   const [isSubmittingClaim, setIsSubmittingClaim] = useState(false);
-
-  const isClaimViewPage = useMemo(() => {
-    return Boolean(
-      matchPath(
-        `${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL}/:uniqueId`,
-        pathname,
-      ),
-    );
-  }, [pathname]);
 
   const {
     email,
@@ -91,7 +77,7 @@ const ClaimsForm = () => {
     files,
     setFiles,
     uploadedFiles,
-  } = useClaimState(isClaimViewPage);
+  } = useClaimState(isView);
 
   const [errors, setErrors] = useState<
     Record<string, { key: string; msg: string } | undefined>
@@ -263,7 +249,7 @@ const ClaimsForm = () => {
       padding={4}
       gap={4}
     >
-      {!isClaimViewPage && (
+      {!isView && (
         <BannerAlert
           severity={BannerAlertSeverity.Info}
           title="You have claims that are pending approval."
@@ -275,16 +261,11 @@ const ClaimsForm = () => {
         />
       )}
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-        {t(
-          isClaimViewPage
-            ? 'shieldClaimDetailsViewClaims'
-            : 'shieldClaimDetails',
-          [
-            <TextButton key="here-link" className="min-w-0" asChild>
-              <a href="#">{t('here')}</a>
-            </TextButton>,
-          ],
-        )}
+        {t(isView ? 'shieldClaimDetailsViewClaims' : 'shieldClaimDetails', [
+          <TextButton key="here-link" className="min-w-0" asChild>
+            <a href="#">{t('here')}</a>
+          </TextButton>,
+        ])}
       </Text>
       <FormTextField
         label={`${t('shieldClaimEmail')}*`}
@@ -306,7 +287,7 @@ const ClaimsForm = () => {
         error={Boolean(errors.email)}
         required
         width={BlockSize.Full}
-        readOnly={isClaimViewPage}
+        readOnly={isView}
       />
       <FormTextField
         label={`${t('shieldClaimImpactedWalletAddress')}*`}
@@ -332,7 +313,7 @@ const ClaimsForm = () => {
         error={Boolean(errors.impactedWalletAddress)}
         required
         width={BlockSize.Full}
-        readOnly={isClaimViewPage}
+        readOnly={isView}
       />
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
@@ -365,7 +346,7 @@ const ClaimsForm = () => {
         error={Boolean(errors.impactedTransactionHash)}
         required
         width={BlockSize.Full}
-        readOnly={isClaimViewPage}
+        readOnly={isView}
       />
       <FormTextField
         label={`${t('shieldClaimReimbursementWalletAddress')}*`}
@@ -391,7 +372,7 @@ const ClaimsForm = () => {
         error={Boolean(errors.reimbursementWalletAddress)}
         required
         width={BlockSize.Full}
-        readOnly={isClaimViewPage}
+        readOnly={isView}
       />
       <Box gap={2}>
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
@@ -411,7 +392,7 @@ const ClaimsForm = () => {
           paddingTop={3}
           paddingBottom={3}
           maxLength={2000}
-          readOnly={isClaimViewPage}
+          readOnly={isView}
         />
         {errors.caseDescription && (
           <Text
@@ -423,7 +404,7 @@ const ClaimsForm = () => {
           </Text>
         )}
       </Box>
-      {isClaimViewPage ? (
+      {isView ? (
         <Box gap={2}>
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {t('shieldClaimFileUploader')}
@@ -475,7 +456,7 @@ const ClaimsForm = () => {
         />
       )}
       <Box className="settings-page__content-item-col">
-        {isClaimViewPage ? (
+        {isView ? (
           <Button
             data-testid="shield-claim-back-button"
             variant={ButtonVariant.Secondary}
