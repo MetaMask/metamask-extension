@@ -24,7 +24,7 @@ export const Recipient = ({
   recipient: RecipientType;
   onClick: (recipient: RecipientType) => void;
 }) => {
-  const { address } = recipient;
+  const { address, seedIcon } = recipient;
   const recipientName = isAccount
     ? recipient.accountGroupName
     : recipient.contactName;
@@ -48,7 +48,7 @@ export const Recipient = ({
       onClick={() => onClick(recipient)}
     >
       <PreferredAvatar
-        address={address}
+        address={seedIcon ?? address}
         size={AvatarAccountSize.Lg}
         data-testid="avatar"
       />

@@ -287,6 +287,14 @@ export function getShowConnectionsRemovedModal(state) {
   return state.appState.showConnectionsRemovedModal;
 }
 
+export function getShowShieldEntryModal(state) {
+  return state.appState.shieldEntryModal?.show;
+}
+
+export function getShouldSubmitEventsForShieldEntryModal(state) {
+  return state.appState.shieldEntryModal?.shouldSubmitEvents;
+}
+
 /** `metamask` slice selectors */
 
 export function getNetworkIdentifier(state) {
@@ -3028,6 +3036,16 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
  */
 export function getIsSecurityAlertsEnabled(state) {
   return state.metamask.securityAlertsEnabled;
+}
+
+/**
+ * To get the `getUsePhishDetect` value which determines whether phishing detection is enabled
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUsePhishDetect(state) {
+  return state.metamask.usePhishDetect;
 }
 
 /**
