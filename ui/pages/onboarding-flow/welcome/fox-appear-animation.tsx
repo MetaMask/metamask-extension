@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useRive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
-import Spinner from '../../../components/ui/spinner';
 
 type FoxAppearAnimationProps = {
   isLoader: boolean;
@@ -62,7 +61,7 @@ export default function FoxAppearAnimation({
       <Box
         className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
       >
-        {isLoader && <Spinner className="riv-animation__spinner" />}
+        {isLoader && <Box className="riv-animation__spinner" />}
       </Box>
     );
   }
@@ -72,7 +71,14 @@ export default function FoxAppearAnimation({
       className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
     >
       <RiveComponent className="riv-animation__canvas" />
-      {isLoader && <Spinner className="riv-animation__spinner" />}
+      {isLoader && (
+        <img
+          data-testid="loading-indicator"
+          className="riv-animation__spinner"
+          src="./images/spinner.gif"
+          alt=""
+        />
+      )}
     </Box>
   );
 }

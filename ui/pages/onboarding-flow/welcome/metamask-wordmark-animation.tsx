@@ -44,7 +44,7 @@ export default function MetamaskWordMarkAnimation({
           if (!isAnimationComplete) {
             setIsAnimationComplete(true);
           }
-        }, 2500); // Adjust this based on your animation duration (in milliseconds)
+        }, 1000); // Adjust this based on your animation duration (in milliseconds)
       }
     },
   });

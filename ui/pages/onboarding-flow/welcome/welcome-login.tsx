@@ -23,8 +23,10 @@ import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function WelcomeLogin({
   onLogin,
+  isAnimationComplete,
 }: {
   onLogin: (loginType: LoginType, loginOption: string) => Promise<void>;
+  isAnimationComplete: boolean;
 }) {
   const t = useI18nContext();
   const [showLoginOptions, setShowLoginOptions] = useState(false);
@@ -75,7 +77,7 @@ export default function WelcomeLogin({
         setLoginOption(option);
         setIsTransitioning(false);
         timeoutRef.current = null;
-      }, 400);
+      }, 100);
     } else {
       setShowLoginOptions(true);
       setLoginOption(option);
@@ -87,7 +89,17 @@ export default function WelcomeLogin({
 
   return (
     <>
-      <Box className="welcome-login" data-testid="get-started">
+      <Box
+        data-testid="get-started"
+        style={{
+          opacity: isAnimationComplete ? 1 : 0,
+          transform: isAnimationComplete
+            ? 'translateY(0) scale(1)'
+            : 'translateY(80px) scale(0.8)',
+          transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+        }}
+        className={'welcome-login'}
+      >
         {isSeedlessOnboardingFeatureEnabled &&
         showLoginOptions &&
         loginOption ? (
@@ -100,7 +112,7 @@ export default function WelcomeLogin({
             flexDirection={FlexDirection.Column}
             width={BlockSize.Full}
             gap={4}
-            className={`welcome-login__cta ${
+            className={`${
               isTransitioning ? 'welcome-login__cta--fade-out' : ''
             }`}
           >

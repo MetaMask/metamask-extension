@@ -403,11 +403,14 @@ export default function OnboardingWelcome() {
         />
       )}
 
-      {isAnimationComplete && !isLoggingIn && (
+      {!isLoggingIn && (
         <>
-          <WelcomeLogin onLogin={handleLogin} />
+          <WelcomeLogin
+            onLogin={handleLogin}
+            isAnimationComplete={isAnimationComplete}
+          />
 
-          {!isTestEnvironment && <FoxAppearAnimation />}
+          {!isTestEnvironment && isAnimationComplete && <FoxAppearAnimation />}
 
           {loginError !== null && (
             <LoginErrorModal

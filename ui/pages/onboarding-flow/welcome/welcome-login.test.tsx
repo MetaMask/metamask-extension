@@ -9,7 +9,7 @@ describe('Welcome login', () => {
     const mockOnLogin = jest.fn();
     const store = configureStore({});
     const { getByTestId, getByText } = renderWithProvider(
-      <WelcomeLogin onLogin={mockOnLogin} />,
+      <WelcomeLogin onLogin={mockOnLogin} isAnimationComplete={false} />,
       store,
     );
     expect(getByTestId('get-started')).toBeInTheDocument();
@@ -26,7 +26,7 @@ describe('Welcome login', () => {
 
     const store = configureStore({});
     const { getByTestId, getByText } = renderWithProvider(
-      <WelcomeLogin onLogin={mockOnLogin} />,
+      <WelcomeLogin onLogin={mockOnLogin} isAnimationComplete={true} />,
       store,
     );
     expect(getByTestId('get-started')).toBeInTheDocument();

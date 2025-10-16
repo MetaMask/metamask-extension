@@ -1,6 +1,5 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { Driver } from '../../../webdriver/driver';
-import { largeDelayMs } from '../../../helpers';
 
 class StartOnboardingPage {
   private driver: Driver;
@@ -81,8 +80,6 @@ class StartOnboardingPage {
 
   async checkLoginPageIsLoaded(): Promise<void> {
     try {
-      // Wait for the page to load
-      await this.driver.delay(largeDelayMs);
       await this.driver.waitForMultipleSelectors([
         this.createWalletButton,
         this.importWalletButton,
