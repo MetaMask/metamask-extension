@@ -6,10 +6,16 @@ import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import * as tokenUtils from '../../../../../utils/token';
 import { Erc20TokenPeriodicDetails } from './erc20-token-periodic-details';
+import { formatPeriodDuration } from './typed-sign-permission-util';
 
 jest.mock('../../../../../utils/token', () => ({
   ...jest.requireActual('../../../../../utils/token'),
   fetchErc20Decimals: jest.fn().mockResolvedValue(2),
+}));
+
+// Mock the formatPeriodDuration utility function
+jest.mock('./typed-sign-permission-util', () => ({
+  formatPeriodDuration: jest.fn().mockReturnValue('Every day'),
 }));
 
 describe('Erc20TokenPeriodicDetails', () => {
@@ -165,10 +171,12 @@ describe('Erc20TokenPeriodicDetails', () => {
         ...defaultProps,
         permission: permissionWithWeeklyPeriod,
       });
-
       expect(detailsSection).toBeInTheDocument();
-
-      expect(detailsSection?.textContent?.includes('Weekly')).toBe(true);
+      expect(formatPeriodDuration).toHaveBeenCalledWith(
+        expect.any(Function),
+        604800,
+      );
+      expect(detailsSection?.textContent?.includes('Every day')).toBe(true);
     });
 
     it('renders with hourly period duration', () => {
@@ -184,30 +192,33 @@ describe('Erc20TokenPeriodicDetails', () => {
         ...defaultProps,
         permission: permissionWithHourlyPeriod,
       });
-
       expect(detailsSection).toBeInTheDocument();
-
-      expect(detailsSection?.textContent?.includes('Hourly')).toBe(true);
+      expect(formatPeriodDuration).toHaveBeenCalledWith(
+        expect.any(Function),
+        3600,
+      );
+      expect(detailsSection?.textContent?.includes('Every day')).toBe(true);
     });
 
-    it('throws an error when period duration is 0 seconds', () => {
-      const permissionWithZeroDuration = {
+    it('renders with complex period duration', () => {
+      const permissionWithComplexPeriod = {
         ...mockPermission,
         data: {
           ...mockPermission.data,
-          periodDuration: 0,
+          periodDuration: 950400, // 1 week, 4 days, 1 hour in seconds
         },
-      } as Erc20TokenPeriodicPermission;
+      };
 
-      expect(() =>
-        renderWithConfirmContextProvider(
-          <Erc20TokenPeriodicDetails
-            {...defaultProps}
-            permission={permissionWithZeroDuration}
-          />,
-          getMockStore(),
-        ),
-      ).toThrow('Cannot format period duration of 0 seconds');
+      const detailsSection = renderAndGetDetailsSection({
+        ...defaultProps,
+        permission: permissionWithComplexPeriod,
+      });
+      expect(detailsSection).toBeInTheDocument();
+      expect(formatPeriodDuration).toHaveBeenCalledWith(
+        expect.any(Function),
+        950400,
+      );
+      expect(detailsSection?.textContent?.includes('Every day')).toBe(true);
     });
   });
 });

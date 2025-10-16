@@ -58,7 +58,7 @@ export const Erc20TokenPeriodicDetails: React.FC<{
 
       <ConfirmInfoRow label={t('confirmFieldFrequency')}>
         <Text variant={TextVariant.BodyMd}>
-          {formatPeriodDuration(periodDuration)}
+          {formatPeriodDuration(t, periodDuration)}
         </Text>
       </ConfirmInfoRow>
 

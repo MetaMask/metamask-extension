@@ -17,90 +17,74 @@ describe('typed-sign-permission-util', () => {
   });
 
   describe('formatPeriodDuration', () => {
-    it('returns "Weekly" for WEEK duration', () => {
-      const result = formatPeriodDuration(604800);
-      expect(result).toEqual('Weekly');
+    it('returns translator literal for HOUR duration', () => {
+      const t = jest.fn().mockReturnValue('HOURLY_TRANSLATION');
+      const result = formatPeriodDuration(t, 3600);
+      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationHourly');
+      expect(result).toEqual('HOURLY_TRANSLATION');
     });
 
-    it('returns "Daily" for DAY duration', () => {
-      const result = formatPeriodDuration(86400);
-      expect(result).toEqual('Daily');
+    it('returns translator literal for WEEK duration', () => {
+      const t = jest.fn().mockReturnValue('WEEKLY_TRANSLATION');
+      const result = formatPeriodDuration(t, 604800);
+      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationWeekly');
+      expect(result).toEqual('WEEKLY_TRANSLATION');
     });
 
-    it('formats bi-weekly correctly', () => {
-      const result = formatPeriodDuration(1209600);
-      expect(result).toEqual('Bi-Weekly');
+    it('returns translator literal for DAY duration', () => {
+      const t = jest.fn().mockReturnValue('DAILY_TRANSLATION');
+      const result = formatPeriodDuration(t, 86400);
+      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationDaily');
+      expect(result).toEqual('DAILY_TRANSLATION');
+    });
+
+    it('returns translator literal for FORTNIGHT duration', () => {
+      const t = jest.fn().mockReturnValue('BIWEEKLY_TRANSLATION');
+      const result = formatPeriodDuration(t, 1209600);
+      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationBiWeekly');
+      expect(result).toEqual('BIWEEKLY_TRANSLATION');
     });
 
     it('formats multiple weeks correctly', () => {
-      const result = formatPeriodDuration(1814400);
-      expect(result).toEqual('Every 3 weeks');
+      const t = jest.fn().mockReturnValue('SECONDS_TRANSLATION');
+      const result = formatPeriodDuration(t, 1814400);
+      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationSeconds');
+      expect(result).toEqual('1814400 SECONDS_TRANSLATION');
     });
 
-    it('formats weeks and days correctly', () => {
-      const result = formatPeriodDuration(950400);
-      expect(result).toEqual('Every 1 week and 4 days');
+    it('returns translator literal for MONTH duration', () => {
+      const t = jest.fn().mockReturnValue('MONTHLY_TRANSLATION');
+      const result = formatPeriodDuration(t, 2592000);
+      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationMonthly');
+      expect(result).toEqual('MONTHLY_TRANSLATION');
     });
 
-    it('formats weeks, days, and hours correctly', () => {
-      const result = formatPeriodDuration(954000);
-      expect(result).toEqual('Every 1 week, 4 days and 1 hour');
+    it('returns translator literal for YEAR duration', () => {
+      const t = jest.fn().mockReturnValue('YEARLY_TRANSLATION');
+      const result = formatPeriodDuration(t, 31536000);
+      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationYearly');
+      expect(result).toEqual('YEARLY_TRANSLATION');
     });
 
-    it('formats weeks, days, hours, and minutes correctly', () => {
-      const result = formatPeriodDuration(954060);
-      expect(result).toEqual('Every 1 week, 4 days, 1 hour and 1 minute');
-    });
-
-    it('formats weeks, days, hours, minutes, and seconds correctly', () => {
-      const result = formatPeriodDuration(954061);
-      expect(result).toEqual(
-        'Every 1 week, 4 days, 1 hour, 1 minute and 1 second',
-      );
-    });
-
-    it('formats only hours correctly', () => {
-      const result = formatPeriodDuration(7200);
-      expect(result).toEqual('Every 2 hours');
-    });
-
-    it('formats only minutes correctly', () => {
-      const result = formatPeriodDuration(120);
-      expect(result).toEqual('Every 2 minutes');
-    });
-
-    it('formats only seconds correctly', () => {
-      const result = formatPeriodDuration(30);
-      expect(result).toEqual('Every 30 seconds');
-    });
-
-    it('handles single units correctly', () => {
-      expect(formatPeriodDuration(3600)).toEqual('Hourly');
-      expect(formatPeriodDuration(60)).toEqual('Every 1 minute');
-      expect(formatPeriodDuration(1)).toEqual('Every 1 second');
+    it('returns seconds as fallback for non-standard duration', () => {
+      const t = jest.fn().mockReturnValue('SECONDS_TRANSLATION');
+      const result = formatPeriodDuration(t, 45);
+      expect(t).toHaveBeenCalledWith('confirmFieldPeriodDurationSeconds');
+      expect(result).toEqual('45 SECONDS_TRANSLATION');
     });
 
     it('throws an error when period duration is 0 seconds', () => {
-      expect(() => formatPeriodDuration(0)).toThrow(
+      const t = jest.fn();
+      expect(() => formatPeriodDuration(t, 0)).toThrow(
         'Cannot format period duration of 0 seconds',
       );
     });
 
-    it('handles fractional seconds by flooring', () => {
-      const result = formatPeriodDuration(1.5);
-      expect(result).toEqual('Every 1 second');
-    });
-
-    it('handles complex combinations', () => {
-      const result = formatPeriodDuration(1234567);
-      expect(result).toEqual(
-        'Every 2 weeks, 6 hours, 56 minutes and 7 seconds',
+    it('throws an error when period duration is negative', () => {
+      const t = jest.fn();
+      expect(() => formatPeriodDuration(t, -1)).toThrow(
+        'Cannot format negative period duration',
       );
-    });
-
-    it('handles very large durations', () => {
-      const result = formatPeriodDuration(31536000);
-      expect(result).toEqual('Yearly');
     });
   });
 

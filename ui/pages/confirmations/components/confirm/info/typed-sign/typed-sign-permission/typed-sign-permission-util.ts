@@ -2,7 +2,6 @@ import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
   DAY,
-  MINUTE,
   HOUR,
   WEEK,
   SECOND,
@@ -12,83 +11,48 @@ import {
 } from '../../../../../../../../shared/constants/time';
 import { selectNetworkConfigurationByChainId } from '../../../../../../../selectors';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../../../selectors/assets';
+import type { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 
 /**
  * Formats a period duration in seconds to a human-readable string.
  * Converts common durations (daily, weekly) to readable labels, otherwise shows seconds.
  *
+ * @param i18nContext
  * @param periodSeconds - The duration in seconds to format
  * @returns A formatted string representing the duration (e.g., "Daily", "Weekly", "3600 seconds")
  */
-export const formatPeriodDuration = (periodSeconds: number) => {
+export const formatPeriodDuration = (
+  i18nContext: ReturnType<typeof useI18nContext>,
+  periodSeconds: number,
+) => {
   if (periodSeconds === 0) {
     throw new Error('Cannot format period duration of 0 seconds');
   }
 
+  if (periodSeconds < 0) {
+    throw new Error('Cannot format negative period duration');
+  }
+
   // multiply by 1000 to convert to milliseconds
-  let periodMilliseconds = periodSeconds * SECOND;
+  const periodMilliseconds = periodSeconds * SECOND;
 
   switch (periodMilliseconds) {
     case HOUR:
-      return 'Hourly';
+      return i18nContext('confirmFieldPeriodDurationHourly');
     case DAY:
-      return 'Daily';
+      return i18nContext('confirmFieldPeriodDurationDaily');
     case WEEK:
-      return 'Weekly';
+      return i18nContext('confirmFieldPeriodDurationWeekly');
     case FORTNIGHT:
-      return 'Bi-Weekly';
+      return i18nContext('confirmFieldPeriodDurationBiWeekly');
     case MONTH:
-      return 'Monthly';
+      return i18nContext('confirmFieldPeriodDurationMonthly');
     case YEAR:
-      return 'Yearly';
+      return i18nContext('confirmFieldPeriodDurationYearly');
     default:
-      break;
+      // this should never happen, but we return the period in seconds as a fallback
+      return `${periodSeconds} ${i18nContext('confirmFieldPeriodDurationSeconds')}`;
   }
-
-  const periods: string[] = [];
-
-  if (periodMilliseconds >= WEEK) {
-    const weekCount = Math.floor(periodMilliseconds / WEEK);
-    periods.push(`${weekCount} week${weekCount > 1 ? 's' : ''}`);
-    periodMilliseconds %= WEEK;
-  }
-
-  if (periodMilliseconds >= DAY) {
-    const dayCount = Math.floor(periodMilliseconds / DAY);
-    periods.push(`${dayCount} day${dayCount > 1 ? 's' : ''}`);
-    periodMilliseconds %= DAY;
-  }
-
-  if (periodMilliseconds >= HOUR) {
-    const hourCount = Math.floor(periodMilliseconds / HOUR);
-    periods.push(`${hourCount} hour${hourCount > 1 ? 's' : ''}`);
-    periodMilliseconds %= HOUR;
-  }
-
-  if (periodMilliseconds >= MINUTE) {
-    const minuteCount = Math.floor(periodMilliseconds / MINUTE);
-    periods.push(`${minuteCount} minute${minuteCount > 1 ? 's' : ''}`);
-    periodMilliseconds %= MINUTE;
-  }
-
-  if (periodMilliseconds > 0) {
-    const secondsCount = Math.floor(periodMilliseconds / SECOND);
-    periods.push(`${secondsCount} second${secondsCount > 1 ? 's' : ''}`);
-  }
-
-  const result = periods.reduce((acc, period, index) => {
-    // only add 'and' for the final period part, and only if there's more than one period
-    const isFirstPeriod = index === 0;
-    const hasAnd = !isFirstPeriod && index === periods.length - 1;
-
-    const separatorIfNeeded = hasAnd ? ' and ' : ', ';
-
-    const separator = isFirstPeriod ? '' : separatorIfNeeded;
-
-    return `${acc}${separator}${period}`;
-  }, '');
-
-  return `Every ${result}`;
 };
 
 /**

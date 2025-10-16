@@ -145,7 +145,10 @@ describe('NativeTokenPeriodicDetails', () => {
         permission: permissionWithWeeklyPeriod,
       });
       expect(detailsSection).toBeInTheDocument();
-      expect(formatPeriodDuration).toHaveBeenCalledWith(604800);
+      expect(formatPeriodDuration).toHaveBeenCalledWith(
+        expect.any(Function),
+        604800,
+      );
       expect(detailsSection?.textContent?.includes('Every day')).toBe(true);
     });
 
@@ -163,7 +166,10 @@ describe('NativeTokenPeriodicDetails', () => {
         permission: permissionWithHourlyPeriod,
       });
       expect(detailsSection).toBeInTheDocument();
-      expect(formatPeriodDuration).toHaveBeenCalledWith(3600);
+      expect(formatPeriodDuration).toHaveBeenCalledWith(
+        expect.any(Function),
+        3600,
+      );
       expect(detailsSection?.textContent?.includes('Every day')).toBe(true);
     });
 
@@ -181,7 +187,10 @@ describe('NativeTokenPeriodicDetails', () => {
         permission: permissionWithComplexPeriod,
       });
       expect(detailsSection).toBeInTheDocument();
-      expect(formatPeriodDuration).toHaveBeenCalledWith(950400);
+      expect(formatPeriodDuration).toHaveBeenCalledWith(
+        expect.any(Function),
+        950400,
+      );
       expect(detailsSection?.textContent?.includes('Every day')).toBe(true);
     });
   });
