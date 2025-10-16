@@ -44,6 +44,11 @@ export enum PasswordChangeToastType {
   Errored = 'errored',
 }
 
+export enum ClaimSubmitToastType {
+  Success = 'success',
+  Errored = 'errored',
+}
+
 export type NetworkConnectionBanner =
   | { status: 'unknown' | 'available' }
   | {
