@@ -11,9 +11,11 @@ import {
   getPercentageValue,
   getPercentageGasDifference,
 } from '../dapp-swap-comparison-utils';
+import { useConversionRate } from './useConversionRate';
 
 export function useDappSwapComparisonInfo() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { getConversionRateForToken } = useConversionRate();
   const {
     chainId,
     id: transactionId,
@@ -50,6 +52,22 @@ export function useDappSwapComparisonInfo() {
     fetchQuotes(quotesInput).then((quotes) => {
       const selectedQuoteIndex = getBestQuote(quotes);
 
+      const sourceTokenRate = getConversionRateForToken(
+        quotesInput.srcTokenAddress as Hex,
+        chainId,
+      );
+
+      const destinationTokenRate = getConversionRateForToken(
+        quotesInput.destTokenAddress as Hex,
+        chainId,
+      );
+
+      console.log(
+        '--------------------------------',
+        sourceTokenRate,
+        destinationTokenRate,
+      );
+
       const percentageChangeInTokenAmount = getPercentageValue(
         quotes[selectedQuoteIndex].quote.destTokenAmount,
         amountMin,
@@ -77,6 +95,7 @@ export function useDappSwapComparisonInfo() {
     chainId,
     data,
     gas,
+    getConversionRateForToken,
     simulationData,
   ]);
 }
