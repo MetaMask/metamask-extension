@@ -120,6 +120,7 @@ body:
         - AirGap Vault
         - imToken
         - OneKey
+        - Keycard Shell
         - Other (please elaborate in the "Additional Context" section)
   - type: textarea
     id: additional
