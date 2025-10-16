@@ -198,24 +198,21 @@ describe('Vault Corruption', function () {
     // Confirm we want to recover/reset.
     const prompt = await driver.driver.switchTo().alert();
     if (confirm) {
-      await prompt.accept();
-    } else {
-      await prompt.dismiss();
-    }
-
-    if (confirm) {
-      // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing to window to become stale
-      await driver.delay(2000);
       try {
+        await prompt.accept();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-
       } catch (error) {
         // to mitigate a race condition where the tab is closed after confirming (issue #36916)
         await driver.openNewPage('about:blank');
         await driver.navigate();
       }
+    } else {
+      await prompt.dismiss();
+    }
+
+    if (confirm) {
       // the button should be disabled if the user confirmed the prompt, but given this is a transient state that goes very fast
       // it can cause a race condition where the element becomes stale, so we check directly that the element is not present as that's a stable state that occurs eventually
       await driver.assertElementNotPresent('#critical-error-button');
