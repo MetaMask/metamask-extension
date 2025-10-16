@@ -75,9 +75,9 @@ const parseTransactionData = (data?: string) => {
     return { inputs: [], commandBytes: [] };
   }
 
-  const commands = parsedTransactionData.args.commands as string;
-  const inputs = parsedTransactionData.args.inputs as string[];
-  const commandBytes = commands.slice(2).match(/.{1,2}/gu) as string[];
+  const commands = parsedTransactionData.args.commands;
+  const inputs = parsedTransactionData.args.inputs;
+  const commandBytes = commands.slice(2).match(/.{1,2}/gu) ?? [];
 
   return { inputs, commandBytes };
 };
@@ -93,7 +93,7 @@ export const getDataFromSwap = (
   const { commandBytes, inputs } = parseTransactionData(data);
 
   const sweepIndex = commandBytes.findIndex(
-    (commandByte) => commandByte === '04',
+    (commandByte: string) => commandByte === '04',
   );
 
   if (sweepIndex >= 0) {
@@ -112,7 +112,7 @@ export const getDataFromSwap = (
     };
   } else {
     const seaportIndex = commandBytes.findIndex(
-      (commandByte) => commandByte === '10',
+      (commandByte: string) => commandByte === '10',
     );
 
     if (seaportIndex >= 0) {
@@ -136,7 +136,9 @@ export const getDataFromSwap = (
   return { quotesInput, amountMin, erc20TokenAddresses };
 };
 
-export const getBestQuote = (quotes: QuoteResponse[]) => {
+export const getBestQuote = (
+  quotes: QuoteResponse[],
+): QuoteResponse | undefined => {
   let selectedQuoteIndex = -1;
   let highestMinDestTokenAmount = '-1';
 

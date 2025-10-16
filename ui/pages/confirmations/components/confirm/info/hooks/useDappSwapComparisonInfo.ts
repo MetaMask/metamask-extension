@@ -117,7 +117,11 @@ export function useDappSwapComparisonInfo() {
       return;
     }
 
-    const selectedQuote = getBestQuote(quotes) as QuoteResponse;
+    const selectedQuote = getBestQuote(quotes);
+
+    if (!selectedQuote) {
+      return;
+    }
 
     const { destTokenAddress, srcTokenAmount, srcTokenAddress } = quotesInput;
     const {
