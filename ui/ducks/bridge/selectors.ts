@@ -336,19 +336,14 @@ export const getToChain = createSelector(
       );
     }
 
-    // Check if source chain can be used as destination
-    // (Bitcoin can't bridge to Bitcoin, for example)
-    const isFromChainAvailable = toChains.some(
-      ({ chainId }) => chainId === fromChain?.chainId,
-    );
-
-    if (isFromChainAvailable) {
-      return fromChain;
+    // Bitcoin can only bridge to EVM chains, not to Bitcoin
+    // So if source is Bitcoin, default to first available EVM chain instead
+    if (fromChain && isBitcoinChainId(fromChain.chainId)) {
+      return toChains[0];
     }
 
-    // Source chain not available - default to first available destination
-    // Return undefined if no destinations available
-    return toChains.length > 0 ? toChains[0] : undefined;
+    // For all other chains, default to same chain (swap mode)
+    return fromChain;
   },
 );
 
