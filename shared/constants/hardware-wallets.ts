@@ -92,6 +92,7 @@ export enum HardwareAffiliateLinks {
   Ngrave = 'https://shop.ngrave.io/',
   ImToken = 'https://token.im/',
   OneKey = 'https://onekey.so/products/onekey-pro-hardware-wallet/',
+  KShell = 'https://get.keycard.tech/pages/keycard-shell',
 }
 
 export enum HardwareAffiliateTutorialLinks {
@@ -105,6 +106,7 @@ export enum HardwareAffiliateTutorialLinks {
   Ngrave = 'https://ngrave.io/zero',
   ImToken = 'https://support.token.im/hc/en-us/articles/24652624775961/',
   OneKey = 'https://help.onekey.so/en/articles/11461108-connect-onekey-pro-to-metamask-via-qr-codes-air-gapped',
+  KShell = 'https://keycard.tech/help/connect-keycard-shell-to-a-wallet-app',
 }
 
 /**
