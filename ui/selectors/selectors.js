@@ -3158,14 +3158,17 @@ export function getIsWatchEthereumAccountEnabled(state) {
  * Get the state of the `bitcoinSupportEnabled` flag with version check.
  * Uses bitcoinAccounts feature flag.
  *
- * @param {*} state
+ * @param {*} _state
  * @returns The state of the `bitcoinSupportEnabled` flag.
  */
-export function getIsBitcoinSupportEnabled(state) {
+export function getIsBitcoinSupportEnabled(
+  // Use `_` prefix to avoid lint issue if `bitcoin` code-fence is not enabled
+  _state,
+) {
   // When bitcoin is not enabled, always return false
   let enabled = false;
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  const { bitcoinAccounts } = getRemoteFeatureFlags(state);
+  const { bitcoinAccounts } = getRemoteFeatureFlags(_state);
   enabled = isMultichainFeatureEnabled(bitcoinAccounts);
   ///: END:ONLY_INCLUDE_IF
   return enabled;
