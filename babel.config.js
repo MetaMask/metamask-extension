@@ -5,7 +5,8 @@ const ReactCompilerConfig = {
   sources: (filename) => {
     return (
       filename.indexOf('ui/') !== -1 &&
-      filename.indexOf('ui/pages/confirmations') === -1
+      filename.indexOf('ui/pages/confirmations') === -1 &&
+      filename.indexOf('ui/components/app/identity') === -1
     );
   },
 };
