@@ -1,5 +1,7 @@
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
+import {
+  SmartTransactionsController,
+  ClientId,
+} from '@metamask/smart-transactions-controller';
 import { Messenger } from '@metamask/base-controller';
 import type { AccountsController } from '@metamask/accounts-controller';
 import type { TransactionController } from '@metamask/transaction-controller';
@@ -276,43 +278,6 @@ describe('SmartTransactionsController Init', () => {
     );
   });
 
-  it('configures getNonceLock correctly', async () => {
-    const { fullRequest, mocks } = buildInitRequest();
-    SmartTransactionsControllerInit(fullRequest);
-
-    const constructorCall =
-      smartTransactionsControllerClassMock.mock.calls[0][0];
-    const { getNonceLock } = constructorCall;
-
-    const address = '0xtest';
-    const networkClientId = 'mainnet';
-    const result = await getNonceLock(address, networkClientId);
-
-    expect(mocks.transactionController.getNonceLock).toHaveBeenCalledWith(
-      address,
-      'mainnet',
-    );
-    expect(result).toHaveProperty('releaseLock');
-  });
-
-  it('configures confirmExternalTransaction correctly', () => {
-    const { fullRequest, mocks } = buildInitRequest();
-    SmartTransactionsControllerInit(fullRequest);
-
-    const constructorCall =
-      smartTransactionsControllerClassMock.mock.calls[0][0];
-    const { confirmExternalTransaction } = constructorCall;
-
-    const args = ['arg1', 'arg2'] as unknown as Parameters<
-      TransactionController['confirmExternalTransaction']
-    >;
-    confirmExternalTransaction(...args);
-
-    expect(
-      mocks.transactionController.confirmExternalTransaction,
-    ).toHaveBeenCalledWith(...args);
-  });
-
   it('configures trackMetaMetricsEvent correctly', () => {
     const { fullRequest } = buildInitRequest();
     SmartTransactionsControllerInit(fullRequest);
@@ -338,44 +303,6 @@ describe('SmartTransactionsController Init', () => {
     expect(fullRequest.initMessenger.call).toHaveBeenCalledWith(
       'MetaMetricsController:trackEvent',
       testPayload,
-    );
-  });
-
-  it('configures getTransactions correctly', () => {
-    const { fullRequest, mocks } = buildInitRequest();
-    SmartTransactionsControllerInit(fullRequest);
-
-    const constructorCall =
-      smartTransactionsControllerClassMock.mock.calls[0][0];
-    const { getTransactions } = constructorCall;
-
-    const args = [] as Parameters<TransactionController['getTransactions']>;
-    getTransactions(...args);
-
-    expect(mocks.transactionController.getTransactions).toHaveBeenCalledWith(
-      ...args,
-    );
-  });
-
-  it('configures updateTransaction correctly', () => {
-    const { fullRequest, mocks } = buildInitRequest();
-    SmartTransactionsControllerInit(fullRequest);
-
-    const constructorCall =
-      smartTransactionsControllerClassMock.mock.calls[0][0];
-    const { updateTransaction } = constructorCall;
-
-    const transactionMeta = {
-      id: 'txId',
-      status: 'confirmed' as const,
-    } as Parameters<TransactionController['updateTransaction']>[0];
-
-    const note = 'test note';
-    updateTransaction(transactionMeta, note);
-
-    expect(mocks.transactionController.updateTransaction).toHaveBeenCalledWith(
-      transactionMeta,
-      note,
     );
   });
 

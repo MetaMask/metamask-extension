@@ -287,8 +287,12 @@ export function getShowConnectionsRemovedModal(state) {
   return state.appState.showConnectionsRemovedModal;
 }
 
-export function getShowShieldEntryModalOnce(state) {
-  return state.metamask.showShieldEntryModalOnce;
+export function getShowShieldEntryModal(state) {
+  return state.appState.shieldEntryModal?.show;
+}
+
+export function getShouldSubmitEventsForShieldEntryModal(state) {
+  return state.appState.shieldEntryModal?.shouldSubmitEvents;
 }
 
 /** `metamask` slice selectors */
@@ -956,7 +960,9 @@ export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
   (internalAccounts, accounts) => {
     return internalAccounts.map((internalAccount) => ({
       ...internalAccount,
-      ...accounts[internalAccount.address],
+      ...(internalAccount?.address
+        ? accounts[internalAccount.address] || {}
+        : {}),
     }));
   },
 );
