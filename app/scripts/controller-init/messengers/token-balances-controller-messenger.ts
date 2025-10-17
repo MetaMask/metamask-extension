@@ -17,7 +17,7 @@ import {
   AccountTrackerUpdateStakedBalancesAction,
   AccountTrackerControllerGetStateAction,
   TokensControllerState,
-  type TokenDetectionControllerAddDetectedTokensViaWsAction
+  type TokenDetectionControllerAddDetectedTokensViaWsAction,
 } from '@metamask/assets-controllers';
 import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
