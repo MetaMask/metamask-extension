@@ -9,19 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.6.0]
 
-### Uncategorized
-
-- Use stable empty references (#36910)
-- chore: update `CODEOWNERS.md` with `@metamask/wallet-integrations` team ownership (#36577)
-- chore: Bump Snaps packages (#36613)
-- Fixed a bug where first permitting accounts via the EVM provider would cause all requests to the Solana Wallet Standard provider (#36434)
-  to fail with an `The requested account and/or method has not been
-authorized by the user.` error until the user fully revoked dapp
-  permissions and then permitted accounts using the Solana Wallet Standard
-  provider first.
-- chore: Remove `imagemin` (#36563)
-- Update tar-fs to 2.1.4 (#36560)
-
 ### Added
 
 - Integrated Backend WebSocket Service and Account Activity Service for real-time balance updates (feature-flagged) (#36819)
@@ -72,7 +59,12 @@ authorized by the user.` error until the user fully revoked dapp
 - Increase our security posture by locking down `cross_origin_opener_policy` to `same-origin-allow-popups` openers only. (#36500)
 - Show correct available token amount in shield subscription plan (#36494)
 - fix: UI review updates (#36523)
-- None (#36555)
+- Helps with ongoing performance regressions when using Solana (#36613)
+- Fixes a bug where first permitting accounts via the EVM provider would cause all requests to the Solana Wallet Standard provider (#36434)
+  to fail with an `The requested account and/or method has not been
+authorized by the user.` error until the user fully revoked dapp
+  permissions and then permitted accounts using the Solana Wallet Standard
+  provider first.
 
 ## [13.5.0]
 
