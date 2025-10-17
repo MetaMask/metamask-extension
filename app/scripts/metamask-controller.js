@@ -1008,6 +1008,7 @@ export default class MetamaskController extends EventEmitter {
      * On chrome profile re-start, they will be re-initialized.
      */
     const resetOnRestartStore = {
+      AccountTrackerController: this.accountTrackerController,
       TokenRatesController: this.tokenRatesController,
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
@@ -1020,7 +1021,6 @@ export default class MetamaskController extends EventEmitter {
     };
 
     this.store.updateStructure({
-      AccountTrackerController: this.accountTrackerController,
       AccountsController: this.accountsController,
       AppStateController: this.appStateController,
       AppMetadataController: this.appMetadataController,
@@ -1069,7 +1069,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.memStore = new ComposableObservableStore({
       config: {
-        AccountTrackerController: this.accountTrackerController,
         AccountsController: this.accountsController,
         AppStateController: this.appStateController,
         AppMetadataController: this.appMetadataController,
