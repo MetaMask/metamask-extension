@@ -6,7 +6,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { DappSwapComparisonBanner } from './dapp-swap-comparison-banner';
 
-jest.mock('../../hooks/useDappSwapComparisonInfo', () => ({
+jest.mock('../../../hooks/transactions/useDappSwapComparisonInfo', () => ({
   useDappSwapComparisonInfo: jest.fn(() => undefined),
 }));
 
