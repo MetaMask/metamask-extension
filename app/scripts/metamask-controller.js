@@ -1133,10 +1133,6 @@ export default class MetamaskController extends EventEmitter {
 
     // if this is the first time, clear the state of by calling these methods
     const resetMethods = [
-      // TODO Review if this is needed
-      // this.accountTrackerController.resetState.bind(
-      //   this.accountTrackerController,
-      // ),
       this.decryptMessageController.resetState.bind(
         this.decryptMessageController,
       ),
@@ -4496,10 +4492,6 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Update @metamask/accounts-controller to support this.
       this.accountOrderController.updateHiddenAccountsList([]);
 
-      // clear accounts in AccountTrackerController
-      // TODO Review if this is needed
-      // this.accountTrackerController.clearAccounts();
-
       this.txController.clearUnapprovedTransactions();
 
       if (completedOnboarding) {
@@ -4906,11 +4898,6 @@ export default class MetamaskController extends EventEmitter {
     try {
       // Automatic login via config password
       await this.submitPassword(password);
-
-      // Updating accounts in this.accountTrackerController before starting UI syncing ensure that
-      // state has account balance before it is synced with UI
-      // TODO Review if this is needed
-      // await this.accountTrackerController.updateAccountsAllActiveNetworks();
     } finally {
       this._startUISync();
     }
@@ -7515,7 +7502,7 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    // TODO Review how we handle this
+    // TODO AccountTrackerController Migration: Review how this works before merging
     // this.accountTrackerController.syncWithAddresses(addresses);
   }
 
@@ -7805,7 +7792,7 @@ export default class MetamaskController extends EventEmitter {
       networkClientId,
       txParams: { from },
     } = transactionMeta;
-    // TODO Review how we handle this
+    // TODO AccountTrackerController Migration: Review how we handle this
     // this.accountTrackerController.updateAccountByAddress({
     //   address: from,
     //   networkClientId,
