@@ -86,7 +86,7 @@ class AccountListPage {
 
   private readonly creatingAccountMessage = {
     text: 'Creating account...',
-    tag: 'div',
+    tag: 'p',
   };
 
   private readonly addMultichainWalletButton =
