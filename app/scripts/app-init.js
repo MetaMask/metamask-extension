@@ -9,12 +9,9 @@ const { chrome } = globalThis;
 
 // this needs to be run early we can begin listening to these browser events
 // as soon as possible
-const listener = new ExtensionLazyListener(chrome, [
-  {
-    namespace: 'runtime',
-    eventNames: ['onInstalled', 'onConnect', 'onMessage', 'onMessageExternal'],
-  },
-]);
+const listener = new ExtensionLazyListener(chrome, {
+  runtime: ['onInstalled', 'onConnect', 'onConnectExternal'],
+});
 
 /**
  * @type {import('../../types/global').StateHooks}
@@ -120,8 +117,7 @@ function importAllScripts() {
 
   // for performance metrics/reference
   console.log(
-    `SCRIPTS IMPORT COMPLETE in Seconds: ${
-      (Date.now() - startImportScriptsTime) / 1000
+    `SCRIPTS IMPORT COMPLETE in Seconds: ${(Date.now() - startImportScriptsTime) / 1000
     }`,
   );
 
