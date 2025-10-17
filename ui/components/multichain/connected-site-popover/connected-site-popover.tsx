@@ -1,4 +1,4 @@
-import React, { useContext, RefObject, useMemo } from 'react';
+import React, { useContext, RefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { parseCaipChainId } from '@metamask/utils';
 import {
@@ -25,6 +25,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/se
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';
+import { getDappActiveNetwork } from '../../../selectors/dapp';
 
 type ConnectedSitePopoverProps = {
   referenceElement: RefObject<HTMLElement>;
