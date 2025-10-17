@@ -525,17 +525,16 @@ class AccountListPage {
     console.log(
       `Open multichain account menu in account list for account ${options.accountLabel}`,
     );
-    // We make sure the Wallet SRP is loaded and then click the account label for that SRP
+    // To ensure no pending Create Account action is in progress
     await this.driver.assertElementNotPresent(this.creatingAccountMessage, {
       waitAtLeastGuard: largeDelayMs,
     });
-    const walletSrp = await this.driver.findElement({
-      text: `Wallet ${(options.srpIndex ?? 0) + 1}`,
-    });
-    const accountElement = await this.driver.findNestedElement(walletSrp, {
-      text: options.accountLabel,
-    });
-    await accountElement.click();
+
+    const multichainAccountMenuIcons = await this.driver.findElements(
+      `${this.multichainAccountOptionsMenuButton}[aria-label="${options.accountLabel} options"]`,
+    );
+
+    await multichainAccountMenuIcons[options.srpIndex ?? 0].click();
   }
 
   /**
