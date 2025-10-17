@@ -5,10 +5,7 @@ import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { WINDOW_TITLES } from '../../helpers';
-import {
-  AccountType,
-  withMultichainAccountsDesignEnabled,
-} from './common';
+import { AccountType, withMultichainAccountsDesignEnabled } from './common';
 
 describe('Multichain Accounts - Multichain accounts list page', function (this: Suite) {
   it('displays wallet and accounts for hardware wallet', async function () {
