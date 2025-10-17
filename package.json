@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.6.0",
+  "version": "13.7.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -358,7 +358,7 @@
     "@metamask/snaps-rpc-methods": "^13.5.2",
     "@metamask/snaps-sdk": "^10.0.0",
     "@metamask/snaps-utils": "^11.6.0",
-    "@metamask/solana-wallet-snap": "^2.4.3",
+    "@metamask/solana-wallet-snap": "^2.4.6",
     "@metamask/solana-wallet-standard": "^0.6.0",
     "@metamask/streams": "^0.4.0",
     "@metamask/subscription-controller": "^2.0.0",

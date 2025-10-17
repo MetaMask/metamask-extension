@@ -44,6 +44,7 @@ export const useAccountRecipients = (): Recipient[] => {
                 account.address.toLowerCase(),
               ),
               accountGroupName,
+              accountType: account.type,
               address: account.address,
               walletName,
             });
