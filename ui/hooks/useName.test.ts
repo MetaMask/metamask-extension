@@ -1,3 +1,4 @@
+import { renderHook } from '@testing-library/react-hooks';
 import {
   FALLBACK_VARIATION,
   NameControllerState,
@@ -47,7 +48,11 @@ describe('useName', () => {
   it('returns default values if no state', () => {
     getNamesMock.mockReturnValue({} as NameControllerState['names']);
 
-    const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK);
+    const {
+      result: {
+        all: [nameEntry],
+      },
+    } = renderHook(() => useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK));
 
     expect(nameEntry).toStrictEqual<NameEntry>({
       name: null,
@@ -71,7 +76,11 @@ describe('useName', () => {
       },
     });
 
-    const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK);
+    const {
+      result: {
+        all: [nameEntry],
+      },
+    } = renderHook(() => useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK));
 
     expect(nameEntry).toStrictEqual<NameEntry>({
       name: null,
@@ -95,7 +104,11 @@ describe('useName', () => {
       },
     });
 
-    const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK);
+    const {
+      result: {
+        all: [nameEntry],
+      },
+    } = renderHook(() => useName(VALUE_MOCK, TYPE_MOCK, VARIATION_MOCK));
 
     expect(nameEntry).toStrictEqual<NameEntry>({
       name: NAME_MOCK,
@@ -119,7 +132,11 @@ describe('useName', () => {
       },
     });
 
-    const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK);
+    const {
+      result: {
+        all: [nameEntry],
+      },
+    } = renderHook(() => useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK));
 
     expect(nameEntry).toStrictEqual<NameEntry>({
       name: NAME_MOCK,
@@ -144,7 +161,11 @@ describe('useName', () => {
         },
       });
 
-      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK);
+      const {
+        result: {
+          all: [nameEntry],
+        },
+      } = renderHook(() => useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK));
 
       expect(nameEntry).toStrictEqual<NameEntry>({
         name: NAME_MOCK,
@@ -174,7 +195,11 @@ describe('useName', () => {
         },
       });
 
-      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK);
+      const {
+        result: {
+          all: [nameEntry],
+        },
+      } = renderHook(() => useName(VALUE_MOCK, TYPE_MOCK, VARIATION_2_MOCK));
 
       expect(nameEntry).toStrictEqual<NameEntry>({
         name: NAME_MOCK,
@@ -199,7 +224,11 @@ describe('useName', () => {
       },
     });
 
-    const nameEntry = useName('0xAbC123', TYPE_MOCK, VARIATION_MOCK);
+    const {
+      result: {
+        all: [nameEntry],
+      },
+    } = renderHook(() => useName('0xAbC123', TYPE_MOCK, VARIATION_MOCK));
 
     expect(nameEntry).toStrictEqual<NameEntry>({
       name: NAME_MOCK,

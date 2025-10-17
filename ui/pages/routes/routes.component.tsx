@@ -560,6 +560,7 @@ export default function Routes() {
           <Route path={DEEP_LINK_ROUTE} component={DeepLink} />
           <RestoreVaultComponent
             path={RESTORE_VAULT_ROUTE}
+            /** @ts-expect-error TODO: Replace `component` prop with `element` once `react-router` is upgraded to v6 */
             component={RestoreVaultPage}
             exact
           />
