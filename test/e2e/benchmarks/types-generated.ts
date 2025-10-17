@@ -39,4 +39,5 @@ export type BenchmarkArguments = {
   out?: string;
   retries: number;
   isPowerUser: boolean;
+  persona: 'standard' | 'powerUser';
 };
