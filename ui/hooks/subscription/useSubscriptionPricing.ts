@@ -171,29 +171,24 @@ export const useAvailableTokenBalances = (params: {
 /**
  * Use this hook to get the subscription pricing.
  *
+ * @param options - The options for the hook.
+ * @param options.refetch - Whether to refetch the subscription pricing from api.
  * @returns The subscription pricing.
  */
-export const useSubscriptionPricing = () => {
+export const useSubscriptionPricing = (
+  { refetch }: { refetch?: boolean } = { refetch: false },
+) => {
   const dispatch = useDispatch();
   const subscriptionPricing = useSelector(getSubscriptionPricing);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        await dispatch(getSubscriptionPricingAction());
-      } catch (err) {
-        log.error('[useSubscriptionPricing] error', err);
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [dispatch]);
+  const { pending, error } = useAsyncResult(async () => {
+    if (!refetch) {
+      return undefined;
+    }
+    return await dispatch(getSubscriptionPricingAction());
+  }, [dispatch, refetch]);
 
-  return { subscriptionPricing, loading, error };
+  return { subscriptionPricing, loading: pending, error };
 };
 
 export const useSubscriptionProductPlans = (

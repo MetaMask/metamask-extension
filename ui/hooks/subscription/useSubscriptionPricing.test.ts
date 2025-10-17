@@ -117,7 +117,7 @@ describe('useSubscriptionPricing', () => {
 
       // Initially should be loading
       expect(result.current.loading).toBe(true);
-      expect(result.current.error).toBeNull();
+      expect(result.current.error).toBeUndefined();
       expect(result.current.subscriptionPricing).toBeDefined();
     });
   });
