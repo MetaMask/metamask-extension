@@ -131,7 +131,9 @@ class HomePage {
   }
 
   async clickBackupRemindMeLaterButton(): Promise<void> {
-    await this.driver.clickElement(this.backupRemindMeLaterButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.backupRemindMeLaterButton,
+    );
   }
 
   async clickSkipShieldModalButton(): Promise<void> {
