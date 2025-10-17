@@ -9,8 +9,6 @@ export type AlertsState = {
   confirmAlerts: ConfirmAlertsState;
 };
 
-const EMPTY_ARRAY: Alert[] = [];
-
 export function selectAlerts(state: AlertsState, ownerId: string): Alert[] {
   return state.confirmAlerts?.alerts[ownerId] ?? EMPTY_ARRAY;
 }

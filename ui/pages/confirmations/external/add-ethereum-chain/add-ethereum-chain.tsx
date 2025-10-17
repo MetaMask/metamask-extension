@@ -22,8 +22,8 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { stripProtocol } from '../../utils/confirm';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-import { AddEthereumChainContext } from './types';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
+import { AddEthereumChainContext } from './types';
 
 export const AddEthereumChain = () => {
   const t = useI18nContext();
