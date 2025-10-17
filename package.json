@@ -480,7 +480,7 @@
     "@metamask/forwarder": "^1.1.0",
     "@metamask/foundryup": "^1.0.1",
     "@metamask/phishing-warning": "^5.1.0",
-    "@metamask/preferences-controller": "^19.0.0",
+    "@metamask/preferences-controller": "^20.0.2",
     "@metamask/snap-account-abstraction-keyring-site": "^1.0.0",
     "@metamask/snap-simple-keyring-site": "^2.0.0",
     "@metamask/superstruct": "^3.2.1",
