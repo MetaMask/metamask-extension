@@ -16,6 +16,7 @@ import {
   getDataFromSwap,
   getBestQuote,
   getTokenValueFromRecord,
+  getBalanceChangeFromSimulationData,
 } from '../../utils/dapp-swap-comparison-utils';
 import { useConfirmContext } from '../../context/confirm';
 import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
@@ -108,6 +109,21 @@ export function useDappSwapComparisonInfo() {
     return await fetchQuotes(quotesInput);
   }, [amountMin, captureDappSwapComparisonMetricsProperties, quotesInput]);
 
+  const getGasUSDValue = useCallback(
+    (gas: BigNumber) => {
+      if (!estimatedBaseFee || !maxPriorityFeePerGas) {
+        return '0';
+      }
+      const gasPrice = new BigNumber(estimatedBaseFee, 16).plus(
+        maxPriorityFeePerGas,
+      );
+      const totalGas = gasPrice.times(gas).toString(10);
+      const nativeTokenAddress = getNativeTokenAddress(chainId);
+      return getUSDValue(totalGas, nativeTokenAddress);
+    },
+    [chainId, estimatedBaseFee, getUSDValue, maxPriorityFeePerGas],
+  );
+
   useEffect(() => {
     if (
       !amountMin ||
@@ -132,33 +148,22 @@ export function useDappSwapComparisonInfo() {
       trade,
     } = selectedQuote;
 
-    const gasPrice = new BigNumber(estimatedBaseFee ?? '0x0', 16).plus(
-      maxPriorityFeePerGas ?? '0x0',
+    const totalGasInQuote = getGasUSDValue(
+      new BigNumber(
+        (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
+          (trade?.effectiveGas ?? trade?.gasLimit ?? 0),
+        10,
+      ),
     );
 
-    const totalGasInQuote = gasPrice
-      .times(
-        new BigNumber(
-          (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
-            (trade?.effectiveGas ?? trade?.gasLimit ?? 0),
-          10,
-        ),
-      )
-      .toString(10);
+    const totalGasInConfirmation = getGasUSDValue(
+      new BigNumber(gasUsed ?? gas ?? '0x0', 16),
+    );
 
-    const totalGasInConfirmation = gasPrice
-      .times(new BigNumber(gasUsed ?? gas ?? '0x0', 16))
-      .toString(10);
-
-    const { tokenBalanceChanges } = simulationData ?? {};
-    const destTokenBalanceChange = new BigNumber(
-      tokenBalanceChanges?.find(
-        (tbc) => tbc.address?.toLowerCase() === destTokenAddress?.toLowerCase(),
-      )?.difference ?? '0x0',
-      16,
-    ).toString(10);
-
-    const nativeTokenAddress = getNativeTokenAddress(chainId);
+    const destTokenBalanceChange = getBalanceChangeFromSimulationData(
+      destTokenAddress as Hex,
+      simulationData,
+    );
 
     captureDappSwapComparisonMetricsProperties({
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -177,10 +182,7 @@ export function useDappSwapComparisonInfo() {
         destTokenAddress as Hex,
       ),
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_dapp_network_fee_usd: getUSDValue(
-        totalGasInConfirmation,
-        nativeTokenAddress,
-      ),
+      swap_dapp_network_fee_usd: totalGasInConfirmation,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_mm_from_token_simulated_value_usd: getUSDValue(
         srcTokenAmount,
@@ -197,21 +199,19 @@ export function useDappSwapComparisonInfo() {
         destTokenAddress as Hex,
       ),
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_mm_network_fee_usd: getUSDValue(totalGasInQuote, nativeTokenAddress),
+      swap_mm_network_fee_usd: totalGasInQuote,
     });
   }, [
     amountMin,
     captureDappSwapComparisonMetricsProperties,
-    chainId,
     erc20FiatRates,
     erc20Decimals,
-    estimatedBaseFee,
     gas,
     gasUsed,
+    getGasUSDValue,
     getUSDValue,
     quotes,
     quotesInput,
-    maxPriorityFeePerGas,
     simulationData,
   ]);
 }

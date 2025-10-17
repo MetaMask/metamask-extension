@@ -1,7 +1,10 @@
 import { QuoteResponse } from '@metamask/bridge-controller';
+import { SimulationTokenStandard } from '@metamask/transaction-controller';
+
 import {
   getBestQuote,
   getDataFromSwap,
+  getBalanceChangeFromSimulationData,
   getTokenValueFromRecord,
 } from './dapp-swap-comparison-utils';
 
@@ -125,6 +128,40 @@ describe('dapp-swap utils', () => {
         '0x123',
       );
       expect(result).toEqual(0);
+    });
+  });
+
+  describe('getBalanceChangeFromSimulationData', () => {
+    it('returns the correct value for token address', () => {
+      const result = getBalanceChangeFromSimulationData(
+        '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+        {
+          tokenBalanceChanges: [
+            {
+              address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+              difference: '0x64',
+              standard: SimulationTokenStandard.erc20,
+              previousBalance: '0x0',
+              newBalance: '0x0',
+              isDecrease: true,
+            },
+          ],
+        },
+      );
+      expect(result).toEqual('100');
+    });
+    it('returns 0 if simulation data is not provided', () => {
+      const result = getBalanceChangeFromSimulationData(
+        '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+        undefined,
+      );
+      expect(result).toEqual('0');
+    });
+    it('returns 0 if record is not found', () => {
+      const result = getBalanceChangeFromSimulationData('0x123', {
+        tokenBalanceChanges: [],
+      });
+      expect(result).toEqual('0');
     });
   });
 });

@@ -4,6 +4,10 @@ import { Interface, TransactionDescription } from '@ethersproject/abi';
 import { QuoteResponse } from '@metamask/bridge-controller';
 import { addHexPrefix } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import {
+  SimulationData,
+  SimulationTokenBalanceChange,
+} from '@metamask/transaction-controller';
 
 export const ABI = [
   {
@@ -162,4 +166,23 @@ export function getTokenValueFromRecord(
     return key.toLowerCase() === tokenAddress.toLowerCase();
   });
   return address ? (record[address as Hex] ?? 0) : 0;
+}
+
+export function getBalanceChangeFromSimulationData(
+  tokenAddress: Hex,
+  simulationData?: SimulationData,
+): string {
+  if (!simulationData) {
+    return '0';
+  }
+
+  const { tokenBalanceChanges } = simulationData;
+  const balanceChange = tokenBalanceChanges.find(
+    (change: SimulationTokenBalanceChange) => change.address === tokenAddress,
+  );
+  return (
+    balanceChange
+      ? new BigNumber(balanceChange.difference, 16)
+      : new BigNumber(0)
+  ).toString(10);
 }
