@@ -43,7 +43,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
 }) => {
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getAppActiveTab);
-  const siteName = getURLHost(activeTabOrigin?.origin);
+  const siteName = getURLHost(activeTabOrigin.origin);
 
   const allDomains = useSelector(getAllDomains);
   const networkConfigurationsByChainId = useSelector(
@@ -53,7 +53,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
 
   // Get the network that this dapp is actually connected to using domain mapping
   const dappActiveNetwork = useMemo(() => {
-    if (!activeTabOrigin?.origin || !allDomains) {
+    if (!activeTabOrigin.origin || !allDomains) {
       return null;
     }
 
@@ -73,7 +73,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
     });
 
     return networkConfiguration || null;
-  }, [activeTabOrigin?.origin, allDomains, networkConfigurationsByChainId]);
+  }, [activeTabOrigin.origin, allDomains, networkConfigurationsByChainId]);
 
   const getChainIdForImage = (chainId: `${string}:${string}`): string => {
     const { namespace, reference } = parseCaipChainId(chainId);
