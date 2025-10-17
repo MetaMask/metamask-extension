@@ -3,6 +3,7 @@
 
 ; This variable is required
 INFURA_PROJECT_ID=00000000000
+INFURA_PROD_PROJECT_ID=00000000000
 
 ; Set this to `true` to enable Seedless onboarding (Social login flow)
 SEEDLESS_ONBOARDING_ENABLED='false'
@@ -16,7 +17,9 @@ METAMASK_SHIELD_ENABLED='false'
 
 ; These variables are required for OAuth Service
 GOOGLE_CLIENT_ID=
+GOOGLE_PROD_CLIENT_ID=00000000000
 APPLE_CLIENT_ID=
+APPLE_PROD_CLIENT_ID=00000000000
 
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
@@ -24,6 +27,7 @@ INFURA_STORYBOOK_PROJECT_ID=
 
 ;PASSWORD=METAMASK PASSWORD
 ;SEGMENT_WRITE_KEY=
+SEGMENT_PROD_WRITE_KEY=00000000000
 ;BRIDGE_USE_DEV_APIS=
 ;ANALYTICS_DATA_DELETION_SOURCE_ID=
 ;ANALYTICS_DATA_DELETION_ENDPOINT=
