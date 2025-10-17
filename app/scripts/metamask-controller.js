@@ -1008,8 +1008,6 @@ export default class MetamaskController extends EventEmitter {
      * On chrome profile re-start, they will be re-initialized.
      */
     const resetOnRestartStore = {
-      // TODO Review if this is needed
-      // AccountTracker: this.accountTrackerController,
       TokenRatesController: this.tokenRatesController,
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
