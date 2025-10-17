@@ -33,6 +33,8 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+
+import { isMultichainFeatureEnabled } from '../../shared/lib/multichain-feature-flags';
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
@@ -3160,25 +3162,33 @@ export function getIsWatchEthereumAccountEnabled(state) {
 }
 
 /**
- * Get the state of the `bitcoinSupportEnabled` flag.
+ * Get the state of the `bitcoinAccounts` feature flag with version check.
  *
- * @param {*} state
- * @returns The state of the `bitcoinSupportEnabled` flag.
+ * @param {*} _state
+ * @returns The state of the `bitcoinAccounts` feature flag.
  */
-export function getIsBitcoinSupportEnabled(state) {
-  const { addBitcoinAccount } = getRemoteFeatureFlags(state);
-  return Boolean(addBitcoinAccount);
+export function getIsBitcoinSupportEnabled(
+  // Use `_` prefix to avoid lint issue if `bitcoin` code-fence is not enabled
+  _state,
+) {
+  // When bitcoin is not enabled, always return false
+  let enabled = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  const { bitcoinAccounts } = getRemoteFeatureFlags(_state);
+  enabled = isMultichainFeatureEnabled(bitcoinAccounts);
+  ///: END:ONLY_INCLUDE_IF
+  return enabled;
 }
 
 /**
- * Get the state of the `solanaSupportEnabled` remote feature flag.
+ * Get the state of the `solanaAccounts` feature flag with version check.
  *
  * @param {*} state
- * @returns The state of the `solanaSupportEnabled` remote feature flag.
+ * @returns The state of the `solanaAccounts` feature flag.
  */
 export function getIsSolanaSupportEnabled(state) {
-  const { addSolanaAccount } = getRemoteFeatureFlags(state);
-  return Boolean(addSolanaAccount);
+  const { solanaAccounts } = getRemoteFeatureFlags(state);
+  return isMultichainFeatureEnabled(solanaAccounts);
 }
 
 /**
