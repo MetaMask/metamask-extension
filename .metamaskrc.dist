@@ -77,3 +77,6 @@ BLOCKAID_PUBLIC_KEY=
 
 ; Set this to `true` to enable Metamask Shield
 ; METAMASK_SHIELD_ENABLED='false'
+
+; Enables React and Redux DevTools.
+; METAMASK_REACT_REDUX_DEVTOOLS='true'
