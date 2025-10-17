@@ -34,10 +34,6 @@ import { ChainId } from '../../../../shared/constants/network';
 
 export type BalanceEmptyStateProps = {
   /**
-   * Optional callback to override default deposit navigation
-   */
-  onAction?: () => void;
-  /**
    * Test ID for component testing
    */
   testID?: string;
@@ -83,7 +79,6 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = (props) => {
       },
     });
 
-    // Use default ramps flow
     openBuyCryptoInPdapp(chainId as ChainId | CaipChainId);
   }, [chainId, openBuyCryptoInPdapp, trackEvent]);
 
