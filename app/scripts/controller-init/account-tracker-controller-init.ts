@@ -27,7 +27,7 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
         networkClientId,
       );
     },
-    includeStakedAssets: true,
+    includeStakedAssets: false,
     allowExternalServices: () => {
       const { useExternalServices } = initMessenger.call(
         'PreferencesController:getState',
@@ -45,11 +45,6 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
         : [];
     },
   });
-
-  // Ensure `AccountTrackerController` updates balances after network change.
-  // initMessenger.subscribe('NetworkController:networkDidChange', () => {
-  //   controller.updateAccounts();
-  // });
 
   return {
     persistedStateKey: null,
