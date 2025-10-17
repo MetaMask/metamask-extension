@@ -287,7 +287,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         error={Boolean(errors.email)}
         required
         width={BlockSize.Full}
-        readOnly={isView}
+        disabled={isView}
       />
       <FormTextField
         label={`${t('shieldClaimImpactedWalletAddress')}*`}
@@ -313,7 +313,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         error={Boolean(errors.impactedWalletAddress)}
         required
         width={BlockSize.Full}
-        readOnly={isView}
+        disabled={isView}
       />
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
@@ -346,7 +346,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         error={Boolean(errors.impactedTransactionHash)}
         required
         width={BlockSize.Full}
-        readOnly={isView}
+        disabled={isView}
       />
       <FormTextField
         label={`${t('shieldClaimReimbursementWalletAddress')}*`}
@@ -372,10 +372,14 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         error={Boolean(errors.reimbursementWalletAddress)}
         required
         width={BlockSize.Full}
-        readOnly={isView}
+        disabled={isView}
       />
-      <Box gap={2}>
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+        <Text
+          variant={TextVariant.BodyMd}
+          fontWeight={FontWeight.Medium}
+          style={{ opacity: isView ? 0.5 : 1 }}
+        >
           {`${t('shieldClaimDescription')}*`}
         </Text>
         <Textarea
@@ -392,7 +396,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
           paddingTop={3}
           paddingBottom={3}
           maxLength={2000}
-          readOnly={isView}
+          disabled={isView}
         />
         {errors.caseDescription && (
           <Text
@@ -405,11 +409,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         )}
       </Box>
       {isView ? (
-        <Box gap={2}>
+        <Box flexDirection={BoxFlexDirection.Column} gap={1}>
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {t('shieldClaimFileUploader')}
           </Text>
-          <Box flexDirection={BoxFlexDirection.Column} gap={2} marginTop={4}>
+          <Box flexDirection={BoxFlexDirection.Column} gap={2}>
             {uploadedFiles.map((file) => (
               <Box
                 asChild
@@ -456,16 +460,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         />
       )}
       <Box className="settings-page__content-item-col">
-        {isView ? (
-          <Button
-            data-testid="shield-claim-back-button"
-            variant={ButtonVariant.Secondary}
-            size={ButtonSize.Lg}
-            onClick={() => navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE)}
-          >
-            {t('back')}
-          </Button>
-        ) : (
+        {!isView && (
           <Button
             data-testid="shield-claim-submit-button"
             variant={ButtonVariant.Primary}

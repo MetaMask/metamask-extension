@@ -9,8 +9,10 @@ import {
   IconName,
   IconSize,
   IconColor,
+  TextAlign,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import LoadingScreen from '../../../../components/ui/loading-screen';
 import { Tag } from '../../../../components/component-library';
 import {
   BackgroundColor,
@@ -26,7 +28,7 @@ import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/r
 const ClaimsList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const { pendingClaims, historyClaims, isLoading, error } = useClaims();
+  const { pendingClaims, historyClaims, isLoading } = useClaims();
 
   const claimItem = (claimId: string, status?: ClaimStatus) => {
     return (
@@ -42,7 +44,9 @@ const ClaimsList = () => {
       >
         <button>
           <Box className="flex items-center gap-2">
-            <Text variant={TextVariant.BodyMd}>Claim #{claimId}</Text>
+            <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Left}>
+              Claim #{claimId}
+            </Text>
             {status && (
               <Tag
                 borderStyle={BorderStyle.none}
@@ -85,32 +89,6 @@ const ClaimsList = () => {
     );
   };
 
-  // Handle loading state
-  if (isLoading) {
-    return (
-      <Box
-        className="claims-list-page flex items-center justify-center w-full p-4"
-        data-testid="claims-list-page"
-      >
-        <Text variant={TextVariant.BodyMd}>{t('loading')}</Text>
-      </Box>
-    );
-  }
-
-  // Handle error state
-  if (error) {
-    return (
-      <Box
-        className="claims-list-page flex items-center justify-center w-full p-4"
-        data-testid="claims-list-page"
-      >
-        <Text variant={TextVariant.BodyMd} color={DsTextColor.ErrorDefault}>
-          {t('errorLoadingClaims')}
-        </Text>
-      </Box>
-    );
-  }
-
   return (
     <Box className="claims-list-page w-full" data-testid="claims-list-page">
       {pendingClaims.length > 0 && (
@@ -141,6 +119,7 @@ const ClaimsList = () => {
           </Box>
         </Box>
       )}
+      {isLoading && <LoadingScreen />}
     </Box>
   );
 };
