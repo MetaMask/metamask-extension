@@ -152,6 +152,8 @@ async function defineAndRunBuildTasks() {
       'getSelection',
       // globals `opera` needs to function
       'opr',
+      // for Popper.js and snap simple keyring site
+      'devicePixelRatio',
     ];
 
     if (
@@ -168,7 +170,6 @@ async function defineAndRunBuildTasks() {
         'browser', // for testing vault corruption
         'chrome', // for testing vault corruption
         `indexedDB`, // for testing vault corruption
-        'devicePixelRatio', // for using snap simple keyring site
       ];
     }
 
