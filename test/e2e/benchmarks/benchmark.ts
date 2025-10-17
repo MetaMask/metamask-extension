@@ -258,17 +258,17 @@ async function main(): Promise<void> {
   ) as unknown as { argv: BenchmarkArguments };
 
   const { pages, out, retries, persona } = argv;
-  let { browserLoads, pageLoads } = argv;
+  const { browserLoads, pageLoads } = argv;
 
   // Reduce the number of loads for webpack powerUser, since it takes longer and fails frequently
   // (see https://github.com/MetaMask/metamask-extension/issues/36935)
-  if (
-    process.env.ARTIFACT_NAME === 'build-test-webpack' &&
-    persona === 'powerUser'
-  ) {
-    browserLoads = 2;
-    pageLoads = 2;
-  }
+  // if (
+  //   process.env.ARTIFACT_NAME === 'build-test-webpack' &&
+  //   persona === 'powerUser'
+  // ) {
+  //   browserLoads = 2;
+  //   pageLoads = 2;
+  // }
 
   const results = await profilePageLoad(
     pages,
