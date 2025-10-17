@@ -33,6 +33,8 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
+
+import { isMultichainFeatureEnabled } from '../../shared/lib/multichain-feature-flags';
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
@@ -132,6 +134,7 @@ import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
+import { EMPTY_ARRAY } from './shared';
 import {
   getAllUnapprovedTransactions,
   getCurrentNetworkTransactions,
@@ -287,8 +290,12 @@ export function getShowConnectionsRemovedModal(state) {
   return state.appState.showConnectionsRemovedModal;
 }
 
-export function getShowShieldEntryModalOnce(state) {
-  return state.metamask.showShieldEntryModalOnce;
+export function getShowShieldEntryModal(state) {
+  return state.appState.shieldEntryModal?.show;
+}
+
+export function getShouldSubmitEventsForShieldEntryModal(state) {
+  return state.appState.shieldEntryModal?.shouldSubmitEvents;
 }
 
 /** `metamask` slice selectors */
@@ -956,7 +963,9 @@ export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
   (internalAccounts, accounts) => {
     return internalAccounts.map((internalAccount) => ({
       ...internalAccount,
-      ...accounts[internalAccount.address],
+      ...(internalAccount?.address
+        ? accounts[internalAccount.address] || {}
+        : {}),
     }));
   },
 );
@@ -1282,7 +1291,7 @@ export const selectNftsByChainId = createSelector(
   (state) => state.metamask.allNfts,
   (_state, chainId) => chainId,
   (selectedAccount, nfts, chainId) => {
-    return nfts?.[selectedAccount.address]?.[chainId] ?? [];
+    return nfts?.[selectedAccount.address]?.[chainId] ?? EMPTY_ARRAY;
   },
 );
 
@@ -3153,25 +3162,33 @@ export function getIsWatchEthereumAccountEnabled(state) {
 }
 
 /**
- * Get the state of the `bitcoinSupportEnabled` flag.
+ * Get the state of the `bitcoinAccounts` feature flag with version check.
  *
- * @param {*} state
- * @returns The state of the `bitcoinSupportEnabled` flag.
+ * @param {*} _state
+ * @returns The state of the `bitcoinAccounts` feature flag.
  */
-export function getIsBitcoinSupportEnabled(state) {
-  const { addBitcoinAccount } = getRemoteFeatureFlags(state);
-  return Boolean(addBitcoinAccount);
+export function getIsBitcoinSupportEnabled(
+  // Use `_` prefix to avoid lint issue if `bitcoin` code-fence is not enabled
+  _state,
+) {
+  // When bitcoin is not enabled, always return false
+  let enabled = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  const { bitcoinAccounts } = getRemoteFeatureFlags(_state);
+  enabled = isMultichainFeatureEnabled(bitcoinAccounts);
+  ///: END:ONLY_INCLUDE_IF
+  return enabled;
 }
 
 /**
- * Get the state of the `solanaSupportEnabled` remote feature flag.
+ * Get the state of the `solanaAccounts` feature flag with version check.
  *
  * @param {*} state
- * @returns The state of the `solanaSupportEnabled` remote feature flag.
+ * @returns The state of the `solanaAccounts` feature flag.
  */
 export function getIsSolanaSupportEnabled(state) {
-  const { addSolanaAccount } = getRemoteFeatureFlags(state);
-  return Boolean(addSolanaAccount);
+  const { solanaAccounts } = getRemoteFeatureFlags(state);
+  return isMultichainFeatureEnabled(solanaAccounts);
 }
 
 /**
@@ -4060,7 +4077,8 @@ export function getShowUpdateModal(state) {
  */
 export const selectNonZeroUnusedApprovalsAllowList = createSelector(
   getRemoteFeatureFlags,
-  (remoteFeatureFlags) => remoteFeatureFlags?.nonZeroUnusedApprovals ?? [],
+  (remoteFeatureFlags) =>
+    remoteFeatureFlags?.nonZeroUnusedApprovals ?? EMPTY_ARRAY,
 );
 
 /**
