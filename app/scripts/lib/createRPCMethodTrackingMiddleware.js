@@ -530,6 +530,10 @@ export default function createRPCMethodTrackingMiddleware({
         stage = STAGE.APPROVED;
       }
 
+      if (!event) {
+        return callback();
+      }
+
       CUSTOM_PROPERTIES_MAP[invokedMethod]?.(req, res, stage, eventProperties);
 
       if (eventType.REQUESTED === MetaMetricsEventName.SignatureRequested) {
