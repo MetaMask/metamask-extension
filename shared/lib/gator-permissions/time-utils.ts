@@ -1,4 +1,12 @@
-import { DAY, FORTNIGHT, MONTH, WEEK, YEAR } from '../../constants/time';
+import { bigIntToHex, Hex, hexToBigInt } from '@metamask/utils';
+import {
+  DAY,
+  FORTNIGHT,
+  MONTH,
+  SECOND,
+  WEEK,
+  YEAR,
+} from '../../constants/time';
 
 export type GatorPermissionRule = {
   type: string;
@@ -15,19 +23,63 @@ export type GatorPermissionRule = {
 export function getPeriodFrequencyValueTranslationKey(
   periodDurationInSeconds: number,
 ): string {
-  const periodDurationMs = periodDurationInSeconds * 1000;
-  if (periodDurationMs === DAY) {
+  const periodDurationMillisecond = periodDurationInSeconds * SECOND;
+  if (periodDurationMillisecond === DAY) {
     return 'gatorPermissionDailyFrequency';
-  } else if (periodDurationMs === WEEK) {
+  } else if (periodDurationMillisecond === WEEK) {
     return 'gatorPermissionWeeklyFrequency';
-  } else if (periodDurationMs === FORTNIGHT) {
+  } else if (periodDurationMillisecond === FORTNIGHT) {
     return 'gatorPermissionFortnightlyFrequency';
-  } else if (periodDurationMs === MONTH) {
+  } else if (periodDurationMillisecond === MONTH) {
     return 'gatorPermissionMonthlyFrequency';
-  } else if (periodDurationMs === YEAR) {
+  } else if (periodDurationMillisecond === YEAR) {
     return 'gatorPermissionAnnualFrequency';
   }
   return 'gatorPermissionCustomFrequency';
+}
+
+/**
+ * Converts milliseconds to seconds.
+ *
+ * @param milliseconds - The milliseconds to convert.
+ * @returns The seconds.
+ */
+export function convertMillisecondsToSeconds(milliseconds: number): number {
+  return milliseconds / SECOND;
+}
+
+/**
+ * Converts an amount per second to an amount per period.
+ *
+ * @param amountPerSecond - The amount per second in hexadecimal format.
+ * @param period - The period to convert to.
+ * @returns The amount per period.
+ */
+export function convertAmountPerSecondToAmountPerPeriod(
+  amountPerSecond: Hex,
+  period: 'weekly' | 'monthly' | 'fortnightly' | 'yearly',
+): Hex {
+  const amountBigInt = hexToBigInt(amountPerSecond);
+  switch (period) {
+    case 'weekly':
+      return bigIntToHex(
+        amountBigInt * BigInt(convertMillisecondsToSeconds(WEEK)),
+      );
+    case 'monthly':
+      return bigIntToHex(
+        amountBigInt * BigInt(convertMillisecondsToSeconds(MONTH)),
+      );
+    case 'fortnightly':
+      return bigIntToHex(
+        amountBigInt * BigInt(convertMillisecondsToSeconds(FORTNIGHT)),
+      );
+    case 'yearly':
+      return bigIntToHex(
+        amountBigInt * BigInt(convertMillisecondsToSeconds(YEAR)),
+      );
+    default:
+      throw new Error(`Invalid period: ${period as string}`);
+  }
 }
 
 /**

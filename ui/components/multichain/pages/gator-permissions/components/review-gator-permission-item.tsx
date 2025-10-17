@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -36,6 +36,7 @@ import {
   getPeriodFrequencyValueTranslationKey,
   extractExpiryToReadableDate,
   GatorPermissionRule,
+  convertAmountPerSecondToAmountPerPeriod,
 } from '../../../../../../shared/lib/gator-permissions';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
@@ -48,7 +49,8 @@ import { getTokenMetadata } from '../../../../../helpers/utils/token-util';
 
 type TokenMetadata = {
   symbol: string;
-  decimals: number;
+  decimals: number | null;
+  name: string;
 };
 
 type ReviewGatorPermissionItemProps = {
@@ -71,19 +73,25 @@ type ReviewGatorPermissionItemProps = {
   onRevokeClick: () => void;
 };
 
-/**
- * The expanded permission details key(translation key) -> value
- */
-type PermissionExpandedDetails = Record<string, string>;
+type PermissionExpandedDetails = Record<
+  string,
+  {
+    translationKey: string;
+    value: string;
+    testId: string;
+  }
+>;
 
 type PermissionDetails = {
   amountLabel: {
     translationKey: string;
     value: string;
+    testId: string;
   };
   frequencyLabel: {
     translationKey: string;
     valueTranslationKey: string;
+    testId: string;
   };
   expandedDetails: PermissionExpandedDetails;
 };
@@ -95,7 +103,7 @@ export const ReviewGatorPermissionItem = ({
 }: ReviewGatorPermissionItemProps) => {
   const t = useI18nContext();
   const { permissionResponse, siteOrigin } = gatorPermission;
-  const [chainId] = permissionResponse.chainId;
+  const { chainId } = permissionResponse;
   const permissionType = permissionResponse.permission.type;
   const permissionAccount = permissionResponse.address || '0x';
   const tokenAddress = permissionResponse.permission.data.tokenAddress as
@@ -119,6 +127,7 @@ export const ReviewGatorPermissionItem = ({
         return {
           symbol: foundTokenMetadata.symbol || 'Unknown Token',
           decimals: foundTokenMetadata.decimals || 18,
+          name: foundTokenMetadata.name || 'Unknown Token',
         };
       }
       console.warn(
@@ -126,21 +135,23 @@ export const ReviewGatorPermissionItem = ({
       );
       return {
         symbol: 'Unknown Token',
-        decimals: 18,
+        decimals: null,
+        name: 'Unknown Token',
       };
     }
     return {
       symbol: nativeTokenMetadata.symbol,
       decimals: nativeTokenMetadata.decimals,
+      name: nativeTokenMetadata.name,
     };
   }, [tokensByChain, chainId, tokenAddress, nativeTokenMetadata]);
 
   /**
    * Handles the click event for the expand/collapse button
    */
-  const handleExpandClick = () => {
+  const handleExpandClick = useCallback(() => {
     setIsExpanded(!isExpanded);
-  };
+  }, [isExpanded]);
 
   /**
    * Converts a hex value to a decimal value
@@ -149,8 +160,11 @@ export const ReviewGatorPermissionItem = ({
    * @param decimals - The number of decimals to shift the value by
    * @returns The decimal value
    */
-  const getDecimalizedHexValue = (value: Hex, decimals: number) =>
-    new Numeric(value, 16).toBase(10).shiftedBy(decimals).toString();
+  const getDecimalizedHexValue = useCallback(
+    (value: Hex, decimals: number) =>
+      new Numeric(value, 16).toBase(10).shiftedBy(decimals).toString(),
+    [],
+  );
 
   /**
    * Returns the expiration date from the rules
@@ -158,16 +172,27 @@ export const ReviewGatorPermissionItem = ({
    * @param rules - The rules to extract the expiration from
    * @returns The expiration date
    */
-  const getExpirationDate = (rules: GatorPermissionRule[]): string => {
-    // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller so we can have stronger typing
-    if (!rules) {
-      return t('gatorPermissionNoExpiration');
-    }
-    if (rules.length === 0) {
-      return t('gatorPermissionNoExpiration');
-    }
-    return extractExpiryToReadableDate(rules);
-  };
+  const getExpirationDate = useCallback(
+    (rules: GatorPermissionRule[]): string => {
+      if (!rules) {
+        return t('gatorPermissionNoExpiration');
+      }
+      if (rules.length === 0) {
+        return t('gatorPermissionNoExpiration');
+      }
+      return extractExpiryToReadableDate(rules);
+    },
+    [t],
+  );
+
+  /**
+   * Returns the unknown token amount text
+   *
+   * @returns The unknown token amount text
+   */
+  const getUnknownTokenAmountText = useCallback(() => {
+    return t('gatorPermissionUnknownTokenAmount');
+  }, [t]);
 
   /**
    * Returns the token stream permission details
@@ -175,44 +200,85 @@ export const ReviewGatorPermissionItem = ({
    * @param permission - The stream permission data
    * @returns The permission details
    */
-  const getTokenStreamPermissionDetails = (
-    permission: NativeTokenStreamPermission | Erc20TokenStreamPermission,
-  ): PermissionDetails => {
-    const { symbol, decimals } = tokenMetadata;
-    return {
-      amountLabel: {
-        translationKey: 'gatorPermissionsStreamingAmountLabel',
-        value: `${getDecimalizedHexValue(
-          permission.data.amountPerSecond,
-          decimals,
-        )} ${symbol}`,
-      },
-      frequencyLabel: {
-        translationKey: 'gatorPermissionTokenStreamFrequencyLabel',
-        valueTranslationKey: 'gatorPermissionWeeklyFrequency',
-      },
-      expandedDetails: {
-        gatorPermissionsInitialAllowance: `${getDecimalizedHexValue(
-          permission.data.initialAmount || '0x0',
-          decimals,
-        )} ${symbol}`,
-        gatorPermissionsMaxAllowance: `${getDecimalizedHexValue(
-          permission.data.maxAmount || '0x0',
-          decimals,
-        )} ${symbol}`,
-        gatorPermissionsStartDate: convertTimestampToReadableDate(
-          permission.data.startTime as number,
-        ),
-        gatorPermissionsExpirationDate: getExpirationDate(
-          (permission as unknown as { rules: GatorPermissionRule[] }).rules,
-        ),
-        gatorPermissionsStreamRate: `${getDecimalizedHexValue(
-          permission.data.amountPerSecond,
-          decimals,
-        )} ${symbol}/sec`,
-      },
-    };
-  };
+  const getTokenStreamPermissionDetails = useCallback(
+    (
+      permission: NativeTokenStreamPermission | Erc20TokenStreamPermission,
+    ): PermissionDetails => {
+      const { symbol, decimals } = tokenMetadata;
+      const amountPerPeriod = convertAmountPerSecondToAmountPerPeriod(
+        permission.data.amountPerSecond,
+        'weekly',
+      );
+      return {
+        amountLabel: {
+          translationKey: 'gatorPermissionsStreamingAmountLabel',
+          value: decimals
+            ? `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`
+            : getUnknownTokenAmountText(),
+          testId: 'review-gator-permission-amount-label',
+        },
+        frequencyLabel: {
+          translationKey: 'gatorPermissionTokenStreamFrequencyLabel',
+          valueTranslationKey: 'gatorPermissionWeeklyFrequency',
+          testId: 'review-gator-permission-frequency-label',
+        },
+        expandedDetails: {
+          initialAllowance: {
+            translationKey: 'gatorPermissionsInitialAllowance',
+            value: decimals
+              ? `${getDecimalizedHexValue(
+                  permission.data.initialAmount || '0x0',
+                  decimals,
+                )} ${symbol}`
+              : getUnknownTokenAmountText(),
+            testId: 'review-gator-permission-initial-allowance',
+          },
+          maxAllowance: {
+            translationKey: 'gatorPermissionsMaxAllowance',
+            value: decimals
+              ? `${getDecimalizedHexValue(
+                  permission.data.maxAmount || '0x0',
+                  decimals,
+                )} ${symbol}`
+              : getUnknownTokenAmountText(),
+            testId: 'review-gator-permission-max-allowance',
+          },
+          startDate: {
+            translationKey: 'gatorPermissionsStartDate',
+            value: convertTimestampToReadableDate(
+              permission.data.startTime as number,
+            ),
+            testId: 'review-gator-permission-start-date',
+          },
+
+          // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller so we can have stronger typing
+          expirationDate: {
+            translationKey: 'gatorPermissionsExpirationDate',
+            value: getExpirationDate(
+              (permission as unknown as { rules: GatorPermissionRule[] }).rules,
+            ),
+            testId: 'review-gator-permission-expiration-date',
+          },
+          streamRate: {
+            translationKey: 'gatorPermissionsStreamRate',
+            value: decimals
+              ? `${getDecimalizedHexValue(
+                  permission.data.amountPerSecond,
+                  decimals,
+                )} ${symbol}/sec`
+              : getUnknownTokenAmountText(),
+            testId: 'review-gator-permission-stream-rate',
+          },
+        },
+      };
+    },
+    [
+      tokenMetadata,
+      getDecimalizedHexValue,
+      getExpirationDate,
+      getUnknownTokenAmountText,
+    ],
+  );
 
   /**
    * Returns the token periodic permission details
@@ -220,34 +286,56 @@ export const ReviewGatorPermissionItem = ({
    * @param permission - The periodic permission data
    * @returns The permission details
    */
-  const getTokenPeriodicPermissionDetails = (
-    permission: NativeTokenPeriodicPermission | Erc20TokenPeriodicPermission,
-  ): PermissionDetails => {
-    const { symbol, decimals } = tokenMetadata;
-    return {
-      amountLabel: {
-        translationKey: 'amount',
-        value: `${getDecimalizedHexValue(
-          permission.data.periodAmount,
-          decimals,
-        )} ${symbol}`,
-      },
-      frequencyLabel: {
-        translationKey: 'gatorPermissionTokenPeriodicFrequencyLabel',
-        valueTranslationKey: getPeriodFrequencyValueTranslationKey(
-          permission.data.periodDuration,
-        ),
-      },
-      expandedDetails: {
-        gatorPermissionsStartDate: convertTimestampToReadableDate(
-          permission.data.startTime ?? 0,
-        ),
-        gatorPermissionsExpirationDate: getExpirationDate(
-          (permission as unknown as { rules: GatorPermissionRule[] }).rules,
-        ),
-      },
-    };
-  };
+  const getTokenPeriodicPermissionDetails = useCallback(
+    (
+      permission: NativeTokenPeriodicPermission | Erc20TokenPeriodicPermission,
+    ): PermissionDetails => {
+      const { symbol, decimals } = tokenMetadata;
+      return {
+        amountLabel: {
+          translationKey: 'amount',
+          value: decimals
+            ? `${getDecimalizedHexValue(
+                permission.data.periodAmount,
+                decimals,
+              )} ${symbol}`
+            : getUnknownTokenAmountText(),
+          testId: 'review-gator-permission-amount-label',
+        },
+        frequencyLabel: {
+          translationKey: 'gatorPermissionTokenPeriodicFrequencyLabel',
+          valueTranslationKey: getPeriodFrequencyValueTranslationKey(
+            permission.data.periodDuration,
+          ),
+          testId: 'review-gator-permission-frequency-label',
+        },
+        expandedDetails: {
+          startDate: {
+            translationKey: 'gatorPermissionsStartDate',
+            value: convertTimestampToReadableDate(
+              permission.data.startTime ?? 0,
+            ),
+            testId: 'review-gator-permission-start-date',
+          },
+
+          // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller so we can have stronger typing
+          expirationDate: {
+            translationKey: 'gatorPermissionsExpirationDate',
+            value: getExpirationDate(
+              (permission as unknown as { rules: GatorPermissionRule[] }).rules,
+            ),
+            testId: 'review-gator-permission-expiration-date',
+          },
+        },
+      };
+    },
+    [
+      tokenMetadata,
+      getDecimalizedHexValue,
+      getExpirationDate,
+      getUnknownTokenAmountText,
+    ],
+  );
 
   /**
    * Returns the permission details
@@ -265,7 +353,12 @@ export const ReviewGatorPermissionItem = ({
       default:
         throw new Error(`Invalid permission type: ${permissionType}`);
     }
-  }, [permissionType, permissionResponse, tokenMetadata]);
+  }, [
+    permissionType,
+    getTokenStreamPermissionDetails,
+    permissionResponse.permission,
+    getTokenPeriodicPermissionDetails,
+  ]);
 
   return (
     <Card
@@ -329,6 +422,7 @@ export const ReviewGatorPermissionItem = ({
             <Text
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}
+              data-testid={permissionDetails.amountLabel.testId}
             >
               {permissionDetails.amountLabel.value}
             </Text>
@@ -360,6 +454,7 @@ export const ReviewGatorPermissionItem = ({
             <Text
               variant={TextVariant.BodyMd}
               color={TextColor.TextAlternative}
+              data-testid={permissionDetails.frequencyLabel.testId}
             >
               {t(permissionDetails.frequencyLabel.valueTranslationKey)}
             </Text>
@@ -461,6 +556,7 @@ export const ReviewGatorPermissionItem = ({
                   textAlign={TextAlign.Right}
                   color={TextColor.TextAlternative}
                   variant={TextVariant.BodyMd}
+                  data-testid="review-gator-permission-network-name"
                 >
                   {networkName}
                 </Text>
@@ -468,9 +564,10 @@ export const ReviewGatorPermissionItem = ({
             </Box>
 
             {Object.entries(permissionDetails.expandedDetails).map(
-              ([key, value]) => {
+              ([key, detail]) => {
                 return (
                   <Box
+                    key={key}
                     flexDirection={BoxFlexDirection.Row}
                     justifyContent={BoxJustifyContent.Between}
                     style={{ flex: '1', alignSelf: 'center' }}
@@ -482,14 +579,15 @@ export const ReviewGatorPermissionItem = ({
                       color={TextColor.TextAlternative}
                       variant={TextVariant.BodyMd}
                     >
-                      {t(key)}
+                      {t(detail.translationKey)}
                     </Text>
                     <Text
                       textAlign={TextAlign.Right}
                       color={TextColor.TextAlternative}
                       variant={TextVariant.BodyMd}
+                      data-testid={detail.testId}
                     >
-                      {value}
+                      {detail.value}
                     </Text>
                   </Box>
                 );
