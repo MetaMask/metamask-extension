@@ -34,7 +34,7 @@ export function useDappSwapComparisonInfo() {
   const {
     data,
     gas,
-    maxFeePerGas,
+    estimatedBaseFee,
     maxPriorityFeePerGas,
     value: amount,
   } = txParams ?? {};
@@ -132,7 +132,9 @@ export function useDappSwapComparisonInfo() {
       trade,
     } = selectedQuote;
 
-    const gasPrice = new BigNumber(maxFeePerGas ?? '0x0', 16);
+    const gasPrice = new BigNumber(estimatedBaseFee ?? '0x0', 16).plus(
+      maxPriorityFeePerGas ?? '0x0',
+    );
 
     const totalGasInQuote = gasPrice
       .times(
@@ -203,12 +205,12 @@ export function useDappSwapComparisonInfo() {
     chainId,
     erc20FiatRates,
     erc20Decimals,
+    estimatedBaseFee,
     gas,
     gasUsed,
     getUSDValue,
     quotes,
     quotesInput,
-    maxFeePerGas,
     maxPriorityFeePerGas,
     simulationData,
   ]);
