@@ -5034,7 +5034,7 @@ export default class MetamaskController extends EventEmitter {
         //     oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())),
         //   ),
         // ];
-        // TODO Review how we handle this
+        // TODO AccountTrackerController Migration: Review how this works before merging
         // this.accountTrackerController.syncWithAddresses(accountsToTrack);
         return accounts;
       },
