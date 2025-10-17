@@ -84,6 +84,11 @@ class AccountListPage {
   private readonly closeMultichainAccountsPageButton =
     '.multichain-page-header button[aria-label="Back"]';
 
+  private readonly creatingAccountMessage = {
+    text: 'Creating account...',
+    tag: 'div',
+  };
+
   private readonly addMultichainWalletButton =
     '[data-testid="account-list-add-wallet-button"]';
 
@@ -520,6 +525,9 @@ class AccountListPage {
     console.log(
       `Open multichain account menu in account list for account ${options.accountLabel}`,
     );
+    await this.driver.assertElementNotPresent(this.creatingAccountMessage, {
+      waitAtLeastGuard: largeDelayMs,
+    });
     const multichainAccountMenuIcons = await this.driver.findElements(
       `${this.multichainAccountOptionsMenuButton}[aria-label="${options.accountLabel} options"]`,
     );
