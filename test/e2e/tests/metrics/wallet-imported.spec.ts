@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
@@ -7,13 +8,32 @@ import { mockSegment } from './mocks/segment';
 
 describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
-    const eventsToMock = [
+    // We need to distinguish between browsers, because routes differ (MetaMetrics screen)
+    const eventsChrome = [
       'App Opened',
       'App Installed',
       'App Installed',
+      'SRP Backup Confirmed',
+      'Wallet Import Attempted',
       'Wallet Imported',
       'Wallet Setup Completed',
     ];
+
+    const eventsFirefox = [
+      'App Opened',
+      'App Installed',
+      'App Installed',
+      'App Installed',
+      'Analytics Preference Selected',
+      'Wallet Import Started',
+      'SRP Backup Confirmed',
+      'Wallet Import Attempted',
+      'Wallet Imported',
+      'Wallet Setup Completed',
+    ];
+    const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+    const expectedEvents = isFirefox ? eventsFirefox : eventsChrome;
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
@@ -23,7 +43,7 @@ describe('Wallet Created Events - Imported Account', function () {
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
-          return await mockSegment(server, eventsToMock);
+          return await mockSegment(server, expectedEvents);
         },
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
@@ -34,33 +54,50 @@ describe('Wallet Created Events - Imported Account', function () {
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 
-        const eventTypes = events.map(
+        // Only include track events not identify events
+        const trackEvents = events.filter(
+          (e: { type?: string }) => e.type === 'track',
+        );
+
+        const eventTypes = trackEvents.map(
           (event: { event: string }) => event.event,
         );
-        eventsToMock.forEach((expectedEvent) => {
+        expectedEvents.forEach((expectedEvent) => {
           assert(
             eventTypes.includes(expectedEvent),
             `Expected event type '${expectedEvent}' not found in events: ${eventTypes.join(', ')}`,
           );
         });
 
-        assert.equal(events.length, eventsToMock.length);
+        assert.equal(trackEvents.length, expectedEvents.length);
 
-        const firstEvent = events.find(
-          (e: { event: string }) => e.event === eventsToMock[0],
-        );
-        const secondEvent = events.find(
-          (e: { event: string }) => e.event === eventsToMock[1],
-        );
-        const thirdEvent = events.find(
-          (e: { event: string }) => e.event === eventsToMock[2],
-        );
-        const fourthEvent = events.find(
-          (e: { event: string }) => e.event === eventsToMock[3],
-        );
-        const fifthEvent = events.find(
-          (e: { event: string }) => e.event === eventsToMock[4],
-        );
+        const getNthEventByName = (
+          name: string,
+          n: number,
+        ): { event: string; properties: Record<string, unknown> } => {
+          const matches = trackEvents.filter(
+            (e: { event: string }) => e.event === name,
+          );
+          const found = matches[n - 1];
+          if (!found) {
+            throw new Error(
+              `Expected to find ${n} occurrence(s) of event '${name}', but found ${matches.length}. Available events: ${trackEvents
+                .map((e: { event: string }) => e.event)
+                .join(', ')}`,
+            );
+          }
+          return found;
+        };
+
+        const firstEvent = getNthEventByName('App Opened', 1);
+        const secondEvent = getNthEventByName('App Installed', 1);
+        const thirdEvent = getNthEventByName('App Installed', 2);
+        const fourthEvent = isFirefox
+          ? getNthEventByName('App Installed', 3)
+          : getNthEventByName('SRP Backup Confirmed', 1);
+        const fifthEvent = isFirefox
+          ? getNthEventByName('Analytics Preference Selected', 1)
+          : getNthEventByName('Wallet Import Attempted', 1);
 
         assert.deepStrictEqual(firstEvent.properties, {
           category: 'App',
@@ -95,44 +132,62 @@ describe('Wallet Created Events - Imported Account', function () {
           environment_type: 'background',
         });
 
-        assert.deepStrictEqual(fourthEvent.properties, {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          biometrics_enabled: false,
-          category: 'Onboarding',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'fullscreen',
-        });
+        if (isFirefox) {
+          assert.deepStrictEqual(fourthEvent.properties, {
+            category: 'Onboarding',
+            locale: 'en',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: '0x1',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            environment_type: 'fullscreen',
+          });
+        } else {
+          assert.deepStrictEqual(fourthEvent.properties, {
+            category: 'Onboarding',
+            locale: 'en',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: '0x1',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            environment_type: 'fullscreen',
+          });
+        }
 
-        assert.deepStrictEqual(fifthEvent.properties, {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'imported',
-          category: 'Onboarding',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'fullscreen',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          wallet_setup_type: 'import',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_wallet: false,
-        });
+        if (isFirefox) {
+          assert.deepStrictEqual(fifthEvent.properties, {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_metrics_opted_in: true,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            has_marketing_consent: false,
+            location: 'onboarding_metametrics',
+            category: 'Onboarding',
+            locale: 'en',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: '0x1',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            environment_type: 'fullscreen',
+          });
+        } else {
+          assert.deepStrictEqual(fifthEvent.properties, {
+            category: 'Onboarding',
+            locale: 'en',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: '0x1',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            environment_type: 'fullscreen',
+          });
+        }
 
         assert.deepStrictEqual(fourthEvent.properties, {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          biometrics_enabled: false,
           category: 'Onboarding',
           locale: 'en',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
