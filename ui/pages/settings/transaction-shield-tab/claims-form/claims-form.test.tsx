@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 import ClaimsForm from './claims-form';
+import { ClaimsProvider } from '../../../../contexts/claims/claims';
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => {
@@ -19,14 +20,24 @@ describe('Submit Claim Form', () => {
   });
 
   it('should render', () => {
-    const { getByTestId } = renderWithProvider(<ClaimsForm />, store);
+    const { getByTestId } = renderWithProvider(
+      <ClaimsProvider>
+        <ClaimsForm />
+      </ClaimsProvider>,
+      store,
+    );
 
     const submitClaimPage = getByTestId('submit-claim-page');
     expect(submitClaimPage).toBeInTheDocument();
   });
 
   it('should show error when email is invalid', () => {
-    const { getByTestId } = renderWithProvider(<ClaimsForm />, store);
+    const { getByTestId } = renderWithProvider(
+      <ClaimsProvider>
+        <ClaimsForm />
+      </ClaimsProvider>,
+      store,
+    );
 
     const emailInput = getByTestId('shield-claim-email-input');
     fireEvent.change(emailInput, { target: { value: 'invalid-email' } });
@@ -39,7 +50,12 @@ describe('Submit Claim Form', () => {
   });
 
   it('should show error when impacted wallet address is invalid', () => {
-    const { getByTestId } = renderWithProvider(<ClaimsForm />, store);
+    const { getByTestId } = renderWithProvider(
+      <ClaimsProvider>
+        <ClaimsForm />
+      </ClaimsProvider>,
+      store,
+    );
 
     const impactedWalletAddressInput = getByTestId(
       'shield-claim-impacted-wallet-address-input',
@@ -58,7 +74,12 @@ describe('Submit Claim Form', () => {
   });
 
   it('should show error when reimbursement wallet address is invalid', () => {
-    const { getByTestId } = renderWithProvider(<ClaimsForm />, store);
+    const { getByTestId } = renderWithProvider(
+      <ClaimsProvider>
+        <ClaimsForm />
+      </ClaimsProvider>,
+      store,
+    );
 
     const reimbursementWalletAddressInput = getByTestId(
       'shield-claim-reimbursement-wallet-address-input',
@@ -77,7 +98,12 @@ describe('Submit Claim Form', () => {
   });
 
   it('should disable submit button when there are errors', () => {
-    const { getByTestId } = renderWithProvider(<ClaimsForm />, store);
+    const { getByTestId } = renderWithProvider(
+      <ClaimsProvider>
+        <ClaimsForm />
+      </ClaimsProvider>,
+      store,
+    );
 
     const submitButton = getByTestId('shield-claim-submit-button');
     expect(submitButton).toBeDisabled();
