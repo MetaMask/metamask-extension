@@ -1,8 +1,4 @@
 import { Messenger } from '@metamask/base-controller';
-import {
-  AllowedActions,
-  AllowedEvents,
-} from '../../controllers/account-tracker-controller-bk';
 import { AppStateControllerRequestQrCodeScanAction } from '../../controllers/app-state-controller';
 
 export type KeyringControllerMessenger = ReturnType<
@@ -17,7 +13,7 @@ export type KeyringControllerMessenger = ReturnType<
  * messenger.
  */
 export function getKeyringControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: Messenger<never, never>,
 ) {
   return messenger.getRestricted({
     name: 'KeyringController',
