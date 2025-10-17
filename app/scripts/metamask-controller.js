@@ -5025,17 +5025,6 @@ export default class MetamaskController extends EventEmitter {
             accounts = await keyring.getFirstPage();
         }
 
-        // Merge with existing accounts
-        // and make sure addresses are not repeated
-        // const oldAccounts = await this.keyringController.getAccounts();
-
-        // const accountsToTrack = [
-        //   ...new Set(
-        //     oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())),
-        //   ),
-        // ];
-        // TODO AccountTrackerController Migration: Review how this works before merging
-        // this.accountTrackerController.syncWithAddresses(accountsToTrack);
         return accounts;
       },
     );
