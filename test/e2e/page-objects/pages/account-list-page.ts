@@ -31,7 +31,10 @@ class AccountListPage {
   private readonly accountMenuButton =
     '[data-testid="account-list-menu-details"]';
 
-  private readonly accountDetailsTab = { text: 'Details', tag: 'button' };
+  private readonly accountDetailsTab = {
+    text: 'Account details',
+    tag: 'button',
+  };
 
   private readonly accountNameInput = '#account-name';
 
@@ -83,6 +86,11 @@ class AccountListPage {
 
   private readonly closeMultichainAccountsPageButton =
     '.multichain-page-header button[aria-label="Back"]';
+
+  private readonly creatingAccountMessage = {
+    text: 'Creating account...',
+    tag: 'p',
+  };
 
   private readonly addMultichainWalletButton =
     '[data-testid="account-list-add-wallet-button"]';
@@ -520,6 +528,11 @@ class AccountListPage {
     console.log(
       `Open multichain account menu in account list for account ${options.accountLabel}`,
     );
+    // To ensure no pending Create Account action is in progress
+    await this.driver.assertElementNotPresent(this.creatingAccountMessage, {
+      waitAtLeastGuard: largeDelayMs,
+    });
+
     const multichainAccountMenuIcons = await this.driver.findElements(
       `${this.multichainAccountOptionsMenuButton}[aria-label="${options.accountLabel} options"]`,
     );
@@ -797,6 +810,11 @@ class AccountListPage {
     await this.driver.waitForSelector(this.walletDetailsButton);
   }
 
+  async checkAddWalletButttonIsDisplayed(): Promise<void> {
+    console.log('Check add wallet button is displayed');
+    await this.driver.waitForSelector(this.addMultichainWalletButton);
+  }
+
   async clickWalletDetailsButton(): Promise<void> {
     console.log('Click wallet details button');
     await this.driver.clickElement(this.walletDetailsButton);
@@ -1035,6 +1053,14 @@ class AccountListPage {
     await showAccountsButton.click();
 
     await this.driver.findNestedElement(selectedSrp, {
+      text: accountName,
+      tag: 'p',
+    });
+  }
+
+  async checkAccountNameIsDisplayed(accountName: string): Promise<void> {
+    console.log(`Check that account name ${accountName} is displayed`);
+    await this.driver.waitForSelector({
       text: accountName,
       tag: 'p',
     });
