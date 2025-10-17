@@ -19,7 +19,7 @@ import {
   getBalanceChangeFromSimulationData,
 } from '../../utils/dapp-swap-comparison-utils';
 import { useConfirmContext } from '../../context/confirm';
-import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
+import { useTransactionEventFragment } from '../useTransactionEventFragment';
 
 export function useDappSwapComparisonInfo() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -110,14 +110,14 @@ export function useDappSwapComparisonInfo() {
   }, [amountMin, captureDappSwapComparisonMetricsProperties, quotesInput]);
 
   const getGasUSDValue = useCallback(
-    (gas: BigNumber) => {
+    (gasValue: BigNumber) => {
       if (!estimatedBaseFee || !maxPriorityFeePerGas) {
         return '0';
       }
       const gasPrice = new BigNumber(estimatedBaseFee, 16).plus(
         maxPriorityFeePerGas,
       );
-      const totalGas = gasPrice.times(gas).toString(10);
+      const totalGas = gasPrice.times(gasValue).toString(10);
       const nativeTokenAddress = getNativeTokenAddress(chainId);
       return getUSDValue(totalGas, nativeTokenAddress);
     },

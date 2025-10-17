@@ -64,7 +64,7 @@ function argToAmount(arg?: string) {
   if (!arg) {
     return '';
   }
-  const amount = arg?.replace(/^0+/u, '') ?? '0';
+  const amount = arg?.replace(/^0+/u, '') || '0';
   return addHexPrefix(amount);
 }
 

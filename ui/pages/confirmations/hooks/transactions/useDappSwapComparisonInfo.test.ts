@@ -33,6 +33,7 @@ const confirmationDataMock = {
     gas: '0x2af63',
     to: '0xa51afafe0263b40edaef0df8781ea9aa03e381a3',
     value: '0x0',
+    estimatedBaseFee: '0xe4e1c0',
     maxFeePerGas: '0xe4e1c0',
     maxPriorityFeePerGas: '0xe4e1c0',
     type: '0x2',
