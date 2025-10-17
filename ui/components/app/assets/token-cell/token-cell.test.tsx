@@ -13,6 +13,7 @@ import {
   getCurrencyRates,
   getUseCurrencyRateCheck,
   getUseSafeChainsListValidation,
+  getEnabledNetworksByNamespace,
 } from '../../../../selectors';
 import {
   getMultichainCurrentChainId,
@@ -186,6 +187,11 @@ describe('Token Cell', () => {
     }
     if (selector === getUseSafeChainsListValidation) {
       return true;
+    }
+    if (selector === getEnabledNetworksByNamespace) {
+      return {
+        '0x1': true,
+      };
     }
     return undefined;
   });

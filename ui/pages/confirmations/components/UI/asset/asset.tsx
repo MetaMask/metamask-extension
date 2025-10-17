@@ -1,4 +1,5 @@
 import React from 'react';
+import { KeyringAccountType } from '@metamask/keyring-api';
 import {
   AvatarToken,
   AvatarNetwork,
@@ -22,7 +23,9 @@ import {
   NFT_STANDARDS,
 } from '../../../types/send';
 import { useNftImageUrl } from '../../../hooks/useNftImageUrl';
+import { accountTypeLabel } from '../../../constants/network';
 import { useFormatters } from '../../../../../hooks/useFormatters';
+import { AccountTypeLabel } from '../account-type-label';
 
 type AssetProps = {
   asset: AssetType;
@@ -119,6 +122,8 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
   const { formatCurrencyWithMinThreshold, formatTokenQuantity } =
     useFormatters();
 
+  const typeLabel = accountTypeLabel[asset.accountType as KeyringAccountType];
+
   return (
     <Box
       alignItems={AlignItems.center}
@@ -161,9 +166,20 @@ const TokenAsset = ({ asset, onClick, isSelected }: AssetProps) => {
         flexDirection={FlexDirection.Column}
         style={{ flex: 1, overflow: 'hidden' }}
       >
-        <Text variant={TextVariant.bodyMdMedium} color={TextColor.textDefault}>
-          {name}
-        </Text>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+        >
+          <Text
+            variant={TextVariant.bodyMdMedium}
+            color={TextColor.textDefault}
+            marginRight={1}
+          >
+            {name}
+          </Text>
+          <AccountTypeLabel label={typeLabel} />
+        </Box>
         <Text
           variant={TextVariant.bodySmMedium}
           color={TextColor.textAlternative}
