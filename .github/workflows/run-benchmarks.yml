@@ -8,7 +8,7 @@ env:
   COMMANDS: |
     {
       standardHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-standardHome.json --retries 2',
-      powerUserHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --isPowerUser --browserLoads 4 --pageLoads 4 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2',
+      powerUserHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --persona powerUser --browserLoads 4 --pageLoads 4 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2',
       userActions: 'yarn tsx test/e2e/benchmarks/user-actions-benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
     }
 

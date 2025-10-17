@@ -38,5 +38,5 @@ export type BenchmarkArguments = {
   pageLoads: number;
   out?: string;
   retries: number;
-  isPowerUser: boolean;
+  persona: 'standard' | 'powerUser';
 };

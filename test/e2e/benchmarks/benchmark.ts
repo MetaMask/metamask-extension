@@ -31,7 +31,7 @@ import {
 
 const ALL_PAGES = Object.values(PAGES);
 
-async function measurePage(
+async function measurePageStandard(
   pageName: string,
   pageLoads: number,
 ): Promise<Metrics[]> {
@@ -100,7 +100,7 @@ async function measurePagePowerUser(
         try {
           metrics.push(await driver.collectMetrics());
         } catch (error) {
-          // This often errors in chrome-webpack-powerUser
+          // This sometimes errors in chrome-webpack-powerUser (see https://github.com/MetaMask/metamask-extension/issues/36935)
           console.error(`Error collecting metrics for ${pageName}:`, error);
         }
       }
@@ -151,17 +151,26 @@ async function profilePageLoad(
   browserLoads: number,
   pageLoads: number,
   retries: number,
-  isPowerUser: boolean,
+  persona: string,
 ): Promise<Record<string, BenchmarkResults>> {
   const results: Record<string, BenchmarkResults> = {};
+
+  // This is sort of like using an eval, but safer
+  let measurePageFunction;
+  switch (persona) {
+    case 'powerUser':
+      measurePageFunction = measurePagePowerUser;
+      break;
+    default:
+      measurePageFunction = measurePageStandard;
+  }
+
   for (const pageName of pages) {
     let runResults: Metrics[] = [];
 
     for (let i = 0; i < browserLoads; i += 1) {
       const result = await retry({ retries }, () =>
-        isPowerUser
-          ? measurePagePowerUser(pageName, pageLoads)
-          : measurePage(pageName, pageLoads),
+        measurePageFunction(pageName, pageLoads),
       );
       runResults = runResults.concat(result);
     }
@@ -190,9 +199,7 @@ async function profilePageLoad(
         .sort((a, b) => a - b); // Sort the array as numbers, not strings
     }
 
-    const reportingPageName = isPowerUser
-      ? `powerUser${capitalize(pageName)}`
-      : `standard${capitalize(pageName)}`;
+    const reportingPageName = `${persona}${capitalize(pageName)}`;
 
     results[reportingPageName] = {
       mean: meanResult(result),
@@ -243,29 +250,21 @@ async function main(): Promise<void> {
             'Set how many times each benchmark sample should be retried upon failure.',
           type: 'number',
         })
-        .option('isPowerUser', {
-          default: false,
-          description:
-            'Whether to run the benchmark as a power user with additional accounts, tokens, and transactions.',
-          type: 'boolean',
+        .option('persona', {
+          default: 'standard',
+          description: 'The user persona to simulate during the benchmark.',
+          type: 'string',
         }),
   ) as unknown as { argv: BenchmarkArguments };
 
-  const { pages, out, retries, isPowerUser } = argv;
-  let { browserLoads, pageLoads } = argv;
-
-  // Reduce the number of loads for webpack powerUser, since it takes longer and fails frequently
-  if (isPowerUser && process.env.ARTIFACT_NAME === 'build-test-webpack') {
-    browserLoads = 2;
-    pageLoads = 2;
-  }
+  const { pages, browserLoads, pageLoads, out, retries, persona } = argv;
 
   const results = await profilePageLoad(
     pages,
     browserLoads,
     pageLoads,
     retries,
-    isPowerUser,
+    persona,
   );
 
   if (out) {

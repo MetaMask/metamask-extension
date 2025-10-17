@@ -267,16 +267,18 @@ async function start(): Promise<void> {
 
                 // if this platform-buildType-page exists in the data (the benchmark didn't crash)
                 if (benchmarkResults[platform][buildType][page]) {
-                  const _m =
+                  const individualMetricString =
                     benchmarkResults[platform][buildType][page][measure][
                       metric
                     ];
 
-                  const _number = Math.round(parseFloat(_m));
+                  const individualMetricNumber = Math.round(
+                    parseFloat(individualMetricString),
+                  );
 
                   // If it's a number, output it
-                  if (!isNaN(_number)) {
-                    output = _number.toString();
+                  if (!isNaN(individualMetricNumber)) {
+                    output = individualMetricNumber.toString();
                   }
                 }
                 metricData += `<td align="right">${output}</td>`;
