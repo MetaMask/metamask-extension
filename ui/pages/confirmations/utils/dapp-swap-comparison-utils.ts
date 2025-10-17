@@ -45,26 +45,26 @@ export const ABI = [
 const COMMAND_BYTE_SWEEP = '04';
 const COMMAND_BYTE_SEAPORT = '10';
 
-const getWordsFromInput = (input: string) => {
+function getWordsFromInput(input: string) {
   return input?.slice(2).match(/.{1,64}/gu) ?? [];
-};
+}
 
-const wordToAddress = (word?: string) => {
+function wordToAddress(word?: string) {
   if (!word) {
     return '';
   }
   return addHexPrefix(word?.slice(24));
-};
+}
 
-const wordToAmount = (word?: string) => {
+function wordToAmount(word?: string) {
   if (!word) {
     return '';
   }
-  const amount = word?.replace(/^0+/u, '') ?? '';
+  const amount = word?.replace(/^0+/u, '') ?? '0';
   return addHexPrefix(amount);
-};
+}
 
-const parseTransactionData = (data?: string) => {
+function parseTransactionData(data?: string) {
   const contractInterface = new Interface(ABI);
 
   let parsedTransactionData: TransactionDescription;
@@ -82,13 +82,9 @@ const parseTransactionData = (data?: string) => {
   const commandBytes = commands.slice(2).match(/.{1,2}/gu) ?? [];
 
   return { inputs, commandBytes };
-};
+}
 
-export const getDataFromSwap = (
-  chainId: Hex,
-  amount?: string,
-  data?: string,
-) => {
+export function getDataFromSwap(chainId: Hex, amount?: string, data?: string) {
   let quotesInput;
   let amountMin;
   const erc20TokenAddresses = [];
@@ -136,11 +132,11 @@ export const getDataFromSwap = (
   }
 
   return { quotesInput, amountMin, erc20TokenAddresses };
-};
+}
 
-export const getBestQuote = (
+export function getBestQuote(
   quotes: QuoteResponse[],
-): QuoteResponse | undefined => {
+): QuoteResponse | undefined {
   let selectedQuoteIndex = -1;
   let highestMinDestTokenAmount = '-1';
 
@@ -156,14 +152,14 @@ export const getBestQuote = (
   });
 
   return selectedQuoteIndex > -1 ? quotes[selectedQuoteIndex] : undefined;
-};
+}
 
-export const getTokenValueFromRecord = (
+export function getTokenValueFromRecord(
   record: Record<Hex, number>,
   tokenAddress: Hex,
-): number => {
+): number {
   const address = Object.keys(record).find((key) => {
     return key.toLowerCase() === tokenAddress.toLowerCase();
   });
   return address ? (record[address as Hex] ?? 0) : 0;
-};
+}

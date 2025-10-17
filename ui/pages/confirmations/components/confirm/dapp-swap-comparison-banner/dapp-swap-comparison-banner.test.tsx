@@ -1,9 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
-import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
-import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
-import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
+import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { DappSwapComparisonBanner } from './dapp-swap-comparison-banner';
 
 jest.mock('../../hooks/useDappSwapComparisonInfo', () => ({

@@ -1,23 +1,23 @@
 import { QuoteResponse } from '@metamask/bridge-controller';
 import { act } from '@testing-library/react';
 
-import { getMockConfirmStateForTransaction } from '../../../../../../../test/data/confirmations/helper';
-import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
-import { fetchQuotes } from '../../../../../../store/actions';
-import * as Utils from '../../../../../../helpers/utils/util';
-import * as TokenUtils from '../../../../utils/token';
-import { Confirmation } from '../../../../types/confirm';
+import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { fetchQuotes } from '../../../../store/actions';
+import * as Utils from '../../../../helpers/utils/util';
+import * as TokenUtils from '../../utils/token';
+import { Confirmation } from '../../types/confirm';
 import { useDappSwapComparisonInfo } from './useDappSwapComparisonInfo';
 
 const mockUpdateTransactionEventFragment = jest.fn();
-jest.mock('../../../../hooks/useTransactionEventFragment', () => ({
+jest.mock('../../hooks/useTransactionEventFragment', () => ({
   useTransactionEventFragment: () => ({
     updateTransactionEventFragment: mockUpdateTransactionEventFragment,
   }),
 }));
 
-jest.mock('../../../../../../store/actions', () => ({
-  ...jest.requireActual('../../../../../../store/actions'),
+jest.mock('../../../../store/actions', () => ({
+  ...jest.requireActual('../../../../store/actions'),
   fetchQuotes: jest.fn(),
 }));
 

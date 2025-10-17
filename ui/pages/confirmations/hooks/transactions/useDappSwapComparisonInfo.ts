@@ -31,7 +31,13 @@ export function useDappSwapComparisonInfo() {
   } = currentConfirmation ?? {
     txParams: {},
   };
-  const { data, gas, maxFeePerGas, value: amount } = txParams ?? {};
+  const {
+    data,
+    gas,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    value: amount,
+  } = txParams ?? {};
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const captureDappSwapComparisonMetricsProperties = useCallback(
@@ -126,7 +132,11 @@ export function useDappSwapComparisonInfo() {
       trade,
     } = selectedQuote;
 
-    const totalGasInQuote = new BigNumber(maxFeePerGas ?? '0x0', 16)
+    const gasPrice = new BigNumber(maxFeePerGas ?? '0x0', 16).plus(
+      maxPriorityFeePerGas ?? '0x0',
+    );
+
+    const totalGasInQuote = gasPrice
       .times(
         new BigNumber(
           (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
@@ -136,7 +146,7 @@ export function useDappSwapComparisonInfo() {
       )
       .toString(10);
 
-    const totalGasInConfirmation = new BigNumber(maxFeePerGas ?? '0x0', 16)
+    const totalGasInConfirmation = gasPrice
       .times(new BigNumber(gasUsed ?? gas ?? '0x0', 16))
       .toString(10);
 
@@ -201,6 +211,7 @@ export function useDappSwapComparisonInfo() {
     quotes,
     quotesInput,
     maxFeePerGas,
+    maxPriorityFeePerGas,
     simulationData,
   ]);
 }
