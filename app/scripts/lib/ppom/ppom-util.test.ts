@@ -716,7 +716,7 @@ describe('PPOM Utils', () => {
         );
         expect(ppom.validateJsonRpc).toHaveBeenCalledWith(
           expect.not.objectContaining({
-            origin: 'https://different-permission-origin.com', // Should not use permission origin
+            origin: 'https://legitimate-domain.com', // Should not use permission origin
           }),
         );
       });
