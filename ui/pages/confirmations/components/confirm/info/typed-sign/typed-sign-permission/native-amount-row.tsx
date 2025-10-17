@@ -4,6 +4,7 @@ import {
   Text,
   AvatarToken,
   AvatarTokenSize,
+  BoxAlignItems,
 } from '@metamask/design-system-react';
 import { BigNumber } from 'bignumber.js';
 import React from 'react';
@@ -34,17 +35,17 @@ export const NativeAmountRow: React.FC<{
   tooltip?: string;
 }> = ({ label, value, symbol, decimals, tooltip, imageUrl }) => {
   const avatar = imageUrl ? (
-    <Box marginRight={1}>
-      <AvatarToken size={AvatarTokenSize.Xs} src={imageUrl} name={symbol} />
-    </Box>
+    <AvatarToken size={AvatarTokenSize.Xs} src={imageUrl} name={symbol} />
   ) : null;
 
   return (
     <ConfirmInfoRow label={label} tooltip={tooltip}>
-      <Box flexDirection={BoxFlexDirection.Row}>
-        <Box marginRight={1}>
-          <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />
-        </Box>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        gap={2}
+        alignItems={BoxAlignItems.Center}
+      >
+        <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />
         {avatar}
         <Text>{symbol}</Text>
       </Box>

@@ -1,4 +1,8 @@
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { NameType } from '@metamask/name-controller';
 import { BigNumber } from 'bignumber.js';
 import React from 'react';
@@ -31,14 +35,16 @@ export const TokenAmountRow: React.FC<{
 }> = ({ label, value, tokenAddress, chainId, decimals, tooltip }) => {
   return (
     <ConfirmInfoRow label={label} tooltip={tooltip}>
-      <Box flexDirection={BoxFlexDirection.Row}>
-        <Box marginRight={1}>
-          {decimals === undefined ? (
-            <Skeleton width="100%" height={20} />
-          ) : (
-            <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />
-          )}
-        </Box>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        gap={2}
+        alignItems={BoxAlignItems.Center}
+      >
+        {decimals === undefined ? (
+          <Skeleton width="100%" height={20} />
+        ) : (
+          <ConfirmInfoRowTextTokenUnits value={value} decimals={decimals} />
+        )}
 
         <Name
           value={tokenAddress}
