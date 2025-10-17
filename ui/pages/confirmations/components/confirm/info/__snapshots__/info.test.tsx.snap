@@ -1911,47 +1911,39 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
         </div>
       </div>
       <div
-        class="flex flex-row"
+        class="flex flex-row gap-2 items-center"
       >
         <div
-          class="mr-1"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            style="min-width: 0;"
           >
             <div
-              style="min-width: 0;"
+              aria-describedby="tippy-tooltip-6"
+              class=""
+              data-original-title="0.00000000000000466"
+              data-tooltipped=""
+              style="display: inline;"
+              tabindex="0"
             >
-              <div
-                aria-describedby="tippy-tooltip-6"
-                class=""
-                data-original-title="0.00000000000000466"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  &lt;0.000001
-                </p>
-              </div>
+                &lt;0.000001
+              </p>
             </div>
           </div>
         </div>
         <div
-          class="mr-1"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
         >
-          <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
-          >
-            <img
-              alt="ETH"
-              class="size-full object-contain"
-              src="./images/eth_logo.svg"
-            />
-          </div>
+          <img
+            alt="ETH"
+            class="size-full object-contain"
+            src="./images/eth_logo.svg"
+          />
         </div>
         <p
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
@@ -1978,47 +1970,39 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
         </div>
       </div>
       <div
-        class="flex flex-row"
+        class="flex flex-row gap-2 items-center"
       >
         <div
-          class="mr-1"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            style="min-width: 0;"
           >
             <div
-              style="min-width: 0;"
+              aria-describedby="tippy-tooltip-7"
+              class=""
+              data-original-title="0.00000000000000466"
+              data-tooltipped=""
+              style="display: inline;"
+              tabindex="0"
             >
-              <div
-                aria-describedby="tippy-tooltip-7"
-                class=""
-                data-original-title="0.00000000000000466"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  &lt;0.000001
-                </p>
-              </div>
+                &lt;0.000001
+              </p>
             </div>
           </div>
         </div>
         <div
-          class="mr-1"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
         >
-          <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
-          >
-            <img
-              alt="ETH"
-              class="size-full object-contain"
-              src="./images/eth_logo.svg"
-            />
-          </div>
+          <img
+            alt="ETH"
+            class="size-full object-contain"
+            src="./images/eth_logo.svg"
+          />
         </div>
         <p
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
@@ -2111,47 +2095,39 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
         </div>
       </div>
       <div
-        class="flex flex-row"
+        class="flex flex-row gap-2 items-center"
       >
         <div
-          class="mr-1"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            style="min-width: 0;"
           >
             <div
-              style="min-width: 0;"
+              aria-describedby="tippy-tooltip-8"
+              class=""
+              data-original-title="0.00000000000000466"
+              data-tooltipped=""
+              style="display: inline;"
+              tabindex="0"
             >
-              <div
-                aria-describedby="tippy-tooltip-8"
-                class=""
-                data-original-title="0.00000000000000466"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  &lt;0.000001
-                </p>
-              </div>
+                &lt;0.000001
+              </p>
             </div>
           </div>
         </div>
         <div
-          class="mr-1"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
         >
-          <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
-          >
-            <img
-              alt="ETH"
-              class="size-full object-contain"
-              src="./images/eth_logo.svg"
-            />
-          </div>
+          <img
+            alt="ETH"
+            class="size-full object-contain"
+            src="./images/eth_logo.svg"
+          />
         </div>
         <p
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
@@ -2178,47 +2154,39 @@ exports[`Info renders info section for typed sign request with permission 1`] = 
         </div>
       </div>
       <div
-        class="flex flex-row"
+        class="flex flex-row gap-2 items-center"
       >
         <div
-          class="mr-1"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            style="min-width: 0;"
           >
             <div
-              style="min-width: 0;"
+              aria-describedby="tippy-tooltip-9"
+              class=""
+              data-original-title="0.000000000402624"
+              data-tooltipped=""
+              style="display: inline;"
+              tabindex="0"
             >
-              <div
-                aria-describedby="tippy-tooltip-9"
-                class=""
-                data-original-title="0.000000000402624"
-                data-tooltipped=""
-                style="display: inline;"
-                tabindex="0"
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
               >
-                <p
-                  class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
-                  style="white-space: pre-wrap;"
-                >
-                  &lt;0.000001
-                </p>
-              </div>
+                &lt;0.000001
+              </p>
             </div>
           </div>
         </div>
         <div
-          class="mr-1"
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
         >
-          <div
-            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
-          >
-            <img
-              alt="ETH"
-              class="size-full object-contain"
-              src="./images/eth_logo.svg"
-            />
-          </div>
+          <img
+            alt="ETH"
+            class="size-full object-contain"
+            src="./images/eth_logo.svg"
+          />
         </div>
         <p
           class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
