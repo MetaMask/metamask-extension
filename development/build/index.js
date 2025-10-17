@@ -152,7 +152,7 @@ async function defineAndRunBuildTasks() {
       'getSelection',
       // globals `opera` needs to function
       'opr',
-      // for Popper.js and snap simple keyring site
+      // for @popperjs/core and snap simple keyring site
       'devicePixelRatio',
     ];
 
