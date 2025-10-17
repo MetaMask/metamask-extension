@@ -266,7 +266,7 @@ describe('useDappSwapComparisonInfo', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             swap_dapp_minimum_received_value_usd: '0.00975',
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            swap_dapp_network_fee_usd: '0.01069623006255',
+            swap_dapp_network_fee_usd: '0.0213924601251',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             swap_dapp_to_token_simulated_value_usd: '0.009994',
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -274,7 +274,7 @@ describe('useDappSwapComparisonInfo', () => {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             swap_mm_minimum_received_value_usd: '0.010881',
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            swap_mm_network_fee_usd: '0.0400665359661',
+            swap_mm_network_fee_usd: '0.0801330719322',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             swap_mm_to_token_simulated_value_usd: '0.011104',
           },

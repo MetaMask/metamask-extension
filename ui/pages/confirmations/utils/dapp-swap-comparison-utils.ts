@@ -45,22 +45,22 @@ export const ABI = [
 const COMMAND_BYTE_SWEEP = '04';
 const COMMAND_BYTE_SEAPORT = '10';
 
-function getWordsFromInput(input: string) {
+function getArgsFromInput(input: string) {
   return input?.slice(2).match(/.{1,64}/gu) ?? [];
 }
 
-function wordToAddress(word?: string) {
-  if (!word) {
+function argToAddress(arg?: string) {
+  if (!arg) {
     return '';
   }
-  return addHexPrefix(word?.slice(24));
+  return addHexPrefix(arg?.slice(24));
 }
 
-function wordToAmount(word?: string) {
-  if (!word) {
+function argToAmount(arg?: string) {
+  if (!arg) {
     return '';
   }
-  const amount = word?.replace(/^0+/u, '') ?? '0';
+  const amount = arg?.replace(/^0+/u, '') ?? '0';
   return addHexPrefix(amount);
 }
 
@@ -95,15 +95,15 @@ export function getDataFromSwap(chainId: Hex, amount?: string, data?: string) {
   );
 
   if (sweepIndex >= 0) {
-    const words = getWordsFromInput(inputs[sweepIndex]);
-    amountMin = wordToAmount(words[2]);
-    erc20TokenAddresses.push(wordToAddress(words[0]));
+    const args = getArgsFromInput(inputs[sweepIndex]);
+    amountMin = argToAmount(args[2]);
+    erc20TokenAddresses.push(argToAddress(args[0]));
     quotesInput = {
-      walletAddress: wordToAddress(words[1]),
+      walletAddress: argToAddress(args[1]),
       srcChainId: chainId,
       destChainId: chainId,
       srcTokenAddress: getNativeTokenAddress(chainId),
-      destTokenAddress: wordToAddress(words[0]),
+      destTokenAddress: argToAddress(args[0]),
       srcTokenAmount: amount ?? '0x0',
       gasIncluded: false,
       gasIncluded7702: false,
@@ -114,17 +114,17 @@ export function getDataFromSwap(chainId: Hex, amount?: string, data?: string) {
     );
 
     if (seaportIndex >= 0) {
-      const words = getWordsFromInput(inputs[seaportIndex]);
-      amountMin = wordToAmount(words[13]);
-      erc20TokenAddresses.push(wordToAddress(words[10]));
-      erc20TokenAddresses.push(wordToAddress(words[16]));
+      const args = getArgsFromInput(inputs[seaportIndex]);
+      amountMin = argToAmount(args[13]);
+      erc20TokenAddresses.push(argToAddress(args[10]));
+      erc20TokenAddresses.push(argToAddress(args[16]));
       quotesInput = {
-        walletAddress: wordToAddress(words[28]),
+        walletAddress: argToAddress(args[28]),
         srcChainId: chainId,
         destChainId: chainId,
-        srcTokenAddress: wordToAddress(words[10]),
-        destTokenAddress: wordToAddress(words[16]),
-        srcTokenAmount: wordToAmount(words[12]),
+        srcTokenAddress: argToAddress(args[10]),
+        destTokenAddress: argToAddress(args[16]),
+        srcTokenAmount: argToAmount(args[12]),
         gasIncluded: false,
         gasIncluded7702: false,
       };
