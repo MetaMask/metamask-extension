@@ -359,8 +359,9 @@ function maybeDetectPhishing(theController) {
       try {
         blockedHostname = new URL(blockedUrl).hostname;
       } catch {
-        // If blockedUrl is null or undefined, fall back to the original URL's hostname
+        // If blockedUrl is null or undefined, fall back to the original URL
         blockedHostname = hostname;
+        blockedUrl = href;
       }
 
       if (!isFirefox) {
