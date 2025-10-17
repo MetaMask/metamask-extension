@@ -15,9 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Bitcoin provider feature flag support for runtime control via addBitcoinAccount flag (#36676)
 - Adds network logo and native token logo for Plasma Mainnet network (#36456)
 - Show skeleton loader when loading status for Shield Coverage (#36888)
-- Added a new feature type "build-experimental" to `builds.yml`. (#36873)
 - Added support for the Irish (Gaeilge) language (#36088)
-- N/A (#36815)
 - Added user's eligibility check for shield subscription Added an option to submit user subscription event from (#36835)
   the shield entry modal
 - Added support for Hourly, Bi-Weekly (14 days), Monthly (30 days), and Yearly (365 days) duration periods. (#36706)
