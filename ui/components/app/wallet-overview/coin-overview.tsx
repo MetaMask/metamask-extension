@@ -6,18 +6,8 @@ import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import {
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonLink,
-  IconName,
-} from '../../component-library';
-import {
-  JustifyContent,
-  TextVariant,
-  IconColor,
-} from '../../../helpers/constants/design-system';
+import { Box, ButtonLink, IconName } from '../../component-library';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -183,16 +173,7 @@ export const LegacyAggregatedBalance = ({
           !showNativeTokenAsMain && !isTestnet && shouldShowFiat
         }
         privacyMode={privacyMode}
-      />
-      <ButtonIcon
-        color={IconColor.iconAlternative}
-        marginLeft={2}
-        size={ButtonIconSize.Md}
         onClick={handleSensitiveToggle}
-        iconName={privacyMode ? IconName.EyeSlash : IconName.Eye}
-        justifyContent={JustifyContent.center}
-        ariaLabel="Sensitive toggle"
-        data-testid="sensitive-toggle"
       />
     </Skeleton>
   );

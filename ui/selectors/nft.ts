@@ -2,6 +2,7 @@ import { Nft, NftContract } from '@metamask/assets-controllers';
 import { createSelector } from 'reselect';
 import { NetworkState } from '../../shared/modules/selectors/networks';
 import { getMemoizedCurrentChainId } from './selectors';
+import { EMPTY_OBJECT } from './shared';
 
 export type NftState = {
   metamask: {
@@ -19,7 +20,7 @@ export type NftState = {
 };
 
 function getNftContractsByChainByAccount(state: NftState) {
-  return state.metamask.allNftContracts ?? {};
+  return state.metamask.allNftContracts ?? EMPTY_OBJECT;
 }
 
 /**
@@ -29,7 +30,7 @@ function getNftContractsByChainByAccount(state: NftState) {
  * @returns All NFTs owned by the user, keyed by chain ID then account address.
  */
 export function getNftsByChainByAccount(state: NftState) {
-  return state.metamask.allNfts ?? {};
+  return state.metamask.allNfts ?? EMPTY_OBJECT;
 }
 
 export const getNftContractsByAddressByChain = createSelector(

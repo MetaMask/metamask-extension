@@ -1,4 +1,5 @@
 import {
+  type NetworkConfiguration,
   RpcEndpointType,
   UpdateNetworkFields,
 } from '@metamask/network-controller';
@@ -53,7 +54,9 @@ export const NetworkManager = () => {
       return undefined;
     }
     if (location.pathname === '/select-rpc') {
-      return evmNetworks[editingChainId as keyof typeof evmNetworks];
+      return editingChainId
+        ? evmNetworks[editingChainId as keyof typeof evmNetworks]
+        : undefined;
     }
     return !editingChainId || editCompleted
       ? undefined
@@ -270,7 +273,10 @@ export const NetworkManager = () => {
                 >
                   {t('selectRpcUrl')}
                 </ModalHeader>
-                <SelectRpcUrlModal onNetworkChange={handleClose} />
+                <SelectRpcUrlModal
+                  networkConfiguration={editedNetwork as NetworkConfiguration}
+                  onNetworkChange={handleClose}
+                />
               </>
             }
           />

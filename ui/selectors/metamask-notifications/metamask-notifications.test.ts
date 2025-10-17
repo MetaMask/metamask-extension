@@ -31,7 +31,9 @@ describe('Metamask Notifications Selectors', () => {
       isUpdatingMetamaskNotificationsAccount: [],
       isCheckingAccountsPresence: false,
       remoteFeatureFlags: {
-        assetsEnableNotificationsByDefault: false,
+        assetsEnableNotificationsByDefaultV2: {
+          value: false,
+        },
       },
     },
   });

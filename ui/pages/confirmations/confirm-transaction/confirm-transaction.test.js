@@ -63,6 +63,15 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+jest.mock('react-router-dom-v5-compat', () => {
+  const original = jest.requireActual('react-router-dom-v5-compat');
+  return {
+    ...original,
+    useNavigate: () => jest.fn(),
+    useSearchParams: () => [new URLSearchParams(''), jest.fn()],
+  };
+});
+
 jest.mock('../../confirm-decrypt-message', () => {
   return {
     __esModule: true,

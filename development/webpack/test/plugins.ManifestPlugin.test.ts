@@ -223,7 +223,6 @@ describe('ManifestPlugin', () => {
   describe('should transform the manifest object', () => {
     const keep = ['scripts/contentscript.js', 'scripts/inpage.js'];
     const argsMatrix = {
-      lockdown: [true, false],
       test: [true, false],
     };
     const manifestMatrix = {
@@ -261,28 +260,10 @@ describe('ManifestPlugin', () => {
               'should throw when manifest contains tabs already',
             );
           });
-        } else if (!args.lockdown || args.test) {
-          it(`works for args.test of ${args.test} and args.lockdown of ${
-            args.lockdown
-          }. Manifest: ${JSON.stringify(manifest)}`, () => {
+        } else if (args.test) {
+          it(`works for args.test of ${args.test}. Manifest: ${JSON.stringify(manifest)}`, () => {
             assert(transform, 'transform should be truthy');
             const transformed = transform(manifest, 'chrome');
-            if (args.lockdown) {
-              assert.deepStrictEqual(
-                transformed.content_scripts,
-                manifest.content_scripts,
-                'nothing should change in lockdown mode',
-              );
-            } else {
-              const stripped = manifest.content_scripts?.[0]?.js?.filter(
-                (js) => js !== 'lockdown.js',
-              );
-              assert.deepStrictEqual(
-                transformed.content_scripts?.[0]?.js,
-                stripped,
-                'lockdown.js should be removed when not in lockdown mode.',
-              );
-            }
 
             if (args.test) {
               assert.deepStrictEqual(
@@ -327,7 +308,7 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        { lockdown: true, test: false },
+        { test: false },
         true,
         manifestOverridesPath,
       );
@@ -350,7 +331,7 @@ describe('ManifestPlugin', () => {
         return fs.readFileSync.original(path, options);
       });
       const transform = transformManifest(
-        { lockdown: true, test: false },
+        { test: false },
         true,
         manifestOverridesPath,
       );
@@ -382,7 +363,7 @@ describe('ManifestPlugin', () => {
       });
 
       const transform = transformManifest(
-        { lockdown: true, test: false },
+        { test: false },
         true,
         manifestOverridesPath,
       );
@@ -399,7 +380,7 @@ describe('ManifestPlugin', () => {
 
     it('silently ignores non-ENOENT filesystem errors', () => {
       const transform = transformManifest(
-        { lockdown: true, test: false },
+        { test: false },
         true,
         manifestOverridesPath,
       );

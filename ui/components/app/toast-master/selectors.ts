@@ -18,7 +18,10 @@ import {
   isSolanaAccount,
 } from '../../../selectors';
 import { MetaMaskReduxState } from '../../../store/store';
-import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
+import {
+  PasswordChangeToastType,
+  ClaimSubmitToastType,
+} from '../../../../shared/constants/app-state';
 import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-accounts/account-tree.types';
 import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-connect/connect-page/utils';
 import { supportsChainIds } from '../../../hooks/useAccountGroupsForPermissions';
@@ -32,6 +35,7 @@ type State = {
       | 'showNewSrpAddedToast'
       | 'showPasswordChangeToast'
       | 'showCopyAddressToast'
+      | 'showClaimSubmitToast'
     >
   >;
   metamask: Partial<
@@ -41,6 +45,8 @@ type State = {
       | 'newPrivacyPolicyToastShownDate'
       | 'onboardingDate'
       | 'surveyLinkLastClickedOrClosed'
+      | 'shieldEndingToastLastClickedOrClosed'
+      | 'shieldPausedToastLastClickedOrClosed'
     >
   >;
 };
@@ -191,4 +197,40 @@ export function selectShowCopyAddressToast(
   state: Pick<State, 'appState'>,
 ): boolean {
   return Boolean(state.appState.showCopyAddressToast);
+}
+
+/**
+ * Retrieves the state for the "Claim Submit" toast
+ *
+ * @param state - Redux state object.
+ * @returns ClaimSubmitToastType or null
+ */
+export function selectClaimSubmitToast(
+  state: Pick<State, 'appState'>,
+): ClaimSubmitToastType | null {
+  return state.appState.showClaimSubmitToast || null;
+}
+
+/**
+ * Retrieves user preference to see the "Shield Payment Declined" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowShieldPausedToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return !state.metamask.shieldPausedToastLastClickedOrClosed;
+}
+
+/**
+ * Retrieves user preference to see the "Shield Coverage Ending" toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean preference value
+ */
+export function selectShowShieldEndingToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return !state.metamask.shieldEndingToastLastClickedOrClosed;
 }

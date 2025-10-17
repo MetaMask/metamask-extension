@@ -1,5 +1,6 @@
 require('@babel/register');
 require('ts-node').register({ transpileOnly: true });
+const v8 = require('v8');
 const fs = require('node:fs/promises');
 const path = require('path');
 
@@ -51,3 +52,10 @@ Object.assign(window, { fetch: shimmedFetch, Headers, Request, Response });
 global.fetch = shimmedFetch;
 
 global.metamask = {};
+
+
+const structuredClone = obj => {
+  return v8.deserialize(v8.serialize(obj));
+};
+
+global.structuredClone = structuredClone;

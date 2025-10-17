@@ -1,6 +1,9 @@
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
 import { ControllerInitFunction } from '../types';
 import { type NotificationServicesControllerMessenger } from '../messengers/notifications';
+import packageJson from '../../../../package.json';
+
+const APP_VERSION = packageJson.version;
 
 export const NotificationServicesControllerInit: ControllerInitFunction<
   NotificationServicesController,
@@ -14,6 +17,7 @@ export const NotificationServicesControllerInit: ControllerInitFunction<
         platform: 'extension',
         spaceId: process.env.CONTENTFUL_ACCESS_SPACE_ID ?? ':spaceId',
         accessToken: process.env.CONTENTFUL_ACCESS_TOKEN ?? ':accessToken',
+        platformVersion: APP_VERSION,
       },
     },
   });

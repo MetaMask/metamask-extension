@@ -66,7 +66,7 @@ const MOCK_STATE: TestState = {
       ...asAccountTree(mockDefaultState.metamask.accountTree),
     },
     remoteFeatureFlags: {
-      addBitcoinAccount: true,
+      bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
     },
     permissionHistory: {
       'https://test.dapp': {

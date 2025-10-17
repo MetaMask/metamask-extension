@@ -31,12 +31,16 @@ import {
 
 // Mock the main selectors to avoid circular dependency
 jest.mock('../selectors', () => ({
-  getIsBitcoinSupportEnabled: jest.fn(
-    (state) => state.metamask.remoteFeatureFlags.addBitcoinAccount,
-  ),
-  getIsSolanaSupportEnabled: jest.fn(
-    (state) => state.metamask.remoteFeatureFlags.addSolanaAccount,
-  ),
+  getIsBitcoinSupportEnabled: jest.fn((state) => {
+    const { bitcoinAccounts } = state.metamask.remoteFeatureFlags;
+    // Keep this simple, only check if it's enabled or not.
+    return bitcoinAccounts?.enabled;
+  }),
+  getIsSolanaSupportEnabled: jest.fn((state) => {
+    const { solanaAccounts } = state.metamask.remoteFeatureFlags;
+    // Keep this simple, only check if it's enabled or not.
+    return solanaAccounts?.enabled;
+  }),
   getIsSolanaTestnetSupportEnabled: jest.fn(
     (state) => state.metamask.remoteFeatureFlags.solanaTestnetsEnabled,
   ),
@@ -132,10 +136,10 @@ const mockEvmNetworksWithOldConfig: Record<Hex, NetworkConfiguration> = {
 const mockState: TestState = {
   metamask: {
     remoteFeatureFlags: {
-      addSolanaAccount: true,
+      solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
       solanaTestnetsEnabled: true,
       bitcoinTestnetsEnabled: false,
-      addBitcoinAccount: true,
+      bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
     },
     multichainNetworkConfigurationsByChainId: {
       ...mockNonEvmNetworks,
@@ -194,7 +198,7 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
+            solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
           },
         },
       };
@@ -219,8 +223,15 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
-            addBitcoinAccount: false,
+            solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
+            bitcoinAccounts: { enabled: false, minimumVersion: '13.6.0' },
+          },
+          // Ensure no accounts with Bitcoin/Solana scopes exist
+          internalAccounts: {
+            selectedAccount: MOCK_ACCOUNT_EOA.id,
+            accounts: {
+              [MOCK_ACCOUNT_EOA.id]: MOCK_ACCOUNT_EOA,
+            },
           },
         },
       };
@@ -242,8 +253,8 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
-            addBitcoinAccount: false,
+            solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
+            bitcoinAccounts: { enabled: false, minimumVersion: '13.6.0' },
           },
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
@@ -276,8 +287,8 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
-            addBitcoinAccount: true,
+            solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
+            bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
           internalAccounts: {
             ...mockState.metamask.internalAccounts,
@@ -313,8 +324,8 @@ describe('Multichain network selectors', () => {
           ...mockState.metamask,
           remoteFeatureFlags: {
             ...mockState.metamask.remoteFeatureFlags,
-            addSolanaAccount: false,
-            addBitcoinAccount: true,
+            solanaAccounts: { enabled: false, minimumVersion: '13.6.0' },
+            bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
           },
           internalAccounts: {
             ...mockState.metamask.internalAccounts,

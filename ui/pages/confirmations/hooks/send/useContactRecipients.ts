@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { isAddress as isEvmAddress } from 'ethers/lib/utils';
-import { isSolanaChainId } from '@metamask/bridge-controller';
 import { AddressBookEntry } from '@metamask/address-book-controller';
 
 import { getCompleteAddressBook } from '../../../../selectors';
@@ -10,7 +9,7 @@ import { useSendType } from './useSendType';
 import { useAccountAddressSeedIconMap } from './useAccountAddressSeedIconMap';
 
 export const useContactRecipients = (): Recipient[] => {
-  const { isEvmSendType, isSolanaSendType } = useSendType();
+  const { isEvmSendType } = useSendType();
   const addressBook = useSelector(getCompleteAddressBook);
   const { accountAddressSeedIconMap } = useAccountAddressSeedIconMap();
 
@@ -26,14 +25,10 @@ export const useContactRecipients = (): Recipient[] => {
     [accountAddressSeedIconMap],
   );
 
+  // Contacts are only supported for EVM chains today - hence we only return contacts for EVM chains
   if (isEvmSendType) {
     return addressBook
       .filter((contact) => isEvmAddress(contact.address))
-      .map(processContacts);
-  }
-  if (isSolanaSendType) {
-    return addressBook
-      .filter((contact) => isSolanaChainId(contact.chainId))
       .map(processContacts);
   }
 

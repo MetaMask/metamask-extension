@@ -15,6 +15,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { selectSessionData } from '../../../../selectors/identity/authentication';
 import { getMetaMetricsId } from '../../../../selectors/selectors';
+import { getUserSubscriptions } from '../../../../selectors/subscription';
 import VisitSupportDataConsentModal from './visit-support-data-consent-modal';
 
 jest.mock('react-redux', () => ({
@@ -32,7 +33,7 @@ describe('VisitSupportDataConsentModal', () => {
   const mockOnClose = jest.fn();
   const mockProfileId = 'test-profile-id';
   const mockMetaMetricsId = 'test-metrics-id';
-
+  const mockShieldCustomerId = 'test-shield-customer-id';
   const useSelectorMock = useSelector as jest.Mock;
 
   beforeEach(() => {
@@ -42,6 +43,13 @@ describe('VisitSupportDataConsentModal', () => {
       }
       if (selector === getMetaMetricsId) {
         return mockMetaMetricsId;
+      }
+      if (selector === getUserSubscriptions) {
+        return {
+          customerId: mockShieldCustomerId,
+          subscriptions: [],
+          trialedProducts: [],
+        };
       }
       return undefined;
     });
@@ -79,7 +87,7 @@ describe('VisitSupportDataConsentModal', () => {
       getByTestId('visit-support-data-consent-modal-accept-button'),
     );
 
-    const expectedUrl = `${SUPPORT_LINK}?metamask_version=MOCK_VERSION&metamask_profile_id=${mockProfileId}&metamask_metametrics_id=${mockMetaMetricsId}`;
+    const expectedUrl = `${SUPPORT_LINK}?metamask_version=MOCK_VERSION&metamask_profile_id=${mockProfileId}&metamask_metametrics_id=${mockMetaMetricsId}&shield_id=${mockShieldCustomerId}`;
 
     expect(mockTrackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -120,7 +128,16 @@ describe('VisitSupportDataConsentModal', () => {
   });
 
   it('handles clicking the accept button with undefined parameters', () => {
-    useSelectorMock.mockImplementation(() => undefined);
+    useSelectorMock.mockImplementation((selector) => {
+      if (selector === getUserSubscriptions) {
+        return {
+          customerId: undefined,
+          subscriptions: [],
+          trialedProducts: [],
+        };
+      }
+      return undefined;
+    });
     const { getByTestId } = renderModal();
 
     fireEvent.click(

@@ -15,6 +15,9 @@ import { Text, type TextProps } from '../text';
 import { Icon, IconName } from '../icon';
 import type { CheckboxProps, CheckboxComponent } from './checkbox.types';
 
+/**
+ * @deprecated Please update your code to use `Checkbox` from `@metamask/design-system-react`
+ */
 export const Checkbox: CheckboxComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

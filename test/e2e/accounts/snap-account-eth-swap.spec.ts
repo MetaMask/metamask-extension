@@ -11,7 +11,7 @@ import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
 import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { Mockttp } from '../mock-e2e';
-import { mockSimpleKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { mockSnapSimpleKeyringAndSite } from '../tests/account/snap-keyring-site-mocks';
 
 const DAI = 'DAI';
 const TEST_ETH = 'TESTETH';
@@ -29,7 +29,7 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
 
 async function mockSwapsAndSimpleKeyringSnap(mockServer: Mockttp) {
   return [
-    await mockSimpleKeyringSnap(mockServer),
+    ...(await mockSnapSimpleKeyringAndSite(mockServer)),
     await mockSwapsTransactionQuote(mockServer),
   ];
 }
@@ -39,9 +39,11 @@ describe('Snap Account - Swap', function () {
   it.skip('swaps ETH for DAI using a snap account', async function () {
     await withFixtures(
       {
+        dapp: true,
+        dappPaths: ['snap-simple-keyring-site'],
         fixtures: new FixtureBuilder().build(),
-        title: this.test?.fullTitle(),
         testSpecificMock: mockSwapsAndSimpleKeyringSnap,
+        title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);

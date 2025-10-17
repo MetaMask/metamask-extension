@@ -4,7 +4,6 @@ import {
   ShieldRemoteBackend,
 } from '@metamask/shield-controller';
 import { ControllerInitFunction } from '../types';
-import { getIsMetaMaskShieldFeatureEnabled } from '../../../../shared/modules/environment';
 import { ShieldControllerInitMessenger } from '../messengers/shield/shield-controller-messenger';
 
 export const ShieldControllerInit: ControllerInitFunction<
@@ -26,14 +25,15 @@ export const ShieldControllerInit: ControllerInitFunction<
     state: persistedState.ShieldController,
     backend: new ShieldRemoteBackend({
       getAccessToken,
-      fetch,
+      fetch: (input, init) => {
+        // From https://github.com/MetaMask/metamask-extension/pull/35588/
+        // Without wrapping fetch, the requests are not sent as expected. More
+        // investigation is needed.
+        return fetch(input, init);
+      },
       baseUrl,
     }),
   });
-
-  if (getIsMetaMaskShieldFeatureEnabled()) {
-    controller.start();
-  }
 
   return {
     controller,

@@ -8,18 +8,24 @@ import {
   initializeDomainSlice,
   lookupDomainName,
 } from '../../../ducks/domains';
-import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
+import {
+  isSolanaAddress,
+  isBtcMainnetAddress,
+  isBtcTestnetAddress,
+} from '../../../../shared/lib/multichain/accounts';
 import { getInternalAccountByAddress } from '../../../selectors/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 type UseExternalAccountResolutionProps = {
   searchQuery: string;
   isDestinationSolana: boolean;
+  isDestinationBitcoin?: boolean;
 };
 
 export const useExternalAccountResolution = ({
   searchQuery,
   isDestinationSolana,
+  isDestinationBitcoin = false,
 }: UseExternalAccountResolutionProps): ExternalDestinationAccount | null => {
   const dispatch = useDispatch();
   const t = useI18nContext();
@@ -31,18 +37,39 @@ export const useExternalAccountResolution = ({
     if (!trimmedQuery) {
       return null;
     }
-    if (
-      isDestinationSolana
-        ? isSolanaAddress(trimmedQuery)
-        : isEthAddress(trimmedQuery)
-    ) {
+    // Check for Bitcoin addresses
+    if (isDestinationBitcoin) {
+      if (
+        isBtcMainnetAddress(trimmedQuery) ||
+        isBtcTestnetAddress(trimmedQuery)
+      ) {
+        return trimmedQuery;
+      }
+      return null;
+    }
+
+    // Check for Solana addresses
+    if (isDestinationSolana) {
+      if (isSolanaAddress(trimmedQuery)) {
+        return trimmedQuery;
+      }
+      return null;
+    }
+
+    // Default to checking for Ethereum addresses
+    if (isEthAddress(trimmedQuery)) {
       return trimmedQuery;
     }
+
     return null;
-  }, [trimmedQuery, isDestinationSolana]);
+  }, [trimmedQuery, isDestinationSolana, isDestinationBitcoin]);
 
   const validEnsName =
-    !isDestinationSolana && trimmedQuery.endsWith('.eth') ? trimmedQuery : null;
+    !isDestinationSolana &&
+    !isDestinationBitcoin &&
+    trimmedQuery.endsWith('.eth')
+      ? trimmedQuery
+      : null;
 
   // Lookup ENS name when we detect a valid ENS name
   useEffect(() => {

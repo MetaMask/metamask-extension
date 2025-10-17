@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { By } from 'selenium-webdriver';
+import { By, Key } from 'selenium-webdriver';
 import { tEn } from '../../../../../lib/i18n-helpers';
 import { Driver } from '../../../../webdriver/driver';
 import { RawLocator } from '../../../common';
@@ -51,6 +51,9 @@ class TransactionConfirmation extends Confirmation {
   private readonly gasFeeFiatText: RawLocator =
     '[data-testid="native-currency"]';
 
+  private readonly paidByMetaMaskNotice: RawLocator =
+    '[data-testid="paid-by-meta-mask"]';
+
   private readonly gasFeeText: RawLocator = '[data-testid="first-gas-field"]';
 
   private readonly gasFeeTokenArrow: RawLocator =
@@ -79,13 +82,91 @@ class TransactionConfirmation extends Confirmation {
     text: tEn('review') as string,
   };
 
+  private readonly simulationDetailsLayout: RawLocator =
+    '[data-testid="simulation-details-layout"]';
+
+  private readonly estimatedSimulationDetails = (type: string): RawLocator => {
+    if (type === '') {
+      return this.simulationDetailsLayout;
+    }
+
+    return {
+      css: this.simulationDetailsLayout.toString(),
+      text: type,
+    };
+  };
+
+  private readonly outgoingIncomingSimulationDetails = (
+    isOutgoing: boolean,
+    index: number,
+  ): RawLocator => {
+    const listTestId = isOutgoing
+      ? 'simulation-rows-outgoing'
+      : 'simulation-rows-incoming';
+    const id = index + 1;
+    const css = `[data-testid="${listTestId}"] [data-testid="simulation-details-balance-change-row"]:nth-child(${id})`;
+    console.log(`Locator for outgoing/incoming simulation details: ${css}`);
+
+    return css;
+  };
+
+  private readonly dappNumberConnected = (dappNumber: string) =>
+    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
+
   constructor(driver: Driver) {
     super(driver);
     this.driver = driver;
   }
 
-  private readonly dappNumberConnected = (dappNumber: string) =>
-    By.xpath(`//p[normalize-space(.)='${dappNumber}']`);
+  async expectBalanceChange({
+    isOutgoing,
+    index,
+    displayAmount,
+    assetName,
+  }: {
+    isOutgoing: boolean;
+    index: number;
+    displayAmount: string;
+    assetName: string;
+  }) {
+    console.log(
+      `Checking balance change ${isOutgoing} ${index} with text ${displayAmount} ${assetName} is displayed on transaction confirmation page.`,
+    );
+    const css = this.outgoingIncomingSimulationDetails(isOutgoing, index);
+
+    console.log(
+      `Checking balance change ${css.toString()} with text ${displayAmount} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.findElement({
+      css,
+      text: displayAmount,
+    });
+
+    console.log(
+      `Checking balance change ${css.toString()} with text ${assetName}  is displayed on transaction confirmation page.`,
+    );
+    await this.driver.findElement({
+      css,
+      text: assetName,
+    });
+  }
+
+  async checkEstimatedSimulationDetails(type: string) {
+    console.log(
+      `Checking estimated simulation details ${type} is displayed on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector(this.estimatedSimulationDetails(type));
+  }
+
+  async checkEstimatedSimulationDetailsNotDisplayed(waitAtLeastGuard: number) {
+    console.log(
+      `Checking estimated simulation details not displayed on transaction confirmation page.`,
+    );
+    await this.driver.assertElementNotPresent(
+      this.estimatedSimulationDetails(''),
+      { waitAtLeastGuard },
+    );
+  }
 
   /**
    * Checks if the alert message is displayed on the transaction confirmation page.
@@ -131,6 +212,13 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.findElement({
       css: this.gasFeeTokenFeeText,
       text: amountFiat,
+    });
+  }
+
+  async checkPaidByMetaMask() {
+    await this.driver.findElement({
+      css: this.paidByMetaMaskNotice,
+      text: tEn('paidByMetaMask') as string,
     });
   }
 
@@ -195,7 +283,11 @@ class TransactionConfirmation extends Confirmation {
   }
 
   async clickAdvancedDetailsButton() {
-    await this.driver.clickElement(this.advancedDetailsButton);
+    // Instead of clicking the button, we use sendKeys to avoid flakiness when a tooltip appears overlaying the button
+    const advancedDetailsButton = await this.driver.findElement(
+      this.advancedDetailsButton,
+    );
+    await advancedDetailsButton.sendKeys(Key.ENTER);
   }
 
   async clickCustomNonceButton() {

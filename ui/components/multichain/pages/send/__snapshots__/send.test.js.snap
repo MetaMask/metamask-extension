@@ -366,7 +366,7 @@ exports[`SendPage render and initialization should render correctly even when a 
                                 title="$0.00"
                               >
                                 <span
-                                  class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                                  class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                                   data-testid="account-value-and-suffix"
                                 >
                                   $0.00

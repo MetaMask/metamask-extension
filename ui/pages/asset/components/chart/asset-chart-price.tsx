@@ -122,7 +122,13 @@ const AssetChartPrice = forwardRef(
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
           >
-            {props.asset && <TokenCellPercentChange token={props.asset} />}
+            {props.asset && (
+              <TokenCellPercentChange
+                token={props.asset}
+                price={price}
+                comparePrice={comparePrice}
+              />
+            )}
             <Text
               display={Display.InlineBlock}
               variant={TextVariant.bodyMdMedium}

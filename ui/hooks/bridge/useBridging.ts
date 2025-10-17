@@ -110,10 +110,16 @@ const useBridging = () => {
       );
       dispatch(resetInputFields());
       let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+
       url += '?';
       if (srcAssetIdToUse) {
         url += `${BridgeQueryParams.FROM}=${srcAssetIdToUse}`;
       }
+
+      if (location === MetaMetricsSwapsEventSource.TransactionShield) {
+        url += `${srcAssetIdToUse ? '&' : ''}isFromTransactionShield=true`;
+      }
+
       history.push(url);
     },
     [

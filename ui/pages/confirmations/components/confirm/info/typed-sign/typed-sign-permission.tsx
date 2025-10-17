@@ -23,7 +23,14 @@ import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/in
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 import { ConfirmInfoRowCurrency } from '../../../../../../components/app/confirm/info/row/currency';
-import { DAY, WEEK } from '../../../../../../../shared/constants/time';
+import {
+  HOUR,
+  DAY,
+  WEEK,
+  FORTNIGHT,
+  MONTH,
+  YEAR,
+} from '../../../../../../../shared/constants/time';
 
 /**
  * Formats a period duration in seconds to a human-readable string.
@@ -35,10 +42,18 @@ import { DAY, WEEK } from '../../../../../../../shared/constants/time';
 const formatPeriodDuration = (seconds: number) => {
   // multiply by 1000 to convert to milliseconds
   switch (seconds * 1000) {
+    case HOUR:
+      return 'Hourly';
     case DAY:
       return 'Daily';
     case WEEK:
       return 'Weekly';
+    case FORTNIGHT:
+      return 'Bi-Weekly';
+    case MONTH:
+      return 'Monthly';
+    case YEAR:
+      return 'Yearly';
     default:
       return `${seconds} seconds`;
   }

@@ -128,6 +128,7 @@ export const AccountOverviewLayout = ({
           onSlideClick={handleCarouselClick}
           onSlideClose={handleRemoveSlide}
           onRenderSlides={handleRenderSlides}
+          className="mb-3 px-4"
         />
       )}
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>

@@ -3556,6 +3556,9 @@ describe('MetaMaskController', () => {
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
+        // Wait for the fire-and-forget sync and discover operation to complete
+        await new Promise((resolve) => setImmediate(resolve));
+
         // Assert that discoverAccounts was called correctly:
         // - 1 time for Bitcoin
         // - 3 times for Solana (twice with discovered accounts, once with empty array)
@@ -3638,6 +3641,9 @@ describe('MetaMaskController', () => {
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
+        // Wait for the fire-and-forget sync and discover operation to complete
+        await new Promise((resolve) => setImmediate(resolve));
+
         // Assert that discoverAccounts was called correctly:
         // - 3 times for Bitcoin (twice with discovered accounts, once with empty array)
         // - 1 time for Solana
@@ -3702,6 +3708,13 @@ describe('MetaMaskController', () => {
           .mockReturnValue(true);
 
         jest
+          .spyOn(
+            metamaskController.accountTreeController,
+            'syncWithUserStorage',
+          )
+          .mockResolvedValue();
+
+        jest
           .spyOn(metamaskController, 'discoverAndCreateAccounts')
           .mockResolvedValue({});
 
@@ -3713,6 +3726,9 @@ describe('MetaMaskController', () => {
 
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
+        // Wait for the fire-and-forget sync and discover operation to complete
+        await new Promise((resolve) => setImmediate(resolve));
+
         expect(metamaskController.discoverAndCreateAccounts).toHaveBeenCalled();
         expect(
           metamaskController._addAccountsWithBalance,
@@ -3723,6 +3739,13 @@ describe('MetaMaskController', () => {
         jest
           .spyOn(metamaskController, 'isMultichainAccountsFeatureState2Enabled')
           .mockReturnValue(true);
+
+        jest
+          .spyOn(
+            metamaskController.accountTreeController,
+            'syncWithUserStorage',
+          )
+          .mockResolvedValue();
 
         jest
           .spyOn(metamaskController, 'discoverAndCreateAccounts')
@@ -3739,6 +3762,9 @@ describe('MetaMaskController', () => {
           shouldSelectAccount: false,
           shouldImportSolanaAccount: false,
         });
+
+        // Wait for the fire-and-forget sync and discover operation to complete
+        await new Promise((resolve) => setImmediate(resolve));
 
         expect(metamaskController._addAccountsWithBalance).toHaveBeenCalled();
         expect(

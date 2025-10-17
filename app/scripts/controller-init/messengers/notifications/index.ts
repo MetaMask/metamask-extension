@@ -5,4 +5,6 @@ export {
 export {
   getNotificationServicesPushControllerMessenger,
   type NotificationServicesPushControllerMessenger,
+  getNotificationServicesPushControllerInitMessenger,
+  type NotificationServicesPushControllerInitMessenger,
 } from './notification-services-push-controller-messenger';
