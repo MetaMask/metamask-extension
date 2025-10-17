@@ -22,6 +22,7 @@ import {
   getSelectedMultichainNetworkChainId,
   getEnabledNetworks,
 } from '../../../selectors';
+import { usePolledTransactions } from '../../../hooks/usePolledTransactions';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import MultichainBridgeTransactionListItem from '../multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
 import MultichainBridgeTransactionDetailsModal from '../multichain-bridge-transaction-details-modal/multichain-bridge-transaction-details-modal';
@@ -91,10 +92,10 @@ import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multich
 ///: END:ONLY_INCLUDE_IF
 // eslint-disable-next-line import/no-restricted-paths
 import AssetListControlBar from '../assets/asset-list/asset-list-control-bar';
-import {
-  startIncomingTransactionPolling,
-  stopIncomingTransactionPolling,
-} from '../../../store/controller-actions/transaction-controller';
+// import {
+//   startIncomingTransactionPolling,
+//   stopIncomingTransactionPolling,
+// } from '../../../store/controller-actions/transaction-controller';
 import {
   selectBridgeHistoryForAccountGroup,
   selectBridgeHistoryItemForTxMetaId,
@@ -207,6 +208,8 @@ const groupTransactionsByDate = (
   getTransactionTimestamp,
   shouldSort = true,
 ) => {
+  console.time('>>> unified transaction list: groupTransactionsByDate');
+
   const groupedTransactions = [];
 
   if (!transactionGroups) {
@@ -243,6 +246,8 @@ const groupTransactionsByDate = (
       groupedTransactions.sort((a, b) => b.dateMillis - a.dateMillis);
     }
   });
+
+  console.timeEnd('>>> unified transaction list: groupTransactionsByDate');
 
   return groupedTransactions;
 };
@@ -300,6 +305,8 @@ export const buildUnifiedActivityItems = (
   nonEvmTransactions,
   { hideTokenTransactions, tokenAddress, evmChainIds, nonEvmChainIds },
 ) => {
+  console.time('>>> unified transaction list: buildUnifiedActivityItems');
+
   // Apply existing token filters to EVM groups (all chains)
   const filteredPending = getFilteredTransactionGroups(
     unfilteredPendingTransactions,
@@ -339,6 +346,8 @@ export const buildUnifiedActivityItems = (
   const sortedUnifiedItems = [...evmItems, ...nonEvmItems].sort(
     (a, b) => b.timeMs - a.timeMs,
   );
+
+  console.timeEnd('>>> unified transaction list: buildUnifiedActivityItems');
 
   return sortedUnifiedItems;
 };
@@ -514,17 +523,17 @@ export default function UnifiedTransactionList({
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const showRampsCard = isBuyableChain && balanceIsZero;
 
-  useEffect(() => {
-    stopIncomingTransactionPolling();
-    startIncomingTransactionPolling();
+  // useEffect(() => {
+  //   stopIncomingTransactionPolling();
+  //   startIncomingTransactionPolling();
 
-    return () => {
-      stopIncomingTransactionPolling();
-    };
-  }, [
-    // Required to restart polling on new account
-    selectedAccount,
-  ]);
+  //   return () => {
+  //     stopIncomingTransactionPolling();
+  //   };
+  // }, [
+  //   // Required to restart polling on new account
+  //   selectedAccount,
+  // ]);
 
   const viewMore = useCallback(
     () => setDaysLimit((prev) => prev + PAGE_DAYS_INCREMENT),
@@ -645,6 +654,14 @@ export default function UnifiedTransactionList({
   const dateGroupsWithItems = (dateGroup) =>
     dateGroup.transactionGroups.length > 0;
 
+  // Use the polled transactions hook
+  const {
+    processedTransactions: rawPolledItems,
+    isLoading: isPolling,
+    error: pollingError,
+  } = usePolledTransactions();
+
+  /*
   const processedUnifiedActivityItems = useMemo(
     () =>
       groupedUnifiedActivityItems
@@ -657,6 +674,25 @@ export default function UnifiedTransactionList({
       removeEmptyEvmItemsFromUnifiedDateGroup,
     ],
   );
+  */
+
+  // Apply the final filtering to the polled data
+  const processedUnifiedActivityItems = useMemo(() => {
+    if (!rawPolledItems || rawPolledItems.length === 0) {
+      return [];
+    }
+    console.log('>>> rawPolledItems', rawPolledItems);
+
+    // Apply the same data massaging as the original
+    return rawPolledItems
+      .map(removeIncomingTxsButToAnotherAddressUnified)
+      .map(removeEmptyEvmItemsFromUnifiedDateGroup)
+      .filter(dateGroupsWithItems);
+  }, [
+    rawPolledItems,
+    removeIncomingTxsButToAnotherAddressUnified,
+    removeEmptyEvmItemsFromUnifiedDateGroup,
+  ]);
 
   return (
     <>
