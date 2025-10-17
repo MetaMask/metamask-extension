@@ -1,8 +1,8 @@
 import React from 'react';
 import { fireEvent, renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
-import ClaimsForm from './claims-form';
 import { ClaimsProvider } from '../../../../contexts/claims/claims';
+import ClaimsForm from './claims-form';
 
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom-v5-compat', () => {
