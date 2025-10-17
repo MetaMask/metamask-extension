@@ -58,7 +58,7 @@ const wordToAmount = (word?: string) => {
   if (!word) {
     return '';
   }
-  const amount = word?.replace(/^0+/u, '') ?? '0';
+  const amount = word?.replace(/^0+/u, '') ?? '';
   return addHexPrefix(amount);
 };
 
