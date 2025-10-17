@@ -1,10 +1,9 @@
+import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { Interface, TransactionDescription } from '@ethersproject/abi';
 import { QuoteResponse } from '@metamask/bridge-controller';
 import { addHexPrefix } from 'ethereumjs-util';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-
-import { Numeric } from '../../../../../../shared/modules/Numeric';
 
 export const ABI = [
   {
@@ -42,6 +41,9 @@ export const ABI = [
     type: 'function',
   },
 ];
+
+const COMMAND_BYTE_SWEEP = '04';
+const COMMAND_BYTE_SEAPORT = '10';
 
 const getWordsFromInput = (input: string) => {
   return input?.slice(2).match(/.{1,64}/gu) ?? [];
@@ -93,7 +95,7 @@ export const getDataFromSwap = (
   const { commandBytes, inputs } = parseTransactionData(data);
 
   const sweepIndex = commandBytes.findIndex(
-    (commandByte: string) => commandByte === '04',
+    (commandByte: string) => commandByte === COMMAND_BYTE_SWEEP,
   );
 
   if (sweepIndex >= 0) {
@@ -112,7 +114,7 @@ export const getDataFromSwap = (
     };
   } else {
     const seaportIndex = commandBytes.findIndex(
-      (commandByte: string) => commandByte === '10',
+      (commandByte: string) => commandByte === COMMAND_BYTE_SEAPORT,
     );
 
     if (seaportIndex >= 0) {
@@ -144,8 +146,8 @@ export const getBestQuote = (
 
   quotes.forEach((quote, index) => {
     if (
-      new Numeric(quote.quote.minDestTokenAmount, 10).greaterThan(
-        new Numeric(highestMinDestTokenAmount, 10),
+      new BigNumber(quote.quote.minDestTokenAmount, 10).greaterThan(
+        new BigNumber(highestMinDestTokenAmount, 10),
       )
     ) {
       highestMinDestTokenAmount = quote.quote.minDestTokenAmount;

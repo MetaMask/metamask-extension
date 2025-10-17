@@ -8,17 +8,17 @@ import { QuoteResponse } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { fetchQuotes } from '../../../../../../store/actions';
-import { fetchTokenExchangeRates } from '../../../../../../helpers/utils/util';
-import { useAsyncResult } from '../../../../../../hooks/useAsync';
-import { fetchAllErc20Decimals } from '../../../../utils/token';
-import { useConfirmContext } from '../../../../context/confirm';
-import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
+import { fetchQuotes } from '../../../../store/actions';
+import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
+import { useAsyncResult } from '../../../../hooks/useAsync';
+import { fetchAllErc20Decimals } from '../../utils/token';
 import {
   getDataFromSwap,
   getBestQuote,
   getTokenValueFromRecord,
-} from '../dapp-swap-comparison-utils';
+} from '../../utils/dapp-swap-comparison-utils';
+import { useConfirmContext } from '../../context/confirm';
+import { useTransactionEventFragment } from '../../hooks/useTransactionEventFragment';
 
 export function useDappSwapComparisonInfo() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -55,7 +55,7 @@ export function useDappSwapComparisonInfo() {
 
   const { value: erc20FiatRates } = useAsyncResult<ContractExchangeRates>(
     () => fetchTokenExchangeRates('usd', erc20TokenAddresses, chainId),
-    [JSON.stringify(erc20TokenAddresses), chainId],
+    [erc20TokenAddresses, chainId],
   );
 
   const { value: erc20Decimals } = useAsyncResult<
@@ -66,7 +66,7 @@ export function useDappSwapComparisonInfo() {
       chainId,
     );
     return { ...result, [getNativeTokenAddress(chainId)]: 18 };
-  }, [JSON.stringify(erc20TokenAddresses), chainId]);
+  }, [erc20TokenAddresses, chainId]);
 
   const getUSDValue = useCallback(
     (tokenAmount: string, tokenAddress: Hex) => {
@@ -87,7 +87,7 @@ export function useDappSwapComparisonInfo() {
         .times(conversionRate)
         .toString(10);
     },
-    [JSON.stringify(erc20Decimals), JSON.stringify(erc20FiatRates)],
+    [erc20Decimals, erc20FiatRates],
   );
 
   const { value: quotes } = useAsyncResult<
@@ -100,11 +100,7 @@ export function useDappSwapComparisonInfo() {
     captureDappSwapComparisonMetricsProperties({ loading: 'true' });
 
     return await fetchQuotes(quotesInput);
-  }, [
-    amountMin,
-    captureDappSwapComparisonMetricsProperties,
-    JSON.stringify(quotesInput),
-  ]);
+  }, [amountMin, captureDappSwapComparisonMetricsProperties, quotesInput]);
 
   useEffect(() => {
     if (
