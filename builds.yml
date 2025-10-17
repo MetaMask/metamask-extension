@@ -243,6 +243,11 @@ env:
   - INFURA_STORYBOOK_PROJECT_ID
 
   ###
+  # Core Backend Services
+  ###
+  - MM_BACKEND_WEBSOCKET_URL: wss://gateway.api.cx.metamask.io/v1
+
+  ###
   # Notifications Feature
   ###
   - AUTH_API: https://authentication.api.cx.metamask.io
