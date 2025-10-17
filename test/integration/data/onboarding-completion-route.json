@@ -186,7 +186,10 @@
   "keyrings": [
     {
       "type": "HD Key Tree",
-      "accounts": ["0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189"]
+      "accounts": ["0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189"],
+      "metadata": {
+        "id": "test-keyring-id"
+      }
     }
   ],
   "knownMethodData": {},

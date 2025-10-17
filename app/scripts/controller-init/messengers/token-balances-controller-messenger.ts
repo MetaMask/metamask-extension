@@ -17,9 +17,14 @@ import {
   AccountTrackerUpdateStakedBalancesAction,
   AccountTrackerControllerGetStateAction,
   TokensControllerState,
+  type TokenDetectionControllerAddDetectedTokensViaWsAction
 } from '@metamask/assets-controllers';
 import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type {
+  AccountActivityServiceStatusChangedEvent,
+  AccountActivityServiceBalanceUpdatedEvent,
+} from '@metamask/core-backend';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -45,13 +50,16 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetStateAction
   | PreferencesControllerGetStateAction
-  | TokensControllerGetStateAction;
+  | TokensControllerGetStateAction
+  | TokenDetectionControllerAddDetectedTokensViaWsAction;
 
 type AllowedEvents =
   | KeyringControllerAccountRemovedEvent
   | NetworkControllerStateChangeEvent
   | PreferencesControllerStateChangeEvent
-  | TokensControllerStateChangeEvent;
+  | TokensControllerStateChangeEvent
+  | AccountActivityServiceStatusChangedEvent
+  | AccountActivityServiceBalanceUpdatedEvent;
 
 export type TokenBalancesControllerMessenger = ReturnType<
   typeof getTokenBalancesControllerMessenger
@@ -79,12 +87,15 @@ export function getTokenBalancesControllerMessenger(
       'AccountTrackerController:getState',
       'AccountTrackerController:updateNativeBalances',
       'AccountTrackerController:updateStakedBalances',
+      'TokenDetectionController:addDetectedTokensViaWs',
     ],
     allowedEvents: [
       'PreferencesController:stateChange',
       'TokensController:stateChange',
       'NetworkController:stateChange',
       'KeyringController:accountRemoved',
+      'AccountActivityService:statusChanged',
+      'AccountActivityService:balanceUpdated',
     ],
   });
 }
