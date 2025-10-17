@@ -84,7 +84,7 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
       };
       networks[CHAIN_IDS.LOCALHOST] = network;
     } else if (
-      // process.env.METAMASK_DEBUG ||
+      process.env.METAMASK_DEBUG ||
       process.env.METAMASK_ENVIRONMENT === 'test'
     ) {
       network = networks[CHAIN_IDS.SEPOLIA];

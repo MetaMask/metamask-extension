@@ -97,7 +97,7 @@ const generateDefaultNetworkEnablementControllerState = (
       },
     };
   } else if (
-    // process.env.METAMASK_DEBUG ||
+    process.env.METAMASK_DEBUG ||
     process.env.METAMASK_ENVIRONMENT === 'test'
   ) {
     return {
