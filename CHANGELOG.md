@@ -21,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added support for Hourly, Bi-Weekly (14 days), Monthly (30 days), and Yearly (365 days) duration periods. (#36706)
 - Added shield subscription error toasts (#36718)
 - Create add funds modal (#36592)
-- Patched ShieldController to `v0.3.2`. (#36809)
 - Added new toast component (#36408)
 - Add file upload component (#35779)
 - Auto turn on some settings when shield is active (#36343)
@@ -52,17 +51,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `ShieldController.init` in `SubscriptionController:stateChange` event listener (#36779)
   fixed `SubscriptionController` polling
   refactor `useUserSubscription` hook usage.
-- N/A (#36741)
+- Use template for dollar amount on locale (#36741)
 - Update notifications enabled by default feature flag to control rollout (#36724)
 - Increase our security posture by locking down `cross_origin_opener_policy` to `same-origin-allow-popups` openers only. (#36500)
 - Show correct available token amount in shield subscription plan (#36494)
-- fix: UI review updates (#36523)
+- Design team’s review have been implemented (#36523)
 - Helps with ongoing performance regressions when using Solana (#36613)
 - Fixes a bug where first permitting accounts via the EVM provider would cause all requests to the Solana Wallet Standard provider (#36434)
   to fail with an `The requested account and/or method has not been
 authorized by the user.` error until the user fully revoked dapp
   permissions and then permitted accounts using the Solana Wallet Standard
   provider first.
+- Patched ShieldController to `v0.3.2`. (#36809)
 
 ## [13.5.0]
 
