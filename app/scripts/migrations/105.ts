@@ -1,4 +1,4 @@
-import { EthAccountType } from '@metamask/keyring-api';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { sha256FromString } from 'ethereumjs-util';
 import { v4 as uuid } from 'uuid';
@@ -17,8 +17,11 @@ export type Identity = {
 };
 
 // The `InternalAccount` has been updated with `@metamask/keyring-api@13.0.0`, so we
-// omit the new field to re-use the original type for that migration.
-export type InternalAccountV1 = Omit<InternalAccount, 'scopes'>;
+// re-use the original types for this migration.
+export type InternalAccountV1 = Pick<
+  InternalAccount,
+  'address' | 'id' | 'options' | 'metadata' | 'methods' | 'type' | 'scopes'
+>;
 
 export const version = 105;
 
@@ -112,6 +115,7 @@ function createInternalAccountsForAccountsController(
       },
       methods: ETH_EOA_METHODS,
       type: EthAccountType.Eoa,
+      scopes: [EthScope.Eoa],
     };
   });
 
