@@ -8286,10 +8286,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/fetch-event-source@npm:^2.0.1":
+"@microsoft/fetch-event-source@npm:2.0.1":
   version: 2.0.1
   resolution: "@microsoft/fetch-event-source@npm:2.0.1"
   checksum: 10/c147055fafe83801efb9834136ba4b7944406a0bba3517afcea6ceeb56714b5ef78c2e89544bd9c1426ad1d2f964a087e3a719169ae04855836a23fb53269f8d
+  languageName: node
+  linkType: hard
+
+"@microsoft/fetch-event-source@patch:@microsoft/fetch-event-source@npm%3A2.0.1#~/.yarn/patches/@microsoft-fetch-event-source-npm-2.0.1-679d34d9ba.patch":
+  version: 2.0.1
+  resolution: "@microsoft/fetch-event-source@patch:@microsoft/fetch-event-source@npm%3A2.0.1#~/.yarn/patches/@microsoft-fetch-event-source-npm-2.0.1-679d34d9ba.patch::version=2.0.1&hash=d8ef8b"
+  checksum: 10/a7def5a1bc1d82b8f70360a5838f3b36ec23fa33c3769eb14f0d9030ddc490165cd6eab46c301dbd75e48b2d1dce57b42595cd856112c42df42476782515007a
   languageName: node
   linkType: hard
 
