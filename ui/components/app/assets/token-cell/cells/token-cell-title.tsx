@@ -10,7 +10,7 @@ type TokenCellTitleProps = {
   token: TokenFiatDisplayInfo;
 };
 
-const accountTypeLabel: Partial<Record<KeyringAccountType, string>> = {
+export const accountTypeLabel: Partial<Record<KeyringAccountType, string>> = {
   [BtcAccountType.P2pkh]: 'Legacy',
   [BtcAccountType.P2sh]: 'Nested SegWit',
   [BtcAccountType.P2wpkh]: 'Native SegWit',

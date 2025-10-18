@@ -4,11 +4,11 @@ import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
+import { type KeyringAccountType } from '@metamask/keyring-api';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
@@ -36,6 +36,7 @@ import {
   ModalOverlay,
   SensitiveText,
   SensitiveTextLength,
+  Tag,
   Text,
 } from '../../component-library';
 import { getMarketData, getCurrencyRates } from '../../../selectors';
@@ -56,6 +57,7 @@ import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { selectNoFeeAssets } from '../../../ducks/bridge/selectors';
+import { accountTypeLabel } from '../../app/assets/token-cell/cells/token-cell-title';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
 
@@ -79,6 +81,7 @@ type TokenListItemProps = {
   privacyMode?: boolean;
   nativeCurrencySymbol?: string;
   isDestinationToken?: boolean;
+  accountType?: KeyringAccountType;
 };
 
 export const TokenListItemComponent = ({
@@ -98,6 +101,7 @@ export const TokenListItemComponent = ({
   isTitleHidden = false,
   address = null,
   showPercentage = false,
+  accountType,
   privacyMode = false,
   nativeCurrencySymbol,
   isDestinationToken = false,
@@ -279,32 +283,10 @@ export const TokenListItemComponent = ({
                   )}
                 </Text>
               )}
-              {isNoFeeAsset && (
-                <Box
-                  backgroundColor={BackgroundColor.backgroundSection}
-                  borderRadius={BorderRadius.SM}
-                  paddingInline={1}
-                  paddingTop={0}
-                  paddingBottom={0}
-                  style={{
-                    height: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Text
-                    variant={TextVariant.bodySm}
-                    fontWeight={FontWeight.Medium}
-                    color={TextColor.textAlternative}
-                    style={{
-                      lineHeight: '20px',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {t('bridgeNoMMFee')}
-                  </Text>
-                </Box>
+              {accountType && accountTypeLabel[accountType] && (
+                <Tag label={accountTypeLabel[accountType]} />
               )}
+              {isNoFeeAsset && <Tag label={t('bridgeNoMMFee')} />}
             </Box>
 
             {showScamWarning ? (
