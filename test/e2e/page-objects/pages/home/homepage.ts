@@ -19,6 +19,11 @@ class HomePage {
     css: '.home-notification__accept-button',
   };
 
+  private readonly backupRemindMeLaterButton = {
+    tag: 'button',
+    text: 'Remind me later',
+  };
+
   private readonly backupSecretRecoveryPhraseNotification = {
     text: 'Back up your Secret Recovery Phrase to keep your wallet and funds secure.',
     css: '.home-notification__text',
@@ -65,6 +70,11 @@ class HomePage {
   };
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
+
+  protected readonly skipShieldModalButton = {
+    testId: 'shield-entry-modal-skip-button',
+    text: 'Skip',
+  };
 
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
@@ -118,6 +128,16 @@ class HomePage {
     await this.driver.assertElementNotPresent(this.tokensTab, {
       waitAtLeastGuard: 500,
     });
+  }
+
+  async clickBackupRemindMeLaterButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.backupRemindMeLaterButton,
+    );
+  }
+
+  async clickSkipShieldModalButton(): Promise<void> {
+    await this.driver.clickElementSafe(this.skipShieldModalButton);
   }
 
   async closeSurveyToast(surveyName: string): Promise<void> {
@@ -428,7 +448,7 @@ class HomePage {
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
     console.log('Check no shield entry modal is displayed on homepage');
     await this.driver.assertElementNotPresent(this.shieldEntryModal, {
-      timeout: 5000,
+      waitAtLeastGuard: 5000,
     });
   }
 }

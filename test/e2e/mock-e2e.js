@@ -1146,6 +1146,30 @@ async function setupMocking(
     )
     .thenForwardTo('ws://localhost:8088');
 
+  // Subscriptions
+  await server
+    .forGet(
+      'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [],
+      };
+    });
+
+  await server
+    .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          subscriptions: [],
+          trialedProducts: [],
+        },
+      };
+    });
+
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);
   const TEST_DAPP_STYLES_2 = fs.readFileSync(TEST_DAPP_STYLES_2_PATH);

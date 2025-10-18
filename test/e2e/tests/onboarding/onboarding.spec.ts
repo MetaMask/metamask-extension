@@ -109,7 +109,7 @@ describe('MetaMask onboarding', function () {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed('85,000.00', '$');
       },
     );
   });
@@ -239,12 +239,13 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
+        await homePage.clickSkipShieldModalButton();
         await switchToNetworkFromSendFlow(driver, networkName);
         await homePage.checkAddNetworkMessageIsDisplayed(networkName);
 
         // Check the correct balance for the custom network is displayed
         if (localNodes[1] && Array.isArray(localNodes)) {
-          await homePage.checkExpectedBalanceIsDisplayed('10');
+          await homePage.checkExpectedBalanceIsDisplayed('17,000.00', '$');
         } else {
           throw new Error('Custom network server not available');
         }
