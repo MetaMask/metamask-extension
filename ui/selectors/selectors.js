@@ -662,6 +662,7 @@ export function getHDEntropyIndex(state) {
   return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
 
+// TODO ACT MIGRATION - CHECK FOR CASE ON REFERENCES
 /**
  * Get account balances state.
  *
@@ -673,6 +674,7 @@ export function getMetaMaskAccountBalances(state) {
   return state.metamask?.accountsByChainId?.[currentChainId] ?? {};
 }
 
+// TODO ACT MIGRATION - CHECK FOR USAGE
 export function getMetaMaskCachedBalances(state, networkChainId) {
   const enabledNetworks = getEnabledNetworks(state);
   const eip155 = enabledNetworks?.eip155 ?? {};
@@ -705,6 +707,7 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
   return {};
 }
 
+// TODO ACT MIGRATION - CHECK FOR USAGE
 export function getCrossChainMetaMaskCachedBalances(state) {
   const allAccountsByChainId = state.metamask.accountsByChainId;
   return Object.keys(allAccountsByChainId).reduce((acc, topLevelKey) => {
@@ -721,6 +724,7 @@ export function getCrossChainMetaMaskCachedBalances(state) {
   }, {});
 }
 
+// TODO ACT MIGRATION - CHECK FOR USAGE
 /**
  * Based on the current account address, return the balance for the native token of all chain networks on that account
  *
@@ -730,6 +734,11 @@ export function getCrossChainMetaMaskCachedBalances(state) {
 export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
   const { accountsByChainId } = state.metamask;
   const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
+
+  console.log('DEBUG XXX 3', {
+    accountsByChainId,
+    selectedAddress,
+  });
 
   const balancesByChainId = {};
   for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
@@ -765,6 +774,11 @@ export function getSelectedAccountTokensAcrossChains(state) {
     ...Object.keys(allTokens || {}),
     ...Object.keys(nativeTokenBalancesByChainId || {}),
   ]);
+
+  console.log('DEBUG XXX 2', {
+    nativeTokenBalancesByChainId,
+    chainIds,
+  });
 
   chainIds.forEach((chainId) => {
     if (!tokensByChain[chainId]) {
@@ -826,6 +840,7 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
     getTokensAcrossChainsByAccountAddress(state, accountAddress),
 );
 
+// TODO ACT MIGRATION - CHECK FOR USAGE
 /**
  * Get the native token balance for a given account address and chainId
  *

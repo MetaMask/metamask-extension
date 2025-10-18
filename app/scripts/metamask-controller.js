@@ -1133,9 +1133,6 @@ export default class MetamaskController extends EventEmitter {
 
     // if this is the first time, clear the state of by calling these methods
     const resetMethods = [
-      this.accountTrackerController.resetState.bind(
-        this.accountTrackerController,
-      ),
       this.decryptMessageController.resetState.bind(
         this.decryptMessageController,
       ),
@@ -3094,10 +3091,9 @@ export default class MetamaskController extends EventEmitter {
         tokenRatesController.stopPollingByPollingToken.bind(
           tokenRatesController,
         ),
-      accountTrackerStartPolling:
-        accountTrackerController.startPollingByNetworkClientId.bind(
-          accountTrackerController,
-        ),
+      accountTrackerStartPolling: accountTrackerController.startPolling.bind(
+        accountTrackerController,
+      ),
       accountTrackerStopPollingByPollingToken:
         accountTrackerController.stopPollingByPollingToken.bind(
           accountTrackerController,
@@ -4496,9 +4492,6 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Update @metamask/accounts-controller to support this.
       this.accountOrderController.updateHiddenAccountsList([]);
 
-      // clear accounts in AccountTrackerController
-      this.accountTrackerController.clearAccounts();
-
       this.txController.clearUnapprovedTransactions();
 
       if (completedOnboarding) {
@@ -4809,10 +4802,12 @@ export default class MetamaskController extends EventEmitter {
    * @param {Provider} provider - The provider instance to use when asking the network
    */
   async getBalance(address, provider) {
+    // TODO We should not rely on global chain id
     const accounts =
       this.accountTrackerController.state.accountsByChainId[
         this.#getGlobalChainId()
       ];
+    // TODO - Checksum?
     const cached = accounts?.[address];
 
     if (cached && cached.balance) {
@@ -4903,10 +4898,6 @@ export default class MetamaskController extends EventEmitter {
     try {
       // Automatic login via config password
       await this.submitPassword(password);
-
-      // Updating accounts in this.accountTrackerController before starting UI syncing ensure that
-      // state has account balance before it is synced with UI
-      await this.accountTrackerController.updateAccountsAllActiveNetworks();
     } finally {
       this._startUISync();
     }
@@ -5034,16 +5025,6 @@ export default class MetamaskController extends EventEmitter {
             accounts = await keyring.getFirstPage();
         }
 
-        // Merge with existing accounts
-        // and make sure addresses are not repeated
-        const oldAccounts = await this.keyringController.getAccounts();
-
-        const accountsToTrack = [
-          ...new Set(
-            oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())),
-          ),
-        ];
-        this.accountTrackerController.syncWithAddresses(accountsToTrack);
         return accounts;
       },
     );
@@ -5339,6 +5320,7 @@ export default class MetamaskController extends EventEmitter {
 
     const internalAccountCount = internalAccounts.length;
 
+    // TODO We should not rely on global chain id
     const accountsForCurrentChain =
       this.accountTrackerController.state.accountsByChainId[
         this.#getGlobalChainId()
@@ -7509,7 +7491,8 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    this.accountTrackerController.syncWithAddresses(addresses);
+    // TODO AccountTrackerController Migration: Review how this works before merging
+    // this.accountTrackerController.syncWithAddresses(addresses);
   }
 
   /**
@@ -7700,6 +7683,7 @@ export default class MetamaskController extends EventEmitter {
       ),
       // Other dependencies
       getAccountBalance: (account, chainId) =>
+        // TODO - Checksum?
         this.accountTrackerController.state.accountsByChainId?.[chainId]?.[
           account
         ]?.balance,
@@ -7797,10 +7781,11 @@ export default class MetamaskController extends EventEmitter {
       networkClientId,
       txParams: { from },
     } = transactionMeta;
-    this.accountTrackerController.updateAccountByAddress({
-      address: from,
-      networkClientId,
-    });
+    // TODO AccountTrackerController Migration: Review how we handle this
+    // this.accountTrackerController.updateAccountByAddress({
+    //   address: from,
+    //   networkClientId,
+    // });
   }
 
   toggleExternalServices(useExternal) {

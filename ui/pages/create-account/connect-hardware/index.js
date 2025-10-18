@@ -110,6 +110,7 @@ class ConnectHardwareForm extends Component {
     isFirefox: false,
   };
 
+  // ACCOUNTTRACKER TODO: Remove this
   UNSAFE_componentWillReceiveProps(nextProps) {
     const { accounts } = nextProps;
     const newAccounts = this.state.accounts.map((a) => {
