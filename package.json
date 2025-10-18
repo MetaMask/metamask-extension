@@ -241,7 +241,8 @@
     "@endo/env-options@npm:^1.1.11": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@endo/env-options@npm:^1.1.7": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
     "@endo/env-options@npm:^1.1.8": "patch:@endo/env-options@npm%3A1.1.11#~/.yarn/patches/@endo-env-options-npm-1.1.11-1b7fae374a.patch",
-    "@metamask/jazzicon@npm:^2.0.0": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
+    "@metamask/jazzicon@npm:^2.0.0": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch",
+    "@microsoft/fetch-event-source@npm:^2.0.1": "patch:@microsoft/fetch-event-source@npm%3A2.0.1#~/.yarn/patches/@microsoft-fetch-event-source-npm-2.0.1-679d34d9ba.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
