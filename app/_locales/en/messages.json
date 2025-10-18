@@ -1244,6 +1244,9 @@
     "message": "No options found",
     "description": "Default text shown in the combo field dropdown if no options."
   },
+  "completed": {
+    "message": "Completed"
+  },
   "concentratedSupplyDistributionDescription": {
     "message": "The majority of the token's supply is held by the top token holders, posing a risk of centralized price manipulation"
   },
@@ -5699,6 +5702,10 @@
     "message": "You may file a single claim per incident within 21 days of the incident. View the full coverage policy $1.",
     "description": "The $1 is a link to the full coverage policy"
   },
+  "shieldClaimDetailsViewClaims": {
+    "message": "This claim is being reviewed by our team. We will notify you when it has been approved by email. View the full coverage policy $1.",
+    "description": "The $1 is a link to the full coverage policy"
+  },
   "shieldClaimEmail": {
     "message": "Email"
   },
@@ -5755,6 +5762,15 @@
   },
   "shieldClaimSubmitSuccessDescription": {
     "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
+  },
+  "shieldClaimsHistoryTitle": {
+    "message": "CLAIM HISTORY"
+  },
+  "shieldClaimsListTitle": {
+    "message": "Claim details"
+  },
+  "shieldClaimsPendingTitle": {
+    "message": "PENDING CLAIMS"
   },
   "shieldConfirmMembership": {
     "message": "Confirm membership"
