@@ -21,7 +21,6 @@ import removeSnapAccount from './remove-snap-account';
 import snapAccountRedirect from './snap-account-redirect';
 import createNamedSnapAccount from './create-named-snap-account';
 ///: END:ONLY_INCLUDE_IF
-import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
 import success from './success';
 import error from './error';
@@ -32,7 +31,6 @@ import snapDefault from './snaps/snap-default/snap-default';
 import hyperliquidReferralConsent from './hyperliquid-referral-consent';
 
 const APPROVAL_TEMPLATES = {
-  [ApprovalType.AddEthereumChain]: addEthereumChain,
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
   // Use ApprovalType from utils controller
   [ApprovalType.ResultSuccess]: success,
