@@ -17,7 +17,10 @@ import {
   selectConversionRateByChainId,
 } from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
-import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
+import {
+  ERC20_DEFAULT_DECIMALS,
+  fetchAllErc20Decimals,
+} from '../../utils/token';
 
 import {
   BalanceChange,
@@ -60,22 +63,6 @@ function getAssetAmount(
       .times(isNegative ? -1 : 1)
       // Shift the decimal point to the left by the number of decimals.
       .shift(-decimals)
-  );
-}
-
-// Fetches token details for all the token addresses in the SimulationTokenBalanceChanges
-async function fetchAllErc20Decimals(
-  addresses: Hex[],
-  chainId: Hex,
-): Promise<Record<Hex, number>> {
-  const uniqueAddresses = [
-    ...new Set(addresses.map((address) => address.toLowerCase() as Hex)),
-  ];
-  const allDecimals = await Promise.all(
-    uniqueAddresses.map((address) => fetchErc20Decimals(address, chainId)),
-  );
-  return Object.fromEntries(
-    allDecimals.map((decimals, i) => [uniqueAddresses[i], decimals]),
   );
 }
 

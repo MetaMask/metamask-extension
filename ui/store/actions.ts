@@ -75,6 +75,11 @@ import {
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
 } from '@metamask/subscription-controller';
+import {
+  GenericQuoteRequest,
+  QuoteResponse,
+} from '@metamask/bridge-controller';
+
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -7546,4 +7551,10 @@ export async function submitShieldClaim(params: {
   }
 
   return ClaimSubmitToastType.Success;
+}
+
+export async function fetchQuotes(
+  quoteRequest: GenericQuoteRequest,
+): Promise<QuoteResponse[]> {
+  return await submitRequestToBackground('fetchQuotes', [quoteRequest]);
 }
