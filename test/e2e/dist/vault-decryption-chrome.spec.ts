@@ -2,14 +2,14 @@ import os from 'os';
 import path from 'path';
 import fs from 'fs-extra';
 import level from 'level';
-import { Driver } from './webdriver/driver';
-import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from './helpers';
-import HeaderNavbar from './page-objects/pages/header-navbar';
-import HomePage from './page-objects/pages/home/homepage';
-import PrivacySettings from './page-objects/pages/settings/privacy-settings';
-import SettingsPage from './page-objects/pages/settings/settings-page';
-import VaultDecryptorPage from './page-objects/pages/vault-decryptor-page';
-import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from './page-objects/flows/onboarding.flow';
+import { Driver } from '../webdriver/driver';
+import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../helpers';
+import HeaderNavbar from '../page-objects/pages/header-navbar';
+import HomePage from '../page-objects/pages/home/homepage';
+import PrivacySettings from '../page-objects/pages/settings/privacy-settings';
+import SettingsPage from '../page-objects/pages/settings/settings-page';
+import VaultDecryptorPage from '../page-objects/pages/vault-decryptor-page';
+import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from '../page-objects/flows/onboarding.flow';
 
 const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
 
@@ -165,6 +165,10 @@ async function closePopoverIfPresent(driver: Driver) {
 
 describe('Vault Decryptor Page', function () {
   it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
+    if (process.env.SELENIUM_BROWSER !== 'chrome') {
+      // TODO: Get this working on Firefox
+      this.skip();
+    }
     await withFixtures(
       {
         disableServerMochaToBackground: true,
@@ -223,6 +227,10 @@ describe('Vault Decryptor Page', function () {
   });
 
   it('is able to decrypt the vault pasting the text in the vault-decryptor webapp', async function () {
+    if (process.env.SELENIUM_BROWSER !== 'chrome') {
+      // TODO: Get this working on Firefox
+      this.skip();
+    }
     await withFixtures(
       {
         disableServerMochaToBackground: true,

@@ -276,6 +276,7 @@ jobs:
   e2e-firefox:
     needs:
       - needs-e2e
+      - build-dist-mv2-browserify
       - build-test-mv2-browserify
       - build-test-webpack
       - build-test-flask-mv2-browserify
