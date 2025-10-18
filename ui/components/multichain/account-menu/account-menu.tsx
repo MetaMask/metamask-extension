@@ -43,6 +43,9 @@ import {
   getIsBitcoinSupportEnabled,
   ///: END:ONLY_INCLUDE_IF
   getIsSolanaSupportEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  getIsTronSupportEnabled,
+  ///: END:ONLY_INCLUDE_IF
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getMetaMaskHdKeyrings,
@@ -110,6 +113,10 @@ export const ACTION_MODES = {
   ///: END:ONLY_INCLUDE_IF
   // Displays the add account form controls (for solana account)
   ADD_SOLANA: 'add-solana',
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  // Displays the add account form controls (for tron account)
+  ADD_TRON: 'add-tron',
+  ///: END:ONLY_INCLUDE_IF
   // Displays the import account form controls
   IMPORT: 'import',
   CREATE_SRP: 'create-srp',
@@ -131,6 +138,10 @@ export const SNAP_CLIENT_CONFIG_MAP: Record<
   [ACTION_MODES.ADD_SOLANA]: {
     clientType: WalletClientType.Solana,
     chainId: MultichainNetworks.SOLANA,
+  },
+  [ACTION_MODES.ADD_TRON]: {
+    clientType: WalletClientType.Tron,
+    chainId: MultichainNetworks.TRON,
   },
 };
 ///: END:ONLY_INCLUDE_IF(multichain)
@@ -162,6 +173,10 @@ export const getActionTitle = (
     ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.ADD_SOLANA:
       return t('addAccountFromNetwork', [t('networkNameSolana')]);
+    ///: BEGIN:ONLY_INCLUDE_IF(tron)
+    case ACTION_MODES.ADD_TRON:
+      return t('addAccountFromNetwork', [t('networkNameTron')]);
+    ///: END:ONLY_INCLUDE_IF
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
     case ACTION_MODES.CREATE_SRP:
@@ -250,6 +265,14 @@ export const AccountMenu = ({
   const solanaWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Solana,
   );
+
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const tronSupportEnabled = useSelector(getIsTronSupportEnabled);
+  const tronWalletSnapClient = useMultichainWalletSnapClient(
+    WalletClientType.Tron,
+  );
+  ///: END:ONLY_INCLUDE_IF
+
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
 
@@ -488,6 +511,35 @@ export const AccountMenu = ({
                     data-testid="multichain-account-menu-popover-add-btc-account"
                   >
                     {t('addBitcoinAccountLabel')}
+                  </ButtonLink>
+                </Box>
+              )
+              ///: END:ONLY_INCLUDE_IF
+            }
+
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(tron)
+              tronSupportEnabled && (
+                <Box marginTop={4}>
+                  <ButtonLink
+                    size={ButtonLinkSize.Sm}
+                    startIconName={IconName.Add}
+                    startIconProps={{ size: IconSize.Md }}
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                    onClick={async () => {
+                      return await handleMultichainSnapAccountCreation(
+                        tronWalletSnapClient,
+                        {
+                          scope: MultichainNetworks.TRON,
+                          entropySource: primaryKeyring.metadata.id,
+                        },
+                        ACTION_MODES.ADD_TRON,
+                      );
+                    }}
+                    data-testid="multichain-account-menu-popover-add-tron-account"
+                  >
+                    {t('addNewTronAccountLabel')}
                   </ButtonLink>
                 </Box>
               )

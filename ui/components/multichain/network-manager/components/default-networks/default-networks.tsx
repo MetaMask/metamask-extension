@@ -1,7 +1,7 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BtcScope, EthScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
@@ -103,6 +103,14 @@ const DefaultNetworks = memo(() => {
     );
   }
 
+  let trxAccountGroup = null;
+
+  if (isFlask()) {
+    trxAccountGroup = useSelector((state) =>
+      getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
+    );
+  }
+
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
     useNetworkManagerState({ showDefaultNetworks: true });
@@ -194,6 +202,13 @@ const DefaultNetworks = memo(() => {
           ) {
             return true;
           }
+          if (
+            trxAccountGroup &&
+            isFlask() &&
+            network.chainId === TrxScope.Mainnet
+          ) {
+            return true;
+          }
           return false;
         });
       }
@@ -206,6 +221,9 @@ const DefaultNetworks = memo(() => {
         }
         if (selectedAccount.scopes.includes(BtcScope.Mainnet)) {
           return network.chainId === BtcScope.Mainnet;
+        }
+        if (selectedAccount.scopes.includes(TrxScope.Mainnet)) {
+          return network.chainId === TrxScope.Mainnet;
         }
         return false;
       });

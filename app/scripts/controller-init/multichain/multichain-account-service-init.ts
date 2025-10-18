@@ -4,6 +4,9 @@ import {
   BtcAccountProvider,
   AccountProviderWrapper,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  TrxAccountProvider,
+  ///: END:ONLY_INCLUDE_IF
 } from '@metamask/multichain-account-service';
 import { ControllerInitFunction } from '../types';
 import {
@@ -45,6 +48,9 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     providers: [
       ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
       btcProvider,
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(tron)
+      new TrxAccountProvider(controllerMessenger),
       ///: END:ONLY_INCLUDE_IF
     ],
   });
