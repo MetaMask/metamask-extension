@@ -44,14 +44,6 @@ if (args.dryRun) {
   exit(0);
 }
 
-// #region short circuit for unsupported build configurations
-if (args.manifest_version === 3) {
-  throw new Error(
-    "The webpack build doesn't support manifest_version version 3 yet. So sorry.",
-  );
-}
-// #endregion short circuit for unsupported build configurations
-
 const context = join(__dirname, '../../app');
 const isDevelopment = args.env === 'development';
 const MANIFEST_VERSION = args.manifest_version;
@@ -105,10 +97,7 @@ const plugins: WebpackPluginInstance[] = [
     preprocessorOptions: { useWith: false },
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
-    data: {
-      isTest: args.test,
-      shouldIncludeSnow: args.snow,
-    },
+    data: { isTest: args.test },
     preload: [
       {
         attributes: { as: 'font', crossorigin: true },
@@ -437,11 +426,6 @@ const config = {
     // and cannot share code with other scripts - as the browser extension
     // platform is responsible for loading them and splitting these files
     // would require updating the manifest to include the other chunks.
-    runtimeChunk: {
-      // casting to string as webpack's types are wrong, `false` is allowed, and
-      // is actually the default value.
-      name: (chunk) => (canBeChunked(chunk) ? 'runtime' : false) as string,
-    },
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
       // https://github.com/mozilla/addons-linter/issues/4942

@@ -165,35 +165,6 @@ if (self.serviceWorker.state === 'activated') {
   importAllScripts();
 }
 
-/*
- * This content script is injected programmatically because
- * MAIN world injection does not work properly via manifest
- * https://bugs.chromium.org/p/chromium/issues/detail?id=634381
- */
-const registerInPageContentScript = async () => {
-  try {
-    await chrome.scripting.registerContentScripts([
-      {
-        id: 'inpage',
-        matches: ['file://*/*', 'http://*/*', 'https://*/*'],
-        js: ['scripts/inpage.js'],
-        runAt: 'document_start',
-        world: 'MAIN',
-        allFrames: true,
-      },
-    ]);
-  } catch (err) {
-    /**
-     * An error occurs when app-init.js is reloaded. Attempts to avoid the duplicate script error:
-     * 1. registeringContentScripts inside runtime.onInstalled - This caused a race condition
-     *    in which the provider might not be loaded in time.
-     * 2. await chrome.scripting.getRegisteredContentScripts() to check for an existing
-     *    inpage script before registering - The provider is not loaded on time.
-     */
-    console.warn(`Dropped attempt to register inpage content script. ${err}`);
-  }
-};
-
 /**
  * A promise that resolves when the `onInstalled` event is fired.
  *
@@ -214,5 +185,3 @@ chrome.runtime.onInstalled.addListener(function listener(details) {
   deferredOnInstalledListener.resolve(details);
   delete globalThis.stateHooks.onInstalledListener;
 });
-
-registerInPageContentScript();

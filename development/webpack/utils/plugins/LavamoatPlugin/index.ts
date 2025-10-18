@@ -11,7 +11,11 @@ import type { Args } from '../../cli';
 const rootDir = join(__dirname, '../../../../../');
 
 // Entries that need to be included in the unsafe layer to run without LavaMoat.
-const unsafeEntries: Set<string> = new Set(['scripts/inpage.js', 'bootstrap']);
+const unsafeEntries: Set<string> = new Set([
+  'scripts/inpage.js',
+  'bootstrap',
+  'service-worker.ts',
+]);
 
 export const lavamoatPlugin = (args: Args) =>
   new LavaMoatPlugin({
@@ -20,9 +24,9 @@ export const lavamoatPlugin = (args: Args) =>
     generatePolicyOnly: args.generatePolicy,
     runChecks: true, // Candidate to disable later for performance. useful in debugging invalid JS errors, but unless the audit proves me wrong this is probably not improving security.
     readableResourceIds: true,
-    // we apply lockdown to 'runtime.<hash>.js' and 'scripts/contentscript.js'
+    // we apply lockdown to 'ui.<hash>.js' and 'scripts/background.js' and 'scripts/contentscript.js'
     inlineLockdown:
-      /^(?:runtime\.[0-9a-h]{20}\.js|scripts\/contentscript\.js)$/u,
+      /^(?:ui\.[0-9a-h]{20}\.js|scripts\/background\.js|scripts\/contentscript\.js)$/u,
     debugRuntime: args.lavamoatDebug,
     lockdown: {
       consoleTaming: 'unsafe',
@@ -49,7 +53,89 @@ export const lavamoatPlugin = (args: Args) =>
             },
           },
         };
-      } else if (chunk.name === 'runtime') {
+      } else if (chunk.name === 'background') {
+        return {
+          mode: 'safe',
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+              exceptions: [
+                // globals used by different mm deps outside of lm compartment
+                'Proxy',
+                'toString',
+                'getComputedStyle',
+                'addEventListener',
+                'removeEventListener',
+                'ShadowRoot',
+                'HTMLElement',
+                'HTMLFormElement',
+                'Element',
+                'pageXOffset',
+                'pageYOffset',
+                'visualViewport',
+                'Reflect',
+                'Set',
+                'Object',
+                'navigator',
+                'harden',
+                'console',
+                'WeakSet',
+                'Event',
+                'EventTarget',
+                // globals used by the browser to generate notifications
+                'Image',
+                'fetch',
+                'AbortController',
+                'OffscreenCanvas',
+                '/cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu',
+                'name',
+                'performance',
+                'parseFloat',
+                'innerWidth',
+                'innerHeight',
+                'Symbol',
+                'Math',
+                'DOMRect',
+                'Number',
+                'Array',
+                'crypto',
+                'Function',
+                'Uint8Array',
+                'String',
+                'Promise',
+                'JSON',
+                'Date',
+                'setTimeout',
+                'clearTimeout',
+                // globals sentry needs to function
+                '__SENTRY__',
+                'appState',
+                'extra',
+                'stateHooks',
+                'sentryHooks',
+                'sentry',
+                'logEncryptedVault',
+                // globals used by react-dom
+                'getSelection',
+                // globals opera needs to function
+                'opr',
+                // globals used by e2e
+                ...(args.test
+                  ? [
+                      'ret_nodes',
+                      'browser',
+                      'chrome',
+                      'indexedDB',
+                      'devicePixelRatio',
+                    ]
+                  : []),
+                // globals webpack needs to function
+                'webpackChunk',
+              ],
+            },
+          },
+        };
+      } else if (chunk.name === 'ui') {
         return {
           mode: 'safe',
           // If snow is enabled, it needs to run before LavaMoat
@@ -59,80 +145,91 @@ export const lavamoatPlugin = (args: Args) =>
                 join(rootDir, 'app/scripts/use-snow.js'),
               ]
             : [],
+          embeddedOptions: {
+            scuttleGlobalThis: {
+              enabled: true,
+              // Scuttler depends on Snow
+              scuttlerName: args.snow ? 'SCUTTLER' : undefined,
+              exceptions: [
+                // globals used by different mm deps outside of lm compartment
+                'Proxy',
+                'toString',
+                'getComputedStyle',
+                'addEventListener',
+                'removeEventListener',
+                'ShadowRoot',
+                'HTMLElement',
+                'HTMLFormElement',
+                'Element',
+                'pageXOffset',
+                'pageYOffset',
+                'visualViewport',
+                'Reflect',
+                'Set',
+                'Object',
+                'navigator',
+                'harden',
+                'console',
+                'WeakSet',
+                'Event',
+                'EventTarget',
+                // globals used by the browser to generate notifications
+                'Image',
+                'fetch',
+                'AbortController',
+                'OffscreenCanvas',
+                '/cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu',
+                'name',
+                'performance',
+                'parseFloat',
+                'innerWidth',
+                'innerHeight',
+                'Symbol',
+                'Math',
+                'DOMRect',
+                'Number',
+                'Array',
+                'crypto',
+                'Function',
+                'Uint8Array',
+                'String',
+                'Promise',
+                'JSON',
+                'Date',
+                'setTimeout',
+                'clearTimeout',
+                // globals sentry needs to function
+                '__SENTRY__',
+                'appState',
+                'extra',
+                'stateHooks',
+                'sentryHooks',
+                'sentry',
+                'logEncryptedVault',
+                // globals used by react-dom
+                'getSelection',
+                // globals opera needs to function
+                'opr',
+                // globals used by e2e
+                ...(args.test
+                  ? [
+                      'ret_nodes',
+                      'browser',
+                      'chrome',
+                      'indexedDB',
+                      'devicePixelRatio',
+                    ]
+                  : []),
+                // globals webpack needs to function
+                'webpackChunk',
+              ],
+            },
+          },
         };
       }
       return { mode: 'safe' };
     },
-    scuttleGlobalThis: {
-      enabled: true,
-      // Scuttler depends on Snow
-      scuttlerName: args.snow ? 'SCUTTLER' : undefined,
-      exceptions: [
-        // globals used by different mm deps outside of lm compartment
-        'Proxy',
-        'toString',
-        'getComputedStyle',
-        'addEventListener',
-        'removeEventListener',
-        'ShadowRoot',
-        'HTMLElement',
-        'HTMLFormElement',
-        'Element',
-        'pageXOffset',
-        'pageYOffset',
-        'visualViewport',
-        'Reflect',
-        'Set',
-        'Object',
-        'navigator',
-        'harden',
-        'console',
-        'WeakSet',
-        'Event',
-        'EventTarget',
-        // globals used by the browser to generate notifications
-        'Image',
-        'fetch',
-        'AbortController',
-        'OffscreenCanvas',
-        /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
-        'name',
-        'performance',
-        'parseFloat',
-        'innerWidth',
-        'innerHeight',
-        'Symbol',
-        'Math',
-        'DOMRect',
-        'Number',
-        'Array',
-        'crypto',
-        'Function',
-        'Uint8Array',
-        'String',
-        'Promise',
-        'JSON',
-        'Date',
-        'setTimeout',
-        'clearTimeout',
-        // globals sentry needs to function
-        '__SENTRY__',
-        'appState',
-        'extra',
-        'stateHooks',
-        'sentryHooks',
-        'sentry',
-        'logEncryptedVault',
-        // globals used by react-dom
-        'getSelection',
-        // globals opera needs to function
-        'opr',
-        // globals used by e2e
-        ...(args.test
-          ? ['ret_nodes', 'browser', 'chrome', 'indexedDB', 'devicePixelRatio']
-          : []),
-      ],
-    },
+    scuttleGlobalThis: { enabled: true },
   });
 
 // Unsafe layer that runs code without LavaMoat
