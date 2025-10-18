@@ -133,53 +133,62 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
         <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
       )}
       <Box>
-        <Box marginBottom={4}>
+        {/* Back Button - Isolated */}
+        <Box marginBottom={6} style={{ paddingInline: '6px' }}>
           <ButtonIcon
             iconName={IconName.ArrowLeft}
             color={IconColor.iconDefault}
-            size={ButtonIconSize.Md}
+            size={ButtonIconSize.Sm}
             data-testid="import-srp-back-button"
             onClick={onBack}
             ariaLabel={t('back')}
           />
         </Box>
-        <Box textAlign={TextAlign.Left} marginBottom={2}>
-          <Text variant={TextVariant.headingLg}>{t('importAWallet')}</Text>
-        </Box>
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          marginBottom={4}
-        >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('typeYourSRP')}
-          </Text>
-          <ButtonIcon
-            iconName={IconName.Info}
-            size={ButtonIconSize.Sm}
-            color={IconColor.iconAlternative}
-            onClick={onShowSrpDetailsModal}
-            ariaLabel="info"
-          />
-        </Box>
-        <Box width={BlockSize.Full}>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <SrpInputImport onChange={setSecretRecoveryPhrase} />
-            {srpError && (
-              <Box marginTop={2}>
-                <Text
-                  data-testid="import-srp-error"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.errorDefault}
-                >
-                  {srpError}
-                </Text>
-              </Box>
-            )}
-          </form>
+
+        {/* All Content with Consistent Padding */}
+        <Box paddingInline={3}>
+          <Box textAlign={TextAlign.Left} marginBottom={1}>
+            <Text variant={TextVariant.headingMd}>{t('importAWallet')}</Text>
+          </Box>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            marginBottom={7}
+          >
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
+              {t('typeYourSRP')}
+            </Text>
+            <ButtonIcon
+              iconName={IconName.Info}
+              size={ButtonIconSize.Sm}
+              color={IconColor.iconAlternative}
+              onClick={onShowSrpDetailsModal}
+              ariaLabel="info"
+            />
+          </Box>
+
+          <Box width={BlockSize.Full}>
+            <form onSubmit={(e) => e.preventDefault()}>
+              <SrpInputImport onChange={setSecretRecoveryPhrase} />
+              {srpError && (
+                <Box marginTop={2}>
+                  <Text
+                    data-testid="import-srp-error"
+                    variant={TextVariant.bodySm}
+                    color={TextColor.errorDefault}
+                  >
+                    {srpError}
+                  </Text>
+                </Box>
+              )}
+            </form>
+          </Box>
         </Box>
       </Box>
-      <Box
+      <Box paddingInline={3}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.center}

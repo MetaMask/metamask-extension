@@ -146,7 +146,7 @@ const ChangePassword = () => {
       rel="noopener noreferrer"
     >
       <span className="change-password__link-text">
-        {t('learnMoreUpperCaseWithDot')}
+        {t('learnMoreUpperCase')}
       </span>
     </a>
   );
@@ -247,7 +247,8 @@ const ChangePassword = () => {
               className="create-password__terms-container"
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.spaceBetween}
-              marginTop={6}
+              marginTop={4}
+              style={{ marginLeft: '12px', marginRight: '12px' }}
             >
               <Checkbox
                 inputProps={{ 'data-testid': 'change-password-terms' }}
