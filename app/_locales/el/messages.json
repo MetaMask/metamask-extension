@@ -4077,9 +4077,6 @@
     "message": "εικονίδιο $1",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Επιλέξτε μια επιλογή για να συνεχίσετε"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Ανοίξτε την επέκταση"
   },
@@ -7155,9 +7152,6 @@
   },
   "welcomeBack": {
     "message": "Καλώς ήρθατε και πάλι"
-  },
-  "welcomeToMetaMask": {
-    "message": "Ας ξεκινήσουμε"
   },
   "whatsThis": {
     "message": "Τι είναι αυτό;"

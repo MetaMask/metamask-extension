@@ -4330,9 +4330,6 @@
     "message": "Deilbhín $1",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Roghnaigh rogha le leanúint ar aghaidh"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Seoladh síneadh"
   },
@@ -7820,9 +7817,6 @@
   },
   "welcomeBack": {
     "message": "Fáilte ar ais"
-  },
-  "welcomeToMetaMask": {
-    "message": "Cuirimis tús leis"
   },
   "whatsThis": {
     "message": "Cad é seo?"

@@ -26,6 +26,7 @@
   "bsc-dataseed.binance.org",
   "carrot.megaeth.com",
   "cdn.contentful.com",
+  "cdn.jsdelivr.net",
   "cdn.segment.com",
   "cdn.segment.io",
   "cdnjs.cloudflare.com",
@@ -112,6 +113,7 @@
   "tx-sentinel-ethereum-mainnet.api.cx.metamask.io",
   "unresponsive-rpc.test",
   "unresponsive-rpc.url",
+  "unpkg.com",
   "user-storage.api.cx.metamask.io",
   "verify.walletconnect.com",
   "www.4byte.directory"
