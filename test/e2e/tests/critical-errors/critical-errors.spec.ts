@@ -2,6 +2,7 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import CriticalErrorPage from '../../page-objects/pages/critical-error-page';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { PAGES } from '../../webdriver/driver';
 
 describe('Critical errors', function (this: Suite) {
@@ -29,6 +30,34 @@ describe('Critical errors', function (this: Suite) {
         await criticalErrorPage.validateErrorMessage(
           'Background connection unresponsive',
         );
+      },
+    );
+  });
+  it('does NOT show critical error screen when background is a "little" slow to respond', async function () {
+    const timeoutValue = 5000;
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ignoredConsoleErrors: ['Background connection unresponsive'],
+        manifestFlags: {
+          testing: {
+            // this causes the background
+            simulatedSlowBackgroundLoadingTimeout: timeoutValue,
+          },
+        },
+        title: this.test?.fullTitle(),
+      },
+      async ({ driver }) => {
+        // immediately navigate to home, which will try to connect to the
+        // background right away, even though it isn't ready (because of the
+        // simulatedSlowBackgroundLoadingTimeout flag)
+        await driver.navigate(PAGES.HOME, { waitForControllers: false });
+
+        // Wait until our "slow" bg timer expires before checking
+        await driver.delay(timeoutValue);
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
       },
     );
   });

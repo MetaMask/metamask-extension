@@ -1,20 +1,29 @@
 // This file is used only for manifest version 3
 
 // We don't usually `import` files into `app-init.js` because we need to load
-// "chunks" via `importScripts`; but in this case `promise-with-resolvers` file
+// "chunks" via `importScripts`; but in this case `extension-lazy-listener` file
 // is so small we won't ever have a problem with these two files being "split".
-import { withResolvers } from '../../shared/lib/promise-with-resolvers';
+import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 
-// Represents if importAllScripts has been run
-// eslint-disable-next-line
-let scriptsLoadInitiated = false;
 const { chrome } = globalThis;
-const testMode = process.env.IN_TEST;
+
+// this needs to be run early we can begin listening to these browser events
+// as soon as possible
+const listener = new ExtensionLazyListener(chrome, {
+  runtime: ['onInstalled', 'onConnect', 'onConnectExternal'],
+});
 
 /**
  * @type {import('../../types/global').StateHooks}
  */
 globalThis.stateHooks = globalThis.stateHooks || {};
+
+globalThis.stateHooks.lazyListener = listener;
+
+// Represents if importAllScripts has been run
+// eslint-disable-next-line
+let scriptsLoadInitiated = false;
+const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];
 // eslint-disable-next-line import/unambiguous
@@ -108,8 +117,7 @@ function importAllScripts() {
 
   // for performance metrics/reference
   console.log(
-    `SCRIPTS IMPORT COMPLETE in Seconds: ${
-      (Date.now() - startImportScriptsTime) / 1000
+    `SCRIPTS IMPORT COMPLETE in Seconds: ${(Date.now() - startImportScriptsTime) / 1000
     }`,
   );
 
@@ -193,26 +201,5 @@ const registerInPageContentScript = async () => {
     console.warn(`Dropped attempt to register inpage content script. ${err}`);
   }
 };
-
-/**
- * A promise that resolves when the `onInstalled` event is fired.
- *
- * @type {PromiseWithResolvers<chrome.runtime.InstalledDetails>}
- */
-const deferredOnInstalledListener = withResolvers();
-globalThis.stateHooks.onInstalledListener = deferredOnInstalledListener.promise;
-
-/**
- * `onInstalled` event handler.
- *
- * On MV3 builds we must listen for this event in `app-init`, otherwise we found
- * that the listener is never called.
- * For MV2 builds, the listener is added in `background.js` instead.
- */
-chrome.runtime.onInstalled.addListener(function listener(details) {
-  chrome.runtime.onInstalled.removeListener(listener);
-  deferredOnInstalledListener.resolve(details);
-  delete globalThis.stateHooks.onInstalledListener;
-});
 
 registerInPageContentScript();

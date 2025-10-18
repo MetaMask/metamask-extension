@@ -19,7 +19,6 @@ import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
-
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -98,6 +97,8 @@ import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferra
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
  */
 
+const { lazyListener } = globalThis.stateHooks;
+
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
@@ -167,15 +168,7 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-// In MV3 onInstalled must be installed in the entry file
-if (globalThis.stateHooks.onInstalledListener) {
-  globalThis.stateHooks.onInstalledListener.then(handleOnInstalled);
-} else {
-  browser.runtime.onInstalled.addListener(function listener(details) {
-    browser.runtime.onInstalled.removeListener(listener);
-    handleOnInstalled(details);
-  });
-}
+lazyListener.once('runtime', 'onInstalled', handleOnInstalled);
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -447,11 +440,17 @@ let connectEip1193;
 let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
-browser.runtime.onConnect.addListener(async (port) => {
+const handleOnConnect = async (port) => {
   if (
     inTest &&
     getManifestFlags().testing?.simulateUnresponsiveBackground === true
   ) {
+    return;
+  }
+  // `handleOnConnect` can be called asynchronously, well after the `onConnect`
+  // event was emitted, due to the lazy listener setup uip app-init.
+  if (port.disconnected) {
+    // window already closed, no need to do anything else.
     return;
   }
 
@@ -519,8 +518,21 @@ browser.runtime.onConnect.addListener(async (port) => {
       });
     }
   }
-});
-browser.runtime.onConnectExternal.addListener(async (...args) => {
+};
+const installOnConnectListener = () => {
+  lazyListener.addListener('runtime', 'onConnect', handleOnConnect);
+};
+if (
+  inTest &&
+  getManifestFlags().testing?.simulatedSlowBackgroundLoadingTimeout
+) {
+  const { simulatedSlowBackgroundLoadingTimeout } = getManifestFlags().testing;
+  setTimeout(installOnConnectListener, simulatedSlowBackgroundLoadingTimeout);
+} else {
+  installOnConnectListener();
+}
+
+lazyListener.addListener('runtime', 'onConnectExternal', async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
   // This is set in `setupController`, which is called as part of initialization
@@ -1586,7 +1598,7 @@ async function onUpdateAvailable() {
   controller.appStateController.setIsUpdateAvailable(true);
 }
 
-browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
+lazyListener.addListener('runtime', 'onUpdateAvailable', onUpdateAvailable);
 
 function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {
