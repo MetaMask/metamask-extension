@@ -1,10 +1,17 @@
 import React from 'react';
-import { fireEvent, screen, render } from '@testing-library/react';
-import { BalanceEmptyState } from './balance-empty-state';
+import { fireEvent, screen } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import mockState from '../../../../test/data/mock-state.json';
+import configureStore from '../../../store/store';
+import {
+  BalanceEmptyState,
+  BalanceEmptyStateProps,
+} from './balance-empty-state';
 
 // Mock useRamps hook
 const mockOpenBuyCryptoInPdapp = jest.fn();
 jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(() => ({
     openBuyCryptoInPdapp: mockOpenBuyCryptoInPdapp,
@@ -16,33 +23,14 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
   },
 }));
 
-// Mock useSelector
-jest.mock('react-redux', () => ({
-  useSelector: jest.fn(),
-}));
+const store = configureStore({
+  metamask: {
+    ...mockState.metamask,
+  },
+});
 
-// Mock useContext
-const mockTrackEvent = jest.fn();
-jest.mock('react', () => ({
-  ...jest.requireActual('react'),
-  useContext: jest.fn(() => mockTrackEvent),
-}));
-
-// Mock i18n hook
-jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string) => key,
-}));
-
-const renderComponent = (props = {}) => {
-  const { useSelector } = require('react-redux');
-
-  // Mock selector returns
-  useSelector
-    .mockReturnValueOnce('en') // getCurrentLocale
-    .mockReturnValueOnce('0x1') // getCurrentChainId
-    .mockReturnValueOnce({ nickname: 'Ethereum Mainnet' }); // getMultichainCurrentNetwork
-
-  return render(<BalanceEmptyState {...props} />);
+const renderComponent = (props: Partial<BalanceEmptyStateProps> = {}) => {
+  return renderWithProvider(<BalanceEmptyState {...props} />, store);
 };
 
 describe('BalanceEmptyState', () => {
