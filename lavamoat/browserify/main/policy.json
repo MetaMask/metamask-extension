@@ -2251,7 +2251,7 @@
         "document.defaultView": true
       }
     },
-    "@rive-app/react-canvas>@rive-app/canvas": {
+    "@rive-app/canvas": {
       "globals": {
         "AudioContext": true,
         "Blob": true,
@@ -2307,7 +2307,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@rive-app/react-canvas>@rive-app/canvas": true,
+        "@rive-app/canvas": true,
         "react": true
       }
     },
