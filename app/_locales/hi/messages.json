@@ -2967,6 +2967,9 @@
     "message": "JSON फाइल",
     "description": "format for importing an account"
   },
+  "keycardShell": {
+    "message": "Keycard Shell"
+  },
   "keyringAccountName": {
     "message": "अकाउंट का नाम"
   },

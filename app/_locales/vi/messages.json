@@ -2967,6 +2967,9 @@
     "message": "Tập tin JSON",
     "description": "format for importing an account"
   },
+  "keycardShell": {
+    "message": "Keycard Shell"
+  },
   "keyringAccountName": {
     "message": "Tên tài khoản"
   },
