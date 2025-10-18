@@ -2683,6 +2683,10 @@
   "function": {
     "message": "Function: $1"
   },
+  "fundYourWallet": {
+    "message": "Fund your wallet",
+    "description": "Title for the balance empty state component encouraging users to add funds"
+  },
   "fundingMethod": {
     "message": "Funding method"
   },
@@ -2755,6 +2759,10 @@
   },
   "getTheNewestFeatures": {
     "message": "Get the newest features"
+  },
+  "getYourWalletReadyToUseWeb3": {
+    "message": "Get your wallet ready to use web3",
+    "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
   "goToSite": {
     "message": "Go to site"
