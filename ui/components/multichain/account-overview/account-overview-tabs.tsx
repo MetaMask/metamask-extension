@@ -17,7 +17,7 @@ import {
   getChainIdsToPoll,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
-import { detectNfts, updateIncomingTransactions } from '../../../store/actions';
+import { detectNfts } from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import { useAssetListTokenDetection } from '../../app/assets/hooks';
@@ -64,9 +64,6 @@ export const AccountOverviewTabs = ({
       onTabClick(tabName);
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
-      }
-      if (tabName === AccountOverviewTabKey.Activity) {
-        dispatch(updateIncomingTransactions());
       }
       trackEvent({
         category: MetaMetricsEventCategory.Home,
