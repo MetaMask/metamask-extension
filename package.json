@@ -369,6 +369,7 @@
     "@noble/hashes": "^1.3.3",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "patch:@reduxjs/toolkit@npm%3A1.9.7#~/.yarn/patches/@reduxjs-toolkit-npm-1.9.7-b14925495c.patch",
+    "@rive-app/canvas": "2.31.5",
     "@rive-app/react-canvas": "patch:@rive-app/react-canvas@npm%3A4.23.3#~/.yarn/patches/@rive-app-react-canvas-npm-4.23.3-3ab1940c19.patch",
     "@segment/loosely-validate-event": "^2.0.0",
     "@sentry/browser": "patch:@sentry/browser@npm%3A8.33.1#~/.yarn/patches/@sentry-browser-npm-8.33.1-4405cafca3.patch",

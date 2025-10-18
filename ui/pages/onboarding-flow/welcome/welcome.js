@@ -1,4 +1,11 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  lazy,
+  Suspense,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
@@ -46,8 +53,12 @@ import {
 import WelcomeLogin from './welcome-login';
 import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE } from './types';
 import LoginErrorModal from './login-error-modal';
-import FoxAppearAnimation from './fox-appear-animation';
-import MetaMaskWordMarkAnimation from './metamask-wordmark-animation';
+
+// Lazy load animation components for better initial load performance
+const MetaMaskWordMarkAnimation = lazy(
+  () => import('./metamask-wordmark-animation'),
+);
+const FoxAppearAnimation = lazy(() => import('./fox-appear-animation'));
 
 export default function OnboardingWelcome() {
   const dispatch = useDispatch();
@@ -397,10 +408,12 @@ export default function OnboardingWelcome() {
       className="welcome-container"
     >
       {!isLoggingIn && !isTestEnvironment && (
-        <MetaMaskWordMarkAnimation
-          setIsAnimationComplete={setIsAnimationComplete}
-          isAnimationComplete={isAnimationComplete}
-        />
+        <Suspense fallback={<Box />}>
+          <MetaMaskWordMarkAnimation
+            setIsAnimationComplete={setIsAnimationComplete}
+            isAnimationComplete={isAnimationComplete}
+          />
+        </Suspense>
       )}
 
       {!isLoggingIn && (
@@ -410,7 +423,11 @@ export default function OnboardingWelcome() {
             isAnimationComplete={isAnimationComplete}
           />
 
-          {!isTestEnvironment && isAnimationComplete && <FoxAppearAnimation />}
+          {!isTestEnvironment && isAnimationComplete && (
+            <Suspense fallback={<Box />}>
+              <FoxAppearAnimation />
+            </Suspense>
+          )}
 
           {loginError !== null && (
             <LoginErrorModal
@@ -421,7 +438,11 @@ export default function OnboardingWelcome() {
         </>
       )}
 
-      {isLoggingIn && !isTestEnvironment && <FoxAppearAnimation isLoader />}
+      {isLoggingIn && !isTestEnvironment && (
+        <Suspense fallback={<Box />}>
+          <FoxAppearAnimation isLoader />
+        </Suspense>
+      )}
     </Box>
   );
 }
