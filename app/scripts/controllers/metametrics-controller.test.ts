@@ -14,6 +14,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
 import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
 import { merge } from 'lodash';
+import { ThemeType } from '../../../shared/constants/preferences';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
@@ -35,6 +36,7 @@ import MetaMetricsController, {
 } from './metametrics-controller';
 import {
   getDefaultPreferencesControllerState,
+  Preferences,
   PreferencesControllerState,
 } from './preferences-controller';
 
@@ -1480,12 +1482,8 @@ describe('MetaMetricsController', function () {
           openSeaEnabled: true,
           useNftDetection: false,
           securityAlertsEnabled: true,
-          theme: 'default',
+          theme: 'default' as ThemeType,
           useTokenDetection: true,
-          ShowNativeTokenAsMainBalance: true,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          security_providers: [],
           names: {
             [NameType.ETHEREUM_ADDRESS]: {
               '0x123': {
@@ -1511,15 +1509,19 @@ describe('MetaMetricsController', function () {
               },
             },
           },
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
           participateInMetaMetrics: true,
           currentCurrency: 'usd',
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          preferences: {
+            privacyMode: true,
+            tokenNetworkFilter: {},
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            showNativeTokenAsMainBalance: true,
+          } as Preferences,
           srpSessionData: undefined,
           keyrings: [],
         });
@@ -1602,25 +1604,25 @@ describe('MetaMetricsController', function () {
             selectedAccount: 'mock1',
           },
           useNftDetection: false,
-          theme: 'default',
+          theme: 'default' as ThemeType,
           useTokenDetection: true,
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
-          ShowNativeTokenAsMainBalance: true,
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          preferences: {
+            privacyMode: true,
+            tokenNetworkFilter: {},
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            showNativeTokenAsMainBalance: true,
+          } as Preferences,
           securityAlertsEnabled: true,
           names: {
             ethereumAddress: {},
           },
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          security_providers: ['blockaid'],
           currentCurrency: 'usd',
           srpSessionData: undefined,
           keyrings: [],
@@ -1663,25 +1665,25 @@ describe('MetaMetricsController', function () {
             selectedAccount: 'mock1',
           },
           useNftDetection: false,
-          theme: 'default',
+          theme: 'default' as ThemeType,
           useTokenDetection: true,
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
-          ShowNativeTokenAsMainBalance: false,
           names: {
             ethereumAddress: {},
           },
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          security_providers: ['blockaid'],
           currentCurrency: 'usd',
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          preferences: {
+            privacyMode: true,
+            tokenNetworkFilter: {},
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            showNativeTokenAsMainBalance: false,
+          } as Preferences,
           securityAlertsEnabled: true,
           srpSessionData: {
             entropySourceId1: {
@@ -1746,25 +1748,25 @@ describe('MetaMetricsController', function () {
             selectedAccount: 'mock1',
           },
           useNftDetection: true,
-          theme: 'default',
+          theme: 'default' as ThemeType,
           useTokenDetection: true,
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
-          ShowNativeTokenAsMainBalance: true,
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          preferences: {
+            privacyMode: true,
+            tokenNetworkFilter: {},
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            showNativeTokenAsMainBalance: true,
+          } as Preferences,
           names: {
             ethereumAddress: {},
           },
           securityAlertsEnabled: true,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          security_providers: ['blockaid'],
           currentCurrency: 'usd',
           srpSessionData: {
             entropySourceId1: {
@@ -1810,25 +1812,25 @@ describe('MetaMetricsController', function () {
             selectedAccount: 'mock1',
           },
           useNftDetection: true,
-          theme: 'default',
+          theme: 'default' as ThemeType,
           useTokenDetection: true,
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
-          ShowNativeTokenAsMainBalance: true,
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          preferences: {
+            privacyMode: true,
+            tokenNetworkFilter: {},
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            showNativeTokenAsMainBalance: true,
+          } as Preferences,
           names: {
             ethereumAddress: {},
           },
           securityAlertsEnabled: true,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          security_providers: ['blockaid'],
           currentCurrency: 'usd',
           srpSessionData: {
             entropySourceId1: {
