@@ -326,6 +326,10 @@ import {
   MultichainRouterInit,
   ///: END:ONLY_INCLUDE_IF
 } from './controller-init/snaps';
+import {
+  BackendWebSocketServiceInit,
+  AccountActivityServiceInit,
+} from './controller-init/core-backend';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
@@ -551,6 +555,8 @@ export default class MetamaskController extends EventEmitter {
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
       WebSocketService: WebSocketServiceInit,
+      BackendWebSocketService: BackendWebSocketServiceInit,
+      AccountActivityService: AccountActivityServiceInit,
       PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       OnboardingController: OnboardingControllerInit,
@@ -665,6 +671,8 @@ export default class MetamaskController extends EventEmitter {
     this.swapsController = controllersByName.SwapsController;
     this.bridgeController = controllersByName.BridgeController;
     this.bridgeStatusController = controllersByName.BridgeStatusController;
+    this.backendWebSocketService = controllersByName.BackendWebSocketService;
+    this.accountActivityService = controllersByName.AccountActivityService;
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
@@ -7860,6 +7868,12 @@ export default class MetamaskController extends EventEmitter {
 
     // Notify Snaps that the client is open or closed.
     this.controllerMessenger.call('SnapController:setClientActive', open);
+
+    if (open) {
+      this.controllerMessenger.call('BackendWebSocketService:connect');
+    } else {
+      this.controllerMessenger.call('BackendWebSocketService:disconnect');
+    }
   }
   /* eslint-enable accessor-pairs */
 
