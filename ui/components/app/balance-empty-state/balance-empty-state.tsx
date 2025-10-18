@@ -99,7 +99,7 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = (props) => {
         justifyContent={BoxJustifyContent.Center}
       >
         <img
-          src="./images/bank.transfer.png"
+          src="./images/bank-transfer.png"
           alt={t('fundYourWallet')}
           width="100"
           height="100"
