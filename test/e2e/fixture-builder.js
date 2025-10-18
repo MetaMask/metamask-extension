@@ -46,6 +46,15 @@ function onboardingFixture() {
         trezorModel: null,
         hasShownMultichainAccountsIntroModal: true,
         showShieldEntryModalOnce: false,
+        appActiveTab: {
+          id: 1,
+          title: 'E2E Test Dapp',
+          origin: 'http://127.0.0.1:8080',
+          protocol: 'http:',
+          url: 'http://127.0.0.1:8080',
+          host: '127.0.0.1:8080',
+          href: 'http://127.0.0.1:8080',
+        },
       },
       NetworkController: {
         ...mockNetworkStateOld({

@@ -20,7 +20,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import { getOriginOfCurrentTab } from '../../../selectors';
+import { getAllDomains, getAppActiveTab } from '../../../selectors';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';
@@ -42,10 +43,38 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
   onClick,
 }) => {
   const t = useContext(I18nContext);
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const dappActiveNetwork = useSelector(getDappActiveNetwork);
-  const siteName = getURLHost(activeTabOrigin);
+  const activeTabOrigin = useSelector(getAppActiveTab);
+  const siteName = getURLHost(activeTabOrigin.origin);
+
+  const allDomains = useSelector(getAllDomains);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
   const dispatch = useDispatch();
+
+  // Get the network that this dapp is actually connected to using domain mapping
+  const dappActiveNetwork = useMemo(() => {
+    if (!activeTabOrigin.origin || !allDomains) {
+      return null;
+    }
+
+    // Get the networkClientId for this domain
+    const networkClientId = allDomains[activeTabOrigin.origin];
+    if (!networkClientId) {
+      return null;
+    }
+
+    // Find the network configuration that has this networkClientId
+    const networkConfiguration = Object.values(
+      networkConfigurationsByChainId,
+    ).find((network) => {
+      return network.rpcEndpoints.some(
+        (rpcEndpoint) => rpcEndpoint.networkClientId === networkClientId,
+      );
+    });
+
+    return networkConfiguration || null;
+  }, [activeTabOrigin.origin, allDomains, networkConfigurationsByChainId]);
 
   const getChainIdForImage = (chainId: `${string}:${string}`): string => {
     const { namespace, reference } = parseCaipChainId(chainId);

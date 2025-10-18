@@ -57,6 +57,16 @@ import type {
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
+  appActiveTab?: {
+    id: number;
+    title: string;
+    origin: string;
+    protocol: string;
+    url: string;
+    host: string;
+    href: string;
+    favIconUrl?: string;
+  };
   browserEnvironment: Record<string, string>;
   connectedStatusPopoverHasBeenShown: boolean;
   // States used for displaying the changed network toast
@@ -209,6 +219,7 @@ export type AppStateControllerOptions = {
 
 const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   activeQrCodeScanRequest: null,
+  appActiveTab: undefined,
   browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
   defaultHomeActiveTabName: null,
@@ -280,6 +291,12 @@ const controllerMetadata = {
     usedInUi: true,
   },
   addressSecurityAlertResponses: {
+    includeInStateLogs: true,
+    persist: false,
+    anonymous: true,
+    usedInUi: true,
+  },
+  appActiveTab: {
     includeInStateLogs: true,
     persist: false,
     anonymous: true,
@@ -1435,6 +1452,27 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
+    });
+  }
+
+  /**
+   * Sets the active tab information
+   *
+   * @param tabData - The active tab data
+   */
+
+  setAppActiveTab(tabData: {
+    id: number;
+    title: string;
+    origin: string;
+    protocol: string;
+    url: string;
+    host: string;
+    href: string;
+    favIconUrl?: string;
+  }): void {
+    this.update((state) => {
+      state.appActiveTab = tabData;
     });
   }
 

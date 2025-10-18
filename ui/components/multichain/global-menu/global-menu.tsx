@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import browser from 'webextension-polyfill';
 import {
   useUnreadNotificationsCounter,
   useReadNotificationsCounter,
@@ -20,6 +21,7 @@ import {
   setShowSupportDataConsentModal,
   showConfirmTurnOnMetamaskNotifications,
   toggleNetworkMenu,
+  setUseSidePanelAsDefault,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -39,7 +41,13 @@ import { MenuItem } from '../../ui/menu';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  PLATFORM_FIREFOX,
+} from '../../../../shared/constants/app';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
@@ -58,6 +66,7 @@ import {
   getAnySnapUpdateAvailable,
   getThirdPartyNotifySnaps,
   getUseExternalServices,
+  getPreferences,
 } from '../../../selectors';
 import {
   AlignItems,
@@ -138,6 +147,57 @@ export const GlobalMenu = ({
   let hasThirdPartyNotifySnaps = false;
   const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
   hasThirdPartyNotifySnaps = useSelector(getThirdPartyNotifySnaps).length > 0;
+
+  // Check if side panel is currently the default (vs popup)
+  const preferences = useSelector(getPreferences);
+  const isSidePanelDefault = preferences?.useSidePanelAsDefault ?? true;
+
+  /**
+   * Toggles between side panel and popup as the default extension behavior
+   */
+  const toggleDefaultView = async () => {
+    try {
+      const newValue = !isSidePanelDefault;
+      await dispatch(setUseSidePanelAsDefault(newValue));
+
+      // If switching from sidepanel to popup view, close the current sidepanel
+      if (
+        isSidePanelDefault &&
+        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+      ) {
+        // Close only the sidepanel, not the entire browser window
+        window.close();
+      }
+      // If switching from popup to sidepanel view, open the sidepanel
+      else if (
+        !isSidePanelDefault &&
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+      ) {
+        try {
+          const browserWithSidePanel = browser as typeof browser & {
+            sidePanel?: {
+              open: (options: { windowId: number }) => Promise<void>;
+            };
+          };
+          if (browserWithSidePanel?.sidePanel?.open) {
+            const tabs = await browser.tabs.query({
+              active: true,
+              currentWindow: true,
+            });
+            if (tabs && tabs.length > 0 && tabs[0].windowId) {
+              await browserWithSidePanel.sidePanel.open({
+                windowId: tabs[0].windowId,
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error opening side panel:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling default view:', error);
+    }
+  };
 
   let supportText = t('support');
   let supportLink = SUPPORT_LINK || '';
@@ -289,7 +349,31 @@ export const GlobalMenu = ({
         {t('allPermissions')}
       </MenuItem>
 
-      {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
+      {/* Toggle between popup and sidepanel not in firefox */}
+      {getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN &&
+      getBrowserName() !== PLATFORM_FIREFOX ? (
+        <MenuItem
+          iconName={IconName.Expand}
+          onClick={async () => {
+            await toggleDefaultView();
+            trackEvent({
+              event: MetaMetricsEventName.AppWindowExpanded,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: METRICS_LOCATION,
+              },
+            });
+            closeMenu();
+          }}
+          data-testid="global-menu-toggle-view"
+        >
+          {isSidePanelDefault ? t('popupView') : t('sidePanelView')}
+        </MenuItem>
+      ) : null}
+
+      {/* Firefox: Show expand view button in popup */}
+      {getBrowserName() === PLATFORM_FIREFOX &&
+      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? (
         <MenuItem
           iconName={IconName.Expand}
           onClick={() => {
@@ -303,11 +387,11 @@ export const GlobalMenu = ({
             });
             closeMenu();
           }}
-          data-testid="global-menu-expand"
+          data-testid="global-menu-expand-view"
         >
           {t('expandView')}
         </MenuItem>
-      )}
+      ) : null}
       <MenuItem
         data-testid="global-menu-networks"
         iconName={IconName.Hierarchy}

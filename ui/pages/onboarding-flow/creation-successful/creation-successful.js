@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
+import browser from 'webextension-polyfill';
 import {
   Button,
   ButtonSize,
@@ -49,6 +50,7 @@ import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask
 import {
   toggleExternalServices,
   setCompletedOnboarding,
+  setCompletedOnboardingWithSidepanel,
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 
@@ -162,10 +164,33 @@ export default function CreationSuccessful() {
       navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
     }
+
     await dispatch(
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
-    await dispatch(setCompletedOnboarding());
+
+    // Side Panel
+    try {
+      if (browser?.sidePanel?.open) {
+        const tabs = await browser.tabs.query({
+          active: true,
+          currentWindow: true,
+        });
+        if (tabs && tabs.length > 0) {
+          await browser.sidePanel.open({ windowId: tabs[0].windowId });
+          // Use the sidepanel-specific action to avoid redirect in fullscreen
+          await dispatch(setCompletedOnboardingWithSidepanel());
+          // Don't navigate to DEFAULT_ROUTE when using sidepanel
+          return;
+        }
+      }
+      // Fallback to regular onboarding completion
+      await dispatch(setCompletedOnboarding());
+    } catch (error) {
+      console.error('Error opening side panel:', error);
+      await dispatch(setCompletedOnboarding());
+    }
+
     navigate(DEFAULT_ROUTE);
   }, [
     isWalletReady,
