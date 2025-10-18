@@ -34,6 +34,12 @@ export const BridgeControllerInit: ControllerInitFunction<
     'TransactionController',
   ) as TransactionController;
 
+  if (!process.env.METAMASK_VERSION) {
+    throw new Error(
+      'process.env.METAMASK_VERSION is not defined but is required by the BridgeController',
+    );
+  }
+
   const controller = new BridgeController({
     messenger: controllerMessenger,
     clientId: BridgeClientId.EXTENSION,

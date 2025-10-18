@@ -5671,9 +5671,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^51.0.0":
-  version: 51.0.0
-  resolution: "@metamask/bridge-controller@npm:51.0.0"
+"@metamask/bridge-controller@npm:^53.0.0":
+  version: 53.0.0
+  resolution: "@metamask/bridge-controller@npm:53.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5694,18 +5694,18 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/accounts-controller": ^33.0.0
-    "@metamask/assets-controllers": ^80.0.0
+    "@metamask/assets-controllers": ^81.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/remote-feature-flag-controller": ^1.6.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/b826065132177f0dac5c965276c44f7f656626640d7570ef36f616f0cfe5f82b15dce17c9be2be5c5939e5d3a20b70b7fdc6fa6c3eccb78fdf08208f6e5ad164
+  checksum: 10/fef7b1be3d3882accb0dc63610d1f4577ec17e2f5f48b62b3275b82fd74fea475fb9641ecd319a0e5a1f294c4919f55f58855393fbec601f9d9eda9fc1e8e70b
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^50.1.0":
-  version: 50.1.0
-  resolution: "@metamask/bridge-status-controller@npm:50.1.0"
+"@metamask/bridge-status-controller@npm:^52.0.0":
+  version: 52.0.0
+  resolution: "@metamask/bridge-status-controller@npm:52.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/controller-utils": "npm:^11.14.1"
@@ -5716,12 +5716,12 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/accounts-controller": ^33.0.0
-    "@metamask/bridge-controller": ^51.0.0
+    "@metamask/bridge-controller": ^53.0.0
     "@metamask/gas-fee-controller": ^24.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/b50f890b3a4f8214df2a36a41946269f85bbbe3becc986f752fea5babfb023cc5222b8718912f18adab12a028cf5636a482a6c471dfdc83708b66859a86d8515
+  checksum: 10/b1d14229c86dec606b6e7bf39ff68fd025360f8b9730125b35d0168f1cd0b74469a7761a9867fb46eb5ffa38da629ccd8879752dae73c0b900a24db7967c50bc
   languageName: node
   linkType: hard
 
@@ -31912,8 +31912,8 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.3.0"
-    "@metamask/bridge-controller": "npm:^51.0.0"
-    "@metamask/bridge-status-controller": "npm:^50.1.0"
+    "@metamask/bridge-controller": "npm:^53.0.0"
+    "@metamask/bridge-status-controller": "npm:^52.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.1.0"
