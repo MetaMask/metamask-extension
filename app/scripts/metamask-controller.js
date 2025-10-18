@@ -268,6 +268,7 @@ import { getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { addTypedMessage, addPersonalMessage } from './lib/signature/util';
+import { createUnlockedMethodWrappers } from './lib/unlock-wrapper';
 import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_COOKIE_HANDLER,
@@ -941,6 +942,12 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
+    // Create unlock wrapper for methods that require wallet to be unlocked
+    const { wrapWithUnlock } = createUnlockedMethodWrappers({
+      appStateController: this.appStateController,
+      keyringController: this.keyringController,
+    });
+
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
         eth_syncing: false,
@@ -956,36 +963,42 @@ export default class MetamaskController extends EventEmitter {
         ),
       // msg signing
 
-      processTypedMessage: (...args) =>
+      processTypedMessage: wrapWithUnlock((...args) =>
         addTypedMessage({
           signatureController: this.signatureController,
           signatureParams: args,
         }),
-      processTypedMessageV3: (...args) =>
+      ),
+      processTypedMessageV3: wrapWithUnlock((...args) =>
         addTypedMessage({
           signatureController: this.signatureController,
           signatureParams: args,
         }),
-      processTypedMessageV4: (...args) =>
+      ),
+      processTypedMessageV4: wrapWithUnlock((...args) =>
         addTypedMessage({
           signatureController: this.signatureController,
           signatureParams: args,
         }),
-      processPersonalMessage: (...args) =>
+      ),
+      processPersonalMessage: wrapWithUnlock((...args) =>
         addPersonalMessage({
           signatureController: this.signatureController,
           signatureParams: args,
         }),
+      ),
 
-      processEncryptionPublicKey:
+      processEncryptionPublicKey: wrapWithUnlock(
         this.encryptionPublicKeyController.newRequestEncryptionPublicKey.bind(
           this.encryptionPublicKeyController,
         ),
+      ),
 
-      processDecryptMessage:
+      processDecryptMessage: wrapWithUnlock(
         this.decryptMessageController.newRequestDecryptMessage.bind(
           this.decryptMessageController,
         ),
+      ),
       getPendingNonce: this.getPendingNonce.bind(this),
       getPendingTransactionByHash: (hash) =>
         this.txController.state.transactions.find(
