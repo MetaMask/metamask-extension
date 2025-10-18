@@ -12,6 +12,7 @@ import AccountDetailsModal from '../../page-objects/pages/dialog/account-details
 import LoginPage from '../../page-objects/pages/login-page';
 
 describe('Vault Corruption', function () {
+  this.timeout(120000); // This test is very long, so we need an unusually high timeout
   /**
    * Script template to simulate a broken database.
    *
@@ -127,8 +128,8 @@ describe('Vault Corruption', function () {
         // the extension has restarted
         return title === WINDOW_TITLES.ExtensionInFullScreenView;
       },
-      // reload and check title as quickly a possible, forever
-      { interval: 0, timeout: Infinity },
+      // reload and check title as quickly a possible
+      { interval: 100, timeout: 10000 },
     );
     await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
   }
@@ -193,10 +194,7 @@ describe('Vault Corruption', function () {
     confirm: boolean;
   }) {
     // click the Recovery/Reset button
-    const recoveryButton = await driver.findClickableElement(
-      '#critical-error-button',
-    );
-    await recoveryButton.click();
+    await driver.clickElement('#critical-error-button');
 
     // Confirm we want to recover/reset.
     const prompt = await driver.driver.switchTo().alert();
@@ -206,16 +204,25 @@ describe('Vault Corruption', function () {
       await prompt.dismiss();
     }
 
-    // the button should be disabled while the recovery process is in progress,
-    // and enabled if the user dismissed the prompt
-    const isEnabled = await recoveryButton.isEnabled();
-    assert.equal(
-      isEnabled,
-      !confirm,
-      confirm
-        ? 'Recovery button should be disabled when prompt is accepted'
-        : 'Recovery button should be enabled when prompt is dismissed',
-    );
+    if (confirm) {
+      // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing to window to become stale
+      await driver.delay(3000);
+      try {
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+      } catch (error) {
+        // to mitigate a race condition where the tab is closed after confirming (issue #36916)
+        await driver.openNewPage('about:blank');
+        await driver.navigate();
+      }
+      // the button should be disabled if the user confirmed the prompt, but given this is a transient state that goes very fast
+      // it can cause a race condition where the element becomes stale, so we check directly that the element is not present as that's a stable state that occurs eventually
+      await driver.assertElementNotPresent('#critical-error-button');
+    } else {
+      // the button should be enabled if the user dismissed the prompt
+      await driver.findClickableElement('#critical-error-button');
+    }
   }
 
   /**
