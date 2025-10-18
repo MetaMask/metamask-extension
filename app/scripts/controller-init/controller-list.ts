@@ -98,6 +98,7 @@ import { MetaMetricsDataDeletionController } from '../controllers/metametrics-da
 import AppMetadataController from '../controllers/app-metadata';
 import DecryptMessageController from '../controllers/decrypt-message';
 import EncryptionPublicKeyController from '../controllers/encryption-public-key';
+import { RewardsController } from './rewards-controller-init';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -157,6 +158,7 @@ export type Controller =
   | RateLimitController<RateLimitedApiMap>
   | RatesController
   | RemoteFeatureFlagController
+  | RewardsController
   | SeedlessOnboardingController<EncryptionKey>
   | SelectedNetworkController
   | ShieldController
@@ -237,6 +239,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
+  RewardsController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   SelectedNetworkController['state'] &
   ShieldController['state'] &
