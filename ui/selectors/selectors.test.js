@@ -3015,3 +3015,25 @@ describe('getUrlScanCacheResult', () => {
     });
   });
 });
+
+describe('getGasFeesSponsoredNetworkEnabled', () => {
+  it('returns the gasFeesSponsoredNetwork flag value for different scenarios', () => {
+    const gasFeesSponsoredNetwork = {
+      '0x1': true,
+      '0x2': false,
+    };
+    state = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        remoteFeatureFlags: {
+          gasFeesSponsoredNetwork,
+        },
+      },
+    };
+    result = selectors.getGasFeesSponsoredNetworkEnabled(state);
+    expect(result).toStrictEqual(gasFeesSponsoredNetwork);
+    expect(result['0x1']).toBe(true);
+    expect(result['0x2']).toBe(false);
+  });
+});
