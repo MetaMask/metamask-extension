@@ -861,8 +861,7 @@ export const getValidationErrors = createDeepEqualSelector(
   ) => {
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
-    const isGasless =
-      gasIncluded7702 || gasIncluded || gasSponsored;
+    const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;

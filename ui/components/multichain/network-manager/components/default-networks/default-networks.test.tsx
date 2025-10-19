@@ -1,7 +1,3 @@
-import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-
-// Mock useSelector
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
@@ -35,3 +31,5 @@ describe('DefaultNetworks - Gas fees sponsored logic', () => {
     expect(isNetworkGasSponsored('0x38')).toBe(true);
   });
 });
+
+export {}; // Makes this a module to satisfy linter rules.
