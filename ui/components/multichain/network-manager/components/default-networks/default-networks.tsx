@@ -127,15 +127,17 @@ const DefaultNetworks = memo(() => {
   // Check if a network has gas sponsorship enabled
   const isNetworkGasSponsored = useCallback(
     (chainId: string | undefined): boolean => {
-      if (!chainId) return false;
+      if (!chainId) {
+        return false;
+      }
 
       return Boolean(
         isGasFeesSponsoredNetworkEnabled?.[
           chainId as keyof typeof isGasFeesSponsoredNetworkEnabled
-        ]
+        ],
       );
     },
-    [isGasFeesSponsoredNetworkEnabled]
+    [isGasFeesSponsoredNetworkEnabled],
   );
 
   // Use the shared state hook
@@ -382,7 +384,12 @@ const DefaultNetworks = memo(() => {
         </Box>
       );
     });
-  }, [featuredNetworksNotYetEnabled, handleAdditionalNetworkClick, t, isNetworkGasSponsored]);
+  }, [
+    featuredNetworksNotYetEnabled,
+    handleAdditionalNetworkClick,
+    t,
+    isNetworkGasSponsored,
+  ]);
 
   return (
     <>

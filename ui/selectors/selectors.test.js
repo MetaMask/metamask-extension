@@ -3022,7 +3022,7 @@ describe('getGasFeesSponsoredNetworkEnabled', () => {
       '0x1': true,
       '0x2': false,
     };
-    state = {
+    const state = {
       ...mockState,
       metamask: {
         ...mockState.metamask,
@@ -3031,7 +3031,7 @@ describe('getGasFeesSponsoredNetworkEnabled', () => {
         },
       },
     };
-    result = selectors.getGasFeesSponsoredNetworkEnabled(state);
+    const result = selectors.getGasFeesSponsoredNetworkEnabled(state);
     expect(result).toStrictEqual(gasFeesSponsoredNetwork);
     expect(result['0x1']).toBe(true);
     expect(result['0x2']).toBe(false);

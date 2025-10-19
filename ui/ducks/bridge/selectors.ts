@@ -878,8 +878,10 @@ export const getValidationErrors = createDeepEqualSelector(
     nativeBalance,
     fromTokenBalance,
   ) => {
-    const { gasIncluded, gasIncluded7702, gasSponsored } = activeQuote?.quote ?? {};
-    const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
+    const { gasIncluded, gasIncluded7702, gasSponsored } =
+      activeQuote?.quote ?? {};
+    const isGasless =
+      gasIncluded7702 || gasIncluded || gasSponsored;
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;

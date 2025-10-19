@@ -19,7 +19,9 @@ describe('DefaultNetworks - Gas fees sponsored logic', () => {
 
     // Simulate the isNetworkGasSponsored callback logic
     const isNetworkGasSponsored = (chainId: string | undefined): boolean => {
-      if (!chainId) return false;
+      if (!chainId) {
+        return false;
+      }
       return Boolean(
         mockGasFeesSponsoredNetwork[
           chainId as keyof typeof mockGasFeesSponsoredNetwork
