@@ -87,3 +87,67 @@ describe('NetworkListItem', () => {
     expect(onClick).toHaveBeenCalledTimes(0);
   });
 });
+
+describe('NetworkListItem - Gas fees sponsored', () => {
+  const { useSelector } = require('react-redux');
+
+  beforeEach(() => {
+    useSelector.mockClear();
+    useSelector.mockReturnValue(undefined);
+  });
+
+  it('renders "No network fee" label when gas fees are sponsored for the network', () => {
+    useSelector.mockReturnValue({
+      '0x1': true, // Mainnet has gas fees sponsored
+    });
+
+    const { getByText } = render(
+      <NetworkListItem {...DEFAULT_PROPS} chainId="0x1" />,
+    );
+    expect(getByText('[noNetworkFee]')).toBeInTheDocument();
+  });
+
+  it('does not render "No network fee" label when gas fees sponsored for the network is false', () => {
+    useSelector.mockReturnValue({
+      '0x1': false, // Mainnet has gas fees sponsored
+    });
+
+    const { queryByText } = render(
+      <NetworkListItem {...DEFAULT_PROPS} chainId="0x1" />,
+    );
+    expect(queryByText('[noNetworkFee]')).not.toBeInTheDocument();
+  });
+
+  it('does not render "No network fee" label when feature flag is not set', () => {
+    // useSelector already returns undefined by default from beforeEach
+    const { queryByText } = render(
+      <NetworkListItem {...DEFAULT_PROPS} chainId="0x1" />,
+    );
+
+    expect(queryByText('[noNetworkFee]')).not.toBeInTheDocument();
+  });
+
+  it('handles CAIP format chainId for gas fees sponsored check', () => {
+    useSelector.mockReturnValue({
+      '0x1': true, // Mainnet has gas fees sponsored
+    });
+
+    const { getByText } = render(
+      <NetworkListItem {...DEFAULT_PROPS} chainId="eip155:1" />,
+    );
+
+    expect(getByText('[noNetworkFee]')).toBeInTheDocument();
+  });
+
+  it('does not render "No network fee" label when chainId is undefined', () => {
+    useSelector.mockReturnValue({
+      '0x1': true,
+    });
+
+    const { queryByText } = render(
+      <NetworkListItem {...DEFAULT_PROPS} chainId={undefined} />,
+    );
+
+    expect(queryByText('[noNetworkFee]')).not.toBeInTheDocument();
+  });
+});
