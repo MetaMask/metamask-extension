@@ -4205,6 +4205,9 @@
   "noMMFeeSwapping": {
     "message": "No MM fee swapping into $1."
   },
+  "noNetworkFee": {
+    "message": "No network fee"
+  },
   "noNetworksAvailable": {
     "message": "No networks available"
   },
@@ -4240,9 +4243,6 @@
   },
   "none": {
     "message": "None"
-  },
-  "noNetworkFee": {
-    "message": "No network fee"
   },
   "notBusy": {
     "message": "Not busy"
