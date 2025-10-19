@@ -102,6 +102,10 @@ export const MultichainBridgeQuoteCard = ({
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
   const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
 
+  const nativeTokenSymbol = fromChain
+    ? getNativeAssetForChainId(fromChain.chainId).symbol
+    : '';
+
   const shouldRenderPriceImpactRow = useMemo(() => {
     const priceImpactThreshold = priceImpactThresholds;
     return (
@@ -263,19 +267,16 @@ export const MultichainBridgeQuoteCard = ({
             </Row>
             {gasSponsored && (
             <Row gap={1} data-testid="network-fees-sponsored">
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textDefault}
-              >
+              <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
                 {t('swapGasFeesSponsored')}
               </Text>
               <Tooltip
-              title={t('swapGasFeesSponsored')}
-              position={PopoverPosition.TopStart}
-              offset={[-16, 16]}
+                title={t('swapGasFeesSponsored')}
+                position={PopoverPosition.TopStart}
+                offset={[-16, 16]}
               >
-                {t('swapGasFeesSponsoredExplanation')}
-            </Tooltip>
+                {t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol])}
+              </Tooltip>
             </Row>
           )}
           {!gasSponsored && activeQuote.quote.gasIncluded && (
