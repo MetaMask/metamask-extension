@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
+import { useSelector } from 'react-redux';
 import {
   POL_TOKEN_IMAGE_URL,
   POLYGON_DISPLAY_NAME,
@@ -89,8 +90,6 @@ describe('NetworkListItem', () => {
 });
 
 describe('NetworkListItem - Gas fees sponsored', () => {
-  const { useSelector } = require('react-redux');
-
   beforeEach(() => {
     useSelector.mockClear();
     useSelector.mockReturnValue(undefined);
