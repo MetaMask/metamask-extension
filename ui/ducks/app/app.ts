@@ -9,7 +9,10 @@ import {
   WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
-import { PasswordChangeToastType } from '../../../shared/constants/app-state';
+import {
+  PasswordChangeToastType,
+  ClaimSubmitToastType,
+} from '../../../shared/constants/app-state';
 
 type AppState = {
   customNonceValue: string;
@@ -130,6 +133,7 @@ type AppState = {
   showPasswordChangeToast: PasswordChangeToastType | null;
   showConnectionsRemovedModal: boolean;
   showCopyAddressToast: boolean;
+  showClaimSubmitToast: ClaimSubmitToastType | null;
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
@@ -234,6 +238,7 @@ const initialState: AppState = {
   showNewSrpAddedToast: false,
   showPasswordChangeToast: null,
   showCopyAddressToast: false,
+  showClaimSubmitToast: null,
   showSupportDataConsentModal: false,
   showConnectionsRemovedModal: false,
 };
@@ -777,6 +782,12 @@ export default function reduceApp(
       return {
         ...appState,
         showCopyAddressToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
+      return {
+        ...appState,
+        showClaimSubmitToast: action.payload,
       };
 
     case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:

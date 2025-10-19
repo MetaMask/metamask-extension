@@ -43,6 +43,7 @@ const ShieldFooterCoverageIndicator = () => {
           </Text>
         }
         style={{ marginBottom: 0, alignItems: AlignItems.center }}
+        showAlertLoader
       />
     </Box>
   );

@@ -9,7 +9,7 @@ import {
   SubjectMetadataController,
 } from '@metamask/permission-controller';
 import { PPOMController } from '@metamask/ppom-validator';
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import { SmartTransactionsController } from '@metamask/smart-transactions-controller';
 import { TransactionController } from '@metamask/transaction-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
@@ -76,6 +76,10 @@ import {
 } from '@metamask/message-manager';
 import { SignatureController } from '@metamask/signature-controller';
 import { UserOperationController } from '@metamask/user-operation-controller';
+import {
+  AccountActivityService,
+  BackendWebSocketService,
+} from '@metamask/core-backend';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -181,6 +185,8 @@ export type Controller =
   | AssetsContractController
   | AccountTreeController
   | WebSocketService
+  | BackendWebSocketService
+  | AccountActivityService
   | MultichainAccountService
   | NetworkEnablementController;
 

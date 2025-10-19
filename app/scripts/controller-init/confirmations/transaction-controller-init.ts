@@ -1,5 +1,3 @@
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller/dist/types';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import {
   type PublishBatchHookRequest,
@@ -10,6 +8,10 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import {
+  SmartTransactionsController,
+  SmartTransactionStatuses,
+} from '@metamask/smart-transactions-controller';
 import { Hex } from '@metamask/utils';
 import { trace } from '../../../../shared/lib/trace';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
@@ -87,7 +89,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         chainId
       ] as unknown as SavedGasFees | undefined;
     },
-    getSimulationConfig: async (url) => {
+    getSimulationConfig: async (url, opts) => {
       const getToken = () =>
         initMessenger.call('AuthenticationController:getBearerToken');
       const getShieldSubscription = () =>
@@ -95,7 +97,10 @@ export const TransactionControllerInit: ControllerInitFunction<
           'SubscriptionController:getSubscriptionByProduct',
           PRODUCT_TYPES.SHIELD,
         );
-      return getShieldGatewayConfig(getToken, getShieldSubscription, url);
+      const origin = opts?.txMeta?.origin;
+      return getShieldGatewayConfig(getToken, getShieldSubscription, url, {
+        origin,
+      });
     },
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
@@ -370,7 +375,11 @@ export async function publishHook({
     transactionMeta.chainId,
   );
 
-  if (!isSmartTransaction || !sendBundleSupport) {
+  if (
+    !isSmartTransaction ||
+    !sendBundleSupport ||
+    transactionMeta.isGasFeeSponsored
+  ) {
     const hook = new Delegation7702PublishHook({
       isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
         transactionController,
