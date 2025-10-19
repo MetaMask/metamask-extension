@@ -10,6 +10,7 @@ on:
 jobs:
   needs-e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       needs-e2e: ${{ steps.determine.outputs.NEEDS_E2E }}
     env:
@@ -74,6 +75,7 @@ jobs:
     needs:
       - needs-e2e
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       OWNER: ${{ github.repository_owner }}
@@ -86,7 +88,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Get changed files with git diff
         run: yarn tsx .github/scripts/git-diff-default-branch.ts

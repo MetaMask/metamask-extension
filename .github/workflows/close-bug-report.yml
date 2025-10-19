@@ -10,6 +10,7 @@ on:
 jobs:
   close-bug-report:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: github.event.pull_request.merged == true && ( startsWith(github.event.pull_request.head.ref, 'Version-v') || startsWith(github.event.pull_request.head.ref, 'release/') )
     steps:
       - name: Checkout and setup environment
@@ -17,7 +18,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Close release bug report issue
         env:

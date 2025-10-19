@@ -47,6 +47,7 @@ describe('MultichainAssetsRatesControllerInit', () => {
     expect(multichainAssetsRatesControllerClassMock).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
       state: requestMock.persistedState.MultichainAssetsRatesController,
+      interval: 180000,
     });
   });
 });

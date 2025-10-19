@@ -27,10 +27,10 @@ import { getAccountTree } from '../../../../selectors/multichain-accounts/accoun
 import { AccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree.types';
 import { Content, Footer, Header, Page } from '../../../multichain/pages/page';
 import { extractWalletIdFromGroupId } from '../../../../selectors/multichain-accounts/utils';
-import { useAllWalletAccountsBalances } from '../../../../hooks/multichain-accounts/useAccountBalance';
 
 type MultichainEditAccountsPageProps = {
   title?: string;
+  confirmButtonText?: string;
   defaultSelectedAccountGroups: AccountGroupId[];
   supportedAccountGroups: AccountGroupWithInternalAccounts[];
   onSubmit: (accountGroups: AccountGroupId[]) => void;
@@ -41,6 +41,7 @@ export const MultichainEditAccountsPage: React.FC<
   MultichainEditAccountsPageProps
 > = ({
   title,
+  confirmButtonText,
   defaultSelectedAccountGroups,
   supportedAccountGroups,
   onSubmit,
@@ -52,7 +53,6 @@ export const MultichainEditAccountsPage: React.FC<
     defaultSelectedAccountGroups,
   );
   const accountTree = useSelector(getAccountTree);
-  const formattedAccountGroupBalancesByWallet = useAllWalletAccountsBalances();
 
   const walletsWithSupportedAccountGroups = useMemo(() => {
     const walletMap = new Map();
@@ -115,14 +115,11 @@ export const MultichainEditAccountsPage: React.FC<
         location: 'Edit Accounts Modal',
       },
     });
-
-    onClose();
   }, [
     selectedAccountGroups,
     defaultSelectedAccountGroups,
     onSubmit,
     trackEvent,
-    onClose,
   ]);
 
   return (
@@ -132,8 +129,9 @@ export const MultichainEditAccountsPage: React.FC<
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Header
-        paddingTop={8}
-        paddingBottom={0}
+        textProps={{
+          variant: TextVariant.headingSm,
+        }}
         startAccessory={
           <ButtonIcon
             size={ButtonIconSize.Md}
@@ -143,9 +141,6 @@ export const MultichainEditAccountsPage: React.FC<
             data-testid="back-button"
           />
         }
-        textProps={{
-          variant: TextVariant.headingSm,
-        }}
       >
         {title ?? t('editAccounts')}
       </Header>
@@ -159,9 +154,6 @@ export const MultichainEditAccountsPage: React.FC<
             wallets={walletsWithSupportedAccountGroups}
             selectedAccountGroups={selectedAccountGroups}
             handleAccountClick={handleAccountClick}
-            formattedAccountGroupBalancesByWallet={
-              formattedAccountGroupBalancesByWallet
-            }
             showAccountCheckbox={true}
           />
         </Box>
@@ -173,7 +165,7 @@ export const MultichainEditAccountsPage: React.FC<
           size={ButtonSecondarySize.Lg}
           block
         >
-          {t('connect')}
+          {confirmButtonText ?? t('connect')}
         </ButtonSecondary>
       </Footer>
     </Page>

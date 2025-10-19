@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
-import { getInternalAccounts } from '../../../../selectors';
+import {
+  getAccountGroupWithInternalAccounts,
+  getSelectedAccountGroup,
+} from '../../../../selectors/multichain-accounts/account-tree';
 // This is fine to use it in send flow - might be removed in the future
 // eslint-disable-next-line no-restricted-syntax
 import { getNftsByChainByAccount } from '../../../../selectors/nft';
@@ -85,8 +88,11 @@ describe('useSendNfts', () => {
       if (selector === getNftsByChainByAccount) {
         return mockNftsData;
       }
-      if (selector === getInternalAccounts) {
-        return mockAccounts;
+      if (selector === getSelectedAccountGroup) {
+        return 'dummy_group_id';
+      }
+      if (selector === getAccountGroupWithInternalAccounts) {
+        return [{ accounts: mockAccounts, id: 'dummy_group_id' }];
       }
       return undefined;
     });
@@ -187,8 +193,11 @@ describe('useSendNfts', () => {
       if (selector === getNftsByChainByAccount) {
         return {};
       }
-      if (selector === getInternalAccounts) {
-        return mockAccounts;
+      if (selector === getSelectedAccountGroup) {
+        return 'dummy_group_id';
+      }
+      if (selector === getAccountGroupWithInternalAccounts) {
+        return [{ accounts: mockAccounts, id: 'dummy_group_id' }];
       }
       return undefined;
     });
@@ -203,7 +212,10 @@ describe('useSendNfts', () => {
       if (selector === getNftsByChainByAccount) {
         return mockNftsData;
       }
-      if (selector === getInternalAccounts) {
+      if (selector === getSelectedAccountGroup) {
+        return undefined;
+      }
+      if (selector === getAccountGroupWithInternalAccounts) {
         return [];
       }
       return undefined;
@@ -214,15 +226,16 @@ describe('useSendNfts', () => {
     expect(result.current).toEqual([]);
   });
 
-  it('filters out NFTs for accounts not in internal accounts list', async () => {
-    const limitedAccounts = [{ id: 'account1', address: '0xAccount1' }];
-
+  it('filters out NFTs for accounts not in selected accounts group', async () => {
     mockUseSelector.mockImplementation((selector) => {
       if (selector === getNftsByChainByAccount) {
         return mockNftsData;
       }
-      if (selector === getInternalAccounts) {
-        return limitedAccounts;
+      if (selector === getSelectedAccountGroup) {
+        return 'dummy_group_id';
+      }
+      if (selector === getAccountGroupWithInternalAccounts) {
+        return [{ accounts: [mockAccounts[0]], id: 'dummy_group_id' }];
       }
       return undefined;
     });
@@ -297,8 +310,11 @@ describe('useSendNfts', () => {
       if (selector === getNftsByChainByAccount) {
         return newNftsData;
       }
-      if (selector === getInternalAccounts) {
-        return mockAccounts;
+      if (selector === getSelectedAccountGroup) {
+        return 'dummy_group_id';
+      }
+      if (selector === getAccountGroupWithInternalAccounts) {
+        return [{ accounts: mockAccounts, id: 'dummy_group_id' }];
       }
       return undefined;
     });

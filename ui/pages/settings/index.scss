@@ -364,7 +364,13 @@
 
   &__button {
     cursor: pointer;
+
+    &-defaut-settings {
+      width: 100%;
+      max-width: 100%;
+    }
   }
+
 
   &__copy-icon {
     padding-left: 4px;

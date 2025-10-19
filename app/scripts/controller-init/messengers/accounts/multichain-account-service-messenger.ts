@@ -11,11 +11,21 @@ import {
   KeyringControllerWithKeyringAction,
   KeyringControllerGetStateAction,
   KeyringControllerStateChangeEvent,
+  KeyringControllerAddNewKeyringAction,
+  KeyringControllerGetKeyringsByTypeAction,
 } from '@metamask/keyring-controller';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
 } from '@metamask/network-controller';
+import {
+  RemoteFeatureFlagControllerStateChangeEvent,
+  RemoteFeatureFlagControllerGetStateAction,
+} from '@metamask/remote-feature-flag-controller';
+import {
+  PreferencesControllerGetStateAction,
+  PreferencesControllerStateChangeEvent,
+} from '../../../controllers/preferences-controller';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction
@@ -24,13 +34,16 @@ type Actions =
   | SnapControllerHandleRequest
   | KeyringControllerGetStateAction
   | KeyringControllerWithKeyringAction
+  | KeyringControllerAddNewKeyringAction
+  | KeyringControllerGetKeyringsByTypeAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerFindNetworkClientIdByChainIdAction;
 
 type Events =
   | KeyringControllerStateChangeEvent
   | AccountsControllerAccountAddedEvent
-  | AccountsControllerAccountRemovedEvent;
+  | AccountsControllerAccountRemovedEvent
+  | RemoteFeatureFlagControllerStateChangeEvent;
 
 export type MultichainAccountServiceMessenger = ReturnType<
   typeof getMultichainAccountServiceMessenger
@@ -52,6 +65,7 @@ export function getMultichainAccountServiceMessenger(
       'KeyringController:stateChange',
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
+      'RemoteFeatureFlagController:stateChange',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
@@ -60,11 +74,23 @@ export function getMultichainAccountServiceMessenger(
       'SnapController:handleRequest',
       'KeyringController:getState',
       'KeyringController:withKeyring',
+      'KeyringController:addNewKeyring',
+      'KeyringController:getKeyringsByType',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
     ],
   });
 }
+
+type AllowedInitializationActions =
+  | PreferencesControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
+
+type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
+
+export type MultichainAccountServiceInitMessenger = ReturnType<
+  typeof getMultichainAccountServiceInitMessenger
+>;
 
 /**
  * Get a restricted messenger for the account wallet controller. This is scoped to the
@@ -74,9 +100,17 @@ export function getMultichainAccountServiceMessenger(
  * @returns The restricted controller messenger.
  */
 export function getMultichainAccountServiceInitMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: Messenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
 ) {
-  // Our `init` method needs the same actions, so just re-use the same messenger
-  // function here.
-  return getMultichainAccountServiceMessenger(messenger);
+  return messenger.getRestricted({
+    name: 'MultichainAccountServiceInit',
+    allowedActions: [
+      'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
+    ],
+    allowedEvents: ['PreferencesController:stateChange'],
+  });
 }

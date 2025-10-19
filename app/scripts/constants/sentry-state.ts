@@ -36,6 +36,8 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   NetworkOrderController: {
     orderedNetworkList: [],
+  },
+  NetworkEnablementController: {
     enabledNetworkMap: {},
   },
   AccountOrderController: {
@@ -90,6 +92,8 @@ export const SENTRY_BACKGROUND_STATE = {
     isUpdateAvailable: true,
     updateModalLastDismissedAt: true,
     lastUpdatedAt: true,
+    shieldEndingToastLastClickedOrClosed: true,
+    shieldPausedToastLastClickedOrClosed: true,
   },
   MultichainBalancesController: {
     balances: false,
@@ -382,8 +386,6 @@ export const SENTRY_BACKGROUND_STATE = {
     isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
     isContactSyncingEnabled: true,
-    hasAccountSyncingSyncedAtLeastOnce: false,
-    isAccountSyncingReadyToBeDispatched: false,
   },
 };
 

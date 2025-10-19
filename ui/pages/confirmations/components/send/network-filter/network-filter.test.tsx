@@ -3,19 +3,14 @@ import { render, fireEvent } from '@testing-library/react';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getImageForChainId } from '../../../utils/network';
+import { useChainNetworkNameAndImageMap } from '../../../hooks/useChainNetworkNameAndImage';
 import { useAssetSelectionMetrics } from '../../../hooks/send/metrics/useAssetSelectionMetrics';
 import { AssetFilterMethod } from '../../../context/send-metrics';
 import { NetworkFilter } from './network-filter';
 
 jest.mock('../../../../../hooks/useI18nContext');
 jest.mock('../../../hooks/send/metrics/useAssetSelectionMetrics');
-jest.mock('../../../../../../shared/constants/bridge', () => ({
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP: {
-    '1': 'Ethereum',
-    '137': 'Polygon',
-    '42161': 'Arbitrum',
-  },
-}));
+jest.mock('../../../hooks/useChainNetworkNameAndImage');
 jest.mock('../../../../../components/component-library', () => ({
   Box: ({
     children,
@@ -126,6 +121,9 @@ describe('NetworkFilter', () => {
   const mockGetImageForChainId = jest.mocked(getImageForChainId);
   const mockOnChainIdChange = jest.fn();
   const mockUseAssetSelectionMetrics = jest.mocked(useAssetSelectionMetrics);
+  const mockUseChainNetworkNameAndImageMap = jest.mocked(
+    useChainNetworkNameAndImageMap,
+  );
   const mockAddAssetFilterMethod = jest.fn();
   const mockRemoveAssetFilterMethod = jest.fn();
 
@@ -144,6 +142,13 @@ describe('NetworkFilter', () => {
       addAssetFilterMethod: mockAddAssetFilterMethod,
       removeAssetFilterMethod: mockRemoveAssetFilterMethod,
     } as unknown as ReturnType<typeof useAssetSelectionMetrics>);
+    mockUseChainNetworkNameAndImageMap.mockReturnValue(
+      new Map([
+        ['1', { networkName: 'Ethereum', networkImage: 'eth.svg' }],
+        ['137', { networkName: 'Polygon', networkImage: 'polygon.svg' }],
+        ['42161', { networkName: 'Arbitrum', networkImage: 'arbitrum.svg' }],
+      ]),
+    );
   });
 
   afterEach(() => {

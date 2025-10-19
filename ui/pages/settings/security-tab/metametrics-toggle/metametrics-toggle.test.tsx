@@ -57,7 +57,7 @@ const arrangeMocks = (stateOverrides: StateOverrides = {}) => {
       <MetametricsToggle
         dataCollectionForMarketing={false}
         // eslint-disable-next-line no-empty-function
-        setDataCollectionForMarketing={() => {}}
+        setDataCollectionForMarketing={() => Promise.resolve()}
       />
     </Provider>,
   );

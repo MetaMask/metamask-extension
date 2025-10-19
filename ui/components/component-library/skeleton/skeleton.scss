@@ -16,7 +16,7 @@
   pointer-events: none;
   user-select: none;
 
-  &--hide-children * {
+  * {
     visibility: hidden;
   }
 }

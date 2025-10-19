@@ -1,5 +1,11 @@
-export { getTokenRatesControllerMessenger } from './token-rates-controller-messenger';
-export type { TokenRatesControllerMessenger } from './token-rates-controller-messenger';
+export {
+  getTokenRatesControllerMessenger,
+  getTokenRatesControllerInitMessenger,
+} from './token-rates-controller-messenger';
+export type {
+  TokenRatesControllerMessenger,
+  TokenRatesControllerInitMessenger,
+} from './token-rates-controller-messenger';
 
 export {
   getNftControllerMessenger,
@@ -13,8 +19,23 @@ export type {
 export { getNftDetectionControllerMessenger } from './nft-detection-controller-messenger';
 export type { NftDetectionControllerMessenger } from './nft-detection-controller-messenger';
 
-export { getAssetsContractControllerMessenger } from './assets-contract-controller-messenger';
-export type { AssetsContractControllerMessenger } from './assets-contract-controller-messenger';
+export {
+  getAssetsContractControllerMessenger,
+  getAssetsContractControllerInitMessenger,
+} from './assets-contract-controller-messenger';
+export type {
+  AssetsContractControllerMessenger,
+  AssetsContractControllerInitMessenger,
+} from './assets-contract-controller-messenger';
 
 export { getNetworkOrderControllerMessenger } from './network-order-controller-messenger';
 export type { NetworkOrderControllerMessenger } from './network-order-controller-messenger';
+
+export {
+  getNetworkEnablementControllerMessenger,
+  getNetworkEnablementControllerInitMessenger,
+} from './network-enablement-controller-messenger';
+export type {
+  NetworkEnablementControllerMessenger,
+  NetworkEnablementControllerInitMessenger,
+} from './network-enablement-controller-messenger';

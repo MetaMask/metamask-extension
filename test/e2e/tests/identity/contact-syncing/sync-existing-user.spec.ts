@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
 
-import { withFixtures, getCleanAppState } from '../../../helpers';
+import { getCleanAppState, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import {
@@ -168,7 +168,7 @@ describe('Contact Syncing - Existing User', function () {
           await driver.wait(async () => {
             const uiState = await getCleanAppState(driver);
             return (
-              uiState?.metamask?.hasAccountSyncingSyncedAtLeastOnce === true
+              uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce === true
             );
           }, 30000);
 

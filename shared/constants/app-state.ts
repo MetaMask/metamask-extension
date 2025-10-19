@@ -1,3 +1,5 @@
+import { NetworkClientId } from '@metamask/network-controller';
+import { Hex } from 'viem';
 import { TraceName } from '../lib/trace';
 import { MetaMetricsEventName } from './metametrics';
 
@@ -41,3 +43,17 @@ export enum PasswordChangeToastType {
   Success = 'success',
   Errored = 'errored',
 }
+
+export enum ClaimSubmitToastType {
+  Success = 'success',
+  Errored = 'errored',
+}
+
+export type NetworkConnectionBanner =
+  | { status: 'unknown' | 'available' }
+  | {
+      status: 'degraded' | 'unavailable';
+      networkName: string;
+      networkClientId: NetworkClientId;
+      chainId: Hex;
+    };
