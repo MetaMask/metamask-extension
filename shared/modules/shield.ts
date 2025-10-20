@@ -33,7 +33,10 @@ export async function getShieldGatewayConfig(
       newUrl += `&origin=${encodeURIComponent(origin)}`;
     }
 
-    const authorization = await getToken();
+    const authToken = await getToken();
+    const authorization = authToken?.startsWith(`Bearer`)
+      ? authToken
+      : `Bearer ${authToken}`;
 
     return {
       newUrl,
