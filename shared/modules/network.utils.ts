@@ -17,7 +17,7 @@ import {
 } from '../constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../constants/multichain/networks';
 
-type RpcEndpoint = {
+export type RpcEndpoint = {
   name?: string;
   url: string;
   networkClientId: string;

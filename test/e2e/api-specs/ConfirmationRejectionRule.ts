@@ -64,7 +64,6 @@ export class ConfirmationsRejectRule implements Rule {
                 data: `data:image/png;base64,${screenshot}`,
               });
 
-              await this.driver.waitUntilXWindowHandles(3);
               await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
               await this.driver.findClickableElements({
@@ -78,7 +77,7 @@ export class ConfirmationsRejectRule implements Rule {
                 data: `data:image/png;base64,${screenshotTwo}`,
               });
 
-              await this.driver.clickElement({
+              await this.driver.clickElementAndWaitForWindowToClose({
                 text: 'Connect',
                 tag: 'button',
               });
@@ -130,7 +129,10 @@ export class ConfirmationsRejectRule implements Rule {
               type: 'image',
               data: `data:image/png;base64,${screenshot}`,
             });
-            await this.driver.clickElement({ text, tag: 'button' });
+            await this.driver.clickElementAndWaitForWindowToClose({
+              text,
+              tag: 'button',
+            });
             // make sure to switch back to the dapp or else the next test will fail on the wrong window
             await switchToOrOpenDapp(this.driver);
           } catch (e) {

@@ -2069,7 +2069,6 @@ describe('MetaMetricsController', function () {
             ),
           ).toMatchInlineSnapshot(`
             {
-              "isSocialLoginFlowEnabledForMetrics": false,
               "latestNonAnonymousEventTimestamp": 0,
               "marketingCampaignCookieId": null,
               "metaMetricsId": "0xabc",
@@ -2097,7 +2096,6 @@ describe('MetaMetricsController', function () {
               "dataCollectionForMarketing": null,
               "eventsBeforeMetricsOptIn": [],
               "fragments": {},
-              "isSocialLoginFlowEnabledForMetrics": false,
               "latestNonAnonymousEventTimestamp": 0,
               "marketingCampaignCookieId": null,
               "metaMetricsId": "0xabc",
@@ -2128,7 +2126,6 @@ describe('MetaMetricsController', function () {
               "dataCollectionForMarketing": null,
               "eventsBeforeMetricsOptIn": [],
               "fragments": {},
-              "isSocialLoginFlowEnabledForMetrics": false,
               "latestNonAnonymousEventTimestamp": 0,
               "marketingCampaignCookieId": null,
               "metaMetricsId": "0xabc",
@@ -2158,7 +2155,6 @@ describe('MetaMetricsController', function () {
             {
               "dataCollectionForMarketing": null,
               "fragments": {},
-              "isSocialLoginFlowEnabledForMetrics": false,
               "latestNonAnonymousEventTimestamp": 0,
               "metaMetricsId": "0xabc",
               "participateInMetaMetrics": true,

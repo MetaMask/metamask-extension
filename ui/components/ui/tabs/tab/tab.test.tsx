@@ -20,33 +20,23 @@ describe('Tab', () => {
     expect(getByText('Test Tab')).toBeInTheDocument();
   });
 
-  it('applies active class when isActive is true', () => {
-    const { container } = renderTab({ isActive: true });
-    expect(container.firstChild).toHaveClass('tab--active');
+  it('sets aria-selected to true when isActive is true', () => {
+    const { getByRole } = renderTab({ isActive: true });
+    expect(getByRole('tab')).toHaveAttribute('aria-selected', 'true');
   });
 
-  it('applies custom activeClassName when provided and active', () => {
-    const { container } = renderTab({
-      isActive: true,
-      activeClassName: 'custom-active',
-    });
-    expect(container.firstChild).toHaveClass('custom-active');
+  it('sets aria-selected to false when isActive is false', () => {
+    const { getByRole } = renderTab({ isActive: false });
+    expect(getByRole('tab')).toHaveAttribute('aria-selected', 'false');
   });
 
   it('calls onClick with tabIndex when clicked', () => {
     const onClick = jest.fn();
     const { getByRole } = renderTab({ onClick });
 
-    fireEvent.click(getByRole('button'));
+    fireEvent.click(getByRole('tab'));
 
     expect(onClick).toHaveBeenCalledWith(defaultProps.tabIndex);
-  });
-
-  it('applies buttonClassName to the button element', () => {
-    const { getByRole } = renderTab({
-      buttonClassName: 'custom-button-class',
-    });
-    expect(getByRole('button')).toHaveClass('custom-button-class');
   });
 
   it('applies className to the root element', () => {
@@ -61,19 +51,6 @@ describe('Tab', () => {
       'data-testid': 'test-tab-id',
     });
     expect(container.firstChild).toHaveAttribute('data-testid', 'test-tab-id');
-  });
-
-  it('spreads textProps to Text component', () => {
-    const { getByRole } = renderTab({
-      textProps: {
-        'data-testid': 'text-component',
-        className: 'custom-text-class',
-      },
-    });
-
-    const textElement = getByRole('button');
-    expect(textElement).toHaveAttribute('data-testid', 'text-component');
-    expect(textElement).toHaveClass('custom-text-class');
   });
 
   it('spreads additional props to root element', () => {
@@ -98,22 +75,22 @@ describe('Tab', () => {
     expect(getByTestId('complex-name')).toBeInTheDocument();
   });
 
-  it('applies disabled class when disabled is true', () => {
-    const { container } = renderTab({ disabled: true });
-    expect(container.firstChild).toHaveClass('tab--disabled');
+  it('sets aria-disabled to true when disabled is true', () => {
+    const { getByRole } = renderTab({ disabled: true });
+    expect(getByRole('tab')).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('does not call onClick when disabled and clicked', () => {
     const onClick = jest.fn();
     const { getByRole } = renderTab({ disabled: true, onClick });
 
-    fireEvent.click(getByRole('button'));
+    fireEvent.click(getByRole('tab'));
 
     expect(onClick).not.toHaveBeenCalled();
   });
 
   it('applies disabled attribute to button when disabled', () => {
     const { getByRole } = renderTab({ disabled: true });
-    expect(getByRole('button')).toHaveAttribute('disabled');
+    expect(getByRole('tab')).toHaveAttribute('disabled');
   });
 });

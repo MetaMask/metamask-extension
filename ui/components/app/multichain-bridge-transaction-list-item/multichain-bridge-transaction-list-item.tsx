@@ -10,7 +10,6 @@ import {
   isBridgeFailed,
 } from '../../../../shared/lib/bridge-status/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { isSelectedInternalAccountSolana } from '../../../selectors/accounts';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTransactionDisplay';
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 import TransactionIcon from '../transaction-icon';
@@ -36,10 +35,8 @@ import {
   AvatarNetworkSize,
 } from '../../component-library';
 import {
-  MULTICHAIN_PROVIDER_CONFIGS,
-  MultichainNetworks,
-  SOLANA_TOKEN_IMAGE_URL,
-  BITCOIN_TOKEN_IMAGE_URL,
+  MULTICHAIN_NETWORK_TO_NICKNAME,
+  MULTICHAIN_TOKEN_IMAGE_MAP,
 } from '../../../../shared/constants/multichain/networks';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
@@ -54,7 +51,7 @@ type MultichainBridgeTransactionListItemProps = {
 };
 
 /**
- * Renders a transaction list item specifically for Solana bridge operations,
+ * Renders a transaction list item for multichain bridge operations (Solana, Bitcoin, etc.),
  * displaying progress across source and destination chains.
  *
  * @param options0 - Component props
@@ -67,8 +64,6 @@ const MultichainBridgeTransactionListItem: React.FC<
 > = ({ transaction, bridgeHistoryItem, toggleShowDetails }) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
-
-  const isSolanaAccount = useSelector(isSelectedInternalAccountSolana);
 
   const isSourceTxConfirmed =
     transaction.status === TransactionStatus.Confirmed;
@@ -96,10 +91,18 @@ const MultichainBridgeTransactionListItem: React.FC<
 
   const txIndex = isSourceTxConfirmed ? 2 : 1;
 
-  const { destNetwork } = useBridgeChainInfo({
+  const { srcNetwork, destNetwork } = useBridgeChainInfo({
     bridgeHistoryItem,
     nonEvmTransaction: transaction,
   });
+
+  // Get source network info from chain ID
+  const sourceNetworkNickname = srcNetwork?.chainId
+    ? MULTICHAIN_NETWORK_TO_NICKNAME[srcNetwork.chainId]
+    : undefined;
+  const sourceNetworkImage = srcNetwork?.chainId
+    ? MULTICHAIN_TOKEN_IMAGE_MAP[srcNetwork.chainId]
+    : undefined;
 
   const displayChainName =
     (destNetwork?.chainId
@@ -112,8 +115,8 @@ const MultichainBridgeTransactionListItem: React.FC<
 
   return (
     <ActivityListItem
-      className="solana-bridge-transaction-list-item"
-      data-testid="solana-bridge-activity-item"
+      className="multichain-bridge-transaction-list-item"
+      data-testid="multichain-bridge-activity-item"
       onClick={() => toggleShowDetails(transaction)}
       icon={
         <BadgeWrapper
@@ -124,19 +127,9 @@ const MultichainBridgeTransactionListItem: React.FC<
               borderWidth={1}
               className="activity-tx__network-badge"
               data-testid="activity-tx-network-badge"
-              name={
-                isSolanaAccount
-                  ? MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA]
-                      .nickname
-                  : MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN]
-                      .nickname
-              }
+              name={sourceNetworkNickname ?? ''}
               size={AvatarNetworkSize.Xs}
-              src={
-                isSolanaAccount
-                  ? SOLANA_TOKEN_IMAGE_URL
-                  : BITCOIN_TOKEN_IMAGE_URL
-              }
+              src={sourceNetworkImage ?? ''}
             />
           }
           display={Display.Block}

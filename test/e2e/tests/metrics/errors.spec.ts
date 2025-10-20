@@ -39,6 +39,8 @@ const maskedBackgroundFields = [
   'AppStateController.surveyLinkLastClickedOrClosed',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
+  'AppStateController.shieldEndingToastLastClickedOrClosed',
+  'AppStateController.shieldPausedToastLastClickedOrClosed',
   // The value in these properties may change each run
   'AppStateController.fullScreenGasPollTokens',
   'AppStateController.notificationGasPollTokens',
@@ -71,6 +73,7 @@ const removedBackgroundFields = [
   'PhishingController.phishingLists',
   'PhishingController.stalelistLastFetched',
   'PhishingController.whitelist',
+  'PhishingController.whitelistPaths',
   // User preference that can vary between test runs
   'PreferencesController.preferences.avatarType',
 ];
@@ -722,7 +725,7 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await loginWithBalanceValidation(driver);
 
-          await driver.delay(2000);
+          await driver.delay(3000);
           // Trigger error
           await driver.executeScript(
             'window.stateHooks.throwTestBackgroundError()',
@@ -828,7 +831,7 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await loginWithBalanceValidation(driver);
 
-          await driver.delay(2000);
+          await driver.delay(3000);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');

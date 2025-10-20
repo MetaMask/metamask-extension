@@ -67,7 +67,7 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
                         <rect
                           fill="#18CDF2"
                           height="18"
-                          transform="translate(-0.5897213458840913 -1.8586597890715306) rotate(328.9 9 9)"
+                          transform="translate(-0.58972134588409 -1.85865978907153) rotate(328.9 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -75,7 +75,7 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
                         <rect
                           fill="#035E56"
                           height="18"
-                          transform="translate(-10.292884711218024 5.9582598028585885) rotate(176.2 9 9)"
+                          transform="translate(-10.29288471121802 5.95825980285859) rotate(176.2 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -83,7 +83,7 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
                         <rect
                           fill="#F26602"
                           height="18"
-                          transform="translate(9.375661135250958 -7.990391094185859) rotate(468.9 9 9)"
+                          transform="translate(9.37566113525096 -7.99039109418586) rotate(468.9 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -259,7 +259,7 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
                         <rect
                           fill="#18CDF2"
                           height="18"
-                          transform="translate(-0.5897213458840913 -1.8586597890715306) rotate(328.9 9 9)"
+                          transform="translate(-0.58972134588409 -1.85865978907153) rotate(328.9 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -267,7 +267,7 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
                         <rect
                           fill="#035E56"
                           height="18"
-                          transform="translate(-10.292884711218024 5.9582598028585885) rotate(176.2 9 9)"
+                          transform="translate(-10.29288471121802 5.95825980285859) rotate(176.2 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -275,7 +275,7 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
                         <rect
                           fill="#F26602"
                           height="18"
-                          transform="translate(9.375661135250958 -7.990391094185859) rotate(468.9 9 9)"
+                          transform="translate(9.37566113525096 -7.99039109418586) rotate(468.9 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -449,7 +449,7 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
                         <rect
                           fill="#18CDF2"
                           height="18"
-                          transform="translate(-0.5897213458840913 -1.8586597890715306) rotate(328.9 9 9)"
+                          transform="translate(-0.58972134588409 -1.85865978907153) rotate(328.9 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -457,7 +457,7 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
                         <rect
                           fill="#035E56"
                           height="18"
-                          transform="translate(-10.292884711218024 5.9582598028585885) rotate(176.2 9 9)"
+                          transform="translate(-10.29288471121802 5.95825980285859) rotate(176.2 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -465,7 +465,7 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
                         <rect
                           fill="#F26602"
                           height="18"
-                          transform="translate(9.375661135250958 -7.990391094185859) rotate(468.9 9 9)"
+                          transform="translate(9.37566113525096 -7.99039109418586) rotate(468.9 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"

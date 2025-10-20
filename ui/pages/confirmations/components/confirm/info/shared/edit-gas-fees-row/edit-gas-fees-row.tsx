@@ -1,11 +1,12 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import React, { Dispatch, SetStateAction } from 'react';
 import { useSelector } from 'react-redux';
-import { Hex } from '@metamask/utils';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Box, Text } from '../../../../../../../components/component-library';
+import { Skeleton } from '../../../../../../../components/component-library/skeleton';
 import Tooltip from '../../../../../../../components/ui/tooltip';
 import {
   AlignItems,
@@ -19,10 +20,11 @@ import {
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
+import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
+import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 import { SelectedGasFeeToken } from '../selected-gas-fee-token';
-import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
-import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 
 export const EditGasFeesRow = ({
   fiatFee,
@@ -45,8 +47,7 @@ export const EditGasFeesRow = ({
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
-
-  const { chainId } = transactionMeta;
+  const { chainId, isGasFeeSponsored, simulationData } = transactionMeta;
   const gasFeeToken = useSelectedGasFeeToken();
   const showFiat = useShowFiat(chainId);
   const fiatValue = gasFeeToken ? gasFeeToken.amountFiat : fiatFee;
@@ -57,6 +58,9 @@ export const EditGasFeesRow = ({
     ? t('confirmGasFeeTokenTooltip', [metamaskFeeFiat])
     : t('estimatedFeeTooltip');
 
+  const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
+  const isLoadingGasUsed = !simulationData || balanceChangesResult.pending;
+
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
       <ConfirmInfoAlertRow
@@ -65,56 +69,74 @@ export const EditGasFeesRow = ({
         data-testid="edit-gas-fees-row"
         label={t('networkFee')}
         tooltip={tooltip}
-        style={{ alignItems: AlignItems.center, marginBottom: '2px' }}
+        style={{ alignItems: AlignItems.center }}
       >
+        {isLoadingGasUsed ? (
+          <Skeleton height={16} width={128} />
+        ) : (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            textAlign={TextAlign.Center}
+            gap={1}
+          >
+            {isGasFeeSponsored && (
+              <Text
+                color={TextColor.textDefault}
+                data-testid="paid-by-meta-mask"
+              >
+                {t('paidByMetaMask')}
+              </Text>
+            )}
+            {!gasFeeToken && !isGasFeeSponsored && (
+              <EditGasIconButton
+                supportsEIP1559={supportsEIP1559}
+                setShowCustomizeGasPopover={setShowCustomizeGasPopover}
+              />
+            )}
+            {showFiat && !showAdvancedDetails && !isGasFeeSponsored && (
+              <FiatValue
+                fullValue={fiatFeeWith18SignificantDigits}
+                roundedValue={fiatValue}
+              />
+            )}
+            {!(showFiat && !showAdvancedDetails) && !isGasFeeSponsored && (
+              <TokenValue roundedValue={tokenValue} />
+            )}
+            {!isGasFeeSponsored && <SelectedGasFeeToken />}
+          </Box>
+        )}
+      </ConfirmInfoAlertRow>
+      {!isGasFeeSponsored && (
         <Box
           display={Display.Flex}
-          flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
-          textAlign={TextAlign.Center}
-          gap={1}
+          paddingInline={2}
         >
-          {!gasFeeToken && (
-            <EditGasIconButton
-              supportsEIP1559={supportsEIP1559}
-              setShowCustomizeGasPopover={setShowCustomizeGasPopover}
-            />
-          )}
-          {showFiat && !showAdvancedDetails ? (
+          <Box style={{ marginTop: gasFeeToken ? -8 : 0 }}>
+            <Text
+              data-testid="gas-fee-token-fee"
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+              paddingBottom={gasFeeToken ? 2 : 0}
+            >
+              {gasFeeToken
+                ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
+                : ' '}
+            </Text>
+          </Box>
+          {showAdvancedDetails && (
             <FiatValue
               fullValue={fiatFeeWith18SignificantDigits}
               roundedValue={fiatValue}
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
             />
-          ) : (
-            <TokenValue roundedValue={tokenValue} />
           )}
-          <SelectedGasFeeToken />
         </Box>
-      </ConfirmInfoAlertRow>
-      <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-        paddingInline={2}
-      >
-        <Text
-          data-testid="gas-fee-token-fee"
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-        >
-          {gasFeeToken
-            ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
-            : ' '}
-        </Text>
-        {showAdvancedDetails && (
-          <FiatValue
-            fullValue={fiatFeeWith18SignificantDigits}
-            roundedValue={fiatValue}
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-          />
-        )}
-      </Box>
+      )}
     </Box>
   );
 };

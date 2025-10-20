@@ -1,22 +1,18 @@
 import React from 'react';
-import classnames from 'classnames';
 import {
-  BlockSize,
-  Display,
+  Text,
   TextAlign,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { Text, Box } from '../../../component-library';
+  FontWeight,
+  twMerge,
+} from '@metamask/design-system-react';
 import { TabProps } from '../tabs.types';
 
 export const Tab = <TKey extends string = string>({
-  buttonClassName = '',
-  activeClassName = '',
   className = '',
   'data-testid': dataTestId,
   isActive = false,
-  isSingleTab = false,
   name,
   onClick,
   tabIndex = 0,
@@ -25,45 +21,42 @@ export const Tab = <TKey extends string = string>({
   // happy when being used in .tsx)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   children,
-  textProps,
   disabled = false,
-  ...rest
+  ...props
 }: TabProps<TKey>) => {
-  const handleClick = (event: React.MouseEvent<HTMLLIElement>) => {
-    event.preventDefault();
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (!disabled && onClick) {
       onClick(tabIndex);
     }
   };
-
   return (
-    <Box
-      as="li"
-      data-testid={dataTestId}
-      onClick={handleClick}
+    <Text
       key={tabKey}
-      {...rest}
-      className={classnames('tab', className, {
-        'tab--single': isSingleTab,
-        'tab--active': isActive,
-        'tab--disabled': disabled,
-        ...(activeClassName && isActive && { [activeClassName]: true }),
-      })}
+      data-testid={dataTestId}
+      textAlign={TextAlign.Center}
+      color={TextColor.TextAlternative}
+      fontWeight={FontWeight.Medium}
+      variant={TextVariant.BodyMd}
+      className={twMerge(
+        'flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default',
+        isActive && 'text-default border-b-text-default',
+        disabled && 'text-muted',
+        className,
+      )}
+      {...props}
+      asChild
     >
-      <Text
-        as="button"
-        padding={2}
-        textAlign={TextAlign.Center}
-        display={Display.Block}
-        width={BlockSize.Full}
-        variant={TextVariant.bodyMd}
-        color={TextColor.inherit}
-        {...textProps}
-        className={classnames(buttonClassName, textProps?.className || '')}
+      <button
+        role="tab"
+        tabIndex={isActive ? 0 : -1}
+        aria-selected={isActive}
+        aria-disabled={disabled}
+        onClick={handleClick}
         disabled={disabled}
       >
         {name}
-      </Text>
-    </Box>
+      </button>
+    </Text>
   );
 };

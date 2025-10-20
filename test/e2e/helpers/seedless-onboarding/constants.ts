@@ -9,6 +9,9 @@ export const AuthServer = {
     'https://auth-service.dev-api.cx.metamask.io/api/v2/oauth/revoke',
   RenewRefreshToken:
     'https://auth-service.dev-api.cx.metamask.io/api/v2/oauth/renew_refresh_token',
+
+  GetMarketingOptInStatus:
+    'https://auth-service.dev-api.cx.metamask.io/api/v1/oauth/marketing_opt_in_status',
 };
 
 export const SSSBaseUrlRgx =

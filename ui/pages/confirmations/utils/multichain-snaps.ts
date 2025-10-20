@@ -13,7 +13,7 @@ export async function sendMultichainTransactionForReview(
     amount: string;
   },
 ) {
-  await handleSnapRequest({
+  return await handleSnapRequest({
     snapId: fromAccount.metadata?.snap?.id as SnapId,
     origin: 'metamask',
     handler: HandlerType.OnClientRequest,

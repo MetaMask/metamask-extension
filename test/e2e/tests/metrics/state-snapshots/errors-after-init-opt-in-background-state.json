@@ -41,16 +41,19 @@
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
     "showPermissionsTour": true,
+    "showShieldEntryModalOnce": "boolean",
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "productTour": "accountIcon",
     "trezorModel": null,
     "onboardingDate": null,
     "lastViewedUserSurvey": null,
+    "networkConnectionBanner": "object",
     "isRampCardClosed": false,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+    "hasShownMultichainAccountsIntroModal": "boolean",
     "surveyLinkLastClickedOrClosed": "object",
     "showDownloadMobileAppSlide": "boolean",
     "slides": "object",
@@ -68,7 +71,9 @@
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
-    "snapsInstallPrivacyWarningShown": true
+    "snapsInstallPrivacyWarningShown": true,
+    "shieldEndingToastLastClickedOrClosed": "object",
+    "shieldPausedToastLastClickedOrClosed": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -149,8 +154,7 @@
     "tracesBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object",
-    "isSocialLoginFlowEnabledForMetrics": "boolean"
+    "segmentApiCalls": "object"
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
@@ -186,9 +190,11 @@
     },
     "networkConfigurationsByChainId": "object"
   },
-  "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" },
+  "NetworkEnablementController": {
     "enabledNetworkMap": { "eip155": "object", "solana": "object" }
+  },
+  "NetworkOrderController": {
+    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -225,7 +231,10 @@
     "permissionHistory": "object",
     "permissionActivityLog": "object"
   },
-  "PhishingController": { "urlScanCache": "object" },
+  "PhishingController": {
+    "urlScanCache": "object",
+    "tokenScanCache": "object"
+  },
   "PreferencesController": {
     "selectedAddress": "string",
     "useBlockie": false,
@@ -250,10 +259,15 @@
     "lostIdentities": "object",
     "forgottenPassword": false,
     "preferences": {
+      "dismissSmartAccountSuggestionEnabled": "boolean",
+      "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": false,
+      "petnamesEnabled": "boolean",
+      "privacyMode": "boolean",
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
+      "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsOptInStatus": true,
       "showNativeTokenAsMainBalance": true,
       "showMultiRpcModal": "boolean",
@@ -261,7 +275,8 @@
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
       "smartTransactionsMigrationApplied": "boolean",
-      "smartAccountOptIn": "boolean"
+      "smartAccountOptIn": "boolean",
+      "useNativeCurrencyAsPrimaryCurrency": "boolean"
     },
     "ipfsGateway": "string",
     "isIpfsGatewayEnabled": "boolean",
@@ -275,14 +290,15 @@
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
-    "showIncomingTransactions": "object",
-    "manageInstitutionalWallets": "boolean"
+    "manageInstitutionalWallets": "boolean",
+    "referrals": "object"
   },
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" }
+      "feature3": { "name": "groupC", "value": "valueC" },
+      "sendRedesign": { "enabled": false }
     },
     "cacheTimestamp": "number"
   },

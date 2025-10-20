@@ -9,7 +9,6 @@ import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 
-import { readAddressAsContract } from '../../../../../../shared/modules/contract-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
@@ -20,6 +19,7 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { selectPendingApprovalsForNavigation } from '../../../../../selectors';
 import { ConfirmContext } from '../../../context/confirm';
 import { useNonContractAddressAlerts } from './useNonContractAddressAlerts';
+import { useContractCode } from './useContractCode';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -42,9 +42,8 @@ jest.mock('react', () => ({
   useContext: jest.fn(),
 }));
 
-jest.mock('../../../../../../shared/modules/contract-utils', () => ({
-  ...jest.requireActual('../../../../../../shared/modules/contract-utils'),
-  readAddressAsContract: jest.fn(),
+jest.mock('./useContractCode', () => ({
+  useContractCode: jest.fn(),
 }));
 
 jest.mock('./NonContractAddressAlertMessage', () => ({
@@ -88,8 +87,7 @@ function runHook({
 describe('useNonContractAddressAlerts', () => {
   const useContextMock = useContext as jest.Mock;
   const useSelectorMock = useSelector as jest.Mock;
-  const mockReadAddressAsContract =
-    readAddressAsContract as jest.MockedFunction<typeof readAddressAsContract>;
+  const mockUseContractCode = jest.mocked(useContractCode);
   const useLocationMock = jest.mocked(useLocation);
 
   beforeEach(() => {
@@ -98,6 +96,17 @@ describe('useNonContractAddressAlerts', () => {
     useLocationMock.mockReturnValue({
       search: '',
     } as unknown as ReturnType<typeof useLocationMock>);
+
+    mockUseContractCode.mockImplementation(
+      () =>
+        ({
+          pending: false,
+          value: {
+            isContractAddress: false,
+            contractCode: '',
+          },
+        }) as ReturnType<typeof useContractCode>,
+    );
   });
 
   it('returns no alerts if no confirmation', () => {
@@ -123,13 +132,6 @@ describe('useNonContractAddressAlerts', () => {
       }
 
       return undefined;
-    });
-
-    mockReadAddressAsContract.mockImplementation(async () => {
-      return {
-        isContractAddress: false,
-        contractCode: '',
-      };
     });
 
     expect(runHook()).toEqual([]);
@@ -165,13 +167,6 @@ describe('useNonContractAddressAlerts', () => {
       }
 
       return undefined;
-    });
-
-    mockReadAddressAsContract.mockImplementation(async () => {
-      return {
-        isContractAddress: false,
-        contractCode: '',
-      };
     });
 
     expect(
@@ -213,12 +208,16 @@ describe('useNonContractAddressAlerts', () => {
       return undefined;
     });
 
-    mockReadAddressAsContract.mockImplementation(async () => {
-      return {
-        isContractAddress: true,
-        contractCode: '',
-      };
-    });
+    mockUseContractCode.mockImplementation(
+      () =>
+        ({
+          pending: false,
+          value: {
+            isContractAddress: true,
+            contractCode: '',
+          },
+        }) as ReturnType<typeof useContractCode>,
+    );
 
     expect(
       runHook({
@@ -298,13 +297,6 @@ describe('useNonContractAddressAlerts', () => {
       return undefined;
     });
 
-    mockReadAddressAsContract.mockImplementation(async () => {
-      return {
-        isContractAddress: false,
-        contractCode: '',
-      };
-    });
-
     const { result } = renderHookWithConfirmContextProvider(
       useNonContractAddressAlerts,
       {
@@ -358,13 +350,6 @@ describe('useNonContractAddressAlerts', () => {
       return undefined;
     });
 
-    mockReadAddressAsContract.mockImplementation(async () => {
-      return {
-        isContractAddress: false,
-        contractCode: '',
-      };
-    });
-
     const { result } = renderHookWithConfirmContextProvider(
       useNonContractAddressAlerts,
       {
@@ -410,12 +395,16 @@ describe('useNonContractAddressAlerts', () => {
       return undefined;
     });
 
-    mockReadAddressAsContract.mockImplementation(async () => {
-      return {
-        isContractAddress: false,
-        contractCode: null, // simulate failure
-      };
-    });
+    mockUseContractCode.mockImplementation(
+      () =>
+        ({
+          pending: false,
+          value: {
+            isContractAddress: false,
+            contractCode: null, // simulate failure
+          },
+        }) as ReturnType<typeof useContractCode>,
+    );
 
     const { result } = renderHookWithConfirmContextProvider(
       useNonContractAddressAlerts,

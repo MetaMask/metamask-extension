@@ -7,6 +7,7 @@ jobs:
   publish-release:
     name: Publish release
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       # Publishing tokens
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
@@ -58,7 +59,7 @@ jobs:
           is-high-risk-environment: true
           skip-allow-scripts: true
           fetch-depth: 0
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
         uses: actions/download-artifact@v4

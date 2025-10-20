@@ -1,6 +1,5 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
-import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
@@ -16,20 +15,10 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
-jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
-  ...jest.requireActual(
-    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
-  ),
-  useAssetDetails: jest.fn().mockResolvedValue({
-    decimals: '4',
-  }),
-}));
-
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
 };
-const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const renderSeaportSignature = async () => {
   const account =
@@ -66,14 +55,9 @@ describe('Permit Seaport Tests', () => {
     jest.resetAllMocks();
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
-        getTokenStandardAndDetails: { decimals: '2' },
+        getTokenStandardAndDetails: { decimals: '4' },
       }),
     );
-    mockedAssetDetails.mockImplementation(() => ({
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      decimals: '4' as any,
-    }));
   });
 
   afterEach(() => {

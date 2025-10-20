@@ -1,8 +1,5 @@
 import { Messenger } from '@metamask/base-controller';
-import type {
-  AccountsControllerGetAccountByAddressAction,
-  AccountsControllerGetSelectedMultichainAccountAction,
-} from '@metamask/accounts-controller';
+import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
@@ -26,7 +23,6 @@ type AllowedActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
-  | AccountsControllerGetSelectedMultichainAccountAction
   | HandleSnapRequest
   | TransactionControllerGetStateAction
   | BridgeControllerAction<BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE>
@@ -58,7 +54,7 @@ export function getBridgeStatusControllerMessenger(
   return messenger.getRestricted({
     name: 'BridgeStatusController',
     allowedActions: [
-      'AccountsController:getSelectedMultichainAccount',
+      'AccountsController:getAccountByAddress',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getState',

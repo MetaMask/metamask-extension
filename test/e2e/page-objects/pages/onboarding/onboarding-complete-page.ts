@@ -94,19 +94,9 @@ class OnboardingCompletePage {
     );
   }
 
-  async completeOnboarding(isSocialImportFlow: boolean = false): Promise<void> {
+  async completeOnboarding(): Promise<void> {
     console.log('Complete onboarding');
-    if (!isSocialImportFlow) {
-      await this.clickCreateWalletDoneButton();
-    }
-
-    await this.displayDownloadAppPageAndContinue();
-
-    await this.driver.waitForSelector(this.installCompleteMessage);
-    await this.driver.waitForSelector(this.pinExtensionMessage);
-    await this.driver.clickElementAndWaitToDisappear(
-      this.pinExtensionDoneButton,
-    );
+    await this.clickCreateWalletDoneButton();
   }
 
   async completeBackup(): Promise<void> {

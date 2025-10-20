@@ -48,7 +48,7 @@ const expectedMaliciousAlert = {
   field: RowAlertKey.InteractingWith,
   isBlocking: false,
   key: 'trustSignalMalicious',
-  message: 'alertMessageAddressTrustSignal',
+  message: 'alertMessageAddressTrustSignalMalicious',
   reason: 'nameModalTitleMalicious',
   severity: Severity.Danger,
 };

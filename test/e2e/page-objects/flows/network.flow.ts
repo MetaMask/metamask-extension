@@ -1,7 +1,6 @@
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../pages/header-navbar';
 import SelectNetwork from '../pages/dialog/select-network';
-import NetworkSwitchModalConfirmation from '../pages/dialog/network-switch-modal-confirmation';
 import SendTokenPage from '../pages/send/send-token-page';
 import HomePage from '../pages/home/homepage';
 
@@ -26,12 +25,6 @@ export const searchAndSwitchToNetworkFromGlobalMenuFlow = async (
   await selectNetworkDialog.checkPageIsLoaded();
   await selectNetworkDialog.fillNetworkSearchInput(networkName);
   await selectNetworkDialog.clickAddButton();
-
-  const networkSwitchModalConfirmation = new NetworkSwitchModalConfirmation(
-    driver,
-  );
-  await networkSwitchModalConfirmation.checkPageIsLoaded();
-  await networkSwitchModalConfirmation.clickApproveButton();
 
   await headerNavbar.checkPageIsLoaded();
   await driver.delay(1000);
@@ -85,10 +78,5 @@ export const searchAndSwitchToNetworkFromSendFlow = async (
   await selectNetworkDialog.fillNetworkSearchInput(networkName);
   await selectNetworkDialog.clickAddButton();
 
-  const networkSwitchModalConfirmation = new NetworkSwitchModalConfirmation(
-    driver,
-  );
-  await networkSwitchModalConfirmation.checkPageIsLoaded();
-  await networkSwitchModalConfirmation.clickApproveButton();
   await switchToNetworkFromSendFlow(driver, networkName);
 };

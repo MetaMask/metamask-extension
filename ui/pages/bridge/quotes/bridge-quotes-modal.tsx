@@ -40,6 +40,7 @@ import {
   getBridgeSortOrder,
   getFromChain,
   getFromToken,
+  getIsStxEnabled,
   getQuoteRequest,
   getToToken,
 } from '../../../ducks/bridge/selectors';
@@ -48,7 +49,6 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getMultichainNativeCurrency } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 
 export const BridgeQuotesModal = ({
   onClose,
@@ -62,9 +62,7 @@ export const BridgeQuotesModal = ({
   const fromChain = useSelector(getFromChain);
   const { insufficientBal } = useSelector(getQuoteRequest);
 
-  const isStxEnabled = useSelector((state) =>
-    getIsSmartTransaction(state as never, fromChain?.chainId),
-  );
+  const isStxEnabled = useSelector(getIsStxEnabled);
 
   const { sortedQuotes, activeQuote, recommendedQuote } =
     useSelector(getBridgeQuotes);
@@ -166,7 +164,7 @@ export const BridgeQuotesModal = ({
               color={
                 sortOrder === sortOrderOption
                   ? TextColor.primaryDefault
-                  : TextColor.textAlternativeSoft
+                  : TextColor.textAlternative
               }
             >
               <Text
@@ -178,7 +176,7 @@ export const BridgeQuotesModal = ({
                 color={
                   sortOrder === sortOrderOption
                     ? TextColor.primaryDefault
-                    : TextColor.textAlternativeSoft
+                    : TextColor.textAlternative
                 }
               >
                 {label}

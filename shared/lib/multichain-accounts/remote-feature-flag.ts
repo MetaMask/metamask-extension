@@ -24,7 +24,7 @@ export const isMultichainAccountsFeatureEnabled = (
   enableMultichainAccounts: MultichainAccountsFeatureFlag | undefined | null,
   featureVersion: string,
 ) => {
-  if (!enableMultichainAccounts) {
+  if (!enableMultichainAccounts || !APP_VERSION) {
     return false;
   }
 
@@ -39,10 +39,6 @@ export const isMultichainAccountsFeatureEnabled = (
   }
 
   if (currentFeatureVersion !== featureVersion) {
-    return false;
-  }
-
-  if (!APP_VERSION) {
     return false;
   }
 

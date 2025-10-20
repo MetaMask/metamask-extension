@@ -9,6 +9,10 @@ import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmati
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
 import { EditGasFeesRow } from './edit-gas-fees-row';
 
+jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
+  useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
+}));
+
 jest.mock(
   '../../../../../../../components/app/alert-system/contexts/alertMetricsContext',
   () => ({

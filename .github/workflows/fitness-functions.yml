@@ -6,10 +6,13 @@ on:
       - opened
       - reopened
       - synchronize
+  merge_group:
 
 jobs:
   fitness-functions:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: ${{ github.event_name != 'merge_group' }} # Skip this step for merge_group events
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -17,7 +20,7 @@ jobs:
           is-high-risk-environment: false
           fetch-depth: 0 # This is needed to checkout all branches
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Run fitness functions
         env:

@@ -69,6 +69,7 @@
     "showNewSrpAddedToast": "boolean",
     "showPasswordChangeToast": null,
     "showCopyAddressToast": "boolean",
+    "showClaimSubmitToast": null,
     "showSupportDataConsentModal": "boolean",
     "showConnectionsRemovedModal": "boolean"
   },
@@ -93,10 +94,15 @@
     "featureFlags": {},
     "currentLocale": "en",
     "preferences": {
+      "dismissSmartAccountSuggestionEnabled": "boolean",
+      "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": false,
+      "petnamesEnabled": "boolean",
+      "privacyMode": "boolean",
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
+      "skipDeepLinkInterstitial": "boolean",
       "smartTransactionsOptInStatus": true,
       "showNativeTokenAsMainBalance": true,
       "showMultiRpcModal": "boolean",
@@ -104,7 +110,8 @@
       "shouldShowAggregatedBalancePopover": "boolean",
       "tokenNetworkFilter": { "0x539": "boolean" },
       "smartTransactionsMigrationApplied": "boolean",
-      "smartAccountOptIn": "boolean"
+      "smartAccountOptIn": "boolean",
+      "useNativeCurrencyAsPrimaryCurrency": "boolean"
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -112,7 +119,6 @@
     "use4ByteResolution": true,
     "participateInMetaMetrics": true,
     "dataCollectionForMarketing": "boolean",
-    "isSocialLoginFlowEnabledForMetrics": "boolean",
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
@@ -134,6 +140,7 @@
     "fullScreenGasPollTokens": "object",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
+    "showShieldEntryModalOnce": "boolean",
     "outdatedBrowserWarningLastShown": "object",
     "nftsDetectionNoticeDismissed": false,
     "showTestnetMessageInDropdown": true,
@@ -189,6 +196,7 @@
       }
     },
     "networkConfigurationsByChainId": "object",
+    "networkConnectionBanner": "object",
     "keyrings": "object",
     "selectedAddress": "string",
     "usePhishDetect": true,
@@ -219,8 +227,8 @@
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
-    "showIncomingTransactions": "object",
     "manageInstitutionalWallets": "boolean",
+    "referrals": "object",
     "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
     "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
@@ -310,12 +318,14 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" }
+      "feature3": { "name": "groupC", "value": "valueC" },
+      "sendRedesign": { "enabled": false }
     },
     "cacheTimestamp": "number",
     "allDeFiPositions": "object",
     "allDeFiPositionsCount": "object",
     "urlScanCache": "object",
+    "tokenScanCache": "object",
     "coverageResults": "object",
     "orderedTransactionHistory": "object",
     "accounts": "object",
@@ -383,13 +393,16 @@
     "accountTree": "object",
     "isAccountTreeSyncingInProgress": "boolean",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+    "hasShownMultichainAccountsIntroModal": "boolean",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object",
     "isGatorPermissionsEnabled": "boolean",
     "gatorPermissionsMapSerialized": "string",
     "isFetchingGatorPermissions": "boolean",
     "gatorPermissionsProviderSnapId": "string",
-    "srpSessionData": "object"
+    "srpSessionData": "object",
+    "shieldEndingToastLastClickedOrClosed": "object",
+    "shieldPausedToastLastClickedOrClosed": "object"
   },
   "ramps": "object",
   "send": "object",

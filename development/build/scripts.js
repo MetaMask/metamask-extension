@@ -1313,7 +1313,8 @@ function renderHtmlFile({
     .replace('<script src="./scripts/load/ui.ts" defer></script>', scriptTags)
     .replace('<script src="./load-offscreen.js" defer></script>', scriptTags)
     .replace('../ui/css/index.scss', './index.css')
-    .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js');
+    .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js')
+    .replace('<script src="./scripts/load/bootstrap.ts" defer></script>', '');
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

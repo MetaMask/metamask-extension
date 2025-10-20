@@ -9,6 +9,7 @@ on:
 jobs:
   build-ts-migration-dashboard:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
@@ -19,7 +20,7 @@ jobs:
         with:
           is-high-risk-environment: true
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Build ts migration dashboard
         run: yarn ts-migration:dashboard:build

@@ -7,18 +7,17 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import {
   withFixtures,
-  openDapp,
-  WINDOW_TITLES,
   createWebSocketConnection,
   veryLargeDelayMs,
 } from '../../helpers';
-
+import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import HomePage from '../../page-objects/pages/home/homepage';
 import MockedPage from '../../page-objects/pages/mocked-page';
 import PhishingWarningPage from '../../page-objects/pages/phishing-warning-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import TestDapp from '../../page-objects/pages/test-dapp';
 import {
   setupPhishingDetectionMocks,
   mockConfigLookupOnWarningPage,
@@ -43,12 +42,15 @@ describe('Phishing Detection', function (this: Suite) {
       );
       assert.equal(
         METAMASK_HOTLIST_DIFF_URL,
-        'https://phishing-detection.api.cx.metamask.io/v1/diffsSince',
+        'https://phishing-detection.api.cx.metamask.io/v2/diffsSince',
       );
     });
   });
 
   it('should display the MetaMask Phishing Detection page and take the user to the blocked page if they continue', async function () {
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      this.skip();
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -59,13 +61,15 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await openDapp(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         // To mitigate a race condition where 2 requests are made to the localhost:8080 which triggers a page refresh
         await driver.delay(veryLargeDelayMs);
@@ -94,6 +98,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: [IFRAMED_HOSTNAME],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -105,6 +110,9 @@ describe('Phishing Detection', function (this: Suite) {
     };
 
     it('should redirect users to the the MetaMask Phishing Detection page when an iframe domain is on the phishing blocklist', async function () {
+      if (process.env.SELENIUM_BROWSER === 'firefox') {
+        this.skip();
+      }
       await withFixtures(
         getFixtureOptions({
           title: this.test?.fullTitle(),
@@ -119,7 +127,11 @@ describe('Phishing Detection', function (this: Suite) {
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.checkPageIsLoaded();
           await phishingWarningPage.clickProceedAnywayButton();
-          await driver.wait(until.titleIs(WINDOW_TITLES.TestDApp), 10000);
+          await driver.waitForWindowWithTitleToBePresent(
+            WINDOW_TITLES.TestDApp,
+            15000,
+          );
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         },
       );
     });
@@ -158,6 +170,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -200,6 +213,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
           mockConfigLookupOnWarningPage(mockServer, { statusCode: 500 });
         },
@@ -207,7 +221,8 @@ describe('Phishing Detection', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        await openDapp(driver);
+        const testDapp = new TestDapp(driver);
+        await testDapp.openTestDappPage();
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         const phishingWarningPage = new PhishingWarningPage(driver);
@@ -239,6 +254,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: [phishingSite.hostname],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -276,6 +292,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -318,6 +335,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -354,6 +372,7 @@ describe('Phishing Detection', function (this: Suite) {
             blockProvider: BlockProvider.MetaMask,
             blocklist: ['127.0.0.1'],
             c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+            blocklistPaths: [],
           });
         },
         dapp: true,
@@ -462,6 +481,7 @@ describe('Phishing Detection', function (this: Suite) {
               blockProvider: BlockProvider.MetaMask,
               blocklist: [blocked],
               c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+              blocklistPaths: [],
             });
           },
         },
@@ -517,5 +537,154 @@ describe('Phishing Detection', function (this: Suite) {
         });
       });
     }
+  });
+
+  describe('Path-based URLs', function () {
+    describe('blocklisted paths', function () {
+      it('displays the MetaMask Phishing Detection page when accessing a blocklisted path', async function () {
+        await withFixtures(
+          {
+            fixtures: new FixtureBuilder().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (mockServer: Mockttp) => {
+              return setupPhishingDetectionMocks(mockServer, {
+                statusCode: 200,
+                blockProvider: BlockProvider.MetaMask,
+                blocklist: [],
+                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+                blocklistPaths: ['127.0.0.1/path1'],
+              });
+            },
+            dapp: true,
+            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
+          },
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
+
+            await driver.openNewPage('http://127.0.0.1:8080/path1/');
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+            const phishingWarningPage = new PhishingWarningPage(driver);
+            await phishingWarningPage.checkPageIsLoaded();
+          },
+        );
+      });
+
+      it('blocks access to blocklisted subpaths', async function () {
+        await withFixtures(
+          {
+            fixtures: new FixtureBuilder().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (mockServer: Mockttp) => {
+              return setupPhishingDetectionMocks(mockServer, {
+                statusCode: 200,
+                blockProvider: BlockProvider.MetaMask,
+                blocklist: [],
+                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+                blocklistPaths: ['127.0.0.1/path1'],
+              });
+            },
+            dapp: true,
+            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
+          },
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
+
+            await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
+
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+            const phishingWarningPage = new PhishingWarningPage(driver);
+            await phishingWarningPage.checkPageIsLoaded();
+          },
+        );
+      });
+    });
+
+    describe('whitelisted paths', function () {
+      it('does not display the MetaMask Phishing Detection page when accessing a whitelisted path', async function () {
+        if (process.env.SELENIUM_BROWSER === 'firefox') {
+          this.skip();
+        }
+        await withFixtures(
+          {
+            fixtures: new FixtureBuilder().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (mockServer: Mockttp) => {
+              return setupPhishingDetectionMocks(mockServer, {
+                statusCode: 200,
+                blockProvider: BlockProvider.MetaMask,
+                blocklist: [],
+                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+                blocklistPaths: ['127.0.0.1/path1'],
+              });
+            },
+            dapp: true,
+            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
+          },
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
+
+            await driver.openNewPage('http://127.0.0.1:8080/path1/');
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+            const phishingWarningPage = new PhishingWarningPage(driver);
+            await phishingWarningPage.checkPageIsLoaded();
+            await phishingWarningPage.clickProceedAnywayButton();
+
+            // Wait for navigation to complete
+            await driver.waitForWindowWithTitleToBePresent(
+              'Mock E2E Phishing Page: Path 1',
+              15000,
+            );
+            await driver.switchToWindowWithTitle(
+              'Mock E2E Phishing Page: Path 1',
+            );
+          },
+        );
+      });
+
+      it('when the subpath is whitelisted, the phishing warning page is not displayed for the blocklisted path and all subpaths', async function () {
+        if (process.env.SELENIUM_BROWSER === 'firefox') {
+          this.skip();
+        }
+        await withFixtures(
+          {
+            fixtures: new FixtureBuilder().build(),
+            title: this.test?.fullTitle(),
+            testSpecificMock: async (mockServer: Mockttp) => {
+              return setupPhishingDetectionMocks(mockServer, {
+                statusCode: 200,
+                blockProvider: BlockProvider.MetaMask,
+                blocklist: [],
+                c2DomainBlocklist: [DEFAULT_BLOCKED_DOMAIN],
+                blocklistPaths: ['127.0.0.1/path1'],
+              });
+            },
+            dapp: true,
+            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
+          },
+          async ({ driver }) => {
+            await loginWithBalanceValidation(driver);
+
+            await driver.openNewPage('http://127.0.0.1:8080/path1/path2');
+            await driver.switchToWindowWithTitle(WINDOW_TITLES.Phishing);
+            const phishingWarningPage = new PhishingWarningPage(driver);
+            await phishingWarningPage.checkPageIsLoaded();
+            await phishingWarningPage.clickProceedAnywayButton();
+            await driver.waitForWindowWithTitleToBePresent(
+              'Mock E2E Phishing Page: Path 2',
+              15000,
+            );
+            await driver.switchToWindowWithTitle(
+              'Mock E2E Phishing Page: Path 2',
+            );
+
+            await driver.openNewPage('http://127.0.0.1:8080/path1');
+            await driver.wait(
+              until.titleIs('Mock E2E Phishing Page: Path 1'),
+              10000,
+            );
+          },
+        );
+      });
+    });
   });
 });

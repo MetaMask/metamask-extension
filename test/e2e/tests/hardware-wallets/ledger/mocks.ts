@@ -182,14 +182,14 @@ export async function mockLedgerTransactionRequests(mockServer: MockttpServer) {
 // Mock network information for swap API
 async function mockSwapNetworkInfo(mockServer: MockttpServer) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/1')
+    .forGet('https://bridge.api.cx.metamask.io/networks/1')
     .thenCallback(() => ({
       statusCode: 200,
       json: {
         active: true,
         networkId: 1,
         chainId: 1,
-        chainName: 'Ethereum Mainnet',
+        chainName: 'Ethereum',
         nativeCurrency: {
           name: 'Ether',
           symbol: 'ETH',
@@ -312,7 +312,7 @@ async function mockLedgerIframeBridge(mockServer: MockttpServer) {
 // Mock swap feature flags API
 async function mockSwapFeatureFlags(mockServer: MockttpServer) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/featureFlags')
+    .forGet('https://bridge.api.cx.metamask.io/featureFlags')
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -337,7 +337,7 @@ async function mockSwapFeatureFlags(mockServer: MockttpServer) {
 // Mock swap tokens API
 async function mockSwapTokens(mockServer: MockttpServer) {
   return await mockServer
-    .forGet('https://swap.api.cx.metamask.io/networks/1/tokens')
+    .forGet('https://bridge.api.cx.metamask.io/networks/1/tokens')
     .thenCallback(() => ({
       statusCode: 200,
       json: [

@@ -63,7 +63,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
         field: RowAlertKey.InteractingWith,
         isBlocking: false,
         key: 'trustSignalMalicious',
-        message: t('alertMessageAddressTrustSignal'),
+        message: t('alertMessageAddressTrustSignalMalicious'),
         reason: t('nameModalTitleMalicious'),
         severity: Severity.Danger,
       });

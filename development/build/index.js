@@ -150,6 +150,10 @@ async function defineAndRunBuildTasks() {
       'logEncryptedVault',
       // Globals used by `react-dom`
       'getSelection',
+      // globals `opera` needs to function
+      'opr',
+      // for @popperjs/core and snap simple keyring site
+      'devicePixelRatio',
     ];
 
     if (

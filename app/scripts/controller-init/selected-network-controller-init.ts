@@ -20,13 +20,6 @@ export const SelectedNetworkControllerInit: ControllerInitFunction<
     // the persisted state may be partial.
     state: persistedState.SelectedNetworkController,
     messenger: controllerMessenger,
-    useRequestQueuePreference: true,
-    onPreferencesStateChange: () => {
-      // Noop. We have removed the ability to toggle the useRequestQueue
-      // preference. Both useRequestQueue and onPreferencesStateChange will be
-      // removed once mobile supports per dapp network selection.
-      // See: https://github.com/MetaMask/core/pull/5065#issue-2736965186
-    },
     domainProxyMap: new WeakRefObjectMap(),
   });
 

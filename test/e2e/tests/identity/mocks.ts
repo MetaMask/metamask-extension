@@ -1,10 +1,11 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import {
-  UserStorageMockttpController,
-  UserStorageResponseData,
-} from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 
 const AuthMocks = AuthenticationController.Mocks;
 
@@ -52,21 +53,21 @@ export async function mockIdentityServices(
   }
   if (
     !userStorageMockttpControllerInstance?.paths.get(
-      'multichain_accounts_wallets',
+      USER_STORAGE_WALLETS_FEATURE_KEY,
     )
   ) {
     userStorageMockttpControllerInstance.setupPath(
-      'multichain_accounts_wallets',
+      USER_STORAGE_WALLETS_FEATURE_KEY,
       server,
     );
   }
   if (
     !userStorageMockttpControllerInstance?.paths.get(
-      'multichain_accounts_groups',
+      USER_STORAGE_GROUPS_FEATURE_KEY,
     )
   ) {
     userStorageMockttpControllerInstance.setupPath(
-      'multichain_accounts_groups',
+      USER_STORAGE_GROUPS_FEATURE_KEY,
       server,
     );
   }
@@ -142,7 +143,6 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
 
 type MockInfuraAndAccountSyncOptions = {
   accountsToMockBalances?: string[];
-  accountsSyncResponse?: UserStorageResponseData[];
 };
 
 const MOCK_ETH_BALANCE = '0xde0b6b3a7640000';
@@ -165,16 +165,13 @@ export async function mockInfuraAndAccountSync(
 
   // Set up User Storage / Account Sync mock
   userStorageMockttpController.setupPath(
-    USER_STORAGE_FEATURE_NAMES.accounts,
+    USER_STORAGE_WALLETS_FEATURE_KEY,
     mockServer,
   );
 
   userStorageMockttpController.setupPath(
-    USER_STORAGE_FEATURE_NAMES.accounts,
+    USER_STORAGE_GROUPS_FEATURE_KEY,
     mockServer,
-    {
-      getResponse: options.accountsSyncResponse ?? undefined,
-    },
   );
 
   // Account Balances
@@ -182,8 +179,9 @@ export async function mockInfuraAndAccountSync(
     accounts.forEach((account) => {
       mockServer
         .forPost(INFURA_URL)
+        .always()
         .withJsonBodyIncluding({
-          method: 'eth_getBalance',
+          method: 'eth_getTransactionCount',
           params: [account.toLowerCase()],
         })
         .thenCallback(() => ({

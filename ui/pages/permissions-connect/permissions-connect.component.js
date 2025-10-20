@@ -26,7 +26,7 @@ import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-hea
 import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapper/state2-wrapper';
 import { MultichainAccountsConnectPage } from '../multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page';
 import { supportsChainIds } from '../../hooks/useAccountGroupsForPermissions';
-import { getCaip25AccountFromAccountGroupAndScope } from '../../../shared/lib/multichain/scope-utils';
+import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../shared/lib/multichain/scope-utils';
 import { MultichainEditAccountsPageWrapper } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-account-wrapper';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
@@ -360,7 +360,7 @@ export default class PermissionConnect extends Component {
               accountGroupIds.includes(group.id) &&
               supportsChainIds(group, caipChainIdsToUse),
           );
-          const addresses = getCaip25AccountFromAccountGroupAndScope(
+          const addresses = getCaip25AccountIdsFromAccountGroupAndScope(
             filteredAccountGroups,
             caipChainIdsToUse,
           ).map(

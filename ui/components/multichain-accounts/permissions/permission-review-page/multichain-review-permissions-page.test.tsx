@@ -32,6 +32,7 @@ jest.mock('../../../../hooks/useAccountGroupsForPermissions', () => ({
 }));
 
 jest.mock('../../../../store/actions', () => ({
+  forceUpdateMetamaskState: jest.fn(),
   hidePermittedNetworkToast: jest.fn(() => ({
     type: 'HIDE_PERMITTED_NETWORK_TOAST',
   })),
@@ -173,6 +174,11 @@ describe('MultichainReviewPermissions', () => {
         existingConnectedCaipAccountIds: [
           expectedCaipAccountIds[0] as CaipAccountId, // First account from first group
         ],
+        connectedAccountGroupWithRequested: [mockAccountGroups[0]],
+        caipAccountIdsOfConnectedAndRequestedAccountGroups: [
+          expectedCaipAccountIds[0] as CaipAccountId,
+        ],
+        selectedAndRequestedAccountGroups: mockAccountGroups,
       });
     });
 
@@ -267,7 +273,7 @@ describe('MultichainReviewPermissions', () => {
         expect(getByTestId(TEST_IDS.MODAL_PAGE)).toBeInTheDocument();
       });
 
-      expect(getByText('Connect with MetaMask')).toBeInTheDocument();
+      expect(getByText('Edit accounts')).toBeInTheDocument();
     });
 
     it('handles deselecting all accounts', async () => {

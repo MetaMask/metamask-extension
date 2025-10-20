@@ -44,7 +44,7 @@ describe('Add Custom RPC', function (this: Suite) {
       `);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const updateNetworkConfirmation = new UpdateNetworkConfirmation(driver);
-        await updateNetworkConfirmation.checkPageIsLoaded('Ethereum Mainnet');
+        await updateNetworkConfirmation.checkPageIsLoaded('Ethereum');
 
         // Check warning messages are displayed
         await updateNetworkConfirmation.checkWarningMessageIsDisplayed(
@@ -59,10 +59,10 @@ describe('Add Custom RPC', function (this: Suite) {
         await updateNetworkConfirmation.approveUpdateNetwork();
 
         const addRpcProviderDialog = new AddRpcProviderDialog(driver);
-        await addRpcProviderDialog.checkPageIsLoaded('Ethereum Mainnet');
+        await addRpcProviderDialog.checkPageIsLoaded('Ethereum');
         await addRpcProviderDialog.approveAddRpcProvider();
 
-        await updateNetworkConfirmation.checkPageIsLoaded('Ethereum Mainnet');
+        await updateNetworkConfirmation.checkPageIsLoaded('Ethereum');
         await updateNetworkConfirmation.checkWarningMessageIsDisplayed(
           'Chain ID returned by the custom network does not match the submitted chain ID.',
         );

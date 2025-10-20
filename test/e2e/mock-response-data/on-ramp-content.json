@@ -27,7 +27,7 @@
     {
       "active": true,
       "chainId": "8453",
-      "chainName": "Base Mainnet",
+      "chainName": "Base",
       "shortName": "Base",
       "isEvm": true,
       "nativeTokenSupported": true
@@ -51,7 +51,7 @@
     {
       "active": true,
       "chainId": "56",
-      "chainName": "BNB Chain Mainnet",
+      "chainName": "BNB Chain",
       "shortName": "BNB Chain",
       "isEvm": true,
       "nativeTokenSupported": true
@@ -75,7 +75,7 @@
     {
       "active": true,
       "chainId": "1",
-      "chainName": "Ethereum Mainnet",
+      "chainName": "Ethereum",
       "shortName": "Ethereum",
       "isEvm": true,
       "nativeTokenSupported": true
@@ -139,7 +139,7 @@
     {
       "active": true,
       "chainId": "137",
-      "chainName": "Polygon Mainnet",
+      "chainName": "Polygon",
       "shortName": "Polygon",
       "isEvm": true,
       "nativeTokenSupported": true
@@ -163,7 +163,7 @@
     {
       "active": true,
       "chainId": "324",
-      "chainName": "zkSync Era Mainnet",
+      "chainName": "zkSync Era",
       "shortName": "zkSync Era",
       "isEvm": true,
       "nativeTokenSupported": true

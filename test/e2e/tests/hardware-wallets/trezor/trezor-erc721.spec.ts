@@ -13,235 +13,229 @@ import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from '../../confirmations/transactions/shared';
-import { Driver } from '../../../webdriver/driver';
 
 describe('Trezor Hardware', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.NFTS;
-
-  describe('can perform actions on an ERC-721 token', function () {
-    async function deployContract(testDappPage: TestDappPage, driver: Driver) {
-      await testDappPage.clickERC721DeployButton();
-      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      const createContractModal = new CreateContractModal(driver);
-      await createContractModal.checkPageIsLoaded();
-      await createContractModal.clickConfirm();
-      await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-      await testDappPage.checkERC721TokenAddressesValue(
-        '0xcB17707e0623251182A654BEdaE16429C78A7424',
-      );
-    }
-
-    async function mintNft(testDappPage: TestDappPage, driver: Driver) {
-      await testDappPage.clickERC721MintButton();
-      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      const mintConfirmation = new TransactionConfirmation(driver);
-      await mintConfirmation.clickFooterConfirmButton();
-      await driver.switchToWindowWithTitle(
-        WINDOW_TITLES.ExtensionInFullScreenView,
-      );
-      const homePage = new HomePage(driver);
-      await homePage.goToNftTab();
-      const nftListPage = new NFTListPage(driver);
-      // Check that NFT image is displayed in NFT tab on homepagexp
-      await nftListPage.checkNftImageIsDisplayed();
-      await homePage.goToActivityList();
-      const activityListPage = new ActivityListPage(driver);
-      await activityListPage.checkTransactionActivityByText('Deposit');
-      await activityListPage.checkWaitForTransactionStatus('confirmed');
-    }
-
-    it('deploys an ERC-721 token', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder()
-            .withTrezorAccount()
-            .withPermissionControllerConnectedToTestDapp({
-              account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          smartContract,
-          dapp: true,
-        },
-        async ({ driver, localNodes }) => {
-          await localNodes?.[0]?.setAccountBalance(
-            KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-            '0x100000000000000000000',
-          );
-          await loginWithBalanceValidation(
-            driver,
-            undefined,
-            undefined,
-            '1208925.8196',
-          );
-
-          // deploy action
-          const testDappPage = new TestDappPage(driver);
-          await testDappPage.openTestDappPage();
-          await testDappPage.checkPageIsLoaded();
-          await deployContract(testDappPage, driver);
-        },
-      );
-    });
-
-    it('mints an ERC-721 token', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder()
-            .withTrezorAccount()
-            .withPermissionControllerConnectedToTestDapp({
-              account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          smartContract,
-          dapp: true,
-        },
-        async ({
+  it('deploys an ERC-721 token', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withTrezorAccount()
+          .withPermissionControllerConnectedToTestDapp({
+            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        smartContract,
+        dapp: true,
+      },
+      async ({ driver, localNodes }) => {
+        await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          '0x100000000000000000000',
+        );
+        await loginWithBalanceValidation(
           driver,
-          localNodes,
-          contractRegistry,
-        }: TestSuiteArguments) => {
-          await localNodes?.[0]?.setAccountBalance(
-            KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
-            '0x100000000000000000000',
-          );
-          await loginWithBalanceValidation(
-            driver,
-            undefined,
-            undefined,
-            '1208925.8196',
-          );
+          undefined,
+          undefined,
+          '1208925.8196',
+        );
 
-          const contractAddress = await (
-            contractRegistry as ContractAddressRegistry
-          ).getContractAddress(smartContract);
+        // deploy action
+        const testDappPage = new TestDappPage(driver);
+        await testDappPage.openTestDappPage();
+        await testDappPage.checkPageIsLoaded();
+        await testDappPage.clickERC721DeployButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const createContractModal = new CreateContractModal(driver);
+        await createContractModal.checkPageIsLoaded();
+        await createContractModal.clickConfirm();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await testDappPage.checkERC721TokenAddressesValue(
+          '0xcB17707e0623251182A654BEdaE16429C78A7424',
+        );
+      },
+    );
+  });
 
-          const testDappPage = new TestDappPage(driver);
-          await testDappPage.openTestDappPage({
-            contractAddress,
-            url: DAPP_URL,
-          });
-          await testDappPage.checkPageIsLoaded();
-
-          await mintNft(testDappPage, driver);
-        },
-      );
-    });
-
-    it('approves an ERC-721 token', async function () {
-      // Approve function is difference since caller must be owner of contract,
-      // so we need to deploy and mint token first to make sure contract belong to caller.
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder()
-            .withTrezorAccount()
-            .withPermissionControllerConnectedToTestDapp({
-              account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          dapp: true,
-        },
-        async ({ driver, localNodes }: TestSuiteArguments) => {
-          await localNodes?.[0]?.setAccountBalance(
-            KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
-            '0x100000000000000000000',
-          );
-          await loginWithBalanceValidation(
-            driver,
-            undefined,
-            undefined,
-            '1208925.8196',
-          );
-
-          const testDappPage = new TestDappPage(driver);
-          await testDappPage.openTestDappPage();
-          await testDappPage.checkPageIsLoaded();
-          await deployContract(testDappPage, driver);
-
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-          await mintNft(testDappPage, driver);
-
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-          await testDappPage.clickERC721ApproveButton();
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          const approveConfirmation = new TransactionConfirmation(driver);
-          await approveConfirmation.clickFooterConfirmButton();
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
-
-          const homePage = new HomePage(driver);
-          const activityListPage = new ActivityListPage(driver);
-          await homePage.goToActivityList();
-          await activityListPage.checkTransactionActivityByText(
-            'Approve TDN spending cap',
-          );
-          await activityListPage.checkWaitForTransactionStatus('confirmed');
-        },
-      );
-    });
-
-    it('sets approval for all an ERC-721 token', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder()
-            .withTrezorAccount()
-            .withPermissionControllerConnectedToTestDapp({
-              account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          smartContract,
-          dapp: true,
-        },
-        async ({
+  it('mints an ERC-721 token', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withTrezorAccount()
+          .withPermissionControllerConnectedToTestDapp({
+            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        smartContract,
+        dapp: true,
+      },
+      async ({ driver, localNodes, contractRegistry }: TestSuiteArguments) => {
+        await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
+          '0x100000000000000000000',
+        );
+        await loginWithBalanceValidation(
           driver,
-          localNodes,
-          contractRegistry,
-        }: TestSuiteArguments) => {
-          await localNodes?.[0]?.setAccountBalance(
-            KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
-            '0x100000000000000000000',
-          );
-          await loginWithBalanceValidation(
-            driver,
-            undefined,
-            undefined,
-            '1208925.8196',
-          );
-          const contractAddress = await (
-            contractRegistry as ContractAddressRegistry
-          ).getContractAddress(smartContract);
-          const testDappPage = new TestDappPage(driver);
-          await testDappPage.openTestDappPage({
-            contractAddress,
-            url: DAPP_URL,
-          });
-          await testDappPage.checkPageIsLoaded();
+          undefined,
+          undefined,
+          '1208925.8196',
+        );
 
-          await testDappPage.clickERC721SetApprovalForAllButton();
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          const setApprovalForAllConfirmation =
-            new SetApprovalForAllTransactionConfirmation(driver);
-          await setApprovalForAllConfirmation.checkSetApprovalForAllTitle();
-          await setApprovalForAllConfirmation.checkSetApprovalForAllSubHeading();
-          await setApprovalForAllConfirmation.clickScrollToBottomButton();
-          await setApprovalForAllConfirmation.clickFooterConfirmButton();
-          await driver.switchToWindowWithTitle(
-            WINDOW_TITLES.ExtensionInFullScreenView,
-          );
+        const contractAddress = await (
+          contractRegistry as ContractAddressRegistry
+        ).getContractAddress(smartContract);
 
-          const homePage = new HomePage(driver);
-          const activityListPage = new ActivityListPage(driver);
-          await homePage.goToActivityList();
-          await activityListPage.checkTransactionActivityByText(
-            'Approve TDN with no spend limit',
-          );
-          await activityListPage.checkWaitForTransactionStatus('confirmed');
-        },
-      );
-    });
+        const testDappPage = new TestDappPage(driver);
+        await testDappPage.openTestDappPage({
+          contractAddress,
+          url: DAPP_URL,
+        });
+        await testDappPage.checkPageIsLoaded();
+
+        await testDappPage.clickERC721MintButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const mintConfirmation = new TransactionConfirmation(driver);
+        await mintConfirmation.clickFooterConfirmButton();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        const homePage = new HomePage(driver);
+        await homePage.goToNftTab();
+        const nftListPage = new NFTListPage(driver);
+        // Check that NFT image is displayed in NFT tab on homepagexp
+        await nftListPage.checkNftImageIsDisplayed();
+        await homePage.goToActivityList();
+        const activityListPage = new ActivityListPage(driver);
+        await activityListPage.checkTransactionActivityByText('Deposit');
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
+      },
+    );
+  });
+
+  it('approves an ERC-721 token', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withTrezorAccount()
+          .withPermissionControllerConnectedToTestDapp({
+            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        dapp: true,
+        smartContract: [
+          {
+            name: smartContract,
+            deployerOptions: {
+              fromAddress: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
+            },
+          },
+        ],
+      },
+      async ({ driver, localNodes, contractRegistry }: TestSuiteArguments) => {
+        await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
+          '0x100000000000000000000',
+        );
+        // mine block to ensure balance is updated in both browsers
+        await localNodes?.[0]?.mineBlock();
+        const balance = await localNodes?.[0]?.getBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
+        );
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          balance?.toString(),
+        );
+
+        const contractAddress =
+          await contractRegistry?.getContractAddress(smartContract);
+        const testDappPage = new TestDappPage(driver);
+        await testDappPage.openTestDappPage({
+          contractAddress,
+        });
+        await testDappPage.checkPageIsLoaded();
+        await testDappPage.clickERC721ApproveButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const approveConfirmation = new TransactionConfirmation(driver);
+        await approveConfirmation.clickFooterConfirmButton();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        const homePage = new HomePage(driver);
+        const activityListPage = new ActivityListPage(driver);
+        await homePage.goToActivityList();
+        await activityListPage.checkTransactionActivityByText(
+          'Approve TDN spending cap',
+        );
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
+      },
+    );
+  });
+
+  it('sets approval for all an ERC-721 token', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withTrezorAccount()
+          .withPermissionControllerConnectedToTestDapp({
+            account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
+          })
+          .build(),
+        title: this.test?.fullTitle(),
+        smartContract,
+        dapp: true,
+      },
+      async ({ driver, localNodes, contractRegistry }: TestSuiteArguments) => {
+        await localNodes?.[0]?.setAccountBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
+          '0x100000000000000000000',
+        );
+        // mine block to ensure balance is updated in both browsers
+        await localNodes?.[0]?.mineBlock();
+        const balance = await localNodes?.[0]?.getBalance(
+          KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
+        );
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          balance?.toString(),
+        );
+        const contractAddress = await (
+          contractRegistry as ContractAddressRegistry
+        ).getContractAddress(smartContract);
+        const testDappPage = new TestDappPage(driver);
+        await testDappPage.openTestDappPage({
+          contractAddress,
+          url: DAPP_URL,
+        });
+        await testDappPage.checkPageIsLoaded();
+
+        await testDappPage.clickERC721SetApprovalForAllButton();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const setApprovalForAllConfirmation =
+          new SetApprovalForAllTransactionConfirmation(driver);
+        await setApprovalForAllConfirmation.checkSetApprovalForAllTitle();
+        await setApprovalForAllConfirmation.checkSetApprovalForAllSubHeading();
+        await setApprovalForAllConfirmation.clickScrollToBottomButton();
+        await setApprovalForAllConfirmation.clickFooterConfirmButton();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+
+        const homePage = new HomePage(driver);
+        const activityListPage = new ActivityListPage(driver);
+        await homePage.goToActivityList();
+        await activityListPage.checkTransactionActivityByText(
+          'Approve TDN with no spend limit',
+        );
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
+      },
+    );
   });
 });

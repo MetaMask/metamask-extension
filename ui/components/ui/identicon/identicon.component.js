@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
+import {
+  AvatarAccount,
+  AvatarAccountSize,
+  AvatarAccountVariant,
+} from '@metamask/design-system-react';
 import Jazzicon from '../jazzicon';
 
 import { getAssetImageURL } from '../../../helpers/utils/util';
-import BlockieIdenticon from './blockieIdenticon';
 
 const getStyles = (diameter) => ({
   height: diameter,
@@ -14,6 +18,26 @@ const getStyles = (diameter) => ({
 });
 const getImage = async (image, ipfsGateway) => {
   return await getAssetImageURL(image, ipfsGateway);
+};
+
+const mapDiameterToSize = (diameter) => {
+  if (diameter <= 16) {
+    return AvatarAccountSize.Xs;
+  }
+  if (diameter <= 24) {
+    return AvatarAccountSize.Sm;
+  }
+  if (diameter <= 32) {
+    return AvatarAccountSize.Md;
+  }
+  if (diameter <= 40) {
+    return AvatarAccountSize.Lg;
+  }
+  if (diameter <= 48) {
+    return AvatarAccountSize.Xl;
+  }
+
+  return AvatarAccountSize.Md;
 };
 
 /**
@@ -156,7 +180,12 @@ export default class Identicon extends Component {
         className={classnames('identicon', className)}
         style={getStyles(diameter)}
       >
-        <BlockieIdenticon address={address} diameter={diameter} alt={alt} />
+        <AvatarAccount
+          variant={AvatarAccountVariant.Blockies}
+          address={address}
+          size={mapDiameterToSize(diameter)}
+          alt={alt}
+        />
       </div>
     );
   }

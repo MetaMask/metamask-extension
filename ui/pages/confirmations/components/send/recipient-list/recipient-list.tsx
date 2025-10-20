@@ -40,8 +40,9 @@ const AccountsList = ({
         <React.Fragment key={walletName}>
           <Text
             color={TextColor.textAlternative}
-            paddingTop={4}
-            paddingBottom={4}
+            paddingInline={4}
+            paddingTop={2}
+            paddingBottom={2}
             variant={TextVariant.bodyMdMedium}
           >
             {walletName}
@@ -77,8 +78,9 @@ const ContactsList = ({
     <>
       <Text
         color={TextColor.textAlternative}
-        paddingTop={4}
-        paddingBottom={4}
+        paddingInline={4}
+        paddingTop={2}
+        paddingBottom={2}
         variant={TextVariant.bodyMdMedium}
       >
         {t('contacts')}

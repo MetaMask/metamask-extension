@@ -2,7 +2,7 @@
 
 .srp-input-import {
   &__container {
-    min-height: 264px;
+    min-height: 218px;
   }
 
   &__srp-note {
@@ -51,8 +51,6 @@
 
   &__actions {
     height: 3rem;
-    grid-template-columns: 1fr 1fr;
-    border-top: 1px solid var(--color-primary-inverse);
   }
 
   &__text {

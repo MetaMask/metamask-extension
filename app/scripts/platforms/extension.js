@@ -147,6 +147,22 @@ export default class ExtensionPlatform {
     browser.windows.onRemoved.addListener(listener);
   }
 
+  addTabRemovedListener(listener) {
+    browser.tabs.onRemoved.addListener(listener);
+  }
+
+  removeTabRemovedListener(listener) {
+    browser.tabs.onRemoved.removeListener(listener);
+  }
+
+  addTabUpdatedListener(listener) {
+    browser.tabs.onUpdated.addListener(listener);
+  }
+
+  removeTabUpdatedListener(listener) {
+    browser.tabs.onUpdated.removeListener(listener);
+  }
+
   async getAllWindows() {
     const windows = await browser.windows.getAll();
     return windows;
