@@ -30,7 +30,7 @@ export const FIXTURES_NETWORKS = {
       chainId: '0xaa36a7',
       nickname: SEPOLIA_DISPLAY_NAME,
       rpcPrefs: {},
-      rpcUrl: 'https://sepolia.infura.io/v3/',
+      rpcUrl: `https://sepolia.infura.io/v3/${infuraProjectId}`,
       ticker: 'SepoliaETH',
       networkConfigurationId: 'networkConfigurationId',
     },
@@ -113,7 +113,7 @@ export const FIXTURES_NETWORKS = {
     },
     celo: {
       id: 'celo',
-      rpcUrl: 'https://celo-mainnet.infura.io/v3/',
+      rpcUrl: `https://celo-mainnet.infura.io/v3/${infuraProjectId}`,
       chainId: CHAIN_IDS.CELO,
       ticker: CURRENCY_SYMBOLS.CELO,
       nickname: CELO_DISPLAY_NAME,
