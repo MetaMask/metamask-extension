@@ -3,11 +3,6 @@
  */
 import { ExtensionLazyListener } from './extension-lazy-listener';
 
-// The implementation under test depends upon calling `.bind` on each event.
-// Real WebExtension Events are objects, not functions, but have no `bind`.
-// The production code uses `.bind` anyway (casting away types), so we provide
-// mock event objects that expose a no-op `bind` returning themselves.
-
 type MockListener = (...args: any[]) => void;
 
 class MockEvent
