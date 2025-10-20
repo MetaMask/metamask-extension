@@ -40,13 +40,13 @@ jobs:
           # Set working branch variable
           BRANCH="${PROVIDED_BRANCH}"
 
-          # Extract version from branch name (supports Version-vX.Y.Z or release/X.Y.Z)
+          # Extract version from branch name (release/X.Y.Z)
           SEMVER_PATTERN='[0-9]+\.[0-9]+\.[0-9]+'
-          if [[ "${BRANCH}" =~ ^Version-v(${SEMVER_PATTERN})$ ]] || [[ "${BRANCH}" =~ ^release/(${SEMVER_PATTERN})$ ]]; then
+          if [[ "${BRANCH}" =~ ^release/(${SEMVER_PATTERN})$ ]]; then
             VERSION="${BASH_REMATCH[1]}"
           else
             echo "::error::Could not extract version from branch name: ${BRANCH}"
-            echo "::error::Expected 'Version-vX.Y.Z' or 'release/X.Y.Z'"
+            echo "::error::Expected 'release/X.Y.Z'"
             exit 1
           fi
 
