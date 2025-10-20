@@ -12,15 +12,15 @@ import { TransactionType } from '@metamask/transaction-controller';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
-import {
-  nonceSortedCompletedTransactionsSelectorAllChains,
-  nonceSortedPendingTransactionsSelectorAllChains,
-} from '../../../selectors/transactions';
+// import {
+//   nonceSortedCompletedTransactionsSelectorAllChains,
+//   nonceSortedPendingTransactionsSelectorAllChains,
+// } from '../../../selectors/transactions';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
-  getSelectedMultichainNetworkChainId,
-  getEnabledNetworks,
+  // getSelectedMultichainNetworkChainId,
+  // getEnabledNetworks,
 } from '../../../selectors';
 import { usePolledTransactions } from '../../../hooks/usePolledTransactions';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -37,7 +37,7 @@ import {
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
-  getAllEnabledNetworksForAllNamespaces,
+  // getAllEnabledNetworksForAllNamespaces,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getSelectedMultichainNetworkConfiguration,
   ///: END:ONLY_INCLUDE_IF
@@ -100,7 +100,7 @@ import {
   selectBridgeHistoryForAccountGroup,
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
-import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
+// import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
 import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
 
 const PAGE_DAYS_INCREMENT = 10;
@@ -208,8 +208,6 @@ const groupTransactionsByDate = (
   getTransactionTimestamp,
   shouldSort = true,
 ) => {
-  console.time('>>> unified transaction list: groupTransactionsByDate');
-
   const groupedTransactions = [];
 
   if (!transactionGroups) {
@@ -246,8 +244,6 @@ const groupTransactionsByDate = (
       groupedTransactions.sort((a, b) => b.dateMillis - a.dateMillis);
     }
   });
-
-  console.timeEnd('>>> unified transaction list: groupTransactionsByDate');
 
   return groupedTransactions;
 };
@@ -305,8 +301,6 @@ export const buildUnifiedActivityItems = (
   nonEvmTransactions,
   { hideTokenTransactions, tokenAddress, evmChainIds, nonEvmChainIds },
 ) => {
-  console.time('>>> unified transaction list: buildUnifiedActivityItems');
-
   // Apply existing token filters to EVM groups (all chains)
   const filteredPending = getFilteredTransactionGroups(
     unfilteredPendingTransactions,
@@ -347,8 +341,6 @@ export const buildUnifiedActivityItems = (
     (a, b) => b.timeMs - a.timeMs,
   );
 
-  console.timeEnd('>>> unified transaction list: buildUnifiedActivityItems');
-
   return sortedUnifiedItems;
 };
 
@@ -373,7 +365,7 @@ export const groupAnyTransactionsByDate = (items) =>
     },
     true,
   );
-
+/*
 function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
   const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
   const filteredUniqueNonEvmChainIds =
@@ -404,16 +396,18 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
     nonEvmChainIds: filteredUniqueNonEvmChainIds,
   };
 }
+  */
 export default function UnifiedTransactionList({
-  hideTokenTransactions,
-  tokenAddress,
+  // hideTokenTransactions,
+  // tokenAddress,
   boxProps,
   hideNetworkFilter,
-  tokenChainIdOverride,
+  // tokenChainIdOverride,
 }) {
   const [daysLimit, setDaysLimit] = useState(PAGE_DAYS_INCREMENT);
   const t = useI18nContext();
   const selectedAccount = useSelector(getSelectedAccount);
+  /*
   const enabledNetworks = useSelector(getEnabledNetworks);
 
   const { evmChainIds, nonEvmChainIds } = getFilteredChainIds(
@@ -421,19 +415,21 @@ export default function UnifiedTransactionList({
     tokenChainIdOverride,
   );
 
+  */
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
-  const nonEvmTransactions = useSelector((state) =>
-    getSelectedAccountGroupMultichainTransactions(state, nonEvmChainIds),
-  );
+  // const nonEvmTransactions = useSelector((state) =>
+  //   getSelectedAccountGroupMultichainTransactions(state, nonEvmChainIds),
+  // );
 
-  const nonEvmTransactionsForToken = useMemo(
-    () => filterNonEvmTxByToken(nonEvmTransactions, tokenAddress),
-    [nonEvmTransactions, tokenAddress],
-  );
+  // const nonEvmTransactionsForToken = useMemo(
+  //   () => filterNonEvmTxByToken(nonEvmTransactions, tokenAddress),
+  //   [nonEvmTransactions, tokenAddress],
+  // );
   ///: END:ONLY_INCLUDE_IF
 
+  /*
   const unfilteredPendingTransactionsAllChains = useSelector(
     nonceSortedPendingTransactionsSelectorAllChains,
   );
@@ -511,6 +507,7 @@ export default function UnifiedTransactionList({
   ]);
   const groupedUnifiedActivityItems =
     groupAnyTransactionsByDate(unifiedActivityItems);
+  */
 
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -657,8 +654,8 @@ export default function UnifiedTransactionList({
   // Use the polled transactions hook
   const {
     processedTransactions: rawPolledItems,
-    isLoading: isPolling,
-    error: pollingError,
+    // isLoading: isPolling,
+    // error: pollingError,
   } = usePolledTransactions();
 
   /*

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
@@ -6,7 +7,7 @@ import { TransactionKind } from '../helpers/constants/transactions';
 import { getSelectedAccount, getEnabledNetworks } from '../selectors';
 import { formatDateWithYearContext } from '../helpers/utils/util';
 
-interface ValueTransfer {
+type ValueTransfer = {
   from: string;
   to: string;
   amount: string;
@@ -16,9 +17,9 @@ interface ValueTransfer {
   name?: string;
   transferType: 'erc20' | 'normal' | 'erc721' | 'erc1155';
   tokenId?: string;
-}
+};
 
-interface ApiTransaction {
+type ApiTransaction = {
   hash: string;
   timestamp: string;
   chainId: number;
@@ -35,13 +36,13 @@ interface ApiTransaction {
   transactionCategory: string;
   readable: string;
   methodId?: string;
-}
+};
 
-interface ApiResponse {
+type ApiResponse = {
   data: ApiTransaction[];
-}
+};
 
-interface TransformationResult {
+type TransformationResult = {
   kind: string;
   transactionGroup: {
     nonce: number;
@@ -51,7 +52,7 @@ interface TransformationResult {
   };
   timeMs: number;
   id: string;
-}
+};
 
 const groupTransactionsByDate = (
   transactionGroups: any[],
@@ -297,13 +298,13 @@ export const usePolledTransactions = () => {
       '0x82750',
       '0x531',
     ];
-    const filteredNetworks = networkChainIds.filter((chainId) =>
+    const filteredChainIds = networkChainIds.filter((chainId) =>
       supportedNetworks.includes(chainId),
     );
 
     return {
       ...enabledNetworks,
-      eip155: filteredNetworks.reduce((acc: any, chainId) => {
+      eip155: filteredChainIds.reduce((acc: any, chainId) => {
         acc[chainId] = enabledNetworks.eip155?.[chainId];
         return acc;
       }, {}),
@@ -318,7 +319,7 @@ export const usePolledTransactions = () => {
     ['transactions', address, filteredNetworks],
     () => fetchTransactions(address, filteredNetworks),
     {
-      enabled: !!address,
+      enabled: Boolean(address),
       refetchInterval: 5 * 60 * 1000, // Poll every 5 minutes
       staleTime: 5 * 60 * 1000, // 5 minutes
       cacheTime: 10 * 60 * 1000, // 10 minutes
