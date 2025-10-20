@@ -108,3 +108,26 @@ export const BITCOIN_ASSET = {
   shortenedBalance: '0.00024',
   standard: 'native',
 };
+
+export const TRON_ASSET = {
+  type: 'tron:728126428',
+  assetId: 'tron:728126428/slip44:195',
+  isNative: true,
+  image: './images/tron-logo.svg',
+  name: 'Tron',
+  symbol: 'TRX',
+  accountId: '80c14733-13cc-4966-bf1a-6212a6409c22',
+  decimals: 6,
+  rawBalance: '0x3d090',
+  balance: '0.25',
+  fiat: {
+    balance: 12.5,
+    currency: 'usd',
+    conversionRate: 50,
+  },
+  chainId: 'tron:728126428',
+  networkImage: './images/tron-logo.svg',
+  networkName: 'Tron',
+  shortenedBalance: '0.25',
+  standard: 'native',
+};

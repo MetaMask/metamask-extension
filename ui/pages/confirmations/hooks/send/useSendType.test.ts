@@ -5,6 +5,7 @@ import {
   EVM_NATIVE_ASSET,
   SOLANA_ASSET,
   SOLANA_NATIVE_ASSET,
+  TRON_ASSET,
 } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import * as SendContext from '../../context/send';
@@ -39,6 +40,7 @@ describe('useSendType', () => {
       isNonEvmNativeSendType: false,
       isNonEvmSendType: false,
       isSolanaSendType: false,
+      isTronSendType: false,
     });
   });
 
@@ -55,6 +57,7 @@ describe('useSendType', () => {
       isNonEvmNativeSendType: false,
       isNonEvmSendType: false,
       isSolanaSendType: false,
+      isTronSendType: false,
     });
   });
 
@@ -71,6 +74,7 @@ describe('useSendType', () => {
       isNonEvmNativeSendType: false,
       isNonEvmSendType: false,
       isSolanaSendType: false,
+      isTronSendType: false,
     });
   });
 
@@ -87,6 +91,7 @@ describe('useSendType', () => {
       isNonEvmNativeSendType: true,
       isNonEvmSendType: true,
       isSolanaSendType: true,
+      isTronSendType: false,
     });
   });
 
@@ -103,6 +108,7 @@ describe('useSendType', () => {
       isNonEvmNativeSendType: false,
       isNonEvmSendType: true,
       isSolanaSendType: true,
+      isTronSendType: false,
     });
   });
 
@@ -119,6 +125,24 @@ describe('useSendType', () => {
       isNonEvmNativeSendType: true,
       isNonEvmSendType: true,
       isSolanaSendType: false,
+      isTronSendType: false,
+    });
+  });
+
+  it('return correct type for tron asset send', () => {
+    jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+      asset: TRON_ASSET,
+      chainId: TRON_ASSET.chainId,
+    } as unknown as SendContext.SendContextType);
+    const result = renderHook();
+    expect(result).toEqual({
+      isBitcoinSendType: false,
+      isEvmNativeSendType: false,
+      isEvmSendType: false,
+      isNonEvmNativeSendType: false,
+      isNonEvmSendType: false,
+      isSolanaSendType: false,
+      isTronSendType: true,
     });
   });
 });

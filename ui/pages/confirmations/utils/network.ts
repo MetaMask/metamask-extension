@@ -12,7 +12,11 @@ export function getImageForChainId(chainId: string): string | undefined {
 
 export const isTronChainId = (chainId: Hex | number | CaipChainId | string) => {
   if (isCaipChainId(chainId)) {
-    return chainId === TrxScope.Mainnet.toString();
+    return [
+      TrxScope.Mainnet.toString(),
+      TrxScope.Nile.toString(),
+      TrxScope.Shasta.toString()
+    ].includes(chainId);
   }
   return false;
 };
