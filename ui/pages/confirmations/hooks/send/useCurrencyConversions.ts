@@ -132,6 +132,7 @@ export const useCurrencyConversions = () => {
       asset?.standard !== ERC1155 &&
       asset?.standard !== ERC721,
     fiatCurrencySymbol: getCurrencySymbol(currentCurrency),
+    fiatCurrencyName: currentCurrency,
     getFiatValue,
     getFiatDisplayValue,
     getNativeValue,

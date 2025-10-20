@@ -1713,6 +1713,7 @@ const state = {
     networkConnectionBanner: {
       status: 'unknown',
     },
+    coverageResults: {},
   },
   appState: {
     isAccountMenuOpen: false,

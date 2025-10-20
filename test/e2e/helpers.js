@@ -55,6 +55,11 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
+const {
+  mockMultichainAccountsFeatureFlagStateOne,
+  mockMultichainAccountsFeatureFlagStateTwo,
+} = require('./tests/multichain-accounts/feature-flag-mocks');
+
 /**
  * Normalizes the localNodeOptions into a consistent format to handle different data structures.
  * Case 1: A string: localNodeOptions = 'anvil'
@@ -171,6 +176,7 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
+    forceBip44Version = 0,
   } = options;
 
   // Normalize localNodeOptions
@@ -279,21 +285,67 @@ async function withFixtures(options, testSuite) {
     if (dapp) {
       if (dappOptions?.numberOfDapps) {
         numberOfDapps = dappOptions.numberOfDapps;
+        // Note: We don't cap numberOfDapps here even if dappPaths is shorter,
+        // because tests may need multiple dapps where some use default paths
+      } else if (dappPaths && Array.isArray(dappPaths)) {
+        numberOfDapps = dappPaths.length;
+      } else {
+        // Default to 1 dapp when dapp=true but no specific configuration
+        numberOfDapps = 1;
       }
+
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
-        if (dappPath || (dappPaths && dappPaths[i])) {
-          dappDirectory = path.resolve(__dirname, dappPath || dappPaths[i]);
+        let currentDappPath;
+        if (dappPath) {
+          // Single dappPath takes precedence
+          currentDappPath = dappPath;
+        } else if (
+          dappPaths &&
+          Array.isArray(dappPaths) &&
+          i < dappPaths.length
+        ) {
+          // Use dappPaths[i] if within bounds
+          currentDappPath = dappPaths[i];
         } else {
-          dappDirectory = path.resolve(
-            __dirname,
-            '..',
-            '..',
-            'node_modules',
-            '@metamask',
-            'test-dapp',
-            'dist',
-          );
+          // Fallback to default
+          currentDappPath = 'test-dapp';
+        }
+
+        switch (currentDappPath) {
+          case 'snap-simple-keyring-site':
+            dappDirectory = path.resolve(
+              __dirname,
+              '..',
+              '..',
+              'node_modules',
+              '@metamask/snap-simple-keyring-site',
+              'public',
+            );
+            break;
+          case 'snap-account-abstraction-keyring':
+            dappDirectory = path.resolve(
+              __dirname,
+              '..',
+              '..',
+              'node_modules',
+              '@metamask/snap-account-abstraction-keyring-site',
+              'public',
+            );
+            break;
+          case 'test-dapp':
+            dappDirectory = path.resolve(
+              __dirname,
+              '..',
+              '..',
+              'node_modules',
+              '@metamask/test-dapp',
+              'dist',
+            );
+            break;
+          default:
+            dappDirectory = path.resolve(__dirname, currentDappPath);
+            break;
         }
         dappServer.push(
           createStaticServer({ public: dappDirectory, ...staticServerOptions }),
@@ -310,6 +362,23 @@ async function withFixtures(options, testSuite) {
     webSocketServer = LocalWebSocketServer.getServerInstance();
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
+
+    // The feature flag wrapper chooses state 2 by default
+    // but we want most tests to be able to run with state 0 (bip-44 disabled)
+    // So the default argument is 0
+    // and doing nothing here means we get state 2
+
+    if (forceBip44Version === 0) {
+      console.log('Applying multichain accounts feature flag disabled mock');
+    } else if (forceBip44Version === 1) {
+      console.log(
+        'Applying multichain accounts state 1 feature state 1 enabled mock',
+      );
+      await mockMultichainAccountsFeatureFlagStateOne(mockServer);
+    } else {
+      console.log('BIP-44 state 2 enabled');
+      await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
+    }
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
