@@ -5367,6 +5367,14 @@
       "comment_id": 3419314138,
       "created_at": "2025-10-19T07:53:31Z",
       "repoId": 42009758
+    },
+    {
+      "id": 6438083,
+      "name": "suspended",
+      "pullRequestNo": 36983,
+      "comment_id": 3420394150,
+      "created_at": "2025-10-20T03:18:11Z",
+      "repoId": 42009758
     }
   ]
 }
