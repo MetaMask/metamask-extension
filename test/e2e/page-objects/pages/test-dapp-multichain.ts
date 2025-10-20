@@ -1,7 +1,7 @@
 import { Browser } from 'selenium-webdriver';
 import { NormalizedScopeObject } from '@metamask/chain-agnostic-permission';
 import { Json } from '@metamask/utils';
-import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { largeDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { replaceColon } from '../../flask/multichain-api/testHelpers';
 
@@ -103,7 +103,7 @@ class TestDappMultichain {
   }
 
   async fillExtensionIdInput(extensionId: string) {
-    await this.driver.fill(this.extensionIdInput, extensionId);
+    await this.driver.fill(this.extensionIdInput, extensionId, { retries: 3 });
   }
 
   /**
@@ -134,7 +134,7 @@ class TestDappMultichain {
         : extensionId,
     );
     await this.clickConnectExternallyConnectableButton();
-    await this.driver.delay(largeDelayMs);
+    await this.driver.delay(veryLargeDelayMs);
   }
 
   /**

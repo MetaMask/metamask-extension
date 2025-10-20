@@ -20,6 +20,7 @@ buildTypes:
       - keyring-snaps
       - multi-srp
       - multichain
+      - bitcoin
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -241,6 +242,11 @@ env:
   ###
   - STORYBOOK: false
   - INFURA_STORYBOOK_PROJECT_ID
+
+  ###
+  # Core Backend Services
+  ###
+  - MM_BACKEND_WEBSOCKET_URL: wss://gateway.api.cx.metamask.io/v1
 
   ###
   # Notifications Feature
