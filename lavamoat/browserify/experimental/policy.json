@@ -2270,7 +2270,6 @@
         "console.error": true,
         "console.log": true,
         "console.warn": true,
-        "devicePixelRatio": true,
         "document.createElement": true,
         "fetch": true,
         "navigator.userAgent": true,
