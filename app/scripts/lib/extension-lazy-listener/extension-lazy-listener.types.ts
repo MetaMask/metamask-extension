@@ -13,7 +13,8 @@ export type BrowserEventName<
     [EventKey in keyof Browser[Namespace]]: Browser[Namespace][EventKey] extends Events.Event<
       infer Callback
     >
-      ? Callback extends (...args: any[]) => infer ReturnValue
+      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        Callback extends (...args: any[]) => infer ReturnValue
         ? ReturnValue extends void
           ? EventKey
           : never
@@ -34,7 +35,8 @@ export type BrowserNamespace<Browser> = Extract<
       [EventKey in keyof Browser[NamespaceKey]]: Browser[NamespaceKey][EventKey] extends Events.Event<
         infer Callback
       >
-        ? Callback extends (...args: any[]) => infer ReturnValue
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          Callback extends (...args: any[]) => infer ReturnValue
           ? ReturnValue extends void
             ? NamespaceKey
             : never

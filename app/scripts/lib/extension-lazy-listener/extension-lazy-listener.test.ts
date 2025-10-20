@@ -1,11 +1,19 @@
 /*
  * Tests for ExtensionLazyListener
  */
+import { Events } from 'webextension-polyfill';
 import { ExtensionLazyListener } from './extension-lazy-listener';
+import {
+  BrowserInterface,
+  BrowserNamespace,
+  Entries,
+} from './extension-lazy-listener.types';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockListener = (...args: any[]) => void;
 
 class MockEvent
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   implements Partial<import('webextension-polyfill').Events.Event<any>>
 {
   private listeners: MockListener[] = [];
@@ -24,7 +32,7 @@ class MockEvent
     this.listeners.includes(listener);
 
   // Non-standard helper used only by tests to fire the event.
-  public trigger = (...args: any[]) => {
+  public trigger = (...args: unknown[]) => {
     // copy to tolerate mutation (e.g., removing listener mid-iteration)
     const current = [...this.listeners];
     for (const l of current) {
@@ -34,15 +42,23 @@ class MockEvent
 }
 
 // Helper to build a mock browser namespace with arbitrary events
-function buildMockBrowser(namespaces: Record<string, string[]>) {
-  const browser: Record<string, Record<string, MockEvent>> = {};
-  for (const [ns, events] of Object.entries(namespaces)) {
-    browser[ns] = {} as any;
+function buildMockBrowser<T extends Record<string, readonly string[]>>(
+  namespaces: T,
+) {
+  const browser: BrowserInterface & {
+    [K in keyof T]: {
+      [E in T[K][number]]: MockEvent & Events.Event<(...args: any[]) => void>;
+    };
+  } = {} as any;
+  for (const [ns, events] of Object.entries(namespaces) as Entries) {
+    // @ts-expect-error
+    browser[ns] = {};
     for (const ev of events) {
+      // @ts-expect-error
       browser[ns][ev] = new MockEvent();
     }
   }
-  return browser as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  return browser;
 }
 
 describe('ExtensionLazyListener', () => {
@@ -56,12 +72,15 @@ describe('ExtensionLazyListener', () => {
   });
 
   test('buffers calls before a real listener is added and flushes them in order', () => {
-    const browser = buildMockBrowser({ runtime: ['onMessage'] });
+    const browser = buildMockBrowser({ runtime: ['onMessage' as const] });
+    type t = BrowserNamespace<typeof browser>;
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onMessage'] });
     browser.runtime.onMessage.trigger('a', 1);
     browser.runtime.onMessage.trigger('b', 2);
-    const received: any[] = [];
-    lazy.addListener('runtime', 'onMessage', (...args) => received.push(args));
+    const received: unknown[] = [];
+    lazy.addListener('runtime', 'onMessage', (...args: unknown[]) =>
+      received.push(args),
+    );
     expect(received).toEqual([
       ['a', 1],
       ['b', 2],

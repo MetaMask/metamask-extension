@@ -10,7 +10,12 @@ const { chrome } = globalThis;
 // this needs to be run early we can begin listening to these browser events
 // as soon as possible
 const listener = new ExtensionLazyListener(chrome, {
-  runtime: ['onInstalled', 'onConnect', 'onConnectExternal'],
+  runtime: [
+    'onInstalled',
+    'onConnect',
+    'onConnectExternal',
+    'onUpdateAvailable',
+  ],
 });
 
 /**

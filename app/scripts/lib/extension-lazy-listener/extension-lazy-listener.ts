@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import type { Browser, Events, Urlbar } from 'webextension-polyfill';
+import type { Browser, Events } from 'webextension-polyfill';
 import type {} from './extension-lazy-listener.types';
 import {
   BrowserInterface,
