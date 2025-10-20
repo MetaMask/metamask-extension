@@ -281,7 +281,6 @@ import {
   validateRequestWithPPOM,
 } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
-import { isEthAddress } from './lib/multichain/address';
 
 import { decodeTransactionData } from './lib/transaction/decode/util';
 import createTracingMiddleware from './lib/createTracingMiddleware';
@@ -748,13 +747,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe('KeyringController:lock', () =>
       this._onLock(),
-    );
-
-    this.controllerMessenger.subscribe(
-      'KeyringController:stateChange',
-      (state) => {
-        this._onKeyringControllerUpdate(state);
-      },
     );
 
     this.userOperationController.hub.on(
@@ -7468,31 +7460,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   // handlers
-
-  /**
-   * Handle a KeyringController update
-   *
-   * @param {object} state - the KC state
-   * @returns {Promise<void>}
-   * @private
-   */
-  async _onKeyringControllerUpdate(state) {
-    const { keyrings } = state;
-
-    // The accounts tracker only supports EVM addresses and the keyring
-    // controller may pass non-EVM addresses, so we filter them out
-    const addresses = keyrings
-      .reduce((acc, { accounts }) => acc.concat(accounts), [])
-      .filter(isEthAddress);
-
-    if (!addresses.length) {
-      return;
-    }
-
-    // TODO AccountTrackerController Migration: Review how this works before merging
-    // this.accountTrackerController.syncWithAddresses(addresses);
-  }
-
   /**
    * Handle global application unlock.
    */
@@ -7771,18 +7738,6 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:getSelectedNetworkClient',
       )?.provider,
     };
-  }
-
-  updateAccountBalanceForTransactionNetwork(transactionMeta) {
-    const {
-      networkClientId,
-      txParams: { from },
-    } = transactionMeta;
-    // TODO AccountTrackerController Migration: Review how we handle this
-    // this.accountTrackerController.updateAccountByAddress({
-    //   address: from,
-    //   networkClientId,
-    // });
   }
 
   toggleExternalServices(useExternal) {
@@ -8641,8 +8596,6 @@ export default class MetamaskController extends EventEmitter {
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       keyringOverrides: this.opts.overrides?.keyrings,
-      updateAccountBalanceForTransactionNetwork:
-        this.updateAccountBalanceForTransactionNetwork.bind(this),
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
