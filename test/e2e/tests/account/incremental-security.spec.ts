@@ -85,8 +85,8 @@ describe('Incremental Security', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await homePage.checkPageIsLoaded();
+        // to update balance faster and avoid timeout error
         await driver.refresh();
-        await homePage.clickSkipShieldModalButton();
         await homePage.checkExpectedBalanceIsDisplayed('3,400.00', '$');
 
         // backup reminder is displayed and it directs user to the backup SRP page

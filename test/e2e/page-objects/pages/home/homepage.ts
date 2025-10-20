@@ -71,11 +71,6 @@ class HomePage {
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
-  protected readonly skipShieldModalButton = {
-    testId: 'shield-entry-modal-skip-button',
-    text: 'Skip',
-  };
-
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 
   private readonly refreshErc20Tokens = {
@@ -133,12 +128,6 @@ class HomePage {
   async clickBackupRemindMeLaterButton(): Promise<void> {
     await this.driver.clickElementAndWaitToDisappear(
       this.backupRemindMeLaterButton,
-    );
-  }
-
-  async clickSkipShieldModalButton(): Promise<void> {
-    await this.driver.clickElementAndWaitToDisappear(
-      this.skipShieldModalButton,
     );
   }
 

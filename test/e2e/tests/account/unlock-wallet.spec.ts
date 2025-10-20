@@ -63,7 +63,6 @@ describe('Unlock wallet - ', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.clickSkipShieldModalButton();
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();

@@ -201,7 +201,6 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
 
         // Wait for sync to complete during onboarding
         const homePage = new HomePage(driver);
-        await homePage.clickSkipShieldModalButton();
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
         // await driver.delay(2000);
 

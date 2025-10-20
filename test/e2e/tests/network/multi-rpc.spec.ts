@@ -115,7 +115,6 @@ describe('MultiRpc:', function (this: Suite) {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.clickSkipShieldModalButton();
         await homePage.checkExpectedBalanceIsDisplayed('85,000.00', '$');
 
         await switchToEditRPCViaGlobalMenuNetworks(driver);
@@ -323,7 +322,7 @@ describe('MultiRpc:', function (this: Suite) {
     );
   });
 
-  it.only('should select rpc from settings', async function () {
+  it('should select rpc from settings', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -430,9 +429,7 @@ describe('MultiRpc:', function (this: Suite) {
         await onboardingCompletePage.completeOnboarding();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-
         await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-
         await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog

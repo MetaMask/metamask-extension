@@ -239,7 +239,6 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.clickSkipShieldModalButton();
         await switchToNetworkFromSendFlow(driver, networkName);
         await homePage.checkAddNetworkMessageIsDisplayed(networkName);
 
