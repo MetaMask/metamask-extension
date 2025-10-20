@@ -1,4 +1,4 @@
-import { Hex, add0x } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import {
   BatchTransactionParams,
   GasFeeToken,
@@ -34,6 +34,9 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
     (token) => token.tokenAddress.toLowerCase() === tokenAddress?.toLowerCase(),
   );
 
+  // This is just a legacy fallback for if `useGasFeeToken` were to be called
+  // with no `tokenAddress`. Even if it's `NATIVE_TOKEN_ADDRESS` we don't rely
+  // on `useNativeGasFeeToken`.
   if (!gasFeeToken) {
     gasFeeToken = nativeFeeToken;
   }
