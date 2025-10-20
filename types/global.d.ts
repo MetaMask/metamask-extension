@@ -17,13 +17,14 @@ import {
   EthereumSignTypedDataTypes,
 } from '@trezor/connect-web';
 import type { Provider } from '@metamask/network-controller';
-import * as Browser from 'webextension-polyfill';
+import type { Browser } from 'webextension-polyfill';
 import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from '../shared/constants/offscreen-communication';
 import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 import type ExtensionPlatform from '../app/scripts/platforms/extension';
+import type { ExtensionLazyListener } from '../app/scripts/lib/extension-lazy-listener/extension-lazy-listener';
 
 declare class MessageSender {
   documentId?: string;
@@ -282,7 +283,7 @@ type StateHooks = {
   /**
    * This is set in `app-init.js`
    */
-  lazyListener: import('../lib/extension-lazy-listener/extension-lazy-listener').ExtensionLazyListener;
+  lazyListener: ExtensionLazyListener<Browser>;
 };
 
 export declare global {

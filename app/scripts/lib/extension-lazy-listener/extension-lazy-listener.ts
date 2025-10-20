@@ -181,15 +181,16 @@ export class ExtensionLazyListener<
   public once<
     Namespace extends BrowserNamespace<BrowserType>,
     EventName extends BrowserEventName<BrowserType, Namespace>,
+    Params extends Parameters<EventCallback<BrowserType, Namespace, EventName>>,
   >(namespace: Namespace, eventName: EventName) {
-    return new Promise<Args>((resolve) => {
+    return new Promise<Params>((resolve) => {
       const event = this.#getEvent(namespace, eventName);
       const listeners = this.#namespaceListeners.get(namespace);
       if (listeners) {
         const tracker = listeners.get(eventName);
         const length = tracker?.args.length;
         if (length) {
-          resolve(tracker.args.shift() as Args);
+          resolve(tracker.args.shift() as Params);
 
           // we don't need our lazy listener anymore, since we know we have
           // application code that is capable of listening on its own. We _do_
@@ -208,7 +209,7 @@ export class ExtensionLazyListener<
       // emitted.
       const tempListener = (...args: Args) => {
         event.removeListener(tempListener);
-        resolve(args);
+        resolve(args as Params);
       };
       event.addListener(tempListener);
     });

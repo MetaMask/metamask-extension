@@ -168,7 +168,7 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-lazyListener.once('runtime', 'onInstalled', handleOnInstalled);
+lazyListener.once('runtime', 'onInstalled').then(handleOnInstalled);
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -502,15 +502,15 @@ const handleOnConnect = async (port) => {
     } else {
       const errorLike = isObject(error)
         ? {
-            message: error.message ?? 'Unknown error',
-            name: error.name ?? 'UnknownError',
-            stack: error.stack,
-          }
+          message: error.message ?? 'Unknown error',
+          name: error.name ?? 'UnknownError',
+          stack: error.stack,
+        }
         : {
-            message: String(error),
-            name: 'UnknownError',
-            stack: '',
-          };
+          message: String(error),
+          name: 'UnknownError',
+          stack: '',
+        };
       // general errors
       tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
         error: errorLike,
@@ -643,20 +643,20 @@ async function initialize(backup) {
 
   const overrides = inTest
     ? {
-        keyrings: {
-          // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
-          trezorBridge: require('../../test/stub/keyring-bridge')
-            .FakeTrezorBridge,
-          // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
-          ledgerBridge: require('../../test/stub/keyring-bridge')
-            .FakeLedgerBridge,
-          // Use `require` to make it easier to exclude this test code from the Browserify build.
-          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
-          qrBridge: require('../../test/stub/keyring-bridge').FakeQrBridge,
-        },
-      }
+      keyrings: {
+        // Use `require` to make it easier to exclude this test code from the Browserify build.
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+        trezorBridge: require('../../test/stub/keyring-bridge')
+          .FakeTrezorBridge,
+        // Use `require` to make it easier to exclude this test code from the Browserify build.
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+        ledgerBridge: require('../../test/stub/keyring-bridge')
+          .FakeLedgerBridge,
+        // Use `require` to make it easier to exclude this test code from the Browserify build.
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+        qrBridge: require('../../test/stub/keyring-bridge').FakeQrBridge,
+      },
+    }
     : {};
 
   const preinstalledSnaps = await loadPreinstalledSnaps();
@@ -855,7 +855,7 @@ export async function loadStateFromPersistence(backup) {
     migrations,
     defaultVersion: process.env.WITH_STATE
       ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
-        require('../../test/e2e/default-fixture').FIXTURE_STATE_METADATA_VERSION
+      require('../../test/e2e/default-fixture').FIXTURE_STATE_METADATA_VERSION
       : null,
   });
 
@@ -1419,30 +1419,30 @@ export function setupController(
       ).filter(
         (notification) =>
           notification.type ===
-            NotificationServicesController.Constants.TRIGGER_TYPES.SNAP &&
+          NotificationServicesController.Constants.TRIGGER_TYPES.SNAP &&
           notification.readDate === null,
       ).length;
 
       const featureAnnouncementCount = isFeatureAnnouncementsEnabled
         ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
-            (notification) =>
-              !notification.isRead &&
-              notification.type ===
-                NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT,
-          ).length
+          (notification) =>
+            !notification.isRead &&
+            notification.type ===
+            NotificationServicesController.Constants.TRIGGER_TYPES
+              .FEATURES_ANNOUNCEMENT,
+        ).length
         : 0;
 
       const walletNotificationCount = isNotificationServicesEnabled
         ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
-            (notification) =>
-              !notification.isRead &&
-              notification.type !==
-                NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT &&
-              notification.type !==
-                NotificationServicesController.Constants.TRIGGER_TYPES.SNAP,
-          ).length
+          (notification) =>
+            !notification.isRead &&
+            notification.type !==
+            NotificationServicesController.Constants.TRIGGER_TYPES
+              .FEATURES_ANNOUNCEMENT &&
+            notification.type !==
+            NotificationServicesController.Constants.TRIGGER_TYPES.SNAP,
+        ).length
         : 0;
 
       const unreadNotificationsCount =
@@ -1557,7 +1557,7 @@ const addAppInstalledEvent = () => {
  *
  * @param {chrome.runtime.InstalledDetails} details
  */
-function handleOnInstalled(details) {
+function handleOnInstalled([details]) {
   if (details.reason === 'install') {
     onInstall();
   } else if (
