@@ -1,6 +1,5 @@
 import { strict as assert } from 'assert';
-import { PermissionConstraint } from '@metamask/permission-controller';
-import { WINDOW_TITLES, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
