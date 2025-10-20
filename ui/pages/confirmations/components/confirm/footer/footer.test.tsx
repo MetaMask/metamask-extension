@@ -6,6 +6,7 @@ import {
 import { BlockaidResultType } from '../../../../../../shared/constants/security-provider';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import {
+  addEthereumChainApproval,
   getMockContractInteractionConfirmState,
   getMockPersonalSignConfirmState,
   getMockPersonalSignConfirmStateForRequest,
@@ -30,6 +31,7 @@ import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
 import { useIsGaslessSupported } from '../../../hooks/gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from '../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import Footer from './footer';
 
 jest.mock('../../../hooks/gas/useIsGaslessLoading');
@@ -39,7 +41,11 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => jest.fn(),
 }));
-
+jest.mock('../../../hooks/useConfirmationNavigation', () => ({
+  useConfirmationNavigation: jest.fn(() => ({
+    navigateNext: jest.fn(),
+  })),
+}));
 jest.mock(
   '../../../../../components/app/alert-system/contexts/alertMetricsContext',
   () => ({
@@ -74,6 +80,7 @@ describe('ConfirmFooter', () => {
     useInsufficientBalanceAlerts,
   );
   const useIsGaslessLoadingMock = jest.mocked(useIsGaslessLoading);
+  const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
 
   beforeEach(() => {
     mockUseOriginThrottling.mockReturnValue({
@@ -455,6 +462,40 @@ describe('ConfirmFooter', () => {
       const { getByTestId } = render(stateWithAlertsMock);
       fireEvent.click(getByTestId('confirm-footer-button'));
       expect(getByTestId('alert-modal-button')).toBeDefined();
+    });
+
+    it('navigates to the next confirmation when there are pending approval requests', async () => {
+      const navigateNextMock = jest.fn();
+      useConfirmationNavigationMock.mockReturnValue({
+        navigateNext: navigateNextMock,
+        navigateToId: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmationNavigation>);
+
+      const mockStateWithContractInteractionConfirmation =
+        getMockContractInteractionConfirmState();
+
+      mockStateWithContractInteractionConfirmation.metamask.pendingApprovals = {
+        [addEthereumChainApproval.id]: addEthereumChainApproval,
+        ...mockStateWithContractInteractionConfirmation.metamask
+          .pendingApprovals,
+      };
+      mockStateWithContractInteractionConfirmation.metamask.pendingApprovalCount = 2;
+
+      // Current confirmation is add ethereum chain
+      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+        currentConfirmation: addEthereumChainApproval,
+        isScrollToBottomCompleted: true,
+        setIsScrollToBottomCompleted: () => undefined,
+      });
+      const { getByText } = render(
+        mockStateWithContractInteractionConfirmation,
+      );
+
+      const confirmButton = getByText('Confirm');
+      fireEvent.click(confirmButton);
+
+      // It will navigate to transaction confirmation
+      expect(navigateNextMock).toHaveBeenCalledTimes(1);
     });
   });
 });

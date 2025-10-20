@@ -24,6 +24,7 @@ import {
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
@@ -188,6 +189,7 @@ const CancelButton = ({
 const Footer = () => {
   const dispatch = useDispatch();
   const { onTransactionConfirm } = useTransactionConfirm();
+  const { navigateNext } = useConfirmationNavigation();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
@@ -209,6 +211,10 @@ const Footer = () => {
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
+  const isTransactionConfirmation = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
+  );
+  const isNavigationNeeded = !isTransactionConfirmation && !isSignature;
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
@@ -220,19 +226,23 @@ const Footer = () => {
       return;
     }
 
-    const isTransactionConfirmation = isCorrectDeveloperTransactionType(
-      currentConfirmation?.type,
-    );
-
     if (isTransactionConfirmation) {
       onTransactionConfirm();
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
+
+    if (isNavigationNeeded) {
+      navigateNext();
+    }
+
     resetTransactionState();
   }, [
     currentConfirmation,
     dispatch,
+    isNavigationNeeded,
+    isTransactionConfirmation,
+    navigateNext,
     onTransactionConfirm,
     resetTransactionState,
   ]);
@@ -243,7 +253,11 @@ const Footer = () => {
       return;
     }
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
-  }, [onCancel, shouldThrottleOrigin]);
+
+    if (isNavigationNeeded) {
+      navigateNext();
+    }
+  }, [isNavigationNeeded, navigateNext, onCancel, shouldThrottleOrigin]);
 
   const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
 
