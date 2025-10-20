@@ -79,7 +79,7 @@ export type Listener = (...args: Args) => void;
 /**
  * Generic browser interface type.
  */
-export type BrowserInterface = {};
+export type BrowserInterface = NonNullable<unknown>;
 
 /**
  * Entries of the Options object as tuples. This is a slightly better type for

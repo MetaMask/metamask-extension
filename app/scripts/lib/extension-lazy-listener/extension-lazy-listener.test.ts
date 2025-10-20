@@ -4,11 +4,7 @@
  */
 import { Events } from 'webextension-polyfill';
 import { ExtensionLazyListener } from './extension-lazy-listener';
-import {
-  BrowserInterface,
-  BrowserNamespace,
-  Entries,
-} from './extension-lazy-listener.types';
+import { BrowserInterface, Entries } from './extension-lazy-listener.types';
 
 type MockListener = (...args: any[]) => void;
 
@@ -41,19 +37,20 @@ class MockEvent
 }
 
 // Helper to build a mock browser namespace with arbitrary events
-function buildMockBrowser<T extends Record<string, readonly string[]>>(
-  namespaces: T,
+function buildMockBrowser<Brows extends Record<string, readonly string[]>>(
+  namespaces: Brows,
 ) {
+  type MockEventsEvent = MockEvent & Events.Event<(...args: any[]) => void>;
   const browser: BrowserInterface & {
-    [K in keyof T]: {
-      [E in T[K][number]]: MockEvent & Events.Event<(...args: any[]) => void>;
+    [K in keyof Brows]: {
+      [E in Brows[K][number]]: MockEventsEvent;
     };
   } = {} as any;
   for (const [ns, events] of Object.entries(namespaces) as Entries) {
-    // @ts-expect-error
+    // @ts-expect-error - dynamic assignment
     browser[ns] = {};
     for (const ev of events) {
-      // @ts-expect-error
+      // @ts-expect-error - dynamic assignment
       browser[ns][ev] = new MockEvent();
     }
   }
@@ -72,7 +69,6 @@ describe('ExtensionLazyListener', () => {
 
   test('buffers calls before a real listener is added and flushes them in order', () => {
     const browser = buildMockBrowser({ runtime: ['onMessage' as const] });
-    type t = BrowserNamespace<typeof browser>;
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onMessage'] });
     browser.runtime.onMessage.trigger('a', 1);
     browser.runtime.onMessage.trigger('b', 2);
@@ -248,11 +244,12 @@ describe('ExtensionLazyListener', () => {
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
     // Create instance (starts timer)
-    new ExtensionLazyListener(
+    const instance = new ExtensionLazyListener(
       browser,
       { runtime: ['onMessage', 'onConnect'] },
       timeout,
     );
+    expect(instance).toBeDefined();
     // Advance but not enough
     jest.advanceTimersByTime(timeout - 1);
     expect(spy).not.toHaveBeenCalled();
@@ -260,8 +257,8 @@ describe('ExtensionLazyListener', () => {
     jest.advanceTimersByTime(1);
     expect(spy).toHaveBeenCalledTimes(2); // one per event
     const messages = spy.mock.calls.map((c) => c[0]);
-    expect(messages[0]).toMatch(/Possible memory leak/);
-    expect(messages[0]).toMatch(/runtime.onMessage/);
+    expect(messages[0]).toMatch(/Possible memory leak/u);
+    expect(messages[0]).toMatch(/runtime.onMessage/u);
   });
 
   test('memory leak warning logs warn in non-test env', () => {
@@ -270,10 +267,15 @@ describe('ExtensionLazyListener', () => {
     const browser = buildMockBrowser({ tabs: ['onActivated'] });
     const timeout = 300;
     const spy = jest.spyOn(console, 'warn').mockImplementation(() => undefined);
-    new ExtensionLazyListener(browser, { tabs: ['onActivated'] }, timeout);
+    const lazy = new ExtensionLazyListener(
+      browser,
+      { tabs: ['onActivated'] },
+      timeout,
+    );
+    expect(lazy).toBeDefined();
     jest.advanceTimersByTime(timeout);
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy.mock.calls[0][0]).toMatch(/tabs.onActivated/);
+    expect(spy.mock.calls[0][0]).toMatch(/tabs.onActivated/u);
   });
 
   // --- Additional branch coverage tests ---
@@ -384,6 +386,7 @@ describe('ExtensionLazyListener', () => {
       { runtime: ['onMessage'] },
       timeout,
     );
+    expect(lazy).toBeDefined();
     // Buffer some calls
     browser.runtime.onMessage.trigger('a');
     browser.runtime.onMessage.trigger('b');
@@ -392,13 +395,14 @@ describe('ExtensionLazyListener', () => {
       .mockImplementation(() => undefined);
     jest.advanceTimersByTime(timeout);
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy.mock.calls[0][0]).toMatch(/2 buffered calls/);
+    expect(spy.mock.calls[0][0]).toMatch(/2 buffered calls/u);
   });
 
   test('constructor with empty options does not schedule any leak warnings', () => {
     jest.useFakeTimers();
     const browser = buildMockBrowser({ runtime: ['onMessage'] });
-    new ExtensionLazyListener(browser, {}, 200);
+    const instance = new ExtensionLazyListener(browser, {}, 200);
+    expect(instance).toBeDefined();
     const errorSpy = jest
       .spyOn(console, 'error')
       .mockImplementation(() => undefined);
