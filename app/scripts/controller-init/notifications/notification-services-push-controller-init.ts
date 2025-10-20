@@ -23,11 +23,20 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
+/**
+ * normalises the extension locale path to use hyphens ('-') instead of underscores ('_')
+ *
+ * @param locale - extension locale
+ * @returns normalised locale
+ */
+export const getNormalisedLocale = (locale: string): string =>
+  locale.replace('_', '-');
+
 export const NotificationServicesPushControllerInit: ControllerInitFunction<
   NotificationServicesPushController,
   NotificationServicesPushControllerMessenger,
   NotificationServicesPushControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, persistedState }) => {
+> = ({ controllerMessenger, initMessenger, persistedState, getController }) => {
   const controller = new NotificationServicesPushController({
     messenger: controllerMessenger,
     state: {
@@ -58,6 +67,10 @@ export const NotificationServicesPushControllerInit: ControllerInitFunction<
           onClickHandler: onPushNotificationClicked,
         }),
       },
+      getLocale: () =>
+        getNormalisedLocale(
+          getController('PreferencesController').state.currentLocale,
+        ),
     },
   });
 

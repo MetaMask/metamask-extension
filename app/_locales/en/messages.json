@@ -258,6 +258,18 @@
   "addFriendsAndAddresses": {
     "message": "Add friends and addresses you trust"
   },
+  "addFunds": {
+    "message": "Add funds"
+  },
+  "addFundsModalBuyCrypto": {
+    "message": "Buy crypto"
+  },
+  "addFundsModalReceiveTokens": {
+    "message": "Receive tokens"
+  },
+  "addFundsModalSwapTokens": {
+    "message": "Swap tokens"
+  },
   "addHardwareWalletLabel": {
     "message": "Hardware wallet"
   },
@@ -1268,8 +1280,57 @@
   "confirmAlertModalAcknowledgeSingle": {
     "message": "I have acknowledged the alert and still want to proceed"
   },
+  "confirmFieldAllowance": {
+    "message": "Allowance"
+  },
+  "confirmFieldAvailablePerDay": {
+    "message": "Available per day"
+  },
+  "confirmFieldExpiration": {
+    "message": "Expiration"
+  },
+  "confirmFieldFrequency": {
+    "message": "Frequency"
+  },
+  "confirmFieldInitialAllowance": {
+    "message": "Initial allowance"
+  },
+  "confirmFieldMaxAllowance": {
+    "message": "Max allowance"
+  },
   "confirmFieldPaymaster": {
     "message": "Fee paid by"
+  },
+  "confirmFieldPeriodDurationBiWeekly": {
+    "message": "Bi-Weekly"
+  },
+  "confirmFieldPeriodDurationDaily": {
+    "message": "Daily"
+  },
+  "confirmFieldPeriodDurationHourly": {
+    "message": "Hourly"
+  },
+  "confirmFieldPeriodDurationMonthly": {
+    "message": "Monthly"
+  },
+  "confirmFieldPeriodDurationSeconds": {
+    "message": "seconds",
+    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
+  },
+  "confirmFieldPeriodDurationWeekly": {
+    "message": "Weekly"
+  },
+  "confirmFieldPeriodDurationYearly": {
+    "message": "Yearly"
+  },
+  "confirmFieldStartDate": {
+    "message": "Start date"
+  },
+  "confirmFieldStreamRate": {
+    "message": "Stream rate"
+  },
+  "confirmFieldTooltipJustification": {
+    "message": "Justification for the request provided by the website"
   },
   "confirmFieldTooltipPaymaster": {
     "message": "The fee for this transaction will be paid by the paymaster smart contract."
@@ -1367,6 +1428,9 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "This site wants permission to withdraw your tokens"
   },
+  "confirmTitleDescPermission": {
+    "message": "This site wants permissions to spend your tokens."
+  },
   "confirmTitleDescPermitSignature": {
     "message": "This site wants permission to spend your tokens."
   },
@@ -1375,6 +1439,9 @@
   },
   "confirmTitleDescSign": {
     "message": "Review request details before you confirm."
+  },
+  "confirmTitlePermission": {
+    "message": "Permission request"
   },
   "confirmTitlePermitTokens": {
     "message": "Spending cap request"
@@ -2524,6 +2591,12 @@
   "fileImportFail": {
     "message": "File import not working? Click here!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "fileUploaderDescription": {
+    "message": "Click to upload or drag and drop"
+  },
+  "fileUploaderInvalidFileTypeError": {
+    "message": "Invalid file type. Please upload a supported file format."
   },
   "fileUploaderMaxFileSizeError": {
     "message": "File size exceeds $1MB. Please upload a smaller file.",
@@ -3678,6 +3751,9 @@
   "nameProvider_token": {
     "message": "MetaMask"
   },
+  "nameResolutionFailedError": {
+    "message": "No address resolution found for this name."
+  },
   "nameSetPlaceholder": {
     "message": "Choose a nickname...",
     "description": "Placeholder text for name input field in name component modal."
@@ -4425,6 +4501,9 @@
   },
   "padlock": {
     "message": "Padlock"
+  },
+  "paidByMetaMask": {
+    "message": "Paid by MetaMask"
   },
   "participateInMetaMetrics": {
     "message": "Participate in MetaMetrics"
@@ -5629,6 +5708,9 @@
   "shieldClaimFileUploader": {
     "message": "Image Upload"
   },
+  "shieldClaimFileUploaderAcceptText": {
+    "message": "PDF, PNG, JPG (MAX. 5MB)"
+  },
   "shieldClaimFileUploaderHelpText": {
     "message": "If you have any additional evidence, please upload it here."
   },
@@ -5645,13 +5727,16 @@
     "message": "Impacted wallet address"
   },
   "shieldClaimInvalidEmail": {
-    "message": "Invalid email"
+    "message": "Please enter a valid email address"
+  },
+  "shieldClaimInvalidRequired": {
+    "message": "This field is required"
   },
   "shieldClaimInvalidTxHash": {
-    "message": "Invalid transaction hash"
+    "message": "Please enter a valid transaction hash"
   },
   "shieldClaimInvalidWalletAddress": {
-    "message": "Invalid wallet address"
+    "message": "Please enter a valid wallet address"
   },
   "shieldClaimReimbursementWalletAddress": {
     "message": "Wallet address for reimbursement"
@@ -5661,6 +5746,15 @@
   },
   "shieldClaimSubmit": {
     "message": "Submit a claim"
+  },
+  "shieldClaimSubmitError": {
+    "message": "Claim submission failed"
+  },
+  "shieldClaimSubmitSuccess": {
+    "message": "Claim submitted successfully"
+  },
+  "shieldClaimSubmitSuccessDescription": {
+    "message": "Your claim is under review. We will notify you via email within 3-5 business days with any updates."
   },
   "shieldConfirmMembership": {
     "message": "Confirm membership"
@@ -5685,6 +5779,16 @@
   },
   "shieldCoverageAlertMessageUnknown": {
     "message": "This request can't be verified, so it isn't protected by Transaction Shield. $1."
+  },
+  "shieldCoverageEnding": {
+    "message": "Shield coverage ends soon"
+  },
+  "shieldCoverageEndingAction": {
+    "message": "Renew"
+  },
+  "shieldCoverageEndingDescription": {
+    "message": "Membership ends on $1.",
+    "description": "The $1 is the date"
   },
   "shieldCovered": {
     "message": "Covered"
@@ -5720,6 +5824,15 @@
   },
   "shieldNotCovered": {
     "message": "Not covered"
+  },
+  "shieldPaymentDeclined": {
+    "message": "Shield payment declined"
+  },
+  "shieldPaymentDeclinedAction": {
+    "message": "Add funds"
+  },
+  "shieldPaymentDeclinedDescription": {
+    "message": "Insufficient token balance. Please try again to resume coverage."
   },
   "shieldPlanAnnual": {
     "message": "Annual"
