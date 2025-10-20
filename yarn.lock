@@ -3341,6 +3341,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@exodus/bitcoin-wallet-standard-chains@npm:^0.0.0":
+  version: 0.0.0
+  resolution: "@exodus/bitcoin-wallet-standard-chains@npm:0.0.0"
+  dependencies:
+    "@wallet-standard/base": "npm:^1.0.1"
+  checksum: 10/1193d95599431af7e772eaa1967502871063b1025bfe43443b7c37c0de9fbd6225cf7977a68eef1a43302ede05f0f3a634f01c5e060b53b1e240e8e250a2f156
+  languageName: node
+  linkType: hard
+
+"@exodus/bitcoin-wallet-standard-core@npm:^0.0.0":
+  version: 0.0.0
+  resolution: "@exodus/bitcoin-wallet-standard-core@npm:0.0.0"
+  dependencies:
+    "@exodus/bitcoin-wallet-standard-chains": "npm:^0.0.0"
+    "@exodus/bitcoin-wallet-standard-features": "npm:^0.0.0"
+  checksum: 10/2294b086cba5b8eb0e0880c8e15f44d7c11bb08f314bbeacda50ee7cfbdc464e6aaefe8ab56b1ed527bc7bb4e83f94425e8ee8bd3c92c3c2e5729284a19c9a3f
+  languageName: node
+  linkType: hard
+
+"@exodus/bitcoin-wallet-standard-features@npm:^0.0.0":
+  version: 0.0.0
+  resolution: "@exodus/bitcoin-wallet-standard-features@npm:0.0.0"
+  dependencies:
+    "@wallet-standard/base": "npm:^1.0.1"
+    "@wallet-standard/features": "npm:^1.0.3"
+  checksum: 10/877b9dd4965a6b3bd05c2e06e3af0f3a50467ceb4709a09164679a0e383dbf4817170b2c1b6fd1d1b42f70942fd2b4fcfc52929a8d434d232f333610d182beec
+  languageName: node
+  linkType: hard
+
+"@exodus/bitcoin-wallet-standard@npm:^0.0.0":
+  version: 0.0.0
+  resolution: "@exodus/bitcoin-wallet-standard@npm:0.0.0"
+  dependencies:
+    "@exodus/bitcoin-wallet-standard-core": "npm:^0.0.0"
+  checksum: 10/d723cfc104145334eee7b63afa0698d984b15dc1aae9a3015eb92efd377d4fef765bc6c732582957a3bfa76b1bbac776b2a30384e84266c7ba49160d359361f6
+  languageName: node
+  linkType: hard
+
 "@fal-works/esbuild-plugin-global-externals@npm:^2.1.2":
   version: 2.1.2
   resolution: "@fal-works/esbuild-plugin-global-externals@npm:2.1.2"
@@ -5947,6 +5985,20 @@ __metadata:
     "@metamask/utils": "npm:^11.8.1"
     immer: "npm:^9.0.6"
   checksum: 10/27554d34ec85c4b585b87850c90dfeaaf9c7e6430f2ab2fa80a1ec06ccc17641e118afab7ad765a0b7255ffef37bc9f6ca5065d459228a2dc660bc463293310d
+  languageName: node
+  linkType: hard
+
+"@metamask/bitcoin-wallet-standard@file:../../metamask-sdk/bitcoin/bitcoin-wallet-standard::locator=metamask-crx%40workspace%3A.":
+  version: 0.6.0
+  resolution: "@metamask/bitcoin-wallet-standard@file:../../metamask-sdk/bitcoin/bitcoin-wallet-standard#../../metamask-sdk/bitcoin/bitcoin-wallet-standard::hash=ada739&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@exodus/bitcoin-wallet-standard": "npm:^0.0.0"
+    "@olistic/jsontokens": "npm:^4.0.2"
+    "@wallet-standard/base": "npm:^1.1.0"
+    "@wallet-standard/features": "npm:^1.1.0"
+    "@wallet-standard/wallet": "npm:^1.1.0"
+    bs58: "npm:^6.0.0"
+  checksum: 10/8a4364e56ba07608578ad4490bd7de0723afd912c9c77b66fe69b60c2f8be91d2732bc4b3411b3ec016472e30f9d3bf2ca3527d0204815e11e21dfd560114e18
   languageName: node
   linkType: hard
 
@@ -9236,6 +9288,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/secp256k1@npm:^1.6.3":
+  version: 1.7.2
+  resolution: "@noble/secp256k1@npm:1.7.2"
+  checksum: 10/ce1651f63ebf9269990dbc1002410d63e2f4379fcbf2bb7a567740997852a1fbdb353929e497cd9d09549c28e3edb036ac3905ff20ac5249ad32e64a852af955
+  languageName: node
+  linkType: hard
+
 "@noble/secp256k1@npm:^1.7.0":
   version: 1.7.2
   resolution: "@noble/secp256k1@npm:1.7.2"
@@ -9861,6 +9920,17 @@ __metadata:
     "@octokit/request-error": "npm:^6.1.7"
     "@octokit/webhooks-methods": "npm:^5.1.1"
   checksum: 10/0ed6bc742d896a35a02a6df255d2561c8d66a6eec163bbd53b68c23fe78fac2130353f2246f8ce2751c6322c1cf4aee0394b025b8af9f727ed90f854462296d1
+  languageName: node
+  linkType: hard
+
+"@olistic/jsontokens@npm:^4.0.2":
+  version: 4.0.2
+  resolution: "@olistic/jsontokens@npm:4.0.2"
+  dependencies:
+    "@noble/hashes": "npm:^1.1.2"
+    "@noble/secp256k1": "npm:^1.6.3"
+    base64-js: "npm:^1.5.1"
+  checksum: 10/968a8b07952c78568116acc5efc61a073469507950eb1ef0d10ddd2ffa49ceab2a6cfd881ad871acdff324407c798446f13b3560598a0baef6387921a76c010b
   languageName: node
   linkType: hard
 
@@ -16938,7 +17008,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wallet-standard/features@npm:^1.1.0":
+"@wallet-standard/features@npm:^1.0.3, @wallet-standard/features@npm:^1.1.0":
   version: 1.1.0
   resolution: "@wallet-standard/features@npm:1.1.0"
   dependencies:
@@ -32923,6 +32993,7 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.3.0"
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.8.0"
+    "@metamask/bitcoin-wallet-standard": "file:../../metamask-sdk/bitcoin/bitcoin-wallet-standard"
     "@metamask/bridge-controller": "npm:^64.0.0"
     "@metamask/bridge-status-controller": "npm:^64.0.1"
     "@metamask/browser-passworder": "npm:^6.0.0"
