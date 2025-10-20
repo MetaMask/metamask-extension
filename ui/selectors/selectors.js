@@ -850,12 +850,12 @@ export function getNativeTokenCachedBalanceByChainIdByAccountAddress(
 ) {
   const { accountsByChainId } = state.metamask;
 
-  const lowercaseSelectedAddress = selectedAddress?.toLowerCase();
+  const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
 
   const balancesByChainId = {};
   for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
-    if (accounts[lowercaseSelectedAddress]) {
-      balancesByChainId[chainId] = accounts[lowercaseSelectedAddress].balance;
+    if (accounts[checksummedSelectedAddress]) {
+      balancesByChainId[chainId] = accounts[checksummedSelectedAddress].balance;
     }
   }
   return balancesByChainId;
