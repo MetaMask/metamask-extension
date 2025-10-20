@@ -5,7 +5,6 @@ name: Update Release Changelog PR
 on:
   push:
     branches:
-      - 'Version-v*'
       - 'release/[0-9]+.[0-9]+.[0-9]+'
 
 concurrency:
@@ -17,12 +16,12 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: MetaMask/github-tools/.github/workflows/update-release-changelog.yml@INFRA-2576-UpdateChangelogAutomatically
+    uses: MetaMask/github-tools/.github/workflows/update-release-changelog.yml@36dc168896c1b496f35fc880ee8a3625b4b837ba
     with:
       release-branch: ${{ github.ref_name }}
       repository-url: ${{ github.server_url }}/${{ github.repository }}
       platform: extension
-      github-tools-version: INFRA-2576-UpdateChangelogAutomatically
+      github-tools-version: 36dc168896c1b496f35fc880ee8a3625b4b837ba
       previous-version-ref: null
     secrets:
       github-token: ${{ secrets.PR_TOKEN }}
