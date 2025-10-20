@@ -41,11 +41,19 @@ jest.mock('../selectors', () => ({
     // Keep this simple, only check if it's enabled or not.
     return solanaAccounts?.enabled;
   }),
+  getIsTronSupportEnabled: jest.fn((state) => {
+    const { tronAccounts } = state.metamask.remoteFeatureFlags;
+    // Keep this simple, only check if it's enabled or not.
+    return tronAccounts?.enabled;
+  }),
   getIsSolanaTestnetSupportEnabled: jest.fn(
     (state) => state.metamask.remoteFeatureFlags.solanaTestnetsEnabled,
   ),
   getIsBitcoinTestnetSupportEnabled: jest.fn(
     (state) => state.metamask.remoteFeatureFlags.bitcoinTestnetsEnabled,
+  ),
+  getIsTronTestnetSupportEnabled: jest.fn(
+    (state) => state.metamask.remoteFeatureFlags.tronTestnetsEnabled,
   ),
   getEnabledNetworks: jest.fn(() => ({ eip155: {} })),
 }));
