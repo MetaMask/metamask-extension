@@ -14,7 +14,7 @@ import {
   AsyncZipDeflate,
   ZipPassThrough,
 } from 'fflate';
-import { noop, type Manifest, Browser } from '../../helpers';
+import { noop, type Manifest, Browser, extensionToJs } from '../../helpers';
 import { schema } from './schema';
 import type { ManifestPluginOptions } from './types';
 
@@ -304,6 +304,18 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
 
+      // handle manifest v3 service worker logic
+      if (manifest.manifest_version === 3) {
+        if (!manifest.background?.service_worker) {
+          throw new Error(
+            'Manifest V3 requires a background.service_worker entry in the manifest',
+          );
+        }
+        manifest.background.service_worker = extensionToJs(
+          manifest.background.service_worker,
+        );
+      }
+
       // allow the user to `transform` the manifest. Use a copy of the manifest
       // so modifications for one browser don't affect other browsers.
       if (transform) {
@@ -320,11 +332,6 @@ export class ManifestPlugin<Z extends boolean> {
     // prepare manifests early so we can catch errors early instead of waiting
     // until the end of the compilation.
     this.prepareManifests(compilation);
-
-    // TODO: MV3 needs to be handled differently. Specifically, it needs to
-    // load the files it needs via a function call to `importScripts`, plus some
-    // other shenanigans.
-
     // hook into the processAssets hook to move/zip assets
     const tapOptions = {
       name: NAME,
