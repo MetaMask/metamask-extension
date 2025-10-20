@@ -56,7 +56,7 @@ export const ExecutionServiceInit: ControllerInitFunction<
         messenger: controllerMessenger,
         setupSnapProvider,
         offscreenPromise,
-        pingTimeout: 60000, // see https://github.com/MetaMask/metamask-extension/issues/36935
+        pingTimeout: process.env.IN_TEST ? 60000 : 5000, // see https://github.com/MetaMask/metamask-extension/issues/36935
       }),
     };
   }
@@ -71,7 +71,7 @@ export const ExecutionServiceInit: ControllerInitFunction<
       messenger: controllerMessenger,
       iframeUrl: new URL(iframeUrl),
       setupSnapProvider,
-      pingTimeout: 60000, // see https://github.com/MetaMask/metamask-extension/issues/36935
+      pingTimeout: process.env.IN_TEST ? 60000 : 5000, // see https://github.com/MetaMask/metamask-extension/issues/36935
     }),
   };
 };
