@@ -48,6 +48,22 @@ RuntimeLoader.setWasmUrl(RIVE_WASM_URL);
 - ✅ **Reduced attack surface** - No CDN dependency
 - ✅ **Guaranteed availability** - Works offline
 - ✅ **Better privacy** - No external tracking
+
+### LavaMoat Security Hardening
+
+**Major Achievement:** Reduced Rive global permissions by **40%** (from 44 to 26 globals).
+
+📄 **Full Security Audit:** [`lavamoat/browserify/RIVE-SECURITY-AUDIT.md`](../lavamoat/browserify/RIVE-SECURITY-AUDIT.md)
+
+**Key Security Wins:**
+
+- ❌ Removed `crypto` (cryptographic API access)
+- ❌ Removed `importScripts` (remote code execution)
+- ❌ Removed `location.href` (URL manipulation)
+- ❌ Removed `prompt`/`readline` (user phishing vectors)
+- ✅ Scoped `document` → `document.createElement` only
+- ✅ Scoped `navigator` → `navigator.userAgent` only
+- ✅ Scoped `console` → specific methods only
 - ✅ **Build-time verification** - File integrity checked during build
 
 ---
