@@ -2,7 +2,7 @@
 /*
  * Tests for ExtensionLazyListener
  */
-import { Events } from 'webextension-polyfill';
+import { Browser, Events, Runtime } from 'webextension-polyfill';
 import { ExtensionLazyListener } from './extension-lazy-listener';
 import { BrowserInterface, Entries } from './extension-lazy-listener.types';
 
@@ -40,7 +40,7 @@ class MockEvent
 function buildMockBrowser<Brows extends Record<string, readonly string[]>>(
   namespaces: Brows,
 ) {
-  type MockEventsEvent = MockEvent & Events.Event<(...args: any[]) => void>;
+  type MockEventsEvent = MockEvent & Events.Event<MockListener>;
   const browser: BrowserInterface & {
     [K in keyof Brows]: {
       [E in Brows[K][number]]: MockEventsEvent;
@@ -67,7 +67,7 @@ describe('ExtensionLazyListener', () => {
     jest.clearAllMocks();
   });
 
-  test('buffers calls before a real listener is added and flushes them in order', () => {
+  it('buffers calls before a real listener is added and flushes them in order', () => {
     const browser = buildMockBrowser({ runtime: ['onMessage' as const] });
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onMessage'] });
     browser.runtime.onMessage.trigger('a', 1);
@@ -82,7 +82,7 @@ describe('ExtensionLazyListener', () => {
     ]);
   });
 
-  test('constructor without options parameter behaves like empty options', async () => {
+  it('constructor without options parameter behaves like empty options', async () => {
     jest.useFakeTimers();
     const browser = buildMockBrowser({ runtime: ['onMessage'] });
     // Emit before constructing (should not matter) then after constructing
@@ -91,8 +91,7 @@ describe('ExtensionLazyListener', () => {
     browser.runtime.onMessage.trigger('pre2');
     // Add listener; neither pre nor pre2 should have been buffered
     const received: any[] = [];
-    lazy.addListener('runtime', 'onMessage', ((...a: any[]) =>
-      received.push(a)) as any);
+    lazy.addListener('runtime', 'onMessage', (...a) => received.push(a));
     expect(received).toEqual([]);
     browser.runtime.onMessage.trigger('live');
     expect(received).toEqual([['live']]);
@@ -103,14 +102,14 @@ describe('ExtensionLazyListener', () => {
     expect(errorSpy).not.toHaveBeenCalled();
   });
 
-  test('once on namespace with listeners but untracked event waits (listeners truthy, tracker undefined)', async () => {
+  it('once on namespace with listeners but untracked event waits (listeners truthy, tracker undefined)', async () => {
     // Track only runtime.onFoo lazily, call once on runtime.onBar
     const browser = buildMockBrowser({ runtime: ['onFoo', 'onBar'] });
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onFoo'] });
     // Fire onBar before calling once; should NOT resolve (not buffered)
     browser.runtime.onBar.trigger('early');
-    const promise = lazy.once('runtime', 'onBar' as any); // cast to satisfy type (untracked event)
-    let resolved: any[] | undefined;
+    const promise = lazy.once('runtime', 'onBar');
+    let resolved;
     promise.then((r) => (resolved = r));
     expect(resolved).toBeUndefined();
     // Trigger after registering temp listener
@@ -118,21 +117,21 @@ describe('ExtensionLazyListener', () => {
     await expect(promise).resolves.toEqual(['later', 123]);
   });
 
-  test('once on completely untracked namespace waits (listeners falsy)', async () => {
+  it('once on completely untracked namespace waits (listeners falsy)', async () => {
     // Browser has a tabs namespace, but we track nothing in options
     const browser = buildMockBrowser({ tabs: ['onActivated'] });
     const lazy = new ExtensionLazyListener(browser, {}); // no namespaces tracked
     // Fire before once; should not resolve
     browser.tabs.onActivated.trigger('early');
-    const promise = lazy.once('tabs' as any, 'onActivated' as any);
-    let resolved: any[] | undefined;
+    const promise = lazy.once('tabs', 'onActivated');
+    let resolved;
     promise.then((r) => (resolved = r));
     expect(resolved).toBeUndefined();
     browser.tabs.onActivated.trigger('later');
     await expect(promise).resolves.toEqual(['later']);
   });
 
-  test('does not buffer further events after flushing (lazy listener removed)', () => {
+  it('does not buffer further events after flushing (lazy listener removed)', () => {
     const browser = buildMockBrowser({ runtime: ['onMessage'] });
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onMessage'] });
     browser.runtime.onMessage.trigger('first');
@@ -153,7 +152,7 @@ describe('ExtensionLazyListener', () => {
     expect(secondCb).toHaveBeenCalledWith('third');
   });
 
-  test('stops flushing buffered calls if listener removes itself mid-flush and leaves remaining buffered', () => {
+  it('stops flushing buffered calls if listener removes itself mid-flush and leaves remaining buffered', () => {
     const browser = buildMockBrowser({ tabs: ['onUpdated'] });
     const lazy = new ExtensionLazyListener(browser, { tabs: ['onUpdated'] });
     browser.tabs.onUpdated.trigger(1);
@@ -164,20 +163,19 @@ describe('ExtensionLazyListener', () => {
       received.push(n);
       if (n === 2) {
         // Remove itself before remaining buffered call(s)
-        browser.tabs.onUpdated.removeListener(callback as any);
+        browser.tabs.onUpdated.removeListener(callback);
       }
     });
-    lazy.addListener('tabs', 'onUpdated', callback as any);
+    lazy.addListener('tabs', 'onUpdated', callback);
     // We expect calls 1 and 2 to have been delivered, but 3 left buffered.
     expect(received).toEqual([1, 2]);
     // Now add a NEW listener to consume remaining buffered call(s)
     const later: number[] = [];
-    lazy.addListener('tabs', 'onUpdated', ((n: number) =>
-      later.push(n)) as any);
+    lazy.addListener('tabs', 'onUpdated', (n: number) => later.push(n));
     expect(later).toEqual([3]);
   });
 
-  test('if callback throws during flush, remaining buffered calls are preserved', () => {
+  it('if callback throws during flush, remaining buffered calls are preserved', () => {
     const browser = buildMockBrowser({ runtime: ['onSuspend'] });
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onSuspend'] });
     browser.runtime.onSuspend.trigger('x');
@@ -189,16 +187,15 @@ describe('ExtensionLazyListener', () => {
       }
     });
     expect(() => {
-      lazy.addListener('runtime', 'onSuspend', throwing as any);
+      lazy.addListener('runtime', 'onSuspend', throwing);
     }).toThrow(error);
     // Remaining call should still be buffered.
     const after: string[] = [];
-    lazy.addListener('runtime', 'onSuspend', ((v: string) =>
-      after.push(v)) as any);
+    lazy.addListener('runtime', 'onSuspend', (v: string) => after.push(v));
     expect(after).toEqual(['y']);
   });
 
-  test('once resolves synchronously from buffered call and leaves remaining buffered', async () => {
+  it('once resolves synchronously from buffered call and leaves remaining buffered', async () => {
     const browser = buildMockBrowser({ runtime: ['onConnect'] });
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onConnect'] });
     browser.runtime.onConnect.trigger('alpha');
@@ -210,7 +207,7 @@ describe('ExtensionLazyListener', () => {
     expect(second).toEqual(['beta']);
   });
 
-  test('once resolves from buffered calls sequentially', async () => {
+  it('once resolves from buffered calls sequentially', async () => {
     const browser = buildMockBrowser({ runtime: ['onMessage'] });
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onMessage'] });
     browser.runtime.onMessage.trigger('first');
@@ -221,21 +218,21 @@ describe('ExtensionLazyListener', () => {
     await expect(p2).resolves.toEqual(['second']);
   });
 
-  test('once waits for next emission if nothing buffered', async () => {
+  it('once waits for next emission if nothing buffered', async () => {
     const browser = buildMockBrowser({ runtime: ['onInstalled'] });
     const lazy = new ExtensionLazyListener(browser, {
       runtime: ['onInstalled'],
     });
     const promise = lazy.once('runtime', 'onInstalled');
     // Nothing buffered yet.
-    let resolved: any[] | undefined;
+    let resolved;
     promise.then((r) => (resolved = r));
     expect(resolved).toBeUndefined();
     browser.runtime.onInstalled.trigger('payload', 42);
     await expect(promise).resolves.toEqual(['payload', 42]);
   });
 
-  test('memory leak warning timer logs error in test env', () => {
+  it('memory leak warning timer logs error in test env', () => {
     jest.useFakeTimers();
     const browser = buildMockBrowser({ runtime: ['onMessage', 'onConnect'] });
     const timeout = 500;
@@ -261,7 +258,7 @@ describe('ExtensionLazyListener', () => {
     expect(messages[0]).toMatch(/runtime.onMessage/u);
   });
 
-  test('memory leak warning logs warn in non-test env', () => {
+  it('memory leak warning logs warn in non-test env', () => {
     jest.useFakeTimers();
     process.env.IN_TEST = '';
     const browser = buildMockBrowser({ tabs: ['onActivated'] });
@@ -280,21 +277,20 @@ describe('ExtensionLazyListener', () => {
 
   // --- Additional branch coverage tests ---
 
-  test('addListener for event that was not part of Options does not flush prior triggers', () => {
+  it('addListener for event that was not part of Options does not flush prior triggers', () => {
     const browser = buildMockBrowser({ runtime: ['onFoo', 'onBar'] });
     // Only track onFoo lazily
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onFoo'] });
     // Trigger onBar before adding a listener; should NOT be buffered
     browser.runtime.onBar.trigger('pre');
     const received: any[] = [];
-    lazy.addListener('runtime', 'onBar', ((...a: any[]) =>
-      received.push(a)) as any);
+    lazy.addListener('runtime', 'onBar', (...a) => received.push(a));
     expect(received).toEqual([]);
     browser.runtime.onBar.trigger('post');
     expect(received).toEqual([['post']]);
   });
 
-  test('addListener for namespace never included in Options does not flush prior triggers', () => {
+  it('addListener for namespace never included in Options does not flush prior triggers', () => {
     const browser = buildMockBrowser({
       runtime: ['onFoo'],
       tabs: ['onUpdated'],
@@ -303,14 +299,13 @@ describe('ExtensionLazyListener', () => {
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onFoo'] });
     browser.tabs.onUpdated.trigger('pre');
     const received: any[] = [];
-    lazy.addListener('tabs', 'onUpdated', ((...a: any[]) =>
-      received.push(a)) as any);
+    lazy.addListener('tabs', 'onUpdated', (...a) => received.push(a));
     expect(received).toEqual([]);
     browser.tabs.onUpdated.trigger('post');
     expect(received).toEqual([['post']]);
   });
 
-  test('mid-flush removal on last buffered call does not re-add lazy listener', () => {
+  it('mid-flush removal on last buffered call does not re-add lazy listener', () => {
     const browser = buildMockBrowser({ runtime: ['onMessage'] });
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onMessage'] });
     browser.runtime.onMessage.trigger('one');
@@ -319,23 +314,22 @@ describe('ExtensionLazyListener', () => {
     const cb = jest.fn((v: string) => {
       received.push(v);
       if (v === 'two') {
-        browser.runtime.onMessage.removeListener(cb as any); // remove on last call
+        browser.runtime.onMessage.removeListener(cb); // remove on last call
       }
     });
-    lazy.addListener('runtime', 'onMessage', cb as any);
+    lazy.addListener('runtime', 'onMessage', cb);
     expect(received).toEqual(['one', 'two']);
     // Fire another event while no listener is attached and ensure it is NOT buffered
     browser.runtime.onMessage.trigger('gap');
     const later: any[] = [];
-    lazy.addListener('runtime', 'onMessage', ((v: string) =>
-      later.push(v)) as any);
+    lazy.addListener('runtime', 'onMessage', (v: string) => later.push(v));
     // 'gap' should not appear because lazy listener was not re-added.
     expect(later).toEqual([]);
     browser.runtime.onMessage.trigger('after');
     expect(later).toEqual(['after']);
   });
 
-  test('error thrown on last buffered call does not re-add lazy listener', () => {
+  it('error thrown on last buffered call does not re-add lazy listener', () => {
     const browser = buildMockBrowser({ runtime: ['onSuspend'] });
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onSuspend'] });
     browser.runtime.onSuspend.trigger('x');
@@ -347,19 +341,18 @@ describe('ExtensionLazyListener', () => {
       }
     });
     expect(() => {
-      lazy.addListener('runtime', 'onSuspend', throwing as any);
+      lazy.addListener('runtime', 'onSuspend', throwing);
     }).toThrow(err);
     // Fire another event while no listener attached: should not be buffered
     browser.runtime.onSuspend.trigger('gap');
     const later: string[] = [];
-    lazy.addListener('runtime', 'onSuspend', ((v: string) =>
-      later.push(v)) as any);
+    lazy.addListener('runtime', 'onSuspend', (v: string) => later.push(v));
     expect(later).toEqual([]);
     browser.runtime.onSuspend.trigger('after');
     expect(later).toEqual(['after']);
   });
 
-  test('once with single buffered call removes tracker completely (length===1 branch)', async () => {
+  it('once with single buffered call removes tracker completely (length===1 branch)', async () => {
     const browser = buildMockBrowser({ runtime: ['onInstalled'] });
     const lazy = new ExtensionLazyListener(browser, {
       runtime: ['onInstalled'],
@@ -376,7 +369,7 @@ describe('ExtensionLazyListener', () => {
     await expect(secondPromise).resolves.toEqual(['new']);
   });
 
-  test('memory leak warning includes buffered count', () => {
+  it('memory leak warning includes buffered count', () => {
     jest.useFakeTimers();
     const browser = buildMockBrowser({ runtime: ['onMessage'] });
     const timeout = 250;
@@ -398,7 +391,7 @@ describe('ExtensionLazyListener', () => {
     expect(spy.mock.calls[0][0]).toMatch(/2 buffered calls/u);
   });
 
-  test('constructor with empty options does not schedule any leak warnings', () => {
+  it('constructor with empty options does not schedule any leak warnings', () => {
     jest.useFakeTimers();
     const browser = buildMockBrowser({ runtime: ['onMessage'] });
     const instance = new ExtensionLazyListener(browser, {}, 200);
@@ -410,16 +403,89 @@ describe('ExtensionLazyListener', () => {
     expect(errorSpy).not.toHaveBeenCalled();
   });
 
-  test('addListener with zero buffered calls (tracker exists, empty args) does not flush and delivers subsequent emissions', () => {
+  it('addListener with zero buffered calls (tracker exists, empty args) does not flush and delivers subsequent emissions', () => {
     const browser = buildMockBrowser({ runtime: ['onMessage'] });
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onMessage'] });
     const cb = jest.fn();
     // No pre-triggering; tracker args length = 0
-    lazy.addListener('runtime', 'onMessage', cb as any);
+    lazy.addListener('runtime', 'onMessage', cb);
     expect(cb).not.toHaveBeenCalled(); // no flush
     // Now emit; should deliver directly
     browser.runtime.onMessage.trigger('later');
     expect(cb).toHaveBeenCalledTimes(1);
     expect(cb).toHaveBeenCalledWith('later');
+  });
+
+  describe('types', () => {
+    const browser = buildMockBrowser({ runtime: ['onMessage' as const] });
+
+    it('constructor enforces types for tracked namespaces and events', () => {
+      let instance = new ExtensionLazyListener(browser as unknown as Browser, {
+        // valid namespace and event
+        runtime: ['onInstalled', 'onMessage'],
+        tabs: ['onUpdated'],
+        // @ts-expect-error - invalid namespace
+        invalidNamespace: ['onFoo'],
+      });
+
+      instance = new ExtensionLazyListener(browser as unknown as Browser, {
+        alarms: [
+          'onAlarm',
+          // @ts-expect-error - invalid param
+          'onMessage',
+        ],
+      });
+
+      instance = new ExtensionLazyListener(browser as unknown as Browser, {
+        urlbar: [
+          'onResultPicked',
+          // @ts-expect-error - `onResultsRequested` doesn't have a listener with
+          // a return type of `void`, and so it is not permitted by the type
+          // system.
+          'onResultsRequested',
+        ],
+      });
+    });
+
+    it('`once` enforces types for tracked namespaces and events', () => {
+      const instance = new ExtensionLazyListener(browser as unknown as Browser);
+
+      function onMessageGood(args: [any, Runtime.MessageSender, () => void]) {
+        // intentionally empty
+      }
+      // valid
+      instance.once('runtime', 'onMessage').then(onMessageGood);
+      function onMessageBad(args: [any, 'not the right type', () => void]) {
+        // intentionally empty
+      }
+      // @ts-expect-error - onMessageBad is the wrong type
+      instance.once('runtime', 'onMessage').then(onMessageBad);
+      expect(true).toBe(true);
+    });
+
+    it('`addListener` enforces types for tracked namespaces and events', () => {
+      const instance = new ExtensionLazyListener(browser as unknown as Browser);
+
+      function onMessageGood(
+        _msg: any,
+        _sender: Runtime.MessageSender,
+        _sendResponse: () => void,
+      ) {
+        // intentionally empty
+      }
+      // valid
+      instance.addListener('runtime', 'onMessage', onMessageGood);
+      function onMessageBad(
+        msg: any,
+        sender: 'not the right type',
+        sendResponse: () => void,
+      ) {
+        // intentionally empty
+      }
+
+      // @ts-expect-error - onMessageBad is the wrong type
+      instance.addListener('runtime', 'onMessage', onMessageBad);
+      expect(true).toBe(true);
+    });
   });
 });
