@@ -200,6 +200,7 @@ import {
   isGatorPermissionsFeatureEnabled,
 } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { getShieldGatewayConfig } from '../../shared/modules/shield';
 import {
   HYPERLIQUID_ORIGIN,
@@ -4802,13 +4803,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {Provider} provider - The provider instance to use when asking the network
    */
   async getBalance(address, provider) {
-    // TODO We should not rely on global chain id
     const accounts =
       this.accountTrackerController.state.accountsByChainId[
         this.#getGlobalChainId()
       ];
-    // TODO - Checksum?
-    const cached = accounts?.[address];
+    const cached = accounts?.[toChecksumHexAddress(address)];
 
     if (cached && cached.balance) {
       return cached.balance;
@@ -5320,7 +5319,6 @@ export default class MetamaskController extends EventEmitter {
 
     const internalAccountCount = internalAccounts.length;
 
-    // TODO We should not rely on global chain id
     const accountsForCurrentChain =
       this.accountTrackerController.state.accountsByChainId[
         this.#getGlobalChainId()
@@ -7683,9 +7681,8 @@ export default class MetamaskController extends EventEmitter {
       ),
       // Other dependencies
       getAccountBalance: (account, chainId) =>
-        // TODO - Checksum?
         this.accountTrackerController.state.accountsByChainId?.[chainId]?.[
-          account
+          toChecksumHexAddress(account)
         ]?.balance,
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),

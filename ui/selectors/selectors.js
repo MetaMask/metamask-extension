@@ -662,7 +662,6 @@ export function getHDEntropyIndex(state) {
   return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
 
-// TODO ACT MIGRATION - CHECK FOR CASE ON REFERENCES
 /**
  * Get account balances state.
  *
@@ -671,10 +670,18 @@ export function getHDEntropyIndex(state) {
  */
 export function getMetaMaskAccountBalances(state) {
   const currentChainId = getCurrentChainId(state);
-  return state.metamask?.accountsByChainId?.[currentChainId] ?? {};
+  const balancesForCurrentChain =
+    state.metamask?.accountsByChainId?.[currentChainId] ?? {};
+
+  return Object.entries(balancesForCurrentChain).reduce(
+    (acc, [address, value]) => {
+      acc[toChecksumHexAddress(address)] = value;
+      return acc;
+    },
+    {},
+  );
 }
 
-// TODO ACT MIGRATION - CHECK FOR USAGE
 export function getMetaMaskCachedBalances(state, networkChainId) {
   const enabledNetworks = getEnabledNetworks(state);
   const eip155 = enabledNetworks?.eip155 ?? {};
@@ -684,7 +691,7 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
     if (state.metamask.accountsByChainId?.[chainId]) {
       return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
         (accumulator, [key, value]) => {
-          accumulator[key] = value.balance;
+          accumulator[key.toLowerCase()] = value.balance;
           return accumulator;
         },
         {},
@@ -707,14 +714,13 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
   return {};
 }
 
-// TODO ACT MIGRATION - CHECK FOR USAGE
 export function getCrossChainMetaMaskCachedBalances(state) {
   const allAccountsByChainId = state.metamask.accountsByChainId;
-  return Object.keys(allAccountsByChainId).reduce((acc, topLevelKey) => {
-    acc[topLevelKey] = Object.keys(allAccountsByChainId[topLevelKey]).reduce(
-      (innerAcc, innerKey) => {
-        innerAcc[innerKey] =
-          allAccountsByChainId[topLevelKey][innerKey].balance;
+  return Object.keys(allAccountsByChainId).reduce((acc, chainId) => {
+    acc[chainId] = Object.keys(allAccountsByChainId[chainId]).reduce(
+      (innerAcc, address) => {
+        innerAcc[address.toLowerCase()] =
+          allAccountsByChainId[chainId][address].balance;
         return innerAcc;
       },
       {},
@@ -724,7 +730,6 @@ export function getCrossChainMetaMaskCachedBalances(state) {
   }, {});
 }
 
-// TODO ACT MIGRATION - CHECK FOR USAGE
 /**
  * Based on the current account address, return the balance for the native token of all chain networks on that account
  *
@@ -735,17 +740,15 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
   const { accountsByChainId } = state.metamask;
   const { address: selectedAddress } = getSelectedEvmInternalAccount(state);
 
-  console.log('DEBUG XXX 3', {
-    accountsByChainId,
-    selectedAddress,
-  });
+  const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
 
   const balancesByChainId = {};
   for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
-    if (accounts[selectedAddress]) {
-      balancesByChainId[chainId] = accounts[selectedAddress].balance;
+    if (accounts[checksummedSelectedAddress]) {
+      balancesByChainId[chainId] = accounts[checksummedSelectedAddress].balance;
     }
   }
+
   return balancesByChainId;
 }
 
@@ -840,7 +843,6 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
     getTokensAcrossChainsByAccountAddress(state, accountAddress),
 );
 
-// TODO ACT MIGRATION - CHECK FOR USAGE
 /**
  * Get the native token balance for a given account address and chainId
  *
@@ -853,10 +855,12 @@ export function getNativeTokenCachedBalanceByChainIdByAccountAddress(
 ) {
   const { accountsByChainId } = state.metamask;
 
+  const lowercaseSelectedAddress = selectedAddress?.toLowerCase();
+
   const balancesByChainId = {};
   for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
-    if (accounts[selectedAddress]) {
-      balancesByChainId[chainId] = accounts[selectedAddress].balance;
+    if (accounts[lowercaseSelectedAddress]) {
+      balancesByChainId[chainId] = accounts[lowercaseSelectedAddress].balance;
     }
   }
   return balancesByChainId;
