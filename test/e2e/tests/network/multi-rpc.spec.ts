@@ -269,7 +269,7 @@ describe('MultiRpc:', function (this: Suite) {
               '2ce66016-8aab-47df-b27f-318c80865eb0': {
                 chainId: '0xa4b1',
                 id: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                nickname: 'Arbitrum mainnet',
+                nickname: 'Arbitrum',
                 rpcPrefs: {},
                 rpcUrl: 'https://arbitrum-mainnet.infura.io',
                 ticker: 'ETH',
@@ -310,9 +310,9 @@ describe('MultiRpc:', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        // await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
 
-        // await homePage.closeUseNetworkNotificationModal();
+        await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog
         await switchToEditRPCViaGlobalMenuNetworks(driver);
