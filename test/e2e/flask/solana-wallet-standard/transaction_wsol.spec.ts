@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
-import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 import {
   clickConfirmButton,
@@ -16,9 +16,6 @@ describe('Solana Wallet Standard - Transfer WSOL', function () {
           ...DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
           title: this.test?.fullTitle(),
           mockGetTransactionSuccess: true,
-          // FIXME: We have to disable this one, since this mock is too "generic" and would
-          // "mock" the actual `getAccountInfo` request used by the dapp.
-          mockTokenAccountAccountInfo: false,
           walletConnect: false,
         },
         async (driver) => {
