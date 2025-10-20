@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /*
  * Tests for ExtensionLazyListener
  */
@@ -9,11 +10,9 @@ import {
   Entries,
 } from './extension-lazy-listener.types';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MockListener = (...args: any[]) => void;
 
 class MockEvent
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   implements Partial<import('webextension-polyfill').Events.Event<any>>
 {
   private listeners: MockListener[] = [];
