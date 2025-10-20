@@ -778,11 +778,6 @@ export function getSelectedAccountTokensAcrossChains(state) {
     ...Object.keys(nativeTokenBalancesByChainId || {}),
   ]);
 
-  console.log('DEBUG XXX 2', {
-    nativeTokenBalancesByChainId,
-    chainIds,
-  });
-
   chainIds.forEach((chainId) => {
     if (!tokensByChain[chainId]) {
       tokensByChain[chainId] = [];
