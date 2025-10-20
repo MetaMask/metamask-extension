@@ -1,4 +1,4 @@
-import { Driver } from '../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 class MultichainWalletDetailsPage {
   private readonly driver: Driver;
@@ -7,10 +7,10 @@ class MultichainWalletDetailsPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(walletName: string): Promise<void> {
     await this.driver.waitForSelector({
       css: 'h4',
-      text: 'Wallet details',
+      text: `${walletName} / Accounts`,
     });
   }
 }
