@@ -43,6 +43,7 @@ import {
   getDefaultTransport,
 } from '@metamask/multichain-api-client';
 import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
+import { registerBitcoinSatsConnectWalletStandard } from '@metamask/bitcoin-wallet-standard';
 
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 import { METAMASK_EIP_1193_PROVIDER } from './constants/stream';
@@ -119,11 +120,21 @@ if (shouldInjectProvider()) {
     },
   });
 
-  const multichainClient = getMultichainClient({
+  // Solana Wallet Standard registration
+  const solanaMultichainClient = getMultichainClient({
     transport: getDefaultTransport(),
   });
   registerSolanaWalletStandard({
-    client: multichainClient,
+    client: solanaMultichainClient,
+    walletName: process.env.METAMASK_BUILD_NAME,
+  });
+
+  // Bitcoin SatsConnect Wallet Standard registration
+  const btcMultichainClient = getMultichainClient({
+    transport: getDefaultTransport(),
+  });
+  registerBitcoinSatsConnectWalletStandard({
+    client: btcMultichainClient,
     walletName: process.env.METAMASK_BUILD_NAME,
   });
 }
