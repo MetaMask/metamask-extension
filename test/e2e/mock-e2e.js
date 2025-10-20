@@ -188,6 +188,17 @@ async function setupMocking(
       };
     });
 
+  await server
+    .forGet(
+      'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [],
+      };
+    });
+
   // User Profile Lineage
   await server
     .forGet('https://authentication.api.cx.metamask.io/api/v2/profile/lineage')
@@ -1145,30 +1156,6 @@ async function setupMocking(
       /^wss:\/\/solana-(mainnet|devnet)\.infura\.io\//u.test(req.url),
     )
     .thenForwardTo('ws://localhost:8088');
-
-  // Subscriptions
-  await server
-    .forGet(
-      'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
-    )
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: [],
-      };
-    });
-
-  await server
-    .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          subscriptions: [],
-          trialedProducts: [],
-        },
-      };
-    });
 
   // Test Dapp Styles
   const TEST_DAPP_STYLES_1 = fs.readFileSync(TEST_DAPP_STYLES_1_PATH);

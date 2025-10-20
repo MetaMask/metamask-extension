@@ -137,7 +137,9 @@ class HomePage {
   }
 
   async clickSkipShieldModalButton(): Promise<void> {
-    await this.driver.clickElementSafe(this.skipShieldModalButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.skipShieldModalButton,
+    );
   }
 
   async closeSurveyToast(surveyName: string): Promise<void> {

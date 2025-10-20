@@ -56,6 +56,7 @@ async function mockSubscriptionApiCalls(
       .forGet(
         'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
       )
+      .always()
       .thenJson(200, [
         {
           canSubscribe: !overrides?.mockNotEligible,

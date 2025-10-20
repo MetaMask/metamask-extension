@@ -323,7 +323,7 @@ describe('MultiRpc:', function (this: Suite) {
     );
   });
 
-  it('should select rpc from settings', async function () {
+  it.only('should select rpc from settings', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
       return [
         await mockServer
@@ -366,7 +366,7 @@ describe('MultiRpc:', function (this: Suite) {
                 chainId: '0xa4b1',
                 defaultBlockExplorerUrlIndex: 0,
                 defaultRpcEndpointIndex: 0,
-                name: 'Arbitrum One',
+                name: 'Arbitrum',
                 nativeCurrency: 'ETH',
                 rpcEndpoints: [
                   {
@@ -431,9 +431,9 @@ describe('MultiRpc:', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        // await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
 
-        // await homePage.closeUseNetworkNotificationModal();
+        await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog
         await switchToEditRPCViaGlobalMenuNetworks(driver);
