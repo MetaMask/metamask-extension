@@ -157,23 +157,31 @@ export const NetworkControllerInit: ControllerInitFunction<
   };
 
   const getRpcServiceOptions = (rpcEndpointUrl: string) => {
-    const maxRetries = 4;
+    // This is the default, but we define it here to be explicit.
+    // Note that the total number of attempts is 1 more than this.
+    const maxRetries = 3;
     const commonOptions = {
       fetch: globalThis.fetch.bind(globalThis),
       btoa: globalThis.btoa.bind(globalThis),
+      maxRetries,
+    };
+    const commonPolicyOptions = {
+      // Ensure that the "cooldown" period after breaking the circuit is short.
+      circuitBreakDuration: 30 * SECOND,
     };
 
     if (getIsQuicknodeEndpointUrl(rpcEndpointUrl)) {
       return {
         ...commonOptions,
         policyOptions: {
-          maxRetries,
-          // When we fail over to Quicknode, we expect it to be down at
-          // first while it is being automatically activated. If an endpoint
-          // is down, the failover logic enters a "cooldown period" of 30
-          // minutes. We'd really rather not enter that for Quicknode, so
-          // keep retrying longer.
-          maxConsecutiveFailures: (maxRetries + 1) * 14,
+          ...commonPolicyOptions,
+          // The number of rounds of retries that will break the circuit,
+          // triggering a "cooldown".
+          //
+          // When we fail over to QuickNode, we expect it to be down at first
+          // while it is being automatically activated, and we don't want to
+          // activate the "cooldown" accidentally.
+          maxConsecutiveFailures: (maxRetries + 1) * 10,
         },
       };
     }
@@ -181,9 +189,15 @@ export const NetworkControllerInit: ControllerInitFunction<
     return {
       ...commonOptions,
       policyOptions: {
-        maxRetries,
-        // Ensure that the circuit does not break too quickly.
-        maxConsecutiveFailures: (maxRetries + 1) * 7,
+        ...commonPolicyOptions,
+        // Ensure that if the endpoint continually responds with errors, we
+        // break the circuit relatively fast (but not prematurely).
+        //
+        // Note that the circuit will break much faster if the errors are
+        // retriable (e.g. 503) than if not (e.g. 500), so we attempt to strike
+        // a balance here. (In testing, it takes about 1 minute to break the
+        // circuit with a continual non-retriable error.)
+        maxConsecutiveFailures: (maxRetries + 1) * 2,
       },
     };
   };
