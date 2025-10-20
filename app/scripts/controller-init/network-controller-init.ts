@@ -168,11 +168,11 @@ export const NetworkControllerInit: ControllerInitFunction<
         ...commonOptions,
         policyOptions: {
           maxRetries,
-          // When we fail over to Quicknode, we expect it to be down at
-          // first while it is being automatically activated. If an endpoint
-          // is down, the failover logic enters a "cooldown period" of 30
-          // minutes. We'd really rather not enter that for Quicknode, so
-          // keep retrying longer.
+          // When we fail over to Quicknode, we expect it to be down at first
+          // while it is being automatically activated. If an endpoint is down,
+          // the failover logic enters a "cooldown period" for a period of time.
+          // We'd really rather not enter that for Quicknode, so keep retrying
+          // for longer.
           maxConsecutiveFailures: (maxRetries + 1) * 14,
         },
       };
@@ -183,7 +183,7 @@ export const NetworkControllerInit: ControllerInitFunction<
       policyOptions: {
         maxRetries,
         // Ensure that the circuit does not break too quickly.
-        maxConsecutiveFailures: (maxRetries + 1) * 7,
+        maxConsecutiveFailures: (maxRetries + 1) * 4,
       },
     };
   };
