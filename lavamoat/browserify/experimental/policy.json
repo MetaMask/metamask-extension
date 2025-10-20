@@ -1019,6 +1019,7 @@
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
+        "lodash": true,
         "uuid": true
       }
     },
