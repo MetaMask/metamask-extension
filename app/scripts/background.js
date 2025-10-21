@@ -298,8 +298,6 @@ function maybeDetectPhishing(theController) {
         return {};
       }
 
-      console.log('details', details);
-
       const { completedOnboarding } = theController.onboardingController.state;
       if (!completedOnboarding) {
         return {};
