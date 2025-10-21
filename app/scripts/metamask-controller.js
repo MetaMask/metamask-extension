@@ -8762,6 +8762,7 @@ export default class MetamaskController extends EventEmitter {
 
   #initControllers({ existingControllers, initFunctions, initState }) {
     const initRequest = {
+      currentMigrationVersion: this.opts.currentMigrationVersion,
       encryptor: this.opts.encryptor,
       extension: this.extension,
       platform: this.platform,
@@ -8769,9 +8770,9 @@ export default class MetamaskController extends EventEmitter {
         this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
-      getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
+      getUIState: this.getState.bind(this),
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       keyringOverrides: this.opts.overrides?.keyrings,
@@ -8786,6 +8787,7 @@ export default class MetamaskController extends EventEmitter {
         this.setupUntrustedCommunicationEip1193.bind(this),
       setLocked: this.setLocked.bind(this),
       showNotification: this.platform._showNotification,
+      showUserConfirmation: this.opts.showUserConfirmation,
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
