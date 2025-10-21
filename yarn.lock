@@ -32356,7 +32356,6 @@ __metadata:
     serve-handler: "npm:^6.1.2"
     ses: "npm:^1.1.0"
     sharp: "npm:^0.34.2"
-    single-call-balance-checker-abi: "npm:^1.0.0"
     sinon: "npm:^9.0.0"
     source-map: "npm:^0.7.4"
     source-map-explorer: "npm:^2.4.2"
