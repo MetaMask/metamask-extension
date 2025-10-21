@@ -345,7 +345,7 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     nickname: 'Tron',
     id: 'tron-mainnet',
     type: 'rpc',
-    decimals: 5,
+    decimals: 6,
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.TRON],
       blockExplorerUrl:
@@ -366,7 +366,7 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     nickname: 'Tron (nile)',
     id: 'tron-nile',
     type: 'rpc',
-    decimals: 5,
+    decimals: 6,
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.TRON_NILE],
       blockExplorerUrl:
@@ -387,7 +387,7 @@ export const MULTICHAIN_PROVIDER_CONFIGS: Record<
     nickname: 'Tron (shasta)',
     id: 'tron-shasta',
     type: 'rpc',
-    decimals: 5,
+    decimals: 6,
     rpcPrefs: {
       imageUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.TRON_SHASTA],
       blockExplorerUrl:

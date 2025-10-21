@@ -139,8 +139,8 @@ describe('useSendType', () => {
       isBitcoinSendType: false,
       isEvmNativeSendType: false,
       isEvmSendType: false,
-      isNonEvmNativeSendType: false,
-      isNonEvmSendType: false,
+      isNonEvmNativeSendType: true,
+      isNonEvmSendType: true,
       isSolanaSendType: false,
       isTronSendType: true,
     });

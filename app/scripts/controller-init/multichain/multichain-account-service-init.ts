@@ -42,6 +42,12 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     new BtcAccountProvider(controllerMessenger),
   );
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const trxProvider = new AccountProviderWrapper(
+    controllerMessenger,
+    new TrxAccountProvider(controllerMessenger),
+  );
+  ///: END:ONLY_INCLUDE_IF
 
   const controller = new MultichainAccountService({
     messenger: controllerMessenger,
@@ -50,7 +56,7 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
       btcProvider,
       ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(tron)
-      new TrxAccountProvider(controllerMessenger),
+      trxProvider,
       ///: END:ONLY_INCLUDE_IF
     ],
   });

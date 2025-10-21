@@ -15,7 +15,7 @@ export const isTronChainId = (chainId: Hex | number | CaipChainId | string) => {
     return [
       TrxScope.Mainnet.toString(),
       TrxScope.Nile.toString(),
-      TrxScope.Shasta.toString()
+      TrxScope.Shasta.toString(),
     ].includes(chainId);
   }
   return false;

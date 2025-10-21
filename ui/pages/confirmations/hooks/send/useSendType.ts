@@ -37,13 +37,20 @@ export const useSendType = () => {
       isBitcoinSendType,
       isEvmSendType,
       isEvmNativeSendType: isEvmSendType && assetIsNative,
-      isNonEvmSendType: isSolanaSendType || isBitcoinSendType,
+      isNonEvmSendType: isSolanaSendType || isBitcoinSendType || isTronSendType,
       isNonEvmNativeSendType:
         (isSolanaSendType && assetIsNative) ||
-        (isBitcoinSendType && assetIsNative),
+        (isBitcoinSendType && assetIsNative) ||
+        (isTronSendType && assetIsNative),
       isSolanaSendType,
       isTronSendType,
     }),
-    [isEvmSendType, isSolanaSendType, assetIsNative, isBitcoinSendType],
+    [
+      isEvmSendType,
+      isSolanaSendType,
+      assetIsNative,
+      isBitcoinSendType,
+      isTronSendType,
+    ],
   );
 };

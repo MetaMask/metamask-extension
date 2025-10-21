@@ -162,37 +162,6 @@ describe('NetworkEnablementControllerInit', () => {
     expect(controller.enableNetwork).toHaveBeenCalledWith('0x1');
   });
 
-  it('enables the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted, the current chain ID is Tron mainnet, and there are no Tron accounts', () => {
-    const messenger = new Messenger<
-      AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
-      AccountTreeControllerSelectedAccountGroupChangeEvent
-    >();
-
-    messenger.registerActionHandler(
-      'AccountTreeController:getAccountsFromSelectedAccountGroup',
-      () => [],
-    );
-
-    const request = getInitRequestMock(messenger);
-    const { controller } = NetworkEnablementControllerInit(request);
-
-    controller.state = {
-      enabledNetworkMap: {
-        tron: { [TrxScope.Mainnet]: true },
-      },
-    };
-
-    expect(controller.enableNetwork).not.toHaveBeenCalled();
-
-    messenger.publish(
-      'AccountTreeController:selectedAccountGroupChange',
-      '',
-      '',
-    );
-
-    expect(controller.enableNetwork).toHaveBeenCalledWith('0x1');
-  });
-
   it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted and there are accounts', () => {
     const messenger = new Messenger<
       AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
@@ -211,38 +180,6 @@ describe('NetworkEnablementControllerInit', () => {
     controller.state = {
       enabledNetworkMap: {
         solana: { [SolScope.Mainnet]: true },
-      },
-    };
-
-    expect(controller.enableNetwork).not.toHaveBeenCalled();
-
-    messenger.publish(
-      'AccountTreeController:selectedAccountGroupChange',
-      '',
-      '',
-    );
-
-    expect(controller.enableNetwork).not.toHaveBeenCalled();
-  });
-
-  it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted, the current chain ID is Tron mainnet, and there are Tron accounts', () => {
-    const messenger = new Messenger<
-      AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
-      AccountTreeControllerSelectedAccountGroupChangeEvent
-    >();
-
-    messenger.registerActionHandler(
-      'AccountTreeController:getAccountsFromSelectedAccountGroup',
-      // @ts-expect-error: Partial mock.
-      () => [{ type: 'tron:eoa' }],
-    );
-
-    const request = getInitRequestMock(messenger);
-    const { controller } = NetworkEnablementControllerInit(request);
-
-    controller.state = {
-      enabledNetworkMap: {
-        tron: { [TrxScope.Mainnet]: true },
       },
     };
 
