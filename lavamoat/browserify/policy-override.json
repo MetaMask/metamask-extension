@@ -68,6 +68,44 @@
       "globals": {
         "crypto": true
       }
+    },
+    "@rive-app/react-canvas>@rive-app/canvas": {
+      "globals": {
+        "Blob": true,
+        "DOMMatrix": false,
+        "HTMLCanvasElement": true,
+        "Image": true,
+        "Path2D": true,
+        "Request": false,
+        "TextDecoder": true,
+        "URL.createObjectURL": true,
+        "URL.revokeObjectURL": true,
+        "WebAssembly": true,
+        "XMLHttpRequest": false,
+        "cancelAnimationFrame": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "document.createElement": true,
+        "fetch": false,
+        "navigator.userAgent": true,
+        "performance.now": false,
+        "requestAnimationFrame": true,
+        "setTimeout": true
+      }
+    },
+    "@rive-app/react-canvas": {
+      "globals": {
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "document.documentElement.clientHeight": true,
+        "document.documentElement.clientWidth": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      }
     }
   }
 }
