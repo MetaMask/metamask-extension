@@ -363,32 +363,36 @@ function maybeDetectPhishing(theController) {
         blockedUrl = details.initiator;
       }
 
-      if (!isFirefox) {
-        theController.metaMetricsController.trackEvent(
-          {
-            // should we differentiate between background redirection and content script redirection?
-            event: MetaMetricsEventName.PhishingPageDisplayed,
-            category: MetaMetricsEventCategory.Phishing,
-            properties: {
-              url: blockedUrl,
-              referrer: {
-                url: blockedUrl,
-              },
-              reason: blockReason,
-              requestDomain: blockedRequestResponse.result
-                ? hostname
-                : undefined,
-            },
-          },
-          {
-            excludeMetaMetricsId: true,
-          },
-        );
-      }
       const querystring = new URLSearchParams({ hostname, href });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
       const redirectHref = redirectUrl.toString();
+
+      // Helper function to track phishing page metrics
+      const trackPhishingMetrics = () => {
+        if (!isFirefox) {
+          theController.metaMetricsController.trackEvent(
+            {
+              // should we differentiate between background redirection and content script redirection?
+              event: MetaMetricsEventName.PhishingPageDisplayed,
+              category: MetaMetricsEventCategory.Phishing,
+              properties: {
+                url: blockedUrl,
+                referrer: {
+                  url: blockedUrl,
+                },
+                reason: blockReason,
+                requestDomain: blockedRequestResponse.result
+                  ? hostname
+                  : undefined,
+              },
+            },
+            {
+              excludeMetaMetricsId: true,
+            },
+          );
+        }
+      };
 
       // blocking is better than tab redirection, as blocking will prevent
       // the browser from loading the page at all
@@ -397,13 +401,19 @@ function maybeDetectPhishing(theController) {
         // For non-`main_frame` requests (e.g. `sub_frame` or WebSocket), we cancel them
         // and redirect the whole tab asynchronously so that the user sees the warning.
         if (details.type === 'main_frame') {
+          trackPhishingMetrics();
           return { redirectUrl: redirectHref };
         }
-        redirectTab(details.tabId, redirectHref);
+        // Track metrics only after successful redirect
+        redirectTab(details.tabId, redirectHref).then(() => {
+          trackPhishingMetrics();
+        });
         return { cancel: true };
       }
-      // redirect the whole tab (even if it's a sub_frame request)
-      redirectTab(details.tabId, redirectHref);
+      // Track metrics only after successful redirect
+      redirectTab(details.tabId, redirectHref).then(() => {
+        trackPhishingMetrics();
+      });
       return {};
     },
     {
