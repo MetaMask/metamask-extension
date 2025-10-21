@@ -32,7 +32,7 @@ export function useDappSwapComparisonInfo() {
   } = currentConfirmation ?? {
     txParams: {},
   };
-  const { data, gas, maxFeePerGas, value: amount } = txParams ?? {};
+  const { data, gas, maxFeePerGas } = txParams ?? {};
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const captureDappSwapComparisonMetricsProperties = useCallback(
@@ -52,7 +52,7 @@ export function useDappSwapComparisonInfo() {
 
   const { quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     return getDataFromSwap(chainId, data);
-  }, [chainId, amount, data]);
+  }, [chainId, data]);
 
   const { value: erc20FiatRates } = useAsyncResult<ContractExchangeRates>(
     () => fetchTokenExchangeRates('usd', tokenAddresses, chainId),
