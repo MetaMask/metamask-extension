@@ -36,12 +36,11 @@ export function useDappSwapComparisonInfo() {
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const captureDappSwapComparisonMetricsProperties = useCallback(
-    (properties: Record<string, string> | string) => {
+    (properties: Record<string, string> | string[]) => {
       updateTransactionEventFragment(
         {
           properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            dapp_swap_comparison: properties,
+            ...properties,
           },
         },
         transactionId,
@@ -124,7 +123,7 @@ export function useDappSwapComparisonInfo() {
       return undefined;
     }
 
-    captureDappSwapComparisonMetricsProperties('loading');
+    captureDappSwapComparisonMetricsProperties(['loading']);
 
     return await fetchQuotes(quotesInput);
   }, [captureDappSwapComparisonMetricsProperties, quotesInput]);
