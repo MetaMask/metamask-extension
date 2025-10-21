@@ -16,14 +16,16 @@ import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
-import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Snap Account Transfers', function (this: Suite) {
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSimpleKeyringSnap,
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
+        dapp: true,
+        dappPaths: ['snap-simple-keyring-site'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -65,7 +67,9 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSimpleKeyringSnap,
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
+        dapp: true,
+        dappPaths: ['snap-simple-keyring-site'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -108,7 +112,9 @@ describe('Snap Account Transfers', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSimpleKeyringSnap,
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
+        dapp: true,
+        dappPaths: ['snap-simple-keyring-site'],
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },

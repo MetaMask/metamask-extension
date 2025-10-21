@@ -32,7 +32,7 @@ exports[`Bridge renders the component with initial props 1`] = `
           <h4
             class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
-            Bridge
+            Swap
           </h4>
         </div>
         <div

@@ -3,7 +3,6 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { act, fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
 import { SimulationTokenStandard } from '@metamask/transaction-controller';
-import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import { createTestProviderTools } from '../../../stub/provider';
@@ -20,17 +19,7 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
-jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
-  ...jest.requireActual(
-    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
-  ),
-  useAssetDetails: jest.fn().mockResolvedValue({
-    decimals: '4',
-  }),
-}));
-
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
-const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -285,14 +274,13 @@ describe('Contract Interaction Confirmation Alerts', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
-    setupSubmitRequestToBackgroundMocks();
+    setupSubmitRequestToBackgroundMocks({
+      getTokenStandardAndDetailsByChain: {
+        decimals: '4',
+      },
+    });
     const APPROVE_NFT_HEX_SIG = '0x095ea7b3';
     mock4byte(APPROVE_NFT_HEX_SIG);
-    mockedAssetDetails.mockImplementation(() => ({
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      decimals: '4' as any,
-    }));
   });
 
   afterEach(() => {
