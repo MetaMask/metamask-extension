@@ -173,6 +173,7 @@ async function mocked4BytesResponse(mockServer: MockttpServer) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x3b4b1381' })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
