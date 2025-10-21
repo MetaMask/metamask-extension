@@ -3052,7 +3052,7 @@ export function getUsePhishDetect(state) {
  * Gets the cached address security alert response for a given address
  *
  * @param {*} state
- * @param {string} cacheKey - The cache key in format "chainId:address" to get security alert for
+ * @param {string} cacheKey - The cache key in format "chain:address" to get security alert for
  * @returns the cached address security alert response for the given cache key
  */
 export function getAddressSecurityAlertResponse(state, cacheKey) {
