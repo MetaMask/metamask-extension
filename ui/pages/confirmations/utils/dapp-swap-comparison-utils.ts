@@ -92,8 +92,7 @@ function parseTransactionData(data?: string) {
   return { inputs, commandBytes };
 }
 
-export function getDataFromSwap(chainId: Hex, amount?: string, data?: string) {
-  let quotesInput;
+export function getDataFromSwap(chainId: Hex, data?: string) {
   let amountMin;
   const tokenAddresses = [];
   const { commandBytes, inputs } = parseTransactionData(data);
@@ -127,7 +126,7 @@ export function getDataFromSwap(chainId: Hex, amount?: string, data?: string) {
     amountMin = argToAmount(unwrapWethArgs[1]);
   }
 
-  quotesInput = {
+  const quotesInput = {
     walletAddress: argToAddress(
       unwrapWethArgs[0] ?? sweepArgs[1] ?? seaportArgs[28],
     ),

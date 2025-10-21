@@ -51,7 +51,7 @@ export function useDappSwapComparisonInfo() {
   );
 
   const { quotesInput, amountMin, tokenAddresses } = useMemo(() => {
-    return getDataFromSwap(chainId, amount, data);
+    return getDataFromSwap(chainId, data);
   }, [chainId, amount, data]);
 
   const { value: erc20FiatRates } = useAsyncResult<ContractExchangeRates>(
