@@ -1,12 +1,13 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { getAddressBookControllerMessenger } from './address-book-controller-messenger';
+import { getRootMessenger } from '.';
 
 describe('getAddressBookControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const addressBookControllerMessenger =
       getAddressBookControllerMessenger(messenger);
 
-    expect(addressBookControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(addressBookControllerMessenger).toBeInstanceOf(Messenger);
   });
 });

@@ -5535,14 +5535,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/address-book-controller@npm:^6.1.0":
-  version: 6.1.0
-  resolution: "@metamask/address-book-controller@npm:6.1.0"
+"@metamask/address-book-controller@npm:@metamask-previews/address-book-controller@6.2.0-preview-e9856975":
+  version: 6.2.0-preview-e9856975
+  resolution: "@metamask-previews/address-book-controller@npm:6.2.0-preview-e9856975"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/controller-utils": "npm:^11.9.0"
-    "@metamask/utils": "npm:^11.2.0"
-  checksum: 10/cff80c760cafbf4698c33e6d39cff2678b4c83df6f2609a5e235db48ef0dbda7f179537e5a1eb6eadac2ac3ebc94731ff12e50e0a7a033fbea2b5a759b955d8d
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
+  checksum: 10/e238e6db8e958640bb1237e1ef2617b32d87ac98a206a03238875b8474a53fe1b78a8a723769ab5e559628f22f5a0ab47ec46175709e935a2efe44281a2b4c26
   languageName: node
   linkType: hard
 
@@ -5844,7 +5845,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.11.0, @metamask/controller-utils@npm:^11.12.0, @metamask/controller-utils@npm:^11.14.0, @metamask/controller-utils@npm:^11.14.1, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0, @metamask/controller-utils@npm:^11.9.0":
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.11.0, @metamask/controller-utils@npm:^11.12.0, @metamask/controller-utils@npm:^11.14.0, @metamask/controller-utils@npm:^11.14.1, @metamask/controller-utils@npm:^11.3.0, @metamask/controller-utils@npm:^11.5.0":
   version: 11.14.1
   resolution: "@metamask/controller-utils@npm:11.14.1"
   dependencies:
@@ -8236,7 +8237,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.2.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.7.0, @metamask/utils@npm:^11.8.0, @metamask/utils@npm:^11.8.1":
+"@metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.7.0, @metamask/utils@npm:^11.8.0, @metamask/utils@npm:^11.8.1":
   version: 11.8.1
   resolution: "@metamask/utils@npm:11.8.1"
   dependencies:
