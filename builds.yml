@@ -103,7 +103,7 @@ buildTypes:
       - GOOGLE_CLIENT_ID_REF: GOOGLE_EXPERIMENTAL_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
     isPrerelease: true
-    manifestOverrides: false
+    manifestOverrides: app/build-types/experimental/manifest
     buildNameOverride: MetaMask Experimental
 
   flask:
