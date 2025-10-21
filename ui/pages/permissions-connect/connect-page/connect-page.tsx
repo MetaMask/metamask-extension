@@ -541,7 +541,6 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       <Content
         paddingLeft={4}
         paddingRight={4}
-        paddingTop={4}
         backgroundColor={BackgroundColor.transparent}
       >
         <Tabs defaultActiveTabKey="accounts">
