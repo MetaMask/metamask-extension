@@ -24,8 +24,6 @@ import {
 import { isEqual } from 'lodash';
 import { Tooltip } from 'react-tippy';
 
-import { BoxBackgroundColor } from '@metamask/design-system-react';
-
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPermissions,
@@ -546,14 +544,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         paddingTop={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs
-          onTabClick={() => null}
-          backgroundColor={BoxBackgroundColor.Transparent}
-          defaultActiveTabKey="accounts"
-          tabListProps={{
-            backgroundColor: BoxBackgroundColor.Transparent,
-          }}
-        >
+        <Tabs defaultActiveTabKey="accounts">
           <Tab
             name={t('accounts')}
             tabKey="accounts"
