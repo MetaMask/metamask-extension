@@ -16,7 +16,10 @@ describe('dapp-swap utils', () => {
       const result = getDataFromSwap('0xa4b1', '0x5af3107a4000', sweepData);
       expect(result).toEqual({
         amountMin: '0x60147',
-        erc20TokenAddresses: ['0xaf88d065e77c8cc2239327c5edb3a432268e5831'],
+        tokenAddresses: [
+          '0x0000000000000000000000000000000000000000',
+          '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+        ],
         quotesInput: {
           destChainId: '0xa4b1',
           destTokenAddress: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
@@ -35,7 +38,7 @@ describe('dapp-swap utils', () => {
       const result = getDataFromSwap('0xa4b1', '0x0', seaportData);
       expect(result).toEqual({
         amountMin: '0x5f',
-        erc20TokenAddresses: [
+        tokenAddresses: [
           '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
           '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
         ],
@@ -62,11 +65,13 @@ describe('dapp-swap utils', () => {
               '0x953edd7a1725891162e49f7a1e449522abd8209dd7377b8772d04edaba02de44',
             bridgeId: 'kyberswap',
             srcChainId: 42161,
-            minDestTokenAmount: '45',
+            destTokenAmount: '45',
             walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
           },
-          approval: {},
-          trade: {},
+          approval: {
+            gasLimit: 15,
+          },
+          trade: { gasLimit: 18 },
           estimatedProcessingTimeInSeconds: 0,
         },
         {
@@ -75,11 +80,13 @@ describe('dapp-swap utils', () => {
               '0x9ade5d2412cacb2c2332108aa83c759a84f39ab72c931da3296fbe8733f3b7f3',
             bridgeId: '0x',
             srcChainId: 42161,
-            minDestTokenAmount: '98',
+            destTokenAmount: '98',
             walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
           },
-          approval: {},
-          trade: {},
+          approval: {
+            gasLimit: 22,
+          },
+          trade: { gasLimit: 34 },
           estimatedProcessingTimeInSeconds: 0,
         },
         {
@@ -88,19 +95,29 @@ describe('dapp-swap utils', () => {
               '0x18359d76a875338da1b455a4f22ab88f4ec467d64e89df5d2daf5e37f7d2f1be',
             bridgeId: 'okx',
             srcChainId: 42161,
-            minDestTokenAmount: '96',
+            destTokenAmount: '96',
           },
-          approval: {},
-          trade: {},
+          approval: {
+            gasLimit: 20,
+          },
+          trade: { gasLimit: 30 },
           estimatedProcessingTimeInSeconds: 0,
         },
       ];
-      const result = getBestQuote(quotes as QuoteResponse[]);
-      expect(result).toEqual(quotes[1]);
+      const result = getBestQuote(
+        quotes as unknown as QuoteResponse[],
+        (val) => val,
+        (val) => val.toString(),
+      );
+      expect(result).toEqual(quotes[2]);
     });
 
     it('returns undefined for empty quotes array', () => {
-      const result = getBestQuote([] as unknown as QuoteResponse[]);
+      const result = getBestQuote(
+        [] as unknown as QuoteResponse[],
+        (val) => val,
+        (val) => val.toString(),
+      );
       expect(result).toEqual(undefined);
     });
   });

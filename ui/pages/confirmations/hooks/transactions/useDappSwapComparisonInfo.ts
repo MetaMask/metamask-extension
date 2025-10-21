@@ -50,24 +50,24 @@ export function useDappSwapComparisonInfo() {
     [transactionId, updateTransactionEventFragment],
   );
 
-  const { quotesInput, amountMin, erc20TokenAddresses } = useMemo(() => {
+  const { quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     return getDataFromSwap(chainId, amount, data);
   }, [chainId, amount, data]);
 
   const { value: erc20FiatRates } = useAsyncResult<ContractExchangeRates>(
-    () => fetchTokenExchangeRates('usd', erc20TokenAddresses, chainId),
-    [erc20TokenAddresses, chainId],
+    () => fetchTokenExchangeRates('usd', tokenAddresses, chainId),
+    [tokenAddresses, chainId],
   );
 
   const { value: erc20Decimals } = useAsyncResult<
     Record<Hex, number>
   >(async () => {
     const result = await fetchAllErc20Decimals(
-      erc20TokenAddresses as Hex[],
+      tokenAddresses as Hex[],
       chainId,
     );
     return { ...result, [getNativeTokenAddress(chainId)]: 18 };
-  }, [erc20TokenAddresses, chainId]);
+  }, [tokenAddresses, chainId]);
 
   const getUSDValue = useCallback(
     (tokenAmount: string, tokenAddress: Hex) => {

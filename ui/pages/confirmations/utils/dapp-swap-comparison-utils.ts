@@ -1,13 +1,16 @@
 import { BigNumber } from 'bignumber.js';
 import { Hex } from '@metamask/utils';
 import { Interface, TransactionDescription } from '@ethersproject/abi';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import {
+  GenericQuoteRequest,
+  QuoteResponse,
+} from '@metamask/bridge-controller';
 import { addHexPrefix } from 'ethereumjs-util';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import {
   SimulationData,
   SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 
 export const ABI = [
   {
@@ -48,6 +51,7 @@ export const ABI = [
 
 const COMMAND_BYTE_SWEEP = '04';
 const COMMAND_BYTE_SEAPORT = '10';
+const COMMAND_BYTE_UNWRAP_WETH = '0c';
 
 function getArgsFromInput(input: string) {
   return input?.slice(2).match(/.{1,64}/gu) ?? [];
@@ -55,14 +59,14 @@ function getArgsFromInput(input: string) {
 
 function argToAddress(arg?: string) {
   if (!arg) {
-    return '';
+    return undefined;
   }
   return addHexPrefix(arg?.slice(24));
 }
 
 function argToAmount(arg?: string) {
   if (!arg) {
-    return '';
+    return undefined;
   }
   const amount = arg?.replace(/^0+/u, '') || '0';
   return addHexPrefix(amount);
@@ -91,51 +95,55 @@ function parseTransactionData(data?: string) {
 export function getDataFromSwap(chainId: Hex, amount?: string, data?: string) {
   let quotesInput;
   let amountMin;
-  const erc20TokenAddresses = [];
+  const tokenAddresses = [];
   const { commandBytes, inputs } = parseTransactionData(data);
 
+  const seaportIndex = commandBytes.findIndex(
+    (commandByte: string) => commandByte === COMMAND_BYTE_SEAPORT,
+  );
+  let seaportArgs: string[] = [];
+  let sweepArgs: string[] = [];
+  let unwrapWethArgs: string[] = [];
+
+  if (seaportIndex >= 0) {
+    seaportArgs = getArgsFromInput(inputs[seaportIndex]);
+    amountMin = argToAmount(seaportArgs[13]);
+    tokenAddresses.push(argToAddress(seaportArgs[10]));
+    tokenAddresses.push(argToAddress(seaportArgs[16]));
+  }
   const sweepIndex = commandBytes.findIndex(
     (commandByte: string) => commandByte === COMMAND_BYTE_SWEEP,
   );
 
   if (sweepIndex >= 0) {
-    const args = getArgsFromInput(inputs[sweepIndex]);
-    amountMin = argToAmount(args[2]);
-    erc20TokenAddresses.push(argToAddress(args[0]));
-    quotesInput = {
-      walletAddress: argToAddress(args[1]),
-      srcChainId: chainId,
-      destChainId: chainId,
-      srcTokenAddress: getNativeTokenAddress(chainId),
-      destTokenAddress: argToAddress(args[0]),
-      srcTokenAmount: amount ?? '0x0',
-      gasIncluded: false,
-      gasIncluded7702: false,
-    };
-  } else {
-    const seaportIndex = commandBytes.findIndex(
-      (commandByte: string) => commandByte === COMMAND_BYTE_SEAPORT,
-    );
-
-    if (seaportIndex >= 0) {
-      const args = getArgsFromInput(inputs[seaportIndex]);
-      amountMin = argToAmount(args[13]);
-      erc20TokenAddresses.push(argToAddress(args[10]));
-      erc20TokenAddresses.push(argToAddress(args[16]));
-      quotesInput = {
-        walletAddress: argToAddress(args[28]),
-        srcChainId: chainId,
-        destChainId: chainId,
-        srcTokenAddress: argToAddress(args[10]),
-        destTokenAddress: argToAddress(args[16]),
-        srcTokenAmount: argToAmount(args[12]),
-        gasIncluded: false,
-        gasIncluded7702: false,
-      };
-    }
+    sweepArgs = getArgsFromInput(inputs[sweepIndex]);
+    amountMin = argToAmount(sweepArgs[2]);
+  }
+  const unwrapWethIndex = commandBytes.findIndex(
+    (commandByte: string) => commandByte === COMMAND_BYTE_UNWRAP_WETH,
+  );
+  if (unwrapWethIndex >= 0) {
+    unwrapWethArgs = getArgsFromInput(inputs[unwrapWethIndex]);
+    amountMin = argToAmount(unwrapWethArgs[1]);
   }
 
-  return { quotesInput, amountMin, erc20TokenAddresses };
+  quotesInput = {
+    walletAddress: argToAddress(
+      unwrapWethArgs[0] ?? sweepArgs[1] ?? seaportArgs[28],
+    ),
+    srcChainId: chainId,
+    destChainId: chainId,
+    srcTokenAddress: argToAddress(seaportArgs[10]),
+    destTokenAddress:
+      unwrapWethIndex >= 0
+        ? getNativeTokenAddress(chainId)
+        : argToAddress(seaportArgs[16]),
+    srcTokenAmount: argToAmount(seaportArgs[12]),
+    gasIncluded: false,
+    gasIncluded7702: false,
+  } as GenericQuoteRequest;
+
+  return { quotesInput, amountMin, tokenAddresses };
 }
 
 export function getBestQuote(
@@ -163,6 +171,7 @@ export function getBestQuote(
         10,
       ),
     );
+
     if (quoteValue.greaterThan(highestQuoteValue)) {
       highestQuoteValue = quoteValue;
       selectedQuoteIndex = index;
