@@ -72,16 +72,13 @@
     "@rive-app/react-canvas>@rive-app/canvas": {
       "globals": {
         "Blob": true,
-        "DOMMatrix": false,
         "HTMLCanvasElement": true,
         "Image": true,
         "Path2D": true,
-        "Request": false,
         "TextDecoder": true,
         "URL.createObjectURL": true,
         "URL.revokeObjectURL": true,
         "WebAssembly": true,
-        "XMLHttpRequest": false,
         "cancelAnimationFrame": true,
         "clearInterval": true,
         "clearTimeout": true,
@@ -89,9 +86,7 @@
         "console.log": true,
         "console.warn": true,
         "document.createElement": true,
-        "fetch": false,
         "navigator.userAgent": true,
-        "performance.now": false,
         "requestAnimationFrame": true,
         "setTimeout": true
       }
