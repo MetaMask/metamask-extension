@@ -23,10 +23,9 @@ import {
 
 import { isEqual } from 'lodash';
 import { Tooltip } from 'react-tippy';
-import {
-  BoxBackgroundColor,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
+
+import { BoxBackgroundColor } from '@metamask/design-system-react';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPermissions,
@@ -462,7 +461,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       className="main-container connect-page"
       backgroundColor={BackgroundColor.backgroundDefault}
     >
-      <Header paddingTop={8} paddingBottom={0}>
+      <Header paddingTop={8} paddingBottom={4}>
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
@@ -544,12 +543,12 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
       <Content
         paddingLeft={4}
         paddingRight={4}
+        paddingTop={4}
         backgroundColor={BackgroundColor.transparent}
       >
         <Tabs
           onTabClick={() => null}
           backgroundColor={BoxBackgroundColor.Transparent}
-          justifyContent={BoxJustifyContent.Center}
           defaultActiveTabKey="accounts"
           tabListProps={{
             backgroundColor: BoxBackgroundColor.Transparent,

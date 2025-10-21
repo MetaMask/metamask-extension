@@ -522,7 +522,7 @@ export const MultichainAccountsConnectPage: React.FC<
       className="main-container multichain-connect-page"
       backgroundColor={BackgroundColor.backgroundDefault}
     >
-      <Header paddingTop={8} paddingBottom={0}>
+      <Header paddingTop={8} paddingBottom={4}>
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
@@ -606,15 +606,7 @@ export const MultichainAccountsConnectPage: React.FC<
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs
-          onTabClick={() => null}
-          backgroundColor={BoxBackgroundColor.Transparent}
-          defaultActiveTabKey="accounts"
-          tabListProps={{
-            backgroundColor: BoxBackgroundColor.Transparent,
-            justifyContent: BoxJustifyContent.Center,
-          }}
-        >
+        <Tabs onTabClick={() => null} defaultActiveTabKey="accounts">
           <Tab
             className="multichain-connect-page__tab"
             name={t('accounts')}
