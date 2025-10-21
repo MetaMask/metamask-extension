@@ -94,7 +94,9 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
         },
         accountsAssets: {
-          'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f': ['solana:  /slip44:501'],
+          'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f': [
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          ],
         },
         balances: {
           'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f': {
