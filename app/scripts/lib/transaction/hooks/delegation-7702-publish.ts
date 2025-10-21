@@ -22,6 +22,10 @@ import {
   createDelegation,
   getDeleGatorEnvironment,
 } from '../../../../../shared/lib/delegation';
+import {
+  findAtomicBatchSupportForChain,
+  checkEip7702Support,
+} from '../../../../../shared/lib/eip7702-support-utils';
 import { exactExecution } from '../../../../../shared/lib/delegation/caveatBuilder/exactExecutionBuilder';
 import { limitedCalls } from '../../../../../shared/lib/delegation/caveatBuilder/limitedCallsBuilder';
 import { specificActionERC20TransferBatch } from '../../../../../shared/lib/delegation/caveatBuilder/specificActionERC20TransferBatchBuilder';
@@ -97,22 +101,18 @@ export class Delegation7702PublishHook {
       chainIds: [chainId],
     });
 
-    const atomicBatchChainSupport = atomicBatchSupport.find(
-      (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
+    const atomicBatchChainSupport = findAtomicBatchSupportForChain(
+      atomicBatchSupport,
+      chainId,
     );
 
-    const isChainSupported =
-      atomicBatchChainSupport &&
-      (!atomicBatchChainSupport.delegationAddress ||
-        atomicBatchChainSupport.isSupported);
+    const { isSupported, delegationAddress, upgradeContractAddress } =
+      checkEip7702Support(atomicBatchChainSupport);
 
-    if (!isChainSupported) {
+    if (!isSupported) {
       log('Skipping as EIP-7702 is not supported', { from, chainId });
       return EMPTY_RESULT;
     }
-
-    const { delegationAddress, upgradeContractAddress } =
-      atomicBatchChainSupport;
 
     const isGaslessSwap = transactionMeta.isGasFeeIncluded;
 
@@ -174,7 +174,7 @@ export class Delegation7702PublishHook {
     if (!delegationAddress) {
       relayRequest.authorizationList = await this.#buildAuthorizationList(
         transactionMeta,
-        upgradeContractAddress,
+        upgradeContractAddress ?? undefined,
       );
     }
 

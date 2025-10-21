@@ -142,6 +142,10 @@ import {
   SecretType,
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
+import {
+  findAtomicBatchSupportForChain,
+  checkEip7702Support,
+} from '../../shared/lib/eip7702-support-utils';
 import { createEIP7702UpgradeTransaction } from '../../shared/lib/eip7702-utils';
 import {
   FEATURE_VERSION_2,
@@ -224,8 +228,6 @@ import {
   isGatorPermissionsFeatureEnabled,
 } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
-// eslint-disable-next-line import/no-restricted-paths
-import { isFlask } from '../../ui/helpers/utils/build-types';
 import { getShieldGatewayConfig } from '../../shared/modules/shield';
 import {
   HYPERLIQUID_ORIGIN,
@@ -1290,10 +1292,10 @@ export default class MetamaskController extends EventEmitter {
           upgradeAccount: this.upgradeAccount.bind(this),
           getCurrentChainIdForDomain:
             this.getCurrentChainIdForDomain.bind(this),
-          isAtomicBatchSupported: this.txController.isAtomicBatchSupported.bind(
-            this.txController,
-          ),
-          getAccounts: this.getPermittedAccounts.bind(this, req.origin),
+          isEip7702Supported: this.isEip7702Supported.bind(this),
+          getPermittedAccountsForOrigin: async () => {
+            return getAccounts({ origin: req.origin });
+          },
         });
       }),
       wallet_getAccountUpgradeStatus: createAsyncMiddleware(
@@ -1302,12 +1304,12 @@ export default class MetamaskController extends EventEmitter {
             getCurrentChainIdForDomain:
               this.getCurrentChainIdForDomain.bind(this),
             getCode: this.getCode.bind(this),
-            getNetworkConfigurationByChainId:
-              this.controllerMessenger.call.bind(
-                this.controllerMessenger,
-                'NetworkController:getNetworkConfigurationByChainId',
-              ),
-            getAccounts: this.getPermittedAccounts.bind(this, req.origin),
+            getSelectedNetworkClientIdForChain:
+              this.getSelectedNetworkClientIdForChain.bind(this),
+            getPermittedAccountsForOrigin: async () => {
+              return getAccounts({ origin: req.origin });
+            },
+            isEip7702Supported: this.isEip7702Supported.bind(this),
           });
         },
       ),
@@ -1579,6 +1581,7 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Returns the current chainId (hex string) for a given domain/origin.
    * Used by EIP-7702 middleware hooks.
+   *
    * @param {string} domain
    * @returns {string | undefined}
    */
@@ -1590,6 +1593,33 @@ export default class MetamaskController extends EventEmitter {
         networkClientId,
       );
     return chainId;
+  }
+
+  /**
+   * Returns the network client ID for a given chain ID.
+   * Used by EIP-7702 middleware hooks.
+   *
+   * @param {string} chainId - The chain ID to get the network client ID for
+   * @returns {string | null} The network client ID or null if not found
+   */
+  getSelectedNetworkClientIdForChain(chainId) {
+    const networkConfiguration =
+      this.networkController.getNetworkConfigurationByChainId(chainId);
+    if (!networkConfiguration) {
+      return null;
+    }
+
+    const { rpcEndpoints, defaultRpcEndpointIndex } = networkConfiguration;
+    if (
+      !rpcEndpoints ||
+      defaultRpcEndpointIndex === undefined ||
+      defaultRpcEndpointIndex < 0 ||
+      defaultRpcEndpointIndex >= rpcEndpoints.length
+    ) {
+      return null;
+    }
+
+    return rpcEndpoints[defaultRpcEndpointIndex].networkClientId;
   }
 
   // Provides a method for getting feature flags for the multichain
@@ -7043,13 +7073,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    if (
-      subjectType === SubjectType.Snap &&
-      (isFlask() || isSnapPreinstalled(origin))
-    ) {
-      engine.push(this.eip7702Middleware);
-    }
-
     if (subjectType !== SubjectType.Internal) {
       engine.push(
         this.permissionController.createPermissionMiddleware({
@@ -7353,6 +7376,10 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.metamaskMiddleware);
 
     engine.push(this.eip5792Middleware);
+
+    if (subjectType === SubjectType.Snap && isSnapPreinstalled(origin)) {
+      engine.push(this.eip7702Middleware);
+    }
 
     engine.push(providerAsMiddleware(proxyClient.provider));
 
@@ -8967,5 +8994,37 @@ export default class MetamaskController extends EventEmitter {
         return transactionMeta;
       },
     );
+  }
+
+  /**
+   * Checks if EIP-7702 is supported for an account on a specific chain.
+   *
+   * @param {object} request - The request object
+   * @param {string} request.address - The account address
+   * @param {string} request.chainId - The chain ID to check
+   * @returns {Promise<{isSupported: boolean, upgradeContractAddress: string | null}>}
+   */
+  async isEip7702Supported(request) {
+    const { address, chainId } = request;
+    const normalizedAccount = address;
+
+    const atomicBatchSupport = await this.txController.isAtomicBatchSupported({
+      address: normalizedAccount,
+      chainIds: [chainId],
+    });
+
+    const atomicBatchChainSupport = findAtomicBatchSupportForChain(
+      atomicBatchSupport,
+      chainId,
+    );
+
+    const { isSupported, upgradeContractAddress } = checkEip7702Support(
+      atomicBatchChainSupport,
+    );
+
+    return {
+      isSupported,
+      upgradeContractAddress,
+    };
   }
 }
