@@ -44,6 +44,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+import { getIsSidePanelFeatureEnabled } from '../../../../shared/modules/environment';
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
@@ -73,23 +74,28 @@ export default function OnboardingPinExtension() {
       },
     });
 
-    // Side Panel
-    try {
-      if (browser?.sidePanel?.open) {
-        const tabs = await browser.tabs.query({
-          active: true,
-          currentWindow: true,
-        });
-        if (tabs && tabs.length > 0) {
-          await browser.sidePanel.open({ windowId: tabs[0].windowId });
-          // Use the sidepanel-specific action to avoid redirect in fullscreen
-          await dispatch(setCompletedOnboardingWithSidepanel());
+    // Side Panel - only if feature flag is enabled
+    if (getIsSidePanelFeatureEnabled()) {
+      try {
+        if (browser?.sidePanel?.open) {
+          const tabs = await browser.tabs.query({
+            active: true,
+            currentWindow: true,
+          });
+          if (tabs && tabs.length > 0) {
+            await browser.sidePanel.open({ windowId: tabs[0].windowId });
+            // Use the sidepanel-specific action to avoid redirect in fullscreen
+            await dispatch(setCompletedOnboardingWithSidepanel());
+          }
+        } else {
+          await dispatch(setCompletedOnboarding());
         }
-      } else {
+      } catch (error) {
+        console.error('Error opening side panel:', error);
         await dispatch(setCompletedOnboarding());
       }
-    } catch (error) {
-      console.error('Error opening side panel:', error);
+    } else {
+      // Regular onboarding completion when sidepanel is disabled
       await dispatch(setCompletedOnboarding());
     }
   };

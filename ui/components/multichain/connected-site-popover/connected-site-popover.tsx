@@ -20,7 +20,11 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import { getAllDomains, getAppActiveTab } from '../../../selectors';
+import {
+  getAllDomains,
+  getAppActiveTab,
+  getOriginOfCurrentTab,
+} from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
@@ -42,8 +46,13 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
   onClick,
 }) => {
   const t = useContext(I18nContext);
-  const activeTabOrigin = useSelector(getAppActiveTab);
-  const siteName = getURLHost(activeTabOrigin.origin);
+  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const dappActiveTabOrigin = useSelector(getAppActiveTab);
+  const activeTabOriginName =
+    process.env.IS_SIDEPANEL?.toString() === 'true'
+      ? dappActiveTabOrigin.origin
+      : activeTabOrigin;
+  const siteName = getURLHost(activeTabOriginName);
 
   const allDomains = useSelector(getAllDomains);
   const networkConfigurationsByChainId = useSelector(
@@ -53,12 +62,12 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
 
   // Get the network that this dapp is actually connected to using domain mapping
   const dappActiveNetwork = useMemo(() => {
-    if (!activeTabOrigin.origin || !allDomains) {
+    if (!activeTabOriginName || !allDomains) {
       return null;
     }
 
     // Get the networkClientId for this domain
-    const networkClientId = allDomains[activeTabOrigin.origin];
+    const networkClientId = allDomains[activeTabOriginName];
     if (!networkClientId) {
       return null;
     }
@@ -73,7 +82,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
     });
 
     return networkConfiguration || null;
-  }, [activeTabOrigin.origin, allDomains, networkConfigurationsByChainId]);
+  }, [activeTabOriginName, allDomains, networkConfigurationsByChainId]);
 
   const getChainIdForImage = (chainId: `${string}:${string}`): string => {
     const { namespace, reference } = parseCaipChainId(chainId);

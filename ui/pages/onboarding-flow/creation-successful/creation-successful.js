@@ -53,6 +53,7 @@ import {
   setCompletedOnboardingWithSidepanel,
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
+import { getIsSidePanelFeatureEnabled } from '../../../../shared/modules/environment';
 
 export default function CreationSuccessful() {
   const navigate = useNavigate();
@@ -169,25 +170,30 @@ export default function CreationSuccessful() {
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
 
-    // Side Panel
-    try {
-      if (browser?.sidePanel?.open) {
-        const tabs = await browser.tabs.query({
-          active: true,
-          currentWindow: true,
-        });
-        if (tabs && tabs.length > 0) {
-          await browser.sidePanel.open({ windowId: tabs[0].windowId });
-          // Use the sidepanel-specific action to avoid redirect in fullscreen
-          await dispatch(setCompletedOnboardingWithSidepanel());
-          // Don't navigate to DEFAULT_ROUTE when using sidepanel
-          return;
+    // Side Panel - only if feature flag is enabled
+    if (getIsSidePanelFeatureEnabled()) {
+      try {
+        if (browser?.sidePanel?.open) {
+          const tabs = await browser.tabs.query({
+            active: true,
+            currentWindow: true,
+          });
+          if (tabs && tabs.length > 0) {
+            await browser.sidePanel.open({ windowId: tabs[0].windowId });
+            // Use the sidepanel-specific action to avoid redirect in fullscreen
+            await dispatch(setCompletedOnboardingWithSidepanel());
+            // Don't navigate to DEFAULT_ROUTE when using sidepanel
+            return;
+          }
         }
+        // Fallback to regular onboarding completion
+        await dispatch(setCompletedOnboarding());
+      } catch (error) {
+        console.error('Error opening side panel:', error);
+        await dispatch(setCompletedOnboarding());
       }
-      // Fallback to regular onboarding completion
-      await dispatch(setCompletedOnboarding());
-    } catch (error) {
-      console.error('Error opening side panel:', error);
+    } else {
+      // Regular onboarding completion when sidepanel is disabled
       await dispatch(setCompletedOnboarding());
     }
 

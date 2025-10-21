@@ -25,6 +25,7 @@ import {
 import {
   getAllPermittedAccounts,
   getAppActiveTab,
+  getOriginOfCurrentTab,
   getSubjectMetadata,
 } from '../../../selectors';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
@@ -39,13 +40,17 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
 
   const subjectMetadata = useSelector(getSubjectMetadata);
   const connectedOrigin = useSelector(getAppActiveTab);
+  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const connectedOriginName =
+    process.env.IS_SIDEPANEL?.toString() === 'true'
+      ? connectedOrigin.origin
+      : activeTabOrigin;
   const permittedAccountsByOrigin = useSelector((state) =>
-    getAllPermittedAccounts(state, connectedOrigin?.origin),
+    getAllPermittedAccounts(state, connectedOriginName),
   );
   const dappActiveNetwork = useSelector(getDappActiveNetwork);
   const currentTabHasNoAccounts = !permittedAccountsByOrigin?.length;
-  const connectedSubjectsMetadata = subjectMetadata[connectedOrigin?.origin];
-
+  const connectedSubjectsMetadata = subjectMetadata[connectedOriginName];
 
   // Get network image URL for the badge
   const getNetworkImageSrc = () => {

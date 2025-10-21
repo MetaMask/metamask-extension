@@ -23,6 +23,10 @@ import {
   toggleNetworkMenu,
   setUseSidePanelAsDefault,
 } from '../../../store/actions';
+import {
+  getIsSidePanelFeatureEnabled,
+  isGatorPermissionsRevocationFeatureEnabled,
+} from '../../../../shared/modules/environment';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   selectIsMetamaskNotificationsEnabled,
@@ -85,7 +89,6 @@ import {
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '../menu-items';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
-import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/modules/environment';
 import { getIsShieldSubscriptionActive } from '../../../../shared/lib/shield';
 
 const METRICS_LOCATION = 'Global Menu';
@@ -156,6 +159,11 @@ export const GlobalMenu = ({
    * Toggles between side panel and popup as the default extension behavior
    */
   const toggleDefaultView = async () => {
+    // Only allow sidepanel functionality if the feature flag is enabled
+    if (!getIsSidePanelFeatureEnabled()) {
+      return;
+    }
+
     try {
       const newValue = !isSidePanelDefault;
       await dispatch(setUseSidePanelAsDefault(newValue));
@@ -351,9 +359,10 @@ export const GlobalMenu = ({
         {t('allPermissions')}
       </MenuItem>
 
-      {/* Toggle between popup and sidepanel not in firefox */}
+      {/* Toggle between popup and sidepanel not in firefox, or in firefox when sidepanel feature is disabled */}
       {getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN &&
-      getBrowserName() !== PLATFORM_FIREFOX ? (
+      (getBrowserName() !== PLATFORM_FIREFOX ||
+        !getIsSidePanelFeatureEnabled()) ? (
         <MenuItem
           iconName={IconName.Expand}
           onClick={async () => {
@@ -373,9 +382,10 @@ export const GlobalMenu = ({
         </MenuItem>
       ) : null}
 
-      {/* Firefox: Show expand view button in popup */}
+      {/* Firefox: Show expand view button in popup when sidepanel feature is enabled */}
       {getBrowserName() === PLATFORM_FIREFOX &&
-      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? (
+      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+      getIsSidePanelFeatureEnabled() ? (
         <MenuItem
           iconName={IconName.Expand}
           onClick={() => {

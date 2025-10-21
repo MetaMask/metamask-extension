@@ -1582,7 +1582,12 @@ function onInstall() {
   }
 }
 // Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
-if (browser.contextMenus && browser.sidePanel) {
+// and when the feature flag is enabled
+if (
+  browser.contextMenus &&
+  browser.sidePanel &&
+  process.env.IS_SIDEPANEL?.toString() === 'true'
+) {
   browser.runtime.onInstalled.addListener(() => {
     browser.contextMenus.create({
       id: 'openSidePanel',
@@ -1675,6 +1680,11 @@ function onNavigateToTab() {
 
 // Set initial side panel behavior based on user preference
 const initSidePanelBehavior = async () => {
+  // Only initialize sidepanel behavior if the feature flag is enabled
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+    return;
+  }
+
   try {
     // Wait for controller to be initialized
     await isInitialized;
@@ -1699,6 +1709,11 @@ initSidePanelBehavior();
 
 // Listen for preference changes to update side panel behavior dynamically
 const setupPreferenceListener = async () => {
+  // Only setup preference listener if the feature flag is enabled
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+    return;
+  }
+
   try {
     await isInitialized;
 
