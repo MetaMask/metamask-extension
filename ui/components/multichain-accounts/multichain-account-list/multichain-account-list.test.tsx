@@ -757,7 +757,7 @@ describe('MultichainAccountList', () => {
       renderComponent({ wallets: walletsWithPinnedAccounts });
 
       // Pinned section header should be present
-      expect(screen.getByText('Pinned accounts')).toBeInTheDocument();
+      expect(screen.getByText('Pinned')).toBeInTheDocument();
 
       // Pinned accounts should be rendered
       expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
@@ -784,7 +784,7 @@ describe('MultichainAccountList', () => {
       renderComponent({ wallets: walletsWithOnePinnedAccount });
 
       // Pinned section header should be present even with just 1 pinned account
-      expect(screen.getByText('Pinned accounts')).toBeInTheDocument();
+      expect(screen.getByText('Pinned')).toBeInTheDocument();
       expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
     });
 
@@ -832,7 +832,7 @@ describe('MultichainAccountList', () => {
       );
 
       // Pinned section should exist
-      expect(screen.getByText('Pinned accounts')).toBeInTheDocument();
+      expect(screen.getByText('Pinned')).toBeInTheDocument();
 
       // Wallet headers should still be present
       expect(screen.getByText('Wallet 1')).toBeInTheDocument();
@@ -882,7 +882,7 @@ describe('MultichainAccountList', () => {
       // With one wallet but pinned accounts, wallet header should be shown
       expect(screen.getByTestId(walletHeaderTestId)).toBeInTheDocument();
       expect(screen.getByText('Wallet 1')).toBeInTheDocument();
-      expect(screen.getByText('Pinned accounts')).toBeInTheDocument();
+      expect(screen.getByText('Pinned')).toBeInTheDocument();
     });
   });
 
@@ -911,7 +911,7 @@ describe('MultichainAccountList', () => {
         'multichain-account-tree-hidden-header',
       );
       expect(hiddenHeader).toBeInTheDocument();
-      expect(screen.getByText('Hidden accounts')).toBeInTheDocument();
+      expect(screen.getByText('Hidden')).toBeInTheDocument();
       expect(screen.getByText('1')).toBeInTheDocument(); // count badge
 
       // Hidden account should NOT be visible initially (collapsed)

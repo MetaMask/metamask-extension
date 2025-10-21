@@ -2812,6 +2812,9 @@
   "hexDataPlaceholder": {
     "message": "Enter hex data (optional)"
   },
+  "hidden": {
+    "message": "Hidden"
+  },
   "hiddenAccounts": {
     "message": "Hidden accounts"
   },
@@ -4866,6 +4869,9 @@
   },
   "pinToTop": {
     "message": "Pin to top"
+  },
+  "pinned": {
+    "message": "Pinned"
   },
   "pleaseConfirm": {
     "message": "Please confirm"

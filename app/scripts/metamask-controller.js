@@ -2530,7 +2530,10 @@ export default class MetamaskController extends EventEmitter {
         );
       },
       setAccountGroupHidden: (accountGroupId, hidden) => {
-        this.accountTreeController.setAccountGroupHidden(accountGroupId, hidden);
+        this.accountTreeController.setAccountGroupHidden(
+          accountGroupId,
+          hidden,
+        );
       },
       syncAccountTreeWithUserStorage: async () => {
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
