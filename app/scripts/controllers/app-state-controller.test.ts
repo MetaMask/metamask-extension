@@ -706,6 +706,22 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setHasFunds', () => {
+    it('updates the hasFunds state with a boolean value', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.hasFunds).toBe(false);
+
+        controller.setHasFunds(true);
+
+        expect(controller.state.hasFunds).toBe(true);
+
+        controller.setHasFunds(false);
+
+        expect(controller.state.hasFunds).toBe(false);
+      });
+    });
+  });
+
   describe('metadata', () => {
     it('includes expected state in debug snapshots', async () => {
       await withController(
@@ -747,6 +763,7 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "hasFunds": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
@@ -832,6 +849,7 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "hasFunds": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
@@ -911,6 +929,7 @@ describe('AppStateController', () => {
               "enableEnforcedSimulations": true,
               "enforcedSimulationsSlippage": 10,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+              "hasFunds": false,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "lastInteractedConfirmationInfo": {
