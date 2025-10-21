@@ -27,7 +27,7 @@ describe('filterWalletsByGroupNameOrAddress', () => {
     },
     'snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
       name: 'another snap account 1',
-      accounts: ['0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281'],
+      accounts: ['0xca8f1f0245530118d0cf14a06b01daf8f76cf281'],
     },
     'snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d': {
       name: 'snap account 1',
