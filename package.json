@@ -286,7 +286,7 @@
     "@metamask/design-system-react": "^0.5.0",
     "@metamask/design-system-tailwind-preset": "^0.6.1",
     "@metamask/design-tokens": "^8.1.1",
-    "@metamask/eip-5792-middleware": "^1.1.0",
+    "@metamask/eip-5792-middleware": "^1.2.0",
     "@metamask/ens-controller": "^17.0.1",
     "@metamask/ens-resolver-snap": "^1.0.0",
     "@metamask/error-reporting-service": "^2.2.0",

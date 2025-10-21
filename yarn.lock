@@ -6055,16 +6055,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eip-5792-middleware@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/eip-5792-middleware@npm:1.1.0"
+"@metamask/eip-5792-middleware@npm:^1.2.0":
+  version: 1.2.3
+  resolution: "@metamask/eip-5792-middleware@npm:1.2.3"
   dependencies:
-    "@metamask/eth-json-rpc-middleware": "npm:^17.0.1"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/transaction-controller": "npm:^60.2.0"
-    "@metamask/utils": "npm:^11.4.2"
+    "@metamask/transaction-controller": "npm:^60.7.0"
+    "@metamask/utils": "npm:^11.8.1"
+    lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
-  checksum: 10/3c5ad33b778792c2dcf7aff9f0c99ce008d93e98531966eb6b2add4effdd7fe51c2317504420fff5caafc25b0eeb8caa072a5e9d7605e7b9ee47ae7ad84e7922
+  checksum: 10/6520b1415ca95afb3e4c68b4de481b36f94b0ac104e6feb51c65ee21f050f9db9ba7890f47990caa3bb3b789c786e87ec253a2abe93461a64953c9b793c25907
   languageName: node
   linkType: hard
 
@@ -8154,7 +8154,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^60.2.0, @metamask/transaction-controller@npm:^60.7.0":
+"@metamask/transaction-controller@npm:^60.7.0":
   version: 60.7.0
   resolution: "@metamask/transaction-controller@npm:60.7.0"
   dependencies:
@@ -32154,7 +32154,7 @@ __metadata:
     "@metamask/design-system-react": "npm:^0.5.0"
     "@metamask/design-system-tailwind-preset": "npm:^0.6.1"
     "@metamask/design-tokens": "npm:^8.1.1"
-    "@metamask/eip-5792-middleware": "npm:^1.1.0"
+    "@metamask/eip-5792-middleware": "npm:^1.2.0"
     "@metamask/ens-controller": "npm:^17.0.1"
     "@metamask/ens-resolver-snap": "npm:^1.0.0"
     "@metamask/error-reporting-service": "npm:^2.2.0"
