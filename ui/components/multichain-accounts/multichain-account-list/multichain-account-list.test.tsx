@@ -313,6 +313,7 @@ describe('MultichainAccountList', () => {
       },
     );
 
+    // With displayWalletHeader=true (default), wallet header should be shown
     expect(screen.queryAllByTestId(walletHeaderTestId)).toHaveLength(1);
     expect(
       screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
@@ -845,6 +846,43 @@ describe('MultichainAccountList', () => {
       );
       // Should be 2 accounts total (both in pinned section)
       expect(accountCells.length).toBe(2);
+    });
+
+    it('shows wallet headers when there is one wallet with pinned accounts', () => {
+      const walletsWithOnePinnedAccount = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent(
+        { wallets: walletsWithOnePinnedAccount },
+        {
+          ...mockDefaultState,
+          metamask: {
+            ...mockDefaultState.metamask,
+            accountTree: {
+              ...mockDefaultState.metamask.accountTree,
+              // @ts-expect-error - walletsWithOnePinnedAccount does not follow the exact structure due to test simplification
+              wallets: walletsWithOnePinnedAccount,
+            },
+          },
+        },
+      );
+
+      // With one wallet but pinned accounts, wallet header should be shown
+      expect(screen.getByTestId(walletHeaderTestId)).toBeInTheDocument();
+      expect(screen.getByText('Wallet 1')).toBeInTheDocument();
+      expect(screen.getByText('Pinned accounts')).toBeInTheDocument();
     });
   });
 

@@ -293,6 +293,10 @@ export const MultichainAccountList = ({
     }
 
     // Render wallets with their non-pinned, non-hidden accounts
+    // Show wallet headers if there are multiple wallets OR if there are pinned accounts
+    const shouldShowWalletHeaders =
+      displayWalletHeader || pinnedGroups.length > 0;
+
     const walletSections = Object.entries(wallets).reduce(
       (walletsAccumulator, [walletId, walletData]) => {
         const walletName = walletData.metadata?.name;
@@ -340,7 +344,7 @@ export const MultichainAccountList = ({
 
         return [
           ...walletsAccumulator,
-          displayWalletHeader ? walletHeader : null,
+          shouldShowWalletHeaders ? walletHeader : null,
           ...groupsItems,
         ];
       },
