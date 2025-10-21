@@ -84,6 +84,7 @@ buildTypes:
       - keyring-snaps
       - multi-srp
       - multichain
+      - bitcoin-swaps
     env:
       - INFURA_EXPERIMENTAL_PROJECT_ID
       - SEGMENT_EXPERIMENTAL_WRITE_KEY
