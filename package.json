@@ -274,7 +274,7 @@
     "@metamask/base-controller": "^8.3.0",
     "@metamask/bitcoin-wallet-snap": "^1.3.0",
     "@metamask/bridge-controller": "^53.1.0",
-    "@metamask/bridge-status-controller": "^52.1.0",
+    "@metamask/bridge-status-controller": "^53.0.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/chain-agnostic-permission": "^1.1.0",
     "@metamask/contract-metadata": "^2.5.0",
