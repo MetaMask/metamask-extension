@@ -188,6 +188,8 @@ export const GlobalMenu = ({
               await browserWithSidePanel.sidePanel.open({
                 windowId: tabs[0].windowId,
               });
+              // Close the popup after successfully opening the sidepanel
+              window.close();
             }
           }
         } catch (error) {
