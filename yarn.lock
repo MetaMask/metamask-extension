@@ -5748,9 +5748,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^53.0.0":
-  version: 53.0.0
-  resolution: "@metamask/bridge-controller@npm:53.0.0"
+"@metamask/bridge-controller@npm:^53.1.0":
+  version: 53.1.0
+  resolution: "@metamask/bridge-controller@npm:53.1.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5765,7 +5765,6 @@ __metadata:
     "@metamask/multichain-network-controller": "npm:^1.0.1"
     "@metamask/polling-controller": "npm:^14.0.1"
     "@metamask/utils": "npm:^11.8.1"
-    "@microsoft/fetch-event-source": "npm:^2.0.1"
     bignumber.js: "npm:^9.1.2"
     reselect: "npm:^5.1.1"
     uuid: "npm:^8.3.2"
@@ -5776,13 +5775,13 @@ __metadata:
     "@metamask/remote-feature-flag-controller": ^1.6.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/fef7b1be3d3882accb0dc63610d1f4577ec17e2f5f48b62b3275b82fd74fea475fb9641ecd319a0e5a1f294c4919f55f58855393fbec601f9d9eda9fc1e8e70b
+  checksum: 10/17ce073b19da5c7c58aaf177ca63d4fda615817612c88fb7d3c1e5ed2d14aee398e67cf808f5f9ecfe1af31c361684efddbf1cc51b73dd4964e1ffce15ff5316
   languageName: node
   linkType: hard
 
-"@metamask/bridge-status-controller@npm:^52.0.0":
-  version: 52.0.0
-  resolution: "@metamask/bridge-status-controller@npm:52.0.0"
+"@metamask/bridge-status-controller@npm:^52.1.0":
+  version: 52.1.0
+  resolution: "@metamask/bridge-status-controller@npm:52.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/controller-utils": "npm:^11.14.1"
@@ -5798,7 +5797,7 @@ __metadata:
     "@metamask/network-controller": ^24.0.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/b1d14229c86dec606b6e7bf39ff68fd025360f8b9730125b35d0168f1cd0b74469a7761a9867fb46eb5ffa38da629ccd8879752dae73c0b900a24db7967c50bc
+  checksum: 10/4f7ba286ff38c94f814d507b973f66a023a3c85dd88c47d30a7ac559921fdd38332d6b2a88ca5b07b697332b4ab47bd12a5ab8e6b4616096b884a017ac70deea
   languageName: node
   linkType: hard
 
@@ -8285,20 +8284,6 @@ __metadata:
     semver: "npm:^7.5.4"
     uuid: "npm:^9.0.1"
   checksum: 10/ed6648cd973bbf3b4eb0e862903b795a99d27784c820e19f62f0bc0ddf353e98c2858d7e9aaebc0249a586391b344e35b9249d13c08e3ea0c74b23dc1c6b1558
-  languageName: node
-  linkType: hard
-
-"@microsoft/fetch-event-source@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@microsoft/fetch-event-source@npm:2.0.1"
-  checksum: 10/c147055fafe83801efb9834136ba4b7944406a0bba3517afcea6ceeb56714b5ef78c2e89544bd9c1426ad1d2f964a087e3a719169ae04855836a23fb53269f8d
-  languageName: node
-  linkType: hard
-
-"@microsoft/fetch-event-source@patch:@microsoft/fetch-event-source@npm%3A2.0.1#~/.yarn/patches/@microsoft-fetch-event-source-npm-2.0.1-679d34d9ba.patch":
-  version: 2.0.1
-  resolution: "@microsoft/fetch-event-source@patch:@microsoft/fetch-event-source@npm%3A2.0.1#~/.yarn/patches/@microsoft-fetch-event-source-npm-2.0.1-679d34d9ba.patch::version=2.0.1&hash=d8ef8b"
-  checksum: 10/a7def5a1bc1d82b8f70360a5838f3b36ec23fa33c3769eb14f0d9030ddc490165cd6eab46c301dbd75e48b2d1dce57b42595cd856112c42df42476782515007a
   languageName: node
   linkType: hard
 
@@ -32039,8 +32024,8 @@ __metadata:
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.3.0"
-    "@metamask/bridge-controller": "npm:^53.0.0"
-    "@metamask/bridge-status-controller": "npm:^52.0.0"
+    "@metamask/bridge-controller": "npm:^53.1.0"
+    "@metamask/bridge-status-controller": "npm:^52.1.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.1.0"
