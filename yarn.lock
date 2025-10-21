@@ -5571,15 +5571,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^7.0.0, @metamask/approval-controller@npm:^7.1.3":
-  version: 7.1.3
-  resolution: "@metamask/approval-controller@npm:7.1.3"
+"@metamask/approval-controller@npm:@metamask-previews/approval-controller@7.2.0-preview-e9856975":
+  version: 7.2.0-preview-e9856975
+  resolution: "@metamask-previews/approval-controller@npm:7.2.0-preview-e9856975"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/utils": "npm:^11.8.1"
     nanoid: "npm:^3.3.8"
-  checksum: 10/2d88378dcc4f6c32ad544766cf26b7f59b1aee1d7ca0909b966c8c08eaac1d7109004120ca254d7ad008a6e5241b144d4dd831f926ec928a66f93cbd2e6f1693
+  checksum: 10/af4e3c93a40a67f37b1a42f6e6d549012fc2d9ff934d458eadcc7f5ea664fe80e916f8270433e90189fa9b6b2eab073eff88d532fee855b98189c5f0bdc458c2
   languageName: node
   linkType: hard
 
