@@ -1031,14 +1031,13 @@ class Driver {
    * Navigates to the specified page within a browser session.
    *
    * @param {string} [page] - its optional parameter to specify the page you want to navigate.
-   * Defaults to sidepanel for Chrome/Edge/Brave, home for Firefox (which doesn't support sidepanel).
    * @param {object} [options] - optional parameter to specify additional options.
    * @param {boolean} [options.waitForControllers] - optional parameter to specify whether to wait for the controllers to be loaded.
    * Defaults to true.
    * @returns {Promise} promise resolves when the page has finished loading
    * @throws {Error} Will throw an error if the navigation fails or the page does not load within the timeout period.
    */
-  async navigate(page = PAGES.SIDEPANEL, { waitForControllers = true } = {}) {
+  async navigate(page = PAGES.HOME, { waitForControllers = true } = {}) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load
     if (waitForControllers) {
