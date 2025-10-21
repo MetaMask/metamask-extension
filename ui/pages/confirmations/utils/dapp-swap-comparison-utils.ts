@@ -140,17 +140,31 @@ export function getDataFromSwap(chainId: Hex, amount?: string, data?: string) {
 
 export function getBestQuote(
   quotes: QuoteResponse[],
+  getUSDValueForToken: (tokenAmount: string) => string,
+  getGasUSDValue: (gasValue: BigNumber) => string,
 ): QuoteResponse | undefined {
   let selectedQuoteIndex = -1;
-  let highestMinDestTokenAmount = '-1';
+  let highestQuoteValue = new BigNumber(-1, 10);
 
-  quotes.forEach((quote, index) => {
-    if (
-      new BigNumber(quote.quote.minDestTokenAmount, 10).greaterThan(
-        new BigNumber(highestMinDestTokenAmount, 10),
-      )
-    ) {
-      highestMinDestTokenAmount = quote.quote.minDestTokenAmount;
+  quotes.forEach((currentQuote, index) => {
+    const { quote, approval, trade } = currentQuote;
+    const quoteValue = new BigNumber(
+      getUSDValueForToken(quote.destTokenAmount),
+      10,
+    ).minus(
+      new BigNumber(
+        getGasUSDValue(
+          new BigNumber(
+            (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
+              (trade?.effectiveGas ?? trade?.gasLimit ?? 0),
+            10,
+          ),
+        ),
+        10,
+      ),
+    );
+    if (quoteValue.greaterThan(highestQuoteValue)) {
+      highestQuoteValue = quoteValue;
       selectedQuoteIndex = index;
     }
   });

@@ -91,17 +91,43 @@ export function useDappSwapComparisonInfo() {
     [erc20Decimals, erc20FiatRates],
   );
 
+  const getUSDValueForDestinationToken = useCallback(
+    (tokenAmount: string) => {
+      if (!erc20Decimals || !erc20FiatRates || !quotesInput) {
+        return '0';
+      }
+      const { destTokenAddress } = quotesInput;
+      const decimals = new BigNumber(
+        Math.pow(
+          10,
+          getTokenValueFromRecord(erc20Decimals, destTokenAddress as Hex),
+        ),
+      );
+      const conversionRate = new BigNumber(
+        getTokenValueFromRecord(
+          erc20FiatRates as Record<Hex, number>,
+          destTokenAddress as Hex,
+        ),
+      );
+      return new BigNumber(tokenAmount ?? 0)
+        .dividedBy(decimals)
+        .times(conversionRate)
+        .toString(10);
+    },
+    [erc20Decimals, erc20FiatRates, quotesInput],
+  );
+
   const { value: quotes } = useAsyncResult<
     QuoteResponse[] | undefined
   >(async () => {
-    if (!quotesInput || !amountMin) {
+    if (!quotesInput) {
       return undefined;
     }
 
     captureDappSwapComparisonMetricsProperties('loading');
 
     return await fetchQuotes(quotesInput);
-  }, [amountMin, captureDappSwapComparisonMetricsProperties, quotesInput]);
+  }, [captureDappSwapComparisonMetricsProperties, quotesInput]);
 
   const getGasUSDValue = useCallback(
     (gasValue: BigNumber) => {
@@ -127,7 +153,11 @@ export function useDappSwapComparisonInfo() {
       return;
     }
 
-    const selectedQuote = getBestQuote(quotes);
+    const selectedQuote = getBestQuote(
+      quotes,
+      getUSDValueForDestinationToken,
+      getGasUSDValue,
+    );
 
     if (!selectedQuote) {
       return;
@@ -164,15 +194,12 @@ export function useDappSwapComparisonInfo() {
         srcTokenAddress as Hex,
       ),
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_dapp_to_token_simulated_value_usd: getUSDValue(
+      swap_dapp_to_token_simulated_value_usd: getUSDValueForDestinationToken(
         destTokenBalanceChange,
-        destTokenAddress as Hex,
       ),
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_dapp_minimum_received_value_usd: getUSDValue(
-        amountMin,
-        destTokenAddress as Hex,
-      ),
+      swap_dapp_minimum_received_value_usd:
+        getUSDValueForDestinationToken(amountMin),
       // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_dapp_network_fee_usd: totalGasInConfirmation,
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -181,15 +208,11 @@ export function useDappSwapComparisonInfo() {
         srcTokenAddress as Hex,
       ),
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_mm_to_token_simulated_value_usd: getUSDValue(
-        destTokenAmount,
-        destTokenAddress as Hex,
-      ),
+      swap_mm_to_token_simulated_value_usd:
+        getUSDValueForDestinationToken(destTokenAmount),
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_mm_minimum_received_value_usd: getUSDValue(
-        minDestTokenAmount,
-        destTokenAddress as Hex,
-      ),
+      swap_mm_minimum_received_value_usd:
+        getUSDValueForDestinationToken(minDestTokenAmount),
       // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_mm_network_fee_usd: totalGasInQuote,
     });
@@ -201,6 +224,7 @@ export function useDappSwapComparisonInfo() {
     gas,
     gasUsed,
     getGasUSDValue,
+    getUSDValueForDestinationToken,
     getUSDValue,
     quotes,
     quotesInput,
