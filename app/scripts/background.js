@@ -274,10 +274,19 @@ const sendReadyMessageToTabs = async () => {
 function maybeDetectPhishing(theController) {
   async function redirectTab(tabId, url) {
     try {
+      const tab = await browser.tabs.get(tabId);
+
+      // Prevent redirect when due to Google pre-fetching
+      if (tab.url && tab.url.startsWith('https://www.google.com/search')) {
+        return;
+      }
+
+      // eslint-disable-next-line consistent-return
       return await browser.tabs.update(tabId, {
         url,
       });
     } catch (error) {
+      // eslint-disable-next-line consistent-return
       return sentry?.captureException(error);
     }
   }
@@ -288,6 +297,8 @@ function maybeDetectPhishing(theController) {
       if (details.tabId === browser.tabs.TAB_ID_NONE) {
         return {};
       }
+
+      console.log('details', details);
 
       const { completedOnboarding } = theController.onboardingController.state;
       if (!completedOnboarding) {
