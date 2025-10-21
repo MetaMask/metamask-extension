@@ -50,9 +50,96 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
               type: 'eip155:eoa',
               scopes: ['eip155:0'],
             },
+            'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f': {
+              type: 'solana:data-account',
+              id: 'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f',
+              address: '5R8a8GBd971kg5B5FqisVmVRk6ooFYtsh1y7vCHNvRvf',
+              options: {
+                entropySource: '01JNGTTNRVYNQVN5FN8YTFAMJ4',
+                derivationPath: "m/44'/501'/1'/0'",
+                index: 1,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01JNGTTNRVYNQVN5FN8YTFAMJ4',
+                  groupIndex: 1,
+                  derivationPath: "m/44'/501'/1'/0'",
+                },
+              },
+              methods: [
+                'signAndSendTransaction',
+                'signTransaction',
+                'signMessage',
+                'signIn',
+              ],
+              scopes: [
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+                'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+                'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+              ],
+              metadata: {
+                name: 'Solana Account 2',
+                importTime: 1760994076395,
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+                snap: {
+                  id: 'npm:@metamask/solana-wallet-snap',
+                  name: 'Solana',
+                  enabled: true,
+                },
+                lastSelected: 0,
+                nameLastUpdatedAt: 1760994076397,
+              },
+            },
           },
         },
+        accountsAssets: {
+          'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f': ['solana:  /slip44:501'],
+        },
+        balances: {
+          'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f': {
+            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
+              unit: 'SOL',
+              amount: '0',
+            },
+          },
+        },
+        nonEvmTransactions: {
+          'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f': {},
+        },
+        accountTree: {
+          wallets: {
+            'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4': {
+              type: 'entropy',
+              id: 'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4',
+              metadata: {
+                name: 'Wallet 1',
+                entropy: {
+                  id: '01JNGTTNRVYNQVN5FN8YTFAMJ4',
+                },
+              },
+              status: 'ready',
+              groups: {
+                'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4/0': {
+                  type: 'multichain-account',
+                  id: 'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4/0',
+                  metadata: {
+                    name: 'Account 1',
+                    pinned: false,
+                    hidden: false,
+                    entropy: {
+                      groupIndex: 0,
+                    },
+                  },
+                  accounts: ['0c5d843d-5105-413d-b40a-cd8b6415a49c'],
+                },
+              },
+            },
+          },
+          selectedAccountGroup: 'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4/0',
+        },
       },
+
       AlertController: {
         alertEnabledness: {
           unconnectedAccount: true,
@@ -207,6 +294,11 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             lastSelected: 1665507600000,
             name: 'Account 1',
+          },
+          '8xK2Lm9Np5Pq7Rs3Tu8Vw6Xy2Za4BcD1EfGh9IjKlMnO': {
+            address: '8xK2Lm9Np5Pq7Rs3Tu8Vw6Xy2Za4BcD1EfGh9IjKlMnO',
+            name: 'Solana Account 1',
+            lastSelected: 0,
           },
         },
         ipfsGateway: 'dweb.link',
