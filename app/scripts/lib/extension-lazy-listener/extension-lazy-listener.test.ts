@@ -416,19 +416,27 @@ describe('ExtensionLazyListener', () => {
     expect(cb).toHaveBeenCalledWith('later');
   });
 
-  describe('types', () => {
-    const browser = buildMockBrowser({}) as unknown as Browser;
+  describe('TypeScript Types', () => {
+    // this browser proxy pretends to have a namespace and event for every
+    // possible PropertyKey. Its used for testing types only.
+    const everyThingBrowser = new Proxy(
+      {},
+      {
+        // we pretend every namespace has every event, just for type testing
+        get: (_target, _prop) =>
+          new Proxy({}, { get: (_target2, _prop2) => new MockEvent() }),
+      },
+    ) as unknown as Browser;
 
     it('constructor enforces types for tracked namespaces and events', () => {
-      let instance = new ExtensionLazyListener(browser, {
+      let instance = new ExtensionLazyListener(everyThingBrowser, {
         // valid namespace and event
         runtime: ['onInstalled', 'onMessage'],
         tabs: ['onUpdated'],
         // @ts-expect-error - invalid namespace
         invalidNamespace: ['onFoo'],
       });
-
-      instance = new ExtensionLazyListener(browser, {
+      instance = new ExtensionLazyListener(everyThingBrowser, {
         alarms: [
           'onAlarm',
           // @ts-expect-error - invalid param
@@ -436,7 +444,7 @@ describe('ExtensionLazyListener', () => {
         ],
       });
 
-      instance = new ExtensionLazyListener(browser, {
+      instance = new ExtensionLazyListener(everyThingBrowser, {
         urlbar: [
           'onResultPicked',
           // @ts-expect-error - `onResultsRequested` doesn't have a listener
@@ -449,7 +457,7 @@ describe('ExtensionLazyListener', () => {
     });
 
     it('`once` enforces types for tracked namespaces and events', () => {
-      const instance = new ExtensionLazyListener(browser);
+      const instance = new ExtensionLazyListener(everyThingBrowser);
 
       function onMessageGood(_args: [any, Runtime.MessageSender, () => void]) {
         // intentionally empty
@@ -466,7 +474,7 @@ describe('ExtensionLazyListener', () => {
     });
 
     it('`addListener` enforces types for tracked namespaces and events', () => {
-      const instance = new ExtensionLazyListener(browser);
+      const instance = new ExtensionLazyListener(everyThingBrowser);
 
       function onMessageGood(
         _msg: any,
