@@ -105,6 +105,31 @@ describe('useTrustSignals', () => {
         );
       });
 
+      it('returns unknown state when no chain id is provided', () => {
+        getAddressSecurityAlertResponseMock.mockReturnValue({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.Malicious,
+          label: TRUST_LABEL_MOCK,
+        });
+
+        const requests: UseTrustSignalRequest[] = [
+          {
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            chainId: '',
+          },
+        ];
+
+        const results = useTrustSignals(requests);
+
+        expect(results).toHaveLength(1);
+        expect(results[0]).toStrictEqual({
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        });
+      });
+
       it('returns warning state for warning addresses', () => {
         getAddressSecurityAlertResponseMock.mockReturnValue({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
