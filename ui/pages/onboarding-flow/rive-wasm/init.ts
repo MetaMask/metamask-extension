@@ -6,7 +6,7 @@ import { RuntimeLoader } from '@rive-app/react-canvas';
 
 // WASM file URL - the file is copied to dist/chrome/images/ by the build process
 // We don't import it as a module to avoid browserify resolution issues
-const RIVE_WASM_URL = './images/rive.wasm';
+const RIVE_WASM_URL = './images/riv_animations/rive.wasm';
 
 // Track WASM initialization state globally
 let wasmInitializationPromise: Promise<void> | null = null;
