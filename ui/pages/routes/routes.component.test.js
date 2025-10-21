@@ -172,6 +172,15 @@ describe('Routes Component', () => {
           tokenBalances: {
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
           },
+          permissionHistory: {
+            'https://metamask.github.io': {
+              eth_accounts: {
+                accounts: [
+                  'eip155:1:0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                ],
+              },
+            },
+          },
         },
         send: {
           ...mockSendState.send,
@@ -311,6 +320,25 @@ describe('toast display', () => {
           [mockSolanaAccount.id]: mockSolanaAccount,
         },
         selectedAccount: selectedAccountId ?? mockAccount.id,
+      },
+      accounts: {
+        ...mockState.metamask.accounts,
+        [mockAccount.address]: {
+          balance: '0x0',
+          address: mockAccount.address,
+        },
+        [mockAccount2.address]: {
+          balance: '0x0',
+          address: mockAccount2.address,
+        },
+        [mockNonEvmAccount.address]: {
+          balance: '0x0',
+          address: mockNonEvmAccount.address,
+        },
+        [mockSolanaAccount.address]: {
+          balance: '0x0',
+          address: mockSolanaAccount.address,
+        },
       },
       accountsAssets: {
         [selectedAccountId ?? mockAccount.id]: [],

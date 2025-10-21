@@ -1555,6 +1555,7 @@ export async function withSolanaAccountSnap(
     mockTokenAccountAccountInfo = true,
     mockZeroBalance,
     numberOfAccounts = 1,
+    state = 0,
     mockSwapUSDtoSOL,
     mockSwapSOLtoUSDC,
     mockSwapWithNoQuotes,
@@ -1565,6 +1566,7 @@ export async function withSolanaAccountSnap(
     withFixtureBuilder,
   }: {
     title?: string;
+    state?: number;
     showNativeTokenAsMainBalance?: boolean;
     showSnapConfirmation?: boolean;
     numberOfAccounts?: number;
@@ -1599,7 +1601,6 @@ export async function withSolanaAccountSnap(
     fixtures =
       fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
   }
-
   if (withFixtureBuilder) {
     fixtures = withFixtureBuilder(fixtures).withEnabledNetworks({
       eip155: {
@@ -1615,6 +1616,7 @@ export async function withSolanaAccountSnap(
     {
       fixtures: fixtures.build(),
       title,
+      forceBip44Version: state === 2 ? 2 : 0,
       dapp: true,
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
@@ -1622,7 +1624,7 @@ export async function withSolanaAccountSnap(
         // - If this flag is not set, the slides count will be 4.
         // - If this flag is set, the slides count will be 5.
         remoteFeatureFlags: {
-          addSolanaAccount: true,
+          solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
           bridgeConfig: showSnapConfirmation
             ? featureFlagsWithSnapConfirmation
             : featureFlags,
