@@ -12,6 +12,10 @@ import {
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
 import { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
+import {
+  TransactionControllerTransactionConfirmedEvent,
+  TransactionControllerUnapprovedTransactionAddedEvent,
+} from '@metamask/transaction-controller';
 import { PreferencesControllerGetStateAction as InternalPreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 export type AccountTrackerControllerMessenger = ReturnType<
@@ -27,7 +31,9 @@ type AllowedActions =
 
 type AllowedEvents =
   | AccountsControllerSelectedAccountChangeEvent
-  | AccountsControllerSelectedEvmAccountChangeEvent;
+  | AccountsControllerSelectedEvmAccountChangeEvent
+  | TransactionControllerTransactionConfirmedEvent
+  | TransactionControllerUnapprovedTransactionAddedEvent;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -51,6 +57,8 @@ export function getAccountTrackerControllerMessenger(
     allowedEvents: [
       'AccountsController:selectedAccountChange',
       'AccountsController:selectedEvmAccountChange',
+      'TransactionController:transactionConfirmed',
+      'TransactionController:unapprovedTransactionAdded',
     ],
   });
 }
