@@ -32,17 +32,11 @@ export function useDappSwapComparisonInfo() {
   } = currentConfirmation ?? {
     txParams: {},
   };
-  const {
-    data,
-    gas,
-    estimatedBaseFee,
-    maxPriorityFeePerGas,
-    value: amount,
-  } = txParams ?? {};
+  const { data, gas, maxFeePerGas, value: amount } = txParams ?? {};
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const captureDappSwapComparisonMetricsProperties = useCallback(
-    (properties: Record<string, string>) => {
+    (properties: Record<string, string> | string) => {
       updateTransactionEventFragment(
         {
           properties: {
@@ -104,24 +98,22 @@ export function useDappSwapComparisonInfo() {
       return undefined;
     }
 
-    captureDappSwapComparisonMetricsProperties({ loading: 'true' });
+    captureDappSwapComparisonMetricsProperties('loading');
 
     return await fetchQuotes(quotesInput);
   }, [amountMin, captureDappSwapComparisonMetricsProperties, quotesInput]);
 
   const getGasUSDValue = useCallback(
     (gasValue: BigNumber) => {
-      if (!estimatedBaseFee || !maxPriorityFeePerGas) {
+      if (!maxFeePerGas) {
         return '0';
       }
-      const gasPrice = new BigNumber(estimatedBaseFee, 16).plus(
-        maxPriorityFeePerGas,
-      );
+      const gasPrice = new BigNumber(maxFeePerGas, 16);
       const totalGas = gasPrice.times(gasValue).toString(10);
       const nativeTokenAddress = getNativeTokenAddress(chainId);
       return getUSDValue(totalGas, nativeTokenAddress);
     },
-    [chainId, estimatedBaseFee, getUSDValue, maxPriorityFeePerGas],
+    [chainId, getUSDValue, maxFeePerGas],
   );
 
   useEffect(() => {
