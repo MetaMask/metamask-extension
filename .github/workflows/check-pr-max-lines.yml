@@ -9,7 +9,6 @@ on:
     branches-ignore:
       # Do not count lines on PRs targeting stable or releases
       - stable
-      - Version-v*
       - release/*
 
 permissions:
