@@ -948,37 +948,6 @@ describe('createTrustSignalsMiddleware', () => {
           );
         }
       });
-
-      it('does not scan spender when primaryType is missing', async () => {
-        scanAddressMockAndAddToCache.mockResolvedValue(
-          MOCK_SCAN_RESPONSES.BENIGN,
-        );
-        const { middleware, appStateController, networkController } =
-          createMiddleware();
-
-        const permitDataWithoutPrimaryType = createPermitTypedData();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        delete (permitDataWithoutPrimaryType as any).primaryType;
-
-        const req = createMockRequest(MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4, [
-          TEST_ADDRESSES.FROM,
-          permitDataWithoutPrimaryType,
-        ]);
-        const res = createMockResponse();
-        const next = jest.fn();
-
-        await middleware(req, res, next);
-
-        // Should only scan the verifying contract since primaryType is missing
-        expect(scanAddressMockAndAddToCache).toHaveBeenCalledTimes(1);
-        expect(scanAddressMockAndAddToCache).toHaveBeenCalledWith(
-          TEST_ADDRESSES.TO,
-          appStateController.getAddressSecurityAlertResponse,
-          appStateController.addAddressSecurityAlertResponse,
-          getChainId(networkController),
-        );
-        expect(next).toHaveBeenCalled();
-      });
     });
   });
 

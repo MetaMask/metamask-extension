@@ -14,10 +14,7 @@ import {
   parseApprovalTransactionData,
 } from '../../../../../shared/modules/transaction.utils';
 import { PRIMARY_TYPES_PERMIT } from '../../../../../shared/constants/signatures';
-import {
-  Alert,
-  AlertSeverity,
-} from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
 import {
@@ -103,7 +100,7 @@ export function useSpenderAlerts(): Alert[] {
         key: 'spenderTrustSignalMalicious',
         message: t('alertMessageAddressTrustSignalMalicious'),
         reason: t('nameModalTitleMalicious'),
-        severity: Severity.Danger as AlertSeverity,
+        severity: Severity.Danger,
       });
     } else if (trustSignalDisplayState === TrustSignalDisplayState.Warning) {
       alerts.push({
@@ -113,7 +110,7 @@ export function useSpenderAlerts(): Alert[] {
         key: 'spenderTrustSignalWarning',
         message: t('alertMessageAddressTrustSignal'),
         reason: t('nameModalTitleWarning'),
-        severity: Severity.Warning as AlertSeverity,
+        severity: Severity.Warning,
       });
     }
 

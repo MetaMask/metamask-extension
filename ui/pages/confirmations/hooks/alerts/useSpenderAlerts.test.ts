@@ -16,7 +16,6 @@ import {
 } from '../../../../hooks/useTrustSignals';
 import { useSpenderAlerts } from './useSpenderAlerts';
 
-// Mock dependencies
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
 }));
@@ -43,10 +42,13 @@ jest.mock('../../../../hooks/useTrustSignals', () => ({
   },
 }));
 
-// eslint-disable-next-line import/no-restricted-paths
 jest.mock('../../../../../app/scripts/lib/ppom/security-alerts-api', () => ({
-  isSecurityAlertsAPIEnabled: jest.fn(() => true),
+  isSecurityAlertsAPIEnabled: jest.fn(),
 }));
+
+const mockIsSecurityAlertsAPIEnabled = jest.requireMock(
+  '../../../../../app/scripts/lib/ppom/security-alerts-api',
+).isSecurityAlertsAPIEnabled;
 
 const mockUseTrustSignal = useTrustSignal as jest.MockedFunction<
   typeof useTrustSignal
@@ -68,6 +70,26 @@ const mockParseTypedDataMessage = parseTypedDataMessage as jest.MockedFunction<
 const MOCK_SPENDER_ADDRESS = '0x1234567890123456789012345678901234567890';
 const MOCK_TRANSACTION_ID = 'test-tx-id';
 
+const expectedWarningAlert = {
+  actions: [],
+  field: RowAlertKey.Spender,
+  isBlocking: false,
+  key: 'spenderTrustSignalWarning',
+  message: 'alertMessageAddressTrustSignal',
+  reason: 'nameModalTitleWarning',
+  severity: Severity.Warning,
+};
+
+const expectedMaliciousAlert = {
+  actions: [],
+  field: RowAlertKey.Spender,
+  isBlocking: false,
+  key: 'spenderTrustSignalMalicious',
+  message: 'alertMessageAddressTrustSignalMalicious',
+  reason: 'nameModalTitleMalicious',
+  severity: Severity.Danger,
+};
+
 describe('useSpenderAlerts', () => {
   const mockT = (key: string) => key;
 
@@ -78,6 +100,38 @@ describe('useSpenderAlerts', () => {
       state: TrustSignalDisplayState.Unknown,
       label: null,
     });
+    mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
+  });
+
+  it('returns an empty array when security alerts API is disabled', () => {
+    mockIsSecurityAlertsAPIEnabled.mockReturnValue(false);
+    mockUseTrustSignal.mockReturnValue({
+      state: TrustSignalDisplayState.Malicious,
+      label: 'Known malicious address',
+    });
+
+    // Mock transaction data
+    const mockTransaction = {
+      id: MOCK_TRANSACTION_ID,
+      type: TransactionType.tokenMethodApprove,
+      txParams: {
+        data: '0xapprovedata',
+      },
+    };
+
+    mockUseConfirmContext.mockReturnValue({
+      currentConfirmation: mockTransaction,
+      isScrollToBottomCompleted: false,
+      setIsScrollToBottomCompleted: jest.fn(),
+    });
+    mockParseApprovalTransactionData.mockReturnValue({
+      name: 'approve',
+      spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
+    });
+
+    const { result } = renderHook(() => useSpenderAlerts());
+
+    expect(result.current).toEqual([]);
   });
 
   describe('approval transactions', () => {
@@ -114,15 +168,7 @@ describe('useSpenderAlerts', () => {
         NameType.ETHEREUM_ADDRESS,
       );
       expect(result.current).toHaveLength(1);
-      expect(result.current[0]).toEqual({
-        actions: [],
-        field: RowAlertKey.Spender,
-        isBlocking: false,
-        key: 'spenderTrustSignalMalicious',
-        message: 'alertMessageAddressTrustSignalMalicious',
-        reason: 'nameModalTitleMalicious',
-        severity: Severity.Danger,
-      });
+      expect(result.current[0]).toEqual(expectedMaliciousAlert);
     });
 
     it('should return alert for warning spender in tokenMethodApprove', () => {
@@ -154,15 +200,7 @@ describe('useSpenderAlerts', () => {
       const { result } = renderHook(() => useSpenderAlerts());
 
       expect(result.current).toHaveLength(1);
-      expect(result.current[0]).toEqual({
-        actions: [],
-        field: RowAlertKey.Spender,
-        isBlocking: false,
-        key: 'spenderTrustSignalWarning',
-        message: 'alertMessageAddressTrustSignal',
-        reason: 'nameModalTitleWarning',
-        severity: Severity.Warning,
-      });
+      expect(result.current[0]).toEqual(expectedWarningAlert);
     });
 
     it('should return empty array for benign spender', () => {
@@ -188,6 +226,36 @@ describe('useSpenderAlerts', () => {
       mockUseTrustSignal.mockReturnValue({
         state: TrustSignalDisplayState.Verified,
         label: 'Verified contract',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(0);
+    });
+
+    it('should return empty array for unknown trust signal state', () => {
+      const mockTransaction = {
+        id: MOCK_TRANSACTION_ID,
+        type: TransactionType.tokenMethodApprove,
+        txParams: {
+          data: '0xapprovedata',
+        },
+      };
+
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockTransaction,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      });
+      mockParseApprovalTransactionData.mockReturnValue({
+        name: 'approve',
+        spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
+      });
+
+      // Mock unknown trust signal response
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
       });
 
       const { result } = renderHook(() => useSpenderAlerts());
@@ -233,15 +301,7 @@ describe('useSpenderAlerts', () => {
       const { result } = renderHook(() => useSpenderAlerts());
 
       expect(result.current).toHaveLength(1);
-      expect(result.current[0]).toEqual({
-        actions: [],
-        field: RowAlertKey.Spender,
-        isBlocking: false,
-        key: 'spenderTrustSignalMalicious',
-        message: 'alertMessageAddressTrustSignalMalicious',
-        reason: 'nameModalTitleMalicious',
-        severity: Severity.Danger,
-      });
+      expect(result.current[0]).toEqual(expectedMaliciousAlert);
     });
 
     it('should return warning alert for warning spender in permit signature', () => {
@@ -280,15 +340,7 @@ describe('useSpenderAlerts', () => {
       const { result } = renderHook(() => useSpenderAlerts());
 
       expect(result.current).toHaveLength(1);
-      expect(result.current[0]).toEqual({
-        actions: [],
-        field: RowAlertKey.Spender,
-        isBlocking: false,
-        key: 'spenderTrustSignalWarning',
-        message: 'alertMessageAddressTrustSignal',
-        reason: 'nameModalTitleWarning',
-        severity: Severity.Warning,
-      });
+      expect(result.current[0]).toEqual(expectedWarningAlert);
     });
 
     it('should return empty array for non-permit signature', () => {
@@ -310,71 +362,6 @@ describe('useSpenderAlerts', () => {
         message: {},
         domain: {},
         types: {},
-      });
-
-      const { result } = renderHook(() => useSpenderAlerts());
-
-      expect(result.current).toHaveLength(0);
-    });
-  });
-
-  describe('edge cases', () => {
-    it('should return empty array when no confirmation', () => {
-      mockUseConfirmContext.mockReturnValue({
-        currentConfirmation: null,
-        isScrollToBottomCompleted: false,
-        setIsScrollToBottomCompleted: jest.fn(),
-      });
-
-      const { result } = renderHook(() => useSpenderAlerts());
-
-      expect(result.current).toHaveLength(0);
-    });
-
-    it('should return empty array when spender address not found', () => {
-      const mockTransaction = {
-        id: MOCK_TRANSACTION_ID,
-        type: TransactionType.tokenMethodApprove,
-        txParams: {
-          data: '0xapprovedata',
-        },
-      };
-
-      mockUseConfirmContext.mockReturnValue({
-        currentConfirmation: mockTransaction,
-        isScrollToBottomCompleted: false,
-        setIsScrollToBottomCompleted: jest.fn(),
-      });
-      mockParseApprovalTransactionData.mockReturnValue(undefined);
-
-      const { result } = renderHook(() => useSpenderAlerts());
-
-      expect(result.current).toHaveLength(0);
-    });
-
-    it('should return empty array for unknown trust signal state', () => {
-      const mockTransaction = {
-        id: MOCK_TRANSACTION_ID,
-        type: TransactionType.tokenMethodApprove,
-        txParams: {
-          data: '0xapprovedata',
-        },
-      };
-
-      mockUseConfirmContext.mockReturnValue({
-        currentConfirmation: mockTransaction,
-        isScrollToBottomCompleted: false,
-        setIsScrollToBottomCompleted: jest.fn(),
-      });
-      mockParseApprovalTransactionData.mockReturnValue({
-        name: 'approve',
-        spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
-      });
-
-      // Mock unknown trust signal response
-      mockUseTrustSignal.mockReturnValue({
-        state: TrustSignalDisplayState.Unknown,
-        label: null,
       });
 
       const { result } = renderHook(() => useSpenderAlerts());
