@@ -68,6 +68,7 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
 import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { ReferralStatus } from './controllers/preferences-controller';
 import { METAMASK_COOKIE_HANDLER } from './constants/stream';
 import {
@@ -943,7 +944,7 @@ describe('MetaMaskController', () => {
             accounts,
             accountsByChainId: {
               '0x1': {
-                [TEST_ADDRESS]: { balance },
+                [toChecksumHexAddress(TEST_ADDRESS)]: { balance },
               },
             },
           });
@@ -968,7 +969,7 @@ describe('MetaMaskController', () => {
             accounts,
             accountsByChainId: {
               '0x1': {
-                [TEST_ADDRESS]: { balance },
+                [toChecksumHexAddress(TEST_ADDRESS)]: { balance },
               },
             },
           });
@@ -4913,9 +4914,6 @@ describe('MetaMaskController', () => {
         // Now required, since it's invoked automatically when new account groups get added.
         setSelectedAccounts: jest.fn(),
       });
-      jest
-        .spyOn(metamaskController.accountTrackerController, 'syncWithAddresses')
-        .mockReturnValue();
 
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
     });
@@ -5191,9 +5189,6 @@ describe('MetaMaskController', () => {
         // Now required, since it's invoked automatically when new account groups get added.
         setSelectedAccounts: jest.fn(),
       });
-      jest
-        .spyOn(metamaskController.accountTrackerController, 'syncWithAddresses')
-        .mockReturnValue();
 
       await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
     });
