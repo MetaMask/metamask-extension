@@ -8,7 +8,7 @@ import { withSolanaAccountSnap } from '../solana/common-solana';
 import { mockMultichainAccountsFeatureFlagStateTwo } from './common';
 
 // eslint-disable-next-line
-describe.skip('Multichain Accounts - Wallet Details', function (this: Suite) {
+describe('Multichain Accounts - Wallet Details', function (this: Suite) {
   it('should view wallet details with one Ethereum and one Solana account and show SRP backup reminder', async function () {
     await withSolanaAccountSnap(
       {
@@ -44,7 +44,7 @@ describe.skip('Multichain Accounts - Wallet Details', function (this: Suite) {
     );
   });
 
-  it('should add new Ethereum account from wallet details', async function () {
+  it.skip('should add new Ethereum account from wallet details', async function () {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
