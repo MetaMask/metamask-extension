@@ -13,11 +13,24 @@ import {
 } from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Checkbox, Text } from '../../component-library';
+import {
+  AvatarIcon,
+  AvatarIconSize,
+  Box,
+  Checkbox,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../component-library';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import {
   AlignItems,
+  BackgroundColor,
+  BlockSize,
   Display,
+  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -67,6 +80,7 @@ export const MultichainAccountList = ({
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+  const t = useI18nContext();
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,
   );
@@ -86,6 +100,9 @@ export const MultichainAccountList = ({
 
   const [openMenuAccountId, setOpenMenuAccountId] =
     useState<AccountGroupId | null>(null);
+
+  const [isHiddenAccountsExpanded, setIsHiddenAccountsExpanded] =
+    useState(false);
 
   const handleAccountRenameActionModalClose = useCallback(() => {
     setIsAccountRenameModalOpen(false);
@@ -144,7 +161,139 @@ export const MultichainAccountList = ({
     const handleAccountClickToUse =
       handleAccountClick ?? defaultHandleAccountClick;
 
-    return Object.entries(wallets).reduce(
+    // Collect all groups to categorize them
+    const pinnedGroups: {
+      groupId: string;
+      groupData: (typeof wallets)[AccountWalletId]['groups'][AccountGroupId];
+      walletId: string;
+    }[] = [];
+    const hiddenGroups: {
+      groupId: string;
+      groupData: (typeof wallets)[AccountWalletId]['groups'][AccountGroupId];
+      walletId: string;
+    }[] = [];
+
+    // First pass: collect pinned and hidden accounts
+    Object.entries(wallets).forEach(([walletId, walletData]) => {
+      Object.entries(walletData.groups || {}).forEach(
+        ([groupId, groupData]) => {
+          if (groupData.metadata.pinned) {
+            pinnedGroups.push({ groupId, groupData, walletId });
+          } else if (groupData.metadata.hidden) {
+            hiddenGroups.push({ groupId, groupData, walletId });
+          }
+        },
+      );
+    });
+
+    const renderAccountCell = (
+      groupId: string,
+      groupData: (typeof wallets)[AccountWalletId]['groups'][AccountGroupId],
+      walletId: string,
+      isHidden = false,
+    ) => {
+      // If prop is provided, attempt render balance. Otherwise do not render balance.
+      const account = allBalances?.wallets?.[walletId]?.groups?.[groupId];
+      const balance = account?.totalBalanceInUserCurrency ?? 0;
+      const currency = account?.userCurrency ?? '';
+
+      // TODO: Implement logic for removable accounts
+      const isRemovable = false;
+
+      // Render account name with EyeSlash icon prefix if hidden
+      const accountNameElement: string | React.ReactNode = isHidden ? (
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+          <Icon
+            name={IconName.EyeSlash}
+            size={IconSize.Xs}
+            color={IconColor.iconDefault}
+          />
+          <Text variant={TextVariant.bodyMdMedium}>
+            {groupData.metadata.name}
+          </Text>
+        </Box>
+      ) : (
+        groupData.metadata.name
+      );
+
+      return (
+        <Box
+          className={`multichain-account-menu-popover__list--menu-item${isHidden ? ' multichain-account-menu-popover__list--menu-item-hidden-account' : ''}`}
+          key={`multichain-account-cell-${groupId}`}
+          style={isHidden ? { opacity: 0.5 } : undefined}
+        >
+          <MultichainAccountCell
+            accountId={groupId as AccountGroupId}
+            accountName={accountNameElement as string | React.ReactNode}
+            accountNameString={groupData.metadata.name}
+            balance={formatCurrencyWithMinThreshold(balance, currency)}
+            selected={selectedAccountGroupsSet.has(groupId as AccountGroupId)}
+            onClick={handleAccountClickToUse}
+            privacyMode={privacyMode}
+            startAccessory={
+              showAccountCheckbox ? (
+                <Box marginRight={4}>
+                  <Checkbox
+                    isChecked={selectedAccountGroupsSet.has(
+                      groupId as AccountGroupId,
+                    )}
+                    onChange={() => {
+                      handleAccountClickToUse(groupId as AccountGroupId);
+                    }}
+                  />
+                </Box>
+              ) : undefined
+            }
+            endAccessory={
+              <MultichainAccountMenu
+                accountGroupId={groupId as AccountGroupId}
+                isRemovable={isRemovable}
+                handleAccountRenameAction={handleAccountRenameAction}
+                isOpen={openMenuAccountId === groupId}
+                onToggle={() => handleMenuToggle(groupId as AccountGroupId)}
+              />
+            }
+          />
+        </Box>
+      );
+    };
+
+    const result: React.ReactNode[] = [];
+
+    // Render pinned section (if there are any pinned accounts)
+    // TODO: Add translation for 'Pinned accounts'
+    if (pinnedGroups.length > 0) {
+      const pinnedHeader = (
+        <Box
+          key="pinned-header"
+          data-testid="multichain-account-tree-pinned-header"
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingTop={2}
+          paddingBottom={2}
+          gap={2}
+        >
+          <Icon
+            name={IconName.Pin}
+            size={IconSize.Sm}
+            color={IconColor.iconMuted}
+          />
+          <Text variant={TextVariant.bodyMdMedium} color={TextColor.textMuted}>
+            Pinned accounts
+          </Text>
+        </Box>
+      );
+      result.push(pinnedHeader);
+
+      pinnedGroups.forEach(({ groupId, groupData, walletId }) => {
+        result.push(renderAccountCell(groupId, groupData, walletId));
+      });
+    }
+
+    // Render wallets with their non-pinned, non-hidden accounts
+    const walletSections = Object.entries(wallets).reduce(
       (walletsAccumulator, [walletId, walletData]) => {
         const walletName = walletData.metadata?.name;
 
@@ -171,56 +320,12 @@ export const MultichainAccountList = ({
 
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
-            // If prop is provided, attempt render balance. Otherwise do not render balance.
-            const account = allBalances?.wallets?.[walletId]?.groups?.[groupId];
-            const balance = account?.totalBalanceInUserCurrency ?? 0;
-            const currency = account?.userCurrency ?? '';
+            // Skip pinned and hidden accounts (they're shown in their own sections)
+            if (groupData.metadata.pinned || groupData.metadata.hidden) {
+              return [];
+            }
 
-            // TODO: Implement logic for removable accounts
-            const isRemovable = false;
-
-            return [
-              <Box
-                className="multichain-account-menu-popover__list--menu-item"
-                key={`multichain-account-cell-${groupId}`}
-              >
-                <MultichainAccountCell
-                  accountId={groupId as AccountGroupId}
-                  accountName={groupData.metadata.name}
-                  balance={formatCurrencyWithMinThreshold(balance, currency)}
-                  selected={selectedAccountGroupsSet.has(
-                    groupId as AccountGroupId,
-                  )}
-                  onClick={handleAccountClickToUse}
-                  privacyMode={privacyMode}
-                  startAccessory={
-                    showAccountCheckbox ? (
-                      <Box marginRight={4}>
-                        <Checkbox
-                          isChecked={selectedAccountGroupsSet.has(
-                            groupId as AccountGroupId,
-                          )}
-                          onChange={() => {
-                            handleAccountClickToUse(groupId as AccountGroupId);
-                          }}
-                        />
-                      </Box>
-                    ) : undefined
-                  }
-                  endAccessory={
-                    <MultichainAccountMenu
-                      accountGroupId={groupId as AccountGroupId}
-                      isRemovable={isRemovable}
-                      handleAccountRenameAction={handleAccountRenameAction}
-                      isOpen={openMenuAccountId === groupId}
-                      onToggle={() =>
-                        handleMenuToggle(groupId as AccountGroupId)
-                      }
-                    />
-                  }
-                />
-              </Box>,
-            ];
+            return [renderAccountCell(groupId, groupData, walletId)];
           },
         );
 
@@ -241,6 +346,74 @@ export const MultichainAccountList = ({
       },
       [] as React.ReactNode[],
     );
+
+    result.push(...walletSections);
+
+    // Render hidden section (if there are any hidden accounts)
+    if (hiddenGroups.length > 0) {
+      const hiddenHeader = (
+        <Box
+          key="hidden-header"
+          as="button"
+          onClick={() => setIsHiddenAccountsExpanded(!isHiddenAccountsExpanded)}
+          backgroundColor={BackgroundColor.backgroundDefault}
+          display={Display.Flex}
+          padding={4}
+          alignItems={AlignItems.center}
+          width={BlockSize.Full}
+          justifyContent={JustifyContent.spaceBetween}
+          className="hidden-accounts-list"
+          data-testid="multichain-account-tree-hidden-header"
+        >
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            width={BlockSize.TwoThirds}
+            gap={2}
+          >
+            <AvatarIcon
+              iconName={IconName.EyeSlash}
+              color={IconColor.infoDefault}
+              backgroundColor={BackgroundColor.infoMuted}
+              size={AvatarIconSize.Sm}
+            />
+            <Box display={Display.Flex}>
+              <Text variant={TextVariant.bodyMdMedium}>
+                {t('hiddenAccounts')}
+              </Text>
+            </Box>
+          </Box>
+          <Box
+            gap={2}
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            width={BlockSize.OneThird}
+            justifyContent={JustifyContent.flexEnd}
+          >
+            <Text variant={TextVariant.bodyMdMedium}>
+              {hiddenGroups.length}
+            </Text>
+            <Icon
+              name={
+                isHiddenAccountsExpanded ? IconName.ArrowUp : IconName.ArrowDown
+              }
+              size={IconSize.Sm}
+              color={IconColor.iconDefault}
+            />
+          </Box>
+        </Box>
+      );
+      result.push(hiddenHeader);
+
+      // Only render hidden accounts when expanded
+      if (isHiddenAccountsExpanded) {
+        hiddenGroups.forEach(({ groupId, groupData, walletId }) => {
+          result.push(renderAccountCell(groupId, groupData, walletId, true));
+        });
+      }
+    }
+
+    return result;
   }, [
     handleAccountClick,
     wallets,
@@ -259,6 +432,8 @@ export const MultichainAccountList = ({
     handleAccountRenameAction,
     handleMenuToggle,
     openMenuAccountId,
+    t,
+    isHiddenAccountsExpanded,
   ]);
 
   return (
