@@ -417,10 +417,10 @@ describe('ExtensionLazyListener', () => {
   });
 
   describe('types', () => {
-    const browser = buildMockBrowser({ runtime: ['onMessage' as const] });
+    const browser = buildMockBrowser({}) as unknown as Browser;
 
     it('constructor enforces types for tracked namespaces and events', () => {
-      let instance = new ExtensionLazyListener(browser as unknown as Browser, {
+      let instance = new ExtensionLazyListener(browser, {
         // valid namespace and event
         runtime: ['onInstalled', 'onMessage'],
         tabs: ['onUpdated'],
@@ -428,7 +428,7 @@ describe('ExtensionLazyListener', () => {
         invalidNamespace: ['onFoo'],
       });
 
-      instance = new ExtensionLazyListener(browser as unknown as Browser, {
+      instance = new ExtensionLazyListener(browser, {
         alarms: [
           'onAlarm',
           // @ts-expect-error - invalid param
@@ -436,35 +436,37 @@ describe('ExtensionLazyListener', () => {
         ],
       });
 
-      instance = new ExtensionLazyListener(browser as unknown as Browser, {
+      instance = new ExtensionLazyListener(browser, {
         urlbar: [
           'onResultPicked',
-          // @ts-expect-error - `onResultsRequested` doesn't have a listener with
-          // a return type of `void`, and so it is not permitted by the type
-          // system.
+          // @ts-expect-error - `onResultsRequested` doesn't have a listener
+          // with a return type of `void`, and so it is not permitted by the
+          // type system.
           'onResultsRequested',
         ],
       });
+      expect(instance).toBeDefined();
     });
 
     it('`once` enforces types for tracked namespaces and events', () => {
-      const instance = new ExtensionLazyListener(browser as unknown as Browser);
+      const instance = new ExtensionLazyListener(browser);
 
-      function onMessageGood(args: [any, Runtime.MessageSender, () => void]) {
+      function onMessageGood(_args: [any, Runtime.MessageSender, () => void]) {
         // intentionally empty
       }
-      // valid
+      // this is valid
       instance.once('runtime', 'onMessage').then(onMessageGood);
-      function onMessageBad(args: [any, 'not the right type', () => void]) {
+
+      function onMessageBad(_args: [any, 'not the right type', () => void]) {
         // intentionally empty
       }
       // @ts-expect-error - onMessageBad is the wrong type
       instance.once('runtime', 'onMessage').then(onMessageBad);
-      expect(true).toBe(true);
+      expect(instance).toBeDefined();
     });
 
     it('`addListener` enforces types for tracked namespaces and events', () => {
-      const instance = new ExtensionLazyListener(browser as unknown as Browser);
+      const instance = new ExtensionLazyListener(browser);
 
       function onMessageGood(
         _msg: any,
@@ -473,19 +475,19 @@ describe('ExtensionLazyListener', () => {
       ) {
         // intentionally empty
       }
-      // valid
+      // this is valid
       instance.addListener('runtime', 'onMessage', onMessageGood);
       function onMessageBad(
-        msg: any,
-        sender: 'not the right type',
-        sendResponse: () => void,
+        _msg: any,
+        _sender: 'not the right type',
+        _sendResponse: () => void,
       ) {
         // intentionally empty
       }
 
       // @ts-expect-error - onMessageBad is the wrong type
       instance.addListener('runtime', 'onMessage', onMessageBad);
-      expect(true).toBe(true);
+      expect(instance).toBeDefined();
     });
   });
 });
