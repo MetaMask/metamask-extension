@@ -675,7 +675,7 @@ export function getMetaMaskAccountBalances(state) {
 
   return Object.entries(balancesForCurrentChain).reduce(
     (acc, [address, value]) => {
-      acc[toChecksumHexAddress(address)] = value;
+      acc[address.toLowerCase()] = value;
       return acc;
     },
     {},
