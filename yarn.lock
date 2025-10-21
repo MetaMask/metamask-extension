@@ -5547,12 +5547,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/announcement-controller@npm:^7.0.3":
-  version: 7.0.3
-  resolution: "@metamask/announcement-controller@npm:7.0.3"
+"@metamask/announcement-controller@npm:@metamask-previews/announcement-controller@7.1.0-preview-e9856975":
+  version: 7.1.0-preview-e9856975
+  resolution: "@metamask-previews/announcement-controller@npm:7.1.0-preview-e9856975"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-  checksum: 10/9eee12f8b00e878c92b0ccf0ecc5ad7d990d9a065a98e5b974a1d3167e68eb5f5f7713904e5b0f3e61caeda90c24747eb229aa628d02cdd3f34033a3046da60d
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/messenger": "npm:^0.3.0"
+  checksum: 10/f1fcc32980fbe780084709d52e38c3d8b01faebed1f8b84096a37f0c937c5aee8d7384e7e8c0a45436be26e0f35564b5738f06e3ca73e6dcc17c2f6cec4357dc
   languageName: node
   linkType: hard
 

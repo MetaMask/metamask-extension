@@ -1,12 +1,13 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
+import { getRootMessenger } from '.';
 
 describe('getAnnouncementControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const announcementControllerMessenger =
       getAnnouncementControllerMessenger(messenger);
 
-    expect(announcementControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(announcementControllerMessenger).toBeInstanceOf(Messenger);
   });
 });

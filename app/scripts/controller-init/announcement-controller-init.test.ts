@@ -1,4 +1,3 @@
-import { Messenger } from '@metamask/base-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
 import { ControllerInitRequest } from './types';
@@ -6,6 +5,7 @@ import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAnnouncementControllerMessenger,
   AnnouncementControllerMessenger,
+  getRootMessenger,
 } from './messengers';
 import { AnnouncementControllerInit } from './announcement-controller-init';
 
@@ -14,7 +14,7 @@ jest.mock('@metamask/announcement-controller');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<AnnouncementControllerMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
