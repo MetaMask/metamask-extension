@@ -43,7 +43,7 @@ describe('Request Queueing chainId proxy sync', function () {
         await unlockWallet(driver);
 
         // Navigate to extension home screen
-        await driver.navigate(PAGES.SIDEPANEL);
+        await driver.navigate(PAGES.HOME);
 
         // Open Dapp One
         await driver.openNewPage(DAPP_URL);

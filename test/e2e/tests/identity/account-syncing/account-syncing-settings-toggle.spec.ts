@@ -104,7 +104,7 @@ describe('Account syncing - Settings Toggle', function () {
         await backupAndSyncSettingsPage.toggleAccountSync();
 
         // Navigate back to wallet to create third account
-        await driver.navigate(PAGES.SIDEPANEL);
+        await driver.navigate(PAGES.HOME);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded({

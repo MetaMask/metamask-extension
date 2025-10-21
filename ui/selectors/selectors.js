@@ -1829,10 +1829,11 @@ export function getFeatureFlags(state) {
 }
 
 export function getOriginOfCurrentTab(state) {
-  // For sidepanel, use appActiveTab directly (more reliable for sidepanel context)
+  // For sidepanel, prefer appActiveTab but fallback to activeTab if not available
   if (process.env.IS_SIDEPANEL === 'true') {
     const appActiveTab = getAppActiveTab(state);
-    if (appActiveTab?.origin) {
+    // Only use appActiveTab if it's properly initialized
+    if (appActiveTab && appActiveTab.origin) {
       return appActiveTab.origin;
     }
     // Fallback to activeTab if appActiveTab is not available
@@ -1856,7 +1857,8 @@ export function getOriginOfCurrentTab(state) {
 }
 
 export function getAppActiveTab(state) {
-  return state.metamask.appActiveTab;
+  // Safely access appActiveTab, return undefined if not available
+  return state?.metamask?.appActiveTab;
 }
 
 export function getDefaultHomeActiveTabName(state) {
@@ -2606,11 +2608,12 @@ export function getNetworkToAutomaticallySwitchTo(state) {
   // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
 
-  // For sidepanel, use appActiveTab directly (more reliable for sidepanel context)
+  // For sidepanel, prefer appActiveTab but fallback to activeTab if not available
   let selectedTabOrigin = null;
   if (process.env.IS_SIDEPANEL === 'true') {
     const appActiveTab = getAppActiveTab(state);
-    if (appActiveTab?.origin) {
+    // Only use appActiveTab if it's properly initialized
+    if (appActiveTab && appActiveTab.origin) {
       selectedTabOrigin = appActiveTab.origin;
     } else if (state.activeTab?.origin) {
       // Fallback to activeTab if appActiveTab is not available
@@ -3716,10 +3719,11 @@ export function getPermittedEVMAccountsForSelectedTab(state, activeTab) {
 }
 
 export function getAllPermittedAccountsForCurrentTab(state) {
-  // For sidepanel, use appActiveTab directly (more reliable for sidepanel context)
+  // For sidepanel, prefer appActiveTab but fallback to activeTab if not available
   if (process.env.IS_SIDEPANEL === 'true') {
     const appActiveTab = getAppActiveTab(state);
-    if (appActiveTab?.origin) {
+    // Only use appActiveTab if it's properly initialized
+    if (appActiveTab && appActiveTab.origin) {
       return getAllPermittedAccounts(state, appActiveTab.origin);
     }
     // Fallback to activeTab if appActiveTab is not available
@@ -4020,11 +4024,12 @@ export function getPermissionsForActiveTab(state) {
   const { metamask } = state;
   const { subjects = {} } = metamask;
 
-  // For sidepanel, use appActiveTab directly (more reliable for sidepanel context)
+  // For sidepanel, prefer appActiveTab but fallback to activeTab if not available
   let origin = null;
   if (process.env.IS_SIDEPANEL === 'true') {
     const appActiveTab = getAppActiveTab(state);
-    if (appActiveTab?.origin) {
+    // Only use appActiveTab if it's properly initialized
+    if (appActiveTab && appActiveTab.origin) {
       origin = appActiveTab.origin;
     } else if (state.activeTab?.origin) {
       // Fallback to activeTab if appActiveTab is not available
@@ -4057,11 +4062,12 @@ export function activeTabHasPermissions(state) {
   const { metamask } = state;
   const { subjects = {} } = metamask;
 
-  // For sidepanel, use appActiveTab directly (more reliable for sidepanel context)
+  // For sidepanel, prefer appActiveTab but fallback to activeTab if not available
   let origin = null;
   if (process.env.IS_SIDEPANEL === 'true') {
     const appActiveTab = getAppActiveTab(state);
-    if (appActiveTab?.origin) {
+    // Only use appActiveTab if it's properly initialized
+    if (appActiveTab && appActiveTab.origin) {
       origin = appActiveTab.origin;
     } else if (state.activeTab?.origin) {
       // Fallback to activeTab if appActiveTab is not available

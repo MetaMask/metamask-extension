@@ -113,7 +113,7 @@ async function main() {
       await unlockWallet(driver);
 
       // Navigate to extension home screen
-      await driver.navigate(PAGES.SIDEPANEL);
+      await driver.navigate(PAGES.HOME);
 
       // Open Dapp
       await driver.openNewPage(DAPP_URL);
@@ -191,7 +191,7 @@ async function main() {
       await unlockWallet(driver);
 
       // Navigate to extension home screen
-      await driver.navigate(PAGES.SIDEPANEL);
+      await driver.navigate(PAGES.HOME);
 
       // Open Dapp
       await driver.openNewPage(DAPP_URL);

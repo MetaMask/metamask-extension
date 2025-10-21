@@ -121,7 +121,7 @@ describe('Vault Corruption', function () {
   async function waitForVaultRestorePage(driver: Driver) {
     await driver.waitUntil(
       async () => {
-        await driver.navigate(PAGES.SIDEPANEL, { waitForControllers: false });
+        await driver.navigate(PAGES.HOME, { waitForControllers: false });
         const title = await driver.driver.getTitle();
         // the browser will return an error message for our UI's HOME page until
         // the extension has restarted
@@ -327,7 +327,7 @@ describe('Vault Corruption', function () {
         await clickRecover({ driver, confirm: false });
 
         // reload to make sure the UI is still in the same Vault Corrupted state
-        await driver.navigate(PAGES.SIDEPANEL, {
+        await driver.navigate(PAGES.HOME, {
           waitForControllers: false,
         });
 
