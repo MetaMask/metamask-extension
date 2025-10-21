@@ -5473,11 +5473,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "@metamask/account-tree-controller@npm:1.5.0"
+"@metamask/account-tree-controller@npm:@metamask-previews/account-tree-controller@1.5.0-preview-e9856975":
+  version: 1.5.0-preview-e9856975
+  resolution: "@metamask-previews/account-tree-controller@npm:1.5.0-preview-e9856975"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
@@ -5493,7 +5494,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/3d5147d7bf6cf85ac0d340b9d6481386bd8f1c60fcc53cfd925c45a14c280662db6d6ef959660cf21ced044507b121cdde60d1e2d1ccff675e9ac6ed8d0f8107
+  checksum: 10/3fb3c078d9dde5dbc2416dfdcf89d7cff33b32b01f407b87b1f1d948f22fde43d15f5ff201b22f00bf8a1b0d811f68be1f12f7ce4b3ac1a5acd4885505b04bd6
   languageName: node
   linkType: hard
 
