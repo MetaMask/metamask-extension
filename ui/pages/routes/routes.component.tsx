@@ -16,6 +16,7 @@ import type { ApprovalType } from '@metamask/controller-utils';
 
 import { useAppSelector } from '../../store/store';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
+import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat';
 import Initialized from '../../helpers/higher-order-components/initialized';
 import PermissionsConnect from '../permissions-connect';
 import Loading from '../../components/ui/loading-screen';
@@ -597,10 +598,13 @@ export default function Routes() {
             component={CrossChainSwapTxDetails}
             exact
           />
-          <Authenticated
-            path={CROSS_CHAIN_SWAP_ROUTE}
-            component={CrossChainSwap}
-          />
+          <Route path={CROSS_CHAIN_SWAP_ROUTE}>
+            {() => (
+              <AuthenticatedV5Compat>
+                <CrossChainSwap />
+              </AuthenticatedV5Compat>
+            )}
+          </Route>
           <Authenticated
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
             component={ConfirmAddSuggestedTokenPage}
