@@ -214,7 +214,6 @@ const Footer = () => {
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
     currentConfirmation?.type,
   );
-  const isNavigationNeeded = !isTransactionConfirmation && !isSignature;
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
@@ -232,15 +231,11 @@ const Footer = () => {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
 
-    if (isNavigationNeeded) {
-      navigateNext();
-    }
-
+    navigateNext();
     resetTransactionState();
   }, [
     currentConfirmation,
     dispatch,
-    isNavigationNeeded,
     isTransactionConfirmation,
     navigateNext,
     onTransactionConfirm,
@@ -254,10 +249,8 @@ const Footer = () => {
     }
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
-    if (isNavigationNeeded) {
-      navigateNext();
-    }
-  }, [isNavigationNeeded, navigateNext, onCancel, shouldThrottleOrigin]);
+    navigateNext();
+  }, [navigateNext, onCancel, shouldThrottleOrigin]);
 
   const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
 
