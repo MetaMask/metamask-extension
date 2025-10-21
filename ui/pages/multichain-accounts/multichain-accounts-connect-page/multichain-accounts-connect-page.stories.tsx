@@ -7,7 +7,11 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
-import { AccountWalletType, AccountGroupType, AccountGroupId } from '@metamask/account-api';
+import {
+  AccountWalletType,
+  AccountGroupType,
+  AccountGroupId,
+} from '@metamask/account-api';
 import { MultichainAccountsConnectPage } from './multichain-accounts-connect-page';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
@@ -57,7 +61,8 @@ const mockAccountTreeState = {
       },
     },
   },
-  selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId,
+  selectedAccountGroup:
+    'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0' as AccountGroupId,
 };
 
 const mockInternalAccountsState = {
@@ -119,6 +124,9 @@ const store = configureStore({
   metamask: {
     ...mockState.metamask,
     ...mockMultichainState.metamask,
+    // Preserve the network configuration from mockState
+    selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+    networkConfigurationsByChainId: mockState.metamask.networkConfigurationsByChainId,
     permissionHistory: {
       'https://test.dapp': {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -162,11 +170,12 @@ const meta: Meta<typeof MultichainAccountsConnectPage> = {
       </Wrapper>
     ),
   ],
-  parameters: {
-    backgrounds: {
-      default: 'light',
-    },
-  },
+};
+
+export default meta;
+type Story = StoryObj<typeof MultichainAccountsConnectPage>;
+
+export const Default: Story = {
   args: {
     request: {
       permissions: {
@@ -198,19 +207,5 @@ const meta: Meta<typeof MultichainAccountsConnectPage> = {
     rejectPermissionsRequest: action('rejectPermissionsRequest'),
     approveConnection: action('approveConnection'),
     targetSubjectMetadata: mockTargetSubjectMetadata,
-  },
-};
-
-export default meta;
-type Story = StoryObj<typeof MultichainAccountsConnectPage>;
-
-export const Default: Story = {};
-
-Default.parameters = {
-  docs: {
-    description: {
-      story:
-        'Default state of the MultichainAccountsConnectPage showing the connection request from a dapp to connect multichain accounts.',
-    },
   },
 };
