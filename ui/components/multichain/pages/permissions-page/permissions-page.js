@@ -35,7 +35,6 @@ import {
 import { getGatorPermissionsMap } from '../../../../selectors/gator-permissions/gator-permissions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 import { getURLHostName } from '../../../../helpers/utils/util';
-import { getNetworkNameByChainId } from '../../../../../shared/modules/feature-flags';
 import { ConnectionListItem } from './connection-list-item';
 
 export const PermissionsPage = () => {
@@ -48,40 +47,22 @@ export const PermissionsPage = () => {
   );
   const gatorPermissionsMap = useSelector(getGatorPermissionsMap);
 
-  // Get all unique site origins from gator permissions with their first chainId and all unique addresses
-  const getUniqueSiteOriginsFromGatorPermissions = (permissionsMap) => {
-    const siteOriginsMap = new Map();
+  // Get permission counts per site origin from gator permissions
+  const getPermissionCountsPerSite = (permissionsMap) => {
+    const sitePermissionCounts = new Map();
 
     Object.values(permissionsMap).forEach((permissionTypeMap) => {
       Object.values(permissionTypeMap).forEach((permissions) => {
         permissions.forEach((permission) => {
           if (permission.siteOrigin) {
-            if (!siteOriginsMap.has(permission.siteOrigin)) {
-              // Store the first permission data for this site origin
-              siteOriginsMap.set(permission.siteOrigin, {
-                addresses: new Set(),
-                chainId: permission.permissionResponse.chainId,
-              });
-            }
-
-            // Add address to the set if it exists
-            const permissionData = siteOriginsMap.get(permission.siteOrigin);
-            if (permission.permissionResponse.address) {
-              permissionData.addresses.add(
-                permission.permissionResponse.address.toLowerCase(),
-              );
-            }
+            const currentCount = sitePermissionCounts.get(permission.siteOrigin) || 0;
+            sitePermissionCounts.set(permission.siteOrigin, currentCount + 1);
           }
         });
       });
     });
 
-    // Convert Set to Array for each site origin
-    siteOriginsMap.forEach((permissionData) => {
-      permissionData.addresses = Array.from(permissionData.addresses);
-    });
-
-    return siteOriginsMap;
+    return sitePermissionCounts;
   };
 
   // Get merged connections list using useSelector to access getTargetSubjectMetadata
@@ -90,31 +71,29 @@ export const PermissionsPage = () => {
       return sitesConnectionsList;
     }
 
-    const gatorSiteOriginsMap =
-      getUniqueSiteOriginsFromGatorPermissions(gatorPermissionsMap);
+    const gatorPermissionCounts = getPermissionCountsPerSite(gatorPermissionsMap);
     const mergedConnections = { ...sitesConnectionsList };
 
-    // Add sites that only have gator permissions but no site connections
-    gatorSiteOriginsMap.forEach((permissionData, siteOrigin) => {
-      if (!mergedConnections[siteOrigin]) {
-        const { addresses, chainId } = permissionData;
-        const networkName = getNetworkNameByChainId(chainId);
-
-        // Get subject metadata for name and iconUrl
-        const subjectMetadata = getTargetSubjectMetadata(state, siteOrigin);
-        const siteName = subjectMetadata?.name || getURLHostName(siteOrigin);
-        const siteIconUrl = subjectMetadata?.iconUrl || null;
-
-        // Create a minimal connection object for sites that only have gator permissions
+    gatorPermissionCounts.forEach((permissionCount, siteOrigin) => {
+      if (mergedConnections[siteOrigin]) {
+        // Site exists in both connections and gator permissions - add count
         mergedConnections[siteOrigin] = {
-          addresses: addresses || [],
+          ...mergedConnections[siteOrigin],
+          advancedPermissionsCount: permissionCount,
+        };
+      } else {
+        // Site only has gator permissions - create minimal entry
+        const subjectMetadata = getTargetSubjectMetadata(state, siteOrigin);
+        mergedConnections[siteOrigin] = {
+          addresses: [],
           origin: siteOrigin,
-          name: siteName,
-          iconUrl: siteIconUrl,
+          name: subjectMetadata?.name || getURLHostName(siteOrigin),
+          iconUrl: subjectMetadata?.iconUrl || null,
           subjectType: SubjectType.Website,
           networkIconUrl: '',
-          networkName: networkName || '',
+          networkName: '',
           extensionId: null,
+          advancedPermissionsCount: permissionCount,
         };
       }
     });

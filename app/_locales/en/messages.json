@@ -166,6 +166,12 @@
   "accountsSmallCase": {
     "message": "accounts"
   },
+  "advancedPermissionSmallCase": {
+    "message": "advanced permission"
+  },
+  "advancedPermissionsSmallCase": {
+    "message": "advanced permissions"
+  },
   "active": {
     "message": "Active"
   },
