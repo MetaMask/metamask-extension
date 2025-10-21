@@ -67,11 +67,15 @@ describe('Metrics', function () {
         // deposit contract
         await testDapp.createDepositTransaction();
         const transactionConfirmation = new TransactionConfirmation(driver);
+        // verify UI before clicking advanced details to give time for the Transaction Added event to be emitted without Advanced Details being displayed
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.checkIsSenderAccountDisplayed(
           'Account 1',
         );
-        await transactionConfirmation.verifyAdvancedDetailsIsDisplayed('Sourcify');
+        await transactionConfirmation.checkGasFeeSymbol('ETH');
+        await transactionConfirmation.checkGasFee('0.0009');
+
+        // enable the advanced view
         await transactionConfirmation.clickAdvancedDetailsButton();
         await transactionConfirmation.verifyAdvancedDetailsHexDataIsDisplayed(
           '0xd0e30db0',
