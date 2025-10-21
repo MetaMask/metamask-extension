@@ -121,16 +121,18 @@ export type Preferences = {
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
 export type PreferencesControllerState = Omit<
   PreferencesState,
+  | 'displayNftMedia'
   | 'showTestNetworks'
   | 'smartTransactionsOptInStatus'
   | 'smartTransactionsMigrationApplied'
   | 'privacyMode'
   | 'tokenSortConfig'
-  | 'useMultiRpcMigration'
+  | 'showMultiRpcModal'
   | 'dismissSmartAccountSuggestionEnabled'
   | 'smartAccountOptIn'
   | 'smartAccountOptInForAccounts'
   | 'showIncomingTransactions'
+  | 'tokenNetworkFilter'
 > & {
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
@@ -141,6 +143,7 @@ export type PreferencesControllerState = Omit<
   knownMethodData: Record<string, string>;
   ledgerTransportType: LedgerTransportTypes;
   manageInstitutionalWallets: boolean;
+  openSeaEnabled: boolean;
   overrideContentSecurityPolicyHeader: boolean;
   preferences: Preferences;
   // TODO: Replace `Json` with correct type
