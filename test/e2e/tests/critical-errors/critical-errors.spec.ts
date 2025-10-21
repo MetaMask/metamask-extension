@@ -2,8 +2,8 @@ import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import CriticalErrorPage from '../../page-objects/pages/critical-error-page';
-import HomePage from '../../page-objects/pages/home/homepage';
 import { PAGES } from '../../webdriver/driver';
+import LoginPage from '../../page-objects/pages/login-page';
 
 describe('Critical errors', function (this: Suite) {
   it('shows critical error screen when background is unresponsive', async function () {
@@ -34,14 +34,14 @@ describe('Critical errors', function (this: Suite) {
     );
   });
   it('does NOT show critical error screen when background is a "little" slow to respond', async function () {
-    const timeoutValue = 5000;
+    const timeoutValue = 2500;
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         ignoredConsoleErrors: ['Background connection unresponsive'],
         manifestFlags: {
           testing: {
-            // this causes the background
+            // this causes the background to delay its "ready" signal
             simulatedSlowBackgroundLoadingTimeout: timeoutValue,
           },
         },
@@ -54,9 +54,9 @@ describe('Critical errors', function (this: Suite) {
         await driver.navigate(PAGES.HOME, { waitForControllers: false });
 
         // Wait until our "slow" bg timer expires before checking
-        await driver.delay(timeoutValue);
+        await driver.delay(timeoutValue * 1.1);
 
-        const homePage = new HomePage(driver);
+        const homePage = new LoginPage(driver);
         await homePage.checkPageIsLoaded();
       },
     );
