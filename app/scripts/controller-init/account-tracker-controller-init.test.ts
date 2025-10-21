@@ -1,10 +1,6 @@
 import { ActionConstraint, Messenger } from '@metamask/base-controller';
-import {
-  NetworkControllerGetSelectedNetworkClientAction,
-  NetworkControllerNetworkDidChangeEvent,
-} from '@metamask/network-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-import AccountTrackerController from '@metamask/assets-controllers';
+import { AccountTrackerController } from '@metamask/assets-controllers';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -19,9 +15,7 @@ jest.mock('../controllers/account-tracker-controller');
 
 function getInitRequestMock(
   baseMessenger = new Messenger<
-    | NetworkControllerGetSelectedNetworkClientAction
-    | RemoteFeatureFlagControllerGetStateAction
-    | ActionConstraint,
+    RemoteFeatureFlagControllerGetStateAction | ActionConstraint,
     never
   >(),
 ): jest.Mocked<
@@ -30,17 +24,6 @@ function getInitRequestMock(
     AccountTrackerControllerInitMessenger
   >
 > {
-  baseMessenger.registerActionHandler(
-    'NetworkController:getSelectedNetworkClient',
-    () => ({
-      // @ts-expect-error: Partial mock.
-      provider: {},
-
-      // @ts-expect-error: Partial mock.
-      blockTracker: {},
-    }),
-  );
-
   baseMessenger.registerActionHandler(
     'RemoteFeatureFlagController:getState',
     () => ({
@@ -92,27 +75,5 @@ describe('AccountTrackerControllerInit', () => {
     expect(chainIds).toContain('0x1'); // Ethereum
     expect(chainIds).toContain('0x38'); // BSC
     expect(chainIds).toContain('0xe708'); // Linea
-  });
-
-  it('calls `updateAccounts` when `NetworkController:networkDidChange` is emitted', () => {
-    const messenger = new Messenger<
-      | NetworkControllerGetSelectedNetworkClientAction
-      | RemoteFeatureFlagControllerGetStateAction
-      | ActionConstraint,
-      NetworkControllerNetworkDidChangeEvent
-    >();
-
-    const request = getInitRequestMock(messenger);
-    const { controller } = AccountTrackerControllerInit(request);
-
-    expect(controller.updateAccounts).not.toHaveBeenCalled();
-
-    messenger.publish('NetworkController:networkDidChange', {
-      selectedNetworkClientId: 'test',
-      networkConfigurationsByChainId: {},
-      networksMetadata: {},
-    });
-
-    expect(controller.updateAccounts).toHaveBeenCalledTimes(1);
   });
 });
