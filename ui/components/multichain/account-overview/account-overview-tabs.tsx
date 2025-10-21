@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { Hex } from '@metamask/utils';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
@@ -13,10 +14,10 @@ import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
-  getAllChainsToPoll,
+  getChainIdsToPoll,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
-import { detectNfts, updateIncomingTransactions } from '../../../store/actions';
+import { detectNfts } from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import { useAssetListTokenDetection } from '../../app/assets/hooks';
@@ -25,6 +26,7 @@ import TransactionList from '../../app/transaction-list';
 import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
 import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
+import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { AccountOverviewCommonProps } from './common';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
@@ -48,18 +50,20 @@ export const AccountOverviewTabs = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
-  const allChainIds = useSelector(getAllChainsToPoll);
+  const selectedChainIds = useSelector(getChainIdsToPoll);
 
   useAssetListTokenDetection();
+
+  // EVM specific tokenBalance polling, updates state via polling loop per chainId
+  useTokenBalances({
+    chainIds: selectedChainIds as Hex[],
+  });
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTabKey) => {
       onTabClick(tabName);
       if (tabName === AccountOverviewTabKey.Nfts) {
-        dispatch(detectNfts(allChainIds));
-      }
-      if (tabName === AccountOverviewTabKey.Activity) {
-        dispatch(updateIncomingTransactions());
+        dispatch(detectNfts(selectedChainIds));
       }
       trackEvent({
         category: MetaMetricsEventCategory.Home,

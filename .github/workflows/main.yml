@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - stable
-      - Version-v*
       - release/*
       - trigger-ci*
   pull_request:
@@ -41,6 +40,7 @@ permissions:
 jobs:
   prep-deps:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -71,6 +71,7 @@ jobs:
     needs:
       - prep-deps
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -187,11 +188,15 @@ jobs:
     secrets: inherit
 
   run-benchmarks:
+    # If not a fork, run benchmarks
+    if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
       - prep-deps
       - build-test-browserify
       - build-test-webpack
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   run-tests:
     name: Run tests
@@ -203,6 +208,7 @@ jobs:
     needs:
       - build-dist-browserify
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
       SELENIUM_BROWSER: chrome
@@ -298,6 +304,7 @@ jobs:
       - prep-deps
       - build-dist-browserify
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -327,12 +334,15 @@ jobs:
       - prep-deps
       - build-dist-browserify
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       GOOGLE_PROD_CLIENT_ID: 00000000000
       APPLE_PROD_CLIENT_ID: 00000000000
       GOOGLE_BETA_CLIENT_ID: 00000000000
       APPLE_BETA_CLIENT_ID: 00000000000
+      GOOGLE_EXPERIMENTAL_CLIENT_ID: 00000000000
+      APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
       GOOGLE_FLASK_CLIENT_ID: 00000000000
       APPLE_FLASK_CLIENT_ID: 00000000000
 
@@ -402,6 +412,7 @@ jobs:
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - lint-workflows
       - test-lint
@@ -435,6 +446,7 @@ jobs:
     name: All jobs pass
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     needs:
       - all-jobs-completed
       - needs-e2e

@@ -1,5 +1,7 @@
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-import { ClientId } from '@metamask/smart-transactions-controller/dist/types';
+import {
+  SmartTransactionsController,
+  ClientId,
+} from '@metamask/smart-transactions-controller';
 import { Messenger } from '@metamask/base-controller';
 import type { AccountsController } from '@metamask/accounts-controller';
 import type { TransactionController } from '@metamask/transaction-controller';
@@ -134,58 +136,56 @@ describe('SmartTransactionsController Init', () => {
           },
         },
       },
-      getStateUI: jest.fn().mockReturnValue({
-        metamask: {
-          internalAccounts: {
-            selectedAccount: 'account-id',
-            accounts: {
-              'account-id': {
-                id: 'account-id',
-                address: '0x123',
-                metadata: {
-                  name: 'Test Account',
-                },
+      getUIState: jest.fn().mockReturnValue({
+        internalAccounts: {
+          selectedAccount: 'account-id',
+          accounts: {
+            'account-id': {
+              id: 'account-id',
+              address: '0x123',
+              metadata: {
+                name: 'Test Account',
               },
             },
           },
-          preferences: {
-            smartTransactionsOptInStatus: true,
+        },
+        preferences: {
+          smartTransactionsOptInStatus: true,
+        },
+        selectedNetworkClientId: 'mainnet',
+        networkConfigurationsByChainId: {
+          '0x1': {
+            chainId: '0x1',
+            rpcEndpoints: [
+              {
+                networkClientId: 'mainnet',
+                url: 'https://mainnet.infura.io/v3/abc',
+              },
+            ],
           },
-          selectedNetworkClientId: 'mainnet',
-          networkConfigurationsByChainId: {
-            '0x1': {
-              chainId: '0x1',
-              rpcEndpoints: [
-                {
-                  networkClientId: 'mainnet',
-                  url: 'https://mainnet.infura.io/v3/abc',
-                },
-              ],
+        },
+        featureFlags: {
+          smartTransactions: {
+            mobileActive: false,
+            extensionActive: true,
+            extensionReturnTxHashAsap: false,
+          },
+        },
+        swapsState: {
+          swapsFeatureFlags: {
+            ethereum: {
+              extensionActive: true,
+              mobileActive: false,
+              smartTransactions: {
+                expectedDeadline: 45,
+                maxDeadline: 150,
+                extensionReturnTxHashAsap: false,
+              },
             },
-          },
-          featureFlags: {
             smartTransactions: {
               mobileActive: false,
               extensionActive: true,
               extensionReturnTxHashAsap: false,
-            },
-          },
-          swapsState: {
-            swapsFeatureFlags: {
-              ethereum: {
-                extensionActive: true,
-                mobileActive: false,
-                smartTransactions: {
-                  expectedDeadline: 45,
-                  maxDeadline: 150,
-                  extensionReturnTxHashAsap: false,
-                },
-              },
-              smartTransactions: {
-                mobileActive: false,
-                extensionActive: true,
-                extensionReturnTxHashAsap: false,
-              },
             },
           },
         },
@@ -278,43 +278,6 @@ describe('SmartTransactionsController Init', () => {
     );
   });
 
-  it('configures getNonceLock correctly', async () => {
-    const { fullRequest, mocks } = buildInitRequest();
-    SmartTransactionsControllerInit(fullRequest);
-
-    const constructorCall =
-      smartTransactionsControllerClassMock.mock.calls[0][0];
-    const { getNonceLock } = constructorCall;
-
-    const address = '0xtest';
-    const networkClientId = 'mainnet';
-    const result = await getNonceLock(address, networkClientId);
-
-    expect(mocks.transactionController.getNonceLock).toHaveBeenCalledWith(
-      address,
-      'mainnet',
-    );
-    expect(result).toHaveProperty('releaseLock');
-  });
-
-  it('configures confirmExternalTransaction correctly', () => {
-    const { fullRequest, mocks } = buildInitRequest();
-    SmartTransactionsControllerInit(fullRequest);
-
-    const constructorCall =
-      smartTransactionsControllerClassMock.mock.calls[0][0];
-    const { confirmExternalTransaction } = constructorCall;
-
-    const args = ['arg1', 'arg2'] as unknown as Parameters<
-      TransactionController['confirmExternalTransaction']
-    >;
-    confirmExternalTransaction(...args);
-
-    expect(
-      mocks.transactionController.confirmExternalTransaction,
-    ).toHaveBeenCalledWith(...args);
-  });
-
   it('configures trackMetaMetricsEvent correctly', () => {
     const { fullRequest } = buildInitRequest();
     SmartTransactionsControllerInit(fullRequest);
@@ -343,44 +306,6 @@ describe('SmartTransactionsController Init', () => {
     );
   });
 
-  it('configures getTransactions correctly', () => {
-    const { fullRequest, mocks } = buildInitRequest();
-    SmartTransactionsControllerInit(fullRequest);
-
-    const constructorCall =
-      smartTransactionsControllerClassMock.mock.calls[0][0];
-    const { getTransactions } = constructorCall;
-
-    const args = [] as Parameters<TransactionController['getTransactions']>;
-    getTransactions(...args);
-
-    expect(mocks.transactionController.getTransactions).toHaveBeenCalledWith(
-      ...args,
-    );
-  });
-
-  it('configures updateTransaction correctly', () => {
-    const { fullRequest, mocks } = buildInitRequest();
-    SmartTransactionsControllerInit(fullRequest);
-
-    const constructorCall =
-      smartTransactionsControllerClassMock.mock.calls[0][0];
-    const { updateTransaction } = constructorCall;
-
-    const transactionMeta = {
-      id: 'txId',
-      status: 'confirmed' as const,
-    } as Parameters<TransactionController['updateTransaction']>[0];
-
-    const note = 'test note';
-    updateTransaction(transactionMeta, note);
-
-    expect(mocks.transactionController.updateTransaction).toHaveBeenCalledWith(
-      transactionMeta,
-      note,
-    );
-  });
-
   describe('getFeatureFlags', () => {
     it('returns feature flags from state', () => {
       const { fullRequest } = buildInitRequest();
@@ -392,7 +317,7 @@ describe('SmartTransactionsController Init', () => {
 
       const result = getFeatureFlags();
 
-      expect(fullRequest.getStateUI).toHaveBeenCalled();
+      expect(fullRequest.getUIState).toHaveBeenCalled();
       expect(result).toHaveProperty('smartTransactions');
       expect(result.smartTransactions).toHaveProperty('extensionActive');
       expect(result.smartTransactions).toHaveProperty('mobileActive');
@@ -407,23 +332,21 @@ describe('SmartTransactionsController Init', () => {
       // To test the null case, we need to make getStateUI return a state
       // that would cause getFeatureFlagsByChainId to return null
       const { fullRequest } = buildInitRequest({
-        getStateUI: jest.fn().mockReturnValue({
-          metamask: {
-            preferences: {},
-            selectedNetworkClientId: 'mainnet',
-            networkConfigurationsByChainId: {
-              '0x1': {
-                chainId: '0x1',
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'mainnet',
-                    url: 'https://mainnet.infura.io/v3/abc',
-                  },
-                ],
-              },
+        getUIState: jest.fn().mockReturnValue({
+          preferences: {},
+          selectedNetworkClientId: 'mainnet',
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1',
+              rpcEndpoints: [
+                {
+                  networkClientId: 'mainnet',
+                  url: 'https://mainnet.infura.io/v3/abc',
+                },
+              ],
             },
-            // No swapsState to test null case
           },
+          // No swapsState to test null case
         }),
       });
 
@@ -461,34 +384,32 @@ describe('SmartTransactionsController Init', () => {
     it('uses selected account address for metrics', async () => {
       const selectedAddress = '0xselected';
       const { fullRequest } = buildInitRequest({
-        getStateUI: jest.fn().mockReturnValue({
-          metamask: {
-            internalAccounts: {
-              selectedAccount: 'selected-account-id',
-              accounts: {
-                'selected-account-id': {
-                  id: 'selected-account-id',
-                  address: selectedAddress,
-                  metadata: {
-                    name: 'Selected Account',
-                  },
+        getUIState: jest.fn().mockReturnValue({
+          internalAccounts: {
+            selectedAccount: 'selected-account-id',
+            accounts: {
+              'selected-account-id': {
+                id: 'selected-account-id',
+                address: selectedAddress,
+                metadata: {
+                  name: 'Selected Account',
                 },
               },
             },
-            preferences: {
-              smartTransactionsOptInStatus: true,
-            },
-            swapsState: {
-              swapsFeatureFlags: {
-                ethereum: {
-                  extensionActive: true,
-                  mobileActive: false,
-                },
-                smartTransactions: {
-                  mobileActive: false,
-                  extensionActive: true,
-                  extensionReturnTxHashAsap: false,
-                },
+          },
+          preferences: {
+            smartTransactionsOptInStatus: true,
+          },
+          swapsState: {
+            swapsFeatureFlags: {
+              ethereum: {
+                extensionActive: true,
+                mobileActive: false,
+              },
+              smartTransactions: {
+                mobileActive: false,
+                extensionActive: true,
+                extensionReturnTxHashAsap: false,
               },
             },
           },

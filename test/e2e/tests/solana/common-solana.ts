@@ -1275,6 +1275,9 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
     })
+    // FIXME: This mock is too generic and will conflict with `mockGetAccountInfoDevnet` sometimes.
+    // It should probably be reworked so it add some filtering constraints to not conflict with the
+    // other mock.
     /* .withJsonBodyIncluding({
       params: [
         '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
@@ -1549,8 +1552,10 @@ export async function withSolanaAccountSnap(
     showSnapConfirmation = false,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
+    mockTokenAccountAccountInfo = true,
     mockZeroBalance,
     numberOfAccounts = 1,
+    state = 0,
     mockSwapUSDtoSOL,
     mockSwapSOLtoUSDC,
     mockSwapWithNoQuotes,
@@ -1561,11 +1566,13 @@ export async function withSolanaAccountSnap(
     withFixtureBuilder,
   }: {
     title?: string;
+    state?: number;
     showNativeTokenAsMainBalance?: boolean;
     showSnapConfirmation?: boolean;
     numberOfAccounts?: number;
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
+    mockTokenAccountAccountInfo?: boolean;
     mockZeroBalance?: boolean;
     sendFailedTransaction?: boolean;
     mockSwapUSDtoSOL?: boolean;
@@ -1594,7 +1601,6 @@ export async function withSolanaAccountSnap(
     fixtures =
       fixtures.withPreferencesControllerShowNativeTokenAsMainBalanceDisabled();
   }
-
   if (withFixtureBuilder) {
     fixtures = withFixtureBuilder(fixtures).withEnabledNetworks({
       eip155: {
@@ -1610,6 +1616,7 @@ export async function withSolanaAccountSnap(
     {
       fixtures: fixtures.build(),
       title,
+      forceBip44Version: state === 2 ? 2 : 0,
       dapp: true,
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
@@ -1617,7 +1624,7 @@ export async function withSolanaAccountSnap(
         // - If this flag is not set, the slides count will be 4.
         // - If this flag is set, the slides count will be 5.
         remoteFeatureFlags: {
-          addSolanaAccount: true,
+          solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
           bridgeConfig: showSnapConfirmation
             ? featureFlagsWithSnapConfirmation
             : featureFlags,
@@ -1667,7 +1674,13 @@ export async function withSolanaAccountSnap(
           await mockPriceApiExchangeRates(mockServer),
           await mockClientSideDetectionApi(mockServer),
           await mockPhishingDetectionApi(mockServer),
-          await mockGetTokenAccountInfo(mockServer),
+        );
+
+        if (mockTokenAccountAccountInfo) {
+          await mockGetTokenAccountInfo(mockServer);
+        }
+
+        mockList.push(
           await mockTokenApiMainnetTest(mockServer),
           await mockAccountsApi(mockServer),
           await mockGetMultipleAccounts(mockServer),

@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import {
   PAYMENT_TYPES,
   PRODUCT_TYPES,
@@ -51,7 +52,7 @@ describe('Transaction Shield Page', () => {
       ],
     },
   };
-  const store = configureMockStore([])(STATE_MOCK);
+  const store = configureMockStore([thunk])(STATE_MOCK);
 
   it('should render', () => {
     const { getByTestId } = renderWithProvider(<TransactionShield />, store);

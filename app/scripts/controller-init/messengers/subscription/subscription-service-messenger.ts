@@ -1,10 +1,8 @@
 import { Messenger } from '@metamask/base-controller';
-import type {
-  SubscriptionControllerActions,
-  SubscriptionControllerEvents,
-} from '@metamask/subscription-controller';
+import type { SubscriptionControllerEvents } from '@metamask/subscription-controller';
 import {
   SERVICE_NAME,
+  SubscriptionServiceAction,
   SubscriptionServiceMessenger,
 } from '../../../services/subscription/types';
 
@@ -16,10 +14,7 @@ import {
  * @returns The restricted messenger.
  */
 export function getSubscriptionServiceMessenger(
-  messenger: Messenger<
-    SubscriptionControllerActions,
-    SubscriptionControllerEvents
-  >,
+  messenger: Messenger<SubscriptionServiceAction, SubscriptionControllerEvents>,
 ): SubscriptionServiceMessenger {
   return messenger.getRestricted({
     name: SERVICE_NAME,
@@ -30,6 +25,7 @@ export function getSubscriptionServiceMessenger(
       'SubscriptionController:updatePaymentMethod',
       'SubscriptionController:getCryptoApproveTransactionParams',
       'SubscriptionController:getBillingPortalUrl',
+      'AuthenticationController:getBearerToken',
     ],
     allowedEvents: [],
   });

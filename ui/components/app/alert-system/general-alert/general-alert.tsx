@@ -96,7 +96,7 @@ function AlertDetails({
             ))}
           </Box>
         ) : (
-          details
+          <>{details}</>
         )}
         <ReportLink
           reportUrl={reportUrl}

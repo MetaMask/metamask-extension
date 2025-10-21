@@ -54,7 +54,7 @@ jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
 const BUY_BUTTON = 'coin-overview-buy';
 const BTC_OVERVIEW_BRIDGE = 'coin-overview-bridge';
 const BTC_OVERVIEW_RECEIVE = 'coin-overview-receive';
-const BTC_OVERVIEW_SWAP = 'token-overview-button-swap';
+const BTC_OVERVIEW_SWAP = 'coin-overview-swap';
 const BTC_OVERVIEW_SEND = 'coin-overview-send';
 const BTC_OVERVIEW_PRIMARY_CURRENCY = 'coin-overview__primary-currency';
 
@@ -108,7 +108,7 @@ const mockBuyableChainsEvmOnly = defaultBuyableChains.filter(
 const mockMetamaskStore = {
   ...mockState.metamask,
   remoteFeatureFlags: {
-    addBitcoinAccount: true,
+    bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
     bridgeConfig: {
       support: true,
     },
