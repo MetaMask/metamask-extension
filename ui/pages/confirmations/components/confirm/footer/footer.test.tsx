@@ -44,6 +44,7 @@ jest.mock('react-redux', () => ({
 jest.mock('../../../hooks/useConfirmationNavigation', () => ({
   useConfirmationNavigation: jest.fn(() => ({
     navigateNext: jest.fn(),
+    navigateToId: jest.fn(),
   })),
 }));
 jest.mock(
@@ -464,38 +465,45 @@ describe('ConfirmFooter', () => {
       expect(getByTestId('alert-modal-button')).toBeDefined();
     });
 
-    it('navigates to the next confirmation when there are pending approval requests', async () => {
-      const navigateNextMock = jest.fn();
-      useConfirmationNavigationMock.mockReturnValue({
-        navigateNext: navigateNextMock,
-        navigateToId: jest.fn(),
-      } as unknown as ReturnType<typeof useConfirmationNavigation>);
+    describe('navigates to the next confirmation', () => {
+      // @ts-expect-error This is missing from the Mocha type definitions
+      it.each(['Confirm', 'Cancel'])(
+        'on %s button click',
+        (buttonText: string) => {
+          const navigateNextMock = jest.fn();
+          useConfirmationNavigationMock.mockReturnValue({
+            navigateNext: navigateNextMock,
+            navigateToId: jest.fn(),
+          } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
-      const mockStateWithContractInteractionConfirmation =
-        getMockContractInteractionConfirmState();
+          const mockStateWithContractInteractionConfirmation =
+            getMockContractInteractionConfirmState();
 
-      mockStateWithContractInteractionConfirmation.metamask.pendingApprovals = {
-        [addEthereumChainApproval.id]: addEthereumChainApproval,
-        ...mockStateWithContractInteractionConfirmation.metamask
-          .pendingApprovals,
-      };
-      mockStateWithContractInteractionConfirmation.metamask.pendingApprovalCount = 2;
+          mockStateWithContractInteractionConfirmation.metamask.pendingApprovals =
+            {
+              [addEthereumChainApproval.id]: addEthereumChainApproval,
+              ...mockStateWithContractInteractionConfirmation.metamask
+                .pendingApprovals,
+            };
+          mockStateWithContractInteractionConfirmation.metamask.pendingApprovalCount = 2;
 
-      // Current confirmation is add ethereum chain
-      jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
-        currentConfirmation: addEthereumChainApproval,
-        isScrollToBottomCompleted: true,
-        setIsScrollToBottomCompleted: () => undefined,
-      });
-      const { getByText } = render(
-        mockStateWithContractInteractionConfirmation,
+          // Current confirmation is add ethereum chain
+          jest.spyOn(confirmContext, 'useConfirmContext').mockReturnValue({
+            currentConfirmation: addEthereumChainApproval,
+            isScrollToBottomCompleted: true,
+            setIsScrollToBottomCompleted: () => undefined,
+          });
+          const { getByText } = render(
+            mockStateWithContractInteractionConfirmation,
+          );
+
+          const button = getByText(buttonText);
+          fireEvent.click(button);
+
+          // It will navigate to transaction confirmation
+          expect(navigateNextMock).toHaveBeenCalledTimes(1);
+        },
       );
-
-      const confirmButton = getByText('Confirm');
-      fireEvent.click(confirmButton);
-
-      // It will navigate to transaction confirmation
-      expect(navigateNextMock).toHaveBeenCalledTimes(1);
     });
   });
 });
