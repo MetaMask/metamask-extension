@@ -4617,7 +4617,6 @@
       "builtin": {
         "node:events": true,
         "node:fs.readFileSync": true,
-        "node:fs/promises": true,
         "node:path.extname": true,
         "node:path.join": true
       },
