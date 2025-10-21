@@ -122,6 +122,7 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import { zeroAddress } from 'ethereumjs-util';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
@@ -207,6 +208,11 @@ import {
   METAMASK_REFERRAL_CODE,
 } from '../../shared/constants/referrals';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
+import {
+  hasNonZeroTokenBalance,
+  hasNonZeroMultichainBalance,
+  getWalletFundsObtainedEventProperties,
+} from '../../shared/lib/wallet-funds-obtained-metric';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -514,6 +520,11 @@ export default class MetamaskController extends EventEmitter {
       const { completedOnboarding } = this.onboardingController.state;
       if (activeControllerConnections > 0 && completedOnboarding) {
         this.triggerNetworkrequests();
+
+        // Monitor for first-time wallet funding event if not already funded
+        if (!this.appStateController.state.hasFunds) {
+          this._setupWalletFundsObtainedMonitoring();
+        }
       } else {
         this.stopNetworkRequests();
       }
@@ -1282,6 +1293,109 @@ export default class MetamaskController extends EventEmitter {
     this.multichainRatesController.stop();
   }
 
+  /**
+   * Checks if user has an existing balance in tokenBalancesState or multichainBalancesState
+   *
+   * @returns {boolean} true if an existing balance is found
+   */
+  _hasExistingFunds() {
+    try {
+      return (
+        hasNonZeroTokenBalance(
+          this.tokenBalancesController.state?.tokenBalances,
+        ) ||
+        hasNonZeroMultichainBalance(
+          this.multichainBalancesController.state?.balances,
+        )
+      );
+    } catch (error) {
+      log.error('Error checking for existing funds: ', error);
+      return false;
+    }
+  }
+
+  /**
+   * Detects and tracks the first wallet funding event from ETH/ERC20 received notifications.
+   *
+   * @param {Array} notifications - List of notifications to process
+   */
+  _handleWalletFundingNotification = (notifications) => {
+    // Filter for erc20 or eth received notifications
+    const filteredNotifications = notifications.filter(
+      (n) =>
+        n.type === TRIGGER_TYPES.ERC20_RECEIVED ||
+        n.type === TRIGGER_TYPES.ETH_RECEIVED,
+    );
+
+    if (filteredNotifications.length < 1) {
+      return;
+    }
+
+    // Use the last (oldest) notification
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { chain_id, data } = filteredNotifications.at(-1);
+
+    // ERC20 transfers have `token` object, native transfers have `amount` object
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    if (chain_id && (data?.token || data?.amount)) {
+      this.metaMetricsController.trackEvent(
+        getWalletFundsObtainedEventProperties({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chainId: chain_id,
+          tokenAddress: data.token?.address || zeroAddress(),
+          tokenUsd: data.token?.usd || data.amount?.usd,
+        }),
+      );
+
+      this.appStateController.setHasFunds(true);
+      this.controllerMessenger.unsubscribe(
+        METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
+        this._handleWalletFundingNotification,
+      );
+    }
+  };
+
+  /**
+   * Sets up monitoring to detect and track when a non-imported wallet first receives funds.
+   */
+  _setupWalletFundsObtainedMonitoring() {
+    // Prevent setting up duplicate listeners
+    if (this._walletFundsObtainedMonitoringSetup) {
+      console.log(
+        '🔍 Balance monitoring - inside _setupWalletFundsObtainedMonitoring but already setup',
+      );
+      return;
+    }
+
+    this._walletFundsObtainedMonitoringSetup = true;
+
+    if (
+      !this.notificationServicesController.state.isNotificationServicesEnabled
+    ) {
+      console.log('🔍 Balance monitoring - notifications disabled, skipping');
+      return;
+    }
+
+    // Only target created wallets (not imported or restored)
+    const { firstTimeFlowType } = this.onboardingController.state;
+    if (
+      firstTimeFlowType !== FirstTimeFlowType.create &&
+      firstTimeFlowType !== FirstTimeFlowType.socialCreate
+    ) {
+      console.log('⏸️ Balance monitoring disabled - not a created wallet');
+      return;
+    }
+
+    if (this._hasExistingFunds()) {
+      this.appStateController.setHasFunds(true);
+    } else {
+      this.controllerMessenger.subscribe(
+        METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
+        this._handleWalletFundingNotification,
+      );
+    }
+  }
+
   resetStates(resetMethods) {
     resetMethods.forEach((resetMethod) => {
       try {
@@ -1928,68 +2042,6 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
-
-    // Helper function to check if balances are zero across all controllers
-    const hasZeroBalances = () => {
-      // Check TokenBalancesController - tokenBalances should be empty or all zero
-      const tokenBalances = this.tokenBalancesController.state.tokenBalances || {};
-      const hasTokenBalances = Object.keys(tokenBalances).some(address => {
-        const addressBalances = tokenBalances[address] || {};
-        return Object.keys(addressBalances).length > 0;
-      });
-
-      // Check MultichainBalancesController - balances should be empty or all zero
-      const multichainBalances = this.multichainBalancesController?.state?.balances || {};
-      const hasMultichainBalances = Object.keys(multichainBalances).some(accountId => {
-        const accountBalances = multichainBalances[accountId] || {};
-        return Object.keys(accountBalances).length > 0;
-      });
-
-      // Check AccountTrackerController - native ETH balances should be zero
-      const currentChainId = this.#getGlobalChainId();
-      const nativeBalances = this.accountTrackerController.state.accountsByChainId?.[currentChainId] || {};
-      const hasNativeBalances = Object.keys(nativeBalances).some(address => {
-        const balance = nativeBalances[address]?.balance;
-        return balance && balance !== '0x0' && balance !== '0x';
-      });
-
-      return !hasTokenBalances && !hasMultichainBalances && !hasNativeBalances;
-    };
-
-    // Only subscribe to notifications if wallet has zero balances
-    if (hasZeroBalances()) {
-      console.log('🎯 Wallet has zero balances - Setting up wallet funds obtained detection');
-      // Subscribe to notifications list updates to detect wallet funds obtained events
-      this.controllerMessenger.subscribe(
-        METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
-        (notifications) => {
-          // Check for new ERC20_RECEIVED or ETH_RECEIVED notifications
-          const newWalletFundsObtainedNotifications = notifications.filter(
-            (notification) =>
-              (notification.type === TRIGGER_TYPES.ERC20_RECEIVED || notification.type === TRIGGER_TYPES.ETH_RECEIVED) &&
-              !notification.isRead // Only process unread (new) notifications
-          );
-
-          newWalletFundsObtainedNotifications.forEach((notification) => {
-            const notificationType = notification.type === TRIGGER_TYPES.ERC20_RECEIVED ? 'ERC20' : 'ETH';
-
-            console.log(`🎉 Wallet Funds Obtained Event Detected!`, {
-              type: notificationType,
-              notificationId: notification.id,
-              triggerType: notification.type,
-              createdAt: notification.createdAt,
-              chainId: notification.chain_id,
-              notification,
-            });
-
-            // TODO: Add actual wallet funds obtained event tracking here
-            // This is where you would integrate with your analytics/tracking system
-          });
-        },
-      );
-    } else {
-      console.log('💰 Wallet has existing balances - Skipping wallet funds obtained detection setup');
-    }
   }
 
   /**
@@ -8710,7 +8762,6 @@ export default class MetamaskController extends EventEmitter {
 
   #initControllers({ existingControllers, initFunctions, initState }) {
     const initRequest = {
-      currentMigrationVersion: this.opts.currentMigrationVersion,
       encryptor: this.opts.encryptor,
       extension: this.extension,
       platform: this.platform,
@@ -8718,9 +8769,9 @@ export default class MetamaskController extends EventEmitter {
         this.opts.cronjobControllerStorageManager,
       getFlatState: this.getState.bind(this),
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
+      getStateUI: this._getMetaMaskState.bind(this),
       getTransactionMetricsRequest:
         this.getTransactionMetricsRequest.bind(this),
-      getUIState: this.getState.bind(this),
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       keyringOverrides: this.opts.overrides?.keyrings,
@@ -8735,7 +8786,6 @@ export default class MetamaskController extends EventEmitter {
         this.setupUntrustedCommunicationEip1193.bind(this),
       setLocked: this.setLocked.bind(this),
       showNotification: this.platform._showNotification,
-      showUserConfirmation: this.opts.showUserConfirmation,
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
