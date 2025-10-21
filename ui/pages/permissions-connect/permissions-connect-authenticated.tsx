@@ -1,7 +1,9 @@
 import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
-import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat.container';
+import type { RouteComponentProps } from 'react-router-dom';
+import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat';
 import PermissionsConnect from './permissions-connect.container';
+
+type PermissionsConnectAuthenticatedProps = RouteComponentProps<{ id: string }>;
 
 /**
  * Wrapper component for PermissionsConnect with v5-compat authentication
@@ -12,15 +14,18 @@ import PermissionsConnect from './permissions-connect.container';
  * It receives v5 router props (history, location, match) from the parent v5 Route,
  * and creates a navigate function compatible with v5-compat API.
  *
- * @param props
+ * @param props - Route component props from react-router v5
+ * @returns Authenticated PermissionsConnect component
  */
-function PermissionsConnectAuthenticated(props) {
+const PermissionsConnectAuthenticated = (
+  props: PermissionsConnectAuthenticatedProps,
+) => {
   const { history, location, match, ...rest } = props;
 
   // Create a navigate function that mimics v5-compat's useNavigate
   // but uses v5's history API under the hood
   const navigate = useCallback(
-    (to, options = {}) => {
+    (to: string, options: { replace?: boolean } = {}) => {
       if (options.replace) {
         history.replace(to);
       } else {
@@ -40,12 +45,6 @@ function PermissionsConnectAuthenticated(props) {
       />
     </AuthenticatedV5Compat>
   );
-}
-
-PermissionsConnectAuthenticated.propTypes = {
-  history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
 };
 
 export default PermissionsConnectAuthenticated;

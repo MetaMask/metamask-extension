@@ -1,8 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom-v5-compat';
 import { useLocation } from 'react-router-dom';
 import { UNLOCK_ROUTE, ONBOARDING_ROUTE } from '../../constants/routes';
+
+type AuthenticatedV5CompatProps = {
+  children: React.ReactNode;
+};
 
 /**
  * AuthenticatedV5Compat - A wrapper component for v5-compat routes that require authentication
@@ -12,11 +16,21 @@ import { UNLOCK_ROUTE, ONBOARDING_ROUTE } from '../../constants/routes';
  *
  * Unlike the v5 Authenticated HOC, this returns the element directly (not wrapped in Route)
  * because v5-compat Routes handle their children differently.
+ *
+ * @param props - Component props
+ * @param props.children - Child components to render when authenticated
+ * @returns Navigate component or children
  */
-export default function AuthenticatedV5Compat({ isUnlocked, completedOnboarding, children }) {
+const AuthenticatedV5Compat = ({ children }: AuthenticatedV5CompatProps) => {
   const location = useLocation();
+  const isUnlocked = useSelector(
+    (state: { metamask: { isUnlocked: boolean } }) => state.metamask.isUnlocked,
+  );
+  const completedOnboarding = useSelector(
+    (state: { metamask: { completedOnboarding: boolean } }) =>
+      state.metamask.completedOnboarding,
+  );
 
-  // Check authentication state - use v5-compat Navigate
   if (!completedOnboarding) {
     return <Navigate to={ONBOARDING_ROUTE} replace />;
   }
@@ -25,13 +39,7 @@ export default function AuthenticatedV5Compat({ isUnlocked, completedOnboarding,
     return <Navigate to={UNLOCK_ROUTE} replace state={{ from: location }} />;
   }
 
-  // If authenticated, render children
-  return children;
-}
-
-AuthenticatedV5Compat.propTypes = {
-  isUnlocked: PropTypes.bool,
-  completedOnboarding: PropTypes.bool,
-  children: PropTypes.node.isRequired,
+  return <>{children}</>;
 };
 
+export default AuthenticatedV5Compat;

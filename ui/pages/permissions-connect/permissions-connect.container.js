@@ -105,8 +105,6 @@ const mapStateToProps = (state, ownProps) => {
   });
 
   const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`;
-
-  // Create absolute paths for navigation and pathname matching
   const confirmPermissionPath = `${connectPath}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
   const snapsConnectPath = `${connectPath}${CONNECT_SNAPS_CONNECT_ROUTE}`;
   const snapInstallPath = `${connectPath}${CONNECT_SNAP_INSTALL_ROUTE}`;
@@ -138,7 +136,6 @@ const mapStateToProps = (state, ownProps) => {
   return {
     isRequestingAccounts,
     requestType,
-    // For navigate() calls - absolute paths
     snapsConnectPath,
     snapInstallPath,
     snapUpdatePath,

@@ -6,7 +6,7 @@ import React, { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Route,
-  RouteComponentProps,
+  type RouteComponentProps,
   Switch,
   useHistory,
   useLocation,
@@ -619,11 +619,11 @@ export default function Routes() {
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
           />
-          <Route
-            path={`${CONNECT_ROUTE}/:id`}
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {...({ component: PermissionsConnectAuthenticated } as any)}
-          />
+          <Route path={`${CONNECT_ROUTE}/:id`}>
+            {(props: RouteComponentProps<{ id: string }>) => (
+              <PermissionsConnectAuthenticated {...props} />
+            )}
+          </Route>
           <Authenticated
             path={`${ASSET_ROUTE}/image/:asset/:id`}
             component={NftFullImage}
