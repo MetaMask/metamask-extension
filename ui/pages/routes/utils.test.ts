@@ -1,9 +1,8 @@
-import type { Location } from 'react-router-dom';
 import { getRelativeLocationForNestedRoutes } from './utils';
 
 describe('getRelativeLocationForNestedRoutes', () => {
   it('should return relative pathname when location starts with basePath', () => {
-    const location: Location = {
+    const location = {
       pathname: '/connect/abc123/snaps-connect',
       search: '?query=test',
       hash: '#section',
@@ -24,7 +23,7 @@ describe('getRelativeLocationForNestedRoutes', () => {
   });
 
   it('should return "/" when pathname exactly matches basePath', () => {
-    const location: Location = {
+    const location = {
       pathname: '/connect/abc123',
       search: '',
       hash: '',
@@ -33,13 +32,13 @@ describe('getRelativeLocationForNestedRoutes', () => {
     };
     const basePath = '/connect/abc123';
 
-    const result = getRelativeLocationForNestedRoutes(location, basePath);
+    const result = getRelativeLocationForNestedRoutes(location, basePath) as typeof location;
 
     expect(result.pathname).toBe('/');
   });
 
   it('should preserve all location properties except pathname', () => {
-    const location: Location = {
+    const location = {
       pathname: '/connect/xyz789/snap-install',
       search: '?foo=bar&baz=qux',
       hash: '#heading',
@@ -60,7 +59,7 @@ describe('getRelativeLocationForNestedRoutes', () => {
   });
 
   it('should return original pathname when location does not start with basePath', () => {
-    const location: Location = {
+    const location = {
       pathname: '/settings/advanced',
       search: '',
       hash: '',
@@ -69,13 +68,13 @@ describe('getRelativeLocationForNestedRoutes', () => {
     };
     const basePath = '/connect/abc123';
 
-    const result = getRelativeLocationForNestedRoutes(location, basePath);
+    const result = getRelativeLocationForNestedRoutes(location, basePath) as typeof location;
 
     expect(result.pathname).toBe('/settings/advanced');
   });
 
   it('should handle nested paths with multiple segments', () => {
-    const location: Location = {
+    const location = {
       pathname: '/connect/id123/snap-update/review',
       search: '',
       hash: '',
@@ -84,13 +83,13 @@ describe('getRelativeLocationForNestedRoutes', () => {
     };
     const basePath = '/connect/id123';
 
-    const result = getRelativeLocationForNestedRoutes(location, basePath);
+    const result = getRelativeLocationForNestedRoutes(location, basePath) as typeof location;
 
     expect(result.pathname).toBe('/snap-update/review');
   });
 
   it('should handle empty basePath', () => {
-    const location: Location = {
+    const location = {
       pathname: '/connect/abc123',
       search: '',
       hash: '',
@@ -99,13 +98,13 @@ describe('getRelativeLocationForNestedRoutes', () => {
     };
     const basePath = '';
 
-    const result = getRelativeLocationForNestedRoutes(location, basePath);
+    const result = getRelativeLocationForNestedRoutes(location, basePath) as typeof location;
 
     expect(result.pathname).toBe('/connect/abc123');
   });
 
   it('should handle basePath with trailing slash', () => {
-    const location: Location = {
+    const location = {
       pathname: '/connect/abc123/snaps-connect',
       search: '',
       hash: '',
@@ -114,13 +113,13 @@ describe('getRelativeLocationForNestedRoutes', () => {
     };
     const basePath = '/connect/abc123/';
 
-    const result = getRelativeLocationForNestedRoutes(location, basePath);
+    const result = getRelativeLocationForNestedRoutes(location, basePath) as typeof location;
 
     expect(result.pathname).toBe('snaps-connect');
   });
 
   it('should return "/" when pathname is basePath with trailing slash', () => {
-    const location: Location = {
+    const location = {
       pathname: '/connect/abc123/',
       search: '',
       hash: '',
@@ -129,13 +128,13 @@ describe('getRelativeLocationForNestedRoutes', () => {
     };
     const basePath = '/connect/abc123';
 
-    const result = getRelativeLocationForNestedRoutes(location, basePath);
+    const result = getRelativeLocationForNestedRoutes(location, basePath) as typeof location;
 
     expect(result.pathname).toBe('/');
   });
 
   it('should not mutate the original location object', () => {
-    const location: Location = {
+    const location = {
       pathname: '/connect/abc123/snaps-connect',
       search: '?test=1',
       hash: '#top',
@@ -151,7 +150,7 @@ describe('getRelativeLocationForNestedRoutes', () => {
   });
 
   it('should handle special characters in pathname', () => {
-    const location: Location = {
+    const location = {
       pathname: '/connect/abc-123_456/snap-install',
       search: '',
       hash: '',
@@ -160,17 +159,17 @@ describe('getRelativeLocationForNestedRoutes', () => {
     };
     const basePath = '/connect/abc-123_456';
 
-    const result = getRelativeLocationForNestedRoutes(location, basePath);
+    const result = getRelativeLocationForNestedRoutes(location, basePath) as typeof location;
 
     expect(result.pathname).toBe('/snap-install');
   });
 
   it('should work with real-world permission connect routes', () => {
-    const testCases: Array<{
+    const testCases: {
       pathname: string;
       basePath: string;
       expected: string;
-    }> = [
+    }[] = [
       {
         pathname: '/connect/-ZVKNcTT6CDpxHK9bc5tn/snaps-connect',
         basePath: '/connect/-ZVKNcTT6CDpxHK9bc5tn',
@@ -194,16 +193,15 @@ describe('getRelativeLocationForNestedRoutes', () => {
     ];
 
     testCases.forEach(({ pathname, basePath, expected }) => {
-      const location: Location = {
+      const location = {
         pathname,
         search: '',
         hash: '',
         state: undefined,
         key: '',
       };
-      const result = getRelativeLocationForNestedRoutes(location, basePath);
+      const result = getRelativeLocationForNestedRoutes(location, basePath) as typeof location;
       expect(result.pathname).toBe(expected);
     });
   });
 });
-
