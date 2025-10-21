@@ -17,7 +17,7 @@ import type { ApprovalType } from '@metamask/controller-utils';
 import { useAppSelector } from '../../store/store';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
-import PermissionsConnect from '../permissions-connect';
+import PermissionsConnectAuthenticated from '../permissions-connect/permissions-connect-authenticated';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -619,9 +619,10 @@ export default function Routes() {
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
           />
-          <Authenticated
+          <Route
             path={`${CONNECT_ROUTE}/:id`}
-            component={PermissionsConnect}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {...({ component: PermissionsConnectAuthenticated } as any)}
           />
           <Authenticated
             path={`${ASSET_ROUTE}/image/:asset/:id`}
