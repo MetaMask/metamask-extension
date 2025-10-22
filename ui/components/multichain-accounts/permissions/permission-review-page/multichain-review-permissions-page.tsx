@@ -381,6 +381,20 @@ export const MultichainReviewPermissions = () => {
           !shouldRenderGatorPermissionGroupDetails ? (
             <NoConnectionContent />
           ) : null}
+          {shouldRenderGatorPermissionGroupDetails
+            ? Object.entries(gatorPermissionsGroupMetaData).map(
+                ([permissionGroupName, details]) => (
+                  <PermissionsCell
+                    key={permissionGroupName}
+                    nonTestNetworks={nonTestNetworks}
+                    testNetworks={testNetworks}
+                    totalCount={details.count}
+                    chainIds={details.chains}
+                    paddingTop={connectedAccountGroups.length === 0 ? 4 : 0}
+                  />
+                ),
+              )
+            : null}
 
           {showDisconnectAllModal ? (
             <DisconnectAllModal
