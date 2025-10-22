@@ -33,7 +33,6 @@ export async function signDeepLink(key: CryptoKey, url: string) {
   const sig = bytesToB64Url(signed);
   const signedUrl = new URL(canonical);
   signedUrl.searchParams.append('sig', sig);
-
   return signedUrl.toString();
 }
 
