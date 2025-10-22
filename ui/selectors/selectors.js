@@ -110,6 +110,10 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../shared/constants/app';
+import {
   getConversionRate,
   isNotEIP1559Network,
   isEIP1559Network,
@@ -128,7 +132,6 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -1828,26 +1831,19 @@ export function getFeatureFlags(state) {
   return state.metamask.featureFlags;
 }
 
-export function getOriginOfCurrentTab(state) {
-  // For sidepanel, always use appActiveTab (which will be available)
-  if (process.env.IS_SIDEPANEL) {
-    const appActiveTab = getAppActiveTab(state);
-    return appActiveTab.origin || null;
-  }
-
-  // For popup/notification, use activeTab, fallback to appActiveTab
-  if (state.activeTab && state.activeTab.origin) {
-    return state.activeTab.origin;
-  }
-
-  // Fallback to appActiveTab (for dialog/notification windows where activeTab is null)
-  const appActiveTab = getAppActiveTab(state);
-  return appActiveTab.origin || null;
-}
-
 export function getAppActiveTab(state) {
   // Safely access appActiveTab, return undefined if not available
   return state?.metamask?.appActiveTab;
+}
+
+export function getOriginOfCurrentTab(state) {
+  // For sidepanel, use appActiveTab
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
+    const appActiveTab = getAppActiveTab(state);
+    return appActiveTab.origin;
+  }
+  // For all other cases, use activeTab
+  return state.activeTab.origin;
 }
 
 export function getDefaultHomeActiveTabName(state) {
@@ -2597,15 +2593,7 @@ export function getNetworkToAutomaticallySwitchTo(state) {
   // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
 
-  // For sidepanel, always use appActiveTab (which will be available)
-  let selectedTabOrigin = null;
-  if (process.env.IS_SIDEPANEL) {
-    const appActiveTab = getAppActiveTab(state);
-    selectedTabOrigin = appActiveTab?.origin || null;
-  } else if (state.activeTab && state.activeTab.origin) {
-    // For popup/notification, use activeTab
-    selectedTabOrigin = state.activeTab.origin;
-  }
+  const selectedTabOrigin = getOriginOfCurrentTab(state);
 
   if (
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
@@ -3697,21 +3685,11 @@ export function getPermittedEVMAccountsForSelectedTab(state, activeTab) {
 }
 
 export function getAllPermittedAccountsForCurrentTab(state) {
-  // For sidepanel, always use appActiveTab (which will be available)
-  if (process.env.IS_SIDEPANEL) {
-    const appActiveTab = getAppActiveTab(state);
-    if (appActiveTab && appActiveTab.origin) {
-      return getAllPermittedAccounts(state, appActiveTab.origin);
-    }
+  const origin = getOriginOfCurrentTab(state);
+  if (!origin) {
     return [];
   }
-
-  // For popup/notification, use activeTab
-  if (state.activeTab && state.activeTab.origin) {
-    return getAllPermittedAccounts(state, state.activeTab.origin);
-  }
-
-  return [];
+  return getAllPermittedAccounts(state, origin);
 }
 
 export function getAllPermittedAccountsForSelectedTab(state, activeTab) {
@@ -3990,18 +3968,7 @@ export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
 export function getPermissionsForActiveTab(state) {
   const { metamask } = state;
   const { subjects = {} } = metamask;
-
-  // For sidepanel, always use appActiveTab (which will be available)
-  let origin = null;
-  if (process.env.IS_SIDEPANEL) {
-    const appActiveTab = getAppActiveTab(state);
-    if (appActiveTab && appActiveTab.origin) {
-      origin = appActiveTab.origin;
-    }
-  } else if (state.activeTab && state.activeTab.origin) {
-    // For popup/notification, use activeTab
-    origin = state.activeTab.origin;
-  }
+  const origin = getOriginOfCurrentTab(state);
 
   if (!origin) {
     return [];
@@ -4028,18 +3995,7 @@ export function getPermissionsForActiveTab(state) {
 export function activeTabHasPermissions(state) {
   const { metamask } = state;
   const { subjects = {} } = metamask;
-
-  // For sidepanel, always use appActiveTab (which will be available)
-  let origin = null;
-  if (process.env.IS_SIDEPANEL) {
-    const appActiveTab = getAppActiveTab(state);
-    if (appActiveTab && appActiveTab.origin) {
-      origin = appActiveTab.origin;
-    }
-  } else if (state.activeTab && state.activeTab.origin) {
-    // For popup/notification, use activeTab
-    origin = state.activeTab.origin;
-  }
+  const origin = getOriginOfCurrentTab(state);
 
   if (!origin) {
     return false;

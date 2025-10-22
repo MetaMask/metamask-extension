@@ -20,11 +20,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import {
-  getAllDomains,
-  getAppActiveTab,
-  getOriginOfCurrentTab,
-} from '../../../selectors';
+import { getAllDomains, getOriginOfCurrentTab } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
@@ -47,12 +43,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
 }) => {
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-  const dappActiveTabOrigin = useSelector(getAppActiveTab);
-  const activeTabOriginName =
-    process.env.IS_SIDEPANEL?.toString() === 'true'
-      ? dappActiveTabOrigin.origin
-      : activeTabOrigin;
-  const siteName = getURLHost(activeTabOriginName);
+  const siteName = getURLHost(activeTabOrigin);
 
   const allDomains = useSelector(getAllDomains);
   const networkConfigurationsByChainId = useSelector(
@@ -62,12 +53,12 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
 
   // Get the network that this dapp is actually connected to using domain mapping
   const dappActiveNetwork = useMemo(() => {
-    if (!activeTabOriginName || !allDomains) {
+    if (!activeTabOrigin || !allDomains) {
       return null;
     }
 
     // Get the networkClientId for this domain
-    const networkClientId = allDomains[activeTabOriginName];
+    const networkClientId = allDomains[activeTabOrigin];
     if (!networkClientId) {
       return null;
     }
@@ -82,7 +73,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
     });
 
     return networkConfiguration || null;
-  }, [activeTabOriginName, allDomains, networkConfigurationsByChainId]);
+  }, [activeTabOrigin, allDomains, networkConfigurationsByChainId]);
 
   const getChainIdForImage = (chainId: `${string}:${string}`): string => {
     const { namespace, reference } = parseCaipChainId(chainId);

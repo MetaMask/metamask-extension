@@ -281,8 +281,7 @@ async function queryCurrentActiveTab(windowType) {
     }
   }
 
-  // At the time of writing we only have the `activeTab` permission which means
-  // that this query will only succeed in the popup context (i.e. after a "browserAction")
+  // Sidepanel uses appActiveTab from tab listeners instead
   if (
     windowType !== ENVIRONMENT_TYPE_POPUP &&
     windowType !== ENVIRONMENT_TYPE_SIDEPANEL

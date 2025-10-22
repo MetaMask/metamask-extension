@@ -1678,6 +1678,8 @@ function onNavigateToTab() {
   });
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+// Sidepanel-specific functionality
 // Set initial side panel behavior based on user preference
 const initSidePanelBehavior = async () => {
   // Only initialize sidepanel behavior if the feature flag is enabled
@@ -1741,67 +1743,115 @@ const setupPreferenceListener = async () => {
 
 setupPreferenceListener();
 
+// Tab listeners to populate appActiveTab
 browser.tabs.onActivated.addListener(async ({ tabId }) => {
-  const activeTab = await browser.tabs.get(tabId);
-  const { id, title, url, favIconUrl } = activeTab;
-  const { origin, protocol, host, href } = url ? new URL(url) : {};
-  if (!origin || origin === 'null') {
+  // Wait for controller to be initialized
+  await isInitialized;
+  if (!controller) {
     return {};
   }
 
-  // Update the app active tab state
-  controller.appStateController.setAppActiveTab({
-    id,
-    title,
-    origin,
-    protocol,
-    url,
-    host,
-    href,
-    favIconUrl,
-  });
+  try {
+    const tabInfo = await browser.tabs.get(tabId);
+    const { id, title, url, favIconUrl } = tabInfo;
 
-  // Update subject metadata for permission system
-  controller.subjectMetadataController.addSubjectMetadata({
-    origin,
-    name: title || host || origin,
-    iconUrl: favIconUrl || null,
-    subjectType: 'website',
-  });
+    if (!url) {
+      return {};
+    }
+
+    const { origin, protocol, host, href } = new URL(url);
+
+    // Skip if no origin, null origin, or extension pages
+    if (
+      !origin ||
+      origin === 'null' ||
+      origin.startsWith('chrome-extension://') ||
+      origin.startsWith('moz-extension://')
+    ) {
+      return {};
+    }
+
+    // Update the app active tab state
+    controller.appStateController.setAppActiveTab({
+      id,
+      title,
+      origin,
+      protocol,
+      url,
+      host,
+      href,
+      favIconUrl,
+    });
+
+    // Update subject metadata for permission system
+    controller.subjectMetadataController.addSubjectMetadata({
+      origin,
+      name: title || host || origin,
+      iconUrl: favIconUrl || null,
+      subjectType: 'website',
+    });
+  } catch (error) {
+    // Ignore errors from tabs that don't exist or can't be accessed
+    console.log('Error in tabs.onActivated listener:', error.message);
+  }
 
   return {};
 });
+
 browser.tabs.onUpdated.addListener(async (tabId) => {
-  const activeTab = await browser.tabs.get(tabId);
-  const { id, title, url, favIconUrl } = activeTab;
-  const { origin, protocol, host, href } = url ? new URL(url) : {};
-  console.log({ id, title, origin, protocol, url });
-  if (!origin || origin === 'null') {
+  // Wait for controller to be initialized
+  await isInitialized;
+  if (!controller) {
     return {};
   }
 
-  // Update the app active tab state
-  controller.appStateController.setAppActiveTab({
-    id,
-    title,
-    origin,
-    protocol,
-    url,
-    host,
-    href,
-    favIconUrl,
-  });
+  try {
+    const tabInfo = await browser.tabs.get(tabId);
+    const { id, title, url, favIconUrl } = tabInfo;
 
-  // Update subject metadata for permission system
-  controller.subjectMetadataController.addSubjectMetadata({
-    origin,
-    name: title || host || origin,
-    iconUrl: favIconUrl || null,
-    subjectType: 'website',
-  });
+    if (!url) {
+      return {};
+    }
+
+    const { origin, protocol, host, href } = new URL(url);
+
+    // Skip if no origin, null origin, or extension pages
+    if (
+      !origin ||
+      origin === 'null' ||
+      origin.startsWith('chrome-extension://') ||
+      origin.startsWith('moz-extension://')
+    ) {
+      return {};
+    }
+
+    // Update the app active tab state
+    controller.appStateController.setAppActiveTab({
+      id,
+      title,
+      origin,
+      protocol,
+      url,
+      host,
+      href,
+      favIconUrl,
+    });
+
+    // Update subject metadata for permission system
+    controller.subjectMetadataController.addSubjectMetadata({
+      origin,
+      name: title || host || origin,
+      iconUrl: favIconUrl || null,
+      subjectType: 'website',
+    });
+  } catch (error) {
+    // Ignore errors from tabs that don't exist or can't be accessed
+    console.log('Error in tabs.onUpdated listener:', error.message);
+  }
 
   return {};
 });
+///: END:ONLY_INCLUDE_IF
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
