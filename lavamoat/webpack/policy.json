@@ -1901,7 +1901,8 @@
         "@metamask/base-controller": true,
         "@metamask/signature-controller": true,
         "@metamask/transaction-controller": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "lodash": true
       }
     },
     "@metamask/signature-controller": {
