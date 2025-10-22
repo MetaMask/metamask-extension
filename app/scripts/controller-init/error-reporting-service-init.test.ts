@@ -1,10 +1,10 @@
-import { Messenger } from '@metamask/base-controller';
 import { ErrorReportingService } from '@metamask/error-reporting-service';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getErrorReportingServiceMessenger,
   ErrorReportingServiceMessenger,
+  getRootMessenger,
 } from './messengers';
 import { ErrorReportingServiceInit } from './error-reporting-service-init';
 
@@ -13,7 +13,7 @@ jest.mock('@metamask/error-reporting-service');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<ErrorReportingServiceMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

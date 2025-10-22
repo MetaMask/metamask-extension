@@ -6047,12 +6047,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/error-reporting-service@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@metamask/error-reporting-service@npm:2.2.0"
+"@metamask/error-reporting-service@npm:@metamask-previews/error-reporting-service@2.2.1-preview-31415333":
+  version: 2.2.1-preview-31415333
+  resolution: "@metamask-previews/error-reporting-service@npm:2.2.1-preview-31415333"
   dependencies:
-    "@metamask/base-controller": "npm:^8.4.0"
-  checksum: 10/f2cd8845247c753c3f37b6af9ea47960340b4120e69e5c6fda88ec2daf953ec3ab96a8a767b6a382a1537a221b0dbccadfe443d72935a8bbc9250f4389834a51
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/messenger": "npm:^0.3.0"
+  checksum: 10/63fcdd7b508ef337235ee09b4206caf6fcb13da6a55384951e5f0964ac3f566d290c60fc6a390ddba731e63a558fccd96c84b687a7d8b17a4e2b799d6fadc3dc
   languageName: node
   linkType: hard
 
