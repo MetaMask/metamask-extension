@@ -6520,20 +6520,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-controller@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/gator-permissions-controller@npm:0.2.0"
+"@metamask/gator-permissions-controller@npm:@metamask-previews/gator-permissions-controller@0.2.1-preview-31415333":
+  version: 0.2.1-preview-31415333
+  resolution: "@metamask-previews/gator-permissions-controller@npm:0.2.1-preview-31415333"
   dependencies:
     "@metamask/7715-permission-types": "npm:^0.3.0"
-    "@metamask/base-controller": "npm:^8.4.0"
+    "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/delegation-core": "npm:^0.2.0"
     "@metamask/delegation-deployments": "npm:^0.12.0"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
-    "@metamask/utils": "npm:^11.8.0"
+    "@metamask/utils": "npm:^11.8.1"
   peerDependencies:
     "@metamask/snaps-controllers": ^14.0.1
-  checksum: 10/0e3aac64b9426a73090bb73ded5e7e4990bd7288722eaead551b749a8022c402fcc0ec1c56466cdf2c4145867d7855107164e012f833bb730c489168d6d6daf2
+  checksum: 10/974886ca17674f2499b539948ec18cadc10988446ee62c83663bc14ea65913cc7d745d6c771ba03b85ab58c58d237d9850f05733da4e1265d6bc7a2be99c292a
   languageName: node
   linkType: hard
 

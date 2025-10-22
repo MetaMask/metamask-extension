@@ -1,5 +1,4 @@
 import { GatorPermissionsController } from '@metamask/gator-permissions-controller';
-import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { ControllerInitRequest } from '../types';
 import { isGatorPermissionsFeatureEnabled } from '../../../../shared/modules/environment';
@@ -7,6 +6,7 @@ import {
   getGatorPermissionsControllerMessenger,
   GatorPermissionsControllerMessenger,
 } from '../messengers/gator-permissions';
+import { getRootMessenger } from '../messengers';
 import { GatorPermissionsControllerInit } from './gator-permissions-controller-init';
 
 jest.mock('@metamask/gator-permissions-controller');
@@ -15,7 +15,7 @@ jest.mock('../../../../shared/modules/environment');
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<GatorPermissionsControllerMessenger>
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   return {
     ...buildControllerInitRequestMock(),
