@@ -4,11 +4,91 @@ import {
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { EthAccountType } from '@metamask/keyring-api';
+import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import type { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
 import { mockNetworkState } from '../../stub/networks';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockTokenData } from './mock-token-data';
+
+export const MOCK_LEDGER_ACCOUNT = {
+  id: 'bf588376-0492-4a35-b653-0f1304a6c5f1',
+  address: '0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+  options: {},
+  methods: [
+    'personal_sign',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData_v1',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  scopes: ['eip155:0'],
+  type: 'eip155:eoa',
+  metadata: {
+    name: 'Ledger 1',
+    importTime: 1759424950983,
+    lastSelected: 1760729126814,
+    keyring: {
+      type: 'Ledger Hardware',
+    },
+  },
+};
+
+export const MOCK_SOLANA_ACCOUNT = {
+  type: 'solana:data-account',
+  id: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+  address: 'ABCDEu4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8J',
+  options: {
+    scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    derivationPath: "m/44'/501'/0'/0'",
+    entropySource: '01K2FF18CTTXJYD34R78X4N1N1',
+    synchronize: true,
+    index: 0,
+    entropy: {
+      type: 'mnemonic',
+      id: '01K2FF18CTTXJYD34R78X4N1N1',
+      groupIndex: 0,
+      derivationPath: "m/44'/501'/0'/0'",
+    },
+  },
+  scopes: [
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+    'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+  ],
+  metadata: {
+    name: 'Solana Account 1',
+    importTime: 1755013234384,
+    keyring: {
+      type: 'Snap Keyring',
+    },
+    snap: {
+      id: 'npm:@metamask/solana-wallet-snap',
+      name: 'Solana',
+      enabled: true,
+    },
+    lastSelected: 1755717637857,
+  },
+};
+
+export const MOCK_EVM_ACCOUNT = {
+  address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+  metadata: {
+    name: 'Test Account',
+    keyring: {
+      type: 'HD Key Tree',
+    },
+  },
+  options: {},
+  methods: ETH_EOA_METHODS,
+  type: EthAccountType.Eoa,
+  scopes: [ETH_SCOPE_EOA],
+};
 
 export const createBridgeMockStore = ({
   featureFlagOverrides = {},
@@ -19,7 +99,6 @@ export const createBridgeMockStore = ({
   stateOverrides = {},
 }: {
   // featureFlagOverrides?: Partial<BridgeControllerState['bridgeFeatureFlags']>;
-  // bridgeSliceOverrides?: Partial<BridgeState>;
   // bridgeStateOverrides?: Partial<BridgeControllerState>;
   // bridgeStatusStateOverrides?: Partial<BridgeStatusState>;
   // metamaskStateOverrides?: Partial<BridgeAppState['metamask']>;
@@ -57,42 +136,8 @@ export const createBridgeMockStore = ({
       ...swapsMetamask.internalAccounts.accounts,
       ...tokenInternalAccounts.accounts,
       ...(internalAccountsOverrides?.accounts ?? {}),
-      'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': {
-        type: 'solana:data-account',
-        id: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
-        address: 'ABCDEu4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8J',
-        options: {
-          scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          derivationPath: "m/44'/501'/0'/0'",
-          entropySource: '01K2FF18CTTXJYD34R78X4N1N1',
-          synchronize: true,
-          index: 0,
-          entropy: {
-            type: 'mnemonic',
-            id: '01K2FF18CTTXJYD34R78X4N1N1',
-            groupIndex: 0,
-            derivationPath: "m/44'/501'/0'/0'",
-          },
-        },
-        scopes: [
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-          'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-        ],
-        metadata: {
-          name: 'Solana Account 1',
-          importTime: 1755013234384,
-          keyring: {
-            type: 'Snap Keyring',
-          },
-          snap: {
-            id: 'npm:@metamask/solana-wallet-snap',
-            name: 'Solana',
-            enabled: true,
-          },
-          lastSelected: 1755717637857,
-        },
-      },
+      'bf588376-0492-4a35-b653-0f1304a6c5f1': MOCK_LEDGER_ACCOUNT,
+      'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': MOCK_SOLANA_ACCOUNT,
     },
   };
   return {
@@ -210,6 +255,30 @@ export const createBridgeMockStore = ({
               },
             },
           },
+          'keyring:Ledger Hardware': {
+            type: 'keyring',
+            id: 'keyring:Ledger Hardware',
+            metadata: {
+              name: 'Ledger',
+              keyring: {
+                type: 'Ledger Hardware',
+              },
+            },
+            status: 'ready',
+            groups: {
+              'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82':
+                {
+                  type: 'single-account',
+                  id: 'keyring:Ledger Hardware/0xb3864b298f4fddbbbd2fa5cf1a2a2748932b3b82',
+                  metadata: {
+                    name: 'Ledger Account 1',
+                    pinned: false,
+                    hidden: false,
+                  },
+                  accounts: ['bf588376-0492-4a35-b653-0f1304a6c5f1'],
+                },
+            },
+          },
         },
         selectedAccountGroup:
           accountTreeOverrides?.selectedAccountGroup ??
@@ -233,6 +302,10 @@ export const createBridgeMockStore = ({
               [formatChainIdToCaip('0x1')]: {
                 isActiveSrc: true,
                 isActiveDest: false,
+              },
+              [formatChainIdToCaip(MultichainNetworks.SOLANA)]: {
+                isActiveSrc: true,
+                isActiveDest: true,
               },
               ...Object.fromEntries(
                 Object.entries(
