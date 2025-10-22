@@ -265,7 +265,14 @@ describe('Multichain API', function () {
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
               const confirmation = new Confirmation(driver);
               await confirmation.checkPageIsLoaded();
-              await confirmation.clickFooterConfirmButton();
+              if (i < totalNumberOfScopes - 1) {
+                // if pending tx's, verify navigation and confirm
+                await confirmation.checkPageNumbers(1, totalNumberOfScopes - i);
+                await confirmation.clickFooterConfirmButton();
+              } else {
+                // if no pending tx's, confirm and wait for window to close
+                await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+              }
             }
 
             await driver.switchToWindowWithTitle(
@@ -298,9 +305,12 @@ describe('Multichain API', function () {
                       ? JSON.parse(currentBalance)
                       : currentBalance;
                   // Left for debugging purposes
-                  console.log('Normalized Balance', normalizedBalance);
-                  console.log('Default Initial Balance', DEFAULT_INITIAL_BALANCE_HEX);
                   console.log('Scope', scope);
+                  console.log('Current Balance', normalizedBalance);
+                  console.log(
+                    'Initial Balance',
+                    DEFAULT_INITIAL_BALANCE_HEX,
+                  );
                   return normalizedBalance !== DEFAULT_INITIAL_BALANCE_HEX;
                 },
                 { timeout: 10000, interval: 1000 },
