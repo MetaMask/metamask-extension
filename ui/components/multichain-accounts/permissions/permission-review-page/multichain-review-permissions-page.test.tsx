@@ -10,9 +10,9 @@ import * as actions from '../../../../store/actions';
 import * as hooks from '../../../../hooks/useAccountGroupsForPermissions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 import {
-  getPermissionGroupDetailsByOrigin,
   getTokenTransferPermissionsByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
+import { getPermissionMetaDataByOrigin } from '../../../../selectors/gator-permissions/gator-permissions';
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
 
 jest.mock('react-router-dom', () => ({
@@ -52,8 +52,7 @@ jest.mock('../../../../store/actions', () => ({
 jest.mock('../../../../../shared/modules/environment');
 
 jest.mock('../../../../selectors/gator-permissions/gator-permissions', () => ({
-  getPermissionGroupDetailsByOrigin: jest.fn(),
-  getTokenTransferPermissionsByOrigin: jest.fn(),
+  getPermissionMetaDataByOrigin: jest.fn(),
 }));
 
 const mockAccountGroups = [
@@ -383,9 +382,9 @@ describe('MultichainReviewPermissions', () => {
         .mocked(isGatorPermissionsRevocationFeatureEnabled)
         .mockReturnValue(true);
 
-      jest.mocked(getPermissionGroupDetailsByOrigin).mockReturnValue({
+      jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
         tokenTransfer: {
-          total: 2,
+          count: 2,
           chains: ['0x1'],
         },
       });
@@ -402,9 +401,9 @@ describe('MultichainReviewPermissions', () => {
         .mocked(isGatorPermissionsRevocationFeatureEnabled)
         .mockReturnValue(false);
 
-      jest.mocked(getPermissionGroupDetailsByOrigin).mockReturnValue({
+      jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
         tokenTransfer: {
-          total: 2,
+          count: 2,
           chains: ['0x1'],
         },
       });
@@ -423,9 +422,9 @@ describe('MultichainReviewPermissions', () => {
         .mocked(isGatorPermissionsRevocationFeatureEnabled)
         .mockReturnValue(true);
 
-      jest.mocked(getPermissionGroupDetailsByOrigin).mockReturnValue({
+      jest.mocked(getPermissionMetaDataByOrigin).mockReturnValue({
         tokenTransfer: {
-          total: 0,
+          count: 0,
           chains: [],
         },
       });

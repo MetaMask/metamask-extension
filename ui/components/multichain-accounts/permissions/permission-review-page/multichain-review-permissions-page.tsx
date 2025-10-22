@@ -60,8 +60,8 @@ import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shar
 import { MultichainEditAccountsPage } from '../multichain-edit-accounts-page/multichain-edit-accounts-page';
 import {
   AppState,
-  getPermissionGroupDetailsByOrigin,
   getTokenTransferPermissionsByOrigin,
+  getPermissionMetaDataByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
@@ -263,8 +263,8 @@ export const MultichainReviewPermissions = () => {
     [activeTabOrigin, connectedChainIds, dispatch, supportedAccountGroups],
   );
 
-  const gatorPermissionGroupDetailsMap = useSelector((state) =>
-    getPermissionGroupDetailsByOrigin(state as AppState, activeTabOrigin),
+  const gatorPermissionsGroupMetaData = useSelector((state) =>
+    getPermissionMetaDataByOrigin(state as AppState, activeTabOrigin),
   );
 
   // Gator permissions revocation logic
@@ -300,19 +300,19 @@ export const MultichainReviewPermissions = () => {
   }, [tokenTransferPermissions]);
 
   const shouldRenderGatorPermissionGroupDetails = useMemo(() => {
-    if (!gatorPermissionGroupDetailsMap) {
+    if (!gatorPermissionsGroupMetaData) {
       return false;
     }
 
     const isPermissionGroupDetailsMapEmpty = Object.values(
-      gatorPermissionGroupDetailsMap,
-    ).every((details) => details.total === 0);
+      gatorPermissionsGroupMetaData,
+    ).every((details) => details.count === 0);
 
     return (
       isGatorPermissionsRevocationFeatureEnabled() &&
       !isPermissionGroupDetailsMapEmpty
     );
-  }, [gatorPermissionGroupDetailsMap]);
+  }, [gatorPermissionsGroupMetaData]);
 
   const handleRemoveAllPermissions = async () => {
     try {
@@ -363,13 +363,13 @@ export const MultichainReviewPermissions = () => {
           ) : null}
 
           {shouldRenderGatorPermissionGroupDetails
-            ? Object.entries(gatorPermissionGroupDetailsMap).map(
+            ? Object.entries(gatorPermissionsGroupMetaData).map(
                 ([permissionGroupName, details]) => (
                   <PermissionsCell
                     key={permissionGroupName}
                     nonTestNetworks={nonTestNetworks}
                     testNetworks={testNetworks}
-                    totalCount={details.total}
+                    totalCount={details.count}
                     chainIds={details.chains}
                     paddingTop={connectedAccountGroups.length === 0 ? 4 : 0}
                   />
@@ -392,8 +392,8 @@ export const MultichainReviewPermissions = () => {
 
                 setShowDisconnectAllModal(false);
                 const hasTokenTransferPermissions = Object.values(
-                  gatorPermissionGroupDetailsMap,
-                ).some((details) => details.total > 0);
+                  gatorPermissionsGroupMetaData,
+                ).some((details) => details.count > 0);
 
                 if (hasTokenTransferPermissions) {
                   setShowDisconnectPermissionsModal(true);

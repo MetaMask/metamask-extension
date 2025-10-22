@@ -22,15 +22,15 @@ import { REVIEW_GATOR_PERMISSIONS_ROUTE } from '../../../../../helpers/constants
 import { PermissionGroupListItem } from '../components';
 import {
   AppState,
-  getPermissionGroupDetails,
+  getPermissionGroupMetaData,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 
 export const TokenTransferPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const permissionGroupName = 'token-transfer';
-  const permissionGroupDetails = useSelector((state: AppState) =>
-    getPermissionGroupDetails(state, permissionGroupName),
+  const permissionGroupMetaData = useSelector((state: AppState) =>
+    getPermissionGroupMetaData(state, permissionGroupName),
   );
   const handlePermissionGroupItemClick = (chainId: Hex) => {
     history.push(
@@ -39,11 +39,11 @@ export const TokenTransferPage = () => {
   };
 
   const renderPageContent = () =>
-    permissionGroupDetails.map(({ chainId, total }) => {
+    permissionGroupMetaData.map(({ chainId, count }) => {
       const text =
-        total === 1
-          ? t('tokenPermissionCount', [total])
-          : t('tokenPermissionsCount', [total]);
+        count === 1
+          ? t('tokenPermissionCount', [count])
+          : t('tokenPermissionsCount', [count]);
       return (
         <PermissionGroupListItem
           data-testid="permission-group-list-item"
@@ -83,7 +83,7 @@ export const TokenTransferPage = () => {
         </Text>
       </Header>
       <Content padding={0}>
-        {permissionGroupDetails.length > 0 ? (
+        {permissionGroupMetaData.length > 0 ? (
           renderPageContent()
         ) : (
           <Box
