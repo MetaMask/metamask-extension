@@ -375,11 +375,22 @@ class TestDappMultichain {
     console.log(
       `Selecting ${method} for scope ${scope} on multichain test dapp.`,
     );
-    await this.driver.clickElement(
-      `[data-testid="${replaceColon(scope)}-select"]`,
-    );
-    await this.driver.clickElement(
-      `[data-testid="${replaceColon(scope)}-${method}-option"]`,
+    // With the waitUntil, we ensure the dropdown element is set to the correct method before clicking it
+    await this.driver.waitUntil(
+      async () => {
+        await this.driver.clickElement(
+          `[data-testid="${replaceColon(scope)}-select"]`,
+        );
+        await this.driver.clickElement(
+          `[data-testid="${replaceColon(scope)}-${method}-option"]`,
+        );
+        const selectEl = await this.driver.findElement(
+          `[data-testid="${replaceColon(scope)}-select"]`,
+        );
+        const selectedValue = await selectEl.getAttribute('value');
+        return selectedValue === method;
+      },
+      { interval: 100, timeout: 5000 },
     );
   }
 

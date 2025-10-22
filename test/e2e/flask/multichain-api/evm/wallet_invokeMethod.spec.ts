@@ -12,7 +12,6 @@ import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
@@ -263,9 +262,20 @@ describe('Multichain API', function () {
             const totalNumberOfScopes = GANACHE_SCOPES.length;
             for (let i = 0; i < totalNumberOfScopes; i++) {
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-              const confirmation = new Confirmation(driver);
+              const confirmation = new TransactionConfirmation(driver);
               await confirmation.checkPageIsLoaded();
-              await confirmation.clickFooterConfirmButton();
+              if (i < totalNumberOfScopes - 1) {
+                // if pending tx's, verify navigation and confirm
+                await confirmation.checkPageNumbers(1, totalNumberOfScopes - i);
+                await confirmation.checkNetworkIsDisplayed(
+                  `Localhost ${8545 + i}`,
+                );
+                await confirmation.clickFooterConfirmButton();
+              } else {
+                await confirmation.checkNetworkIsDisplayed('Localhost 7777');
+                // if no pending tx's, confirm and wait for window to close
+                await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+              }
             }
 
             await driver.switchToWindowWithTitle(
