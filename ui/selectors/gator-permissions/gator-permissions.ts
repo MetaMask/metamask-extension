@@ -16,18 +16,18 @@ export type AppState = {
   metamask: GatorPermissionsControllerState;
 };
 
-export type PermissionsGroupDetailRecord = Record<Hex, number>; // chainId -> total
+export type PermissionsGroupMetaDataByChainId = Record<Hex, number>; // chainId -> count
 
-export type PermissionsGroupDetail = {
+export type PermissionsGroupMetaData = {
   chainId: Hex;
-  total: number;
+  count: number;
 };
 
-export type PermissionGroupDetailsMap = Record<
+export type MetDataByPermissionTypeGroup = Record<
   'tokenTransfer',
   {
-    total: number;
-    chains: string[];
+    count: number;
+    chains: Hex[];
   }
 >;
 
@@ -146,10 +146,10 @@ export const getAggregatedGatorPermissionsCountAcrossAllChains = createSelector(
  * @param record2 - The second record to merge
  * @returns A merged record of chainId to total count of gator permissions
  */
-function mergePermissionsGroupDetailRecords(
-  record1: PermissionsGroupDetailRecord,
-  record2: PermissionsGroupDetailRecord,
-): PermissionsGroupDetailRecord {
+function mergePermissionsGroupMetaDataByChainId(
+  record1: PermissionsGroupMetaDataByChainId,
+  record2: PermissionsGroupMetaDataByChainId,
+): PermissionsGroupMetaDataByChainId {
   const mergedRecord = { ...record1 };
 
   for (const [key, value] of Object.entries(record2)) {
@@ -167,13 +167,13 @@ function mergePermissionsGroupDetailRecords(
  */
 function getTotalCountOfGatorPermissionsPerChainId(
   permissionsMapByPermissionType: GatorPermissionsMapByPermissionType<SupportedGatorPermissionType>,
-): PermissionsGroupDetailRecord {
+): PermissionsGroupMetaDataByChainId {
   const flattenedGatorPermissionsAcrossAllChains: StoredGatorPermissionSanitized<
     Signer,
     PermissionTypesWithCustom
   >[] = Object.values(permissionsMapByPermissionType).flat();
 
-  const permissionsGroupDetailRecord: PermissionsGroupDetailRecord = {};
+  const permissionsGroupDetailRecord: PermissionsGroupMetaDataByChainId = {};
   return flattenedGatorPermissionsAcrossAllChains.reduce(
     (acc, gatorPermission) => {
       const { permissionResponse } = gatorPermission;
@@ -192,28 +192,28 @@ function getTotalCountOfGatorPermissionsPerChainId(
  * @param permissionGroupName - The type of list to get (token-transfer, spending-cap, nft, custom, etc.)
  * @returns A list of gator permissions group details.
  * @example
- * const permissionGroupDetails = getPermissionsGroupDetails(state, 'token-transfer');
+ * const permissionGroupMetaData = getPermissionsGroupMetaData(state, 'token-transfer');
  *
  * // [{
  * //   chainId: '0x1',
- * //   total: 2,
+ * //   count: 2,
  * // },
  * // {
  * //   chainId: '0x89',
- * //   total: 2,
+ * //   count: 2,
  * // }
  * ]
  */
-export const getPermissionGroupDetails = createSelector(
+export const getPermissionGroupMetaData = createSelector(
   [
     getGatorPermissionsMap,
     (_state: AppState, permissionGroupName: string) => permissionGroupName,
   ],
-  (gatorPermissionsMap, permissionGroupName): PermissionsGroupDetail[] => {
+  (gatorPermissionsMap, permissionGroupName): PermissionsGroupMetaData[] => {
     switch (permissionGroupName) {
       case 'token-transfer': {
         const streamsPermissionsCountPerChainId =
-          mergePermissionsGroupDetailRecords(
+          mergePermissionsGroupMetaDataByChainId(
             getTotalCountOfGatorPermissionsPerChainId(
               gatorPermissionsMap['native-token-stream'],
             ),
@@ -223,7 +223,7 @@ export const getPermissionGroupDetails = createSelector(
           );
 
         const periodicPermissionsCountPerChainId =
-          mergePermissionsGroupDetailRecords(
+          mergePermissionsGroupMetaDataByChainId(
             getTotalCountOfGatorPermissionsPerChainId(
               gatorPermissionsMap['native-token-periodic'],
             ),
@@ -233,15 +233,15 @@ export const getPermissionGroupDetails = createSelector(
           );
 
         const totalPermissionsCountPerChainId =
-          mergePermissionsGroupDetailRecords(
+          mergePermissionsGroupMetaDataByChainId(
             streamsPermissionsCountPerChainId,
             periodicPermissionsCountPerChainId,
           );
 
         return Object.entries(totalPermissionsCountPerChainId).map(
-          ([chainId, total]) => ({
+          ([chainId, count]) => ({
             chainId: chainId as Hex,
-            total,
+            count,
           }),
         );
       }
@@ -268,6 +268,7 @@ const filterPermissionsByOriginAndType = (
     return [];
   }
 
+  const decodedSiteOrigin = decodeURIComponent(siteOrigin);
   return Object.values(gatorPermissionsMap[permissionType])
     .flat() // flatten array of arrays to get permission across all chains
     .filter((gatorPermission) => {
@@ -279,7 +280,7 @@ const filterPermissionsByOriginAndType = (
 
       return isEqualCaseInsensitive(
         decodeURIComponent(gatorPermission.siteOrigin),
-        decodeURIComponent(siteOrigin),
+        decodedSiteOrigin,
       );
     });
 };
@@ -291,7 +292,7 @@ const filterPermissionsByOriginAndType = (
  * @param siteOrigin - The site origin to filter by (e.g., 'https://example.com')
  * @returns An object with the count and chains of token transfer permissions across all chains by site origin
  */
-const getTokenTransferDetailsByOrigin = (
+const getTokenTransferMetaDataByOrigin = (
   gatorPermissionsMap: GatorPermissionsMap,
   siteOrigin: string,
 ) => {
@@ -325,7 +326,7 @@ const getTokenTransferDetailsByOrigin = (
   );
 
   return {
-    total: tokenTransferPermissions.length,
+    count: tokenTransferPermissions.length,
     chains: Array.from(tokenTransferChains),
   };
 };
@@ -337,7 +338,7 @@ const getTokenTransferDetailsByOrigin = (
  * @param siteOrigin - The site origin to filter by (e.g., 'https://example.com')
  * @returns Object with counts and chain lists for permission group details across all chains by site origin
  * @example
- * const permissionGroupDetails = getPermissionGroupDetailsByOrigin(state, 'https://example.com');
+ * const permissionGroupMetaData = getPermissionMetaDataByOrigin(state, 'https://example.com');
  *
  * // {
  * //   'tokenTransfer': {
@@ -346,14 +347,14 @@ const getTokenTransferDetailsByOrigin = (
  * //   },
  * // }
  */
-export const getPermissionGroupDetailsByOrigin = createSelector(
+export const getPermissionMetaDataByOrigin = createSelector(
   [
     getGatorPermissionsMap,
     (_state: AppState, siteOrigin: string) => siteOrigin,
   ],
-  (gatorPermissionsMap, siteOrigin): PermissionGroupDetailsMap => {
+  (gatorPermissionsMap, siteOrigin): MetDataByPermissionTypeGroup => {
     return {
-      tokenTransfer: getTokenTransferDetailsByOrigin(
+      tokenTransfer: getTokenTransferMetaDataByOrigin(
         gatorPermissionsMap,
         siteOrigin,
       ),
