@@ -39,6 +39,48 @@ export function useDappSwapComparisonInfo() {
   const [requestDetectionLatency, setRequestDetectionLatency] = useState('N/A');
   const [quoteRequestLatency, setQuoteRequestLatency] = useState('N/A');
   const [quoteResponseLatency, setQuoteResponseLatency] = useState('N/A');
+  const [swapComparisonLatency, setSwapComparisonLatency] = useState('N/A');
+
+  const updateRequestDetectionLatency = useCallback(() => {
+    if (requestDetectionLatency !== 'N/A') {
+      return;
+    }
+    setRequestDetectionLatency(
+      (new Date().getTime() - currentConfirmation.time).toString(),
+    );
+  }, [
+    currentConfirmation.time,
+    requestDetectionLatency,
+    setRequestDetectionLatency,
+  ]);
+
+  const updateQuoteRequestLatency = useCallback(() => {
+    if (quoteRequestLatency !== 'N/A') {
+      return;
+    }
+    setQuoteRequestLatency(
+      (
+        new Date().getTime() -
+        currentConfirmation.time +
+        parseInt(requestDetectionLatency, 10)
+      ).toString(),
+    );
+  }, [
+    currentConfirmation.time,
+    quoteRequestLatency,
+    setQuoteRequestLatency,
+    requestDetectionLatency,
+  ]);
+
+  const updateQuoteResponseLatency = useCallback(
+    (startTime: number) => {
+      if (quoteResponseLatency !== 'N/A') {
+        return;
+      }
+      setQuoteResponseLatency((new Date().getTime() - startTime).toString());
+    },
+    [quoteResponseLatency, setQuoteResponseLatency],
+  );
 
   const captureDappSwapComparisonMetricsProperties = useCallback(
     (params: {
@@ -58,9 +100,7 @@ export function useDappSwapComparisonInfo() {
   const { quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     try {
       const result = getDataFromSwap(chainId, data);
-      setRequestDetectionLatency(
-        (new Date().getTime() - currentConfirmation.time).toString(),
-      );
+      updateRequestDetectionLatency();
       return result;
     } catch (error) {
       captureException(error);
@@ -70,7 +110,7 @@ export function useDappSwapComparisonInfo() {
         tokenAddresses: [],
       };
     }
-  }, [chainId, currentConfirmation.time, data, setRequestDetectionLatency]);
+  }, [chainId, currentConfirmation.time, data, updateRequestDetectionLatency]);
 
   const { value: fiatRates } = useAsyncResult<Record<Hex, number | undefined>>(
     () => fetchTokenExchangeRates('usd', tokenAddresses, chainId),
@@ -146,24 +186,16 @@ export function useDappSwapComparisonInfo() {
     });
 
     const startTime = new Date().getTime();
-    setQuoteRequestLatency(
-      (
-        startTime -
-        currentConfirmation.time +
-        parseInt(requestDetectionLatency, 10)
-      ).toString(),
-    );
+    updateQuoteRequestLatency();
 
     const quotes = await fetchQuotes(quotesInput);
 
-    setQuoteResponseLatency((new Date().getTime() - startTime).toString());
+    updateQuoteResponseLatency(startTime);
     return quotes;
   }, [
     captureDappSwapComparisonMetricsProperties,
     quotesInput,
     requestDetectionLatency,
-    setQuoteRequestLatency,
-    setQuoteResponseLatency,
     currentConfirmation.time,
   ]);
 
