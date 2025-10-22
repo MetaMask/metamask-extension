@@ -75,7 +75,7 @@ export const AccountTreeControllerInit: ControllerInitFunction<
             'AccountOrderController:getState',
           );
 
-          return accountOrderState?.hiddenAccountList.includes(
+          return accountOrderState?.pinnedAccountList.includes(
             internalAccount.address,
           );
         },
