@@ -5812,8 +5812,8 @@
   "shieldEntryModalSupport": {
     "message": "Priority customer support"
   },
-  "shieldEstimatedChangesMonthlyTooltip": {
-    "message": "Authorize up to $$1 for the full year. You'll be billed $$2 each month, not the full amount now."
+  "shieldEstimatedChangesMonthlyTooltipText": {
+    "message": "Authorize up to $1 for the full year. You'll be billed $2 each month, not the full amount now."
   },
   "shieldFooterAgreement": {
     "message": "By continuing, I agree to Transaction Shield $1."
