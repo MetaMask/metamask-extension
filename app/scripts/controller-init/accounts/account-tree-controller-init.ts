@@ -45,7 +45,7 @@ export const AccountTreeControllerInit: ControllerInitFunction<
         isHiddenAccount: (accountId: AccountId) => {
           console.log('checking if is hidden account', accountId);
           const internalAccount = initMessenger.call(
-            'AccountsController:getAccountByAddress',
+            'AccountsController:getAccount',
             accountId,
           );
           console.log('internalAccount', internalAccount);
@@ -64,7 +64,7 @@ export const AccountTreeControllerInit: ControllerInitFunction<
         isPinnedAccount: (accountId: AccountId) => {
           console.log('checking if is pinned account', accountId);
           const internalAccount = initMessenger.call(
-            'AccountsController:getAccountByAddress',
+            'AccountsController:getAccount',
             accountId,
           );
           console.log('internalAccount', internalAccount);

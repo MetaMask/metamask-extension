@@ -88,7 +88,7 @@ export function getAccountTreeControllerMessenger(
 
 export type AllowedInitializationActions =
   | MetaMetricsControllerTrackEventAction
-  | AccountsControllerGetAccountByAddressAction
+  | AccountsControllerGetAccountAction
   | AccountOrderControllerGetStateAction;
 
 export type AccountTreeControllerInitMessenger = ReturnType<
@@ -109,7 +109,7 @@ export function getAccountTreeControllerInitMessenger(
     name: 'AccountTreeControllerInit',
     allowedActions: [
       'MetaMetricsController:trackEvent',
-      'AccountsController:getAccountByAddress',
+      'AccountsController:getAccount',
       'AccountOrderController:getState',
     ],
     allowedEvents: [],

@@ -35,8 +35,10 @@ function transformState(state: Record<string, unknown>) {
     | undefined;
 
   if (accountTreeControllerState) {
+    console.log('accountTreeControllerState', accountTreeControllerState);
     Object.values(accountTreeControllerState.accountGroupsMetadata).forEach(
       (groupMetadata) => {
+        console.log('groupMetadata', groupMetadata);
         delete groupMetadata.pinned;
         delete groupMetadata.hidden;
       },
