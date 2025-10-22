@@ -21,20 +21,19 @@ describe('Swap tests', function (this: Suite) {
         await homePage.goToTokensTab();
         await homePage.goToActivityList();
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '1',
           },
-          1,
-          undefined,
-          {
+          expectedTransactionsCount: 1,
+          expectedSwapTokens: {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
-          5000,
-          '3,839',
-        );
+          submitDelay: 5000,
+          expectedDestAmount: '3,839',
+        });
       },
     );
   });

@@ -1,10 +1,6 @@
 import { Suite } from 'mocha';
 import { unlockWallet, veryLargeDelayMs, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
-import {
-  switchToNetworkFromSendFlow,
-  searchAndSwitchToNetworkFromSendFlow,
-} from '../../page-objects/flows/network.flow';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import {
@@ -27,9 +23,9 @@ describe('Bridge tests', function (this: Suite) {
 
         const homePage = new HomePage(driver);
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '25',
             tokenFrom: 'DAI',
             tokenTo: 'ETH',
@@ -37,47 +33,42 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
             unapproved: true,
           },
-          2,
-        );
+          expectedTransactionsCount: 2,
+          expectedDestAmount: '0.0157',
+        });
 
-        // Switch to Linea to set it as the selected network
-        // in the network-controller
-        await switchToNetworkFromSendFlow(driver, 'Linea');
-
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '1',
             tokenFrom: 'ETH',
             tokenTo: 'USDC',
             fromChain: 'Ethereum',
             toChain: 'Arbitrum',
           },
-          3,
-        );
-
-        await bridgeTransaction(
+          expectedTransactionsCount: 3,
+          expectedDestAmount: '1,642',
+        });
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '1',
             tokenFrom: 'ETH',
             tokenTo: 'ETH',
             fromChain: 'Ethereum',
             toChain: 'Linea',
           },
-          4,
-        );
+          expectedTransactionsCount: 4,
+          expectedDestAmount: '0.991',
+        });
 
-        // Switch to Arbitrum to set it as the selected network
-        // in the network-controller
         await homePage.checkPageIsLoaded();
         await homePage.goToTokensTab();
-        await searchAndSwitchToNetworkFromSendFlow(driver, 'Arbitrum');
         await homePage.goToActivityList();
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '10',
             tokenFrom: 'USDC',
             tokenTo: 'DAI',
@@ -85,8 +76,9 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
             unapproved: true,
           },
-          6,
-        );
+          expectedTransactionsCount: 6,
+          expectedDestAmount: '9.9',
+        });
       },
     );
   });
@@ -141,9 +133,9 @@ describe('Bridge tests', function (this: Suite) {
         await homePage.goToTokensTab();
         await homePage.goToActivityList();
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '10',
             tokenFrom: 'USDC',
             tokenTo: 'DAI',
@@ -151,12 +143,9 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
             unapproved: true,
           },
-          2,
-          undefined,
-          undefined,
-          0,
-          '9.9',
-        );
+          expectedTransactionsCount: 2,
+          expectedDestAmount: '9.9',
+        });
       },
     );
   });

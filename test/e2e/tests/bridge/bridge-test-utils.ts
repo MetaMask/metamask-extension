@@ -92,23 +92,32 @@ export class BridgePage {
 /**
  * Execute a bridge transaction and checks the activity list
  *
- * @param driver - The driver instance
- * @param quote - The quote object
- * @param transactionsCount - The number of transactions to expect in the activity list
- * @param expectedWalletBalance - The expected wallet balance after the transaction
- * @param expectedSwapTokens - The expected swap tokens shown in the activity list
- * @param submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
- * @param expectedDestAmount - The expected quoted destination amounts in the quote page
+ * @param testParams - The test parameters
+ * @param testParams.driver - The driver instance
+ * @param testParams.quote - The quote input parameters
+ * @param testParams.expectedTransactionsCount - The number of transactions to expect in the activity list
+ * @param testParams.expectedWalletBalance - The expected wallet balance after the transaction
+ * @param testParams.expectedSwapTokens - The expected swap tokens shown in the activity list
+ * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
+ * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
  */
-export async function bridgeTransaction(
-  driver: Driver,
-  quote: BridgeQuote,
-  transactionsCount: number,
-  expectedWalletBalance?: string,
-  expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>,
-  submitDelay?: number,
-  expectedDestAmount?: string,
-) {
+export const bridgeTransaction = async ({
+  driver,
+  quote,
+  expectedTransactionsCount = 1,
+  expectedWalletBalance,
+  expectedSwapTokens,
+  expectedDestAmount,
+  submitDelay,
+}: {
+  driver: Driver;
+  quote: BridgeQuote;
+  expectedTransactionsCount: number;
+  expectedWalletBalance?: string;
+  expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
+  expectedDestAmount: string;
+  submitDelay?: number;
+}) => {
   // Navigate to Bridge page
   const homePage = new HomePage(driver);
   await homePage.startSwapFlow();
@@ -126,7 +135,9 @@ export async function bridgeTransaction(
   await homePage.goToActivityList();
 
   const activityList = new ActivityListPage(driver);
-  await activityList.checkCompletedBridgeTransactionActivity(transactionsCount);
+  await activityList.checkCompletedBridgeTransactionActivity(
+    expectedTransactionsCount,
+  );
 
   const isBridge =
     quote.fromChain && quote.toChain
@@ -138,11 +149,11 @@ export async function bridgeTransaction(
       action: isBridge
         ? `Bridged to ${quote.toChain}`
         : `Swapped ${quote.tokenFrom} to ${quote.tokenTo}`,
-      completedTxs: transactionsCount,
+      completedTxs: expectedTransactionsCount,
     });
     await activityList.checkTxAction({
       action: `Approve ${quote.tokenFrom} for ${isBridge ? 'bridge' : 'swap'}`,
-      completedTxs: transactionsCount,
+      completedTxs: expectedTransactionsCount,
       txIndex: 2,
     });
   } else {
@@ -150,7 +161,7 @@ export async function bridgeTransaction(
       action: isBridge
         ? `Bridged to ${quote.toChain}`
         : `Swap ${quote.tokenFrom ?? expectedSwapTokens?.tokenFrom} to ${quote.tokenTo ?? expectedSwapTokens?.tokenTo}`,
-      completedTxs: transactionsCount,
+      completedTxs: expectedTransactionsCount,
     });
   }
   // Check the amount of ETH deducted in the activity is correct
@@ -165,7 +176,7 @@ export async function bridgeTransaction(
       expectedWalletBalance,
     );
   }
-}
+};
 
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer

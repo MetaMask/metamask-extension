@@ -99,16 +99,9 @@ class BridgeQuotePage {
       // 2. Token picker with network badge (if destination is empty or on the correct network)
 
       if (quote.toChain) {
-        // Check if we're in the network selection modal (has network options visible)
-        const networkOptionExists = await this.driver.isElementPresent(
-          `[data-testid="${quote.toChain}"]`,
-        );
-
-        if (!networkOptionExists) {
-          // We're in token picker, need to click network badge first
-          await this.driver.waitForSelector(this.mutlichainAssetPicker);
-          await this.driver.clickElement(this.mutlichainAssetPicker);
-        }
+        // We're in token picker, need to click network badge first
+        await this.driver.waitForSelector(this.mutlichainAssetPicker);
+        await this.driver.clickElement(this.mutlichainAssetPicker);
 
         // Now select the destination network
         await this.driver.clickElementAndWaitToDisappear(
@@ -128,7 +121,7 @@ class BridgeQuotePage {
         tag: 'p',
         text: 'Fetching quotes...',
       },
-      { waitAtLeastGuard: 1000 },
+      { waitAtLeastGuard: 500 },
     );
   };
 
