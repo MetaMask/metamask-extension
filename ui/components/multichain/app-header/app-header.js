@@ -21,10 +21,7 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import {
-  getUnapprovedConfirmations,
-  getUnapprovedTransactions,
-} from '../../../selectors';
+import { getUnapprovedTransactions } from '../../../selectors';
 
 import { toggleNetworkMenu } from '../../../store/actions';
 // TODO: Remove restricted import
