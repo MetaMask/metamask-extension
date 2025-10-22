@@ -3,6 +3,7 @@ import { Hex } from '@metamask/utils';
 import { Interface, TransactionDescription } from '@ethersproject/abi';
 import {
   GenericQuoteRequest,
+  isNativeAddress,
   QuoteResponse,
 } from '@metamask/bridge-controller';
 import { addHexPrefix } from 'ethereumjs-util';
@@ -198,13 +199,19 @@ export function getBalanceChangeFromSimulationData(
     return '0';
   }
 
-  const { tokenBalanceChanges } = simulationData;
-  const balanceChange = tokenBalanceChanges.find(
-    (change: SimulationTokenBalanceChange) => change.address === tokenAddress,
-  );
+  const { nativeBalanceChange, tokenBalanceChanges } = simulationData;
+  let balanceDifference = '0x0';
+  if (isNativeAddress(tokenAddress)) {
+    balanceDifference = nativeBalanceChange?.difference ?? '0';
+  } else {
+    balanceDifference =
+      tokenBalanceChanges.find(
+        (change: SimulationTokenBalanceChange) =>
+          change.address === tokenAddress,
+      )?.difference ?? '0';
+  }
+
   return (
-    balanceChange
-      ? new BigNumber(balanceChange.difference, 16)
-      : new BigNumber(0)
+    balanceDifference ? new BigNumber(balanceDifference, 16) : new BigNumber(0)
   ).toString(10);
 }

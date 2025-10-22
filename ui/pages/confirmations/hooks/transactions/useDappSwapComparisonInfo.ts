@@ -150,7 +150,8 @@ export function useDappSwapComparisonInfo() {
       !erc20Decimals ||
       !erc20FiatRates ||
       !quotes?.length ||
-      !quotesInput
+      !quotesInput ||
+      !simulationData
     ) {
       return;
     }
