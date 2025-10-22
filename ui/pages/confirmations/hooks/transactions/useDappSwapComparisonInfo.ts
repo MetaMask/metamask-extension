@@ -235,6 +235,14 @@ export function useDappSwapComparisonInfo() {
         return;
       }
 
+      let swapComparisonLatencyValue = swapComparisonLatency;
+      if (swapComparisonLatency === 'N/A') {
+        swapComparisonLatencyValue = (
+          new Date().getTime() - currentConfirmation.time
+        ).toString();
+        setSwapComparisonLatency(swapComparisonLatencyValue);
+      }
+
       const { destTokenAddress, srcTokenAmount, srcTokenAddress } = quotesInput;
       const {
         approval,
@@ -298,9 +306,7 @@ export function useDappSwapComparisonInfo() {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_network_fee_usd: totalGasInQuote,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_comparison_total_latency_ms: (
-            new Date().getTime() - currentConfirmation.time
-          ).toString(),
+          swap_comparison_total_latency_ms: swapComparisonLatencyValue,
           swap_dapp_request_detection_latency_ms: requestDetectionLatency,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_request_latency_ms: quoteRequestLatency,
@@ -344,7 +350,9 @@ export function useDappSwapComparisonInfo() {
     quoteRequestLatency,
     quoteResponseLatency,
     requestDetectionLatency,
+    setSwapComparisonLatency,
     simulationData,
+    swapComparisonLatency,
     tokenDetails,
   ]);
 }
