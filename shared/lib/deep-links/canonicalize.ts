@@ -1,10 +1,11 @@
 import { SIG_PARAM, SIG_PARAMS } from './constants';
 
 /**
- * Canonicalizes a URL by removing the `sig` and `sig_params` query parameters and sorting the
- * remaining parameters.
+ * Canonicalizes a URL by removing the `sig` query parameter
+ * keeping the query parameters included in `sig_params` if it exists
+ * and sorting the remaining parameters.
  *
- * This is the same as the `canonicalize` function in the server side signing
+ * This is NOT the same as the `canonicalize` function in the server side signing
  * application.
  *
  * @param url - The URL to canonicalize.
@@ -18,21 +19,20 @@ export function canonicalize(url: URL): string {
 
   let queryString = '';
 
-  if (params.has(SIG_PARAMS)) {
-    const sigParamsStr = params.get(SIG_PARAMS);
-    const allowedParams = sigParamsStr?.split(',') ?? [];
-    const signedParams = new URLSearchParams();
-    const seenParams = new Set<string>(); // Track which params we've already processed
+  const sigParams = params.get(SIG_PARAMS);
 
-    for (const param of allowedParams) {
-      if (params.has(param) && !seenParams.has(param)) {
-        const value = params.get(param);
-        if (value !== null) {
-          signedParams.set(param, value);
-          seenParams.add(param); // Mark this param as processed
-        }
+  if (sigParams) {
+    const allowedParams = sigParams.split(',');
+    const signedParams = new URLSearchParams();
+
+    for (const allowedParam of allowedParams) {
+      const values = params.getAll(allowedParam);
+      for (const value of values) {
+        signedParams.append(allowedParam, value);
       }
     }
+
+    signedParams.append(SIG_PARAMS, sigParams);
 
     signedParams.sort();
     queryString = signedParams.toString();
