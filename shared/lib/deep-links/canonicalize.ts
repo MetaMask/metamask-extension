@@ -35,7 +35,6 @@ export function canonicalize(url: URL): string {
     // Backward compatibility: sign all params if there are no sig_params
     // clone the searchParams so we don't edit the original URL when deleting `sig`
     const params = new URLSearchParams(url.searchParams);
-    // remove the `sig` parameter if it exists, since we'll be adding our own later
     params.delete(SIG_PARAM);
     params.sort();
     queryString = params.toString();
