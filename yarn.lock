@@ -5685,14 +5685,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^8.0.0, @metamask/base-controller@npm:^8.0.1, @metamask/base-controller@npm:^8.1.0, @metamask/base-controller@npm:^8.3.0, @metamask/base-controller@npm:^8.4.0, @metamask/base-controller@npm:^8.4.1":
-  version: 8.4.1
-  resolution: "@metamask/base-controller@npm:8.4.1"
+"@metamask/base-controller@npm:@metamask-previews/base-controller@8.4.1-preview-e9856975":
+  version: 8.4.1-preview-e9856975
+  resolution: "@metamask-previews/base-controller@npm:8.4.1-preview-e9856975"
   dependencies:
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.8.1"
     immer: "npm:^9.0.6"
-  checksum: 10/d720638b6a640f43e06b37bd77b7291be20df2f3cc89ab571ee47c895313ba2521cd49e6dede02dd7e06971c351f88eec2c39b65d8f46ba09492d89131d640b9
+  checksum: 10/bfa8f2984febaa8f6de918b65eef3c94a5339be08cf94583e6d6066abd8d0ed5da48d4fb6b89ccddda184ec595fda619831edb942aad03564c836a06888d6a7e
   languageName: node
   linkType: hard
 
@@ -5818,19 +5818,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/core-backend@npm:2.1.0"
+"@metamask/core-backend@npm:@metamask-previews/core-backend@2.1.0-preview-e9856975":
+  version: 2.1.0-preview-e9856975
+  resolution: "@metamask-previews/core-backend@npm:2.1.0-preview-e9856975"
   dependencies:
-    "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/profile-sync-controller": "npm:^25.1.1"
     "@metamask/utils": "npm:^11.8.1"
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/accounts-controller": ^33.1.0
     "@metamask/keyring-controller": ^23.0.0
-  checksum: 10/7dce39ab1d433013491c36737767edf1ff7e3fdf3793bc8612d47e8d8e4d454e9d921ec5e0cc6d79c809a31d0e0491560d45d245b2c3bd61f139b305a77e63a4
+  checksum: 10/fdb90a3ae9c3280649878bfc8c87e7f66a90f17175753ab8de44f819dc6aec396eb07c107c45c94082912cbf72cfdd2f41b9da7a116b1b7c9cc61a733a9166ef
   languageName: node
   linkType: hard
 
