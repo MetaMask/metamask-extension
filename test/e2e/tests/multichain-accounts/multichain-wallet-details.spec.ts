@@ -19,9 +19,6 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
           builder.withKeyringControllerMultiSRP().withPreferencesController({
             dismissSeedBackUpReminder: false,
           }),
-        withCustomMocks: async (mockServer: Mockttp) => {
-          return mockMultichainAccountsFeatureFlagStateTwo(mockServer);
-        },
       },
       async (driver: Driver) => {
         const headerNavbar = new HeaderNavbar(driver);
