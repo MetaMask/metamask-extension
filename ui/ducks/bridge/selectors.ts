@@ -338,8 +338,9 @@ export const getToChain = createSelector(
 
     // Bitcoin can only bridge to EVM chains, not to Bitcoin
     // So if source is Bitcoin, default to first available EVM chain instead
+    // If no chains are available, leave the chain unselected.
     if (fromChain && isBitcoinChainId(fromChain.chainId)) {
-      return toChains[0];
+      return toChains[0] ?? undefined;
     }
 
     // For all other chains, default to same chain (swap mode)
