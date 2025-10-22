@@ -32,6 +32,7 @@ export function useDappSwapComparisonInfo() {
     id: transactionId,
     simulationData,
     txParams,
+    nestedTransactions,
   } = currentConfirmation ?? {
     txParams: {},
   };
@@ -65,7 +66,13 @@ export function useDappSwapComparisonInfo() {
 
   const { quotesInput, amountMin, tokenAddresses } = useMemo(() => {
     try {
-      const result = getDataFromSwap(chainId, data);
+      let transactionData = data;
+      if (nestedTransactions?.length) {
+        transactionData = nestedTransactions?.find(({ data }) =>
+          data?.startsWith('0x3593564c'),
+        )?.data;
+      }
+      const result = getDataFromSwap(chainId, transactionData);
       updateRequestDetectionLatency();
       return result;
     } catch (error) {
@@ -76,7 +83,7 @@ export function useDappSwapComparisonInfo() {
         tokenAddresses: [],
       };
     }
-  }, [chainId, data, updateRequestDetectionLatency]);
+  }, [chainId, data, nestedTransactions, updateRequestDetectionLatency]);
 
   const { value: fiatRates } = useAsyncResult<Record<Hex, number | undefined>>(
     () => fetchTokenExchangeRates('usd', tokenAddresses, chainId),

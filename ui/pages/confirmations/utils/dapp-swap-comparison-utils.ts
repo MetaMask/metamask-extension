@@ -108,8 +108,6 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
   if (seaportIndex >= 0) {
     seaportArgs = getArgsFromInput(inputs[seaportIndex]);
     amountMin = argToAmount(seaportArgs[13]);
-    tokenAddresses.push(argToAddress(seaportArgs[10]));
-    tokenAddresses.push(argToAddress(seaportArgs[16]));
   } else {
     return { quotesInput: undefined, amountMin: undefined, tokenAddresses: [] };
   }
@@ -130,6 +128,9 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
     amountMin = argToAmount(unwrapWethArgs[1]);
   }
 
+  tokenAddresses.push(argToAddress(seaportArgs[10]));
+  tokenAddresses.push(argToAddress(sweepArgs[0] ?? seaportArgs[16]));
+
   const quotesInput = {
     walletAddress: argToAddress(
       unwrapWethArgs[0] ?? sweepArgs[1] ?? seaportArgs[28],
@@ -140,7 +141,7 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
     destTokenAddress:
       unwrapWethIndex >= 0
         ? getNativeTokenAddress(chainId)
-        : argToAddress(seaportArgs[16]),
+        : argToAddress(sweepArgs[0] ?? seaportArgs[16]),
     srcTokenAmount: argToAmount(seaportArgs[12]),
     gasIncluded: false,
     gasIncluded7702: false,
