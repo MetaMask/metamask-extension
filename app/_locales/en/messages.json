@@ -1938,6 +1938,9 @@
   "deepLink_thePerpsPage": {
     "message": "the perps page"
   },
+  "deepLink_theRewardsPage": {
+    "message": "the MetaMask Rewards page"
+  },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
   },
