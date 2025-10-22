@@ -32,6 +32,7 @@ const maskedBackgroundFields = [
   // App metadata is masked so that we don't have to update the snapshot as
   // part of the release process
   'AppMetadataController.currentAppVersion',
+  'AppStateController.hasFunds',
   'AppMetadataController.currentMigrationVersion',
   'AppStateController.browserEnvironment.browser',
   'AppStateController.browserEnvironment.os',
