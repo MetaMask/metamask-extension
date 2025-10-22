@@ -54,7 +54,7 @@ describe('Navigate transactions', function () {
     );
   });
 
-  it.only('should add a transaction while the confirm page is in focus', async function () {
+  it('should add a transaction while the confirm page is in focus', async function () {
     await withFixtures(
       {
         dapp: true,
