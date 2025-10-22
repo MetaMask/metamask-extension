@@ -252,30 +252,6 @@ describe('Security alerts utils', () => {
       );
     });
 
-    it('should make API call with correct body structure', async () => {
-      const mockResponse = {
-        status: 'SUCCESS',
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_details: null,
-        error: null,
-      };
-
-      jest.spyOn(global, 'fetch').mockResolvedValueOnce({
-        ok: true,
-        json: async () => mockResponse,
-      } as unknown as Response);
-
-      await fetchTxAlerts({
-        signal,
-        chainId: mockChainId,
-        trade: mockTrade,
-        accountAddress: mockAccountAddress,
-      });
-
-      // expect(scope.isDone()).toBe(true);
-    });
-
     it('should work with different supported chain IDs', async () => {
       const mockResponse = {
         status: 'SUCCESS',

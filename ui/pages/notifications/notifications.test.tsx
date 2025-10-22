@@ -64,16 +64,4 @@ describe('Notifications Component', () => {
 
     expect(getByTestId('notifications-page')).toBeInTheDocument();
   });
-
-  it('navigates to default route on back button click', () => {
-    const { getByTestId } = renderWithProvider(<Notifications />, store);
-
-    fireEvent.click(getByTestId('back-button'));
-  });
-
-  it('navigates to settings on settings button click', () => {
-    const { getByTestId } = renderWithProvider(<Notifications />, store);
-
-    fireEvent.click(getByTestId('notifications-settings-button'));
-  });
 });
