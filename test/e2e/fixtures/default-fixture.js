@@ -25,6 +25,68 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         metamaskNotificationsList: [],
         metamaskNotificationsReadList: [],
       },
+      AccountTreeController: {
+        accountTree: {
+          wallets: {
+            'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK': {
+              type: 'entropy',
+              id: 'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK',
+              metadata: {
+                name: 'Wallet 1',
+                entropy: {
+                  id: '01JNGTRZ3QCEEQ7GYYFXBSQSBK',
+                },
+              },
+              status: 'ready',
+              groups: {
+                'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK/0': {
+                  type: 'multichain-account',
+                  id: 'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK/0',
+                  metadata: {
+                    name: 'Account 1',
+                    pinned: false,
+                    hidden: false,
+                    entropy: {
+                      groupIndex: 0,
+                    },
+                  },
+                  accounts: [
+                    'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+                    '7be38d47-4dba-430e-9463-c7d84659fb2e',
+                  ],
+                },
+              },
+            },
+            'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4': {
+              type: 'entropy',
+              id: 'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4',
+              metadata: {
+                name: 'Wallet 2',
+                entropy: {
+                  id: '01JNGTTNRVYNQVN5FN8YTFAMJ4',
+                },
+              },
+              status: 'ready',
+              groups: {
+                'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4/0': {
+                  type: 'multichain-account',
+                  id: 'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4/0',
+                  metadata: {
+                    name: 'Account 2',
+                    pinned: false,
+                    hidden: false,
+                    entropy: {
+                      groupIndex: 0,
+                    },
+                  },
+                  accounts: ['0c5d843d-5105-413d-b40a-cd8b6415a49c'],
+                },
+              },
+            },
+          },
+          selectedAccountGroup: 'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK/0',
+        },
+      },
       AccountsController: {
         internalAccounts: {
           selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
@@ -32,37 +94,83 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
               id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
               address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-              metadata: {
-                name: 'Account 1',
-                lastSelected: 1665507600000,
-                keyring: {
-                  type: 'HD Key Tree',
+              options: {
+                entropySource: '01JNGTRZ3QCEEQ7GYYFXBSQSBK',
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01JNGTRZ3QCEEQ7GYYFXBSQSBK',
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
                 },
               },
-              options: {},
               methods: [
                 'personal_sign',
+                'eth_sign',
                 'eth_signTransaction',
                 'eth_signTypedData_v1',
                 'eth_signTypedData_v3',
                 'eth_signTypedData_v4',
               ],
-              type: 'eip155:eoa',
               scopes: ['eip155:0'],
+              type: 'eip155:eoa',
+              metadata: {
+                name: 'Account 1',
+                importTime: 1761093330346,
+                lastSelected: 1761093448033,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
             },
-            'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f': {
-              type: 'solana:data-account',
-              id: 'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f',
-              address: '5R8a8GBd971kg5B5FqisVmVRk6ooFYtsh1y7vCHNvRvf',
+            '0c5d843d-5105-413d-b40a-cd8b6415a49c': {
+              id: '0c5d843d-5105-413d-b40a-cd8b6415a49c',
+              address: '0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf',
               options: {
                 entropySource: '01JNGTTNRVYNQVN5FN8YTFAMJ4',
-                derivationPath: "m/44'/501'/1'/0'",
-                index: 1,
+                derivationPath: "m/44'/60'/0'/0/0",
+                groupIndex: 0,
                 entropy: {
                   type: 'mnemonic',
                   id: '01JNGTTNRVYNQVN5FN8YTFAMJ4',
-                  groupIndex: 1,
-                  derivationPath: "m/44'/501'/1'/0'",
+                  derivationPath: "m/44'/60'/0'/0/0",
+                  groupIndex: 0,
+                },
+              },
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              scopes: ['eip155:0'],
+              type: 'eip155:eoa',
+              metadata: {
+                name: 'Account 2',
+                importTime: 1761093331303,
+                lastSelected: 0,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            '7be38d47-4dba-430e-9463-c7d84659fb2e': {
+              type: 'solana:data-account',
+              id: '7be38d47-4dba-430e-9463-c7d84659fb2e',
+              address: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
+              options: {
+                scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+                entropySource: '01JNGTRZ3QCEEQ7GYYFXBSQSBK',
+                derivationPath: "m/44'/501'/0'/0'",
+                index: 0,
+                entropy: {
+                  type: 'mnemonic',
+                  id: '01JNGTRZ3QCEEQ7GYYFXBSQSBK',
+                  groupIndex: 0,
+                  derivationPath: "m/44'/501'/0'/0'",
                 },
               },
               methods: [
@@ -77,8 +185,8 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
                 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
               ],
               metadata: {
-                name: 'Solana Account 2',
-                importTime: 1760994076395,
+                name: 'Solana 1',
+                importTime: 1761093334044,
                 keyring: {
                   type: 'Snap Keyring',
                 },
@@ -87,58 +195,12 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
                   name: 'Solana',
                   enabled: true,
                 },
-                lastSelected: 0,
-                nameLastUpdatedAt: 1760994076397,
+                lastSelected: 1761093334047,
+                nameLastUpdatedAt: 1761093334047,
               },
             },
           },
-        },
-        accountsAssets: {
-          'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f': [
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
-          ],
-        },
-        balances: {
-          'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f': {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501': {
-              unit: 'SOL',
-              amount: '0',
-            },
-          },
-        },
-        nonEvmTransactions: {
-          'f50249f7-4ebc-4e70-a662-7a7bd16b5a5f': {},
-        },
-        accountTree: {
-          wallets: {
-            'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4': {
-              type: 'entropy',
-              id: 'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4',
-              metadata: {
-                name: 'Wallet 1',
-                entropy: {
-                  id: '01JNGTTNRVYNQVN5FN8YTFAMJ4',
-                },
-              },
-              status: 'ready',
-              groups: {
-                'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4/0': {
-                  type: 'multichain-account',
-                  id: 'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4/0',
-                  metadata: {
-                    name: 'Account 1',
-                    pinned: false,
-                    hidden: false,
-                    entropy: {
-                      groupIndex: 0,
-                    },
-                  },
-                  accounts: ['0c5d843d-5105-413d-b40a-cd8b6415a49c'],
-                },
-              },
-            },
-          },
-          selectedAccountGroup: 'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4/0',
+          selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
         },
       },
 
@@ -296,11 +358,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             lastSelected: 1665507600000,
             name: 'Account 1',
-          },
-          '8xK2Lm9Np5Pq7Rs3Tu8Vw6Xy2Za4BcD1EfGh9IjKlMnO': {
-            address: '8xK2Lm9Np5Pq7Rs3Tu8Vw6Xy2Za4BcD1EfGh9IjKlMnO',
-            name: 'Solana Account 1',
-            lastSelected: 0,
           },
         },
         ipfsGateway: 'dweb.link',
