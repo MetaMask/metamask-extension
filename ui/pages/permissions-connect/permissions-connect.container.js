@@ -192,8 +192,4 @@ const PermissionApprovalContainer = connect(
   mapDispatchToProps,
 )(PermissionApproval);
 
-// PropTypes for router props (history, match, location) are now handled by
-// the PermissionsConnectAuthenticated wrapper component, which uses withRouterHooks
-// to inject navigate/location/params and adapts them to the v5 API
-
 export default PermissionApprovalContainer;
