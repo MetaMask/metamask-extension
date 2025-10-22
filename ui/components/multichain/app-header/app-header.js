@@ -46,7 +46,6 @@ import { AppHeaderLockedContent } from './app-header-locked-content';
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const menuRef = useRef(null);
-  const pendingConfirmations = useSelector(getUnapprovedConfirmations);
   const isUnlocked = useSelector(getIsUnlocked);
 
   const multichainNetwork = useSelector(
@@ -125,7 +124,7 @@ export const AppHeader = ({ location }) => {
     gap: 2,
   };
 
-  const hideAppHeader = isSidePanel && pendingConfirmations.length > 0;
+  const hideAppHeader = isSidePanel;
 
   return (
     <>

@@ -36,7 +36,7 @@ const goToOnboardingWelcomeLoginPage = async ({
   dataCollectionForMarketing?: boolean;
 }) => {
   if (needNavigateToNewPage) {
-    await driver.navigate(PAGES.HOME);
+    await driver.navigate();
   }
 
   if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {

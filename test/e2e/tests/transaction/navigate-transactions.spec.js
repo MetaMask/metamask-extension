@@ -84,7 +84,7 @@ describe('Navigate transactions', function () {
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        // await navigation.checkPageNumbers(2, 5);
+        await navigation.checkPageNumbers(2, 5);
       },
     );
   });

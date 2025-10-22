@@ -145,7 +145,9 @@ const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 let sidePanelIsOpen = false;
+///: END:ONLY_INCLUDE_IF
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -1097,7 +1099,10 @@ export function setupController(
       openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
       notificationIsOpen ||
-      sidePanelIsOpen
+      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+      sidePanelIsOpen ||
+      ///: END:ONLY_INCLUDE_IF
+      false
     );
   };
 
@@ -1158,6 +1163,7 @@ export function setupController(
         });
       }
 
+      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
         sidePanelIsOpen = true;
         finished(portStream, () => {
@@ -1167,6 +1173,7 @@ export function setupController(
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
         });
       }
+      ///: END:ONLY_INCLUDE_IF
 
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
@@ -1517,7 +1524,10 @@ async function triggerUi() {
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
-    !sidePanelIsOpen
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+    !sidePanelIsOpen &&
+    ///: END:ONLY_INCLUDE_IF
+    true
   ) {
     uiIsTriggering = true;
     try {
@@ -1581,6 +1591,7 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 // Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
 // and when the feature flag is enabled
 if (
@@ -1602,6 +1613,7 @@ if (
     }
   });
 }
+///: END:ONLY_INCLUDE_IF
 
 // // On first install, open a new tab with MetaMask
 // async function onInstall() {
