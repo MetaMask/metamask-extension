@@ -71,6 +71,9 @@ export function useTransactionConfirm() {
     },
     [navigate],
   );
+  // show loading indicator for shield subscription approval transaction since it will skip the transaction status page and wait for subscription api response
+  const shouldShowLoadingIndicator =
+    newTransactionMeta.type === TransactionType.shieldSubscriptionApprove;
 
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
@@ -81,7 +84,9 @@ export function useTransactionConfirm() {
       handleGasless7702();
     }
 
-    await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+    await dispatch(
+      updateAndApproveTx(newTransactionMeta, !shouldShowLoadingIndicator, ''),
+    );
     handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
   }, [
     customNonceValue,
@@ -91,6 +96,7 @@ export function useTransactionConfirm() {
     isSmartTransaction,
     newTransactionMeta,
     selectedGasFeeToken,
+    shouldShowLoadingIndicator,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
   ]);
 
