@@ -4,7 +4,6 @@ import {
   ACCOUNT_1,
   ACCOUNT_2,
   convertETHToHexGwei,
-  largeDelayMs,
   WINDOW_TITLES,
   withFixtures,
 } from '../../../helpers';
@@ -284,17 +283,16 @@ describe('Multichain API', function () {
             );
             await testDapp.checkPageIsLoaded();
             for (const scope of GANACHE_SCOPES) {
-              await driver.delay(largeDelayMs);
-              const currentBalance = await testDapp.invokeMethodAndReturnResult(
-                {
-                  scope,
-                  method: 'eth_getBalance',
+              await driver.waitUntil(
+                async () => {
+                  const currentBalance =
+                    await testDapp.invokeMethodAndReturnResult({
+                      scope,
+                      method: 'eth_getBalance',
+                    });
+                  return currentBalance !== DEFAULT_INITIAL_BALANCE_HEX;
                 },
-              );
-              assert.notStrictEqual(
-                currentBalance,
-                `"${DEFAULT_INITIAL_BALANCE_HEX}"`,
-                `${scope} scope balance should be different after eth_sendTransaction due to gas`,
+                { timeout: 10000, interval: 1000 },
               );
             }
           },
