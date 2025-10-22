@@ -5,12 +5,14 @@ import { isWasmReady as checkWasmReady } from '../rive-wasm';
 
 type FoxAppearAnimationProps = {
   isLoader: boolean;
+  skipTransition: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function FoxAppearAnimation({
   isLoader = false,
+  skipTransition,
 }: FoxAppearAnimationProps) {
   const isTestEnvironment = Boolean(process.env.IN_TEST);
   const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
@@ -65,9 +67,16 @@ export default function FoxAppearAnimation({
       if (inputs) {
         // Fire the Start trigger to begin the animation
         // (Fox raises up from bottom of the artboard)
-        const startTrigger = inputs.find((input) => input.name === 'Start');
-        if (startTrigger) {
-          startTrigger.fire();
+        if (skipTransition) {
+          const wiggleTrigger = inputs.find((input) => input.name === 'Wiggle');
+          if (wiggleTrigger) {
+            wiggleTrigger.fire();
+          }
+        } else {
+          const startTrigger = inputs.find((input) => input.name === 'Start');
+          if (startTrigger) {
+            startTrigger.fire();
+          }
         }
 
         // Fire the Loader trigger to show loading animation

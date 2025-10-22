@@ -7,7 +7,7 @@ import React, {
   Suspense,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate, useSearchParams } from 'react-router-dom-v5-compat';
 import log from 'loglevel';
 import { Box } from '../../../components/component-library';
 import {
@@ -63,6 +63,7 @@ const FoxAppearAnimation = lazy(() => import('./fox-appear-animation'));
 export default function OnboardingWelcome() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSeedlessOnboardingFeatureEnabled =
     getIsSeedlessOnboardingFeatureEnabled();
@@ -79,9 +80,16 @@ export default function OnboardingWelcome() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState(null);
   const isTestEnvironment = Boolean(process.env.IN_TEST);
-  // In test environments, skip animations and show buttons immediately
-  const [isAnimationComplete, setIsAnimationComplete] =
-    useState(isTestEnvironment);
+
+  // Check if user is returning from another page (skip animations)
+  const fromParam = searchParams.get('from');
+  const shouldSkipAnimation =
+    fromParam === 'unlock' || fromParam === 'account-exist';
+
+  // In test environments or when returning from another page, skip animations
+  const [isAnimationComplete, setIsAnimationComplete] = useState(
+    isTestEnvironment || shouldSkipAnimation,
+  );
 
   const isFireFox = getBrowserName() === PLATFORM_FIREFOX;
   // Don't allow users to come back to this screen after they
@@ -412,6 +420,7 @@ export default function OnboardingWelcome() {
           <MetaMaskWordMarkAnimation
             setIsAnimationComplete={setIsAnimationComplete}
             isAnimationComplete={isAnimationComplete}
+            skipTransition={shouldSkipAnimation}
           />
         </Suspense>
       )}
@@ -421,11 +430,12 @@ export default function OnboardingWelcome() {
           <WelcomeLogin
             onLogin={handleLogin}
             isAnimationComplete={isAnimationComplete}
+            skipTransition={shouldSkipAnimation}
           />
 
           {!isTestEnvironment && isAnimationComplete && (
             <Suspense fallback={<Box />}>
-              <FoxAppearAnimation />
+              <FoxAppearAnimation skipTransition={shouldSkipAnimation} />
             </Suspense>
           )}
 

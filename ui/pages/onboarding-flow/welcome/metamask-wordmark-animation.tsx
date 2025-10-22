@@ -8,6 +8,7 @@ import { isWasmReady as checkWasmReady } from '../rive-wasm';
 type MetamaskWordMarkAnimationProps = {
   setIsAnimationComplete: (isAnimationComplete: boolean) => void;
   isAnimationComplete: boolean;
+  skipTransition: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -15,6 +16,7 @@ type MetamaskWordMarkAnimationProps = {
 export default function MetamaskWordMarkAnimation({
   setIsAnimationComplete,
   isAnimationComplete,
+  skipTransition,
 }: MetamaskWordMarkAnimationProps) {
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const theme = useTheme();
@@ -94,14 +96,20 @@ export default function MetamaskWordMarkAnimation({
           darkToggle.value = true;
         }
 
-        // Fire the Start trigger to begin the animation
-        const startTrigger = inputs.find((input) => input.name === 'Start');
-        if (startTrigger) {
-          startTrigger.fire();
-
-          // Play the state machine
-          rive.play();
+        if (skipTransition) {
+          const stillTrigger = inputs.find((input) => input.name === 'Still');
+          if (stillTrigger) {
+            stillTrigger.fire();
+          }
+        } else {
+          const startTrigger = inputs.find((input) => input.name === 'Start');
+          if (startTrigger) {
+            startTrigger.fire();
+          }
         }
+
+        // Play the state machine
+        rive.play();
       }
     }
 
@@ -111,7 +119,7 @@ export default function MetamaskWordMarkAnimation({
         clearTimeout(animationTimeoutRef.current);
       }
     };
-  }, [rive, theme, isWasmReady]);
+  }, [rive, theme, isWasmReady, skipTransition]);
 
   // In test environments, skip animation entirely and show buttons immediately
   // This prevents any Rive initialization and CDN network requests
@@ -156,8 +164,10 @@ export default function MetamaskWordMarkAnimation({
   return (
     <Box
       className={`riv-animation__wordmark-container ${
-        isAnimationComplete ? 'riv-animation__wordmark-container--complete' : ''
-      }`}
+        isAnimationComplete && !skipTransition
+          ? 'riv-animation__wordmark-container--complete'
+          : ''
+      } ${skipTransition ? 'riv-animation__wordmark-container--skip-transition' : ''} `}
     >
       <RiveComponent className="riv-animation__canvas" />
     </Box>
