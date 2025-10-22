@@ -18,6 +18,8 @@ const listener = new ExtensionLazyListener(chrome, {
  */
 globalThis.stateHooks = globalThis.stateHooks || {};
 
+// Set the lazy listener on globalThis.stateHooks so that other
+// other _bundles_ can access it.
 globalThis.stateHooks.lazyListener = listener;
 
 // Represents if importAllScripts has been run

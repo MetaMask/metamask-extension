@@ -283,7 +283,7 @@ type StateHooks = {
   /**
    * This is set in `app-init.js`
    */
-  lazyListener: ExtensionLazyListener<Browser>;
+  lazyListener?: ExtensionLazyListener<Browser>;
 };
 
 export declare global {

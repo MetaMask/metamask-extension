@@ -97,7 +97,13 @@ import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferra
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
  */
 
-const { lazyListener } = globalThis.stateHooks;
+// MV3 conffigures the ExtensionLazyListener in app-init.js and sets it on globalThis.stateHooks,
+// but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners).
+const lazyListener = isManifestV3
+  ? globalThis.stateHooks.lazyListener
+  : new (require('./lib/extension-lazy-listener/extension-lazy-listener').ExtensionLazyListener)(
+      browser,
+    );
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
