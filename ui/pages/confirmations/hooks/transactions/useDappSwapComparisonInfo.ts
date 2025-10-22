@@ -76,7 +76,7 @@ export function useDappSwapComparisonInfo() {
         tokenAddresses: [],
       };
     }
-  }, [chainId, currentConfirmation.time, data, updateRequestDetectionLatency]);
+  }, [chainId, data, updateRequestDetectionLatency]);
 
   const { value: fiatRates } = useAsyncResult<Record<Hex, number | undefined>>(
     () => fetchTokenExchangeRates('usd', tokenAddresses, chainId),
@@ -162,7 +162,6 @@ export function useDappSwapComparisonInfo() {
     captureDappSwapComparisonMetricsProperties,
     quotesInput,
     requestDetectionLatency,
-    currentConfirmation.time,
   ]);
 
   const getGasUSDValue = useCallback(
@@ -298,7 +297,6 @@ export function useDappSwapComparisonInfo() {
   }, [
     amountMin,
     captureDappSwapComparisonMetricsProperties,
-    currentConfirmation.time,
     fiatRates,
     gas,
     gasUsed,

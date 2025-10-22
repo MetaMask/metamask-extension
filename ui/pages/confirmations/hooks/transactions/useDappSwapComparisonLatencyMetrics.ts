@@ -15,10 +15,10 @@ export function useDappSwapComparisonLatencyMetrics() {
       return;
     }
     setRequestDetectionLatency(
-      (new Date().getTime() - currentConfirmation.time).toString(),
+      (new Date().getTime() - currentConfirmation?.time).toString(),
     );
   }, [
-    currentConfirmation.time,
+    currentConfirmation?.time,
     requestDetectionLatency,
     setRequestDetectionLatency,
   ]);
@@ -30,12 +30,12 @@ export function useDappSwapComparisonLatencyMetrics() {
     setQuoteRequestLatency(
       (
         new Date().getTime() -
-        currentConfirmation.time +
+        currentConfirmation?.time +
         parseInt(requestDetectionLatency, 10)
       ).toString(),
     );
   }, [
-    currentConfirmation.time,
+    currentConfirmation?.time,
     quoteRequestLatency,
     setQuoteRequestLatency,
     requestDetectionLatency,
@@ -56,10 +56,10 @@ export function useDappSwapComparisonLatencyMetrics() {
       return;
     }
     setSwapComparisonLatency(
-      (new Date().getTime() - currentConfirmation.time).toString(),
+      (new Date().getTime() - currentConfirmation?.time).toString(),
     );
   }, [
-    currentConfirmation.time,
+    currentConfirmation?.time,
     swapComparisonLatency,
     setSwapComparisonLatency,
   ]);
