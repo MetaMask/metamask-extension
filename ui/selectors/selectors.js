@@ -3686,9 +3686,6 @@ export function getPermittedEVMAccountsForSelectedTab(state, activeTab) {
 
 export function getAllPermittedAccountsForCurrentTab(state) {
   const origin = getOriginOfCurrentTab(state);
-  if (!origin) {
-    return [];
-  }
   return getAllPermittedAccounts(state, origin);
 }
 
@@ -3966,23 +3963,10 @@ export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
 }
 
 export function getPermissionsForActiveTab(state) {
-  const { metamask } = state;
+  const { activeTab, metamask } = state;
   const { subjects = {} } = metamask;
-  const origin = getOriginOfCurrentTab(state);
 
-  if (!origin) {
-    return [];
-  }
-
-  const subject = subjects[origin];
-  if (!subject) {
-    return [];
-  }
-
-  const { permissions } = subject;
-  if (!permissions || typeof permissions !== 'object') {
-    return [];
-  }
+  const permissions = subjects[activeTab.origin]?.permissions ?? {};
 
   return Object.keys(permissions).map((parentCapability) => {
     return {
@@ -3993,15 +3977,12 @@ export function getPermissionsForActiveTab(state) {
 }
 
 export function activeTabHasPermissions(state) {
-  const { metamask } = state;
+  const { activeTab, metamask } = state;
   const { subjects = {} } = metamask;
-  const origin = getOriginOfCurrentTab(state);
 
-  if (!origin) {
-    return false;
-  }
-
-  return Boolean(Object.keys(subjects[origin]?.permissions || {}).length > 0);
+  return Boolean(
+    Object.keys(subjects[activeTab.origin]?.permissions || {}).length > 0,
+  );
 }
 
 /**

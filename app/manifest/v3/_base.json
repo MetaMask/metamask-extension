@@ -80,9 +80,7 @@
     "unlimitedStorage",
     "webRequest",
     "offscreen",
-    "identity",
-    "sidePanel",
-    "contextMenus"
+    "identity"
   ],
   "sandbox": {
     "pages": ["snaps/index.html"]
