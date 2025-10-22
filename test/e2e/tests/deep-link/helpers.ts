@@ -1,5 +1,3 @@
-import { canonicalize } from '../../../../shared/lib/deep-links/canonicalize';
-
 /**
  * Generates an ECDSA key pair for signing deep links for testing purposes.
  */
@@ -18,21 +16,37 @@ export async function generateECDSAKeyPair() {
  * Signs a URL using the ECDSA key pair. Same implementation as in the server
  * side signing application.
  *
- * @param key
- * @param url - The URL to sign.
- * @returns A signed URL with the `sig` query parameter appended, and the
+ * @param key - The ECDSA private key to use for signing.
+ * @param canonicalUrl - The URL to sign.
+ * @returns A signed URL with the `sig` and `sig_params` query parameters appended, and the
  * params sorted and canonicalized.
  */
-export async function signDeepLink(key: CryptoKey, url: string) {
-  const canonical = canonicalize(new URL(url));
-  const signed = await crypto.subtle.sign(
+export async function signDeepLink(key: CryptoKey, canonicalUrl: string) {
+  const signedUrl = new URL(canonicalUrl);
+  const sigParams = [...signedUrl.searchParams.keys()];
+
+  for (const sigParam of sigParams) {
+    if (sigParam.includes(',')) {
+      throw new Error(
+        `Invalid signature parameter '${sigParam}': Signature parameters cannot contain commas`,
+      );
+    }
+  }
+
+  if (sigParams.length) {
+    signedUrl.searchParams.append('sig_params', sigParams.join(','));
+    signedUrl.searchParams.sort();
+  }
+
+  const signed = await globalThis.crypto.subtle.sign(
     { name: 'ECDSA', hash: 'SHA-256' },
     key,
-    new TextEncoder().encode(canonical),
+    new TextEncoder().encode(signedUrl.toString()),
   );
   const sig = bytesToB64Url(signed);
-  const signedUrl = new URL(canonical);
+
   signedUrl.searchParams.append('sig', sig);
+
   return signedUrl.toString();
 }
 

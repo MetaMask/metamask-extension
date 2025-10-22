@@ -12,6 +12,7 @@ import FixtureBuilder from '../../fixture-builder';
 import { BaseUrl } from '../../../../shared/constants/urls';
 import type { Anvil } from '../../seeder/anvil';
 import type { Ganache } from '../../seeder/ganache';
+import { canonicalize } from '../../../../shared/lib/deep-links/canonicalize';
 import {
   bytesToB64,
   cartesianProduct,
@@ -115,13 +116,16 @@ describe('Deep Link', function () {
 
           // navigate to https://link.metamask.io/home and make sure it
           // redirects to the deep link interstitial page
-          const rawUrl = `https://link.metamask.io${route}`;
+          const canonicalUrl = canonicalize(
+            new URL(`https://link.metamask.io${route}`),
+          );
+
           // note: we sign the "/INVALID" link as well, as signed links that no
           // longer exist/match should be treated handled the same way as
           // unsigned links. We test for this below.
           const preparedUrl = isSigned
-            ? await signDeepLink(keyPair.privateKey, rawUrl)
-            : rawUrl;
+            ? await signDeepLink(keyPair.privateKey, canonicalUrl)
+            : canonicalUrl;
           console.log('Opening deep link URL');
           await driver.openNewURL(preparedUrl);
 
@@ -200,8 +204,10 @@ and we'll take you to the right place.`
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl = `https://link.metamask.io/buy`;
-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+        const canonicalUrl = canonicalize(
+          new URL('https://link.metamask.io/buy'),
+        );
+        const signedUrl = await signDeepLink(keyPair.privateKey, canonicalUrl);
 
         // test signed flow
         await driver.openNewURL(signedUrl);
@@ -215,7 +221,7 @@ and we'll take you to the right place.`
         homePage.checkPageIsLoaded();
 
         // test unsigned flow
-        await driver.openNewURL(rawUrl);
+        await driver.openNewURL(canonicalUrl);
 
         await driver.waitForUrl({
           url: `${BaseUrl.Portfolio}/buy`,
@@ -235,8 +241,10 @@ and we'll take you to the right place.`
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl = `https://link.metamask.io/perps`;
-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+        const canonicalUrl = canonicalize(
+          new URL('https://link.metamask.io/perps'),
+        );
+        const signedUrl = await signDeepLink(keyPair.privateKey, canonicalUrl);
 
         // test signed flow
         await driver.openNewURL(signedUrl);
@@ -250,7 +258,7 @@ and we'll take you to the right place.`
         homePage.checkPageIsLoaded();
 
         // test unsigned flow
-        await driver.openNewURL(rawUrl);
+        await driver.openNewURL(canonicalUrl);
 
         await driver.waitForUrl({
           url: `${BaseUrl.MetaMask}/perps`,
@@ -338,8 +346,10 @@ and we'll take you to the right place.`
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
-        const rawUrl = `https://link.metamask.io/home`;
-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+        const canonicalUrl = canonicalize(
+          new URL('https://link.metamask.io/home'),
+        );
+        const signedUrl = await signDeepLink(keyPair.privateKey, canonicalUrl);
         await driver.openNewURL(signedUrl);
         const internalDeepLinkUrl = await driver.getCurrentUrl();
         const deepLink = new DeepLink(driver);
@@ -365,7 +375,7 @@ and we'll take you to the right place.`
         await homePage.checkPageIsLoaded();
 
         // navigating to an unsigned page should NOT skip the interstitial
-        await driver.openNewURL(rawUrl);
+        await driver.openNewURL(canonicalUrl);
         await deepLink.checkPageIsLoaded();
 
         // navigating to the internalDeepLinkUrl should display the interstitial
@@ -406,8 +416,10 @@ and we'll take you to the right place.`
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
 
-        const rawUrl = `https://link.metamask.io/home`;
-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+        const canonicalUrl = canonicalize(
+          new URL('https://link.metamask.io/home'),
+        );
+        const signedUrl = await signDeepLink(keyPair.privateKey, canonicalUrl);
 
         // test signed flow
         await driver.openNewURL(signedUrl);
