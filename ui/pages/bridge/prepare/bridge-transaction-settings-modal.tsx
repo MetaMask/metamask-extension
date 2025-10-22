@@ -150,7 +150,7 @@ export const BridgeTransactionSettingsModal = ({
             )}
             {HARDCODED_SLIPPAGE_OPTIONS.map((hardcodedSlippage) => {
               const isSelected =
-                isAutoSelected === false && localSlippage === hardcodedSlippage;
+                !isAutoSelected && localSlippage === hardcodedSlippage;
               return isSelected ? (
                 <ButtonPrimary
                   key={hardcodedSlippage}
