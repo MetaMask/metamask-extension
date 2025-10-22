@@ -188,6 +188,7 @@ export const MultichainAccountList = ({
       groupId: string,
       groupData: (typeof wallets)[AccountWalletId]['groups'][AccountGroupId],
       walletId: string,
+      showWalletName = false,
     ) => {
       // If prop is provided, attempt render balance. Otherwise do not render balance.
       const account = allBalances?.wallets?.[walletId]?.groups?.[groupId];
@@ -210,6 +211,11 @@ export const MultichainAccountList = ({
             selected={selectedAccountGroupsSet.has(groupId as AccountGroupId)}
             onClick={handleAccountClickToUse}
             privacyMode={privacyMode}
+            walletName={
+              showWalletName
+                ? wallets[walletId as AccountWalletId]?.metadata?.name
+                : undefined
+            }
             startAccessory={
               showAccountCheckbox ? (
                 <Box marginRight={4}>
@@ -264,7 +270,7 @@ export const MultichainAccountList = ({
       result.push(pinnedHeader);
 
       pinnedGroups.forEach(({ groupId, groupData, walletId }) => {
-        result.push(renderAccountCell(groupId, groupData, walletId));
+        result.push(renderAccountCell(groupId, groupData, walletId, true));
       });
     }
 
@@ -372,7 +378,7 @@ export const MultichainAccountList = ({
       // Only render hidden accounts when expanded
       if (isHiddenAccountsExpanded) {
         hiddenGroups.forEach(({ groupId, groupData, walletId }) => {
-          result.push(renderAccountCell(groupId, groupData, walletId));
+          result.push(renderAccountCell(groupId, groupData, walletId, true));
         });
       }
     }
