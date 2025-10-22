@@ -692,26 +692,26 @@ export const getDedupedSnaps = (request, permissions) => {
 
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
-const REGEX_LTR_OVERRIDE = /\u202D/giu;
-const REGEX_RTL_OVERRIDE = /\u202E/giu;
-
 /**
- * The method escapes LTR and RTL override unicode in the string
+ * Sanitizes a string by removing bidirectional and invisible Unicode control characters.
+ * Uses Unicode property escapes to automatically cover all format characters including:
+ * - Bidirectional control characters (LRM, RLM, LRE, RLE, LRO, RLO, PDF, LRI, RLI, FSI, PDI)
+ * - Zero-width characters (ZWSP, ZWNJ, ZWJ, ZWNBSP)
+ * - Other invisible format characters
  *
- * @param {*} value
- * @returns {(string|*)} escaped string or original param value
+ * @param {*} value - Input value
+ * @returns {(string|*)} Sanitized string or original param if not a string
  */
 export const sanitizeString = (value) => {
-  if (!value) {
-    return value;
-  }
-  if (!lodash.isString(value)) {
+  if (!value || !lodash.isString(value)) {
     return value;
   }
 
-  return value
-    .replace(REGEX_LTR_OVERRIDE, '\\u202D')
-    .replace(REGEX_RTL_OVERRIDE, '\\u202E');
+  // Remove all Unicode Format category characters (includes all bidi and zero-width chars)
+  // \p{Cf} matches all Format characters in Unicode
+  const INVISIBLE_CHARS = /\p{Cf}/gu;
+
+  return value.replace(INVISIBLE_CHARS, '');
 };
 
 /**
