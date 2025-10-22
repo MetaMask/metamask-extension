@@ -550,6 +550,7 @@ export default function Routes() {
     }
   }, [currentCurrency, dispatch]);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   // Navigate to confirmations when there are pending approvals (from any page)
   useEffect(() => {
     if (pendingApprovals.length > 0 || approvalFlows?.length > 0) {
@@ -561,6 +562,7 @@ export default function Routes() {
       );
     }
   }, [pendingApprovals, approvalFlows, history]);
+  ///: END:ONLY_INCLUDE_IF
 
   const renderRoutes = useCallback(() => {
     const RestoreVaultComponent = forgottenPassword ? Route : Initialized;

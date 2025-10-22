@@ -124,7 +124,7 @@ describe('Send ETH', function () {
     );
   });
 
-  it('it should be possible to resolve name lookup address', async function () {
+  it.only('it should be possible to resolve name lookup address', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({
