@@ -1,7 +1,9 @@
+import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import {
-  ControllerStateChangeEvent,
+  MOCK_ANY_NAMESPACE,
   Messenger,
-} from '@metamask/base-controller';
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { NetworkController } from '@metamask/network-controller';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { ControllerInitRequest } from './types';
@@ -11,6 +13,7 @@ import {
   NetworkControllerMessenger,
   getNetworkControllerMessenger,
   getNetworkControllerInitMessenger,
+  getRootMessenger,
 } from './messengers';
 import {
   ADDITIONAL_DEFAULT_NETWORKS,
@@ -34,7 +37,7 @@ jest.mock('@metamask/network-controller', () => {
 });
 
 function getInitRequestMock(
-  baseMessenger = new Messenger<never, never>(),
+  baseMessenger = getRootMessenger<never, never>(),
 ): jest.Mocked<
   ControllerInitRequest<
     NetworkControllerMessenger,
@@ -236,12 +239,13 @@ describe('NetworkControllerInit', () => {
 
   it('enables RPC failover when the `walletFrameworkRpcFailoverEnabled` feature flag is enabled', () => {
     const messenger = new Messenger<
+      MockAnyNamespace,
       never,
       ControllerStateChangeEvent<
         'RemoteFeatureFlagController',
         RemoteFeatureFlagControllerState
       >
-    >();
+    >({ namespace: MOCK_ANY_NAMESPACE });
 
     const request = getInitRequestMock(messenger);
 
@@ -264,12 +268,13 @@ describe('NetworkControllerInit', () => {
 
   it('disables RPC failover when the `walletFrameworkRpcFailoverEnabled` feature flag is disabled', () => {
     const messenger = new Messenger<
+      MockAnyNamespace,
       never,
       ControllerStateChangeEvent<
         'RemoteFeatureFlagController',
         RemoteFeatureFlagControllerState
       >
-    >();
+    >({ namespace: MOCK_ANY_NAMESPACE });
 
     const request = getInitRequestMock(messenger);
 
