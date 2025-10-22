@@ -8,7 +8,7 @@ import {
 } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 import { fetchQuotes, TokenStandAndDetails } from '../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
@@ -22,6 +22,7 @@ import {
 } from '../../utils/dapp-swap-comparison-utils';
 import { useConfirmContext } from '../../context/confirm';
 import { useTransactionEventFragment } from '../useTransactionEventFragment';
+import { useDappSwapComparisonLatencyMetrics } from './useDappSwapComparisonLatencyMetrics';
 
 export function useDappSwapComparisonInfo() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -36,51 +37,16 @@ export function useDappSwapComparisonInfo() {
   };
   const { data, gas, maxFeePerGas } = txParams ?? {};
   const { updateTransactionEventFragment } = useTransactionEventFragment();
-  const [requestDetectionLatency, setRequestDetectionLatency] = useState('N/A');
-  const [quoteRequestLatency, setQuoteRequestLatency] = useState('N/A');
-  const [quoteResponseLatency, setQuoteResponseLatency] = useState('N/A');
-  const [swapComparisonLatency, setSwapComparisonLatency] = useState('N/A');
-
-  const updateRequestDetectionLatency = useCallback(() => {
-    if (requestDetectionLatency !== 'N/A') {
-      return;
-    }
-    setRequestDetectionLatency(
-      (new Date().getTime() - currentConfirmation.time).toString(),
-    );
-  }, [
-    currentConfirmation.time,
+  const {
     requestDetectionLatency,
-    setRequestDetectionLatency,
-  ]);
-
-  const updateQuoteRequestLatency = useCallback(() => {
-    if (quoteRequestLatency !== 'N/A') {
-      return;
-    }
-    setQuoteRequestLatency(
-      (
-        new Date().getTime() -
-        currentConfirmation.time +
-        parseInt(requestDetectionLatency, 10)
-      ).toString(),
-    );
-  }, [
-    currentConfirmation.time,
     quoteRequestLatency,
-    setQuoteRequestLatency,
-    requestDetectionLatency,
-  ]);
-
-  const updateQuoteResponseLatency = useCallback(
-    (startTime: number) => {
-      if (quoteResponseLatency !== 'N/A') {
-        return;
-      }
-      setQuoteResponseLatency((new Date().getTime() - startTime).toString());
-    },
-    [quoteResponseLatency, setQuoteResponseLatency],
-  );
+    quoteResponseLatency,
+    swapComparisonLatency,
+    updateRequestDetectionLatency,
+    updateQuoteRequestLatency,
+    updateQuoteResponseLatency,
+    updateSwapComparisonLatency,
+  } = useDappSwapComparisonLatencyMetrics();
 
   const captureDappSwapComparisonMetricsProperties = useCallback(
     (params: {
@@ -235,13 +201,7 @@ export function useDappSwapComparisonInfo() {
         return;
       }
 
-      let swapComparisonLatencyValue = swapComparisonLatency;
-      if (swapComparisonLatency === 'N/A') {
-        swapComparisonLatencyValue = (
-          new Date().getTime() - currentConfirmation.time
-        ).toString();
-        setSwapComparisonLatency(swapComparisonLatencyValue);
-      }
+      updateSwapComparisonLatency();
 
       const { destTokenAddress, srcTokenAmount, srcTokenAddress } = quotesInput;
       const {
@@ -306,7 +266,7 @@ export function useDappSwapComparisonInfo() {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_network_fee_usd: totalGasInQuote,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_comparison_total_latency_ms: swapComparisonLatencyValue,
+          swap_comparison_total_latency_ms: swapComparisonLatency,
           swap_dapp_request_detection_latency_ms: requestDetectionLatency,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_request_latency_ms: quoteRequestLatency,
@@ -350,7 +310,7 @@ export function useDappSwapComparisonInfo() {
     quoteRequestLatency,
     quoteResponseLatency,
     requestDetectionLatency,
-    setSwapComparisonLatency,
+    updateSwapComparisonLatency,
     simulationData,
     swapComparisonLatency,
     tokenDetails,
