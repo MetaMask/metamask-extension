@@ -154,10 +154,10 @@ export function useDappSwapComparisonInfo() {
     const startTime = new Date().getTime();
     updateQuoteRequestLatency();
 
-    const quotes = await fetchQuotes(quotesInput);
+    const quotesList = await fetchQuotes(quotesInput);
 
     updateQuoteResponseLatency(startTime);
-    return quotes;
+    return quotesList;
   }, [
     captureDappSwapComparisonMetricsProperties,
     quotesInput,
@@ -266,6 +266,7 @@ export function useDappSwapComparisonInfo() {
           swap_mm_network_fee_usd: totalGasInQuote,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_comparison_total_latency_ms: swapComparisonLatency,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_request_detection_latency_ms: requestDetectionLatency,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_request_latency_ms: quoteRequestLatency,
