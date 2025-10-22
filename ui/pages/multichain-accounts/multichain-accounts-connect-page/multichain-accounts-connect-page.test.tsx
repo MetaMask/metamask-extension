@@ -110,13 +110,13 @@ jest.mock('../../../hooks/useAccountGroupsForPermissions', () => ({
   useAccountGroupsForPermissions: (
     existingCaip25CaveatValue: unknown,
     requestedCaipAccountIds: unknown,
-    requestedandExistingCaipChainIdsOrDefault: unknown,
+    requestedAndAlreadyConnectedCaipChainIdsOrDefault: unknown,
     requestedNamespacesWithoutWallet: unknown,
   ) => {
     mockUseAccountGroupsForPermissions(
       existingCaip25CaveatValue,
       requestedCaipAccountIds,
-      requestedandExistingCaipChainIdsOrDefault,
+      requestedAndAlreadyConnectedCaipChainIdsOrDefault,
       requestedNamespacesWithoutWallet,
     );
     return {
@@ -723,7 +723,7 @@ describe('MultichainConnectPage', () => {
     expect(getByTestId('permissions-tab')).toBeDefined();
   });
 
-  describe('requestedandExistingCaipChainIdsOrDefault logic', () => {
+  describe('requestedAndAlreadyConnectedCaipChainIdsOrDefault logic', () => {
     beforeEach(() => {
       jest.clearAllMocks();
     });
