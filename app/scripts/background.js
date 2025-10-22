@@ -272,22 +272,30 @@ const sendReadyMessageToTabs = async () => {
  * @param {MetamaskController} theController
  */
 function maybeDetectPhishing(theController) {
+  /**
+   * Redirects a tab to the phishing warning page.
+   *
+   * @param {number} tabId - The ID of the tab to redirect
+   * @param {string} url - The URL to redirect to (phishing warning page)
+   * @returns {Promise<boolean>} Returns true if the redirect was successful, false otherwise.
+   *   Returns false for Google pre-fetch requests or if the redirect fails.
+   */
   async function redirectTab(tabId, url) {
     try {
       const tab = await browser.tabs.get(tabId);
 
       // Prevent redirect when due to Google pre-fetching
       if (tab.url && tab.url.startsWith('https://www.google.com/search')) {
-        return;
+        return false;
       }
 
-      // eslint-disable-next-line consistent-return
-      return await browser.tabs.update(tabId, {
+      await browser.tabs.update(tabId, {
         url,
       });
+      return true;
     } catch (error) {
-      // eslint-disable-next-line consistent-return
-      return sentry?.captureException(error);
+      sentry?.captureException(error);
+      return false;
     }
   }
   // we can use the blocking API in MV2, but not in MV3
@@ -404,15 +412,17 @@ function maybeDetectPhishing(theController) {
           trackPhishingMetrics();
           return { redirectUrl: redirectHref };
         }
-        // Track metrics only after successful redirect
-        redirectTab(details.tabId, redirectHref).then(() => {
-          trackPhishingMetrics();
+        redirectTab(details.tabId, redirectHref).then((redirected) => {
+          if (redirected) {
+            trackPhishingMetrics();
+          }
         });
         return { cancel: true };
       }
-      // Track metrics only after successful redirect
-      redirectTab(details.tabId, redirectHref).then(() => {
-        trackPhishingMetrics();
+      redirectTab(details.tabId, redirectHref).then((redirected) => {
+        if (redirected) {
+          trackPhishingMetrics();
+        }
       });
       return {};
     },
