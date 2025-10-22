@@ -246,7 +246,8 @@
     "@metamask/accounts-controller": "npm:@metamask-previews/accounts-controller@33.1.1-preview-e9856975",
     "@metamask/address-book-controller": "npm:@metamask-previews/address-book-controller@6.2.0-preview-e9856975",
     "@metamask/announcement-controller": "npm:@metamask-previews/announcement-controller@7.1.0-preview-e9856975",
-    "@metamask/approval-controller": "npm:@metamask-previews/approval-controller@7.2.0-preview-e9856975"
+    "@metamask/approval-controller": "npm:@metamask-previews/approval-controller@7.2.0-preview-e9856975",
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@81.0.1-preview-e9856975"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
