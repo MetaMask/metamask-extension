@@ -163,7 +163,7 @@ export type PreferencesControllerState = Omit<
     hyperliquid: Record<Hex, ReferralStatus>;
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
 };
@@ -683,7 +683,7 @@ export class PreferencesController extends BaseController<
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   /**
    * Setter for the `watchEthereumAccountEnabled` property.
    *
