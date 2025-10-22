@@ -65,6 +65,7 @@
     "enableEnforcedSimulationsForTransactions": {},
     "enforcedSimulationsSlippage": 10,
     "enforcedSimulationsSlippageForTransactions": {},
+    "hasFunds": false,
     "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",

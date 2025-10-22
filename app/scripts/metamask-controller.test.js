@@ -45,6 +45,7 @@ import { PermissionDoesNotExistError } from '@metamask/permission-controller';
 import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
 
 import log from 'loglevel';
+import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { parseCaipAccountId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
@@ -5512,6 +5513,358 @@ describe('MetaMaskController', () => {
 
       expect(
         metamaskController._notifySolanaAccountChange,
+      ).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('_setupWalletFundsObtainedMonitoring', () => {
+    let metamaskController;
+
+    beforeEach(() => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+      });
+
+      jest.spyOn(metamaskController.appStateController, 'setHasFunds');
+      jest.spyOn(metamaskController.controllerMessenger, 'subscribe');
+      metamaskController._walletFundsObtainedMonitoringSetup = false;
+    });
+
+    it('should return early if already setup', () => {
+      metamaskController._walletFundsObtainedMonitoringSetup = true;
+      metamaskController._setupWalletFundsObtainedMonitoring();
+
+      expect(
+        metamaskController.controllerMessenger.subscribe,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should return early if notifications are disabled', () => {
+      jest
+        .spyOn(
+          metamaskController.notificationServicesController,
+          'state',
+          'get',
+        )
+        .mockReturnValue({
+          isNotificationServicesEnabled: false,
+        });
+      metamaskController._setupWalletFundsObtainedMonitoring();
+
+      expect(
+        metamaskController.controllerMessenger.subscribe,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should return early if wallet was not created (imported)', () => {
+      jest
+        .spyOn(
+          metamaskController.notificationServicesController,
+          'state',
+          'get',
+        )
+        .mockReturnValue({
+          isNotificationServicesEnabled: true,
+        });
+      jest
+        .spyOn(metamaskController.onboardingController, 'state', 'get')
+        .mockReturnValue({
+          firstTimeFlowType: FirstTimeFlowType.import,
+        });
+      metamaskController._setupWalletFundsObtainedMonitoring();
+
+      expect(
+        metamaskController.controllerMessenger.subscribe,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should call setHasFunds if wallet has existing funds', () => {
+      jest
+        .spyOn(
+          metamaskController.notificationServicesController,
+          'state',
+          'get',
+        )
+        .mockReturnValue({
+          isNotificationServicesEnabled: true,
+        });
+      jest
+        .spyOn(metamaskController.onboardingController, 'state', 'get')
+        .mockReturnValue({
+          firstTimeFlowType: FirstTimeFlowType.create,
+        });
+      jest.spyOn(metamaskController, '_hasExistingFunds').mockReturnValue(true);
+      metamaskController._setupWalletFundsObtainedMonitoring();
+
+      expect(
+        metamaskController.appStateController.setHasFunds,
+      ).toHaveBeenCalledWith(true);
+    });
+
+    it('should subscribe to notifications if wallet has no existing funds', () => {
+      jest
+        .spyOn(
+          metamaskController.notificationServicesController,
+          'state',
+          'get',
+        )
+        .mockReturnValue({
+          isNotificationServicesEnabled: true,
+        });
+      jest
+        .spyOn(metamaskController.onboardingController, 'state', 'get')
+        .mockReturnValue({
+          firstTimeFlowType: FirstTimeFlowType.create,
+        });
+      jest
+        .spyOn(metamaskController, '_hasExistingFunds')
+        .mockReturnValue(false);
+      metamaskController._setupWalletFundsObtainedMonitoring();
+
+      expect(
+        metamaskController.controllerMessenger.subscribe,
+      ).toHaveBeenCalledWith(
+        'NotificationServicesController:notificationsListUpdated',
+        metamaskController._handleWalletFundingNotification,
+      );
+    });
+
+    it('should work with socialCreate flow type', () => {
+      jest
+        .spyOn(
+          metamaskController.notificationServicesController,
+          'state',
+          'get',
+        )
+        .mockReturnValue({
+          isNotificationServicesEnabled: true,
+        });
+      jest
+        .spyOn(metamaskController.onboardingController, 'state', 'get')
+        .mockReturnValue({
+          firstTimeFlowType: FirstTimeFlowType.socialCreate,
+        });
+      jest.spyOn(metamaskController, '_hasExistingFunds').mockReturnValue(true);
+      metamaskController._setupWalletFundsObtainedMonitoring();
+
+      expect(
+        metamaskController.appStateController.setHasFunds,
+      ).toHaveBeenCalledWith(true);
+    });
+  });
+
+  describe('_handleWalletFundingNotification', () => {
+    let metamaskController;
+
+    beforeEach(() => {
+      metamaskController = new MetaMaskController({
+        showUserConfirmation: noop,
+        encryptor: mockEncryptor,
+        initState: cloneDeep(firstTimeState),
+        initLangCode: 'en_US',
+        platform: {
+          showTransactionNotification: () => undefined,
+          getVersion: () => 'foo',
+          switchToAnotherURL: jest.fn(),
+        },
+        browser: browserPolyfillMock,
+        infuraProjectId: 'foo',
+        isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+      });
+
+      jest.spyOn(metamaskController.metaMetricsController, 'trackEvent');
+      jest.spyOn(metamaskController.appStateController, 'setHasFunds');
+      jest.spyOn(metamaskController.controllerMessenger, 'unsubscribe');
+    });
+
+    it('should return early if no relevant notifications', () => {
+      const notifications = [
+        { type: TRIGGER_TYPES.FEATURES_ANNOUNCEMENT, data: {} },
+      ];
+      metamaskController._handleWalletFundingNotification(notifications);
+
+      expect(
+        metamaskController.metaMetricsController.trackEvent,
+      ).not.toHaveBeenCalled();
+      expect(
+        metamaskController.appStateController.setHasFunds,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should return early if notifications array is empty', () => {
+      const notifications = [];
+      metamaskController._handleWalletFundingNotification(notifications);
+
+      expect(
+        metamaskController.metaMetricsController.trackEvent,
+      ).not.toHaveBeenCalled();
+      expect(
+        metamaskController.appStateController.setHasFunds,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should return early if notification has no chain_id', () => {
+      const notifications = [
+        {
+          type: TRIGGER_TYPES.ETH_RECEIVED,
+          data: { amount: { usd: '100' } },
+        },
+      ];
+      metamaskController._handleWalletFundingNotification(notifications);
+
+      expect(
+        metamaskController.metaMetricsController.trackEvent,
+      ).not.toHaveBeenCalled();
+      expect(
+        metamaskController.appStateController.setHasFunds,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should return early if notification has no token or amount data', () => {
+      const notifications = [
+        {
+          type: TRIGGER_TYPES.ETH_RECEIVED,
+          chain_id: 1,
+          data: {},
+        },
+      ];
+      metamaskController._handleWalletFundingNotification(notifications);
+
+      expect(
+        metamaskController.metaMetricsController.trackEvent,
+      ).not.toHaveBeenCalled();
+      expect(
+        metamaskController.appStateController.setHasFunds,
+      ).not.toHaveBeenCalled();
+    });
+
+    it('should handle ETH received notification', () => {
+      const notifications = [
+        {
+          type: TRIGGER_TYPES.ETH_RECEIVED,
+          chain_id: 1,
+          data: {
+            amount: { usd: '100' },
+          },
+        },
+      ];
+      metamaskController._handleWalletFundingNotification(notifications);
+
+      expect(
+        metamaskController.metaMetricsController.trackEvent,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: 'Wallet Funds Obtained',
+          properties: expect.objectContaining({
+            chain_id: '1',
+            token_address: '0x0000000000000000000000000000000000000000',
+          }),
+        }),
+      );
+      expect(
+        metamaskController.appStateController.setHasFunds,
+      ).toHaveBeenCalledWith(true);
+      expect(
+        metamaskController.controllerMessenger.unsubscribe,
+      ).toHaveBeenCalledWith(
+        'NotificationServicesController:notificationsListUpdated',
+        metamaskController._handleWalletFundingNotification,
+      );
+    });
+
+    it('should handle ERC20 received notification', () => {
+      const notifications = [
+        {
+          type: TRIGGER_TYPES.ERC20_RECEIVED,
+          chain_id: 1,
+          data: {
+            token: {
+              address: '0x123',
+              usd: '50',
+            },
+          },
+        },
+      ];
+      metamaskController._handleWalletFundingNotification(notifications);
+
+      expect(
+        metamaskController.metaMetricsController.trackEvent,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: 'Wallet Funds Obtained',
+          properties: expect.objectContaining({
+            chain_id: '1',
+            token_address: '0x123',
+          }),
+        }),
+      );
+      expect(
+        metamaskController.appStateController.setHasFunds,
+      ).toHaveBeenCalledWith(true);
+      expect(
+        metamaskController.controllerMessenger.unsubscribe,
+      ).toHaveBeenCalledWith(
+        'NotificationServicesController:notificationsListUpdated',
+        metamaskController._handleWalletFundingNotification,
+      );
+    });
+
+    it('should use the last (oldest) notification when multiple are present', () => {
+      const notifications = [
+        {
+          type: TRIGGER_TYPES.ETH_RECEIVED,
+          chain_id: 1,
+          data: { amount: { usd: '100' } },
+        },
+        {
+          type: TRIGGER_TYPES.ERC20_RECEIVED,
+          chain_id: 137,
+          data: { token: { address: '0x456', usd: '200' } },
+        },
+      ];
+      metamaskController._handleWalletFundingNotification(notifications);
+
+      expect(
+        metamaskController.metaMetricsController.trackEvent,
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            chain_id: '137',
+            token_address: '0x456',
+          }),
+        }),
+      );
+    });
+
+    it('should filter out non-funding notifications', () => {
+      const notifications = [
+        { type: TRIGGER_TYPES.FEATURES_ANNOUNCEMENT, data: {} },
+        {
+          type: TRIGGER_TYPES.ETH_RECEIVED,
+          chain_id: 1,
+          data: { amount: { usd: '100' } },
+        },
+        { type: 'another_type', data: {} },
+      ];
+      metamaskController._handleWalletFundingNotification(notifications);
+
+      expect(
+        metamaskController.metaMetricsController.trackEvent,
       ).not.toHaveBeenCalled();
     });
   });
