@@ -297,6 +297,9 @@ describe('Multichain API', function () {
                     currentBalance.endsWith('"')
                       ? JSON.parse(currentBalance)
                       : currentBalance;
+                  console.log("==========Normalized Balance", normalizedBalance);
+                  console.log("==========Default Initial Balance", DEFAULT_INITIAL_BALANCE_HEX);
+                  console.log("==========Scope", scope);
                   return normalizedBalance !== DEFAULT_INITIAL_BALANCE_HEX;
                 },
                 { timeout: 10000, interval: 1000 },
