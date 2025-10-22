@@ -30875,9 +30875,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-browserify@npm:^19.0.0":
-  version: 19.0.0
-  resolution: "lavamoat-browserify@npm:19.0.0"
+"lavamoat-browserify@npm:^19.0.1":
+  version: 19.0.1
+  resolution: "lavamoat-browserify@npm:19.0.1"
   dependencies:
     "@lavamoat/aa": "npm:^4.3.4"
     "@lavamoat/lavapack": "npm:^7.0.17"
@@ -30891,7 +30891,7 @@ __metadata:
     readable-stream: "npm:4.7.0"
     source-map: "npm:0.7.4"
     through2: "npm:4.0.2"
-  checksum: 10/1d6fb989cb36a41bdface967fc43563d2370eaea695901213186d268b31a0d709ecc258235158f523365438208ccbe40ef8c2390d06e5e0902b7854f30262819
+  checksum: 10/af459ef3471c6d939faa20e9ffb9966585bc1de084e026c3fb61cd487120a0a91eee351053b8ccca2c08420538104cb50d595582e243d5bcd0a26ad9d6d3687f
   languageName: node
   linkType: hard
 
@@ -32464,7 +32464,7 @@ __metadata:
     koa: "npm:^2.7.0"
     labeled-stream-splicer: "npm:^2.0.2"
     lavamoat: "npm:^10.0.0"
-    lavamoat-browserify: "npm:^19.0.0"
+    lavamoat-browserify: "npm:^19.0.1"
     lavamoat-viz: "npm:^7.0.5"
     level: "npm:^8.0.1"
     localforage: "npm:^1.9.0"
