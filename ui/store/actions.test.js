@@ -30,6 +30,8 @@ import { setBackgroundConnection } from './background-connection';
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
+// test
+
 const mockUlid = '01JMPHQSH1A4DQAAS6ES7NDJ38';
 
 const middleware = [thunk];
