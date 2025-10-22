@@ -684,10 +684,6 @@
   "from": {
     "message": "Da"
   },
-  "fromAddress": {
-    "message": "Da: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "gasLimit": {
     "message": "Gas Limite"
   },
@@ -1346,10 +1342,6 @@
   },
   "to": {
     "message": "A"
-  },
-  "toAddress": {
-    "message": "A: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "tokenAlreadyAdded": {
     "message": "Il token è già stato aggiunto."

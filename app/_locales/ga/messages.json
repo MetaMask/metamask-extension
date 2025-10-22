@@ -2606,10 +2606,6 @@
   "from": {
     "message": "Ó"
   },
-  "fromAddress": {
-    "message": "Ó: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "Ó liostaí comharthaí: $1"
   },
@@ -7227,10 +7223,6 @@
   },
   "to": {
     "message": "Chuig"
-  },
-  "toAddress": {
-    "message": "Chuig: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "Úsáidimid seirbhísí 4byte.directory agus Sourcify chun sonraí idirbhearta a dhíchódú agus a thaispeáint níos inléite. Cuidíonn sé seo leat toradh idirbhearta atá ar feitheamh agus san am atá thart a thuiscint, ach d’fhéadfadh sé go roinnfí do sheoladh IP dá bharr."

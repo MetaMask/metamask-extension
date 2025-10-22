@@ -13,6 +13,11 @@ export type WalletMetadata = {
   name: string;
 };
 
+export type NormalizedGroupMetadata = {
+  name: string;
+  accounts: string[];
+};
+
 export type AccountTreeWallets = {
   [walletId: AccountWalletId]: AccountWalletObject;
 };

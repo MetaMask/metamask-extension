@@ -40,6 +40,7 @@ import {
   MultichainAccountGroupToScopesMap,
   MultichainAccountsState,
   AccountGroupObjectWithWalletNameAndId,
+  NormalizedGroupMetadata,
 } from './account-tree.types';
 import { getSanitizedChainId, extractWalletIdFromGroupId } from './utils';
 
@@ -190,6 +191,38 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
       // Standard behavior: use the group's original accounts
       (groupAccounts) => groupAccounts,
     );
+  },
+);
+
+/**
+ * Retrieve the normalized groups metadata.
+ *
+ * @param accountTree - Account tree state.
+ * @param internalAccountsObject - The internal accounts object.
+ * @returns The normalized group metadata.
+ */
+export const getNormalizedGroupsMetadata = createDeepEqualSelector(
+  getAccountTree,
+  getInternalAccountsObject,
+  (
+    accountTree: AccountTreeState,
+    internalAccountsObject: Record<AccountId, InternalAccount>,
+  ) => {
+    const { wallets } = accountTree;
+    const result: Record<AccountGroupId, NormalizedGroupMetadata> = {};
+    for (const wallet of Object.values(wallets)) {
+      for (const group of Object.values(wallet.groups)) {
+        result[group.id] = {
+          name: group.metadata?.name?.toLowerCase() ?? '',
+          accounts: group.accounts.map((accountId: AccountId) => {
+            return (
+              internalAccountsObject[accountId]?.address.toLowerCase() ?? ''
+            );
+          }),
+        };
+      }
+    }
+    return result;
   },
 );
 

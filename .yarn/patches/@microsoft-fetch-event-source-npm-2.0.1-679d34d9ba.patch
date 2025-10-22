@@ -1,0 +1,17 @@
+diff --git a/lib/esm/fetch.js b/lib/esm/fetch.js
+index 175b639f3da6754f01641fbf74df791b36520c4d..865fa883ec018e7420fad0310acccab2ecebe309 100644
+--- a/lib/esm/fetch.js
++++ b/lib/esm/fetch.js
+@@ -37,9 +37,10 @@ export function fetchEventSource(input, _a) {
+             window.clearTimeout(retryTimer);
+             curRequestController.abort();
+         }
+-        inputSignal === null || inputSignal === void 0 ? void 0 : inputSignal.addEventListener('abort', () => {
++        inputSignal === null || inputSignal === void 0 ? void 0 : inputSignal.addEventListener('abort', (error) => {
+             dispose();
+-            resolve();
++             // This line is a workaround to fix the issue with the abort error not being properly propagated
++            reject(Object.assign(new Error('Aborted'), { name: 'AbortError', message: error.target.reason }));
+         });
+         const fetch = inputFetch !== null && inputFetch !== void 0 ? inputFetch : window.fetch;
+         const onopen = inputOnOpen !== null && inputOnOpen !== void 0 ? inputOnOpen : defaultOnOpen;
