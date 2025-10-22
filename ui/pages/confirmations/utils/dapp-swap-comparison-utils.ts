@@ -110,15 +110,18 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
     amountMin = argToAmount(seaportArgs[13]);
     tokenAddresses.push(argToAddress(seaportArgs[10]));
     tokenAddresses.push(argToAddress(seaportArgs[16]));
+  } else {
+    return { quotesInput: undefined, amountMin: undefined, tokenAddresses: [] };
   }
+
   const sweepIndex = commandBytes.findIndex(
     (commandByte: string) => commandByte === COMMAND_BYTE_SWEEP,
   );
-
   if (sweepIndex >= 0) {
     sweepArgs = getArgsFromInput(inputs[sweepIndex]);
     amountMin = argToAmount(sweepArgs[2]);
   }
+
   const unwrapWethIndex = commandBytes.findIndex(
     (commandByte: string) => commandByte === COMMAND_BYTE_UNWRAP_WETH,
   );
