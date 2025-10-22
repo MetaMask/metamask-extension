@@ -135,7 +135,7 @@ describe('dapp-swap utils', () => {
       expect(result).toEqual(6);
     });
 
-    it('returns 0 if record is not found', () => {
+    it('returns undefined if record is not found', () => {
       const result = getTokenValueFromRecord(
         {
           '0xaf88d065e77c8cc2239327c5edb3a432268e5831': 6,
@@ -144,7 +144,7 @@ describe('dapp-swap utils', () => {
         },
         '0x123',
       );
-      expect(result).toEqual(0);
+      expect(result).toEqual(undefined);
     });
   });
 

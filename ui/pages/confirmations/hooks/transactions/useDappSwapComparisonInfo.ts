@@ -1,8 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import {
-  ContractExchangeRates,
-  getNativeTokenAddress,
-} from '@metamask/assets-controllers';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import {
   getNativeAssetForChainId,
@@ -16,7 +13,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { fetchQuotes, TokenStandAndDetails } from '../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { useAsyncResult } from '../../../../hooks/useAsync';
-import { fetchAllErc20Decimals, fetchAllTokenDetails } from '../../utils/token';
+import { fetchAllTokenDetails } from '../../utils/token';
 import {
   getDataFromSwap,
   getBestQuote,

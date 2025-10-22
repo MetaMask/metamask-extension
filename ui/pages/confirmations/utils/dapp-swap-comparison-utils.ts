@@ -184,10 +184,10 @@ export function getBestQuote(
   return selectedQuoteIndex > -1 ? quotes[selectedQuoteIndex] : undefined;
 }
 
-export function getTokenValueFromRecord<T>(
-  record: Record<Hex, T>,
+export function getTokenValueFromRecord<Type>(
+  record: Record<Hex, Type>,
   tokenAddress: Hex,
-): T | undefined {
+): Type | undefined {
   const address = Object.keys(record).find((key) => {
     return key.toLowerCase() === tokenAddress.toLowerCase();
   });
