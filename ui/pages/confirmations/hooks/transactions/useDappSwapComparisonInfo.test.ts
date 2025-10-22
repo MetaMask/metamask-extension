@@ -259,24 +259,23 @@ describe('useDappSwapComparisonInfo', () => {
       {
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          dapp_swap_comparison: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            swap_dapp_from_token_simulated_value_usd: '0.00999804',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            swap_dapp_minimum_received_value_usd: '0.00975',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            swap_dapp_network_fee_usd: '0.01069623006255',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            swap_dapp_to_token_simulated_value_usd: '0.009994',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            swap_mm_from_token_simulated_value_usd: '0.00999804',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            swap_mm_minimum_received_value_usd: '0.009708',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            swap_mm_network_fee_usd: '0.02183867583615',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            swap_mm_to_token_simulated_value_usd: '0.009907',
-          },
+          dapp_swap_comparison: 'completed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_from_token_simulated_value_usd: '0.00999804',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_minimum_received_value_usd: '0.00975',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_network_fee_usd: '0.01069623006255',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_to_token_simulated_value_usd: '0.009994',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_mm_from_token_simulated_value_usd: '0.00999804',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_mm_minimum_received_value_usd: '0.009708',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_mm_network_fee_usd: '0.02183867583615',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_mm_to_token_simulated_value_usd: '0.009907',
         },
       },
       '66b489a0-aa87-11f0-a866-c513455971f9',

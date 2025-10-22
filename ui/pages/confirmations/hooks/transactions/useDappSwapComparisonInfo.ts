@@ -36,7 +36,7 @@ export function useDappSwapComparisonInfo() {
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const captureDappSwapComparisonMetricsProperties = useCallback(
-    (properties: Record<string, string> | string[]) => {
+    (properties: Record<string, string>) => {
       updateTransactionEventFragment(
         {
           properties: {
@@ -123,7 +123,10 @@ export function useDappSwapComparisonInfo() {
       return undefined;
     }
 
-    captureDappSwapComparisonMetricsProperties(['loading']);
+    captureDappSwapComparisonMetricsProperties({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      dapp_swap_comparison: 'loading',
+    });
 
     return await fetchQuotes(quotesInput);
   }, [captureDappSwapComparisonMetricsProperties, quotesInput]);
@@ -187,6 +190,8 @@ export function useDappSwapComparisonInfo() {
     );
 
     captureDappSwapComparisonMetricsProperties({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      dapp_swap_comparison: 'completed',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       swap_dapp_from_token_simulated_value_usd: getUSDValue(
         srcTokenAmount,
