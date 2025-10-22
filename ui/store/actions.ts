@@ -3432,9 +3432,14 @@ export function addNetwork(
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.addNetwork`, networkConfiguration);
     try {
-      return await submitRequestToBackground('addNetwork', [
+      const addedNetwork = await submitRequestToBackground('addNetwork', [
         networkConfiguration,
       ]);
+      const { networkClientId } =
+        addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
+        {};
+      await submitRequestToBackground('setActiveNetwork', [networkClientId]);
+      return addedNetwork;
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning('Had a problem adding networks!'));
