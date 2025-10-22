@@ -20,6 +20,7 @@ import {
 } from '../../utils/dapp-swap-comparison-utils';
 import { useConfirmContext } from '../../context/confirm';
 import { useTransactionEventFragment } from '../useTransactionEventFragment';
+import { captureException } from '@sentry/browser';
 
 export function useDappSwapComparisonInfo() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -50,7 +51,16 @@ export function useDappSwapComparisonInfo() {
   );
 
   const { quotesInput, amountMin, tokenAddresses } = useMemo(() => {
-    return getDataFromSwap(chainId, data);
+    try {
+      return getDataFromSwap(chainId, data);
+    } catch (error) {
+      captureException(error);
+      return {
+        quotesInput: undefined,
+        amountMin: undefined,
+        tokenAddresses: [],
+      };
+    }
   }, [chainId, data]);
 
   const { value: erc20FiatRates } = useAsyncResult<ContractExchangeRates>(
@@ -145,82 +155,86 @@ export function useDappSwapComparisonInfo() {
   );
 
   useEffect(() => {
-    if (
-      !amountMin ||
-      !erc20Decimals ||
-      !erc20FiatRates ||
-      !quotes?.length ||
-      !quotesInput ||
-      !simulationData
-    ) {
-      return;
+    try {
+      if (
+        !amountMin ||
+        !erc20Decimals ||
+        !erc20FiatRates ||
+        !quotes?.length ||
+        !quotesInput ||
+        !simulationData
+      ) {
+        return;
+      }
+
+      const selectedQuote = getBestQuote(
+        quotes,
+        getUSDValueForDestinationToken,
+        getGasUSDValue,
+      );
+
+      if (!selectedQuote) {
+        return;
+      }
+
+      const { destTokenAddress, srcTokenAmount, srcTokenAddress } = quotesInput;
+      const {
+        approval,
+        quote: { destTokenAmount, minDestTokenAmount },
+        trade,
+      } = selectedQuote;
+
+      const totalGasInQuote = getGasUSDValue(
+        new BigNumber(
+          (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
+            (trade?.effectiveGas ?? trade?.gasLimit ?? 0),
+          10,
+        ),
+      );
+
+      const totalGasInConfirmation = getGasUSDValue(
+        new BigNumber(gasUsed ?? gas ?? '0x0', 16),
+      );
+
+      const destTokenBalanceChange = getBalanceChangeFromSimulationData(
+        destTokenAddress as Hex,
+        simulationData,
+      );
+
+      captureDappSwapComparisonMetricsProperties({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        dapp_swap_comparison: 'completed',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_dapp_from_token_simulated_value_usd: getUSDValue(
+          srcTokenAmount,
+          srcTokenAddress as Hex,
+        ),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_dapp_to_token_simulated_value_usd: getUSDValueForDestinationToken(
+          destTokenBalanceChange,
+        ),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_dapp_minimum_received_value_usd:
+          getUSDValueForDestinationToken(amountMin),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_dapp_network_fee_usd: totalGasInConfirmation,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_mm_from_token_simulated_value_usd: getUSDValue(
+          srcTokenAmount,
+          srcTokenAddress as Hex,
+        ),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_mm_to_token_simulated_value_usd:
+          getUSDValueForDestinationToken(destTokenAmount),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_mm_minimum_received_value_usd:
+          getUSDValueForDestinationToken(minDestTokenAmount),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_mm_network_fee_usd: totalGasInQuote,
+      });
+    } catch (error) {
+      captureException(error);
     }
-
-    const selectedQuote = getBestQuote(
-      quotes,
-      getUSDValueForDestinationToken,
-      getGasUSDValue,
-    );
-
-    if (!selectedQuote) {
-      return;
-    }
-
-    const { destTokenAddress, srcTokenAmount, srcTokenAddress } = quotesInput;
-    const {
-      approval,
-      quote: { destTokenAmount, minDestTokenAmount },
-      trade,
-    } = selectedQuote;
-
-    const totalGasInQuote = getGasUSDValue(
-      new BigNumber(
-        (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
-          (trade?.effectiveGas ?? trade?.gasLimit ?? 0),
-        10,
-      ),
-    );
-
-    const totalGasInConfirmation = getGasUSDValue(
-      new BigNumber(gasUsed ?? gas ?? '0x0', 16),
-    );
-
-    const destTokenBalanceChange = getBalanceChangeFromSimulationData(
-      destTokenAddress as Hex,
-      simulationData,
-    );
-
-    captureDappSwapComparisonMetricsProperties({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      dapp_swap_comparison: 'completed',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_dapp_from_token_simulated_value_usd: getUSDValue(
-        srcTokenAmount,
-        srcTokenAddress as Hex,
-      ),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_dapp_to_token_simulated_value_usd: getUSDValueForDestinationToken(
-        destTokenBalanceChange,
-      ),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_dapp_minimum_received_value_usd:
-        getUSDValueForDestinationToken(amountMin),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_dapp_network_fee_usd: totalGasInConfirmation,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_mm_from_token_simulated_value_usd: getUSDValue(
-        srcTokenAmount,
-        srcTokenAddress as Hex,
-      ),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_mm_to_token_simulated_value_usd:
-        getUSDValueForDestinationToken(destTokenAmount),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_mm_minimum_received_value_usd:
-        getUSDValueForDestinationToken(minDestTokenAmount),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      swap_mm_network_fee_usd: totalGasInQuote,
-    });
   }, [
     amountMin,
     captureDappSwapComparisonMetricsProperties,
