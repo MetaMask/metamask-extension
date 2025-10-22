@@ -1,4 +1,4 @@
-import { hasProperty, isObject } from '@metamask/utils';
+import { isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
