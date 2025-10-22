@@ -91,6 +91,9 @@ class HomePage {
   private readonly shieldEntryModalGetStarted =
     '[data-testid="shield-entry-modal-get-started-button"]';
 
+  private readonly shieldEntryModalSkip =
+    '[data-testid="shield-entry-modal-skip-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.headerNavbar = new HeaderNavbar(driver);
@@ -423,6 +426,11 @@ class HomePage {
   async clickOnShieldEntryModalGetStarted(): Promise<void> {
     console.log('Click on shield entry modal get started');
     await this.driver.clickElement(this.shieldEntryModalGetStarted);
+  }
+
+  async clickOnShieldEntryModalSkip(): Promise<void> {
+    console.log('Click on shield entry modal skip');
+    await this.driver.clickElement(this.shieldEntryModalSkip);
   }
 
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {

@@ -285,13 +285,18 @@ const TransactionShield = () => {
     );
   };
 
-  const billingDetails = (key: string, value: string | React.ReactNode) => {
+  const billingDetails = (
+    key: string,
+    value: string | React.ReactNode,
+    testId?: string,
+  ) => {
     return (
       <Box
         display={Display.Flex}
         alignItems={AlignItems.center}
         gap={2}
         justifyContent={JustifyContent.spaceBetween}
+        data-testid={testId}
       >
         {showSkeletonLoader ? (
           <Skeleton width="40%" height={24} />
@@ -601,6 +606,7 @@ const TransactionShield = () => {
                 <Text
                   variant={TextVariant.bodyMdBold}
                   className="transaction-shield-page__membership-text"
+                  data-testid="shield-detail-membership-status"
                 >
                   {isMembershipInactive
                     ? t('shieldTxMembershipInactive')
@@ -617,6 +623,7 @@ const TransactionShield = () => {
                     borderStyle={BorderStyle.none}
                     borderRadius={BorderRadius.SM}
                     backgroundColor={BackgroundColor.backgroundMuted}
+                    data-testid="shield-detail-trial-tag"
                   />
                 )}
                 {isPaused && (
@@ -629,6 +636,7 @@ const TransactionShield = () => {
                     borderStyle={BorderStyle.none}
                     borderRadius={BorderRadius.SM}
                     backgroundColor={BackgroundColor.backgroundMuted}
+                    data-testid="shield-detail-paused-tag"
                   />
                 )}
               </Box>
@@ -639,6 +647,7 @@ const TransactionShield = () => {
               <Text
                 variant={TextVariant.bodyXs}
                 className="transaction-shield-page__membership-text"
+                data-testid="shield-detail-customer-id"
               >
                 {t('shieldTxMembershipId')}: {customerId}
               </Text>
@@ -697,19 +706,31 @@ const TransactionShield = () => {
             </Box>
           ))}
         </Box>
-        {buttonRow(t('shieldTxMembershipViewFullBenefits'), () => {
-          // todo: link to benefits page
-        })}
+        {buttonRow(
+          t('shieldTxMembershipViewFullBenefits'),
+          () => {
+            // todo: link to benefits page
+          },
+          'shield-detail-view-benefits-button',
+        )}
         {/* TODO: implement logic to allow submitting case until after 21 days of last active subscription */}
         {!isCancelled &&
-          buttonRow(t('shieldTxMembershipSubmitCase'), () => {
-            navigate(TRANSACTION_SHIELD_CLAIM_ROUTE);
-          })}
+          buttonRow(
+            t('shieldTxMembershipSubmitCase'),
+            () => {
+              navigate(TRANSACTION_SHIELD_CLAIM_ROUTE);
+            },
+            'shield-detail-submit-case-button',
+          )}
         {!isMembershipInactive &&
           shieldSubscription?.cancelAtPeriodEnd &&
-          buttonRow(t('shieldTxMembershipResubscribe'), () => {
-            executeUnCancelSubscription();
-          })}
+          buttonRow(
+            t('shieldTxMembershipResubscribe'),
+            () => {
+              executeUnCancelSubscription();
+            },
+            'shield-detail-resubscribe-button',
+          )}
         {canCancel &&
           buttonRow(
             t('shieldTxMembershipCancel'),
@@ -719,14 +740,18 @@ const TransactionShield = () => {
             'shield-tx-membership-cancel-button',
           )}
         {isCancelled &&
-          buttonRow(t('shieldTxMembershipRenew'), async () => {
-            if (isCryptoPayment) {
-              // TODO: handle renew membership crypto
-              console.log('renew membership');
-            } else {
-              await executeUpdateSubscriptionCardPaymentMethod();
-            }
-          })}
+          buttonRow(
+            t('shieldTxMembershipRenew'),
+            async () => {
+              if (isCryptoPayment) {
+                // TODO: handle renew membership crypto
+                console.log('renew membership');
+              } else {
+                await executeUpdateSubscriptionCardPaymentMethod();
+              }
+            },
+            'shield-detail-renew-button',
+          )}
       </Box>
 
       <Box className="transaction-shield-page__container">
@@ -739,7 +764,10 @@ const TransactionShield = () => {
           {showSkeletonLoader ? (
             <Skeleton width="60%" height={24} />
           ) : (
-            <Text variant={TextVariant.headingSm}>
+            <Text
+              variant={TextVariant.headingSm}
+              data-testid="shield-detail-billing-details-title"
+            >
               {t('shieldTxMembershipBillingDetails')}
             </Text>
           )}
@@ -752,6 +780,7 @@ const TransactionShield = () => {
                   : getShortDateFormatterV2().format(
                       new Date(shieldSubscription.currentPeriodEnd),
                     ),
+                'shield-detail-next-billing',
               )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsCharges'),
@@ -764,6 +793,7 @@ const TransactionShield = () => {
                         maximumFractionDigits: 0,
                       },
                     )} (${shieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`,
+                'shield-detail-charges',
               )}
               {isCryptoPayment &&
                 billingDetails(
@@ -778,10 +808,12 @@ const TransactionShield = () => {
                   ) : (
                     ''
                   ),
+                  'shield-detail-billing-account',
                 )}
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsPaymentMethod'),
                 paymentMethod,
+                'shield-detail-payment-method',
               )}
             </>
           ) : (
@@ -792,6 +824,7 @@ const TransactionShield = () => {
           buttonRow(
             t('shieldTxMembershipBillingDetailsViewBillingHistory'),
             executeOpenGetSubscriptionBillingPortal,
+            'shield-detail-view-billing-history-button',
           )}
       </Box>
       {shieldSubscription && isCancelMembershipModalOpen && (
