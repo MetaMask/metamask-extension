@@ -3996,11 +3996,9 @@ export function getPermissionsForActiveTab(state) {
     if (appActiveTab && appActiveTab.origin) {
       origin = appActiveTab.origin;
     }
-  } else {
+  } else if (state.activeTab && state.activeTab.origin) {
     // For popup/notification, use activeTab
-    if (state.activeTab && state.activeTab.origin) {
-      origin = state.activeTab.origin;
-    }
+    origin = state.activeTab.origin;
   }
 
   if (!origin) {
@@ -4012,7 +4010,11 @@ export function getPermissionsForActiveTab(state) {
     return [];
   }
 
-  const permissions = subject.permissions ?? {};
+  const permissions = subject.permissions;
+  if (!permissions || typeof permissions !== 'object') {
+    return [];
+  }
+
   return Object.keys(permissions).map((parentCapability) => {
     return {
       key: parentCapability,
