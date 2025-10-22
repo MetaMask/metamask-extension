@@ -249,7 +249,8 @@
     "@metamask/approval-controller": "npm:@metamask-previews/approval-controller@7.2.0-preview-e9856975",
     "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@81.0.1-preview-e9856975",
     "@metamask/base-controller": "npm:@metamask-previews/base-controller@8.4.1-preview-e9856975",
-    "@metamask/core-backend": "npm:@metamask-previews/core-backend@2.1.0-preview-e9856975"
+    "@metamask/core-backend": "npm:@metamask-previews/core-backend@2.1.0-preview-e9856975",
+    "@metamask/delegation-controller": "npm:@metamask-previews/delegation-controller@0.8.0-preview-e9856975"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",

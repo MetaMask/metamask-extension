@@ -5843,16 +5843,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/delegation-controller@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@metamask/delegation-controller@npm:0.7.0"
+"@metamask/delegation-controller@npm:@metamask-previews/delegation-controller@0.8.0-preview-e9856975":
+  version: 0.8.0-preview-e9856975
+  resolution: "@metamask-previews/delegation-controller@npm:0.8.0-preview-e9856975"
   dependencies:
-    "@metamask/base-controller": "npm:^8.1.0"
-    "@metamask/utils": "npm:^11.4.2"
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
   peerDependencies:
     "@metamask/accounts-controller": ^33.0.0
     "@metamask/keyring-controller": ^23.0.0
-  checksum: 10/e02d9d3ebb773d363a6d970e64ee7b9b6cef4b6c8e949dddbc2ab671d172af2887dea69e3283af0d8714de8ba1bcadd2dbac436115dd1b3b1bb3d537490c86b6
+  checksum: 10/bb32ab77b429df202d6a2540600ea22ac60ab2c69c8c37045f2f4c7b5b381a9dabdfb384a16598d2d87935b72922f59f15d062c6088c37a7e113ab06eddbafc3
   languageName: node
   linkType: hard
 
