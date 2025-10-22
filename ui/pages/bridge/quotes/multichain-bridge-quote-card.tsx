@@ -400,7 +400,7 @@ export const MultichainBridgeQuoteCard = ({
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                {selectedDestinationAccount.displayName}
+                {`${selectedDestinationAccount.walletName ? `${selectedDestinationAccount.walletName} / ` : ''}${selectedDestinationAccount.displayName}`}
               </Text>
               <ButtonIcon
                 iconName={IconName.Edit}
