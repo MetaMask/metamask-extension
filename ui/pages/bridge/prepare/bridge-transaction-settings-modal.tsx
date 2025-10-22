@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BRIDGE_DEFAULT_SLIPPAGE } from '@metamask/bridge-controller';
 import {
-  ButtonPrimary,
-  ButtonPrimarySize,
-  ButtonSecondary,
-  ButtonSecondarySize,
+  Button,
+  ButtonSize,
+  ButtonVariant,
   Modal,
   ModalContent,
   ModalFooter,
@@ -118,43 +117,34 @@ export const BridgeTransactionSettingsModal = ({
           </Row>
           <Row gap={2} justifyContent={JustifyContent.flexStart}>
             {shouldShowAutoOption && (
-              <>
-                {isAutoSelected ? (
-                  <ButtonPrimary
-                    size={ButtonPrimarySize.Md}
-                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setLocalSlippage(undefined);
-                      setCustomSlippage(undefined);
-                      setIsAutoSelected(true);
-                    }}
-                  >
-                    {t('swapSlippageAutoDescription')}
-                  </ButtonPrimary>
-                ) : (
-                  <ButtonSecondary
-                    size={ButtonSecondarySize.Md}
-                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setLocalSlippage(undefined);
-                      setCustomSlippage(undefined);
-                      setIsAutoSelected(true);
-                    }}
-                  >
-                    {t('swapSlippageAutoDescription')}
-                  </ButtonSecondary>
-                )}
-              </>
+              <Button
+                size={ButtonSize.Md}
+                variant={
+                  isAutoSelected
+                    ? ButtonVariant.Primary
+                    : ButtonVariant.Secondary
+                }
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setLocalSlippage(undefined);
+                  setCustomSlippage(undefined);
+                  setIsAutoSelected(true);
+                }}
+              >
+                {t('swapSlippageAutoDescription')}
+              </Button>
             )}
             {HARDCODED_SLIPPAGE_OPTIONS.map((hardcodedSlippage) => {
               const isSelected =
                 !isAutoSelected && localSlippage === hardcodedSlippage;
-              return isSelected ? (
-                <ButtonPrimary
+              return (
+                <Button
                   key={hardcodedSlippage}
-                  size={ButtonPrimarySize.Md}
+                  size={ButtonSize.Md}
+                  variant={
+                    isSelected ? ButtonVariant.Primary : ButtonVariant.Secondary
+                  }
                   onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -164,51 +154,28 @@ export const BridgeTransactionSettingsModal = ({
                   }}
                 >
                   {hardcodedSlippage}%
-                </ButtonPrimary>
-              ) : (
-                <ButtonSecondary
-                  key={hardcodedSlippage}
-                  size={ButtonSecondarySize.Md}
-                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setLocalSlippage(hardcodedSlippage);
-                    setCustomSlippage(undefined);
-                    setIsAutoSelected(false);
-                  }}
-                >
-                  {hardcodedSlippage}%
-                </ButtonSecondary>
+                </Button>
               );
             })}
             {showCustomButton && (
-              <>
-                {customSlippage === undefined ? (
-                  <ButtonSecondary
-                    size={ButtonSecondarySize.Md}
-                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setShowCustomButton(false);
-                      setIsAutoSelected(false);
-                    }}
-                  >
-                    {t('customSlippage')}
-                  </ButtonSecondary>
-                ) : (
-                  <ButtonPrimary
-                    size={ButtonPrimarySize.Md}
-                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setShowCustomButton(false);
-                      setIsAutoSelected(false);
-                    }}
-                  >
-                    {`${customSlippage}%`}
-                  </ButtonPrimary>
-                )}
-              </>
+              <Button
+                size={ButtonSize.Md}
+                variant={
+                  customSlippage === undefined
+                    ? ButtonVariant.Secondary
+                    : ButtonVariant.Primary
+                }
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowCustomButton(false);
+                  setIsAutoSelected(false);
+                }}
+              >
+                {customSlippage === undefined
+                  ? t('customSlippage')
+                  : `${customSlippage}%`}
+              </Button>
             )}
             {!showCustomButton && (
               <TextField
@@ -249,9 +216,10 @@ export const BridgeTransactionSettingsModal = ({
           )}
         </Column>
         <ModalFooter>
-          <ButtonPrimary
+          <Button
             width={BlockSize.Full}
-            size={ButtonPrimarySize.Lg}
+            size={ButtonSize.Lg}
+            variant={ButtonVariant.Primary}
             disabled={(() => {
               // Calculate what the new slippage would be
               const newSlippage = isAutoSelected
@@ -276,7 +244,7 @@ export const BridgeTransactionSettingsModal = ({
             }}
           >
             {t('submit')}
-          </ButtonPrimary>
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
