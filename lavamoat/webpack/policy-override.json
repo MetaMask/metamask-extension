@@ -247,7 +247,7 @@
         "bitcoin-address-validation": true
       }
     },
-     "@rive-app/react-canvas>@rive-app/canvas": {
+    "@rive-app/react-canvas>@rive-app/canvas": {
       "globals": {
         "AudioContext": false,
         "Blob": true,
@@ -268,20 +268,20 @@
         "cancelAnimationFrame": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console": false,
         "console.error": true,
         "console.log": true,
         "console.warn": true,
-        "console": false,
         "crypto": false,
         "define": false,
         "devicePixelRatio": false,
-        "document.createElement": true,
         "document": false,
+        "document.createElement": true,
         "fetch": false,
         "importScripts": false,
         "location.href": false,
-        "navigator.userAgent": true,
         "navigator": false,
+        "navigator.userAgent": true,
         "performance.now": false,
         "prompt": false,
         "readline": false,
