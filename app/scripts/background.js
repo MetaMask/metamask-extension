@@ -86,6 +86,7 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
@@ -97,13 +98,11 @@ import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferra
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
  */
 
-// MV3 conffigures the ExtensionLazyListener in app-init.js and sets it on globalThis.stateHooks,
-// but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners).
-const lazyListener = isManifestV3
-  ? globalThis.stateHooks.lazyListener
-  : new (require('./lib/extension-lazy-listener/extension-lazy-listener').ExtensionLazyListener)(
-      browser,
-    );
+// MV3 configures the ExtensionLazyListener in app-init.js and sets it on globalThis.stateHooks,
+// but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
+// as it doesn't need them).
+const lazyListener =
+  globalThis.stateHooks.lazyListener ?? new ExtensionLazyListener(browser);
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
