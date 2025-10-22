@@ -1024,7 +1024,6 @@
     },
     "@metamask/eip-7702-internal-rpc-middleware": {
       "packages": {
-        "@metamask/controller-utils": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true
