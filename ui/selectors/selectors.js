@@ -1832,15 +1832,17 @@ export function getOriginOfCurrentTab(state) {
   // For sidepanel, always use appActiveTab (which will be available)
   if (process.env.IS_SIDEPANEL) {
     const appActiveTab = getAppActiveTab(state);
-    return appActiveTab?.origin || null;
+    return appActiveTab.origin || null;
   }
 
-  // For popup/notification, use activeTab
+  // For popup/notification, use activeTab, fallback to appActiveTab
   if (state.activeTab && state.activeTab.origin) {
     return state.activeTab.origin;
   }
 
-  return null;
+  // Fallback to appActiveTab (for dialog/notification windows where activeTab is null)
+  const appActiveTab = getAppActiveTab(state);
+  return appActiveTab.origin || null;
 }
 
 export function getAppActiveTab(state) {
@@ -4010,7 +4012,7 @@ export function getPermissionsForActiveTab(state) {
     return [];
   }
 
-  const permissions = subject.permissions;
+  const { permissions } = subject;
   if (!permissions || typeof permissions !== 'object') {
     return [];
   }

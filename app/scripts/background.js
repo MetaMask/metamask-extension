@@ -1745,7 +1745,6 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
   const activeTab = await browser.tabs.get(tabId);
   const { id, title, url, favIconUrl } = activeTab;
   const { origin, protocol, host, href } = url ? new URL(url) : {};
-  console.log({ id, title, origin, protocol, url });
   if (!origin || origin === 'null') {
     return {};
   }
