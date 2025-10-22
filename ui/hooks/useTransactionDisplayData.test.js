@@ -18,7 +18,6 @@ import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
 import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { KeyringType } from '../../shared/constants/keyring';
 import { createMockInternalAccount } from '../../test/jest/mocks';
-import { formatDateWithYearContext } from '../helpers/utils/util';
 import { getMessage } from '../helpers/utils/i18n-helper';
 import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
@@ -30,20 +29,17 @@ const expectedResults = [
   {
     title: 'Sent',
     category: TransactionGroupCategory.send,
-    date: formatDateWithYearContext(1589314601567),
     primaryCurrency: '-1 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
     secondaryCurrency: '-1 ETH',
     isPending: false,
     displayedStatusKey: TransactionStatus.confirmed,
-    isSubmitted: false,
     detailsTitle: 'Sent',
   },
   {
     title: 'Sent',
     category: TransactionGroupCategory.send,
-    date: formatDateWithYearContext(1589314355872),
     primaryCurrency: '-2 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0x0ccc8aeeaf5ce790f3b448325981a143fdef8848',
@@ -54,7 +50,6 @@ const expectedResults = [
   {
     title: 'Sent',
     category: TransactionGroupCategory.send,
-    date: formatDateWithYearContext(1589314345433),
     primaryCurrency: '-2 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xffe5bc4e8f1f969934d773fa67da095d2e491a97',
@@ -65,7 +60,6 @@ const expectedResults = [
   {
     title: 'Received',
     category: TransactionGroupCategory.receive,
-    date: formatDateWithYearContext(1589314295000),
     primaryCurrency: '18.75 ETH',
     senderAddress: '0x31b98d14007bdee637298086988a0bbd31184523',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
@@ -76,7 +70,6 @@ const expectedResults = [
   {
     title: 'Received',
     category: TransactionGroupCategory.receive,
-    date: formatDateWithYearContext(1588972833000),
     primaryCurrency: '0 ETH',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
@@ -87,7 +80,6 @@ const expectedResults = [
   {
     title: 'Received',
     category: TransactionGroupCategory.receive,
-    date: formatDateWithYearContext(1585087013000),
     primaryCurrency: '1 ETH',
     senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
@@ -98,7 +90,6 @@ const expectedResults = [
   {
     title: 'Swap ETH to ABC',
     category: TransactionType.swap,
-    date: formatDateWithYearContext(1585088013000),
     primaryCurrency: '+1 ABC',
     senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',
@@ -108,7 +99,6 @@ const expectedResults = [
   {
     title: 'Contract deployment',
     category: TransactionGroupCategory.interaction,
-    date: formatDateWithYearContext(1585088013000),
     primaryCurrency: '-0 ETH',
     senderAddress: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
     recipientAddress: undefined,
@@ -139,7 +129,6 @@ const expectedResults = [
   {
     title: 'Sent BAT as ETH',
     category: TransactionType.swapAndSend,
-    date: formatDateWithYearContext(1585088013000),
     primaryCurrency: '-33.425656732428330864 BAT',
     senderAddress: '0x0a985a957b490f4d05bef05bc7ec556dd8535946',
     recipientAddress: '0xc6f6ca03d790168758285264bcbf7fb30d27322b',
@@ -150,7 +139,6 @@ const expectedResults = [
   {
     title: 'Sent USDC as DAI',
     category: TransactionType.swapAndSend,
-    date: formatDateWithYearContext(1585088013000),
     primaryCurrency: '-5 USDC',
     senderAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
     recipientAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
@@ -161,7 +149,6 @@ const expectedResults = [
   {
     title: 'Sent BNB as USDC',
     category: TransactionType.swapAndSend,
-    date: formatDateWithYearContext(1585088013000),
     primaryCurrency: '-0.05 BNB',
     senderAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
     recipientAddress: '0x141d32a89a1e0a5ef360034a2f60a4b917c18838',
@@ -172,7 +159,6 @@ const expectedResults = [
   {
     title: 'Sent ABC',
     category: TransactionGroupCategory.send,
-    date: formatDateWithYearContext(1585088013000),
     primaryCurrency: '-1.234 ABC',
     senderAddress: '0x9eca64466f257793eaa52fcfff5066894b76a149',
     recipientAddress: '0xabca64466f257793eaa52fcfff5066894b76a149',

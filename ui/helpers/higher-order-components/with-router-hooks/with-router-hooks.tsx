@@ -15,7 +15,7 @@ export type RouterHooksProps = {
 function withRouterHooks<Props extends object>(
   WrappedComponent: React.ComponentType<Props & RouterHooksProps>,
 ): React.ComponentType<Props> {
-  function useComponentWithRouterHooks(props: Props) {
+  const useComponentWithRouterHooks = (props: Props) => {
     const navigate = useNavigate();
     const location = useLocation();
     const params = useParams();
@@ -28,7 +28,7 @@ function withRouterHooks<Props extends object>(
         params={params}
       />
     );
-  }
+  };
 
   // Preserve component name for debugging
   useComponentWithRouterHooks.displayName = `withRouterHooks(${

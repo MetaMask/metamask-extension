@@ -30,6 +30,7 @@ import { hasValueAndNativeBalanceMismatch as checkValueAndNativeBalanceMismatch 
 import { NetworkRow } from '../network-row/network-row';
 import { SigningInWithRow } from '../sign-in-with-row/sign-in-with-row';
 import { isBatchTransaction } from '../../../../../../../../shared/lib/transactions.utils';
+import { useIsBIP44 } from '../../../../../hooks/useIsBIP44';
 
 export const OriginRow = () => {
   const t = useI18nContext();
@@ -168,6 +169,7 @@ const PaymasterRow = () => {
 };
 
 export const TransactionDetails = () => {
+  const isBIP44 = useIsBIP44();
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
@@ -192,7 +194,7 @@ export const TransactionDetails = () => {
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
-        <NetworkRow isShownWithAlertsOnly />
+        <NetworkRow isShownWithAlertsOnly={!isBIP44} />
         <OriginRow />
         {!isBatch && <RecipientRow />}
         {showAdvancedDetails && <MethodDataRow />}
