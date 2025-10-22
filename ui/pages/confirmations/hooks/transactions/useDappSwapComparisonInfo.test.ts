@@ -3,7 +3,7 @@ import { act } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
-import { fetchQuotes } from '../../../../store/actions';
+import { fetchQuotes, TokenStandAndDetails } from '../../../../store/actions';
 import * as Utils from '../../../../helpers/utils/util';
 import * as TokenUtils from '../../utils/token';
 import { Confirmation } from '../../types/confirm';
@@ -250,9 +250,15 @@ describe('useDappSwapComparisonInfo', () => {
       '0xaf88d065e77c8cC2239327C5EDb3A432268e5831': 0.999804,
       '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9': 1,
     });
-    jest.spyOn(TokenUtils, 'fetchAllErc20Decimals').mockResolvedValue({
-      '0xaf88d065e77c8cc2239327c5edb3a432268e5831': 6,
-      '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9': 6,
+    jest.spyOn(TokenUtils, 'fetchAllTokenDetails').mockResolvedValue({
+      '0xaf88d065e77c8cc2239327c5edb3a432268e5831': {
+        symbol: 'USDC',
+        decimals: '6',
+      } as TokenStandAndDetails,
+      '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9': {
+        symbol: 'USDT',
+        decimals: '6',
+      } as TokenStandAndDetails,
     });
 
     await runHook();
@@ -273,7 +279,11 @@ describe('useDappSwapComparisonInfo', () => {
           swap_from_token_contract:
             '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_from_token_symbol: 'USDC',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_to_token_contract: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_to_token_symbol: 'USDT',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_provider: 'openocean',
           // eslint-disable-next-line @typescript-eslint/naming-convention

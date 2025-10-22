@@ -1,6 +1,10 @@
 import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 import { ERC20_DEFAULT_DECIMALS } from '../constants/token';
-import { fetchAllErc20Decimals, fetchErc20Decimals } from './token';
+import {
+  fetchAllErc20Decimals,
+  fetchAllTokenDetails,
+  fetchErc20Decimals,
+} from './token';
 
 const MOCK_ADDRESS = '0x514910771af9ca656af840dff83e8264ecf986ca';
 const MOCK_ADDRESS_2 = '0x514910771af9ca656af840dff83e8264ecf986cb';
@@ -63,6 +67,35 @@ describe('fetchAllErc20Decimals', () => {
     expect(response).toEqual({
       [MOCK_ADDRESS]: ERC20_DEFAULT_DECIMALS,
       [MOCK_ADDRESS_2]: ERC20_DEFAULT_DECIMALS,
+    });
+  });
+});
+
+describe('fetchAllTokenDetails', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it(`call getTokenStandardAndDetailsByChain for all tokens passed`, async () => {
+    (getTokenStandardAndDetailsByChain as jest.Mock).mockResolvedValue({
+      standard: 'erc20',
+      tokenURI: 'https://token.com',
+      symbol: 'USDC',
+      name: 'USDC',
+      decimals: '6',
+      balance: '1000000000000000000',
+    });
+    const response = await fetchAllTokenDetails([MOCK_ADDRESS], MOCK_CHAIN_ID);
+
+    expect(response).toEqual({
+      [MOCK_ADDRESS]: {
+        standard: 'erc20',
+        tokenURI: 'https://token.com',
+        symbol: 'USDC',
+        name: 'USDC',
+        decimals: '6',
+        balance: '1000000000000000000',
+      },
     });
   });
 });

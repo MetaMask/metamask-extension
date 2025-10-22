@@ -184,14 +184,14 @@ export function getBestQuote(
   return selectedQuoteIndex > -1 ? quotes[selectedQuoteIndex] : undefined;
 }
 
-export function getTokenValueFromRecord(
-  record: Record<Hex, number>,
+export function getTokenValueFromRecord<T>(
+  record: Record<Hex, T>,
   tokenAddress: Hex,
-): number {
+): T | undefined {
   const address = Object.keys(record).find((key) => {
     return key.toLowerCase() === tokenAddress.toLowerCase();
   });
-  return address ? (record[address as Hex] ?? 0) : 0;
+  return address ? record[address as Hex] : undefined;
 }
 
 export function getBalanceChangeFromSimulationData(

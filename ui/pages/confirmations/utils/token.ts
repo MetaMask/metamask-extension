@@ -1,9 +1,11 @@
 import { memoize } from 'lodash';
 import { Hex } from '@metamask/utils';
 import { AssetsContractController } from '@metamask/assets-controllers';
+
 import {
   getTokenStandardAndDetails,
   getTokenStandardAndDetailsByChain,
+  TokenStandAndDetails,
 } from '../../../store/actions';
 
 export type TokenDetailsERC20 = Awaited<
@@ -115,5 +117,22 @@ export const fetchAllErc20Decimals = async (
   );
   return Object.fromEntries(
     allDecimals.map((decimals, i) => [uniqueAddresses[i], decimals]),
+  );
+};
+
+export const fetchAllTokenDetails = async (
+  addresses: Hex[],
+  chainId: Hex,
+): Promise<Record<Hex, TokenStandAndDetails>> => {
+  const uniqueAddresses = [
+    ...new Set(addresses.map((address) => address.toLowerCase() as Hex)),
+  ];
+  const tokenDetails = await Promise.all(
+    uniqueAddresses.map((address) =>
+      getTokenStandardAndDetailsByChain(address, undefined, undefined, chainId),
+    ),
+  );
+  return Object.fromEntries(
+    tokenDetails.map((tokenDetail, i) => [uniqueAddresses[i], tokenDetail]),
   );
 };

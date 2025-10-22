@@ -4,15 +4,19 @@ import {
   getNativeTokenAddress,
 } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { QuoteResponse } from '@metamask/bridge-controller';
+import {
+  getNativeAssetForChainId,
+  isNativeAddress,
+  QuoteResponse,
+} from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { fetchQuotes } from '../../../../store/actions';
+import { fetchQuotes, TokenStandAndDetails } from '../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { useAsyncResult } from '../../../../hooks/useAsync';
-import { fetchAllErc20Decimals } from '../../utils/token';
+import { fetchAllErc20Decimals, fetchAllTokenDetails } from '../../utils/token';
 import {
   getDataFromSwap,
   getBestQuote,
@@ -63,67 +67,63 @@ export function useDappSwapComparisonInfo() {
     }
   }, [chainId, data]);
 
-  const { value: erc20FiatRates } = useAsyncResult<ContractExchangeRates>(
+  const { value: fiatRates } = useAsyncResult<Record<Hex, number | undefined>>(
     () => fetchTokenExchangeRates('usd', tokenAddresses, chainId),
-    [tokenAddresses, chainId],
+    [tokenAddresses?.length, chainId],
   );
 
-  const { value: erc20Decimals } = useAsyncResult<
-    Record<Hex, number>
+  const { value: tokenDetails } = useAsyncResult<
+    Record<Hex, TokenStandAndDetails>
   >(async () => {
-    const result = await fetchAllErc20Decimals(
-      tokenAddresses as Hex[],
-      chainId,
-    );
-    return { ...result, [getNativeTokenAddress(chainId)]: 18 };
-  }, [tokenAddresses, chainId]);
+    let result = await fetchAllTokenDetails(tokenAddresses as Hex[], chainId);
+    tokenAddresses.forEach((tokenAddress) => {
+      if (isNativeAddress(tokenAddress)) {
+        result = {
+          ...result,
+          [tokenAddress as Hex]: getNativeAssetForChainId(chainId),
+        };
+      }
+    });
+    return result;
+  }, [tokenAddresses?.length, chainId]);
 
   const getUSDValue = useCallback(
     (tokenAmount: string, tokenAddress: Hex) => {
-      if (!erc20Decimals || !erc20FiatRates) {
+      if (!tokenDetails || !fiatRates) {
         return '0';
       }
       const decimals = new BigNumber(
-        Math.pow(10, getTokenValueFromRecord(erc20Decimals, tokenAddress)),
+        Math.pow(
+          10,
+          parseInt(
+            getTokenValueFromRecord<TokenStandAndDetails>(
+              tokenDetails,
+              tokenAddress,
+            )?.decimals ?? '18',
+            10,
+          ),
+        ),
       );
       const conversionRate = new BigNumber(
-        getTokenValueFromRecord(
-          erc20FiatRates as Record<Hex, number>,
-          tokenAddress,
-        ),
+        getTokenValueFromRecord(fiatRates, tokenAddress) ?? 0,
       );
       return new BigNumber(tokenAmount ?? 0)
         .dividedBy(decimals)
         .times(conversionRate)
         .toString(10);
     },
-    [erc20Decimals, erc20FiatRates],
+    [tokenDetails, fiatRates],
   );
 
   const getUSDValueForDestinationToken = useCallback(
     (tokenAmount: string) => {
-      if (!erc20Decimals || !erc20FiatRates || !quotesInput) {
+      if (!quotesInput) {
         return '0';
       }
       const { destTokenAddress } = quotesInput;
-      const decimals = new BigNumber(
-        Math.pow(
-          10,
-          getTokenValueFromRecord(erc20Decimals, destTokenAddress as Hex),
-        ),
-      );
-      const conversionRate = new BigNumber(
-        getTokenValueFromRecord(
-          erc20FiatRates as Record<Hex, number>,
-          destTokenAddress as Hex,
-        ),
-      );
-      return new BigNumber(tokenAmount ?? 0)
-        .dividedBy(decimals)
-        .times(conversionRate)
-        .toString(10);
+      return getUSDValue(tokenAmount, destTokenAddress as Hex);
     },
-    [erc20Decimals, erc20FiatRates, quotesInput],
+    [tokenDetails, fiatRates, quotesInput, getUSDValue],
   );
 
   const { value: quotes } = useAsyncResult<
@@ -158,8 +158,8 @@ export function useDappSwapComparisonInfo() {
     try {
       if (
         !amountMin ||
-        !erc20Decimals ||
-        !erc20FiatRates ||
+        !tokenDetails ||
+        !fiatRates ||
         !quotes?.length ||
         !quotesInput ||
         !simulationData
@@ -242,7 +242,19 @@ export function useDappSwapComparisonInfo() {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         swap_from_token_contract: srcTokenAddress,
         // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_from_token_symbol:
+          getTokenValueFromRecord<TokenStandAndDetails>(
+            tokenDetails,
+            srcTokenAddress as Hex,
+          )?.symbol ?? 'N/A',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         swap_to_token_contract: destTokenAddress,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_to_token_symbol:
+          getTokenValueFromRecord<TokenStandAndDetails>(
+            tokenDetails,
+            destTokenAddress as Hex,
+          )?.symbol ?? 'N/A',
       });
     } catch (error) {
       captureException(error);
@@ -250,8 +262,8 @@ export function useDappSwapComparisonInfo() {
   }, [
     amountMin,
     captureDappSwapComparisonMetricsProperties,
-    erc20FiatRates,
-    erc20Decimals,
+    fiatRates,
+    tokenDetails,
     gas,
     gasUsed,
     getGasUSDValue,
