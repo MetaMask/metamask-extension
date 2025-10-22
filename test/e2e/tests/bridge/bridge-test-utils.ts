@@ -341,6 +341,7 @@ async function mockDAItoETH(mockServer: Mockttp) {
 const getEventId = (index: number) => `${Date.now().toString()}-${index}`;
 const emitLine = (controller: ReadableStreamDefaultController, line: string) =>
   controller.enqueue(Buffer.from(line));
+
 export const mockSseEventSource = (
   mockQuotes: unknown[],
   delay: number = 2000,
@@ -390,7 +391,6 @@ async function mockSwapETHtoMUSD(mockServer: Mockttp) {
     );
 }
 
-// TODO getQuote to update mocks with multiple quotes and latest schema
 async function mockUSDCtoDAI(mockServer: Mockttp, sseEnabled?: boolean) {
   if (sseEnabled) {
     return await mockServer
