@@ -7064,14 +7064,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-network-controller@npm:^1.0.0, @metamask/multichain-network-controller@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask/multichain-network-controller@npm:1.0.1"
+"@metamask/multichain-network-controller@npm:@metamask-previews/multichain-network-controller@1.0.1-preview-35a5c8a7":
+  version: 1.0.1-preview-35a5c8a7
+  resolution: "@metamask-previews/multichain-network-controller@npm:1.0.1-preview-35a5c8a7"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/controller-utils": "npm:^11.14.1"
     "@metamask/keyring-api": "npm:^21.0.0"
     "@metamask/keyring-internal-api": "npm:^9.0.0"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.8.1"
     "@solana/addresses": "npm:^2.0.0"
@@ -7079,7 +7080,7 @@ __metadata:
   peerDependencies:
     "@metamask/accounts-controller": ^33.0.0
     "@metamask/network-controller": ^24.0.0
-  checksum: 10/904c19679a32e4b2b4743d39daa7e219e549b4544c0a7e73478b6714673b3dfd826dce10035ed450f6f8be8a8b9739ebae7a974b9a4dc25644c1137083f82702
+  checksum: 10/1a08c44a220b74d72d30bd4e882eead871a5bdbc455a58ddeea981178a452955d6b18442deb1ff3f4bb821d65e6dac65b5d43ea7b938ebb257543c2689862ea9
   languageName: node
   linkType: hard
 
