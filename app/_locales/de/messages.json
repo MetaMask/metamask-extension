@@ -2463,10 +2463,6 @@
   "from": {
     "message": "Von"
   },
-  "fromAddress": {
-    "message": "Von: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "Von Token-Liste: $1"
   },
@@ -6592,10 +6588,6 @@
   },
   "to": {
     "message": "An"
-  },
-  "toAddress": {
-    "message": "An: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "Wir nutzen die Dienste von 4byte.directory und Sourcify, um Transaktionsdaten zu dekodieren und lesbarer anzuzeigen. Dadurch können Sie das Ergebnis ausstehender und vergangener Transaktionen leichter einsehen, allerdings kann dies zur Weitergabe Ihrer IP-Adresse führen."

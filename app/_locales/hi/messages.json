@@ -2463,10 +2463,6 @@
   "from": {
     "message": "भेजने वाले"
   },
-  "fromAddress": {
-    "message": "भेजने वाले: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "टोकन लिस्टों से: $1"
   },
@@ -6586,10 +6582,6 @@
   },
   "to": {
     "message": "प्रति"
-  },
-  "toAddress": {
-    "message": "प्रति: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "हम अधिक पठनीय ट्रांसेक्शन डेटा को डिकोड करने और प्रदर्शित करने के लिए 4byte.directory और Sourcify सेवाओं का उपयोग करते हैं। इससे आपको लंबित और पिछले ट्रांसेक्शन के परिणाम को समझने में मदद मिलती है, लेकिन इसके परिणामस्वरूप आपका आईपी ​​एड्रेस साझा किया जा सकता है।"

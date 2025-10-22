@@ -2463,10 +2463,6 @@
   "from": {
     "message": "Kimden"
   },
-  "fromAddress": {
-    "message": "Kimden: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "Token listelerinden: $1"
   },
@@ -6592,10 +6588,6 @@
   },
   "to": {
     "message": "Kime"
-  },
-  "toAddress": {
-    "message": "Alıcı: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "Şifre çözmek ve daha okunabilir işlem verileri göstermek için 4byte.directory ve Sourcify hizmetlerini kullanıyoruz. Bu da, bekleyen ve geçmiş işlemlerinin sonucunu anlamanıza yardımcı olur ancak IP adresinizin paylaşılmasıyla sonuçlanabilir."

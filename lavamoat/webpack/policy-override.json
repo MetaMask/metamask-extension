@@ -246,6 +246,43 @@
         "@metamask/utils": true,
         "bitcoin-address-validation": true
       }
+    },
+    "@rive-app/react-canvas>@rive-app/canvas": {
+      "globals": {
+        "AudioContext": false,
+        "DOMMatrix": false,
+        "FinalizationRegistry": false,
+        "Iterator": false,
+        "MouseEvent": false,
+        "Request": false,
+        "ResizeObserver": false,
+        "XMLHttpRequest": false,
+        "crypto": false,
+        "define": false,
+        "devicePixelRatio": false,
+        "document": false,
+        "document.createElement": true,
+        "fetch": false,
+        "h": false,
+        "importScripts": false,
+        "location.href": false,
+        "navigator": false,
+        "navigator.userAgent": true,
+        "performance.now": false,
+        "prompt": false,
+        "readline": false,
+        "webkitAudioContext": false
+      }
+    },
+    "@rive-app/react-canvas": {
+      "globals": {
+        "IntersectionObserver": false,
+        "ResizeObserver": false,
+        "devicePixelRatio": false,
+        "innerHeight": false,
+        "innerWidth": false,
+        "matchMedia": false
+      }
     }
   }
 }

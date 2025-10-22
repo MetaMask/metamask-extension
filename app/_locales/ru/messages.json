@@ -2463,10 +2463,6 @@
   "from": {
     "message": "От"
   },
-  "fromAddress": {
-    "message": "От: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "Из списков токенов: $1"
   },
@@ -6592,10 +6588,6 @@
   },
   "to": {
     "message": "Адресат"
-  },
-  "toAddress": {
-    "message": "Адресат: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "Мы используем сервисы 4byte.directory и Sourcify для декодирования и отображения более читаемых данных транзакций. Это поможет Вам понять результат ожидающих и прошлых транзакций, но может привести к раскрытию вашего IP-адреса."
