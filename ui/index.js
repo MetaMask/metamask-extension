@@ -141,9 +141,9 @@ export async function setupInitialStore(metamaskState, activeTab) {
     },
   };
   if (
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
     ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+    || getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
     ///: END:ONLY_INCLUDE_IF
   ) {
     const { origin } = draftInitialState.activeTab;
