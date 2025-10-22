@@ -40,12 +40,7 @@ import {
   createPreinstalledSnapsMiddleware,
   createSnapsMethodMiddleware,
 } from '@metamask/snaps-rpc-methods';
-import {
-  ERC1155,
-  ERC20,
-  ERC721,
-  toHex,
-} from '@metamask/controller-utils';
+import { ERC1155, ERC20, ERC721, toHex } from '@metamask/controller-utils';
 
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
