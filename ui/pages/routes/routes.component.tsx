@@ -94,7 +94,10 @@ import {
   getPendingApprovals,
   getIsMultichainAccountsState1Enabled,
 } from '../../selectors';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { getApprovalFlows } from '../../selectors/approvals';
+///: END:ONLY_INCLUDE_IF
+
 import {
   hideImportNftsModal,
   hideIpfsModal,
@@ -118,8 +121,9 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { getShouldShowSeedPhraseReminder } from '../../selectors/multi-srp/multi-srp';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNavigation';
-
+///: END:ONLY_INCLUDE_IF
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
@@ -401,7 +405,9 @@ export default function Routes() {
   );
   const pendingApprovals = useAppSelector(getPendingApprovals);
   const transactionsMetadata = useAppSelector(getUnapprovedTransactions);
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   const approvalFlows = useAppSelector(getApprovalFlows);
+  ///: END:ONLY_INCLUDE_IF
 
   const shouldShowSeedPhraseReminder = useAppSelector((state) =>
     getShouldShowSeedPhraseReminder(state, account),
