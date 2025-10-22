@@ -55,6 +55,12 @@
     &--complete {
       animation: slideUpSmooth 0.6s ease-out forwards;
     }
+
+    &--skip-transition {
+      transform: translateY(-60px);
+      animation: none;
+      transition: none;
+    }
   }
 
   &__fox-container {

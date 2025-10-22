@@ -24,9 +24,11 @@ import { LOGIN_OPTION, LOGIN_TYPE, LoginOptionType, LoginType } from './types';
 export default function WelcomeLogin({
   onLogin,
   isAnimationComplete,
+  skipTransition = false,
 }: {
   onLogin: (loginType: LoginType, loginOption: string) => Promise<void>;
   isAnimationComplete: boolean;
+  skipTransition?: boolean;
 }) {
   const t = useI18nContext();
   const [showLoginOptions, setShowLoginOptions] = useState(false);
@@ -96,7 +98,10 @@ export default function WelcomeLogin({
           transform: isAnimationComplete
             ? 'translateY(0) scale(1)'
             : 'translateY(80px) scale(0.8)',
-          transition: 'opacity 0.6s ease-out, transform 0.6s ease-out',
+          // Skip transition when returning from another page
+          transition: skipTransition
+            ? 'none'
+            : 'opacity 0.6s ease-out, transform 0.6s ease-out',
         }}
         className={'welcome-login'}
       >
