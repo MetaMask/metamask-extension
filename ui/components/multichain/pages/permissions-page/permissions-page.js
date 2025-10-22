@@ -37,36 +37,34 @@ import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../share
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { ConnectionListItem } from './connection-list-item';
 
+// Helper function to get permission counts per site origin from gator permissions
+const getPermissionCountsPerSite = (permissionsMap) => {
+  const sitePermissionCounts = new Map();
+
+  Object.values(permissionsMap).forEach((permissionTypeMap) => {
+    Object.values(permissionTypeMap).forEach((permissions) => {
+      permissions.forEach((permission) => {
+        if (permission.siteOrigin) {
+          const currentCount = sitePermissionCounts.get(permission.siteOrigin) || 0;
+          sitePermissionCounts.set(permission.siteOrigin, currentCount + 1);
+        }
+      });
+    });
+  });
+
+  return sitePermissionCounts;
+};
+
 export const PermissionsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
-  const sitesConnectionsList = useSelector(
-    getConnectedSitesListWithNetworkInfo,
-  );
-  const gatorPermissionsMap = useSelector(getGatorPermissionsMap);
 
-  // Get permission counts per site origin from gator permissions
-  const getPermissionCountsPerSite = (permissionsMap) => {
-    const sitePermissionCounts = new Map();
-
-    Object.values(permissionsMap).forEach((permissionTypeMap) => {
-      Object.values(permissionTypeMap).forEach((permissions) => {
-        permissions.forEach((permission) => {
-          if (permission.siteOrigin) {
-            const currentCount = sitePermissionCounts.get(permission.siteOrigin) || 0;
-            sitePermissionCounts.set(permission.siteOrigin, currentCount + 1);
-          }
-        });
-      });
-    });
-
-    return sitePermissionCounts;
-  };
-
-  // Get merged connections list using useSelector to access getTargetSubjectMetadata
   const mergedConnectionsList = useSelector((state) => {
+    const sitesConnectionsList = getConnectedSitesListWithNetworkInfo(state);
+    const gatorPermissionsMap = getGatorPermissionsMap(state);
+
     if (!isGatorPermissionsRevocationFeatureEnabled()) {
       return sitesConnectionsList;
     }
