@@ -17,7 +17,9 @@ import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
 import {
   ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
 } from '../shared/constants/app';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import { switchDirection } from '../shared/lib/switch-direction';
@@ -141,9 +143,9 @@ export async function setupInitialStore(metamaskState, activeTab) {
     },
   };
   if (
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
     ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-    || getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
     ///: END:ONLY_INCLUDE_IF
   ) {
     const { origin } = draftInitialState.activeTab;
