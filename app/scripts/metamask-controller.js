@@ -6731,6 +6731,7 @@ export default class MetamaskController extends EventEmitter {
           name: 'SnapAndHardwareMessenger',
           allowedActions: [
             'KeyringController:getKeyringForAccount',
+            'KeyringController:getState',
             'SnapController:get',
             'AccountsController:getSelectedAccount',
           ],
@@ -7731,6 +7732,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'SnapAndHardwareMessenger',
         allowedActions: [
           'KeyringController:getKeyringForAccount',
+          'KeyringController:getState',
           'SnapController:get',
           'AccountsController:getSelectedAccount',
         ],
