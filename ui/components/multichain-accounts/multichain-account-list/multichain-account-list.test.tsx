@@ -835,8 +835,14 @@ describe('MultichainAccountList', () => {
       expect(screen.getByText('Pinned')).toBeInTheDocument();
 
       // Wallet headers should still be present
-      expect(screen.getByText('Wallet 1')).toBeInTheDocument();
-      expect(screen.getByText('Wallet 2')).toBeInTheDocument();
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+      expect(walletHeaders).toHaveLength(2);
+      expect(
+        within(walletHeaders[0]).getByText('Wallet 1'),
+      ).toBeInTheDocument();
+      expect(
+        within(walletHeaders[1]).getByText('Wallet 2'),
+      ).toBeInTheDocument();
 
       // Accounts should appear in pinned section, not in wallet sections
       // Only match the actual account cells, not indicators or accessories
@@ -880,8 +886,10 @@ describe('MultichainAccountList', () => {
       );
 
       // With one wallet but pinned accounts, wallet header should be shown
-      expect(screen.getByTestId(walletHeaderTestId)).toBeInTheDocument();
-      expect(screen.getByText('Wallet 1')).toBeInTheDocument();
+      const walletHeader = screen.getByTestId(walletHeaderTestId);
+      expect(walletHeader).toBeInTheDocument();
+      // Wallet name should be in the header
+      expect(within(walletHeader).getByText('Wallet 1')).toBeInTheDocument();
       expect(screen.getByText('Pinned')).toBeInTheDocument();
     });
   });
@@ -911,8 +919,7 @@ describe('MultichainAccountList', () => {
         'multichain-account-tree-hidden-header',
       );
       expect(hiddenHeader).toBeInTheDocument();
-      expect(screen.getByText('Hidden')).toBeInTheDocument();
-      expect(screen.getByText('1')).toBeInTheDocument(); // count badge
+      expect(screen.getByText('Hidden (1)')).toBeInTheDocument();
 
       // Hidden account should NOT be visible initially (collapsed)
       expect(
