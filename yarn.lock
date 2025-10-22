@@ -7068,15 +7068,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/name-controller@npm:^8.0.3":
-  version: 8.0.3
-  resolution: "@metamask/name-controller@npm:8.0.3"
+"@metamask/name-controller@npm:@metamask-previews/name-controller@8.1.0-preview-35a5c8a7":
+  version: 8.1.0-preview-35a5c8a7
+  resolution: "@metamask-previews/name-controller@npm:8.1.0-preview-35a5c8a7"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
-    "@metamask/controller-utils": "npm:^11.5.0"
-    "@metamask/utils": "npm:^11.1.0"
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/39db5962437640fa62f82631aa95da3d37d3029f419863e1bf83553fa0bc0864850e0d7daede0d31da35280025434c3500a3fca4712705be2ecb5e1f86c25b2c
+  checksum: 10/e4f9a44ee01694a3f403325ec3df4a812f30630875284400679c503b8eab581602b0bc14d93c6b5e959b8e9cfe242d23ef4aa17001d97e9ef073862e459a0c7e
   languageName: node
   linkType: hard
 

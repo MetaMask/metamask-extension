@@ -1,4 +1,3 @@
-import { Messenger } from '@metamask/base-controller';
 import { NameController } from '@metamask/name-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
@@ -7,6 +6,7 @@ import {
   NameControllerMessenger,
   getNameControllerInitMessenger,
   NameControllerInitMessenger,
+  getRootMessenger,
 } from '../messengers';
 import { NameControllerInit } from './name-controller-init';
 
@@ -15,7 +15,7 @@ jest.mock('@metamask/name-controller');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<NameControllerMessenger, NameControllerInitMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
