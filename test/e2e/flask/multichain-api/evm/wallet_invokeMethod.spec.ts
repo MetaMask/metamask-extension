@@ -265,14 +265,7 @@ describe('Multichain API', function () {
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
               const confirmation = new Confirmation(driver);
               await confirmation.checkPageIsLoaded();
-              if (i < totalNumberOfScopes - 1) {
-                // if pending tx's, verify navigation and confirm
-                await confirmation.checkPageNumbers(1, totalNumberOfScopes - i);
-                await confirmation.clickFooterConfirmButton();
-              } else {
-                // if no pending tx's, confirm and wait for window to close
-                await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
-              }
+              await confirmation.clickFooterConfirmButton();
             }
 
             await driver.switchToWindowWithTitle(
@@ -290,12 +283,14 @@ describe('Multichain API', function () {
             );
             await testDapp.checkPageIsLoaded();
             for (const scope of GANACHE_SCOPES) {
+              const methodCount = 0;
               await driver.waitUntil(
                 async () => {
                   const currentBalance =
                     await testDapp.invokeMethodAndReturnResult({
                       scope,
                       method: 'eth_getBalance',
+                      methodCount: methodCount + 1,
                     });
                   // Normalize balance to make strict comparison
                   const normalizedBalance =
@@ -304,13 +299,6 @@ describe('Multichain API', function () {
                     currentBalance.endsWith('"')
                       ? JSON.parse(currentBalance)
                       : currentBalance;
-                  // Left for debugging purposes
-                  console.log('Scope', scope);
-                  console.log('Current Balance', normalizedBalance);
-                  console.log(
-                    'Initial Balance',
-                    DEFAULT_INITIAL_BALANCE_HEX,
-                  );
                   return normalizedBalance !== DEFAULT_INITIAL_BALANCE_HEX;
                 },
                 { timeout: 10000, interval: 1000 },
