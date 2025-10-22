@@ -97,8 +97,6 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
   let amountMin;
   const tokenAddresses = [];
   const { commandBytes, inputs } = parseTransactionData(data);
-  console.log('---------------COMMAND BYTES---------------', commandBytes);
-  console.log('---------------INPUTS---------------', inputs);
 
   const seaportIndex = commandBytes.findIndex(
     (commandByte: string) => commandByte === COMMAND_BYTE_SEAPORT,
