@@ -648,7 +648,6 @@ async function initialize(backup) {
     : {};
 
   const preinstalledSnaps = await loadPreinstalledSnaps();
-  console.log({ preinstalledSnaps });
   const cronjobControllerStorageManager = new CronjobControllerStorageManager();
   await cronjobControllerStorageManager.init();
 
