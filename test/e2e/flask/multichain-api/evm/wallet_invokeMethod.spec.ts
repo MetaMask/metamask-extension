@@ -290,7 +290,14 @@ describe('Multichain API', function () {
                       scope,
                       method: 'eth_getBalance',
                     });
-                  return currentBalance !== DEFAULT_INITIAL_BALANCE_HEX;
+                  // Normalize balance to make strict comparison
+                  const normalizedBalance =
+                    typeof currentBalance === 'string' &&
+                    currentBalance.startsWith('"') &&
+                    currentBalance.endsWith('"')
+                      ? JSON.parse(currentBalance)
+                      : currentBalance;
+                  return normalizedBalance !== DEFAULT_INITIAL_BALANCE_HEX;
                 },
                 { timeout: 10000, interval: 1000 },
               );
