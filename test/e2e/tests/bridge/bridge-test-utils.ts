@@ -1,13 +1,12 @@
+import { ReadableStream as ReadableStreamWeb } from 'stream/web';
+import { Readable } from 'stream';
 import { Mockttp } from 'mockttp';
 import {
   type QuoteResponse,
   type TxData,
   type FeatureFlagResponse,
 } from '@metamask/bridge-controller';
-import { Readable } from 'stream';
-import { ReadableStream } from 'stream/web';
 
-import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
@@ -41,6 +40,7 @@ import {
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
   MOCK_SWAP_API_AGGREGATOR_LINEA,
 } from './constants';
+import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 
 export class BridgePage {
   driver: Driver;
@@ -91,12 +91,14 @@ export class BridgePage {
 
 /**
  * Execute a bridge transaction and checks the activity list
+ *
  * @param driver - The driver instance
  * @param quote - The quote object
  * @param transactionsCount - The number of transactions to expect in the activity list
  * @param expectedWalletBalance - The expected wallet balance after the transaction
  * @param expectedSwapTokens - The expected swap tokens shown in the activity list
  * @param submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
+ * @param expectedDestAmount - The expected quoted destination amounts in the quote page
  */
 export async function bridgeTransaction(
   driver: Driver,
@@ -325,24 +327,15 @@ async function mockDAItoETH(mockServer: Mockttp) {
     });
 }
 
-const getEventId = (index: number) => {
-  return `${Date.now().toString()}-${index}`;
-};
-
-const emitLine = (
-  // eslint-disable-next-line n/no-unsupported-features/node-builtins
-  controller: ReadableStreamDefaultController,
-  line: string,
-) => {
+const getEventId = (index: number) => `${Date.now().toString()}-${index}`;
+const emitLine = (controller: ReadableStreamDefaultController, line: string) =>
   controller.enqueue(Buffer.from(line));
-};
-
 export const mockSseEventSource = (
   mockQuotes: unknown[],
   delay: number = 2000,
 ) => {
   let index = 0;
-  return new ReadableStream({
+  return new ReadableStreamWeb({
     async pull(controller) {
       const quote = mockQuotes[index];
       if (index === mockQuotes.length) {
@@ -352,7 +345,7 @@ export const mockSseEventSource = (
       emitLine(controller, `id: ${getEventId(index + 1)}\n`);
       emitLine(controller, `data: ${JSON.stringify(quote)}\n\n`);
       await new Promise((resolve) => setTimeout(resolve, delay));
-      index++;
+      index += 1;
     },
   });
 };
