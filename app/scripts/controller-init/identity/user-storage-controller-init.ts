@@ -12,19 +12,7 @@ import {
 import { trace } from '../../../../shared/lib/trace';
 import { captureException } from '../../../../shared/lib/sentry';
 import { UserStorageControllerInitMessenger } from '../messengers/identity/user-storage-controller-messenger';
-import { ENVIRONMENT } from '../../../../development/build/constants';
-
-/**
- * Check if the build is a Development or Test build.
- *
- * @returns true if the build is a Development or Test build, false otherwise
- */
-function isDevOrTestBuild() {
-  return (
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
-  );
-}
+import { isProduction } from '../../../../shared/modules/environment';
 
 /**
  * Initialize the UserStorage controller.
@@ -46,7 +34,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     config: {
-      env: isDevOrTestBuild() ? Env.DEV : Env.PRD,
+      env: isProduction() ? Env.PRD : Env.DEV,
       contactSyncing: {
         onContactUpdated: (profileId) => {
           initMessenger.call('MetaMetricsController:trackEvent', {
