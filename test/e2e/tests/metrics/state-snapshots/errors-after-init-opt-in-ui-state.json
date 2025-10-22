@@ -393,6 +393,7 @@
     "accountTree": "object",
     "isAccountTreeSyncingInProgress": "boolean",
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+    "hasFunds": "boolean",
     "hasShownMultichainAccountsIntroModal": "boolean",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object",

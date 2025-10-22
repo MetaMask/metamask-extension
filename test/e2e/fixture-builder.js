@@ -37,7 +37,6 @@ function onboardingFixture() {
         connectedStatusPopoverHasBeenShown: true,
         defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
-        hasFunds: false,
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
         recoveryPhraseReminderHasBeenShown: false,
