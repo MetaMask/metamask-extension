@@ -230,7 +230,19 @@ export function useDappSwapComparisonInfo() {
         swap_mm_minimum_received_value_usd:
           getUSDValueForDestinationToken(minDestTokenAmount),
         // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_mm_slippage: (
+          selectedQuote.quote as unknown as { slippage: string }
+        ).slippage,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_mm_quote_provider: (
+          selectedQuote.quote as unknown as { aggregator: string }
+        ).aggregator,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         swap_mm_network_fee_usd: totalGasInQuote,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_from_token_contract: srcTokenAddress,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        swap_to_token_contract: destTokenAddress,
       });
     } catch (error) {
       captureException(error);

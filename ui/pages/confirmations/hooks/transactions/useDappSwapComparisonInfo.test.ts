@@ -125,7 +125,7 @@ describe('useDappSwapComparisonInfo', () => {
           bridgeId: '0x',
           srcChainId: 42161,
           destChainId: 42161,
-          aggregator: '0x',
+          aggregator: 'openocean',
           aggregatorType: 'AGG',
           srcTokenAmount: '9913',
           destTokenAmount: '11104',
@@ -194,6 +194,7 @@ describe('useDappSwapComparisonInfo', () => {
       },
       {
         quote: {
+          aggregator: 'openocean',
           requestId:
             '0xf5fe1ea0c87b44825dfc89cc60c3398f1cf83eb49a07e491029e00cb72090ef2',
           bridgeId: 'okx',
@@ -268,6 +269,15 @@ describe('useDappSwapComparisonInfo', () => {
           swap_dapp_network_fee_usd: '0.01069623006255',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_to_token_simulated_value_usd: '0.009994',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_from_token_contract:
+            '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_to_token_contract: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_mm_quote_provider: 'openocean',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_mm_slippage: 2,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_from_token_simulated_value_usd: '0.00999804',
           // eslint-disable-next-line @typescript-eslint/naming-convention
