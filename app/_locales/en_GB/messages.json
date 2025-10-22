@@ -5806,8 +5806,8 @@
   "shieldEntryModalSupport": {
     "message": "Priority customer support"
   },
-  "shieldEstimatedChangesMonthlyTooltip": {
-    "message": "Authorize up to $$1 for the full year. You'll be billed $$2 each month, not the full amount now."
+  "shieldEstimatedChangesMonthlyTooltipText": {
+    "message": "Authorize up to $1 for the full year. You'll be billed $2 each month, not the full amount now."
   },
   "shieldFooterAgreement": {
     "message": "By continuing, I agree to Transaction Shield $1."
@@ -7349,6 +7349,10 @@
   "tokenContractError": {
     "message": "This address is a token contract address. If you send tokens to this address, you will lose them."
   },
+  "tokenCount": {
+    "message": "token",
+    "description": "is number of tokens used for token transfers (singular form)"
+  },
   "tokenDecimal": {
     "message": "Token decimal"
   },
@@ -7392,6 +7396,10 @@
   },
   "tokens": {
     "message": "Tokens"
+  },
+  "tokensCount": {
+    "message": "tokens",
+    "description": "is the count of tokens used for token transfers (plural form)"
   },
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
