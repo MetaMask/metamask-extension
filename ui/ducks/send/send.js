@@ -538,7 +538,6 @@ export const initialState = {
  *
  * @typedef {object} MetaMaskState
  * @property {SendState} send - The state of the send flow.
- * @property {object} metamask - The state of the metamask store.
  */
 
 const name = 'send';
@@ -564,7 +563,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
   'send/computeEstimatedGasLimit',
   async (_, thunkApi) => {
     const state = thunkApi.getState();
-    const { send, metamask } = state;
+    const { send } = state;
     const draftTransaction =
       send.draftTransactions[send.currentTransactionUUID];
     const unapprovedTxs = getUnapprovedTransactions(state);
@@ -598,8 +597,6 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     ) {
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: draftTransaction.gas.gasPrice,
-        // ACCOUNTTRACKER TODO: Replace this
-        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: selectedAccount.address,
         sendToken: draftTransaction.sendAsset.details,
         to: draftTransaction.recipient.address?.toLowerCase(),
@@ -650,7 +647,6 @@ export const initializeSendState = createAsyncThunk(
   async ({ chainHasChanged = false } = {}, thunkApi) => {
     /**
      * @typedef {object} ReduxState
-     * @property {object} metamask - Half baked type for the MetaMask object
      * @property {SendState} send - the send state
      */
 
@@ -666,7 +662,7 @@ export const initializeSendState = createAsyncThunk(
       eip1559support = await getCurrentNetworkEIP1559Compatibility();
     }
     const account = getSelectedAccount(state);
-    const { send: sendState, metamask } = state;
+    const { send: sendState } = state;
     const draftTransaction =
       sendState.draftTransactions[sendState.currentTransactionUUID];
 
@@ -736,8 +732,6 @@ export const initializeSendState = createAsyncThunk(
       // required gas. If this value isn't nullish, set it as the new gasLimit
       const estimatedGasLimit = await estimateGasLimitForSend({
         gasPrice,
-        // ACCOUNTTRACKER TODO: Replace this
-        blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress: getSender(state),
         sendToken: draftTransaction.sendAsset.details,
         to: draftTransaction.recipient.address.toLowerCase(),
