@@ -6499,9 +6499,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^24.0.0, @metamask/gas-fee-controller@npm:^24.1.0":
-  version: 24.1.0
-  resolution: "@metamask/gas-fee-controller@npm:24.1.0"
+"@metamask/gas-fee-controller@npm:@metamask-previews/gas-fee-controller@24.1.0-preview-31415333":
+  version: 24.1.0-preview-31415333
+  resolution: "@metamask-previews/gas-fee-controller@npm:24.1.0-preview-31415333"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/controller-utils": "npm:^11.14.1"
@@ -6516,7 +6516,7 @@ __metadata:
   peerDependencies:
     "@babel/runtime": ^7.0.0
     "@metamask/network-controller": ^24.0.0
-  checksum: 10/da4a8193a5bf7ddb2f0b7bf00c891b5580fa679d9809ac4a2c22a7f6af66ecb7f608fa474ee329d2ef829c1e6ec4625b1a92c99ed5402e8f3dfea28ac8f20bc4
+  checksum: 10/1ec66120363c260b3622115a4c6d81b7765512d480b376bb89cf89f002fd90525d3f963f5db3cf90e6b6cdb3f68e8b3e8f7578a8c7d7ed7d3bdede559d6878c6
   languageName: node
   linkType: hard
 

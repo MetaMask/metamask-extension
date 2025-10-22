@@ -252,7 +252,8 @@
     "@metamask/core-backend": "npm:@metamask-previews/core-backend@2.1.0-preview-31415333",
     "@metamask/delegation-controller": "npm:@metamask-previews/delegation-controller@0.8.0-preview-31415333",
     "@metamask/ens-controller": "npm:@metamask-previews/ens-controller@17.1.0-preview-31415333",
-    "@metamask/error-reporting-service": "npm:@metamask-previews/error-reporting-service@2.2.1-preview-31415333"
+    "@metamask/error-reporting-service": "npm:@metamask-previews/error-reporting-service@2.2.1-preview-31415333",
+    "@metamask/gas-fee-controller": "npm:@metamask-previews/gas-fee-controller@24.1.0-preview-31415333"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
