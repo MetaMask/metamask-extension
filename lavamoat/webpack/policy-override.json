@@ -247,35 +247,62 @@
         "bitcoin-address-validation": true
       }
     },
-    "@rive-app/react-canvas>@rive-app/canvas": {
+     "@rive-app/react-canvas>@rive-app/canvas": {
       "globals": {
+        "AudioContext": false,
         "Blob": true,
+        "DOMMatrix": false,
+        "FinalizationRegistry": false,
         "HTMLCanvasElement": true,
         "Image": true,
+        "Iterator": false,
+        "MouseEvent": false,
         "Path2D": true,
+        "Request": false,
+        "ResizeObserver": false,
         "TextDecoder": true,
         "URL.createObjectURL": true,
         "URL.revokeObjectURL": true,
         "WebAssembly": true,
+        "XMLHttpRequest": false,
         "cancelAnimationFrame": true,
         "clearInterval": true,
         "clearTimeout": true,
         "console.error": true,
         "console.log": true,
         "console.warn": true,
+        "console":false,
+        "crypto": false,
+        "define": false,
+        "devicePixelRatio": false,
         "document.createElement": true,
+        "document": false,
+        "fetch": false,
+        "importScripts": false,
+        "location.href": false,
         "navigator.userAgent": true,
+        "navigator": false,
+        "performance.now": false,
+        "prompt": false,
+        "readline": false,
         "requestAnimationFrame": true,
-        "setTimeout": true
+        "setTimeout": true,
+        "webkitAudioContext": false
       }
     },
     "@rive-app/react-canvas": {
       "globals": {
+        "IntersectionObserver": false,
+        "ResizeObserver": false,
         "addEventListener": true,
         "clearTimeout": true,
         "console.error": true,
+        "devicePixelRatio": false,
         "document.documentElement.clientHeight": true,
         "document.documentElement.clientWidth": true,
+        "innerHeight": false,
+        "innerWidth": false,
+        "matchMedia": false,
         "removeEventListener": true,
         "setTimeout": true
       }
