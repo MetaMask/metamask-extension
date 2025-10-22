@@ -9,6 +9,8 @@ import * as TokenUtils from '../../utils/token';
 import { Confirmation } from '../../types/confirm';
 import { useDappSwapComparisonInfo } from './useDappSwapComparisonInfo';
 
+jest.useFakeTimers();
+
 const mockUpdateTransactionEventFragment = jest.fn();
 jest.mock('../../hooks/useTransactionEventFragment', () => ({
   useTransactionEventFragment: () => ({
@@ -22,6 +24,7 @@ jest.mock('../../../../store/actions', () => ({
 }));
 
 const confirmationDataMock = {
+  time: new Date().getTime(),
   chainId: '0xa4b1',
   id: '66b489a0-aa87-11f0-a866-c513455971f9',
   networkClientId: 'cc8a125a-ac7e-4390-8ac9-02cb19a9a116',
@@ -265,37 +268,28 @@ describe('useDappSwapComparisonInfo', () => {
     expect(mockUpdateTransactionEventFragment).toHaveBeenLastCalledWith(
       {
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           dapp_swap_comparison: 'completed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_comparison_total_latency_ms: '0',
           swap_dapp_from_token_simulated_value_usd: '0.00999804',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_minimum_received_value_usd: '0.00975',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_network_fee_usd: '0.01069623006255',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_dapp_request_detection_latency_ms: '0',
           swap_dapp_to_token_simulated_value_usd: '0.009994',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+          swap_mm_from_token_simulated_value_usd: '0.00999804',
+          swap_mm_minimum_received_value_usd: '0.009708',
+          swap_mm_network_fee_usd: '0.02183867583615',
+          swap_mm_quote_provider: 'openocean',
+          swap_mm_quote_request_latency_ms: '0',
+          swap_mm_quote_response_latency_ms: '0',
+          swap_mm_slippage: 2,
+          swap_mm_to_token_simulated_value_usd: '0.009907',
+        },
+        sensitiveProperties: {
           swap_from_token_contract:
             '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_from_token_symbol: 'USDC',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_to_token_contract: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_to_token_symbol: 'USDT',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_quote_provider: 'openocean',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_slippage: 2,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_from_token_simulated_value_usd: '0.00999804',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_minimum_received_value_usd: '0.009708',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_network_fee_usd: '0.02183867583615',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_to_token_simulated_value_usd: '0.009907',
         },
       },
       '66b489a0-aa87-11f0-a866-c513455971f9',
