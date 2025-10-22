@@ -1,11 +1,7 @@
 import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { Readable } from 'stream';
 import { Mockttp } from 'mockttp';
-import {
-  type QuoteResponse,
-  type TxData,
-  type FeatureFlagResponse,
-} from '@metamask/bridge-controller';
+import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
 import FixtureBuilder from '../../fixture-builder';
@@ -39,6 +35,7 @@ import {
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
   MOCK_SWAP_API_AGGREGATOR_LINEA,
+  SSE_RESPONSE_HEADER,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 
@@ -342,24 +339,30 @@ const getEventId = (index: number) => `${Date.now().toString()}-${index}`;
 const emitLine = (controller: ReadableStreamDefaultController, line: string) =>
   controller.enqueue(Buffer.from(line));
 
-export const mockSseEventSource = (
-  mockQuotes: unknown[],
-  delay: number = 2000,
-) => {
+/**
+ * Mocks the bridge-api getQuoteStream endpoint's response body
+ *
+ * @param mockQuotes - The quotes to emit
+ * @param delay - The delay to wait between emitting each quote
+ * @returns The Readable stream
+ */
+const mockSseEventSource = (mockQuotes: unknown[], delay: number = 2000) => {
   let index = 0;
-  return new ReadableStreamWeb({
-    async pull(controller) {
-      const quote = mockQuotes[index];
-      if (index === mockQuotes.length) {
-        controller.close();
-      }
-      emitLine(controller, `event: quote\n`);
-      emitLine(controller, `id: ${getEventId(index + 1)}\n`);
-      emitLine(controller, `data: ${JSON.stringify(quote)}\n\n`);
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      index += 1;
-    },
-  });
+  return Readable.fromWeb(
+    new ReadableStreamWeb({
+      async pull(controller) {
+        const quote = mockQuotes[index];
+        if (index === mockQuotes.length) {
+          controller.close();
+        }
+        emitLine(controller, `event: quote\n`);
+        emitLine(controller, `id: ${getEventId(index + 1)}\n`);
+        emitLine(controller, `data: ${JSON.stringify(quote)}\n\n`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        index += 1;
+      },
+    }),
+  );
 };
 
 async function mockFeatureFlags(
@@ -386,8 +389,8 @@ async function mockSwapETHtoMUSD(mockServer: Mockttp) {
     })
     .thenStream(
       200,
-      Readable.fromWeb(mockSseEventSource(MOCK_SWAP_QUOTES_ETH_MUSD)),
-      { 'Content-Type': 'text/event-stream' },
+      mockSseEventSource(MOCK_SWAP_QUOTES_ETH_MUSD),
+      SSE_RESPONSE_HEADER,
     );
 }
 
@@ -401,12 +404,8 @@ async function mockUSDCtoDAI(mockServer: Mockttp, sseEnabled?: boolean) {
       })
       .thenStream(
         200,
-        Readable.fromWeb(
-          mockSseEventSource([
-            MOCK_BRIDGE_USDC_TO_DAI_LINEA[0],
-          ] as unknown as QuoteResponse<TxData>[]),
-        ),
-        { 'Content-Type': 'text/event-stream' },
+        mockSseEventSource(MOCK_BRIDGE_USDC_TO_DAI_LINEA),
+        SSE_RESPONSE_HEADER,
       );
   }
 

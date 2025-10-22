@@ -1,5 +1,7 @@
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
+export const SSE_RESPONSE_HEADER = { 'Content-Type': 'text/event-stream' };
+
 export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
   minimumVersion: string;
 } = {
