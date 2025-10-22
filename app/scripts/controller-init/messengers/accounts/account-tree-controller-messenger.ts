@@ -3,6 +3,7 @@ import {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
   AccountsControllerGetAccountAction,
+  AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedMultichainAccountAction,
   AccountsControllerListMultichainAccountsAction,
   AccountsControllerSelectedAccountChangeEvent,
@@ -19,6 +20,7 @@ import {
   MultichainAccountServiceWalletStatusChangeEvent,
 } from '@metamask/multichain-account-service';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { AccountOrderControllerGetStateAction } from '../account-order-controller-messenger';
 
 type Actions =
   | AccountsControllerGetAccountAction
@@ -85,7 +87,9 @@ export function getAccountTreeControllerMessenger(
 }
 
 export type AllowedInitializationActions =
-  MetaMetricsControllerTrackEventAction;
+  | MetaMetricsControllerTrackEventAction
+  | AccountsControllerGetAccountByAddressAction
+  | AccountOrderControllerGetStateAction;
 
 export type AccountTreeControllerInitMessenger = ReturnType<
   typeof getAccountTreeControllerInitMessenger
@@ -103,7 +107,11 @@ export function getAccountTreeControllerInitMessenger(
 ) {
   return messenger.getRestricted({
     name: 'AccountTreeControllerInit',
-    allowedActions: ['MetaMetricsController:trackEvent'],
+    allowedActions: [
+      'MetaMetricsController:trackEvent',
+      'AccountsController:getAccountByAddress',
+      'AccountOrderController:getState',
+    ],
     allowedEvents: [],
   });
 }

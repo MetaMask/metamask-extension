@@ -1,8 +1,16 @@
 import { Messenger } from '@metamask/base-controller';
+import { AccountOrderControllerState } from '../../controllers/account-order';
 
 export type AccountOrderControllerMessenger = ReturnType<
   typeof getAccountOrderControllerMessenger
 >;
+
+export type AccountOrderControllerGetStateAction = {
+  type: 'AccountOrderController:getState';
+  handler: () => AccountOrderControllerState;
+};
+
+export type AccountOrderAllowedActions = AccountOrderControllerGetStateAction;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -12,7 +20,7 @@ export type AccountOrderControllerMessenger = ReturnType<
  * messenger.
  */
 export function getAccountOrderControllerMessenger(
-  messenger: Messenger<never, never>,
+  messenger: Messenger<AccountOrderAllowedActions, never>,
 ) {
   return messenger.getRestricted({
     name: 'AccountOrderController',
