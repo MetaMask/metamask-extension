@@ -43,12 +43,10 @@ export const AccountTreeControllerInit: ControllerInitFunction<
       },
       accountOrderCallbacks: {
         isHiddenAccount: (accountId: AccountId) => {
-          console.log('checking if is hidden account', accountId);
           const internalAccount = initMessenger.call(
             'AccountsController:getAccount',
             accountId,
           );
-          console.log('internalAccount', internalAccount);
           if (!internalAccount) {
             return false;
           }
@@ -56,18 +54,15 @@ export const AccountTreeControllerInit: ControllerInitFunction<
           const accountOrderState = initMessenger.call(
             'AccountOrderController:getState',
           );
-
-          return accountOrderState?.hiddenAccountList.includes(
+          return accountOrderState.hiddenAccountList.includes(
             internalAccount.address,
           );
         },
         isPinnedAccount: (accountId: AccountId) => {
-          console.log('checking if is pinned account', accountId);
           const internalAccount = initMessenger.call(
             'AccountsController:getAccount',
             accountId,
           );
-          console.log('internalAccount', internalAccount);
           if (!internalAccount) {
             return false;
           }
@@ -75,7 +70,7 @@ export const AccountTreeControllerInit: ControllerInitFunction<
             'AccountOrderController:getState',
           );
 
-          return accountOrderState?.pinnedAccountList.includes(
+          return accountOrderState.pinnedAccountList.includes(
             internalAccount.address,
           );
         },
