@@ -6,6 +6,7 @@ import {
 import { Hex } from '@metamask/utils';
 import { QuoteResponse } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import { captureException } from '@sentry/browser';
 import { useCallback, useEffect, useMemo } from 'react';
 
 import { fetchQuotes } from '../../../../store/actions';
@@ -20,7 +21,6 @@ import {
 } from '../../utils/dapp-swap-comparison-utils';
 import { useConfirmContext } from '../../context/confirm';
 import { useTransactionEventFragment } from '../useTransactionEventFragment';
-import { captureException } from '@sentry/browser';
 
 export function useDappSwapComparisonInfo() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
