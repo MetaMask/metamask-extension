@@ -1,9 +1,17 @@
-import { buildControllerInitRequestMock } from "../test/utils";
-import { ControllerInitRequest } from "../types";
-import { ShieldControllerInit } from "./shield-controller-init";
-import { getShieldControllerInitMessenger, getShieldControllerMessenger, ShieldControllerInitMessenger, ShieldControllerMessengerType } from "../messengers/shield/shield-controller-messenger";
-import { Messenger } from "@metamask/base-controller";
-import { ShieldController, ShieldRemoteBackend } from "@metamask/shield-controller";
+import { Messenger } from '@metamask/base-controller';
+import {
+  ShieldController,
+  ShieldRemoteBackend,
+} from '@metamask/shield-controller';
+import { buildControllerInitRequestMock } from '../test/utils';
+import { ControllerInitRequest } from '../types';
+import {
+  getShieldControllerInitMessenger,
+  getShieldControllerMessenger,
+  ShieldControllerInitMessenger,
+  ShieldControllerMessengerType,
+} from '../messengers/shield/shield-controller-messenger';
+import { ShieldControllerInit } from './shield-controller-init';
 
 jest.mock('@metamask/shield-controller');
 
@@ -43,6 +51,6 @@ describe('ShieldControllerInit', () => {
       state: request.persistedState.ShieldController,
       normalizeSignatureRequest: expect.any(Function),
       backend: expect.any(backendMock),
-    })
+    });
   });
 });
