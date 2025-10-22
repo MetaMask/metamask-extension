@@ -15,12 +15,14 @@ export const PREINSTALLED_SNAPS_URLS = [
     // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
     import.meta.url,
   ),
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   new URL(
     '@metamask/account-watcher/dist/preinstalled-snap.json',
     // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
     import.meta.url,
   ),
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   new URL(
     '@metamask/preinstalled-example-snap/dist/preinstalled-snap.json',
     // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
