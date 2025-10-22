@@ -43,7 +43,7 @@ import {
   getDefaultTransport,
 } from '@metamask/multichain-api-client';
 import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
-import { registerBitcoinSatsConnectWalletStandard } from '@metamask/bitcoin-wallet-standard';
+import { registerBitcoinWalletStandard } from '@metamask/bitcoin-wallet-standard';
 
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 import { METAMASK_EIP_1193_PROVIDER } from './constants/stream';
@@ -133,7 +133,7 @@ if (shouldInjectProvider()) {
   const btcMultichainClient = getMultichainClient({
     transport: getDefaultTransport(),
   });
-  registerBitcoinSatsConnectWalletStandard({
+  registerBitcoinWalletStandard({
     client: btcMultichainClient,
     walletName: process.env.METAMASK_BUILD_NAME,
   });
