@@ -1829,26 +1829,13 @@ export function getFeatureFlags(state) {
 }
 
 export function getOriginOfCurrentTab(state) {
-  // For sidepanel, prefer appActiveTab but fallback to activeTab if not available
-  if (process.env.IS_SIDEPANEL === 'true') {
+  // For sidepanel, always use appActiveTab (which will be available)
+  if (process.env.IS_SIDEPANEL) {
     const appActiveTab = getAppActiveTab(state);
-    // Only use appActiveTab if it's properly initialized
-    if (appActiveTab && appActiveTab.origin) {
-      return appActiveTab.origin;
-    }
-    // Fallback to activeTab if appActiveTab is not available
-    if (state.activeTab?.origin) {
-      return state.activeTab.origin;
-    }
-    return null;
+    return appActiveTab?.origin || null;
   }
 
-  // For popup, use the existing logic (tries appActiveTab first, falls back to activeTab)
-  const appActiveTab = getAppActiveTab(state);
-  if (appActiveTab && appActiveTab.origin) {
-    return appActiveTab.origin;
-  }
-
+  // For popup/notification, use activeTab
   if (state.activeTab && state.activeTab.origin) {
     return state.activeTab.origin;
   }
@@ -2608,25 +2595,14 @@ export function getNetworkToAutomaticallySwitchTo(state) {
   // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
 
-  // For sidepanel, prefer appActiveTab but fallback to activeTab if not available
+  // For sidepanel, always use appActiveTab (which will be available)
   let selectedTabOrigin = null;
-  if (process.env.IS_SIDEPANEL === 'true') {
+  if (process.env.IS_SIDEPANEL) {
     const appActiveTab = getAppActiveTab(state);
-    // Only use appActiveTab if it's properly initialized
-    if (appActiveTab && appActiveTab.origin) {
-      selectedTabOrigin = appActiveTab.origin;
-    } else if (state.activeTab?.origin) {
-      // Fallback to activeTab if appActiveTab is not available
-      selectedTabOrigin = state.activeTab.origin;
-    }
-  } else {
-    // For popup, use the existing logic (tries appActiveTab first, falls back to activeTab)
-    const appActiveTab = getAppActiveTab(state);
-    if (appActiveTab && appActiveTab.origin) {
-      selectedTabOrigin = appActiveTab.origin;
-    } else if (state.activeTab && state.activeTab.origin) {
-      selectedTabOrigin = state.activeTab.origin;
-    }
+    selectedTabOrigin = appActiveTab?.origin || null;
+  } else if (state.activeTab && state.activeTab.origin) {
+    // For popup/notification, use activeTab
+    selectedTabOrigin = state.activeTab.origin;
   }
 
   if (
@@ -3719,27 +3695,16 @@ export function getPermittedEVMAccountsForSelectedTab(state, activeTab) {
 }
 
 export function getAllPermittedAccountsForCurrentTab(state) {
-  // For sidepanel, prefer appActiveTab but fallback to activeTab if not available
-  if (process.env.IS_SIDEPANEL === 'true') {
+  // For sidepanel, always use appActiveTab (which will be available)
+  if (process.env.IS_SIDEPANEL) {
     const appActiveTab = getAppActiveTab(state);
-    // Only use appActiveTab if it's properly initialized
     if (appActiveTab && appActiveTab.origin) {
       return getAllPermittedAccounts(state, appActiveTab.origin);
-    }
-    // Fallback to activeTab if appActiveTab is not available
-    if (state.activeTab?.origin) {
-      return getAllPermittedAccounts(state, state.activeTab.origin);
     }
     return [];
   }
 
-  // For popup, use the existing logic (tries appActiveTab first, falls back to activeTab)
-  const appActiveTab = getAppActiveTab(state);
-  if (appActiveTab && appActiveTab.origin) {
-    return getAllPermittedAccounts(state, appActiveTab.origin);
-  }
-
-  // Fallback to the old activeTab structure if appActiveTab is not available
+  // For popup/notification, use activeTab
   if (state.activeTab && state.activeTab.origin) {
     return getAllPermittedAccounts(state, state.activeTab.origin);
   }
@@ -4024,23 +3989,16 @@ export function getPermissionsForActiveTab(state) {
   const { metamask } = state;
   const { subjects = {} } = metamask;
 
-  // For sidepanel, prefer appActiveTab but fallback to activeTab if not available
+  // For sidepanel, always use appActiveTab (which will be available)
   let origin = null;
-  if (process.env.IS_SIDEPANEL === 'true') {
+  if (process.env.IS_SIDEPANEL) {
     const appActiveTab = getAppActiveTab(state);
-    // Only use appActiveTab if it's properly initialized
     if (appActiveTab && appActiveTab.origin) {
       origin = appActiveTab.origin;
-    } else if (state.activeTab?.origin) {
-      // Fallback to activeTab if appActiveTab is not available
-      origin = state.activeTab.origin;
     }
   } else {
-    // For popup, use the existing logic (tries appActiveTab first, falls back to activeTab)
-    const appActiveTab = getAppActiveTab(state);
-    if (appActiveTab && appActiveTab.origin) {
-      origin = appActiveTab.origin;
-    } else if (state.activeTab && state.activeTab.origin) {
+    // For popup/notification, use activeTab
+    if (state.activeTab && state.activeTab.origin) {
       origin = state.activeTab.origin;
     }
   }
@@ -4062,23 +4020,16 @@ export function activeTabHasPermissions(state) {
   const { metamask } = state;
   const { subjects = {} } = metamask;
 
-  // For sidepanel, prefer appActiveTab but fallback to activeTab if not available
+  // For sidepanel, always use appActiveTab (which will be available)
   let origin = null;
-  if (process.env.IS_SIDEPANEL === 'true') {
+  if (process.env.IS_SIDEPANEL) {
     const appActiveTab = getAppActiveTab(state);
-    // Only use appActiveTab if it's properly initialized
     if (appActiveTab && appActiveTab.origin) {
       origin = appActiveTab.origin;
-    } else if (state.activeTab?.origin) {
-      // Fallback to activeTab if appActiveTab is not available
-      origin = state.activeTab.origin;
     }
   } else {
-    // For popup, use the existing logic (tries appActiveTab first, falls back to activeTab)
-    const appActiveTab = getAppActiveTab(state);
-    if (appActiveTab && appActiveTab.origin) {
-      origin = appActiveTab.origin;
-    } else if (state.activeTab && state.activeTab.origin) {
+    // For popup/notification, use activeTab
+    if (state.activeTab && state.activeTab.origin) {
       origin = state.activeTab.origin;
     }
   }
