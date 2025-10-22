@@ -1,11 +1,14 @@
+import { KeyringAccountType } from '@metamask/keyring-api';
 import { useContactRecipients } from './useContactRecipients';
 import { useAccountRecipients } from './useAccountRecipients';
 
 export type Recipient = {
   accountGroupName?: string;
+  accountType?: KeyringAccountType;
   address: string;
   contactName?: string;
   isContact?: boolean;
+  seedIcon?: string;
   walletName?: string;
 };
 

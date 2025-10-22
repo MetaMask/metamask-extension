@@ -165,6 +165,7 @@ export function convertChainIdToBlockAidChainName(
 
 export async function fetchTxAlerts(
   params: {
+    signal: AbortSignal;
     chainId: AllowedBridgeChainIds;
     trade: string;
     accountAddress: string;
@@ -174,7 +175,7 @@ export async function fetchTxAlerts(
     return null;
   }
 
-  const { chainId, trade, accountAddress } = params;
+  const { chainId, trade, accountAddress, signal } = params;
 
   const chain = convertChainIdToBlockAidChainName(chainId);
 
@@ -205,6 +206,7 @@ export async function fetchTxAlerts(
     headers: {
       'Content-Type': 'application/json',
     },
+    signal,
   });
 
   if (!response.ok) {

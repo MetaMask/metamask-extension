@@ -23,18 +23,21 @@ import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield';
 
-export const useUserSubscriptions = () => {
+export const useUserSubscriptions = (
+  { refetch }: { refetch?: boolean } = { refetch: false },
+) => {
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const isSignedIn = useSelector(selectIsSignedIn);
+  const isUnlocked = useSelector(getIsUnlocked);
   const { customerId, subscriptions, trialedProducts } =
     useSelector(getUserSubscriptions);
 
   const result = useAsyncResult(async () => {
-    if (!isSignedIn) {
+    if (!isSignedIn || !refetch || !isUnlocked) {
       return undefined;
     }
     return await dispatch(getSubscriptions());
-  }, [dispatch, isSignedIn]);
+  }, [refetch, dispatch, isSignedIn, isUnlocked]);
 
   return {
     customerId,

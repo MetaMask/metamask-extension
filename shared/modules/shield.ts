@@ -8,6 +8,9 @@ export async function getShieldGatewayConfig(
   getToken: () => Promise<string>,
   getShieldSubscription: () => Subscription | undefined,
   url: string,
+  opts?: {
+    origin?: string;
+  },
 ): Promise<{ newUrl: string; authorization: string | undefined }> {
   const shieldSubscription = getShieldSubscription();
   const isShieldSubscriptionActive = shieldSubscription
@@ -27,10 +30,20 @@ export async function getShieldGatewayConfig(
   }
 
   try {
-    const token = await getToken();
+    let newUrl = `${host}/proxy?url=${encodeURIComponent(url)}`;
+    const origin = opts?.origin;
+    if (origin) {
+      newUrl += `&origin=${encodeURIComponent(origin)}`;
+    }
+
+    let authorization = await getToken();
+    if (authorization && !authorization.startsWith(`Bearer`)) {
+      authorization = `Bearer ${authorization}`;
+    }
+
     return {
-      newUrl: `${host}/proxy?url=${encodeURIComponent(url)}`,
-      authorization: token,
+      newUrl,
+      authorization,
     };
   } catch (error) {
     console.error('Failed to get bearer token', error);

@@ -1,3 +1,6 @@
+import { BtcAccountType } from '@metamask/keyring-api';
+
+import { cloneDeep } from 'lodash';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import { ConsolidatedWallets } from '../../../../selectors/multichain-accounts/account-tree.types';
@@ -13,6 +16,11 @@ jest.mock('./useSendType');
 jest.mock('../../../../selectors/multichain-accounts/account-tree');
 jest.mock('../../context/send');
 jest.mock('../../utils/account');
+jest.mock('./useAccountAddressSeedIconMap', () => ({
+  useAccountAddressSeedIconMap: jest.fn().mockReturnValue({
+    accountAddressSeedIconMap: new Map(),
+  }),
+}));
 
 const mockUseSendType = jest.spyOn(useSendTypeModule, 'useSendType');
 const mockGetWalletsWithAccounts = jest.spyOn(
@@ -141,6 +149,20 @@ describe('useAccountRecipients', () => {
       isSolanaSendType: false,
       isBitcoinSendType: true,
     } as unknown as ReturnType<typeof useSendType>);
+    const accountsWithAccountType = cloneDeep(mockWalletsWithAccounts);
+    (
+      accountsWithAccountType.wallet1.groups.group1.accounts[0] as {
+        address: string;
+        type: BtcAccountType;
+      }
+    ).type = BtcAccountType.P2wpkh;
+    (
+      accountsWithAccountType.wallet1.groups.group1.accounts[1] as {
+        address: string;
+        type: BtcAccountType;
+      }
+    ).type = BtcAccountType.P2sh;
+    mockGetWalletsWithAccounts.mockReturnValue(accountsWithAccountType);
     mockIsEVMAccountForSend.mockReturnValue(false);
     mockIsSolanaAccountForSend.mockReturnValue(false);
     mockIsBitcoinAccountForSend.mockReturnValue(true);
@@ -153,11 +175,13 @@ describe('useAccountRecipients', () => {
     expect(result.current).toEqual([
       {
         accountGroupName: 'Account Group 1',
+        accountType: BtcAccountType.P2wpkh,
         address: '0x1234567890abcdef1234567890abcdef12345678',
         walletName: 'MetaMask Wallet',
       },
       {
         accountGroupName: 'Account Group 1',
+        accountType: BtcAccountType.P2sh,
         address: '0xabcdef1234567890abcdef1234567890abcdef12',
         walletName: 'MetaMask Wallet',
       },
