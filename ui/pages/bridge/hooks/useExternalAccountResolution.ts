@@ -15,6 +15,7 @@ import {
 } from '../../../../shared/lib/multichain/accounts';
 import { getInternalAccountByAddress } from '../../../selectors/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { shortenString } from '../../../helpers/utils/util';
 
 type UseExternalAccountResolutionProps = {
   searchQuery: string;
@@ -95,7 +96,14 @@ export const useExternalAccountResolution = ({
       address: resolvedAddress,
       isExternal: true,
       type: 'any:account' as const,
-      displayName: validEnsName ?? t('externalAccount'),
+      displayName:
+        validEnsName ??
+        shortenString(resolvedAddress, {
+          truncatedCharLimit: 15,
+          truncatedStartChars: 7,
+          truncatedEndChars: 5,
+          skipCharacterInEnd: false,
+        }),
     };
   }, [validEnsName, resolvedAddress, internalAccount]);
 };
