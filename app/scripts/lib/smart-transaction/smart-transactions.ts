@@ -76,11 +76,6 @@ export type SubmitSmartTransactionRequest = {
   transactions?: PublishBatchHookTransaction[];
 };
 
-const SHOULD_NOT_SHOW_STATUS_PAGE_TRANSACTION_TYPES = [
-  TransactionType.shieldSubscriptionApprove,
-  TransactionType.bridge,
-];
-
 class SmartTransactionHook {
   // Static property to store the approval flow ID across instances
   static #sharedApprovalFlowId = '';
@@ -146,9 +141,7 @@ class SmartTransactionHook {
     this.#txParams = transactionMeta.txParams;
     this.#transactions = transactions;
     this.#shouldShowStatusPage = Boolean(
-      !SHOULD_NOT_SHOW_STATUS_PAGE_TRANSACTION_TYPES.includes(
-        transactionMeta.type as TransactionType,
-      ) ||
+      transactionMeta.type !== TransactionType.bridge ||
         (this.#transactions && this.#transactions.length > 0),
     );
   }
