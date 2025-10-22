@@ -2463,10 +2463,6 @@
   "from": {
     "message": "발신"
   },
-  "fromAddress": {
-    "message": "발신: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "가져올 토큰 목록: $1"
   },
@@ -6595,10 +6591,6 @@
   },
   "to": {
     "message": "수신"
-  },
-  "toAddress": {
-    "message": "수신: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "트랜잭션 데이터는 4byte.directory와 Sourcify 서비스를 사용하여 디코딩하고 읽기 쉬운 형식으로 표시합니다. 이는 대기 중이거나 과거 트랜잭션의 결과를 이해하는 데 도움이 되지만, IP 주소를 공유하는 결과가 초래될 수 있습니다."

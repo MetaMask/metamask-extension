@@ -2463,10 +2463,6 @@
   "from": {
     "message": "移動元"
   },
-  "fromAddress": {
-    "message": "移動元: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "トークンリストから: $1"
   },
@@ -6595,10 +6591,6 @@
   },
   "to": {
     "message": "移動先"
-  },
-  "toAddress": {
-    "message": "移動先: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "当社は4byte.directoryとSourcifyサービスを使用してトランザクションデータを解読し、より読みやすい形で表示しています。これにより、保留中および過去のトランザクションの結果を理解しやすくなりますが、IPアドレスが共有される可能性があります。"

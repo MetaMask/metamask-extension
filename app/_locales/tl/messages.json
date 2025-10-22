@@ -2463,10 +2463,6 @@
   "from": {
     "message": "Mula kay/sa"
   },
-  "fromAddress": {
-    "message": "Mula kay/sa: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "Mula sa mga listahan ng token: $1"
   },
@@ -6595,10 +6591,6 @@
   },
   "to": {
     "message": "Para kay/sa"
-  },
-  "toAddress": {
-    "message": "Para kay/sa: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "Ginagamit namin ang mga serbisyo ng 4byte.directory at Sourcify para i-decode at ipakita ang mas nababasang data ng transaksyon. Tinutulungan ka nito na maunawaan ang kinalabasan ng mga nakabinbin at nakalipas na transaksyon, ngunit maaaring humantong sa pagbabahagi ng iyong IP address."
