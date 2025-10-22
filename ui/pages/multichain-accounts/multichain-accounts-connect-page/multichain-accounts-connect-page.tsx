@@ -11,6 +11,7 @@ import {
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
+  KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
@@ -174,25 +175,18 @@ export const MultichainAccountsConnectPage: React.FC<
     requestedCaip25CaveatValue,
   );
 
-  // something is going wrong here
-  // if there are no requested namespaces we're still getting back eip155
-  // do we need to special case handle when its just a `wallet:eip155` scope requested and treat that as no namespaces requested?
-
-  // first check if the requested scopes are just `wallet:eip155` and if so, return an empty array
-  // this should be a special case because it means we're just connecting via EVM provider and not requesting any specific chains
   const requestedScopes = getAllScopesFromCaip25CaveatValue(
     requestedCaip25CaveatValueWithExistingPermissions,
   );
-  if (requestedScopes.length === 1 && requestedScopes[0] === 'wallet:eip155') {
-    return [];
-  }
 
-  // next check if the request scopes are just solana **and** the solanaAccountsChanged flag is set to true and if so, return an empty array
-  // this should be a special case because it means we're just connecting via Solana provider and not requesting any specific chains
-  if (requestedScopes.length === 1 && requestedScopes[0] === 'solana:mainnet' && requestedCaip25CaveatValueWithExistingPermissions.sessionProperties?.solanaAccountsChanged) {
-    return [];
-  }
+  const SOLANA_CAIP_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
+  const isSolanaWalletStandardRequest =
+    requestedScopes.length === 1 &&
+    requestedScopes[0] === SOLANA_CAIP_CHAIN_ID &&
+    requestedCaip25CaveatValue.sessionProperties[
+      KnownSessionProperties.SolanaAccountChangedNotifications
+    ];
 
   const requestedNamespaces = useMemo(
     () =>
@@ -298,7 +292,9 @@ export const MultichainAccountsConnectPage: React.FC<
         )
       : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
-    if (supportedRequestedCaipChainIds.length > 0) {
+      // if we have specifically requested chains and it's not a Solana wallet standard request, return the supported requested chains plus the already connected chains
+      // For Solana wallet standard requests, we want to proceed to return all default networks
+    if (supportedRequestedCaipChainIds.length > 0 && !isSolanaWalletStandardRequest) {
       return Array.from(
         new Set([
           ...supportedRequestedCaipChainIds,
@@ -307,7 +303,11 @@ export const MultichainAccountsConnectPage: React.FC<
       );
     }
 
-    if (requestedNamespaces.length > 0) {
+    if (
+      requestedNamespaces.length > 0 &&
+      !isEip1193Request &&
+      !isSolanaWalletStandardRequest
+    ) {
       return Array.from(
         new Set(
           defaultSelectedNetworkList.filter((caipChainId) => {
