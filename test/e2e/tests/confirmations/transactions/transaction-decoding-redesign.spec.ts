@@ -115,7 +115,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         await confirmation.checkPageIsLoaded();
         await confirmation.clickAdvancedDetailsButton();
         await confirmation.clickScrollToBottomButton();
-        await confirmation.verifyAdvancedDetailsHexDataIsDisplayed();
+        await confirmation.verifyAdvancedDetailsHexDataIsDisplayed(
+          '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
+        );
       },
     );
   });
@@ -171,6 +173,7 @@ async function mocked4BytesResponse(mockServer: MockttpServer) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x3b4b1381' })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
