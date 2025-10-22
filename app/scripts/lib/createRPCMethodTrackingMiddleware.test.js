@@ -22,6 +22,14 @@ import {
 import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
 import { createSegmentMock } from './segment';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
+import * as snapKeyringMetrics from './snap-keyring/metrics';
+
+jest.mock('./snap-keyring/metrics', () => {
+  return {
+    getSnapAndHardwareInfoForMetrics: jest.fn().mockResolvedValue({}),
+  };
+});
+const MockSnapKeyringMetrics = jest.mocked(snapKeyringMetrics);
 
 const MOCK_ID = '123';
 const expectedUniqueIdentifier = `signature-${MOCK_ID}`;
@@ -250,6 +258,31 @@ describe('createRPCMethodTrackingMiddleware', () => {
       });
     });
 
+    it(`should attempt to resolve snaps and hardware info for the ${MetaMetricsEventName.SignatureRequested} event`, async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
+        origin: 'some.dapp',
+        securityAlertResponse: {
+          result_type: BlockaidResultType.Malicious,
+          reason: BlockaidReason.maliciousDomain,
+          securityAlertId: 1,
+          description: 'some_description',
+        },
+      };
+
+      const res = {
+        error: null,
+      };
+      const { next } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+
+      expect(
+        MockSnapKeyringMetrics.getSnapAndHardwareInfoForMetrics,
+      ).toHaveBeenCalledTimes(1);
+    });
+
     it(`should track a ${MetaMetricsEventName.SignatureRequested} event for personal sign`, async () => {
       const req = {
         id: MOCK_ID,
@@ -453,6 +486,49 @@ describe('createRPCMethodTrackingMiddleware', () => {
         },
         referrer: { url: 'some.dapp' },
       });
+    });
+
+    it(`should attempt to resolve snaps and hardware info for the ${MetaMetricsEventName.SignatureRejected} event`, async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
+        origin: 'some.dapp',
+      };
+
+      const res = {
+        error: {
+          code: errorCodes.provider.userRejectedRequest,
+          data: { location: 'some_location' },
+        },
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      // Called once for the initial request and once for the rejected request
+      expect(
+        MockSnapKeyringMetrics.getSnapAndHardwareInfoForMetrics,
+      ).toHaveBeenCalledTimes(2);
+    });
+
+    it(`should attempt to resolve snaps and hardware info for the ${MetaMetricsEventName.SignatureApproved} event`, async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
+        origin: 'some.dapp',
+      };
+
+      const res = {};
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      // Called once for the initial request and once for the approved request
+      expect(
+        MockSnapKeyringMetrics.getSnapAndHardwareInfoForMetrics,
+      ).toHaveBeenCalledTimes(2);
     });
 
     it(`should never track blocked methods such as ${MESSAGE_TYPE.GET_PROVIDER_STATE}`, () => {
