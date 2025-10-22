@@ -48,7 +48,9 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
   PLATFORM_FIREFOX,
 } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
@@ -168,6 +170,7 @@ export const GlobalMenu = ({
       const newValue = !isSidePanelDefault;
       await dispatch(setUseSidePanelAsDefault(newValue));
 
+      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       // If switching from sidepanel to popup view, close the current sidepanel
       if (
         isSidePanelDefault &&
@@ -204,6 +207,7 @@ export const GlobalMenu = ({
           console.error('Error opening side panel:', error);
         }
       }
+      ///: END:ONLY_INCLUDE_IF
     } catch (error) {
       console.error('Error toggling default view:', error);
     }
