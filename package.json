@@ -262,7 +262,8 @@
     "@metamask/multichain-network-controller": "npm:@metamask-previews/multichain-network-controller@1.0.1-preview-35a5c8a7",
     "@metamask/multichain-transactions-controller": "npm:@metamask-previews/multichain-transactions-controller@5.1.0-preview-35a5c8a7",
     "@metamask/name-controller": "npm:@metamask-previews/name-controller@8.1.0-preview-35a5c8a7",
-    "@metamask/network-controller": "npm:@metamask-previews/network-controller@24.3.0-preview-35a5c8a7"
+    "@metamask/network-controller": "npm:@metamask-previews/network-controller@24.3.0-preview-35a5c8a7",
+    "@metamask/network-enablement-controller": "npm:@metamask-previews/network-enablement-controller@2.1.1-preview-35a5c8a7"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",

@@ -7133,20 +7133,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/network-enablement-controller@npm:2.1.0"
+"@metamask/network-enablement-controller@npm:@metamask-previews/network-enablement-controller@2.1.1-preview-35a5c8a7":
+  version: 2.1.1-preview-35a5c8a7
+  resolution: "@metamask-previews/network-enablement-controller@npm:2.1.1-preview-35a5c8a7"
   dependencies:
-    "@metamask/base-controller": "npm:^8.4.0"
-    "@metamask/controller-utils": "npm:^11.14.0"
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
     "@metamask/keyring-api": "npm:^21.0.0"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.8.1"
     reselect: "npm:^5.1.1"
   peerDependencies:
     "@metamask/multichain-network-controller": ^1.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/5c956b358a1b130e5e37d50a7991a7487ec8ccdda2fe43a905c51c1dcc2d3b17135a7d7675b855d6a93eeda66b64aa3089b5e2431bac24396a54b144d9336f24
+  checksum: 10/160e7e89f7443e5a6ead31071f57845e1e3bc9e82e6c41ef51fb1c389e24be8bb645628e896e6d98f7e7ff586dbdba93f2b818e16d7a73e9c192152a58fcd49a
   languageName: node
   linkType: hard
 
