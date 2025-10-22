@@ -9,8 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.6.0]
 
+### Uncategorized
+
+- Update Attributions
+- Use stable empty references (#36910)
+- chore: update `CODEOWNERS.md` with `@metamask/wallet-integrations` team ownership (#36577)
+- chore: Remove `imagemin` (#36563)
+- Update tar-fs to 2.1.4 (#36560)
+
 ### Added
 
+- Added a new feature type "build-experimental" to `builds.yml`. (#36873)
+- N/A (#36815)
 - Integrated Backend WebSocket Service and Account Activity Service for real-time balance updates (feature-flagged) (#36819)
 - Added Bitcoin provider feature flag support for runtime control via addBitcoinAccount flag (#36676)
 - Adds network logo and native token logo for Plasma Mainnet network (#36456)
@@ -40,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- None (#36555)
 - Fixed a bug that was causing the same token to be added twice from search (#36727)
 - Improve perceived performance after importing a new SRP (#36882)
 - Empty select rpc modal (#36876)
