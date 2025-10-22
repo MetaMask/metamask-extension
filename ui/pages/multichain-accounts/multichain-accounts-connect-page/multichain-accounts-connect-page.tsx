@@ -174,6 +174,26 @@ export const MultichainAccountsConnectPage: React.FC<
     requestedCaip25CaveatValue,
   );
 
+  // something is going wrong here
+  // if there are no requested namespaces we're still getting back eip155
+  // do we need to special case handle when its just a `wallet:eip155` scope requested and treat that as no namespaces requested?
+
+  // first check if the requested scopes are just `wallet:eip155` and if so, return an empty array
+  // this should be a special case because it means we're just connecting via EVM provider and not requesting any specific chains
+  const requestedScopes = getAllScopesFromCaip25CaveatValue(
+    requestedCaip25CaveatValueWithExistingPermissions,
+  );
+  if (requestedScopes.length === 1 && requestedScopes[0] === 'wallet:eip155') {
+    return [];
+  }
+
+  // next check if the request scopes are just solana **and** the solanaAccountsChanged flag is set to true and if so, return an empty array
+  // this should be a special case because it means we're just connecting via Solana provider and not requesting any specific chains
+  if (requestedScopes.length === 1 && requestedScopes[0] === 'solana:mainnet' && requestedCaip25CaveatValueWithExistingPermissions.sessionProperties?.solanaAccountsChanged) {
+    return [];
+  }
+
+
   const requestedNamespaces = useMemo(
     () =>
       getAllNamespacesFromCaip25CaveatValue(
