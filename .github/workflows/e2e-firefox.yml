@@ -59,7 +59,7 @@ jobs:
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
-  test-e2e-firefox-report:
+  test-e2e-firefox-json-report:
     needs:
       - test-e2e-firefox-browserify
       - test-e2e-firefox-webpack
@@ -96,5 +96,5 @@ jobs:
       - name: Upload test runs
         uses: actions/upload-artifact@v4
         with:
-          name: test-e2e-firefox-report
+          name: test-e2e-firefox-json-report
           path: ${{ env.TEST_RUNS_PATH }}

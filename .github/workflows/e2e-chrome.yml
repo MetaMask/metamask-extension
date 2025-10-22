@@ -168,7 +168,7 @@ jobs:
         run: |
           gh pr comment "${PR_NUMBER}" --repo "${OWNER}/${REPOSITORY}" --body ":x: ${JOB_NAME} failed. View the html report [here](${HOST_URL}/${HTML_REPORT_PATH}/index.html)."
 
-  test-e2e-chrome-report:
+  test-e2e-chrome-json-report:
     needs:
       - test-e2e-chrome-browserify
       - test-e2e-chrome-webpack
@@ -209,5 +209,5 @@ jobs:
       - name: Upload test runs
         uses: actions/upload-artifact@v4
         with:
-          name: test-e2e-chrome-report
+          name: test-e2e-chrome-json-report
           path: ${{ env.TEST_RUNS_PATH }}
