@@ -121,7 +121,11 @@ import {
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
 
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import {
+  PAYMENT_TYPES,
+  PRODUCT_TYPES,
+  RECURRING_INTERVALS,
+} from '@metamask/subscription-controller';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
@@ -186,6 +190,7 @@ import {
 } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
@@ -326,6 +331,10 @@ import {
   MultichainRouterInit,
   ///: END:ONLY_INCLUDE_IF
 } from './controller-init/snaps';
+import {
+  BackendWebSocketServiceInit,
+  AccountActivityServiceInit,
+} from './controller-init/core-backend';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
@@ -551,6 +560,8 @@ export default class MetamaskController extends EventEmitter {
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
       WebSocketService: WebSocketServiceInit,
+      BackendWebSocketService: BackendWebSocketServiceInit,
+      AccountActivityService: AccountActivityServiceInit,
       PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       OnboardingController: OnboardingControllerInit,
@@ -665,6 +676,8 @@ export default class MetamaskController extends EventEmitter {
     this.swapsController = controllersByName.SwapsController;
     this.bridgeController = controllersByName.BridgeController;
     this.bridgeStatusController = controllersByName.BridgeStatusController;
+    this.backendWebSocketService = controllersByName.BackendWebSocketService;
+    this.accountActivityService = controllersByName.AccountActivityService;
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
@@ -817,6 +830,7 @@ export default class MetamaskController extends EventEmitter {
       'TransactionController:transactionStatusUpdated',
       ({ transactionMeta }) => {
         this._onFinishedTransaction(transactionMeta);
+        // this._onSubscriptionApprovalTransactionSigned(transactionMeta);
       },
     );
 
@@ -886,6 +900,8 @@ export default class MetamaskController extends EventEmitter {
                 ),
               isRelaySupported,
               getSendBundleSupportedChains,
+              isAuxiliaryFundsSupported: (chainId) =>
+                ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
             },
             this.controllerMessenger,
           ),
@@ -921,6 +937,8 @@ export default class MetamaskController extends EventEmitter {
                   getSecurityAlertsConfig:
                     this.getSecurityAlertsConfig.bind(this),
                 }),
+              isAuxiliaryFundsSupported: (chainId) =>
+                ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
             },
             this.controllerMessenger,
           ),
@@ -2567,10 +2585,6 @@ export default class MetamaskController extends EventEmitter {
 
       isNftOwner: nftController.isNftOwner.bind(nftController),
 
-      // TransactionController
-      updateIncomingTransactions:
-        txController.updateIncomingTransactions.bind(txController),
-
       // AddressController
       setAddressBook: addressBookController.set.bind(addressBookController),
       removeFromAddressBook: addressBookController.delete.bind(
@@ -4203,7 +4217,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {boolean} options.shouldCreateSocialBackup - whether to create a backup for the seedless onboarding flow
    * @param {boolean} options.shouldSelectAccount - whether to select the new account in the wallet
    * @param {boolean} options.shouldImportSolanaAccount - whether to import a Solana account
-   * @returns {Promise<string>} new account address
+   * @returns {Promise<void>}
    */
   async importMnemonicToVault(
     mnemonic,
@@ -4273,32 +4287,47 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setSelectedAccount(account.id);
       }
 
-      if (this.isMultichainAccountsFeatureState2Enabled()) {
-        // We want to trigger a full sync of the account tree after importing a new SRP
-        // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
-        await this.accountTreeController.syncWithUserStorage();
-      }
+      const syncAndDiscoverAccounts = async () => {
+        if (this.isMultichainAccountsFeatureState2Enabled()) {
+          // We want to trigger a full sync of the account tree after importing a new SRP
+          // because `hasAccountTreeSyncingSyncedAtLeastOnce` is already true
+          await this.accountTreeController.syncWithUserStorage();
+        }
 
-      let discoveredAccounts;
+        let discoveredAccounts;
 
-      if (
-        this.isMultichainAccountsFeatureState2Enabled() &&
-        shouldImportSolanaAccount
-      ) {
-        // We check if shouldImportSolanaAccount is true, because if it's false, we are in the middle of the onboarding flow.
-        // We just create the accounts at the end of the onboarding flow (including EVM).
-        discoveredAccounts = await this.discoverAndCreateAccounts(id);
-      } else {
-        discoveredAccounts = await this._addAccountsWithBalance(
-          id,
-          shouldImportSolanaAccount,
-        );
-      }
+        if (
+          this.isMultichainAccountsFeatureState2Enabled() &&
+          shouldImportSolanaAccount
+        ) {
+          // We check if shouldImportSolanaAccount is true, because if it's false, we are in the middle of the onboarding flow.
+          // We just create the accounts at the end of the onboarding flow (including EVM).
+          discoveredAccounts = await this.discoverAndCreateAccounts(id);
+        } else {
+          discoveredAccounts = await this._addAccountsWithBalance(
+            id,
+            shouldImportSolanaAccount,
+          );
+        }
 
-      return {
-        newAccountAddress,
-        discoveredAccounts,
+        const newHdEntropyIndex = this.getHDEntropyIndex();
+
+        this.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            hd_entropy_index: newHdEntropyIndex,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            number_of_bitcoin_accounts_discovered: discoveredAccounts?.Bitcoin,
+          },
+        });
       };
+
+      // In order to avoid blocking the UI thread, we don't await for the sync and discover accounts to complete.
+      // eslint-disable-next-line no-void
+      void syncAndDiscoverAccounts();
     } finally {
       releaseLock();
     }
@@ -6735,6 +6764,7 @@ export default class MetamaskController extends EventEmitter {
           name: 'SnapAndHardwareMessenger',
           allowedActions: [
             'KeyringController:getKeyringForAccount',
+            'KeyringController:getState',
             'SnapController:get',
             'AccountsController:getSelectedAccount',
           ],
@@ -7759,6 +7789,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'SnapAndHardwareMessenger',
         allowedActions: [
           'KeyringController:getKeyringForAccount',
+          'KeyringController:getState',
           'SnapController:get',
           'AccountsController:getSelectedAccount',
         ],
@@ -7845,6 +7876,12 @@ export default class MetamaskController extends EventEmitter {
 
     // Notify Snaps that the client is open or closed.
     this.controllerMessenger.call('SnapController:setClientActive', open);
+
+    if (open) {
+      this.controllerMessenger.call('BackendWebSocketService:connect');
+    } else {
+      this.controllerMessenger.call('BackendWebSocketService:disconnect');
+    }
   }
   /* eslint-enable accessor-pairs */
 
@@ -8068,6 +8105,8 @@ export default class MetamaskController extends EventEmitter {
   resolvePendingApproval = async (id, value, options) => {
     try {
       await this.approvalController.accept(id, value, options);
+      // handle shield subscription approval transaction in background after approval is accepted
+      await this._onShieldSubscriptionApprovalTransaction(id);
     } catch (exp) {
       if (!(exp instanceof ApprovalRequestNotFoundError)) {
         throw exp;
@@ -8193,6 +8232,131 @@ export default class MetamaskController extends EventEmitter {
       method: NOTIFICATION_NAMES.chainChanged,
       params: await this.getProviderNetworkState({ origin }),
     });
+  }
+
+  /**
+   * Handles the shield subscription approval transaction after confirm
+   *
+   * @param {string} transactionId - The id of the transaction
+   */
+  async _onShieldSubscriptionApprovalTransaction(transactionId) {
+    const transactionMeta = this.txController.getTransactions({
+      searchCriteria: { id: transactionId },
+    })[0];
+
+    if (!transactionMeta) {
+      throw new Error(
+        `Transaction meta not found for transaction id: ${transactionId}`,
+      );
+    }
+
+    if (
+      // NOTE: transaciton meta only has rawTx when transaction is submitted
+      transactionMeta.status !== TransactionStatus.submitted ||
+      transactionMeta.type !== TransactionType.shieldSubscriptionApprove
+    ) {
+      return;
+    }
+    const selectedAddress =
+      this.accountsController.getSelectedAccount().address;
+    if (!selectedAddress) {
+      return;
+    }
+    const { trialedProducts, pricing } = this.subscriptionController.state;
+    const pricingPlans = pricing?.products.find(
+      (product) => product.name === PRODUCT_TYPES.SHIELD,
+    )?.prices;
+    const cryptoPaymentMethod = pricing?.paymentMethods.find(
+      (paymentMethod) => paymentMethod.type === PAYMENT_TYPES.byCrypto,
+    );
+    const selectedTokenPrice = cryptoPaymentMethod?.chains
+      ?.find(
+        (chain) =>
+          chain.chainId.toLowerCase() ===
+          transactionMeta?.chainId.toLowerCase(),
+      )
+      ?.tokens.find(
+        (token) =>
+          token.address.toLowerCase() ===
+          transactionMeta?.txParams?.to?.toLowerCase(),
+      );
+    if (!selectedTokenPrice) {
+      log.error('Selected token price not found', pricing);
+      return;
+    }
+    if (!pricing) {
+      log.error('Subscription pricing not found', transactionMeta);
+      return;
+    }
+    const isTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
+
+    const { chainId, txParams, rawTx } = transactionMeta;
+    if (!chainId || !txParams || !rawTx) {
+      log.error('Missing required transaction meta', transactionMeta);
+      return;
+    }
+    const decodeResponse = await decodeTransactionData({
+      transactionData: txParams.data,
+      contractAddress: txParams.to,
+      chainId,
+      provider: this.provider,
+    });
+    if (!decodeResponse) {
+      return;
+    }
+    const decodedApprovalAmount = decodeResponse?.data?.[0]?.params?.find(
+      (param) => param.name === 'value' || param.name === 'amount',
+    )?.value;
+    if (!decodedApprovalAmount) {
+      return;
+    }
+
+    const getProductPriceByApprovalAmount = async () => {
+      const getCryptoApproveTransactionParams = {
+        chainId,
+        paymentTokenAddress: selectedTokenPrice.address,
+        productType: PRODUCT_TYPES.SHIELD,
+      };
+      // Get all intervals from RECURRING_INTERVALS
+      const intervals = Object.values(RECURRING_INTERVALS);
+
+      // Fetch approval amounts for all intervals
+      const approvalAmounts = await Promise.all(
+        intervals.map((interval) =>
+          this.subscriptionController.getCryptoApproveTransactionParams({
+            ...getCryptoApproveTransactionParams,
+            interval,
+          }),
+        ),
+      );
+
+      // Find the matching plan by comparing approval amounts
+      for (let i = 0; i < approvalAmounts.length; i++) {
+        if (approvalAmounts[i]?.approveAmount === decodedApprovalAmount) {
+          return pricingPlans?.find((plan) => plan.interval === intervals[i]);
+        }
+      }
+
+      return undefined;
+    };
+
+    const productPrice = await getProductPriceByApprovalAmount();
+    if (!productPrice) {
+      return;
+    }
+
+    const params = {
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: !isTrialed,
+      recurringInterval: productPrice.interval,
+      billingCycles: productPrice.minBillingCycles,
+      chainId,
+      payerAddress: selectedAddress,
+      tokenSymbol: selectedTokenPrice.symbol,
+      rawTransaction: rawTx,
+    };
+    await this.subscriptionController.startSubscriptionWithCrypto(params);
+    await this.subscriptionController.getSubscriptions();
   }
 
   /**

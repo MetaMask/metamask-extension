@@ -5,43 +5,25 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
-import { Hex } from '@metamask/utils';
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
-import {
-  getSubscriptions,
-  getTransactions,
-  startSubscriptionWithCrypto,
-  updateAndApproveTx,
-} from '../../../../store/actions';
+import { updateAndApproveTx } from '../../../../store/actions';
 import {
   getIsSmartTransaction,
   type SmartTransactionsState,
 } from '../../../../../shared/modules/selectors';
-import { useDecodedTransactionDataValue } from '../../components/confirm/info/hooks/useDecodedTransactionData';
-import { useShieldSubscriptionPricingFromTokenApproval } from '../../../../hooks/subscription/useSubscriptionPricing';
-import { MetaMaskReduxDispatch } from '../../../../store/store';
-import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 
 export function useTransactionConfirm() {
-  const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const dispatch = useDispatch();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
     getIsSmartTransaction(state, transactionMeta?.chainId),
-  );
-  const navigate = useNavigate();
-
-  const evmInternalAccount = useSelector((state) =>
-    // Account address will be the same for all EVM accounts
-    getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
   );
 
   const newTransactionMeta = useMemo(
@@ -72,76 +54,22 @@ export function useTransactionConfirm() {
     newTransactionMeta.isExternalSign = true;
   }, [newTransactionMeta]);
 
-  const { value: decodedApprovalAmount } =
-    useDecodedTransactionDataValue(newTransactionMeta);
-
-  const { productPrice, tokenPrice } =
-    useShieldSubscriptionPricingFromTokenApproval({
-      transactionMeta: newTransactionMeta,
-      decodedApprovalAmount,
-    });
-
-  const { trialedProducts } = useUserSubscriptions();
-  const isTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
-
+  const navigate = useNavigate();
   /**
-   * Handle shield subscription start after transaction is submitted
+   * Handle shield subscription approval transaction after confirm in UI
+   * (navigation)
+   *
+   * @param txMeta - The transaction meta
    */
-  const handleShieldSubscriptionStart = useCallback(
-    async (currentTxMeta: TransactionMeta) => {
-      if (currentTxMeta.type !== TransactionType.shieldSubscriptionApprove) {
+  const handleShieldSubscriptionApprovalTransactionAfterConfirm = useCallback(
+    (txMeta: TransactionMeta) => {
+      if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
         return;
       }
 
-      // refetch the latest transaction meta to have rawTx available
-      const { id: transactionId } = currentTxMeta;
-      const transactions = await getTransactions();
-      const submittedTx = transactions.find((tx) => tx.id === transactionId);
-      if (!productPrice) {
-        console.error('Product price not found', transactionId);
-        return;
-      }
-
-      if (submittedTx) {
-        const { rawTx } = submittedTx;
-        if (rawTx) {
-          await dispatch(
-            startSubscriptionWithCrypto({
-              products: [PRODUCT_TYPES.SHIELD],
-              isTrialRequested: !isTrialed,
-              recurringInterval: productPrice.interval,
-              billingCycles: productPrice.minBillingCycles,
-              chainId: submittedTx.chainId,
-              payerAddress: evmInternalAccount?.address as Hex,
-              tokenSymbol: tokenPrice?.symbol as string,
-              rawTransaction: rawTx as Hex,
-            }),
-          );
-          // refetch subscriptions with the newly created one
-          await dispatch(getSubscriptions());
-          // navigate to shield settings page after successful subscription approval
-          navigate(TRANSACTION_SHIELD_ROUTE);
-        } else {
-          console.error(
-            'Subscription approve transaction rawTx not found',
-            transactionId,
-          );
-        }
-      } else {
-        console.error(
-          'Subscription approve transaction not found',
-          transactionId,
-        );
-      }
+      navigate(TRANSACTION_SHIELD_ROUTE);
     },
-    [
-      productPrice,
-      isTrialed,
-      navigate,
-      dispatch,
-      evmInternalAccount,
-      tokenPrice,
-    ],
+    [navigate],
   );
 
   const onTransactionConfirm = useCallback(async () => {
@@ -154,17 +82,16 @@ export function useTransactionConfirm() {
     }
 
     await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
-
-    await handleShieldSubscriptionStart(newTransactionMeta);
+    handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
   }, [
     customNonceValue,
     dispatch,
     handleGasless7702,
     handleSmartTransaction,
-    handleShieldSubscriptionStart,
     isSmartTransaction,
     newTransactionMeta,
     selectedGasFeeToken,
+    handleShieldSubscriptionApprovalTransactionAfterConfirm,
   ]);
 
   return {
