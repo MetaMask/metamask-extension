@@ -128,6 +128,10 @@ export const MultichainAccountsConnectPage: React.FC<
   approveConnection,
   targetSubjectMetadata,
 }) => {
+  console.log(
+    'request: MultichainAccountsConnectPage',
+    request.permissions['endowment:caip25']?.caveats?.[0]?.value,
+  );
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
@@ -159,6 +163,8 @@ export const MultichainAccountsConnectPage: React.FC<
     () => getCaip25CaveatValueFromPermissions(request.permissions),
     [request.permissions],
   );
+
+  console.log('requestedCaip25CaveatValue', requestedCaip25CaveatValue);
 
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
     () =>
@@ -292,9 +298,12 @@ export const MultichainAccountsConnectPage: React.FC<
         )
       : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
-      // if we have specifically requested chains and it's not a Solana wallet standard request, return the supported requested chains plus the already connected chains
-      // For Solana wallet standard requests, we want to proceed to return all default networks
-    if (supportedRequestedCaipChainIds.length > 0 && !isSolanaWalletStandardRequest) {
+    // if we have specifically requested chains and it's not a Solana wallet standard request, return the supported requested chains plus the already connected chains
+    // For Solana wallet standard requests, we want to proceed to return all default networks
+    if (
+      supportedRequestedCaipChainIds.length > 0 &&
+      !isSolanaWalletStandardRequest
+    ) {
       return Array.from(
         new Set([
           ...supportedRequestedCaipChainIds,
