@@ -705,7 +705,7 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
   if (state.metamask.accountsByChainId?.[chainId]) {
     return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
       (accumulator, [key, value]) => {
-        accumulator[key] = value.balance;
+        accumulator[key.toLowerCase()] = value.balance;
         return accumulator;
       },
       {},
