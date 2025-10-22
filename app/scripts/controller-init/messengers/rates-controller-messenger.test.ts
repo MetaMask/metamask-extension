@@ -1,11 +1,12 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { getRatesControllerMessenger } from './rates-controller-messenger';
+import { getRootMessenger } from '.';
 
 describe('getRatesControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const ratesControllerMessenger = getRatesControllerMessenger(messenger);
 
-    expect(ratesControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(ratesControllerMessenger).toBeInstanceOf(Messenger);
   });
 });
