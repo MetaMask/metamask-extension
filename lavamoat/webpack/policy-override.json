@@ -271,7 +271,7 @@
         "console.error": true,
         "console.log": true,
         "console.warn": true,
-        "console":false,
+        "console": false,
         "crypto": false,
         "define": false,
         "devicePixelRatio": false,

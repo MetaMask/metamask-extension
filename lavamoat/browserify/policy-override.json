@@ -90,7 +90,7 @@
         "cancelAnimationFrame": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console":false,
+        "console": false,
         "console.error": true,
         "console.log": true,
         "console.warn": true,
