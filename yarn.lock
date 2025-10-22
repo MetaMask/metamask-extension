@@ -7009,18 +7009,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^1.6.0":
-  version: 1.6.0
-  resolution: "@metamask/multichain-account-service@npm:1.6.0"
+"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@1.6.1-preview-35a5c8a7":
+  version: 1.6.1-preview-35a5c8a7
+  resolution: "@metamask-previews/multichain-account-service@npm:1.6.1-preview-35a5c8a7"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/base-controller": "npm:^8.4.0"
+    "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/eth-snap-keyring": "npm:^17.0.0"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/keyring-api": "npm:^21.0.0"
     "@metamask/keyring-internal-api": "npm:^9.0.0"
     "@metamask/keyring-snap-client": "npm:^8.0.0"
     "@metamask/keyring-utils": "npm:^3.1.0"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     "@metamask/superstruct": "npm:^3.1.0"
@@ -7033,7 +7034,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/5ca5203431e66c59037b2b28b0df445bb5174a149942d6bfdf0fb0f6d367ee84c68f69ecf4ea31c66917ed27e663295400666820b30cd00b976b17b32643618b
+  checksum: 10/2d0ab91519da23bfe49fa5754a769bb73d0da03412fef49cf74d0a18191a31ef3666ed18d2456ae6647e20da3866e33340389467356ae372dd18007579caa25e
   languageName: node
   linkType: hard
 
