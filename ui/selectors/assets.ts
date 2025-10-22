@@ -29,6 +29,7 @@ import type {
   CurrencyRateState,
   BalanceChangePeriod,
   BalanceChangeResult,
+  AccountGroupBalance,
 } from '@metamask/assets-controllers';
 import { TEST_CHAINS } from '../../shared/constants/network';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
@@ -41,8 +42,13 @@ import {
 } from '../ducks/metamask/metamask';
 import { findAssetByAddress } from '../pages/asset/util';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
+import { ZERO_ADDRESS } from '../components/app/assets/util/getTokenAvatarUrl';
+import { MultichainProviderConfig } from '../../shared/constants/multichain/networks';
 import { getSelectedInternalAccount } from './accounts';
-import { getMultichainBalances } from './multichain';
+import {
+  getMultichainBalances,
+  getMultichainNetworkProviders,
+} from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
   getCurrencyRates,
@@ -55,7 +61,10 @@ import {
   getTokensAcrossChainsByAccountAddressSelector,
   getEnabledNetworks,
 } from './selectors';
-import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
+import {
+  getNonEvmMultichainNetworkConfigurationsByChainId,
+  getSelectedMultichainNetworkConfiguration,
+} from './multichain/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 
 export type AssetsState = {
@@ -935,6 +944,167 @@ export const selectBalanceByAccountGroup = (groupId: string) =>
     }
     return wallet.groups[groupId];
   });
+
+export const selectedAccountNativeBalance = createSelector(
+  [
+    selectBalanceBySelectedAccountGroup,
+    getEnabledNetworks,
+    getMarketData,
+    getCurrencyRates,
+  ],
+  (selectedGroupBalance, enabledNetworks, marketData, currencyRates) => {
+    // Check if multiple chains are enabled - if so, return null as we can't determine a single native balance
+    const enabledEip155Chains = Object.keys(enabledNetworks.eip155).filter(
+      (key) => enabledNetworks.eip155[key] === true,
+    );
+
+    if (enabledEip155Chains.length > 1) {
+      return null;
+    }
+
+    // If no chains are enabled, return 0
+    if (enabledEip155Chains.length === 0) {
+      return null;
+    }
+
+    // Get the single enabled chain ID
+    const chainId = enabledEip155Chains[0];
+
+    if (!chainId) {
+      return null;
+    }
+
+    const marketDataForChain = marketData?.[chainId];
+    const currencyForChain = marketDataForChain?.[ZERO_ADDRESS]?.currency;
+
+    if (!currencyForChain) {
+      return null;
+    }
+
+    const currencyRateForNativeToken =
+      currencyRates[currencyForChain]?.conversionRate;
+
+    if (!currencyRateForNativeToken || currencyRateForNativeToken === 0) {
+      return null;
+    }
+
+    const totalBalanceInUserCurrency =
+      selectedGroupBalance?.totalBalanceInUserCurrency ?? 0;
+
+    const nativeBalance =
+      totalBalanceInUserCurrency / currencyRateForNativeToken;
+
+    const roundedBalance = Math.round(nativeBalance * 10000000) / 10000000;
+
+    const displayBalance = roundedBalance === 0 ? 0 : roundedBalance;
+
+    return `${displayBalance} ${currencyForChain}`;
+  },
+);
+
+export const getEnabledChainsWithNamespace = createSelector(
+  [getEnabledNetworks],
+  (enabledNetworks) => {
+    return Object.entries(enabledNetworks).flatMap(([namespace, networks]) =>
+      Object.entries(networks ?? {})
+        .filter(([, isEnabled]) => Boolean(isEnabled))
+        .map(([chainId]) => ({ namespace, chainId })),
+    );
+  },
+);
+
+export const selectedAccountNativeBalanceByAccountGroup = (
+  balanceByAccountGroup: AccountGroupBalance,
+) =>
+  createSelector(
+    [
+      getEnabledChainsWithNamespace,
+      getMarketData,
+      getCurrencyRates,
+      getAssetsRates,
+      getMultichainNetworkProviders,
+      getNonEvmMultichainNetworkConfigurationsByChainId,
+    ],
+    (
+      enabledNetworks,
+      marketData,
+      currencyRates,
+      assetsRates,
+      multichainNetworkProviders,
+      nonEvmMultichainNetworkConfigurationsByChainId,
+    ) => {
+      // Check if multiple chains are enabled - if so, return null as we can't determine a single native balance
+
+      if (enabledNetworks.length > 1) {
+        return null;
+      }
+
+      // If no chains are enabled, return null
+      if (enabledNetworks.length === 0) {
+        return null;
+      }
+
+      // Get the single enabled chain ID
+      const { chainId } = enabledNetworks[0];
+
+      if (!chainId) {
+        return null;
+      }
+
+      if (enabledNetworks[0].namespace === 'eip155') {
+        const marketDataForChain = marketData?.[chainId];
+        const currencyForChain = marketDataForChain?.[ZERO_ADDRESS]?.currency;
+
+        if (!currencyForChain) {
+          return null;
+        }
+
+        const currencyRateForNativeToken =
+          currencyRates[currencyForChain]?.conversionRate;
+
+        if (!currencyRateForNativeToken || currencyRateForNativeToken === 0) {
+          return null;
+        }
+
+        const totalBalanceInUserCurrency =
+          balanceByAccountGroup?.totalBalanceInUserCurrency ?? 0;
+
+        const nativeBalance =
+          totalBalanceInUserCurrency / currencyRateForNativeToken;
+
+        const roundedBalance = Math.round(nativeBalance * 10000000) / 10000000;
+
+        const displayBalance = roundedBalance === 0 ? 0 : roundedBalance;
+
+        return `${displayBalance} ${currencyForChain}`;
+      }
+      const chainCurrency =
+        nonEvmMultichainNetworkConfigurationsByChainId[
+          enabledNetworks[0]?.chainId as CaipChainId
+        ]?.nativeCurrency;
+      const assetRate = assetsRates[chainCurrency as CaipAssetType]?.rate;
+      const currency = multichainNetworkProviders.find(
+        (provider: MultichainProviderConfig) => provider.chainId === chainId,
+      )?.ticker;
+      if (!currency) {
+        return null;
+      }
+
+      if (!assetRate) {
+        return null;
+      }
+
+      const totalBalanceInUserCurrency =
+        balanceByAccountGroup?.totalBalanceInUserCurrency ?? 0;
+
+      const nativeBalance = totalBalanceInUserCurrency / Number(assetRate);
+      const roundedBalance = Math.round(nativeBalance * 10000000) / 10000000;
+      const displayBalance = roundedBalance === 0 ? 0 : roundedBalance;
+      const result = `${displayBalance} ${currency}`;
+
+      return result;
+    },
+  );
 
 /**
  * Returns a summary for a wallet's balance and its groups, with zeroed fallback
