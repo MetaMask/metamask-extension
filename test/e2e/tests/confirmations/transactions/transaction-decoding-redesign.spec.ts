@@ -115,7 +115,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         await confirmation.checkPageIsLoaded();
         await confirmation.clickAdvancedDetailsButton();
         await confirmation.clickScrollToBottomButton();
-        await confirmation.verifyAdvancedDetailsHexDataIsDisplayed();
+        await confirmation.verifyAdvancedDetailsHexDataIsDisplayed(
+          '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
+        );
       },
     );
   });
