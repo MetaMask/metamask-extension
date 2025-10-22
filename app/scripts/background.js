@@ -453,7 +453,7 @@ const handleOnConnect = async (port) => {
     return;
   }
   // `handleOnConnect` can be called asynchronously, well after the `onConnect`
-  // event was emitted, due to the lazy listener setup uip app-init.
+  // event was emitted, due to the lazy listener setup in app-init.
   if (port.disconnected) {
     // window already closed, no need to do anything else.
     return;
