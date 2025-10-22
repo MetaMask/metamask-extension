@@ -18,6 +18,8 @@ import { InternalError, type SnapId } from '@metamask/snaps-sdk';
 export async function forwardRequestToSnap(
   config: {
     handleRequest: SnapController['handleRequest'];
+    onBeginRequest: () => void;
+    onEndRequest: () => void;
     snapId: SnapId;
   },
   _params: {
@@ -26,7 +28,7 @@ export async function forwardRequestToSnap(
   req: JsonRpcRequest & { origin: string },
 ): Promise<Json> {
   const { method, params, origin } = req;
-  const { handleRequest, snapId } = config;
+  const { handleRequest, snapId, onBeginRequest, onEndRequest } = config;
 
   if (!snapId) {
     throw new InternalError(`No snapId configured for method ${method}`);
@@ -36,16 +38,22 @@ export async function forwardRequestToSnap(
     throw new InternalError(`No origin specified for method ${method}`);
   }
 
-  const response = (await handleRequest({
-    snapId,
-    origin,
-    handler: HandlerType.OnRpcRequest,
-    request: {
-      jsonrpc: '2.0',
-      method,
-      params,
-    },
-  })) as Json;
+  onBeginRequest();
 
-  return response;
+  try {
+    const response = (await handleRequest({
+      snapId,
+      origin,
+      handler: HandlerType.OnRpcRequest,
+      request: {
+        jsonrpc: '2.0',
+        method,
+        params,
+      },
+    })) as Json;
+
+    return response;
+  } finally {
+    onEndRequest();
+  }
 }

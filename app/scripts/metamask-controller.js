@@ -231,6 +231,7 @@ import {
   makeMethodMiddlewareMaker,
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
+import createEip7715BlockingMiddleware from './lib/eip7715BlockingMiddleware';
 import createMainFrameOriginMiddleware from './lib/createMainFrameOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
@@ -1001,6 +1002,12 @@ export default class MetamaskController extends EventEmitter {
         ? forwardRequestToSnap.bind(null, {
             snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
             handleRequest: this.handleSnapRequest.bind(this),
+            onBeginRequest: () => {
+              this._isEip7715RequestInProcess = true;
+            },
+            onEndRequest: () => {
+              this._isEip7715RequestInProcess = false;
+            },
           })
         : undefined,
     });
@@ -6677,6 +6684,8 @@ export default class MetamaskController extends EventEmitter {
   }) {
     const engine = new JsonRpcEngine();
 
+    const controller = this;
+
     // Append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
@@ -6687,6 +6696,8 @@ export default class MetamaskController extends EventEmitter {
 
     // Append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
+
+    engine.push(createEip7715BlockingMiddleware({ controller }));
 
     // If the origin is not in the selectedNetworkController's `domains` state
     // when the provider engine is created, the selectedNetworkController will
