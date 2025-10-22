@@ -5,6 +5,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BannerBase,
   Box,
+  ButtonLink,
+  ButtonLinkSize,
   Icon,
   IconName,
   IconSize,
@@ -16,6 +18,7 @@ import {
   IconColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library/text';
 import { useNetworkConnectionBanner } from '../../../hooks/useNetworkConnectionBanner';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
@@ -29,14 +32,81 @@ type BannerIcon = {
   className?: string;
 };
 
+const renderPrimaryMessage = ({
+  t,
+  primaryMessageKey,
+  networkConnectionBanner,
+}: {
+  t: ReturnType<typeof useI18nContext>;
+  primaryMessageKey: string;
+  networkConnectionBanner: Exclude<
+    NetworkConnectionBannerType,
+    { status: 'unknown' | 'available' }
+  >;
+}) => {
+  return (
+    <Text
+      variant={TextVariant.bodyXsMedium}
+      style={{
+        display: 'inline-block',
+        verticalAlign: 'middle',
+        paddingRight: '4px',
+      }}
+    >
+      {t(primaryMessageKey, [networkConnectionBanner.networkName])}
+    </Text>
+  );
+};
+
+const renderSecondaryMessage = (content: React.ReactNode) => {
+  return (
+    <Text
+      variant={TextVariant.bodyXsMedium}
+      style={{ display: 'inline-block', verticalAlign: 'middle' }}
+    >
+      {content}
+    </Text>
+  );
+};
+
+const renderUpdateRpcButton = ({
+  t,
+  isLowerCase,
+  updateRpc,
+}: {
+  t: ReturnType<typeof useI18nContext>;
+  isLowerCase: boolean;
+  updateRpc: () => void;
+}) => {
+  const updateRpcText = t('updateRpc');
+
+  return (
+    <ButtonLink
+      key="updateRpc"
+      size={ButtonLinkSize.Auto}
+      variant={TextVariant.bodyXsMedium}
+      onClick={updateRpc}
+      paddingTop={0}
+      paddingBottom={0}
+      style={{ verticalAlign: 'bottom' }}
+    >
+      {isLowerCase
+        ? updateRpcText[0].toLowerCase() + updateRpcText.slice(1)
+        : updateRpcText}
+    </ButtonLink>
+  );
+};
+
 const getBannerContent = (
   networkConnectionBanner: Exclude<
     NetworkConnectionBannerType,
     { status: 'unknown' | 'available' }
   >,
   t: ReturnType<typeof useI18nContext>,
+  updateRpc: () => void,
 ): {
-  message: string;
+  primaryMessage: React.ReactNode;
+  secondaryMessage: React.ReactNode;
   backgroundColor: BackgroundColor;
   icon: BannerIcon;
 } => {
@@ -44,8 +114,24 @@ const getBannerContent = (
   const verticalAdjustment = '0.25em';
 
   if (networkConnectionBanner.status === 'degraded') {
+    const primaryMessage = renderPrimaryMessage({
+      t,
+      primaryMessageKey: 'stillConnectingTo',
+      networkConnectionBanner,
+    });
+    const secondaryMessage = networkConnectionBanner.isInfuraEndpoint
+      ? null
+      : renderSecondaryMessage(
+          renderUpdateRpcButton({
+            t,
+            isLowerCase: false,
+            updateRpc,
+          }),
+        );
+
     return {
-      message: t('stillConnectingTo', [networkConnectionBanner.networkName]),
+      primaryMessage,
+      secondaryMessage,
       backgroundColor: BackgroundColor.backgroundSection,
       icon: {
         color: IconColor.iconDefault,
@@ -56,8 +142,25 @@ const getBannerContent = (
     };
   }
 
+  const primaryMessage = renderPrimaryMessage({
+    t,
+    primaryMessageKey: 'unableToConnectTo',
+    networkConnectionBanner,
+  });
+  const secondaryMessageContent = networkConnectionBanner.isInfuraEndpoint
+    ? t('checkNetworkConnectivity')
+    : t('checkNetworkConnectivityOr', [
+        renderUpdateRpcButton({
+          t,
+          isLowerCase: true,
+          updateRpc,
+        }),
+      ]);
+  const secondaryMessage = renderSecondaryMessage(secondaryMessageContent);
+
   return {
-    message: t('unableToConnectTo', [networkConnectionBanner.networkName]),
+    primaryMessage,
+    secondaryMessage,
     backgroundColor: BackgroundColor.errorMuted,
     icon: {
       color: IconColor.errorDefault,
@@ -93,10 +196,8 @@ export const NetworkConnectionBanner = () => {
     networkConnectionBanner.status === 'degraded' ||
     networkConnectionBanner.status === 'unavailable'
   ) {
-    const { message, backgroundColor, icon } = getBannerContent(
-      networkConnectionBanner,
-      t,
-    );
+    const { primaryMessage, secondaryMessage, backgroundColor, icon } =
+      getBannerContent(networkConnectionBanner, t, updateRpc);
 
     return (
       <Box
@@ -118,22 +219,10 @@ export const NetworkConnectionBanner = () => {
               data-testid="icon"
             />
           }
-          actionButtonLabel={t('updateRpc')}
-          actionButtonOnClick={updateRpc}
           borderRadius={BorderRadius.MD}
-          childrenWrapperProps={{
-            variant: TextVariant.bodyXsMedium,
-            style: {
-              display: 'inline-block',
-              verticalAlign: 'middle',
-              paddingRight: '8px',
-            },
-          }}
-          actionButtonProps={{
-            variant: TextVariant.bodyXsMedium,
-          }}
         >
-          {message}
+          {primaryMessage}
+          {secondaryMessage}
         </BannerBase>
       </Box>
     );
