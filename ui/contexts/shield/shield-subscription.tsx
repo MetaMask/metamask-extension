@@ -19,7 +19,6 @@ import {
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
-import { useShieldApproveTransaction } from './useShieldApproveTransaction';
 
 export const ShieldSubscriptionContext = React.createContext<{
   resetShieldEntryModalShownStatus: () => void;
@@ -133,9 +132,6 @@ export const ShieldSubscriptionProvider: React.FC = ({ children }) => {
       dispatch(subscriptionsStartPolling());
     }
   }, [isSignedIn, selectedAccount, dispatch, isUnlocked]);
-
-  // watch and handle shield subscription approve transaction
-  useShieldApproveTransaction();
 
   const resetShieldEntryModalShownStatus = useCallback(() => {
     if (!isShieldSubscriptionActive) {
