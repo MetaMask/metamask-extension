@@ -172,7 +172,7 @@ describe('EthOverview', () => {
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
   const ETH_OVERVIEW_RECEIVE = 'eth-overview-receive';
-  const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
+  const ETH_OVERVIEW_SWAP = 'eth-overview-swap';
   const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
 

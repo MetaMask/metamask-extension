@@ -27,7 +27,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountList } from '../../../components/multichain-accounts/multichain-account-list';
-import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  getAccountTree,
+  getNormalizedGroupsMetadata,
+} from '../../../selectors/multichain-accounts/account-tree';
 import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
@@ -43,7 +46,8 @@ import {
   Page,
 } from '../../../components/multichain/pages/page';
 import { useAssetsUpdateAllAccountBalances } from '../../../hooks/useAssetsUpdateAllAccountBalances';
-import { filterWalletsByGroupName } from './utils';
+import { useSyncSRPs } from '../../../hooks/social-sync/useSyncSRPs';
+import { filterWalletsByGroupNameOrAddress } from './utils';
 
 export const AccountList = () => {
   const t = useI18nContext();
@@ -52,6 +56,7 @@ export const AccountList = () => {
   const { wallets } = accountTree;
   const { selectedAccountGroup } = accountTree;
   const [searchPattern, setSearchPattern] = useState<string>('');
+  const groupsMetadata = useSelector(getNormalizedGroupsMetadata);
 
   const {
     isAccountTreeSyncingInProgress,
@@ -68,6 +73,12 @@ export const AccountList = () => {
   // This ensures all account balances are visible without requiring user interaction
   useAssetsUpdateAllAccountBalances();
 
+  // Sync SRPs for social login flow
+  // TODO: Move this logic on the background side, so we don't trigger this sync
+  // every time the account list is being opened.
+  // See: https://github.com/MetaMask/metamask-extension/issues/36639
+  useSyncSRPs();
+
   const hasMultipleWallets = useMemo(
     () => Object.keys(wallets).length > 1,
     [wallets],
@@ -80,8 +91,12 @@ export const AccountList = () => {
   );
 
   const filteredWallets = useMemo(() => {
-    return filterWalletsByGroupName(wallets, searchPattern);
-  }, [wallets, searchPattern]);
+    return filterWalletsByGroupNameOrAddress(
+      wallets,
+      searchPattern,
+      groupsMetadata,
+    );
+  }, [wallets, searchPattern, groupsMetadata]);
 
   const hasFilteredWallets = useMemo(
     () => Object.keys(filteredWallets).length > 0,

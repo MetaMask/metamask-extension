@@ -7,6 +7,7 @@ jobs:
   validate-lavamoat-policy-build:
     name: Validate LavaMoat build policy
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -23,6 +24,8 @@ jobs:
           APPLE_PROD_CLIENT_ID: 00000000000
           GOOGLE_BETA_CLIENT_ID: 00000000000
           APPLE_BETA_CLIENT_ID: 00000000000
+          GOOGLE_EXPERIMENTAL_CLIENT_ID: 00000000000
+          APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
           GOOGLE_FLASK_CLIENT_ID: 00000000000
           APPLE_FLASK_CLIENT_ID: 00000000000
 
@@ -36,6 +39,7 @@ jobs:
   validate-lavamoat-policy-webapp:
     name: Validate LavaMoat webapp policy
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     strategy:
       matrix:
         build-type: [main, beta, experimental, flask]
@@ -55,6 +59,8 @@ jobs:
           APPLE_PROD_CLIENT_ID: 00000000000
           GOOGLE_BETA_CLIENT_ID: 00000000000
           APPLE_BETA_CLIENT_ID: 00000000000
+          GOOGLE_EXPERIMENTAL_CLIENT_ID: 00000000000
+          APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
           GOOGLE_FLASK_CLIENT_ID: 00000000000
           APPLE_FLASK_CLIENT_ID: 00000000000
 
@@ -68,6 +74,7 @@ jobs:
   validate-lavamoat-policy-webpack:
     name: Validate LavaMoat webpack policy
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
