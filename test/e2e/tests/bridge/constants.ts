@@ -23,6 +23,21 @@ export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
       isActiveDest: true,
       isSingleSwapBridgeButtonEnabled: true,
     },
+    '8453': {
+      isActiveSrc: true,
+      isActiveDest: true,
+      isSingleSwapBridgeButtonEnabled: true,
+    },
+  },
+};
+
+export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
+  minimumVersion: string;
+} = {
+  ...DEFAULT_BRIDGE_FEATURE_FLAGS,
+  sse: {
+    enabled: true,
+    minimumVersion: '13.2.0',
   },
 };
 

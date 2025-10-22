@@ -7,7 +7,10 @@ import {
 } from '../../page-objects/flows/network.flow';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
 import NetworkManager from '../../page-objects/pages/network-manager';
-import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
+import {
+  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+  DEFAULT_BRIDGE_FEATURE_FLAGS,
+} from './constants';
 import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
@@ -119,6 +122,41 @@ describe('Bridge tests', function (this: Suite) {
         await driver.delay(veryLargeDelayMs);
 
         await networkManager.checkAllPopularNetworksIsSelected();
+      },
+    );
+  });
+
+  it('updates recommended bridge quote incrementally when SSE events are received', async function () {
+    await withFixtures(
+      getBridgeFixtures(
+        this.test?.fullTitle(),
+        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        false,
+      ),
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.goToTokensTab();
+        await homePage.goToActivityList();
+
+        await bridgeTransaction(
+          driver,
+          {
+            amount: '10',
+            tokenFrom: 'USDC',
+            tokenTo: 'DAI',
+            fromChain: 'Ethereum',
+            toChain: 'Linea',
+            unapproved: true,
+          },
+          2,
+          undefined,
+          undefined,
+          0,
+          '9.9',
+        );
       },
     );
   });
