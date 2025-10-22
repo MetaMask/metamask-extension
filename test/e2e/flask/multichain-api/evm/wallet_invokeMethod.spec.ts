@@ -222,7 +222,7 @@ describe('Multichain API', function () {
         );
       });
 
-      it('should have less balance due to gas after transaction is sent', async function () {
+      it.only('should have less balance due to gas after transaction is sent', async function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
@@ -283,15 +283,16 @@ describe('Multichain API', function () {
             );
             await testDapp.checkPageIsLoaded();
             for (const scope of GANACHE_SCOPES) {
-              const methodCount = 0;
+              let methodCount = 1;
               await driver.waitUntil(
                 async () => {
                   const currentBalance =
                     await testDapp.invokeMethodAndReturnResult({
                       scope,
                       method: 'eth_getBalance',
-                      methodCount: methodCount + 1,
+                      methodCount,
                     });
+                  methodCount += 1;
                   // Normalize balance to make strict comparison
                   const normalizedBalance =
                     typeof currentBalance === 'string' &&

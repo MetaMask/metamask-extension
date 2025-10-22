@@ -175,11 +175,11 @@ class TestDappMultichain {
   async getInvokeMethodResult({
     scope,
     method,
-    methodCount,
+    methodCount = 1,
   }: {
     scope: string;
     method: string;
-    methodCount: number;
+    methodCount?: number;
   }): Promise<string> {
     console.log(
       `Getting invoke method result for scope ${scope} and method ${method} on multichain test dapp.`,
