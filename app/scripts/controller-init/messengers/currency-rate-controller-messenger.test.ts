@@ -1,27 +1,26 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   getCurrencyRateControllerInitMessenger,
   getCurrencyRateControllerMessenger,
 } from './currency-rate-controller-messenger';
+import { getRootMessenger } from '.';
 
 describe('getCurrencyRateControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const currencyRateControllerMessenger =
       getCurrencyRateControllerMessenger(messenger);
 
-    expect(currencyRateControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(currencyRateControllerMessenger).toBeInstanceOf(Messenger);
   });
 });
 
 describe('getCurrencyRateControllerInitMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const currencyRateControllerInitMessenger =
       getCurrencyRateControllerInitMessenger(messenger);
 
-    expect(currencyRateControllerInitMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(currencyRateControllerInitMessenger).toBeInstanceOf(Messenger);
   });
 });
