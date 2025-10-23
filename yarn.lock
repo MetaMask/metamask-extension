@@ -7381,15 +7381,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:^20.0.2":
-  version: 20.0.2
-  resolution: "@metamask/preferences-controller@npm:20.0.2"
+"@metamask/preferences-controller@npm:@metamask-previews/preferences-controller@20.0.2-preview-8e6c5423":
+  version: 20.0.2-preview-8e6c5423
+  resolution: "@metamask-previews/preferences-controller@npm:20.0.2-preview-8e6c5423"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/messenger": "npm:^0.3.0"
   peerDependencies:
     "@metamask/keyring-controller": ^23.0.0
-  checksum: 10/f2ba7cf618bcc9f209abd2bfa482c7ba63cd31f076c2dae3196eab57ddeb430215093697a1be2ee0c6ffd2dd40c93186c73095065a7421b8aa2fb9b3901606d5
+  checksum: 10/b5611dd459c4cd9d801a622aa4f42ba2394844f347d8c118a13044a092b61afd672770b74d44fc1cca724605a37bbb582f88f26a11b2d4ec18427d4ca0a09b6f
   languageName: node
   linkType: hard
 
@@ -7402,33 +7403,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-sync-controller@npm:21.0.0":
-  version: 21.0.0
-  resolution: "@metamask/profile-sync-controller@npm:21.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/snaps-sdk": "npm:^9.0.0"
-    "@metamask/snaps-utils": "npm:^11.0.0"
-    "@noble/ciphers": "npm:^0.5.2"
-    "@noble/hashes": "npm:^1.4.0"
-    immer: "npm:^9.0.6"
-    loglevel: "npm:^1.8.1"
-    siwe: "npm:^2.3.2"
-  peerDependencies:
-    "@metamask/accounts-controller": ^31.0.0
-    "@metamask/keyring-controller": ^22.0.0
-    "@metamask/providers": ^22.0.0
-    "@metamask/snaps-controllers": ^14.0.0
-    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/4e599cca3b7999c517b906b51cf30470dec9349aa35a94a3a4a5f3847cd6c5bcbb176e8e3b2eeb8ef0ae6b26097920571e9bea8965006d757e9ef2b6898cf671
-  languageName: node
-  linkType: hard
-
-"@metamask/profile-sync-controller@npm:^25.1.0, @metamask/profile-sync-controller@npm:^25.1.1":
-  version: 25.1.1
-  resolution: "@metamask/profile-sync-controller@npm:25.1.1"
+"@metamask/profile-sync-controller@npm:@metamask-previews/profile-sync-controller@25.1.1-preview-8e6c5423":
+  version: 25.1.1-preview-8e6c5423
+  resolution: "@metamask-previews/profile-sync-controller@npm:25.1.1-preview-8e6c5423"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/snaps-sdk": "npm:^9.0.0"
     "@metamask/snaps-utils": "npm:^11.0.0"
     "@metamask/utils": "npm:^11.8.1"
@@ -7443,7 +7423,7 @@ __metadata:
     "@metamask/providers": ^22.0.0
     "@metamask/snaps-controllers": ^14.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/50ec133a53af28c989ce13b93dbdc55f4c1b59dfabe6d113f15214cb2f9b4c8be9e23541d46ff23bcc1aa7c2091d9ac2566cfe19cf664f915912405e0f1d62dd
+  checksum: 10/064a8c80fd6752af4eeac8da3b0e5fdeed4916e95825b7466b5e58c9ba193defe486a84ca529ec71a23f3c5ef95ec09617c56e691975a5ff8d5f6056eb34a38a
   languageName: node
   linkType: hard
 
@@ -8387,13 +8367,6 @@ __metadata:
   version: 1.3.0
   resolution: "@noble/ciphers@npm:1.3.0"
   checksum: 10/051660051e3e9e2ca5fb9dece2885532b56b7e62946f89afa7284a0fb8bc02e2bd1c06554dba68162ff42d295b54026456084198610f63c296873b2f1cd7a586
-  languageName: node
-  linkType: hard
-
-"@noble/ciphers@npm:^0.5.2":
-  version: 0.5.3
-  resolution: "@noble/ciphers@npm:0.5.3"
-  checksum: 10/af0ad96b5807feace93e63549e05de6f5e305b36e2e95f02d90532893fbc3af3f19b9621b6de4caa98303659e5df2e7aa082064e5d4a82e6f38c728d48dfae5d
   languageName: node
   linkType: hard
 
