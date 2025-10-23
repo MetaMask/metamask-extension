@@ -231,7 +231,7 @@ const Footer = () => {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
 
-    navigateNext();
+    navigateNext(currentConfirmation.id);
     resetTransactionState();
   }, [
     currentConfirmation,
@@ -249,8 +249,8 @@ const Footer = () => {
     }
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
-    navigateNext();
-  }, [navigateNext, onCancel, shouldThrottleOrigin]);
+    navigateNext(currentConfirmation.id);
+  }, [navigateNext, onCancel, shouldThrottleOrigin, currentConfirmation.id]);
 
   const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
 
