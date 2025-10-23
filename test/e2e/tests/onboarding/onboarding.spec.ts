@@ -1,5 +1,6 @@
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
+import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
 import {
   convertToHexValue,
   TEST_SEED_PHRASE,
@@ -109,7 +110,10 @@ describe('MetaMask onboarding', function () {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('85,000.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          '$',
+        );
       },
     );
   });

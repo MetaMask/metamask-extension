@@ -1,7 +1,10 @@
 import path from 'path';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { DEFAULT_FIXTURE_ACCOUNT_SHORTENED } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT_SHORTENED,
+  DEFAULT_LOCAL_NODE_USD_BALANCE,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -53,7 +56,10 @@ describe('Import flow', function () {
         });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('85,000.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          '$',
+        );
 
         // Open account details modal and check displayed account address
         const headerNavbar = new HeaderNavbar(driver);
