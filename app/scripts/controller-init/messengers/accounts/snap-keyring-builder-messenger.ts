@@ -1,8 +1,9 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { KeyringControllerPersistAllKeyringsAction } from '@metamask/keyring-controller';
 import { AccountsControllerUpdateAccountsAction } from '@metamask/accounts-controller';
 import { SnapKeyringBuilderAllowActions } from '../../../lib/snap-keyring/types';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { RootMessenger } from '..';
 
 export type SnapKeyringBuilderMessenger = ReturnType<
   typeof getSnapKeyringBuilderMessenger
@@ -16,11 +17,20 @@ export type SnapKeyringBuilderMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getSnapKeyringBuilderMessenger(
-  messenger: Messenger<SnapKeyringBuilderAllowActions, never>,
+  messenger: RootMessenger<SnapKeyringBuilderAllowActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'SnapKeyring',
-    allowedActions: [
+  const keyringMessenger = new Messenger<
+    'SnapKeyring',
+    SnapKeyringBuilderAllowActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'SnapKeyring',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: keyringMessenger,
+    actions: [
       'ApprovalController:addRequest',
       'ApprovalController:acceptRequest',
       'ApprovalController:rejectRequest',
@@ -40,8 +50,8 @@ export function getSnapKeyringBuilderMessenger(
       'SnapController:isMinimumPlatformVersion',
       'PreferencesController:getState',
     ],
-    allowedEvents: [],
   });
+  return keyringMessenger;
 }
 
 type AllowedInitializationActions =
@@ -61,15 +71,24 @@ export type SnapKeyringBuilderInitMessenger = ReturnType<
  * messenger.
  */
 export function getSnapKeyringBuilderInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'SnapKeyringInit',
-    allowedActions: [
+  const keyringInitMessenger = new Messenger<
+    'SnapKeyringInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'SnapKeyringInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: keyringInitMessenger,
+    actions: [
       'AccountsController:updateAccounts',
       'KeyringController:persistAllKeyrings',
       'MetaMetricsController:trackEvent',
     ],
-    allowedEvents: [],
   });
+  return keyringInitMessenger;
 }

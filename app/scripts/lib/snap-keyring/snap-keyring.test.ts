@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   EthAccountType,
   EthScope,
@@ -6,6 +6,7 @@ import {
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SnapId } from '@metamask/snaps-sdk';
+import { getRootMessenger } from '../../controller-init/messengers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -85,12 +86,19 @@ const createControllerMessenger = ({
 }: {
   account?: InternalAccount;
 } = {}): SnapKeyringBuilderMessenger => {
+  const rootMessenger = getRootMessenger();
   const messenger = new Messenger<
+    'SnapKeyring',
     SnapKeyringBuilderAllowActions,
-    never
-  >().getRestricted({
-    name: 'SnapKeyring',
-    allowedActions: [
+    never,
+    typeof rootMessenger
+  >({
+    namespace: 'SnapKeyring',
+    parent: rootMessenger,
+  });
+  rootMessenger.delegate({
+    messenger,
+    actions: [
       'ApprovalController:addRequest',
       'ApprovalController:acceptRequest',
       'ApprovalController:rejectRequest',
@@ -107,7 +115,6 @@ const createControllerMessenger = ({
       'SnapController:get',
       'SnapController:handleRequest',
     ],
-    allowedEvents: [],
   });
 
   jest.spyOn(messenger, 'call').mockImplementation((...args) => {
