@@ -17,8 +17,8 @@ describe('dapp-swap utils', () => {
       expect(result).toEqual({
         amountMin: '0x60147',
         tokenAddresses: [
-          '0x0000000000000000000000000000000000000000',
           '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+          '0x0000000000000000000000000000000000000000',
         ],
         quotesInput: {
           destChainId: '0xa4b1',
@@ -39,8 +39,8 @@ describe('dapp-swap utils', () => {
       expect(result).toEqual({
         amountMin: '0x5f',
         tokenAddresses: [
-          '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
           '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
+          '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
         ],
         quotesInput: {
           destChainId: '0xa4b1',
