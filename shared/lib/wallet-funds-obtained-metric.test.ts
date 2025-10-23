@@ -11,21 +11,21 @@ import {
 
 describe('getAmountBucket', () => {
   it('returns Low bucket for amounts less than $100', () => {
-    expect(getAmountBucket(0)).toBe(AmountBucket.Low);
-    expect(getAmountBucket(50)).toBe(AmountBucket.Low);
-    expect(getAmountBucket(99.99)).toBe(AmountBucket.Low);
+    expect(getAmountBucket('0')).toBe(AmountBucket.Low);
+    expect(getAmountBucket('50')).toBe(AmountBucket.Low);
+    expect(getAmountBucket('99.99')).toBe(AmountBucket.Low);
   });
 
   it('returns Medium bucket for amounts between $100 and $1000', () => {
-    expect(getAmountBucket(100)).toBe(AmountBucket.Medium);
-    expect(getAmountBucket(500)).toBe(AmountBucket.Medium);
-    expect(getAmountBucket(999.99)).toBe(AmountBucket.Medium);
+    expect(getAmountBucket('100')).toBe(AmountBucket.Medium);
+    expect(getAmountBucket('500')).toBe(AmountBucket.Medium);
+    expect(getAmountBucket('999.99')).toBe(AmountBucket.Medium);
   });
 
   it('returns High bucket for amounts greater than $1000', () => {
-    expect(getAmountBucket(1000.01)).toBe(AmountBucket.High);
-    expect(getAmountBucket(5000)).toBe(AmountBucket.High);
-    expect(getAmountBucket(1000000)).toBe(AmountBucket.High);
+    expect(getAmountBucket('1000.01')).toBe(AmountBucket.High);
+    expect(getAmountBucket('5000')).toBe(AmountBucket.High);
+    expect(getAmountBucket('1000000')).toBe(AmountBucket.High);
   });
 });
 
@@ -39,14 +39,14 @@ describe('getMidnightISOTimestamp', () => {
     jest.useRealTimers();
   });
 
-  it('returns a timestamp with time set to midnight (00:00:00.000)', () => {
+  it('returns a timestamp with time set to midnight (00:00:00.000) in local timezone', () => {
     const result = getMidnightISOTimestamp();
     const date = new Date(result);
 
-    expect(date.getUTCHours()).toBe(0);
-    expect(date.getUTCMinutes()).toBe(0);
-    expect(date.getUTCSeconds()).toBe(0);
-    expect(date.getUTCMilliseconds()).toBe(0);
+    expect(date.getHours()).toBe(0);
+    expect(date.getMinutes()).toBe(0);
+    expect(date.getSeconds()).toBe(0);
+    expect(date.getMilliseconds()).toBe(0);
   });
 
   it('returns a timestamp for the current day', () => {
@@ -186,16 +186,18 @@ describe('getWalletFundsObtainedEventProperties', () => {
   it('returns event object correctly', () => {
     const result = getWalletFundsObtainedEventProperties({
       chainId: 1,
-      tokenAddress: '0x123',
-      tokenUsd: 50,
+      amountUsd: '50',
     });
 
+    // Calculate expected timestamp: local midnight for the current date
+    const expectedDate = new Date('2024-06-07T15:30:00.000Z');
+    expectedDate.setHours(0, 0, 0, 0);
+    const expectedTimestamp = expectedDate.toISOString();
+
     expect(result.event).toBe(MetaMetricsEventName.WalletFundsObtained);
-    expect(result.timestamp).toStrictEqual('2024-06-07T00:00:00.000Z');
+    expect(result.timestamp).toStrictEqual(expectedTimestamp);
     expect(result.properties).toStrictEqual({
-      chain_id: '1',
       chain_id_caip: 'eip155:1',
-      token_address: '0x123',
       funding_amount_usd: AmountBucket.Low,
     });
   });

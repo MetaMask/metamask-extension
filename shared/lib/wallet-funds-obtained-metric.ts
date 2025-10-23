@@ -24,11 +24,12 @@ export const AmountBucket = {
  * @param amount - The USD amount to categorize
  * @returns The bucket category that the amount falls into
  */
-export const getAmountBucket = (amount: number): string => {
-  if (amount < 100) {
+export const getAmountBucket = (amount: string): string => {
+  const numAmount = Number(amount);
+  if (numAmount < 100) {
     return AmountBucket.Low;
   }
-  if (amount <= 1000) {
+  if (numAmount <= 1000) {
     return AmountBucket.Medium;
   }
   return AmountBucket.High;
@@ -44,7 +45,7 @@ export const getAmountBucket = (amount: number): string => {
  */
 export const getMidnightISOTimestamp = (): string => {
   const timestamp = new Date();
-  timestamp.setUTCHours(0, 0, 0, 0);
+  timestamp.setHours(0, 0, 0, 0);
   return timestamp.toISOString();
 };
 
@@ -93,34 +94,27 @@ export const hasNonZeroMultichainBalance = (
  *
  * @param params
  * @param params.chainId - The chain ID where funds were obtained
- * @param params.tokenAddress - The address of the token received
- * @param params.tokenUsd - The USD value of the token received
+ * @param params.amountUsd - The USD value of the funds received
  * @returns Complete event object with event name, timestamp, and properties
  */
 export const getWalletFundsObtainedEventProperties = ({
   chainId,
-  tokenAddress,
-  tokenUsd,
+  amountUsd,
 }: {
-  chainId: string | number;
-  tokenAddress: string;
-  tokenUsd: number;
+  chainId: number;
+  amountUsd: string;
 }) => {
   return {
     event: MetaMetricsEventName.WalletFundsObtained,
     timestamp: getMidnightISOTimestamp(),
     properties: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      chain_id: chainId.toString(),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       chain_id_caip: toCaipChainId(
         KnownCaipNamespace.Eip155,
         chainId.toString(),
       ),
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      token_address: tokenAddress,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      funding_amount_usd: getAmountBucket(tokenUsd),
+      funding_amount_usd: getAmountBucket(amountUsd),
     },
   };
 };

@@ -5543,15 +5543,6 @@ describe('MetaMaskController', () => {
       metamaskController._walletFundsObtainedMonitoringSetup = false;
     });
 
-    it('should return early if already setup', () => {
-      metamaskController._walletFundsObtainedMonitoringSetup = true;
-      metamaskController._setupWalletFundsObtainedMonitoring();
-
-      expect(
-        metamaskController.controllerMessenger.subscribe,
-      ).not.toHaveBeenCalled();
-    });
-
     it('should return early if notifications are disabled', () => {
       jest
         .spyOn(
@@ -5689,7 +5680,9 @@ describe('MetaMaskController', () => {
 
       jest.spyOn(metamaskController.metaMetricsController, 'trackEvent');
       jest.spyOn(metamaskController.appStateController, 'setHasFunds');
-      jest.spyOn(metamaskController.controllerMessenger, 'unsubscribe');
+      jest
+        .spyOn(metamaskController.controllerMessenger, 'unsubscribe')
+        .mockImplementation(noop);
     });
 
     it('should return early if no relevant notifications', () => {
@@ -5771,8 +5764,8 @@ describe('MetaMaskController', () => {
         expect.objectContaining({
           event: 'Wallet Funds Obtained',
           properties: expect.objectContaining({
-            chain_id: '1',
-            token_address: '0x0000000000000000000000000000000000000000',
+            chain_id_caip: 'eip155:1',
+            funding_amount_usd: '$100-1000',
           }),
         }),
       );
@@ -5808,8 +5801,8 @@ describe('MetaMaskController', () => {
         expect.objectContaining({
           event: 'Wallet Funds Obtained',
           properties: expect.objectContaining({
-            chain_id: '1',
-            token_address: '0x123',
+            chain_id_caip: 'eip155:1',
+            funding_amount_usd: '<$100',
           }),
         }),
       );
@@ -5844,8 +5837,8 @@ describe('MetaMaskController', () => {
       ).toHaveBeenCalledWith(
         expect.objectContaining({
           properties: expect.objectContaining({
-            chain_id: '137',
-            token_address: '0x456',
+            chain_id_caip: 'eip155:137',
+            funding_amount_usd: '$100-1000',
           }),
         }),
       );
@@ -5859,13 +5852,19 @@ describe('MetaMaskController', () => {
           chain_id: 1,
           data: { amount: { usd: '100' } },
         },
-        { type: 'another_type', data: {} },
       ];
       metamaskController._handleWalletFundingNotification(notifications);
 
       expect(
         metamaskController.metaMetricsController.trackEvent,
-      ).not.toHaveBeenCalled();
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            chain_id_caip: 'eip155:1',
+            funding_amount_usd: '$100-1000',
+          }),
+        }),
+      );
     });
   });
 });

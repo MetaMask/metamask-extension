@@ -122,7 +122,6 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
-import { zeroAddress } from 'ethereumjs-util';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
@@ -520,13 +519,22 @@ export default class MetamaskController extends EventEmitter {
       const { completedOnboarding } = this.onboardingController.state;
       if (activeControllerConnections > 0 && completedOnboarding) {
         this.triggerNetworkrequests();
-
-        // Monitor for first-time wallet funding event if not already funded
-        if (!this.appStateController.state.hasFunds) {
-          this._setupWalletFundsObtainedMonitoring();
-        }
       } else {
         this.stopNetworkRequests();
+      }
+    });
+
+    // Monitor for first wallet funding event based on activeControllerConnections
+    this.on('controllerConnectionChanged', (activeControllerConnections) => {
+      const { completedOnboarding } = this.onboardingController.state;
+      if (
+        activeControllerConnections > 0 &&
+        completedOnboarding &&
+        !this.appStateController.state.hasFunds &&
+        !this.walletFundsObtainedMonitoringSetup
+      ) {
+        this._setupWalletFundsObtainedMonitoring();
+        this.walletFundsObtainedMonitoringSetup = true;
       }
     });
 
@@ -1337,13 +1345,12 @@ export default class MetamaskController extends EventEmitter {
 
     // ERC20 transfers have `token` object, native transfers have `amount` object
     // eslint-disable-next-line camelcase
-    if (chain_id && (data?.token || data?.amount)) {
+    if (chain_id && (data?.token?.usd || data?.amount?.usd)) {
       this.metaMetricsController.trackEvent(
         getWalletFundsObtainedEventProperties({
           // eslint-disable-next-line camelcase
           chainId: chain_id,
-          tokenAddress: data.token?.address || zeroAddress(),
-          tokenUsd: data.token?.usd || data.amount?.usd,
+          amountUsd: data?.token?.usd || data?.amount?.usd,
         }),
       );
 
@@ -1356,33 +1363,23 @@ export default class MetamaskController extends EventEmitter {
   };
 
   /**
-   * Sets up monitoring to detect and track when a non-imported wallet first receives funds.
+   * Sets up monitoring to detect and track when a non-imported wallet first receives funds
+   * via ERC20 or ETH received events from the notification service.
    */
   _setupWalletFundsObtainedMonitoring() {
-    // Prevent setting up duplicate listeners
-    if (this._walletFundsObtainedMonitoringSetup) {
-      console.log(
-        '🔍 Balance monitoring - inside _setupWalletFundsObtainedMonitoring but already setup',
-      );
-      return;
-    }
-
-    this._walletFundsObtainedMonitoringSetup = true;
-
-    if (
-      !this.notificationServicesController.state.isNotificationServicesEnabled
-    ) {
-      console.log('🔍 Balance monitoring - notifications disabled, skipping');
-      return;
-    }
-
     // Only target created wallets (not imported or restored)
     const { firstTimeFlowType } = this.onboardingController.state;
     if (
       firstTimeFlowType !== FirstTimeFlowType.create &&
       firstTimeFlowType !== FirstTimeFlowType.socialCreate
     ) {
-      console.log('⏸️ Balance monitoring disabled - not a created wallet');
+      return;
+    }
+
+    // Only target wallets with notifications enabled
+    if (
+      !this.notificationServicesController.state.isNotificationServicesEnabled
+    ) {
       return;
     }
 
