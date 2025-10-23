@@ -137,14 +137,6 @@ export const getApprovedAndSignedTransactions = createDeepEqualSelector(
   (transactions) => transactions,
 );
 
-export const getSignedTransactions = createDeepEqualSelector(
-  (state) => getTransactions(state),
-  (transactions) =>
-    transactions.filter(
-      (transaction) => transaction.status === TransactionStatus.signed,
-    ),
-);
-
 export const incomingTxListSelector = createDeepEqualSelector(
   (state) => {
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);
