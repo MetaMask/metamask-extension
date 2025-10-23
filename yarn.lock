@@ -7678,7 +7678,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-controllers@npm:^15.0.2":
+"@metamask/snaps-controllers@npm:15.0.2":
   version: 15.0.2
   resolution: "@metamask/snaps-controllers@npm:15.0.2"
   dependencies:
@@ -7716,6 +7716,47 @@ __metadata:
     "@metamask/snaps-execution-environments":
       optional: true
   checksum: 10/cdd98b3d4936d9d04c1aa3419615edf2df4def012bfcfe8be89501552f86059067d96b396544725dda8b519918227e6828a9fbd96f24999b2676c3885d1663bd
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A15.0.2#~/.yarn/patches/@metamask-snaps-controllers-npm-15.0.2-fa1770fbeb.patch":
+  version: 15.0.2
+  resolution: "@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A15.0.2#~/.yarn/patches/@metamask-snaps-controllers-npm-15.0.2-fa1770fbeb.patch::version=15.0.2&hash=d8b5f5"
+  dependencies:
+    "@metamask/approval-controller": "npm:^7.2.0"
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/json-rpc-engine": "npm:^10.1.0"
+    "@metamask/json-rpc-middleware-stream": "npm:^8.0.8"
+    "@metamask/key-tree": "npm:^10.1.1"
+    "@metamask/object-multiplex": "npm:^2.1.0"
+    "@metamask/permission-controller": "npm:^11.0.6"
+    "@metamask/phishing-controller": "npm:^13.1.0"
+    "@metamask/post-message-stream": "npm:^10.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/snaps-registry": "npm:^3.2.3"
+    "@metamask/snaps-rpc-methods": "npm:^13.5.3"
+    "@metamask/snaps-sdk": "npm:^10.0.0"
+    "@metamask/snaps-utils": "npm:^11.6.0"
+    "@metamask/utils": "npm:^11.8.1"
+    "@xstate/fsm": "npm:^2.0.0"
+    async-mutex: "npm:^0.5.0"
+    concat-stream: "npm:^2.0.0"
+    cron-parser: "npm:^4.5.0"
+    fast-deep-equal: "npm:^3.1.3"
+    get-npm-tarball-url: "npm:^2.0.3"
+    immer: "npm:^9.0.21"
+    luxon: "npm:^3.5.0"
+    nanoid: "npm:^3.3.10"
+    readable-stream: "npm:^3.6.2"
+    readable-web-to-node-stream: "npm:^3.0.2"
+    semver: "npm:^7.5.4"
+    tar-stream: "npm:^3.1.7"
+  peerDependencies:
+    "@metamask/snaps-execution-environments": ^10.2.2
+  peerDependenciesMeta:
+    "@metamask/snaps-execution-environments":
+      optional: true
+  checksum: 10/976b8034673ded70f0cbd1cb3a54202d1ac94b05c319df9f4f6688a0c79e5c8c45668af9733bf2c13ccfca6a937585990661ec615c9ab52a36450cbcb449bfb2
   languageName: node
   linkType: hard
 
@@ -31940,7 +31981,7 @@ __metadata:
     "@metamask/smart-transactions-controller": "npm:^19.2.1"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.0.0"
-    "@metamask/snaps-controllers": "npm:^15.0.2"
+    "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A15.0.2#~/.yarn/patches/@metamask-snaps-controllers-npm-15.0.2-fa1770fbeb.patch"
     "@metamask/snaps-execution-environments": "npm:^10.2.2"
     "@metamask/snaps-rpc-methods": "npm:^13.5.3"
     "@metamask/snaps-sdk": "npm:^10.0.0"
