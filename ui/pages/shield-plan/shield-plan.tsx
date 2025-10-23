@@ -326,6 +326,7 @@ const ShieldPlan = () => {
                     'shield-plan-page__plan--selected':
                       plan.id === selectedPlan,
                   })}
+                  data-testid={`shield-plan-${plan.label.toLowerCase()}-button`}
                   onClick={() => setSelectedPlan(plan.id)}
                 >
                   <div className="shield-plan-page__radio" />
@@ -466,6 +467,7 @@ const ShieldPlan = () => {
               variant={ButtonVariant.Primary}
               block
               onClick={handleSubscription}
+              data-testid="shield-plan-continue-button"
             >
               {t('continue')}
             </Button>
