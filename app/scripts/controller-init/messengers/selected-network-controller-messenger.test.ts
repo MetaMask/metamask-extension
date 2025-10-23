@@ -1,14 +1,13 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
+import { getRootMessenger } from '.';
 
 describe('getSelectedNetworkControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const selectedNetworkControllerMessenger =
       getSelectedNetworkControllerMessenger(messenger);
 
-    expect(selectedNetworkControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(selectedNetworkControllerMessenger).toBeInstanceOf(Messenger);
   });
 });

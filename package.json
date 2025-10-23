@@ -272,7 +272,8 @@
     "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@25.1.1-preview-8e6c5423",
     "@metamask/rate-limit-controller": "npm:@metamask-previews/rate-limit-controller@6.1.0-preview-8e6c5423",
     "@metamask/remote-feature-flag-controller": "npm:@metamask-previews/remote-feature-flag-controller@1.9.0-preview-8e6c5423",
-    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@4.1.0-preview-8e6c5423"
+    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@4.1.0-preview-8e6c5423",
+    "@metamask/selected-network-controller": "npm:@metamask-previews/selected-network-controller@24.0.1-preview-8e6c5423"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
