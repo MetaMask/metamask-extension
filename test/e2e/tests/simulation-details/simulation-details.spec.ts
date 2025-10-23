@@ -61,7 +61,7 @@ async function withFixturesForSimulationDetails(
         .build(),
       title,
       testSpecificMock: mockRequests,
-      dapp: true,
+      dappOptions: { defaultTestDapp: 1 },
       localNodeOptions: {
         hardfork: 'london',
         chainId: hexToNumber(inputChainId),

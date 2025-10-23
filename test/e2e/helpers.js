@@ -33,6 +33,7 @@ const {
   ACCOUNT_2,
   WALLET_PASSWORD,
   WINDOW_TITLES,
+  DAPP_PATHS,
 } = require('./constants');
 const {
   getServerMochaToBackground,
@@ -154,7 +155,6 @@ function normalizeSmartContracts(smartContract) {
  */
 async function withFixtures(options, testSuite) {
   const {
-    dapp,
     fixtures,
     localNodeOptions = 'anvil',
     smartContract,
@@ -163,9 +163,7 @@ async function withFixtures(options, testSuite) {
     staticServerOptions,
     title,
     ignoredConsoleErrors = [],
-    dappPath = undefined,
     disableServerMochaToBackground = false,
-    dappPaths,
     testSpecificMock = function () {
       // do nothing.
     },
@@ -187,7 +185,16 @@ async function withFixtures(options, testSuite) {
   const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
-  let numberOfDapps = dapp ? 1 : 0;
+  const dappOpts = dappOptions || {};
+  const hasCustomPaths =
+    Array.isArray(dappOpts.customDappPaths) &&
+    dappOpts.customDappPaths.length > 0;
+  const customCount = hasCustomPaths ? dappOpts.customDappPaths.length : 0;
+  const defaultCount =
+    typeof dappOpts.defaultTestDapp === 'number' && dappOpts.defaultTestDapp > 0
+      ? dappOpts.defaultTestDapp
+      : 0;
+  const numberOfDapps = customCount + defaultCount;
   const dappServer = [];
   const phishingPageServer = new PhishingWarningPageServer();
 
@@ -282,75 +289,35 @@ async function withFixtures(options, testSuite) {
     }
 
     await phishingPageServer.start();
-    if (dapp) {
-      if (dappOptions?.numberOfDapps) {
-        numberOfDapps = dappOptions.numberOfDapps;
-        // Note: We don't cap numberOfDapps here even if dappPaths is shorter,
-        // because tests may need multiple dapps where some use default paths
-      } else if (dappPaths && Array.isArray(dappPaths)) {
-        numberOfDapps = dappPaths.length;
-      } else {
-        // Default to 1 dapp when dapp=true but no specific configuration
-        numberOfDapps = 1;
-      }
+    if (numberOfDapps > 0) {
+      // numberOfDapps is precomputed in normalization
 
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
         let currentDappPath;
-        if (dappPath) {
-          // Single dappPath takes precedence
-          currentDappPath = dappPath;
-        } else if (
-          dappPaths &&
-          Array.isArray(dappPaths) &&
-          i < dappPaths.length
-        ) {
-          // Use dappPaths[i] if within bounds
-          currentDappPath = dappPaths[i];
+        if (hasCustomPaths && i < customCount) {
+          currentDappPath = dappOpts.customDappPaths[i];
         } else {
-          // Fallback to default
+          // Use the standard test dapp for the remaining slots
           currentDappPath = 'test-dapp';
         }
 
-        switch (currentDappPath) {
-          case 'snap-simple-keyring-site':
-            dappDirectory = path.resolve(
-              __dirname,
-              '..',
-              '..',
-              'node_modules',
-              '@metamask/snap-simple-keyring-site',
-              'public',
-            );
-            break;
-          case 'snap-account-abstraction-keyring':
-            dappDirectory = path.resolve(
-              __dirname,
-              '..',
-              '..',
-              'node_modules',
-              '@metamask/snap-account-abstraction-keyring-site',
-              'public',
-            );
-            break;
-          case 'test-dapp':
-            dappDirectory = path.resolve(
-              __dirname,
-              '..',
-              '..',
-              'node_modules',
-              '@metamask/test-dapp',
-              'dist',
-            );
-            break;
-          default:
-            dappDirectory = path.resolve(__dirname, currentDappPath);
-            break;
+        if (DAPP_PATHS && DAPP_PATHS[currentDappPath]) {
+          dappDirectory = path.resolve(
+            __dirname,
+            ...DAPP_PATHS[currentDappPath],
+          );
+        } else {
+          dappDirectory = path.resolve(__dirname, currentDappPath);
         }
         dappServer.push(
           createStaticServer({ public: dappDirectory, ...staticServerOptions }),
         );
-        dappServer[i].listen(`${dappBasePort + i}`);
+        const basePort =
+          typeof dappOpts.basePort === 'number'
+            ? dappOpts.basePort
+            : dappBasePort;
+        dappServer[i].listen(`${basePort + i}`);
         await new Promise((resolve, reject) => {
           dappServer[i].on('listening', resolve);
           dappServer[i].on('error', reject);
@@ -536,7 +503,7 @@ async function withFixtures(options, testSuite) {
       if (webDriver) {
         shutdownTasks.push(driver.quit());
       }
-      if (dapp) {
+      if (numberOfDapps > 0) {
         for (let i = 0; i < numberOfDapps; i++) {
           if (dappServer[i] && dappServer[i].listening) {
             shutdownTasks.push(

@@ -1,4 +1,3 @@
-import * as path from 'path';
 import { Browser } from 'selenium-webdriver';
 import {
   KnownRpcMethods,
@@ -20,17 +19,10 @@ export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
  * Default options for setting up Multichain E2E test environment
  */
 export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
-  dapp: true,
-  dappPaths: [
-    path.join(
-      '..',
-      '..',
-      'node_modules',
-      '@metamask',
-      'test-dapp-multichain',
-      'build',
-    ),
-  ],
+  dappOptions: {
+    defaultTestDapp: 1,
+    customDappPaths: ['test-dapp-multichain'],
+  },
   localNodeOptions: [
     {
       type: 'anvil',

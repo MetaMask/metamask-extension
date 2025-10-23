@@ -193,7 +193,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338; // 0x53a
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
@@ -209,7 +209,7 @@ describe('Request-queue UI changes', function () {
             },
           },
         ],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

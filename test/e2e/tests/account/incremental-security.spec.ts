@@ -17,10 +17,12 @@ describe('Incremental Security', function (this: Suite) {
   it('Back up Secret Recovery Phrase from backup reminder', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: {
+          defaultTestDapp: 1,
+          customDappPaths: ['test-dapp-send-eth-with-private-key'],
+        },
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        dappPath: 'send-eth-with-private-key-test',
       },
       async ({
         driver,

@@ -68,8 +68,10 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.SSK,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          defaultTestDapp: 1,
+          customDappPaths: ['snap-simple-keyring-site'],
+        },
         testSpecificMock: async (mockServer) => {
           return mockSnapSimpleKeyringAndSite(mockServer);
         },
