@@ -7,6 +7,12 @@ import { useHistory } from 'react-router-dom';
 import { getAccountLink, getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 
+import {
+  Box,
+  BoxJustifyContent,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   useTokensToSearch,
@@ -20,15 +26,11 @@ import {
   getCurrentCurrency,
 } from '../../../ducks/metamask/metamask';
 import {
-  Box,
-  BoxJustifyContent,
-  BoxAlignItems,
-} from '@metamask/design-system-react';
-import {
   TextColor,
   SEVERITIES,
   TextVariant,
   BLOCK_SIZES,
+  AlignItems,
   FontWeight,
   TextAlign,
 } from '../../../helpers/constants/design-system';
@@ -999,9 +1001,7 @@ export default function PrepareSwapPage({
             )}
           </Box>
           {showNotEnoughTokenMessage && (
-            <Box
-              justifyContent={BoxJustifyContent.FlexStart}
-            >
+            <Box justifyContent={BoxJustifyContent.FlexStart}>
               <Text
                 variant={TextVariant.bodySmBold}
                 color={TextColor.textAlternative}
@@ -1012,9 +1012,7 @@ export default function PrepareSwapPage({
             </Box>
           )}
           {fromTokenError && (
-            <Box
-              justifyContent={BoxJustifyContent.FlexStart}
-            >
+            <Box justifyContent={BoxJustifyContent.FlexStart}>
               <Text
                 variant={TextVariant.bodySmBold}
                 color={TextColor.textAlternative}
@@ -1077,18 +1075,16 @@ export default function PrepareSwapPage({
             </Box>
           </Box>
           <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.stretch}
+            justifyContent={BoxJustifyContent.SpaceBetween}
+            alignItems={BoxAlignItems.Stretch}
           >
             <div className="prepare-swap-page__balance-message">
               {selectedToToken?.string && yourTokenToBalance}
             </div>
             {receiveToAmountFormatted && swapToTokenFiatValue && (
               <Box
-                display={DISPLAY.FLEX}
-                justifyContent={JustifyContent.flexEnd}
-                alignItems={AlignItems.flexEnd}
+                justifyContent={BoxJustifyContent.FlexEnd}
+                alignItems={BoxAlignItems.FlexEnd}
               >
                 <Text
                   variant={TextVariant.bodySm}
@@ -1100,9 +1096,8 @@ export default function PrepareSwapPage({
             )}
           </Box>
           <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.stretch}
+            justifyContent={BoxJustifyContent.SpaceBetween}
+            alignItems={BoxAlignItems.Stretch}
           >
             <div className="prepare-swap-page__balance-message">
               {selectedToToken &&
@@ -1136,7 +1131,7 @@ export default function PrepareSwapPage({
           </ButtonLink>
         )}
         {!showReviewQuote && toTokenIsNotDefault && occurrences < 2 && (
-          <Box display={DISPLAY.FLEX} marginTop={2}>
+          <Box flexDirection={BoxFlexDirection.Column} marginTop={2}>
             <BannerAlert
               severity={
                 tokenVerifiedOn1Source ? SEVERITIES.WARNING : SEVERITIES.DANGER
@@ -1198,7 +1193,7 @@ export default function PrepareSwapPage({
           />
         )}
         {swapsErrorKey && (
-          <Box display={DISPLAY.FLEX} marginTop={2}>
+          <Box flexDirection={BoxFlexDirection.Row} marginTop={2}>
             <SwapsBannerAlert
               swapsErrorKey={swapsErrorKey}
               currentSlippage={maxSlippage}

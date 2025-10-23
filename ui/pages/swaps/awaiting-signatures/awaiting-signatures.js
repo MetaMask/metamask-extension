@@ -3,6 +3,7 @@ import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getFetchParams,
@@ -23,10 +24,6 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import PulseLoader from '../../../components/ui/pulse-loader';
-import {
-  Box,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import {
   BLOCK_SIZES,
   TextVariant,

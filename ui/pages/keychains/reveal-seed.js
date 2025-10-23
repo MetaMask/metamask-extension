@@ -32,10 +32,7 @@ import ExportTextContainer from '../../components/ui/export-text-container';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
-  AlignItems,
   BlockSize,
-  Display,
-  JustifyContent,
   Severity,
   Size,
   TextVariant,

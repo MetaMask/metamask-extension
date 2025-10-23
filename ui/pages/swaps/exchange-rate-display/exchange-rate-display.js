@@ -2,17 +2,14 @@ import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
-import { formatSwapsValueForDisplay } from '../swaps.util';
-import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import {
   Box,
   BoxJustifyContent,
   BoxAlignItems,
 } from '@metamask/design-system-react';
-import {
-  IconColor,
-  TextColor,
-} from '../../../helpers/constants/design-system';
+import { formatSwapsValueForDisplay } from '../swaps.util';
+import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
+import { IconColor, TextColor } from '../../../helpers/constants/design-system';
 import { Icon, IconName } from '../../../components/component-library';
 import { I18nContext } from '../../../contexts/i18n';
 

@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { PageContainerFooter } from '../../../../components/ui/page-container';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { PageContainerFooter } from '../../../../components/ui/page-container';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+
 import {
   BlockSize,
   BorderStyle,

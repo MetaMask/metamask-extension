@@ -15,6 +15,7 @@ import {
 } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../contexts/i18n';
 
 import {
@@ -87,19 +88,8 @@ import {
 } from '../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
-import {
-  Box,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
-import {
-  Icon,
-  IconName,
-  IconSize,
-} from '../../components/component-library';
-import {
-  IconColor,
-  FRACTIONS,
-} from '../../helpers/constants/design-system';
+import { Icon, IconName, IconSize } from '../../components/component-library';
+import { IconColor, FRACTIONS } from '../../helpers/constants/design-system';
 import useUpdateSwapsState from './hooks/useUpdateSwapsState';
 import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';

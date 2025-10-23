@@ -3,13 +3,13 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import { I18nContext } from '../../../contexts/i18n';
-import { setSwapsErrorKey } from '../../../store/actions';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
+import { I18nContext } from '../../../contexts/i18n';
+import { setSwapsErrorKey } from '../../../store/actions';
 import {
   TextVariant,
   TEXT_ALIGN,

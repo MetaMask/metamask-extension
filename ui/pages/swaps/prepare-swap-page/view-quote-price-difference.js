@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
+import { Box } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
-import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import {
   SEVERITIES,
   TextVariant,
   BLOCK_SIZES,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { GasRecommendations } from '../../../../shared/constants/gas';
 import {

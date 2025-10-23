@@ -12,6 +12,12 @@ import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
 import { captureException } from '../../../../shared/lib/sentry';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { I18nContext } from '../../../contexts/i18n';
@@ -111,12 +117,6 @@ import {
   Severity,
   FontStyle,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
-} from '@metamask/design-system-react';
 import {
   BannerAlert,
   ButtonLink,
@@ -1405,9 +1405,7 @@ export default function ReviewQuote({
             </Box>
           )}
           {!hideTokenApprovalRow && (
-            <Box
-              justifyContent={BoxJustifyContent.SpaceBetween}
-            >
+            <Box justifyContent={BoxJustifyContent.SpaceBetween}>
               <Text
                 variant={TextVariant.bodyMd}
                 as="h6"

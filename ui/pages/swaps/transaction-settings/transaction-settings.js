@@ -162,10 +162,7 @@ export default function TransactionSettings({
             <>
               {!isDirectWrappingEnabled && (
                 <>
-                  <Box
-                    alignItems={BoxAlignItems.Center}
-                    marginBottom={2}
-                  >
+                  <Box alignItems={BoxAlignItems.Center} marginBottom={2}>
                     <Text variant={TextVariant.bodySm} className="pr-2">
                       {t('swapsMaxSlippage')}
                     </Text>

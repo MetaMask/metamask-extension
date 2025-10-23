@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import { BannerAlert } from '../../../components/component-library/banner-alert';
-import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import {
   SEVERITIES,
   TextVariant,
