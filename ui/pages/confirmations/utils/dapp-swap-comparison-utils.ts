@@ -235,7 +235,7 @@ export function getBestQuote(
   let highestQuoteValue = new BigNumber(-1, 10);
   let minBelowAmountMin = true;
 
-  quotes.forEach((currentQuote, index) => {
+  quotes.forEach((currentQuote: QuoteResponse, index: number) => {
     const { quote, approval, trade } = currentQuote;
     const destTokenAmountInQuote = new BigNumber(
       getUSDValueForToken(quote.destTokenAmount),
@@ -258,7 +258,7 @@ export function getBestQuote(
     ).greaterThan(new BigNumber(amountMin, 16));
 
     if (
-      (!minBelowAmountMin && quoteMinGreaterThanAmountMin) ||
+      (minBelowAmountMin && quoteMinGreaterThanAmountMin) ||
       quoteValue.greaterThan(highestQuoteValue)
     ) {
       minBelowAmountMin = false;
