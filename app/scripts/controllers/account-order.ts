@@ -3,6 +3,7 @@ import {
   RestrictedMessenger,
   StateMetadata,
 } from '@metamask/base-controller';
+import { AccountOrderControllerGetStateAction } from '../controller-init/messengers/account-order-controller-messenger';
 
 // Unique name for the controller
 const controllerName = 'AccountOrderController';
@@ -33,7 +34,8 @@ export type AccountOrderControllerhideAccountsListAction = {
 // Union of all possible actions for the messenger
 export type AccountOrderControllerMessengerActions =
   | AccountOrderControllerupdateAccountsListAction
-  | AccountOrderControllerhideAccountsListAction;
+  | AccountOrderControllerhideAccountsListAction
+  | AccountOrderControllerGetStateAction;
 
 // Type for the messenger of AccountOrderController
 export type AccountOrderControllerMessenger = RestrictedMessenger<
