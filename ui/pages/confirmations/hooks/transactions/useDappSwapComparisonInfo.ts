@@ -10,7 +10,8 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { fetchQuotes, TokenStandAndDetails } from '../../../../store/actions';
+import { TokenStandAndDetails } from '../../../../store/actions';
+import { fetchQuotes } from '../../../../store/controller-actions/bridge-controller';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { fetchAllTokenDetails } from '../../utils/token';
@@ -23,6 +24,8 @@ import {
 import { useConfirmContext } from '../../context/confirm';
 import { useTransactionEventFragment } from '../useTransactionEventFragment';
 import { useDappSwapComparisonLatencyMetrics } from './useDappSwapComparisonLatencyMetrics';
+
+const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 
 export function useDappSwapComparisonInfo() {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -68,8 +71,8 @@ export function useDappSwapComparisonInfo() {
     try {
       let transactionData = data;
       if (nestedTransactions?.length) {
-        transactionData = nestedTransactions?.find(({ data }) =>
-          data?.startsWith('0x3593564c'),
+        transactionData = nestedTransactions?.find(({ data: trxnData }) =>
+          trxnData?.startsWith(FOUR_BYTE_EXECUTE_SWAP_CONTRACT),
         )?.data;
       }
       const result = getDataFromSwap(chainId, transactionData);
@@ -224,7 +227,7 @@ export function useDappSwapComparisonInfo() {
         ),
       );
 
-      const totalGasInConfirmation = getGasUSDValue(
+      const confirmationGasUsd = getGasUSDValue(
         new BigNumber(gasUsed ?? gas ?? '0x0', 16),
       );
 
@@ -249,7 +252,7 @@ export function useDappSwapComparisonInfo() {
           swap_dapp_minimum_received_value_usd:
             getUSDValueForDestinationToken(amountMin),
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_dapp_network_fee_usd: totalGasInConfirmation,
+          swap_dapp_network_fee_usd: confirmationGasUsd,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_from_token_simulated_value_usd: getUSDValue(
             srcTokenAmount,

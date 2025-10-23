@@ -7535,9 +7535,3 @@ export async function submitShieldClaim(params: {
 
   return ClaimSubmitToastType.Success;
 }
-
-export async function fetchQuotes(
-  quoteRequest: GenericQuoteRequest,
-): Promise<QuoteResponse[]> {
-  return await submitRequestToBackground('fetchQuotes', [quoteRequest]);
-}
