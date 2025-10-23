@@ -14,6 +14,7 @@ import { AccountDetails } from './account-details';
 import { EstimatedChanges } from './estimated-changes';
 import ShieldSubscriptionApproveLoader from './shield-subscription-approve-loader';
 import { SubscriptionDetails } from './subscription-details';
+import BillingDetails from './billing-details';
 
 const ShieldSubscriptionApproveInfo = () => {
   const { currentConfirmation: transactionMeta } =
@@ -68,6 +69,7 @@ const ShieldSubscriptionApproveInfo = () => {
         accountAddress={transactionMeta?.txParams?.from as Hex}
         chainId={transactionMeta?.chainId}
       />
+      {productPrice && <BillingDetails productPrice={productPrice} />}
       <GasFeesSection />
     </Box>
   );
