@@ -5,7 +5,6 @@ import {
   StartFlow,
   UpdateRequestState,
 } from '@metamask/approval-controller';
-import { RestrictedMessenger } from '@metamask/base-controller';
 import {
   SmartTransactionsController,
   SmartTransactionsControllerSmartTransactionEvent,
@@ -23,6 +22,7 @@ import {
 } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
+import { Messenger } from '@metamask/messenger';
 import {
   ORIGIN_METAMASK,
   SMART_TRANSACTION_CONFIRMATION_TYPES,
@@ -47,12 +47,10 @@ export type AllowedActions =
   | EndFlow;
 export type AllowedEvents = SmartTransactionsControllerSmartTransactionEvent;
 
-export type SmartTransactionHookMessenger = RestrictedMessenger<
+export type SmartTransactionHookMessenger = Messenger<
   typeof namespace,
   AllowedActions,
-  AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  AllowedEvents
 >;
 
 export type FeatureFlags = {

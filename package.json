@@ -268,6 +268,7 @@
     "@metamask/permission-controller": "npm:@metamask-previews/permission-controller@11.1.0-preview-8e6c5423",
     "@metamask/permission-log-controller": "npm:@metamask-previews/permission-log-controller@4.1.0-preview-8e6c5423",
     "@metamask/phishing-controller": "npm:@metamask-previews/phishing-controller@14.1.2-preview-8e6c5423",
+    "@metamask/polling-controller": "npm:@metamask-previews/polling-controller@14.0.1-preview-8e6c5423",
     "@metamask/preferences-controller": "npm:@metamask-previews/preferences-controller@20.0.2-preview-8e6c5423",
     "@metamask/profile-sync-controller": "npm:@metamask-previews/profile-sync-controller@25.1.1-preview-8e6c5423",
     "@metamask/rate-limit-controller": "npm:@metamask-previews/rate-limit-controller@6.1.0-preview-8e6c5423",
@@ -276,7 +277,9 @@
     "@metamask/selected-network-controller": "npm:@metamask-previews/selected-network-controller@24.0.1-preview-8e6c5423",
     "@metamask/shield-controller": "npm:@metamask-previews/shield-controller@0.3.2-preview-8e6c5423",
     "@metamask/signature-controller": "npm:@metamask-previews/signature-controller@34.0.1-preview-8e6c5423",
-    "@metamask/subscription-controller": "npm:@metamask-previews/subscription-controller@2.0.0-preview-8e6c5423"
+    "@metamask/subscription-controller": "npm:@metamask-previews/subscription-controller@2.0.0-preview-8e6c5423",
+    "@metamask/smart-transactions-controller": "npm:@metamask-previews/smart-transactions-controller@19.2.1-preview-54c655a",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@60.9.0-preview-8e6c5423"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
