@@ -37,10 +37,10 @@ import {
   extractExpiryToReadableDate,
   GatorPermissionRule,
   convertAmountPerSecondToAmountPerPeriod,
+  getDecimalizedHexValue,
 } from '../../../../../../shared/lib/gator-permissions';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
-import { Numeric } from '../../../../../../shared/modules/Numeric';
 import {
   getNativeTokenInfo,
   selectERC20TokensByChain,
@@ -149,22 +149,9 @@ export const ReviewGatorPermissionItem = ({
   /**
    * Handles the click event for the expand/collapse button
    */
-  const handleExpandClick = useCallback(() => {
+  const handleExpandClick = () => {
     setIsExpanded(!isExpanded);
-  }, [isExpanded]);
-
-  /**
-   * Converts a hex value to a decimal value
-   *
-   * @param value - The hex value to convert
-   * @param decimals - The number of decimals to shift the value by
-   * @returns The decimal value
-   */
-  const getDecimalizedHexValue = useCallback(
-    (value: Hex, decimals: number) =>
-      new Numeric(value, 16).toBase(10).shiftedBy(decimals).toString(),
-    [],
-  );
+  };
 
   /**
    * Returns the expiration date from the rules
@@ -186,15 +173,6 @@ export const ReviewGatorPermissionItem = ({
   );
 
   /**
-   * Returns the unknown token amount text
-   *
-   * @returns The unknown token amount text
-   */
-  const getUnknownTokenAmountText = useCallback(() => {
-    return t('gatorPermissionUnknownTokenAmount');
-  }, [t]);
-
-  /**
    * Returns the token stream permission details
    *
    * @param permission - The stream permission data
@@ -214,7 +192,7 @@ export const ReviewGatorPermissionItem = ({
           translationKey: 'gatorPermissionsStreamingAmountLabel',
           value: decimals
             ? `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`
-            : getUnknownTokenAmountText(),
+            : t('gatorPermissionUnknownTokenAmount'),
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -230,7 +208,7 @@ export const ReviewGatorPermissionItem = ({
                   permission.data.initialAmount || '0x0',
                   decimals,
                 )} ${symbol}`
-              : getUnknownTokenAmountText(),
+              : t('gatorPermissionUnknownTokenAmount'),
             testId: 'review-gator-permission-initial-allowance',
           },
           maxAllowance: {
@@ -240,7 +218,7 @@ export const ReviewGatorPermissionItem = ({
                   permission.data.maxAmount || '0x0',
                   decimals,
                 )} ${symbol}`
-              : getUnknownTokenAmountText(),
+              : t('gatorPermissionUnknownTokenAmount'),
             testId: 'review-gator-permission-max-allowance',
           },
           startDate: {
@@ -266,18 +244,13 @@ export const ReviewGatorPermissionItem = ({
                   permission.data.amountPerSecond,
                   decimals,
                 )} ${symbol}/sec`
-              : getUnknownTokenAmountText(),
+              : t('gatorPermissionUnknownTokenAmount'),
             testId: 'review-gator-permission-stream-rate',
           },
         },
       };
     },
-    [
-      tokenMetadata,
-      getDecimalizedHexValue,
-      getExpirationDate,
-      getUnknownTokenAmountText,
-    ],
+    [tokenMetadata, t, getExpirationDate],
   );
 
   /**
@@ -299,7 +272,7 @@ export const ReviewGatorPermissionItem = ({
                 permission.data.periodAmount,
                 decimals,
               )} ${symbol}`
-            : getUnknownTokenAmountText(),
+            : t('gatorPermissionUnknownTokenAmount'),
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -329,12 +302,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [
-      tokenMetadata,
-      getDecimalizedHexValue,
-      getExpirationDate,
-      getUnknownTokenAmountText,
-    ],
+    [tokenMetadata, t, getExpirationDate],
   );
 
   /**

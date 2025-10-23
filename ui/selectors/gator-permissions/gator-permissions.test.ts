@@ -991,7 +991,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1037,7 +1036,6 @@ describe('Gator Permissions Selectors', () => {
             }),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1089,7 +1087,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1136,7 +1133,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1183,7 +1179,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1230,7 +1225,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1263,7 +1257,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },

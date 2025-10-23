@@ -17,6 +17,23 @@ import {
 } from './time-utils';
 
 describe('time-utils', () => {
+  /**
+   * Helper function to create a timestamp from a date in local timezone
+   *
+   * @param year - The year
+   * @param month - The month (0-11)
+   * @param day - The day of the month
+   * @returns Unix timestamp in seconds
+   */
+  const createTimestamp = (
+    year: number,
+    month: number,
+    day: number,
+  ): number => {
+    const testDate = new Date(year, month, day, 12, 0, 0);
+    return Math.floor(testDate.getTime() / 1000);
+  };
+
   describe('getPeriodFrequencyValueTranslationKey', () => {
     it('returns daily frequency for 1 day period', () => {
       const result = getPeriodFrequencyValueTranslationKey(DAY / SECOND);
@@ -132,10 +149,24 @@ describe('time-utils', () => {
   });
 
   describe('convertTimestampToReadableDate', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2024-06-15T12:00:00Z'));
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
     it('converts timestamp to mm/dd/yyyy format', () => {
-      // 1747699200 = Mon May 19 2025 16:00:00 GMT+0000 (UTC)
-      const result = convertTimestampToReadableDate(1747699200);
-      expect(result).toMatch(/^05\/(19|20)\/2025$/u);
+      const timestamp = createTimestamp(2025, 0, 15);
+      const result = convertTimestampToReadableDate(timestamp);
+
+      expect(result).toMatch(/^\d{2}\/\d{2}\/\d{4}$/u);
+      const [month, day, year] = result.split('/');
+      expect(month).toBe('01');
+      expect(day).toBe('15');
+      expect(year).toBe('2025');
     });
 
     it('returns empty string for timestamp 0', () => {
@@ -143,32 +174,69 @@ describe('time-utils', () => {
       expect(result).toBe('');
     });
 
-    it('converts another timestamp correctly', () => {
-      const result = convertTimestampToReadableDate(1735689600);
-      expect(result).toMatch(/^\d{2}\/\d{2}\/202(4|5)$/u);
+    it('converts timestamp with proper padding', () => {
+      const timestamp = createTimestamp(2024, 2, 5);
+      const result = convertTimestampToReadableDate(timestamp);
+
+      const [month, day, year] = result.split('/');
+      expect(month).toBe('03');
+      expect(day).toBe('05');
+      expect(year).toBe('2024');
+    });
+
+    it('handles dates at end of month', () => {
+      const timestamp = createTimestamp(2025, 11, 31);
+      const result = convertTimestampToReadableDate(timestamp);
+
+      expect(result).toMatch(/^\d{2}\/\d{2}\/\d{4}$/u);
+      const [month, day, year] = result.split('/');
+      expect(month).toBe('12');
+      expect(day).toBe('31');
+      expect(year).toBe('2025');
     });
 
     it('pads single digit months and days with zeros', () => {
-      // March 5, 2025 = 1741132800
-      const result = convertTimestampToReadableDate(1741132800);
+      const timestamp = createTimestamp(2025, 1, 1);
+      const result = convertTimestampToReadableDate(timestamp);
+
       expect(result).toMatch(/^\d{2}\/\d{2}\/\d{4}$/u);
+      const [month, day] = result.split('/');
+      expect(month).toHaveLength(2);
+      expect(day).toHaveLength(2);
     });
   });
 
   describe('extractExpiryToReadableDate', () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2024-06-15T12:00:00Z'));
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+    });
+
     it('extracts and converts expiry timestamp from rules', () => {
+      const timestamp = createTimestamp(2025, 5, 15);
+
       const rules: GatorPermissionRule[] = [
         {
           type: 'expiry',
           isAdjustmentAllowed: false,
           data: {
-            timestamp: 1747699200,
+            timestamp,
           },
         },
       ];
 
       const result = extractExpiryToReadableDate(rules);
-      expect(result).toMatch(/^05\/(19|20)\/2025$/u);
+
+      // Verify format and expected date
+      expect(result).toMatch(/^\d{2}\/\d{2}\/\d{4}$/u);
+      const [month, day, year] = result.split('/');
+      expect(month).toBe('06');
+      expect(day).toBe('15');
+      expect(year).toBe('2025');
     });
 
     it('returns empty string when no expiry rule exists', () => {
@@ -188,6 +256,21 @@ describe('time-utils', () => {
 
     it('returns empty string for empty rules array', () => {
       const rules: GatorPermissionRule[] = [];
+      const result = extractExpiryToReadableDate(rules);
+      expect(result).toBe('');
+    });
+
+    it('returns empty string when expiry timestamp is 0', () => {
+      const rules: GatorPermissionRule[] = [
+        {
+          type: 'expiry',
+          isAdjustmentAllowed: false,
+          data: {
+            timestamp: 0,
+          },
+        },
+      ];
+
       const result = extractExpiryToReadableDate(rules);
       expect(result).toBe('');
     });
