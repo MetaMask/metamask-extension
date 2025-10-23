@@ -107,7 +107,7 @@ function getCommandArgs(
   return getArgsFromInput(inputs[commandIndex]);
 }
 
-function addSeaportValues(
+function addSeaportCommandValues(
   commandBytes: string[],
   inputs: string[],
   quotesInput: GenericQuoteRequest,
@@ -133,7 +133,7 @@ function addSeaportValues(
   };
 }
 
-function addSweepValues(
+function addSweepCommandValues(
   commandBytes: string[],
   inputs: string[],
   quotesInput: GenericQuoteRequest,
@@ -153,7 +153,7 @@ function addSweepValues(
   };
 }
 
-function addUnwrapWethValues(
+function addUnwrapWethCommandValues(
   commandBytes: string[],
   inputs: string[],
   quotesInput: GenericQuoteRequest,
@@ -187,7 +187,11 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
     gasIncluded7702: false,
   } as GenericQuoteRequest;
 
-  const seaportResult = addSeaportValues(commandBytes, inputs, quotesInput);
+  const seaportResult = addSeaportCommandValues(
+    commandBytes,
+    inputs,
+    quotesInput,
+  );
   if (seaportResult) {
     amountMin = seaportResult.amountMin;
     quotesInput = seaportResult.quotesInput;
@@ -195,13 +199,13 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
     return { quotesInput: undefined, amountMin: undefined, tokenAddresses: [] };
   }
 
-  const sweepResult = addSweepValues(commandBytes, inputs, quotesInput);
+  const sweepResult = addSweepCommandValues(commandBytes, inputs, quotesInput);
   if (sweepResult) {
     amountMin = sweepResult.amountMin;
     quotesInput = sweepResult.quotesInput;
   }
 
-  const unwrapWethResult = addUnwrapWethValues(
+  const unwrapWethResult = addUnwrapWethCommandValues(
     commandBytes,
     inputs,
     quotesInput,
