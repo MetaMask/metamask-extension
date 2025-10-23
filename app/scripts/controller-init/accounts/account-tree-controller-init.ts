@@ -1,4 +1,5 @@
 import { AccountTreeController } from '@metamask/account-tree-controller';
+import { AccountId } from '@metamask/keyring-utils';
 import { ControllerInitFunction } from '../types';
 import { AccountTreeControllerMessenger } from '../messengers/accounts';
 import { trace } from '../../../../shared/lib/trace';
@@ -38,6 +39,40 @@ export const AccountTreeControllerInit: ControllerInitFunction<
               event,
             },
           });
+        },
+      },
+      accountOrderCallbacks: {
+        isHiddenAccount: (accountId: AccountId) => {
+          const internalAccount = initMessenger.call(
+            'AccountsController:getAccount',
+            accountId,
+          );
+          if (!internalAccount) {
+            return false;
+          }
+
+          const accountOrderState = initMessenger.call(
+            'AccountOrderController:getState',
+          );
+          return accountOrderState.hiddenAccountList.includes(
+            internalAccount.address,
+          );
+        },
+        isPinnedAccount: (accountId: AccountId) => {
+          const internalAccount = initMessenger.call(
+            'AccountsController:getAccount',
+            accountId,
+          );
+          if (!internalAccount) {
+            return false;
+          }
+          const accountOrderState = initMessenger.call(
+            'AccountOrderController:getState',
+          );
+
+          return accountOrderState.pinnedAccountList.includes(
+            internalAccount.address,
+          );
         },
       },
     },
