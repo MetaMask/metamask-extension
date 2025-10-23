@@ -1,12 +1,21 @@
 /**
  * @file The entry point for the web extension singleton process.
+/**
+ * Handles the onInstalled event.
+ *
+ * @param {chrome.runtime.InstalledDetails} details - Details about the installation event.
  */
-
-// Disabled to allow setting up initial state hooks first
-
-// This import sets up global functions required for Sentry to function.
-// It must be run first in case an error is thrown later during initialization.
-import './lib/setup-initial-state-hooks';
+function handleOnInstalled(details) {
+  if (details.reason === 'install') {
+    onInstall();
+  } else if (
+    details.reason === 'update' &&
+    details.previousVersion &&
+    details.previousVersion !== platform.getVersion()
+  ) {
+    onUpdate();
+  }
+}
 
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
@@ -469,7 +478,10 @@ const handleOnConnect = async (port) => {
       name: 'background-liveness',
     });
   } catch (e) {
-    log.error('MetaMask - Failed to message to port', e, message);
+    log.error(
+      'MetaMask - background-liveness check: Failed to message to port',
+      e,
+    );
     // window already closed, no need to continue.
     return;
   }
@@ -1598,8 +1610,7 @@ const addAppInstalledEvent = () => {
 /**
  * Handles the onInstalled event.
  *
- * @param {[chrome.runtime.InstalledDetails]} obj
- * @param {chrome.runtime.InstalledDetails} obj[0] - Details about the installation event.
+ * @param {[chrome.runtime.InstalledDetails[]]} params - Array containing a single installation details object.
  */
 function handleOnInstalled([details]) {
   if (details.reason === 'install') {
