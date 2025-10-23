@@ -36,7 +36,6 @@ import {
   AddAddressSecurityAlertResponse,
   GetAddressSecurityAlertResponse,
   ScanAddressResponse,
-  createCacheKey,
 } from '../../../../shared/lib/trust-signals';
 
 export type AddTransactionOptions = NonNullable<
@@ -262,16 +261,14 @@ function scanAddressForTrustSignals(request: AddTransactionRequest) {
     return;
   }
 
-  const getAddressSecurityAlertResponseWithChain = (address: string) => {
-    const cacheKey = createCacheKey(supportedEVMChain, address);
+  const getAddressSecurityAlertResponseWithChain = (cacheKey: string) => {
     return getSecurityAlertResponse(cacheKey);
   };
 
   const addAddressSecurityAlertResponseWithChain = (
-    address: string,
+    cacheKey: string,
     response: ScanAddressResponse,
   ) => {
-    const cacheKey = createCacheKey(supportedEVMChain, address);
     return addSecurityAlertResponse(cacheKey, response);
   };
 
