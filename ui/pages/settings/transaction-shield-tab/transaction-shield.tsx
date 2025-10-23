@@ -729,7 +729,7 @@ const TransactionShield = () => {
             () => {
               executeUnCancelSubscription();
             },
-            'shield-detail-resubscribe-button',
+            'shield-tx-membership-renew-button',
           )}
         {canCancel &&
           buttonRow(

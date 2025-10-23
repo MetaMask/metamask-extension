@@ -152,10 +152,14 @@ async function completeShieldPlanSubscriptionFlow(
   // Wait for checkout tab to open and switch to it
   await driver.waitUntilXWindowHandles(2);
 
-  // Focus on the main window and wait for the shield detail page to load
+  // Switch to the checkout tab and simulate successful payment completion
   const windowHandles = await driver.getAllWindowHandles();
+
+  await driver.delay(2000);
   await driver.closeWindowHandle(windowHandles[1]);
   await driver.waitUntilXWindowHandles(1);
+
+  // Switch back to the main MetaMask window
   await driver.switchToWindowWithTitle('MetaMask');
 }
 

@@ -37,7 +37,7 @@ export default class ShieldDetailPage {
     '[data-testid="shield-tx-membership-cancel-button"]';
 
   private readonly renewButton =
-    '[data-testid="shield-detail-resubscribe-button"]';
+    '[data-testid="shield-tx-membership-renew-button"]';
 
   private readonly viewBillingHistoryButton =
     '[data-testid="shield-detail-view-billing-history-button"]';
