@@ -656,19 +656,61 @@ export default function Routes() {
               );
             }}
           </Route>
-          <Authenticated
-            path={`${ASSET_ROUTE}/image/:asset/:id`}
-            component={NftFullImage}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
-            component={Asset}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/:chainId/:asset/`}
-            component={Asset}
-          />
-          <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
+          <Route path={`${ASSET_ROUTE}/image/:asset/:id`}>
+            {(props: RouteComponentProps<{ asset: string; id: string }>) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const NftFullImageComponent = NftFullImage as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <NftFullImageComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId/:asset/:id`}>
+            {(
+              props: RouteComponentProps<{
+                chainId: string;
+                asset: string;
+                id: string;
+              }>,
+            ) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const AssetComponent = Asset as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId/:asset/`}>
+            {(
+              props: RouteComponentProps<{
+                chainId: string;
+                asset: string;
+              }>,
+            ) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const AssetComponent = Asset as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId`}>
+            {(props: RouteComponentProps<{ chainId: string }>) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const AssetComponent = Asset as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Authenticated
             path={`${DEFI_ROUTE}/:chainId/:protocolId`}
             component={DeFiPage}
