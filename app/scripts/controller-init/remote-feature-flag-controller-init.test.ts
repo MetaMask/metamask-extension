@@ -68,7 +68,7 @@ describe('getConfigForRemoteFeatureFlagRequest', () => {
   });
 
   // @ts-expect-error ESLint is misconfigured and not applying Jest types to this file
-  it.each(Object.keys(ENVIRONMENT))(
+  it.each(Object.values(ENVIRONMENT))(
     'returns main-exp for experimental build in "%s" environment',
     async (environment: keyof typeof ENVIRONMENT) => {
       process.env.METAMASK_BUILD_TYPE = 'experimental';
