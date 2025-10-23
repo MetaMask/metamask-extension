@@ -62,7 +62,7 @@ export const useNetworkConnectionBanner =
     const clearTimers = useCallback(() => {
       clearDegradedTimer();
       clearUnavailableTimer();
-    }, []);
+    }, [clearDegradedTimer, clearUnavailableTimer]);
 
     const trackNetworkBannerEvent = useCallback(
       ({
@@ -141,6 +141,7 @@ export const useNetworkConnectionBanner =
               networkName: firstUnavailableEvmNetwork.networkName,
               networkClientId: firstUnavailableEvmNetwork.networkClientId,
               chainId: firstUnavailableEvmNetwork.chainId,
+              isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
             }),
           );
         }
@@ -168,6 +169,7 @@ export const useNetworkConnectionBanner =
               networkName: firstUnavailableEvmNetwork.networkName,
               networkClientId: firstUnavailableEvmNetwork.networkClientId,
               chainId: firstUnavailableEvmNetwork.chainId,
+              isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
             }),
           );
 
