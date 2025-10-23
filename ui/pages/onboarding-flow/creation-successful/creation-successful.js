@@ -2,7 +2,9 @@ import React, { useCallback, useMemo, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import browser from 'webextension-polyfill';
+///: END:ONLY_INCLUDE_IF
 import {
   Button,
   ButtonSize,
@@ -50,10 +52,14 @@ import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask
 import {
   toggleExternalServices,
   setCompletedOnboarding,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   setCompletedOnboardingWithSidepanel,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { getIsSidePanelFeatureEnabled } from '../../../../shared/modules/environment';
+///: END:ONLY_INCLUDE_IF
 
 export default function CreationSuccessful() {
   const navigate = useNavigate();
@@ -170,6 +176,7 @@ export default function CreationSuccessful() {
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
     // Side Panel - only if feature flag is enabled
     if (getIsSidePanelFeatureEnabled()) {
       try {
@@ -196,6 +203,11 @@ export default function CreationSuccessful() {
       // Regular onboarding completion when sidepanel is disabled
       await dispatch(setCompletedOnboarding());
     }
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    // Regular onboarding completion for non-experimental builds
+    await dispatch(setCompletedOnboarding());
+    ///: END:ONLY_INCLUDE_IF
 
     navigate(DEFAULT_ROUTE);
   }, [
