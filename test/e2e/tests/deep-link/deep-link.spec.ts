@@ -212,7 +212,7 @@ and we'll take you to the right place.`
         });
 
         await driver.navigate();
-        homePage.checkPageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         // test unsigned flow
         await driver.openNewURL(rawUrl);
