@@ -247,7 +247,7 @@ SrpInput.propTypes = {
    */
   onChange: PropTypes.func.isRequired,
   /**
-   * Text to show on the left of the Dropdown component. Wrapped in Typography component.
+   * Text to show on the left of the Dropdown component.
    */
   srpText: PropTypes.string.isRequired,
 };

@@ -9,16 +9,16 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
       class="mm-box confirmation-page__content mm-box--padding-4"
       style="overflow-y: auto;"
     >
-      <h3
-        class="box box--md:margin-2 box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h3 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+      <h4
+        class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-normal mm-box--margin-0 mm-box--sm:margin-0 mm-box--md:margin-2 mm-box--padding-0 mm-box--sm:padding-4 mm-box--md:padding-0 mm-box--lg:padding-4 mm-box--align-items-center mm-box--color-text-default"
       >
         Allow this site to switch the network?
-      </h3>
-      <h6
-        class="box box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+      </h4>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--padding-0 mm-box--sm:padding-4 mm-box--md:padding-0 mm-box--lg:padding-4 mm-box--align-items-center mm-box--color-text-alternative"
       >
         This will switch the selected network within MetaMask to a previously added network:
-      </h6>
+      </p>
       <div
         class="mm-box mm-box--margin-top-6 mm-box--margin-right-4 mm-box--margin-left-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-pill mm-box--border-style-solid mm-box--border-color-border-muted mm-box--border-width-1"
         data-testid="signature-origin-pill"
@@ -121,16 +121,16 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
       class="mm-box confirmation-page__content mm-box--padding-4"
       style="overflow-y: auto;"
     >
-      <h3
-        class="box box--md:margin-2 box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h3 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+      <h4
+        class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-normal mm-box--margin-0 mm-box--sm:margin-0 mm-box--md:margin-2 mm-box--padding-0 mm-box--sm:padding-4 mm-box--md:padding-0 mm-box--lg:padding-4 mm-box--align-items-center mm-box--color-text-default"
       >
         Allow this site to switch the network?
-      </h3>
-      <h6
-        class="box box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+      </h4>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--padding-0 mm-box--sm:padding-4 mm-box--md:padding-0 mm-box--lg:padding-4 mm-box--align-items-center mm-box--color-text-alternative"
       >
         This will switch the selected network within MetaMask to a previously added network:
-      </h6>
+      </p>
       <div
         class="mm-box mm-box--margin-top-6 mm-box--margin-right-4 mm-box--margin-left-4 mm-box--padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-pill mm-box--border-style-solid mm-box--border-color-border-muted mm-box--border-width-1"
         data-testid="signature-origin-pill"

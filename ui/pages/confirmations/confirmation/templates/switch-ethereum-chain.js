@@ -4,6 +4,7 @@ import {
   SEVERITIES,
   TextColor,
   TextVariant,
+  AlignItems,
 } from '../../../../helpers/constants/design-system';
 
 const PENDING_TX_DROP_NOTICE = {
@@ -37,12 +38,10 @@ function getValues(pendingApproval, t, actions) {
         children: t('switchEthereumChainConfirmationTitle'),
         props: {
           variant: TextVariant.headingSm,
-          align: 'center',
+          alignItems: AlignItems.center,
           fontWeight: 'normal',
-          boxProps: {
-            margin: [0, 0, 2],
-            padding: [0, 4, 0, 4],
-          },
+          margin: [0, 0, 2],
+          padding: [0, 4, 0, 4],
         },
       },
       {
@@ -52,10 +51,8 @@ function getValues(pendingApproval, t, actions) {
         props: {
           variant: TextVariant.bodySm,
           color: TextColor.textAlternative,
-          align: 'center',
-          boxProps: {
-            padding: [0, 4, 0, 4],
-          },
+          alignItems: AlignItems.center,
+          padding: [0, 4, 0, 4],
         },
       },
       {

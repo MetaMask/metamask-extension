@@ -260,11 +260,9 @@ function getValues(pendingApproval, t, actions, history, data) {
         children: title,
         props: {
           variant: TextVariant.headingSm,
-          align: 'center',
+          alignItems: AlignItems.center,
           fontWeight: 'bold',
-          boxProps: {
-            margin: [0, 0, 4],
-          },
+          margin: [0, 0, 4],
         },
       },
       {
@@ -273,10 +271,8 @@ function getValues(pendingApproval, t, actions, history, data) {
         children: subtitle,
         props: {
           variant: TextVariant.bodySm,
-          align: 'center',
-          boxProps: {
-            margin: originIsMetaMask ? [0, 8, 4] : [0, 0, 4],
-          },
+          alignItems: AlignItems.center,
+          margin: originIsMetaMask ? [0, 8, 4] : [0, 0, 4],
         },
       },
       {
@@ -346,12 +342,10 @@ function getValues(pendingApproval, t, actions, history, data) {
         ],
         props: {
           variant: TextVariant.bodySm,
-          boxProps: {
-            margin: originIsMetaMask ? [0, 8] : 0,
-            display: Display.Flex,
-            flexDirection: FlexDirection.Column,
-            alignItems: AlignItems.center,
-          },
+          margin: originIsMetaMask ? [0, 8] : 0,
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+          alignItems: AlignItems.center,
         },
       },
     ],
