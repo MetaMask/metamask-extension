@@ -23,12 +23,13 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import PulseLoader from '../../../components/ui/pulse-loader';
-import Box from '../../../components/ui/box';
+import {
+  Box,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   BLOCK_SIZES,
   TextVariant,
-  JustifyContent,
-  DISPLAY,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import SwapsFooter from '../swaps-footer';
@@ -88,8 +89,7 @@ export default function AwaitingSignatures() {
         paddingLeft={8}
         paddingRight={8}
         height={BLOCK_SIZES.FULL}
-        justifyContent={JustifyContent.center}
-        display={DISPLAY.FLEX}
+        justifyContent={BoxJustifyContent.Center}
         className="awaiting-signatures__content"
       >
         <Box marginTop={3} marginBottom={4}>

@@ -5,12 +5,13 @@ import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
 import { setSwapsErrorKey } from '../../../store/actions';
-import Box from '../../../components/ui/box';
 import {
-  DISPLAY,
-  AlignItems,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import {
   TextVariant,
-  FLEX_DIRECTION,
   TEXT_ALIGN,
   IconColor,
 } from '../../../helpers/constants/design-system';
@@ -38,9 +39,8 @@ export default function NotificationPage({ notificationKey }) {
   return (
     <div className="notification-page">
       <Box
-        alignItems={AlignItems.center}
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        alignItems={BoxAlignItems.Center}
+        flexDirection={BoxFlexDirection.Column}
         marginTop={10}
         marginLeft={4}
         marginRight={4}

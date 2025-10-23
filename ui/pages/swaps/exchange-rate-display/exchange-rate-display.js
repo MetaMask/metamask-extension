@@ -4,11 +4,12 @@ import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { formatSwapsValueForDisplay } from '../swaps.util';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import Box from '../../../components/ui/box';
 import {
-  JustifyContent,
-  DISPLAY,
-  AlignItems,
+  Box,
+  BoxJustifyContent,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
+import {
   IconColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -82,9 +83,8 @@ export default function ExchangeRateDisplay({
   return (
     <div className={classnames('exchange-rate-display', className)}>
       <Box
-        display={DISPLAY.FLEX}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
         onClick={onQuotesClick}
         color={quoteRateColor}
         className={quoteRateClassName}

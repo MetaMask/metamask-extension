@@ -15,13 +15,13 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
           class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
         >
           <div
-            class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+            class="flex flex-row p-4 network-account-balance-header"
           >
             <div
-              class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+              class="flex flex-row gap-2 items-center"
             >
               <div
-                class="box box--display-flex box--flex-direction-row box--align-items-center"
+                class="flex flex-row items-center"
               >
                 <div
                   class=""
@@ -79,7 +79,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 </div>
               </div>
               <div
-                class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
+                class="flex flex-col"
               >
                 <h6
                   class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
@@ -95,7 +95,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               </div>
             </div>
             <div
-              class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
+              class="flex flex-col"
             >
               <h6
                 class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
@@ -230,13 +230,13 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
         class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
       >
         <div
-          class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+          class="flex flex-row p-4 network-account-balance-header"
         >
           <div
-            class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+            class="flex flex-row gap-2 items-center"
           >
             <div
-              class="box box--display-flex box--flex-direction-row box--align-items-center"
+              class="flex flex-row items-center"
             >
               <div
                 class=""
@@ -294,7 +294,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               </div>
             </div>
             <div
-              class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
+              class="flex flex-col"
             >
               <h6
                 class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
@@ -310,7 +310,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
             </div>
           </div>
           <div
-            class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
+            class="flex flex-col"
           >
             <h6
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"

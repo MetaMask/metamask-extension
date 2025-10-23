@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 import { filter } from 'lodash';
 import log from 'loglevel';
 
-import Box from '../../../components/ui/box';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
-  AlignItems,
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
+import {
   TextVariant,
   BlockSize,
 } from '../../../helpers/constants/design-system';
@@ -116,8 +117,7 @@ export default function ListWithSearch({
     <Box className="list-with-search" width={BlockSize.Full} tabIndex="0">
       <Box
         style={{ gridColumnStart: 1, gridColumnEnd: 3 }}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        flexDirection={BoxFlexDirection.Column}
       >
         <TextFieldSearch
           id="list-with-search__text-search"
@@ -151,9 +151,8 @@ export default function ListWithSearch({
         <Box
           marginTop={1}
           marginBottom={5}
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
         >
           <Text variant={TextVariant.bodyMd} as="h6">
             {t('swapNoTokensAvailable', [searchQuery])}

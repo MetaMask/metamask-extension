@@ -4,19 +4,20 @@ import { useSelector } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import Box from '../../../../components/ui/box/box';
 import {
-  AlignItems,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   BlockSize,
   BorderStyle,
-  FlexDirection,
   FontWeight,
-  JustifyContent,
   TextVariant,
   BackgroundColor,
   IconColor,
   TextAlign,
-  Display,
 } from '../../../../helpers/constants/design-system';
 import {
   AvatarIcon,
@@ -63,9 +64,9 @@ export default function SnapResult({
 
     return (
       <Box
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
         height={BlockSize.Full}
         paddingTop={2}
         paddingBottom={2}
@@ -136,10 +137,10 @@ export default function SnapResult({
   return (
     <Box
       className="page-container snap-result"
-      justifyContent={JustifyContent.spaceBetween}
+      justifyContent={BoxJustifyContent.SpaceBetween}
       height={BlockSize.Full}
       borderStyle={BorderStyle.none}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundAlternative}
     >
       <SnapAuthorshipHeader
@@ -150,19 +151,18 @@ export default function SnapResult({
         className="snap-result__content"
         paddingLeft={4}
         paddingRight={4}
-        alignItems={AlignItems.center}
-        flexDirection={FlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        flexDirection={BoxFlexDirection.Column}
         backgroundColor={BackgroundColor.backgroundAlternative}
         height={BlockSize.Full}
-        justifyContent={JustifyContent.center}
+        justifyContent={BoxJustifyContent.Center}
       >
         {isLoading && (
           <Box
             className="snap-result__content__loader-container"
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.Center}
             height={BlockSize.Full}
           >
             <PulseLoader />
@@ -175,8 +175,8 @@ export default function SnapResult({
       </Box>
       <Box
         className="snap-result__footer"
-        alignItems={AlignItems.center}
-        flexDirection={FlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
+        flexDirection={BoxFlexDirection.Column}
         backgroundColor={BackgroundColor.backgroundAlternative}
       >
         <PageContainerFooter

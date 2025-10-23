@@ -4,9 +4,8 @@ import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
 import { BannerAlert } from '../../../components/component-library/banner-alert';
-import Box from '../../../components/ui/box';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import {
-  AlignItems,
   SEVERITIES,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -113,7 +112,7 @@ export default function SwapsBannerAlert({
             size={ButtonLinkSize.Inherit}
             textProps={{
               variant: TextVariant.bodyMd,
-              alignItems: AlignItems.flexStart,
+              alignItems: BoxAlignItems.FlexStart,
             }}
             as="a"
             href="https://support.metamask.io/token-swaps/user-guide-swaps/"

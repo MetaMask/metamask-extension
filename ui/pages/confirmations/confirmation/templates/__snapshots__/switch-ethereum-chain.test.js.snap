@@ -40,7 +40,7 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
         </h6>
       </div>
       <div
-        class="box box--flex-direction-row box--justify-content-center box--display-flex"
+        class="mm-box mm-box--justify-content-center"
       >
         <div
           class="mm-box confirmation-network-switch mm-box--margin-top-8 mm-box--display-flex mm-box--justify-content-center mm-box--height-full"
@@ -152,7 +152,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
         </h6>
       </div>
       <div
-        class="box box--flex-direction-row box--justify-content-center box--display-flex"
+        class="mm-box mm-box--justify-content-center"
       >
         <div
           class="mm-box confirmation-network-switch mm-box--margin-top-8 mm-box--display-flex mm-box--justify-content-center mm-box--height-full"

@@ -7,10 +7,10 @@ exports[`SnapUIAccountSelector renders an account selector 1`] = `
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+      class="mm-box snap-ui-renderer__container mm-box--display-flex mm-box--flex-direction-column"
     >
       <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        class="mm-box snap-ui-renderer__panel mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -312,10 +312,10 @@ exports[`SnapUIAccountSelector renders inside a field 1`] = `
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+      class="mm-box snap-ui-renderer__container mm-box--display-flex mm-box--flex-direction-column"
     >
       <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        class="mm-box snap-ui-renderer__panel mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box snap-ui-renderer__field mm-box--display-flex mm-box--flex-direction-column"

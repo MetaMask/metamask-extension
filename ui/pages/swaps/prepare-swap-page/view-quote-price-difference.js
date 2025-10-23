@@ -2,10 +2,8 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
-import Box from '../../../components/ui/box';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import {
-  DISPLAY,
-  AlignItems,
   SEVERITIES,
   TextVariant,
   BLOCK_SIZES,
@@ -56,7 +54,7 @@ export default function ViewQuotePriceDifference(props) {
       : SEVERITIES.WARNING;
 
   return (
-    <Box display={DISPLAY.FLEX} marginTop={2}>
+    <Box marginTop={2}>
       <BannerAlert
         title={priceDifferenceTitle}
         titleProps={{ 'data-testid': 'swaps-banner-title' }}

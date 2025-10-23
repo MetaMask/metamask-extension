@@ -7,10 +7,10 @@ exports[`SnapUIAddressInput renders the matched address info in a disabled state
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+      class="mm-box snap-ui-renderer__container mm-box--display-flex mm-box--flex-direction-column"
     >
       <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        class="mm-box snap-ui-renderer__panel mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -105,10 +105,10 @@ exports[`SnapUIAddressInput renders with an invalid CAIP Account ID 1`] = `
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+      class="mm-box snap-ui-renderer__container mm-box--display-flex mm-box--flex-direction-column"
     >
       <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        class="mm-box snap-ui-renderer__panel mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
@@ -147,10 +147,10 @@ exports[`SnapUIAddressInput will not render avatar when displayAvatar is false 1
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+      class="mm-box snap-ui-renderer__container mm-box--display-flex mm-box--flex-direction-column"
     >
       <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        class="mm-box snap-ui-renderer__panel mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
@@ -189,10 +189,10 @@ exports[`SnapUIAddressInput will render 1`] = `
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+      class="mm-box snap-ui-renderer__container mm-box--display-flex mm-box--flex-direction-column"
     >
       <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        class="mm-box snap-ui-renderer__panel mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"
@@ -227,10 +227,10 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+      class="mm-box snap-ui-renderer__container mm-box--display-flex mm-box--flex-direction-column"
     >
       <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        class="mm-box snap-ui-renderer__panel mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--flex-direction-column"
@@ -325,10 +325,10 @@ exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = 
     style="overflow-y: auto; margin-bottom: 0px;"
   >
     <div
-      class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
+      class="mm-box snap-ui-renderer__container mm-box--display-flex mm-box--flex-direction-column"
     >
       <div
-        class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
+        class="mm-box snap-ui-renderer__panel mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--color-text-default"
       >
         <div
           class="mm-box mm-form-text-field snap-ui-renderer__address-input mm-box--display-flex mm-box--flex-direction-column"

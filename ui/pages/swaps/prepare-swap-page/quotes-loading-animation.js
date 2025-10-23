@@ -2,13 +2,14 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
-import Box from '../../../components/ui/box';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
+import {
   TextColor,
-  JustifyContent,
-  AlignItems,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Text } from '../../../components/component-library';
@@ -22,15 +23,13 @@ export default function QuotesLoadingAnimation(props) {
   return (
     <Box
       marginTop={4}
-      display={DISPLAY.FLEX}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      justifyContent={BoxJustifyContent.Center}
+      alignItems={BoxAlignItems.Center}
+      flexDirection={BoxFlexDirection.Column}
     >
       <Box
-        display={DISPLAY.FLEX}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
       >
         <Text
           variant={TextVariant.bodyMd}
