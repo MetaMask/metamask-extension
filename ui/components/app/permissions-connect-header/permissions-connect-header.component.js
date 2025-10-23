@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { SubjectType } from '@metamask/permission-controller';
-import SiteOrigin from '../../ui/site-origin';
-import Box from '../../ui/box';
 import {
-  FLEX_DIRECTION,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import SiteOrigin from '../../ui/site-origin';
 
 export default class PermissionsConnectHeader extends Component {
   static propTypes = {
@@ -58,8 +58,8 @@ export default class PermissionsConnectHeader extends Component {
     return (
       <Box
         className={classnames('permissions-connect-header', className)}
-        flexDirection={FLEX_DIRECTION.COLUMN}
-        justifyContent={JustifyContent.center}
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Center}
         {...boxProps}
       >
         {this.renderHeaderIcon()}

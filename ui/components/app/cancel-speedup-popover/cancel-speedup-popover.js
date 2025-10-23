@@ -1,10 +1,14 @@
 import { useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
   AlignItems,
   Display,
-  FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getAppIsLoading } from '../../../selectors';
@@ -13,7 +17,6 @@ import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import GasDetailsItem from '../../../pages/confirmations/components/gas-details-item';
-import Box from '../../ui/box';
 import InfoTooltip from '../../ui/info-tooltip';
 import AppLoadingSpinner from '../app-loading-spinner';
 import {
@@ -21,10 +24,10 @@ import {
   Button,
   ButtonLink,
   Modal,
+  ModalContent,
+  ModalHeader,
   ModalOverlay,
 } from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
 const CancelSpeedupPopover = () => {
   const {
@@ -140,9 +143,8 @@ const CancelSpeedupPopover = () => {
             />
           </Text>
           <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            flexDirection={FlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            flexDirection={BoxFlexDirection.Column}
             marginTop={2}
             paddingBottom={4}
           >

@@ -21,6 +21,7 @@ export type {
   StyleUtilityProps,
   PolymorphicRef,
   PolymorphicComponentPropWithRef,
+  SizeNumber,
 } from './box';
 export {
   Button,

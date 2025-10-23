@@ -1,12 +1,12 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import Box from '../../ui/box';
+import { Box } from '../box';
 
 import {
   BorderColor,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 
 import { ModalFocus } from './modal-focus';
@@ -44,8 +44,8 @@ const Template: ComponentStory<typeof ModalFocus> = (args) => {
           <Box
             padding={4}
             borderColor={BorderColor.borderDefault}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
             gap={4}
           >
             {args.children}

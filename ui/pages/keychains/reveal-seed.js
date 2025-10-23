@@ -2,6 +2,12 @@ import qrCode from 'qrcode-generator';
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
 import { getErrorMessage } from '../../../shared/modules/error';
 import {
   MetaMetricsEventCategory,
@@ -22,7 +28,6 @@ import {
   TextFieldSize,
   TextFieldType,
 } from '../../components/component-library';
-import Box from '../../components/ui/box';
 import ExportTextContainer from '../../components/ui/export-text-container';
 import { Tab, Tabs } from '../../components/ui/tabs';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -221,9 +226,9 @@ export default function RevealSeedPage() {
           </Tab>
           <Tab name={t('revealSeedWordsQR')} tabKey="qr-srp">
             <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
+              flexDirection={BoxFlexDirection.Column}
+              justifyContent={BoxJustifyContent.Center}
+              alignItems={BoxAlignItems.Center}
               paddingTop={4}
               data-testid="qr-srp"
             >
@@ -241,7 +246,7 @@ export default function RevealSeedPage() {
 
   const renderPasswordPromptFooter = () => {
     return (
-      <Box display={Display.Flex} marginTop="auto" gap={4}>
+      <Box flexDirection={BoxFlexDirection.Column} className="mt-auto" gap={4}>
         <Button
           width={BlockSize.Full}
           size={Size.LG}
@@ -299,7 +304,7 @@ export default function RevealSeedPage() {
 
   const renderRevealSeedFooter = () => {
     return (
-      <Box marginTop="auto">
+      <Box className="mt-auto">
         <Button
           variant={BUTTON_VARIANT.SECONDARY}
           width={BlockSize.Full}

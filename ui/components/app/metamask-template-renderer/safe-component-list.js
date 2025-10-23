@@ -5,10 +5,10 @@ import {
   BannerAlert,
   FormTextField,
   Text,
+  Box,
 } from '../../component-library';
 import { AccountListItem } from '../../multichain';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
-import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Chip from '../../ui/chip';
 import DefinitionList from '../../ui/definition-list';
