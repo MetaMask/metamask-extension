@@ -1427,14 +1427,6 @@
         "bitcoin-address-validation": true
       }
     },
-    "@metamask/multichain-transactions-controller>@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "bitcoin-address-validation": true
-      }
-    },
     "@metamask/keyring-controller": {
       "globals": {
         "console.error": true
@@ -1474,14 +1466,6 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/keyring-snap-client>uuid": true
-      }
-    },
-    "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": {
-      "packages": {
-        "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
-        "@metamask/keyring-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": true
       }
     },
     "@metamask/eth-snap-keyring>@metamask/keyring-snap-sdk": {
@@ -1532,6 +1516,11 @@
         "buffer": true,
         "webpack>events": true,
         "uuid": true
+      }
+    },
+    "@metamask/messenger": {
+      "globals": {
+        "console.error": true
       }
     },
     "@metamask/multichain-account-service": {
@@ -1590,8 +1579,8 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/multichain-transactions-controller>@metamask/keyring-api": true,
-        "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client": true,
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true
       }
     },
@@ -1886,8 +1875,7 @@
         "@metamask/base-controller": true,
         "@metamask/signature-controller": true,
         "@metamask/transaction-controller": true,
-        "@metamask/utils": true,
-        "lodash": true
+        "@metamask/utils": true
       }
     },
     "@metamask/signature-controller": {
@@ -1907,28 +1895,6 @@
         "webpack>events": true,
         "@metamask/message-manager>jsonschema": true,
         "uuid": true
-      }
-    },
-    "@metamask/smart-transactions-controller": {
-      "globals": {
-        "URLSearchParams": true,
-        "clearInterval": true,
-        "console.error": true,
-        "console.log": true,
-        "fetch": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@ethersproject/bytes": true,
-        "ethers>@ethersproject/keccak256": true,
-        "ethers>@ethersproject/transactions": true,
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/transaction-controller": true,
-        "@metamask/smart-transactions-controller>bignumber.js": true,
-        "fast-json-patch": true,
-        "lodash": true
       }
     },
     "@metamask/snaps-controllers": {
@@ -3018,11 +2984,6 @@
       }
     },
     "@metamask/notification-services-controller>bignumber.js": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/smart-transactions-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
@@ -5829,11 +5790,6 @@
       }
     },
     "@metamask/keyring-snap-client>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/multichain-transactions-controller>@metamask/keyring-snap-client>uuid": {
       "globals": {
         "crypto": true
       }
