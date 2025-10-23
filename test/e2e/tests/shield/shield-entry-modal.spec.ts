@@ -3,7 +3,7 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import ShieldPlanPage from '../../page-objects/pages/settings/shield-plan-page';
+import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
