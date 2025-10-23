@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type { Browser, Events } from 'webextension-polyfill';
 import {
   BrowserInterface,
@@ -97,7 +96,7 @@ export class ExtensionLazyListener<
    * @returns The event object corresponding to the specified namespace and event name.
    */
   #getEvent(namespace: string, eventName: string) {
-    // @ts-expect-error - we don't need property types here, as we're just
+    // @ts-expect-error - we don't need valid types here, as we're just
     // doing this to cast to `Events.Event<...>`
     const event = this.#browser[namespace][eventName];
     return event as Events.Event<(...args: unknown[]) => void>;
@@ -105,7 +104,7 @@ export class ExtensionLazyListener<
 
   /**
    * Adds a listener for the specified namespace and event name. If there are
-   * any buffered calls, they will be asynchronously invoked with the callback.
+   * any buffered calls, they will be synchronously invoked with the callback.
    *
    * @param namespace - The browser namespace, e.g., 'runtime', 'tabs', etc.
    * @param eventName - The event name within the namespace, e.g., 'onMessage', 'onInstalled', etc.
@@ -133,7 +132,7 @@ export class ExtensionLazyListener<
 
         // 2. flush any buffered calls
         const { args } = tracker;
-        for (let i = 0, l = args.length; i < l; i++) {
+        for (let i = 0, length = args.length; i < length; i++) {
           try {
             callback(...args[i]);
 
@@ -143,7 +142,7 @@ export class ExtensionLazyListener<
             // be consumed later.
             if (!event.hasListener(callback)) {
               const next = i + 1;
-              if (next !== l) {
+              if (next !== length) {
                 args.splice(0, next);
                 trackers.set(eventName, tracker);
                 event.addListener(tracker.listener);
@@ -155,7 +154,7 @@ export class ExtensionLazyListener<
             // the remaining are still "good", so we need to put the tracker
             // back, in case another listener is added later.
             const next = i + 1;
-            if (next !== l) {
+            if (next !== length) {
               args.splice(0, next);
               trackers.set(eventName, tracker);
               event.addListener(tracker.listener);

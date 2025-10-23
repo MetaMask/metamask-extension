@@ -6,52 +6,69 @@ import { Browser, Events, Runtime } from 'webextension-polyfill';
 import { ExtensionLazyListener } from './extension-lazy-listener';
 import { BrowserInterface, Entries } from './extension-lazy-listener.types';
 
+/**
+ * A mock listener type just for testing.
+ */
 type MockListener = (...args: any[]) => void;
 
+/**
+ * A mock Events.Event implementation for testing.
+ *
+ * e.g., `browser.runtime.onConnect` implements this sort of interface
+ */
 class MockEvent
   implements Partial<import('webextension-polyfill').Events.Event<any>>
 {
-  private listeners: MockListener[] = [];
+  #listeners: MockListener[] = [];
 
   public addListener = (listener: MockListener) => {
-    if (!this.listeners.includes(listener)) {
-      this.listeners.push(listener);
+    if (!this.#listeners.includes(listener)) {
+      this.#listeners.push(listener);
     }
   };
 
   public removeListener = (listener: MockListener) => {
-    this.listeners = this.listeners.filter((l) => l !== listener);
+    this.#listeners = this.#listeners.filter((l) => l !== listener);
   };
 
   public hasListener = (listener: MockListener) =>
-    this.listeners.includes(listener);
+    this.#listeners.includes(listener);
 
-  // Non-standard helper used only by tests to fire the event.
+  /**
+   * Non-standard helper used only by tests to fire the event.
+   *
+   * @param args - The arguments to pass to listeners.
+   */
   public trigger = (...args: unknown[]) => {
     // copy to tolerate mutation (e.g., removing listener mid-iteration)
-    const current = [...this.listeners];
+    const current = [...this.#listeners];
     for (const l of current) {
       l(...args);
     }
   };
 }
 
-// Helper to build a mock browser namespace with arbitrary events
-function buildMockBrowser<Brows extends Record<string, readonly string[]>>(
-  namespaces: Brows,
-) {
+/**
+ * Helper to build a mock browser namespace with arbitrary events
+ *
+ * @param namespaces - The namespaces and their events.
+ * @returns The mock browser.
+ */
+function buildMockBrowser<
+  MockBrowser extends Record<string, readonly string[]>,
+>(namespaces: MockBrowser) {
   type MockEventsEvent = MockEvent & Events.Event<MockListener>;
   const browser: BrowserInterface & {
-    [K in keyof Brows]: {
-      [E in Brows[K][number]]: MockEventsEvent;
+    [Key in keyof MockBrowser]: {
+      [EventName in MockBrowser[Key][number]]: MockEventsEvent;
     };
   } = {} as any;
-  for (const [ns, events] of Object.entries(namespaces) as Entries) {
+  for (const [namespace, events] of Object.entries(namespaces) as Entries) {
     // @ts-expect-error - dynamic assignment
-    browser[ns] = {};
+    browser[namespace] = {};
     for (const ev of events) {
       // @ts-expect-error - dynamic assignment
-      browser[ns][ev] = new MockEvent();
+      browser[namespace][ev] = new MockEvent();
     }
   }
   return browser;
@@ -60,7 +77,8 @@ function buildMockBrowser<Brows extends Record<string, readonly string[]>>(
 describe('ExtensionLazyListener', () => {
   beforeEach(() => {
     jest.useRealTimers();
-    process.env.IN_TEST = 'true'; // ensure error logging path
+    // ensure `console.error` logging path is taken
+    process.env.IN_TEST = 'true';
   });
 
   afterEach(() => {
@@ -275,8 +293,6 @@ describe('ExtensionLazyListener', () => {
     expect(spy.mock.calls[0][0]).toMatch(/tabs.onActivated/u);
   });
 
-  // --- Additional branch coverage tests ---
-
   it('addListener for event that was not part of Options does not flush prior triggers', () => {
     const browser = buildMockBrowser({ runtime: ['onFoo', 'onBar'] });
     // Only track onFoo lazily
@@ -418,7 +434,7 @@ describe('ExtensionLazyListener', () => {
 
   describe('TypeScript Types', () => {
     // this browser proxy pretends to have a namespace and event for every
-    // possible PropertyKey. Its used for testing types only.
+    // possible PropertyKey. It's used for testing types only.
     const everyThingBrowser = new Proxy(
       {},
       {

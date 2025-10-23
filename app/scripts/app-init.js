@@ -1,13 +1,13 @@
 // This file is used only for manifest version 3
 
 // We don't usually `import` files into `app-init.js` because we need to load
-// "chunks" via `importScripts`; but in this case `extension-lazy-listener` file
-// is so small we won't ever have a problem with these two files being "split".
+// "chunks" via `importScripts`; but in this case `ExtensionLazyListener` is so
+// small we won't ever have a problem with these two files being "split".
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
 
 const { chrome } = globalThis;
 
-// this needs to be run early we can begin listening to these browser events
+// this needs to be run early so we can begin listening to these browser events
 // as soon as possible
 const listener = new ExtensionLazyListener(chrome, {
   runtime: ['onInstalled', 'onConnect'],
@@ -18,7 +18,7 @@ const listener = new ExtensionLazyListener(chrome, {
  */
 globalThis.stateHooks = globalThis.stateHooks || {};
 
-// Set the lazy listener on globalThis.stateHooks so that other _bundles_ can
+// Set the lazy listener on globalThis.stateHooks so that other bundles can
 // access it.
 globalThis.stateHooks.lazyListener = listener;
 
@@ -119,8 +119,7 @@ function importAllScripts() {
 
   // for performance metrics/reference
   console.log(
-    `SCRIPTS IMPORT COMPLETE in Seconds: ${
-      (Date.now() - startImportScriptsTime) / 1000
+    `SCRIPTS IMPORT COMPLETE in Seconds: ${(Date.now() - startImportScriptsTime) / 1000
     }`,
   );
 
