@@ -22,7 +22,6 @@ import {
   getOrderedConnectedAccountsForActiveTab,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getEnabledNetworks,
 } from '../selectors';
 import { MergedInternalAccount } from '../selectors.types';
 import {
