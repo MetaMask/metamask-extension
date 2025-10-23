@@ -44,15 +44,13 @@ export function isNonEvmAccount(account: InternalAccount) {
 }
 
 export const getInternalAccounts = createSelector(
-  (state: AccountsState) =>
-    Object.values(state.metamask.internalAccounts.accounts),
-  (accounts) => accounts,
+  getInternalAccountsObject,
+  (accounts) => Object.values(accounts),
 );
 
-export const getInternalAccountsObject = createSelector(
-  (state: AccountsState) => state.metamask.internalAccounts.accounts,
-  (internalAccounts) => internalAccounts,
-);
+export function getInternalAccountsObject(state: AccountsState) {
+  return state.metamask.internalAccounts.accounts;
+}
 
 export const getMemoizedInternalAccountByAddress = createDeepEqualSelector(
   [getInternalAccounts, (_state, address) => address],
