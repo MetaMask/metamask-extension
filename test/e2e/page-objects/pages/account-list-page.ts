@@ -238,6 +238,15 @@ class AccountListPage {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
     }
+
+    if (options?.isMultichainAccountsState2Enabled) {
+      console.log(`Check that account syncing not displayed in account list`);
+      await this.driver.assertElementNotPresent({
+        css: this.createMultichainAccountButton,
+        text: 'Syncing',
+      });
+    }
+
     console.log('Account list is loaded');
   }
 
