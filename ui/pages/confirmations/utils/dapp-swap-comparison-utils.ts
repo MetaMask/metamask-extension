@@ -265,14 +265,17 @@ export function getBestQuote(
     if (
       (minBelowAmountMin && quoteMinGreaterThanAmountMin) ||
       (quoteValue.greaterThan(highestQuoteValue) &&
-        (!minBelowAmountMin || quoteMinGreaterThanAmountMin))
+        (minBelowAmountMin || quoteMinGreaterThanAmountMin))
     ) {
       minBelowAmountMin = !quoteMinGreaterThanAmountMin;
       highestQuoteValue = quoteValue;
       selectedQuoteIndex = index;
     }
   });
-
+  console.log(
+    '---------------SELECTED QUOTE INDEX---------------',
+    selectedQuoteIndex,
+  );
   return selectedQuoteIndex > -1 ? quotes[selectedQuoteIndex] : undefined;
 }
 
