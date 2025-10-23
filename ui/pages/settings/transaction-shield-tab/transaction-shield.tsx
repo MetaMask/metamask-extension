@@ -70,6 +70,7 @@ import {
   useSubscriptionPricing,
 } from '../../../hooks/subscription/useSubscriptionPricing';
 import {
+  getSubscriptionCryptoApprovalAmount,
   setSecurityAlertsEnabled,
   setUsePhishDetect,
   setUseTransactionSimulations,
@@ -89,7 +90,7 @@ import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
 } from '../../../../shared/lib/shield';
-import { calculateSubscriptionRemainingBillingCycles } from '../../../../shared/modules/shield';
+import { useAsyncResult } from '../../../hooks/useAsync';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
@@ -331,54 +332,53 @@ const TransactionShield = () => {
       shieldSubscription?.paymentMethod.crypto.error ===
         CRYPTO_PAYMENT_METHOD_ERRORS.APPROVAL_TRANSACTION_MAX_VERIFICATION_ATTEMPTS_REACHED);
 
+  const { value: subscriptionCryptoApprovalAmount } =
+    useAsyncResult(async () => {
+      if (
+        !currentToken ||
+        !shieldSubscription ||
+        !isCryptoPaymentMethod(shieldSubscription.paymentMethod)
+      ) {
+        return undefined;
+      }
+      const amount = getSubscriptionCryptoApprovalAmount({
+        chainId: shieldSubscription.paymentMethod.crypto.chainId,
+        paymentTokenAddress: currentToken.address,
+        productType: PRODUCT_TYPES.SHIELD,
+        interval: shieldSubscription.interval,
+      });
+
+      return amount;
+    }, [currentToken, shieldSubscription]);
+
   const paymentToken = useMemo(() => {
     if (
       !shieldSubscription ||
       !currentToken ||
       !isCryptoPaymentMethod(shieldSubscription.paymentMethod) ||
       !shieldSubscription.endDate ||
-      !productInfo
+      !productInfo ||
+      !subscriptionCryptoApprovalAmount
     ) {
       return undefined;
     }
-
-    const remainingBillingCycles = calculateSubscriptionRemainingBillingCycles({
-      currentPeriodEnd: new Date(shieldSubscription.currentPeriodEnd),
-      endDate: new Date(shieldSubscription.endDate),
-      interval: shieldSubscription.interval,
-    });
-    // no need to use BigInt since max unitDecimals are always 2 for price
-    const priceAmount =
-      (productInfo.unitAmount / 10 ** productInfo.unitDecimals) *
-      remainingBillingCycles;
-
-    // TODO: consider moving this calculation logic to controller ?
-    // conversionRate is in usd decimal. In most currencies, we only care about 2 decimals (cents)
-    // So, scale must be max of 10 ** 4 (most exchanges trade with max 4 decimals of usd)
-    const SCALE = 10n ** 4n;
-    const conversionRate = currentToken.conversionRate[productInfo.currency];
-    const conversionRateScaled =
-      BigInt(Math.round(Number(conversionRate) * Number(SCALE))) / SCALE;
-    const priceAmountScaled =
-      BigInt(Math.round(priceAmount * Number(SCALE))) / SCALE;
-
-    const tokenDecimal = BigInt(10) ** BigInt(currentToken.decimals);
-
-    const tokenAmount =
-      (priceAmountScaled * tokenDecimal) / conversionRateScaled;
-    const approveAmount = tokenAmount.toString();
 
     return {
       chainId: shieldSubscription.paymentMethod.crypto.chainId,
       address: currentToken.address,
       approvalAmount: {
-        approveAmount,
+        approveAmount: subscriptionCryptoApprovalAmount.approveAmount,
         chainId: shieldSubscription.paymentMethod.crypto.chainId,
         paymentAddress: shieldSubscription.paymentMethod.crypto.payerAddress,
         paymentTokenAddress: currentToken.address,
       },
     };
-  }, [productInfo, currentToken, shieldSubscription]);
+  }, [
+    productInfo,
+    currentToken,
+    shieldSubscription,
+    subscriptionCryptoApprovalAmount,
+  ]);
 
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(paymentToken);
