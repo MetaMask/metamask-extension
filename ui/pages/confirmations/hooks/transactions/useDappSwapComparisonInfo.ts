@@ -32,6 +32,7 @@ export function useDappSwapComparisonInfo() {
   const {
     chainId,
     gasUsed,
+    gasLimitNoBuffer,
     id: transactionId,
     simulationData,
     txParams,
@@ -51,6 +52,8 @@ export function useDappSwapComparisonInfo() {
     updateQuoteResponseLatency,
     updateSwapComparisonLatency,
   } = useDappSwapComparisonLatencyMetrics();
+
+  console.log('-----------currentConfirmation--------', currentConfirmation);
 
   const captureDappSwapComparisonMetricsProperties = useCallback(
     (params: {
@@ -229,7 +232,7 @@ export function useDappSwapComparisonInfo() {
       );
 
       const confirmationGasUsd = getGasUSDValue(
-        new BigNumber(gasUsed ?? gas ?? '0x0', 16),
+        new BigNumber(gasUsed ?? gasLimitNoBuffer ?? gas ?? '0x0', 16),
       );
 
       const destTokenBalanceChange = getBalanceChangeFromSimulationData(
@@ -311,6 +314,7 @@ export function useDappSwapComparisonInfo() {
     captureDappSwapComparisonMetricsProperties,
     fiatRates,
     gas,
+    gasLimitNoBuffer,
     gasUsed,
     getGasUSDValue,
     getUSDValueForDestinationToken,
