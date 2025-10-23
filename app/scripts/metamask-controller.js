@@ -2524,6 +2524,10 @@ export default class MetamaskController extends EventEmitter {
           accountGroupName,
         );
       },
+      setAccountGroupPinned:
+        this.accountTreeController.setAccountGroupPinned.bind(this),
+      setAccountGroupHidden:
+        this.accountTreeController.setAccountGroupHidden.bind(this),
       syncAccountTreeWithUserStorage: async () => {
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         await this.getSnapKeyring();
