@@ -60,7 +60,7 @@ export function getCurrencyRateControllerInitMessenger(
     namespace: 'CurrencyRateControllerInit',
     parent: messenger,
   });
-  controllerInitMessenger.delegate({
+  messenger.delegate({
     messenger: controllerInitMessenger,
     actions: ['PreferencesController:getState'],
   });

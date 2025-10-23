@@ -113,7 +113,7 @@ export function getNftControllerInitMessenger(
     namespace: 'NftControllerInit',
     parent: messenger,
   });
-  controllerInitMessenger.delegate({
+  messenger.delegate({
     messenger: controllerInitMessenger,
     actions: ['MetaMetricsController:trackEvent'],
   });
