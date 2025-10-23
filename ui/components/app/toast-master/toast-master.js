@@ -58,6 +58,7 @@ import {
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
+  getIconSeedAddressByAccountGroupId,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
@@ -241,6 +242,13 @@ function ConnectAccountGroupToast() {
       .map((account) => account.address);
   }, [existingChainIds, selectedAccountGroupInternalAccounts?.accounts]);
 
+  const seedAddress = useSelector((state) =>
+    getIconSeedAddressByAccountGroupId(
+      state,
+      selectedAccountGroupInternalAccounts.id,
+    ),
+  );
+
   // Early return if selectedAccountGroupInternalAccounts is undefined
   if (!selectedAccountGroupInternalAccounts) {
     return null;
@@ -252,10 +260,7 @@ function ConnectAccountGroupToast() {
         dataTestId="connect-account-toast"
         key="connect-account-toast"
         startAdornment={
-          <PreferredAvatar
-            address={selectedAccountGroupInternalAccounts.id}
-            className="self-center"
-          />
+          <PreferredAvatar address={seedAddress} className="self-center" />
         }
         text={t('accountIsntConnectedToastText', [
           selectedAccountGroupInternalAccounts.metadata?.name,
