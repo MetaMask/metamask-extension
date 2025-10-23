@@ -2,9 +2,8 @@ import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { capitalize } from 'lodash';
+import { Box, twMerge } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Box from '../../ui/box';
-import { BLOCK_SIZES } from '../../../helpers/constants/design-system';
 
 export const threeStepStages = {
   PASSWORD_CREATE: 1,
@@ -56,7 +55,10 @@ export function ThreeStepProgressBar({ stage, ...boxProps }) {
 export function TwoStepProgressBar({ stage, ...boxProps }) {
   const t = useI18nContext();
   return (
-    <Box width={BLOCK_SIZES.FULL} {...boxProps}>
+    <Box
+      {...boxProps}
+      className={twMerge('w-full', ...(boxProps?.className || ''))}
+    >
       <ul className="progressbar two-steps">
         <li
           className={classnames({

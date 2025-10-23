@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { Box } from '@metamask/design-system-react';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { isNullish } from '../../../../../helpers/utils/util';
 import { formatGasFeeOrFeeRange } from '../../../../../helpers/utils/gas';
 import { I18nContext } from '../../../../../contexts/i18n';
@@ -38,13 +38,12 @@ const AdvancedGasFeeInputSubtext = ({ latest, historical, trend }) => {
   const trendInfo = determineTrendInfo(trend, t);
   return (
     <Box
-      display="flex"
-      alignItems="center"
+      alignItems={BoxAlignItems.center}
       gap={4}
       className="advanced-gas-fee-input-subtext"
     >
       {isNullish(latest) ? null : (
-        <Box display="flex" alignItems="center" data-testid="latest">
+        <Box alignItems={BoxAlignItems.center} data-testid="latest">
           <span className="advanced-gas-fee-input-subtext__label">
             {t('currentTitle')}
           </span>
