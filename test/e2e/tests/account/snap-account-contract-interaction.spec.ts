@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
 import { Anvil } from '../../seeder/anvil';
@@ -14,7 +15,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Snap Account Contract interaction', function (this: Suite) {
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
@@ -22,6 +23,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
     await withFixtures(
       {
         dapp: true,
+        dappPaths: ['test-dapp', 'snap-simple-keyring-site'],
         fixtures: new FixtureBuilder()
           .withPermissionControllerSnapAccountConnectedToTestDapp()
           .build(),
@@ -29,7 +31,13 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           hardfork: 'london',
         },
         smartContract,
-        testSpecificMock: mockSimpleKeyringSnap,
+        testSpecificMock: async (mockServer: Mockttp) => {
+          const snapMocks = await mockSnapSimpleKeyringAndSite(
+            mockServer,
+            8081,
+          );
+          return snapMocks;
+        },
         title: this.test?.fullTitle(),
       },
       async ({

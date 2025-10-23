@@ -70,7 +70,10 @@ describe('lockdown', function (this: Mocha.Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ignoredConsoleErrors: ['Error: Could not establish connection.'],
+        ignoredConsoleErrors: [
+          'Error: Could not establish connection.',
+          'Error: Premature close', // issue #35241
+        ],
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {

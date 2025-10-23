@@ -4,7 +4,10 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { NetworkControllerGetSelectedNetworkClientAction } from '@metamask/network-controller';
+import {
+  NetworkControllerGetSelectedNetworkClientAction,
+  NetworkControllerNetworkDidChangeEvent,
+} from '@metamask/network-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import AccountTrackerController from '../controllers/account-tracker-controller';
 import { ControllerInitRequest } from './types';
@@ -19,20 +22,20 @@ import { AccountTrackerControllerInit } from './account-tracker-controller-init'
 
 jest.mock('../controllers/account-tracker-controller');
 
-function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<
-    AccountTrackerControllerMessenger,
-    AccountTrackerControllerInitMessenger
-  >
-> {
-  const baseMessenger = new Messenger<
+function getInitRequestMock(
+  baseMessenger = new Messenger<
     MockAnyNamespace,
     | NetworkControllerGetSelectedNetworkClientAction
     | RemoteFeatureFlagControllerGetStateAction
     | ActionConstraint,
     never
-  >({ namespace: MOCK_ANY_NAMESPACE });
-
+  >({ namespace: MOCK_ANY_NAMESPACE }),
+): jest.Mocked<
+  ControllerInitRequest<
+    AccountTrackerControllerMessenger,
+    AccountTrackerControllerInitMessenger
+  >
+> {
   baseMessenger.registerActionHandler(
     'NetworkController:getSelectedNetworkClient',
     () => ({
@@ -95,5 +98,28 @@ describe('AccountTrackerControllerInit', () => {
     expect(chainIds).toContain('0x1'); // Ethereum
     expect(chainIds).toContain('0x38'); // BSC
     expect(chainIds).toContain('0xe708'); // Linea
+  });
+
+  it('calls `updateAccounts` when `NetworkController:networkDidChange` is emitted', () => {
+    const messenger = new Messenger<
+      MockAnyNamespace,
+      | NetworkControllerGetSelectedNetworkClientAction
+      | RemoteFeatureFlagControllerGetStateAction
+      | ActionConstraint,
+      NetworkControllerNetworkDidChangeEvent
+    >({ namespace: MOCK_ANY_NAMESPACE });
+
+    const request = getInitRequestMock(messenger);
+    const { controller } = AccountTrackerControllerInit(request);
+
+    expect(controller.updateAccounts).not.toHaveBeenCalled();
+
+    messenger.publish('NetworkController:networkDidChange', {
+      selectedNetworkClientId: 'test',
+      networkConfigurationsByChainId: {},
+      networksMetadata: {},
+    });
+
+    expect(controller.updateAccounts).toHaveBeenCalledTimes(1);
   });
 });

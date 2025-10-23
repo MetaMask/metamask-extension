@@ -1,5 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { ProductPrice } from '@metamask/subscription-controller';
 import { getMockApproveConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { tEn } from '../../../../../../../test/lib/i18n-helpers';
@@ -45,6 +46,23 @@ jest.mock('../../../../../../store/actions', () => ({
     upperTimeBound: 60000,
   }),
 }));
+
+jest.mock('../../../../../../hooks/subscription/useSubscriptionPricing', () => {
+  const mockProductPrice: ProductPrice = {
+    interval: 'month',
+    minBillingCycles: 12,
+    unitAmount: 8000000,
+    unitDecimals: 6,
+    currency: 'usd',
+    trialPeriodDays: 7,
+  };
+  return {
+    useShieldSubscriptionPricingFromTokenApproval: jest.fn(() => ({
+      productPrice: mockProductPrice,
+      pending: false,
+    })),
+  };
+});
 
 describe('ShieldSubscriptionApproveInfo', () => {
   it('renders correctly', () => {

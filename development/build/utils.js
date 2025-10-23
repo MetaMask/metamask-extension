@@ -127,10 +127,7 @@ function getEnvironment({ buildTarget }) {
     return ENVIRONMENT.DEVELOPMENT;
   } else if (isTestBuild(buildTarget)) {
     return ENVIRONMENT.TESTING;
-  } else if (
-    /^Version-v(\d+)[.](\d+)[.](\d+)/u.test(branch) ||
-    /^release\/(\d+)[.](\d+)[.](\d+)/u.test(branch)
-  ) {
+  } else if (/^release\/(\d+)[.](\d+)[.](\d+)/u.test(branch)) {
     return ENVIRONMENT.RELEASE_CANDIDATE;
   } else if (branch === 'main') {
     return ENVIRONMENT.STAGING;

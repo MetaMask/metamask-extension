@@ -3,12 +3,12 @@ name: Check Attributions
 on:
   push:
     branches:
-      - Version-v*
       - release/*
 
 jobs:
   check-attributions:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1

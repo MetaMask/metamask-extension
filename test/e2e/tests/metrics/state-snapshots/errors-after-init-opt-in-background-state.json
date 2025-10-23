@@ -41,6 +41,7 @@
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
     "showPermissionsTour": true,
+    "showShieldEntryModalOnce": "boolean",
     "showNetworkBanner": true,
     "showAccountBanner": true,
     "productTour": "accountIcon",
@@ -70,7 +71,9 @@
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
     "termsOfUseLastAgreed": "number",
-    "snapsInstallPrivacyWarningShown": true
+    "snapsInstallPrivacyWarningShown": true,
+    "shieldEndingToastLastClickedOrClosed": "object",
+    "shieldPausedToastLastClickedOrClosed": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -287,7 +290,6 @@
     "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
     "isMultiAccountBalancesEnabled": "boolean",
-    "showIncomingTransactions": "object",
     "manageInstitutionalWallets": "boolean",
     "referrals": "object"
   },
