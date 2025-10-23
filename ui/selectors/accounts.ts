@@ -8,7 +8,6 @@ import {
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import { createSelector } from 'reselect';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
@@ -43,7 +42,7 @@ export function isNonEvmAccount(account: InternalAccount) {
   );
 }
 
-export const getInternalAccounts = createSelector(
+export const getInternalAccounts = createDeepEqualSelector(
   getInternalAccountsObject,
   (accounts) => Object.values(accounts),
 );
