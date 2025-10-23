@@ -53,6 +53,7 @@ export const ShieldPaymentModal = ({
   selectedToken,
   onAssetChange,
   hasStableTokenWithBalance,
+  tokensSupported,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -62,6 +63,7 @@ export const ShieldPaymentModal = ({
   selectedToken?: TokenWithApprovalAmount;
   onAssetChange: (asset: TokenWithApprovalAmount) => void;
   hasStableTokenWithBalance: boolean;
+  tokensSupported: string[];
 }) => {
   const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
@@ -96,6 +98,16 @@ export const ShieldPaymentModal = ({
       }
     };
   }, [availableTokenBalances]);
+
+  const noCryptoFundsText = useMemo(() => {
+    const lastToken = tokensSupported.pop();
+
+    if (tokensSupported.length > 0) {
+      return t('shieldPlanNoFunds', [tokensSupported.join(', '), lastToken]);
+    }
+
+    return t('shieldPlanNoFundsOneToken', [lastToken]);
+  }, [tokensSupported, t]);
 
   return (
     <Modal
@@ -184,7 +196,7 @@ export const ShieldPaymentModal = ({
                     {t('shieldPlanPayWithToken', [
                       hasStableTokenWithBalance
                         ? (selectedToken?.symbol ?? '')
-                        : 'Crypto',
+                        : 'crypto',
                     ])}
                   </Text>
                   <Text
@@ -193,7 +205,7 @@ export const ShieldPaymentModal = ({
                   >
                     {hasStableTokenWithBalance
                       ? `${t('balance')}: ${selectedToken?.string ?? ''} ${selectedToken?.symbol ?? ''}`
-                      : t('shieldPlanNoFunds')}
+                      : noCryptoFundsText}
                   </Text>
                 </Box>
               </Box>
