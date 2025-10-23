@@ -296,16 +296,14 @@ export function getBalanceChangeFromSimulationData(
   const { nativeBalanceChange, tokenBalanceChanges } = simulationData;
   let balanceDifference = '0x0';
   if (isNativeAddress(tokenAddress)) {
-    balanceDifference = nativeBalanceChange?.difference ?? '0';
+    balanceDifference = nativeBalanceChange?.difference ?? '0x0';
   } else {
     balanceDifference =
       tokenBalanceChanges.find(
         (change: SimulationTokenBalanceChange) =>
           change.address === tokenAddress,
-      )?.difference ?? '0';
+      )?.difference ?? '0x0';
   }
 
-  return (
-    balanceDifference ? new BigNumber(balanceDifference, 16) : new BigNumber(0)
-  ).toString(10);
+  return new BigNumber(balanceDifference, 16).toString(10);
 }

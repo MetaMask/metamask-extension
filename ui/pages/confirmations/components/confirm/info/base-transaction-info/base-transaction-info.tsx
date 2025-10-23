@@ -22,12 +22,13 @@ const BaseTransactionInfo = () => {
     return null;
   }
 
+  const dappSwapMetricsEnabled =
+    (dappSwapMetrics as { enabled: boolean })?.enabled === true &&
+    transactionMeta.origin === DAPP_SWAP_COMPARISON_ORIGIN;
+
   return (
     <>
-      {(dappSwapMetrics as { enabled: boolean })?.enabled === true &&
-        transactionMeta.origin === DAPP_SWAP_COMPARISON_ORIGIN && (
-          <DappSwapComparisonBanner />
-        )}
+      {dappSwapMetricsEnabled && <DappSwapComparisonBanner />}
       <TransactionAccountDetails />
       <BatchSimulationDetails />
       <TransactionDetails />
