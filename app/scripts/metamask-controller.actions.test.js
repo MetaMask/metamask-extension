@@ -19,6 +19,7 @@ import {
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import MetaMaskController from './metamask-controller';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 
@@ -139,6 +140,9 @@ describe('MetaMaskController', function () {
         getInitialState: noop,
         set: noop,
       },
+      controllerMessenger: new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      }),
     });
     initializeMockMiddlewareLog();
 
@@ -335,7 +339,7 @@ describe('MetaMaskController', function () {
 
     it('networkClientId is used when provided', async function () {
       const callSpy = jest
-        .spyOn(metamaskController.controllerMessenger, 'call')
+        .spyOn(metamaskController.tokensController.messenger, 'call')
         .mockReturnValueOnce({
           configuration: { chainId: '0xa' },
         })
@@ -357,7 +361,7 @@ describe('MetaMaskController', function () {
         decimals,
         networkClientId: 'networkClientId1',
       });
-      expect(callSpy.mock.calls[1]).toStrictEqual([
+      expect(callSpy.mock.calls[0]).toStrictEqual([
         'NetworkController:getNetworkClientById',
         'networkClientId1',
       ]);

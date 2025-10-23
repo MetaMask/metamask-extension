@@ -105,7 +105,7 @@ export function getTokenRatesControllerInitMessenger(
     namespace: 'TokenRatesControllerInit',
     parent: messenger,
   });
-  controllerInitMessenger.delegate({
+  messenger.delegate({
     messenger: controllerInitMessenger,
     actions: ['PreferencesController:getState'],
     events: ['PreferencesController:stateChange'],

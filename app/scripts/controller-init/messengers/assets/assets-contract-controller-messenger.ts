@@ -85,7 +85,7 @@ export function getAssetsContractControllerInitMessenger(
     namespace: 'AssetsContractControllerInit',
     parent: messenger,
   });
-  controllerInitMessenger.delegate({
+  messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
       'NetworkController:getNetworkClientById',

@@ -111,7 +111,7 @@ export function getTokensControllerInitMessenger(
     namespace: 'TokensControllerInit',
     parent: messenger,
   });
-  controllerInitMessenger.delegate({
+  messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
       'NetworkController:getNetworkClientById',

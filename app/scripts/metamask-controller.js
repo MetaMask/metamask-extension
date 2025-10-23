@@ -439,7 +439,10 @@ export default class MetamaskController extends EventEmitter {
   constructor(opts) {
     super();
 
-    const { isFirstMetaMaskControllerSetup } = opts;
+    const {
+      isFirstMetaMaskControllerSetup,
+      controllerMessenger = getRootMessenger(),
+    } = opts;
 
     this.defaultMaxListeners = 20;
 
@@ -469,7 +472,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.initializeChainlist();
 
-    this.controllerMessenger = getRootMessenger();
+    this.controllerMessenger = controllerMessenger;
     this.currentMigrationVersion = opts.currentMigrationVersion;
 
     // observable state store

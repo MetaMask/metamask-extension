@@ -61,7 +61,6 @@ export function getBridgeStatusControllerMessenger(
     namespace: 'BridgeStatusController',
     parent: messenger,
   });
-
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
@@ -73,7 +72,6 @@ export function getBridgeStatusControllerMessenger(
       'BridgeController:trackUnifiedSwapBridgeEvent',
       'BridgeController:stopPollingForQuotes',
       'GasFeeController:getState',
-      'AccountsController:getAccountByAddress',
       'SnapController:handleRequest',
       'TransactionController:getState',
       'RemoteFeatureFlagController:getState',
