@@ -69,7 +69,12 @@ const ShieldSubscriptionApproveInfo = () => {
         accountAddress={transactionMeta?.txParams?.from as Hex}
         chainId={transactionMeta?.chainId}
       />
-      {productPrice && <BillingDetails productPrice={productPrice} />}
+      {productPrice && (
+        <BillingDetails
+          productPrice={productPrice}
+          isTrialSubscription={!isTrialed}
+        />
+      )}
       <GasFeesSection />
     </Box>
   );

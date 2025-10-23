@@ -1,7 +1,11 @@
-import React from "react";
-import { render } from "@testing-library/react";
-import BillingDetails from "./billing-details";
-import { ProductPrice, RECURRING_INTERVALS } from "@metamask/subscription-controller";
+import React from 'react';
+import { render } from '@testing-library/react';
+import {
+  ProductPrice,
+  RECURRING_INTERVALS,
+} from '@metamask/subscription-controller';
+import { DateTime } from 'luxon';
+import BillingDetails from './billing-details';
 
 describe('BillingDetails', () => {
   const mockProductPrice: ProductPrice = {
@@ -14,8 +18,27 @@ describe('BillingDetails', () => {
   };
 
   it('should render', () => {
-    const { getByText, getByTestId } = render(<BillingDetails productPrice={mockProductPrice} />)
+    const { getByText, getByTestId } = render(
+      <BillingDetails
+        productPrice={mockProductPrice}
+        isTrialSubscription={true}
+      />,
+    );
     expect(getByText('Billing Date')).toBeInTheDocument();
     expect(getByTestId('shield-subscription-billing_date')).toBeInTheDocument();
+  });
+
+  it('should render the correct billing date for a non-trial subscription', () => {
+    const { getByTestId } = render(
+      <BillingDetails
+        productPrice={mockProductPrice}
+        isTrialSubscription={false}
+      />,
+    );
+
+    const expectedBillingDate = DateTime.now().toFormat('MMMM d, y');
+    expect(getByTestId('shield-subscription-billing_date')).toHaveTextContent(
+      expectedBillingDate,
+    );
   });
 });
