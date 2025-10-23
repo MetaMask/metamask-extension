@@ -264,9 +264,10 @@ export function getBestQuote(
 
     if (
       (minBelowAmountMin && quoteMinGreaterThanAmountMin) ||
-      quoteValue.greaterThan(highestQuoteValue)
+      (quoteValue.greaterThan(highestQuoteValue) &&
+        (!minBelowAmountMin || quoteMinGreaterThanAmountMin))
     ) {
-      minBelowAmountMin = quoteMinGreaterThanAmountMin;
+      minBelowAmountMin = !quoteMinGreaterThanAmountMin;
       highestQuoteValue = quoteValue;
       selectedQuoteIndex = index;
     }
