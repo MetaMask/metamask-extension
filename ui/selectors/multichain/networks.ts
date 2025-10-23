@@ -36,6 +36,8 @@ import {
 } from '../selectors';
 import { getInternalAccounts } from '../accounts';
 import { getEnabledNetworks } from '../../../shared/modules/selectors/multichain';
+import { getIsMetaMaskInfuraEndpointUrl } from '../../../shared/lib/network-utils';
+import { infuraProjectId } from '../../../shared/constants/network';
 
 // Selector types
 
@@ -354,13 +356,11 @@ export const selectFirstUnavailableEvmNetwork = createSelector(
   getNetworkConfigurationsByChainId,
   getNetworksMetadata,
   (enabledNetworks, networkConfigurationsByChainId, networksMetadata) => {
-    // Get all enabled EVM networks
     const enabledEvmNetworks = enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
     const enabledChainIds = Object.entries(enabledEvmNetworks)
       .filter(([, isEnabled]) => isEnabled)
       .map(([chainId]) => chainId as Hex);
 
-    // Find the first network that is not available
     for (const chainId of enabledChainIds) {
       const networkConfiguration = networkConfigurationsByChainId[chainId];
       if (networkConfiguration) {
@@ -377,9 +377,16 @@ export const selectFirstUnavailableEvmNetwork = createSelector(
             metadata.status !== NetworkStatus.Available
           ) {
             return {
-              networkName: name,
               networkClientId: rpcEndpoint.networkClientId,
               chainId,
+              networkName: name,
+              // We have to use this function to check whether the endpoint is
+              // an Infura endpoint because some Infura endpoint URLs use the
+              // wrong type.
+              isInfuraEndpoint: getIsMetaMaskInfuraEndpointUrl(
+                rpcEndpoint.url,
+                infuraProjectId ?? '',
+              ),
             };
           }
         }
