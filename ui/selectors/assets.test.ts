@@ -26,6 +26,7 @@ import {
   selectBalanceChangeForAllWallets,
   selectBalanceChangeBySelectedAccountGroup,
   getAssetsBySelectedAccountGroup,
+  selectedAccountNativeBalance,
 } from './assets';
 
 jest.mock('@metamask/assets-controllers', () => {
@@ -955,5 +956,213 @@ describe('getAssetsBySelectedAccountGroup', () => {
 
     expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
     expect(result).toBe(expectedResult);
+  });
+});
+
+describe('selectedAccountNativeBalance', () => {
+  const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const createMockState = (overrides = {}) => ({
+    metamask: {
+      accountTree: {
+        wallets: {},
+        selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+      },
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '5132883f-598e-482c-a02b-84eeaa352f5b',
+      },
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+        },
+      },
+      marketData: {
+        '0x1': {
+          [ZERO_ADDRESS]: {
+            currency: 'ETH',
+          },
+        },
+      },
+      currencyRates: {
+        ETH: {
+          conversionRate: 2000,
+        },
+      },
+      tokenBalances: {},
+      allTokens: {},
+      currentCurrency: 'usd',
+      ...overrides,
+    },
+  });
+
+  it('should return null when multiple chains are enabled', () => {
+    const mockState = createMockState({
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+          '0x89': true,
+        },
+      },
+    });
+
+    const result = selectedAccountNativeBalance(mockState);
+    expect(result).toBeNull();
+  });
+
+  it('should return null when no chains are enabled', () => {
+    const mockState = createMockState({
+      enabledNetworkMap: {
+        eip155: {},
+      },
+    });
+
+    const result = selectedAccountNativeBalance(mockState);
+    expect(result).toBeNull();
+  });
+
+  it('should return null when market data for chain is not available', () => {
+    const mockState = createMockState({
+      marketData: {
+        '0x1': {},
+      },
+    });
+
+    const result = selectedAccountNativeBalance(mockState);
+    expect(result).toBeNull();
+  });
+
+  it('should return null when currency rate is not available', () => {
+    const mockState = createMockState({
+      currencyRates: {},
+    });
+
+    const result = selectedAccountNativeBalance(mockState);
+    expect(result).toBeNull();
+  });
+
+  it('should calculate native balance correctly with valid data', () => {
+    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce({
+      wallets: {
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+          groups: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+              walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+              groupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+              totalBalanceInUserCurrency: 4000,
+              userCurrency: 'usd',
+            },
+          },
+        },
+      },
+      userCurrency: 'usd',
+    });
+
+    const mockState = createMockState();
+    const result = selectedAccountNativeBalance(mockState);
+    expect(result).toBe('2 ETH');
+  });
+
+  it('should handle zero balance correctly', () => {
+    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce({
+      wallets: {
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+          groups: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+              walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+              groupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+              totalBalanceInUserCurrency: 0,
+              userCurrency: 'usd',
+            },
+          },
+        },
+      },
+      userCurrency: 'usd',
+    });
+
+    const mockState = createMockState();
+    const result = selectedAccountNativeBalance(mockState);
+    expect(result).toBe('0 ETH');
+  });
+
+  it('should round balance to 7 decimal places', () => {
+    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce({
+      wallets: {
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+          groups: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+              walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+              groupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+              totalBalanceInUserCurrency: 10,
+              userCurrency: 'usd',
+            },
+          },
+        },
+      },
+      userCurrency: 'usd',
+    });
+
+    const mockState = createMockState({
+      currencyRates: {
+        ETH: {
+          conversionRate: 3,
+        },
+      },
+    });
+
+    const result = selectedAccountNativeBalance(mockState);
+    expect(result).toBe('3.3333333 ETH');
+  });
+
+  it('should handle different currencies correctly', () => {
+    (calculateBalanceForAllWallets as jest.Mock).mockReturnValueOnce({
+      wallets: {
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+          groups: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+              walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+              groupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+              totalBalanceInUserCurrency: 100,
+              userCurrency: 'usd',
+            },
+          },
+        },
+      },
+      userCurrency: 'usd',
+    });
+
+    const mockState = createMockState({
+      marketData: {
+        '0x1': {
+          [ZERO_ADDRESS]: {
+            currency: 'MATIC',
+          },
+        },
+      },
+      currencyRates: {
+        MATIC: {
+          conversionRate: 0.5,
+        },
+      },
+    });
+
+    const result = selectedAccountNativeBalance(mockState);
+    expect(result).toBe('200 MATIC');
+  });
+
+  it('should return zero balance when no selected account group', () => {
+    const mockState = createMockState({
+      accountTree: {
+        wallets: {},
+        selectedAccountGroup: null,
+      },
+    });
+
+    const result = selectedAccountNativeBalance(mockState);
+    expect(result).toBe('0 ETH');
   });
 });
