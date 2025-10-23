@@ -131,10 +131,6 @@ export const MultichainAccountsConnectPage: React.FC<
   approveConnection,
   targetSubjectMetadata,
 }) => {
-  console.log(
-    'request: MultichainAccountsConnectPage',
-    request.permissions['endowment:caip25']?.caveats?.[0]?.value,
-  );
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
@@ -166,8 +162,6 @@ export const MultichainAccountsConnectPage: React.FC<
     () => getCaip25CaveatValueFromPermissions(request.permissions),
     [request.permissions],
   );
-
-  console.log('requestedCaip25CaveatValue', requestedCaip25CaveatValue);
 
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
     () =>
