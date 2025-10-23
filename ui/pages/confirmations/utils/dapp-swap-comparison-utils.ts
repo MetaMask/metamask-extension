@@ -5,6 +5,7 @@ import {
   GenericQuoteRequest,
   isNativeAddress,
   QuoteResponse,
+  TxData,
 } from '@metamask/bridge-controller';
 import { addHexPrefix } from 'ethereumjs-util';
 import {
@@ -236,7 +237,7 @@ export function getBestQuote(
   let minBelowAmountMin = true;
 
   quotes.forEach((currentQuote, index) => {
-    const { quote, approval, trade } = currentQuote as QuoteResponse;
+    const { quote, approval, trade } = currentQuote;
     const destTokenAmountInQuote = new BigNumber(
       getUSDValueForToken(quote.destTokenAmount),
       10,
@@ -244,8 +245,12 @@ export function getBestQuote(
     const totalGasInQuote = new BigNumber(
       getGasUSDValue(
         new BigNumber(
-          (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
-            (trade?.effectiveGas ?? trade?.gasLimit ?? 0),
+          ((approval as TxData)?.effectiveGas ??
+            (approval as TxData)?.gasLimit ??
+            0) +
+            ((trade as TxData)?.effectiveGas ??
+              (trade as TxData)?.gasLimit ??
+              0),
           10,
         ),
       ),
