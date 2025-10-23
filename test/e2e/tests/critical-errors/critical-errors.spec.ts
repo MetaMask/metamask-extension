@@ -41,7 +41,7 @@ describe('Critical errors', function (this: Suite) {
       this.skip();
     }
 
-    const timeoutValue = 2500;
+    const timeoutValue = 5000;
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -63,8 +63,8 @@ describe('Critical errors', function (this: Suite) {
         // Wait until our "slow" bg timer expires before checking
         await driver.delay(timeoutValue * 1.1);
 
-        const homePage = new LoginPage(driver);
-        await homePage.checkPageIsLoaded();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
       },
     );
   });
