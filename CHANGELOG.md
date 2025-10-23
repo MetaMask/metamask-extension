@@ -60,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Helps with ongoing performance regressions when using Solana (#36613)
 - Fixes a bug where first permitting accounts via the EVM provider would cause all requests to the Solana Wallet Standard provider (#36434)
   to fail with an `The requested account and/or method has not been
-  authorized by the user.` error until the user fully revoked dapp
+authorized by the user.` error until the user fully revoked dapp
   permissions and then permitted accounts using the Solana Wallet Standard
   provider first.
 - Patched ShieldController to `v0.3.2`. (#36809)
