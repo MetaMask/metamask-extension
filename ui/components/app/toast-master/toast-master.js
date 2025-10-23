@@ -245,7 +245,7 @@ function ConnectAccountGroupToast() {
   const seedAddress = useSelector((state) =>
     getIconSeedAddressByAccountGroupId(
       state,
-      selectedAccountGroupInternalAccounts.id,
+      selectedAccountGroupInternalAccounts?.id,
     ),
   );
 
