@@ -709,15 +709,15 @@ describe('AppStateController', () => {
   describe('setCanTrackWalletFundsObtained', () => {
     it('updates the canTrackWalletFundsObtained state with a boolean value', async () => {
       await withController(({ controller }) => {
-        expect(controller.state.canTrackWalletFundsObtained).toBe(false);
-
-        controller.setCanTrackWalletFundsObtained(true);
-
         expect(controller.state.canTrackWalletFundsObtained).toBe(true);
 
         controller.setCanTrackWalletFundsObtained(false);
 
         expect(controller.state.canTrackWalletFundsObtained).toBe(false);
+
+        controller.setCanTrackWalletFundsObtained(true);
+
+        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
       });
     });
   });
@@ -753,6 +753,7 @@ describe('AppStateController', () => {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
               "browserEnvironment": {},
+              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
@@ -763,7 +764,6 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-              "canTrackWalletFundsObtained": true,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
@@ -839,6 +839,7 @@ describe('AppStateController', () => {
             {
               "addressSecurityAlertResponses": {},
               "browserEnvironment": {},
+              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
@@ -849,7 +850,6 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-              "canTrackWalletFundsObtained": true,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
@@ -924,12 +924,12 @@ describe('AppStateController', () => {
           ).toMatchInlineSnapshot(`
             {
               "browserEnvironment": {},
+              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "defaultHomeActiveTabName": null,
               "enableEnforcedSimulations": true,
               "enforcedSimulationsSlippage": 10,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-              "canTrackWalletFundsObtained": true,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "lastInteractedConfirmationInfo": {

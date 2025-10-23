@@ -5538,7 +5538,10 @@ describe('MetaMaskController', () => {
           createMockCronjobControllerStorageManager(),
       });
 
-      jest.spyOn(metamaskController.appStateController, 'setCanTrackWalletFundsObtained');
+      jest.spyOn(
+        metamaskController.appStateController,
+        'setCanTrackWalletFundsObtained',
+      );
       jest.spyOn(metamaskController.controllerMessenger, 'subscribe');
       metamaskController.walletFundsObtainedListenerSetup = false;
     });
@@ -5685,7 +5688,10 @@ describe('MetaMaskController', () => {
       });
 
       jest.spyOn(metamaskController.metaMetricsController, 'trackEvent');
-      jest.spyOn(metamaskController.appStateController, 'setCanTrackWalletFundsObtained');
+      jest.spyOn(
+        metamaskController.appStateController,
+        'setCanTrackWalletFundsObtained',
+      );
       jest
         .spyOn(metamaskController.controllerMessenger, 'unsubscribe')
         .mockImplementation(noop);
