@@ -13,7 +13,7 @@ import { AvatarFavicon } from './avatar-favicon';
 import { AvatarFaviconSize } from './avatar-favicon.types';
 
 export default {
-  title: 'Components/ComponentLibrary/AvatarFavicon',
+  title: 'Components/ComponentLibrary/AvatarFavicon (deprecated)',
   component: AvatarFavicon,
   parameters: {
     docs: {

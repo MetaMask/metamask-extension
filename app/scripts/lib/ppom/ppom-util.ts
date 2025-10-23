@@ -242,7 +242,7 @@ function normalizeTransactionRequest(
   };
 }
 
-function normalizeSignatureRequest(request: PPOMRequest): PPOMRequest {
+export function normalizeSignatureRequest(request: PPOMRequest): PPOMRequest {
   // This is a temporary fix to prevent a PPOM bypass
   if (
     request.method !== MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3 &&
