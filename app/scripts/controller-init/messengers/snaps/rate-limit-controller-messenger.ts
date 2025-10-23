@@ -1,32 +1,22 @@
-import { Messenger } from '@metamask/messenger';
 import {
-  SnapInstalled,
-  SnapUpdated,
-  SnapDisabled,
-  SnapEnabled,
-  SnapUninstalled,
-  HandleSnapRequest,
-  GetAllSnaps,
-} from '@metamask/snaps-controllers';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import {
-  GetPermissions,
-  GetSubjectMetadataState,
-} from '@metamask/permission-controller';
+  RateLimitMessenger,
+  RateLimitedApiMap,
+} from '@metamask/rate-limit-controller';
+import { GetSubjectMetadataState } from '@metamask/permission-controller';
 import { NotificationServicesControllerUpdateMetamaskNotificationsList } from '@metamask/notification-services-controller/notification-services';
 import { RootMessenger } from '..';
 
-type Actions = GetPermissions | HandleSnapRequest | GetAllSnaps;
+export type RateLimitControllerMessenger =
+  RateLimitMessenger<RateLimitedApiMap>;
 
-type Events =
-  | SnapInstalled
-  | SnapUpdated
-  | SnapUninstalled
-  | SnapEnabled
-  | SnapDisabled;
+type Actions = MessengerActions<RateLimitControllerMessenger>;
 
-export type RateLimitControllerMessenger = ReturnType<
-  typeof getRateLimitControllerMessenger
->;
+type Events = MessengerEvents<RateLimitControllerMessenger>;
 
 /**
  * Get a restricted controller messenger for the rate limit controller. This is
@@ -38,7 +28,7 @@ export type RateLimitControllerMessenger = ReturnType<
  */
 export function getRateLimitControllerMessenger(
   messenger: RootMessenger<Actions, Events>,
-) {
+): RateLimitControllerMessenger {
   return new Messenger<
     'RateLimitController',
     Actions,
