@@ -63,7 +63,7 @@ export function useTransactionConfirm() {
     isGaslessSupported,
     newTransactionMeta,
     selectedGasFeeToken,
-    transactionMeta.isGasFeeSponsored,
+    transactionMeta?.isGasFeeSponsored,
   ]);
 
   const handleGasless7702 = useCallback(() => {
@@ -73,7 +73,7 @@ export function useTransactionConfirm() {
   }, [
     isGaslessSupported,
     newTransactionMeta,
-    transactionMeta.isGasFeeSponsored,
+    transactionMeta?.isGasFeeSponsored,
   ]);
 
   const onTransactionConfirm = useCallback(async () => {

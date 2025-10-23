@@ -80,6 +80,11 @@ describe('ConfirmFooter', () => {
       shouldThrottleOrigin: false,
     });
 
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: false,
+    });
+
     useIsGaslessLoadingMock.mockReturnValue({
       isGaslessLoading: false,
     });
