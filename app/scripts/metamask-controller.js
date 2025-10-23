@@ -530,11 +530,9 @@ export default class MetamaskController extends EventEmitter {
       if (
         activeControllerConnections > 0 &&
         completedOnboarding &&
-        !this.appStateController.state.hasFunds &&
-        !this.walletFundsObtainedMonitoringSetup
+        this.appStateController.state.canTrackWalletFundsObtained
       ) {
         this._setupWalletFundsObtainedMonitoring();
-        this.walletFundsObtainedMonitoringSetup = true;
       }
     });
 
@@ -1355,7 +1353,7 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
 
-      this.appStateController.setHasFunds(true);
+      this.appStateController.setCanTrackWalletFundsObtained(false);
       this.controllerMessenger.unsubscribe(
         METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
         this._handleWalletFundingNotification,
@@ -1374,6 +1372,7 @@ export default class MetamaskController extends EventEmitter {
       firstTimeFlowType !== FirstTimeFlowType.create &&
       firstTimeFlowType !== FirstTimeFlowType.socialCreate
     ) {
+      this.appStateController.setCanTrackWalletFundsObtained(false);
       return;
     }
 
@@ -1381,16 +1380,19 @@ export default class MetamaskController extends EventEmitter {
     if (
       !this.notificationServicesController.state.isNotificationServicesEnabled
     ) {
+      this.appStateController.setCanTrackWalletFundsObtained(false);
+
       return;
     }
 
     if (this._hasExistingFunds()) {
-      this.appStateController.setHasFunds(true);
-    } else {
+      this.appStateController.setCanTrackWalletFundsObtained(false);
+    } else if (!this.walletFundsObtainedListenerSetup) {
       this.controllerMessenger.subscribe(
         METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
         this._handleWalletFundingNotification,
       );
+      this.walletFundsObtainedListenerSetup = true;
     }
   }
 

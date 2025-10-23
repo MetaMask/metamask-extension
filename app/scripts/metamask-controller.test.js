@@ -5538,9 +5538,9 @@ describe('MetaMaskController', () => {
           createMockCronjobControllerStorageManager(),
       });
 
-      jest.spyOn(metamaskController.appStateController, 'setHasFunds');
+      jest.spyOn(metamaskController.appStateController, 'setCanTrackWalletFundsObtained');
       jest.spyOn(metamaskController.controllerMessenger, 'subscribe');
-      metamaskController._walletFundsObtainedMonitoringSetup = false;
+      metamaskController.walletFundsObtainedListenerSetup = false;
     });
 
     it('should return early if notifications are disabled', () => {
@@ -5558,6 +5558,9 @@ describe('MetaMaskController', () => {
       expect(
         metamaskController.controllerMessenger.subscribe,
       ).not.toHaveBeenCalled();
+      expect(
+        metamaskController.appStateController.setCanTrackWalletFundsObtained,
+      ).toHaveBeenCalledWith(false);
     });
 
     it('should return early if wallet was not created (imported)', () => {
@@ -5580,9 +5583,12 @@ describe('MetaMaskController', () => {
       expect(
         metamaskController.controllerMessenger.subscribe,
       ).not.toHaveBeenCalled();
+      expect(
+        metamaskController.appStateController.setCanTrackWalletFundsObtained,
+      ).toHaveBeenCalledWith(false);
     });
 
-    it('should call setHasFunds if wallet has existing funds', () => {
+    it('should call setCanTrackWalletFundsObtained if wallet has existing funds', () => {
       jest
         .spyOn(
           metamaskController.notificationServicesController,
@@ -5601,8 +5607,8 @@ describe('MetaMaskController', () => {
       metamaskController._setupWalletFundsObtainedMonitoring();
 
       expect(
-        metamaskController.appStateController.setHasFunds,
-      ).toHaveBeenCalledWith(true);
+        metamaskController.appStateController.setCanTrackWalletFundsObtained,
+      ).toHaveBeenCalledWith(false);
     });
 
     it('should subscribe to notifications if wallet has no existing funds', () => {
@@ -5652,8 +5658,8 @@ describe('MetaMaskController', () => {
       metamaskController._setupWalletFundsObtainedMonitoring();
 
       expect(
-        metamaskController.appStateController.setHasFunds,
-      ).toHaveBeenCalledWith(true);
+        metamaskController.appStateController.setCanTrackWalletFundsObtained,
+      ).toHaveBeenCalledWith(false);
     });
   });
 
@@ -5679,7 +5685,7 @@ describe('MetaMaskController', () => {
       });
 
       jest.spyOn(metamaskController.metaMetricsController, 'trackEvent');
-      jest.spyOn(metamaskController.appStateController, 'setHasFunds');
+      jest.spyOn(metamaskController.appStateController, 'setCanTrackWalletFundsObtained');
       jest
         .spyOn(metamaskController.controllerMessenger, 'unsubscribe')
         .mockImplementation(noop);
@@ -5695,7 +5701,7 @@ describe('MetaMaskController', () => {
         metamaskController.metaMetricsController.trackEvent,
       ).not.toHaveBeenCalled();
       expect(
-        metamaskController.appStateController.setHasFunds,
+        metamaskController.appStateController.setCanTrackWalletFundsObtained,
       ).not.toHaveBeenCalled();
     });
 
@@ -5707,7 +5713,7 @@ describe('MetaMaskController', () => {
         metamaskController.metaMetricsController.trackEvent,
       ).not.toHaveBeenCalled();
       expect(
-        metamaskController.appStateController.setHasFunds,
+        metamaskController.appStateController.setCanTrackWalletFundsObtained,
       ).not.toHaveBeenCalled();
     });
 
@@ -5724,7 +5730,7 @@ describe('MetaMaskController', () => {
         metamaskController.metaMetricsController.trackEvent,
       ).not.toHaveBeenCalled();
       expect(
-        metamaskController.appStateController.setHasFunds,
+        metamaskController.appStateController.setCanTrackWalletFundsObtained,
       ).not.toHaveBeenCalled();
     });
 
@@ -5742,7 +5748,7 @@ describe('MetaMaskController', () => {
         metamaskController.metaMetricsController.trackEvent,
       ).not.toHaveBeenCalled();
       expect(
-        metamaskController.appStateController.setHasFunds,
+        metamaskController.appStateController.setCanTrackWalletFundsObtained,
       ).not.toHaveBeenCalled();
     });
 
@@ -5770,8 +5776,8 @@ describe('MetaMaskController', () => {
         }),
       );
       expect(
-        metamaskController.appStateController.setHasFunds,
-      ).toHaveBeenCalledWith(true);
+        metamaskController.appStateController.setCanTrackWalletFundsObtained,
+      ).toHaveBeenCalledWith(false);
       expect(
         metamaskController.controllerMessenger.unsubscribe,
       ).toHaveBeenCalledWith(
@@ -5807,8 +5813,8 @@ describe('MetaMaskController', () => {
         }),
       );
       expect(
-        metamaskController.appStateController.setHasFunds,
-      ).toHaveBeenCalledWith(true);
+        metamaskController.appStateController.setCanTrackWalletFundsObtained,
+      ).toHaveBeenCalledWith(false);
       expect(
         metamaskController.controllerMessenger.unsubscribe,
       ).toHaveBeenCalledWith(
@@ -5842,6 +5848,9 @@ describe('MetaMaskController', () => {
           }),
         }),
       );
+      expect(
+        metamaskController.appStateController.setCanTrackWalletFundsObtained,
+      ).toHaveBeenCalledWith(false);
     });
 
     it('should filter out non-funding notifications', () => {
@@ -5865,6 +5874,9 @@ describe('MetaMaskController', () => {
           }),
         }),
       );
+      expect(
+        metamaskController.appStateController.setCanTrackWalletFundsObtained,
+      ).toHaveBeenCalledWith(false);
     });
   });
 });

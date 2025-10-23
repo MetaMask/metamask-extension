@@ -706,18 +706,18 @@ describe('AppStateController', () => {
     });
   });
 
-  describe('setHasFunds', () => {
-    it('updates the hasFunds state with a boolean value', async () => {
+  describe('setCanTrackWalletFundsObtained', () => {
+    it('updates the canTrackWalletFundsObtained state with a boolean value', async () => {
       await withController(({ controller }) => {
-        expect(controller.state.hasFunds).toBe(false);
+        expect(controller.state.canTrackWalletFundsObtained).toBe(false);
 
-        controller.setHasFunds(true);
+        controller.setCanTrackWalletFundsObtained(true);
 
-        expect(controller.state.hasFunds).toBe(true);
+        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
 
-        controller.setHasFunds(false);
+        controller.setCanTrackWalletFundsObtained(false);
 
-        expect(controller.state.hasFunds).toBe(false);
+        expect(controller.state.canTrackWalletFundsObtained).toBe(false);
       });
     });
   });
@@ -763,7 +763,7 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-              "hasFunds": false,
+              "canTrackWalletFundsObtained": true,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
@@ -849,7 +849,7 @@ describe('AppStateController', () => {
               "enforcedSimulationsSlippageForTransactions": {},
               "fullScreenGasPollTokens": [],
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-              "hasFunds": false,
+              "canTrackWalletFundsObtained": true,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "isUpdateAvailable": false,
@@ -929,7 +929,7 @@ describe('AppStateController', () => {
               "enableEnforcedSimulations": true,
               "enforcedSimulationsSlippage": 10,
               "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-              "hasFunds": false,
+              "canTrackWalletFundsObtained": true,
               "hasShownMultichainAccountsIntroModal": false,
               "isRampCardClosed": false,
               "lastInteractedConfirmationInfo": {

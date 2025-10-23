@@ -68,7 +68,7 @@ export const SENTRY_BACKGROUND_STATE = {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
-    hasFunds: true,
+    canTrackWalletFundsObtained: true,
     isRampCardClosed: true,
     nftsDetectionNoticeDismissed: true,
     nftsDropdownState: true,

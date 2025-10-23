@@ -74,7 +74,7 @@ export type AppStateControllerState = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  hasFunds: boolean;
+  canTrackWalletFundsObtained: boolean;
   isRampCardClosed: boolean;
   isUpdateAvailable: boolean;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
@@ -221,7 +221,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
-  hasFunds: false,
+  canTrackWalletFundsObtained: true,
   isRampCardClosed: false,
   isUpdateAvailable: false,
   lastUpdatedAt: null,
@@ -355,7 +355,7 @@ const controllerMetadata = {
     anonymous: true,
     usedInUi: false,
   },
-  hasFunds: {
+  canTrackWalletFundsObtained: {
     includeInStateLogs: true,
     persist: true,
     anonymous: true,
@@ -1452,9 +1452,9 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setHasFunds(hasFunds: boolean): void {
+  setCanTrackWalletFundsObtained(enabled: boolean): void {
     this.update((state) => {
-      state.hasFunds = hasFunds;
+      state.canTrackWalletFundsObtained = enabled;
     });
   }
 }
