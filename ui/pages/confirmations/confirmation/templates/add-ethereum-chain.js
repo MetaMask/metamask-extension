@@ -10,7 +10,7 @@ import {
   Display,
   FlexDirection,
   Severity,
-  TypographyVariant,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
@@ -255,11 +255,11 @@ function getValues(pendingApproval, t, actions, history, data) {
   return {
     content: [
       {
-        element: 'Typography',
+        element: 'Text',
         key: 'title',
         children: title,
         props: {
-          variant: TypographyVariant.H3,
+          variant: TextVariant.headingSm,
           align: 'center',
           fontWeight: 'bold',
           boxProps: {
@@ -268,11 +268,11 @@ function getValues(pendingApproval, t, actions, history, data) {
         },
       },
       {
-        element: 'Typography',
+        element: 'Text',
         key: 'description',
         children: subtitle,
         props: {
-          variant: TypographyVariant.H6,
+          variant: TextVariant.bodySm,
           align: 'center',
           boxProps: {
             margin: originIsMetaMask ? [0, 8, 4] : [0, 0, 4],
@@ -322,7 +322,7 @@ function getValues(pendingApproval, t, actions, history, data) {
         },
       },
       {
-        element: 'Typography',
+        element: 'Text',
         key: 'only-add-networks-you-trust',
         children: [
           {
@@ -345,7 +345,7 @@ function getValues(pendingApproval, t, actions, history, data) {
           },
         ],
         props: {
-          variant: TypographyVariant.H6,
+          variant: TextVariant.bodySm,
           boxProps: {
             margin: originIsMetaMask ? [0, 8] : 0,
             display: Display.Flex,
