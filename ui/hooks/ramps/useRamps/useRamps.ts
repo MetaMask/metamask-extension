@@ -67,7 +67,6 @@ const useRamps = (
 
   const openBuyCryptoInPdapp = useCallback(
     (_chainId?: ChainId | CaipChainId) => {
-      console.log('openBuyCryptoInPdapp, _chainId', _chainId);
       const buyUrl = getBuyURI(_chainId || chainId);
       global.platform.openTab({
         url: buyUrl,
