@@ -146,8 +146,8 @@ const ShieldPlan = () => {
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentType>(() => {
-      if (lastUsedSubscriptionPaymentMethod?.subscriptionPaymentMethod) {
-        return lastUsedSubscriptionPaymentMethod.subscriptionPaymentMethod;
+      if (lastUsedSubscriptionPaymentMethod?.paymentMethod) {
+        return lastUsedSubscriptionPaymentMethod.paymentMethod;
       }
       return hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard;
     });
