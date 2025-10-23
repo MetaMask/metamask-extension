@@ -68,25 +68,21 @@ export function getSelectedInternalAccount(state: AccountsState) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
-export const isSelectedInternalAccountEth = createSelector(
-  getSelectedInternalAccount,
-  (account) => {
-    const { Eoa, Erc4337 } = EthAccountType;
-    return Boolean(
-      account && (account.type === Eoa || account.type === Erc4337),
-    );
-  },
-);
+export function isSelectedInternalAccountEth(state: AccountsState) {
+  const account = getSelectedInternalAccount(state);
+  const { Eoa, Erc4337 } = EthAccountType;
 
-export const isSelectedInternalAccountSolana = createSelector(
-  getSelectedInternalAccount,
-  (account) => isSolanaAccount(account),
-);
+  return Boolean(account && (account.type === Eoa || account.type === Erc4337));
+}
 
-export const hasCreatedSolanaAccount = createDeepEqualSelector(
-  getInternalAccounts,
-  (accounts) => accounts.some((account) => isSolanaAccount(account)),
-);
+export function isSelectedInternalAccountSolana(state: AccountsState) {
+  return isSolanaAccount(getSelectedInternalAccount(state));
+}
+
+export function hasCreatedSolanaAccount(state: AccountsState) {
+  const accounts = getInternalAccounts(state);
+  return accounts.some((account) => isSolanaAccount(account));
+}
 
 /**
  * Returns all internal accounts that declare support for the provided CAIP scope.
