@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Attributions
 - Update Attributions
 - Update Attributions
+- Update Attributions
 - Use stable empty references (#36910)
 - chore: update `CODEOWNERS.md` with `@metamask/wallet-integrations` team ownership (#36577)
 - chore: Remove `imagemin` (#36563)
