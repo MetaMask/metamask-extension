@@ -71,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renders missing network row in transaction confirmations (#37048)
 - Adds address pattern matching to accounts list search (#37005)
 - Migrates user's existing pinned and hidden state to multichain account designs (#37017)
+- Tweaks messaging for degraded and unavailable networks (#37082)
 
 ## [13.5.0]
 
