@@ -4,10 +4,10 @@ import {
   ProductPrice,
   RECURRING_INTERVALS,
 } from '@metamask/subscription-controller';
-import { getShortDateFormatterV2 } from '../../../../../asset/util';
 import BillingDetails from './billing-details';
 
 describe('BillingDetails', () => {
+  const mockSubscriptionDate = 'Oct 23, 2025';
   const mockProductPrice: ProductPrice = {
     interval: RECURRING_INTERVALS.year,
     minBillingCycles: 1,
@@ -16,6 +16,15 @@ describe('BillingDetails', () => {
     currency: 'usd',
     trialPeriodDays: 7,
   };
+
+  beforeAll(() => {
+    jest.resetAllMocks();
+    jest.useFakeTimers().setSystemTime(new Date(mockSubscriptionDate));
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
 
   it('should render', () => {
     const { getByTestId } = render(
@@ -28,6 +37,9 @@ describe('BillingDetails', () => {
       getByTestId('shield-subscription-billing_date_label'),
     ).toBeInTheDocument();
     expect(getByTestId('shield-subscription-billing_date')).toBeInTheDocument();
+    expect(getByTestId('shield-subscription-billing_date')).toHaveTextContent(
+      'Oct 30, 2025', // 7 days after the subscription date
+    );
   });
 
   it('should render the correct billing date for a non-trial subscription', () => {
@@ -38,9 +50,8 @@ describe('BillingDetails', () => {
       />,
     );
 
-    const expectedBillingDate = getShortDateFormatterV2().format(new Date());
     expect(getByTestId('shield-subscription-billing_date')).toHaveTextContent(
-      expectedBillingDate,
+      'Oct 23, 2025',
     );
   });
 });
