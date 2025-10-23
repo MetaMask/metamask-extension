@@ -249,7 +249,9 @@ export const NetworkControllerInit: ControllerInitFunction<
     (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
   );
 
-  controller.initializeProvider();
+  // Delay lookupNetwork until after onboarding to prevent network requests before the user can
+  // update their RPC endpoints.
+  controller.initializeProvider({ lookupNetwork: false });
 
   return {
     controller,
