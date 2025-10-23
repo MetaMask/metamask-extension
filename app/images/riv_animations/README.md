@@ -39,9 +39,6 @@ await RuntimeLoader.awaitInstance();
 
 1. Manual WASM file management (must keep in sync with package version)
 2. Extra initialization code complexity
-3. Runtime overhead for WASM loading
-4. Cannot leverage tree-shaking/optimization
-5. Bundle size
 
 ---
 
