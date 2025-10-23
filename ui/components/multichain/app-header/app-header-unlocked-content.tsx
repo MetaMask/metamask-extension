@@ -29,6 +29,7 @@ import {
   ButtonBaseSize,
   ButtonIcon,
   ButtonIconSize,
+  Icon,
   IconName,
   IconSize,
   Text,
@@ -250,14 +251,26 @@ export const AppHeaderUnlockedContent = ({
           to={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`}
           data-testid="networks-subtitle-test-id"
         >
-          <Text
+          <Box
+            display={Display.Flex}
             className="networks-subtitle"
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyXsMedium}
+            alignItems={AlignItems.center}
+            gap={1}
             paddingInline={2}
           >
-            {networksLabel}
-          </Text>
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyXsMedium}
+            >
+              {networksLabel}
+            </Text>
+            <Icon
+              name={IconName.Copy}
+              size={IconSize.Xs}
+              color={IconColor.iconAlternative}
+              data-testid="copy-network-addresses-icon"
+            />
+          </Box>
         </Link>
       </Box>
     );
