@@ -250,7 +250,7 @@ const Footer = () => {
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
     navigateNext(currentConfirmation.id);
-  }, [navigateNext, onCancel, shouldThrottleOrigin, currentConfirmation.id]);
+  }, [navigateNext, onCancel, shouldThrottleOrigin, currentConfirmation]);
 
   const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
 
