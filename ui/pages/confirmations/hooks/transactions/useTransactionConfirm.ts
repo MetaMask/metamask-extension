@@ -73,9 +73,12 @@ export function useTransactionConfirm() {
   );
 
   /**
-   * Handle shield subscription approval transaction after confirm if approval error happen
+   * Handle shield subscription approval transaction approval error
+   * (navigation)
+   *
+   * @param txMeta - The transaction meta
    */
-  const handleShieldSubscriptionApprovalTransactionAfterConfirmError =
+  const handleShieldSubscriptionApprovalTransactionAfterConfirmErr =
     useCallback(
       (txMeta: TransactionMeta) => {
         if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
@@ -96,18 +99,26 @@ export function useTransactionConfirm() {
     } else if (selectedGasFeeToken) {
       handleGasless7702();
     }
-    // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
-    // navigate to shield settings page first before approving transaction to wait for subscription creation there
-    handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
 
-    try {
-      await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
-    } catch (err) {
-      handleShieldSubscriptionApprovalTransactionAfterConfirmError(
-        newTransactionMeta,
-      );
-      throw err;
-    }
+    await dispatch(
+      updateAndApproveTx({
+        txMeta: newTransactionMeta,
+        dontShowLoadingIndicator: true,
+        loadingIndicatorMessage: '',
+        onBeforeApproveTx: () => {
+          // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
+          // navigate to shield settings page first before approving transaction to wait for subscription creation there
+          handleShieldSubscriptionApprovalTransactionAfterConfirm(
+            newTransactionMeta,
+          );
+        },
+        onApproveTxError: () => {
+          handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
+            newTransactionMeta,
+          );
+        },
+      }),
+    );
   }, [
     customNonceValue,
     dispatch,
@@ -117,7 +128,7 @@ export function useTransactionConfirm() {
     newTransactionMeta,
     selectedGasFeeToken,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
-    handleShieldSubscriptionApprovalTransactionAfterConfirmError,
+    handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
   ]);
 
   return {

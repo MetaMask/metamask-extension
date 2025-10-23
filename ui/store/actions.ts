@@ -1823,11 +1823,19 @@ export async function addTransaction(
   ]);
 }
 
-export function updateAndApproveTx(
-  txMeta: TransactionMeta,
-  dontShowLoadingIndicator: boolean,
-  loadingIndicatorMessage: string,
-): ThunkAction<
+export function updateAndApproveTx({
+  txMeta,
+  dontShowLoadingIndicator,
+  loadingIndicatorMessage,
+  onBeforeApproveTx,
+  onApproveTxError,
+}: {
+  txMeta: TransactionMeta;
+  dontShowLoadingIndicator: boolean;
+  loadingIndicatorMessage: string;
+  onBeforeApproveTx?: () => void;
+  onApproveTxError?: () => void;
+}): ThunkAction<
   Promise<TransactionMeta | null>,
   MetaMaskReduxState,
   unknown,
@@ -1843,6 +1851,7 @@ export function updateAndApproveTx(
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
 
+      onBeforeApproveTx?.();
       callBackgroundMethod(
         'resolvePendingApproval',
         [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
@@ -1876,6 +1885,7 @@ export function updateAndApproveTx(
         return txMeta;
       })
       .catch((err) => {
+        onApproveTxError?.();
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
