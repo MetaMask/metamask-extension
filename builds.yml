@@ -84,6 +84,7 @@ buildTypes:
       - keyring-snaps
       - multi-srp
       - multichain
+      - bitcoin
       - bitcoin-swaps
     env:
       - INFURA_EXPERIMENTAL_PROJECT_ID
@@ -196,6 +197,9 @@ features:
       - src: ./node_modules/@metamask/gator-permissions-snap/dist/preinstalled-snap.json
         dest: snaps/gator-permissions-snap.json
   build-experimental:
+    assets:
+      - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
+        dest: snaps/account-watcher.json
 
 # Env variables that are required for all types of builds
 #

@@ -75,6 +75,7 @@ import {
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
 } from '@metamask/subscription-controller';
+
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -2512,6 +2513,58 @@ export function createNextMultichainAccountGroup(
         stripWalletTypePrefixFromWalletId(walletId);
       await submitRequestToBackground('createNextMultichainAccountGroup', [
         walletIdWithoutTypePrefix,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
+/**
+ * Set the pinned state of an account group.
+ *
+ * @param accountGroupId - ID of an account group.
+ * @param pinned - Whether the account group should be pinned.
+ */
+export function setAccountGroupPinned(
+  accountGroupId: AccountGroupId,
+  pinned: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setAccountGroupPinned`);
+    try {
+      await submitRequestToBackground('setAccountGroupPinned', [
+        accountGroupId,
+        pinned,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
+/**
+ * Set the hidden state of an account group.
+ *
+ * @param accountGroupId - ID of an account group.
+ * @param hidden - Whether the account group should be hidden.
+ */
+export function setAccountGroupHidden(
+  accountGroupId: AccountGroupId,
+  hidden: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setAccountGroupHidden`);
+    try {
+      await submitRequestToBackground('setAccountGroupHidden', [
+        accountGroupId,
+        hidden,
       ]);
       // Forcing update of the state speeds up the UI update process
       // and makes UX better

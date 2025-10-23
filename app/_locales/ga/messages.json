@@ -5714,9 +5714,6 @@
   "shieldEntryModalSupport": {
     "message": "Tacaíocht do chustaiméirí tosaíochta"
   },
-  "shieldEstimatedChangesMonthlyTooltip": {
-    "message": "Údaraigh suas le $$1 don bhliain iomlán. Gearrfar $$2 ort gach mí, ní an méid iomlán anois."
-  },
   "shieldFooterAgreement": {
     "message": "Trí leanúint ar aghaidh, aontaím le Sciath Idirbhirt $1."
   },
