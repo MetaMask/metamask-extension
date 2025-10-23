@@ -34,7 +34,7 @@
     "popupGasPollTokens": "object",
     "notificationGasPollTokens": "object",
     "fullScreenGasPollTokens": "object",
-    "hasFunds": "boolean",
+    "hasFunds": false,
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
     "outdatedBrowserWarningLastShown": "object",

@@ -35,7 +35,7 @@
       "termsOfUseLastAgreed": "number",
       "defaultHomeActiveTabName": null,
       "fullScreenGasPollTokens": "object",
-      "hasFunds": "boolean",
+      "hasFunds": false,
       "notificationGasPollTokens": "object",
       "popupGasPollTokens": "object",
       "recoveryPhraseReminderHasBeenShown": true,
