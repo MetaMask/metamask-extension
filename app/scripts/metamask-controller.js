@@ -186,6 +186,7 @@ import {
 } from '../../shared/lib/trace';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 ///: END:ONLY_INCLUDE_IF
@@ -326,6 +327,10 @@ import {
   MultichainRouterInit,
   ///: END:ONLY_INCLUDE_IF
 } from './controller-init/snaps';
+import {
+  BackendWebSocketServiceInit,
+  AccountActivityServiceInit,
+} from './controller-init/core-backend';
 import { AuthenticationControllerInit } from './controller-init/identity/authentication-controller-init';
 import { UserStorageControllerInit } from './controller-init/identity/user-storage-controller-init';
 import { DeFiPositionsControllerInit } from './controller-init/defi-positions/defi-positions-controller-init';
@@ -551,6 +556,8 @@ export default class MetamaskController extends EventEmitter {
       SnapInsightsController: SnapInsightsControllerInit,
       SnapInterfaceController: SnapInterfaceControllerInit,
       WebSocketService: WebSocketServiceInit,
+      BackendWebSocketService: BackendWebSocketServiceInit,
+      AccountActivityService: AccountActivityServiceInit,
       PPOMController: PPOMControllerInit,
       PhishingController: PhishingControllerInit,
       OnboardingController: OnboardingControllerInit,
@@ -570,6 +577,8 @@ export default class MetamaskController extends EventEmitter {
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
       TokenRatesController: TokenRatesControllerInit,
+      // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
+      AccountOrderController: AccountOrderControllerInit,
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
@@ -603,7 +612,6 @@ export default class MetamaskController extends EventEmitter {
       NameController: NameControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
       AnnouncementController: AnnouncementControllerInit,
-      AccountOrderController: AccountOrderControllerInit,
     };
 
     const {
@@ -665,6 +673,8 @@ export default class MetamaskController extends EventEmitter {
     this.swapsController = controllersByName.SwapsController;
     this.bridgeController = controllersByName.BridgeController;
     this.bridgeStatusController = controllersByName.BridgeStatusController;
+    this.backendWebSocketService = controllersByName.BackendWebSocketService;
+    this.accountActivityService = controllersByName.AccountActivityService;
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
@@ -886,6 +896,8 @@ export default class MetamaskController extends EventEmitter {
                 ),
               isRelaySupported,
               getSendBundleSupportedChains,
+              isAuxiliaryFundsSupported: (chainId) =>
+                ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
             },
             this.controllerMessenger,
           ),
@@ -921,6 +933,8 @@ export default class MetamaskController extends EventEmitter {
                   getSecurityAlertsConfig:
                     this.getSecurityAlertsConfig.bind(this),
                 }),
+              isAuxiliaryFundsSupported: (chainId) =>
+                ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
             },
             this.controllerMessenger,
           ),
@@ -2258,7 +2272,7 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
       setWatchEthereumAccountEnabled:
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
@@ -2515,6 +2529,14 @@ export default class MetamaskController extends EventEmitter {
           accountGroupName,
         );
       },
+      setAccountGroupPinned:
+        this.accountTreeController.setAccountGroupPinned.bind(
+          this.accountTreeController,
+        ),
+      setAccountGroupHidden:
+        this.accountTreeController.setAccountGroupHidden.bind(
+          this.accountTreeController,
+        ),
       syncAccountTreeWithUserStorage: async () => {
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         await this.getSnapKeyring();
@@ -2566,10 +2588,6 @@ export default class MetamaskController extends EventEmitter {
       getNFTContractInfo: nftController.getNFTContractInfo.bind(nftController),
 
       isNftOwner: nftController.isNftOwner.bind(nftController),
-
-      // TransactionController
-      updateIncomingTransactions:
-        txController.updateIncomingTransactions.bind(txController),
 
       // AddressController
       setAddressBook: addressBookController.set.bind(addressBookController),
@@ -2979,6 +2997,10 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.TRACK_METAMETRICS_EVENT}`,
         ),
+      [BridgeBackgroundAction.FETCH_QUOTES]: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+      ),
 
       // Bridge Tx submission
       [BridgeStatusAction.SUBMIT_TX]: this.controllerMessenger.call.bind(
@@ -6750,6 +6772,7 @@ export default class MetamaskController extends EventEmitter {
           name: 'SnapAndHardwareMessenger',
           allowedActions: [
             'KeyringController:getKeyringForAccount',
+            'KeyringController:getState',
             'SnapController:get',
             'AccountsController:getSelectedAccount',
           ],
@@ -7774,6 +7797,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'SnapAndHardwareMessenger',
         allowedActions: [
           'KeyringController:getKeyringForAccount',
+          'KeyringController:getState',
           'SnapController:get',
           'AccountsController:getSelectedAccount',
         ],
@@ -7860,6 +7884,12 @@ export default class MetamaskController extends EventEmitter {
 
     // Notify Snaps that the client is open or closed.
     this.controllerMessenger.call('SnapController:setClientActive', open);
+
+    if (open) {
+      this.controllerMessenger.call('BackendWebSocketService:connect');
+    } else {
+      this.controllerMessenger.call('BackendWebSocketService:disconnect');
+    }
   }
   /* eslint-enable accessor-pairs */
 

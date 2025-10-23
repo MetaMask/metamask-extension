@@ -56,4 +56,5 @@ export type NetworkConnectionBanner =
       networkName: string;
       networkClientId: NetworkClientId;
       chainId: Hex;
+      isInfuraEndpoint: boolean;
     };
