@@ -7592,16 +7592,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/shield-controller@npm:^0.3.2":
-  version: 0.3.2
-  resolution: "@metamask/shield-controller@npm:0.3.2"
+"@metamask/shield-controller@npm:@metamask-previews/shield-controller@0.3.2-preview-8e6c5423":
+  version: 0.3.2-preview-8e6c5423
+  resolution: "@metamask-previews/shield-controller@npm:0.3.2-preview-8e6c5423"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.8.1"
   peerDependencies:
     "@metamask/signature-controller": ^34.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/7866daf12239a8719f6e6c9e6463b317826c38aa856ffc087b24149b7f22e8bb1a29cb6b883d88dcb285ae9921c2fff8f07d47e7a068f7e0c54998c6bb471c43
+  checksum: 10/ec26d1ee455a85fd23d7967e845aa740f88a7ad11679a4de34b8a60d7d52713ae2071d22cbe1b9dffe0e363a397afe9344bfc995e82837d7aee6951a6c335656
   languageName: node
   linkType: hard
 
