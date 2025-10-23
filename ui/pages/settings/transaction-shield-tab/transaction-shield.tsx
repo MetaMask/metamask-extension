@@ -341,7 +341,7 @@ const TransactionShield = () => {
       ) {
         return undefined;
       }
-      const amount = getSubscriptionCryptoApprovalAmount({
+      const amount = await getSubscriptionCryptoApprovalAmount({
         chainId: shieldSubscription.paymentMethod.crypto.chainId,
         paymentTokenAddress: currentToken.address,
         productType: PRODUCT_TYPES.SHIELD,
