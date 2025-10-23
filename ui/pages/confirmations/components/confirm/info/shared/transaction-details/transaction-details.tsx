@@ -18,6 +18,7 @@ import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
+
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
 import { SmartContractWithLogo } from '../../../../smart-contract-with-logo';
@@ -122,6 +123,8 @@ const AmountRow = () => {
 
   const value = currentConfirmation?.txParams?.value;
 
+  // Hide the "Amount" row when there's no value or when the value is zero.
+  // HEX_ZERO is defined in ../constants and equals '0x0'.
   if (!value || value === HEX_ZERO) {
     return null;
   }
@@ -137,6 +140,7 @@ const AmountRow = () => {
     </ConfirmInfoSection>
   );
 };
+
 
 const PaymasterRow = () => {
   const t = useI18nContext();
