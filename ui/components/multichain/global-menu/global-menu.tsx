@@ -365,10 +365,10 @@ export const GlobalMenu = ({
         {t('allPermissions')}
       </MenuItem>
 
-      {/* Toggle between popup and sidepanel not in firefox, or in firefox when sidepanel feature is disabled */}
+      {/* Toggle between popup and sidepanel - only for Chrome when sidepanel is enabled */}
       {getEnvironmentType() !== ENVIRONMENT_TYPE_FULLSCREEN &&
-      (getBrowserName() !== PLATFORM_FIREFOX ||
-        !getIsSidePanelFeatureEnabled()) ? (
+      getBrowserName() !== PLATFORM_FIREFOX &&
+      getIsSidePanelFeatureEnabled() ? (
         <MenuItem
           iconName={IconName.Expand}
           onClick={async () => {
@@ -388,10 +388,10 @@ export const GlobalMenu = ({
         </MenuItem>
       ) : null}
 
-      {/* Firefox: Show expand view button in popup when sidepanel feature is enabled */}
-      {getBrowserName() === PLATFORM_FIREFOX &&
-      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-      getIsSidePanelFeatureEnabled() ? (
+      {/* Expand view button: shows when sidepanel disabled (any browser) OR when sidepanel enabled (Firefox only) */}
+      {getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+      (!getIsSidePanelFeatureEnabled() ||
+        getBrowserName() === PLATFORM_FIREFOX) ? (
         <MenuItem
           iconName={IconName.Expand}
           onClick={() => {
