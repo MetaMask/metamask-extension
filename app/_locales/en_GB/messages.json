@@ -1183,6 +1183,13 @@
   "changePasswordWarningDescription": {
     "message": "Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password."
   },
+  "checkNetworkConnectivity": {
+    "message": "Check network connectivity."
+  },
+  "checkNetworkConnectivityOr": {
+    "message": "Check network connectivity, or $1.",
+    "description": "$1 is a link to update the network."
+  },
   "chooseYourNetwork": {
     "message": "Choose your network"
   },
