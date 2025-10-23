@@ -7488,14 +7488,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rate-limit-controller@npm:^6.0.3":
-  version: 6.0.3
-  resolution: "@metamask/rate-limit-controller@npm:6.0.3"
+"@metamask/rate-limit-controller@npm:@metamask-previews/rate-limit-controller@6.1.0-preview-8e6c5423":
+  version: 6.1.0-preview-8e6c5423
+  resolution: "@metamask-previews/rate-limit-controller@npm:6.1.0-preview-8e6c5423"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.0"
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.1.0"
-  checksum: 10/40f3e538b41b480a5a8c4b96702ddd8d0b2f20b44e30ebd1e3d2e676942d7d4f6b33fb5d16be1f2ccc90c7616ac59d0cc2e6c28384e935443f0511477e17c6b8
+    "@metamask/utils": "npm:^11.8.1"
+  checksum: 10/81de391a15eff82161a12b10bb457020c83b2d58699a2ffaca872738dac3887df9428a1974de6c15fa43a30a29e2859da9224becb955966b373d1f987a0bb73b
   languageName: node
   linkType: hard
 

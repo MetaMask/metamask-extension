@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   SnapInstalled,
   SnapUpdated,
@@ -13,6 +13,7 @@ import {
   GetSubjectMetadataState,
 } from '@metamask/permission-controller';
 import { NotificationServicesControllerUpdateMetamaskNotificationsList } from '@metamask/notification-services-controller/notification-services';
+import { RootMessenger } from '..';
 
 type Actions = GetPermissions | HandleSnapRequest | GetAllSnaps;
 
@@ -36,12 +37,16 @@ export type RateLimitControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getRateLimitControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'RateLimitController',
-    allowedEvents: [],
-    allowedActions: [],
+  return new Messenger<
+    'RateLimitController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'RateLimitController',
+    parent: messenger,
   });
 }
 
@@ -62,14 +67,23 @@ export type RateLimitControllerInitMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getRateLimitControllerInitMessenger(
-  messenger: Messenger<InitActions, never>,
+  messenger: RootMessenger<InitActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'RateLimitController',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'RateLimitController',
+    InitActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'RateLimitController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'SubjectMetadataController:getState',
       'NotificationServicesController:updateMetamaskNotificationsList',
     ],
-    allowedEvents: [],
   });
+  return controllerInitMessenger;
 }
