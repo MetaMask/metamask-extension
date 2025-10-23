@@ -6609,9 +6609,8 @@ export default class MetamaskController extends EventEmitter {
             origin,
             networkClientId,
           );
-        } else {
-          await this.networkController.setActiveNetwork(networkClientId);
         }
+        await this.networkController.setActiveNetwork(networkClientId);
       },
       getNetworkConfigurationByChainId:
         this.networkController.getNetworkConfigurationByChainId.bind(
