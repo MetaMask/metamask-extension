@@ -51,7 +51,6 @@ export default class TokenList extends Component {
       testNetworkBackgroundColor,
       isTokenNetworkFilterEqualCurrentNetwork,
     } = this.props;
-
     return (
       <Box className="token-list">
         {results.length === 0 ? (
@@ -71,11 +70,14 @@ export default class TokenList extends Component {
             {Array(Math.min(12, results.length))
               .fill(undefined)
               .map((_, i) => {
-                const { symbol, name, address, chainId } = results[i] || {};
+                const { symbol, name, address } = results[i] || {};
+
+                const chainId = isTokenNetworkFilterEqualCurrentNetwork
+                  ? currentNetwork?.chainId
+                  : results[i]?.chainId;
+
                 let tokenAlreadyAdded = false;
-                if (isTokenNetworkFilterEqualCurrentNetwork) {
-                  results[i].chainId = currentNetwork?.chainId;
-                }
+
                 tokenAlreadyAdded = checkExistingAllTokens(
                   address,
                   chainId,
