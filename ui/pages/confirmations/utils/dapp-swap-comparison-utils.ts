@@ -235,8 +235,8 @@ export function getBestQuote(
   let highestQuoteValue = new BigNumber(-1, 10);
   let minBelowAmountMin = true;
 
-  quotes.forEach((currentQuote: QuoteResponse, index: number) => {
-    const { quote, approval, trade } = currentQuote;
+  quotes.forEach((currentQuote, index) => {
+    const { quote, approval, trade } = currentQuote as QuoteResponse;
     const destTokenAmountInQuote = new BigNumber(
       getUSDValueForToken(quote.destTokenAmount),
       10,
