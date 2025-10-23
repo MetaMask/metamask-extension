@@ -250,7 +250,7 @@ function ConnectAccountGroupToast() {
   );
 
   // Early return if selectedAccountGroupInternalAccounts is undefined
-  if (!selectedAccountGroupInternalAccounts) {
+  if (!selectedAccountGroupInternalAccounts || !seedAddress) {
     return null;
   }
 
