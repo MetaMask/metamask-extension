@@ -75,10 +75,6 @@ import {
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
 } from '@metamask/subscription-controller';
-import {
-  GenericQuoteRequest,
-  QuoteResponse,
-} from '@metamask/bridge-controller';
 
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';

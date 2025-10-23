@@ -3,7 +3,8 @@ import { act } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
-import { fetchQuotes, TokenStandAndDetails } from '../../../../store/actions';
+import { TokenStandAndDetails } from '../../../../store/actions';
+import { fetchQuotes } from '../../../../store/controller-actions/bridge-controller';
 import * as Utils from '../../../../helpers/utils/util';
 import * as TokenUtils from '../../utils/token';
 import { Confirmation } from '../../types/confirm';
@@ -18,8 +19,10 @@ jest.mock('../../hooks/useTransactionEventFragment', () => ({
   }),
 }));
 
-jest.mock('../../../../store/actions', () => ({
-  ...jest.requireActual('../../../../store/actions'),
+jest.mock('../../../../store/controller-actions/bridge-controller', () => ({
+  ...jest.requireActual(
+    '../../../../store/controller-actions/bridge-controller',
+  ),
   fetchQuotes: jest.fn(),
 }));
 

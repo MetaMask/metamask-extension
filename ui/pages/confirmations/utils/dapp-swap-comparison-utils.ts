@@ -152,31 +152,41 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
 
 export function getBestQuote(
   quotes: QuoteResponse[],
+  amountMin: string,
   getUSDValueForToken: (tokenAmount: string) => string,
   getGasUSDValue: (gasValue: BigNumber) => string,
 ): QuoteResponse | undefined {
   let selectedQuoteIndex = -1;
   let highestQuoteValue = new BigNumber(-1, 10);
+  let minBelowAmountMin = true;
 
   quotes.forEach((currentQuote, index) => {
     const { quote, approval, trade } = currentQuote;
-    const quoteValue = new BigNumber(
+    const destTokenAmountInQuote = new BigNumber(
       getUSDValueForToken(quote.destTokenAmount),
       10,
-    ).minus(
-      new BigNumber(
-        getGasUSDValue(
-          new BigNumber(
-            (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
-              (trade?.effectiveGas ?? trade?.gasLimit ?? 0),
-            10,
-          ),
-        ),
-        10,
-      ),
     );
+    const totalGasInQuote = new BigNumber(
+      getGasUSDValue(
+        new BigNumber(
+          (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
+            (trade?.effectiveGas ?? trade?.gasLimit ?? 0),
+          10,
+        ),
+      ),
+      10,
+    );
+    const quoteValue = destTokenAmountInQuote.minus(totalGasInQuote);
+    const quoteMinGreaterThanAmountMin = new BigNumber(
+      quote.minDestTokenAmount,
+      10,
+    ).greaterThan(new BigNumber(amountMin, 16));
 
-    if (quoteValue.greaterThan(highestQuoteValue)) {
+    if (
+      (!minBelowAmountMin && quoteMinGreaterThanAmountMin) ||
+      quoteValue.greaterThan(highestQuoteValue)
+    ) {
+      minBelowAmountMin = false;
       highestQuoteValue = quoteValue;
       selectedQuoteIndex = index;
     }

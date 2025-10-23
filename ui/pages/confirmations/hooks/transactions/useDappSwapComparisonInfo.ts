@@ -202,6 +202,7 @@ export function useDappSwapComparisonInfo() {
 
       const selectedQuote = getBestQuote(
         quotes,
+        amountMin,
         getUSDValueForDestinationToken,
         getGasUSDValue,
       );

@@ -66,6 +66,7 @@ describe('dapp-swap utils', () => {
             bridgeId: 'kyberswap',
             srcChainId: 42161,
             destTokenAmount: '45',
+            minDestTokenAmount: '40',
             walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
           },
           approval: {
@@ -81,6 +82,7 @@ describe('dapp-swap utils', () => {
             bridgeId: '0x',
             srcChainId: 42161,
             destTokenAmount: '98',
+            minDestTokenAmount: '90',
             walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
           },
           approval: {
@@ -96,6 +98,7 @@ describe('dapp-swap utils', () => {
             bridgeId: 'okx',
             srcChainId: 42161,
             destTokenAmount: '96',
+            minDestTokenAmount: '90',
           },
           approval: {
             gasLimit: 20,
@@ -106,6 +109,7 @@ describe('dapp-swap utils', () => {
       ];
       const result = getBestQuote(
         quotes as unknown as QuoteResponse[],
+        '0x32',
         (val) => val,
         (val) => val.toString(),
       );
@@ -115,6 +119,7 @@ describe('dapp-swap utils', () => {
     it('returns undefined for empty quotes array', () => {
       const result = getBestQuote(
         [] as unknown as QuoteResponse[],
+        '0x32',
         (val) => val,
         (val) => val.toString(),
       );
