@@ -132,7 +132,7 @@ export class ExtensionLazyListener<
 
         // 2. flush any buffered calls
         const { args } = tracker;
-        for (let i = 0, length = args.length; i < length; i++) {
+        for (let i = 0, { length } = args; i < length; i++) {
           try {
             callback(...args[i]);
 
