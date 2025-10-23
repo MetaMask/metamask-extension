@@ -67,10 +67,26 @@ export function useTransactionConfirm() {
         return;
       }
 
-      navigate(TRANSACTION_SHIELD_ROUTE);
+      navigate(`${TRANSACTION_SHIELD_ROUTE}/?waitForSubscriptionCreation=true`);
     },
     [navigate],
   );
+
+  /**
+   * Handle shield subscription approval transaction after confirm if approval error happen
+   */
+  const handleShieldSubscriptionApprovalTransactionAfterConfirmError =
+    useCallback(
+      (txMeta: TransactionMeta) => {
+        if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
+          return;
+        }
+
+        // go back to previous screen from navigate in `handleShieldSubscriptionApprovalTransactionAfterConfirm`
+        navigate(-1);
+      },
+      [navigate],
+    );
 
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
@@ -80,9 +96,18 @@ export function useTransactionConfirm() {
     } else if (selectedGasFeeToken) {
       handleGasless7702();
     }
-
-    await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+    // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
+    // navigate to shield settings page first before approving transaction to wait for subscription creation there
     handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
+
+    try {
+      await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+    } catch (err) {
+      handleShieldSubscriptionApprovalTransactionAfterConfirmError(
+        newTransactionMeta,
+      );
+      throw err;
+    }
   }, [
     customNonceValue,
     dispatch,
@@ -92,6 +117,7 @@ export function useTransactionConfirm() {
     newTransactionMeta,
     selectedGasFeeToken,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
+    handleShieldSubscriptionApprovalTransactionAfterConfirmError,
   ]);
 
   return {

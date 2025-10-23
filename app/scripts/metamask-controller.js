@@ -831,7 +831,7 @@ export default class MetamaskController extends EventEmitter {
       'TransactionController:transactionStatusUpdated',
       ({ transactionMeta }) => {
         this._onFinishedTransaction(transactionMeta);
-        // this._onSubscriptionApprovalTransactionSigned(transactionMeta);
+        this._onShieldSubscriptionApprovalTransaction(transactionMeta.id);
       },
     );
 
@@ -8110,8 +8110,6 @@ export default class MetamaskController extends EventEmitter {
   resolvePendingApproval = async (id, value, options) => {
     try {
       await this.approvalController.accept(id, value, options);
-      // handle shield subscription approval transaction in background after approval is accepted
-      await this._onShieldSubscriptionApprovalTransaction(id);
     } catch (exp) {
       if (!(exp instanceof ApprovalRequestNotFoundError)) {
         throw exp;
