@@ -127,10 +127,6 @@ const AssetListControlBar = ({
   );
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
-  console.log(
-    'enabledNetworksByNamespace .........',
-    enabledNetworksByNamespace,
-  );
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
