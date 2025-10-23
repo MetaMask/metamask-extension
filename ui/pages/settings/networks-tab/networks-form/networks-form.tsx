@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   type UpdateNetworkFields,
-  NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
 import { Hex, isStrictHexString } from '@metamask/utils';
