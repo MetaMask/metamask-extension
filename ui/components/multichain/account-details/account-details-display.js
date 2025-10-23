@@ -105,7 +105,7 @@ export const AccountDetailsDisplay = ({
           data-testid="address-copy-button-text"
         />
       </Box>
-      {pending && (
+      {false && (
         <Box
           paddingTop={12}
           paddingBottom={12}
@@ -117,19 +117,19 @@ export const AccountDetailsDisplay = ({
           <Preloader size={18} />
         </Box>
       )}
-      {!pending && networkSupporting7702Present && (
-        <Tabs onTabClick={() => undefined} className="mt-2">
-          <Tab name="Type" tabKey="Type" className="flex-1">
-            <SmartAccountTab address={address} />
-          </Tab>
-          <Tab name="Details" tabKey="Details" className="flex-1">
-            <AccountDetailsSection
-              address={address}
-              onExportClick={onExportClick}
-            />
-          </Tab>
-        </Tabs>
-      )}
+      {/* {!pending && networkSupporting7702Present && ( */}
+      <Tabs onTabClick={() => undefined} className="mt-2">
+        <Tab name="Type" tabKey="Type" className="flex-1">
+          <SmartAccountTab address={address} />
+        </Tab>
+        <Tab name="Details" tabKey="Details" className="flex-1">
+          <AccountDetailsSection
+            address={address}
+            onExportClick={onExportClick}
+          />
+        </Tab>
+      </Tabs>
+      {/* )} */}
       {!pending && !networkSupporting7702Present && (
         <AccountDetailsSection
           address={address}
