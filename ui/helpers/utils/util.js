@@ -693,25 +693,27 @@ export const getDedupedSnaps = (request, permissions) => {
 export const IS_FLASK = process.env.METAMASK_BUILD_TYPE === 'flask';
 
 /**
- * Sanitizes a string by removing bidirectional and invisible Unicode control characters.
- * Uses Unicode property escapes to automatically cover all format characters including:
- * - Bidirectional control characters (LRM, RLM, LRE, RLE, LRO, RLO, PDF, LRI, RLI, FSI, PDI)
- * - Zero-width characters (ZWSP, ZWNJ, ZWJ, ZWNBSP)
- * - Other invisible format characters
+ * Escapes bidirectional and invisible Unicode control characters in a string.
+ * Prevents text direction manipulation attacks by making hidden characters visible.
+ * This is critical for user safety when signing transactions or messages.
  *
- * @param {*} value - Input value
- * @returns {(string|*)} Sanitized string or original param if not a string
+ * @param {*} value - Input value to sanitize
+ * @returns {string|*} Escaped string or original value if not a string
+ * @example
+ * sanitizeString('Send 100\u200F0 ETH'); // Returns: 'Send 100\u200F0 ETH'
  */
 export const sanitizeString = (value) => {
   if (!value || !lodash.isString(value)) {
     return value;
   }
 
-  // Remove all Unicode Format category characters (includes all bidi and zero-width chars)
-  // \p{Cf} matches all Format characters in Unicode
+  // Escape all Unicode Format characters (includes bidi controls and zero-width chars)
   const INVISIBLE_CHARS = /\p{Cf}/gu;
 
-  return value.replace(INVISIBLE_CHARS, '');
+  return value.replace(INVISIBLE_CHARS, (char) => {
+    const hex = char.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
+    return `\\u${hex}`;
+  });
 };
 
 /**

@@ -913,56 +913,56 @@ describe('util', () => {
       ).toStrictEqual('The Quick Brown Fox Jumps Over The Lazy Dog');
     });
 
-    it('should return a string that matches sanitizeString regex with the matched characters replaced', () => {
-      expect(
-        util.sanitizeString(
-          'The Quick ‭Brown \u202EFox Jumps Over \u202DThe Lazy Dog',
-        ),
-      ).toStrictEqual('The Quick Brown Fox Jumps Over The Lazy Dog');
+    it('escapes RIGHT-TO-LEFT OVERRIDE (U+202E)', () => {
+      expect(util.sanitizeString('Send \u202E1000 ETH')).toStrictEqual(
+        'Send \\u202E1000 ETH',
+      );
     });
 
-    it('return a string ignoring Unicode', () => {
+    it('escapes LEFT-TO-RIGHT OVERRIDE (U+202D)', () => {
+      expect(util.sanitizeString('Amount: \u202D1000')).toStrictEqual(
+        'Amount: \\u202D1000',
+      );
+    });
+
+    it('escapes RIGHT-TO-LEFT MARK (U+200F)', () => {
+      expect(util.sanitizeString('Send 100\u200F0 ETH')).toStrictEqual(
+        'Send 100\\u200F0 ETH',
+      );
+    });
+
+    it('escapes multiple bidi control characters', () => {
+      expect(util.sanitizeString('Send\u200F\u202E\u202D1000')).toStrictEqual(
+        'Send\\u200F\\u202E\\u202D1000',
+      );
+    });
+
+    it('escapes LTR/RTL isolates (U+2066–U+2069)', () => {
+      expect(util.sanitizeString('Check\u20661000\u2069')).toStrictEqual(
+        'Check\\u20661000\\u2069',
+      );
+    });
+
+    it('displays hidden bidi marks as escaped sequences in text containing numbers', () => {
       expect(
         util.sanitizeString(
           'Pay ‏11‏1.1 USDC to 0x3333333333333333333333333333333333333333',
         ),
       ).toStrictEqual(
-        'Pay 111.1 USDC to 0x3333333333333333333333333333333333333333',
+        'Pay \\u200F11\\u200F1.1 USDC to 0x3333333333333333333333333333333333333333',
       );
     });
 
-    it('removes RIGHT-TO-LEFT MARK (U+200F)', () => {
-      expect(util.sanitizeString('Send 100\u200F0 ETH')).toBe('Send 1000 ETH');
-    });
-
-    it('removes LEFT-TO-RIGHT OVERRIDE (U+202D)', () => {
-      expect(util.sanitizeString('Amount: \u202D1000')).toBe('Amount: 1000');
-    });
-
-    it('removes RIGHT-TO-LEFT OVERRIDE (U+202E)', () => {
-      expect(util.sanitizeString('Send \u202E1000 ETH')).toBe('Send 1000 ETH');
-    });
-
-    it('removes ZERO WIDTH SPACE (U+200B)', () => {
-      expect(util.sanitizeString('Test\u200BString')).toBe('TestString');
-    });
-
-    it('removes ZERO WIDTH NO-BREAK SPACE (U+FEFF)', () => {
-      expect(util.sanitizeString('Test\uFEFFString')).toBe('TestString');
-    });
-
-    it('removes multiple invisible characters', () => {
-      expect(util.sanitizeString('Send\u200F\u202E\u200B1000')).toBe(
-        'Send1000',
+    it('keeps clean text unchanged', () => {
+      expect(util.sanitizeString('Send 1000 ETH')).toStrictEqual(
+        'Send 1000 ETH',
       );
     });
 
-    it('handles normal text without changes', () => {
-      expect(util.sanitizeString('Send 1000 ETH')).toBe('Send 1000 ETH');
-    });
-
-    it('preserves legitimate Unicode (emojis, other languages)', () => {
-      expect(util.sanitizeString('Hello 👋 مرحبا')).toBe('Hello 👋 مرحبا');
+    it('keeps legitimate Unicode (emojis, non-Latin scripts)', () => {
+      expect(util.sanitizeString('Hello 👋 مرحبا')).toStrictEqual(
+        'Hello 👋 مرحبا',
+      );
     });
   });
 
