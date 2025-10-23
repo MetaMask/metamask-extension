@@ -19,7 +19,7 @@ import {
   MultichainAccountServiceWalletStatusChangeEvent,
 } from '@metamask/multichain-account-service';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
-import { AccountOrderControllerGetStateAction } from '../account-order-controller-messenger';
+import { AccountOrderControllerGetStateAction } from '../../../controllers/account-order';
 
 type Actions =
   | AccountsControllerGetAccountAction
