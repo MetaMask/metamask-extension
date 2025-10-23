@@ -140,10 +140,10 @@ export function useShieldCoverageAlert(): Alert[] {
   const modalBodyStr = getModalBodyStr(reasonCode);
 
   const isEnableShieldCoverageChecks = useEnableShieldCoverageChecks();
-  const showAlert = isEnableShieldCoverageChecks;
+  const showAlert = isEnableShieldCoverageChecks && Boolean(status);
 
   return useMemo<Alert[]>((): Alert[] => {
-    if (!showAlert || !status) {
+    if (!showAlert) {
       return [];
     }
 
