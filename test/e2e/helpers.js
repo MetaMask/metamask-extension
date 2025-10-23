@@ -290,15 +290,18 @@ async function withFixtures(options, testSuite) {
 
     await phishingPageServer.start();
     if (numberOfDapps > 0) {
-      // numberOfDapps is precomputed in normalization
-
+      // Ensure the default test dapp occupies the lowest ports first (e.g., 8080),
+      // then any custom dapps follow (e.g., 8081, 8082, ...).
       for (let i = 0; i < numberOfDapps; i++) {
         let dappDirectory;
         let currentDappPath;
-        if (hasCustomPaths && i < customCount) {
-          currentDappPath = dappOpts.customDappPaths[i];
+        if (i < defaultCount) {
+          // First spin up the default test-dapp instances
+          currentDappPath = 'test-dapp';
+        } else if (hasCustomPaths) {
+          // Then start custom dapps on subsequent ports
+          currentDappPath = dappOpts.customDappPaths[i - defaultCount];
         } else {
-          // Use the standard test dapp for the remaining slots
           currentDappPath = 'test-dapp';
         }
 
