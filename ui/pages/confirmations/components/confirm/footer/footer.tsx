@@ -24,6 +24,7 @@ import {
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
@@ -188,6 +189,7 @@ const CancelButton = ({
 const Footer = () => {
   const dispatch = useDispatch();
   const { onTransactionConfirm } = useTransactionConfirm();
+  const { navigateNext } = useConfirmationNavigation();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
@@ -209,6 +211,9 @@ const Footer = () => {
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
+  const isTransactionConfirmation = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
+  );
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
@@ -220,19 +225,19 @@ const Footer = () => {
       return;
     }
 
-    const isTransactionConfirmation = isCorrectDeveloperTransactionType(
-      currentConfirmation?.type,
-    );
-
     if (isTransactionConfirmation) {
       onTransactionConfirm();
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
+
+    navigateNext();
     resetTransactionState();
   }, [
     currentConfirmation,
     dispatch,
+    isTransactionConfirmation,
+    navigateNext,
     onTransactionConfirm,
     resetTransactionState,
   ]);
@@ -243,7 +248,9 @@ const Footer = () => {
       return;
     }
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
-  }, [onCancel, shouldThrottleOrigin]);
+
+    navigateNext();
+  }, [navigateNext, onCancel, shouldThrottleOrigin]);
 
   const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
 
