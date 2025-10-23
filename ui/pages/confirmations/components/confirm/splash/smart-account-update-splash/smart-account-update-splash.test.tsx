@@ -47,7 +47,10 @@ describe('Splash', () => {
   it('renders correctly', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
+        {
+          ...upgradeAccountConfirmation,
+          origin: 'https://example.com',
+        } as Confirmation,
       ),
     );
     const { getByText } = renderWithConfirmContextProvider(
@@ -61,7 +64,10 @@ describe('Splash', () => {
   it('closes after acknowledgement', () => {
     const mockStore = configureMockStore([])(
       getMockConfirmStateForTransaction(
-        upgradeAccountConfirmation as Confirmation,
+        {
+          ...upgradeAccountConfirmation,
+          origin: 'https://example.com',
+        } as Confirmation,
         {
           metamask: {
             preferences: {
