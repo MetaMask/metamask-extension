@@ -14,7 +14,6 @@ import {
   isBtcTestnetAddress,
 } from '../../../../shared/lib/multichain/accounts';
 import { getInternalAccountByAddress } from '../../../selectors/selectors';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenString } from '../../../helpers/utils/util';
 
 type UseExternalAccountResolutionProps = {
@@ -29,7 +28,6 @@ export const useExternalAccountResolution = ({
   isDestinationBitcoin = false,
 }: UseExternalAccountResolutionProps): ExternalDestinationAccount | null => {
   const dispatch = useDispatch();
-  const t = useI18nContext();
 
   const domainResolutionsFromStore = useSelector(getDomainResolutions);
 
