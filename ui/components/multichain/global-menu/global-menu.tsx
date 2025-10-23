@@ -1,7 +1,9 @@
 import React, { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import browser from 'webextension-polyfill';
+///: END:ONLY_INCLUDE_IF
 import {
   useUnreadNotificationsCounter,
   useReadNotificationsCounter,

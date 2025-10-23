@@ -896,6 +896,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "theme": "os",
           "use4ByteResolution": true,
@@ -967,6 +968,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "hyperliquid": {},
@@ -1050,6 +1052,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "hyperliquid": {},
@@ -1133,6 +1136,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "hyperliquid": {},
