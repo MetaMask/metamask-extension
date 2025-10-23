@@ -563,7 +563,10 @@ export default function Routes() {
   ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   // Navigate to confirmations when there are pending approvals (from any page)
   useEffect(() => {
-    if (pendingApprovals.length > 0 || approvalFlows?.length > 0) {
+    if (
+      isUnlocked &&
+      (pendingApprovals.length > 0 || approvalFlows?.length > 0)
+    ) {
       navigateToConfirmation(
         pendingApprovals[0]?.id,
         pendingApprovals,
@@ -571,7 +574,7 @@ export default function Routes() {
         history,
       );
     }
-  }, [pendingApprovals, approvalFlows, history]);
+  }, [isUnlocked, pendingApprovals, approvalFlows, history]);
   ///: END:ONLY_INCLUDE_IF
 
   const renderRoutes = useCallback(() => {
