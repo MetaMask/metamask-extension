@@ -15,10 +15,14 @@ import {
 } from '@metamask/subscription-controller';
 import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { getSubscriptionPricing } from '../../selectors/subscription';
+import {
+  getSubscriptionPricing,
+  getUserSubscriptions,
+} from '../../selectors/subscription';
 import {
   getSubscriptionCryptoApprovalAmount,
   getSubscriptionPricing as getSubscriptionPricingAction,
+  getSubscriptions,
 } from '../../store/actions';
 import { getSelectedAccount } from '../../selectors';
 import { getTokenBalancesEvm } from '../../selectors/assets';
@@ -286,4 +290,35 @@ export const useShieldSubscriptionPricingFromTokenApproval = ({
   ]);
 
   return { productPrice, pending };
+};
+
+/**
+ * Use this hook to get the subscriptions and subscription pricing in a single hook. (in concurrent manner)
+ * This can be used to speed up the initial load time of the app by fetching the subscriptions and subscription pricing in parallel.
+ *
+ * @returns The subscriptions and subscription pricing.
+ */
+export const useUseSubscriptionsWithPricing = () => {
+  const dispatch = useDispatch();
+  const { subscriptions, customerId, trialedProducts } =
+    useSelector(getUserSubscriptions);
+  const subscriptionPricing = useSelector(getSubscriptionPricing);
+
+  const { pending, error } = useAsyncResult(async () => {
+    const results = await Promise.all([
+      dispatch(getSubscriptionPricingAction()),
+      dispatch(getSubscriptions()),
+    ]);
+
+    return { subscriptionPricing: results[0], subscriptions: results[1] };
+  }, [dispatch]);
+
+  return {
+    subscriptionPricing,
+    subscriptions,
+    customerId,
+    trialedProducts,
+    loading: pending,
+    error,
+  };
 };

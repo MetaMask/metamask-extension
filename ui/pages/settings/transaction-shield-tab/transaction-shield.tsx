@@ -52,7 +52,6 @@ import {
   useUnCancelSubscription,
   useUpdateSubscriptionCardPaymentMethod,
   useUserSubscriptionByProduct,
-  useUserSubscriptions,
 } from '../../../hooks/subscription/useSubscription';
 import { getShortDateFormatterV2 } from '../../asset/util';
 import {
@@ -67,7 +66,7 @@ import LoadingScreen from '../../../components/ui/loading-screen';
 import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
 import {
   useSubscriptionPaymentMethods,
-  useSubscriptionPricing,
+  useUseSubscriptionsWithPricing,
 } from '../../../hooks/subscription/useSubscriptionPricing';
 import {
   getSubscriptionCryptoApprovalAmount,
@@ -108,21 +107,16 @@ const TransactionShield = () => {
   const dispatch = useDispatch();
 
   const {
-    customerId,
+    subscriptionPricing,
     subscriptions,
-    loading: subscriptionsLoading,
-  } = useUserSubscriptions({
-    refetch: true, // always fetch latest subscriptions state in settings screen
-  });
+    customerId,
+    loading: subscriptionsAndPricingRequestLoading,
+  } = useUseSubscriptionsWithPricing();
+
   const shieldSubscription = useUserSubscriptionByProduct(
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
-
-  const { subscriptionPricing, loading: subscriptionPricingLoading } =
-    useSubscriptionPricing({
-      refetch: true, // need to refetch here in case user already subscribed and doesn't go through shield plan screen
-    });
   const cryptoPaymentMethod = useSubscriptionPaymentMethods(
     PAYMENT_TYPES.byCrypto,
     subscriptionPricing,
@@ -177,7 +171,7 @@ const TransactionShield = () => {
     openGetSubscriptionBillingPortalResult.pending ||
     updateSubscriptionCardPaymentMethodResult.pending;
 
-  const showSkeletonLoader = subscriptionsLoading || subscriptionPricingLoading;
+  const showSkeletonLoader = subscriptionsAndPricingRequestLoading;
 
   useEffect(() => {
     if (shieldSubscription) {
