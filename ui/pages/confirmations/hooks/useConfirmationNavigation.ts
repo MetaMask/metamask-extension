@@ -35,6 +35,7 @@ export function useConfirmationNavigation() {
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const history = useHistory();
   const { search: queryString } = useLocation();
+  const count = confirmations.length;
 
   const getIndex = useCallback(
     (confirmationId?: string) => {
@@ -68,9 +69,20 @@ export function useConfirmationNavigation() {
     [confirmations, navigateToId],
   );
 
-  const count = confirmations.length;
+  const navigateNext = useCallback(() => {
+    if (count > 1) {
+      navigateToIndex(1);
+    }
+  }, [count, navigateToIndex]);
 
-  return { confirmations, count, getIndex, navigateToId, navigateToIndex };
+  return {
+    confirmations,
+    count,
+    getIndex,
+    navigateToId,
+    navigateToIndex,
+    navigateNext,
+  };
 }
 
 export function navigateToConfirmation(

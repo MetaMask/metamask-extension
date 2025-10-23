@@ -11,6 +11,10 @@ type AllowedActions = MessengerActions<ShieldControllerMessenger>;
 
 type AllowedEvents = MessengerEvents<ShieldControllerMessenger>;
 
+export type ShieldControllerMessengerType = ReturnType<
+  typeof getShieldControllerMessenger
+>;
+
 /**
  * Get a restricted messenger for the Shield controller. This is scoped to the
  * actions and events that the Shield controller is allowed to handle.

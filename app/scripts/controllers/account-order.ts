@@ -20,6 +20,11 @@ export type AccountOrderControllerState = {
   hiddenAccountList: AccountAddress[];
 };
 
+export type AccountOrderControllerGetStateAction = {
+  type: 'AccountOrderController:getState';
+  handler: () => AccountOrderControllerState;
+};
+
 // Describes the action for updating the accounts list
 export type AccountOrderControllerupdateAccountsListAction = {
   type: `${typeof controllerName}:updateAccountsList`;
@@ -36,7 +41,8 @@ export type AccountOrderControllerhideAccountsListAction = {
 export type AccountOrderControllerMessengerActions =
   | ControllerGetStateAction<typeof controllerName, AccountOrderControllerState>
   | AccountOrderControllerupdateAccountsListAction
-  | AccountOrderControllerhideAccountsListAction;
+  | AccountOrderControllerhideAccountsListAction
+  | AccountOrderControllerGetStateAction;
 
 export type AccountOrderControllerMessengerEvents = ControllerStateChangeEvent<
   typeof controllerName,

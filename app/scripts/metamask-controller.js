@@ -577,6 +577,8 @@ export default class MetamaskController extends EventEmitter {
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
       TokenRatesController: TokenRatesControllerInit,
+      // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
+      AccountOrderController: AccountOrderControllerInit,
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
@@ -610,7 +612,6 @@ export default class MetamaskController extends EventEmitter {
       NameController: NameControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
       AnnouncementController: AnnouncementControllerInit,
-      AccountOrderController: AccountOrderControllerInit,
     };
 
     const {
@@ -2271,7 +2272,7 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
       setWatchEthereumAccountEnabled:
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
@@ -2528,6 +2529,10 @@ export default class MetamaskController extends EventEmitter {
           accountGroupName,
         );
       },
+      setAccountGroupPinned:
+        this.accountTreeController.setAccountGroupPinned.bind(this),
+      setAccountGroupHidden:
+        this.accountTreeController.setAccountGroupHidden.bind(this),
       syncAccountTreeWithUserStorage: async () => {
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         await this.getSnapKeyring();
@@ -6759,6 +6764,7 @@ export default class MetamaskController extends EventEmitter {
           name: 'SnapAndHardwareMessenger',
           allowedActions: [
             'KeyringController:getKeyringForAccount',
+            'KeyringController:getState',
             'SnapController:get',
             'AccountsController:getSelectedAccount',
           ],
@@ -7783,6 +7789,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'SnapAndHardwareMessenger',
         allowedActions: [
           'KeyringController:getKeyringForAccount',
+          'KeyringController:getState',
           'SnapController:get',
           'AccountsController:getSelectedAccount',
         ],

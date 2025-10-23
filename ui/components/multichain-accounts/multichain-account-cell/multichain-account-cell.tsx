@@ -17,7 +17,8 @@ import {
 
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
-  accountName: string;
+  accountName: string | React.ReactNode;
+  accountNameString?: string; // Optional string version for accessibility labels
   onClick?: (accountGroupId: AccountGroupId) => void;
   balance: string;
   startAccessory?: React.ReactNode;
@@ -31,6 +32,7 @@ export type MultichainAccountCellProps = {
 export const MultichainAccountCell = ({
   accountId,
   accountName,
+  accountNameString,
   onClick,
   balance,
   startAccessory,
@@ -41,6 +43,11 @@ export const MultichainAccountCell = ({
   privacyMode = false,
 }: MultichainAccountCellProps) => {
   const handleClick = () => onClick?.(accountId);
+
+  // Use accountNameString for aria-label, or fallback to accountName if it's a string
+  const ariaLabelName =
+    accountNameString ||
+    (typeof accountName === 'string' ? accountName : 'Account');
   const seedAddressIcon = useSelector((state) =>
     getIconSeedAddressByAccountGroupId(state, accountId),
   );
@@ -140,7 +147,7 @@ export const MultichainAccountCell = ({
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.flexEnd}
           data-testid="multichain-account-cell-end-accessory"
-          aria-label={`${accountName} options`}
+          aria-label={`${ariaLabelName} options`}
         >
           {endAccessory}
         </Box>

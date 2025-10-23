@@ -1,5 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { RootMessenger } from '.';
+import { AccountOrderControllerMessengerActions } from '../../controllers/account-order';
 
 export type AccountOrderControllerMessenger = ReturnType<
   typeof getAccountOrderControllerMessenger
@@ -13,7 +14,7 @@ export type AccountOrderControllerMessenger = ReturnType<
  * messenger.
  */
 export function getAccountOrderControllerMessenger(
-  messenger: RootMessenger<never, never>,
+  messenger: RootMessenger<AccountOrderControllerMessengerActions, never>,
 ) {
   return new Messenger<
     'AccountOrderController',

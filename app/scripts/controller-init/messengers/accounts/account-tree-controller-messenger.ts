@@ -20,6 +20,7 @@ import {
 } from '@metamask/multichain-account-service';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 import { RootMessenger } from '..';
+import { AccountOrderControllerGetStateAction } from '../../../controllers/account-order';
 
 type Actions =
   | AccountsControllerGetAccountAction
@@ -95,7 +96,9 @@ export function getAccountTreeControllerMessenger(
 }
 
 export type AllowedInitializationActions =
-  MetaMetricsControllerTrackEventAction;
+  | MetaMetricsControllerTrackEventAction
+  | AccountsControllerGetAccountAction
+  | AccountOrderControllerGetStateAction;
 
 export type AccountTreeControllerInitMessenger = ReturnType<
   typeof getAccountTreeControllerInitMessenger
@@ -122,7 +125,11 @@ export function getAccountTreeControllerInitMessenger(
   });
   messenger.delegate({
     messenger: accountTreeControllerInitMessenger,
-    actions: ['MetaMetricsController:trackEvent'],
+    actions: [
+      'MetaMetricsController:trackEvent',
+      'AccountsController:getAccount',
+      'AccountOrderController:getState',
+    ],
     events: [],
   });
   return accountTreeControllerInitMessenger;
