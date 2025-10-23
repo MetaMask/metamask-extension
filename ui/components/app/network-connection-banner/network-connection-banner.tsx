@@ -32,7 +32,7 @@ type BannerIcon = {
   className?: string;
 };
 
-const renderPrimaryMessage = ({
+const PrimaryMessage = ({
   t,
   primaryMessageKey,
   networkConnectionBanner,
@@ -58,7 +58,7 @@ const renderPrimaryMessage = ({
   );
 };
 
-const renderSecondaryMessage = (content: React.ReactNode) => {
+const SecondaryMessage = ({ content }: { content: React.ReactNode }) => {
   return (
     <Text
       variant={TextVariant.bodyXsMedium}
@@ -69,7 +69,7 @@ const renderSecondaryMessage = (content: React.ReactNode) => {
   );
 };
 
-const renderUpdateRpcButton = ({
+const UpdateRpcButton = ({
   t,
   isLowerCase,
   updateRpc,
@@ -114,20 +114,20 @@ const getBannerContent = (
   const verticalAdjustment = '0.25em';
 
   if (networkConnectionBanner.status === 'degraded') {
-    const primaryMessage = renderPrimaryMessage({
-      t,
-      primaryMessageKey: 'stillConnectingTo',
-      networkConnectionBanner,
-    });
-    const secondaryMessage = networkConnectionBanner.isInfuraEndpoint
-      ? null
-      : renderSecondaryMessage(
-          renderUpdateRpcButton({
-            t,
-            isLowerCase: false,
-            updateRpc,
-          }),
-        );
+    const primaryMessage = (
+      <PrimaryMessage
+        t={t}
+        primaryMessageKey="stillConnectingTo"
+        networkConnectionBanner={networkConnectionBanner}
+      />
+    );
+    const secondaryMessage = networkConnectionBanner.isInfuraEndpoint ? null : (
+      <SecondaryMessage
+        content={
+          <UpdateRpcButton t={t} isLowerCase={false} updateRpc={updateRpc} />
+        }
+      />
+    );
 
     return {
       primaryMessage,
@@ -142,21 +142,26 @@ const getBannerContent = (
     };
   }
 
-  const primaryMessage = renderPrimaryMessage({
-    t,
-    primaryMessageKey: 'unableToConnectTo',
-    networkConnectionBanner,
-  });
+  const primaryMessage = (
+    <PrimaryMessage
+      t={t}
+      primaryMessageKey="unableToConnectTo"
+      networkConnectionBanner={networkConnectionBanner}
+    />
+  );
   const secondaryMessageContent = networkConnectionBanner.isInfuraEndpoint
     ? t('checkNetworkConnectivity')
     : t('checkNetworkConnectivityOr', [
-        renderUpdateRpcButton({
-          t,
-          isLowerCase: true,
-          updateRpc,
-        }),
+        <UpdateRpcButton
+          key="updateRpc"
+          t={t}
+          isLowerCase={true}
+          updateRpc={updateRpc}
+        />,
       ]);
-  const secondaryMessage = renderSecondaryMessage(secondaryMessageContent);
+  const secondaryMessage = (
+    <SecondaryMessage content={secondaryMessageContent} />
+  );
 
   return {
     primaryMessage,
