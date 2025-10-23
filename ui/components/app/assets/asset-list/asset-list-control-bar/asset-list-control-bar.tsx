@@ -127,6 +127,10 @@ const AssetListControlBar = ({
   );
 
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  console.log(
+    'enabledNetworksByNamespace .........',
+    enabledNetworksByNamespace,
+  );
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
@@ -274,7 +278,7 @@ const AssetListControlBar = ({
   };
 
   const handleRefresh = () => {
-    dispatch(detectTokens());
+    dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     closePopover();
     trackEvent({
       category: MetaMetricsEventCategory.Tokens,
