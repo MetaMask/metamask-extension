@@ -4,14 +4,15 @@ import {
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
-import { EthAccountType } from '@metamask/keyring-api';
+import { KeyringTypes } from '@metamask/keyring-controller';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import type { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
 import { mockNetworkState } from '../../stub/networks';
-import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { KeyringType } from '../../../shared/constants/keyring';
 import { mockTokenData } from './mock-token-data';
 
 export const MOCK_LEDGER_ACCOUNT = {
@@ -45,7 +46,6 @@ export const MOCK_SOLANA_ACCOUNT = {
   options: {
     scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     derivationPath: "m/44'/501'/0'/0'",
-    entropySource: '01K2FF18CTTXJYD34R78X4N1N1',
     synchronize: true,
     index: 0,
     entropy: {
@@ -64,7 +64,7 @@ export const MOCK_SOLANA_ACCOUNT = {
     name: 'Solana Account 1',
     importTime: 1755013234384,
     keyring: {
-      type: 'Snap Keyring',
+      type: KeyringTypes.snap,
     },
     snap: {
       id: 'npm:@metamask/solana-wallet-snap',
@@ -84,10 +84,37 @@ export const MOCK_EVM_ACCOUNT = {
       type: 'HD Key Tree',
     },
   },
-  options: {},
+  options: {
+    entropy: {
+      type: 'mnemonic',
+      id: '01K2FF18CTTXJYD34R78X4N1N1',
+      groupIndex: 0,
+    },
+  },
   methods: ETH_EOA_METHODS,
   type: EthAccountType.Eoa,
   scopes: [ETH_SCOPE_EOA],
+};
+
+export const MOCK_EVM_ACCOUNT_2 = {
+  address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+  id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+  metadata: {
+    name: 'Test Account 2',
+    keyring: {
+      type: 'HD Key Tree',
+    },
+  },
+  options: {
+    entropy: {
+      type: 'mnemonic',
+      id: '01K2FF18CTTXJYD34R78X4N1N1',
+      groupIndex: 1,
+    },
+  },
+  methods: ETH_EOA_METHODS,
+  type: EthAccountType.Eoa,
+  scopes: [EthScope.Eoa],
 };
 
 export const createBridgeMockStore = ({
@@ -128,19 +155,22 @@ export const createBridgeMockStore = ({
     accountTree: accountTreeOverrides,
     ...metamaskStateOverridesWithoutAccounts
   } = metamaskStateOverrides;
+
   const internalAccounts = {
     selectedAccount:
-      internalAccountsOverrides?.selectedAccount ??
-      swapsMetamask.internalAccounts.selectedAccount,
+      internalAccountsOverrides?.selectedAccount ?? MOCK_EVM_ACCOUNT.id,
     accounts: {
-      ...swapsMetamask.internalAccounts.accounts,
-      ...tokenInternalAccounts.accounts,
       ...(internalAccountsOverrides?.accounts ?? {}),
-      'bf588376-0492-4a35-b653-0f1304a6c5f1': MOCK_LEDGER_ACCOUNT,
-      'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': MOCK_SOLANA_ACCOUNT,
+      [MOCK_LEDGER_ACCOUNT.id]: MOCK_LEDGER_ACCOUNT,
+      [MOCK_SOLANA_ACCOUNT.id]: MOCK_SOLANA_ACCOUNT,
+      [MOCK_EVM_ACCOUNT.id]: MOCK_EVM_ACCOUNT,
+      [MOCK_EVM_ACCOUNT_2.id]: MOCK_EVM_ACCOUNT_2,
     },
   };
   return {
+    activeTab: {
+      origin: 'https://github.com',
+    },
     ...swapsStore,
     // For initial state of dest asset picker
     swaps: {
@@ -154,6 +184,16 @@ export const createBridgeMockStore = ({
     },
     localeMessages: { currentLocale: 'es_419' },
     metamask: {
+      permissionHistory: {},
+      subjectMetadata: {
+        'https://github.com': {
+          iconUrl: 'https://github.githubassets.com/favicons/favicon-dark.png',
+          name: 'GitHub',
+          subjectType: 'website',
+          origin: 'https://github.com',
+          extensionId: null,
+        },
+      },
       featureFlags: {},
       ...DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE,
       ...swapsMetamask,
@@ -219,12 +259,7 @@ export const createBridgeMockStore = ({
                     groupIndex: 0,
                   },
                 },
-                accounts: [
-                  'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-                  '07c2cfec-36c9-46c4-8115-3836d3ac9047',
-                  'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
-                  'account-1',
-                ],
+                accounts: [MOCK_EVM_ACCOUNT.id, MOCK_SOLANA_ACCOUNT.id],
               },
               'entropy:01K2FF18CTTXJYD34R78X4N1N1/1': {
                 type: 'multichain-account',
@@ -237,21 +272,7 @@ export const createBridgeMockStore = ({
                     groupIndex: 1,
                   },
                 },
-                accounts: ['15e69915-2a1a-4019-93b3-916e11fd432f'],
-              },
-              // Account group with only 1 solana account (edge case)
-              'entropy:01K2FF18CTTXJYD34R78X4N1N1/2': {
-                type: 'multichain-account',
-                id: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/2',
-                metadata: {
-                  name: 'Account 1',
-                  pinned: false,
-                  hidden: false,
-                  entropy: {
-                    groupIndex: 0,
-                  },
-                },
-                accounts: ['bf13d52c-d6e8-40ea-9726-07d7149a3ca5'],
+                accounts: [MOCK_EVM_ACCOUNT_2.id],
               },
             },
           },
@@ -275,7 +296,7 @@ export const createBridgeMockStore = ({
                     pinned: false,
                     hidden: false,
                   },
-                  accounts: ['bf588376-0492-4a35-b653-0f1304a6c5f1'],
+                  accounts: [MOCK_LEDGER_ACCOUNT.id],
                 },
             },
           },
@@ -287,6 +308,41 @@ export const createBridgeMockStore = ({
       ...tokenData,
       ...metamaskStateOverridesWithoutAccounts,
       internalAccounts,
+      keyrings: [
+        {
+          type: KeyringType.hdKeyTree,
+          accounts: [MOCK_EVM_ACCOUNT.address],
+          metadata: {
+            id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+            name: '',
+          },
+        },
+        {
+          type: KeyringType.snap,
+          accounts: [MOCK_SOLANA_ACCOUNT.address],
+          metadata: {
+            id: '01K6GQ6SXDB9GKP6CAPSRV5AJF',
+            name: '',
+          },
+        },
+        {
+          type: KeyringType.ledger,
+          accounts: [MOCK_LEDGER_ACCOUNT.address],
+          metadata: {
+            id: '01JKAF3KP7VPAG0YXEDTDRB6ZV',
+            name: '',
+          },
+        },
+
+        {
+          type: KeyringType.hdKeyTree,
+          accounts: [MOCK_EVM_ACCOUNT_2.address],
+          metadata: {
+            id: '01JKAF3DSGM3AB87EM9N0KA1AJ',
+            name: '',
+          },
+        },
+      ],
       ...{
         ...getDefaultBridgeControllerState(),
         remoteFeatureFlags: {
@@ -302,10 +358,6 @@ export const createBridgeMockStore = ({
               [formatChainIdToCaip('0x1')]: {
                 isActiveSrc: true,
                 isActiveDest: false,
-              },
-              [formatChainIdToCaip(MultichainNetworks.SOLANA)]: {
-                isActiveSrc: true,
-                isActiveDest: true,
               },
               ...Object.fromEntries(
                 Object.entries(

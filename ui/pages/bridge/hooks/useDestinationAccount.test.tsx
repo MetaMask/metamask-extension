@@ -36,6 +36,7 @@ describe('useDestinationAccount', () => {
       ...getFromAccount(store?.getState()),
       isExternal: false,
       displayName: 'Account 1',
+      walletName: 'Wallet 1',
     });
     expect(result.current.isDestinationAccountPickerOpen).toBe(false);
   });
@@ -45,6 +46,10 @@ describe('useDestinationAccount', () => {
       featureFlagOverrides: {
         bridgeConfig: {
           chains: {
+            [ChainId.ETH]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
             [MultichainNetworks.SOLANA]: {
               isActiveSrc: true,
               isActiveDest: true,
@@ -53,12 +58,21 @@ describe('useDestinationAccount', () => {
         },
       },
       bridgeSliceOverrides: { toChainId: MultichainNetworks.SOLANA },
+      metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: MOCK_EVM_ACCOUNT.id,
+        },
+        accountTree: {
+          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
+        },
+      },
     });
 
     expect(result.current.selectedDestinationAccount).toStrictEqual({
       ...MOCK_SOLANA_ACCOUNT,
       isExternal: false,
       displayName: 'Account 1',
+      walletName: 'Wallet 1',
     });
     expect(result.current.isDestinationAccountPickerOpen).toBe(false);
   });
@@ -84,7 +98,10 @@ describe('useDestinationAccount', () => {
       },
       metamaskStateOverrides: {
         internalAccounts: {
-          selectedAccount: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+          selectedAccount: MOCK_SOLANA_ACCOUNT.id,
+        },
+        accountTree: {
+          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
         },
       },
     });
@@ -92,6 +109,7 @@ describe('useDestinationAccount', () => {
       ...MOCK_EVM_ACCOUNT,
       isExternal: false,
       displayName: 'Account 1',
+      walletName: 'Wallet 1',
     });
     expect(result.current.isDestinationAccountPickerOpen).toBe(false);
   });
@@ -113,6 +131,14 @@ describe('useDestinationAccount', () => {
         },
       },
       bridgeSliceOverrides: { toChainId: formatChainIdToCaip(ChainId.LINEA) },
+      metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: MOCK_EVM_ACCOUNT.id,
+        },
+        accountTree: {
+          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
+        },
+      },
     });
     expect(getFromChain(store?.getState())?.chainId).toBe('0x1');
     expect(getToChain(store?.getState())?.chainId).toBe('0xe708');
@@ -120,6 +146,7 @@ describe('useDestinationAccount', () => {
       ...getFromAccount(store?.getState()),
       isExternal: false,
       displayName: 'Account 1',
+      walletName: 'Wallet 1',
     });
     expect(result.current.isDestinationAccountPickerOpen).toBe(false);
   });
@@ -132,6 +159,7 @@ describe('useDestinationAccount', () => {
       ...getFromAccount(store?.getState()),
       isExternal: false,
       displayName: 'Account 1',
+      walletName: 'Wallet 1',
     });
     const newDestinationAccount = getToAccounts(store?.getState())[1];
     act(() => {
@@ -141,8 +169,9 @@ describe('useDestinationAccount', () => {
       ...newDestinationAccount,
       isExternal: false,
       displayName: 'Account 1',
+      walletName: 'Wallet 1',
     });
-    expect(getFromAccount(store?.getState())?.id).not.toBe(
+    expect(getFromAccount(store?.getState())?.id).toStrictEqual(
       newDestinationAccount?.id,
     );
     expect(result.current.isDestinationAccountPickerOpen).toBe(false);
@@ -156,6 +185,7 @@ describe('useDestinationAccount', () => {
       ...getFromAccount(store?.getState()),
       isExternal: false,
       displayName: 'Account 1',
+      walletName: 'Wallet 1',
     });
     const newDestinationAccount = {
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -191,6 +221,7 @@ describe('useDestinationAccount', () => {
       ...getFromAccount(store?.getState()),
       isExternal: false,
       displayName: 'Ledger Account 1',
+      walletName: 'Ledger',
     });
     expect(result.current.isDestinationAccountPickerOpen).toBe(false);
   });
@@ -200,7 +231,7 @@ describe('useDestinationAccount', () => {
       bridgeSliceOverrides: { toChainId: MultichainNetworks.SOLANA },
       metamaskStateOverrides: {
         internalAccounts: {
-          selectedAccount: 'bf588376-0492-4a35-b653-0f1304a6c5f1',
+          selectedAccount: MOCK_LEDGER_ACCOUNT.id,
         },
         accountTree: {
           selectedAccountGroup:
@@ -245,7 +276,10 @@ describe('useDestinationAccount', () => {
       },
       metamaskStateOverrides: {
         internalAccounts: {
-          selectedAccount: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+          selectedAccount: MOCK_SOLANA_ACCOUNT.id,
+        },
+        accountTree: {
+          selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
         },
       },
     });
@@ -253,24 +287,22 @@ describe('useDestinationAccount', () => {
       ...MOCK_EVM_ACCOUNT,
       isExternal: false,
       displayName: 'Account 1',
+      walletName: 'Wallet 1',
     });
     expect(result.current.isDestinationAccountPickerOpen).toBe(false);
-    expect(result.current.selectedDestinationAccount).toStrictEqual({
-      ...MOCK_EVM_ACCOUNT,
-      isExternal: false,
-      displayName: 'Account 1',
-    });
     act(() => {
       result.current.setSelectedDestinationAccount({
         ...MOCK_LEDGER_ACCOUNT,
         isExternal: false,
         displayName: 'Ledger Account 1',
+        walletName: 'Wallet 3',
       });
     });
     expect(result.current.selectedDestinationAccount).toStrictEqual({
       ...MOCK_LEDGER_ACCOUNT,
       isExternal: false,
       displayName: 'Ledger Account 1',
+      walletName: 'Wallet 3',
     });
     expect(result.current.isDestinationAccountPickerOpen).toBe(false);
   });
