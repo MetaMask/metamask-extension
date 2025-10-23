@@ -458,16 +458,18 @@ const handleOnConnect = async (port) => {
     return;
   }
 
-  // `handleOnConnect` can be called asynchronously, well after the `onConnect`
-  // event was emitted, due to the lazy listener setup in `app-init.js`, so we
-  // might not be able to send this message if the window has already closed.
-  const livenessCheckSent = tryPostMessage({
-    data: {
-      method: BACKGROUND_LIVENESS_METHOD,
-    },
-    name: 'background-liveness',
-  });
-  if (!livenessCheckSent) {
+  try {
+    // `handleOnConnect` can be called asynchronously, well after the `onConnect`
+    // event was emitted, due to the lazy listener setup in `app-init.js`, so we
+    // might not be able to send this message if the window has already closed.
+    port.postMessage({
+      data: {
+        method: BACKGROUND_LIVENESS_METHOD,
+      },
+      name: 'background-liveness',
+    });
+  } catch (e) {
+    log.error('MetaMask - Failed to message to port', e, message);
     // window already closed, no need to continue.
     return;
   }
