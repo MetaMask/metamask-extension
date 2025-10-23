@@ -586,12 +586,13 @@ export function setShowShieldEntryModalOnceAction(payload: {
   };
 }
 
-export function setLastUsedSubscriptionPaymentMethod(payload: {
+export function setLastUsedSubscriptionPaymentDetails(payload: {
   paymentMethod: PaymentType;
+  plan: RecurringInterval;
   paymentTokenAddress?: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
-    type: actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_METHOD,
+    type: actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_DETAILS,
     payload,
   };
 }

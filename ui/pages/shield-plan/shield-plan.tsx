@@ -63,7 +63,10 @@ import {
   useSubscriptionPricing,
   useSubscriptionProductPlans,
 } from '../../hooks/subscription/useSubscriptionPricing';
-import { startSubscriptionWithCard } from '../../store/actions';
+import {
+  setLastUsedSubscriptionPaymentDetails,
+  startSubscriptionWithCard,
+} from '../../store/actions';
 import {
   useSubscriptionCryptoApprovalTransaction,
   useUserSubscriptionByProduct,
@@ -72,7 +75,7 @@ import {
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
-  getLastUsedSubscriptionPaymentMethod,
+  getLastUsedSubscriptionPaymentDetails,
   selectNetworkConfigurationByChainId,
 } from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
@@ -84,8 +87,8 @@ const ShieldPlan = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const lastUsedSubscriptionPaymentMethod = useSelector(
-    getLastUsedSubscriptionPaymentMethod,
+  const lastUsedPaymentDetails = useSelector(
+    getLastUsedSubscriptionPaymentDetails,
   );
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
@@ -113,7 +116,7 @@ const ShieldPlan = () => {
   }, [navigate, shieldSubscription]);
 
   const [selectedPlan, setSelectedPlan] = useState<RecurringInterval>(
-    RECURRING_INTERVALS.year,
+    lastUsedPaymentDetails?.plan || RECURRING_INTERVALS.year,
   );
 
   const {
@@ -146,8 +149,8 @@ const ShieldPlan = () => {
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentType>(() => {
-      if (lastUsedSubscriptionPaymentMethod?.paymentMethod) {
-        return lastUsedSubscriptionPaymentMethod.paymentMethod;
+      if (lastUsedPaymentDetails?.paymentMethod) {
+        return lastUsedPaymentDetails.paymentMethod;
       }
       return hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard;
     });
@@ -171,10 +174,8 @@ const ShieldPlan = () => {
       return;
     }
 
-    const lastUsedPaymentToken =
-      lastUsedSubscriptionPaymentMethod?.paymentTokenAddress;
-    const lastUsedPaymentMethod =
-      lastUsedSubscriptionPaymentMethod?.paymentMethod;
+    const lastUsedPaymentToken = lastUsedPaymentDetails?.paymentTokenAddress;
+    const lastUsedPaymentMethod = lastUsedPaymentDetails?.paymentMethod;
 
     let lastUsedSelectedToken = availableTokenBalances[0];
     if (
@@ -192,7 +193,7 @@ const ShieldPlan = () => {
     availableTokenBalances,
     selectedToken,
     setSelectedToken,
-    lastUsedSubscriptionPaymentMethod,
+    lastUsedPaymentDetails,
   ]);
 
   // set default selected payment method to crypto if selected token available
@@ -202,11 +203,26 @@ const ShieldPlan = () => {
     }
   }, [selectedToken, setSelectedPaymentMethod]);
 
+  // rehydrate selected plan from last used payment details if not already set
+  useEffect(() => {
+    if (!selectedPlan && lastUsedPaymentDetails?.plan) {
+      setSelectedPlan(lastUsedPaymentDetails.plan);
+    }
+  }, [lastUsedPaymentDetails, selectedPlan, setSelectedPlan]);
+
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
 
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
+      // save the last used subscription payment method and plan to Redux store
+      await dispatch(
+        setLastUsedSubscriptionPaymentDetails({
+          paymentMethod: selectedPaymentMethod,
+          paymentTokenAddress: selectedToken?.address as Hex,
+          plan: selectedPlan,
+        }),
+      );
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
         await dispatch(
           startSubscriptionWithCard({

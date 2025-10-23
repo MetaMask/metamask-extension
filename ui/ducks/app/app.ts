@@ -4,7 +4,10 @@ import type {
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Action, AnyAction } from 'redux';
-import { PaymentType } from '@metamask/subscription-controller';
+import {
+  PaymentType,
+  RecurringInterval,
+} from '@metamask/subscription-controller';
 import {
   HardwareTransportStates,
   WebHIDConnectedStatuses,
@@ -139,9 +142,10 @@ type AppState = {
     show: boolean;
     shouldSubmitEvents: boolean;
   };
-  lastUsedSubscriptionPaymentMethod?: {
+  lastUsedSubscriptionPaymentDetails?: {
     paymentMethod: PaymentType;
     paymentTokenAddress?: string;
+    plan: RecurringInterval;
   } | null;
 };
 
@@ -813,10 +817,10 @@ export default function reduceApp(
           ...action.payload,
         },
       };
-    case actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_METHOD:
+    case actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_DETAILS:
       return {
         ...appState,
-        lastUsedSubscriptionPaymentMethod: action.payload,
+        lastUsedSubscriptionPaymentDetails: action.payload,
       };
 
     default:

@@ -18,7 +18,6 @@ import {
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
   getSubscriptionsEligibilities,
-  setLastUsedSubscriptionPaymentMethod,
   unCancelSubscription,
   updateSubscriptionCardPaymentMethod,
 } from '../../store/actions';
@@ -140,7 +139,6 @@ export const useSubscriptionCryptoApprovalTransaction = (
   >,
 ) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { subscriptionPricing } = useSubscriptionPricing();
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
@@ -183,13 +181,6 @@ export const useSubscriptionCryptoApprovalTransaction = (
       networkClientId: networkClientId as string,
     };
     await addTransaction(transactionParams, transactionOptions);
-    // save the last used subscription payment method and token to Redux store
-    await dispatch(
-      setLastUsedSubscriptionPaymentMethod({
-        paymentMethod: PAYMENT_TYPES.byCrypto,
-        paymentTokenAddress: selectedToken.address as Hex,
-      }),
-    );
     navigate(CONFIRM_TRANSACTION_ROUTE);
   }, [
     navigate,
@@ -197,7 +188,6 @@ export const useSubscriptionCryptoApprovalTransaction = (
     evmInternalAccount,
     selectedToken,
     networkClientId,
-    dispatch,
   ]);
 
   return {
