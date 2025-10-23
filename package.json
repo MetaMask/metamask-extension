@@ -398,7 +398,7 @@
     "@metamask/smart-transactions-controller": "^19.2.1",
     "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A15.0.2#~/.yarn/patches/@metamask-snaps-controllers-npm-15.0.2-fa1770fbeb.patch",
     "@metamask/snaps-execution-environments": "^10.2.2",
-    "@metamask/snaps-rpc-methods": "^13.5.3",
+    "@metamask/snaps-rpc-methods": "patch:@metamask/snaps-rpc-methods@npm%3A13.5.3#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-13.5.3-d3d98c7af0.patch",
     "@metamask/snaps-sdk": "^10.0.0",
     "@metamask/snaps-utils": "^11.6.0",
     "@metamask/solana-wallet-snap": "^2.4.6",

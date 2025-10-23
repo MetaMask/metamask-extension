@@ -7721,7 +7721,7 @@ __metadata:
 
 "@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A15.0.2#~/.yarn/patches/@metamask-snaps-controllers-npm-15.0.2-fa1770fbeb.patch":
   version: 15.0.2
-  resolution: "@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A15.0.2#~/.yarn/patches/@metamask-snaps-controllers-npm-15.0.2-fa1770fbeb.patch::version=15.0.2&hash=d8b5f5"
+  resolution: "@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A15.0.2#~/.yarn/patches/@metamask-snaps-controllers-npm-15.0.2-fa1770fbeb.patch::version=15.0.2&hash=191987"
   dependencies:
     "@metamask/approval-controller": "npm:^7.2.0"
     "@metamask/base-controller": "npm:^8.4.1"
@@ -7756,7 +7756,7 @@ __metadata:
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: 10/976b8034673ded70f0cbd1cb3a54202d1ac94b05c319df9f4f6688a0c79e5c8c45668af9733bf2c13ccfca6a937585990661ec615c9ab52a36450cbcb449bfb2
+  checksum: 10/52c3905dc5e9b3661b4b7719ca4f0b8bf0683b4c99942b08953776c6dba9a6a7e331678b68ae39eb41a9746cb8bdc7be8e31f590f5720fab30784f5f012d51f6
   languageName: node
   linkType: hard
 
@@ -7790,7 +7790,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:^13.5.3":
+"@metamask/snaps-rpc-methods@npm:13.5.3, @metamask/snaps-rpc-methods@npm:^13.5.3":
   version: 13.5.3
   resolution: "@metamask/snaps-rpc-methods@npm:13.5.3"
   dependencies:
@@ -7803,6 +7803,22 @@ __metadata:
     "@metamask/utils": "npm:^11.8.1"
     "@noble/hashes": "npm:^1.7.1"
   checksum: 10/3474e7a7e3de18d8d6e2dd0b1adb43ba79d676bcbd5a9ecb41e85015524044a6371aa325872153835a19405cd5ce4e4656adbe28f339105b59d9e00085e48538
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A13.5.3#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-13.5.3-d3d98c7af0.patch":
+  version: 13.5.3
+  resolution: "@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A13.5.3#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-13.5.3-d3d98c7af0.patch::version=13.5.3&hash=ed7a4f"
+  dependencies:
+    "@metamask/key-tree": "npm:^10.1.1"
+    "@metamask/permission-controller": "npm:^11.0.6"
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/snaps-sdk": "npm:^10.0.0"
+    "@metamask/snaps-utils": "npm:^11.6.0"
+    "@metamask/superstruct": "npm:^3.2.1"
+    "@metamask/utils": "npm:^11.8.1"
+    "@noble/hashes": "npm:^1.7.1"
+  checksum: 10/88df6e712da05ca985a4dcd280975f17443fd0849af7c35d335bedb8fd48c0cb68ba0edfa16e4a21213321d6ed2eb847b1832382ff092ba0979d80bd6fc9a152
   languageName: node
   linkType: hard
 
@@ -31983,7 +31999,7 @@ __metadata:
     "@metamask/snap-simple-keyring-site": "npm:^2.0.0"
     "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A15.0.2#~/.yarn/patches/@metamask-snaps-controllers-npm-15.0.2-fa1770fbeb.patch"
     "@metamask/snaps-execution-environments": "npm:^10.2.2"
-    "@metamask/snaps-rpc-methods": "npm:^13.5.3"
+    "@metamask/snaps-rpc-methods": "patch:@metamask/snaps-rpc-methods@npm%3A13.5.3#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-13.5.3-d3d98c7af0.patch"
     "@metamask/snaps-sdk": "npm:^10.0.0"
     "@metamask/snaps-utils": "npm:^11.6.0"
     "@metamask/solana-wallet-snap": "npm:^2.4.6"
