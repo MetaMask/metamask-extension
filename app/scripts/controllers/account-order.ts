@@ -3,7 +3,6 @@ import {
   RestrictedMessenger,
   StateMetadata,
 } from '@metamask/base-controller';
-import { AccountOrderControllerGetStateAction } from '../controller-init/messengers/account-order-controller-messenger';
 
 // Unique name for the controller
 const controllerName = 'AccountOrderController';
@@ -17,6 +16,11 @@ export type AccountAddress = string;
 export type AccountOrderControllerState = {
   pinnedAccountList: AccountAddress[];
   hiddenAccountList: AccountAddress[];
+};
+
+export type AccountOrderControllerGetStateAction = {
+  type: 'AccountOrderController:getState';
+  handler: () => AccountOrderControllerState;
 };
 
 // Describes the action for updating the accounts list
