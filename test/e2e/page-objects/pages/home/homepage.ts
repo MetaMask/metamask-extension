@@ -282,6 +282,18 @@ class HomePage {
     );
   }
 
+  async checkTokenListIsDisplayed(): Promise<void> {
+    try{
+    await this.driver.waitForSelector('[data-testid="multichain-token-list-button"]', {
+      timeout: 300000,
+    });
+    } catch (e) {
+      console.log('Token list is not displayed', e);
+      throw e;
+    }
+  }
+
+
   /**
    * Checks if the expected token balance is displayed on homepage.
    *
