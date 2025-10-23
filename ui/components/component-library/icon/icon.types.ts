@@ -8,6 +8,9 @@ import type {
   PolymorphicComponentPropWithRef,
 } from '../box';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum IconSize {
   Xs = 'xs',
   Sm = 'sm',
@@ -24,6 +27,7 @@ export enum IconSize {
  *
  * Add an icon: https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-icon--default-story#adding-a-new-icon
  *
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
  */
 
 export enum IconName {

@@ -23,12 +23,12 @@ if (reactDevtoolsCore && process.env.METAMASK_REACT_REDUX_DEVTOOLS) {
   connectToDevTools();
 }
 
-import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
 
 import { StreamProvider } from '@metamask/providers';
 import { createIdRemapMiddleware } from '@metamask/json-rpc-engine';
 import log from 'loglevel';
+import { ExtensionPortStream } from 'extension-port-stream';
 import launchMetaMaskUi, {
   CriticalStartupErrorHandler,
   connectToBackground,
@@ -112,7 +112,7 @@ async function start() {
   );
   criticalErrorHandler.install();
 
-  const connectionStream = new PortStream(extensionPort);
+  const connectionStream = new ExtensionPortStream(extensionPort);
   const subStreams = connectSubstreams(connectionStream);
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
   connectToBackground(backgroundConnection, handleStartUISync);
@@ -331,7 +331,7 @@ async function initializeUi(activeTab, backgroundConnection, traceContext) {
  * Establishes a connections between the PortStream (background) and various UI
  * streams.
  *
- * @param {PortStream} connectionStream - PortStream instance establishing a background connection
+ * @param {ExtensionPortStream} connectionStream - PortStream instance establishing a background connection
  * @returns The multiplexed streams
  */
 function connectSubstreams(connectionStream) {

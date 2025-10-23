@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
+import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
@@ -14,7 +15,6 @@ import WhatsNewModal from '../../components/app/whats-new-modal';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
-import Typography from '../../components/ui/typography/typography';
 import Button from '../../components/ui/button';
 import Popover from '../../components/ui/popover';
 import ConnectedSites from '../connected-sites';
@@ -25,8 +25,6 @@ import ActionableMessage from '../../components/ui/actionable-message/actionable
 import {
   FontWeight,
   Display,
-  TextColor,
-  TextVariant,
   FlexDirection,
   BlockSize,
   AlignItems,
@@ -38,7 +36,6 @@ import {
   ButtonIconSize,
   IconName,
   Box,
-  Text,
   Icon,
   Modal,
   ModalBody,
@@ -409,7 +406,7 @@ export default class Home extends PureComponent {
         <div>
           <Text>{t('outdatedBrowserNotification')}</Text>
           <br />
-          <Text fontWeight={FontWeight.Bold} color={TextColor.warningDefault}>
+          <Text fontWeight={FontWeight.Bold} color={TextColor.WarningDefault}>
             {t('noHardwareWalletOrSnapsSupport')}
           </Text>
         </div>
@@ -428,8 +425,8 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('newNftAddedMessage')}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('newNftAddedMessage')}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -451,8 +448,8 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('removeNftMessage')}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('removeNftMessage')}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -474,8 +471,8 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('removeNftErrorMessage')}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('removeNftErrorMessage')}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -495,8 +492,8 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-network-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('newNetworkAdded', [newNetworkAddedName])}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('newNetworkAdded', [newNetworkAddedName])}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -519,10 +516,12 @@ export default class Home extends PureComponent {
           message={
             <Box display={Display.InlineFlex}>
               <i className="fa fa-check-circle home__new-network-notification-icon" />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {editedNetwork.newNetwork
-                  ? t('newNetworkAdded', [editedNetwork.nickname])
-                  : t('newNetworkEdited', [editedNetwork.nickname])}
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>
+                  {editedNetwork.newNetwork
+                    ? t('newNetworkAdded', [editedNetwork.nickname])
+                    : t('newNetworkEdited', [editedNetwork.nickname])}
+                </h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -548,17 +547,17 @@ export default class Home extends PureComponent {
               <Box>
                 <Text
                   className="home__new-tokens-imported-notification-title"
-                  variant={TextVariant.bodySmBold}
-                  as="h6"
+                  variant={TextVariant.BodySm}
+                  asChild
                 >
-                  {t('newTokensImportedTitle')}
+                  <h6>{t('newTokensImportedTitle')}</h6>
                 </Text>
                 <Text
                   className="home__new-tokens-imported-notification-message"
-                  variant={TextVariant.bodySm}
-                  as="h6"
+                  variant={TextVariant.BodySm}
+                  asChild
                 >
-                  {t('newTokensImportedMessage', [newTokensImported])}
+                  <h6>{t('newTokensImportedMessage', [newTokensImported])}</h6>
                 </Text>
               </Box>
 
@@ -582,9 +581,9 @@ export default class Home extends PureComponent {
           onAutoHide={onAutoHide}
           message={
             <Box display={Display.InlineFlex}>
-              <Icon name={IconName.Danger} />
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('importTokensError')}
+              <Icon name={IconName.Danger} marginRight={1} />
+              <Text variant={TextVariant.BodySm} asChild>
+                <h6>{t('importTokensError')}</h6>
               </Text>
               <ButtonIcon
                 iconName={IconName.Close}
@@ -726,7 +725,7 @@ export default class Home extends PureComponent {
               gap={2}
               margin={4}
             >
-              <Typography>
+              <Text>
                 {t('onboardedMetametricsParagraph1', [
                   <a
                     href={METAMETRICS_SETTINGS_LINK}
@@ -737,14 +736,14 @@ export default class Home extends PureComponent {
                     {t('onboardedMetametricsLink')}
                   </a>,
                 ])}
-              </Typography>
-              <Typography>{t('onboardedMetametricsParagraph2')}</Typography>
+              </Text>
+              <Text>{t('onboardedMetametricsParagraph2')}</Text>
               <ul className="home__onboarding_list">
                 <li>{t('onboardedMetametricsKey1')}</li>
                 <li>{t('onboardedMetametricsKey2')}</li>
                 <li>{t('onboardedMetametricsKey3')}</li>
               </ul>
-              <Typography>{t('onboardedMetametricsParagraph3')}</Typography>
+              <Text>{t('onboardedMetametricsParagraph3')}</Text>
             </Box>
           </ModalBody>
           <ModalFooter>
