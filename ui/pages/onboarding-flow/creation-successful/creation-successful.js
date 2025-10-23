@@ -187,22 +187,18 @@ export default function CreationSuccessful() {
           });
           if (tabs && tabs.length > 0) {
             await browser.sidePanel.open({ windowId: tabs[0].windowId });
-            // Use the sidepanel-specific action to avoid redirect in fullscreen
+            // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
-            // Don't navigate to DEFAULT_ROUTE when using sidepanel
             return;
           }
         }
-        // Fallback to regular onboarding completion
-        await dispatch(setCompletedOnboarding());
       } catch (error) {
         console.error('Error opening side panel:', error);
-        await dispatch(setCompletedOnboarding());
+        // Fall through to regular onboarding
       }
-    } else {
-      // Regular onboarding completion when sidepanel is disabled
-      await dispatch(setCompletedOnboarding());
     }
+    // Fallback to regular onboarding completion
+    await dispatch(setCompletedOnboarding());
     ///: END:ONLY_INCLUDE_IF
     ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     // Regular onboarding completion for non-experimental builds
