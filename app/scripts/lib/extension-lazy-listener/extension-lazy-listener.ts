@@ -118,9 +118,9 @@ export class ExtensionLazyListener<
     const event = this.#getEvent(namespace, eventName);
     event.addListener(callback);
 
-    const trackers = this.#namespaceListeners.get(namespace);
-    if (trackers) {
-      const tracker = trackers.get(eventName);
+    const listeners = this.#namespaceListeners.get(namespace);
+    if (listeners) {
+      const tracker = listeners.get(eventName);
       if (tracker) {
         // we have a listener from the application, so we must:
         // 1. stop the lazy listener
@@ -128,7 +128,11 @@ export class ExtensionLazyListener<
 
         // 1. stop the lazy listener
         event.removeListener(tracker.listener);
-        trackers.delete(eventName);
+        listeners.delete(eventName);
+        // if the namespace has no more listeners, we can remove it
+        if (listeners.size === 0) {
+          this.#namespaceListeners.delete(namespace);
+        }
 
         // 2. flush any buffered calls
         const { args } = tracker;
@@ -144,7 +148,8 @@ export class ExtensionLazyListener<
               const next = i + 1;
               if (next !== length) {
                 args.splice(0, next);
-                trackers.set(eventName, tracker);
+                listeners.set(eventName, tracker);
+                this.#namespaceListeners.set(namespace, listeners);
                 event.addListener(tracker.listener);
               }
               break;
@@ -156,7 +161,8 @@ export class ExtensionLazyListener<
             const next = i + 1;
             if (next !== length) {
               args.splice(0, next);
-              trackers.set(eventName, tracker);
+              listeners.set(eventName, tracker);
+              this.#namespaceListeners.set(namespace, listeners);
               event.addListener(tracker.listener);
             }
 
@@ -198,6 +204,10 @@ export class ExtensionLazyListener<
           if (length === 1) {
             // if the tracker has no more calls, we can completely remove it
             listeners.delete(eventName);
+            // if the namespace has no more listeners, we can remove it too
+            if (listeners.size === 0) {
+              this.#namespaceListeners.delete(namespace);
+            }
           }
           return;
         }

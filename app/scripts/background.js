@@ -445,6 +445,11 @@ let connectEip1193;
 let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
+/**
+ * Handles the onConnect event.
+ *
+ * @param {browser.Runtime.Port} port - The port provided by a new context.
+ */
 const handleOnConnect = async (port) => {
   if (
     inTest &&
@@ -452,19 +457,20 @@ const handleOnConnect = async (port) => {
   ) {
     return;
   }
-  // `handleOnConnect` can be called asynchronously, well after the `onConnect`
-  // event was emitted, due to the lazy listener setup in app-init.
-  if (port.disconnected) {
-    // window already closed, no need to do anything else.
-    return;
-  }
 
-  port.postMessage({
+  // `handleOnConnect` can be called asynchronously, well after the `onConnect`
+  // event was emitted, due to the lazy listener setup in `app-init.js`, so we
+  // might not be able to send this message if the window has already closed.
+  const livenessCheckSent = tryPostMessage({
     data: {
       method: BACKGROUND_LIVENESS_METHOD,
     },
     name: 'background-liveness',
   });
+  if (!livenessCheckSent) {
+    // window already closed, no need to continue.
+    return;
+  }
 
   // Queue up connection attempts here, waiting until after initialization
   try {
@@ -1590,7 +1596,8 @@ const addAppInstalledEvent = () => {
 /**
  * Handles the onInstalled event.
  *
- * @param {chrome.runtime.InstalledDetails} details
+ * @param {[chrome.runtime.InstalledDetails]} obj
+ * @param {chrome.runtime.InstalledDetails} obj[0] - Details about the installation event.
  */
 function handleOnInstalled([details]) {
   if (details.reason === 'install') {
