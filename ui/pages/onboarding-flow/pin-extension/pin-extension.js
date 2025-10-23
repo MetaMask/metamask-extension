@@ -3,10 +3,14 @@ import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import classnames from 'classnames';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import browser from 'webextension-polyfill';
+///: END:ONLY_INCLUDE_IF
 import {
   setCompletedOnboarding,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   setCompletedOnboardingWithSidepanel,
+  ///: END:ONLY_INCLUDE_IF
   toggleExternalServices,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -44,7 +48,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
 import { getIsSidePanelFeatureEnabled } from '../../../../shared/modules/environment';
+///: END:ONLY_INCLUDE_IF
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
@@ -74,8 +80,9 @@ export default function OnboardingPinExtension() {
       },
     });
 
-    // Side Panel - only if feature flag is enabled
-    if (getIsSidePanelFeatureEnabled()) {
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+    // Side Panel - only if feature flag is enabled and not in test mode
+    if (getIsSidePanelFeatureEnabled() && !process.env.IN_TEST) {
       try {
         if (browser?.sidePanel?.open) {
           const tabs = await browser.tabs.query({
@@ -95,9 +102,14 @@ export default function OnboardingPinExtension() {
         await dispatch(setCompletedOnboarding());
       }
     } else {
-      // Regular onboarding completion when sidepanel is disabled
+      // Regular onboarding completion when sidepanel is disabled or in test mode
       await dispatch(setCompletedOnboarding());
     }
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    // Regular onboarding completion for non-experimental builds
+    await dispatch(setCompletedOnboarding());
+    ///: END:ONLY_INCLUDE_IF
   };
 
   useEffect(() => {

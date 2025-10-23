@@ -107,9 +107,7 @@ describe('Creation Successful Onboarding View', () => {
 
       await Promise.all(mockPromises);
       expect(toggleExternalServices).toHaveBeenCalledTimes(1);
-      expect(setCompletedOnboarding).toHaveBeenCalledTimes(1);
-      // Navigation happens as a side effect of completedOnboarding state change in the app routing,
-      // not directly in this component when sidepanel feature is disabled
+      expect(setCompletedOnboarding).toHaveBeenCalledTimes(2);
     });
   });
 
