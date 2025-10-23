@@ -53,8 +53,6 @@ export function useDappSwapComparisonInfo() {
     updateSwapComparisonLatency,
   } = useDappSwapComparisonLatencyMetrics();
 
-  console.log('-----------currentConfirmation--------', currentConfirmation);
-
   const captureDappSwapComparisonMetricsProperties = useCallback(
     (params: {
       properties: Record<string, string>;
@@ -203,7 +201,7 @@ export function useDappSwapComparisonInfo() {
         return;
       }
 
-      const selectedQuote = getBestQuote(
+      const selectedQuote: QuoteResponse | undefined = getBestQuote(
         quotes,
         amountMin,
         getUSDValueForDestinationToken,

@@ -93,61 +93,129 @@ function parseTransactionData(data?: string) {
   return { inputs, commandBytes };
 }
 
+function getCommandArgs(
+  commandBytes: string[],
+  inputs: string[],
+  command: string,
+) {
+  const commandIndex = commandBytes.findIndex(
+    (commandByte: string) => commandByte === command,
+  );
+  if (commandIndex < 0) {
+    return undefined;
+  }
+  return getArgsFromInput(inputs[commandIndex]);
+}
+
+function addSeaportValues(
+  commandBytes: string[],
+  inputs: string[],
+  quotesInput: GenericQuoteRequest,
+) {
+  const seaportArgs = getCommandArgs(
+    commandBytes,
+    inputs,
+    COMMAND_BYTE_SEAPORT,
+  );
+  if (seaportArgs === undefined) {
+    return undefined;
+  }
+
+  return {
+    amountMin: argToAmount(seaportArgs[13]),
+    quotesInput: {
+      ...quotesInput,
+      destTokenAddress: argToAddress(seaportArgs[16]),
+      srcTokenAddress: argToAddress(seaportArgs[10]),
+      srcTokenAmount: argToAmount(seaportArgs[12]),
+      walletAddress: argToAddress(seaportArgs[28]),
+    } as GenericQuoteRequest,
+  };
+}
+
+function addSweepValues(
+  commandBytes: string[],
+  inputs: string[],
+  quotesInput: GenericQuoteRequest,
+) {
+  const sweepArgs = getCommandArgs(commandBytes, inputs, COMMAND_BYTE_SWEEP);
+  if (sweepArgs === undefined) {
+    return undefined;
+  }
+
+  return {
+    amountMin: argToAmount(sweepArgs[2]),
+    quotesInput: {
+      ...quotesInput,
+      destTokenAddress: argToAddress(sweepArgs[0]),
+      walletAddress: argToAddress(sweepArgs[1]),
+    } as GenericQuoteRequest,
+  };
+}
+
+function addUnwrapWethValues(
+  commandBytes: string[],
+  inputs: string[],
+  quotesInput: GenericQuoteRequest,
+) {
+  const unwrapWethArgs = getCommandArgs(
+    commandBytes,
+    inputs,
+    COMMAND_BYTE_UNWRAP_WETH,
+  );
+  if (unwrapWethArgs === undefined) {
+    return undefined;
+  }
+
+  return {
+    amountMin: argToAmount(unwrapWethArgs[1]),
+    quotesInput: {
+      ...quotesInput,
+      walletAddress: argToAddress(unwrapWethArgs[0]),
+    } as GenericQuoteRequest,
+  };
+}
+
 export function getDataFromSwap(chainId: Hex, data?: string) {
-  let amountMin;
-  const tokenAddresses = [];
   const { commandBytes, inputs } = parseTransactionData(data);
 
-  const seaportIndex = commandBytes.findIndex(
-    (commandByte: string) => commandByte === COMMAND_BYTE_SEAPORT,
-  );
-  let seaportArgs: string[] = [];
-  let sweepArgs: string[] = [];
-  let unwrapWethArgs: string[] = [];
-
-  if (seaportIndex >= 0) {
-    seaportArgs = getArgsFromInput(inputs[seaportIndex]);
-    amountMin = argToAmount(seaportArgs[13]);
-  } else {
-    return { quotesInput: undefined, amountMin: undefined, tokenAddresses: [] };
-  }
-
-  const sweepIndex = commandBytes.findIndex(
-    (commandByte: string) => commandByte === COMMAND_BYTE_SWEEP,
-  );
-  if (sweepIndex >= 0) {
-    sweepArgs = getArgsFromInput(inputs[sweepIndex]);
-    amountMin = argToAmount(sweepArgs[2]);
-  }
-
-  const unwrapWethIndex = commandBytes.findIndex(
-    (commandByte: string) => commandByte === COMMAND_BYTE_UNWRAP_WETH,
-  );
-  if (unwrapWethIndex >= 0) {
-    unwrapWethArgs = getArgsFromInput(inputs[unwrapWethIndex]);
-    amountMin = argToAmount(unwrapWethArgs[1]);
-  }
-
-  tokenAddresses.push(argToAddress(seaportArgs[10]));
-  tokenAddresses.push(argToAddress(sweepArgs[0] ?? seaportArgs[16]));
-
-  const quotesInput = {
-    walletAddress: argToAddress(
-      unwrapWethArgs[0] ?? sweepArgs[1] ?? seaportArgs[28],
-    ),
+  let amountMin;
+  let quotesInput = {
     srcChainId: chainId,
     destChainId: chainId,
-    srcTokenAddress: argToAddress(seaportArgs[10]),
-    destTokenAddress:
-      unwrapWethIndex >= 0
-        ? getNativeTokenAddress(chainId)
-        : argToAddress(sweepArgs[0] ?? seaportArgs[16]),
-    srcTokenAmount: argToAmount(seaportArgs[12]),
     gasIncluded: false,
     gasIncluded7702: false,
   } as GenericQuoteRequest;
 
-  return { quotesInput, amountMin, tokenAddresses };
+  const seaportResult = addSeaportValues(commandBytes, inputs, quotesInput);
+  if (seaportResult) {
+    amountMin = seaportResult.amountMin;
+    quotesInput = seaportResult.quotesInput;
+  } else {
+    return { quotesInput: undefined, amountMin: undefined, tokenAddresses: [] };
+  }
+
+  const sweepResult = addSweepValues(commandBytes, inputs, quotesInput);
+  if (sweepResult) {
+    amountMin = sweepResult.amountMin;
+    quotesInput = sweepResult.quotesInput;
+  }
+
+  const unwrapWethResult = addUnwrapWethValues(
+    commandBytes,
+    inputs,
+    quotesInput,
+  );
+  if (unwrapWethResult) {
+    amountMin = unwrapWethResult.amountMin;
+    quotesInput = unwrapWethResult.quotesInput;
+  }
+
+  return {
+    quotesInput,
+    amountMin,
+    tokenAddresses: [quotesInput.destTokenAddress, quotesInput.srcTokenAddress],
+  };
 }
 
 export function getBestQuote(
