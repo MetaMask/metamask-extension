@@ -6,6 +6,7 @@ import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { twMerge } from '@metamask/design-system-react';
 import { Box, ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -52,6 +53,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
+import { BalanceEmptyState } from '../balance-empty-state';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -179,6 +181,35 @@ export const LegacyAggregatedBalance = ({
   );
 };
 
+/**
+ * Checks if the wallet balance should be considered "empty" (zero or effectively zero)
+ * Prioritizes current network balance - shows empty state when current network has 0 balance,
+ * even if other networks have funds.
+ *
+ * @param balance - The native token balance on current network
+ * @param totalFiatBalance - The aggregated fiat balance across chains
+ * @param isNotAggregatedFiatBalance - Whether to use native balance instead of fiat
+ * @returns true if balance should be considered empty
+ */
+const isWalletBalanceEmpty = (
+  balance: string,
+  totalFiatBalance: string,
+  isNotAggregatedFiatBalance: boolean,
+): boolean => {
+  // Always check current network balance first
+  // If current network has no funds, show empty state regardless of other networks
+  if (isZeroAmount(balance)) {
+    return true;
+  }
+
+  // If current network has funds, only check aggregated balance in aggregated display mode
+  if (!isNotAggregatedFiatBalance) {
+    return isZeroAmount(totalFiatBalance);
+  }
+
+  return false;
+};
+
 export const CoinOverview = ({
   account,
   balance,
@@ -209,6 +240,15 @@ export const CoinOverview = ({
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
+  const shouldHideZeroBalanceTokens = useSelector(
+    getShouldHideZeroBalanceTokens,
+  );
+  const allChainIDs = useSelector(getChainIdsToPoll) as string[];
+  const shouldShowFiat = useMultichainSelector(
+    getMultichainShouldShowFiat,
+    account,
+  );
+  const isTestnet = useSelector(getIsTestnet);
 
   const isEvm = useSelector(getMultichainIsEvm);
 
@@ -219,6 +259,19 @@ export const CoinOverview = ({
 
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
+  );
+
+  // Get formatted tokens and total fiat balance for empty state detection
+  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
+    account,
+    shouldHideZeroBalanceTokens,
+    isTokenNetworkFilterEqualCurrentNetwork,
+    allChainIDs,
+  );
+
+  const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
+    account,
+    formattedTokensWithBalancesPerChain,
   );
 
   const handleSensitiveToggle = () => {
@@ -349,6 +402,26 @@ export const CoinOverview = ({
       />
     );
   }
+
+  // Determine if the balance is empty and should show the empty state
+  const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
+    ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
+    : showNativeTokenAsMainBalance;
+
+  const isNotAggregatedFiatBalance =
+    !shouldShowFiat || showNativeTokenAsMain || isTestnet;
+
+  const isEmpty = isWalletBalanceEmpty(
+    balance,
+    totalFiatBalance,
+    isNotAggregatedFiatBalance,
+  );
+
+  // If balance is empty, show the BalanceEmptyState component
+  if (isEmpty) {
+    return <BalanceEmptyState className={twMerge('mx-auto', className)} />;
+  }
+
   return (
     <WalletOverview
       balance={

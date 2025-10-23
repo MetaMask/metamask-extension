@@ -90,36 +90,43 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = (props) => {
       padding={6}
       margin={4}
       backgroundColor={BoxBackgroundColor.BackgroundSection}
-      gap={4}
+      gap={5}
       {...props}
       className={twMerge('rounded-lg', props.className)}
     >
       <Box
+        flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
+        gap={1}
       >
-        <img
-          src="./images/bank-transfer.png"
-          alt={t('fundYourWallet')}
-          width="100"
-          height="100"
-        />
+        <Box
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+        >
+          <img
+            src="./images/bank-transfer.png"
+            alt={t('fundYourWallet')}
+            width="100"
+            height="100"
+          />
+        </Box>
+        <Text
+          variant={TextVariant.HeadingLg}
+          color={TextColor.TextDefault}
+          fontWeight={FontWeight.Bold}
+          textAlign={TextAlign.Center}
+        >
+          {t('fundYourWallet')}
+        </Text>
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          textAlign={TextAlign.Center}
+        >
+          {t('getYourWalletReadyToUseWeb3')}
+        </Text>
       </Box>
-      <Text
-        variant={TextVariant.HeadingMd}
-        color={TextColor.TextDefault}
-        fontWeight={FontWeight.Bold}
-        textAlign={TextAlign.Center}
-      >
-        {t('fundYourWallet')}
-      </Text>
-      <Text
-        variant={TextVariant.BodyMd}
-        color={TextColor.TextAlternative}
-        textAlign={TextAlign.Center}
-      >
-        {t('getYourWalletReadyToUseWeb3')}
-      </Text>
       <Button
         variant={ButtonVariant.Primary}
         size={ButtonSize.Lg}

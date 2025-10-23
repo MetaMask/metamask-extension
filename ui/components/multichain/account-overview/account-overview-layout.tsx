@@ -117,7 +117,7 @@ export const AccountOverviewLayout = ({
 
   return (
     <>
-      <div className="account-overview__balance-wrapper">
+      <div className="account-overview__balance-wrapper px-4 gap-4">
         <NetworkConnectionBanner />
         {children}
       </div>
