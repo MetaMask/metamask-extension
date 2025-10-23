@@ -763,7 +763,7 @@
       "packages": {
         "@metamask/account-api": true,
         "@metamask/accounts-controller": true,
-        "@metamask/base-controller": true,
+        "@metamask/account-tree-controller>@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/profile-sync-controller": true,
@@ -871,6 +871,15 @@
       }
     },
     "@metamask/base-controller": {
+      "globals": {
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/account-tree-controller>@metamask/base-controller": {
       "globals": {
         "console.error": true,
         "setTimeout": true
