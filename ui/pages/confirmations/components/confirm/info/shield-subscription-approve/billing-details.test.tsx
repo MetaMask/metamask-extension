@@ -4,7 +4,7 @@ import {
   ProductPrice,
   RECURRING_INTERVALS,
 } from '@metamask/subscription-controller';
-import { DateTime } from 'luxon';
+import { getShortDateFormatterV2 } from '../../../../../asset/util';
 import BillingDetails from './billing-details';
 
 describe('BillingDetails', () => {
@@ -18,13 +18,15 @@ describe('BillingDetails', () => {
   };
 
   it('should render', () => {
-    const { getByText, getByTestId } = render(
+    const { getByTestId } = render(
       <BillingDetails
         productPrice={mockProductPrice}
         isTrialSubscription={true}
       />,
     );
-    expect(getByText('Billing Date')).toBeInTheDocument();
+    expect(
+      getByTestId('shield-subscription-billing_date_label'),
+    ).toBeInTheDocument();
     expect(getByTestId('shield-subscription-billing_date')).toBeInTheDocument();
   });
 
@@ -36,7 +38,7 @@ describe('BillingDetails', () => {
       />,
     );
 
-    const expectedBillingDate = DateTime.now().toFormat('MMMM d, y');
+    const expectedBillingDate = getShortDateFormatterV2().format(new Date());
     expect(getByTestId('shield-subscription-billing_date')).toHaveTextContent(
       expectedBillingDate,
     );
