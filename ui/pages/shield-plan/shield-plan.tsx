@@ -167,25 +167,27 @@ const ShieldPlan = () => {
 
   // set selected token to the first available token if no token is selected
   useEffect(() => {
+    if (selectedToken || availableTokenBalances.length === 0) {
+      return;
+    }
+
     const lastUsedPaymentToken =
       lastUsedSubscriptionPaymentMethod?.paymentTokenAddress;
     const lastUsedPaymentMethod =
       lastUsedSubscriptionPaymentMethod?.paymentMethod;
+
+    let lastUsedSelectedToken = availableTokenBalances[0];
     if (
       lastUsedPaymentToken &&
       lastUsedPaymentMethod === PAYMENT_TYPES.byCrypto
     ) {
-      setSelectedToken(
+      lastUsedSelectedToken =
         availableTokenBalances.find(
           (token) => token.address === lastUsedPaymentToken,
-        ),
-      );
-      return;
-    } else if (selectedToken || availableTokenBalances.length === 0) {
-      return;
+        ) || availableTokenBalances[0];
     }
 
-    setSelectedToken(availableTokenBalances[0]);
+    setSelectedToken(lastUsedSelectedToken);
   }, [
     availableTokenBalances,
     selectedToken,
