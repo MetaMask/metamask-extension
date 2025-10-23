@@ -206,6 +206,7 @@ function withRequest<ReturnValue>(
         expectedDeadline: 45,
         maxDeadline: 150,
         extensionReturnTxHashAsap: false,
+        extensionReturnTxHashAsapBatch: false,
       },
     },
     ...options,
@@ -897,6 +898,56 @@ describe('submitBatchSmartTransactionHook', () => {
 
       expect(endFlowSpy).toHaveBeenCalledWith({
         id: 'approvalId',
+      });
+    });
+  });
+
+  it('returns txHashes asap if extensionReturnTxHashAsapBatch feature flag is enabled', async () => {
+    withRequest(async ({ request }) => {
+      request.featureFlags.smartTransactions.extensionReturnTxHashAsapBatch = true;
+      request.smartTransactionsController.submitSignedTransactions = jest.fn(
+        async (_) => {
+          return {
+            uuid,
+            txHashes: ['hash1', 'hash2'],
+          };
+        },
+      );
+
+      const result = await submitBatchSmartTransactionHook(request);
+
+      expect(result).toEqual({
+        results: [{ transactionHash: 'hash1' }, { transactionHash: 'hash2' }],
+      });
+    });
+  });
+
+  it('waits for transaction hash if extensionReturnTxHashAsapBatch is false', async () => {
+    withRequest(async ({ request, messenger }) => {
+      request.featureFlags.smartTransactions.extensionReturnTxHashAsapBatch = false;
+      request.smartTransactionsController.submitSignedTransactions = jest.fn(
+        async (_) => {
+          return {
+            uuid,
+            txHashes: ['hash1', 'hash2'],
+          };
+        },
+      );
+
+      setImmediate(() => {
+        messenger.publish('SmartTransactionsController:smartTransaction', {
+          status: 'success',
+          uuid,
+          statusMetadata: {
+            minedHash: txHash,
+          },
+        } as SmartTransaction);
+      });
+
+      const result = await submitBatchSmartTransactionHook(request);
+
+      expect(result).toEqual({
+        results: [{ transactionHash: 'hash1' }, { transactionHash: 'hash2' }],
       });
     });
   });

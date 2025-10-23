@@ -60,6 +60,7 @@ export type FeatureFlags = {
     expectedDeadline?: number;
     maxDeadline?: number;
     extensionReturnTxHashAsap?: boolean;
+    extensionReturnTxHashAsapBatch?: boolean;
   };
 };
 
@@ -93,6 +94,7 @@ class SmartTransactionHook {
       expectedDeadline?: number;
       maxDeadline?: number;
       extensionReturnTxHashAsap?: boolean;
+      extensionReturnTxHashAsapBatch?: boolean;
     };
   };
 
@@ -241,16 +243,6 @@ class SmartTransactionHook {
 
       await this.#processApprovalIfNeeded(uuid);
 
-      const transactionHash = await this.#waitForTransactionHash({
-        uuid,
-      });
-
-      if (transactionHash === null) {
-        throw new Error(
-          'submitBatch: Transaction does not have a transaction hash, there was a problem',
-        );
-      }
-
       let submitBatchResponse;
       if (submitTransactionResponse?.txHashes) {
         submitBatchResponse = {
@@ -262,6 +254,26 @@ class SmartTransactionHook {
         submitBatchResponse = {
           results: [],
         };
+      }
+
+      const extensionReturnTxHashAsapBatch =
+        this.#featureFlags?.smartTransactions?.extensionReturnTxHashAsapBatch;
+
+      if (
+        extensionReturnTxHashAsapBatch &&
+        submitBatchResponse?.results?.length > 0
+      ) {
+        return submitBatchResponse;
+      }
+
+      const transactionHash = await this.#waitForTransactionHash({
+        uuid,
+      });
+
+      if (transactionHash === null) {
+        throw new Error(
+          'submitBatch: Transaction does not have a transaction hash, there was a problem',
+        );
       }
 
       return submitBatchResponse;
