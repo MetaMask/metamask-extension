@@ -1,4 +1,3 @@
-import { Messenger } from '@metamask/messenger';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   NetworkOrderController,
