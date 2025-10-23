@@ -254,6 +254,29 @@ const createMockState = (overrides = {}) => {
       ...mockMultichainState.metamask,
       keyrings: [],
       defaultHomeActiveTabName: 'activity',
+      tokenBalances: {
+        '0x1111111111111111111111111111111111111111': {},
+        '0x2222222222222222222222222222222222222222': {},
+        '0x3333333333333333333333333333333333333333': {},
+      },
+      balances: {
+        '9b6b30a0-3c87-4a33-9d10-a27a2aba2ba2': {},
+        '8a5c4b1e-2f9d-4e7a-8c3b-1d6e9f2a5b8c': {},
+        '7d4e3f2a-1c8b-5e9d-7f2a-4b8c1e5f9a2d': {},
+      },
+      allTokens: {},
+      allIgnoredTokens: {},
+      marketData: {},
+      currencyRates: {},
+      currentCurrency: 'USD',
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+        },
+        solana: {
+          '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+        },
+      },
       ...overrides,
     },
   };
