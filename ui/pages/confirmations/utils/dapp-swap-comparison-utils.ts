@@ -260,13 +260,13 @@ export function getBestQuote(
     const quoteMinGreaterThanAmountMin = new BigNumber(
       quote.minDestTokenAmount,
       10,
-    ).greaterThan(new BigNumber(amountMin, 16));
+    ).greaterThanOrEqualTo(new BigNumber(amountMin, 16));
 
     if (
       (minBelowAmountMin && quoteMinGreaterThanAmountMin) ||
       quoteValue.greaterThan(highestQuoteValue)
     ) {
-      minBelowAmountMin = false;
+      minBelowAmountMin = quoteMinGreaterThanAmountMin;
       highestQuoteValue = quoteValue;
       selectedQuoteIndex = index;
     }
