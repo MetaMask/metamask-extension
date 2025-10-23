@@ -96,7 +96,7 @@ exports[`PersonalSignInfo handle reverse string properly 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
           style="white-space: pre-wrap;"
         >
-          Sign into \\u202E EVIL
+          Sign into  EVIL
         </p>
       </div>
     </div>
