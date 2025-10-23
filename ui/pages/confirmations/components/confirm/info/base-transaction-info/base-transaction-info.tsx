@@ -24,7 +24,7 @@ const BaseTransactionInfo = () => {
 
   return (
     <>
-      {(dappSwapMetrics as { enabled: boolean })?.enabled == true &&
+      {(dappSwapMetrics as { enabled: boolean })?.enabled === true &&
         transactionMeta.origin === DAPP_SWAP_COMPARISON_ORIGIN && (
           <DappSwapComparisonBanner />
         )}
