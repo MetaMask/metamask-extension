@@ -258,6 +258,7 @@
     "@metamask/gas-fee-controller": "npm:@metamask-previews/gas-fee-controller@24.1.0-preview-8e6c5423",
     "@metamask/gator-permissions-controller": "npm:@metamask-previews/gator-permissions-controller@0.2.1-preview-8e6c5423",
     "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@23.1.1-preview-8e6c5423",
+    "@metamask/keyring-internal-snap-client": "npm:@metamask-previews/keyring-internal-snap-client@7.2.0-74cd0f8",
     "@metamask/logging-controller": "npm:@metamask-previews/logging-controller@6.1.0-preview-8e6c5423",
     "@metamask/message-manager": "npm:@metamask-previews/message-manager@13.0.1-preview-8e6c5423",
     "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@1.6.1-preview-8e6c5423",
