@@ -7271,14 +7271,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-log-controller@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/permission-log-controller@npm:4.0.0"
+"@metamask/permission-log-controller@npm:@metamask-previews/permission-log-controller@4.1.0-preview-8e6c5423":
+  version: 4.1.0-preview-8e6c5423
+  resolution: "@metamask-previews/permission-log-controller@npm:4.1.0-preview-8e6c5423"
   dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/json-rpc-engine": "npm:^10.0.3"
-    "@metamask/utils": "npm:^11.4.2"
-  checksum: 10/aa30d84c27a742cf410d28d5a8c8d7d1c52d4ae6430cd89808386c78bc80ffce51870d3ea0222c40acff9a1b6ad747cb297b2a00dde57a512bfea68e3b536051
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/json-rpc-engine": "npm:^10.1.1"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
+  checksum: 10/2677c51adcd0ca112e1391d760613fdf2761678adb67871e77207e034edbbdc116c735b768586496fde55cbaa3d305dd4399b3ac0832e87ebb73d71c094b48af
   languageName: node
   linkType: hard
 
