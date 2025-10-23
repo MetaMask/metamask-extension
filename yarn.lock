@@ -5797,7 +5797,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.11.0, @metamask/controller-utils@npm:^11.12.0, @metamask/controller-utils@npm:^11.14.0, @metamask/controller-utils@npm:^11.14.1, @metamask/controller-utils@npm:^11.3.0":
+"@metamask/controller-utils@npm:^11.0.0, @metamask/controller-utils@npm:^11.12.0, @metamask/controller-utils@npm:^11.14.0, @metamask/controller-utils@npm:^11.14.1, @metamask/controller-utils@npm:^11.3.0":
   version: 11.14.1
   resolution: "@metamask/controller-utils@npm:11.14.1"
   dependencies:
@@ -7293,27 +7293,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^13.1.0":
-  version: 13.1.0
-  resolution: "@metamask/phishing-controller@npm:13.1.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/controller-utils": "npm:^11.11.0"
-    "@noble/hashes": "npm:^1.4.0"
-    "@types/punycode": "npm:^2.1.0"
-    ethereum-cryptography: "npm:^2.1.2"
-    fastest-levenshtein: "npm:^1.0.16"
-    punycode: "npm:^2.1.1"
-  checksum: 10/c62f71291736dfd635cc69b2d422687d8d610591a5e1cd9a6b4806cdc19221a72fe7699c0cabe0a2a108b49c3cc4dcb88a5b283fba374fe13e54d5813fb77902
-  languageName: node
-  linkType: hard
-
-"@metamask/phishing-controller@npm:^14.1.2":
-  version: 14.1.2
-  resolution: "@metamask/phishing-controller@npm:14.1.2"
+"@metamask/phishing-controller@npm:@metamask-previews/phishing-controller@14.1.2-preview-8e6c5423":
+  version: 14.1.2-preview-8e6c5423
+  resolution: "@metamask-previews/phishing-controller@npm:14.1.2-preview-8e6c5423"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/messenger": "npm:^0.3.0"
     "@noble/hashes": "npm:^1.8.0"
     "@types/punycode": "npm:^2.1.0"
     ethereum-cryptography: "npm:^2.1.2"
@@ -7321,7 +7307,7 @@ __metadata:
     punycode: "npm:^2.1.1"
   peerDependencies:
     "@metamask/transaction-controller": ^60.4.0
-  checksum: 10/957667c965266767c4da08d630425dd19aa2b655a72e294ee8d63918bae80b48596bae1fafcdbc4ec06b530ece34c9246165a9135f6b75790c9c20c8137b03d0
+  checksum: 10/09a1b1d39d0a236da1be1ef1348178c601841f4cf61250028f8a6d90511b907bc45aded51dec350e2b701eb31d63e9e08a1dea917755cfe1408ee65492ef4946
   languageName: node
   linkType: hard
 

@@ -1,9 +1,9 @@
-import { Messenger } from '@metamask/base-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getPhishingControllerMessenger,
+  getRootMessenger,
   PhishingControllerMessenger,
 } from './messengers';
 import { PhishingControllerInit } from './phishing-controller-init';
@@ -13,7 +13,7 @@ jest.mock('@metamask/phishing-controller');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<PhishingControllerMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

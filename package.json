@@ -266,7 +266,8 @@
     "@metamask/network-enablement-controller": "npm:@metamask-previews/network-enablement-controller@2.1.1-preview-8e6c5423",
     "@metamask/notification-services-controller": "npm:@metamask-previews/notification-services-controller@18.3.0-preview-8e6c5423",
     "@metamask/permission-controller": "npm:@metamask-previews/permission-controller@11.1.0-preview-8e6c5423",
-    "@metamask/permission-log-controller": "npm:@metamask-previews/permission-log-controller@4.1.0-preview-8e6c5423"
+    "@metamask/permission-log-controller": "npm:@metamask-previews/permission-log-controller@4.1.0-preview-8e6c5423",
+    "@metamask/phishing-controller": "npm:@metamask-previews/phishing-controller@14.1.2-preview-8e6c5423"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
