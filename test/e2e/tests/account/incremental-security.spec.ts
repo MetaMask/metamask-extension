@@ -18,8 +18,7 @@ describe('Incremental Security', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: {
-          defaultTestDapp: 1,
-          customDappPaths: ['test-dapp-send-eth-with-private-key'],
+          customDappPaths: ['./send-eth-with-private-key-test'],
         },
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),

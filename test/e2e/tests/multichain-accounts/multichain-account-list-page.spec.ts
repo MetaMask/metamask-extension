@@ -37,7 +37,6 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         title: this.test?.fullTitle(),
         accountType: AccountType.SSK,
         dappOptions: {
-          defaultTestDapp: 1,
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
         testSpecificMock: async (mockServer) => {

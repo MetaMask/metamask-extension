@@ -46,8 +46,7 @@ describe('Marketing cookieId', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: {
-          defaultTestDapp: 1,
-          customDappPaths: ['../tests/metrics/marketing-cookieid-mock-page'],
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
@@ -93,8 +92,7 @@ describe('Marketing cookieId', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: {
-          defaultTestDapp: 1,
-          customDappPaths: ['../tests/metrics/marketing-cookieid-mock-page'],
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
@@ -140,8 +138,7 @@ describe('Marketing cookieId', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: {
-          defaultTestDapp: 1,
-          customDappPaths: ['../tests/metrics/marketing-cookieid-mock-page'],
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         },
         fixtures: new FixtureBuilder().withMetaMetricsController().build(),
         title: this.test?.fullTitle(),
@@ -180,8 +177,7 @@ describe('Marketing cookieId', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: {
-          defaultTestDapp: 1,
-          customDappPaths: ['../tests/metrics/marketing-cookieid-mock-page'],
+          customDappPaths: ['./tests/metrics/marketing-cookieid-mock-page'],
         },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({

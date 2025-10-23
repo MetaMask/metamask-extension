@@ -177,7 +177,6 @@ describe('Phishing Detection', function (this: Suite) {
           });
         },
         dappOptions: {
-          defaultTestDapp: 1,
           customDappPaths: [
             './tests/phishing-controller/mock-page-with-disallowed-iframe',
           ],
@@ -298,7 +297,6 @@ describe('Phishing Detection', function (this: Suite) {
           });
         },
         dappOptions: {
-          defaultTestDapp: 1,
           customDappPaths: [
             './tests/phishing-controller/mock-page-with-disallowed-iframe',
           ],
@@ -557,7 +555,6 @@ describe('Phishing Detection', function (this: Suite) {
               });
             },
             dappOptions: {
-              defaultTestDapp: 1,
               customDappPaths: [
                 './tests/phishing-controller/mock-page-with-paths',
               ],
@@ -589,7 +586,6 @@ describe('Phishing Detection', function (this: Suite) {
               });
             },
             dappOptions: {
-              defaultTestDapp: 1,
               customDappPaths: [
                 './tests/phishing-controller/mock-page-with-paths',
               ],
@@ -627,7 +623,6 @@ describe('Phishing Detection', function (this: Suite) {
               });
             },
             dappOptions: {
-              defaultTestDapp: 1,
               customDappPaths: [
                 './tests/phishing-controller/mock-page-with-paths',
               ],
@@ -672,7 +667,6 @@ describe('Phishing Detection', function (this: Suite) {
               });
             },
             dappOptions: {
-              defaultTestDapp: 1,
               customDappPaths: [
                 './tests/phishing-controller/mock-page-with-paths',
               ],

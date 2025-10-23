@@ -25,7 +25,6 @@ describe('Snap Account Transfers', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
         dappOptions: {
-          defaultTestDapp: 1,
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
         title: this.test?.fullTitle(),
@@ -71,7 +70,6 @@ describe('Snap Account Transfers', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
         dappOptions: {
-          defaultTestDapp: 1,
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
         title: this.test?.fullTitle(),
@@ -118,7 +116,6 @@ describe('Snap Account Transfers', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
         dappOptions: {
-          defaultTestDapp: 1,
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
         title: this.test?.fullTitle(),
