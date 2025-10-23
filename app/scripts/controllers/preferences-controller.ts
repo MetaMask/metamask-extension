@@ -115,7 +115,7 @@ export type Preferences = {
     sortCallback: string;
   };
   useNativeCurrencyAsPrimaryCurrency: boolean;
-  useSidePanelAsDefault: boolean;
+  useSidePanelAsDefault?: boolean; // Only available in build-experimental
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
@@ -224,7 +224,9 @@ export const getDefaultPreferencesControllerState =
         sortCallback: 'stringNumeric',
       },
       useNativeCurrencyAsPrimaryCurrency: true,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
       useSidePanelAsDefault: true,
+      ///: END:ONLY_INCLUDE_IF
     },
     securityAlertsEnabled: true,
     selectedAddress: '',
@@ -493,12 +495,14 @@ const controllerMetadata = {
     anonymous: false,
     usedInUi: true,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   'preferences.useSidePanelAsDefault': {
     includeInStateLogs: true,
     persist: true,
     anonymous: true,
     usedInUi: true,
   },
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export class PreferencesController extends BaseController<
