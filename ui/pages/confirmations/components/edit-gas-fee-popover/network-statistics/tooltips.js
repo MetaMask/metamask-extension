@@ -1,20 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import Box from '../../../../../components/ui/box';
-import Tooltip from '../../../../../components/ui/tooltip';
 
-import {
-  DISPLAY,
-  FLEX_DIRECTION,
-} from '../../../../../helpers/constants/design-system';
+import Tooltip from '../../../../../components/ui/tooltip';
 
 const NetworkStatusTooltip = ({ children, html, title }) => (
   <Tooltip position="top" html={html} title={title}>
-    <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
-      {children}
-    </Box>
+    <Box flexDirection={BoxFlexDirection.column}>{children}</Box>
   </Tooltip>
 );
 

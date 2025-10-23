@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Box from '../../../../../components/ui/box';
+import { Box } from '@metamask/design-system-react';
 import BaseFeeInput from './base-fee-input';
 import PriorityFeeInput from './priority-fee-input';
 

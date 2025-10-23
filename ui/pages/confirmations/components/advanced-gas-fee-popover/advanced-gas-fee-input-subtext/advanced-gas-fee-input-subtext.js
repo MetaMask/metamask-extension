@@ -2,10 +2,10 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { Box } from '@metamask/design-system-react';
 import { isNullish } from '../../../../../helpers/utils/util';
 import { formatGasFeeOrFeeRange } from '../../../../../helpers/utils/gas';
 import { I18nContext } from '../../../../../contexts/i18n';
-import Box from '../../../../../components/ui/box';
 import LoadingHeartBeat from '../../../../../components/ui/loading-heartbeat';
 
 function determineTrendInfo(trend, t) {

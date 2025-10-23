@@ -1,8 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { AvatarAccountSize } from '@metamask/design-system-react';
-import Box from '../../../../components/ui/box/box';
+import {
+  AvatarAccountSize,
+  Box,
+  BoxJustifyContent,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
 import Tooltip from '../../../../components/ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
@@ -14,8 +18,6 @@ import {
 import {
   TextVariant,
   DISPLAY,
-  AlignItems,
-  JustifyContent,
   TextColor,
   Color,
   FontWeight,
@@ -34,9 +36,8 @@ export default function ContractTokenValues({
   return (
     <Box
       className="contract-token-values"
-      display={DISPLAY.FLEX}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
+      alignItems={BoxAlignItems.center}
+      justifyContent={BoxJustifyContent.center}
       gap={2}
     >
       <PreferredAvatar address={address} size={AvatarAccountSize.Sm} />
