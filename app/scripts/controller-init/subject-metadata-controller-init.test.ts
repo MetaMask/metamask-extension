@@ -1,8 +1,8 @@
-import { Messenger } from '@metamask/base-controller';
 import { SubjectMetadataController } from '@metamask/permission-controller';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
+  getRootMessenger,
   getSubjectMetadataControllerMessenger,
   SubjectMetadataControllerMessenger,
 } from './messengers';
@@ -13,7 +13,7 @@ jest.mock('@metamask/permission-controller');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<SubjectMetadataControllerMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
