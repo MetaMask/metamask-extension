@@ -27,6 +27,7 @@ import {
   selectBalanceChangeBySelectedAccountGroup,
   getAssetsBySelectedAccountGroup,
   selectedAccountNativeBalance,
+  selectedAccountNativeBalanceByAccountGroup,
 } from './assets';
 
 jest.mock('@metamask/assets-controllers', () => {
@@ -1163,6 +1164,245 @@ describe('selectedAccountNativeBalance', () => {
     });
 
     const result = selectedAccountNativeBalance(mockState);
+    expect(result).toBe('0 ETH');
+  });
+});
+
+describe('selectedAccountNativeBalanceByAccountGroup', () => {
+  const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const createMockState = (overrides = {}) => ({
+    metamask: {
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '5132883f-598e-482c-a02b-84eeaa352f5b',
+      },
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+        },
+      },
+      marketData: {
+        '0x1': {
+          [ZERO_ADDRESS]: {
+            currency: 'ETH',
+          },
+        },
+      },
+      currencyRates: {
+        ETH: {
+          conversionRate: 2000,
+        },
+      },
+      assetsRates: {},
+      multichainNetworkProviders: [],
+      nonEvmMultichainNetworkConfigurationsByChainId: {},
+      ...overrides,
+    },
+  });
+
+  const createMockAccountGroupBalance = (overrides = {}) => ({
+    walletId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+    groupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+    totalBalanceInUserCurrency: 4000,
+    userCurrency: 'usd',
+    ...overrides,
+  });
+
+  it('should return null when multiple chains are enabled', () => {
+    const mockState = createMockState({
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+          '0x89': true,
+        },
+      },
+    });
+
+    const mockBalance = createMockAccountGroupBalance();
+    const selector = selectedAccountNativeBalanceByAccountGroup(mockBalance);
+    const result = selector(mockState);
+
+    expect(result).toBeNull();
+  });
+
+  it('should return null when no chains are enabled', () => {
+    const mockState = createMockState({
+      enabledNetworkMap: {
+        eip155: {},
+      },
+    });
+
+    const mockBalance = createMockAccountGroupBalance();
+    const selector = selectedAccountNativeBalanceByAccountGroup(mockBalance);
+    const result = selector(mockState);
+
+    expect(result).toBeNull();
+  });
+
+  it('should return null when chainId is not available', () => {
+    const mockState = createMockState({
+      enabledNetworkMap: {
+        eip155: {
+          '': true, // Empty chainId
+        },
+      },
+    });
+
+    const mockBalance = createMockAccountGroupBalance();
+    const selector = selectedAccountNativeBalanceByAccountGroup(mockBalance);
+    const result = selector(mockState);
+
+    expect(result).toBeNull();
+  });
+
+  it('should return null when market data for chain is not available', () => {
+    const mockState = createMockState({
+      marketData: {
+        '0x1': {}, // No ZERO_ADDRESS entry
+      },
+    });
+
+    const mockBalance = createMockAccountGroupBalance();
+    const selector = selectedAccountNativeBalanceByAccountGroup(mockBalance);
+    const result = selector(mockState);
+
+    expect(result).toBeNull();
+  });
+
+  it('should return null when currency for chain is not available', () => {
+    const mockState = createMockState({
+      marketData: {
+        '0x1': {
+          [ZERO_ADDRESS]: {
+            // No currency property
+          },
+        },
+      },
+    });
+
+    const mockBalance = createMockAccountGroupBalance();
+    const selector = selectedAccountNativeBalanceByAccountGroup(mockBalance);
+    const result = selector(mockState);
+
+    expect(result).toBeNull();
+  });
+
+  it('should return null when currency rate is not available', () => {
+    const mockState = createMockState({
+      currencyRates: {
+        // No ETH entry
+      },
+    });
+
+    const mockBalance = createMockAccountGroupBalance();
+    const selector = selectedAccountNativeBalanceByAccountGroup(mockBalance);
+    const result = selector(mockState);
+
+    expect(result).toBeNull();
+  });
+
+  it('should return null when currency rate is zero', () => {
+    const mockState = createMockState({
+      currencyRates: {
+        ETH: {
+          conversionRate: 0,
+        },
+      },
+    });
+
+    const mockBalance = createMockAccountGroupBalance();
+    const selector = selectedAccountNativeBalanceByAccountGroup(mockBalance);
+    const result = selector(mockState);
+
+    expect(result).toBeNull();
+  });
+
+  it('should calculate native balance correctly with valid data for EIP155 chain', () => {
+    const mockState = createMockState();
+    const mockBalance = createMockAccountGroupBalance({
+      totalBalanceInUserCurrency: 4000, // 4000 USD
+    });
+
+    const selector = selectedAccountNativeBalanceByAccountGroup(mockBalance);
+    const result = selector(mockState);
+
+    // 4000 USD / 2000 USD per ETH = 2 ETH
+    expect(result).toBe('2 ETH');
+  });
+
+  it('should handle zero balance correctly for EIP155 chain', () => {
+    const mockState = createMockState();
+    const mockBalance = createMockAccountGroupBalance({
+      totalBalanceInUserCurrency: 0,
+    });
+
+    const selector = selectedAccountNativeBalanceByAccountGroup(mockBalance);
+    const result = selector(mockState);
+
+    expect(result).toBe('0 ETH');
+  });
+
+  it('should round balance to 7 decimal places for EIP155 chain', () => {
+    const mockState = createMockState({
+      currencyRates: {
+        ETH: {
+          conversionRate: 3, // 1 ETH = 3 USD
+        },
+      },
+    });
+
+    const mockBalance = createMockAccountGroupBalance({
+      totalBalanceInUserCurrency: 10, // 10 USD
+    });
+
+    const selector = selectedAccountNativeBalanceByAccountGroup(mockBalance);
+    const result = selector(mockState);
+
+    // 10 USD / 3 USD per ETH = 3.3333333...
+    expect(result).toBe('3.3333333 ETH');
+  });
+
+  it('should handle different currencies correctly for EIP155 chain', () => {
+    const mockState = createMockState({
+      marketData: {
+        '0x1': {
+          [ZERO_ADDRESS]: {
+            currency: 'MATIC',
+          },
+        },
+      },
+      currencyRates: {
+        MATIC: {
+          conversionRate: 0.5, // 1 MATIC = 0.5 USD
+        },
+      },
+    });
+
+    const mockBalance = createMockAccountGroupBalance({
+      totalBalanceInUserCurrency: 100, // 100 USD
+    });
+
+    const selector = selectedAccountNativeBalanceByAccountGroup(mockBalance);
+    const result = selector(mockState);
+
+    // 100 USD / 0.5 USD per MATIC = 200 MATIC
+    expect(result).toBe('200 MATIC');
+  });
+
+  it('should return zero balance when balanceByAccountGroup is undefined', () => {
+    const mockState = createMockState();
+    const mockBalance = createMockAccountGroupBalance({
+      totalBalanceInUserCurrency: undefined,
+    });
+
+    const selector = selectedAccountNativeBalanceByAccountGroup(mockBalance);
+    const result = selector(mockState);
+
     expect(result).toBe('0 ETH');
   });
 });
