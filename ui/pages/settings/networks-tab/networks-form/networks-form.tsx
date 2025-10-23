@@ -33,7 +33,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   addNetwork,
-  setActiveNetwork,
   setEditedNetwork,
   setEnabledNetworks,
   setTokenNetworkFilter,
@@ -312,16 +311,7 @@ export const NetworksForm = ({
             await dispatch(setEnabledNetworks(existingNetwork.chainId));
           }
         } else {
-          const addedNetworkConfiguration = (await dispatch(
-            addNetwork(networkPayload),
-          )) as unknown as NetworkConfiguration;
-
-          const networkClientId =
-            addedNetworkConfiguration?.rpcEndpoints?.[
-              addedNetworkConfiguration.defaultRpcEndpointIndex
-            ]?.networkClientId;
-
-          await dispatch(setActiveNetwork(networkClientId));
+          await dispatch(addNetwork(networkPayload));
           await dispatch(setEnabledNetworks(networkPayload.chainId));
         }
 
