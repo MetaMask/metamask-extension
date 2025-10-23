@@ -70,12 +70,7 @@ export default class TokenList extends Component {
             {Array(Math.min(12, results.length))
               .fill(undefined)
               .map((_, i) => {
-                const { symbol, name, address } = results[i] || {};
-
-                const chainId = isTokenNetworkFilterEqualCurrentNetwork
-                  ? currentNetwork?.chainId
-                  : results[i]?.chainId;
-
+                const { symbol, name, address, chainId } = results[i] || {};
                 let tokenAlreadyAdded = false;
 
                 tokenAlreadyAdded = checkExistingAllTokens(
