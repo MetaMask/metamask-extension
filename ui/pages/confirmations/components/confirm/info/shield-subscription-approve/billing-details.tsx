@@ -6,6 +6,7 @@ import {
   ConfirmInfoRowText,
 } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 
 const BillingDetails = ({
   productPrice,
@@ -14,6 +15,7 @@ const BillingDetails = ({
   productPrice: ProductPrice;
   isTrialSubscription: boolean;
 }) => {
+  const t = useI18nContext();
   const billingDate = useMemo(() => {
     // If it's not a trial subscription, return the billing date as today
     if (!isTrialSubscription) {
@@ -28,7 +30,7 @@ const BillingDetails = ({
   return (
     <ConfirmInfoSection data-testid="shield-subscription-billing_details_section">
       <ConfirmInfoRow
-        label="Billing Date"
+        label={t('shieldPlanBillingDate')}
         style={{ color: 'var(--color-text-alternative)' }}
       >
         <ConfirmInfoRowText

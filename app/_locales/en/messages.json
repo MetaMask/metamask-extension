@@ -5849,6 +5849,9 @@
     "message": "Auto renews for $1 until canceled",
     "description": "The $1 is the price of the monthly plan"
   },
+  "shieldPlanBillingDate": {
+    "message": "Billing date"
+  },
   "shieldPlanCard": {
     "message": "Card"
   },
