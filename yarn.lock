@@ -7606,14 +7606,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^34.0.0":
-  version: 34.0.0
-  resolution: "@metamask/signature-controller@npm:34.0.0"
+"@metamask/signature-controller@npm:@metamask-previews/signature-controller@34.0.1-preview-8e6c5423":
+  version: 34.0.1-preview-8e6c5423
+  resolution: "@metamask-previews/signature-controller@npm:34.0.1-preview-8e6c5423"
   dependencies:
-    "@metamask/base-controller": "npm:^8.4.0"
-    "@metamask/controller-utils": "npm:^11.14.0"
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/utils": "npm:^11.8.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
     jsonschema: "npm:^1.4.1"
     lodash: "npm:^4.17.21"
     uuid: "npm:^8.3.2"
@@ -7624,7 +7625,7 @@ __metadata:
     "@metamask/keyring-controller": ^23.0.0
     "@metamask/logging-controller": ^6.0.0
     "@metamask/network-controller": ^24.0.0
-  checksum: 10/d74da83840fe8745060179905e51909456d5557e84d2df8bb508d83562f4c82140e8c86c793c62347d8d0ed95ff9614fae28d9260f360ea5a393f1ae6d8734f3
+  checksum: 10/ea00b5d3102607798793c740f13fc092039f30e5d5d64b3c2b4f8430e1290fd23d97e7d432d8b3755eb1f34002aada7f5c5dca8c441c87b4876cb3793cf53b97
   languageName: node
   linkType: hard
 
