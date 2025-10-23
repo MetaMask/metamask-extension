@@ -8051,17 +8051,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/user-operation-controller@npm:^39.0.0":
-  version: 39.0.0
-  resolution: "@metamask/user-operation-controller@npm:39.0.0"
+"@metamask/user-operation-controller@npm:@metamask-previews/user-operation-controller@39.2.0-preview-8e6c5423":
+  version: 39.2.0-preview-8e6c5423
+  resolution: "@metamask-previews/user-operation-controller@npm:39.2.0-preview-8e6c5423"
   dependencies:
-    "@metamask/base-controller": "npm:^8.1.0"
-    "@metamask/controller-utils": "npm:^11.12.0"
+    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/controller-utils": "npm:^11.14.1"
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/polling-controller": "npm:^14.0.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/polling-controller": "npm:^14.0.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.4.2"
+    "@metamask/utils": "npm:^11.8.1"
     bn.js: "npm:^5.2.1"
     immer: "npm:^9.0.6"
     lodash: "npm:^4.17.21"
@@ -8073,7 +8074,7 @@ __metadata:
     "@metamask/keyring-controller": ^23.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/transaction-controller": ^60.0.0
-  checksum: 10/7fdcb1f4dc22e609e556cf46f195ab1cc9ab36791fd08006b8e546ca4fa447043b8fc9b122bdd61ecbf9854bb54742df94f04f426863bc34e722c7088b178623
+  checksum: 10/4d662df2943ca5142e11a417068ee44fd23a6a24b004abef66a31a82486666ce77c272f54a4a1b03a7cd24b6d29f3419a46ab79f715450dd737b8408802bf21d
   languageName: node
   linkType: hard
 

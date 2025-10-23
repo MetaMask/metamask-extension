@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { AddApprovalRequest } from '@metamask/approval-controller';
 import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import {
@@ -6,6 +6,7 @@ import {
   KeyringControllerPrepareUserOperationAction,
   KeyringControllerSignUserOperationAction,
 } from '@metamask/keyring-controller';
+import { RootMessenger } from '.';
 
 type AllowedActions =
   | AddApprovalRequest
@@ -26,17 +27,26 @@ export type UserOperationControllerMessenger = ReturnType<
  * messenger.
  */
 export function getUserOperationControllerMessenger(
-  messenger: Messenger<AllowedActions, never>,
+  messenger: RootMessenger<AllowedActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'UserOperationController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'UserOperationController',
+    AllowedActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'UserOperationController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'ApprovalController:addRequest',
       'NetworkController:getNetworkClientById',
       'KeyringController:prepareUserOperation',
       'KeyringController:patchUserOperation',
       'KeyringController:signUserOperation',
     ],
-    allowedEvents: [],
   });
+  return controllerMessenger;
 }

@@ -1,14 +1,13 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { getUserOperationControllerMessenger } from './user-operation-controller-messenger';
+import { getRootMessenger } from '.';
 
 describe('getUserOperationControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const userOperationControllerMessenger =
       getUserOperationControllerMessenger(messenger);
 
-    expect(userOperationControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(userOperationControllerMessenger).toBeInstanceOf(Messenger);
   });
 });
