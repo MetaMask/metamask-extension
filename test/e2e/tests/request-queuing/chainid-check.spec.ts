@@ -20,7 +20,7 @@ describe('Request Queueing chainId proxy sync', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()

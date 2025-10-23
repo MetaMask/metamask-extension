@@ -13,7 +13,7 @@ describe('Add Custom RPC', function (this: Suite) {
   it('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -78,7 +78,7 @@ describe('Add Custom RPC', function (this: Suite) {
   it("don't add bad rpc custom network", async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: true })
@@ -157,7 +157,7 @@ describe('Add Custom RPC', function (this: Suite) {
     }
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
@@ -198,7 +198,7 @@ describe('Add Custom RPC', function (this: Suite) {
   it("don't add unreachable custom network", async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
