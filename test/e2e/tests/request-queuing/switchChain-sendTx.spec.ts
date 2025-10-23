@@ -10,7 +10,7 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
