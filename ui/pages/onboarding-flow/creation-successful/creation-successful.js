@@ -71,7 +71,7 @@ export default function CreationSuccessful() {
   const searchParams = new URLSearchParams(search);
   const isFromReminder = searchParams.get('isFromReminder');
   const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
-  const isFromSetiingsSRPBackup = isWalletReady && isFromReminder;
+  const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
 
   const renderDetails1 = useMemo(() => {
     if (isFromReminder) {
@@ -194,7 +194,7 @@ export default function CreationSuccessful() {
       className="creation-successful"
       data-testid="wallet-ready"
     >
-      {isFromSetiingsSRPBackup && (
+      {isFromSettingsSRPBackup && (
         <Box>
           <Box
             display={Display.Flex}
@@ -260,14 +260,14 @@ export default function CreationSuccessful() {
           {renderSettingsActions}
         </Box>
       )}
-      {!isFromSetiingsSRPBackup && !isTestEnvironment && (
+      {!isFromSettingsSRPBackup && !isTestEnvironment && (
         <WalletReadyAnimation />
       )}
-      {!isFromSetiingsSRPBackup && (
+      {!isFromSettingsSRPBackup && (
         <Text className="title">{t('yourWalletIsReady')}</Text>
       )}
       {renderDoneButton()}
-      {!isFromSetiingsSRPBackup && (
+      {!isFromSettingsSRPBackup && (
         <Box>
           <Button
             variant={ButtonVariant.Link}

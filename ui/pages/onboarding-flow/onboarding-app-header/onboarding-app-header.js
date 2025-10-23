@@ -49,8 +49,7 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
   const searchParams = new URLSearchParams(search);
   const isFromReminder = searchParams.get('isFromReminder');
   const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
-
-  const isFromSetiingsSRPBackup = isFromReminder || isFromSettingsSecurity;
+  const isFromSettingsSRPBackup = isFromReminder || isFromSettingsSecurity;
 
   return (
     <Box
@@ -78,7 +77,7 @@ export default function OnboardingAppHeader({ isWelcomePage }) {
         )}
 
         {pathname === ONBOARDING_COMPLETION_ROUTE &&
-        !isFromSetiingsSRPBackup ? (
+        !isFromSettingsSRPBackup ? (
           <Box
             paddingTop={12}
             className="onboarding-app-header__banner-tip-container"
