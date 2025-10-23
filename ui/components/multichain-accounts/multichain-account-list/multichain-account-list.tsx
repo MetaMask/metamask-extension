@@ -129,6 +129,34 @@ export const MultichainAccountList = ({
     [selectedAccountGroups],
   );
 
+  const { pinnedGroups, hiddenGroups } = useMemo(() => {
+    const pinned: {
+      groupId: string;
+      groupData: (typeof wallets)[AccountWalletId]['groups'][AccountGroupId];
+      walletId: string;
+    }[] = [];
+    const hidden: {
+      groupId: string;
+      groupData: (typeof wallets)[AccountWalletId]['groups'][AccountGroupId];
+      walletId: string;
+    }[] = [];
+
+    // Collect all groups to categorize them
+    Object.entries(wallets).forEach(([walletId, walletData]) => {
+      Object.entries(walletData.groups || {}).forEach(
+        ([groupId, groupData]) => {
+          if (groupData.metadata.pinned) {
+            pinned.push({ groupId, groupData, walletId });
+          } else if (groupData.metadata.hidden) {
+            hidden.push({ groupId, groupData, walletId });
+          }
+        },
+      );
+    });
+
+    return { pinnedGroups: pinned, hiddenGroups: hidden };
+  }, [wallets]);
+
   const walletTree = useMemo(() => {
     const defaultHandleAccountClick = (accountGroupId: AccountGroupId) => {
       trackEvent({
@@ -158,31 +186,6 @@ export const MultichainAccountList = ({
 
     const handleAccountClickToUse =
       handleAccountClick ?? defaultHandleAccountClick;
-
-    // Collect all groups to categorize them
-    const pinnedGroups: {
-      groupId: string;
-      groupData: (typeof wallets)[AccountWalletId]['groups'][AccountGroupId];
-      walletId: string;
-    }[] = [];
-    const hiddenGroups: {
-      groupId: string;
-      groupData: (typeof wallets)[AccountWalletId]['groups'][AccountGroupId];
-      walletId: string;
-    }[] = [];
-
-    // First pass: collect pinned and hidden accounts
-    Object.entries(wallets).forEach(([walletId, walletData]) => {
-      Object.entries(walletData.groups || {}).forEach(
-        ([groupId, groupData]) => {
-          if (groupData.metadata.pinned) {
-            pinnedGroups.push({ groupId, groupData, walletId });
-          } else if (groupData.metadata.hidden) {
-            hiddenGroups.push({ groupId, groupData, walletId });
-          }
-        },
-      );
-    });
 
     const renderAccountCell = (
       groupId: string,
@@ -306,11 +309,11 @@ export const MultichainAccountList = ({
 
         const groupsItems = Object.entries(walletData.groups || {}).flatMap(
           ([groupId, groupData]) => {
-            // Skip pinned and hidden accounts (they're shown in their own sections)
-            if (groupData.metadata.pinned || groupData.metadata.hidden) {
+            const shouldSkip =
+              groupData.metadata?.pinned || groupData.metadata?.hidden;
+            if (shouldSkip) {
               return [];
             }
-
             return [renderAccountCell(groupId, groupData, walletId)];
           },
         );
@@ -387,6 +390,8 @@ export const MultichainAccountList = ({
   }, [
     handleAccountClick,
     wallets,
+    pinnedGroups,
+    hiddenGroups,
     trackEvent,
     hdEntropyIndex,
     defaultHomeActiveTabName,
