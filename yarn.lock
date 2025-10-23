@@ -7317,12 +7317,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ppom-validator@npm:0.38.0":
-  version: 0.38.0
-  resolution: "@metamask/ppom-validator@npm:0.38.0"
+"@metamask/ppom-validator@npm:@metamask-previews/ppom-validator@0.38.0-preview-a101cca":
+  version: 0.38.0-preview-a101cca
+  resolution: "@metamask-previews/ppom-validator@npm:0.38.0-preview-a101cca"
   dependencies:
-    "@metamask/base-controller": "npm:^8.3.0"
+    "@metamask/base-controller": "npm:^8.4.0"
     "@metamask/controller-utils": "npm:^11.3.0"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^9.2.1"
     await-semaphore: "npm:^0.1.3"
     crypto-js: "npm:^4.2.0"
@@ -7332,7 +7333,7 @@ __metadata:
   peerDependencies:
     "@metamask/error-reporting-service": ^2.0.0
     "@metamask/network-controller": ^24.0.0
-  checksum: 10/00539ae96b24f682f28bf2577d6480e779f27a10624d2599a0d5670186a6e0210d97c677e7ec08f0a2f3fb5c37bb2a3ccc730e461f048a7e01412f3e0448a681
+  checksum: 10/9e3238c725dcc4420f029e97145ab3ac65ec9b3d7619e32f9cd49872e1dcbfbc005d7cce87a9beb0964929ae611304d133366ee3b356a37064740e58b242c812
   languageName: node
   linkType: hard
 
