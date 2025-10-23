@@ -23,7 +23,6 @@ export const account2Short = 'ExTE...GNtt';
  */
 export const DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS = {
   dappOptions: {
-    defaultTestDapp: 1,
     customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
   },
 };
