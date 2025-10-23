@@ -6590,9 +6590,15 @@ export default class MetamaskController extends EventEmitter {
         }),
 
       // Network configuration-related
-      addNetwork: this.networkController.addNetwork.bind(
-        this.networkController,
-      ),
+      addNetwork: async (networkConfiguration) => {
+        const addedNetwork =
+          await this.networkController.addNetwork(networkConfiguration);
+        const { networkClientId } =
+          addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ??
+          {};
+        await this.networkController.setActiveNetwork(networkClientId);
+        return addedNetwork;
+      },
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
@@ -6609,8 +6615,9 @@ export default class MetamaskController extends EventEmitter {
             origin,
             networkClientId,
           );
+        } else {
+          await this.networkController.setActiveNetwork(networkClientId);
         }
-        await this.networkController.setActiveNetwork(networkClientId);
       },
       getNetworkConfigurationByChainId:
         this.networkController.getNetworkConfigurationByChainId.bind(
