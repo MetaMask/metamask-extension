@@ -2530,9 +2530,13 @@ export default class MetamaskController extends EventEmitter {
         );
       },
       setAccountGroupPinned:
-        this.accountTreeController.setAccountGroupPinned.bind(this),
+        this.accountTreeController.setAccountGroupPinned.bind(
+          this.accountTreeController,
+        ),
       setAccountGroupHidden:
-        this.accountTreeController.setAccountGroupHidden.bind(this),
+        this.accountTreeController.setAccountGroupHidden.bind(
+          this.accountTreeController,
+        ),
       syncAccountTreeWithUserStorage: async () => {
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         await this.getSnapKeyring();
@@ -2993,6 +2997,10 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.TRACK_METAMETRICS_EVENT}`,
         ),
+      [BridgeBackgroundAction.FETCH_QUOTES]: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+      ),
 
       // Bridge Tx submission
       [BridgeStatusAction.SUBMIT_TX]: this.controllerMessenger.call.bind(
