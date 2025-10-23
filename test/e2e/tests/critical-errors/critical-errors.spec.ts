@@ -4,7 +4,6 @@ import FixtureBuilder from '../../fixture-builder';
 import CriticalErrorPage from '../../page-objects/pages/critical-error-page';
 import { PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
-import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { getManifestVersion } from '../../set-manifest-flags';
 
 describe('Critical errors', function (this: Suite) {
