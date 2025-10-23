@@ -18,7 +18,8 @@ import {
 
 describe('time-utils', () => {
   /**
-   * Helper function to create a timestamp from a date in local timezone
+   * Helper function to create a timestamp from a date at noon UTC.
+   * Using UTC ensures consistent date values across all timezones.
    *
    * @param year - The year
    * @param month - The month (0-11)
@@ -30,8 +31,8 @@ describe('time-utils', () => {
     month: number,
     day: number,
   ): number => {
-    const testDate = new Date(year, month, day, 12, 0, 0);
-    return Math.floor(testDate.getTime() / 1000);
+    const testDate = Date.UTC(year, month, day, 12, 0, 0);
+    return Math.floor(testDate / 1000);
   };
 
   describe('getPeriodFrequencyValueTranslationKey', () => {
