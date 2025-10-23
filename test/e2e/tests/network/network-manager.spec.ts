@@ -149,8 +149,7 @@ describe('Network Manager', function (this: Suite) {
     );
   });
 
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('should preserve existing enabled networks when adding a network via dapp', async function () {
+  it('should preserve existing enabled networks when adding a network via dapp', async function () {
     await withFixtures(
       {
         dapp: true,
