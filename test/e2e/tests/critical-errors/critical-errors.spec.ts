@@ -4,6 +4,8 @@ import FixtureBuilder from '../../fixture-builder';
 import CriticalErrorPage from '../../page-objects/pages/critical-error-page';
 import { PAGES } from '../../webdriver/driver';
 import LoginPage from '../../page-objects/pages/login-page';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
+import { getManifestVersion } from '../../set-manifest-flags';
 
 describe('Critical errors', function (this: Suite) {
   it('shows critical error screen when background is unresponsive', async function () {
@@ -34,6 +36,12 @@ describe('Critical errors', function (this: Suite) {
     );
   });
   it('does NOT show critical error screen when background is a "little" slow to respond', async function () {
+    // we can skip this test in MV2, since we don't need lazy listeners there
+    // as they are installed synchronously in `background.js` anyway.
+    if (getManifestVersion() === 2) {
+      this.skip();
+    }
+
     const timeoutValue = 2500;
     await withFixtures(
       {
