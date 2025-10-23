@@ -383,7 +383,7 @@ const TransactionShield = () => {
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(paymentToken);
 
-  const handlePaymenError = useCallback(async () => {
+  const handlePaymentError = useCallback(async () => {
     if (
       shieldSubscription &&
       isCryptoPaymentMethod(shieldSubscription.paymentMethod)
@@ -425,7 +425,7 @@ const TransactionShield = () => {
               ? 'shieldTxMembershipErrorAddFunds'
               : 'shieldTxMembershipErrorUpdatePayment',
           )}
-          actionButtonOnClick={handlePaymenError}
+          actionButtonOnClick={handlePaymentError}
         />
       );
     }
@@ -444,7 +444,7 @@ const TransactionShield = () => {
               ? t('shieldTxMembershipRenew')
               : t('shieldTxMembershipErrorAddFunds')
           }
-          actionButtonOnClick={handlePaymenError}
+          actionButtonOnClick={handlePaymentError}
         />
       );
     }
@@ -458,7 +458,7 @@ const TransactionShield = () => {
     isCryptoPayment,
     isInsufficientFundsCrypto,
     isAllowanceNeededCrypto,
-    handlePaymenError,
+    handlePaymentError,
   ]);
 
   const paymentMethod = useMemo(() => {
@@ -480,7 +480,7 @@ const TransactionShield = () => {
             startIconProps={{
               size: IconSize.Md,
             }}
-            onClick={handlePaymenError}
+            onClick={handlePaymentError}
             danger
           >
             {t(
@@ -507,7 +507,7 @@ const TransactionShield = () => {
             color: IconColor.warningDefault,
           }}
           color={TextColor.warningDefault}
-          onClick={handlePaymenError}
+          onClick={handlePaymentError}
         >
           {isCryptoPaymentMethod(shieldSubscription.paymentMethod)
             ? shieldSubscription.paymentMethod.crypto.tokenSymbol
@@ -524,7 +524,7 @@ const TransactionShield = () => {
     isCryptoPayment,
     isSubscriptionEndingSoon,
     t,
-    handlePaymenError,
+    handlePaymentError,
   ]);
 
   return (
