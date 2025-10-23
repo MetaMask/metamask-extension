@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add claims submission form (#35790)
 - Show user account instead of payer address in transaction shield (#36610)
   fix translation date for crypto insufficient funding
+- Adds hide and pin options to account item menu (#37012)
 
 ### Fixed
 
@@ -59,10 +60,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Helps with ongoing performance regressions when using Solana (#36613)
 - Fixes a bug where first permitting accounts via the EVM provider would cause all requests to the Solana Wallet Standard provider (#36434)
   to fail with an `The requested account and/or method has not been
-authorized by the user.` error until the user fully revoked dapp
+  authorized by the user.` error until the user fully revoked dapp
   permissions and then permitted accounts using the Solana Wallet Standard
   provider first.
 - Patched ShieldController to `v0.3.2`. (#36809)
+- Fixes positioning issues for dropdowns, tooltips, and popovers (#36967)
+- Fixes a bug where the wallet would not prompt the user (#36963)
+  for unlock and would silently drop personal_sign requests when the
+  wallet was locked and the user was opted into MetaMetrics
+- Renders missing network row in transaction confirmations (#37048)
+- Adds address pattern matching to accounts list search (#37005)
+- Migrates user's existing pinned and hidden state to multichain account designs (#37017)
 
 ## [13.5.0]
 
