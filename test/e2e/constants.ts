@@ -77,6 +77,15 @@ export const DAPP_PATHS: Readonly<Record<string, readonly string[]>> =
     'test-dapp-solana': mm('test-dapp-solana', 'dist'),
   });
 
+// Canonical dapp path keys to be used in tests
+export const DAPP_PATH = Object.freeze({
+  TEST_DAPP: 'test-dapp',
+  TEST_DAPP_MULTICHAIN: 'test-dapp-multichain',
+  TEST_DAPP_SOLANA: 'test-dapp-solana',
+  SNAP_SIMPLE_KEYRING_SITE: 'snap-simple-keyring-site',
+  SNAP_ACCOUNT_ABSTRACTION_KEYRING: 'snap-account-abstraction-keyring',
+} as const);
+
 /* Default BTC address created using test SRP */
 export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 

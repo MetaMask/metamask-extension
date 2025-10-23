@@ -2,6 +2,7 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { DAPP_PATH } from '../../constants';
 import FixtureBuilder from '../../fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
@@ -20,7 +21,7 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
       {
         dappOptions: {
           defaultTestDapp: 1,
-          customDappPaths: ['snap-simple-keyring-site'],
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: async (mockServer: Mockttp) => {

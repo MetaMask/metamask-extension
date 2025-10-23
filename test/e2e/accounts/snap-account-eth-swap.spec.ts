@@ -11,6 +11,7 @@ import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
 import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { Mockttp } from '../mock-e2e';
+import { DAPP_PATH } from '../constants';
 import { mockSnapSimpleKeyringAndSite } from '../tests/account/snap-keyring-site-mocks';
 
 const DAI = 'DAI';
@@ -41,7 +42,7 @@ describe('Snap Account - Swap', function () {
       {
         dappOptions: {
           defaultTestDapp: 1,
-          customDappPaths: ['snap-simple-keyring-site'],
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSwapsAndSimpleKeyringSnap,

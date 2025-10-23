@@ -2,6 +2,7 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
+import { DAPP_PATH } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
@@ -24,7 +25,7 @@ describe('Snap Account Contract interaction', function (this: Suite) {
       {
         dappOptions: {
           defaultTestDapp: 1,
-          customDappPaths: ['snap-simple-keyring-site'],
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
         fixtures: new FixtureBuilder()
           .withPermissionControllerSnapAccountConnectedToTestDapp()

@@ -5,6 +5,7 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { JsonRpcRequest } from '@metamask/utils';
 import { Driver } from '../../webdriver/driver';
+import { DAPP_PATH } from '../../constants';
 import {
   CONTENT_SCRIPT,
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
@@ -21,7 +22,7 @@ export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
   dappOptions: {
     defaultTestDapp: 1,
-    customDappPaths: ['test-dapp-multichain'],
+    customDappPaths: [DAPP_PATH.TEST_DAPP_MULTICHAIN],
   },
   localNodeOptions: [
     {

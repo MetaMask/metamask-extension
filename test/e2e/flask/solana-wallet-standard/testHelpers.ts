@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import nacl from 'tweetnacl';
 import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
+import { DAPP_PATH } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
@@ -23,7 +24,7 @@ export const account2Short = 'ExTE...GNtt';
 export const DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS = {
   dappOptions: {
     defaultTestDapp: 1,
-    customDappPaths: ['test-dapp-solana'],
+    customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
   },
 };
 
