@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type {
@@ -18,6 +18,7 @@ import type {
 } from '@metamask/bridge-controller';
 import type { GetGasFeeState } from '@metamask/gas-fee-controller';
 import { MultichainTransactionsControllerTransactionConfirmedEvent } from '@metamask/multichain-transactions-controller';
+import { RootMessenger } from '.';
 
 type AllowedActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
@@ -49,11 +50,21 @@ export type BridgeStatusControllerMessenger = ReturnType<
  * messenger.
  */
 export function getBridgeStatusControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'BridgeStatusController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'BridgeStatusController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'BridgeStatusController',
+    parent: messenger,
+  });
+
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'AccountsController:getAccountByAddress',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
@@ -67,10 +78,11 @@ export function getBridgeStatusControllerMessenger(
       'TransactionController:getState',
       'RemoteFeatureFlagController:getState',
     ],
-    allowedEvents: [
+    events: [
       'MultichainTransactionsController:transactionConfirmed',
       'TransactionController:transactionFailed',
       'TransactionController:transactionConfirmed',
     ],
   });
+  return controllerMessenger;
 }
