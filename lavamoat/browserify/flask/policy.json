@@ -763,7 +763,7 @@
       "packages": {
         "@metamask/account-api": true,
         "@metamask/accounts-controller": true,
-        "@metamask/base-controller": true,
+        "@metamask/account-tree-controller>@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/profile-sync-controller": true,
@@ -879,9 +879,19 @@
         "immer": true
       }
     },
+    "@metamask/account-tree-controller>@metamask/base-controller": {
+      "globals": {
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
     "@metamask/bridge-controller": {
       "globals": {
         "AbortController": true,
+        "TextDecoder": true,
         "URLSearchParams": true,
         "console.error": true,
         "console.log": true,
@@ -899,7 +909,6 @@
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@metamask/bridge-controller>@microsoft/fetch-event-source": true,
         "@metamask/bridge-controller>bignumber.js": true,
         "lodash": true,
         "reselect": true,
@@ -2122,18 +2131,6 @@
         "nock>debug": true,
         "@metamask/utils>pony-cause": true,
         "semver": true
-      }
-    },
-    "@metamask/bridge-controller>@microsoft/fetch-event-source": {
-      "globals": {
-        "AbortController": true,
-        "TextDecoder": true,
-        "clearTimeout": true,
-        "document.addEventListener": true,
-        "document.hidden": true,
-        "document.removeEventListener": true,
-        "fetch": true,
-        "setTimeout": true
       }
     },
     "@ngraveio/bc-ur": {
