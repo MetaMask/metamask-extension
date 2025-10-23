@@ -142,9 +142,10 @@ const TransactionShield = () => {
       // nav back home after timeout and no subscription created
       navigate(DEFAULT_ROUTE);
     },
-    5 * MINUTE,
+    MINUTE,
     false,
   );
+  // trigger wait for subscription creation timeout
   useEffect(() => {
     if (shouldWaitForSubscriptionCreation) {
       startSubscriptionCreationTimeout?.();
