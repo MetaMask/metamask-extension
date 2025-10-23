@@ -7922,17 +7922,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/subscription-controller@npm:2.0.0"
+"@metamask/subscription-controller@npm:@metamask-previews/subscription-controller@2.0.0-preview-8e6c5423":
+  version: 2.0.0-preview-8e6c5423
+  resolution: "@metamask-previews/subscription-controller@npm:2.0.0-preview-8e6c5423"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/polling-controller": "npm:^14.0.1"
     "@metamask/utils": "npm:^11.8.1"
   peerDependencies:
     "@metamask/profile-sync-controller": ^25.0.0
-  checksum: 10/6fcbf6e5619ab096964d5ffcf526c4c1b16d4f5269bf02e4fdcb793d0f812a679c197d17bdb76a24e4b9c58664d27fddbc6b96a91f9928fd6f8af8bac05258bc
+  checksum: 10/fbc404de44eb8a57cc38ac270fbf5ea5be3017cfccab808c13fec5209bde42344ad7b1a7867af3a1e4b6d5242fa62e4dadbc33629c3d43783d3cdb6fb77d78d0
   languageName: node
   linkType: hard
 
