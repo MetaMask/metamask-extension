@@ -72,7 +72,7 @@ export class ExtensionLazyListener<
   #startWarningTimer(timeout: number) {
     setTimeout(() => {
       // if there are still listeners after `timeout` ms, it means
-      // we have a memory leak. Lets warn in the console and give developers
+      // we have a memory leak. Lets log to the console and give developers
       // clear instructions on how to investigate why this has happened.
       for (const [namespace, listeners] of this.#namespaceListeners) {
         for (const [eventName, { args: calls }] of listeners) {
