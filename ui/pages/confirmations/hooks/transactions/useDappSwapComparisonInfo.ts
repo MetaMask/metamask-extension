@@ -5,6 +5,7 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
   QuoteResponse,
+  TxData,
 } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
@@ -223,8 +224,12 @@ export function useDappSwapComparisonInfo() {
 
       const totalGasInQuote = getGasUSDValue(
         new BigNumber(
-          (approval?.effectiveGas ?? approval?.gasLimit ?? 0) +
-            (trade?.effectiveGas ?? trade?.gasLimit ?? 0),
+          ((approval as TxData)?.effectiveGas ??
+            (approval as TxData)?.gasLimit ??
+            0) +
+            ((trade as TxData)?.effectiveGas ??
+              (trade as TxData)?.gasLimit ??
+              0),
           10,
         ),
       );
