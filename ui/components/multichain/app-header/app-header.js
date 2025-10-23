@@ -27,10 +27,7 @@ import { toggleNetworkMenu } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_SIDEPANEL,
-} from '../../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
@@ -54,7 +51,6 @@ export const AppHeader = ({ location }) => {
 
   const dispatch = useDispatch();
 
-  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   // Disable the network and account pickers if the user is in
@@ -121,8 +117,6 @@ export const AppHeader = ({ location }) => {
     gap: 2,
   };
 
-  const hideAppHeader = isSidePanel;
-
   return (
     <>
       {isUnlocked && !popupStatus ? <MultichainMetaFoxLogo /> : null}
@@ -135,7 +129,6 @@ export const AppHeader = ({ location }) => {
                 : 'multichain-app-header__lock-contents',
             )}
             {...(isUnlocked ? unlockedStyling : lockStyling)}
-            display={hideAppHeader ? Display.None : Display.Flex}
           >
             {isUnlocked ? (
               <AppHeaderUnlockedContent
