@@ -11,7 +11,6 @@ import {
   SimulationData,
   SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
 
 export const ABI = [
   {
