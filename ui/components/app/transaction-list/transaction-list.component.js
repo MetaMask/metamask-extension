@@ -118,10 +118,10 @@ import {
 import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
 import AssetListControlBar from '../assets/asset-list/asset-list-control-bar';
 import { isGlobalNetworkSelectorRemoved } from '../../../selectors/selectors';
-import {
-  startIncomingTransactionPolling,
-  stopIncomingTransactionPolling,
-} from '../../../store/controller-actions/transaction-controller';
+// import {
+//   startIncomingTransactionPolling,
+//   stopIncomingTransactionPolling,
+// } from '../../../store/controller-actions/transaction-controller';
 import {
   selectBridgeHistoryForAccountGroup,
   selectBridgeHistoryItemForTxMetaId,
@@ -445,6 +445,7 @@ export default function TransactionList({
     windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
     windowType !== ENVIRONMENT_TYPE_POPUP;
 
+  /*
   useEffect(() => {
     stopIncomingTransactionPolling();
     startIncomingTransactionPolling();
@@ -456,6 +457,7 @@ export default function TransactionList({
     // Required to restart polling on new account
     selectedAccount,
   ]);
+  */
 
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (

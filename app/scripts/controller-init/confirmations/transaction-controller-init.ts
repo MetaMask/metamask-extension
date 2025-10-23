@@ -64,7 +64,7 @@ export const TransactionControllerInit: ControllerInitFunction<
     gasFeeController,
     keyringController,
     networkController,
-    onboardingController,
+    // onboardingController:
     preferencesController,
     smartTransactionsController,
   } = getControllers(request);
@@ -105,10 +105,12 @@ export const TransactionControllerInit: ControllerInitFunction<
     incomingTransactions: {
       client: `extension-${process.env.METAMASK_VERSION?.replace(/\./gu, '-')}`,
       includeTokenTransfers: false,
-      isEnabled: () =>
-        preferencesController().state.useExternalServices &&
-        onboardingController().state.completedOnboarding,
-      updateTransactions: true,
+      // isEnabled: () =>
+      //   preferencesController().state.useExternalServices &&
+      //   onboardingController().state.completedOnboarding,
+      // updateTransactions: true,
+      isEnabled: () => false,
+      updateTransactions: false,
     },
     isAutomaticGasFeeUpdateEnabled: ({ type }) => {
       // Disables automatic gas fee updates for swap and bridge transactions
