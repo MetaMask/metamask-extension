@@ -143,7 +143,7 @@ export function useShieldCoverageAlert(): Alert[] {
   const showAlert = isEnableShieldCoverageChecks;
 
   return useMemo<Alert[]>((): Alert[] => {
-    if (!showAlert) {
+    if (!showAlert || !status) {
       return [];
     }
 
