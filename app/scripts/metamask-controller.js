@@ -24,7 +24,7 @@ import { rawChainData } from 'eth-chainlist';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
 import { nanoid } from 'nanoid';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   MethodNames,
   PermissionDoesNotExistError,
@@ -401,6 +401,7 @@ import { EncryptionPublicKeyControllerInit } from './controller-init/confirmatio
 import { EncryptionPublicKeyManagerInit } from './controller-init/confirmations/encryption-public-key-message-manager-init';
 import { SignatureControllerInit } from './controller-init/confirmations/signature-controller-init';
 import { UserOperationControllerInit } from './controller-init/confirmations/user-operation-controller-init';
+import { getRootMessenger } from './controller-init/messengers';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -468,7 +469,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.initializeChainlist();
 
-    this.controllerMessenger = new Messenger();
+    this.controllerMessenger = getRootMessenger();
     this.currentMigrationVersion = opts.currentMigrationVersion;
 
     // observable state store
@@ -785,14 +786,18 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
-      name: 'PetnamesBridge',
-      allowedEvents: [
+    const petnamesBridgeMessenger = new Messenger({
+      namespace: 'PetnamesBridge',
+      parent: this.controllerMessenger,
+    });
+    this.controllerMessenger.delegate({
+      messenger: petnamesBridgeMessenger,
+      events: [
         'NameController:stateChange',
         'AccountsController:stateChange',
         'AddressBookController:stateChange',
       ],
-      allowedActions: ['AccountsController:listAccounts'],
+      actions: ['AccountsController:listAccounts'],
     });
 
     new AddressBookPetnamesBridge({
@@ -6754,21 +6759,27 @@ export default class MetamaskController extends EventEmitter {
       ),
     );
 
+    const snapAndHardwareMessenger = new Messenger({
+      namespace: 'SnapAndHardwareMessenger',
+      parent: this.controllerMessenger,
+    });
+    this.controllerMessenger.delegate({
+      messenger: snapAndHardwareMessenger,
+      actions: [
+        'KeyringController:getKeyringForAccount',
+        'KeyringController:getState',
+        'SnapController:get',
+        'AccountsController:getSelectedAccount',
+      ],
+    });
+
     engine.push(
       createRPCMethodTrackingMiddleware({
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
         getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
-        snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
-          name: 'SnapAndHardwareMessenger',
-          allowedActions: [
-            'KeyringController:getKeyringForAccount',
-            'KeyringController:getState',
-            'SnapController:get',
-            'AccountsController:getSelectedAccount',
-          ],
-        }),
+        snapAndHardwareMessenger,
         appStateController: this.appStateController,
         metaMetricsController: this.metaMetricsController,
       }),
@@ -6828,14 +6839,21 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
+    const evmMethodsToNonEvmAccountFilterMessenger = new Messenger({
+      namespace: 'EvmMethodsToNonEvmAccountFilterMessenger',
+      parent: this.controllerMessenger,
+    });
+
+    this.controllerMessenger.delegate({
+      messenger: evmMethodsToNonEvmAccountFilterMessenger,
+      actions: ['AccountsController:getSelectedAccount'],
+    });
+
     // EVM requests and eth permissions should not be passed to non-EVM accounts
     // this middleware intercepts these requests and returns an error.
     engine.push(
       createEvmMethodsToNonEvmAccountReqFilterMiddleware({
-        messenger: this.controllerMessenger.getRestricted({
-          name: 'EvmMethodsToNonEvmAccountFilterMessenger',
-          allowedActions: ['AccountsController:getSelectedAccount'],
-        }),
+        messenger: evmMethodsToNonEvmAccountFilterMessenger,
       }),
     );
 
@@ -7149,20 +7167,27 @@ export default class MetamaskController extends EventEmitter {
       return next();
     });
 
+    const snapAndHardwareMessenger = new Messenger({
+      namespace: 'SnapAndHardwareMessenger',
+      parent: this.controllerMessenger,
+    });
+    this.controllerMessenger.delegate({
+      messenger: snapAndHardwareMessenger,
+      actions: [
+        'KeyringController:getKeyringForAccount',
+        'KeyringController:getState',
+        'SnapController:get',
+        'AccountsController:getSelectedAccount',
+      ],
+    });
+
     engine.push(
       createRPCMethodTrackingMiddleware({
         getAccountType: this.getAccountType.bind(this),
         getDeviceModel: this.getDeviceModel.bind(this),
         getHDEntropyIndex: this.getHDEntropyIndex.bind(this),
         getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
-        snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
-          name: 'SnapAndHardwareMessenger',
-          allowedActions: [
-            'KeyringController:getKeyringForAccount',
-            'SnapController:get',
-            'AccountsController:getSelectedAccount',
-          ],
-        }),
+        snapAndHardwareMessenger,
         appStateController: this.appStateController,
         metaMetricsController: this.metaMetricsController,
       }),
@@ -7783,17 +7808,23 @@ export default class MetamaskController extends EventEmitter {
       },
     };
 
+    const snapAndHardwareMessenger = new Messenger({
+      namespace: 'SnapAndHardwareMessenger',
+      parent: this.controllerMessenger,
+    });
+    this.controllerMessenger.delegate({
+      messenger: snapAndHardwareMessenger,
+      actions: [
+        'KeyringController:getKeyringForAccount',
+        'KeyringController:getState',
+        'SnapController:get',
+        'AccountsController:getSelectedAccount',
+      ],
+    });
+
     return {
       ...controllerActions,
-      snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
-        name: 'SnapAndHardwareMessenger',
-        allowedActions: [
-          'KeyringController:getKeyringForAccount',
-          'KeyringController:getState',
-          'SnapController:get',
-          'AccountsController:getSelectedAccount',
-        ],
-      }),
+      snapAndHardwareMessenger,
       provider: this.controllerMessenger.call(
         'NetworkController:getSelectedNetworkClient',
       )?.provider,
