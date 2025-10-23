@@ -465,7 +465,7 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
     currentChainId,
     chainId,
   ) =>
-    Object.values(internalAccounts).reduce((accounts, internalAccount) => {
+    internalAccounts.reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
@@ -1203,21 +1203,22 @@ export function getAccountName(accounts, accountAddress) {
   return account && account.metadata.name !== '' ? account.metadata.name : '';
 }
 
-export function accountsWithSendEtherInfoSelector(state) {
-  const accounts = getMetaMaskAccounts(state);
-  const internalAccounts = getInternalAccounts(state);
+export const accountsWithSendEtherInfoSelector = createDeepEqualSelector(
+  getMetaMaskAccounts,
+  getInternalAccounts,
+  (accounts, internalAccounts) => {
+    const accountsWithSendEtherInfo = internalAccounts.map(
+      (internalAccount) => {
+        return {
+          ...internalAccount,
+          ...accounts[internalAccount.address],
+        };
+      },
+    );
 
-  const accountsWithSendEtherInfo = Object.values(internalAccounts).map(
-    (internalAccount) => {
-      return {
-        ...internalAccount,
-        ...accounts[internalAccount.address],
-      };
-    },
-  );
-
-  return accountsWithSendEtherInfo;
-}
+    return accountsWithSendEtherInfo;
+  },
+);
 
 export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map((account) => {
@@ -3626,17 +3627,16 @@ export function getSnapRegistry(state) {
   return snapRegistryList;
 }
 
-export function getKeyringSnapAccounts(state) {
-  const internalAccounts = getInternalAccounts(state);
-
-  const keyringAccounts = Object.values(internalAccounts).filter(
-    (internalAccount) => {
+export const getKeyringSnapAccounts = createSelector(
+  getInternalAccounts,
+  (internalAccounts) => {
+    const keyringAccounts = internalAccounts.filter((internalAccount) => {
       const { keyring } = internalAccount.metadata;
       return keyring.type === KeyringType.snap;
-    },
-  );
-  return keyringAccounts;
-}
+    });
+    return keyringAccounts;
+  },
+);
 ///: END:ONLY_INCLUDE_IF
 
 export const getSelectedKeyringByIdOrDefault = createSelector(
