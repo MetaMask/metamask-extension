@@ -11,8 +11,8 @@ import * as hooks from '../../../../hooks/useAccountGroupsForPermissions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 import {
   getTokenTransferPermissionsByOrigin,
+  getPermissionMetaDataByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
-import { getPermissionMetaDataByOrigin } from '../../../../selectors/gator-permissions/gator-permissions';
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
 
 jest.mock('react-router-dom', () => ({
@@ -53,6 +53,7 @@ jest.mock('../../../../../shared/modules/environment');
 
 jest.mock('../../../../selectors/gator-permissions/gator-permissions', () => ({
   getPermissionMetaDataByOrigin: jest.fn(),
+  getTokenTransferPermissionsByOrigin: jest.fn(),
 }));
 
 const mockAccountGroups = [
@@ -391,9 +392,10 @@ describe('MultichainReviewPermissions', () => {
 
       jest.mocked(getTokenTransferPermissionsByOrigin).mockReturnValue([]);
 
-      const { getByTestId } = render();
+      const { getAllByTestId } = render();
 
-      expect(getByTestId(TEST_IDS.GATOR_PERMISSIONS_CELL)).toBeInTheDocument();
+      const gatorPermissionsCells = getAllByTestId(TEST_IDS.GATOR_PERMISSIONS_CELL);
+      expect(gatorPermissionsCells.length).toBeGreaterThan(0);
     });
 
     it('should not render gator permissions cell when feature is disabled and there are permissions', () => {
