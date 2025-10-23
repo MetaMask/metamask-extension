@@ -72,6 +72,7 @@ authorized by the user.` error until the user fully revoked dapp
 - Adds address pattern matching to accounts list search (#37005)
 - Migrates user's existing pinned and hidden state to multichain account designs (#37017)
 - Tweaks messaging for degraded and unavailable networks (#37082)
+- When adding a network the selectedNetworkClientId was not being updated and many of our components still depend on it (#37062)
 
 ## [13.5.0]
 
