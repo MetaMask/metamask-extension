@@ -47,7 +47,7 @@ export default class PermissionPageContainer extends Component {
       extensionId: PropTypes.string,
       iconUrl: PropTypes.string,
     }),
-    history: PropTypes.object.isRequired,
+    navigate: PropTypes.func.isRequired,
     connectPath: PropTypes.string.isRequired,
   };
 
@@ -128,8 +128,8 @@ export default class PermissionPageContainer extends Component {
   }
 
   goBack() {
-    const { history, connectPath } = this.props;
-    history.push(connectPath);
+    const { navigate, connectPath } = this.props;
+    navigate(connectPath);
   }
 
   onCancel = () => {
