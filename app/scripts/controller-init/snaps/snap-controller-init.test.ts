@@ -1,5 +1,4 @@
 import { SnapController } from '@metamask/snaps-controllers';
-import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
@@ -8,6 +7,7 @@ import {
   SnapControllerInitMessenger,
   SnapControllerMessenger,
 } from '../messengers/snaps';
+import { getRootMessenger } from '../messengers';
 import { SnapControllerInit } from './snap-controller-init';
 
 jest.mock('@metamask/snaps-controllers');
@@ -15,7 +15,7 @@ jest.mock('@metamask/snaps-controllers');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<SnapControllerMessenger, SnapControllerInitMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
