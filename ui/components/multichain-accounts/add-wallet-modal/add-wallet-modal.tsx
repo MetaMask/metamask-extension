@@ -38,7 +38,7 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
   getIsAddSnapAccountEnabled,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   getIsWatchEthereumAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
@@ -50,7 +50,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
 import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
@@ -85,7 +85,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   );
   const trackEvent = useContext(MetaMetricsContext);
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
@@ -158,7 +158,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
     });
   }, [trackEvent]);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const handleAddWatchAccount = useCallback(async () => {
     await trackEvent({
       category: MetaMetricsEventCategory.Navigation,
@@ -268,7 +268,7 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
             </Box>
           )}
           {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
             isAddWatchEthereumAccountEnabled && (
               <Box
                 key="watch-ethereum-account"
