@@ -24,10 +24,10 @@ export async function withMultiSrp(
 ) {
   await withFixtures(
     {
+      dappOptions: { defaultTestDapp: 1 },
       fixtures: new FixtureBuilder().build(),
       testSpecificMock,
       title,
-      dapp: true,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
       await loginWithBalanceValidation(driver);

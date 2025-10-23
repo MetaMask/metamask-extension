@@ -200,8 +200,10 @@ async function withAccountSnap(
       title,
       useBundler: true,
       usePaymaster: Boolean(paymaster),
-      dapp: true,
-      dappPaths: ['test-dapp', 'snap-account-abstraction-keyring'],
+      dappOptions: {
+        defaultTestDapp: 1,
+        customDappPaths: ['snap-account-abstraction-keyring'],
+      },
       localNodeOptions: localNodeOptions || {
         hardfork: 'london',
         mnemonic:

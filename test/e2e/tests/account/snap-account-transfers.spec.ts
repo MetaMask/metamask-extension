@@ -24,8 +24,10 @@ describe('Snap Account Transfers', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          defaultTestDapp: 1,
+          customDappPaths: ['snap-simple-keyring-site'],
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -68,8 +70,10 @@ describe('Snap Account Transfers', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          defaultTestDapp: 1,
+          customDappPaths: ['snap-simple-keyring-site'],
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -113,8 +117,10 @@ describe('Snap Account Transfers', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          defaultTestDapp: 1,
+          customDappPaths: ['snap-simple-keyring-site'],
+        },
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },

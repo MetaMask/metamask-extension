@@ -37,7 +37,7 @@ export function withTransactionEnvelopeTypeFixtures(
   };
   return withFixtures(
     {
-      dapp: true,
+      dappOptions: { defaultTestDapp: 1 },
       driverOptions: { timeOut: 20000 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
@@ -69,7 +69,7 @@ export function withSignatureFixtures(
 ) {
   return withFixtures(
     {
-      dapp: true,
+      dappOptions: { defaultTestDapp: 1 },
       driverOptions: { timeOut: 20000 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()

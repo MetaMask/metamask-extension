@@ -31,8 +31,10 @@ describe('Snap Account Signatures', function (this: Suite) {
     it(title, async function () {
       await withFixtures(
         {
-          dapp: true,
-          dappPaths: ['test-dapp', 'snap-simple-keyring-site'],
+          dappOptions: {
+            defaultTestDapp: 1,
+            customDappPaths: ['snap-simple-keyring-site'],
+          },
           fixtures: new FixtureBuilder().build(),
           testSpecificMock: async (mockServer: Mockttp) => {
             const snapMocks = await mockSnapSimpleKeyringAndSite(

@@ -90,7 +90,7 @@ describe('Petnames - Signatures', function (this: Suite) {
   it('can propose names using installed snaps', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()

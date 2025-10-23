@@ -18,7 +18,7 @@ describe('Dapp interactions', function () {
   it('should trigger the add chain confirmation despite MetaMask being locked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder().build(),
         localNodeOptions: [
           {
@@ -56,11 +56,10 @@ describe('Dapp interactions', function () {
   it('should connect a second Dapp despite MetaMask being locked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 2 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -111,7 +110,7 @@ describe('Dapp interactions', function () {
     }
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

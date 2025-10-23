@@ -39,8 +39,10 @@ describe('Snap Account - Swap', function () {
   it.skip('swaps ETH for DAI using a snap account', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          defaultTestDapp: 1,
+          customDappPaths: ['snap-simple-keyring-site'],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSwapsAndSimpleKeyringSnap,
         title: this.test?.fullTitle(),

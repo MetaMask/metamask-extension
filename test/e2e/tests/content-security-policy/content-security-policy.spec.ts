@@ -11,10 +11,12 @@ describe('Content-Security-Policy', function (this: Suite) {
   it.skip('opening a restricted website should still load the extension', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: [
-          './tests/content-security-policy/content-security-policy-mock-page',
-        ],
+        dappOptions: {
+          defaultTestDapp: 1,
+          customDappPaths: [
+            './tests/content-security-policy/content-security-policy-mock-page',
+          ],
+        },
         staticServerOptions: {
           headers: [
             {

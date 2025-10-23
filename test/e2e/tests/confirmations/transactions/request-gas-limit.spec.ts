@@ -15,7 +15,7 @@ describe('dApp Request Gas Limit', function () {
   it('should update the gas limit in the activity list after submitting a request with custom gas (lower than 21000)', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -77,7 +77,7 @@ describe('dApp Request Gas Limit', function () {
   it('should update the gas limit in the activity list after submitting a request with custom gas limit (lower than 21000)', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -139,7 +139,7 @@ describe('dApp Request Gas Limit', function () {
   it('should update the gas limit in the activity list after submitting a request with custom gas (above estimated gas limit)', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -201,7 +201,7 @@ describe('dApp Request Gas Limit', function () {
   it('should update the gas limit in the activity list after submitting a request with custom gas limit (above estimated gas limit)', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

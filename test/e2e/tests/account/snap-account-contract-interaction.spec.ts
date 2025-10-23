@@ -22,8 +22,10 @@ describe('Snap Account Contract interaction', function (this: Suite) {
   it('deposits to piggybank contract', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['test-dapp', 'snap-simple-keyring-site'],
+        dappOptions: {
+          defaultTestDapp: 1,
+          customDappPaths: ['snap-simple-keyring-site'],
+        },
         fixtures: new FixtureBuilder()
           .withPermissionControllerSnapAccountConnectedToTestDapp()
           .build(),

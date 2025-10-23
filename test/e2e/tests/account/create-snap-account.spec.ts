@@ -13,8 +13,10 @@ describe('Create Snap Account', function (this: Suite) {
   it('create Snap account with custom name input ends in approval success', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          defaultTestDapp: 1,
+          customDappPaths: ['snap-simple-keyring-site'],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
         title: this.test?.fullTitle(),
@@ -39,8 +41,10 @@ describe('Create Snap Account', function (this: Suite) {
   it('creates multiple Snap accounts with increasing numeric suffixes', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          defaultTestDapp: 1,
+          customDappPaths: ['snap-simple-keyring-site'],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
         title: this.test?.fullTitle(),
@@ -79,8 +83,10 @@ describe('Create Snap Account', function (this: Suite) {
   it('create Snap account canceling on confirmation screen results in error on Snap', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          defaultTestDapp: 1,
+          customDappPaths: ['snap-simple-keyring-site'],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
         title: this.test?.fullTitle(),
@@ -115,8 +121,10 @@ describe('Create Snap Account', function (this: Suite) {
   it('create Snap account canceling on fill name screen results in error on Snap', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          defaultTestDapp: 1,
+          customDappPaths: ['snap-simple-keyring-site'],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
         title: this.test?.fullTitle(),

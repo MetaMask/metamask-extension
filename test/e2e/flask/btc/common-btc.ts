@@ -32,7 +32,7 @@ export async function withBtcAccountSnap(
         })
         .build(),
       title,
-      dapp: true,
+      dappOptions: { defaultTestDapp: 1 },
       testSpecificMock: async (mockServer: Mockttp) => [
         await mockBitcoinFeatureFlag(mockServer),
         await mockInitialFullScan(mockServer),

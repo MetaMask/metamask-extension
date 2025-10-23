@@ -15,11 +15,10 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
 
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { defaultTestDapp: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
