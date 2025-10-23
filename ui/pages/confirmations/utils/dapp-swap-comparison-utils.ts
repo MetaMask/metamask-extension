@@ -11,6 +11,7 @@ import {
   SimulationData,
   SimulationTokenBalanceChange,
 } from '@metamask/transaction-controller';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 
 export const ABI = [
   {
@@ -155,6 +156,7 @@ function addSweepCommandValues(
 function addUnwrapWethCommandValues(
   commandBytes: string[],
   inputs: string[],
+  chainId: Hex,
   quotesInput: GenericQuoteRequest,
 ) {
   const unwrapWethArgs = getCommandArgs(
@@ -170,6 +172,7 @@ function addUnwrapWethCommandValues(
     amountMin: argToAmount(unwrapWethArgs[1]),
     quotesInput: {
       ...quotesInput,
+      destTokenAddress: getNativeTokenAddress(chainId),
       walletAddress: argToAddress(unwrapWethArgs[0]),
     } as GenericQuoteRequest,
   };
@@ -207,6 +210,7 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
   const unwrapWethResult = addUnwrapWethCommandValues(
     commandBytes,
     inputs,
+    chainId,
     quotesInput,
   );
   if (unwrapWethResult) {
