@@ -1,6 +1,15 @@
 import React, { useCallback, useState } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+} from '@metamask/design-system-react';
 
 import { ORIGIN_METAMASK } from '../../../../../../../shared/constants/app';
 import {
@@ -8,20 +17,11 @@ import {
   getMemoizedInternalAccountByAddress,
 } from '../../../../../../selectors';
 import {
-  Box,
-  Button,
-  ButtonSize,
-  ButtonVariant,
+  Modal,
+  ModalContent,
+  ModalBody,
+  ModalFooter,
 } from '../../../../../../components/component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextColor,
-} from '../../../../../../helpers/constants/design-system';
 import { isHardwareKeyring } from '../../../../../../helpers/utils/hardware';
 import { setSmartAccountOptIn } from '../../../../../../store/actions';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -48,7 +48,7 @@ export function SmartAccountUpdateSplash() {
   const acknowledgeSmartAccountUpgrade = useCallback(() => {
     dispatch(setSmartAccountOptIn(true));
     setAcknowledged(true);
-  }, [setAcknowledged, from]);
+  }, [dispatch, setAcknowledged]);
 
   if (
     !currentConfirmation ||
@@ -60,41 +60,48 @@ export function SmartAccountUpdateSplash() {
   }
 
   return (
-    <Box
-      display={Display.Flex}
-      backgroundColor={BackgroundColor.overlayDefault}
-      color={TextColor.primaryDefault}
+    <Modal
+      isOpen={true}
+      onClose={handleRejectUpgrade}
       className="smart-account-update-splash__container"
     >
-      <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.spaceBetween}
-        padding={4}
-        className="smart-account-update-splash__inner"
-      >
-        <SmartAccountUpdateContent />
-        <Button
-          variant={ButtonVariant.Secondary}
-          size={ButtonSize.Lg}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={handleRejectUpgrade}
-          width={BlockSize.Full}
-        >
-          {t('smartAccountReject')}
-        </Button>
-        <Button
-          onClick={acknowledgeSmartAccountUpgrade}
-          size={ButtonSize.Lg}
-          variant={ButtonVariant.Primary}
-          width={BlockSize.Full}
-        >
-          {t('smartAccountAccept')}
-        </Button>
-      </Box>
-    </Box>
+      <ModalContent className="smart-account-update-splash__inner">
+        <ModalBody>
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.SpaceBetween}
+            padding={4}
+          >
+            <SmartAccountUpdateContent />
+          </Box>
+        </ModalBody>
+        <ModalFooter>
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            style={{ width: '100%', gap: '12px' }}
+          >
+            <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={handleRejectUpgrade}
+              style={{ width: '100%' }}
+            >
+              {t('smartAccountReject')}
+            </Button>
+            <Button
+              onClick={acknowledgeSmartAccountUpgrade}
+              size={ButtonSize.Lg}
+              variant={ButtonVariant.Primary}
+              style={{ width: '100%' }}
+            >
+              {t('smartAccountAccept')}
+            </Button>
+          </Box>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }

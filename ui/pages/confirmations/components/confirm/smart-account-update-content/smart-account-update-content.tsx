@@ -1,20 +1,19 @@
 import React, { ReactElement } from 'react';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  Text,
+  TextVariant,
+  TextColor,
+  FontWeight,
+} from '@metamask/design-system-react';
 
 import ZENDESK_URLS from '../../../../../helpers/constants/zendesk-url';
 import {
-  Box,
   ButtonLink,
   ButtonLinkSize,
-  Text,
 } from '../../../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  FontWeight,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 const ListItem = ({
@@ -27,26 +26,24 @@ const ListItem = ({
   description: ReactElement;
 }) => (
   <Box
-    display={Display.Flex}
-    alignItems={AlignItems.flexStart}
+    alignItems={BoxAlignItems.Start}
     className="smart-account-update-content__list-item"
+    style={{ display: 'flex', gap: '8px' }}
   >
     <img width="24px" src={imgSrc} />
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      marginInlineStart={2}
+      flexDirection={BoxFlexDirection.Column}
     >
       <Text
-        color={TextColor.textDefault}
-        variant={TextVariant.bodyMd}
+        color={TextColor.TextDefault}
+        variant={TextVariant.BodyMd}
         fontWeight={FontWeight.Medium}
       >
         {title}
       </Text>
       <Text
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodyMd}
+        color={TextColor.TextAlternative}
+        variant={TextVariant.BodyMd}
         fontWeight={FontWeight.Normal}
       >
         {description}
@@ -59,18 +56,22 @@ export const SmartAccountUpdateContent = () => {
   const t = useI18nContext();
 
   return (
-    <>
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      style={{ gap: '16px' }}
+    >
       <img
         width="100%"
         src="./images/smart-transactions/smart-account-update.svg"
       />
-      <Text fontWeight={FontWeight.Bold} variant={TextVariant.headingLg}>
+      <Text fontWeight={FontWeight.Bold} variant={TextVariant.HeadingLg}>
         {t('smartAccountSplashTitle')}
       </Text>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        style={{ gap: '12px' }}
       >
         <ListItem
           imgSrc="./images/speedometer.svg"
@@ -86,25 +87,19 @@ export const SmartAccountUpdateContent = () => {
           imgSrc="./images/sparkle.svg"
           title={t('smartAccountSameAccount')}
           description={
-            <>
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodyMd}
-                fontWeight={FontWeight.Normal}
+            <span>
+              {t('smartAccountFeaturesDescription')}{' '}
+              <ButtonLink
+                size={ButtonLinkSize.Inherit}
+                href={ZENDESK_URLS.ACCOUNT_UPGRADE}
+                externalLink
               >
-                {t('smartAccountFeaturesDescription')}{' '}
-                <ButtonLink
-                  size={ButtonLinkSize.Inherit}
-                  href={ZENDESK_URLS.ACCOUNT_UPGRADE}
-                  externalLink
-                >
-                  {t('learnMoreUpperCaseWithDot')}
-                </ButtonLink>
-              </Text>
-            </>
+                {t('learnMoreUpperCaseWithDot')}
+              </ButtonLink>
+            </span>
           }
         />
       </Box>
-    </>
+    </Box>
   );
 };
