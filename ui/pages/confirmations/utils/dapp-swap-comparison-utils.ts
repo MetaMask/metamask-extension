@@ -272,10 +272,7 @@ export function getBestQuote(
       selectedQuoteIndex = index;
     }
   });
-  console.log(
-    '---------------SELECTED QUOTE INDEX---------------',
-    selectedQuoteIndex,
-  );
+
   return selectedQuoteIndex > -1 ? quotes[selectedQuoteIndex] : undefined;
 }
 
