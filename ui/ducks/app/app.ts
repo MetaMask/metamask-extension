@@ -4,6 +4,7 @@ import type {
 } from '@metamask/assets-controllers';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Action, AnyAction } from 'redux';
+import { PaymentType } from '@metamask/subscription-controller';
 import {
   HardwareTransportStates,
   WebHIDConnectedStatuses,
@@ -138,6 +139,10 @@ type AppState = {
     show: boolean;
     shouldSubmitEvents: boolean;
   };
+  lastUsedSubscriptionPaymentMethod?: {
+    paymentMethod: PaymentType;
+    paymentTokenAddress?: string;
+  } | null;
 };
 
 export type AppSliceState = {
@@ -807,6 +812,11 @@ export default function reduceApp(
         shieldEntryModal: {
           ...action.payload,
         },
+      };
+    case actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_METHOD:
+      return {
+        ...appState,
+        lastUsedSubscriptionPaymentMethod: action.payload,
       };
 
     default:

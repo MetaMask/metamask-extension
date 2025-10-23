@@ -298,6 +298,10 @@ export function getShouldSubmitEventsForShieldEntryModal(state) {
   return state.appState.shieldEntryModal?.shouldSubmitEvents;
 }
 
+export function getLastUsedSubscriptionPaymentMethod(state) {
+  return state.appState.lastUsedSubscriptionPaymentMethod;
+}
+
 /** `metamask` slice selectors */
 
 export function getNetworkIdentifier(state) {

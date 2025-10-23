@@ -71,7 +71,10 @@ import {
 } from '../../hooks/subscription/useSubscription';
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { selectNetworkConfigurationByChainId } from '../../selectors';
+import {
+  getLastUsedSubscriptionPaymentMethod,
+  selectNetworkConfigurationByChainId,
+} from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
@@ -81,7 +84,9 @@ const ShieldPlan = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
-
+  const lastUsedSubscriptionPaymentMethod = useSelector(
+    getLastUsedSubscriptionPaymentMethod,
+  );
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
     getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
@@ -140,9 +145,12 @@ const ShieldPlan = () => {
   const hasAvailableToken = availableTokenBalances.length > 0;
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<PaymentType>(
-      hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard,
-    );
+    useState<PaymentType>(() => {
+      if (lastUsedSubscriptionPaymentMethod?.subscriptionPaymentMethod) {
+        return lastUsedSubscriptionPaymentMethod.subscriptionPaymentMethod;
+      }
+      return hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard;
+    });
 
   const [selectedToken, setSelectedToken] = useState<
     TokenWithApprovalAmount | undefined
@@ -159,12 +167,31 @@ const ShieldPlan = () => {
 
   // set selected token to the first available token if no token is selected
   useEffect(() => {
-    if (selectedToken || availableTokenBalances.length === 0) {
+    const lastUsedPaymentToken =
+      lastUsedSubscriptionPaymentMethod?.paymentTokenAddress;
+    const lastUsedPaymentMethod =
+      lastUsedSubscriptionPaymentMethod?.paymentMethod;
+    if (
+      lastUsedPaymentToken &&
+      lastUsedPaymentMethod === PAYMENT_TYPES.byCrypto
+    ) {
+      setSelectedToken(
+        availableTokenBalances.find(
+          (token) => token.address === lastUsedPaymentToken,
+        ),
+      );
+      return;
+    } else if (selectedToken || availableTokenBalances.length === 0) {
       return;
     }
 
     setSelectedToken(availableTokenBalances[0]);
-  }, [availableTokenBalances, selectedToken, setSelectedToken]);
+  }, [
+    availableTokenBalances,
+    selectedToken,
+    setSelectedToken,
+    lastUsedSubscriptionPaymentMethod,
+  ]);
 
   // set default selected payment method to crypto if selected token available
   useEffect(() => {

@@ -586,6 +586,16 @@ export function setShowShieldEntryModalOnceAction(payload: {
   };
 }
 
+export function setLastUsedSubscriptionPaymentMethod(payload: {
+  paymentMethod: PaymentType;
+  paymentTokenAddress?: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return {
+    type: actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_METHOD,
+    payload,
+  };
+}
+
 /**
  * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
  *
