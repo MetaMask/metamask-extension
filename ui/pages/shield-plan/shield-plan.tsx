@@ -203,13 +203,6 @@ const ShieldPlan = () => {
     }
   }, [selectedToken, setSelectedPaymentMethod]);
 
-  // rehydrate selected plan from last used payment details if not already set
-  useEffect(() => {
-    if (!selectedPlan && lastUsedPaymentDetails?.plan) {
-      setSelectedPlan(lastUsedPaymentDetails.plan);
-    }
-  }, [lastUsedPaymentDetails, selectedPlan, setSelectedPlan]);
-
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
 
