@@ -394,7 +394,9 @@ describe('MultichainReviewPermissions', () => {
 
       const { getAllByTestId } = render();
 
-      const gatorPermissionsCells = getAllByTestId(TEST_IDS.GATOR_PERMISSIONS_CELL);
+      const gatorPermissionsCells = getAllByTestId(
+        TEST_IDS.GATOR_PERMISSIONS_CELL,
+      );
       expect(gatorPermissionsCells.length).toBeGreaterThan(0);
     });
 
