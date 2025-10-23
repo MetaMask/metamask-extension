@@ -7500,15 +7500,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^1.9.0":
-  version: 1.9.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:1.9.0"
+"@metamask/remote-feature-flag-controller@npm:@metamask-previews/remote-feature-flag-controller@1.9.0-preview-8e6c5423":
+  version: 1.9.0-preview-8e6c5423
+  resolution: "@metamask-previews/remote-feature-flag-controller@npm:1.9.0-preview-8e6c5423"
   dependencies:
     "@metamask/base-controller": "npm:^8.4.1"
     "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.8.1"
     uuid: "npm:^8.3.2"
-  checksum: 10/f691d9e3932245cc6cb5665fd75ee9b68879c813c02c36d360ebec32c423bf8707ffd364939d0d87b9940727d46aabedadf5e34c7d64799b7ad29201b137dafa
+  checksum: 10/6b76d513581e43a6ecf8d6fc90fa894691b7cc40b66082a854a97f1c6b4c8a38992e9ff61650df42d9683ccf30970d143533bc77542384bdb8327915020cf877
   languageName: node
   linkType: hard
 

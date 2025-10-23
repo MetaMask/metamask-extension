@@ -2,7 +2,12 @@ import {
   ClientConfigApiService,
   RemoteFeatureFlagController,
 } from '@metamask/remote-feature-flag-controller';
-import { ActionConstraint, Messenger } from '@metamask/base-controller';
+import {
+  ActionConstraint,
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { ENVIRONMENT } from '../../../development/build/constants';
 import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
 import {
@@ -27,9 +32,12 @@ function getInitRequestMock(): jest.Mocked<
   >
 > {
   const baseMessenger = new Messenger<
+    MockAnyNamespace,
     PreferencesControllerGetStateAction | ActionConstraint,
     never
-  >();
+  >({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 
   baseMessenger.registerActionHandler(
     'PreferencesController:getState',
