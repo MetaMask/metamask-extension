@@ -12,6 +12,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom-v5-compat';
 import {
+  Icon,
+  IconName as IconNameDesignSystem,
+  IconSize as IconSizeDesignSystem,
+  IconColor as IconColorDesignSystem,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   BlockSize,
@@ -29,7 +35,6 @@ import {
   ButtonBaseSize,
   ButtonIcon,
   ButtonIconSize,
-  Icon,
   IconName,
   IconSize,
   Text,
@@ -265,9 +270,9 @@ export const AppHeaderUnlockedContent = ({
               {networksLabel}
             </Text>
             <Icon
-              name={IconName.Copy}
-              size={IconSize.Xs}
-              color={IconColor.iconAlternative}
+              name={IconNameDesignSystem.Copy}
+              size={IconSizeDesignSystem.Xs}
+              color={IconColorDesignSystem.IconAlternative}
               data-testid="copy-network-addresses-icon"
             />
           </Box>
