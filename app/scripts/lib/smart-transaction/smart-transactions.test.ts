@@ -884,8 +884,7 @@ describe('submitBatchSmartTransactionHook', () => {
 
   it('returns txHashes asap if extensionReturnTxHashAsapBatch feature flag is enabled', async () => {
     withRequest(async ({ request }) => {
-      request.featureFlags.smartTransactions.extensionReturnTxHashAsapBatch =
-        true;
+      request.featureFlags.smartTransactions.extensionReturnTxHashAsapBatch = true;
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
           return {
@@ -905,8 +904,7 @@ describe('submitBatchSmartTransactionHook', () => {
 
   it('waits for transaction hash if extensionReturnTxHashAsapBatch is false', async () => {
     withRequest(async ({ request, messenger }) => {
-      request.featureFlags.smartTransactions.extensionReturnTxHashAsapBatch =
-        false;
+      request.featureFlags.smartTransactions.extensionReturnTxHashAsapBatch = false;
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
           return {
