@@ -66,6 +66,21 @@ describe('getConfigForRemoteFeatureFlagRequest', () => {
       environment: 'rc',
     });
   });
+
+  // @ts-expect-error ESLint is misconfigured and not applying Jest types to this file
+  it.each(Object.keys(ENVIRONMENT))(
+    'returns main-exp for experimental build in "%s" environment',
+    async (environment: keyof typeof ENVIRONMENT) => {
+      process.env.METAMASK_BUILD_TYPE = 'experimental';
+      process.env.METAMASK_ENVIRONMENT = environment;
+
+      const result = getConfigForRemoteFeatureFlagRequest();
+      expect(result).toStrictEqual({
+        distribution: 'main',
+        environment: 'exp',
+      });
+    },
+  );
 });
 
 describe('RemoteFeatureFlagControllerInit', () => {
