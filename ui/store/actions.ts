@@ -75,6 +75,7 @@ import {
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
 } from '@metamask/subscription-controller';
+
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {

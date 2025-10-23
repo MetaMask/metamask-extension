@@ -159,10 +159,19 @@ const ShieldPlan = () => {
 
   // set selected token to the first available token if no token is selected
   useEffect(() => {
-    if (!selectedToken) {
-      setSelectedToken(availableTokenBalances[0]);
+    if (selectedToken || availableTokenBalances.length === 0) {
+      return;
     }
+
+    setSelectedToken(availableTokenBalances[0]);
   }, [availableTokenBalances, selectedToken, setSelectedToken]);
+
+  // set default selected payment method to crypto if selected token available
+  useEffect(() => {
+    if (selectedToken) {
+      setSelectedPaymentMethod(PAYMENT_TYPES.byCrypto);
+    }
+  }, [selectedToken, setSelectedPaymentMethod]);
 
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
