@@ -586,6 +586,8 @@ export default class MetamaskController extends EventEmitter {
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
       TokenRatesController: TokenRatesControllerInit,
+      // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
+      AccountOrderController: AccountOrderControllerInit,
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
       // reacting to any `:multichainAccountGroup*` events.
       AccountTreeController: AccountTreeControllerInit,
@@ -619,7 +621,6 @@ export default class MetamaskController extends EventEmitter {
       NameController: NameControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
       AnnouncementController: AnnouncementControllerInit,
-      AccountOrderController: AccountOrderControllerInit,
     };
 
     const {
@@ -2246,6 +2247,21 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Adds a network and sets it as the active network.
+   *
+   * @param {object} networkConfiguration - The network configuration to add.
+   * @returns {Promise<object>} The added network configuration.
+   */
+  async _addNetworkAndSetActive(networkConfiguration) {
+    const addedNetwork =
+      await this.networkController.addNetwork(networkConfiguration);
+    const { networkClientId } =
+      addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ?? {};
+    await this.networkController.setActiveNetwork(networkClientId);
+    return addedNetwork;
+  }
+
+  /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
    * The API object can be transmitted over a stream via JSON-RPC.
@@ -2353,7 +2369,7 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
       setWatchEthereumAccountEnabled:
         preferencesController.setWatchEthereumAccountEnabled.bind(
           preferencesController,
@@ -2518,9 +2534,7 @@ export default class MetamaskController extends EventEmitter {
       },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
-      addNetwork: this.networkController.addNetwork.bind(
-        this.networkController,
-      ),
+      addNetwork: this._addNetworkAndSetActive.bind(this),
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
@@ -2610,6 +2624,14 @@ export default class MetamaskController extends EventEmitter {
           accountGroupName,
         );
       },
+      setAccountGroupPinned:
+        this.accountTreeController.setAccountGroupPinned.bind(
+          this.accountTreeController,
+        ),
+      setAccountGroupHidden:
+        this.accountTreeController.setAccountGroupHidden.bind(
+          this.accountTreeController,
+        ),
       syncAccountTreeWithUserStorage: async () => {
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         await this.getSnapKeyring();
@@ -3070,6 +3092,10 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.TRACK_METAMETRICS_EVENT}`,
         ),
+      [BridgeBackgroundAction.FETCH_QUOTES]: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
+      ),
 
       // Bridge Tx submission
       [BridgeStatusAction.SUBMIT_TX]: this.controllerMessenger.call.bind(
@@ -6672,9 +6698,7 @@ export default class MetamaskController extends EventEmitter {
         }),
 
       // Network configuration-related
-      addNetwork: this.networkController.addNetwork.bind(
-        this.networkController,
-      ),
+      addNetwork: this._addNetworkAndSetActive.bind(this),
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
@@ -6841,6 +6865,7 @@ export default class MetamaskController extends EventEmitter {
           name: 'SnapAndHardwareMessenger',
           allowedActions: [
             'KeyringController:getKeyringForAccount',
+            'KeyringController:getState',
             'SnapController:get',
             'AccountsController:getSelectedAccount',
           ],
@@ -7870,6 +7895,7 @@ export default class MetamaskController extends EventEmitter {
         name: 'SnapAndHardwareMessenger',
         allowedActions: [
           'KeyringController:getKeyringForAccount',
+          'KeyringController:getState',
           'SnapController:get',
           'AccountsController:getSelectedAccount',
         ],

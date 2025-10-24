@@ -29,6 +29,7 @@ export type SmartTransactionNetwork = {
   extensionActive?: boolean;
   sentinelUrl?: string;
   extensionReturnTxHashAsap?: boolean;
+  extensionReturnTxHashAsapBatch?: boolean;
   batchStatusPollingInterval?: number;
 };
 
@@ -65,12 +66,15 @@ export function getFeatureFlagsByChainId(
   const defaultConfig = smartTransactionsNetworks?.default;
   const extensionReturnTxHashAsap =
     defaultConfig?.extensionReturnTxHashAsap ?? false;
+  const extensionReturnTxHashAsapBatch =
+    defaultConfig?.extensionReturnTxHashAsapBatch ?? false;
 
   return {
     smartTransactions: {
       ...featureFlags.smartTransactions,
       ...featureFlags[networkName].smartTransactions,
       extensionReturnTxHashAsap,
+      extensionReturnTxHashAsapBatch,
     },
   };
 }
