@@ -7,7 +7,7 @@ import {
 } from '@metamask/accounts-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction

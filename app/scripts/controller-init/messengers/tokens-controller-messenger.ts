@@ -17,7 +17,7 @@ import {
 import { TokenListController } from '@metamask/assets-controllers';
 import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
 import { PreferencesControllerStateChangeEvent } from '../../controllers/preferences-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 // Not exported from `@metamask/assets-controllers`.
 type TokenListControllerStateChangeEvent = ControllerStateChangeEvent<

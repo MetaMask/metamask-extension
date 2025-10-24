@@ -20,7 +20,7 @@ import {
 import { AddApprovalRequest } from '@metamask/approval-controller';
 import { PhishingControllerBulkScanUrlsAction } from '@metamask/phishing-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | AddApprovalRequest

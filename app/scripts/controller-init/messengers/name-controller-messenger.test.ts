@@ -3,7 +3,7 @@ import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
 } from './name-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getNameControllerMessenger', () => {
   it('returns a restricted messenger', () => {

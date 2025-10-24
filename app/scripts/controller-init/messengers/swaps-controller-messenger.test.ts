@@ -3,7 +3,7 @@ import {
   getSwapsControllerInitMessenger,
   getSwapsControllerMessenger,
 } from './swaps-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getSwapsControllerMessenger', () => {
   it('returns a restricted messenger', () => {

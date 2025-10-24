@@ -3,7 +3,7 @@ import {
   getEnsControllerInitMessenger,
   getEnsControllerMessenger,
 } from './ens-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getEnsControllerMessenger', () => {
   it('returns a restricted messenger', () => {

@@ -47,7 +47,7 @@ import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,
 } from './accounts/institutional-snap-controller-messenger';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions = MessengerActions<TransactionControllerMessenger>;
 

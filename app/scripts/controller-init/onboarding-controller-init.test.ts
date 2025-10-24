@@ -3,9 +3,9 @@ import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getOnboardingControllerMessenger,
-  getRootMessenger,
   OnboardingControllerMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { OnboardingControllerInit } from './onboarding-controller-init';
 
 jest.mock('../controllers/onboarding');

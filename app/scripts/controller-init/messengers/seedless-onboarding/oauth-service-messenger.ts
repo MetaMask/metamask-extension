@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { OAuthServiceAction } from '../../../services/oauth/types';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type OAuthServiceMessenger = ReturnType<typeof getOAuthServiceMessenger>;
 

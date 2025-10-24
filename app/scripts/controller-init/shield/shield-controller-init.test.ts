@@ -10,7 +10,7 @@ import {
   ShieldControllerInitMessenger,
   ShieldControllerMessengerType,
 } from '../messengers/shield/shield-controller-messenger';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { ShieldControllerInit } from './shield-controller-init';
 
 jest.mock('@metamask/shield-controller');

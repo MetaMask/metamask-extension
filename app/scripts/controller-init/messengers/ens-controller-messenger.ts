@@ -1,7 +1,7 @@
 import { Messenger } from '@metamask/messenger';
 import { AllowedActions } from '@metamask/ens-controller';
 import { NetworkControllerNetworkDidChangeEvent } from '@metamask/network-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type EnsControllerMessenger = ReturnType<
   typeof getEnsControllerMessenger

@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { getApprovalControllerMessenger } from './approval-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getApprovalControllerMessenger', () => {
   it('returns a restricted messenger', () => {

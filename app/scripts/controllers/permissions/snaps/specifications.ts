@@ -32,7 +32,7 @@ import {
 import { PreferencesControllerGetStateAction } from '../../preferences-controller';
 import { KeyringType } from '../../../../../shared/constants/keyring';
 import { AppStateControllerGetUnlockPromiseAction } from '../../app-state-controller';
-import { RootMessenger } from '../../../controller-init/messengers';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type SnapPermissionSpecificationsActions =
   | AppStateControllerGetUnlockPromiseAction

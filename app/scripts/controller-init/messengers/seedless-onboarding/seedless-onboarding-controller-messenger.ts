@@ -12,7 +12,7 @@ import {
   OAuthServiceRevokeRefreshTokenAction,
   OAuthServiceRenewRefreshTokenAction,
 } from '../../../services/oauth/types';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type MessengerActions = SeedlessOnboardingControllerGetStateAction;
 

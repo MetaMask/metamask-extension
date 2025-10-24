@@ -3,7 +3,7 @@ import { Messenger } from '@metamask/messenger';
 import { type DelegationControllerMessenger } from '@metamask/delegation-controller';
 import { type KeyringControllerSignTypedMessageAction } from '@metamask/keyring-controller';
 import { TransactionControllerTransactionStatusUpdatedEvent } from '@metamask/transaction-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 export { type DelegationControllerMessenger } from '@metamask/delegation-controller';
 

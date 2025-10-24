@@ -3,7 +3,7 @@ import {
   getSignatureControllerMessenger,
   getSignatureControllerInitMessenger,
 } from './signature-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getSignatureControllerMessenger', () => {
   it('returns a restricted messenger', () => {

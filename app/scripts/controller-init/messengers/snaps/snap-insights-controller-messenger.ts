@@ -10,7 +10,7 @@ import {
   TransactionControllerTransactionStatusUpdatedEvent,
 } from '@metamask/transaction-controller';
 import { SignatureStateChange } from '@metamask/signature-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | HandleSnapRequest

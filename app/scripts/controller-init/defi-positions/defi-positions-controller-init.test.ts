@@ -9,7 +9,7 @@ import {
   getDeFiPositionsControllerInitMessenger,
   getDeFiPositionsControllerMessenger,
 } from '../messengers/defi-positions/defi-positions-controller-messenger';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { DeFiPositionsControllerInit } from './defi-positions-controller-init';
 
 jest.mock('@metamask/assets-controllers');

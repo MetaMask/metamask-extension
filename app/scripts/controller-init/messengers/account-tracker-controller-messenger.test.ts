@@ -3,7 +3,7 @@ import {
   getAccountTrackerControllerInitMessenger,
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getAccountTrackerControllerMessenger', () => {
   it('returns a restricted messenger', () => {

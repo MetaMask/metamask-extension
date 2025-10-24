@@ -4,8 +4,8 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getApprovalControllerMessenger,
   ApprovalControllerMessenger,
-  getRootMessenger,
 } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { ApprovalControllerInit } from './approval-controller-init';
 
 jest.mock('@metamask/approval-controller');

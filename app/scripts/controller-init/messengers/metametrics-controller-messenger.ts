@@ -3,7 +3,7 @@ import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/metametrics-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type MetaMetricsControllerMessenger = ReturnType<
   typeof getMetaMetricsControllerMessenger

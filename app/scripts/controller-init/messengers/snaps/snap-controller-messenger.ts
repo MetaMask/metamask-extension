@@ -41,7 +41,7 @@ import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@met
 import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import { PreferencesControllerGetStateAction } from '../../../controllers/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | GetEndowments

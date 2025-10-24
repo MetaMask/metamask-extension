@@ -6,8 +6,8 @@ import {
   NameControllerMessenger,
   getNameControllerInitMessenger,
   NameControllerInitMessenger,
-  getRootMessenger,
 } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { NameControllerInit } from './name-controller-init';
 
 jest.mock('@metamask/name-controller');

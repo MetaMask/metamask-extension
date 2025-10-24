@@ -7,7 +7,7 @@ import {
   AccountTreeControllerMessenger,
   AccountTreeControllerInitMessenger,
 } from '../messengers/accounts';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { AccountTreeControllerInit } from './account-tree-controller-init';
 
 jest.mock('@metamask/account-tree-controller');

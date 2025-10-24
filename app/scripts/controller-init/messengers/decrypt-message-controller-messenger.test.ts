@@ -3,7 +3,7 @@ import {
   getDecryptMessageControllerInitMessenger,
   getDecryptMessageControllerMessenger,
 } from './decrypt-message-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getDecryptMessageControllerMessenger', () => {
   it('returns a restricted messenger', () => {

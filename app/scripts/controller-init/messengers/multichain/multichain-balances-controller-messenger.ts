@@ -11,7 +11,7 @@ import {
   MultichainAssetsControllerGetStateAction,
 } from '@metamask/assets-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction

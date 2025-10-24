@@ -2,7 +2,7 @@ import { Messenger } from '@metamask/messenger';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import { AllowedActions } from '../../controllers/swaps/swaps.types';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type SwapsControllerMessenger = ReturnType<
   typeof getSwapsControllerMessenger

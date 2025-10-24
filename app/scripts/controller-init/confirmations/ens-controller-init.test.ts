@@ -6,8 +6,8 @@ import {
   EnsControllerMessenger,
   getEnsControllerInitMessenger,
   EnsControllerInitMessenger,
-  getRootMessenger,
 } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { EnsControllerInit } from './ens-controller-init';
 
 jest.mock('@metamask/ens-controller');

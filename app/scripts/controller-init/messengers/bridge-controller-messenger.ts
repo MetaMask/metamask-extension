@@ -13,7 +13,7 @@ import type {
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | AccountsControllerGetAccountByAddressAction

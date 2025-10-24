@@ -7,7 +7,7 @@ import {
   AuthenticationControllerInitMessenger,
   getAuthenticationControllerInitMessenger,
 } from '../messengers/identity';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { AuthenticationControllerInit } from './authentication-controller-init';
 
 jest.mock('@metamask/profile-sync-controller/auth');

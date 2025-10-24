@@ -5,7 +5,7 @@ import {
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import { getInstitutionalSnapControllerMessenger } from '../messengers/accounts/institutional-snap-controller-messenger';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { InstitutionalSnapControllerInit } from './institutional-snap-controller-init';
 
 jest.mock('../../controllers/institutional-snap/InstitutionalSnapController');

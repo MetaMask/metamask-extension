@@ -7,7 +7,7 @@ import {
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | NetworkControllerGetNetworkClientByIdAction

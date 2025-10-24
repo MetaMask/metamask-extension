@@ -6,7 +6,7 @@ import {
 } from '@metamask/keyring-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { MetaMetricsControllerGetMetaMetricsIdAction } from '../../../controllers/metametrics-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type MessengerActions = KeyringControllerGetStateAction | HandleSnapRequest;
 

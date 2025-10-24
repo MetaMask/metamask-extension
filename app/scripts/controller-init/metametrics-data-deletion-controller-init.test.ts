@@ -4,9 +4,9 @@ import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getMetaMetricsDataDeletionControllerMessenger,
-  getRootMessenger,
   MetaMetricsDataDeletionControllerMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { MetaMetricsDataDeletionControllerInit } from './metametrics-data-deletion-controller-init';
 
 jest.mock('../controllers/metametrics-data-deletion/metametrics-data-deletion');

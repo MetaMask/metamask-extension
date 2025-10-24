@@ -5,7 +5,7 @@ import {
   getSnapInsightsControllerMessenger,
   SnapInsightsControllerMessenger,
 } from '../messengers/snaps';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { SnapInsightsControllerInit } from './snap-insights-controller-init';
 
 jest.mock('@metamask/snaps-controllers');

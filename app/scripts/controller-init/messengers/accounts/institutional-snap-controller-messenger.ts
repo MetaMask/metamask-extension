@@ -3,7 +3,7 @@ import { Messenger } from '@metamask/messenger';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { TransactionControllerUpdateCustodialTransactionAction } from '@metamask/transaction-controller';
 import { InstitutionalSnapController } from '../../../controllers/institutional-snap/InstitutionalSnapController';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 const controllerName = 'InstitutionalSnapController';
 

@@ -4,8 +4,8 @@ import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAppMetadataControllerMessenger,
   AppMetadataControllerMessenger,
-  getRootMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { AppMetadataControllerInit } from './app-metadata-controller-init';
 
 jest.mock('../controllers/app-metadata');

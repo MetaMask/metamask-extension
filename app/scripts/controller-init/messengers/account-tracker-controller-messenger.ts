@@ -10,7 +10,7 @@ import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/account-tracker-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type AccountTrackerControllerMessenger = ReturnType<
   typeof getAccountTrackerControllerMessenger

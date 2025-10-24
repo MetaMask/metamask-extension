@@ -9,7 +9,7 @@ import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-c
 import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 import { AddApprovalRequest } from '@metamask/approval-controller';
 import { PhishingControllerBulkScanUrlsAction } from '@metamask/phishing-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | AddApprovalRequest

@@ -6,7 +6,7 @@ import {
   getGatorPermissionsControllerMessenger,
   GatorPermissionsControllerMessenger,
 } from '../messengers/gator-permissions';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { GatorPermissionsControllerInit } from './gator-permissions-controller-init';
 
 jest.mock('@metamask/gator-permissions-controller');

@@ -2,12 +2,12 @@ import { TokenDetectionController } from '@metamask/assets-controllers';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
-  getRootMessenger,
   getTokenDetectionControllerInitMessenger,
   getTokenDetectionControllerMessenger,
   TokenDetectionControllerInitMessenger,
   TokenDetectionControllerMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { TokenDetectionControllerInit } from './token-detection-controller-init';
 
 jest.mock('@metamask/assets-controllers');

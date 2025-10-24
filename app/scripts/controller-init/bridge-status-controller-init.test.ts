@@ -5,8 +5,8 @@ import { buildControllerInitRequestMock } from './test/utils';
 import {
   getBridgeStatusControllerMessenger,
   BridgeStatusControllerMessenger,
-  getRootMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { BridgeStatusControllerInit } from './bridge-status-controller-init';
 
 jest.mock('@metamask/bridge-status-controller');

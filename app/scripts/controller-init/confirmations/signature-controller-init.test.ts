@@ -2,12 +2,12 @@ import { SignatureController } from '@metamask/signature-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
-  getRootMessenger,
   getSignatureControllerInitMessenger,
   getSignatureControllerMessenger,
   SignatureControllerInitMessenger,
   SignatureControllerMessenger,
 } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { SignatureControllerInit } from './signature-controller-init';
 
 jest.mock('@metamask/signature-controller', () => ({

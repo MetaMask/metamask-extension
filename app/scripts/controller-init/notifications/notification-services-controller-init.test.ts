@@ -5,7 +5,7 @@ import {
   getNotificationServicesControllerMessenger,
   type NotificationServicesControllerMessenger,
 } from '../messengers/notifications';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { NotificationServicesControllerInit } from './notification-services-controller-init';
 
 jest.mock('@metamask/notification-services-controller/notification-services');

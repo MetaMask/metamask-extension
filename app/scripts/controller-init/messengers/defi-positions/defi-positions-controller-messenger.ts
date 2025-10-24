@@ -11,7 +11,7 @@ import {
 
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type DefiPositionsControllerMessenger = ReturnType<
   typeof getDeFiPositionsControllerMessenger

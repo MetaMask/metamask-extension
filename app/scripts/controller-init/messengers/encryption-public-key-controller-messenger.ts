@@ -5,7 +5,7 @@ import {
   AllowedEvents,
 } from '../../controllers/encryption-public-key';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type EncryptionPublicKeyControllerMessenger = ReturnType<
   typeof getEncryptionPublicKeyControllerMessenger

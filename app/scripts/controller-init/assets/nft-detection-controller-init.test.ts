@@ -6,7 +6,7 @@ import { PreferencesController } from '@metamask/preferences-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import { getNftDetectionControllerMessenger } from '../messengers/assets';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { NftDetectionControllerInit } from './nft-detection-controller-init';
 
 jest.mock('@metamask/assets-controllers');

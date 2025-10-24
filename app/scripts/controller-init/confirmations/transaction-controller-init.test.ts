@@ -14,7 +14,7 @@ import {
   getTransactionControllerMessenger,
   TransactionControllerInitMessenger,
 } from '../messengers/transaction-controller-messenger';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import { TransactionControllerInit } from './transaction-controller-init';

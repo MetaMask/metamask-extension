@@ -6,7 +6,7 @@ import {
   KeyringControllerPrepareUserOperationAction,
   KeyringControllerSignUserOperationAction,
 } from '@metamask/keyring-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | AddApprovalRequest

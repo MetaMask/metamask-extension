@@ -3,7 +3,7 @@ import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/preferences-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type PreferencesControllerMessenger = ReturnType<
   typeof getPreferencesControllerMessenger

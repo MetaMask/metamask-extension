@@ -4,8 +4,8 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getEncryptionPublicKeyManagerMessenger,
   EncryptionPublicKeyManagerMessenger,
-  getRootMessenger,
 } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { EncryptionPublicKeyManagerInit } from './encryption-public-key-message-manager-init';
 
 jest.mock('@metamask/message-manager');

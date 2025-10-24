@@ -5,7 +5,7 @@ import {
   CronjobControllerMessenger,
   getWebSocketServiceMessenger,
 } from '../messengers/snaps';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { WebSocketServiceInit } from './websocket-service-init';
 
 function getInitRequestMock(): jest.Mocked<

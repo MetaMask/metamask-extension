@@ -3,7 +3,7 @@ import {
   getTokenDetectionControllerInitMessenger,
   getTokenDetectionControllerMessenger,
 } from './token-detection-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getTokenDetectionControllerMessenger', () => {
   it('returns a restricted messenger', () => {

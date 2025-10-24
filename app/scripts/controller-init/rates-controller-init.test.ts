@@ -3,9 +3,9 @@ import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getRatesControllerMessenger,
-  getRootMessenger,
   RatesControllerMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { RatesControllerInit } from './rates-controller-init';
 
 jest.mock('@metamask/assets-controllers');

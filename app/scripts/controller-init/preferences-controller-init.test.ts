@@ -3,9 +3,9 @@ import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getPreferencesControllerMessenger,
-  getRootMessenger,
   PreferencesControllerMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { PreferencesControllerInit } from './preferences-controller-init';
 
 jest.mock('../controllers/preferences-controller');

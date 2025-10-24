@@ -5,7 +5,7 @@ import {
   getSnapsRegistryMessenger,
   SnapsRegistryMessenger,
 } from '../messengers/snaps';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { SnapsRegistryInit } from './snaps-registry-init';
 
 jest.mock('@metamask/snaps-controllers');

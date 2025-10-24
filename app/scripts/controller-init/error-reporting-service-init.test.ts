@@ -4,8 +4,8 @@ import { buildControllerInitRequestMock } from './test/utils';
 import {
   getErrorReportingServiceMessenger,
   ErrorReportingServiceMessenger,
-  getRootMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { ErrorReportingServiceInit } from './error-reporting-service-init';
 
 jest.mock('@metamask/error-reporting-service');

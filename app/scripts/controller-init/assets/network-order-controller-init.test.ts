@@ -4,7 +4,7 @@ import {
   NetworkOrderControllerState,
 } from '../../controllers/network-order';
 import { getNetworkOrderControllerMessenger } from '../messengers/assets';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { NetworkOrderControllerInit } from './network-order-controller-init';
 

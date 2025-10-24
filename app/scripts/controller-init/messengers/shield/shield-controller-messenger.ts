@@ -5,7 +5,7 @@ import {
 } from '@metamask/messenger';
 import { ShieldControllerMessenger } from '@metamask/shield-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type AllowedActions = MessengerActions<ShieldControllerMessenger>;
 

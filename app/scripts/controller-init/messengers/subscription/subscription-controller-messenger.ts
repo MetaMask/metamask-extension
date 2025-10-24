@@ -1,6 +1,6 @@
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { Messenger } from '@metamask/messenger';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | AuthenticationController.AuthenticationControllerGetBearerToken

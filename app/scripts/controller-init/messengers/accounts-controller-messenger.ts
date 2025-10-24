@@ -1,6 +1,6 @@
 import { AllowedActions, AllowedEvents } from '@metamask/accounts-controller';
 import { Messenger } from '@metamask/messenger';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type AccountsControllerMessenger = ReturnType<
   typeof getAccountsControllerMessenger

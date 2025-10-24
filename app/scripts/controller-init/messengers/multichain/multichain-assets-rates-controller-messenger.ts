@@ -15,7 +15,7 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | HandleSnapRequest

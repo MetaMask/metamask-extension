@@ -13,7 +13,7 @@ import {
   getDelegationControllerMessenger,
   getDelegationControllerInitMessenger,
 } from '../messengers/delegation/delegation-controller-messenger';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   DelegationControllerInit,
   awaitDeleteDelegationEntry,

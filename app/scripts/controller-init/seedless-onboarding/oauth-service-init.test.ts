@@ -3,7 +3,7 @@ import {
   getOAuthServiceMessenger,
   OAuthServiceMessenger,
 } from '../messengers/seedless-onboarding';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import OAuthService from '../../services/oauth/oauth-service';
 import { OAuthServiceInit } from './oauth-service-init';

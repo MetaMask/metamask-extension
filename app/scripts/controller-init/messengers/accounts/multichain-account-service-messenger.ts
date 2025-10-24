@@ -26,7 +26,7 @@ import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../../controllers/preferences-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | AccountsControllerListMultichainAccountsAction

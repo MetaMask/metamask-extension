@@ -12,7 +12,7 @@ import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { normalizeSafeAddress } from '../lib/multichain/address';
-import { getRootMessenger } from '../controller-init/messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { withAddressBook } from './with-address-book';
 import { FIXTURES_APP_STATE } from './with-app-state';
 import { withConfirmedTransactions } from './with-confirmed-transactions';

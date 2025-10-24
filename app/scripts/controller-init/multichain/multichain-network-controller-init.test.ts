@@ -5,7 +5,7 @@ import {
   MultichainNetworkControllerMessenger,
   getMultichainNetworkControllerMessenger,
 } from '../messengers/multichain';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { MultichainNetworkControllerInit } from './multichain-network-controller-init';
 
 jest.mock('@metamask/multichain-network-controller');

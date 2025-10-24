@@ -4,7 +4,7 @@ import {
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions = MessengerActions<AccountActivityServiceMessenger>;
 

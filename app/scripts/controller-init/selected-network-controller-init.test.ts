@@ -3,10 +3,10 @@ import { WeakRefObjectMap } from '../lib/WeakRefObjectMap';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
-  getRootMessenger,
   getSelectedNetworkControllerMessenger,
   SelectedNetworkControllerMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { SelectedNetworkControllerInit } from './selected-network-controller-init';
 
 jest.mock('@metamask/selected-network-controller');

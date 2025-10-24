@@ -3,7 +3,7 @@ import {
   getEncryptionPublicKeyControllerInitMessenger,
   getEncryptionPublicKeyControllerMessenger,
 } from './encryption-public-key-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getEncryptionPublicKeyControllerMessenger', () => {
   it('returns a restricted messenger', () => {

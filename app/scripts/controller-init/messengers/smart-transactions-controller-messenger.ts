@@ -11,7 +11,7 @@ import {
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 type MessengerActions =
   | NetworkControllerGetNetworkClientByIdAction

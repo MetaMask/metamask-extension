@@ -4,7 +4,7 @@ import {
   AllowedEvents,
 } from '../../controllers/metametrics-controller';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getMetaMetricsControllerMessenger', () => {
   it('returns a restricted messenger', () => {

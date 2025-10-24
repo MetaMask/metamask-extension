@@ -3,7 +3,7 @@ import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/metametrics-data-deletion/metametrics-data-deletion';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type MetaMetricsDataDeletionControllerMessenger = ReturnType<
   typeof getMetaMetricsDataDeletionControllerMessenger

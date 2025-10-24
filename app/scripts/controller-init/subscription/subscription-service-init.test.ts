@@ -1,6 +1,6 @@
 import { ControllerInitRequest } from '../types';
 import { getSubscriptionServiceMessenger } from '../messengers/subscription';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { SubscriptionServiceMessenger } from '../../services/subscription/types';
 import { SubscriptionService } from '../../services/subscription/subscription-service';

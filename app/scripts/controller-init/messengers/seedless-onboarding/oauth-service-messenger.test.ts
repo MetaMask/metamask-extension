@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 
-import { getRootMessenger } from '..';
+import { getRootMessenger } from '../../../lib/messenger';
 import { getOAuthServiceMessenger } from './oauth-service-messenger';
 
 describe('getOAuthServiceMessenger', () => {

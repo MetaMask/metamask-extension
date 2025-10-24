@@ -1,5 +1,5 @@
 import { Messenger } from '@metamask/messenger';
-import { getRootMessenger } from '..';
+import { getRootMessenger } from '../../../lib/messenger';
 import { getDelegationControllerMessenger } from './delegation-controller-messenger';
 
 describe('getDelegationControllerMessenger', () => {

@@ -4,10 +4,10 @@ import { buildControllerInitRequestMock } from './test/utils';
 import {
   getPermissionControllerInitMessenger,
   getPermissionControllerMessenger,
-  getRootMessenger,
   PermissionControllerInitMessenger,
   PermissionControllerMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { PermissionControllerInit } from './permission-controller-init';
 
 jest.mock('@metamask/permission-controller');

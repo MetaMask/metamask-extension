@@ -1,7 +1,7 @@
 import { Messenger } from '@metamask/messenger';
 import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions = NetworkControllerGetNetworkClientByIdAction;
 

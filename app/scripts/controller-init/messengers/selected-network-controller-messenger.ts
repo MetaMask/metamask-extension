@@ -10,7 +10,7 @@ import {
   GetSubjects,
   PermissionControllerStateChange,
 } from '@metamask/permission-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction

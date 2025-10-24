@@ -6,7 +6,7 @@ import {
   SnapKeyringBuilderMessenger,
   SnapKeyringBuilderInitMessenger,
 } from '../messengers/accounts';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { snapKeyringBuilder } from '../../lib/snap-keyring';
 import { SnapKeyringBuilderInit } from './snap-keyring-builder-init';
 

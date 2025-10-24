@@ -5,7 +5,7 @@ import {
   MultichainRouterMessenger,
   getMultichainRouterMessenger,
 } from '../messengers/snaps';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { MultichainRouterInit } from './multichain-router-init';
 
 jest.mock('@metamask/snaps-controllers');

@@ -6,7 +6,7 @@ import {
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { SnapId } from '@metamask/snaps-sdk';
-import { getRootMessenger } from '../../controller-init/messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,

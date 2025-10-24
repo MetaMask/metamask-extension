@@ -4,7 +4,7 @@ import {
   getSnapsNameProviderMessenger,
   SnapsNameProviderMessenger,
 } from '../messengers/snaps';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { SnapsNameProvider } from '../../lib/SnapsNameProvider';
 import { SnapsNameProviderInit } from './snaps-name-provider-init';
 

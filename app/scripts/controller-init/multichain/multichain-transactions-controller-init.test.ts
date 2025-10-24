@@ -5,7 +5,7 @@ import {
   getMultichainTransactionsControllerMessenger,
   MultichainTransactionsControllerMessenger,
 } from '../messengers/multichain';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { MultichainTransactionsControllerInit } from './multichain-transactions-controller-init';
 
 jest.mock('@metamask/multichain-transactions-controller');

@@ -10,7 +10,7 @@ import {
   NotificationServicesPushControllerInitMessenger,
   type NotificationServicesPushControllerMessenger,
 } from '../messengers/notifications';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getNormalisedLocale,
   NotificationServicesPushControllerInit,

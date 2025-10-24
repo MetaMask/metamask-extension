@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { getRatesControllerMessenger } from './rates-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getRatesControllerMessenger', () => {
   it('returns a restricted messenger', () => {

@@ -28,7 +28,7 @@ import {
 } from '../../../../shared/constants/security-provider';
 import { AppStateController } from '../../controllers/app-state-controller';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { RootMessenger } from '../../controller-init/messengers';
+import { RootMessenger } from '../../lib/messenger';
 import {
   generateSecurityAlertId,
   updateSecurityAlertResponse,

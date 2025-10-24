@@ -3,7 +3,7 @@ import {
   getBridgeControllerInitMessenger,
   getBridgeControllerMessenger,
 } from './bridge-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getBridgeControllerMessenger', () => {
   it('returns a restricted messenger', () => {

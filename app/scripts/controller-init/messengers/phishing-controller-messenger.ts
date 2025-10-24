@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { AllowedEvents } from '@metamask/phishing-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type PhishingControllerMessenger = ReturnType<
   typeof getPhishingControllerMessenger

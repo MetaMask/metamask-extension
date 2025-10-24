@@ -1,5 +1,5 @@
 import { Messenger } from '@metamask/messenger';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type OnboardingControllerMessenger = ReturnType<
   typeof getOnboardingControllerMessenger

@@ -3,7 +3,7 @@ import {
   getNetworkControllerInitMessenger,
   getNetworkControllerMessenger,
 } from './network-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getNetworkControllerMessenger', () => {
   it('returns a restricted messenger', () => {

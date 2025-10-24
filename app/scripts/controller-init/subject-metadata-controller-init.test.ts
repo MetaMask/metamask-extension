@@ -2,10 +2,10 @@ import { SubjectMetadataController } from '@metamask/permission-controller';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
-  getRootMessenger,
   getSubjectMetadataControllerMessenger,
   SubjectMetadataControllerMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { SubjectMetadataControllerInit } from './subject-metadata-controller-init';
 
 jest.mock('@metamask/permission-controller');

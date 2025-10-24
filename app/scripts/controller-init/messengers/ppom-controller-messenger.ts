@@ -8,7 +8,7 @@ import {
 } from '@metamask/network-controller';
 import { PPOMControllerMessenger } from '@metamask/ppom-validator';
 import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 type MessengerActions = NetworkControllerGetNetworkClientByIdAction;
 

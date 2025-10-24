@@ -5,7 +5,7 @@ import {
   CronjobControllerMessenger,
   getCronjobControllerMessenger,
 } from '../messengers/snaps';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { CronjobControllerInit } from './cronjob-controller-init';
 
 function getInitRequestMock(): jest.Mocked<

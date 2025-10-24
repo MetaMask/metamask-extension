@@ -7,7 +7,7 @@ import {
   RateLimitControllerInitMessenger,
   RateLimitControllerMessenger,
 } from '../messengers/snaps';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { RateLimitControllerInit } from './rate-limit-controller-init';
 
 jest.mock('@metamask/rate-limit-controller');

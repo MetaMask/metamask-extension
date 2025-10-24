@@ -6,8 +6,8 @@ import {
   GasFeeControllerMessenger,
   getGasFeeControllerInitMessenger,
   GasFeeControllerInitMessenger,
-  getRootMessenger,
 } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { GasFeeControllerInit } from './gas-fee-controller-init';
 
 jest.mock('@metamask/gas-fee-controller');

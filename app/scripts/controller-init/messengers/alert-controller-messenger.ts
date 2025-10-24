@@ -3,7 +3,7 @@ import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/alert-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type AlertControllerMessenger = ReturnType<
   typeof getAlertControllerMessenger

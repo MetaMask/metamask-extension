@@ -15,7 +15,7 @@ import {
   MultichainRouterIsSupportedScopeAction,
 } from '@metamask/snaps-controllers';
 import { SnapPermissionSpecificationsActions } from '../../controllers/permissions/snaps/specifications';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | AddApprovalRequest

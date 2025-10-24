@@ -5,7 +5,7 @@ import {
   SubscriptionServiceAction,
   SubscriptionServiceMessenger,
 } from '../../../services/subscription/types';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 /**
  * Get a restricted messenger for the SubscriptionService. This is scoped to the

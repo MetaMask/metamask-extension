@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 
-import { getRootMessenger } from '..';
+import { getRootMessenger } from '../../../lib/messenger';
 import { getSubscriptionServiceMessenger } from './subscription-service-messenger';
 
 describe('getSubscriptionServiceMessenger', () => {

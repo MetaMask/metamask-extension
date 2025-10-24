@@ -6,8 +6,8 @@ import {
   EncryptionPublicKeyControllerMessenger,
   getEncryptionPublicKeyControllerInitMessenger,
   EncryptionPublicKeyControllerInitMessenger,
-  getRootMessenger,
 } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { EncryptionPublicKeyControllerInit } from './encryption-public-key-controller-init';
 
 jest.mock('../../controllers/encryption-public-key');

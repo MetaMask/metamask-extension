@@ -4,8 +4,8 @@ import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAccountOrderControllerMessenger,
   AccountOrderControllerMessenger,
-  getRootMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { AccountOrderControllerInit } from './account-order-controller-init';
 
 jest.mock('../controllers/account-order');

@@ -9,7 +9,7 @@ import {
 } from '@metamask/rate-limit-controller';
 import { GetSubjectMetadataState } from '@metamask/permission-controller';
 import { NotificationServicesControllerUpdateMetamaskNotificationsList } from '@metamask/notification-services-controller/notification-services';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type RateLimitControllerMessenger =
   RateLimitMessenger<RateLimitedApiMap>;

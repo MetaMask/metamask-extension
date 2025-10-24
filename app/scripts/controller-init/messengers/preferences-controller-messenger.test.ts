@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { getPreferencesControllerMessenger } from './preferences-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getPreferencesControllerMessenger', () => {
   it('returns a restricted controller messenger', () => {

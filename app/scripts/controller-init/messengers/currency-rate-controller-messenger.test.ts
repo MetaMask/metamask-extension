@@ -3,7 +3,7 @@ import {
   getCurrencyRateControllerInitMessenger,
   getCurrencyRateControllerMessenger,
 } from './currency-rate-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getCurrencyRateControllerMessenger', () => {
   it('returns a restricted messenger', () => {

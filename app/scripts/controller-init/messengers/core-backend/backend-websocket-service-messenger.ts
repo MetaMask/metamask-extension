@@ -6,7 +6,7 @@ import {
 } from '@metamask/messenger';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type BackendWebSocketServiceMessenger =
   BackendPlatformWebSocketServiceMessenger;

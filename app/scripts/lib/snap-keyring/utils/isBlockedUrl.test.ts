@@ -5,7 +5,7 @@ import {
   PhishingControllerActions,
 } from '@metamask/phishing-controller';
 import { Messenger } from '@metamask/messenger';
-import { getRootMessenger } from '../../../controller-init/messengers';
+import { getRootMessenger } from '../../../lib/messenger';
 import { isBlockedUrl } from './isBlockedUrl';
 
 describe('isBlockedUrl', () => {

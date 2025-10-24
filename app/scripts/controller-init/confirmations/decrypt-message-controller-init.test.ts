@@ -5,8 +5,8 @@ import {
   getDecryptMessageControllerMessenger,
   DecryptMessageControllerMessenger,
   getDecryptMessageControllerInitMessenger,
-  getRootMessenger,
 } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { DecryptMessageControllerInitMessenger } from '../messengers/decrypt-message-controller-messenger';
 import { DecryptMessageControllerInit } from './decrypt-message-controller-init';
 

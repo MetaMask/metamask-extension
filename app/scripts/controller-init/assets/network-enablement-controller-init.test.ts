@@ -20,7 +20,7 @@ import {
   NetworkEnablementControllerInitMessenger,
   NetworkEnablementControllerMessenger,
 } from '../messengers/assets';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { NetworkEnablementControllerInit } from './network-enablement-controller-init';
 
 jest.mock('@metamask/network-enablement-controller');

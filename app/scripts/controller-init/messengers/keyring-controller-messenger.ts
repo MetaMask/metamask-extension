@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { AppStateControllerRequestQrCodeScanAction } from '../../controllers/app-state-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type KeyringControllerMessenger = ReturnType<
   typeof getKeyringControllerMessenger

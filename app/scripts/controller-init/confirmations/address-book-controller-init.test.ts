@@ -4,8 +4,8 @@ import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getAddressBookControllerMessenger,
   AddressBookControllerMessenger,
-  getRootMessenger,
 } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { AddressBookControllerInit } from './address-book-controller-init';
 
 jest.mock('@metamask/address-book-controller');

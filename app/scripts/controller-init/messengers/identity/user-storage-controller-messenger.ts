@@ -5,7 +5,7 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type AllowedActions = MessengerActions<UserStorageControllerMessenger>;
 

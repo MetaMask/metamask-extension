@@ -3,7 +3,7 @@ import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/app-state-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type AppStateControllerMessenger = ReturnType<
   typeof getAppStateControllerMessenger

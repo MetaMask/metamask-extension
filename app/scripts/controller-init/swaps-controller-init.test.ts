@@ -2,12 +2,12 @@ import SwapsController from '../controllers/swaps';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
-  getRootMessenger,
   getSwapsControllerInitMessenger,
   getSwapsControllerMessenger,
   SwapsControllerInitMessenger,
   SwapsControllerMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { SwapsControllerInit } from './swaps-controller-init';
 
 jest.mock('../controllers/swaps');

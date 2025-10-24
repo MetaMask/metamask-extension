@@ -9,7 +9,7 @@ import {
   getNftControllerMessenger,
   NftControllerInitMessenger,
 } from '../messengers/assets';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { NftControllerInit } from './nft-controller-init';
 
 jest.mock('@metamask/assets-controllers');

@@ -3,7 +3,7 @@ import {
   getGasFeeControllerInitMessenger,
   getGasFeeControllerMessenger,
 } from './gas-fee-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getGasFeeControllerMessenger', () => {
   it('returns a restricted messenger', () => {

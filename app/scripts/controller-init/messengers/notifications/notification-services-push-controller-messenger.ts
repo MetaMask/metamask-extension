@@ -9,7 +9,7 @@ import type {
   NotificationServicesPushControllerMessenger,
 } from '@metamask/notification-services-controller/push-services';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions = MessengerActions<NotificationServicesPushControllerMessenger>;
 

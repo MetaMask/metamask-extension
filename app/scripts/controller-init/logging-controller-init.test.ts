@@ -3,9 +3,9 @@ import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getLoggingControllerMessenger,
-  getRootMessenger,
   LoggingControllerMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { LoggingControllerInit } from './logging-controller-init';
 
 jest.mock('@metamask/logging-controller');

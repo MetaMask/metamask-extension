@@ -8,7 +8,7 @@ import {
   ExecutionServiceMessenger,
   getExecutionServiceMessenger,
 } from '../messengers/snaps';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { ExecutionServiceInit } from './execution-service-init';
 
 jest.mock('@metamask/snaps-controllers');

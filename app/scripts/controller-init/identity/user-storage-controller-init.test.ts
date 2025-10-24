@@ -9,7 +9,7 @@ import {
   getUserStorageControllerInitMessenger,
   UserStorageControllerInitMessenger,
 } from '../messengers/identity/user-storage-controller-messenger';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { UserStorageControllerInit } from './user-storage-controller-init';
 
 jest.mock('@metamask/profile-sync-controller/user-storage');

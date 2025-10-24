@@ -5,7 +5,7 @@ import {
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
 import { GetPermissionControllerState } from '@metamask/permission-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type AllowedActions =
   | GetAllSnaps

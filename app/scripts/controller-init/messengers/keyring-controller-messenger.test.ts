@@ -3,7 +3,7 @@ import {
   getKeyringControllerInitMessenger,
   getKeyringControllerMessenger,
 } from './keyring-controller-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getKeyringControllerMessenger', () => {
   it('returns a restricted messenger', () => {

@@ -13,8 +13,8 @@ import {
   NetworkControllerMessenger,
   getNetworkControllerMessenger,
   getNetworkControllerInitMessenger,
-  getRootMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import {
   ADDITIONAL_DEFAULT_NETWORKS,
   NetworkControllerInit,

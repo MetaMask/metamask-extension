@@ -4,7 +4,7 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import { type NotificationServicesControllerMessenger } from '@metamask/notification-services-controller/notification-services';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions = MessengerActions<NotificationServicesControllerMessenger>;
 

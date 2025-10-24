@@ -5,7 +5,7 @@ import {
   getMultichainAssetsControllerMessenger,
   MultichainAssetsControllerMessenger,
 } from '../messengers/multichain';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { MultichainAssetsControllerInit } from './multichain-assets-controller-init';
 
 jest.mock('@metamask/assets-controllers');

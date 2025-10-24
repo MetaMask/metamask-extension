@@ -3,7 +3,7 @@ import {
   WebSocketServiceEvents,
   WebSocketServiceAllowedActions,
 } from '@metamask/snaps-controllers';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type WebSocketServiceMessenger = ReturnType<
   typeof getWebSocketServiceMessenger

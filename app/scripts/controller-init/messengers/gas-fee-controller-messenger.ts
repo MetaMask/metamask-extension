@@ -7,7 +7,7 @@ import {
   NetworkControllerNetworkDidChangeEvent,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | NetworkControllerGetStateAction

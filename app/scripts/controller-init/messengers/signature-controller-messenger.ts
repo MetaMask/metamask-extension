@@ -11,7 +11,7 @@ import type {
 } from '@metamask/keyring-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | AccountsControllerGetStateAction

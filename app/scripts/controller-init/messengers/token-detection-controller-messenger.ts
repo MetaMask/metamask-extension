@@ -34,7 +34,7 @@ import {
   PreferencesControllerStateChangeEvent,
 } from '../../controllers/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 // Not exported from `@metamask/assets-controllers`.
 type TokenListControllerGetStateAction = ControllerGetStateAction<

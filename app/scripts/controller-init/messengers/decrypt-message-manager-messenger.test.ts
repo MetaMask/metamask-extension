@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { getDecryptMessageManagerMessenger } from './decrypt-message-manager-messenger';
-import { getRootMessenger } from '.';
+import { getRootMessenger } from '../../lib/messenger';
 
 describe('getDecryptMessageManagerMessenger', () => {
   it('returns a restricted messenger', () => {

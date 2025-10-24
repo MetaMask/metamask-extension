@@ -5,8 +5,8 @@ import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAnnouncementControllerMessenger,
   AnnouncementControllerMessenger,
-  getRootMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { AnnouncementControllerInit } from './announcement-controller-init';
 
 jest.mock('@metamask/announcement-controller');

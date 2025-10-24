@@ -1,5 +1,5 @@
 import { Messenger } from '@metamask/messenger';
-import { getRootMessenger } from '..';
+import { getRootMessenger } from '../../../lib/messenger';
 import { getExecutionServiceMessenger } from './execution-service-messenger';
 
 describe('getExecutionServiceMessenger', () => {

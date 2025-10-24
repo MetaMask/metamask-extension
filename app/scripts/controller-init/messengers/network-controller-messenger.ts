@@ -10,7 +10,7 @@ import {
   MetaMetricsControllerGetMetaMetricsIdAction,
   MetaMetricsControllerTrackEventAction,
 } from '../../controllers/metametrics-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions = ErrorReportingServiceCaptureExceptionAction;
 

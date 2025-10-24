@@ -4,8 +4,8 @@ import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAppStateControllerMessenger,
   AppStateControllerMessenger,
-  getRootMessenger,
 } from './messengers';
+import { getRootMessenger } from '../lib/messenger';
 import { AppStateControllerInit } from './app-state-controller-init';
 
 jest.mock('../controllers/app-state-controller');

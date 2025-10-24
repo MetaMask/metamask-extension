@@ -14,7 +14,7 @@ import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedMultichainAccountAction,
 } from '@metamask/accounts-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | MaybeUpdateState

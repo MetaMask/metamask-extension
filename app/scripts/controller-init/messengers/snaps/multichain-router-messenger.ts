@@ -3,7 +3,7 @@ import {
   MultichainRouterEvents,
   MultichainRouterAllowedActions,
 } from '@metamask/snaps-controllers';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type MultichainRouterMessenger = ReturnType<
   typeof getMultichainRouterMessenger

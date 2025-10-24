@@ -3,7 +3,7 @@ import { KeyringControllerPersistAllKeyringsAction } from '@metamask/keyring-con
 import { AccountsControllerUpdateAccountsAction } from '@metamask/accounts-controller';
 import { SnapKeyringBuilderAllowActions } from '../../../lib/snap-keyring/types';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
-import { RootMessenger } from '..';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type SnapKeyringBuilderMessenger = ReturnType<
   typeof getSnapKeyringBuilderMessenger

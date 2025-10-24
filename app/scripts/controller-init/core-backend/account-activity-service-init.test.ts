@@ -2,7 +2,7 @@ import {
   AccountActivityService,
   AccountActivityServiceMessenger,
 } from '@metamask/core-backend';
-import { getRootMessenger } from '../messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { getAccountActivityServiceMessenger } from '../messengers/core-backend';

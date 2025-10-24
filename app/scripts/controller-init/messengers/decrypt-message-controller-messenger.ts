@@ -4,7 +4,7 @@ import {
   AllowedEvents,
 } from '../../controllers/decrypt-message';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type DecryptMessageControllerMessenger = ReturnType<
   typeof getDecryptMessageControllerMessenger

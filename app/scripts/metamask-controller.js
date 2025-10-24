@@ -401,7 +401,7 @@ import { EncryptionPublicKeyControllerInit } from './controller-init/confirmatio
 import { EncryptionPublicKeyManagerInit } from './controller-init/confirmations/encryption-public-key-message-manager-init';
 import { SignatureControllerInit } from './controller-init/confirmations/signature-controller-init';
 import { UserOperationControllerInit } from './controller-init/confirmations/user-operation-controller-init';
-import { getRootMessenger } from './controller-init/messengers';
+import { getRootMessenger } from './lib/messenger';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)

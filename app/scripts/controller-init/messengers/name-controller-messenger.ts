@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
-import { RootMessenger } from '.';
+import { RootMessenger } from '../../lib/messenger';
 
 export type NameControllerMessenger = ReturnType<
   typeof getNameControllerMessenger
