@@ -196,20 +196,4 @@ export default class ShieldClaimPage {
 
     console.log('Claim form submitted');
   }
-
-  /**
-   * Wait for the page to be fully loaded
-   */
-  async waitForPageToLoad(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.pageContainer,
-      this.emailInput,
-      this.impactedWalletAddressInput,
-      this.impactedTxHashInput,
-      this.reimbursementWalletAddressInput,
-      this.descriptionTextarea,
-      this.submitButton,
-    ]);
-    console.log('Shield Claim page fully loaded');
-  }
 }
