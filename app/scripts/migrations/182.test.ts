@@ -1,6 +1,12 @@
 import { NetworkState } from '@metamask/network-controller';
-import { FEATURED_RPCS } from '../../../shared/constants/network';
+import {
+  FEATURED_RPCS,
+  SUPPORTED_NETWORKS_ACCOUNTS_API_V4,
+} from '../../../shared/constants/network';
 import { migrate, version } from './182';
+
+// Mock process.env.IN_TEST to allow migration logic to run in tests
+const originalEnv = process.env;
 
 // Mock uuid
 jest.mock('uuid', () => ({
@@ -12,10 +18,14 @@ const oldVersion = 181;
 describe(`migration #${version}`, () => {
   beforeEach(() => {
     global.sentry = { captureException: jest.fn() };
+    // Mock process.env to allow migration logic to run
+    process.env = { ...originalEnv, IN_TEST: undefined };
   });
 
   afterEach(() => {
     global.sentry = undefined;
+    // Restore original environment
+    process.env = originalEnv;
   });
 
   it('updates the version metadata', async () => {
@@ -105,24 +115,28 @@ describe(`migration #${version}`, () => {
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('does not modify state if FEATURED_RPCS networks are already present', async () => {
-    // Create a state with all FEATURED_RPCS networks already present
+  it('does not modify state if supported FEATURED_RPCS networks are already present', async () => {
+    // Create a state with all supported FEATURED_RPCS networks already present
     const existingNetworks: Record<string, unknown> = {};
     FEATURED_RPCS.forEach((network) => {
-      existingNetworks[network.chainId] = {
-        chainId: network.chainId,
-        name: network.name,
-        nativeCurrency: network.nativeCurrency,
-        rpcEndpoints: network.rpcEndpoints.map((endpoint) => ({
-          url: endpoint.url,
-          failoverUrls: endpoint.failoverUrls || [],
-          type: endpoint.type,
-          networkClientId: 'existing-client-id',
-        })),
-        defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
-        blockExplorerUrls: network.blockExplorerUrls || [],
-        defaultBlockExplorerUrlIndex: network.defaultBlockExplorerUrlIndex || 0,
-      };
+      // Only add supported networks
+      if (SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId)) {
+        existingNetworks[network.chainId] = {
+          chainId: network.chainId,
+          name: network.name,
+          nativeCurrency: network.nativeCurrency,
+          rpcEndpoints: network.rpcEndpoints.map((endpoint) => ({
+            url: endpoint.url,
+            failoverUrls: endpoint.failoverUrls || [],
+            type: endpoint.type,
+            networkClientId: 'existing-client-id',
+          })),
+          defaultRpcEndpointIndex: network.defaultRpcEndpointIndex,
+          blockExplorerUrls: network.blockExplorerUrls || [],
+          defaultBlockExplorerUrlIndex:
+            network.defaultBlockExplorerUrlIndex || 0,
+        };
+      }
     });
 
     const oldStorage = {
@@ -136,19 +150,21 @@ describe(`migration #${version}`, () => {
 
     const newStorage = await migrate(oldStorage);
 
-    // Assert - All networks remain unchanged
+    // Assert - All supported networks remain unchanged
     FEATURED_RPCS.forEach((network) => {
-      expect(
-        (newStorage.data.NetworkController as NetworkState)
-          .networkConfigurationsByChainId[network.chainId],
-      ).toStrictEqual(existingNetworks[network.chainId]);
+      if (SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId)) {
+        expect(
+          (newStorage.data.NetworkController as NetworkState)
+            .networkConfigurationsByChainId[network.chainId],
+        ).toStrictEqual(existingNetworks[network.chainId]);
+      }
     });
 
     // Assert - the entire state structure is unchanged
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('adds all FEATURED_RPCS networks to networkConfigurationsByChainId if not already present', async () => {
+  it('adds all supported FEATURED_RPCS networks to networkConfigurationsByChainId if not already present', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -164,39 +180,41 @@ describe(`migration #${version}`, () => {
 
     const newStorage = await migrate(oldStorage);
 
-    // Assert - All FEATURED_RPCS networks were added
+    // Assert - All supported FEATURED_RPCS networks were added
     FEATURED_RPCS.forEach((network) => {
-      const addedNetwork = (newStorage.data.NetworkController as NetworkState)
-        .networkConfigurationsByChainId[network.chainId];
+      if (SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId)) {
+        const addedNetwork = (newStorage.data.NetworkController as NetworkState)
+          .networkConfigurationsByChainId[network.chainId];
 
-      expect(addedNetwork).toBeDefined();
-      expect(addedNetwork.chainId).toBe(network.chainId);
-      expect(addedNetwork.name).toBe(network.name);
-      expect(addedNetwork.nativeCurrency).toBe(network.nativeCurrency);
-      expect(addedNetwork.defaultRpcEndpointIndex).toBe(
-        network.defaultRpcEndpointIndex,
-      );
-      expect(addedNetwork.blockExplorerUrls).toEqual(
-        network.blockExplorerUrls || [],
-      );
-      expect(addedNetwork.defaultBlockExplorerUrlIndex).toBe(
-        network.defaultBlockExplorerUrlIndex || 0,
-      );
+        expect(addedNetwork).toBeDefined();
+        expect(addedNetwork.chainId).toBe(network.chainId);
+        expect(addedNetwork.name).toBe(network.name);
+        expect(addedNetwork.nativeCurrency).toBe(network.nativeCurrency);
+        expect(addedNetwork.defaultRpcEndpointIndex).toBe(
+          network.defaultRpcEndpointIndex,
+        );
+        expect(addedNetwork.blockExplorerUrls).toEqual(
+          network.blockExplorerUrls || [],
+        );
+        expect(addedNetwork.defaultBlockExplorerUrlIndex).toBe(
+          network.defaultBlockExplorerUrlIndex || 0,
+        );
 
-      // Check RPC endpoints structure
-      expect(addedNetwork.rpcEndpoints).toHaveLength(
-        network.rpcEndpoints.length,
-      );
-      network.rpcEndpoints.forEach((endpoint, index) => {
-        expect(addedNetwork.rpcEndpoints[index].url).toBe(endpoint.url);
-        expect(addedNetwork.rpcEndpoints[index].failoverUrls).toEqual(
-          endpoint.failoverUrls || [],
+        // Check RPC endpoints structure
+        expect(addedNetwork.rpcEndpoints).toHaveLength(
+          network.rpcEndpoints.length,
         );
-        expect(addedNetwork.rpcEndpoints[index].type).toBe(endpoint.type);
-        expect(addedNetwork.rpcEndpoints[index].networkClientId).toBe(
-          'mocked-uuid-123',
-        );
-      });
+        network.rpcEndpoints.forEach((endpoint, index) => {
+          expect(addedNetwork.rpcEndpoints[index].url).toBe(endpoint.url);
+          expect(addedNetwork.rpcEndpoints[index].failoverUrls).toEqual(
+            endpoint.failoverUrls || [],
+          );
+          expect(addedNetwork.rpcEndpoints[index].type).toBe(endpoint.type);
+          expect(addedNetwork.rpcEndpoints[index].networkClientId).toBe(
+            'mocked-uuid-123',
+          );
+        });
+      }
     });
 
     // Assert - Other networks are unchanged
@@ -216,25 +234,35 @@ describe(`migration #${version}`, () => {
     );
   });
 
-  it('adds only missing FEATURED_RPCS networks when some are already present', async () => {
-    // Create a state with only some FEATURED_RPCS networks present
+  it('adds only missing supported FEATURED_RPCS networks when some are already present', async () => {
+    // Find the first supported FEATURED_RPCS network
+    const firstSupportedNetwork = FEATURED_RPCS.find((network) =>
+      SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId),
+    );
+
+    if (!firstSupportedNetwork) {
+      // Skip this test if no supported networks are found
+      return;
+    }
+
+    // Create a state with only some supported FEATURED_RPCS networks present
     const existingNetworks: Record<string, unknown> = {
       '0x1': { chainId: '0x1', name: 'Ethereum Mainnet' },
-      // Add only the first FEATURED_RPCS network
-      [FEATURED_RPCS[0].chainId]: {
-        chainId: FEATURED_RPCS[0].chainId,
-        name: FEATURED_RPCS[0].name,
-        nativeCurrency: FEATURED_RPCS[0].nativeCurrency,
-        rpcEndpoints: FEATURED_RPCS[0].rpcEndpoints.map((endpoint) => ({
+      // Add only the first supported FEATURED_RPCS network
+      [firstSupportedNetwork.chainId]: {
+        chainId: firstSupportedNetwork.chainId,
+        name: firstSupportedNetwork.name,
+        nativeCurrency: firstSupportedNetwork.nativeCurrency,
+        rpcEndpoints: firstSupportedNetwork.rpcEndpoints.map((endpoint) => ({
           url: endpoint.url,
           failoverUrls: endpoint.failoverUrls || [],
           type: endpoint.type,
           networkClientId: 'existing-client-id',
         })),
-        defaultRpcEndpointIndex: FEATURED_RPCS[0].defaultRpcEndpointIndex,
-        blockExplorerUrls: FEATURED_RPCS[0].blockExplorerUrls || [],
+        defaultRpcEndpointIndex: firstSupportedNetwork.defaultRpcEndpointIndex,
+        blockExplorerUrls: firstSupportedNetwork.blockExplorerUrls || [],
         defaultBlockExplorerUrlIndex:
-          FEATURED_RPCS[0].defaultBlockExplorerUrlIndex || 0,
+          firstSupportedNetwork.defaultBlockExplorerUrlIndex || 0,
       },
     };
 
@@ -249,20 +277,25 @@ describe(`migration #${version}`, () => {
 
     const newStorage = await migrate(oldStorage);
 
-    // Assert - The first network remains unchanged
+    // Assert - The first supported network remains unchanged
     expect(
       (newStorage.data.NetworkController as NetworkState)
-        .networkConfigurationsByChainId[FEATURED_RPCS[0].chainId],
-    ).toStrictEqual(existingNetworks[FEATURED_RPCS[0].chainId]);
+        .networkConfigurationsByChainId[firstSupportedNetwork.chainId],
+    ).toStrictEqual(existingNetworks[firstSupportedNetwork.chainId]);
 
-    // Assert - All other FEATURED_RPCS networks were added
-    FEATURED_RPCS.slice(1).forEach((network) => {
-      const addedNetwork = (newStorage.data.NetworkController as NetworkState)
-        .networkConfigurationsByChainId[network.chainId];
+    // Assert - All other supported FEATURED_RPCS networks were added
+    FEATURED_RPCS.forEach((network) => {
+      if (
+        SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId) &&
+        network.chainId !== firstSupportedNetwork.chainId
+      ) {
+        const addedNetwork = (newStorage.data.NetworkController as NetworkState)
+          .networkConfigurationsByChainId[network.chainId];
 
-      expect(addedNetwork).toBeDefined();
-      expect(addedNetwork.chainId).toBe(network.chainId);
-      expect(addedNetwork.name).toBe(network.name);
+        expect(addedNetwork).toBeDefined();
+        expect(addedNetwork.chainId).toBe(network.chainId);
+        expect(addedNetwork.name).toBe(network.name);
+      }
     });
 
     // Assert - Other existing networks are unchanged
@@ -284,13 +317,15 @@ describe(`migration #${version}`, () => {
 
     const newStorage = await migrate(oldStorage);
 
-    // Assert - All FEATURED_RPCS networks were added
+    // Assert - All supported FEATURED_RPCS networks were added
     FEATURED_RPCS.forEach((network) => {
-      const addedNetwork = (newStorage.data.NetworkController as NetworkState)
-        .networkConfigurationsByChainId[network.chainId];
+      if (SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId)) {
+        const addedNetwork = (newStorage.data.NetworkController as NetworkState)
+          .networkConfigurationsByChainId[network.chainId];
 
-      expect(addedNetwork).toBeDefined();
-      expect(addedNetwork.chainId).toBe(network.chainId);
+        expect(addedNetwork).toBeDefined();
+        expect(addedNetwork.chainId).toBe(network.chainId);
+      }
     });
   });
 
@@ -331,13 +366,52 @@ describe(`migration #${version}`, () => {
         .networkConfigurationsByChainId['0x1234'],
     ).toStrictEqual(customNetwork);
 
-    // Assert - All FEATURED_RPCS networks were added
+    // Assert - All supported FEATURED_RPCS networks were added
     FEATURED_RPCS.forEach((network) => {
+      if (SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId)) {
+        const addedNetwork = (newStorage.data.NetworkController as NetworkState)
+          .networkConfigurationsByChainId[network.chainId];
+
+        expect(addedNetwork).toBeDefined();
+        expect(addedNetwork.chainId).toBe(network.chainId);
+      }
+    });
+  });
+
+  it('filters out unsupported FEATURED_RPCS networks', async () => {
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {},
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    // Assert - Only supported networks were added
+    const supportedNetworks = FEATURED_RPCS.filter((network) =>
+      SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId),
+    );
+    const unsupportedNetworks = FEATURED_RPCS.filter(
+      (network) =>
+        !SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId),
+    );
+
+    // Check that supported networks were added
+    supportedNetworks.forEach((network) => {
       const addedNetwork = (newStorage.data.NetworkController as NetworkState)
         .networkConfigurationsByChainId[network.chainId];
-
       expect(addedNetwork).toBeDefined();
       expect(addedNetwork.chainId).toBe(network.chainId);
+    });
+
+    // Check that unsupported networks were NOT added
+    unsupportedNetworks.forEach((network) => {
+      const addedNetwork = (newStorage.data.NetworkController as NetworkState)
+        .networkConfigurationsByChainId[network.chainId];
+      expect(addedNetwork).toBeUndefined();
     });
   });
 });

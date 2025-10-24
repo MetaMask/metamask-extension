@@ -38,7 +38,6 @@ function transformState(state: Record<string, unknown>) {
   if (process.env.IN_TEST) {
     return state;
   }
-
   if (!hasProperty(state, 'NetworkController')) {
     console.warn(`Migration ${version}: NetworkController not found.`);
     return state;
