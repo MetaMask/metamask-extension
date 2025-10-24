@@ -134,6 +134,7 @@ import {
   FEATURED_NETWORK_CHAIN_IDS,
   FEATURED_RPCS,
   NetworkStatus,
+  SUPPORTED_NETWORKS_ACCOUNTS_API_V4,
   UNSUPPORTED_RPC_METHODS,
 } from '../../shared/constants/network';
 
@@ -4726,6 +4727,9 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
     FEATURED_RPCS.forEach((rpc) => {
+      if (!SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(rpc.chainId)) {
+        return;
+      }
       try {
         this.networkController.addNetwork({
           ...rpc,

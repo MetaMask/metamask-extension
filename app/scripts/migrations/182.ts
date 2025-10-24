@@ -1,7 +1,10 @@
 import { cloneDeep } from 'lodash';
 import { v4 as uuidV4 } from 'uuid';
 import { hasProperty, isObject } from '@metamask/utils';
-import { FEATURED_RPCS } from '../../../shared/constants/network';
+import {
+  FEATURED_RPCS,
+  SUPPORTED_NETWORKS_ACCOUNTS_API_V4,
+} from '../../../shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };
@@ -74,6 +77,9 @@ function transformState(state: Record<string, unknown>) {
 
   // Add each FEATURED_RPCS network if it's not already present
   FEATURED_RPCS.forEach((featuredNetwork) => {
+    if (!SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(featuredNetwork.chainId)) {
+      return;
+    }
     const { chainId } = featuredNetwork;
 
     // Skip if network already exists
