@@ -2,7 +2,7 @@ import { Cryptocurrency } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { BtcScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope } from '@metamask/keyring-api';
 import {
   type SupportedCaipChainId,
   AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
@@ -224,6 +224,71 @@ describe('Multichain Selectors', () => {
       const network = getMultichainNetwork(state);
       expect(network.nickname).toBe(network.network.rpcUrl);
       expect(network.nickname).toBe(mockNetworkRpc);
+    });
+
+    it('prioritizes account scopes over selectedMultichainNetworkChainId for non-EVM networks', () => {
+      // Create a Bitcoin account with Bitcoin scope
+      const bitcoinAccount = MOCK_ACCOUNT_BIP122_P2WPKH;
+      const state = getNonEvmState(bitcoinAccount, BtcScope.Mainnet);
+
+      // Set selectedMultichainNetworkChainId to Solana (different from account scope)
+      state.metamask.selectedMultichainNetworkChainId = SolScope.Mainnet;
+
+      const network = getMultichainNetwork(state);
+
+      // Should return Bitcoin network based on account scope, not Solana from selectedChainId
+      expect(network.isEvmNetwork).toBe(false);
+      expect(network.chainId).toBe(MultichainNetworks.BITCOIN);
+      expect(network.nickname).toBe('Bitcoin');
+    });
+
+    it('falls back to selectedMultichainNetworkChainId when account has no matching scopes', () => {
+      // Create a state with a Bitcoin account but no matching provider configs
+      const state = getNonEvmState(
+        MOCK_ACCOUNT_BIP122_P2WPKH,
+        SolScope.Mainnet,
+      );
+
+      // Modify the account to have no scopes that match available providers
+      const modifiedAccount = {
+        ...MOCK_ACCOUNT_BIP122_P2WPKH,
+        scopes: ['bip122:nonexistent-network' as `${string}:${string}`],
+      };
+      state.metamask.internalAccounts.accounts = {
+        ...state.metamask.internalAccounts.accounts,
+        [modifiedAccount.id]: modifiedAccount,
+      };
+
+      const network = getMultichainNetwork(state);
+
+      // Should fall back to selectedMultichainNetworkChainId (Solana)
+      expect(network.isEvmNetwork).toBe(false);
+      expect(network.chainId).toBe(MultichainNetworks.SOLANA);
+      expect(network.nickname).toBe('Solana');
+    });
+
+    it('uses address compatibility as final fallback', () => {
+      // Create a state where neither scopes nor selectedChainId match
+      const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
+
+      // Set selectedMultichainNetworkChainId to null and modify account scopes
+      // @ts-expect-error - Testing null case for fallback behavior
+      state.metamask.selectedMultichainNetworkChainId = null;
+      const modifiedAccount = {
+        ...MOCK_ACCOUNT_BIP122_P2WPKH,
+        scopes: ['bip122:nonexistent-network' as `${string}:${string}`],
+      };
+      state.metamask.internalAccounts.accounts = {
+        ...state.metamask.internalAccounts.accounts,
+        [modifiedAccount.id]: modifiedAccount,
+      };
+
+      const network = getMultichainNetwork(state);
+
+      // Should fall back to address compatibility (Bitcoin for Bitcoin address)
+      expect(network.isEvmNetwork).toBe(false);
+      expect(network.chainId).toBe(MultichainNetworks.BITCOIN);
+      expect(network.nickname).toBe('Bitcoin');
     });
   });
 
