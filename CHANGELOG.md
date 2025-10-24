@@ -9,17 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.7.0]
 
-### Uncategorized
-
-- Updates found here: https://github.com/MetaMask/snap-7715-permissions/releases/tag/v6.0.0 (#37094)
-- Updated core-backend to v3.0.0 and related controllers for improved backend service integration (#37118)
-- See below. (#36994)
-- Replace swap server event utility with internal implementation (#37027)
-- Enable watch only accounts on experimental builds (#37051)
-- Improved gator permissions page loading performance with cache-first strategy. (#36833)
-- Null (#37025)
-- Remove extra transactions call (#36968)
-
 ### Added
 
 - Fix Transaction Shield membership banner on light mode (#37162)
@@ -47,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (https://github.com/MetaMask/snap-solana-wallet/pull/548)
   Fixed the send flow to support token account recipients
   (https://github.com/MetaMask/snap-solana-wallet/pull/547)
+- Enables watch only accounts on experimental builds (#37051)
 
 ### Fixed
 
@@ -65,6 +55,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove unneccesary callback and dependencies (#36974)
 - Fixed a bug that was causing the token list to show "No conversion rate available" once the user connects to testnet from a (#36685)
   dapp.
+- Improves gator permissions page loading performance with cache-first strategy. (#36833)
+- Removes extra transactions call to improve performance (#36968)
 
 ## [13.5.0]
 
