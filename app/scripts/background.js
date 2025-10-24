@@ -1,22 +1,3 @@
-/**
- * @file The entry point for the web extension singleton process.
-/**
- * Handles the onInstalled event.
- *
- * @param {chrome.runtime.InstalledDetails} details - Details about the installation event.
- */
-function handleOnInstalled(details) {
-  if (details.reason === 'install') {
-    onInstall();
-  } else if (
-    details.reason === 'update' &&
-    details.previousVersion &&
-    details.previousVersion !== platform.getVersion()
-  ) {
-    onUpdate();
-  }
-}
-
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
