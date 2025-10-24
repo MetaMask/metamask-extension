@@ -146,7 +146,7 @@ describe('useRamps', () => {
 
   it('should handle non-EVM chain IDs correctly (like Bitcoin)', () => {
     const metaMaskEntry = 'ext_buy_sell_button';
-    const bitcoinChainId = 'bitcoin:mainnet';
+    const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';
     (isEvmChainId as jest.Mock).mockReturnValueOnce(false);
     mockStoreState = {
       ...mockStoreState,
