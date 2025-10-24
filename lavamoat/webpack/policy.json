@@ -1013,8 +1013,15 @@
         "clearTimeout": true,
         "setTimeout": true
       },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
+        "@metamask/controller-utils": true,
         "@metamask/utils": true,
+        "cockatiel": true,
         "uuid": true
       }
     },
@@ -1886,7 +1893,8 @@
         "@metamask/base-controller": true,
         "@metamask/signature-controller": true,
         "@metamask/transaction-controller": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "lodash": true
       }
     },
     "@metamask/signature-controller": {
@@ -4445,15 +4453,6 @@
     "@metamask/assets-controllers>multiformats": {
       "globals": {
         "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@swc/helpers": true
-      }
-    },
-    "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": {
-      "globals": {
-        "TextDecoder": true,
         "TextEncoder": true,
         "console.warn": true,
         "crypto.subtle.digest": true
@@ -5718,7 +5717,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true
+        "@metamask/assets-controllers>multiformats": true
       }
     },
     "@ensdomains/content-hash>cids>multihashes>uint8arrays": {
