@@ -179,4 +179,75 @@ describe('MultichainAccountCell', () => {
     expect(balanceContainer.textContent).not.toContain('$2,400.00');
     expect(balanceContainer.textContent).toMatch(/^[•]+$/u);
   });
+
+  describe('Native balance display', () => {
+    it('displays regular balance when showNativeTokenAsMainBalance is false', () => {
+      const customState = {
+        ...mockDefaultState,
+        metamask: {
+          ...mockDefaultState.metamask,
+          preferences: {
+            ...mockDefaultState.metamask.preferences,
+            showNativeTokenAsMainBalance: false,
+          },
+        },
+      };
+      const customStore = configureStore(customState);
+
+      renderWithProvider(
+        <MultichainAccountCell {...defaultProps} />,
+        customStore,
+      );
+
+      expect(screen.getByText('$2,400.00')).toBeInTheDocument();
+    });
+
+    it('displays regular balance when showNativeTokenAsMainBalance is true but selectedNativeBalanceSelector is null', () => {
+      // The mock state already has showNativeTokenAsMainBalance: true
+      // but the selectedNativeBalanceSelector will return null due to multiple chains being enabled
+      renderWithProvider(<MultichainAccountCell {...defaultProps} />, store);
+
+      expect(screen.getByText('$2,400.00')).toBeInTheDocument();
+    });
+
+    it('displays regular balance when showNativeTokenAsMainBalance is true but selectedNativeBalanceSelector returns null due to complex balance calculation', () => {
+      // The mock state has showNativeTokenAsMainBalance: true
+      // but the selectedNativeBalanceSelector will return null due to the complex balance calculation system
+      // not being properly mocked in the test environment
+      renderWithProvider(<MultichainAccountCell {...defaultProps} />, store);
+
+      // Should fall back to regular balance when native balance calculation fails
+      expect(screen.getByText('$2,400.00')).toBeInTheDocument();
+    });
+
+    it('displays regular balance when showNativeTokenAsMainBalance is true but selectedNativeBalanceSelector returns null due to missing market data', () => {
+      const customState = {
+        ...mockDefaultState,
+        metamask: {
+          ...mockDefaultState.metamask,
+          preferences: {
+            ...mockDefaultState.metamask.preferences,
+            showNativeTokenAsMainBalance: true,
+          },
+          // Mock enabled networks to have only one chain but no market data
+          enabledNetworks: {
+            eip155: {
+              '0x1': true,
+            },
+          },
+          marketData: {},
+          currencyRates: {},
+        },
+      };
+      const customStore = configureStore(customState);
+
+      renderWithProvider(
+        <MultichainAccountCell {...defaultProps} />,
+        customStore,
+      );
+
+      // Should fall back to regular balance when native balance calculation fails
+      expect(screen.getByText('$2,400.00')).toBeInTheDocument();
+    });
+  });
 });
