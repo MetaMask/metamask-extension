@@ -7591,3 +7591,21 @@ export async function submitShieldClaim(params: {
 
   return ClaimSubmitToastType.Success;
 }
+
+export async function getShieldClaims() {
+  const baseUrl =
+    process.env.SHIELD_CLAIMS_API_URL ??
+    'https://claims.dev-api.cx.metamask.io';
+
+  const claimsUrl = `${baseUrl}/claims`;
+  const accessToken = await submitRequestToBackground<string>('getBearerToken');
+
+  const response = await fetch(claimsUrl, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  return response.json();
+}
