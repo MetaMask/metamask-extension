@@ -23,6 +23,7 @@ import {
 import {
   FormTextField,
   FormTextFieldSize,
+  TextFieldType,
 } from '../../../../components/component-library';
 import {
   BlockSize,
@@ -297,7 +298,8 @@ const SubmitClaimForm = () => {
       </Text>
       <FormTextField
         label={`${t('shieldClaimChainId')}*`}
-        placeholder="1"
+        placeholder="e.g. 1"
+        type={TextFieldType.Number}
         inputProps={{ 'data-testid': 'shield-claim-chain-id-input' }}
         helpText={errors.chainId ? errors.chainId.msg : undefined}
         helpTextProps={{
@@ -307,7 +309,14 @@ const SubmitClaimForm = () => {
         id="chain-id"
         name="chain-id"
         size={FormTextFieldSize.Lg}
-        onChange={(e) => setChainId(Number(e.target.value))}
+        onChange={(e) => {
+          console.log('e.target.value', e.target.value);
+          if (e.target.value.trim() === '') {
+            setChainId(undefined);
+          } else {
+            setChainId(Number(e.target.value));
+          }
+        }}
         onBlur={() => validateChainId()}
         value={chainId}
         error={Boolean(errors.chainId)}

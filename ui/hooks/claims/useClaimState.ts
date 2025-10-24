@@ -28,6 +28,7 @@ export const useClaimState = () => {
     files,
     setFiles,
     clear: () => {
+      setChainId(undefined);
       setEmail('');
       setImpactedWalletAddress('');
       setImpactedTransactionHash('');
