@@ -7954,9 +7954,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^60.7.0":
-  version: 60.7.0
-  resolution: "@metamask/transaction-controller@npm:60.7.0"
+"@metamask/transaction-controller@npm:^60.10.0, @metamask/transaction-controller@npm:^60.7.0":
+  version: 60.10.0
+  resolution: "@metamask/transaction-controller@npm:60.10.0"
   dependencies:
     "@ethereumjs/common": "npm:^4.4.0"
     "@ethereumjs/tx": "npm:^5.4.0"
@@ -7965,7 +7965,7 @@ __metadata:
     "@ethersproject/contracts": "npm:^5.7.0"
     "@ethersproject/providers": "npm:^5.7.0"
     "@ethersproject/wallet": "npm:^5.7.0"
-    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/base-controller": "npm:^8.4.2"
     "@metamask/controller-utils": "npm:^11.14.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
@@ -7986,7 +7986,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^24.0.0
     "@metamask/network-controller": ^24.0.0
     "@metamask/remote-feature-flag-controller": ^1.5.0
-  checksum: 10/5aa7b5479094f9e12813b3b18c13513ef2e68519afe753657ab23c594b88c7e3d42c740621d7e952cd966efea797dd6de3e15f127578b02c275084ed6ada48fe
+  checksum: 10/e2b088d71ac7777ec6827c6c5ab75ebf9d2ab894cb6320d66472c534a9d376df11cd70e64d6e88ccf7b4e2f14a414b9b43f4769acedc0051c4aba13ee231f89c
   languageName: node
   linkType: hard
 
@@ -31931,7 +31931,7 @@ __metadata:
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
-    "@metamask/transaction-controller": "npm:^60.7.0"
+    "@metamask/transaction-controller": "npm:^60.10.0"
     "@metamask/user-operation-controller": "npm:^39.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"
