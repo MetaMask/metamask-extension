@@ -12,6 +12,7 @@ import {
 import {
   Display,
   FlexDirection,
+  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -30,12 +31,16 @@ const ShieldFooterAgreement = () => {
   }
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      justifyContent={JustifyContent.center}
+      gap={4}
+    >
       <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
         {t('shieldFooterAgreement', [
           <ButtonLink
             href={SHIELD_TERMS_OF_USE_URL}
-            color={TextColor.textAlternative}
             size={ButtonLinkSize.Inherit}
             externalLink
             key="shield-footer-agreement-button"
