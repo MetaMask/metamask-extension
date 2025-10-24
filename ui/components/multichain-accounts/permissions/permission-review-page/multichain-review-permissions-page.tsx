@@ -6,6 +6,7 @@ import {
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
+import log from 'loglevel';
 import {
   AlignItems,
   BlockSize,
@@ -65,7 +66,7 @@ import {
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
-import { useRevokeGatorPermissions } from '../../../../hooks/gator-permissions/useRevokeGatorPermissions';
+import { useRevokeGatorPermissionsMultiChain } from '../../../../hooks/gator-permissions/useRevokeGatorPermissionsMultiChain';
 
 export enum MultichainReviewPermissionsPageMode {
   Summary = 'summary',
@@ -274,7 +275,7 @@ export const MultichainReviewPermissions = () => {
 
   // Group permissions by chain ID for proper revocation
   const permissionsByChainId = useMemo(() => {
-    const grouped: { [chainId: string]: typeof tokenTransferPermissions } = {};
+    const grouped: Record<Hex, typeof tokenTransferPermissions> = {};
     tokenTransferPermissions.forEach((permission) => {
       const { chainId } = permission.permissionResponse;
       if (!grouped[chainId]) {
@@ -285,10 +286,9 @@ export const MultichainReviewPermissions = () => {
     return grouped;
   }, [tokenTransferPermissions]);
 
-  // Single hook instance for multi-chain support
-  const { revokeGatorPermissionsBatchMultiChain } = useRevokeGatorPermissions({
-    chainId: '0x1', // This will be overridden by the multi-chain function
-  });
+  // Hook for multi-chain permission revocation
+  const { revokeGatorPermissionsBatchMultiChain } =
+    useRevokeGatorPermissionsMultiChain();
 
   // Format permissions for the DisconnectPermissionsModal
   const formattedPermissions = useMemo(() => {
@@ -326,14 +326,14 @@ export const MultichainReviewPermissions = () => {
       // Revoke gator permissions if they exist (run in background)
       if (tokenTransferPermissions.length > 0) {
         // Start revocation process in the background (don't await)
-        revokeGatorPermissionsBatchMultiChain(
-          permissionsByChainId as Record<Hex, typeof tokenTransferPermissions>,
-        ).catch((gatorError) => {
-          console.error('Error revoking gator permissions:', gatorError);
-        });
+        revokeGatorPermissionsBatchMultiChain(permissionsByChainId).catch(
+          (gatorError) => {
+            log.error('Error revoking gator permissions:', gatorError);
+          },
+        );
       }
     } catch (error) {
-      console.error('Error removing permissions:', error);
+      log.error('Error removing permissions:', error);
       // Still proceed to disconnect even if revocation fails
       setShowDisconnectPermissionsModal(false);
     }
@@ -388,12 +388,14 @@ export const MultichainReviewPermissions = () => {
               hostname={activeTabOrigin}
               onClose={() => setShowDisconnectAllModal(false)}
               onClick={() => {
-                // Check if there are token transfer permissions
-
                 setShowDisconnectAllModal(false);
-                const hasTokenTransferPermissions = Object.values(
-                  gatorPermissionsGroupMetaData,
-                ).some((details) => details.count > 0);
+
+                // Check if there are token transfer permissions
+                const hasTokenTransferPermissions =
+                  gatorPermissionsGroupMetaData &&
+                  Object.values(gatorPermissionsGroupMetaData).some(
+                    (details) => details.count > 0,
+                  );
 
                 if (hasTokenTransferPermissions) {
                   setShowDisconnectPermissionsModal(true);

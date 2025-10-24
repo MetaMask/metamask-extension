@@ -11,10 +11,7 @@ import {
   Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
-import {
-  addTransaction,
-  findNetworkClientIdByChainId,
-} from '../../store/actions';
+import { addTransaction } from '../../store/actions';
 import {
   getInternalAccounts,
   selectDefaultRpcEndpointByChainId,
@@ -325,134 +322,6 @@ export function useRevokeGatorPermissions({
     ],
   );
 
-  /**
-   * Revokes gator permissions across multiple chains.
-   *
-   * @param permissionsByChain - Object mapping chain IDs to arrays of permissions for that chain.
-   * @returns Object mapping chain IDs to results (revoked transactions, skipped permissions, errors).
-   */
-  const revokeGatorPermissionsBatchMultiChain = useCallback(
-    async (
-      permissionsByChain: Record<
-        Hex,
-        StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>[]
-      >,
-    ): Promise<
-      Record<
-        Hex,
-        {
-          revoked: TransactionMeta[];
-          skipped: StoredGatorPermissionSanitized<
-            Signer,
-            PermissionTypesWithCustom
-          >[];
-          errors: Error[];
-        }
-      >
-    > => {
-      const results: Record<
-        Hex,
-        {
-          revoked: TransactionMeta[];
-          skipped: StoredGatorPermissionSanitized<
-            Signer,
-            PermissionTypesWithCustom
-          >[];
-          errors: Error[];
-        }
-      > = {};
-      const allTransactionIds: string[] = [];
-
-      // Process each chain
-      for (const [currentChainId, permissions] of Object.entries(
-        permissionsByChain,
-      )) {
-        results[currentChainId as Hex] = {
-          revoked: [],
-          skipped: [],
-          errors: [],
-        };
-
-        if (permissions.length === 0) {
-          continue;
-        }
-
-        // Get network client ID for this chain using the proper method
-        let networkClientId: string;
-
-        try {
-          networkClientId = await findNetworkClientIdByChainId(currentChainId);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : String(error);
-          results[currentChainId as Hex].errors.push(
-            new Error(
-              `No network client ID found for chain ${currentChainId}: ${errorMessage}`,
-            ),
-          );
-          continue;
-        }
-
-        // Process each permission for this chain
-        for (const permission of permissions) {
-          try {
-            const { permissionResponse } = permission;
-            const internalAccount = findInternalAccountByAddress(
-              permissionResponse.address as Hex,
-            );
-
-            // TODO: what to do if internal account is not found? Also should we implement this in the other hooks?
-            if (!internalAccount) {
-              results[currentChainId as Hex].skipped.push(permission);
-              continue;
-            }
-
-            // Extract delegation
-            const delegation = extractDelegationFromGatorPermissionContext(
-              permissionResponse.context,
-            );
-
-            // Encode disable delegation call
-            const encodedCallData = encodeDisableDelegation({ delegation });
-
-            // Create transaction
-            const transactionMeta = await addTransaction(
-              {
-                from: internalAccount.address as Hex,
-                to: permissionResponse.signerMeta.delegationManager,
-                data: encodedCallData,
-                value: '0x0',
-              },
-              {
-                networkClientId,
-                type: TransactionType.contractInteraction,
-              },
-            );
-
-            if (transactionMeta?.id) {
-              results[currentChainId as Hex].revoked.push(transactionMeta);
-              allTransactionIds.push(transactionMeta.id);
-            }
-          } catch (error) {
-            results[currentChainId as Hex].errors.push(error as Error);
-          }
-        }
-      }
-
-      // Update transaction IDs for redirect handling
-      if (allTransactionIds.length > 0) {
-        setTransactionId(allTransactionIds[0]);
-      }
-
-      return results;
-    },
-    [
-      extractDelegationFromGatorPermissionContext,
-      findInternalAccountByAddress,
-      findNetworkClientIdByChainId,
-    ],
-  );
-
   useEffect(() => {
     if (isRedirectPending) {
       navigateToId(transactionId);
@@ -463,7 +332,6 @@ export function useRevokeGatorPermissions({
   return {
     revokeGatorPermission,
     revokeGatorPermissionBatch,
-    revokeGatorPermissionsBatchMultiChain,
     findInternalAccountByAddress,
   };
 }
