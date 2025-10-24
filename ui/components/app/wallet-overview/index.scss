@@ -8,6 +8,7 @@
   min-width: 0;
   flex-direction: column;
   width: 100%;
+  gap: 16px;
 
   &-fullscreen {
     align-items: center;
@@ -30,7 +31,6 @@
     display: flex;
     flex-direction: row;
     height: 100%;
-    margin-bottom: 12px;
     width: 100%;
     max-width: 420px;
   }
@@ -72,7 +72,6 @@
     min-width: 0;
     position: relative;
     align-items: start;
-    margin: 16px 0;
     max-width: 326px;
   }
 
