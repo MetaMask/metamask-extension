@@ -11,6 +11,7 @@ import {
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
+  KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
@@ -174,6 +175,20 @@ export const MultichainAccountsConnectPage: React.FC<
     requestedCaip25CaveatValue,
   );
 
+  const requestedScopes = getAllScopesFromCaip25CaveatValue(
+    requestedCaip25CaveatValueWithExistingPermissions,
+  );
+
+  const SOLANA_MAINNET_CAIP_CHAIN_ID =
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+
+  const isSolanaWalletStandardRequest =
+    requestedScopes.length === 1 &&
+    requestedScopes[0] === SOLANA_MAINNET_CAIP_CHAIN_ID &&
+    requestedCaip25CaveatValue.sessionProperties[
+      KnownSessionProperties.SolanaAccountChangedNotifications
+    ];
+
   const requestedNamespaces = useMemo(
     () =>
       getAllNamespacesFromCaip25CaveatValue(
@@ -278,7 +293,12 @@ export const MultichainAccountsConnectPage: React.FC<
         )
       : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
-    if (supportedRequestedCaipChainIds.length > 0) {
+    // if we have specifically requested chains and it's not a Solana wallet standard request, return the supported requested chains plus the already connected chains
+    // For Solana wallet standard requests, we want to proceed to return all default networks
+    if (
+      supportedRequestedCaipChainIds.length > 0 &&
+      !isSolanaWalletStandardRequest
+    ) {
       return Array.from(
         new Set([
           ...supportedRequestedCaipChainIds,
@@ -287,7 +307,11 @@ export const MultichainAccountsConnectPage: React.FC<
       );
     }
 
-    if (requestedNamespaces.length > 0) {
+    if (
+      requestedNamespaces.length > 0 &&
+      !isEip1193Request &&
+      !isSolanaWalletStandardRequest
+    ) {
       return Array.from(
         new Set(
           defaultSelectedNetworkList.filter((caipChainId) => {
