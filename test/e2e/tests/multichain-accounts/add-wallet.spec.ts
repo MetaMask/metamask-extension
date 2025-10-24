@@ -53,6 +53,9 @@ describe('Add wallet', function () {
           driver,
           fillSrpWordByWord: true,
         });
+        // Allow syncing to finish
+        await driver.delay(3000);
+
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         // BUG 37030 With BIP44 enabled wallet is not showing balance
