@@ -21,7 +21,6 @@ export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
  */
 export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
   dappOptions: {
-    defaultTestDapp: 1,
     customDappPaths: [DAPP_PATH.TEST_DAPP_MULTICHAIN],
   },
   localNodeOptions: [

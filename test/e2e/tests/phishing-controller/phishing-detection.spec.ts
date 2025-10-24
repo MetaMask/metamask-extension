@@ -86,7 +86,7 @@ describe('Phishing Detection', function (this: Suite) {
   });
 
   describe('Via Iframe', function () {
-    const DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST = 'http://localhost:8080/';
+    const DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST = 'http://localhost:8081/';
     const IFRAMED_HOSTNAME = '127.0.0.1';
 
     const getFixtureOptions = (overrides: Record<string, unknown>) => {
@@ -114,6 +114,7 @@ describe('Phishing Detection', function (this: Suite) {
         getFixtureOptions({
           title: this.test?.fullTitle(),
           dappOptions: {
+            defaultTestDapp: 1,
             customDappPaths: [
               './tests/phishing-controller/mock-page-with-iframe',
             ],
@@ -142,6 +143,7 @@ describe('Phishing Detection', function (this: Suite) {
         getFixtureOptions({
           title: this.test?.fullTitle(),
           dappOptions: {
+            defaultTestDapp: 1,
             customDappPaths: [
               './tests/phishing-controller/mock-page-with-iframe-but-disable-early-detection',
             ],
