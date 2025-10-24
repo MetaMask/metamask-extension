@@ -1,14 +1,13 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../../lib/messenger';
 import { getSnapInterfaceControllerMessenger } from './snap-interface-controller-messenger';
 
 describe('getSnapInterfaceControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger();
     const snapInterfaceControllerMessenger =
       getSnapInterfaceControllerMessenger(messenger);
 
-    expect(snapInterfaceControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(snapInterfaceControllerMessenger).toBeInstanceOf(Messenger);
   });
 });

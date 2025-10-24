@@ -1,4 +1,5 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getBridgeControllerInitMessenger,
   getBridgeControllerMessenger,
@@ -6,19 +7,19 @@ import {
 
 describe('getBridgeControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const BridgeControllerMessenger = getBridgeControllerMessenger(messenger);
 
-    expect(BridgeControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(BridgeControllerMessenger).toBeInstanceOf(Messenger);
   });
 });
 
 describe('getBridgeControllerInitMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const BridgeControllerInitMessenger =
       getBridgeControllerInitMessenger(messenger);
 
-    expect(BridgeControllerInitMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(BridgeControllerInitMessenger).toBeInstanceOf(Messenger);
   });
 });

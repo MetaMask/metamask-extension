@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
@@ -10,6 +10,7 @@ import {
   GetSubjects,
   PermissionControllerStateChange,
 } from '@metamask/permission-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
@@ -34,20 +35,30 @@ export type SelectedNetworkControllerMessenger = ReturnType<
  * messenger.
  */
 export function getSelectedNetworkControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'SelectedNetworkController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'SelectedNetworkController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'SelectedNetworkController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'NetworkController:getSelectedNetworkClient',
       'PermissionController:hasPermissions',
       'PermissionController:getSubjectNames',
     ],
-    allowedEvents: [
+    events: [
       'NetworkController:stateChange',
       'PermissionController:stateChange',
     ],
   });
+  return controllerMessenger;
 }

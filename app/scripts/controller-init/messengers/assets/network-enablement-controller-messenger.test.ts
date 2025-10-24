@@ -1,4 +1,5 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../../lib/messenger';
 import {
   getNetworkEnablementControllerMessenger,
   getNetworkEnablementControllerInitMessenger,
@@ -6,22 +7,18 @@ import {
 
 describe('getNetworkEnablementControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const networkEnablementControllerMessenger =
       getNetworkEnablementControllerMessenger(messenger);
-    expect(networkEnablementControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(networkEnablementControllerMessenger).toBeInstanceOf(Messenger);
   });
 });
 
 describe('getNetworkEnablementControllerInitMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const networkEnablementControllerInitMessenger =
       getNetworkEnablementControllerInitMessenger(messenger);
-    expect(networkEnablementControllerInitMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(networkEnablementControllerInitMessenger).toBeInstanceOf(Messenger);
   });
 });

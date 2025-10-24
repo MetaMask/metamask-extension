@@ -1,4 +1,4 @@
-import { RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   PAYMENT_TYPES,
   StartSubscriptionRequest,
@@ -20,12 +20,10 @@ export class SubscriptionService {
 
   state = null;
 
-  #messenger: RestrictedMessenger<
+  #messenger: Messenger<
     typeof SERVICE_NAME,
     SubscriptionServiceAction,
-    SubscriptionServiceEvent,
-    SubscriptionServiceAction['type'],
-    SubscriptionServiceEvent['type']
+    SubscriptionServiceEvent
   >;
 
   #platform: ExtensionPlatform;

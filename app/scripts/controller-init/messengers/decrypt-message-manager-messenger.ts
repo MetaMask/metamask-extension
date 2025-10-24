@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '../../lib/messenger';
 
 export type DecryptMessageManagerMessenger = ReturnType<
   typeof getDecryptMessageManagerMessenger
@@ -12,13 +13,12 @@ export type DecryptMessageManagerMessenger = ReturnType<
  * messenger.
  */
 export function getDecryptMessageManagerMessenger(
-  messenger: Messenger<never, never>,
+  messenger: RootMessenger<never, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'DecryptMessageManager',
-
-    // This controller does not call any actions or subscribe to any events.
-    allowedActions: [],
-    allowedEvents: [],
-  });
+  return new Messenger<'DecryptMessageManager', never, never, typeof messenger>(
+    {
+      namespace: 'DecryptMessageManager',
+      parent: messenger,
+    },
+  );
 }

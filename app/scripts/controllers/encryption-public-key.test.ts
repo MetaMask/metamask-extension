@@ -1,4 +1,4 @@
-import { deriveStateFromMetadata } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller/next';
 import {
   EncryptionPublicKeyManager,
   AbstractMessage,
@@ -367,7 +367,7 @@ describe('EncryptionPublicKeyController', () => {
         deriveStateFromMetadata(
           encryptionPublicKeyController.state,
           encryptionPublicKeyController.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`{}`);
     });

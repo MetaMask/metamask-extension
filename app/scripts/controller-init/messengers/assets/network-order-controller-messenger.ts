@@ -1,10 +1,11 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerGetStateAction,
   NetworkControllerNetworkRemovedEvent,
   NetworkControllerSetActiveNetworkAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | NetworkControllerGetStateAction
@@ -18,17 +19,27 @@ export type NetworkOrderControllerMessenger = ReturnType<
 >;
 
 export function getNetworkOrderControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'NetworkOrderController',
-    allowedEvents: [
+  const controllerMessenger = new Messenger<
+    'NetworkOrderController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'NetworkOrderController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    events: [
       'NetworkController:stateChange',
       'NetworkController:networkRemoved',
     ],
-    allowedActions: [
+    actions: [
       'NetworkController:getState',
       'NetworkController:setActiveNetwork',
     ],
   });
+  return controllerMessenger;
 }

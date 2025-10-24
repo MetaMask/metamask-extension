@@ -1,4 +1,4 @@
-import { RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import type { KeyringControllerGetAccountsAction } from '@metamask/keyring-controller';
 import { GetSubjectMetadata } from '@metamask/permission-controller';
@@ -46,11 +46,9 @@ export type SnapKeyringBuilderAllowActions =
   | PreferencesControllerGetStateAction
   | IsMinimumPlatformVersion;
 
-export type SnapKeyringBuilderMessenger = RestrictedMessenger<
+export type SnapKeyringBuilderMessenger = Messenger<
   'SnapKeyring',
   SnapKeyringBuilderAllowActions,
-  never,
-  SnapKeyringBuilderAllowActions['type'],
   never
 >;
 

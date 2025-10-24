@@ -1,10 +1,10 @@
-import { Messenger } from '@metamask/base-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   NetworkOrderController,
   NetworkOrderControllerState,
 } from '../../controllers/network-order';
 import { getNetworkOrderControllerMessenger } from '../messengers/assets';
+import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { NetworkOrderControllerInit } from './network-order-controller-init';
 
@@ -19,7 +19,7 @@ const originalEnv = process.env;
 type MockVar = any;
 
 function buildInitRequestMock() {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getNetworkOrderControllerMessenger(

@@ -1,4 +1,3 @@
-import { Messenger } from '@metamask/base-controller';
 import { NetworkController } from '@metamask/network-controller';
 // Mocha type definitions are conflicting with Jest
 import { it as jestIt } from '@jest/globals';
@@ -15,6 +14,7 @@ import {
   getTransactionControllerMessenger,
   TransactionControllerInitMessenger,
 } from '../messengers/transaction-controller-messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import { TransactionControllerInit } from './transaction-controller-init';
@@ -48,7 +48,7 @@ function buildInitRequestMock(): jest.Mocked<
     TransactionControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

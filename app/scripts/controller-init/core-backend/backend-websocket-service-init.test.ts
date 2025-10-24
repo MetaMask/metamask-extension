@@ -1,5 +1,10 @@
 import { BackendWebSocketService } from '@metamask/core-backend';
-import { Messenger, ActionConstraint } from '@metamask/base-controller';
+import {
+  Messenger,
+  ActionConstraint,
+  MockAnyNamespace,
+  MOCK_ANY_NAMESPACE,
+} from '@metamask/messenger';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
@@ -18,7 +23,13 @@ function getInitRequestMock(): jest.Mocked<
     BackendWebSocketServiceInitMessenger
   >
 > {
-  const baseMessenger = new Messenger<ActionConstraint, never>();
+  const baseMessenger = new Messenger<
+    MockAnyNamespace,
+    ActionConstraint,
+    never
+  >({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 
   // Mock RemoteFeatureFlagController:getState
   baseMessenger.registerActionHandler(
@@ -103,7 +114,13 @@ describe('BackendWebSocketServiceInit', () => {
     });
 
     it('returns false when feature flag check fails', () => {
-      const baseMessenger = new Messenger<ActionConstraint, never>();
+      const baseMessenger = new Messenger<
+        MockAnyNamespace,
+        ActionConstraint,
+        never
+      >({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
       baseMessenger.registerActionHandler(
         'RemoteFeatureFlagController:getState',
         () => {
@@ -127,7 +144,13 @@ describe('BackendWebSocketServiceInit', () => {
     });
 
     it('returns true when feature flag is enabled', () => {
-      const baseMessenger = new Messenger<ActionConstraint, never>();
+      const baseMessenger = new Messenger<
+        MockAnyNamespace,
+        ActionConstraint,
+        never
+      >({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
       baseMessenger.registerActionHandler(
         'RemoteFeatureFlagController:getState',
         () =>
@@ -157,7 +180,13 @@ describe('BackendWebSocketServiceInit', () => {
     });
 
     it('returns false when feature flag object does not have value property', () => {
-      const baseMessenger = new Messenger<ActionConstraint, never>();
+      const baseMessenger = new Messenger<
+        MockAnyNamespace,
+        ActionConstraint,
+        never
+      >({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
       baseMessenger.registerActionHandler(
         'RemoteFeatureFlagController:getState',
         () =>
@@ -188,7 +217,13 @@ describe('BackendWebSocketServiceInit', () => {
     });
 
     it('returns false when feature flag is not an object', () => {
-      const baseMessenger = new Messenger<ActionConstraint, never>();
+      const baseMessenger = new Messenger<
+        MockAnyNamespace,
+        ActionConstraint,
+        never
+      >({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
       baseMessenger.registerActionHandler(
         'RemoteFeatureFlagController:getState',
         () =>
@@ -216,7 +251,13 @@ describe('BackendWebSocketServiceInit', () => {
     });
 
     it('returns false when remoteFeatureFlags is missing', () => {
-      const baseMessenger = new Messenger<ActionConstraint, never>();
+      const baseMessenger = new Messenger<
+        MockAnyNamespace,
+        ActionConstraint,
+        never
+      >({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
       baseMessenger.registerActionHandler(
         'RemoteFeatureFlagController:getState',
         () =>
@@ -244,7 +285,13 @@ describe('BackendWebSocketServiceInit', () => {
     it('logs warning when feature flag check fails', () => {
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
 
-      const baseMessenger = new Messenger<ActionConstraint, never>();
+      const baseMessenger = new Messenger<
+        MockAnyNamespace,
+        ActionConstraint,
+        never
+      >({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
       baseMessenger.registerActionHandler(
         'RemoteFeatureFlagController:getState',
         () => {

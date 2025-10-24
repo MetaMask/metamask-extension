@@ -1,4 +1,4 @@
-import { RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
@@ -18,14 +18,10 @@ import {
  * controller directly from within your controller.
  */
 export function getGlobalChainId(
-  initMessenger: RestrictedMessenger<
-    never,
+  initMessenger: Messenger<
+    string,
     | NetworkControllerGetStateAction
-    | NetworkControllerGetNetworkClientByIdAction,
-    never,
-    | NetworkControllerGetStateAction['type']
-    | NetworkControllerGetNetworkClientByIdAction['type'],
-    never
+    | NetworkControllerGetNetworkClientByIdAction
   >,
 ) {
   const networkState = initMessenger.call('NetworkController:getState');

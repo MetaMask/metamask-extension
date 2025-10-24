@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '../../lib/messenger';
 
 export type ErrorReportingServiceMessenger = ReturnType<
   typeof getErrorReportingServiceMessenger
@@ -12,13 +13,12 @@ export type ErrorReportingServiceMessenger = ReturnType<
  * messenger.
  */
 export function getErrorReportingServiceMessenger(
-  messenger: Messenger<never, never>,
+  messenger: RootMessenger<never, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'ErrorReportingService',
-
-    // This service does not call any actions or subscribe to any events.
-    allowedActions: [],
-    allowedEvents: [],
-  });
+  return new Messenger<'ErrorReportingService', never, never, typeof messenger>(
+    {
+      namespace: 'ErrorReportingService',
+      parent: messenger,
+    },
+  );
 }

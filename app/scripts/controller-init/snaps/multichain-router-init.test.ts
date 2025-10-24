@@ -1,11 +1,11 @@
 import { MultichainRouter } from '@metamask/snaps-controllers';
-import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   MultichainRouterMessenger,
   getMultichainRouterMessenger,
 } from '../messengers/snaps';
+import { getRootMessenger } from '../../lib/messenger';
 import { MultichainRouterInit } from './multichain-router-init';
 
 jest.mock('@metamask/snaps-controllers');
@@ -13,7 +13,7 @@ jest.mock('@metamask/snaps-controllers');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<MultichainRouterMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

@@ -1,12 +1,13 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../../lib/messenger';
 import { getCronjobControllerMessenger } from './cronjob-controller-messenger';
 
 describe('getCronjobControllerMessenger', () => {
   it('returns a restricted controller messenger', () => {
-    const controllerMessenger = new Messenger<never, never>();
+    const controllerMessenger = getRootMessenger<never, never>();
     const cronjobControllerMessenger =
       getCronjobControllerMessenger(controllerMessenger);
 
-    expect(cronjobControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(cronjobControllerMessenger).toBeInstanceOf(Messenger);
   });
 });

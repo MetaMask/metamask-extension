@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import type {
   TransactionControllerConfirmExternalTransactionAction,
   TransactionControllerGetNonceLockAction,
@@ -11,6 +11,7 @@ import {
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 type MessengerActions =
   | NetworkControllerGetNetworkClientByIdAction
@@ -27,11 +28,20 @@ export type SmartTransactionsControllerMessenger = ReturnType<
 >;
 
 export function getSmartTransactionsControllerMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: RootMessenger<MessengerActions, MessengerEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'SmartTransactionsController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'SmartTransactionsController',
+    MessengerActions,
+    MessengerEvents,
+    typeof messenger
+  >({
+    namespace: 'SmartTransactionsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'TransactionController:getNonceLock',
@@ -39,8 +49,9 @@ export function getSmartTransactionsControllerMessenger(
       'TransactionController:getTransactions',
       'TransactionController:updateTransaction',
     ],
-    allowedEvents: ['NetworkController:stateChange'],
+    events: ['NetworkController:stateChange'],
   });
+  return controllerMessenger;
 }
 
 export type AllowedInitializationActions =
@@ -59,11 +70,20 @@ export type SmartTransactionsControllerInitMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getSmartTransactionsControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'SmartTransactionsControllerInit',
-    allowedActions: ['MetaMetricsController:trackEvent'],
-    allowedEvents: [],
+  const controllerInitMessenger = new Messenger<
+    'SmartTransactionsControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'SmartTransactionsControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['MetaMetricsController:trackEvent'],
+  });
+  return controllerInitMessenger;
 }

@@ -1,5 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
 import { PreferencesController } from '../controllers/preferences-controller';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -13,7 +13,7 @@ jest.mock('../controllers/preferences-controller');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<PreferencesControllerMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

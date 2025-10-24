@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { cloneDeep } from 'lodash';
@@ -9,6 +9,7 @@ import { E2E_SRP, defaultFixture } from '../../../test/e2e/default-fixture';
 import FixtureBuilder from '../../../test/e2e/fixture-builder';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { normalizeSafeAddress } from '../lib/multichain/address';
+import { getRootMessenger } from '../lib/messenger';
 import { withAddressBook } from './with-address-book';
 import { FIXTURES_APP_STATE } from './with-app-state';
 import { withConfirmedTransactions } from './with-confirmed-transactions';
@@ -64,9 +65,10 @@ export async function generateWalletState(withState, fromTest) {
  * @returns {Promise<{vault: object, accounts: Array<string>}>} The generated vault and account.
  */
 async function generateVaultAndAccount(encodedSeedPhrase, password) {
-  const messenger = new Messenger();
-  const keyringControllerMessenger = messenger.getRestricted({
-    name: 'KeyringController',
+  const messenger = getRootMessenger();
+  const keyringControllerMessenger = new Messenger({
+    namespace: 'KeyringController',
+    parent: messenger,
   });
   const krCtrl = new KeyringController({
     encryptor: encryptorFactory(600_000),

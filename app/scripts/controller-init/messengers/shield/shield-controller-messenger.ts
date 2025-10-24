@@ -1,27 +1,15 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import { ShieldControllerMessenger } from '@metamask/shield-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
-type MessengerActions =
-  ShieldControllerMessenger extends RestrictedMessenger<
-    never,
-    infer Actions,
-    never,
-    never,
-    never
-  >
-    ? Actions
-    : never;
-type MessengerEvents =
-  ShieldControllerMessenger extends RestrictedMessenger<
-    never,
-    never,
-    infer Events,
-    never,
-    never
-  >
-    ? Events
-    : never;
+type AllowedActions = MessengerActions<ShieldControllerMessenger>;
+
+type AllowedEvents = MessengerEvents<ShieldControllerMessenger>;
 
 export type ShieldControllerMessengerType = ReturnType<
   typeof getShieldControllerMessenger
@@ -35,16 +23,25 @@ export type ShieldControllerMessengerType = ReturnType<
  * @returns The restricted messenger.
  */
 export function getShieldControllerMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ): ShieldControllerMessenger {
-  return messenger.getRestricted({
-    name: 'ShieldController',
-    allowedActions: [],
-    allowedEvents: [
+  const controllerMessenger = new Messenger<
+    'ShieldController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'ShieldController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    events: [
       'SignatureController:stateChange',
       'TransactionController:stateChange',
     ],
   });
+  return controllerMessenger;
 }
 
 type InitActions =
@@ -52,13 +49,22 @@ type InitActions =
 type InitEvents = never;
 
 export function getShieldControllerInitMessenger(
-  messenger: Messenger<InitActions, InitEvents>,
+  messenger: RootMessenger<InitActions, InitEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'ShieldControllerInit',
-    allowedEvents: [],
-    allowedActions: ['AuthenticationController:getBearerToken'],
+  const controllerInitMessenger = new Messenger<
+    'ShieldControllerInit',
+    InitActions,
+    InitEvents,
+    typeof messenger
+  >({
+    namespace: 'ShieldControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['AuthenticationController:getBearerToken'],
+  });
+  return controllerInitMessenger;
 }
 
 export type ShieldControllerInitMessenger = ReturnType<

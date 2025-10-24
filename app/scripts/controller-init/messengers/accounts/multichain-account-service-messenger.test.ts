@@ -1,4 +1,5 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../../lib/messenger';
 import {
   getMultichainAccountServiceInitMessenger,
   getMultichainAccountServiceMessenger,
@@ -6,24 +7,20 @@ import {
 
 describe('getMultichainAccountServiceMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const multichainAccountServiceMessenger =
       getMultichainAccountServiceMessenger(messenger);
 
-    expect(multichainAccountServiceMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(multichainAccountServiceMessenger).toBeInstanceOf(Messenger);
   });
 });
 
 describe('getMultichainAccountServiceInitMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const multichainAccountServiceInitMessenger =
       getMultichainAccountServiceInitMessenger(messenger);
 
-    expect(multichainAccountServiceInitMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(multichainAccountServiceInitMessenger).toBeInstanceOf(Messenger);
   });
 });

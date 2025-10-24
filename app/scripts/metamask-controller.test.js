@@ -22,7 +22,7 @@ import {
   SolAccountType,
   SolScope,
 } from '@metamask/keyring-api';
-import { Messenger } from '@metamask/base-controller';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import {
   CHAIN_IDS,
@@ -452,6 +452,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       // Mock RemoteFeatureFlagController to prevent network requests in tests
@@ -515,6 +518,9 @@ describe('MetaMaskController', () => {
           },
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         expect(localController.loggingController.add).toHaveBeenCalledTimes(1);
@@ -544,6 +550,9 @@ describe('MetaMaskController', () => {
           infuraProjectId: 'foo',
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         expect(openExtensionInBrowserMock).toHaveBeenCalledTimes(1);
@@ -670,6 +679,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         const accountsControllerSpy = jest.spyOn(
@@ -1940,6 +1952,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
         jest.spyOn(localMetaMaskController, 'getCookieFromMarketingPage');
       });
@@ -2253,6 +2268,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
         initializeMockMiddlewareLog();
         jest
@@ -3305,6 +3323,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         metamaskController.controllerMessenger.publish(
@@ -3342,6 +3363,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         // Mock RemoteFeatureFlagController to prevent network requests in tests
@@ -3795,6 +3819,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         expect(
@@ -3827,6 +3854,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         const networkState = metamaskController.networkController.state;
@@ -3894,6 +3924,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         const networkState = metamaskController.networkController.state;
@@ -3939,6 +3972,9 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
           cronjobControllerStorageManager:
             createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
         });
 
         const networkState = metamaskController.networkController.state;
@@ -4789,6 +4825,9 @@ describe('MetaMaskController', () => {
       isFirstMetaMaskControllerSetup: true,
       cronjobControllerStorageManager:
         createMockCronjobControllerStorageManager(),
+      controllerMessenger: new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      }),
     });
 
     beforeEach(() => {
@@ -4854,6 +4893,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
@@ -4881,6 +4923,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: false,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       expect(metamaskController.resetStates).not.toHaveBeenCalled();
@@ -4909,6 +4954,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
     });
 
@@ -5004,6 +5052,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
@@ -5145,6 +5196,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       jest
@@ -5282,6 +5336,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
@@ -5449,6 +5506,9 @@ describe('MetaMaskController', () => {
         isFirstMetaMaskControllerSetup: true,
         cronjobControllerStorageManager:
           createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       jest
