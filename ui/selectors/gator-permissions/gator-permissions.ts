@@ -367,14 +367,7 @@ export const getTokenTransferPermissionsByOrigin = createSelector(
 export const getUniqueSiteOriginsFromTokenTransferPermissions = createSelector(
   [getGatorPermissionsMap],
   (gatorPermissionsMap): string[] => {
-    const tokenTransferPermissionTypes: SupportedGatorPermissionType[] = [
-      'native-token-stream',
-      'erc20-token-stream',
-      'native-token-periodic',
-      'erc20-token-periodic',
-    ];
-
-    const siteOrigins = tokenTransferPermissionTypes
+    const siteOrigins = TOKEN_TRANSFER_PERMISSION_TYPES
       .flatMap((permissionType) => {
         const permissionsByChain = gatorPermissionsMap[permissionType];
         if (!permissionsByChain) {
