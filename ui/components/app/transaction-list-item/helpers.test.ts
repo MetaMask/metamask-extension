@@ -1,7 +1,7 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-import { mapTransactionTypeToCategory } from './helpers';
 import transactions from '../../../../test/data/transaction-data.json';
+import { mapTransactionTypeToCategory } from './helpers';
 
 const expectedResults = [
   {
