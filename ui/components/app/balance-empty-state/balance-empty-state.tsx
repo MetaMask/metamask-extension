@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -31,6 +31,7 @@ import useRamps, {
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { ChainId } from '../../../../shared/constants/network';
+import { FundingMethodModal } from '../../multichain/funding-method-modal/funding-method-modal';
 
 export type BalanceEmptyStateProps = {
   /**
@@ -49,6 +50,8 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = (props) => {
   const currentLocale = useSelector(getCurrentLocale);
   const chainId = useSelector(getCurrentChainId);
   const { nickname } = useSelector(getMultichainCurrentNetwork);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { openBuyCryptoInPdapp } = useRamps(RampsMetaMaskEntry.TokensBanner);
 
@@ -79,8 +82,21 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = (props) => {
       },
     });
 
-    openBuyCryptoInPdapp(chainId as ChainId | CaipChainId);
-  }, [chainId, openBuyCryptoInPdapp, trackEvent]);
+    setIsModalOpen(true);
+  }, [chainId, trackEvent]);
+
+  // Handle modal close
+  const handleModalClose = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
+  // Handle receive crypto option
+  const handleReceive = useCallback(() => {
+    // Close modal and handle receive flow
+    setIsModalOpen(false);
+    // Note: The receive flow would typically be handled by the parent component
+    // For now, we'll just close the modal
+  }, []);
 
   return (
     <Box
@@ -135,6 +151,12 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = (props) => {
       >
         {t('addFunds')}
       </Button>
+      <FundingMethodModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        title={t('addFunds')}
+        onClickReceive={handleReceive}
+      />
     </Box>
   );
 };

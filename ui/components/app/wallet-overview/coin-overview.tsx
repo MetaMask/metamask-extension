@@ -43,6 +43,7 @@ import { AccountGroupBalanceChange } from '../assets/account-group-balance-chang
 import {
   getMultichainIsEvm,
   getMultichainShouldShowFiat,
+  getMultichainSelectedAccountCachedBalanceIsZero,
 } from '../../../selectors/multichain';
 import { setPrivacyMode } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -183,10 +184,8 @@ export const LegacyAggregatedBalance = ({
 
 /**
  * Checks if the wallet balance should be considered "empty" (zero or effectively zero)
- * Prioritizes current network balance - shows empty state when current network has 0 balance,
- * even if other networks have funds.
  *
- * @param balance - The native token balance on current network
+ * @param balance - The native token balance
  * @param totalFiatBalance - The aggregated fiat balance across chains
  * @param isNotAggregatedFiatBalance - Whether to use native balance instead of fiat
  * @returns true if balance should be considered empty
@@ -196,18 +195,10 @@ const isWalletBalanceEmpty = (
   totalFiatBalance: string,
   isNotAggregatedFiatBalance: boolean,
 ): boolean => {
-  // Always check current network balance first
-  // If current network has no funds, show empty state regardless of other networks
-  if (isZeroAmount(balance)) {
-    return true;
-  }
-
-  // If current network has funds, only check aggregated balance in aggregated display mode
-  if (!isNotAggregatedFiatBalance) {
-    return isZeroAmount(totalFiatBalance);
-  }
-
-  return false;
+  const balanceToCheck = isNotAggregatedFiatBalance
+    ? balance
+    : totalFiatBalance;
+  return isZeroAmount(balanceToCheck);
 };
 
 export const CoinOverview = ({
@@ -261,7 +252,12 @@ export const CoinOverview = ({
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  // Get formatted tokens and total fiat balance for empty state detection
+  // For non-EVM networks, use the multichain balance checker that handles different number systems
+  const multichainBalanceIsZero = useSelector(
+    getMultichainSelectedAccountCachedBalanceIsZero,
+  );
+
+  // Get formatted tokens and total fiat balance for empty state detection (mainly for EVM)
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
     shouldHideZeroBalanceTokens,
@@ -411,15 +407,24 @@ export const CoinOverview = ({
   const isNotAggregatedFiatBalance =
     !shouldShowFiat || showNativeTokenAsMain || isTestnet;
 
-  const isEmpty = isWalletBalanceEmpty(
-    balance,
-    totalFiatBalance,
-    isNotAggregatedFiatBalance,
-  );
+  // For non-EVM networks, use the reliable multichain balance checker
+  // For EVM networks, use the existing aggregated balance logic
+  const isEmpty = !isEvm
+    ? multichainBalanceIsZero
+    : isWalletBalanceEmpty(balance, totalFiatBalance, isNotAggregatedFiatBalance);
 
-  // If balance is empty, show the BalanceEmptyState component
-  if (isEmpty) {
-    return <BalanceEmptyState className={twMerge('mx-auto', className)} />;
+  // Only show empty state if:
+  // 1. Balance is actually empty (not just loading)
+  // 2. Network data is available (not in loading state)
+  // 3. Not on a testnet
+  const shouldShowEmptyState = isEmpty &&
+    anyEnabledNetworksAreAvailable &&
+    !isTestnet;
+
+  // If balance is empty and data is loaded, show the BalanceEmptyState component
+  // But NOT on testnets - show normal 0.00 balance display instead
+  if (shouldShowEmptyState) {
+    return <BalanceEmptyState className={className} />;
   }
 
   return (
