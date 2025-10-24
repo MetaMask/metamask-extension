@@ -4722,6 +4722,9 @@ export default class MetamaskController extends EventEmitter {
    * Adds popular networks to the network controller.
    */
   _addPopularNetworks() {
+    if (process.env.IN_TEST) {
+      return;
+    }
     FEATURED_RPCS.forEach((rpc) => {
       try {
         this.networkController.addNetwork({
