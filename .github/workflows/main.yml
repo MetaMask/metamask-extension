@@ -373,7 +373,7 @@ jobs:
         run: |
           # if 'changed-files/changed-files.json' exists, check if it contains any files named policy.json
           if [ -f "changed-files/changed-files.json" ]; then
-            if grep -q 'policy.json' changed-files/changed-files.json; then
+            if grep -q -e 'policy.json' -e 'policy-override.json' changed-files/changed-files.json; then
               echo "Lavamoat policy.json file changes detected."
               echo "changed=true" >> "$GITHUB_OUTPUT"
             else
