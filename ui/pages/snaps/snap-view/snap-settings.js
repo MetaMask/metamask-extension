@@ -35,7 +35,9 @@ import {
   getPermissions,
   getSnapLatestVersion,
   getSnapMetadata,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getInternalAccounts,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import {
   Box,
