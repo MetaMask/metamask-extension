@@ -65,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   dapp.
 - Improves gator permissions page loading performance with cache-first strategy. (#36833)
 - Removes extra transactions call to improve performance (#36968)
+
 ## [13.6.0]
 
 ### Added
@@ -1016,8 +1017,7 @@ authorized by the user.` error until the user fully revoked dapp
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.7.0...HEAD
-[13.7.0]: https://github.com/MetaMask/metamask-extension/compare/v13.5.0...v13.7.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.6.0...HEAD
+[13.7.0]: https://github.com/MetaMask/metamask-extension/compare/v13.6.0...v13.7.0
 [13.6.0]: https://github.com/MetaMask/metamask-extension/compare/v13.5.0...v13.6.0
 [13.5.0]: https://github.com/MetaMask/metamask-extension/compare/v13.4.3...v13.5.0
 [13.4.3]: https://github.com/MetaMask/metamask-extension/compare/v13.4.2...v13.4.3
