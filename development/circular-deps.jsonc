@@ -8,6 +8,11 @@
 
 [
   [
+    "app/scripts/controller-init/controller-list.ts",
+    "app/scripts/controller-init/rewards-controller-init.ts",
+    "app/scripts/controller-init/types.ts"
+  ],
+  [
     "shared/modules/selectors/account.ts",
     "shared/modules/selectors/index.ts",
     "ui/pages/confirmations/confirmation/ResultTemplate.ts",
