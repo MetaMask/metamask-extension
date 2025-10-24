@@ -1183,6 +1183,13 @@
   "changePasswordWarningDescription": {
     "message": "Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password."
   },
+  "checkNetworkConnectivity": {
+    "message": "Check network connectivity."
+  },
+  "checkNetworkConnectivityOr": {
+    "message": "Check network connectivity, or $1.",
+    "description": "$1 is a link to update the network."
+  },
   "chooseYourNetwork": {
     "message": "Choose your network"
   },
@@ -1937,6 +1944,9 @@
   },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
+  },
+  "deepLink_theRewardsPage": {
+    "message": "the MetaMask Rewards page"
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
@@ -5854,6 +5864,9 @@
   "shieldPlanAutoRenew": {
     "message": "Auto renews for $1 until canceled",
     "description": "The $1 is the price of the monthly plan"
+  },
+  "shieldPlanBillingDate": {
+    "message": "Billing date"
   },
   "shieldPlanCard": {
     "message": "Card"

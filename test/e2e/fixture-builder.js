@@ -27,119 +27,10 @@ const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
 } = require('./default-fixture');
+const onboardingFixtureJson = require('./fixtures/onboarding-fixture.json');
 
 function onboardingFixture() {
-  return {
-    data: {
-      AppStateController: {
-        browserEnvironment: {},
-        nftsDropdownState: {},
-        connectedStatusPopoverHasBeenShown: true,
-        defaultHomeActiveTabName: null,
-        fullScreenGasPollTokens: [],
-        notificationGasPollTokens: [],
-        popupGasPollTokens: [],
-        recoveryPhraseReminderHasBeenShown: false,
-        recoveryPhraseReminderLastShown:
-          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
-        showTestnetMessageInDropdown: true,
-        trezorModel: null,
-        hasShownMultichainAccountsIntroModal: true,
-        showShieldEntryModalOnce: false,
-      },
-      NetworkController: {
-        ...mockNetworkStateOld({
-          id: 'networkConfigurationId',
-          chainId: CHAIN_IDS.LOCALHOST,
-          nickname: LOCALHOST_DISPLAY_NAME,
-          rpcUrl: 'http://localhost:8545',
-          ticker: 'ETH',
-          blockExplorerUrl: undefined,
-        }),
-        providerConfig: { id: 'networkConfigurationId' },
-      },
-      NetworkOrderController: {},
-      NetworkEnablementController: {
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.LOCALHOST]: true,
-          },
-          solana: {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
-          },
-        },
-      },
-      NotificationServicesController: {},
-      PreferencesController: {
-        advancedGasFee: {},
-        currentLocale: 'en',
-        dismissSeedBackUpReminder: false,
-        overrideContentSecurityPolicyHeader: true,
-        featureFlags: {},
-        forgottenPassword: false,
-        identities: {},
-        ipfsGateway: 'dweb.linkssssss',
-        knownMethodData: {},
-        ledgerTransportType: 'webhid',
-        lostIdentities: {},
-        openSeaEnabled: false,
-        preferences: {
-          hideZeroBalanceTokens: false,
-          showExtensionInFullSizeView: false,
-          showFiatInTestnets: false,
-          privacyMode: false,
-          showTestNetworks: false,
-          smartTransactionsOptInStatus: true,
-          showNativeTokenAsMainBalance: true,
-          petnamesEnabled: true,
-          showMultiRpcModal: false,
-          showConfirmationAdvancedDetails: false,
-          tokenSortConfig: {
-            key: 'tokenFiatAmount',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
-          tokenNetworkFilter: {},
-          shouldShowAggregatedBalancePopover: true,
-          avatarType: 'maskicon',
-        },
-        useExternalServices: true,
-        theme: 'light',
-        useBlockie: false,
-        useNftDetection: false,
-        usePhishDetect: true,
-        useTokenDetection: false,
-        useCurrencyRateCheck: true,
-        useMultiAccountBalanceChecker: true,
-        isMultiAccountBalancesEnabled: true,
-      },
-      SelectedNetworkController: {
-        domains: {},
-      },
-      SmartTransactionsController: {
-        smartTransactionsState: {
-          fees: {},
-          liveness: true,
-          smartTransactions: {
-            [CHAIN_IDS.MAINNET]: [],
-          },
-        },
-      },
-      UserStorageController: {},
-      MultichainAccountService: {},
-      TokensController: {
-        allDetectedTokens: {},
-        allIgnoredTokens: {},
-        allTokens: {},
-      },
-      TransactionController: {},
-      config: {},
-      firstTimeInfo: {
-        date: 1665507600000,
-        version: '10.21.0',
-      },
-    },
-  };
+  return onboardingFixtureJson;
 }
 
 class FixtureBuilder {
@@ -2062,9 +1953,11 @@ class FixtureBuilder {
   }
 
   build() {
-    this.fixture.meta = {
-      version: FIXTURE_STATE_METADATA_VERSION,
-    };
+    if (!this.fixture.meta) {
+      this.fixture.meta = {
+        version: FIXTURE_STATE_METADATA_VERSION,
+      };
+    }
     return this.fixture;
   }
 }

@@ -75,6 +75,7 @@ import {
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
 } from '@metamask/subscription-controller';
+
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -581,6 +582,17 @@ export function setShowShieldEntryModalOnceAction(payload: {
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
     type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
+    payload,
+  };
+}
+
+export function setLastUsedSubscriptionPaymentDetails(payload: {
+  paymentMethod: PaymentType;
+  plan: RecurringInterval;
+  paymentTokenAddress?: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return {
+    type: actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_DETAILS,
     payload,
   };
 }
