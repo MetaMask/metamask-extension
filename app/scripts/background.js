@@ -1,3 +1,13 @@
+/**
+ * @file The entry point for the web extension singleton process.
+ */
+
+// Disabled to allow setting up initial state hooks first
+
+// This import sets up global functions required for Sentry to function.
+// It must be run first in case an error is thrown later during initialization.
+import './lib/setup-initial-state-hooks';
+
 // Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
 import '../../shared/constants/infura-project-id';
 
