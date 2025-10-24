@@ -75,6 +75,7 @@ import {
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
 } from '@metamask/subscription-controller';
+
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -581,6 +582,17 @@ export function setShowShieldEntryModalOnceAction(payload: {
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
     type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
+    payload,
+  };
+}
+
+export function setLastUsedSubscriptionPaymentDetails(payload: {
+  paymentMethod: PaymentType;
+  plan: RecurringInterval;
+  paymentTokenAddress?: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return {
+    type: actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_DETAILS,
     payload,
   };
 }
@@ -4667,18 +4679,15 @@ export function fetchHistoricalPricesForAsset(
 }
 
 // TokenDetectionController
-export function detectTokens(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function detectTokens(
+  chainIds?: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.detectTokens`);
-    await submitRequestToBackground('detectTokens');
+    await submitRequestToBackground('detectTokens', [{ chainIds }]);
     dispatch(hideLoadingIndication());
     await forceUpdateMetamaskState(dispatch);
   };
