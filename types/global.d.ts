@@ -305,7 +305,7 @@ export declare global {
   namespace jest {
     // The interface is being used for declaration merging, which is an acceptable exception to this rule.
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/naming-convention
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     interface Matchers<R> {
       toBeFulfilled(): Promise<R>;
       toNeverResolve(): Promise<R>;
