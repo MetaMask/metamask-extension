@@ -367,8 +367,8 @@ export const getTokenTransferPermissionsByOrigin = createSelector(
 export const getUniqueSiteOriginsFromTokenTransferPermissions = createSelector(
   [getGatorPermissionsMap],
   (gatorPermissionsMap): string[] => {
-    const siteOrigins = TOKEN_TRANSFER_PERMISSION_TYPES
-      .flatMap((permissionType) => {
+    const siteOrigins = TOKEN_TRANSFER_PERMISSION_TYPES.flatMap(
+      (permissionType) => {
         const permissionsByChain = gatorPermissionsMap[permissionType];
         if (!permissionsByChain) {
           return [];
@@ -376,7 +376,8 @@ export const getUniqueSiteOriginsFromTokenTransferPermissions = createSelector(
 
         // Get all permissions across all chains for this permission type
         return Object.values(permissionsByChain).flat();
-      })
+      },
+    )
       .filter((permission) => permission !== undefined && permission !== null)
       .map((permission) => permission.siteOrigin);
 
