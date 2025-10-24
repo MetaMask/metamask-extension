@@ -1,5 +1,9 @@
 import { Messenger } from '@metamask/base-controller';
 import { UserOperationController } from '@metamask/user-operation-controller';
+import type {
+  TransactionControllerEmulateNewTransaction,
+  TransactionControllerEmulateTransactionUpdate,
+} from '@metamask/transaction-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
@@ -9,10 +13,6 @@ import {
   UserOperationControllerInitMessenger,
 } from '../messengers';
 import { UserOperationControllerInit } from './user-operation-controller-init';
-import {
-  TransactionControllerEmulateNewTransaction,
-  TransactionControllerEmulateTransactionUpdate,
-} from '@metamask/transaction-controller';
 
 jest.mock('@metamask/user-operation-controller', () => ({
   UserOperationController: jest.fn().mockImplementation(() => ({
