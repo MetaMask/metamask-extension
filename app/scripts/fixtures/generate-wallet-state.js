@@ -1,8 +1,5 @@
 import { Messenger } from '@metamask/messenger';
-import {
-  KeyringController,
-  KeyringControllerMessenger,
-} from '@metamask/keyring-controller';
+import { KeyringController } from '@metamask/keyring-controller';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import { cloneDeep } from 'lodash';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';

@@ -16,10 +16,10 @@ import {
   RecoveryError,
   SeedlessOnboardingControllerErrorMessage,
 } from '@metamask/seedless-onboarding-controller';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import mockEncryptor from '../../test/lib/mock-encryptor';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import MetaMaskController from './metamask-controller';
-import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 

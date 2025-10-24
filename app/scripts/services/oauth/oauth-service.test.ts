@@ -8,11 +8,7 @@ import {
 } from '@metamask/messenger';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { ENVIRONMENT } from '../../../../development/build/constants';
-import {
-  OAuthServiceAction,
-  OAuthServiceMessenger,
-  WebAuthenticator,
-} from './types';
+import { OAuthServiceMessenger, WebAuthenticator } from './types';
 import OAuthService from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
 import { loadOAuthConfig } from './config';
