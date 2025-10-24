@@ -356,76 +356,37 @@ class TransactionConfirmation extends Confirmation {
     await this.clickSaveButton();
   }
 
-  async verifyAdvancedDetailsHexDataIsDisplayed() {
-    const advancedDetailsSection = await this.driver.findElement(
-      this.advancedDetailsSection,
-    );
-
-    await advancedDetailsSection.isDisplayed();
-    await advancedDetailsSection
-      .findElement({ css: this.advancedDetailsHexData.toString() })
-      .isDisplayed();
-
-    const hexDataInfo = (
-      await this.driver.findElement(this.advancedDetailsHexData)
-    ).getText();
-
-    assert.ok(
-      (await hexDataInfo).includes(
-        '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
-      ),
-      'Expected hex data to be displayed',
-    );
+  async verifyAdvancedDetailsHexDataIsDisplayed(hexData: string) {
+    await this.driver.waitForSelector({
+      css: this.advancedDetailsHexData,
+      text: hexData,
+    });
   }
 
   async verifyAdvancedDetailsIsDisplayed(type: string) {
-    const advancedDetailsSection = await this.driver.findElement(
-      this.advancedDetailsSection,
-    );
+    await this.driver.waitForSelector(this.advancedDetailsSection);
 
-    await advancedDetailsSection.isDisplayed();
-    await advancedDetailsSection
-      .findElement({ css: this.advancedDetailsDataFunction.toString() })
-      .isDisplayed();
-    await advancedDetailsSection
-      .findElement({ css: this.advancedDetailsDataParam.toString() })
-      .isDisplayed();
-
-    const functionInfo = await this.driver.findElement(
-      this.advancedDetailsDataFunction,
-    );
-    const functionText = await functionInfo.getText();
-
-    assert.ok(
-      functionText.includes('Function'),
-      'Expected key "Function" to be included in the function text',
-    );
-    assert.ok(
-      functionText.includes('mintNFTs'),
-      'Expected "mintNFTs" to be included in the function text',
-    );
-
-    const paramsInfo = await this.driver.findElement(
-      this.advancedDetailsDataParam,
-    );
-    const paramsText = await paramsInfo.getText();
+    await this.driver.waitForSelector({
+      css: this.advancedDetailsDataFunction,
+      text: 'mintNFTs',
+    });
 
     if (type === '4Bytes') {
-      assert.ok(
-        paramsText.includes('Param #1'),
-        'Expected "Param #1" to be included in the param text',
-      );
+      await this.driver.waitForSelector({
+        css: this.advancedDetailsDataParam,
+        text: 'Param #1',
+      });
     } else if (type === 'Sourcify') {
-      assert.ok(
-        paramsText.includes('Number Of Tokens'),
-        'Expected "Number Of Tokens" to be included in the param text',
-      );
+      await this.driver.waitForSelector({
+        css: this.advancedDetailsDataParam,
+        text: 'Number Of Tokens',
+      });
     }
 
-    assert.ok(
-      paramsText.includes('1'),
-      'Expected "1" to be included in the param value',
-    );
+    await this.driver.waitForSelector({
+      css: this.advancedDetailsDataParam,
+      text: '1',
+    });
   }
 
   async verifyUniswapDecodedTransactionAdvancedDetails() {

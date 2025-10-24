@@ -316,4 +316,15 @@ describe('useConfirmationNavigation', () => {
       },
     );
   });
+
+  describe('navigateNext', () => {
+    it('navigates to the next confirmation', () => {
+      const result = renderHook(ApprovalType.Transaction);
+      result.navigateNext(APPROVAL_ID_MOCK);
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(
+        `${CONFIRM_TRANSACTION_ROUTE}/${APPROVAL_ID_2_MOCK}`,
+      );
+    });
+  });
 });

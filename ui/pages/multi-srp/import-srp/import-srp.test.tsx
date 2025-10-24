@@ -7,7 +7,7 @@ import {
 } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { importMnemonicToVault } from '../../../store/actions';
 import { ImportSrp } from './import-srp';
@@ -40,12 +40,10 @@ jest.mock('../../../components/app/toast-master/utils', () => ({
   })),
 }));
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
 }));
 
 const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {

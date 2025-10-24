@@ -186,6 +186,7 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
                 variant={TextVariant.BodyMd}
                 fontWeight={FontWeight.Medium}
                 className="break-all max-w-64"
+                data-testid="account-address"
               >
                 <Text asChild>
                   <span>{addressStart}</span>
@@ -214,6 +215,7 @@ export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
                 size={ButtonSize.Lg}
                 isFullWidth
                 onClick={handleExplorerNavigation}
+                data-testid="view-address-on-etherscan"
               >
                 {explorerInfo.buttonText}
               </Button>

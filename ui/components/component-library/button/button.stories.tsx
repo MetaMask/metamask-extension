@@ -14,7 +14,7 @@ import { ButtonSize, ButtonVariant } from './button.types';
 import { Box } from '../box';
 
 export default {
-  title: 'Components/ComponentLibrary/Button',
+  title: 'Components/ComponentLibrary/Button (deprecated)',
   component: Button,
   parameters: {
     docs: {

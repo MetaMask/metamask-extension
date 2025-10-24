@@ -8,8 +8,12 @@ import {
   SubscriptionEligibility,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
+import { useNavigate } from 'react-router-dom-v5-compat';
+import { TransactionType } from '@metamask/transaction-controller';
+import { Hex } from '@metamask/utils';
 import { getUserSubscriptions } from '../../selectors/subscription';
 import {
+  addTransaction,
   cancelSubscription,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
@@ -22,6 +26,15 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 import { selectIsSignedIn } from '../../selectors/identity/authentication';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { getIsShieldSubscriptionActive } from '../../../shared/lib/shield';
+import { generateERC20ApprovalData } from '../../pages/confirmations/send-legacy/send.utils';
+import { decimalToHex } from '../../../shared/modules/conversion.utils';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { selectNetworkConfigurationByChainId } from '../../selectors';
+import {
+  TokenWithApprovalAmount,
+  useSubscriptionPricing,
+} from './useSubscriptionPricing';
 
 export const useUserSubscriptions = (
   { refetch }: { refetch?: boolean } = { refetch: false },
@@ -117,6 +130,69 @@ export const useUpdateSubscriptionCardPaymentMethod = ({
       }),
     );
   }, [dispatch, subscriptionId, recurringInterval]);
+};
+
+export const useSubscriptionCryptoApprovalTransaction = (
+  selectedToken?: Pick<
+    TokenWithApprovalAmount,
+    'chainId' | 'address' | 'approvalAmount'
+  >,
+) => {
+  const navigate = useNavigate();
+  const { subscriptionPricing } = useSubscriptionPricing();
+  const evmInternalAccount = useSelector((state) =>
+    // Account address will be the same for all EVM accounts
+    getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
+  );
+  const networkConfiguration = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, selectedToken?.chainId as Hex),
+  );
+  const networkClientId =
+    networkConfiguration?.rpcEndpoints[
+      networkConfiguration.defaultRpcEndpointIndex ?? 0
+    ]?.networkClientId;
+
+  const handler = useCallback(async () => {
+    if (!subscriptionPricing) {
+      throw new Error('Subscription pricing not found');
+    }
+
+    if (!selectedToken) {
+      throw new Error('No token selected');
+    }
+
+    const spenderAddress = subscriptionPricing?.paymentMethods
+      ?.find((method) => method.type === PAYMENT_TYPES.byCrypto)
+      ?.chains?.find(
+        (chain) => chain.chainId === selectedToken?.chainId,
+      )?.paymentAddress;
+    const approvalData = generateERC20ApprovalData({
+      spenderAddress,
+      amount: decimalToHex(selectedToken.approvalAmount.approveAmount),
+    });
+    const transactionParams = {
+      from: evmInternalAccount?.address as Hex,
+      to: selectedToken.address as Hex,
+      value: '0x0',
+      data: approvalData,
+    };
+    const transactionOptions = {
+      type: TransactionType.shieldSubscriptionApprove,
+      networkClientId: networkClientId as string,
+    };
+    await addTransaction(transactionParams, transactionOptions);
+    navigate(CONFIRM_TRANSACTION_ROUTE);
+  }, [
+    navigate,
+    subscriptionPricing,
+    evmInternalAccount,
+    selectedToken,
+    networkClientId,
+  ]);
+
+  return {
+    execute: handler,
+  };
 };
 
 /**

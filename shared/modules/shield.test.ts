@@ -71,7 +71,7 @@ describe('getShieldGatewayConfig', () => {
     );
     expect(config).toStrictEqual({
       newUrl: `${gatewayUrl}/proxy?url=${encodeURIComponent(targetUrl)}`,
-      authorization: 'token',
+      authorization: 'Bearer token',
     });
   });
 

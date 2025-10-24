@@ -1,11 +1,9 @@
-import { Hex, isHexString } from '@metamask/utils';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import { Hex } from '@metamask/utils';
 import { useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useLocation, useSearchParams } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 
-import { toHex } from '../../../../../shared/lib/delegation/utils';
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
 import { Asset } from '../../types/send';
@@ -120,14 +118,10 @@ export const useSendQueryParams = () => {
     if (asset || !paramChainId) {
       return;
     }
-    const chainId =
-      !isSolanaChainId(paramChainId) && !isHexString(paramChainId)
-        ? toHex(paramChainId)
-        : paramChainId;
 
     let newAsset: Asset | undefined = flatAssets?.find(
       ({ assetId, chainId: tokenChainId, isNative }) =>
-        chainId === tokenChainId &&
+        paramChainId === tokenChainId &&
         ((paramAsset && assetId?.toLowerCase() === paramAsset.toLowerCase()) ||
           (!paramAsset && isNative)),
     );
@@ -135,7 +129,7 @@ export const useSendQueryParams = () => {
     if (!newAsset) {
       newAsset = nfts?.find(
         ({ address, chainId: tokenChainId, isNative }) =>
-          chainId === tokenChainId &&
+          paramChainId === tokenChainId &&
           ((paramAsset &&
             address?.toLowerCase() === paramAsset.toLowerCase()) ||
             (!paramAsset && isNative)),

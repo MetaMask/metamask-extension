@@ -918,6 +918,7 @@
     "@metamask/bridge-controller": {
       "globals": {
         "AbortController": true,
+        "TextDecoder": true,
         "URLSearchParams": true,
         "console.error": true,
         "console.log": true,
@@ -1012,8 +1013,15 @@
         "clearTimeout": true,
         "setTimeout": true
       },
+      "meta": {
+        "webpack-optimization": [
+          "Dependency '@metamask/controller-utils' reexports from 'cockatiel' and webpack collapsed that to a direct import."
+        ]
+      },
       "packages": {
+        "@metamask/controller-utils": true,
         "@metamask/utils": true,
+        "cockatiel": true,
         "uuid": true
       }
     },
@@ -1056,6 +1064,7 @@
         "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
+        "lodash": true,
         "uuid": true
       }
     },
@@ -1141,22 +1150,6 @@
     },
     "@metamask/eth-json-rpc-middleware": {
       "globals": {
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-sig-util": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/eth-json-rpc-middleware>klona": true,
-        "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
-      "globals": {
-        "URL": true,
         "console.error": true,
         "setTimeout": true
       },
@@ -1415,7 +1408,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
-        "readable-stream": true
+        "@metamask/json-rpc-middleware-stream>readable-stream": true
       }
     },
     "@metamask/snaps-sdk>@metamask/key-tree": {
@@ -1622,6 +1615,7 @@
     },
     "@metamask/network-controller": {
       "globals": {
+        "Intl.NumberFormat": true,
         "URL": true,
         "setTimeout": true
       },
@@ -1635,7 +1629,7 @@
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
+        "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
@@ -1702,13 +1696,13 @@
       },
       "packages": {
         "@metamask/object-multiplex>once": true,
-        "readable-stream": true
+        "@metamask/object-multiplex>readable-stream": true
       }
     },
     "@metamask/obs-store": {
       "packages": {
         "@metamask/safe-event-emitter": true,
-        "readable-stream": true
+        "@metamask/obs-store>readable-stream": true
       }
     },
     "@metamask/permission-controller": {
@@ -1774,7 +1768,7 @@
       },
       "packages": {
         "@metamask/utils": true,
-        "readable-stream": true
+        "@metamask/post-message-stream>readable-stream": true
       }
     },
     "@metamask/ppom-validator": {
@@ -1831,7 +1825,7 @@
         "@metamask/safe-event-emitter": true,
         "eslint>fast-deep-equal": true,
         "@metamask/providers>is-stream": true,
-        "readable-stream": true
+        "@metamask/providers>readable-stream": true
       }
     },
     "@metamask/rate-limit-controller": {
@@ -1899,7 +1893,8 @@
         "@metamask/base-controller": true,
         "@metamask/signature-controller": true,
         "@metamask/transaction-controller": true,
-        "@metamask/utils": true
+        "@metamask/utils": true,
+        "lodash": true
       }
     },
     "@metamask/signature-controller": {
@@ -1982,7 +1977,7 @@
         "immer": true,
         "luxon": true,
         "nanoid": true,
-        "readable-stream": true,
+        "@metamask/snaps-controllers>readable-stream": true,
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "semver": true,
         "@metamask/snaps-controllers>tar-stream": true
@@ -2860,7 +2855,7 @@
         "@zxing/library>ts-custom-error": true
       }
     },
-    "@lavamoat/lavapack>readable-stream>abort-controller": {
+    "readable-stream>abort-controller": {
       "globals": {
         "AbortController": true
       }
@@ -3385,7 +3380,7 @@
         "buffer": true,
         "terser>source-map-support>buffer-from": true,
         "pumpify>inherits": true,
-        "readable-stream": true,
+        "@metamask/snaps-controllers>readable-stream": true,
         "browserify>concat-stream>typedarray": true
       }
     },
@@ -3820,12 +3815,15 @@
     },
     "extension-port-stream": {
       "globals": {
-        "Buffer.from": true,
-        "Buffer.isBuffer": true
+        "AggregateError": true,
+        "navigator.userAgent.includes": true,
+        "performance.now": true,
+        "queueMicrotask": true,
+        "scheduler": true,
+        "setTimeout": true
       },
       "packages": {
-        "buffer": true,
-        "extension-port-stream>readable-stream": true
+        "readable-stream": true
       }
     },
     "fast-json-patch": {
@@ -3961,14 +3959,14 @@
     "ethereumjs-util>create-hash>md5.js>hash-base": {
       "packages": {
         "pumpify>inherits": true,
-        "readable-stream": true,
+        "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": true,
         "koa>content-disposition>safe-buffer": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160>hash-base": {
       "packages": {
         "pumpify>inherits": true,
-        "readable-stream": true,
+        "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream": true,
         "koa>content-disposition>safe-buffer": true
       }
     },
@@ -4268,7 +4266,7 @@
       },
       "packages": {
         "buffer": true,
-        "readable-stream": true
+        "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": true
       }
     },
     "currency-formatter>locale-currency": {
@@ -4453,15 +4451,6 @@
       }
     },
     "@metamask/assets-controllers>multiformats": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@swc/helpers": true
-      }
-    },
-    "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true,
@@ -5067,6 +5056,22 @@
     },
     "readable-stream": {
       "globals": {
+        "AbortController": true,
+        "AbortSignal": true,
+        "AggregateError": true,
+        "Blob": true,
+        "queueMicrotask": true
+      },
+      "packages": {
+        "readable-stream>abort-controller": true,
+        "buffer": true,
+        "webpack>events": true,
+        "process": true,
+        "browserify>string_decoder": true
+      }
+    },
+    "@metamask/json-rpc-middleware-stream>readable-stream": {
+      "globals": {
         "process.nextTick": true,
         "process.stderr": true,
         "process.stdout": true
@@ -5077,7 +5082,82 @@
         "pumpify>inherits": true,
         "process": true,
         "browserify>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "@metamask/object-multiplex>readable-stream": {
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "@metamask/obs-store>readable-stream": {
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "@metamask/post-message-stream>readable-stream": {
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "@metamask/providers>readable-stream": {
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "@metamask/snaps-controllers>readable-stream": {
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
       }
     },
     "crypto-browserify>browserify-sign>readable-stream": {
@@ -5098,28 +5178,102 @@
         "readable-stream-2>process-nextick-args": true,
         "crypto-browserify>browserify-sign>readable-stream>safe-buffer": true,
         "crypto-browserify>browserify-sign>readable-stream>string_decoder": true,
-        "readable-stream>util-deprecate": true
+        "@storybook/react>util-deprecate": true
       }
     },
-    "extension-port-stream>readable-stream": {
+    "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": {
       "globals": {
-        "AbortController": true,
-        "AbortSignal": true,
-        "AggregateError": true,
-        "Blob": true,
-        "queueMicrotask": true
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
       },
       "packages": {
-        "@lavamoat/lavapack>readable-stream>abort-controller": true,
         "buffer": true,
         "webpack>events": true,
+        "pumpify>inherits": true,
         "process": true,
-        "browserify>string_decoder": true
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream": {
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": {
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": {
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "stream-browserify>readable-stream": {
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
+      }
+    },
+    "stream-http>readable-stream": {
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true,
+        "process.stdout": true
+      },
+      "packages": {
+        "buffer": true,
+        "webpack>events": true,
+        "pumpify>inherits": true,
+        "process": true,
+        "browserify>string_decoder": true,
+        "@storybook/react>util-deprecate": true
       }
     },
     "@metamask/snaps-controllers>readable-web-to-node-stream": {
       "packages": {
-        "readable-stream": true
+        "@metamask/snaps-controllers>readable-web-to-node-stream>readable-stream": true
       }
     },
     "redux": {
@@ -5442,7 +5596,7 @@
       "packages": {
         "webpack>events": true,
         "pumpify>inherits": true,
-        "readable-stream": true
+        "stream-browserify>readable-stream": true
       }
     },
     "stream-http": {
@@ -5467,7 +5621,7 @@
         "stream-http>builtin-status-codes": true,
         "pumpify>inherits": true,
         "process": true,
-        "readable-stream": true,
+        "stream-http>readable-stream": true,
         "browserify>url": true,
         "watchify>xtend": true
       }
@@ -5563,7 +5717,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true
+        "@metamask/assets-controllers>multiformats": true
       }
     },
     "@ensdomains/content-hash>cids>multihashes>uint8arrays": {
@@ -5627,7 +5781,7 @@
         "tslib": true
       }
     },
-    "readable-stream>util-deprecate": {
+    "@storybook/react>util-deprecate": {
       "globals": {
         "console.trace": true,
         "console.warn": true,

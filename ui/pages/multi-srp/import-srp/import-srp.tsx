@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   hideWarning,
@@ -51,7 +51,7 @@ const defaultNumberOfWords = 12;
 
 export const ImportSrp = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
@@ -96,7 +96,7 @@ export const ImportSrp = () => {
       setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));
     }
 
-    history.push(DEFAULT_ROUTE);
+    navigate(DEFAULT_ROUTE);
     dispatch(setShowNewSrpAddedToast(true));
   }
 
@@ -285,7 +285,7 @@ export const ImportSrp = () => {
             ariaLabel="back"
             iconName={IconName.ArrowLeft}
             onClick={() => {
-              history.push(DEFAULT_ROUTE);
+              navigate(DEFAULT_ROUTE);
             }}
           />
         }
@@ -294,7 +294,7 @@ export const ImportSrp = () => {
             ariaLabel="close"
             iconName={IconName.Close}
             onClick={() => {
-              history.push(DEFAULT_ROUTE);
+              navigate(DEFAULT_ROUTE);
             }}
           />
         }

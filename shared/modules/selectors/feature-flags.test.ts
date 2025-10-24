@@ -103,6 +103,7 @@ describe('Feature Flags Selectors', () => {
                   batchStatusPollingInterval: 1000,
                   extensionActive: true,
                   extensionReturnTxHashAsap: true,
+                  extensionReturnTxHashAsapBatch: true,
                 },
               },
             }
@@ -145,6 +146,7 @@ describe('Feature Flags Selectors', () => {
           expectedDeadline: 45,
           maxDeadline: 150,
           extensionReturnTxHashAsap: false,
+          extensionReturnTxHashAsapBatch: false,
         },
       });
     });
@@ -175,6 +177,7 @@ describe('Feature Flags Selectors', () => {
           expectedDeadline: 60,
           maxDeadline: 180,
           extensionReturnTxHashAsap: false,
+          extensionReturnTxHashAsapBatch: false,
         },
       });
     });
@@ -190,6 +193,7 @@ describe('Feature Flags Selectors', () => {
           expectedDeadline: 45,
           maxDeadline: 150,
           extensionReturnTxHashAsap: false,
+          extensionReturnTxHashAsapBatch: false,
         },
       });
     });
@@ -206,6 +210,7 @@ describe('Feature Flags Selectors', () => {
             expectedDeadline: 45,
             maxDeadline: 150,
             extensionReturnTxHashAsap: true,
+            extensionReturnTxHashAsapBatch: true,
           },
         });
       });
@@ -221,6 +226,7 @@ describe('Feature Flags Selectors', () => {
             expectedDeadline: 45,
             maxDeadline: 150,
             extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
           },
         });
       });
@@ -236,6 +242,7 @@ describe('Feature Flags Selectors', () => {
             expectedDeadline: 60,
             maxDeadline: 180,
             extensionReturnTxHashAsap: true,
+            extensionReturnTxHashAsapBatch: true,
           },
         });
       });

@@ -2463,10 +2463,6 @@
   "from": {
     "message": "自"
   },
-  "fromAddress": {
-    "message": "从：$1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "从代币列表：$1"
   },
@@ -6598,10 +6594,6 @@
   },
   "to": {
     "message": "至"
-  },
-  "toAddress": {
-    "message": "至：$1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "我们使用 4byte.directory 和 Sourcify 服务来解码和显示更易读的交易数据。这可以帮助您了解待定交易和过去交易的结果，但可能会导致您的 IP 地址共享。"

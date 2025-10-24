@@ -15,7 +15,7 @@ import { ButtonLink } from './button-link';
 import { ButtonLinkSize } from './button-link.types';
 
 export default {
-  title: 'Components/ComponentLibrary/ButtonLink',
+  title: 'Components/ComponentLibrary/ButtonLink (deprecated)',
   component: ButtonLink,
   parameters: {
     docs: {

@@ -129,7 +129,10 @@ export class ConfirmationsRejectRule implements Rule {
               type: 'image',
               data: `data:image/png;base64,${screenshot}`,
             });
-            await this.driver.clickElement({ text, tag: 'button' });
+            await this.driver.clickElementAndWaitForWindowToClose({
+              text,
+              tag: 'button',
+            });
             // make sure to switch back to the dapp or else the next test will fail on the wrong window
             await switchToOrOpenDapp(this.driver);
           } catch (e) {

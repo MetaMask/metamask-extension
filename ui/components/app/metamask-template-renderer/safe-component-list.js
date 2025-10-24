@@ -28,7 +28,6 @@ import {
   ConfirmInfoRowValueDouble,
 } from '../confirm/info/row';
 import MetaMaskTranslation from '../metamask-translation';
-import NetworkDisplay from '../network-display';
 import { Copyable } from '../snaps/copyable';
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { SnapUIAddress } from '../snaps/snap-ui-address';
@@ -88,7 +87,6 @@ export const safeComponentList = {
   HyperliquidReferralConsent,
   i: 'i',
   MetaMaskTranslation,
-  NetworkDisplay,
   OriginPill,
   p: 'p',
   Popover,

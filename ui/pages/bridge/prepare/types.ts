@@ -19,7 +19,9 @@ export type ExternalDestinationAccount = Pick<
   InternalAccount,
   'address' | 'type'
 > &
-  BaseDestinationAccount;
+  BaseDestinationAccount & {
+    walletName?: string;
+  };
 
 /**
  * Internal destination accounts are accounts that are part of the user's internal account tree
@@ -27,7 +29,14 @@ export type ExternalDestinationAccount = Pick<
  * Populated by the useDestinationAccount hook
  */
 export type InternalDestinationAccount = InternalAccount &
-  BaseDestinationAccount;
+  BaseDestinationAccount & {
+    /**
+     * This is used to display the wallet name in the account picker
+     * If the account is internal, this is the name of the wallet that the account belongs to
+     * If the account is external, this is not set
+     */
+    walletName: string;
+  };
 
 /**
  * Destination accounts are the accounts that the user can select to swap to

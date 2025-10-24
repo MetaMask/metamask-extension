@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import { BtcAccountType } from '@metamask/keyring-api';
 import createMockStore from 'redux-mock-store';
 
 import { renderWithProvider } from '../../../../../../test/jest';
@@ -183,5 +184,15 @@ describe('NFTAsset', () => {
 
     const image = getByAltText('Test NFT');
     expect(image).toHaveAttribute('src', 'https://example.com/collection.png');
+  });
+
+  it('renders account type label when account type is provided', () => {
+    const assetWithAccountType = {
+      ...mockTokenAsset,
+      accountType: BtcAccountType.P2wpkh,
+    };
+    const { getByText } = render(<Asset asset={assetWithAccountType} />);
+
+    expect(getByText('Native SegWit')).toBeInTheDocument();
   });
 });
