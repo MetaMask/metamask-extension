@@ -103,6 +103,7 @@ const TransactionShield = () => {
   const { search } = useLocation();
   const shouldWaitForSubscriptionCreation = useMemo(() => {
     const searchParams = new URLSearchParams(search);
+    // param to wait for subscription creation happen in the background
     const waitForSubscriptionCreation = searchParams.get(
       'waitForSubscriptionCreation',
     );
@@ -124,18 +125,30 @@ const TransactionShield = () => {
     subscriptions,
     loading: subscriptionsLoading,
   } = useUserSubscriptions({
-    refetch: true, // always fetch latest subscriptions state in settings screen
+    refetch: !shouldWaitForSubscriptionCreation, // always fetch latest subscriptions state in settings screen unless we are waiting for subscription creation (subscription is refetch in background)
   });
   const shieldSubscription = useUserSubscriptionByProduct(
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
 
-  const isWaitingForSubscriptionCreation =
-    shouldWaitForSubscriptionCreation && !shieldSubscription;
+  const [timeoutCancelled, setTimeoutCancelled] = useState(false);
+  useEffect(() => {
+    // cancel timeout when component unmounts
+    return () => {
+      setTimeoutCancelled(true);
+    };
+  }, []);
+  useEffect(() => {
+    // cancel timeout when subscription is created
+    if (shieldSubscription) {
+      setTimeoutCancelled(true);
+    }
+  }, [shieldSubscription]);
+
   const startSubscriptionCreationTimeout = useTimeout(
     () => {
-      if (shieldSubscription) {
+      if (timeoutCancelled) {
         return;
       }
 
@@ -203,6 +216,9 @@ const TransactionShield = () => {
     subscriptionId: shieldSubscription?.id,
     recurringInterval: shieldSubscription?.interval,
   });
+
+  const isWaitingForSubscriptionCreation =
+    shouldWaitForSubscriptionCreation && !shieldSubscription;
 
   const loading =
     cancelSubscriptionResult.pending ||
