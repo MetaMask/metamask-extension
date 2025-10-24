@@ -14,6 +14,8 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
   const getAssetsContractController = () =>
     getController('AssetsContractController');
 
+  const onboardingController = () => getController('OnboardingController');
+
   const controller = new AccountTrackerController({
     state: persistedState.AccountTrackerController,
     messenger: controllerMessenger,
@@ -44,6 +46,7 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
         ? (featureFlagForAccountApiBalances as `0x${string}`[])
         : [];
     },
+    fetchingEnabled: () => onboardingController().state.completedOnboarding,
   });
 
   return {
