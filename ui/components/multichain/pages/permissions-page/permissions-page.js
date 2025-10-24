@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
-import { SubjectType } from '@metamask/permission-controller';
 import { Content, Header, Page } from '../page';
 import {
   Box,
@@ -28,33 +27,10 @@ import {
   REVIEW_PERMISSIONS,
   GATOR_PERMISSIONS,
 } from '../../../../helpers/constants/routes';
-import {
-  getConnectedSitesListWithNetworkInfo,
-  getTargetSubjectMetadata,
-} from '../../../../selectors';
-import { getGatorPermissionsMap } from '../../../../selectors/gator-permissions/gator-permissions';
+import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
+import { getMergedConnectionsListWithGatorPermissions } from '../../../../selectors/gator-permissions/gator-permissions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
-import { getURLHostName } from '../../../../helpers/utils/util';
 import { ConnectionListItem } from './connection-list-item';
-
-// Helper function to get permission counts per site origin from gator permissions
-const getPermissionCountsPerSite = (permissionsMap) => {
-  const sitePermissionCounts = new Map();
-
-  Object.values(permissionsMap).forEach((permissionTypeMap) => {
-    Object.values(permissionTypeMap).forEach((permissions) => {
-      permissions.forEach((permission) => {
-        if (permission.siteOrigin) {
-          const currentCount =
-            sitePermissionCounts.get(permission.siteOrigin) || 0;
-          sitePermissionCounts.set(permission.siteOrigin, currentCount + 1);
-        }
-      });
-    });
-  });
-
-  return sitePermissionCounts;
-};
 
 export const PermissionsPage = () => {
   const t = useI18nContext();
@@ -63,42 +39,10 @@ export const PermissionsPage = () => {
   const [totalConnections, setTotalConnections] = useState(0);
 
   const mergedConnectionsList = useSelector((state) => {
-    const sitesConnectionsList = getConnectedSitesListWithNetworkInfo(state);
-    const gatorPermissionsMap = getGatorPermissionsMap(state);
-
     if (!isGatorPermissionsRevocationFeatureEnabled()) {
-      return sitesConnectionsList;
+      return getConnectedSitesListWithNetworkInfo(state);
     }
-
-    const gatorPermissionCounts =
-      getPermissionCountsPerSite(gatorPermissionsMap);
-    const mergedConnections = { ...sitesConnectionsList };
-
-    gatorPermissionCounts.forEach((permissionCount, siteOrigin) => {
-      if (mergedConnections[siteOrigin]) {
-        // Site exists in both connections and gator permissions - add count
-        mergedConnections[siteOrigin] = {
-          ...mergedConnections[siteOrigin],
-          advancedPermissionsCount: permissionCount,
-        };
-      } else {
-        // Site only has gator permissions - create minimal entry
-        const subjectMetadata = getTargetSubjectMetadata(state, siteOrigin);
-        mergedConnections[siteOrigin] = {
-          addresses: [],
-          origin: siteOrigin,
-          name: subjectMetadata?.name || getURLHostName(siteOrigin),
-          iconUrl: subjectMetadata?.iconUrl || null,
-          subjectType: SubjectType.Website,
-          networkIconUrl: '',
-          networkName: '',
-          extensionId: null,
-          advancedPermissionsCount: permissionCount,
-        };
-      }
-    });
-
-    return mergedConnections;
+    return getMergedConnectionsListWithGatorPermissions(state);
   });
 
   useEffect(() => {

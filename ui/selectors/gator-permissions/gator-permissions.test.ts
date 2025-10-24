@@ -1477,6 +1477,9 @@ describe('Gator Permissions Selectors', () => {
       const result =
         getUniqueSiteOriginsFromTokenTransferPermissions(stateWithUndefined);
       expect(result).toEqual(['https://valid-site.com']);
+    });
+  });
+
   describe('getTokenTransferPermissionsByOrigin', () => {
     describe('token transfer permissions by origin', () => {
       it('should return correct permissions for a site origin with permissions', () => {
