@@ -1601,7 +1601,7 @@ const addAppInstalledEvent = () => {
 /**
  * Handles the onInstalled event.
  *
- * @param {[chrome.runtime.InstalledDetails[]]} params - Array containing a single installation details object.
+ * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
  */
 function handleOnInstalled([details]) {
   if (details.reason === 'install') {
