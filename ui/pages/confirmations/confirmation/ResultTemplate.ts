@@ -12,7 +12,6 @@ import {
   AlignItems,
   FlexDirection,
   JustifyContent,
-  Text,
   TextVariant,
   TextAlign,
   IconColor,
