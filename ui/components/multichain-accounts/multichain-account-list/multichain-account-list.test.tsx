@@ -31,6 +31,16 @@ jest.mock('../../../store/actions', () => {
         await Promise.resolve();
       };
     }),
+    setAccountGroupPinned: jest.fn().mockImplementation(() => {
+      return async function () {
+        await Promise.resolve();
+      };
+    }),
+    setAccountGroupHidden: jest.fn().mockImplementation(() => {
+      return async function () {
+        await Promise.resolve();
+      };
+    }),
   };
 });
 
@@ -303,6 +313,7 @@ describe('MultichainAccountList', () => {
       },
     );
 
+    // With displayWalletHeader=true (default), wallet header should be shown
     expect(screen.queryAllByTestId(walletHeaderTestId)).toHaveLength(1);
     expect(
       screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
@@ -710,6 +721,324 @@ describe('MultichainAccountList', () => {
         screen.queryByTestId(
           `multichain-account-cell-${walletOneGroupId}-selected-indicator`,
         ),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Pinned accounts section', () => {
+    it('renders pinned section when there are pinned accounts', () => {
+      const walletsWithPinnedAccounts = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+        [walletTwoId]: {
+          ...mockWallets[walletTwoId],
+          groups: {
+            [walletTwoGroupId]: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+              metadata: {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent({ wallets: walletsWithPinnedAccounts });
+
+      // Pinned section header should be present
+      expect(screen.getByText('Pinned')).toBeInTheDocument();
+
+      // Pinned accounts should be rendered
+      expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
+      expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
+    });
+
+    it('shows pinned section even with one pinned account', () => {
+      const walletsWithOnePinnedAccount = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+        [walletTwoId]: mockWallets[walletTwoId],
+      };
+
+      renderComponent({ wallets: walletsWithOnePinnedAccount });
+
+      // Pinned section header should be present even with just 1 pinned account
+      expect(screen.getByText('Pinned')).toBeInTheDocument();
+      expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
+    });
+
+    it('excludes pinned accounts from their wallet sections', () => {
+      const walletsWithPinnedAccount = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+        [walletTwoId]: {
+          ...mockWallets[walletTwoId],
+          groups: {
+            [walletTwoGroupId]: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+              metadata: {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent(
+        { wallets: walletsWithPinnedAccount },
+        {
+          ...mockDefaultState,
+          metamask: {
+            ...mockDefaultState.metamask,
+            accountTree: {
+              ...mockDefaultState.metamask.accountTree,
+              // @ts-expect-error - walletsWithPinnedAccount does not follow the exact structure due to test simplification
+              wallets: walletsWithPinnedAccount,
+            },
+          },
+        },
+      );
+
+      // Pinned section should exist
+      expect(screen.getByText('Pinned')).toBeInTheDocument();
+
+      // Wallet headers should still be present
+      const walletHeaders = screen.getAllByTestId(walletHeaderTestId);
+      expect(walletHeaders).toHaveLength(2);
+      expect(
+        within(walletHeaders[0]).getByText('Wallet 1'),
+      ).toBeInTheDocument();
+      expect(
+        within(walletHeaders[1]).getByText('Wallet 2'),
+      ).toBeInTheDocument();
+
+      // Accounts should appear in pinned section, not in wallet sections
+      // Only match the actual account cells, not indicators or accessories
+      // Regex matches entropy:ID/number but not -selected-indicator or other suffixes
+      const accountCells = screen.getAllByTestId(
+        /^multichain-account-cell-entropy:[^/]+\/\d+$/u,
+      );
+      // Should be 2 accounts total (both in pinned section)
+      expect(accountCells.length).toBe(2);
+    });
+
+    it('shows wallet headers when there is one wallet with pinned accounts', () => {
+      const walletsWithOnePinnedAccount = {
+        [walletOneId]: {
+          ...mockWallets[walletOneId],
+          groups: {
+            [walletOneGroupId]: {
+              ...mockWallets[walletOneId].groups[walletOneGroupId],
+              metadata: {
+                ...mockWallets[walletOneId].groups[walletOneGroupId].metadata,
+                pinned: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent(
+        { wallets: walletsWithOnePinnedAccount },
+        {
+          ...mockDefaultState,
+          metamask: {
+            ...mockDefaultState.metamask,
+            accountTree: {
+              ...mockDefaultState.metamask.accountTree,
+              // @ts-expect-error - walletsWithOnePinnedAccount does not follow the exact structure due to test simplification
+              wallets: walletsWithOnePinnedAccount,
+            },
+          },
+        },
+      );
+
+      // With one wallet but pinned accounts, wallet header should be shown
+      const walletHeader = screen.getByTestId(walletHeaderTestId);
+      expect(walletHeader).toBeInTheDocument();
+      // Wallet name should be in the header
+      expect(within(walletHeader).getByText('Wallet 1')).toBeInTheDocument();
+      expect(screen.getByText('Pinned')).toBeInTheDocument();
+    });
+  });
+
+  describe('Hidden accounts section', () => {
+    it('renders collapsible hidden section when there are hidden accounts', () => {
+      const walletsWithHiddenAccounts = {
+        [walletOneId]: mockWallets[walletOneId],
+        [walletTwoId]: {
+          ...mockWallets[walletTwoId],
+          groups: {
+            [walletTwoGroupId]: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+              metadata: {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+                hidden: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent({ wallets: walletsWithHiddenAccounts });
+
+      // Hidden section header should be present
+      const hiddenHeader = screen.getByTestId(
+        'multichain-account-tree-hidden-header',
+      );
+      expect(hiddenHeader).toBeInTheDocument();
+      expect(screen.getByText('Hidden (1)')).toBeInTheDocument();
+
+      // Hidden account should NOT be visible initially (collapsed)
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+    });
+
+    it('expands hidden section when clicked', async () => {
+      const walletsWithHiddenAccounts = {
+        [walletOneId]: mockWallets[walletOneId],
+        [walletTwoId]: {
+          ...mockWallets[walletTwoId],
+          groups: {
+            [walletTwoGroupId]: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+              metadata: {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+                hidden: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent({ wallets: walletsWithHiddenAccounts });
+
+      const hiddenHeader = screen.getByTestId(
+        'multichain-account-tree-hidden-header',
+      );
+
+      // Initially hidden account should not be visible
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+
+      // Click to expand
+      await act(async () => {
+        fireEvent.click(hiddenHeader);
+      });
+
+      // Now hidden account should be visible
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+      expect(screen.getByText('Account 1 from wallet 2')).toBeInTheDocument();
+    });
+
+    it('collapses hidden section when clicked twice', async () => {
+      const walletsWithHiddenAccounts = {
+        [walletOneId]: mockWallets[walletOneId],
+        [walletTwoId]: {
+          ...mockWallets[walletTwoId],
+          groups: {
+            [walletTwoGroupId]: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+              metadata: {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+                hidden: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent({ wallets: walletsWithHiddenAccounts });
+
+      const hiddenHeader = screen.getByTestId(
+        'multichain-account-tree-hidden-header',
+      );
+
+      // Click to expand
+      await act(async () => {
+        fireEvent.click(hiddenHeader);
+      });
+
+      expect(
+        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).toBeInTheDocument();
+
+      // Click again to collapse
+      await act(async () => {
+        fireEvent.click(hiddenHeader);
+      });
+
+      // Hidden account should not be visible again
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
+      ).not.toBeInTheDocument();
+    });
+
+    it('excludes hidden accounts from their wallet sections', () => {
+      const walletsWithHiddenAccount = {
+        [walletOneId]: mockWallets[walletOneId],
+        [walletTwoId]: {
+          ...mockWallets[walletTwoId],
+          groups: {
+            [walletTwoGroupId]: {
+              ...mockWallets[walletTwoId].groups[walletTwoGroupId],
+              metadata: {
+                ...mockWallets[walletTwoId].groups[walletTwoGroupId].metadata,
+                hidden: true,
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent({ wallets: walletsWithHiddenAccount });
+
+      // Wallet headers should still be present
+      expect(screen.getByText('Wallet 1')).toBeInTheDocument();
+      expect(screen.getByText('Wallet 2')).toBeInTheDocument();
+
+      // Only one account should be visible in wallet section (not hidden one)
+      expect(screen.getByText('Account 1 from wallet 1')).toBeInTheDocument();
+
+      // Hidden account should not be in wallet section (collapsed by default)
+      expect(
+        screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
       ).not.toBeInTheDocument();
     });
   });

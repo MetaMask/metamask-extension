@@ -10,6 +10,10 @@ SEEDLESS_ONBOARDING_ENABLED='false'
 ; Set this to `true` to enable Metamask Shield
 METAMASK_SHIELD_ENABLED='false'
 
+; Backend WebSocket URL
+; Uses production API endpoint by default (same as builds.yml)
+;MM_BACKEND_WEBSOCKET_URL='wss://gateway.api.cx.metamask.io/v1'
+
 ; These variables are required for OAuth Service
 GOOGLE_CLIENT_ID=
 APPLE_CLIENT_ID=

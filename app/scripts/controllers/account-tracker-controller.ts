@@ -1015,20 +1015,26 @@ export default class AccountTrackerController extends BaseController<
   ) {
     this.update((state) => {
       balances.forEach(({ address, chainId, balance }) => {
+        // Temporary until moving AccountTrackerController in core with an normalized format
+        // accountsByChainId works with lowercase addresses, this is just a safe guard in case address is in checksum format
+        // Convert address to lowercase to match extension's accountsByChainId format
+        const lowercaseAddress = address.toLowerCase();
+
         // Ensure the chainId exists in the state
         if (!state.accountsByChainId[chainId]) {
           state.accountsByChainId[chainId] = {};
         }
         // Ensure the address exists for this chain
-        if (!state.accountsByChainId[chainId][address]) {
-          state.accountsByChainId[chainId][address] = {
-            address,
+        if (!state.accountsByChainId[chainId][lowercaseAddress]) {
+          state.accountsByChainId[chainId][lowercaseAddress] = {
+            address: lowercaseAddress,
             balance: '0x0',
           };
         }
         // Update the balance
         if (balance) {
-          state.accountsByChainId[chainId][address].balance = toHex(balance);
+          state.accountsByChainId[chainId][lowercaseAddress].balance =
+            toHex(balance);
         }
       });
     });

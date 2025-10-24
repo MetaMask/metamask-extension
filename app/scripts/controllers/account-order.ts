@@ -18,6 +18,11 @@ export type AccountOrderControllerState = {
   hiddenAccountList: AccountAddress[];
 };
 
+export type AccountOrderControllerGetStateAction = {
+  type: 'AccountOrderController:getState';
+  handler: () => AccountOrderControllerState;
+};
+
 // Describes the action for updating the accounts list
 export type AccountOrderControllerupdateAccountsListAction = {
   type: `${typeof controllerName}:updateAccountsList`;
@@ -33,7 +38,8 @@ export type AccountOrderControllerhideAccountsListAction = {
 // Union of all possible actions for the messenger
 export type AccountOrderControllerMessengerActions =
   | AccountOrderControllerupdateAccountsListAction
-  | AccountOrderControllerhideAccountsListAction;
+  | AccountOrderControllerhideAccountsListAction
+  | AccountOrderControllerGetStateAction;
 
 // Type for the messenger of AccountOrderController
 export type AccountOrderControllerMessenger = RestrictedMessenger<
@@ -88,7 +94,7 @@ export class AccountOrderController extends BaseController<
     state,
   }: {
     messenger: AccountOrderControllerMessenger;
-    state?: AccountOrderControllerState;
+    state?: Partial<AccountOrderControllerState>;
   }) {
     // Call the constructor of BaseControllerV2
     super({
