@@ -346,7 +346,8 @@ jobs:
       APPLE_EXPERIMENTAL_CLIENT_ID: 00000000000
       GOOGLE_FLASK_CLIENT_ID: 00000000000
       APPLE_FLASK_CLIENT_ID: 00000000000
-
+    outputs:
+      changed: ${{ steps.policy-changed.outputs.changed }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -374,14 +375,14 @@ jobs:
           # if 'changed-files/changed-files.json' exists, check if it contains any files named policy.json or policy-override.json
           if [ -f "changed-files/changed-files.json" ]; then
             if grep -q -e 'policy.json' -e 'policy-override.json' changed-files/changed-files.json; then
-              echo "Lavamoat policy.json file changes detected."
+              echo "Lavamoat policy file changes detected."
               echo "changed=true" >> "$GITHUB_OUTPUT"
             else
-              echo "No Lavamoat policy.json file changes detected."
+              echo "No Lavamoat policy file changes detected."
               echo "changed=false" >> "$GITHUB_OUTPUT"
             fi
           else
-            echo "Cannot find 'changed-files.json', assuming that Lavamoat policy.json files have changed."
+            echo "Cannot find 'changed-files.json', assuming that Lavamoat policy files have changed."
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
@@ -423,6 +424,8 @@ jobs:
       - build-source-map-explorer
       - build-lavamoat-viz
     uses: ./.github/workflows/publish-prerelease.yml
+    with:
+      changed: ${{ needs.build-lavamoat-viz.outputs.changed == 'true' }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 

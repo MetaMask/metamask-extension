@@ -155,9 +155,14 @@ async function start(): Promise<void> {
 
   const allArtifactsUrl = `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}#artifacts`;
 
-  const contentRows = [
-    ...buildContentRows,
-    `build viz (only exists if policy files have changed): ${depVizLink}`,
+  const contentRows = [...buildContentRows];
+
+  // Only show build viz link if the policy files changed
+  if (process.env.CHANGED === 'true') {
+    contentRows.push(`build viz: ${depVizLink}`);
+  }
+
+  contentRows.push(
     `bundle size: ${bundleSizeStatsLink}`,
     `user-actions-benchmark: ${userActionsStatsLink}`,
     `storybook: ${storybookLink}`,
@@ -167,7 +172,8 @@ async function start(): Promise<void> {
        <summary>bundle viz:</summary>
        ${bundleMarkup}
      </details>`,
-  ];
+  );
+
   const hiddenContent = `<ul>${contentRows
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
