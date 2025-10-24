@@ -35,6 +35,7 @@ import { getConnectedSitesListWithNetworkInfo } from '../../../../selectors';
 import {
   AppState,
   getAggregatedGatorPermissionsCountAcrossAllChains,
+  getUniqueSiteOriginsFromTokenTransferPermissions,
 } from '../../../../selectors/gator-permissions/gator-permissions';
 import { PermissionListItem } from './components/permission-list-item';
 
@@ -48,9 +49,21 @@ export const GatorPermissionsPage = () => {
   const totalGatorPermissions = useSelector((state: AppState) =>
     getAggregatedGatorPermissionsCountAcrossAllChains(state, 'token-transfer'),
   );
-  const totalSitesConnections = Object.keys(sitesConnectionsList).filter(
+  const gatorPermissionSiteOrigins = useSelector(
+    getUniqueSiteOriginsFromTokenTransferPermissions,
+  );
+
+  // Get unique site origins from site connections (excluding snaps)
+  const connectedSiteOrigins = Object.keys(sitesConnectionsList).filter(
     (site) => !isSnapId(site),
-  ).length;
+  );
+
+  // Combine both lists and get unique sites
+  const allUniqueSites = new Set([
+    ...connectedSiteOrigins,
+    ...gatorPermissionSiteOrigins,
+  ]);
+  const totalSitesConnections = allUniqueSites.size;
   const totalPermissions = totalGatorPermissions + totalSitesConnections;
 
   // Hook uses cache-first strategy: returns cached data immediately if available,

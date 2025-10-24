@@ -45,7 +45,8 @@ const getPermissionCountsPerSite = (permissionsMap) => {
     Object.values(permissionTypeMap).forEach((permissions) => {
       permissions.forEach((permission) => {
         if (permission.siteOrigin) {
-          const currentCount = sitePermissionCounts.get(permission.siteOrigin) || 0;
+          const currentCount =
+            sitePermissionCounts.get(permission.siteOrigin) || 0;
           sitePermissionCounts.set(permission.siteOrigin, currentCount + 1);
         }
       });
@@ -69,7 +70,8 @@ export const PermissionsPage = () => {
       return sitesConnectionsList;
     }
 
-    const gatorPermissionCounts = getPermissionCountsPerSite(gatorPermissionsMap);
+    const gatorPermissionCounts =
+      getPermissionCountsPerSite(gatorPermissionsMap);
     const mergedConnections = { ...sitesConnectionsList };
 
     gatorPermissionCounts.forEach((permissionCount, siteOrigin) => {

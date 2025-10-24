@@ -409,3 +409,40 @@ export const getTokenTransferPermissionsByOrigin = createSelector(
     return allPermissions;
   },
 );
+
+/**
+ * Get unique site origins from token transfer gator permissions.
+ *
+ * @param state - The current state
+ * @returns Array of unique site origins that have token transfer gator permissions
+ * @example
+ * const siteOrigins = getUniqueSiteOriginsFromTokenTransferPermissions(state);
+ *
+ * // ['https://example.com', 'https://another-site.com']
+ */
+export const getUniqueSiteOriginsFromTokenTransferPermissions = createSelector(
+  [getGatorPermissionsMap],
+  (gatorPermissionsMap): string[] => {
+    const tokenTransferPermissionTypes: SupportedGatorPermissionType[] = [
+      'native-token-stream',
+      'erc20-token-stream',
+      'native-token-periodic',
+      'erc20-token-periodic',
+    ];
+
+    const siteOrigins = tokenTransferPermissionTypes
+      .flatMap((permissionType) => {
+        const permissionsByChain = gatorPermissionsMap[permissionType];
+        if (!permissionsByChain) {
+          return [];
+        }
+
+        // Get all permissions across all chains for this permission type
+        return Object.values(permissionsByChain).flat();
+      })
+      .filter((permission) => permission !== undefined && permission !== null)
+      .map((permission) => permission.siteOrigin);
+
+    return [...new Set(siteOrigins)];
+  },
+);
