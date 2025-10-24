@@ -115,10 +115,14 @@ export const ShieldPaymentModal = ({
   }, [availableTokenBalances]);
 
   const noCryptoFundsText = useMemo(() => {
-    const lastToken = tokensSupported.pop();
+    const tokensSupportedCopy = [...tokensSupported];
+    const lastToken = tokensSupportedCopy.pop();
 
     if (tokensSupported.length > 0) {
-      return t('shieldPlanNoFunds', [tokensSupported.join(', '), lastToken]);
+      return t('shieldPlanNoFunds', [
+        tokensSupportedCopy.join(', '),
+        lastToken,
+      ]);
     }
 
     return t('shieldPlanNoFundsOneToken', [lastToken]);
