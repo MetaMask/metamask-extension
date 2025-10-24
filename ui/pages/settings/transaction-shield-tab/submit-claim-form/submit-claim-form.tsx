@@ -90,7 +90,7 @@ const SubmitClaimForm = () => {
 
   const validateChainId = useCallback(() => {
     if (chainId) {
-      const isChainIdValid = isSafeChainId(chainId);
+      const isChainIdValid = isSafeChainId(Number(chainId));
       setErrors((state) => ({
         ...state,
         chainId: isChainIdValid
@@ -234,7 +234,7 @@ const SubmitClaimForm = () => {
     try {
       setClaimSubmitLoading(true);
       await submitShieldClaim({
-        chainId: chainId as number,
+        chainId,
         email,
         impactedWalletAddress,
         impactedTransactionHash,
@@ -309,14 +309,7 @@ const SubmitClaimForm = () => {
         id="chain-id"
         name="chain-id"
         size={FormTextFieldSize.Lg}
-        onChange={(e) => {
-          console.log('e.target.value', e.target.value);
-          if (e.target.value.trim() === '') {
-            setChainId(undefined);
-          } else {
-            setChainId(Number(e.target.value));
-          }
-        }}
+        onChange={(e) => setChainId(e.target.value.trim())}
         onBlur={() => validateChainId()}
         value={chainId}
         error={Boolean(errors.chainId)}

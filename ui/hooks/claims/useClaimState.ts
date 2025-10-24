@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 export const useClaimState = () => {
-  const [chainId, setChainId] = useState<number>();
+  const [chainId, setChainId] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [impactedWalletAddress, setImpactedWalletAddress] =
     useState<string>('');
@@ -28,7 +28,7 @@ export const useClaimState = () => {
     files,
     setFiles,
     clear: () => {
-      setChainId(undefined);
+      setChainId('');
       setEmail('');
       setImpactedWalletAddress('');
       setImpactedTransactionHash('');

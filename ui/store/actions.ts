@@ -7536,7 +7536,7 @@ export async function getLayer1GasFeeValue({
  * @returns The subscription response.
  */
 export async function submitShieldClaim(params: {
-  chainId: number;
+  chainId: string;
   email: string;
   impactedWalletAddress: string;
   impactedTransactionHash: string;
