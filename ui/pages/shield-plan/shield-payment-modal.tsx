@@ -77,11 +77,13 @@ export const ShieldPaymentModal = ({
       setSelectedPaymentMethod(selectedMethod);
 
       if (selectedMethod === PAYMENT_TYPES.byCrypto) {
+        // if there are multiple token options, show the asset picker modal
         if (hasMultipleTokenOptions) {
           setShowAssetPickerModal(true);
           return;
         }
 
+        // if there is only one token option, set it as the selected token
         onAssetChange(availableTokenBalances[0]);
       }
 
@@ -118,13 +120,14 @@ export const ShieldPaymentModal = ({
     const tokensSupportedCopy = [...tokensSupported];
     const lastToken = tokensSupportedCopy.pop();
 
+    // multiple tokens to display eg. Insufficient USDC, USDT or mUSD
     if (tokensSupportedCopy.length > 0) {
       return t('shieldPlanNoFunds', [
         tokensSupportedCopy.join(', '),
         lastToken,
       ]);
     }
-
+    // single token to display eg. Insufficient USDC
     return t('shieldPlanNoFundsOneToken', [lastToken]);
   }, [tokensSupported, t]);
 
