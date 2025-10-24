@@ -3,6 +3,9 @@ import { TransactionGroupCategory as GroupCategory } from '../../../../shared/co
 
 export function mapTransactionTypeToCategory(transactionType: TransactionType) {
   switch (transactionType) {
+    // Ported from useTransactionDisplayData
+    case null:
+    case undefined:
     case TransactionType.personalSign:
     case TransactionType.signTypedData:
     case TransactionType.ethDecrypt:
