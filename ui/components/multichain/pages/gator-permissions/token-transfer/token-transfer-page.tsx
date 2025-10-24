@@ -18,22 +18,19 @@ import {
 import { Content, Header, Page } from '../../page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  GATOR_PERMISSIONS,
-  REVIEW_GATOR_PERMISSIONS_ROUTE,
-} from '../../../../../helpers/constants/routes';
+import { REVIEW_GATOR_PERMISSIONS_ROUTE } from '../../../../../helpers/constants/routes';
 import { PermissionGroupListItem } from '../components';
 import {
   AppState,
-  getPermissionGroupDetails,
+  getPermissionGroupMetaData,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
 
 export const TokenTransferPage = () => {
   const t = useI18nContext();
   const history = useHistory();
   const permissionGroupName = 'token-transfer';
-  const permissionGroupDetails = useSelector((state: AppState) =>
-    getPermissionGroupDetails(state, permissionGroupName),
+  const permissionGroupMetaData = useSelector((state: AppState) =>
+    getPermissionGroupMetaData(state, permissionGroupName),
   );
   const handlePermissionGroupItemClick = (chainId: Hex) => {
     history.push(
@@ -42,11 +39,11 @@ export const TokenTransferPage = () => {
   };
 
   const renderPageContent = () =>
-    permissionGroupDetails.map(({ chainId, total }) => {
+    permissionGroupMetaData.map(({ chainId, count }) => {
       const text =
-        total === 1
-          ? t('tokenPermissionCount', [total])
-          : t('tokenPermissionsCount', [total]);
+        count === 1
+          ? t('tokenPermissionCount', [count])
+          : t('tokenPermissionsCount', [count]);
       return (
         <PermissionGroupListItem
           data-testid="permission-group-list-item"
@@ -72,7 +69,7 @@ export const TokenTransferPage = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.IconDefault}
-            onClick={() => history.push(GATOR_PERMISSIONS)}
+            onClick={() => history.goBack()}
             size={ButtonIconSize.Sm}
           />
         }
@@ -86,7 +83,7 @@ export const TokenTransferPage = () => {
         </Text>
       </Header>
       <Content padding={0}>
-        {permissionGroupDetails.length > 0 ? (
+        {permissionGroupMetaData.length > 0 ? (
           renderPageContent()
         ) : (
           <Box
