@@ -43,7 +43,6 @@ import { AccountGroupBalanceChange } from '../assets/account-group-balance-chang
 import {
   getMultichainIsEvm,
   getMultichainShouldShowFiat,
-  getMultichainSelectedAccountCachedBalanceIsZero,
 } from '../../../selectors/multichain';
 import { setPrivacyMode } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -252,11 +251,6 @@ export const CoinOverview = ({
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  // For non-EVM networks, use the multichain balance checker that handles different number systems
-  const multichainBalanceIsZero = useSelector(
-    getMultichainSelectedAccountCachedBalanceIsZero,
-  );
-
   // Get formatted tokens and total fiat balance for empty state detection (mainly for EVM)
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
@@ -407,15 +401,13 @@ export const CoinOverview = ({
   const isNotAggregatedFiatBalance =
     !shouldShowFiat || showNativeTokenAsMain || isTestnet;
 
-  // For non-EVM networks, use the reliable multichain balance checker
-  // For EVM networks, use the existing aggregated balance logic
-  const isEmpty = isEvm
-    ? isWalletBalanceEmpty(
-        balance,
-        totalFiatBalance,
-        isNotAggregatedFiatBalance,
-      )
-    : multichainBalanceIsZero;
+  // Use unified balance detection logic for all networks (EVM and non-EVM)
+  // This ensures consistent behavior and uses the same data source as token display
+  const isEmpty = isWalletBalanceEmpty(
+    balance,
+    totalFiatBalance,
+    isNotAggregatedFiatBalance,
+  );
 
   // Only show empty state if:
   // 1. Balance is actually empty (not just loading)
@@ -427,7 +419,7 @@ export const CoinOverview = ({
   // If balance is empty and data is loaded, show the BalanceEmptyState component
   // But NOT on testnets - show normal 0.00 balance display instead
   if (shouldShowEmptyState) {
-    return <BalanceEmptyState className={twMerge('my-4', className)} />;
+    return <BalanceEmptyState className={className} />;
   }
 
   return (
