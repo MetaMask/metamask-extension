@@ -306,7 +306,7 @@ class MultichainAccountDetailsPage {
    */
   async checkRemoveAccountButtonPresent(): Promise<boolean> {
     try {
-      await this.driver.findElement(this.removeAccountButton);
+      await this.driver.findElement(this.removeAccountButton, 3000);
       return true;
     } catch {
       return false;

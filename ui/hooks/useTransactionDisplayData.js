@@ -1,9 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import BigNumber from 'bignumber.js';
 import {
   getAllDetectedTokens,
@@ -23,7 +20,6 @@ import {
   getTokenAddressParam,
   getTokenIdParam,
 } from '../helpers/utils/token-util';
-import { formatDateWithYearContext } from '../helpers/utils/util';
 
 import {
   PENDING_STATUS_HASH,
@@ -83,10 +79,8 @@ const signatureTypes = [
  * @property {string} status - the status of the transaction
  * @property {string} title - the primary title of the tx that will be displayed in the activity list
  * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
- * @property {string} date - the formatted date of the transaction
  * @property {string} displayedStatusKey - the key representing the displayed status of the transaction
  * @property {boolean} isPending - indicates if the transaction is pending
- * @property {boolean} isSubmitted - indicates if the transaction has been submitted
  */
 
 /**
@@ -143,11 +137,9 @@ export function useTransactionDisplayData(transactionGroup) {
 
   const displayedStatusKey = getStatusKey(primaryTransaction);
   const isPending = displayedStatusKey in PENDING_STATUS_HASH;
-  const isSubmitted = displayedStatusKey === TransactionStatus.submitted;
   const mounted = useRef(true);
 
   const primaryValue = primaryTransaction.txParams?.value;
-  const date = formatDateWithYearContext(initialTransaction.time);
 
   let prefix = '-';
   let recipientAddress = to;
@@ -463,7 +455,6 @@ export function useTransactionDisplayData(transactionGroup) {
   return {
     title,
     category,
-    date,
     primaryCurrency:
       type === TransactionType.swap && isPending ? '' : primaryCurrency,
     senderAddress,
@@ -478,7 +469,6 @@ export function useTransactionDisplayData(transactionGroup) {
         : secondaryCurrency,
     displayedStatusKey,
     isPending,
-    isSubmitted,
     detailsTitle,
   };
 }

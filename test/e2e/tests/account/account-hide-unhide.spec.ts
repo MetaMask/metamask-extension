@@ -6,7 +6,9 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
-describe('Account list - hide/unhide functionality', function (this: Suite) {
+// Hide/unhide is not available in BIP44 stage 2
+// eslint-disable-next-line
+describe.skip('Account list - hide/unhide functionality', function (this: Suite) {
   it('hide and unhide account by clicking hide and unhide button', async function () {
     await withFixtures(
       {

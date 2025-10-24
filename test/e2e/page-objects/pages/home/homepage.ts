@@ -3,7 +3,7 @@ import { Driver } from '../../../webdriver/driver';
 import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
-import { getCleanAppState } from '../../../helpers';
+import { getCleanAppState, regularDelayMs } from '../../../helpers';
 
 class HomePage {
   protected driver: Driver;
@@ -17,6 +17,11 @@ class HomePage {
   private readonly backupSecretRecoveryPhraseButton = {
     text: 'Back up now',
     css: '.home-notification__accept-button',
+  };
+
+  private readonly backupRemindMeLaterButton = {
+    tag: 'button',
+    text: 'Remind me later',
   };
 
   private readonly backupSecretRecoveryPhraseNotification = {
@@ -118,6 +123,12 @@ class HomePage {
     await this.driver.assertElementNotPresent(this.tokensTab, {
       waitAtLeastGuard: 500,
     });
+  }
+
+  async clickBackupRemindMeLaterButton(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(
+      this.backupRemindMeLaterButton,
+    );
   }
 
   async closeSurveyToast(surveyName: string): Promise<void> {
@@ -428,7 +439,7 @@ class HomePage {
   async checkNoShieldEntryModalIsDisplayed(): Promise<void> {
     console.log('Check no shield entry modal is displayed on homepage');
     await this.driver.assertElementNotPresent(this.shieldEntryModal, {
-      timeout: 5000,
+      waitAtLeastGuard: regularDelayMs,
     });
   }
 }

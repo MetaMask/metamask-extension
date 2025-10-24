@@ -396,7 +396,7 @@ describe('Multichain network selectors', () => {
   });
 
   describe('selectFirstUnavailableEvmNetwork', () => {
-    it('returns the first EVM network that does not have a status of "available"', () => {
+    it('returns the first EVM Infura-powered network that does not have a status of "available"', () => {
       const mockStateWithMultipleUnavailableNetworks = {
         metamask: {
           enabledNetworkMap: {
@@ -422,7 +422,7 @@ describe('Multichain network selectors', () => {
               nativeCurrency: 'ETH',
               rpcEndpoints: [
                 {
-                  type: RpcEndpointType.Infura,
+                  type: RpcEndpointType.Infura as const,
                   url: 'https://mainnet.infura.io/v3/{infuraProjectId}' as const,
                   networkClientId: 'mainnet' as const,
                 },
@@ -437,7 +437,7 @@ describe('Multichain network selectors', () => {
               nativeCurrency: 'SepoliaETH',
               rpcEndpoints: [
                 {
-                  type: RpcEndpointType.Infura,
+                  type: RpcEndpointType.Infura as const,
                   url: 'https://sepolia.infura.io/v3/{infuraProjectId}' as const,
                   networkClientId: 'sepolia' as const,
                 },
@@ -459,6 +459,74 @@ describe('Multichain network selectors', () => {
         networkName: 'Ethereum Mainnet',
         networkClientId: 'mainnet',
         chainId: '0x1',
+        isInfuraEndpoint: true,
+      });
+    });
+
+    it('returns the first EVM custom network that does not have a status of "available"', () => {
+      const mockStateWithMultipleUnavailableNetworks = {
+        metamask: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              '0x1000': true,
+              '0xaa36a7': true,
+            },
+          },
+          networksMetadata: {
+            'AAAA-BBBB-CCCC-DDDD': {
+              EIPS: {},
+              status: NetworkStatus.Unavailable,
+            },
+            sepolia: {
+              EIPS: {},
+              status: NetworkStatus.Blocked,
+            },
+          },
+          networkConfigurationsByChainId: {
+            '0x1000': {
+              chainId: '0x1000' as const,
+              name: 'Custom Network',
+              nativeCurrency: 'ETH',
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom as const,
+                  url: 'https://custom.network',
+                  networkClientId: 'AAAA-BBBB-CCCC-DDDD' as const,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              blockExplorerUrls: [],
+              defaultBlockExplorerUrlIndex: 0,
+            },
+            '0xaa36a7': {
+              chainId: '0xaa36a7' as const,
+              name: 'Sepolia',
+              nativeCurrency: 'SepoliaETH',
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura as const,
+                  url: 'https://sepolia.infura.io/v3/{infuraProjectId}' as const,
+                  networkClientId: 'sepolia' as const,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              blockExplorerUrls: [],
+              defaultBlockExplorerUrlIndex: 0,
+            },
+          },
+          selectedNetworkClientId: 'AAAA-BBBB-CCCC-DDDD',
+        },
+      };
+
+      expect(
+        selectFirstUnavailableEvmNetwork(
+          mockStateWithMultipleUnavailableNetworks,
+        ),
+      ).toStrictEqual({
+        networkName: 'Custom Network',
+        networkClientId: 'AAAA-BBBB-CCCC-DDDD',
+        chainId: '0x1000',
+        isInfuraEndpoint: false,
       });
     });
 
@@ -488,7 +556,7 @@ describe('Multichain network selectors', () => {
               nativeCurrency: 'ETH',
               rpcEndpoints: [
                 {
-                  type: RpcEndpointType.Infura,
+                  type: RpcEndpointType.Infura as const,
                   url: 'https://mainnet.infura.io/v3/{infuraProjectId}' as const,
                   networkClientId: 'mainnet' as const,
                 },
@@ -503,7 +571,7 @@ describe('Multichain network selectors', () => {
               nativeCurrency: 'SepoliaETH',
               rpcEndpoints: [
                 {
-                  type: RpcEndpointType.Infura,
+                  type: RpcEndpointType.Infura as const,
                   url: 'https://sepolia.infura.io/v3/{infuraProjectId}' as const,
                   networkClientId: 'sepolia' as const,
                 },
@@ -555,7 +623,7 @@ describe('Multichain network selectors', () => {
               nativeCurrency: 'ETH',
               rpcEndpoints: [
                 {
-                  type: RpcEndpointType.Infura,
+                  type: RpcEndpointType.Infura as const,
                   url: 'https://mainnet.infura.io/v3/{infuraProjectId}' as const,
                   networkClientId: 'mainnet' as const,
                 },

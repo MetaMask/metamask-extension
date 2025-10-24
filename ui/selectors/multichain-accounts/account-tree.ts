@@ -858,9 +858,7 @@ export const getIconSeedAddressByAccountGroupId = createDeepEqualSelector(
   [getInternalAccountsFromGroupById],
   (accounts: InternalAccount[]): string => {
     if (!accounts || accounts.length === 0) {
-      throw new Error(
-        'Error in getIconSeedAddressByAccountGroupId: No accounts found in the specified group',
-      );
+      return '';
     }
 
     for (const account of accounts) {
