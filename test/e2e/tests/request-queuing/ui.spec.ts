@@ -8,6 +8,7 @@ import NetworkManager, {
 } from '../../page-objects/pages/network-manager';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import FixtureBuilder from '../../fixture-builder';
+import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
 import {
   withFixtures,
   DAPP_URL,
@@ -625,7 +626,7 @@ describe('Request-queue UI changes', function () {
           driver,
           undefined,
           undefined,
-          '85,000.00',
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
         );
 
         // Open the first dapp
