@@ -44,6 +44,7 @@ describe('Change payment method', () => {
         {...defaultProps}
         hasStableTokenWithBalance={true}
         availableTokenBalances={[]}
+        tokensSupported={['USDC', 'USDT', 'mUSD']}
       />,
       mockStore,
     );
@@ -59,6 +60,7 @@ describe('Change payment method', () => {
         onClose={onCloseStub}
         hasStableTokenWithBalance={true}
         availableTokenBalances={[]}
+        tokensSupported={['USDC', 'USDT', 'mUSD']}
       />,
       mockStore,
     );
@@ -80,6 +82,7 @@ describe('Change payment method', () => {
         setSelectedPaymentMethod={setSelectedPaymentMethodStub}
         hasStableTokenWithBalance={true}
         availableTokenBalances={[]}
+        tokensSupported={['USDC', 'USDT', 'mUSD']}
       />,
       mockStore,
     );
