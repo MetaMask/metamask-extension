@@ -8556,7 +8556,7 @@ export default class MetamaskController extends EventEmitter {
 
   _onUserOperationTransactionUpdated(transactionMeta) {
     this.controllerMessenger.call(
-      'TransactionController:emulateTransactionUpdated',
+      'TransactionController:emulateTransactionUpdate',
       transactionMeta,
     );
   }
