@@ -69,11 +69,18 @@ export function useConfirmationNavigation() {
     [confirmations, navigateToId],
   );
 
-  const navigateNext = useCallback(() => {
-    if (count > 1) {
-      navigateToIndex(1);
-    }
-  }, [count, navigateToIndex]);
+  const navigateNext = useCallback(
+    (confirmationId: string) => {
+      const pendingConfirmations = confirmations.filter(
+        (confirmation) => confirmation.id !== confirmationId,
+      );
+      if (pendingConfirmations.length >= 1) {
+        const index = getIndex(pendingConfirmations[0].id);
+        navigateToIndex(index);
+      }
+    },
+    [confirmations, getIndex, navigateToIndex],
+  );
 
   return {
     confirmations,
