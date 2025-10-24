@@ -38,6 +38,7 @@ import {
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
 import { SubscriptionControllerActions } from '@metamask/subscription-controller';
+import { RootMessenger } from '../../lib/messenger';
 import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
 import {
   SwapsControllerSetApproveTxIdAction,
@@ -47,7 +48,6 @@ import {
   InstitutionalSnapControllerBeforeCheckPendingTransactionHookAction,
   InstitutionalSnapControllerPublishHookAction,
 } from './accounts/institutional-snap-controller-messenger';
-import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions = MessengerActions<TransactionControllerMessenger>;
 

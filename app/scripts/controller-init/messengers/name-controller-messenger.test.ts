@@ -1,9 +1,9 @@
 import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getNameControllerInitMessenger,
   getNameControllerMessenger,
 } from './name-controller-messenger';
-import { getRootMessenger } from '../../lib/messenger';
 
 describe('getNameControllerMessenger', () => {
   it('returns a restricted messenger', () => {

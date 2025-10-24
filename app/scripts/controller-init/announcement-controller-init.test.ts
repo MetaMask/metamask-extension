@@ -1,12 +1,12 @@
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { UI_NOTIFICATIONS } from '../../../shared/notifications';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAnnouncementControllerMessenger,
   AnnouncementControllerMessenger,
 } from './messengers';
-import { getRootMessenger } from '../lib/messenger';
 import { AnnouncementControllerInit } from './announcement-controller-init';
 
 jest.mock('@metamask/announcement-controller');

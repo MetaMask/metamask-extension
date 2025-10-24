@@ -1,9 +1,9 @@
 import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getSignatureControllerMessenger,
   getSignatureControllerInitMessenger,
 } from './signature-controller-messenger';
-import { getRootMessenger } from '../../lib/messenger';
 
 describe('getSignatureControllerMessenger', () => {
   it('returns a restricted messenger', () => {

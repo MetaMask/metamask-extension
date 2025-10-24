@@ -1,9 +1,9 @@
 import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getAccountTrackerControllerInitMessenger,
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
-import { getRootMessenger } from '../../lib/messenger';
 
 describe('getAccountTrackerControllerMessenger', () => {
   it('returns a restricted messenger', () => {

@@ -1,9 +1,9 @@
 import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getBridgeControllerInitMessenger,
   getBridgeControllerMessenger,
 } from './bridge-controller-messenger';
-import { getRootMessenger } from '../../lib/messenger';
 
 describe('getBridgeControllerMessenger', () => {
   it('returns a restricted messenger', () => {

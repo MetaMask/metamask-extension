@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
-import { getUserOperationControllerMessenger } from './user-operation-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
+import { getUserOperationControllerMessenger } from './user-operation-controller-messenger';
 
 describe('getUserOperationControllerMessenger', () => {
   it('returns a restricted messenger', () => {

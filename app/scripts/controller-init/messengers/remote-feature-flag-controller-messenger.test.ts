@@ -1,9 +1,9 @@
 import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getRemoteFeatureFlagControllerMessenger,
   getRemoteFeatureFlagControllerInitMessenger,
 } from './remote-feature-flag-controller-messenger';
-import { getRootMessenger } from '../../lib/messenger';
 
 describe('getRemoteFeatureFlagControllerMessenger', () => {
   it('returns a restricted messenger', () => {

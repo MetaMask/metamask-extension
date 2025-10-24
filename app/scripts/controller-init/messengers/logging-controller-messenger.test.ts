@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
-import { getLoggingControllerMessenger } from './logging-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
+import { getLoggingControllerMessenger } from './logging-controller-messenger';
 
 describe('getLoggingControllerMessenger', () => {
   it('returns a restricted messenger', () => {

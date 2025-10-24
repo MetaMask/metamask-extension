@@ -1,5 +1,6 @@
 import { BridgeController } from '@metamask/bridge-controller';
 import { BRIDGE_API_BASE_URL } from '../../../shared/constants/bridge';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -8,7 +9,6 @@ import {
   getBridgeControllerInitMessenger,
   BridgeControllerInitMessenger,
 } from './messengers';
-import { getRootMessenger } from '../lib/messenger';
 import { BridgeControllerInit } from './bridge-controller-init';
 
 jest.mock('@metamask/bridge-controller');

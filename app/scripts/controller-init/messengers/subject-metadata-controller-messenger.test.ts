@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
-import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
+import { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 
 describe('getSubjectMetadataControllerMessenger', () => {
   it('returns a restricted messenger', () => {

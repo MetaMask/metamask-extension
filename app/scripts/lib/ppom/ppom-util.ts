@@ -27,7 +27,7 @@ import { AppStateController } from '../../controllers/app-state-controller';
 import { sanitizeMessageRecursively } from '../../../../shared/modules/typed-signature';
 import { parseTypedDataMessage } from '../../../../shared/modules/transaction.utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { RootMessenger } from '../../lib/messenger';
+import { RootMessenger } from '../messenger';
 import {
   SecurityAlertResponse,
   GetSecurityAlertsConfig,

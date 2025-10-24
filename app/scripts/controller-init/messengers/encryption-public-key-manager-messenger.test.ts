@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
-import { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
 import { getRootMessenger } from '../../lib/messenger';
+import { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
 
 describe('getEncryptionPublicKeyManagerMessenger', () => {
   it('returns a restricted messenger', () => {

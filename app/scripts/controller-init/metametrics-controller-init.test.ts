@@ -1,11 +1,11 @@
 import MetaMetricsController from '../controllers/metametrics-controller';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getMetaMetricsControllerMessenger,
   MetaMetricsControllerMessenger,
 } from './messengers';
-import { getRootMessenger } from '../lib/messenger';
 import { MetaMetricsControllerInit } from './metametrics-controller-init';
 
 jest.mock('../controllers/metametrics-controller');

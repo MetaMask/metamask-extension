@@ -1,9 +1,9 @@
 import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getDecryptMessageControllerInitMessenger,
   getDecryptMessageControllerMessenger,
 } from './decrypt-message-controller-messenger';
-import { getRootMessenger } from '../../lib/messenger';
 
 describe('getDecryptMessageControllerMessenger', () => {
   it('returns a restricted messenger', () => {

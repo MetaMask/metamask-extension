@@ -1,9 +1,9 @@
 import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getKeyringControllerInitMessenger,
   getKeyringControllerMessenger,
 } from './keyring-controller-messenger';
-import { getRootMessenger } from '../../lib/messenger';
 
 describe('getKeyringControllerMessenger', () => {
   it('returns a restricted messenger', () => {

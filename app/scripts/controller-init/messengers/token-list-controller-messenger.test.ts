@@ -1,9 +1,9 @@
 import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getTokenListControllerInitMessenger,
   getTokenListControllerMessenger,
 } from './token-list-controller-messenger';
-import { getRootMessenger } from '../../lib/messenger';
 
 describe('getTokenListControllerMessenger', () => {
   it('returns a restricted messenger', () => {

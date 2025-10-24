@@ -1,9 +1,9 @@
 import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getCurrencyRateControllerInitMessenger,
   getCurrencyRateControllerMessenger,
 } from './currency-rate-controller-messenger';
-import { getRootMessenger } from '../../lib/messenger';
 
 describe('getCurrencyRateControllerMessenger', () => {
   it('returns a restricted messenger', () => {

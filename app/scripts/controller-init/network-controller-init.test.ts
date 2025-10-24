@@ -6,6 +6,7 @@ import {
 } from '@metamask/messenger';
 import { NetworkController } from '@metamask/network-controller';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -14,7 +15,6 @@ import {
   getNetworkControllerMessenger,
   getNetworkControllerInitMessenger,
 } from './messengers';
-import { getRootMessenger } from '../lib/messenger';
 import {
   ADDITIONAL_DEFAULT_NETWORKS,
   NetworkControllerInit,

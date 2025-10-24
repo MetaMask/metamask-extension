@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
-import { getPhishingControllerMessenger } from './phishing-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
+import { getPhishingControllerMessenger } from './phishing-controller-messenger';
 
 describe('getPhishingControllerMessenger', () => {
   it('returns a restricted messenger', () => {

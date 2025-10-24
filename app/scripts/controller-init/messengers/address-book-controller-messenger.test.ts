@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
-import { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
+import { getAddressBookControllerMessenger } from './address-book-controller-messenger';
 
 describe('getAddressBookControllerMessenger', () => {
   it('returns a restricted messenger', () => {

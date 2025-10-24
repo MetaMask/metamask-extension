@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
-import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
+import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
 
 describe('getOnboardingControllerMessenger', () => {
   it('returns a restricted messenger', () => {

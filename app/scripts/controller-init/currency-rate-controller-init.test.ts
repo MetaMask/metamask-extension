@@ -1,4 +1,5 @@
 import { CurrencyRateController } from '@metamask/assets-controllers';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -7,7 +8,6 @@ import {
   getCurrencyRateControllerInitMessenger,
   CurrencyRateControllerInitMessenger,
 } from './messengers';
-import { getRootMessenger } from '../lib/messenger';
 import { CurrencyRateControllerInit } from './currency-rate-controller-init';
 
 jest.mock('@metamask/assets-controllers', () => ({

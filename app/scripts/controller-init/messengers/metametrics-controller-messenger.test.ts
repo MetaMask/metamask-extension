@@ -3,8 +3,8 @@ import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/metametrics-controller';
-import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
+import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 
 describe('getMetaMetricsControllerMessenger', () => {
   it('returns a restricted messenger', () => {

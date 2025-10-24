@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
-import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 import { getRootMessenger } from '../../lib/messenger';
+import { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 
 describe('getAppMetadataControllerMessenger', () => {
   it('returns a restricted messenger', () => {

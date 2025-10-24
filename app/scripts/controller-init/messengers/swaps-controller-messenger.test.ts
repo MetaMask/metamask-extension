@@ -1,9 +1,9 @@
 import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getSwapsControllerInitMessenger,
   getSwapsControllerMessenger,
 } from './swaps-controller-messenger';
-import { getRootMessenger } from '../../lib/messenger';
 
 describe('getSwapsControllerMessenger', () => {
   it('returns a restricted messenger', () => {

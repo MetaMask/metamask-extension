@@ -1,11 +1,11 @@
 import { AccountsController } from '@metamask/accounts-controller';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   getAccountsControllerMessenger,
   AccountsControllerMessenger,
 } from './messengers';
-import { getRootMessenger } from '../lib/messenger';
 import { AccountsControllerInit } from './accounts-controller-init';
 
 jest.mock('@metamask/accounts-controller');
