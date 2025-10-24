@@ -1,4 +1,5 @@
 import { bigIntToHex, Hex, hexToBigInt } from '@metamask/utils';
+import { DateTime } from 'luxon';
 import {
   DAY,
   FORTNIGHT,
@@ -86,23 +87,20 @@ export function convertAmountPerSecondToAmountPerPeriod(
  * Converts a unix timestamp(in seconds) to a human-readable date format.
  *
  * @param timestamp - The unix timestamp in seconds.
- * @returns The formatted date string in mm/dd/yyyy format.
+ * @returns The formatted date string in mm/dd/yyyy format in local timezone.
  */
 export const convertTimestampToReadableDate = (timestamp: number): string => {
   if (timestamp === 0) {
     return '';
   }
-  const date = new Date(timestamp * 1000); // Convert seconds to milliseconds
 
-  if (isNaN(date.getTime())) {
-    return '';
+  const dateTime = DateTime.fromSeconds(timestamp);
+
+  if (!dateTime.isValid) {
+    throw new Error('Invalid date format');
   }
 
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const year = date.getFullYear();
-
-  return `${month}/${day}/${year}`;
+  return dateTime.toFormat('MM/dd/yyyy');
 };
 
 /**

@@ -1,4 +1,5 @@
 import { bigIntToHex } from '@metamask/utils';
+import { Settings } from 'luxon';
 import {
   DAY,
   FORTNIGHT,
@@ -17,23 +18,15 @@ import {
 } from './time-utils';
 
 describe('time-utils', () => {
-  /**
-   * Helper function to create a timestamp from a date at noon UTC.
-   * Using UTC ensures consistent date values across all timezones.
-   *
-   * @param year - The year
-   * @param month - The month (0-11)
-   * @param day - The day of the month
-   * @returns Unix timestamp in seconds
-   */
-  const createTimestamp = (
-    year: number,
-    month: number,
-    day: number,
-  ): number => {
-    const testDate = Date.UTC(year, month, day, 12, 0, 0);
-    return Math.floor(testDate / 1000);
-  };
+  beforeAll(() => {
+    // Set Luxon to use UTC as the default timezone for consistent test results
+    Settings.defaultZone = 'utc';
+  });
+
+  afterAll(() => {
+    // Reset to system default
+    Settings.defaultZone = 'system';
+  });
 
   describe('getPeriodFrequencyValueTranslationKey', () => {
     it('returns daily frequency for 1 day period', () => {
@@ -150,94 +143,40 @@ describe('time-utils', () => {
   });
 
   describe('convertTimestampToReadableDate', () => {
-    beforeAll(() => {
-      jest.useFakeTimers();
-      jest.setSystemTime(new Date('2024-06-15T12:00:00Z'));
-    });
-
-    afterAll(() => {
-      jest.useRealTimers();
-    });
-
-    it('converts timestamp to mm/dd/yyyy format', () => {
-      const timestamp = createTimestamp(2025, 0, 15);
+    it('should convert a Unix timestamp to mm/dd/yyyy format', () => {
+      const timestamp = 1736271776; // January 7, 2025;
       const result = convertTimestampToReadableDate(timestamp);
-
-      expect(result).toMatch(/^\d{2}\/\d{2}\/\d{4}$/u);
-      const [month, day, year] = result.split('/');
-      expect(month).toBe('01');
-      expect(day).toBe('15');
-      expect(year).toBe('2025');
+      expect(result).toBe('01/07/2025');
     });
 
-    it('returns empty string for timestamp 0', () => {
-      const result = convertTimestampToReadableDate(0);
-      expect(result).toBe('');
-    });
-
-    it('converts timestamp with proper padding', () => {
-      const timestamp = createTimestamp(2024, 2, 5);
+    it('should handle different dates correctly', () => {
+      const timestamp = 1756921376; // September 3, 2025
       const result = convertTimestampToReadableDate(timestamp);
-
-      const [month, day, year] = result.split('/');
-      expect(month).toBe('03');
-      expect(day).toBe('05');
-      expect(year).toBe('2024');
+      expect(result).toBe('09/03/2025');
     });
 
-    it('handles dates at end of month', () => {
-      const timestamp = createTimestamp(2025, 11, 31);
-      const result = convertTimestampToReadableDate(timestamp);
-
-      expect(result).toMatch(/^\d{2}\/\d{2}\/\d{4}$/u);
-      const [month, day, year] = result.split('/');
-      expect(month).toBe('12');
-      expect(day).toBe('31');
-      expect(year).toBe('2025');
-    });
-
-    it('pads single digit months and days with zeros', () => {
-      const timestamp = createTimestamp(2025, 1, 1);
-      const result = convertTimestampToReadableDate(timestamp);
-
-      expect(result).toMatch(/^\d{2}\/\d{2}\/\d{4}$/u);
-      const [month, day] = result.split('/');
-      expect(month).toHaveLength(2);
-      expect(day).toHaveLength(2);
+    it('should throw an error for invalid date format', () => {
+      const timestamp = NaN;
+      expect(() => convertTimestampToReadableDate(timestamp)).toThrow(
+        'Invalid date format',
+      );
     });
   });
 
   describe('extractExpiryToReadableDate', () => {
-    beforeAll(() => {
-      jest.useFakeTimers();
-      jest.setSystemTime(new Date('2024-06-15T12:00:00Z'));
-    });
-
-    afterAll(() => {
-      jest.useRealTimers();
-    });
-
     it('extracts and converts expiry timestamp from rules', () => {
-      const timestamp = createTimestamp(2025, 5, 15);
-
       const rules: GatorPermissionRule[] = [
         {
           type: 'expiry',
           isAdjustmentAllowed: false,
           data: {
-            timestamp,
+            timestamp: 1744588800, // April 14, 2025
           },
         },
       ];
 
       const result = extractExpiryToReadableDate(rules);
-
-      // Verify format and expected date
-      expect(result).toMatch(/^\d{2}\/\d{2}\/\d{4}$/u);
-      const [month, day, year] = result.split('/');
-      expect(month).toBe('06');
-      expect(day).toBe('15');
-      expect(year).toBe('2025');
+      expect(result).toBe('04/14/2025');
     });
 
     it('returns empty string when no expiry rule exists', () => {

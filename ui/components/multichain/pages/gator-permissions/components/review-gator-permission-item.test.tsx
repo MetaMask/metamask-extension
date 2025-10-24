@@ -9,6 +9,7 @@ import {
   Erc20TokenPeriodicPermission,
 } from '@metamask/gator-permissions-controller';
 import { fireEvent } from '@testing-library/react';
+import { Settings } from 'luxon';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
@@ -22,11 +23,22 @@ const store = configureStore({
 });
 
 describe('Permission List Item', () => {
+  beforeAll(() => {
+    // Set Luxon to use UTC as the default timezone for consistent test results
+    Settings.defaultZone = 'utc';
+  });
+
+  afterAll(() => {
+    // Reset to system default
+    Settings.defaultZone = 'system';
+  });
+
   describe('render', () => {
     const mockOnClick = jest.fn();
     const mockNetworkName = 'Ethereum';
     const mockSelectedAccountAddress =
       '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
+    const mockStartTime = 1736271776; // January 7, 2025;
 
     describe('NATIVE token permissions', () => {
       const mockNativeTokenStreamPermission: StoredGatorPermissionSanitized<
@@ -43,7 +55,7 @@ describe('Permission List Item', () => {
               maxAmount: '0x22b1c8c1227a0000', // 2.5 ETH (18 decimals)
               initialAmount: '0x6f05b59d3b20000', // 0.5 ETH (18 decimals)
               amountPerSecond: '0x6f05b59d3b20000', // 0.5 ETH/sec (18 decimals)
-              startTime: 1747699200,
+              startTime: mockStartTime,
               justification:
                 'This is a very important request for streaming allowance for some very important thing',
             },
@@ -69,7 +81,7 @@ describe('Permission List Item', () => {
             data: {
               periodAmount: '0x6f05b59d3b20000', // 0.5 ETH per week (18 decimals)
               periodDuration: 604800, // 1 week in seconds
-              startTime: 1747699200,
+              startTime: mockStartTime,
               justification:
                 'This is a very important request for periodic allowance',
             },
@@ -132,7 +144,7 @@ describe('Permission List Item', () => {
         // Verify start date is rendered
         const startDate = getByTestId('review-gator-permission-start-date');
         expect(startDate).toBeInTheDocument();
-        expect(startDate).toHaveTextContent('05/19/2025');
+        expect(startDate).toHaveTextContent('01/07/2025');
 
         // Verify expiration date is rendered
         const expirationDate = getByTestId(
@@ -179,7 +191,7 @@ describe('Permission List Item', () => {
         // Verify start date is rendered
         const startDate = getByTestId('review-gator-permission-start-date');
         expect(startDate).toBeInTheDocument();
-        expect(startDate).toHaveTextContent('05/19/2025');
+        expect(startDate).toHaveTextContent('01/07/2025');
 
         // Verify expiration date is rendered
         const expirationDate = getByTestId(
@@ -214,7 +226,7 @@ describe('Permission List Item', () => {
               tokenAddress: mockTokenAddress, // WBTC with 8 decimals
               periodAmount: '0x2faf080', // 0.5 WBTC per week (8 decimals)
               periodDuration: 604800, // 1 week in seconds
-              startTime: 1747699200,
+              startTime: mockStartTime,
               justification:
                 'This is a very important request for ERC20 periodic allowance',
             },
@@ -242,7 +254,7 @@ describe('Permission List Item', () => {
               maxAmount: '0xee6b280', // 2.5 WBTC (8 decimals)
               initialAmount: '0x2faf080', // 0.5 WBTC (8 decimals)
               amountPerSecond: '0x2faf080', // 0.5 WBTC/sec (8 decimals)
-              startTime: 1747699200,
+              startTime: mockStartTime,
               justification:
                 'This is a very important request for ERC20 streaming allowance',
             },
@@ -305,7 +317,7 @@ describe('Permission List Item', () => {
         // Verify start date is rendered
         const startDate = getByTestId('review-gator-permission-start-date');
         expect(startDate).toBeInTheDocument();
-        expect(startDate).toHaveTextContent('05/19/2025');
+        expect(startDate).toHaveTextContent('01/07/2025');
 
         // Verify expiration date is rendered
         const expirationDate = getByTestId(
@@ -352,7 +364,7 @@ describe('Permission List Item', () => {
         // Verify start date is rendered
         const startDate = getByTestId('review-gator-permission-start-date');
         expect(startDate).toBeInTheDocument();
-        expect(startDate).toHaveTextContent('05/19/2025');
+        expect(startDate).toHaveTextContent('01/07/2025');
 
         // Verify network name is rendered
         const networkName = getByTestId('review-gator-permission-network-name');
@@ -380,7 +392,7 @@ describe('Permission List Item', () => {
                 maxAmount: '0xee6b280',
                 initialAmount: '0x2faf080',
                 amountPerSecond: '0x2faf080',
-                startTime: 1747699200,
+                startTime: mockStartTime,
                 justification: 'Test unknown token',
               },
             },

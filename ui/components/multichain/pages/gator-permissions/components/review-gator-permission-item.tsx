@@ -190,9 +190,10 @@ export const ReviewGatorPermissionItem = ({
       return {
         amountLabel: {
           translationKey: 'gatorPermissionsStreamingAmountLabel',
-          value: decimals
-            ? `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`
-            : t('gatorPermissionUnknownTokenAmount'),
+          value:
+            decimals === null
+              ? t('gatorPermissionUnknownTokenAmount')
+              : `${getDecimalizedHexValue(amountPerPeriod, decimals)} ${symbol}`,
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
@@ -203,22 +204,24 @@ export const ReviewGatorPermissionItem = ({
         expandedDetails: {
           initialAllowance: {
             translationKey: 'gatorPermissionsInitialAllowance',
-            value: decimals
-              ? `${getDecimalizedHexValue(
-                  permission.data.initialAmount || '0x0',
-                  decimals,
-                )} ${symbol}`
-              : t('gatorPermissionUnknownTokenAmount'),
+            value:
+              decimals === null
+                ? t('gatorPermissionUnknownTokenAmount')
+                : `${getDecimalizedHexValue(
+                    permission.data.initialAmount || '0x0',
+                    decimals,
+                  )} ${symbol}`,
             testId: 'review-gator-permission-initial-allowance',
           },
           maxAllowance: {
             translationKey: 'gatorPermissionsMaxAllowance',
-            value: decimals
-              ? `${getDecimalizedHexValue(
-                  permission.data.maxAmount || '0x0',
-                  decimals,
-                )} ${symbol}`
-              : t('gatorPermissionUnknownTokenAmount'),
+            value:
+              decimals === null
+                ? t('gatorPermissionUnknownTokenAmount')
+                : `${getDecimalizedHexValue(
+                    permission.data.maxAmount || '0x0',
+                    decimals,
+                  )} ${symbol}`,
             testId: 'review-gator-permission-max-allowance',
           },
           startDate: {
@@ -239,12 +242,13 @@ export const ReviewGatorPermissionItem = ({
           },
           streamRate: {
             translationKey: 'gatorPermissionsStreamRate',
-            value: decimals
-              ? `${getDecimalizedHexValue(
-                  permission.data.amountPerSecond,
-                  decimals,
-                )} ${symbol}/sec`
-              : t('gatorPermissionUnknownTokenAmount'),
+            value:
+              decimals === null
+                ? t('gatorPermissionUnknownTokenAmount')
+                : `${getDecimalizedHexValue(
+                    permission.data.amountPerSecond,
+                    decimals,
+                  )} ${symbol}/sec`,
             testId: 'review-gator-permission-stream-rate',
           },
         },
@@ -267,12 +271,13 @@ export const ReviewGatorPermissionItem = ({
       return {
         amountLabel: {
           translationKey: 'amount',
-          value: decimals
-            ? `${getDecimalizedHexValue(
-                permission.data.periodAmount,
-                decimals,
-              )} ${symbol}`
-            : t('gatorPermissionUnknownTokenAmount'),
+          value:
+            decimals === null
+              ? t('gatorPermissionUnknownTokenAmount')
+              : `${getDecimalizedHexValue(
+                  permission.data.periodAmount,
+                  decimals,
+                )} ${symbol}`,
           testId: 'review-gator-permission-amount-label',
         },
         frequencyLabel: {
