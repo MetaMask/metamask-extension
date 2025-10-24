@@ -239,6 +239,18 @@ const ShieldPlan = () => {
       subscriptionPricing,
     ]);
 
+  const tokensSupported = useMemo(() => {
+    const chainsAndTokensSupported = cryptoPaymentMethod?.chains ?? [];
+
+    return [
+      ...new Set(
+        chainsAndTokensSupported.flatMap((chain) =>
+          chain.tokens.map((token) => token.symbol),
+        ),
+      ),
+    ];
+  }, [cryptoPaymentMethod?.chains]);
+
   const loading =
     subscriptionsLoading ||
     subscriptionPricingLoading ||
@@ -357,7 +369,7 @@ const ShieldPlan = () => {
                       className="shield-plan-page__save-badge"
                     >
                       <Text
-                        variant={TextVariant.bodyXs}
+                        variant={TextVariant.bodyXsMedium}
                         color={TextColor.iconInverse}
                       >
                         {t('shieldPlanSave')}
@@ -464,6 +476,7 @@ const ShieldPlan = () => {
               setSelectedPaymentMethod={setSelectedPaymentMethod}
               onAssetChange={setSelectedToken}
               availableTokenBalances={availableTokenBalances}
+              tokensSupported={tokensSupported}
             />
           </Content>
           <Footer
