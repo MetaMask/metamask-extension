@@ -117,20 +117,20 @@ export const AccountOverviewLayout = ({
 
   return (
     <>
-      <div className="account-overview__balance-wrapper">
+      <div className="account-overview__balance-wrapper flex flex-col p-4 gap-4">
         <NetworkConnectionBanner />
         {children}
+
+        {isCarouselEnabled && (
+          <CarouselWithEmptyState
+            slides={slides}
+            isLoading={isLoading}
+            onSlideClick={handleCarouselClick}
+            onSlideClose={handleRemoveSlide}
+            onRenderSlides={handleRenderSlides}
+          />
+        )}
       </div>
-      {isCarouselEnabled && (
-        <CarouselWithEmptyState
-          slides={slides}
-          isLoading={isLoading}
-          onSlideClick={handleCarouselClick}
-          onSlideClose={handleRemoveSlide}
-          onRenderSlides={handleRenderSlides}
-          className="mb-3 px-4"
-        />
-      )}
       <AccountOverviewTabs {...tabsProps}></AccountOverviewTabs>
       {showCreateSolanaAccountModal && (
         <CreateSolanaAccountModal
