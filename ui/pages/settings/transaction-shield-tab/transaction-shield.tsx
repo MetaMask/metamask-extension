@@ -597,6 +597,7 @@ const TransactionShield = () => {
       {membershipErrorBanner}
       <Box className="transaction-shield-page__container" marginBottom={4}>
         <Box
+          data-theme={ThemeType.dark}
           className={classnames(
             'transaction-shield-page__row transaction-shield-page__membership',
             {
@@ -617,7 +618,6 @@ const TransactionShield = () => {
             gap={showSkeletonLoader ? 2 : 0}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            data-theme={ThemeType.dark}
           >
             {showSkeletonLoader ? (
               <Skeleton width="60%" height={20} />

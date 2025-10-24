@@ -502,6 +502,9 @@ describe('ConfirmFooter', () => {
 
           // It will navigate to transaction confirmation
           expect(navigateNextMock).toHaveBeenCalledTimes(1);
+          expect(navigateNextMock).toHaveBeenCalledWith(
+            addEthereumChainApproval.id,
+          );
         },
       );
     });
