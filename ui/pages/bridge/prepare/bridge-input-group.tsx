@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -72,8 +73,10 @@ export const BridgeInputGroup = ({
   buttonProps,
   containerProps = {},
   isDestinationToken = false,
+  lockdown = false,
 }: {
   amountInFiat?: string;
+  lockdown?: boolean;
   onAmountChange?: (value: string) => void;
   token: BridgeToken | null;
   buttonProps: { testId: string };
@@ -231,41 +234,62 @@ export const BridgeInputGroup = ({
           }}
           {...amountFieldProps}
         />
-        <AssetPicker
-          header={header}
-          visibleTabs={[TabName.TOKENS]}
-          asset={(token as never) ?? undefined}
-          onAssetChange={onAssetChange}
-          networkProps={networkProps}
-          customTokenListGenerator={customTokenListGenerator}
-          isTokenListLoading={isTokenListLoading}
-          isMultiselectEnabled={isMultiselectEnabled}
-          isDestinationToken={isDestinationToken}
-        >
-          {(onClickHandler, networkImageSrc) =>
-            isAmountReadOnly && !token ? (
-              <Button
-                data-testid={buttonProps.testId}
-                onClick={onClickHandler}
-                size={ButtonSize.Lg}
-                paddingLeft={6}
-                paddingRight={6}
-                fontWeight={FontWeight.Normal}
-                style={{ whiteSpace: 'nowrap' }}
-              >
-                {t('swapSwapTo')}
-              </Button>
-            ) : (
-              <BridgeAssetPickerButton
-                onClick={onClickHandler}
-                networkImageSrc={networkImageSrc}
-                asset={(token as never) ?? undefined}
-                networkProps={networkProps}
-                data-testid={buttonProps.testId}
-              />
-            )
-          }
-        </AssetPicker>
+
+        {lockdown && token ? (
+          <BridgeAssetPickerButton
+            lockdown={true}
+            asset={(token as never) ?? undefined}
+            networkProps={networkProps}
+            data-testid={buttonProps.testId}
+          />
+        ) : lockdown && !token ? (
+          <Button
+            data-testid={buttonProps.testId}
+            size={ButtonSize.Lg}
+            paddingLeft={6}
+            paddingRight={6}
+            fontWeight={FontWeight.Normal}
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            {t('swapSwapTo')}
+          </Button>
+        ) : (
+          <AssetPicker
+            header={header}
+            visibleTabs={[TabName.TOKENS]}
+            asset={(token as never) ?? undefined}
+            onAssetChange={onAssetChange}
+            networkProps={networkProps}
+            customTokenListGenerator={customTokenListGenerator}
+            isTokenListLoading={isTokenListLoading}
+            isMultiselectEnabled={isMultiselectEnabled}
+            isDestinationToken={isDestinationToken}
+          >
+            {(onClickHandler, networkImageSrc) =>
+              isAmountReadOnly && !token ? (
+                <Button
+                  data-testid={buttonProps.testId}
+                  onClick={onClickHandler}
+                  size={ButtonSize.Lg}
+                  paddingLeft={6}
+                  paddingRight={6}
+                  fontWeight={FontWeight.Normal}
+                  style={{ whiteSpace: 'nowrap' }}
+                >
+                  {t('swapSwapTo')}
+                </Button>
+              ) : (
+                <BridgeAssetPickerButton
+                  onClick={onClickHandler}
+                  networkImageSrc={networkImageSrc}
+                  asset={(token as never) ?? undefined}
+                  networkProps={networkProps}
+                  data-testid={buttonProps.testId}
+                />
+              )
+            }
+          </AssetPicker>
+        )}
       </Row>
 
       <Row justifyContent={JustifyContent.spaceBetween} style={{ height: 24 }}>

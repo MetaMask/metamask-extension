@@ -6,6 +6,8 @@ import type { Hex } from '@metamask/utils';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { Button } from 'selenium-webdriver';
+import { useHistory } from 'react-router-dom';
 import { Box, ButtonLink, IconName } from '../../component-library';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -349,6 +351,8 @@ export const CoinOverview = ({
       />
     );
   }
+  const history = useHistory();
+
   return (
     <WalletOverview
       balance={
@@ -368,6 +372,19 @@ export const CoinOverview = ({
                 </span>
               )}
             </div>
+            <div>
+              Test button:
+              <button
+                onClick={() => {
+                  history.push(
+                    '/cross-chain/swaps/prepare-swap-page?from=eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&to=eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da&lockdown=true',
+                  );
+                }}
+              >
+                Swap USDC for MUSD
+              </button>
+            </div>
+
             {renderPercentageAndAmountChange()}
           </div>
         </Tooltip>

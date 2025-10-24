@@ -27,6 +27,7 @@ import {
   setFromToken,
   setFromTokenInputValue,
   setToToken,
+  setLockdown,
 } from '../../ducks/bridge/actions';
 import {
   getFromAccount,
@@ -133,6 +134,10 @@ export const useBridgeQueryParams = () => {
     );
     const searchParamsTo = parseAsset(searchParams.get(BridgeQueryParams.TO));
     const searchParamsAmount = searchParams.get(BridgeQueryParams.AMOUNT);
+    const searchParamsLockdown = searchParams.get(BridgeQueryParams.LOCKDOWN);
+    if (searchParamsLockdown) {
+      dispatch(setLockdown(searchParamsLockdown === 'true'));
+    }
 
     if (searchParamsFrom || searchParamsTo || searchParamsAmount) {
       setParsedToAssetId(searchParamsTo);

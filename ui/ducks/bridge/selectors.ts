@@ -400,6 +400,9 @@ export const getToToken = createSelector(
   },
 );
 
+export const getLockdown = (state: BridgeAppState): boolean | undefined =>
+  Boolean(state.bridge.lockdown);
+
 export const getFromAmount = (state: BridgeAppState): string | null =>
   state.bridge.fromTokenInputValue;
 

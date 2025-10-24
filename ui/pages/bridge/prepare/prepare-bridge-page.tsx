@@ -22,6 +22,7 @@ import {
   type BridgeController,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -56,6 +57,7 @@ import {
   getFromAccount,
   getIsStxEnabled,
   getIsGasIncluded,
+  getLockdown,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -116,6 +118,12 @@ import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
+import { useAvailableTokenBalances } from '../../../hooks/subscription/useSubscriptionPricing';
+import {
+  AssetWithDisplayData,
+  ERC20Asset,
+  NativeAsset,
+} from '../../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -178,7 +186,7 @@ const PrepareBridgePage = ({
   const fromTokens = useSelector(getTokenList) as TokenListMap;
 
   const toToken = useSelector(getToToken);
-
+  const lockdown = useSelector(getLockdown);
   const fromChains = useSelector(getFromChains);
   const toChains = useSelector(getToChains);
   const toChain = useSelector(getToChain);
@@ -267,6 +275,29 @@ const PrepareBridgePage = ({
     isDestinationAccountPickerOpen,
     setIsDestinationAccountPickerOpen,
   } = useDestinationAccount();
+
+  // if lockdown is true, we should only show USDT/USDC with balance
+
+  const availableTokenBalances = useAvailableTokenBalances({
+    productType: PRODUCT_TYPES.SHIELD,
+  });
+  // Create custom token list generator that filters for USDT/USDC with balance
+  const customTokenListGenerator = useMemo(() => {
+    return function* (
+      filterPredicate: (
+        symbol: string,
+        address?: null | string,
+        chainId?: string,
+      ) => boolean,
+    ): Generator<AssetWithDisplayData<ERC20Asset | NativeAsset>> {
+      // Filter for USDT and USDC tokens that have balance
+      for (const token of availableTokenBalances) {
+        if (filterPredicate(token.symbol, token.address, token.chainId)) {
+          yield token;
+        }
+      }
+    };
+  }, [availableTokenBalances]);
 
   const {
     filteredTokenListGenerator: toTokenListGenerator,
@@ -488,6 +519,8 @@ const PrepareBridgePage = ({
     return t('swapSelectToken');
   };
 
+  console.log('lockdown', lockdown);
+
   return (
     <>
       <DestinationAccountPickerModal
@@ -507,6 +540,9 @@ const PrepareBridgePage = ({
           onAmountChange={(e) => {
             dispatch(setFromTokenInputValue(e));
           }}
+          customTokenListGenerator={
+            lockdown ? customTokenListGenerator : undefined
+          }
           onAssetChange={(token) => {
             const bridgeToken = {
               ...token,
@@ -687,6 +723,7 @@ const PrepareBridgePage = ({
           />
 
           <BridgeInputGroup
+            lockdown={lockdown}
             header={getToInputHeader()}
             token={toToken}
             onAssetChange={(token) => {

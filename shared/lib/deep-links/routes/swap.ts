@@ -6,6 +6,9 @@ export enum BridgeQueryParams {
    * @deprecated not needed anymore since default value is true
    */
   SWAPS = 'swaps',
+  /**
+   * This is the amount of the token to bridge or swap from
+   */
   AMOUNT = 'amount',
   /**
    * This is the Caip asset type of the token to bridge or swap from
@@ -15,9 +18,11 @@ export enum BridgeQueryParams {
    * This is the Caip asset type of the token to bridge or swap to
    */
   TO = 'to',
+
   /**
-   * This is the amount of the token to bridge or swap from
+   * Do not allow the user to change the from and to tokens
    */
+  LOCKDOWN = 'lockdown',
 }
 
 export default new Route({
@@ -29,6 +34,7 @@ export default new Route({
     const from = params.get(BridgeQueryParams.FROM);
     const to = params.get(BridgeQueryParams.TO);
     const amount = params.get(BridgeQueryParams.AMOUNT);
+    const lockdown = params.get(BridgeQueryParams.LOCKDOWN);
     // add the params to the query if they exist
     let parsedFrom;
     if (from) {
@@ -52,6 +58,10 @@ export default new Route({
     }
     if (amount) {
       query.set(BridgeQueryParams.AMOUNT, amount);
+    }
+
+    if (lockdown) {
+      query.set(BridgeQueryParams.LOCKDOWN, 'true');
     }
 
     return {

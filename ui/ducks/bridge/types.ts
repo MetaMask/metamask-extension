@@ -43,6 +43,7 @@ export type BridgeState = {
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
   slippage?: number;
   txAlert: TxAlert | null;
+  lockdown: string | null;
 };
 
 export type ChainIdPayload = { payload: ChainId | Hex | CaipChainId | null };

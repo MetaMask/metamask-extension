@@ -32,6 +32,7 @@ const initialState: BridgeState = {
   wasTxDeclined: false,
   slippage: BRIDGE_DEFAULT_SLIPPAGE,
   txAlert: null,
+  lockdown: false,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -116,6 +117,11 @@ const bridgeSlice = createSlice({
         state.toToken = null;
       }
     },
+
+    setLockdown: (state, { payload }: { payload: boolean }) => {
+      state.lockdown = payload ? 'true' : 'false';
+    },
+
     setToToken: (state, { payload }: TokenPayload) => {
       const toToken = toBridgeToken(payload);
       state.toToken = toToken

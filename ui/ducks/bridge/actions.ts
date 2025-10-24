@@ -37,6 +37,7 @@ const {
   setToChainId,
   setFromToken,
   setToToken,
+  setLockdown,
   setFromTokenInputValue,
   resetInputFields,
   setSortOrder,
@@ -48,6 +49,7 @@ const {
 
 export {
   setToChainId,
+  setLockdown,
   resetInputFields,
   setToToken,
   setFromToken,

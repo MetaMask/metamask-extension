@@ -29,9 +29,11 @@ export const BridgeAssetPickerButton = ({
   asset,
   networkProps,
   networkImageSrc,
+  lockdown = false,
   ...props
 }: {
   networkImageSrc?: string;
+  lockdown?: boolean;
 } & SelectButtonProps<'div'> &
   Pick<React.ComponentProps<typeof AssetPicker>, 'asset' | 'networkProps'>) => {
   const t = useI18nContext();
@@ -41,6 +43,7 @@ export const BridgeAssetPickerButton = ({
       borderRadius={BorderRadius.pill}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderColor={BorderColor.borderMuted}
+      disabled={lockdown}
       style={{
         padding: 8,
         paddingRight: 11,
