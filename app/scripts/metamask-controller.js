@@ -131,6 +131,8 @@ import { TokenStandard } from '../../shared/constants/transaction';
 import {
   CHAIN_IDS,
   CHAIN_SPEC_URL,
+  FEATURED_NETWORK_CHAIN_IDS,
+  FEATURED_RPCS,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
 } from '../../shared/constants/network';
@@ -865,6 +867,10 @@ export default class MetamaskController extends EventEmitter {
           await this.tokenDetectionController.detectTokens({
             selectedAddress: address,
           });
+
+          // add list of popular networks to the state
+          this._addPopularNetworks();
+          this._enableDefaultNetwork();
         }
       }, this.onboardingController.state),
     );
@@ -4709,6 +4715,39 @@ export default class MetamaskController extends EventEmitter {
         Bitcoin: 0,
         Solana: 0,
       };
+    }
+  }
+
+  /**
+   * Adds popular networks to the network controller.
+   */
+  _addPopularNetworks() {
+    FEATURED_RPCS.forEach((rpc) => {
+      try {
+        this.networkController.addNetwork({
+          ...rpc,
+        });
+      } catch (error) {
+        console.error('error adding popular network', error);
+      }
+    });
+  }
+
+  /**
+   * Enables the default network based on the current environment.
+   */
+  _enableDefaultNetwork() {
+    if (process.env.IN_TEST) {
+      this.networkEnablementController.enableNetwork(CHAIN_IDS.LOCALHOST);
+    } else if (
+      process.env.METAMASK_DEBUG ||
+      process.env.METAMASK_ENVIRONMENT === 'test'
+    ) {
+      this.networkEnablementController.enableNetwork(CHAIN_IDS.SEPOLIA);
+    } else {
+      this.networkEnablementController.enableNetwork(
+        FEATURED_NETWORK_CHAIN_IDS,
+      );
     }
   }
 
