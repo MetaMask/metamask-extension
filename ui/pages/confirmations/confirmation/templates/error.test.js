@@ -18,10 +18,10 @@ const mockApproval = {
     header: [
       {
         key: 'headerText',
-        name: 'Typography',
+        name: 'Text',
         children: 'Error mock',
         properties: {
-          variant: 'h2',
+          variant: 'TextVariant.headingMd',
           class: 'header-mock-class',
         },
       },

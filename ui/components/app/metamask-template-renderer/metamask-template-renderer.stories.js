@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  TextColor,
-  TypographyVariant,
-} from '../../../helpers/constants/design-system';
+import { TextColor } from '../../../helpers/constants/design-system';
 import MetaMaskTemplateRenderer from '.';
 
 export default {
@@ -24,24 +21,6 @@ const SECTIONS = {
     borderWidth: 2,
   },
   children: [
-    {
-      element: 'Typography',
-      key: 'A Test String',
-      children: 'A Test String',
-      props: {
-        color: TextColor.textMuted,
-        variant: TypographyVariant.H2,
-      },
-    },
-    {
-      element: 'Typography',
-      key: 'Some more text',
-      children: 'Some more text as a paragraph',
-      props: {
-        color: TextColor.textAlternative,
-        variant: TypographyVariant.paragraph,
-      },
-    },
     {
       element: 'TruncatedDefinitionList',
       key: 'TDL',

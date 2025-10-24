@@ -3,7 +3,8 @@ import {
   JustifyContent,
   SEVERITIES,
   TextColor,
-  TypographyVariant,
+  TextVariant,
+  AlignItems,
 } from '../../../../helpers/constants/design-system';
 
 const PENDING_TX_DROP_NOTICE = {
@@ -32,30 +33,26 @@ function getValues(pendingApproval, t, actions) {
   return {
     content: [
       {
-        element: 'Typography',
+        element: 'Text',
         key: 'title',
         children: t('switchEthereumChainConfirmationTitle'),
         props: {
-          variant: TypographyVariant.H3,
-          align: 'center',
+          variant: TextVariant.headingSm,
+          alignItems: AlignItems.center,
           fontWeight: 'normal',
-          boxProps: {
-            margin: [0, 0, 2],
-            padding: [0, 4, 0, 4],
-          },
+          margin: [0, 0, 2],
+          padding: [0, 4, 0, 4],
         },
       },
       {
-        element: 'Typography',
+        element: 'Text',
         key: 'description',
         children: t('switchEthereumChainConfirmationDescription'),
         props: {
-          variant: TypographyVariant.H7,
+          variant: TextVariant.bodySm,
           color: TextColor.textAlternative,
-          align: 'center',
-          boxProps: {
-            padding: [0, 4, 0, 4],
-          },
+          alignItems: AlignItems.center,
+          padding: [0, 4, 0, 4],
         },
       },
       {

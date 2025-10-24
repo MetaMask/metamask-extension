@@ -99,15 +99,15 @@ TransactionDetailItem.propTypes = {
    */
   'data-testid': PropTypes.string,
   /**
-   * Detail title text wrapped in Typography component.
+   * Detail title text wrapped in Text component.
    */
   detailTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * Text to show on the left of the detailTotal. Wrapped in Typography component.
+   * Text to show on the left of the detailTotal. Wrapped in Text component.
    */
   detailText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * Total amount to show. Wrapped in Typography component.
+   * Total amount to show. Wrapped in Text component.
    */
   detailTotal: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
@@ -119,7 +119,7 @@ TransactionDetailItem.propTypes = {
    */
   subTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**
-   * Text to show under detailTotal. Wrapped in Typography component.
+   * Text to show under detailTotal. Wrapped in Text component.
    */
   subText: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   /**

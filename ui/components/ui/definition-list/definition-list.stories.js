@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Size,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import DefinitionList from './definition-list';
 
@@ -86,9 +86,9 @@ export const WithTypographyControl = (args) => (
 
 WithTypographyControl.args = {
   dictionary: advanced,
-  termTypographyVariant: TypographyVariant.H6,
+  termTypographyVariant: TextVariant.bodySm,
   termTypographyColor: TextColor.textDefault,
-  definitionTypographyVariant: TypographyVariant.H6,
+  definitionTypographyVariant: TextVariant.bodySm,
   definitionTypographyColor: TextColor.textDefault,
 };
 
@@ -97,7 +97,7 @@ WithTypographyControl.argTypes = {
   termTypographyVariant: {
     control: 'select',
     name: 'Term Variant',
-    options: Object.values(TypographyVariant),
+    options: Object.values(TextVariant),
   },
   termTypographyColor: {
     control: 'select',
@@ -107,7 +107,7 @@ WithTypographyControl.argTypes = {
   definitionTypographyVariant: {
     control: 'select',
     name: 'Definition Variant',
-    options: Object.values(TypographyVariant),
+    options: Object.values(TextVariant),
   },
   definitionTypographyColor: {
     control: 'select',
