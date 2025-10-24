@@ -3,9 +3,11 @@ import { Driver } from '../../../../webdriver/driver';
 class UpdateNetworkConfirmation {
   private readonly driver: Driver;
 
-  private readonly approveButton = { testId: 'confirmation-submit-button' };
+  private readonly approveButton = { testId: 'confirm-footer-button' };
 
-  private readonly cancelButton = { testId: 'confirmation-cancel-button' };
+  private readonly cancelButton = { testId: 'confirm-footer-cancel-button' };
+
+  private readonly alertModalButton = { testId: 'alert-modal-button' };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -18,7 +20,6 @@ class UpdateNetworkConfirmation {
     try {
       await this.driver.waitForSelector({
         text: `Update ${networkName}`,
-        tag: 'h3',
       });
     } catch (e) {
       console.log(
@@ -63,11 +64,17 @@ class UpdateNetworkConfirmation {
     return true;
   }
 
-  async checkWarningMessageIsDisplayed(message: string) {
+  async checkWarningMessageIsDisplayed(key: string, message: string) {
     console.log(
       `Checking if warning message ${message} is displayed on update network confirmation page`,
     );
-    await this.driver.waitForSelector({ text: message });
+    await this.driver.clickElement({
+      xpath: `//*[@data-testid="inline-alert" and @data-alert-key="${key}"]`,
+    });
+    await this.driver.waitForSelector({
+      text: message,
+    });
+    await this.driver.clickElementAndWaitToDisappear(this.alertModalButton);
   }
 }
 

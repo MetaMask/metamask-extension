@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.7.0",
+  "version": "13.8.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -854,7 +854,7 @@
       "@metamask/streams": false
     }
   },
-  "packageManager": "yarn@4.9.4",
+  "packageManager": "yarn@4.10.3",
   "foundryup": {
     "binaries": [
       "anvil"
