@@ -5692,10 +5692,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:1.4.0"
-  checksum: 10/6c2bd60849bfa9147b56dba88754eb775f3654c026b99c718e3099a172736fb640adecbc006cf8bb4a2374ff1c4956bae704063b7b350f45794db6a877d438ad
+"@metamask/bitcoin-wallet-snap@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@metamask/bitcoin-wallet-snap@npm:1.4.1"
+  checksum: 10/79eecf8dae10b7c6ed1a3619a77f7855c7deb723fe29fc23082007bca3ce62e3ff1d6b1cb6882ac22ef3305b4b6062cf8a894fe80a64455f22889bbfb9a089dc
   languageName: node
   linkType: hard
 
