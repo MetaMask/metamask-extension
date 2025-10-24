@@ -328,13 +328,25 @@ export const getToChain = createSelector(
     getToChains,
     (state: BridgeAppState) => state.bridge?.toChainId,
   ],
-  (fromChain, toChains, toChainId) =>
-    toChainId
-      ? toChains.find(
-          ({ chainId }) =>
-            chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
-        )
-      : fromChain,
+  (fromChain, toChains, toChainId) => {
+    // If user has explicitly selected a destination, use it
+    if (toChainId) {
+      return toChains.find(
+        ({ chainId }) =>
+          chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
+      );
+    }
+
+    // Bitcoin can only bridge to EVM chains, not to Bitcoin
+    // So if source is Bitcoin, default to first available EVM chain instead
+    // If no chains are available, leave the chain unselected.
+    if (fromChain && isBitcoinChainId(fromChain.chainId)) {
+      return toChains[0] ?? undefined;
+    }
+
+    // For all other chains, default to same chain (swap mode)
+    return fromChain;
+  },
 );
 
 export const getDefaultTokenPair = createDeepEqualSelector(
