@@ -98,6 +98,7 @@ describe('AccountTrackerControllerInit', () => {
       includeStakedAssets: false,
       allowExternalServices: expect.any(Function),
       accountsApiChainIds: expect.any(Function),
+      fetchingEnabled: expect.any(Function),
     });
   });
 
