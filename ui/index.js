@@ -2,6 +2,7 @@ import copyToClipboard from 'copy-to-clipboard';
 import log from 'loglevel';
 import React from 'react';
 import { render } from 'react-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
@@ -50,6 +51,17 @@ export {
 const METHOD_START_UI_SYNC = 'startUISync';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
+
+// Create a QueryClient instance for React Query
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      cacheTime: 1000 * 60 * 10, // 10 minutes
+      refetchOnWindowFocus: false, // Disable refetch on window focus for extension context
+    },
+  },
+});
 
 /**
  * @type {PromiseWithResolvers<ReturnType<typeof configureStore>>}
@@ -228,7 +240,12 @@ async function startApp(metamaskState, opts) {
   );
 
   trace({ name: TraceName.FirstRender, parentContext: traceContext }, () =>
-    render(<Root store={store} />, opts.container),
+    render(
+      <QueryClientProvider client={queryClient}>
+        <Root store={store} />
+      </QueryClientProvider>,
+      opts.container,
+    ),
   );
 
   return store;

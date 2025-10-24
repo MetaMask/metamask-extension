@@ -12,16 +12,17 @@ import { TransactionType } from '@metamask/transaction-controller';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
-import {
-  nonceSortedCompletedTransactionsSelectorAllChains,
-  nonceSortedPendingTransactionsSelectorAllChains,
-} from '../../../selectors/transactions';
+// import {
+//   nonceSortedCompletedTransactionsSelectorAllChains,
+//   nonceSortedPendingTransactionsSelectorAllChains,
+// } from '../../../selectors/transactions';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
-  getSelectedMultichainNetworkChainId,
-  getEnabledNetworks,
+  // getSelectedMultichainNetworkChainId,
+  // getEnabledNetworks,
 } from '../../../selectors';
+import { usePolledTransactions } from '../../../hooks/usePolledTransactions';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import MultichainBridgeTransactionListItem from '../multichain-bridge-transaction-list-item/multichain-bridge-transaction-list-item';
 import MultichainBridgeTransactionDetailsModal from '../multichain-bridge-transaction-details-modal/multichain-bridge-transaction-details-modal';
@@ -36,7 +37,7 @@ import {
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import {
-  getAllEnabledNetworksForAllNamespaces,
+  // getAllEnabledNetworksForAllNamespaces,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   getSelectedMultichainNetworkConfiguration,
   ///: END:ONLY_INCLUDE_IF
@@ -91,15 +92,15 @@ import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multich
 ///: END:ONLY_INCLUDE_IF
 // eslint-disable-next-line import/no-restricted-paths
 import AssetListControlBar from '../assets/asset-list/asset-list-control-bar';
-import {
-  startIncomingTransactionPolling,
-  stopIncomingTransactionPolling,
-} from '../../../store/controller-actions/transaction-controller';
+// import {
+//   startIncomingTransactionPolling,
+//   stopIncomingTransactionPolling,
+// } from '../../../store/controller-actions/transaction-controller';
 import {
   selectBridgeHistoryForAccountGroup,
   selectBridgeHistoryItemForTxMetaId,
 } from '../../../ducks/bridge-status/selectors';
-import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
+// import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
 import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
 
 const PAGE_DAYS_INCREMENT = 10;
@@ -364,7 +365,7 @@ export const groupAnyTransactionsByDate = (items) =>
     },
     true,
   );
-
+/*
 function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
   const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
   const filteredUniqueNonEvmChainIds =
@@ -395,16 +396,18 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
     nonEvmChainIds: filteredUniqueNonEvmChainIds,
   };
 }
+  */
 export default function UnifiedTransactionList({
-  hideTokenTransactions,
-  tokenAddress,
+  // hideTokenTransactions,
+  // tokenAddress,
   boxProps,
   hideNetworkFilter,
-  tokenChainIdOverride,
+  // tokenChainIdOverride,
 }) {
   const [daysLimit, setDaysLimit] = useState(PAGE_DAYS_INCREMENT);
   const t = useI18nContext();
   const selectedAccount = useSelector(getSelectedAccount);
+  /*
   const enabledNetworks = useSelector(getEnabledNetworks);
 
   const { evmChainIds, nonEvmChainIds } = getFilteredChainIds(
@@ -412,19 +415,21 @@ export default function UnifiedTransactionList({
     tokenChainIdOverride,
   );
 
+  */
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
-  const nonEvmTransactions = useSelector((state) =>
-    getSelectedAccountGroupMultichainTransactions(state, nonEvmChainIds),
-  );
+  // const nonEvmTransactions = useSelector((state) =>
+  //   getSelectedAccountGroupMultichainTransactions(state, nonEvmChainIds),
+  // );
 
-  const nonEvmTransactionsForToken = useMemo(
-    () => filterNonEvmTxByToken(nonEvmTransactions, tokenAddress),
-    [nonEvmTransactions, tokenAddress],
-  );
+  // const nonEvmTransactionsForToken = useMemo(
+  //   () => filterNonEvmTxByToken(nonEvmTransactions, tokenAddress),
+  //   [nonEvmTransactions, tokenAddress],
+  // );
   ///: END:ONLY_INCLUDE_IF
 
+  /*
   const unfilteredPendingTransactionsAllChains = useSelector(
     nonceSortedPendingTransactionsSelectorAllChains,
   );
@@ -502,6 +507,7 @@ export default function UnifiedTransactionList({
   ]);
   const groupedUnifiedActivityItems =
     groupAnyTransactionsByDate(unifiedActivityItems);
+  */
 
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
@@ -514,17 +520,17 @@ export default function UnifiedTransactionList({
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const showRampsCard = isBuyableChain && balanceIsZero;
 
-  useEffect(() => {
-    stopIncomingTransactionPolling();
-    startIncomingTransactionPolling();
+  // useEffect(() => {
+  //   stopIncomingTransactionPolling();
+  //   startIncomingTransactionPolling();
 
-    return () => {
-      stopIncomingTransactionPolling();
-    };
-  }, [
-    // Required to restart polling on new account
-    selectedAccount,
-  ]);
+  //   return () => {
+  //     stopIncomingTransactionPolling();
+  //   };
+  // }, [
+  //   // Required to restart polling on new account
+  //   selectedAccount,
+  // ]);
 
   const viewMore = useCallback(
     () => setDaysLimit((prev) => prev + PAGE_DAYS_INCREMENT),
@@ -645,6 +651,14 @@ export default function UnifiedTransactionList({
   const dateGroupsWithItems = (dateGroup) =>
     dateGroup.transactionGroups.length > 0;
 
+  // Use the polled transactions hook
+  const {
+    processedTransactions: rawPolledItems,
+    // isLoading: isPolling,
+    // error: pollingError,
+  } = usePolledTransactions();
+
+  /*
   const processedUnifiedActivityItems = useMemo(
     () =>
       groupedUnifiedActivityItems
@@ -657,6 +671,25 @@ export default function UnifiedTransactionList({
       removeEmptyEvmItemsFromUnifiedDateGroup,
     ],
   );
+  */
+
+  // Apply the final filtering to the polled data
+  const processedUnifiedActivityItems = useMemo(() => {
+    if (!rawPolledItems || rawPolledItems.length === 0) {
+      return [];
+    }
+    console.log('>>> rawPolledItems', rawPolledItems);
+
+    // Apply the same data massaging as the original
+    return rawPolledItems
+      .map(removeIncomingTxsButToAnotherAddressUnified)
+      .map(removeEmptyEvmItemsFromUnifiedDateGroup)
+      .filter(dateGroupsWithItems);
+  }, [
+    rawPolledItems,
+    removeIncomingTxsButToAnotherAddressUnified,
+    removeEmptyEvmItemsFromUnifiedDateGroup,
+  ]);
 
   return (
     <>

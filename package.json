@@ -426,6 +426,7 @@
     "react-idle-timer": "4.5.6",
     "react-markdown": "^6.0.3",
     "react-popper": "^2.2.3",
+    "react-query": "^3.39.3",
     "react-redux": "^7.2.9",
     "react-responsive-carousel": "^3.2.21",
     "react-router-dom": "^5.3.4",
