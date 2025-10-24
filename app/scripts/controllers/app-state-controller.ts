@@ -517,13 +517,13 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   shieldEndingToastLastClickedOrClosed: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   shieldPausedToastLastClickedOrClosed: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   termsOfUseLastAgreed: {
@@ -565,7 +565,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   showShieldEntryModalOnce: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
 };
