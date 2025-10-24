@@ -3,6 +3,7 @@ name: Post Merge Validation
 on:
   schedule:
     - cron: '0 7 * * *'
+  workflow_dispatch:
 
 jobs:
   post-merge-validation-tracker:
