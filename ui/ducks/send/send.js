@@ -49,7 +49,6 @@ import {
   getIsMainnet,
   getTargetAccount,
   getIsNonStandardEthChain,
-  checkNetworkAndAccountSupports1559,
   getUseTokenDetection,
   getTokenList,
   getAddressBookEntryOrAccountName,
@@ -657,7 +656,8 @@ export const initializeSendState = createAsyncThunk(
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const selectedNetworkClientId = getSelectedNetworkClientId(state);
     const chainId = getCurrentChainId(state);
-    let eip1559support = checkNetworkAndAccountSupports1559(state);
+    let eip1559support =
+      state.metamask.networksMetadata?.[selectedNetworkClientId]?.EIPS?.[1559];
     if (eip1559support === undefined) {
       eip1559support = await getCurrentNetworkEIP1559Compatibility();
     }
