@@ -18,6 +18,7 @@ export const DefaultStory = () => {
         onAssetChange={() => {}}
         hasStableTokenWithBalance={true}
         availableTokenBalances={[]}
+        tokensSupported={['USDC', 'USDT', 'mUSD']}
       />
     </div>
   );

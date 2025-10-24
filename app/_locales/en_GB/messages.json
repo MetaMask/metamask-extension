@@ -1183,6 +1183,13 @@
   "changePasswordWarningDescription": {
     "message": "Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password."
   },
+  "checkNetworkConnectivity": {
+    "message": "Check network connectivity."
+  },
+  "checkNetworkConnectivityOr": {
+    "message": "Check network connectivity, or $1.",
+    "description": "$1 is a link to update the network."
+  },
   "chooseYourNetwork": {
     "message": "Choose your network"
   },
@@ -1940,6 +1947,9 @@
   },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
+  },
+  "deepLink_theRewardsPage": {
+    "message": "the MetaMask Rewards page"
   },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
@@ -2830,6 +2840,9 @@
   },
   "hexDataPlaceholder": {
     "message": "Enter hex data (optional)"
+  },
+  "hidden": {
+    "message": "Hidden"
   },
   "hiddenAccounts": {
     "message": "Hidden accounts"
@@ -4895,6 +4908,9 @@
   "pinToTop": {
     "message": "Pin to top"
   },
+  "pinned": {
+    "message": "Pinned"
+  },
   "pleaseConfirm": {
     "message": "Please confirm"
   },
@@ -5876,6 +5892,9 @@
     "message": "Auto renews for $1 until canceled",
     "description": "The $1 is the price of the monthly plan"
   },
+  "shieldPlanBillingDate": {
+    "message": "Billing date"
+  },
   "shieldPlanCard": {
     "message": "Card"
   },
@@ -5902,7 +5921,12 @@
     "description": "The $1 is the price of the monthly plan"
   },
   "shieldPlanNoFunds": {
-    "message": "No available funds"
+    "message": "Insufficient $1 or $2",
+    "description": "$1 or $2 shows the supported token eg. USDC, USDT or mUSD"
+  },
+  "shieldPlanNoFundsOneToken": {
+    "message": "Insufficient $1",
+    "description": "$1 is the one token supported"
   },
   "shieldPlanPayWith": {
     "message": "Pay with"
