@@ -248,7 +248,7 @@ function normalizeTransactionRequest(
   };
 }
 
-function normalizeSignatureRequest(
+export function normalizeSignatureRequest(
   request: PPOMRequest,
   controllerObject?: TransactionMeta | SignatureRequest,
 ): PPOMRequest {
