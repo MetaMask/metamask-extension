@@ -7526,6 +7526,7 @@ export async function getLayer1GasFeeValue({
  * Submits a shield claim.
  *
  * @param params - The parameters.
+ * @param params.chainId - The chain ID.
  * @param params.email - The email.
  * @param params.impactedWalletAddress - The impacted wallet address.
  * @param params.impactedTransactionHash - The impacted transaction hash.
@@ -7535,6 +7536,7 @@ export async function getLayer1GasFeeValue({
  * @returns The subscription response.
  */
 export async function submitShieldClaim(params: {
+  chainId: number;
   email: string;
   impactedWalletAddress: string;
   impactedTransactionHash: string;
@@ -7548,6 +7550,7 @@ export async function submitShieldClaim(params: {
 
   const claimsUrl = `${baseUrl}/claims`;
   const formData = new FormData();
+  formData.append('chainId', params.chainId);
   formData.append('email', params.email);
   formData.append('impactedWalletAddress', params.impactedWalletAddress);
   formData.append('impactedTxHash', params.impactedTransactionHash);

@@ -39,8 +39,21 @@ import { setShowClaimSubmitToast } from '../../../../components/app/toast-master
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
 import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
+import { isSafeChainId } from '../../../../../shared/modules/network.utils';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+const BACKEND_ERROR_MAP: Record<string, { key: string; msg: string }> = {
+  'Please enter a valid transaction hash': {
+    key: 'impactedTransactionHash',
+    msg: 'shieldClaimInvalidTxHash',
+  },
+  'This transaction was not made within MetaMask and is not eligible for claims.':
+    {
+      key: 'impactedTransactionHash',
+      msg: 'shieldClaimImpactedTxHashNotEligible',
+    },
+};
 
 function isValidTransactionHash(hash: string): boolean {
   // Check if it's exactly 66 characters (0x + 64 hex chars)
@@ -54,6 +67,8 @@ const SubmitClaimForm = () => {
   const [claimSubmitLoading, setClaimSubmitLoading] = useState(false);
 
   const {
+    chainId,
+    setChainId,
     email,
     setEmail,
     impactedWalletAddress,
@@ -71,6 +86,23 @@ const SubmitClaimForm = () => {
   const [errors, setErrors] = useState<
     Record<string, { key: string; msg: string } | undefined>
   >({});
+
+  const validateChainId = useCallback(() => {
+    if (chainId) {
+      const isChainIdValid = isSafeChainId(chainId);
+      setErrors((state) => ({
+        ...state,
+        chainId: isChainIdValid
+          ? undefined
+          : { key: 'chainId', msg: t('shieldClaimInvalidChainId') },
+      }));
+    } else {
+      setErrors((state) => ({
+        ...state,
+        chainId: { key: 'chainId', msg: t('shieldClaimInvalidRequired') },
+      }));
+    }
+  }, [chainId, t]);
 
   const validateEmail = useCallback(() => {
     if (email) {
@@ -142,6 +174,7 @@ const SubmitClaimForm = () => {
   const isInvalidData = useMemo(() => {
     return (
       Object.values(errors).some((error) => error !== undefined) ||
+      !chainId ||
       !email ||
       !impactedWalletAddress ||
       !impactedTransactionHash ||
@@ -150,6 +183,7 @@ const SubmitClaimForm = () => {
     );
   }, [
     errors,
+    chainId,
     email,
     impactedWalletAddress,
     impactedTransactionHash,
@@ -193,9 +227,13 @@ const SubmitClaimForm = () => {
   }, [caseDescription, t]);
 
   const handleSubmitClaim = useCallback(async () => {
+    if (isInvalidData) {
+      return;
+    }
     try {
       setClaimSubmitLoading(true);
       await submitShieldClaim({
+        chainId: chainId as number,
         email,
         impactedWalletAddress,
         impactedTransactionHash,
@@ -207,18 +245,32 @@ const SubmitClaimForm = () => {
       navigate(TRANSACTION_SHIELD_ROUTE);
     } catch (error) {
       const { message } = error as Error;
-      dispatch(
-        setShowClaimSubmitToast(
-          message === ClaimSubmitToastType.Errored
-            ? ClaimSubmitToastType.Errored
-            : message,
-        ),
-      );
+      const backendErrorMessage = BACKEND_ERROR_MAP[message];
+      // if backend error message is specific to a field, set the error for that field, otherwise show the error in the toast
+      if (backendErrorMessage) {
+        setErrors((state) => ({
+          ...state,
+          [backendErrorMessage.key]: {
+            key: backendErrorMessage.key,
+            msg: t(backendErrorMessage.msg),
+          },
+        }));
+      } else {
+        dispatch(
+          setShowClaimSubmitToast(
+            message === ClaimSubmitToastType.Errored
+              ? ClaimSubmitToastType.Errored
+              : message,
+          ),
+        );
+      }
     } finally {
       setClaimSubmitLoading(false);
     }
   }, [
     dispatch,
+    isInvalidData,
+    chainId,
     email,
     impactedTransactionHash,
     impactedWalletAddress,
@@ -226,6 +278,7 @@ const SubmitClaimForm = () => {
     caseDescription,
     files,
     navigate,
+    t,
   ]);
 
   return (
@@ -242,6 +295,25 @@ const SubmitClaimForm = () => {
           </TextButton>,
         ])}
       </Text>
+      <FormTextField
+        label={`${t('shieldClaimChainId')}*`}
+        placeholder="1"
+        inputProps={{ 'data-testid': 'shield-claim-chain-id-input' }}
+        helpText={errors.chainId ? errors.chainId.msg : undefined}
+        helpTextProps={{
+          'data-testid': 'shield-claim-chain-id-help-text',
+          color: DsTextColor.textAlternative,
+        }}
+        id="chain-id"
+        name="chain-id"
+        size={FormTextFieldSize.Lg}
+        onChange={(e) => setChainId(Number(e.target.value))}
+        onBlur={() => validateChainId()}
+        value={chainId}
+        error={Boolean(errors.chainId)}
+        required
+        width={BlockSize.Full}
+      />
       <FormTextField
         label={`${t('shieldClaimEmail')}*`}
         placeholder="johncarpenter@sample.com"
@@ -352,6 +424,7 @@ const SubmitClaimForm = () => {
         <Textarea
           id="description"
           name="description"
+          placeholder={t('shieldClaimDescriptionPlaceholder')}
           onChange={(e) => setCaseDescription(e.target.value)}
           onBlur={() => validateDescription()}
           value={caseDescription}

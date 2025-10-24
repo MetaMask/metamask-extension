@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 export const useClaimState = () => {
+  const [chainId, setChainId] = useState<number>();
   const [email, setEmail] = useState<string>('');
   const [impactedWalletAddress, setImpactedWalletAddress] =
     useState<string>('');
@@ -12,6 +13,8 @@ export const useClaimState = () => {
   const [files, setFiles] = useState<FileList>();
 
   return {
+    chainId,
+    setChainId,
     email,
     setEmail,
     impactedWalletAddress,

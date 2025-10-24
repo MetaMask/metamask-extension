@@ -5712,8 +5712,14 @@
   "shieldClaim": {
     "message": "Submit a claim"
   },
+  "shieldClaimChainId": {
+    "message": "Chain ID"
+  },
   "shieldClaimDescription": {
     "message": "Description of case"
+  },
+  "shieldClaimDescriptionPlaceholder": {
+    "message": "Provide a brief summary of the incident"
   },
   "shieldClaimDetails": {
     "message": "You may file a single claim per incident within 21 days of the incident. View the full coverage policy $1.",
@@ -5746,6 +5752,9 @@
   "shieldClaimImpactedWalletAddress": {
     "message": "Impacted wallet address"
   },
+  "shieldClaimInvalidChainId": {
+    "message": "Please enter a valid chain ID"
+  },
   "shieldClaimInvalidEmail": {
     "message": "Please enter a valid email address"
   },
@@ -5754,6 +5763,9 @@
   },
   "shieldClaimInvalidTxHash": {
     "message": "Please enter a valid transaction hash"
+  },
+  "shieldClaimImpactedTxHashNotEligible": {
+    "message": "This transaction was not made within MetaMask and is not eligible for claims."
   },
   "shieldClaimInvalidWalletAddress": {
     "message": "Please enter a valid wallet address"
