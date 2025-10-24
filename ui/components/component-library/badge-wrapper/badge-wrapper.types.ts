@@ -5,6 +5,9 @@ import type {
   StyleUtilityProps,
 } from '../box';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum BadgeWrapperPosition {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -20,6 +23,9 @@ export enum BadgeWrapperPosition {
   bottomLeft = 'bottom-left',
 }
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum BadgeWrapperAnchorElementShape {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

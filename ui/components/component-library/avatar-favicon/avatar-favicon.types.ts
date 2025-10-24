@@ -3,6 +3,9 @@ import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.typ
 import { PolymorphicComponentPropWithRef } from '../box';
 import { IconProps } from '../icon';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum AvatarFaviconSize {
   Xs = 'xs',
   Sm = 'sm',

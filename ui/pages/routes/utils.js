@@ -349,3 +349,42 @@ export function showAppHeader(props) {
     }),
   );
 }
+
+/**
+ * Creates a relative location object for use with nested react-router-dom-v5-compat Routes.
+ *
+ * When using v5-compat <Routes> and <Route> components inside a parent route,
+ * the child Routes need to match against paths relative to the parent route,
+ * not the full pathname. This function strips the base path prefix from the
+ * location to create a relative location.
+ *
+ * @param {object} location - The full location object from react-router
+ * @param {string} location.pathname - The full pathname (e.g., '/connect/id/snap-install')
+ * @param {string} basePath - The base path to remove (e.g., '/connect/id')
+ * @returns {object} A new location object with pathname set to the relative path
+ * (e.g., '/snap-install' or '/') and all other location properties preserved
+ * @example
+ * // Full pathname: '/connect/abc123/snaps-connect'
+ * // Base path: '/connect/abc123'
+ * const relativeLocation = getRelativeLocationForNestedRoutes(
+ *   location,
+ *   '/connect/abc123'
+ * );
+ * // relativeLocation.pathname === '/snaps-connect'
+ * @example
+ * // Usage with v5-compat Routes:
+ * <Routes location={relativeLocation}>
+ *   <Route path="/" element={<HomePage />} />
+ *   <Route path="/snaps-connect" element={<SnapsConnect />} />
+ * </Routes>
+ */
+export function getRelativeLocationForNestedRoutes(location, basePath) {
+  const relativePathname = location.pathname.startsWith(basePath)
+    ? location.pathname.slice(basePath.length) || '/'
+    : location.pathname;
+
+  return {
+    ...location,
+    pathname: relativePathname,
+  };
+}

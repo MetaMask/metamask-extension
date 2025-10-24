@@ -319,7 +319,7 @@ export const MultichainBridgeQuoteCard = ({
         </Row>
 
         {/* Minimum Received */}
-        {
+        {activeQuote.minToTokenAmount.valueInCurrency && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
               <Text
@@ -349,7 +349,7 @@ export const MultichainBridgeQuoteCard = ({
               )}
             </Text>
           </Row>
-        }
+        )}
 
         {/* Price Impact */}
         {shouldRenderPriceImpactRow && shouldShowPriceImpactWarning && (
@@ -400,7 +400,7 @@ export const MultichainBridgeQuoteCard = ({
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                {selectedDestinationAccount.displayName}
+                {`${selectedDestinationAccount.walletName ? `${selectedDestinationAccount.walletName} / ` : ''}${selectedDestinationAccount.displayName}`}
               </Text>
               <ButtonIcon
                 iconName={IconName.Edit}

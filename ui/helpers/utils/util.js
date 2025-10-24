@@ -332,18 +332,6 @@ export function sortSelectedInternalAccounts(accounts) {
 
 /**
  * Strips the following schemes from URL strings:
- * - http
- * - https
- *
- * @param {string} urlString - The URL string to strip the scheme from.
- * @returns {string} The URL string, without the scheme, if it was stripped.
- */
-export function stripHttpSchemes(urlString) {
-  return urlString.replace(/^https?:\/\//u, '');
-}
-
-/**
- * Strips the following schemes from URL strings:
  * - https
  *
  * @param {string} urlString - The URL string to strip the scheme from.

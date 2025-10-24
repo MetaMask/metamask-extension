@@ -2463,10 +2463,6 @@
   "from": {
     "message": "Dari"
   },
-  "fromAddress": {
-    "message": "Dari: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "Dari daftar token: $1"
   },
@@ -6598,10 +6594,6 @@
   },
   "to": {
     "message": "Untuk"
-  },
-  "toAddress": {
-    "message": "Ke: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "Kami menggunakan layanan 4byte.directory dan Sourcify untuk mengonversi kode dan menampilkan data transaksi yang lebih mudah dibaca. Ini membantu Anda memahami hasil transaksi yang tertunda dan yang sudah lewat, tetapi alamat IP Anda berpotensi tersebar."

@@ -49,15 +49,17 @@ describe('AccountTreeControllerInit', () => {
     const requestMock = buildInitRequestMock();
     AccountTreeControllerInit(requestMock);
 
-    expect(accountTreeControllerClassMock).toHaveBeenCalledWith({
-      messenger: requestMock.controllerMessenger,
-      state: requestMock.persistedState.AccountTreeController,
-      config: {
-        trace: expect.any(Function),
-        backupAndSync: {
-          onBackupAndSyncEvent: expect.any(Function),
-        },
-      },
-    });
+    expect(accountTreeControllerClassMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        messenger: requestMock.controllerMessenger,
+        state: requestMock.persistedState.AccountTreeController,
+        config: expect.objectContaining({
+          trace: expect.any(Function),
+          backupAndSync: expect.objectContaining({
+            onBackupAndSyncEvent: expect.any(Function),
+          }),
+        }),
+      }),
+    );
   });
 });

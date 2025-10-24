@@ -138,6 +138,7 @@ describe('useNetworkConnectionBanner', () => {
             networkName: 'Ethereum Mainnet',
             networkClientId: 'mainnet',
             chainId: '0x1',
+            isInfuraEndpoint: true,
           });
           mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
 
@@ -154,6 +155,7 @@ describe('useNetworkConnectionBanner', () => {
             networkName: 'Ethereum Mainnet',
             networkClientId: 'mainnet',
             chainId: '0x1',
+            isInfuraEndpoint: true,
           });
         });
 
@@ -162,6 +164,7 @@ describe('useNetworkConnectionBanner', () => {
             networkName: 'Ethereum Mainnet',
             networkClientId: 'mainnet',
             chainId: '0x1',
+            isInfuraEndpoint: true,
           });
           mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
           const mockTrackEvent = jest.fn();
@@ -199,6 +202,7 @@ describe('useNetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
         mockGetNetworkConnectionBanner.mockReturnValue({
           status: 'available',
@@ -217,6 +221,7 @@ describe('useNetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
       });
     });
@@ -227,12 +232,14 @@ describe('useNetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
         mockGetNetworkConnectionBanner.mockReturnValue({
           status: 'degraded',
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
 
         renderHookWithProviderTyped(
@@ -248,6 +255,7 @@ describe('useNetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
       });
 
@@ -256,12 +264,14 @@ describe('useNetworkConnectionBanner', () => {
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
         mockGetNetworkConnectionBanner.mockReturnValue({
           status: 'degraded',
           networkName: 'Ethereum Mainnet',
           networkClientId: 'mainnet',
           chainId: '0x1',
+          isInfuraEndpoint: true,
         });
         const mockTrackEvent = jest.fn();
 
@@ -298,6 +308,7 @@ describe('useNetworkConnectionBanner', () => {
         networkName: 'Ethereum Mainnet',
         networkClientId: 'mainnet',
         chainId: '0x1',
+        isInfuraEndpoint: true,
       });
       mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
 
@@ -324,6 +335,7 @@ describe('useNetworkConnectionBanner', () => {
         networkName: 'Ethereum Mainnet',
         networkClientId: 'mainnet',
         chainId: '0x1',
+        isInfuraEndpoint: true,
       });
       mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
 

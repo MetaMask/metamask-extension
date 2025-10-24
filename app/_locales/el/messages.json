@@ -2463,10 +2463,6 @@
   "from": {
     "message": "Από"
   },
-  "fromAddress": {
-    "message": "Από: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "Από λίστες token: $1"
   },
@@ -6598,10 +6594,6 @@
   },
   "to": {
     "message": "Προς"
-  },
-  "toAddress": {
-    "message": "Προς: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "Χρησιμοποιούμε τις υπηρεσίες 4byte.directory και Sourcify για να αποκωδικοποιήσουμε και να εμφανίσουμε πιο ευανάγνωστα τα δεδομένα συναλλαγών. Έτσι μπορείτε να κατανοήσετε το αποτέλεσμα των εκκρεμών και προηγούμενων συναλλαγών, αλλά μπορεί να προκαλέσει στην κοινοποίηση της διεύθυνσης IP σας."

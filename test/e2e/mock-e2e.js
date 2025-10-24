@@ -188,6 +188,17 @@ async function setupMocking(
       };
     });
 
+  await server
+    .forGet(
+      'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [],
+      };
+    });
+
   // User Profile Lineage
   await server
     .forGet('https://authentication.api.cx.metamask.io/api/v2/profile/lineage')

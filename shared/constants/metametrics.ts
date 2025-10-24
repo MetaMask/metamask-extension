@@ -847,7 +847,7 @@ export enum MetaMetricsEventName {
   RehydrationPasswordAttempted = 'Rehydration Password Attempted',
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
-  // BEGIN:ONLY_INCLUDE_IF(build-flask)
+  // BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
@@ -950,6 +950,8 @@ export enum MetaMetricsEventName {
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
   ExtensionPinned = 'Extension Pinned',
+  // Extension Port Stream
+  PortStreamChunked = 'Port Stream Chunked',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1013,6 +1015,7 @@ export enum MetaMetricsEventCategory {
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
   CrossChainSwaps = 'Cross Chain Swaps',
+  PortStream = 'Port Stream',
 }
 
 export enum MetaMetricsEventLinkType {
