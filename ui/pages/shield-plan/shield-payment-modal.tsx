@@ -68,17 +68,32 @@ export const ShieldPaymentModal = ({
   const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
+  const hasMultipleTokenOptions = useMemo(() => {
+    return availableTokenBalances.length > 1;
+  }, [availableTokenBalances]);
+
   const selectPaymentMethod = useCallback(
     (selectedMethod: PaymentType) => {
       setSelectedPaymentMethod(selectedMethod);
 
       if (selectedMethod === PAYMENT_TYPES.byCrypto) {
-        setShowAssetPickerModal(true);
-      } else {
-        onClose();
+        if (hasMultipleTokenOptions) {
+          setShowAssetPickerModal(true);
+          return;
+        }
+
+        onAssetChange(availableTokenBalances[0]);
       }
+
+      onClose();
     },
-    [setSelectedPaymentMethod, onClose],
+    [
+      setSelectedPaymentMethod,
+      onClose,
+      hasMultipleTokenOptions,
+      onAssetChange,
+      availableTokenBalances,
+    ],
   );
 
   // Create custom token list generator that filters for USDT/USDC with balance
@@ -209,7 +224,7 @@ export const ShieldPaymentModal = ({
                   </Text>
                 </Box>
               </Box>
-              {hasStableTokenWithBalance && (
+              {hasStableTokenWithBalance && hasMultipleTokenOptions && (
                 <Icon size={IconSize.Md} name={IconName.ArrowRight} />
               )}
             </Box>
