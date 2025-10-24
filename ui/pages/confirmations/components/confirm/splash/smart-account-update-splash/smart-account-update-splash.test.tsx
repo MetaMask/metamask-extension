@@ -46,12 +46,10 @@ jest.mock('react-redux', () => {
 describe('Splash', () => {
   it('renders correctly', () => {
     const mockStore = configureMockStore([])(
-      getMockConfirmStateForTransaction(
-        {
-          ...upgradeAccountConfirmation,
-          origin: 'https://example.com',
-        } as Confirmation,
-      ),
+      getMockConfirmStateForTransaction({
+        ...upgradeAccountConfirmation,
+        origin: 'https://example.com',
+      } as Confirmation),
     );
     const { getByText } = renderWithConfirmContextProvider(
       <SmartAccountUpdateSplash />,
@@ -78,6 +76,11 @@ describe('Splash', () => {
                 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
                   address: '0x8a0bbcd42cf79e7cee834e7808eb2fef1cebdb87',
                   id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
                 },
               },
             },
