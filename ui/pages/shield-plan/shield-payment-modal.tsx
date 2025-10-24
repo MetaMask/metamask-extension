@@ -118,7 +118,7 @@ export const ShieldPaymentModal = ({
     const tokensSupportedCopy = [...tokensSupported];
     const lastToken = tokensSupportedCopy.pop();
 
-    if (tokensSupported.length > 0) {
+    if (tokensSupportedCopy.length > 0) {
       return t('shieldPlanNoFunds', [
         tokensSupportedCopy.join(', '),
         lastToken,
