@@ -75,6 +75,7 @@ import {
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
 } from '@metamask/subscription-controller';
+
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -585,6 +586,17 @@ export function setShowShieldEntryModalOnceAction(payload: {
   };
 }
 
+export function setLastUsedSubscriptionPaymentDetails(payload: {
+  paymentMethod: PaymentType;
+  plan: RecurringInterval;
+  paymentTokenAddress?: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return {
+    type: actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_DETAILS,
+    payload,
+  };
+}
+
 /**
  * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
  *
@@ -788,23 +800,14 @@ export function createNewVaultAndRestore(
   };
 }
 
-export function importMnemonicToVault(mnemonic: string): ThunkAction<
-  Promise<{
-    newAccountAddress: string;
-    discoveredAccounts: { bitcoin: number; solana: number };
-  }>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function importMnemonicToVault(
+  mnemonic: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.importMnemonicToVault`);
 
-    return new Promise<{
-      newAccountAddress: string;
-      discoveredAccounts: { bitcoin: number; solana: number };
-    }>((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'importMnemonicToVault',
         [mnemonic],
@@ -2532,6 +2535,58 @@ export function createNextMultichainAccountGroup(
 }
 
 /**
+ * Set the pinned state of an account group.
+ *
+ * @param accountGroupId - ID of an account group.
+ * @param pinned - Whether the account group should be pinned.
+ */
+export function setAccountGroupPinned(
+  accountGroupId: AccountGroupId,
+  pinned: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setAccountGroupPinned`);
+    try {
+      await submitRequestToBackground('setAccountGroupPinned', [
+        accountGroupId,
+        pinned,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
+/**
+ * Set the hidden state of an account group.
+ *
+ * @param accountGroupId - ID of an account group.
+ * @param hidden - Whether the account group should be hidden.
+ */
+export function setAccountGroupHidden(
+  accountGroupId: AccountGroupId,
+  hidden: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setAccountGroupHidden`);
+    try {
+      await submitRequestToBackground('setAccountGroupHidden', [
+        accountGroupId,
+        hidden,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
+/**
  * Set a new account group name (rename a multichain account).
  *
  * @param accountGroupId - ID of a multichain account group.
@@ -3393,23 +3448,6 @@ export function createSpeedUpTransaction(
     })
       .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => newTx);
-  };
-}
-
-export function updateIncomingTransactions(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch) => {
-    log.debug(`background.updateIncomingTransactions`);
-    try {
-      await submitRequestToBackground('updateIncomingTransactions');
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning('Had a problem updating incoming transactions!'));
-    }
   };
 }
 

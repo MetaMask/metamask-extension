@@ -7,7 +7,7 @@ import { ButtonPrimarySize } from './button-primary.types';
 import { Box } from '../box';
 
 export default {
-  title: 'Components/ComponentLibrary/ButtonPrimary',
+  title: 'Components/ComponentLibrary/ButtonPrimary (deprecated)',
   component: ButtonPrimary,
   parameters: {
     docs: {

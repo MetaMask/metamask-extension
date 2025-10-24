@@ -120,16 +120,18 @@ export type Preferences = {
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.
 export type PreferencesControllerState = Omit<
   PreferencesState,
+  | 'displayNftMedia'
   | 'showTestNetworks'
   | 'smartTransactionsOptInStatus'
   | 'smartTransactionsMigrationApplied'
   | 'privacyMode'
   | 'tokenSortConfig'
-  | 'useMultiRpcMigration'
+  | 'showMultiRpcModal'
   | 'dismissSmartAccountSuggestionEnabled'
   | 'smartAccountOptIn'
   | 'smartAccountOptInForAccounts'
   | 'showIncomingTransactions'
+  | 'tokenNetworkFilter'
 > & {
   addSnapAccountEnabled?: boolean;
   advancedGasFee: Record<string, Record<string, string>>;
@@ -140,6 +142,7 @@ export type PreferencesControllerState = Omit<
   knownMethodData: Record<string, string>;
   ledgerTransportType: LedgerTransportTypes;
   manageInstitutionalWallets: boolean;
+  openSeaEnabled: boolean;
   overrideContentSecurityPolicyHeader: boolean;
   preferences: Preferences;
   // TODO: Replace `Json` with correct type
@@ -160,7 +163,7 @@ export type PreferencesControllerState = Omit<
     hyperliquid: Record<Hex, ReferralStatus>;
   };
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   watchEthereumAccountEnabled: boolean;
   ///: END:ONLY_INCLUDE_IF
 };
@@ -680,7 +683,7 @@ export class PreferencesController extends BaseController<
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   /**
    * Setter for the `watchEthereumAccountEnabled` property.
    *
