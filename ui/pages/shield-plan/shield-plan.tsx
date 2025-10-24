@@ -7,16 +7,13 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
-import { TransactionType } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { BigNumber } from 'bignumber.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -56,7 +53,6 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
@@ -67,8 +63,9 @@ import {
   useSubscriptionPricing,
   useSubscriptionProductPlans,
 } from '../../hooks/subscription/useSubscriptionPricing';
-import { addTransaction, startSubscriptionWithCard } from '../../store/actions';
+import { startSubscriptionWithCard } from '../../store/actions';
 import {
+  useSubscriptionCryptoApprovalTransaction,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
@@ -76,7 +73,6 @@ import { useAsyncCallback } from '../../hooks/useAsync';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { selectNetworkConfigurationByChainId } from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
-import { generateERC20ApprovalData } from '../confirmations/send-legacy/send.utils';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -168,6 +164,9 @@ const ShieldPlan = () => {
     }
   }, [availableTokenBalances, selectedToken, setSelectedToken]);
 
+  const { execute: executeSubscriptionCryptoApprovalTransaction } =
+    useSubscriptionCryptoApprovalTransaction(selectedToken);
+
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
@@ -179,42 +178,7 @@ const ShieldPlan = () => {
           }),
         );
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
-        const approvalAmount = new BigNumber(
-          selectedToken?.approvalAmount?.approveAmount ?? '0',
-        );
-        const balance = new BigNumber(selectedToken?.balance ?? '0');
-        const balanceInWei = balance.mul(10 ** (selectedToken?.decimals ?? 18));
-        const userHasEnoughBalance = balanceInWei.gte(approvalAmount);
-
-        if (!userHasEnoughBalance) {
-          throw new Error('Insufficient balance');
-        }
-
-        if (!selectedToken) {
-          throw new Error('No token selected');
-        }
-
-        const spenderAddress = subscriptionPricing?.paymentMethods
-          ?.find((method) => method.type === PAYMENT_TYPES.byCrypto)
-          ?.chains?.find(
-            (chain) => chain.chainId === selectedToken?.chainId,
-          )?.paymentAddress;
-        const approvalData = generateERC20ApprovalData({
-          spenderAddress,
-          amount: decimalToHex(selectedToken.approvalAmount.approveAmount),
-        });
-        const transactionParams = {
-          from: evmInternalAccount?.address as Hex,
-          to: selectedToken.address as Hex,
-          value: '0x0',
-          data: approvalData,
-        };
-        const transactionOptions = {
-          type: TransactionType.shieldSubscriptionApprove,
-          networkClientId: networkClientId as string,
-        };
-        await addTransaction(transactionParams, transactionOptions);
-        navigate(CONFIRM_TRANSACTION_ROUTE);
+        await executeSubscriptionCryptoApprovalTransaction();
       }
     }, [
       dispatch,

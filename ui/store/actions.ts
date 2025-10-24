@@ -1823,11 +1823,19 @@ export async function addTransaction(
   ]);
 }
 
-export function updateAndApproveTx(
-  txMeta: TransactionMeta,
-  dontShowLoadingIndicator: boolean,
-  loadingIndicatorMessage: string,
-): ThunkAction<
+export function updateAndApproveTx({
+  txMeta,
+  dontShowLoadingIndicator,
+  loadingIndicatorMessage,
+  onBeforeApproveTx,
+  onApproveTxError,
+}: {
+  txMeta: TransactionMeta;
+  dontShowLoadingIndicator: boolean;
+  loadingIndicatorMessage: string;
+  onBeforeApproveTx?: () => void;
+  onApproveTxError?: () => void;
+}): ThunkAction<
   Promise<TransactionMeta | null>,
   MetaMaskReduxState,
   unknown,
@@ -1843,6 +1851,7 @@ export function updateAndApproveTx(
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
 
+      onBeforeApproveTx?.();
       callBackgroundMethod(
         'resolvePendingApproval',
         [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
@@ -1876,6 +1885,7 @@ export function updateAndApproveTx(
         return txMeta;
       })
       .catch((err) => {
+        onApproveTxError?.();
         dispatch(hideLoadingIndication());
         return Promise.reject(err);
       });
@@ -2512,6 +2522,58 @@ export function createNextMultichainAccountGroup(
         stripWalletTypePrefixFromWalletId(walletId);
       await submitRequestToBackground('createNextMultichainAccountGroup', [
         walletIdWithoutTypePrefix,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
+/**
+ * Set the pinned state of an account group.
+ *
+ * @param accountGroupId - ID of an account group.
+ * @param pinned - Whether the account group should be pinned.
+ */
+export function setAccountGroupPinned(
+  accountGroupId: AccountGroupId,
+  pinned: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setAccountGroupPinned`);
+    try {
+      await submitRequestToBackground('setAccountGroupPinned', [
+        accountGroupId,
+        pinned,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
+/**
+ * Set the hidden state of an account group.
+ *
+ * @param accountGroupId - ID of an account group.
+ * @param hidden - Whether the account group should be hidden.
+ */
+export function setAccountGroupHidden(
+  accountGroupId: AccountGroupId,
+  hidden: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setAccountGroupHidden`);
+    try {
+      await submitRequestToBackground('setAccountGroupHidden', [
+        accountGroupId,
+        hidden,
       ]);
       // Forcing update of the state speeds up the UI update process
       // and makes UX better
