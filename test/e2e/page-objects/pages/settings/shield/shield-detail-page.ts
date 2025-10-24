@@ -13,12 +13,28 @@ export default class ShieldDetailPage {
   // Main page container
   private readonly pageContainer = '[data-testid="transaction-shield-page"]';
 
-  // Membership status elements
-  private readonly membershipStatus =
-    '[data-testid="shield-detail-membership-status"]';
+  // Locators (alphabetically ordered)
+  private readonly addFundsModal = '[data-testid="add-funds-modal"]';
 
-  private readonly membershipStatusElement = (text: string) => ({
-    css: this.membershipStatus,
+  private readonly billingAccount =
+    '[data-testid="shield-detail-billing-account"]';
+
+  private readonly billingDetailsTitleElement = (text: string) => ({
+    css: '[data-testid="shield-detail-billing-details-title"]',
+    text,
+  });
+
+  private readonly cancelButton =
+    '[data-testid="shield-tx-membership-cancel-button"]';
+
+  private readonly cancelMembershipButton =
+    'button[data-testid="cancel-membership-modal-submit-button"]';
+
+  private readonly cancelMembershipModal =
+    '[data-testid="cancel-membership-modal"]';
+
+  private readonly chargesElement = (text: string) => ({
+    css: '[data-testid="shield-detail-charges"]',
     text,
   });
 
@@ -27,32 +43,14 @@ export default class ShieldDetailPage {
     text,
   });
 
-  private readonly trialTag = '[data-testid="shield-detail-trial-tag"]';
+  private readonly membershipErrorBanner =
+    '[data-testid="membership-error-banner"]';
 
-  private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
+  private readonly membershipStatus =
+    '[data-testid="shield-detail-membership-status"]';
 
-  // Action buttons
-  private readonly viewBenefitsButton =
-    '[data-testid="shield-detail-view-benefits-button"]';
-
-  private readonly submitCaseButton =
-    '[data-testid="shield-detail-submit-case-button"]';
-
-  private readonly resubscribeButton =
-    '[data-testid="shield-detail-resubscribe-button"]';
-
-  private readonly cancelButton =
-    '[data-testid="shield-tx-membership-cancel-button"]';
-
-  private readonly renewButton =
-    '[data-testid="shield-tx-membership-renew-button"]';
-
-  private readonly viewBillingHistoryButton =
-    '[data-testid="shield-detail-view-billing-history-button"]';
-
-  // Billing details section
-  private readonly billingDetailsTitleElement = (text: string) => ({
-    css: '[data-testid="shield-detail-billing-details-title"]',
+  private readonly membershipStatusElement = (text: string) => ({
+    css: this.membershipStatus,
     text,
   });
 
@@ -61,20 +59,6 @@ export default class ShieldDetailPage {
     text,
   });
 
-  private readonly chargesElement = (text: string) => ({
-    css: '[data-testid="shield-detail-charges"]',
-    text,
-  });
-
-  private readonly billingAccount =
-    '[data-testid="shield-detail-billing-account"]';
-
-  private readonly paymentMethodElement = (text: string) => ({
-    css: '[data-testid="shield-detail-payment-method"]',
-    text,
-  });
-
-  // Notification banners
   private readonly notificationShieldBanner =
     '.transaction-shield-page__notification-banner';
 
@@ -83,17 +67,29 @@ export default class ShieldDetailPage {
     text,
   });
 
-  private readonly membershipErrorBanner =
-    '[data-testid="membership-error-banner"]';
+  private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
 
-  // Modal elements
-  private readonly cancelMembershipModal =
-    '[data-testid="cancel-membership-modal"]';
+  private readonly paymentMethodElement = (text: string) => ({
+    css: '[data-testid="shield-detail-payment-method"]',
+    text,
+  });
 
-  private readonly cancelMembershipButton =
-    'button[data-testid="cancel-membership-modal-submit-button"]';
+  private readonly renewButton =
+    '[data-testid="shield-tx-membership-uncancel-button"]';
 
-  private readonly addFundsModal = '[data-testid="add-funds-modal"]';
+  private readonly resubscribeButton =
+    '[data-testid="shield-detail-resubscribe-button"]';
+
+  private readonly submitCaseButton =
+    '[data-testid="shield-detail-submit-case-button"]';
+
+  private readonly trialTag = '[data-testid="shield-detail-trial-tag"]';
+
+  private readonly viewBenefitsButton =
+    '[data-testid="shield-detail-view-benefits-button"]';
+
+  private readonly viewBillingHistoryButton =
+    '[data-testid="shield-detail-view-billing-history-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -190,7 +186,9 @@ export default class ShieldDetailPage {
   async cancelSubscription(): Promise<void> {
     console.log('Cancelling subscription');
     await this.driver.clickElement(this.cancelButton);
-    await this.driver.clickElement(this.cancelMembershipButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.cancelMembershipButton,
+    );
   }
 
   /**
