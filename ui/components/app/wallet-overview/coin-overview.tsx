@@ -409,17 +409,20 @@ export const CoinOverview = ({
 
   // For non-EVM networks, use the reliable multichain balance checker
   // For EVM networks, use the existing aggregated balance logic
-  const isEmpty = !isEvm
-    ? multichainBalanceIsZero
-    : isWalletBalanceEmpty(balance, totalFiatBalance, isNotAggregatedFiatBalance);
+  const isEmpty = isEvm
+    ? isWalletBalanceEmpty(
+        balance,
+        totalFiatBalance,
+        isNotAggregatedFiatBalance,
+      )
+    : multichainBalanceIsZero;
 
   // Only show empty state if:
   // 1. Balance is actually empty (not just loading)
   // 2. Network data is available (not in loading state)
   // 3. Not on a testnet
-  const shouldShowEmptyState = isEmpty &&
-    anyEnabledNetworksAreAvailable &&
-    !isTestnet;
+  const shouldShowEmptyState =
+    isEmpty && anyEnabledNetworksAreAvailable && !isTestnet;
 
   // If balance is empty and data is loaded, show the BalanceEmptyState component
   // But NOT on testnets - show normal 0.00 balance display instead
