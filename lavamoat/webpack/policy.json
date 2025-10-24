@@ -1897,6 +1897,28 @@
         "uuid": true
       }
     },
+    "@metamask/smart-transactions-controller": {
+      "globals": {
+        "URLSearchParams": true,
+        "clearInterval": true,
+        "console.error": true,
+        "console.log": true,
+        "fetch": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@ethersproject/bytes": true,
+        "ethers>@ethersproject/keccak256": true,
+        "ethers>@ethersproject/transactions": true,
+        "@metamask/controller-utils": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/transaction-controller": true,
+        "@metamask/smart-transactions-controller>bignumber.js": true,
+        "fast-json-patch": true,
+        "lodash": true
+      }
+    },
     "@metamask/snaps-controllers": {
       "globals": {
         "DecompressionStream": true,
@@ -2996,6 +3018,11 @@
       }
     },
     "@metamask/notification-services-controller>bignumber.js": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/smart-transactions-controller>bignumber.js": {
       "globals": {
         "crypto": true
       }
