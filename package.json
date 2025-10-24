@@ -283,7 +283,7 @@
     "@metamask/shield-controller": "npm:@metamask-previews/shield-controller@0.3.2-preview-8e6c5423",
     "@metamask/signature-controller": "npm:@metamask-previews/signature-controller@34.0.1-preview-8e6c5423",
     "@metamask/subscription-controller": "npm:@metamask-previews/subscription-controller@2.0.0-preview-8e6c5423",
-    "@metamask/smart-transactions-controller": "npm:@metamask-previews/smart-transactions-controller@19.2.1-preview-54c655a",
+    "@metamask/smart-transactions-controller": "npm:@metamask-previews/smart-transactions-controller@19.2.1-preview-520a56d",
     "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@60.9.0-preview-8e6c5423",
     "@metamask/user-operation-controller": "npm:@metamask-previews/user-operation-controller@39.2.0-preview-8e6c5423"
   },

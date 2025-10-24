@@ -7520,9 +7520,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:@metamask-previews/smart-transactions-controller@19.2.1-preview-54c655a":
-  version: 19.2.1-preview-54c655a
-  resolution: "@metamask-previews/smart-transactions-controller@npm:19.2.1-preview-54c655a"
+"@metamask/smart-transactions-controller@npm:@metamask-previews/smart-transactions-controller@19.2.1-preview-520a56d":
+  version: 19.2.1-preview-520a56d
+  resolution: "@metamask-previews/smart-transactions-controller@npm:19.2.1-preview-520a56d"
   dependencies:
     "@babel/runtime": "npm:^7.24.1"
     "@ethereumjs/tx": "npm:^5.2.1"
@@ -7553,7 +7553,7 @@ __metadata:
       optional: true
     "@metamask/remote-feature-flag-controller":
       optional: true
-  checksum: 10/0b992a77b163a932fa6b02cdc61e13adcfe036e51188d026707e34ebd1deefbd1665ca9b8f685eee327bcfe747d6720f9ef9aa6b0826d471a39a2d8db8876c61
+  checksum: 10/18e5d7f0957736eb508e112a496609f193be85ab4200400c1d233547f55ac8d94fb9b603292ff071b8eb42aeae31e439d47c4d3cbc4712e14e74f643a1699fb6
   languageName: node
   linkType: hard
 
