@@ -7,7 +7,7 @@ describe('eth_subscribe', function () {
   it('only broadcasts subscription notifications on the page that registered the subscription', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

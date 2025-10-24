@@ -20,7 +20,7 @@ describe('Test Snap TxInsights', function () {
   it('shows insight for ERC20 transactions', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -54,7 +54,7 @@ describe('Test Snap TxInsights', function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -99,7 +99,7 @@ describe('Test Snap TxInsights', function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

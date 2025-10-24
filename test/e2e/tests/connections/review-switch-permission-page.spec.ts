@@ -14,7 +14,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
     const chainId: number = 1338;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withSelectedNetworkControllerPerDomain()

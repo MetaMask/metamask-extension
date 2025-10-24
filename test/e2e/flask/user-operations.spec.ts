@@ -202,7 +202,7 @@ async function withAccountSnap(
       useBundler: true,
       usePaymaster: Boolean(paymaster),
       dappOptions: {
-        defaultTestDapp: 1,
+        numberOfTestDapps: 1,
         customDappPaths: [DAPP_PATH.SNAP_ACCOUNT_ABSTRACTION_KEYRING],
       },
       localNodeOptions: localNodeOptions || {

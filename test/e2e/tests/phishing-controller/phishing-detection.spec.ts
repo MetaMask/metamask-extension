@@ -64,7 +64,7 @@ describe('Phishing Detection', function (this: Suite) {
             blocklistPaths: [],
           });
         },
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -101,7 +101,7 @@ describe('Phishing Detection', function (this: Suite) {
             blocklistPaths: [],
           });
         },
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         ...overrides,
       };
     };
@@ -114,7 +114,7 @@ describe('Phishing Detection', function (this: Suite) {
         getFixtureOptions({
           title: this.test?.fullTitle(),
           dappOptions: {
-            defaultTestDapp: 1,
+            numberOfTestDapps: 1,
             customDappPaths: [
               './tests/phishing-controller/mock-page-with-iframe',
             ],
@@ -143,7 +143,7 @@ describe('Phishing Detection', function (this: Suite) {
         getFixtureOptions({
           title: this.test?.fullTitle(),
           dappOptions: {
-            defaultTestDapp: 1,
+            numberOfTestDapps: 1,
             customDappPaths: [
               './tests/phishing-controller/mock-page-with-iframe-but-disable-early-detection',
             ],
@@ -220,7 +220,7 @@ describe('Phishing Detection', function (this: Suite) {
           });
           mockConfigLookupOnWarningPage(mockServer, { statusCode: 500 });
         },
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -260,7 +260,7 @@ describe('Phishing Detection', function (this: Suite) {
             blocklistPaths: [],
           });
         },
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -339,7 +339,7 @@ describe('Phishing Detection', function (this: Suite) {
             blocklistPaths: [],
           });
         },
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -364,7 +364,7 @@ describe('Phishing Detection', function (this: Suite) {
     const testPageURL = 'http://localhost:8080/';
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {

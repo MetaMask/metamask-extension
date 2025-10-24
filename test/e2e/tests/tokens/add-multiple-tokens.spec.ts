@@ -11,7 +11,7 @@ describe('Multiple ERC20 Watch Asset', function () {
     const tokenContract = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

@@ -28,7 +28,7 @@ async function withFixturesForSmartTransactions(
 ) {
   await withFixtures(
     {
-      dappOptions: { defaultTestDapp: 1 },
+      dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
         .withNetworkControllerOnMainnet()

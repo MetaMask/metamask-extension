@@ -12,7 +12,7 @@ describe('Edit Networks Permissions', function () {
   it('should be able to edit networks', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },

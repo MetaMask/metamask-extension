@@ -19,7 +19,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
@@ -100,7 +100,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         manifestFlags: {
           testing: { disableSmartTransactionsOverride: true },
         },
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -213,7 +213,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',

@@ -17,7 +17,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('deploys an ERC-721 token', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -57,7 +57,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('mints an ERC-721 token', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -120,7 +120,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('approves an ERC-721 token', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -181,7 +181,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('sets approval for all an ERC-721 token', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({

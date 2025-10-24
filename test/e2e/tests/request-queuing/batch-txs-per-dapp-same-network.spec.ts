@@ -16,7 +16,7 @@ describe('Request Queuing for Multiple Dapps and Txs on same networks', function
     const chainId = 1338;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 3 },
+        dappOptions: { numberOfTestDapps: 3 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleNode()
           .build(),

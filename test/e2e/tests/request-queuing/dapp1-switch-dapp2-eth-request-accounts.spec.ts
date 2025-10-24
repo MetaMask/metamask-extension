@@ -14,7 +14,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
     const chainId = 1338;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
@@ -99,7 +99,7 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
     const chainId = 1338;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTwoTestDapps()

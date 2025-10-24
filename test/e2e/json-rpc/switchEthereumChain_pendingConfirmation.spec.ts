@@ -11,7 +11,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
   it('show alerts on permission network if user does not have permission on new network', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
@@ -88,7 +88,7 @@ describe('Switch Ethereum Chain for two dapps with pending confirmation in the o
   it('show alerts on switch network page if user does has permission on new network', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDappWithChains([

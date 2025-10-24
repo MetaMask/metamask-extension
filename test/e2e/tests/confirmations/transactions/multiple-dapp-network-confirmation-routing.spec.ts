@@ -17,7 +17,7 @@ describe('Routing confirmstions from Multiple Dapps and different networks', fun
     const chainId = 1338;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),

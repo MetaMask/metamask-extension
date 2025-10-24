@@ -19,7 +19,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks.', fu
     const chainId = 1338;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withEnabledNetworks({
             eip155: {

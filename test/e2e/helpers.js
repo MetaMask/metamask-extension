@@ -191,8 +191,8 @@ async function withFixtures(options, testSuite) {
     dappOpts.customDappPaths.length > 0;
   const customCount = hasCustomPaths ? dappOpts.customDappPaths.length : 0;
   const defaultCount =
-    typeof dappOpts.defaultTestDapp === 'number' && dappOpts.defaultTestDapp > 0
-      ? dappOpts.defaultTestDapp
+    typeof dappOpts.numberOfTestDapps === 'number' && dappOpts.numberOfTestDapps > 0
+      ? dappOpts.numberOfTestDapps
       : 0;
   const numberOfDapps = customCount + defaultCount;
   const dappServer = [];

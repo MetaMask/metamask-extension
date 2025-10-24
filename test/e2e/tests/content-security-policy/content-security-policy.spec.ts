@@ -12,7 +12,6 @@ describe('Content-Security-Policy', function (this: Suite) {
     await withFixtures(
       {
         dappOptions: {
-          defaultTestDapp: 1,
           customDappPaths: [
             './tests/content-security-policy/content-security-policy-mock-page',
           ],

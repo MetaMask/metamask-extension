@@ -152,7 +152,7 @@ describe('Network Manager', function (this: Suite) {
   it('should preserve existing enabled networks when adding a network via dapp', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withEnabledNetworks({
@@ -237,7 +237,7 @@ describe('Network Manager', function (this: Suite) {
   it('should deselect all networks when adding a custom network via dapp', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withEnabledNetworks({

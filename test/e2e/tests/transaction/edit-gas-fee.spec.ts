@@ -123,7 +123,7 @@ describe('Editing Confirm Transaction', function () {
   it('should use dapp suggested estimates for transaction coming from dapp', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController(PREFERENCES_STATE_MOCK)

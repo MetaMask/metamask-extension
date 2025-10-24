@@ -16,7 +16,7 @@ describe('Petnames - Transactions', function () {
   it('can save petnames for addresses in dapp send transactions', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()

@@ -15,7 +15,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
 
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),

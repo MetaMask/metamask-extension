@@ -16,7 +16,7 @@ describe('Ledger Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -68,7 +68,7 @@ describe('Ledger Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -137,7 +137,7 @@ describe('Ledger Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -196,7 +196,7 @@ describe('Ledger Hardware', function (this: Suite) {
     const erc20 = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({

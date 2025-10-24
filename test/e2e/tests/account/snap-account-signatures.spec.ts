@@ -33,7 +33,7 @@ describe('Snap Account Signatures', function (this: Suite) {
       await withFixtures(
         {
           dappOptions: {
-            defaultTestDapp: 1,
+            numberOfTestDapps: 1,
             customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
           },
           fixtures: new FixtureBuilder().build(),

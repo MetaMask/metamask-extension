@@ -11,7 +11,7 @@ describe('Request Queueing', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),

@@ -24,7 +24,7 @@ describe('Navigate transactions', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -57,7 +57,7 @@ describe('Navigate transactions', function () {
   it('should add a transaction while the confirm page is in focus', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerTxSimulationsDisabled()
@@ -98,7 +98,7 @@ describe('Navigate transactions', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -123,7 +123,7 @@ describe('Navigate transactions', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test.fullTitle(),
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -142,7 +142,7 @@ describe('Navigate transactions', function () {
   it('should reject and remove all unapproved transactions', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesControllerTxSimulationsDisabled()
           .withPermissionControllerConnectedToTestDapp()

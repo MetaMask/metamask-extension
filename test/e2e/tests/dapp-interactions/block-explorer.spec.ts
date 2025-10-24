@@ -57,7 +57,7 @@ describe('Block Explorer', function () {
     const smartContract = SMART_CONTRACTS.HST;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkController({
             ...mockNetworkStateOld({

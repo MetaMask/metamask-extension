@@ -37,7 +37,7 @@ export async function withMultichainAccountsDesignEnabled(
     ) => Promise<MockedEndpoint | MockedEndpoint[]>;
     accountType?: AccountType;
     state?: number;
-    dappOptions?: { defaultTestDapp?: number; customDappPaths?: string[] };
+    dappOptions?: { numberOfTestDapps?: number; customDappPaths?: string[] };
   },
   test: (driver: Driver) => Promise<void>,
 ) {

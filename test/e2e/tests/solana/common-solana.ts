@@ -1580,7 +1580,7 @@ export async function withSolanaAccountSnap(
     mockSwapWithNoQuotes?: boolean;
     walletConnect?: boolean;
     dappOptions?: {
-      defaultTestDapp?: number;
+      numberOfTestDapps?: number;
       customDappPaths?: string[];
     };
     withProtocolSnap?: boolean;
@@ -1620,7 +1620,7 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       forceBip44Version: state === 2 ? 2 : 0,
-      dappOptions: dappOptions ?? { defaultTestDapp: 1 },
+      dappOptions: dappOptions ?? { numberOfTestDapps: 1 },
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
         // component, which will impact to the slides count.

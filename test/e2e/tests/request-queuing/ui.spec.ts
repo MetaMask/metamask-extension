@@ -193,7 +193,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338; // 0x53a
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
@@ -257,7 +257,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338; // 0x53a
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 3 },
+        dappOptions: { numberOfTestDapps: 3 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleNode()
           .withPreferencesController({
@@ -400,7 +400,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPreferencesController({
@@ -469,7 +469,7 @@ describe('Request-queue UI changes', function () {
   it('should signal from UI to dapp the network change', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         driverOptions: { constrainWindowSize: true },
@@ -508,7 +508,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withEnabledNetworks({
@@ -587,7 +587,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         // Presently confirmations take up to 10 seconds to display on a dead network
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()

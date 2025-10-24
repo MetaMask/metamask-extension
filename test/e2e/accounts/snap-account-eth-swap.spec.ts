@@ -41,7 +41,6 @@ describe('Snap Account - Swap', function () {
     await withFixtures(
       {
         dappOptions: {
-          defaultTestDapp: 1,
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
         fixtures: new FixtureBuilder().build(),

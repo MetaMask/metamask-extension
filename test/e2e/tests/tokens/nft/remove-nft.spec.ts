@@ -33,7 +33,7 @@ describe('Remove NFT', function () {
     }
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNftControllerERC721()
           .withMetaMetricsController({

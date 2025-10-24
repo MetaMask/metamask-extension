@@ -10,7 +10,7 @@ describe('Ledger Hardware Signatures', function (this: Suite) {
   it('sign typed v4', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({

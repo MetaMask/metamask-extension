@@ -10,7 +10,7 @@ describe('Trezor Hardware Signatures', function (this: Suite) {
   it('personal sign', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -35,7 +35,7 @@ describe('Trezor Hardware Signatures', function (this: Suite) {
   it('sign typed v4', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({

@@ -24,7 +24,7 @@ export async function withMultiSrp(
 ) {
   await withFixtures(
     {
-      dappOptions: { defaultTestDapp: 1 },
+      dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilder().build(),
       testSpecificMock,
       title,

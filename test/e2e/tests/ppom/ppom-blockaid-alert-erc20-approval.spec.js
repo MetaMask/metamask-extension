@@ -209,7 +209,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
   it.skip('should show banner alert', async function () {
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()

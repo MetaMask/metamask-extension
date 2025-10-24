@@ -25,7 +25,7 @@ async function main() {
   const chainId = 1337;
   await withFixtures(
     {
-      dappOptions: { defaultTestDapp: 1 },
+      dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilder().build(),
       localNodeOptions: 'none',
       title: 'api-specs coverage',

@@ -54,7 +54,7 @@ describe('Test Snap installed', function () {
 
     await withFixtures(
       {
-        dappOptions: { defaultTestDapp: 1 },
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: 'fake-metrics-id',
