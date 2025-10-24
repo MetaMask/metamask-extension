@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { BtcScope, EthScope, SolScope } from '@metamask/keyring-api';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  FEATURED_NETWORK_CHAIN_IDS,
   FEATURED_RPCS,
 } from '../../../../../../shared/constants/network';
 import {
@@ -24,7 +23,11 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { hideModal, setActiveNetwork } from '../../../../../store/actions';
+import {
+  setEnabledAllPopularNetworks,
+  hideModal,
+  setActiveNetwork,
+} from '../../../../../store/actions';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -42,7 +45,7 @@ import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { AdditionalNetworksInfo } from '../additional-networks-info';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import { getEnabledNetworksByNamespace } from '../../../../../selectors/multichain/networks';
+import { getAllEnabledNetworksForAllNamespaces } from '../../../../../selectors/multichain/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getOrderedNetworksList,
@@ -50,9 +53,7 @@ import {
   getIsMultichainAccountsState2Enabled,
   getSelectedInternalAccount,
 } from '../../../../../selectors';
-import { enableAllPopularNetworks } from '../../../../../store/controller-actions/network-order-controller';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
-import { isFlask } from '../../../../../helpers/utils/build-types';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
@@ -61,7 +62,9 @@ const DefaultNetworks = memo(() => {
   const [, evmNetworks] = useSelector(
     getMultichainNetworkConfigurationsByChainId,
   );
-  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const allEnabledNetworksForAllNamespaces = useSelector(
+    getAllEnabledNetworksForAllNamespaces,
+  );
   // Use the shared callbacks hook
   const { getItemCallbacks, hasMultiRpcOptions } = useNetworkItemCallbacks();
 
@@ -82,6 +85,8 @@ const DefaultNetworks = memo(() => {
     getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
   );
 
+  const enabledChainIds = useSelector(getAllEnabledNetworksForAllNamespaces);
+
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
   // extract the solana account of the selected account group
@@ -91,11 +96,11 @@ const DefaultNetworks = memo(() => {
 
   let btcAccountGroup = null;
 
-  if (isFlask()) {
-    btcAccountGroup = useSelector((state) =>
-      getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
-    );
-  }
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  btcAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
+  );
+  ///: END:ONLY_INCLUDE_IF
 
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
@@ -116,29 +121,20 @@ const DefaultNetworks = memo(() => {
     [evmNetworks],
   );
 
-  const allCurrentPopularNetworks = useMemo(() => {
-    const evmNetworksList = orderedNetworks.filter((network) => network.isEvm);
-    const evmChainIds = evmNetworksList
-      .map((network) => convertCaipToHexChainId(network.chainId))
-      .filter((chainId) => FEATURED_NETWORK_CHAIN_IDS.includes(chainId));
-    return evmChainIds;
-  }, [orderedNetworks]);
-
   const isAllPopularNetworksSelected = useMemo(
-    () =>
-      allCurrentPopularNetworks.every(
-        (chainId) => chainId in enabledNetworksByNamespace,
-      ),
-    [allCurrentPopularNetworks, enabledNetworksByNamespace],
+    () => allEnabledNetworksForAllNamespaces.length > 1,
+    [allEnabledNetworksForAllNamespaces],
   );
 
   const isSingleNetworkSelected = useCallback(
-    (chainId: Hex) => {
+    (hexChainId: Hex) => {
       return (
-        !isAllPopularNetworksSelected && chainId in enabledNetworksByNamespace
+        !isAllPopularNetworksSelected &&
+        allEnabledNetworksForAllNamespaces.length === 1 &&
+        allEnabledNetworksForAllNamespaces[0] === hexChainId
       );
     },
-    [enabledNetworksByNamespace, isAllPopularNetworksSelected],
+    [isAllPopularNetworksSelected, allEnabledNetworksForAllNamespaces],
   );
 
   // Use useCallback for stable function references
@@ -157,7 +153,7 @@ const DefaultNetworks = memo(() => {
     );
     const finalNetworkClientId = defaultRpcEndpoint.networkClientId;
 
-    dispatch(enableAllPopularNetworks());
+    dispatch(setEnabledAllPopularNetworks());
     dispatch(hideModal());
     // deferring execution to keep select all unblocked
     setTimeout(() => {
@@ -179,8 +175,6 @@ const DefaultNetworks = memo(() => {
 
   // Memoize the network list items to avoid recreation on every render
   const networkListItems = useMemo(() => {
-    const enabledChainIds = Object.keys(enabledNetworksByNamespace);
-
     // Helper function to filter networks based on account type and selection
     const getFilteredNetworks = () => {
       if (isMultichainAccountsState2Enabled) {
@@ -192,11 +186,7 @@ const DefaultNetworks = memo(() => {
           if (solAccountGroup && network.chainId === SolScope.Mainnet) {
             return true;
           }
-          if (
-            btcAccountGroup &&
-            isFlask() &&
-            network.chainId === BtcScope.Mainnet
-          ) {
+          if (btcAccountGroup && network.chainId === BtcScope.Mainnet) {
             return true;
           }
           return false;
@@ -267,7 +257,6 @@ const DefaultNetworks = memo(() => {
       );
     });
   }, [
-    enabledNetworksByNamespace,
     orderedNetworks,
     isEvmNetworkSelected,
     isNetworkInDefaultNetworkTab,
@@ -281,6 +270,8 @@ const DefaultNetworks = memo(() => {
     isMultichainAccountsState2Enabled,
     evmAccountGroup,
     dispatch,
+    selectedAccount,
+    enabledChainIds,
   ]);
 
   // Memoize the additional network list items

@@ -18,6 +18,7 @@ jobs:
   page-load-benchmark-pr:
     name: Run Page Load Benchmarks
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
@@ -29,7 +30,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
-          yarn-custom-url: ${{ vars.YARN_URL }}
+          use-yarn-hydrate: true
 
       - name: Download artifact 'build-test-browserify'
         uses: actions/download-artifact@v4

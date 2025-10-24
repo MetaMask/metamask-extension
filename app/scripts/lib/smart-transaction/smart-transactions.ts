@@ -1,13 +1,19 @@
-import SmartTransactionsController, {
-  SmartTransactionsControllerSmartTransactionEvent,
-} from '@metamask/smart-transactions-controller';
 import {
-  Fee,
-  Fees,
+  AcceptRequest,
+  AddApprovalRequest,
+  EndFlow,
+  StartFlow,
+  UpdateRequestState,
+} from '@metamask/approval-controller';
+import { RestrictedMessenger } from '@metamask/base-controller';
+import {
+  SmartTransactionsController,
+  SmartTransactionsControllerSmartTransactionEvent,
   SmartTransactionStatuses,
-  SmartTransaction,
-} from '@metamask/smart-transactions-controller/dist/types';
-import type { Hex } from '@metamask/utils';
+  type Fee,
+  type Fees,
+  type SmartTransaction,
+} from '@metamask/smart-transactions-controller';
 import {
   TransactionController,
   TransactionMeta,
@@ -15,32 +21,21 @@ import {
   TransactionType,
   type PublishBatchHookTransaction,
 } from '@metamask/transaction-controller';
+import type { Hex } from '@metamask/utils';
 import log from 'loglevel';
-import { RestrictedMessenger } from '@metamask/base-controller';
 import {
-  AddApprovalRequest,
-  UpdateRequestState,
-  StartFlow,
-  EndFlow,
-  AcceptRequest,
-} from '@metamask/approval-controller';
-
-import { decimalToHex } from '../../../../shared/modules/conversion.utils';
-import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
-import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
-import {
-  SMART_TRANSACTION_CONFIRMATION_TYPES,
   ORIGIN_METAMASK,
+  SMART_TRANSACTION_CONFIRMATION_TYPES,
 } from '../../../../shared/constants/app';
+import { CANCEL_GAS_LIMIT_DEC } from '../../../../shared/constants/smartTransactions';
+import { decimalToHex } from '../../../../shared/modules/conversion.utils';
 import {
   getFeatureFlagsByChainId,
   getIsSmartTransaction,
   isHardwareWallet,
 } from '../../../../shared/modules/selectors';
+import { isLegacyTransaction } from '../../../../shared/modules/transaction.utils';
 import { ControllerFlatState } from '../../controller-init/controller-list';
-import { TransactionControllerInitMessenger } from '../../controller-init/messengers/transaction-controller-messenger';
-import { Delegation7702PublishHook } from '../transaction/hooks/delegation-7702-publish';
-import { getTransactionById } from '../transaction/util';
 
 const namespace = 'SmartTransactions';
 
@@ -67,6 +62,7 @@ export type FeatureFlags = {
     expectedDeadline?: number;
     maxDeadline?: number;
     extensionReturnTxHashAsap?: boolean;
+    extensionReturnTxHashAsapBatch?: boolean;
   };
 };
 
@@ -100,6 +96,7 @@ class SmartTransactionHook {
       expectedDeadline?: number;
       maxDeadline?: number;
       extensionReturnTxHashAsap?: boolean;
+      extensionReturnTxHashAsapBatch?: boolean;
     };
   };
 
@@ -248,16 +245,6 @@ class SmartTransactionHook {
 
       await this.#processApprovalIfNeeded(uuid);
 
-      const transactionHash = await this.#waitForTransactionHash({
-        uuid,
-      });
-
-      if (transactionHash === null) {
-        throw new Error(
-          'submitBatch: Transaction does not have a transaction hash, there was a problem',
-        );
-      }
-
       let submitBatchResponse;
       if (submitTransactionResponse?.txHashes) {
         submitBatchResponse = {
@@ -269,6 +256,26 @@ class SmartTransactionHook {
         submitBatchResponse = {
           results: [],
         };
+      }
+
+      const extensionReturnTxHashAsapBatch =
+        this.#featureFlags?.smartTransactions?.extensionReturnTxHashAsapBatch;
+
+      if (
+        extensionReturnTxHashAsapBatch &&
+        submitBatchResponse?.results?.length > 0
+      ) {
+        return submitBatchResponse;
+      }
+
+      const transactionHash = await this.#waitForTransactionHash({
+        uuid,
+      });
+
+      if (transactionHash === null) {
+        throw new Error(
+          'submitBatch: Transaction does not have a transaction hash, there was a problem',
+        );
       }
 
       return submitBatchResponse;
@@ -545,7 +552,7 @@ function getUIState(flatState: ControllerFlatState) {
   return { metamask: flatState };
 }
 
-function getSmartTransactionCommonParams(
+export function getSmartTransactionCommonParams(
   flatState: ControllerFlatState,
   chainId?: string,
 ) {
@@ -566,97 +573,4 @@ function getSmartTransactionCommonParams(
     featureFlags,
     isHardwareWalletAccount,
   };
-}
-
-export async function publishSmartTransactionHook({
-  flatState,
-  initMessenger,
-  signedTx,
-  smartTransactionsController,
-  transactionController,
-  transactionMeta,
-}: {
-  flatState: ControllerFlatState;
-  initMessenger: TransactionControllerInitMessenger;
-  signedTx: string;
-  smartTransactionsController: SmartTransactionsController;
-  transactionController: TransactionController;
-  transactionMeta: TransactionMeta;
-}) {
-  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
-
-  if (isSmartTransaction) {
-    const result = await submitSmartTransactionHook({
-      transactionMeta,
-      signedTransactionInHex: signedTx as Hex,
-      transactionController,
-      smartTransactionsController,
-      controllerMessenger: initMessenger,
-      isSmartTransaction,
-      isHardwareWallet: isHardwareWalletAccount,
-      // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
-      featureFlags,
-    });
-
-    if (result?.transactionHash) {
-      return result;
-    }
-  }
-
-  const hook = new Delegation7702PublishHook({
-    isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
-      transactionController,
-    ),
-    messenger: initMessenger,
-  }).getHook();
-
-  return await hook(transactionMeta, signedTx);
-}
-
-export function publishBatchSmartTransactionHook({
-  transactionController,
-  smartTransactionsController,
-  hookControllerMessenger,
-  flatState,
-  transactions,
-}: {
-  transactionController: TransactionController;
-  smartTransactionsController: SmartTransactionsController;
-  hookControllerMessenger: SmartTransactionHookMessenger;
-  flatState: ControllerFlatState;
-  transactions: PublishBatchHookTransaction[];
-}) {
-  // Get transactionMeta based on the last transaction ID
-  const lastTransaction = transactions[transactions.length - 1];
-  const transactionMeta = getTransactionById(
-    lastTransaction.id ?? '',
-    transactionController,
-  );
-
-  // If we couldn't find the transaction, we should handle that gracefully
-  if (!transactionMeta) {
-    throw new Error(
-      `publishBatchSmartTransactionHook: Could not find transaction with id ${lastTransaction.id}`,
-    );
-  }
-
-  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
-
-  if (!isSmartTransaction) {
-    return undefined;
-  }
-
-  return submitBatchSmartTransactionHook({
-    transactions,
-    transactionController,
-    smartTransactionsController,
-    controllerMessenger: hookControllerMessenger,
-    isSmartTransaction,
-    isHardwareWallet: isHardwareWalletAccount,
-    // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
-    featureFlags,
-    transactionMeta,
-  });
 }

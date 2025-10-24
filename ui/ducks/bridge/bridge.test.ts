@@ -165,6 +165,7 @@ describe('Ducks - Bridge', () => {
       store.dispatch(
         updateQuoteRequestParams(
           {
+            walletAddress: '0x1234567890',
             srcChainId: 1,
             srcTokenAddress: zeroAddress(),
             destTokenAddress: undefined,
@@ -189,6 +190,7 @@ describe('Ducks - Bridge', () => {
       expect(mockUpdateParams).toHaveBeenCalledTimes(1);
       expect(mockUpdateParams).toHaveBeenCalledWith(
         {
+          walletAddress: '0x1234567890',
           srcChainId: 1,
           srcTokenAddress: zeroAddress(),
           destTokenAddress: undefined,

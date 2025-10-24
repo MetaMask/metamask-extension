@@ -1,4 +1,4 @@
-import BN from 'bn.js';
+import { KeyringAccountType } from '@metamask/keyring-api';
 import { Hex } from '@metamask/utils';
 
 export enum AssetStandard {
@@ -13,10 +13,10 @@ export const NFT_STANDARDS = [AssetStandard.ERC721, AssetStandard.ERC1155];
 export type Asset = {
   accountAddress?: string;
   accountId?: string;
+  accountType?: KeyringAccountType;
   address?: string;
   assetId?: string;
-  balance?: BN | string | number | undefined;
-  balanceInSelectedCurrency?: string;
+  balance?: string | number | undefined;
   chainId?: string | number;
   collection?: {
     name?: string;
@@ -47,7 +47,10 @@ export type RecipientValidationResult = {
     point: string;
     similarTo: string;
   }[];
-  error?: string | null;
-  resolvedLookup?: string | null;
-  warning?: string | null;
+  error?: string;
+  resolvedLookup?: string;
+  warning?: string;
+  toAddressValidated?: string;
+  loading?: boolean;
+  protocol?: string;
 };

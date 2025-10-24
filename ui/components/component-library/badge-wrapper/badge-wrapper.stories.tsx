@@ -20,7 +20,7 @@ import README from './README.mdx';
 
 import { BadgeWrapper } from './badge-wrapper';
 import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
-import { AvatarAccount } from '../avatar-account';
+import { AvatarAccount } from '@metamask/design-system-react';
 import { AvatarToken } from '../avatar-token';
 
 import Box from '../../ui/box/box';
@@ -28,7 +28,7 @@ import { Icon, IconName, IconSize } from '../icon';
 import { Tag } from '../tag';
 
 export default {
-  title: 'Components/ComponentLibrary/BadgeWrapper',
+  title: 'Components/ComponentLibrary/BadgeWrapper (deprecated)',
   component: BadgeWrapper,
   parameters: {
     docs: {

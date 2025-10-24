@@ -6,6 +6,25 @@ import mockState from '../../../../../../../../test/data/mock-state.json';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { GasFeesRow } from './gas-fees-row';
 
+jest.mock('../../../../simulation-details/useBalanceChanges', () => ({
+  useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
+}));
+
+jest.mock('../../../../../context/confirm', () => {
+  const actual = jest.requireActual('../../../../../context/confirm');
+  return {
+    ...actual,
+    useConfirmContext: jest.fn(() => ({
+      currentConfirmation: {
+        ...mockState.metamask.transactions[0],
+        simulationData: {
+          tokenBalanceChanges: [],
+        },
+      },
+    })),
+  };
+});
+
 describe('<GasFeesRow />', () => {
   const middleware = [thunk];
 

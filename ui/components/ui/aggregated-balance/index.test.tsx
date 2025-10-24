@@ -76,8 +76,8 @@ const mockMetamaskStore = {
   },
   cryptocurrencies: [Cryptocurrency.Solana],
   remoteFeatureFlags: {
-    addSolanaAccount: true,
-    addBitcoinAccount: true,
+    solanaAccounts: { enabled: true, minimumVersion: '13.6.0' },
+    bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
   },
 };
 
@@ -95,7 +95,8 @@ describe('AggregatedBalance Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  it('renders Spinner when balances are missing', () => {
+
+  it('renders a skeleton when balances are missing', () => {
     const testStore = getStore({
       metamask: {
         ...mockMetamaskStore,
@@ -113,8 +114,8 @@ describe('AggregatedBalance Component', () => {
       testStore,
     );
 
-    const spinner = container.querySelector('.spinner');
-    expect(spinner).toBeInTheDocument();
+    const skeleton = container.querySelector('.mm-skeleton');
+    expect(skeleton).toBeInTheDocument();
   });
 
   it('renders fiat balance when showNativeTokenAsMainBalance is false', () => {

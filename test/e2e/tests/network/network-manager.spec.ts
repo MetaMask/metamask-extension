@@ -193,8 +193,8 @@ describe('Network Manager', function (this: Suite) {
           method: 'wallet_addEthereumChain',
           params: [
             {
-              chainId: '0x89', // Polygon mainnet
-              chainName: 'Polygon Mainnet',
+              chainId: '0x89', // Polygon
+              chainName: 'Polygon',
               nativeCurrency: {
                 name: 'MATIC',
                 symbol: 'MATIC',
@@ -213,7 +213,7 @@ describe('Network Manager', function (this: Suite) {
         // Approve the network addition
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.checkPageIsLoaded('Polygon Mainnet');
+        await addNetworkConfirmation.checkPageIsLoaded('Polygon');
         await addNetworkConfirmation.approveAddNetwork();
 
         // Switch back to MetaMask to verify preservation
@@ -242,7 +242,7 @@ describe('Network Manager', function (this: Suite) {
           .withPermissionControllerConnectedToTestDapp()
           .withEnabledNetworks({
             eip155: {
-              '0x1': true, // Start with only Ethereum Mainnet
+              '0x1': true, // Start with only Ethereum
             },
           })
           .build(),

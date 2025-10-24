@@ -386,6 +386,89 @@ class AssetListPage {
     });
   }
 
+  /**
+   * Gets the network icon details from the sort-by-networks button
+   *
+   * @returns Object containing icon src, alt text, and visibility status, or null if no icon found
+   */
+  async getNetworkIcon(): Promise<{
+    src: string;
+    alt: string;
+    isVisible: boolean;
+  } | null> {
+    console.log('Getting network icon details from sort-by-networks button');
+    const iconDetails = await this.driver.executeScript(`
+      const button = document.querySelector('[data-testid="sort-by-networks"]');
+      const avatarNetwork = button?.querySelector('.mm-avatar-network img');
+      return avatarNetwork ? {
+        src: avatarNetwork.src,
+        alt: avatarNetwork.alt,
+        isVisible: avatarNetwork.offsetWidth > 0 && avatarNetwork.offsetHeight > 0
+      } : null;
+    `);
+    return iconDetails as {
+      src: string;
+      alt: string;
+      isVisible: boolean;
+    } | null;
+  }
+
+  /**
+   * Checks if the network icon is visible in the sort-by-networks button
+   *
+   * @returns true if icon is present and visible, false otherwise
+   */
+  async isNetworkIconVisible(): Promise<boolean> {
+    console.log('Checking if network icon is visible');
+    const iconElement = await this.driver.executeScript(`
+      const button = document.querySelector('[data-testid="sort-by-networks"]');
+      const avatarNetwork = button?.querySelector('.mm-avatar-network');
+      return avatarNetwork ? {
+        isPresent: true,
+        isVisible: avatarNetwork.offsetWidth > 0 && avatarNetwork.offsetHeight > 0
+      } : { isPresent: false, isVisible: false };
+    `);
+
+    const result = iconElement as { isPresent: boolean; isVisible: boolean };
+    return result.isPresent && result.isVisible;
+  }
+
+  /**
+   * Verifies that the network icon matches expected characteristics
+   *
+   * @param expectedIndicators - Array of strings that should be present in the icon URL
+   * @throws Error if icon is not found or doesn't match expected characteristics
+   */
+  async checkNetworkIconContains(expectedIndicators: string[]): Promise<void> {
+    console.log(
+      `Checking network icon contains one of: ${expectedIndicators.join(', ')}`,
+    );
+
+    const iconDetails = await this.getNetworkIcon();
+
+    if (!iconDetails) {
+      throw new Error('Network icon not found in sort-by-networks button');
+    }
+
+    if (!iconDetails.isVisible) {
+      throw new Error('Network icon is not visible');
+    }
+
+    const hasValidIcon = expectedIndicators.some((indicator) =>
+      iconDetails.src.toLowerCase().includes(indicator.toLowerCase()),
+    );
+
+    if (!hasValidIcon) {
+      throw new Error(
+        `Expected icon to contain one of ${expectedIndicators.join(', ')}, but got: ${iconDetails.src}`,
+      );
+    }
+
+    console.log(
+      `✅ Network icon verification passed - Icon src: ${iconDetails.src}`,
+    );
+  }
+
   async checkPriceChartIsShown(): Promise<void> {
     console.log(`Verify the price chart is displayed`);
     await this.driver.waitUntil(

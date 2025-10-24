@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getChainIdsCaveat,
@@ -9,36 +9,31 @@ import { getNameLookupSnaps } from '../../selectors';
 import { handleSnapRequest } from '../../store/actions';
 
 /**
- * A hook for using Snaps to lookup domains for a given chain ID.
- * Returns a callback function that lookups domains on-demand.
+ * A hook for using Snaps to resolve domain names for a given chain ID.
  *
- * @returns The resolve callback function.
+ * @returns Function to get domain name resolutions.
  */
 export function useSnapNameResolution() {
   const snaps = useSelector(getNameLookupSnaps);
 
-  const processedSnaps = useMemo(
-    () =>
-      snaps.map((snap) => {
-        const chainIdCaveat = getChainIdsCaveat(snap.permission);
-        const lookupMatchersCaveat = getLookupMatchersCaveat(snap.permission);
-
-        return {
-          id: snap.id,
-          chainIdCaveat,
-          lookupMatchersCaveat,
-        };
-      }),
-    [snaps],
-  );
-
-  const getFilteredSnaps = useCallback(
+  /**
+   * Filters the available snaps based on the provided chain ID and domain.
+   *
+   * @param chainId - The CAIP-2 chain ID.
+   * @param domain - The domain to resolve.
+   * @returns The filtered snap IDs.
+   */
+  const getAvailableSnaps = useCallback(
     (chainId: string, domain: string) =>
-      processedSnaps
-        .filter(({ chainIdCaveat, lookupMatchersCaveat }) => {
+      snaps
+        .filter(({ permission }) => {
+          const chainIdCaveat = getChainIdsCaveat(permission);
+
           if (chainIdCaveat && !chainIdCaveat.includes(chainId)) {
             return false;
           }
+
+          const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
 
           if (lookupMatchersCaveat) {
             const { tlds, schemes } = lookupMatchersCaveat;
@@ -51,15 +46,26 @@ export function useSnapNameResolution() {
           return true;
         })
         .map(({ id }) => id),
-    [processedSnaps],
+    [snaps],
   );
 
-  const lookupDomainAddresses = useCallback(
+  /**
+   * Fetches name resolutions from the available snaps for the given chain ID and domain.
+   *
+   * @param chainId - The CAIP-2 chain ID.
+   * @param domain - The domain to resolve.
+   * @returns An object containing the resolutions and any errors encountered.
+   */
+  const fetchResolutions = useCallback(
     async (chainId: string, domain: string) => {
-      const filteredSnaps = getFilteredSnaps(chainId, domain);
+      const availableSnaps = getAvailableSnaps(chainId, domain);
+
+      if (availableSnaps.length === 0) {
+        return [];
+      }
 
       const responses = await Promise.allSettled(
-        filteredSnaps.map(
+        availableSnaps.map(
           (id) =>
             handleSnapRequest({
               snapId: id,
@@ -77,6 +83,9 @@ export function useSnapNameResolution() {
         ),
       );
 
+      /**
+       * Filters the responses from the snap requests into successful resolutions and errors.
+       */
       const resolutions = responses
         .filter((response) => response.status === 'fulfilled' && response.value)
         .flatMap(
@@ -87,8 +96,8 @@ export function useSnapNameResolution() {
 
       return resolutions;
     },
-    [getFilteredSnaps],
+    [getAvailableSnaps],
   );
 
-  return { lookupDomainAddresses };
+  return { fetchResolutions };
 }

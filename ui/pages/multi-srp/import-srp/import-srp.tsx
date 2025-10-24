@@ -1,21 +1,13 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   hideWarning,
   checkIsSeedlessPasswordOutdated,
   importMnemonicToVault,
-  lockAccountSyncing,
-  unlockAccountSyncing,
 } from '../../../store/actions';
 import {
   Text,
@@ -45,12 +37,7 @@ import { clearClipboard } from '../../../helpers/utils/util';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
 import ShowHideToggle from '../../../components/ui/show-hide-toggle';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import {
-  getMetaMaskHdKeyrings,
-  getIsSocialLoginFlow,
-} from '../../../selectors';
+import { getIsSocialLoginFlow } from '../../../selectors';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
@@ -64,8 +51,7 @@ const defaultNumberOfWords = 12;
 
 export const ImportSrp = () => {
   const t = useI18nContext();
-  const history = useHistory();
-  const trackEvent = useContext(MetaMetricsContext);
+  const navigate = useNavigate();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const [srpError, setSrpError] = useState('');
   const [pasteFailed, setPasteFailed] = useState(false);
@@ -81,8 +67,6 @@ export const ImportSrp = () => {
   );
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
-  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
-  const newHdEntropyIndex = hdKeyrings.length;
 
   const [loading, setLoading] = useState(false);
 
@@ -106,35 +90,13 @@ export const ImportSrp = () => {
 
     const joinedSrp = secretRecoveryPhrase.join(' ');
     if (joinedSrp) {
-      const result = (await dispatch(
-        importMnemonicToVault(joinedSrp),
-      )) as unknown as {
-        newAccountAddress: string;
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        discoveredAccounts: { Bitcoin: number; Solana: number };
-      };
-
-      const { discoveredAccounts } = result;
+      await dispatch(importMnemonicToVault(joinedSrp));
 
       // Clear the secret recovery phrase after importing
       setSecretRecoveryPhrase(Array(defaultNumberOfWords).fill(''));
-
-      // Track the event with the discovered accounts
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      trackEvent({
-        event: MetaMetricsEventName.ImportSecretRecoveryPhraseCompleted,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          hd_entropy_index: newHdEntropyIndex,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_solana_accounts_discovered: discoveredAccounts?.Solana,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          number_of_bitcoin_accounts_discovered: discoveredAccounts?.Bitcoin,
-        },
-      });
     }
 
-    history.push(DEFAULT_ROUTE);
+    navigate(DEFAULT_ROUTE);
     dispatch(setShowNewSrpAddedToast(true));
   }
 
@@ -323,7 +285,7 @@ export const ImportSrp = () => {
             ariaLabel="back"
             iconName={IconName.ArrowLeft}
             onClick={() => {
-              history.push(DEFAULT_ROUTE);
+              navigate(DEFAULT_ROUTE);
             }}
           />
         }
@@ -332,7 +294,7 @@ export const ImportSrp = () => {
             ariaLabel="close"
             iconName={IconName.Close}
             onClick={() => {
-              history.push(DEFAULT_ROUTE);
+              navigate(DEFAULT_ROUTE);
             }}
           />
         }
@@ -381,6 +343,7 @@ export const ImportSrp = () => {
                     flexDirection={FlexDirection.Row}
                     alignItems={AlignItems.center}
                     width={BlockSize.Full}
+                    paddingRight={2}
                   >
                     <TextField
                       id={id}
@@ -471,7 +434,6 @@ export const ImportSrp = () => {
               trace({ name: TraceName.ImportSrp });
               try {
                 setLoading(true);
-                await dispatch(lockAccountSyncing());
                 await importWallet();
               } catch (e) {
                 setSrpError(
@@ -482,7 +444,6 @@ export const ImportSrp = () => {
               } finally {
                 setLoading(false);
                 endTrace({ name: TraceName.ImportSrp });
-                await dispatch(unlockAccountSyncing());
               }
             }}
           >

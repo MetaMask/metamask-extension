@@ -3,33 +3,53 @@ import {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
   AccountsControllerGetAccountAction,
-  AccountsControllerGetSelectedAccountAction,
+  AccountsControllerGetSelectedMultichainAccountAction,
   AccountsControllerListMultichainAccountsAction,
   AccountsControllerSelectedAccountChangeEvent,
   AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
+import {
+  AuthenticationController,
+  UserStorageController,
+} from '@metamask/profile-sync-controller';
 import { GetSnap as SnapControllerGet } from '@metamask/snaps-controllers';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
+import {
+  MultichainAccountServiceCreateMultichainAccountGroupAction,
+  MultichainAccountServiceWalletStatusChangeEvent,
+} from '@metamask/multichain-account-service';
+import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { AccountOrderControllerGetStateAction } from '../../../controllers/account-order';
 
 type Actions =
   | AccountsControllerGetAccountAction
-  | AccountsControllerGetSelectedAccountAction
+  | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerSetSelectedAccountAction
   | AccountsControllerListMultichainAccountsAction
   | SnapControllerGet
-  | KeyringControllerGetStateAction;
+  | KeyringControllerGetStateAction
+  | UserStorageController.UserStorageControllerGetStateAction
+  | UserStorageController.UserStorageControllerPerformGetStorage
+  | UserStorageController.UserStorageControllerPerformGetStorageAllFeatureEntries
+  | UserStorageController.UserStorageControllerPerformSetStorage
+  | UserStorageController.UserStorageControllerPerformBatchSetStorage
+  | AuthenticationController.AuthenticationControllerGetSessionProfile
+  | MultichainAccountServiceCreateMultichainAccountGroupAction
+  | MetaMetricsControllerTrackEventAction;
 
 type Events =
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
-  | AccountsControllerSelectedAccountChangeEvent;
+  | AccountsControllerSelectedAccountChangeEvent
+  | UserStorageController.UserStorageControllerStateChangeEvent
+  | MultichainAccountServiceWalletStatusChangeEvent;
 
 export type AccountTreeControllerMessenger = ReturnType<
   typeof getAccountTreeControllerMessenger
 >;
 
 /**
- * Get a restricted messenger for the account wallet controller. This is scoped to the
+ * Get a restricted messenger for the account tree controller. This is scoped to the
  * actions and events that this controller is allowed to handle.
  *
  * @param messenger - The controller messenger to restrict.
@@ -44,29 +64,53 @@ export function getAccountTreeControllerMessenger(
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'AccountsController:selectedAccountChange',
+      'UserStorageController:stateChange',
+      'MultichainAccountService:walletStatusChange',
     ],
     allowedActions: [
       'AccountsController:listMultichainAccounts',
       'AccountsController:getAccount',
-      'AccountsController:getSelectedAccount',
+      'AccountsController:getSelectedMultichainAccount',
       'AccountsController:setSelectedAccount',
+      'UserStorageController:getState',
+      'UserStorageController:performGetStorage',
+      'UserStorageController:performGetStorageAllFeatureEntries',
+      'UserStorageController:performSetStorage',
+      'UserStorageController:performBatchSetStorage',
+      'AuthenticationController:getSessionProfile',
+      'MultichainAccountService:createMultichainAccountGroup',
       'SnapController:get',
       'KeyringController:getState',
     ],
   });
 }
 
+export type AllowedInitializationActions =
+  | MetaMetricsControllerTrackEventAction
+  | AccountsControllerGetAccountAction
+  | AccountOrderControllerGetStateAction;
+
+export type AccountTreeControllerInitMessenger = ReturnType<
+  typeof getAccountTreeControllerInitMessenger
+>;
+
 /**
- * Get a restricted messenger for the account wallet controller. This is scoped to the
+ * Get a restricted messenger for the account tree controller. This is scoped to the
  * actions and events that this controller is allowed to handle.
  *
  * @param messenger - The controller messenger to restrict.
  * @returns The restricted controller messenger.
  */
 export function getAccountTreeControllerInitMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: Messenger<AllowedInitializationActions, Events>,
 ) {
-  // Our `init` method needs the same actions, so just re-use the same messenger
-  // function here.
-  return getAccountTreeControllerMessenger(messenger);
+  return messenger.getRestricted({
+    name: 'AccountTreeControllerInit',
+    allowedActions: [
+      'MetaMetricsController:trackEvent',
+      'AccountsController:getAccount',
+      'AccountOrderController:getState',
+    ],
+    allowedEvents: [],
+  });
 }

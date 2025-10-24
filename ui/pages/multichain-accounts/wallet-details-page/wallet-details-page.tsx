@@ -12,6 +12,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  SensitiveText,
   Text,
 } from '../../../components/component-library';
 import {
@@ -40,6 +41,7 @@ import {
   useSingleWalletAccountsBalanceCallback,
   useSingleWalletDisplayBalance,
 } from '../../../hooks/multichain-accounts/useWalletBalance';
+import { getPreferences } from '../../../selectors';
 
 export const WalletDetailsPage = () => {
   const t = useI18nContext();
@@ -53,6 +55,7 @@ export const WalletDetailsPage = () => {
 
   const walletTotalBalance = useSingleWalletDisplayBalance(walletId);
   const walletAccountBalance = useSingleWalletAccountsBalanceCallback(walletId);
+  const { privacyMode } = useSelector(getPreferences);
 
   useEffect(() => {
     if (!wallet) {
@@ -83,16 +86,21 @@ export const WalletDetailsPage = () => {
           accountName={group.metadata.name}
           balance={walletAccountBalance(group.id) ?? ''}
           disableHoverEffect={true}
+          privacyMode={privacyMode}
         />
       )),
-    [multichainAccounts, walletAccountBalance],
+    [multichainAccounts, privacyMode, walletAccountBalance],
   );
+
+  const walletDetailsTitle = useMemo(() => {
+    return `${wallet?.metadata.name} / ${t('accounts')}`;
+  }, [wallet?.metadata.name, t]);
 
   return (
     <Page className="multichain-wallet-details-page">
       <Header
         textProps={{
-          variant: TextVariant.headingMd,
+          variant: TextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -104,7 +112,7 @@ export const WalletDetailsPage = () => {
           />
         }
       >
-        {wallet?.metadata.name}
+        {walletDetailsTitle}
       </Header>
       <Content>
         <Box
@@ -144,12 +152,14 @@ export const WalletDetailsPage = () => {
             >
               {t('balance')}
             </Text>
-            <Text
+            <SensitiveText
               variant={TextVariant.bodyMdMedium}
               color={TextColor.textAlternative}
+              isHidden={privacyMode}
+              ellipsis
             >
               {walletTotalBalance ?? '$ n/a'}
-            </Text>
+            </SensitiveText>
           </Box>
           {isEntropyWallet ? (
             <MultichainSrpBackup

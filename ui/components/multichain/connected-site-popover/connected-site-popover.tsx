@@ -1,4 +1,4 @@
-import React, { useContext, RefObject, useMemo } from 'react';
+import React, { useContext, RefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { parseCaipChainId } from '@metamask/utils';
 import {
@@ -20,11 +20,11 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import { getOriginOfCurrentTab, getAllDomains } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getOriginOfCurrentTab } from '../../../selectors';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';
+import { getDappActiveNetwork } from '../../../selectors/dapp';
 
 type ConnectedSitePopoverProps = {
   referenceElement: RefObject<HTMLElement>;
@@ -43,36 +43,9 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
 }) => {
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
+  const dappActiveNetwork = useSelector(getDappActiveNetwork);
   const siteName = getURLHost(activeTabOrigin);
-  const allDomains = useSelector(getAllDomains);
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
   const dispatch = useDispatch();
-
-  // Get the network that this dapp is actually connected to using domain mapping
-  const dappActiveNetwork = useMemo(() => {
-    if (!activeTabOrigin || !allDomains) {
-      return null;
-    }
-
-    // Get the networkClientId for this domain
-    const networkClientId = allDomains[activeTabOrigin];
-    if (!networkClientId) {
-      return null;
-    }
-
-    // Find the network configuration that has this networkClientId
-    const networkConfiguration = Object.values(
-      networkConfigurationsByChainId,
-    ).find((network) => {
-      return network.rpcEndpoints.some(
-        (rpcEndpoint) => rpcEndpoint.networkClientId === networkClientId,
-      );
-    });
-
-    return networkConfiguration || null;
-  }, [activeTabOrigin, allDomains, networkConfigurationsByChainId]);
 
   const getChainIdForImage = (chainId: `${string}:${string}`): string => {
     const { namespace, reference } = parseCaipChainId(chainId);
@@ -85,9 +58,10 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
     <Popover
       referenceElement={referenceElement?.current}
       isOpen={isOpen}
-      style={{ width: '256px' }}
+      style={{ width: '260px' }}
       onClickOutside={onClose}
       data-testid="connected-site-popover"
+      paddingTop={3}
       paddingLeft={0}
       paddingRight={0}
       offset={[8, 8]}
@@ -158,7 +132,10 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
         </Box>
         {!isConnected && (
           <Box paddingLeft={4} paddingRight={4} paddingTop={2}>
-            <Text variant={TextVariant.bodyMd}>
+            <Text
+              variant={TextVariant.bodyMd}
+              color={TextColor.textAlternative}
+            >
               {t('connectionPopoverDescription')}
             </Text>
             <ButtonLink
@@ -170,7 +147,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
             </ButtonLink>
           </Box>
         )}
-        <Box paddingTop={2} paddingLeft={4} paddingRight={4}>
+        <Box paddingTop={4} paddingLeft={4} paddingRight={4}>
           <ButtonSecondary
             block
             onClick={() => {

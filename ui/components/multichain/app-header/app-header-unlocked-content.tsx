@@ -10,6 +10,13 @@ import browser from 'webextension-polyfill';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom-v5-compat';
+import {
+  Icon,
+  IconName as IconNameDesignSystem,
+  IconSize as IconSizeDesignSystem,
+  IconColor as IconColorDesignSystem,
+} from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
@@ -209,36 +216,82 @@ export const AppHeaderUnlockedContent = ({
     [copied, handleCopyClick, shortenedAddress],
   );
 
-  const handleNetworksClick = useCallback(() => {
-    history.push(
-      `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`,
-    );
-  }, [history, selectedMultichainAccountId]);
+  const multichainAccountAppContent = useMemo(() => {
+    const networksLabel =
+      numberOfAccountsInGroup === 1
+        ? t('networkAddress')
+        : t('networkAddresses', [numberOfAccountsInGroup]);
 
-  const networksSubtitle = useMemo(() => {
-    if (!isMultichainAccountsState2Enabled) {
-      return null;
-    }
-
-    const label = numberOfAccountsInGroup === 1 ? t('network') : t('networks');
     return (
-      <Text
-        color={TextColor.primaryDefault}
-        variant={TextVariant.bodyXs}
-        onClick={handleNetworksClick}
-        data-testid="networks-subtitle-test-id"
-        className="networks-subtitle"
-      >
-        {`${numberOfAccountsInGroup} ${label.toLowerCase()}`}
-      </Text>
+      <Box style={{ overflow: 'hidden' }}>
+        {/* Prevent overflow of account picker by long account names */}
+        <Text
+          as="div"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.flexStart}
+          ellipsis
+        >
+          <AccountPicker
+            address={''} // No address shown in multichain mode
+            name={accountName}
+            showAvatarAccount={false}
+            onClick={() => {
+              history.push(ACCOUNT_LIST_PAGE_ROUTE);
+              trackEvent({
+                event: MetaMetricsEventName.NavAccountMenuOpened,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: 'Home',
+                },
+              });
+            }}
+            disabled={disableAccountPicker}
+            paddingLeft={2}
+            paddingRight={2}
+          />
+          <>{!isMultichainAccountsState2Enabled && CopyButton}</>
+        </Text>
+        <Link
+          to={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`}
+          data-testid="networks-subtitle-test-id"
+        >
+          <Box
+            display={Display.Flex}
+            className="networks-subtitle"
+            alignItems={AlignItems.center}
+            gap={1}
+            paddingInline={2}
+          >
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyXsMedium}
+            >
+              {networksLabel}
+            </Text>
+            <Icon
+              name={IconNameDesignSystem.Copy}
+              size={IconSizeDesignSystem.Xs}
+              color={IconColorDesignSystem.IconAlternative}
+              data-testid="copy-network-addresses-icon"
+            />
+          </Box>
+        </Link>
+      </Box>
     );
   }, [
-    handleNetworksClick,
+    CopyButton,
+    accountName,
+    disableAccountPicker,
+    selectedMultichainAccountId,
+    history,
     isMultichainAccountsState2Enabled,
     numberOfAccountsInGroup,
     t,
+    trackEvent,
   ]);
 
+  // TODO: [Multichain-Accounts-MUL-849] Delete this method once multichain accounts is released
   const AppContent = useMemo(() => {
     const handleAccountMenuClick = () => {
       if (isMultichainAccountsState2Enabled) {
@@ -249,16 +302,10 @@ export const AppHeaderUnlockedContent = ({
     };
 
     return (
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        marginTop={2}
-      >
-        {!isMultichainAccountsState2Enabled && (
-          <div ref={tourAnchorRef} className="flex">
-            <PreferredAvatar address={internalAccount.address} />
-          </div>
-        )}
+      <>
+        <div ref={tourAnchorRef} className="flex">
+          <PreferredAvatar address={internalAccount.address} />
+        </div>
 
         {internalAccount && (
           <Text
@@ -284,22 +331,20 @@ export const AppHeaderUnlockedContent = ({
                 });
               }}
               disabled={disableAccountPicker}
-              paddingLeft={isMultichainAccountsState2Enabled ? 0 : 2}
-              paddingRight={isMultichainAccountsState2Enabled ? 0 : 2}
+              paddingLeft={2}
+              paddingRight={2}
             />
-            <>{!isMultichainAccountsState2Enabled && CopyButton}</>
+            <>{CopyButton}</>
           </Text>
         )}
-        {networksSubtitle}
-      </Box>
+      </>
     );
   }, [
-    isMultichainAccountsState2Enabled,
     internalAccount,
     accountName,
     disableAccountPicker,
     CopyButton,
-    networksSubtitle,
+    isMultichainAccountsState2Enabled,
     history,
     dispatch,
     trackEvent,
@@ -314,7 +359,9 @@ export const AppHeaderUnlockedContent = ({
         gap={2}
         className="min-w-0"
       >
-        {AppContent}
+        {isMultichainAccountsState2Enabled
+          ? multichainAccountAppContent
+          : AppContent}
       </Box>
       <Box
         display={Display.Flex}
@@ -322,7 +369,7 @@ export const AppHeaderUnlockedContent = ({
         justifyContent={JustifyContent.flexEnd}
         style={{ marginLeft: 'auto' }}
       >
-        <Box display={Display.Flex} gap={3}>
+        <Box display={Display.Flex} gap={2}>
           {showConnectedStatus && (
             <Box ref={menuRef} data-testid="connection-menu" margin="auto">
               <ConnectedStatusIndicator

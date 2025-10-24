@@ -1,15 +1,13 @@
 import {
   withFixtures,
   unlockWallet,
-  switchToNotificationWindow,
   WINDOW_TITLES,
-  sendTransaction,
   convertETHToHexGwei,
-  createDappTransaction,
 } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import {
   BUNDLER_URL,
+  DAPP_URL,
   ENTRYPOINT,
   ERC_4337_ACCOUNT,
   ERC_4337_ACCOUNT_SALT,
@@ -24,7 +22,9 @@ import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
-import { mockAccountAbstractionKeyringSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { mockSnapAccountAbstractionKeyRingAndSite } from '../mock-response-data/snaps/snap-local-sites/account-abstraction-keyring-site-mocks';
+import SendTokenPage from '../page-objects/pages/send/send-token-page';
+import HomePage from '../page-objects/pages/home/homepage';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -41,13 +41,11 @@ async function installExampleSnap(driver: Driver) {
   });
   await driver.findElement({ text: 'Add to MetaMask', tag: 'h3' });
   await driver.clickElementSafe('[data-testid="snap-install-scroll"]', 200);
-  await driver.waitForSelector({ text: 'Confirm' });
   await driver.clickElement({
     text: 'Confirm',
     tag: 'button',
   });
-  await driver.waitForSelector({ text: 'OK' });
-  await driver.clickElement({
+  await driver.clickElementAndWaitForWindowToClose({
     text: 'OK',
     tag: 'button',
   });
@@ -112,7 +110,7 @@ async function setSnapConfig(
 }
 
 async function confirmTransaction(driver: Driver) {
-  await switchToNotificationWindow(driver);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({ text: 'Confirm' });
 }
 
@@ -183,8 +181,8 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
 }
 async function mockSnapAndSwaps(mockServer: Mockttp) {
   return [
+    ...(await mockSnapAccountAbstractionKeyRingAndSite(mockServer, 8081)),
     await mockSwapsTransactionQuote(mockServer),
-    await mockAccountAbstractionKeyringSnap(mockServer),
   ];
 }
 
@@ -203,6 +201,7 @@ async function withAccountSnap(
       useBundler: true,
       usePaymaster: Boolean(paymaster),
       dapp: true,
+      dappPaths: ['test-dapp', 'snap-account-abstraction-keyring'],
       localNodeOptions: localNodeOptions || {
         hardfork: 'london',
         mnemonic:
@@ -249,23 +248,36 @@ async function withAccountSnap(
 describe('User Operations', function () {
   it('from dApp transaction', async function () {
     await withAccountSnap({ title: this.test?.fullTitle() }, async (driver) => {
-      await createDappTransaction(driver, {
+      const transaction = {
         from: ERC_4337_ACCOUNT,
         to: LOCAL_NODE_ACCOUNT,
         value: convertETHToHexGwei(1),
         maxFeePerGas: '0x0',
         maxPriorityFeePerGas: '0x0',
-      });
+      };
+      await driver.openNewPage(
+        `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
+      );
 
       await confirmTransaction(driver);
     });
   });
 
-  it('from send transaction', async function () {
+  // https://github.com/MetaMask/metamask-extension/issues/36567
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('from send transaction', async function () {
     await withAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver, bundlerServer) => {
-        await sendTransaction(driver, LOCAL_NODE_ACCOUNT, 1, true);
+        const homePage = new HomePage(driver);
+        await homePage.startSendFlow();
+
+        const sendToPage = new SendTokenPage(driver);
+        await sendToPage.checkPageIsLoaded();
+        await sendToPage.fillRecipient(LOCAL_NODE_ACCOUNT);
+        await sendToPage.fillAmount('1');
+        await sendToPage.goToNextScreen();
+        await sendToPage.clickConfirmButton();
 
         await openConfirmedTransaction(driver);
         await expectTransactionDetailsMatchReceipt(driver, bundlerServer);
@@ -301,13 +313,16 @@ describe('User Operations', function () {
         ],
       },
       async (driver, bundlerServer) => {
-        await createDappTransaction(driver, {
+        const transaction = {
           from: ERC_4337_ACCOUNT,
           to: LOCAL_NODE_ACCOUNT,
           value: convertETHToHexGwei(1),
           maxFeePerGas: '0x0',
           maxPriorityFeePerGas: '0x0',
-        });
+        };
+        await driver.openNewPage(
+          `${DAPP_URL}/request?method=eth_sendTransaction&params=${JSON.stringify([transaction])}`,
+        );
 
         await confirmTransaction(driver);
         await openConfirmedTransaction(driver);

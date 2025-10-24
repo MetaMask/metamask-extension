@@ -26,6 +26,7 @@ jobs:
   resolve-bases:
     # Determines if the release is hotfix or not based on semver. Then sets the appropriate base branches for the checkout and release PR.
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       checkout_base: ${{ steps.out.outputs.checkout_base }}
       release_base: ${{ steps.out.outputs.release_base }}
@@ -57,6 +58,7 @@ jobs:
   resolve-previous-ref:
     needs: resolve-bases
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       previous_ref: ${{ steps.out.outputs.previous_ref }}
     steps:
@@ -74,14 +76,14 @@ jobs:
   create-release-pr:
     needs: [resolve-bases, resolve-previous-ref]
     name: Create Release Pull Request using Github Tools
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@6090afa85c94a6b64a79e992d94b11610d02181a
+    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@7fe185fdb0e60981c898e88d82e44ff33f604daa
     with:
       platform: extension
       checkout-base-branch: ${{ needs.resolve-bases.outputs.checkout_base }}
       release-pr-base-branch: ${{ needs.resolve-bases.outputs.release_base }}
       semver-version: ${{ inputs.semver-version }}
       previous-version-ref: ${{ needs.resolve-previous-ref.outputs.previous_ref }}
-      github-tools-version: 6090afa85c94a6b64a79e992d94b11610d02181a
+      github-tools-version: 7fe185fdb0e60981c898e88d82e44ff33f604daa
     secrets:
       # This token needs write permissions to metamask-extension & read permissions to metamask-planning
       # If called from auto-create-release-pr use the PR_TOKEN passed in as an input, if called manually use github secret token values

@@ -16,16 +16,6 @@ setBackgroundConnection({
   setBackgroundSwapRouteState: jest.fn(),
 });
 
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
-  return {
-    ...original,
-    useHistory: () => ({
-      push: jest.fn(),
-    }),
-  };
-});
-
 jest.mock('../../../ducks/swaps/swaps', () => {
   const original = jest.requireActual('../../../ducks/swaps/swaps');
   return {

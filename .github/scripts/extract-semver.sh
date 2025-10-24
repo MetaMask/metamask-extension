@@ -4,13 +4,11 @@ set -euo pipefail
 
 ref_name="${GITHUB_REF#refs/heads/}"
 
-# Extract semver based on prefix
-if [[ "$ref_name" == Version-v* ]]; then
-  semver="${ref_name#Version-v}"
-elif [[ "$ref_name" == release/* ]]; then
+# Extract semver
+if [[ "$ref_name" == release/* ]]; then
   semver="${ref_name#release/}"
 else
-  echo "Error: Branch name must be Version-vX.Y.Z or release/X.Y.Z where X, Y, Z are numbers. Got: $ref_name" >&2
+  echo "Error: Branch name must be release/X.Y.Z where X, Y, Z are numbers. Got: $ref_name" >&2
   exit 1
 fi
 

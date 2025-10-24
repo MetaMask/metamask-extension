@@ -1,9 +1,11 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
   Icon,
   IconName,
+  ModalFocus,
   Popover,
   PopoverPosition,
 } from '../../component-library';
@@ -21,6 +23,11 @@ import {
 } from '../../../helpers/constants/routes';
 import { MultichainAccountMenuItems } from '../multichain-account-menu-items/multichain-account-menu-items';
 import { MenuItemConfig } from '../multichain-account-menu-items/multichain-account-menu-items.types';
+import {
+  setAccountGroupPinned,
+  setAccountGroupHidden,
+} from '../../../store/actions';
+import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
 export const MultichainAccountMenu = ({
@@ -28,14 +35,32 @@ export const MultichainAccountMenu = ({
   isRemovable,
   buttonBackgroundColor,
   handleAccountRenameAction,
+  isOpen = false,
+  onToggle,
 }: MultichainAccountMenuProps) => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const popoverRef = useRef<HTMLDivElement>(null);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const accountTree = useSelector(getAccountTree);
 
-  const togglePopover = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
-    setIsPopoverOpen(!isPopoverOpen);
+  // Get the account group metadata to check pinned/hidden state
+  const accountGroupMetadata = useMemo(() => {
+    const { wallets } = accountTree;
+    for (const wallet of Object.values(wallets)) {
+      const group = wallet.groups?.[accountGroupId];
+      if (group) {
+        return group.metadata;
+      }
+    }
+    return null;
+  }, [accountTree, accountGroupId]);
+
+  const isPinned = accountGroupMetadata?.pinned ?? false;
+  const isHidden = accountGroupMetadata?.hidden ?? false;
+
+  const togglePopover = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    onToggle?.();
   };
 
   const menuConfig = useMemo(() => {
@@ -50,7 +75,6 @@ export const MultichainAccountMenu = ({
       mouseEvent.preventDefault();
       if (handleAccountRenameAction) {
         handleAccountRenameAction(accountGroupId);
-        setIsPopoverOpen(false);
       }
     };
 
@@ -61,16 +85,30 @@ export const MultichainAccountMenu = ({
       history.push(multichainAccountAddressesPageRoute);
     };
 
-    const handleAccountPinClick = (mouseEvent: React.MouseEvent) => {
-      // TODO: Implement account pin click handling
+    const handleAccountPinClick = async (mouseEvent: React.MouseEvent) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
+
+      // If account is hidden, unhide it first before pinning
+      if (isHidden) {
+        await dispatch(setAccountGroupHidden(accountGroupId, false));
+      }
+
+      await dispatch(setAccountGroupPinned(accountGroupId, !isPinned));
+      onToggle?.();
     };
 
-    const handleAccountHideClick = (mouseEvent: React.MouseEvent) => {
-      // TODO: Implement account hide click handling
+    const handleAccountHideClick = async (mouseEvent: React.MouseEvent) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
+
+      // If account is pinned, unpin it first before hiding
+      if (isPinned) {
+        await dispatch(setAccountGroupPinned(accountGroupId, false));
+      }
+
+      await dispatch(setAccountGroupHidden(accountGroupId, !isHidden));
+      onToggle?.();
     };
 
     const handleAccountRemoveClick = (mouseEvent: React.MouseEvent) => {
@@ -96,16 +134,14 @@ export const MultichainAccountMenu = ({
         onClick: handleAccountAddressesClick,
       },
       {
-        textKey: 'pin',
-        iconName: IconName.Pin,
+        textKey: isPinned ? 'unpin' : 'pinToTop',
+        iconName: isPinned ? IconName.Unpin : IconName.Pin,
         onClick: handleAccountPinClick,
-        disabled: true,
       },
       {
-        textKey: 'hide',
-        iconName: IconName.EyeSlash,
+        textKey: isHidden ? 'showAccount' : 'hideAccount',
+        iconName: isHidden ? IconName.Eye : IconName.EyeSlash,
         onClick: handleAccountHideClick,
-        disabled: true,
       },
     ];
 
@@ -119,7 +155,16 @@ export const MultichainAccountMenu = ({
     }
 
     return baseMenuItems;
-  }, [accountGroupId, handleAccountRenameAction, history, isRemovable]);
+  }, [
+    accountGroupId,
+    handleAccountRenameAction,
+    history,
+    isRemovable,
+    isPinned,
+    isHidden,
+    dispatch,
+    onToggle,
+  ]);
 
   return (
     <>
@@ -143,13 +188,18 @@ export const MultichainAccountMenu = ({
       </Box>
       <Popover
         className="multichain-account-cell-popover-menu"
-        isOpen={isPopoverOpen}
+        isOpen={isOpen}
         position={PopoverPosition.LeftStart}
         referenceElement={popoverRef.current}
         matchWidth={false}
         borderRadius={BorderRadius.LG}
+        isPortal
+        flip
+        onClickOutside={onToggle}
       >
-        <MultichainAccountMenuItems menuConfig={menuConfig} />
+        <ModalFocus restoreFocus initialFocusRef={popoverRef}>
+          <MultichainAccountMenuItems menuConfig={menuConfig} />
+        </ModalFocus>
       </Popover>
     </>
   );

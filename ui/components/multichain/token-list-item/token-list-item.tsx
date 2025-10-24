@@ -5,8 +5,10 @@ import classnames from 'classnames';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { type Hex } from '@metamask/utils';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
   FontWeight,
@@ -53,6 +55,7 @@ import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { selectNoFeeAssets } from '../../../ducks/bridge/selectors';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
 
@@ -73,9 +76,9 @@ type TokenListItemProps = {
   chainId: string;
   address?: string | null;
   showPercentage?: boolean;
-  isPrimaryTokenSymbolHidden?: boolean;
   privacyMode?: boolean;
   nativeCurrencySymbol?: string;
+  isDestinationToken?: boolean;
 };
 
 export const TokenListItemComponent = ({
@@ -89,7 +92,6 @@ export const TokenListItemComponent = ({
   tooltipText,
   tokenChainImage,
   chainId,
-  isPrimaryTokenSymbolHidden = false,
   isNativeCurrency = false,
   isStakeable = false,
   isTitleNetworkName = false,
@@ -98,11 +100,13 @@ export const TokenListItemComponent = ({
   showPercentage = false,
   privacyMode = false,
   nativeCurrencySymbol,
+  isDestinationToken = false,
 }: TokenListItemProps) => {
   const t = useI18nContext();
   const isEvm = useSelector(getMultichainIsEvm);
   const trackEvent = useContext(MetaMetricsContext);
   const currencyRates = useSelector(getCurrencyRates);
+  const noFeeAssets = useSelector((state) => selectNoFeeAssets(state, chainId));
 
   // We do not want to display any percentage with non-EVM since we don't have the data for this yet. So
   // we only use this option for EVM here:
@@ -148,6 +152,11 @@ export const TokenListItemComponent = ({
   const tokenTitle = getTokenTitle();
   const tokenMainTitleToDisplay =
     shouldShowPercentage && !isTitleNetworkName ? tokenTitle : tokenSymbol;
+
+  const isNoFeeAsset =
+    isDestinationToken &&
+    address &&
+    noFeeAssets?.includes(address.toLowerCase());
 
   // Used for badge icon
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
@@ -238,17 +247,30 @@ export const TokenListItemComponent = ({
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
           >
-            {title?.length > 12 ? (
-              <Tooltip
-                position="bottom"
-                html={title}
-                tooltipInnerClassName="multichain-token-list-item__tooltip"
-              >
+            <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+              {title?.length > 12 ? (
+                <Tooltip
+                  position="bottom"
+                  html={title}
+                  tooltipInnerClassName="multichain-token-list-item__tooltip"
+                >
+                  <Text
+                    as="span"
+                    fontWeight={FontWeight.Medium}
+                    variant={TextVariant.bodyMd}
+                    display={Display.Block}
+                    ellipsis
+                  >
+                    {tokenMainTitleToDisplay}
+                    {isStakeable && (
+                      <StakeableLink chainId={chainId} symbol={tokenSymbol} />
+                    )}
+                  </Text>
+                </Tooltip>
+              ) : (
                 <Text
-                  as="span"
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
-                  display={Display.Block}
                   ellipsis
                 >
                   {tokenMainTitleToDisplay}
@@ -256,19 +278,34 @@ export const TokenListItemComponent = ({
                     <StakeableLink chainId={chainId} symbol={tokenSymbol} />
                   )}
                 </Text>
-              </Tooltip>
-            ) : (
-              <Text
-                fontWeight={FontWeight.Medium}
-                variant={TextVariant.bodyMd}
-                ellipsis
-              >
-                {tokenMainTitleToDisplay}
-                {isStakeable && (
-                  <StakeableLink chainId={chainId} symbol={tokenSymbol} />
-                )}
-              </Text>
-            )}
+              )}
+              {isNoFeeAsset && (
+                <Box
+                  backgroundColor={BackgroundColor.backgroundSection}
+                  borderRadius={BorderRadius.SM}
+                  paddingInline={1}
+                  paddingTop={0}
+                  paddingBottom={0}
+                  style={{
+                    height: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Text
+                    variant={TextVariant.bodySm}
+                    fontWeight={FontWeight.Medium}
+                    color={TextColor.textAlternative}
+                    style={{
+                      lineHeight: '20px',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {t('bridgeNoMMFee')}
+                  </Text>
+                </Box>
+              )}
+            </Box>
 
             {showScamWarning ? (
               <ButtonIcon
@@ -341,7 +378,7 @@ export const TokenListItemComponent = ({
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
+                {primary}
               </SensitiveText>
             ) : (
               <SensitiveText
@@ -352,7 +389,7 @@ export const TokenListItemComponent = ({
                 isHidden={privacyMode}
                 length={SensitiveTextLength.Short}
               >
-                {primary} {isPrimaryTokenSymbolHidden ? '' : tokenSymbol}
+                {primary}
               </SensitiveText>
             )}
           </Box>

@@ -85,11 +85,6 @@ describe('Send flow', function (this: Suite) {
           true,
           'Swap button is not enabled and it should',
         );
-        assert.equal(
-          await homePage.checkIfBridgeButtonIsClickable(),
-          true,
-          'Bridge button is not enabled and it should',
-        );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);
         await sendSolanaPage.checkPageIsLoaded();
@@ -216,11 +211,6 @@ describe('Send flow', function (this: Suite) {
           await homePage.checkIfSwapButtonIsClickable(),
           true,
           'Swap button is not enabled and it should',
-        );
-        assert.equal(
-          await homePage.checkIfBridgeButtonIsClickable(),
-          true,
-          'Bridge button is not enabled and it should',
         );
         await homePage.clickOnSendButton();
         const sendSolanaPage = new SendSolanaPage(driver);

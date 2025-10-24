@@ -15,8 +15,8 @@ import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { isObject, hasProperty } from '@metamask/utils';
-import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
@@ -50,6 +50,7 @@ import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
+import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
 import {
   CorruptionHandler,
   hasVault,
@@ -91,6 +92,7 @@ import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
+import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferralMiddleware';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -145,6 +147,7 @@ let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
+const senderOriginMapping = {};
 const tabOriginMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
@@ -935,16 +938,26 @@ function emitDappViewedMetricEvent(origin) {
  * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
  */
 function trackDappView(remotePort) {
-  if (!remotePort.sender || !remotePort.sender.tab || !remotePort.sender.url) {
+  if (
+    !remotePort.sender?.tab ||
+    !remotePort.sender?.url ||
+    !remotePort.sender?.tab?.url
+  ) {
     return;
   }
   const tabId = remotePort.sender.tab.id;
   const url = new URL(remotePort.sender.url);
   const { origin } = url;
+  const tabUrl = new URL(remotePort.sender.tab.url);
+  const { origin: tabOrigin } = tabUrl;
 
-  // store the orgin to corresponding tab so it can provide infor for onActivated listener
-  if (!Object.keys(tabOriginMapping).includes(tabId)) {
-    tabOriginMapping[tabId] = origin;
+  // store the origin to corresponding tab so it can provide info for onActivated listener
+  if (!Object.keys(senderOriginMapping).includes(tabId)) {
+    senderOriginMapping[tabId] = origin;
+  }
+  // do the same for tab origin, which can be different to sender origin
+  if (!(tabId in tabOriginMapping)) {
+    tabOriginMapping[tabId] = tabOrigin;
   }
 
   const isConnectedToDapp = controller.controllerMessenger.call(
@@ -1123,8 +1136,34 @@ export function setupController(
     }
 
     if (isMetaMaskInternalProcess) {
+      /**
+       * @type {ExtensionPortStream}
+       */
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort);
+
+      /**
+       * send event to sentry with details about the event
+       *
+       * @param {import("extension-port-stream").MessageTooLargeEventData} details
+       */
+      const handleMessageTooLarge = function ({ chunkSize }) {
+        /**
+         * @type {MetamaskController}
+         */
+        const theController = controller;
+        theController.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PortStreamChunked,
+          category: MetaMetricsEventCategory.PortStream,
+          properties: { chunkSize },
+        });
+      };
+      remotePort.onDisconnect.addListener(() =>
+        portStream.off('message-too-large', handleMessageTooLarge),
+      );
+      portStream.on('message-too-large', handleMessageTooLarge);
+
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -1176,7 +1215,8 @@ export function setupController(
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
       const portStreamForPhishingPage =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort, { chunkSize: 0 });
       controller.setupPhishingCommunication({
         connectionStream: portStreamForPhishingPage,
       });
@@ -1205,14 +1245,16 @@ export function setupController(
         )
       ) {
         const portStreamForCookieHandlerPage =
-          overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+          overrides?.getPortStream?.(remotePort) ||
+          new ExtensionPortStream(remotePort, { chunkSize: 0 });
         controller.setUpCookieHandlerCommunication({
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
 
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
       connectEip1193(portStream, remotePort.sender);
 
@@ -1232,7 +1274,8 @@ export function setupController(
 
   connectExternallyConnectable = (remotePort) => {
     const portStream =
-      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+      overrides?.getPortStream?.(remotePort) ||
+      new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
     // if the sender.id value is present it means the caller is an extension rather
     // than a site. When the caller is an extension we want to fallback to connecting
@@ -1465,7 +1508,7 @@ export function setupController(
       (snap) => !snap.preinstalled,
     )
   ) {
-    controller.snapController.updateBlockedSnaps();
+    controller.snapController.updateRegistry();
   }
 }
 
@@ -1579,7 +1622,8 @@ function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {
     if (controller) {
       const { tabId } = onActivatedTab;
-      const currentOrigin = tabOriginMapping[tabId];
+      const currentOrigin = senderOriginMapping[tabId];
+      const currentTabOrigin = tabOriginMapping[tabId];
       // *** Emit DappViewed metric event when ***
       // - navigate to a connected dapp
       if (currentOrigin) {
@@ -1589,6 +1633,27 @@ function onNavigateToTab() {
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
           emitDappViewedMetricEvent(currentOrigin);
+        }
+      }
+
+      // If the connected dApp is Hyperliquid, trigger the referral flow
+      if (currentTabOrigin === HYPERLIQUID_ORIGIN) {
+        const connectSitePermissions =
+          controller.permissionController.state.subjects[currentTabOrigin];
+        // when the dapp is not connected, connectSitePermissions is undefined
+        const isConnectedToDapp = connectSitePermissions !== undefined;
+        if (isConnectedToDapp) {
+          controller
+            .handleHyperliquidReferral(
+              tabId,
+              HyperliquidPermissionTriggerType.OnNavigateConnectedTab,
+            )
+            .catch((error) => {
+              log.error(
+                'Failed to handle Hyperliquid referral after navigation to connected tab: ',
+                error,
+              );
+            });
         }
       }
     }

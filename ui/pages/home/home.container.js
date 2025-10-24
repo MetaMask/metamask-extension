@@ -27,6 +27,7 @@ import {
   getShowUpdateModal,
   getShowConnectionsRemovedModal,
   getIsSocialLoginFlow,
+  getShowShieldEntryModal,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -48,6 +49,7 @@ import {
   setDataCollectionForMarketing,
   setEditedNetwork,
   setAccountDetailsAddress,
+  lookupSelectedNetworks,
 } from '../../store/actions';
 import {
   hideWhatsNewPopup,
@@ -183,8 +185,7 @@ const mapStateToProps = (state) => {
     isSeedlessPasswordOutdated: getIsSeedlessPasswordOutdated(state),
     isPrimarySeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
     showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
-    // TODO: integrate condition to show shield entry modal
-    showShieldEntryModal: false,
+    showShieldEntryModal: getShowShieldEntryModal(state),
     isSocialLoginFlow: getIsSocialLoginFlow(state),
   };
 };
@@ -242,6 +243,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(clearRedirectAfterDefaultPage()),
     setAccountDetailsAddress: (address) =>
       dispatch(setAccountDetailsAddress(address)),
+    lookupSelectedNetworks: () => dispatch(lookupSelectedNetworks()),
   };
 };
 

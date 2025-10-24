@@ -79,10 +79,10 @@ describe('transaction-details', () => {
       );
       const expectedRows = [
         'Statuscomplete',
-        'BridgedPolygonOP Mainnet',
+        'BridgedPolygonOP',
         'Time stamp',
         'You sent2 USDC onPolygon',
-        'You received1.981 USDC onOP Mainnet',
+        'You received1.981 USDC onOP',
         'Total gas fee0.00446 POL',
         'Nonce3',
       ];
@@ -119,7 +119,7 @@ describe('transaction-details', () => {
       );
       const expectedRows = [
         'Statuspending',
-        'BridgingPolygonOP Mainnet',
+        'BridgingPolygonOP',
         'Time stamp',
         'You sent2 USDC onPolygon',
         'Total gas fee0.00446 POL',
@@ -158,7 +158,7 @@ describe('transaction-details', () => {
       );
       const expectedRows = [
         'Statuspending',
-        'BridgingPolygonOP Mainnet',
+        'BridgingPolygonOP',
         'Time stamp',
         'You sent2 USDC onPolygon',
         'Total gas fee0.00446 POL',
@@ -197,7 +197,7 @@ describe('transaction-details', () => {
       );
       const expectedRows = [
         'Statuspending',
-        'BridgingPolygonOP Mainnet',
+        'BridgingPolygonOP',
         'Time stamp',
         'You sent2 USDC onPolygon',
         'Total gas fee0.00446 POL',
@@ -237,7 +237,7 @@ describe('transaction-details', () => {
 
       const expectedRows = [
         'Statusfailed',
-        'BridgingPolygonOP Mainnet',
+        'BridgingPolygonOP',
         'Time stamp',
         'You sent2 USDC onPolygon',
         'Total gas fee0.00446 POL',

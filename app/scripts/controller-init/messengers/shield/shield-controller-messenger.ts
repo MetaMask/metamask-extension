@@ -23,6 +23,10 @@ type MessengerEvents =
     ? Events
     : never;
 
+export type ShieldControllerMessengerType = ReturnType<
+  typeof getShieldControllerMessenger
+>;
+
 /**
  * Get a restricted messenger for the Shield controller. This is scoped to the
  * actions and events that the Shield controller is allowed to handle.
@@ -36,7 +40,10 @@ export function getShieldControllerMessenger(
   return messenger.getRestricted({
     name: 'ShieldController',
     allowedActions: [],
-    allowedEvents: ['TransactionController:stateChange'],
+    allowedEvents: [
+      'SignatureController:stateChange',
+      'TransactionController:stateChange',
+    ],
   });
 }
 

@@ -10,7 +10,7 @@ exports[`Bridge renders the component with initial props 1`] = `
       class="mm-box multichain-page__inner-container bridge__container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       >
         <div
           class="mm-box"
@@ -30,9 +30,9 @@ exports[`Bridge renders the component with initial props 1`] = `
           class="mm-box"
         >
           <h4
-            class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
+            class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
-            Bridge
+            Swap
           </h4>
         </div>
         <div
@@ -51,7 +51,7 @@ exports[`Bridge renders the component with initial props 1`] = `
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        class="mm-box multichain-page-content mm-box--padding-0 mm-box--padding-top-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
         style="overflow: auto;"
       >
         <div
@@ -102,7 +102,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
                       <img
-                        alt="Ethereum Mainnet logo"
+                        alt="Ethereum logo"
                         class="mm-avatar-network__network-image"
                         src="./images/eth_logo.svg"
                       />
@@ -133,31 +133,35 @@ exports[`Bridge renders the component with initial props 1`] = `
               style="height: 24px;"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative"
               />
             </div>
           </div>
           <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative-soft"
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
             style="position: relative;"
           >
             <div
-              class="mm-box prepare-bridge-page__switch-tokens mm-box--display-flex mm-box--background-color-background-alternative-soft"
+              class="mm-box prepare-bridge-page__switch-tokens mm-box--display-flex mm-box--background-color-background-section"
               style="position: absolute; top: -20px; right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
             >
               <button
                 aria-label="switch-tokens"
-                class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative-soft mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="switch-tokens"
                 disabled=""
                 style="align-self: center; border-radius: 100%; width: 100%; height: 100%;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/arrow-2-down.svg');"
+                  style="mask-image: url('./images/icons/swap-vertical.svg');"
                 />
               </button>
             </div>
+            <div
+              class="mm-box mm-box--padding-inline-4"
+              style="margin-top: -16px;"
+            />
             <div
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
             >
@@ -193,9 +197,9 @@ exports[`Bridge renders the component with initial props 1`] = `
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-hover mm-box--rounded-full"
                     >
                       <img
-                        alt="USDC logo"
+                        alt="mUSD logo"
                         class="mm-avatar-token__token-image"
-                        src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png"
+                        src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png"
                       />
                     </div>
                     <div
@@ -205,7 +209,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
                         <img
-                          alt="Ethereum Mainnet logo"
+                          alt="Ethereum logo"
                           class="mm-avatar-network__network-image"
                           src="./images/eth_logo.svg"
                         />
@@ -221,7 +225,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       <p
                         class="mm-box mm-text mm-text--body-lg-medium mm-text--ellipsis mm-box--color-text-default"
                       >
-                        USDC
+                        mUSD
                       </p>
                     </label>
                   </span>
@@ -236,13 +240,13 @@ exports[`Bridge renders the component with initial props 1`] = `
                 style="height: 24px;"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative"
                 />
                 <a
-                  class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
+                  class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative"
                   style="cursor: pointer; text-decoration: underline;"
                 >
-                  0xa0...eb48
+                  0xac...35da
                 </a>
               </div>
             </div>
@@ -256,7 +260,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
                 >
                   <p
-                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
+                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative"
                   >
                     Select amount
                   </p>
@@ -266,7 +270,7 @@ exports[`Bridge renders the component with initial props 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-alternative-soft"
+          class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
         >
           <div />
         </div>

@@ -1,59 +1,35 @@
 import { migrate, version } from './177';
 
 const oldVersion = 176;
-const newVersion = version;
 
-describe('migration #177', () => {
+describe(`migration #${version}`, () => {
   it('updates the version metadata', async () => {
-    const oldState = {
+    const oldStorage = {
       meta: { version: oldVersion },
       data: {},
     };
-
-    const newState = await migrate(oldState);
-    expect(newState.meta.version).toBe(newVersion);
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('adds default avatarType to preferences when missing', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
-      data: {
-        PreferencesController: {
-          useBlockie: false,
-          preferences: {},
-        },
-      },
-    };
-
-    const newState = await migrate(oldState);
-
-    expect(newState.data.PreferencesController).toStrictEqual({
-      useBlockie: false,
-      preferences: {
-        avatarType: 'maskicon',
-      },
-    });
-  });
-
-  it('does not overwrite existing avatarType', async () => {
-    const oldState = {
-      meta: { version: oldVersion },
-      data: {
-        PreferencesController: {
-          useBlockie: false,
-          preferences: {
-            avatarType: 'jazzicon',
+  describe(`migration #${version}`, () => {
+    it('deletes the old and unused UserStorageController state properties', async () => {
+      const oldStorage = {
+        meta: { version: oldVersion },
+        data: {
+          UserStorageController: {
+            hasAccountSyncingSyncedAtLeastOnce: false,
+            isAccountSyncingReadyToBeDispatched: false,
+            isAccountSyncingInProgress: false,
           },
         },
-      },
-    };
+      };
+      const expectedData = {
+        UserStorageController: {},
+      };
+      const newStorage = await migrate(oldStorage);
 
-    const newState = await migrate(oldState);
-    expect(newState.data.PreferencesController).toStrictEqual({
-      useBlockie: false,
-      preferences: {
-        avatarType: 'jazzicon',
-      },
+      expect(newStorage.data).toStrictEqual(expectedData);
     });
   });
 });

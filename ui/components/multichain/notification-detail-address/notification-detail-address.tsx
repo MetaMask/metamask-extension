@@ -2,12 +2,13 @@ import React from 'react';
 import type { FC } from 'react';
 import { NotificationDetail } from '../notification-detail';
 import { NotificationDetailCopyButton } from '../notification-detail-copy-button';
-import { AvatarAccount, Text } from '../../component-library';
+import { Text } from '../../component-library';
 import {
   FontWeight,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 
 export type NotificationDetailAddressProps = {
@@ -38,7 +39,7 @@ export const NotificationDetailAddress: FC<NotificationDetailAddressProps> = ({
 
   return (
     <NotificationDetail
-      icon={<AvatarAccount address={address} />}
+      icon={<PreferredAvatar address={address} />}
       primaryTextLeft={<SideText side={side} />}
       secondaryTextLeft={
         <NotificationDetailCopyButton
