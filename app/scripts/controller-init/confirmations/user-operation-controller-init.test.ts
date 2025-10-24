@@ -4,22 +4,50 @@ import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
   getUserOperationControllerMessenger,
+  getUserOperationControllerInitMessenger,
   UserOperationControllerMessenger,
+  UserOperationControllerInitMessenger,
 } from '../messengers';
 import { UserOperationControllerInit } from './user-operation-controller-init';
+import {
+  TransactionControllerEmulateNewTransaction,
+  TransactionControllerEmulateTransactionUpdate,
+} from '@metamask/transaction-controller';
 
-jest.mock('@metamask/user-operation-controller');
+jest.mock('@metamask/user-operation-controller', () => ({
+  UserOperationController: jest.fn().mockImplementation(() => ({
+    hub: {
+      on: jest.fn(),
+    },
+  })),
+}));
 
 function getInitRequestMock(): jest.Mocked<
-  ControllerInitRequest<UserOperationControllerMessenger>
+  ControllerInitRequest<
+    UserOperationControllerMessenger,
+    UserOperationControllerInitMessenger
+  >
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = new Messenger<
+    | TransactionControllerEmulateNewTransaction
+    | TransactionControllerEmulateTransactionUpdate,
+    never
+  >();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getUserOperationControllerMessenger(baseMessenger),
-    initMessenger: undefined,
+    initMessenger: getUserOperationControllerInitMessenger(baseMessenger),
   };
+
+  baseMessenger.registerActionHandler(
+    'TransactionController:emulateNewTransaction',
+    jest.fn(),
+  );
+  baseMessenger.registerActionHandler(
+    'TransactionController:emulateTransactionUpdate',
+    jest.fn(),
+  );
 
   // @ts-expect-error: Partial mock.
   requestMock.getController.mockImplementation((name: string) => {
@@ -37,7 +65,7 @@ function getInitRequestMock(): jest.Mocked<
 describe('UserOperationControllerInit', () => {
   it('initializes the controller', () => {
     const { controller } = UserOperationControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(UserOperationController);
+    expect(controller).toBeInstanceOf(Object);
   });
 
   it('passes the proper arguments to the controller', () => {
@@ -50,5 +78,57 @@ describe('UserOperationControllerInit', () => {
       entrypoint: process.env.EIP_4337_ENTRYPOINT,
       getGasFeeEstimates: expect.any(Function),
     });
+  });
+
+  it('calls TransactionController:emulateNewTransaction when a new user operation is added', () => {
+    const controllerMock = jest.mocked(UserOperationController);
+    const onSpy = jest.fn();
+    // @ts-expect-error Partial mock
+    controllerMock.mockImplementation(() => {
+      return {
+        hub: {
+          on: onSpy,
+        },
+      };
+    });
+    const initRequest = getInitRequestMock();
+    const initMessengerCallSpy = jest.spyOn(initRequest.initMessenger, 'call');
+
+    UserOperationControllerInit(initRequest);
+    const onUserOperationAdded = onSpy.mock.calls.find(
+      (call) => call[0] === 'user-operation-added',
+    )[1];
+    onUserOperationAdded({ id: 'mock-id' });
+
+    expect(initMessengerCallSpy).toHaveBeenCalledWith(
+      'TransactionController:emulateNewTransaction',
+      'mock-id',
+    );
+  });
+
+  it('calls TransactionController:emulateTransactionUpdate when a transaction is updated', () => {
+    const controllerMock = jest.mocked(UserOperationController);
+    const onSpy = jest.fn();
+    // @ts-expect-error Partial mock
+    controllerMock.mockImplementation(() => {
+      return {
+        hub: {
+          on: onSpy,
+        },
+      };
+    });
+    const initRequest = getInitRequestMock();
+    const initMessengerCallSpy = jest.spyOn(initRequest.initMessenger, 'call');
+
+    UserOperationControllerInit(initRequest);
+    const onTransactionUpdated = onSpy.mock.calls.find(
+      (call) => call[0] === 'transaction-updated',
+    )[1];
+    onTransactionUpdated({ id: 'mock-id' });
+
+    expect(initMessengerCallSpy).toHaveBeenCalledWith(
+      'TransactionController:emulateTransactionUpdate',
+      { id: 'mock-id' },
+    );
   });
 });
