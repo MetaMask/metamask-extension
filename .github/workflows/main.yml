@@ -371,7 +371,7 @@ jobs:
       - name: See if policy.json files have changed
         id: policy-changed
         run: |
-          # if 'changed-files/changed-files.json' exists, check if it contains any files named policy.json
+          # if 'changed-files/changed-files.json' exists, check if it contains any files named policy.json or policy-override.json
           if [ -f "changed-files/changed-files.json" ]; then
             if grep -q -e 'policy.json' -e 'policy-override.json' changed-files/changed-files.json; then
               echo "Lavamoat policy.json file changes detected."
