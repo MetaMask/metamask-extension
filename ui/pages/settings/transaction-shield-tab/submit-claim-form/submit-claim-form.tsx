@@ -291,6 +291,9 @@ const SubmitClaimForm = () => {
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
         placeholder={'e.g. a1084235686add...q46q8wurgw'}
+        inputProps={{
+          'data-testid': 'shield-claim-impacted-tx-hash-input',
+        }}
         helpText={
           errors.impactedTransactionHash ? (
             errors.impactedTransactionHash?.msg
@@ -352,6 +355,7 @@ const SubmitClaimForm = () => {
         <Textarea
           id="description"
           name="description"
+          data-testid="shield-claim-description-textarea"
           onChange={(e) => setCaseDescription(e.target.value)}
           onBlur={() => validateDescription()}
           value={caseDescription}
@@ -369,6 +373,7 @@ const SubmitClaimForm = () => {
             variant={TextVariant.BodySm}
             color={TextColor.ErrorDefault}
             className="mt-0.5"
+            data-testid="shield-claim-description-error"
           >
             {errors.caseDescription.msg}
           </Text>

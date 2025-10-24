@@ -175,19 +175,6 @@ async function setupMocking(
   const mockedEndpoint = await testSpecificMock(server);
   // Mocks below this line can be overridden by test-specific mocks
 
-  // Subscriptions Polling Get Subscriptions
-  await server
-    .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          subscriptions: [],
-          trialedProducts: [],
-        },
-      };
-    });
-
   // User Profile Lineage
   await server
     .forGet('https://authentication.api.cx.metamask.io/api/v2/profile/lineage')
