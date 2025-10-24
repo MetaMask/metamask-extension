@@ -56,7 +56,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
   it.skip('Successfully track button toggle on/off', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()

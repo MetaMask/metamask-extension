@@ -194,7 +194,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338; // 0x53a
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
@@ -210,7 +210,7 @@ describe('Request-queue UI changes', function () {
             },
           },
         ],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -258,7 +258,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338; // 0x53a
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 3 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleNode()
           .withPreferencesController({
@@ -290,7 +290,6 @@ describe('Request-queue UI changes', function () {
           },
         ],
 
-        dappOptions: { numberOfDapps: 3 },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -402,7 +401,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPreferencesController({
@@ -422,7 +421,7 @@ describe('Request-queue UI changes', function () {
             },
           },
         ],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -471,7 +470,7 @@ describe('Request-queue UI changes', function () {
   it('should signal from UI to dapp the network change', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         driverOptions: { constrainWindowSize: true },
@@ -510,7 +509,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withEnabledNetworks({
@@ -534,7 +533,7 @@ describe('Request-queue UI changes', function () {
         // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({
@@ -589,7 +588,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         // Presently confirmations take up to 10 seconds to display on a dead network
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()
@@ -618,7 +617,7 @@ describe('Request-queue UI changes', function () {
         // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {

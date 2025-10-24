@@ -142,7 +142,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
   it('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPreferencesController({
@@ -189,7 +189,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
       // we need to use localhost instead of the ip
       // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp({
@@ -234,7 +234,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
   it('should show "Be careful" if the PPOM request fails to check transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPreferencesController({

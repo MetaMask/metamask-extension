@@ -28,6 +28,7 @@ async function withFixturesForSmartTransactions(
 ) {
   await withFixtures(
     {
+      dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
         .withNetworkControllerOnMainnet()
@@ -43,7 +44,6 @@ async function withFixturesForSmartTransactions(
         chainId: '1',
       },
       testSpecificMock,
-      dapp: true,
     },
     async ({ driver }) => {
       await unlockWallet(driver);

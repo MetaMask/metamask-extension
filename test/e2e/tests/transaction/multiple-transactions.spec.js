@@ -7,7 +7,7 @@ describe('Multiple transactions', function () {
   it('creates multiple queued transactions, then confirms', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -69,7 +69,7 @@ describe('Multiple transactions', function () {
   it('creates multiple queued transactions, then rejects', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

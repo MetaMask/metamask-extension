@@ -12,7 +12,7 @@ describe('Add token using wallet_watchAsset', function () {
   it('opens a notification that adds a token when wallet_watchAsset is executed, then approves', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -57,7 +57,7 @@ describe('Add token using wallet_watchAsset', function () {
   it('opens a notification that adds a token when wallet_watchAsset is executed, then rejects', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

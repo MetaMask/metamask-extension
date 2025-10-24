@@ -28,7 +28,7 @@ describe('Portfolio site', function () {
   it('should link to the portfolio site', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,

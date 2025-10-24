@@ -117,7 +117,7 @@ describe('PPOM Blockaid Alert - Set Trade farming order', function (this: Suite)
     // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp({
             useLocalhostHostname: true,

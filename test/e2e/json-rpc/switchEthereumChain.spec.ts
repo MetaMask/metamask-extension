@@ -19,11 +19,10 @@ describe('Switch Ethereum Chain for two dapps', function () {
   it('switches the chainId of two dapps when switchEthereumChain of one dapp is confirmed', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -94,7 +93,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
   it('queues switchEthereumChain request from second dapp after send tx request', async function () {
     await withFixtures(
       {
-        dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPreferencesControllerSmartTransactionsOptedOut()
@@ -102,7 +100,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         manifestFlags: {
           testing: { disableSmartTransactionsOverride: true },
         },
-        dappOptions: { numberOfDapps: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -212,11 +210,10 @@ describe('Switch Ethereum Chain for two dapps', function () {
   it('queues send tx after switchEthereum request with a warning, if switchEthereum request is cancelled should show pending tx', async function () {
     await withFixtures(
       {
-        dapp: true,
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
+        dappOptions: { numberOfTestDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',

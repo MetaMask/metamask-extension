@@ -104,7 +104,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when pasted and should send TST to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()
@@ -166,7 +166,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()
