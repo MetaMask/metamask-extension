@@ -43,7 +43,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@hashFiles
         with:
           is-high-risk-environment: false
           cache-node-modules: true
@@ -74,7 +74,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@hashFiles
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -214,7 +214,7 @@ jobs:
       SELENIUM_BROWSER: chrome
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@hashFiles
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -307,7 +307,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@hashFiles
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
@@ -348,7 +348,7 @@ jobs:
 
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@hashFiles
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true

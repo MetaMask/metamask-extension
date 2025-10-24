@@ -26,7 +26,7 @@ jobs:
       GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
+        uses: MetaMask/action-checkout-and-setup@hashFiles
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
