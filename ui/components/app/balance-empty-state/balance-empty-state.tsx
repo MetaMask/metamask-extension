@@ -104,7 +104,6 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = (props) => {
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       padding={6}
-      margin={4}
       backgroundColor={BoxBackgroundColor.BackgroundSection}
       gap={5}
       {...props}

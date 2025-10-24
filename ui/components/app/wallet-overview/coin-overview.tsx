@@ -424,10 +424,15 @@ export const CoinOverview = ({
   const shouldShowEmptyState =
     isEmpty && anyEnabledNetworksAreAvailable && !isTestnet;
 
+  console.log('isEvm', isEvm);
+  console.log('isEmpty', isEmpty);
+  console.log('anyEnabledNetworksAreAvailable', anyEnabledNetworksAreAvailable);
+  console.log('isTestnet', isTestnet);
+
   // If balance is empty and data is loaded, show the BalanceEmptyState component
   // But NOT on testnets - show normal 0.00 balance display instead
   if (shouldShowEmptyState) {
-    return <BalanceEmptyState className={className} />;
+    return <BalanceEmptyState className={twMerge('my-4', className)} />;
   }
 
   return (
