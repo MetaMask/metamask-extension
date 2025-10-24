@@ -179,11 +179,12 @@ export const MultichainAccountsConnectPage: React.FC<
     requestedCaip25CaveatValueWithExistingPermissions,
   );
 
-  const SOLANA_CAIP_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+  const SOLANA_MAINNET_CAIP_CHAIN_ID =
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 
   const isSolanaWalletStandardRequest =
     requestedScopes.length === 1 &&
-    requestedScopes[0] === SOLANA_CAIP_CHAIN_ID &&
+    requestedScopes[0] === SOLANA_MAINNET_CAIP_CHAIN_ID &&
     requestedCaip25CaveatValue.sessionProperties[
       KnownSessionProperties.SolanaAccountChangedNotifications
     ];
