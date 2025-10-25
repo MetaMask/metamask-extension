@@ -68,6 +68,8 @@ import { navigateToConfirmation } from '../confirmations/hooks/useConfirmationNa
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
+import RewardsOnboardingModal from '../../components/app/rewards/components/onboarding/onboarding-modal';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -900,6 +902,7 @@ export default class Home extends PureComponent {
           ) : null}
           {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
           {showShieldEntryModal && <ShieldEntryModal />}
+          <RewardsOnboardingModal />
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
