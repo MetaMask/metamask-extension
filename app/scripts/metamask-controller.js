@@ -4745,8 +4745,9 @@ export default class MetamaskController extends EventEmitter {
    */
   _enableDefaultNetwork() {
     if (process.env.IN_TEST) {
-      this.networkEnablementController.enableNetwork(CHAIN_IDS.LOCALHOST);
-    } else if (
+      return;
+    }
+    if (
       process.env.METAMASK_DEBUG ||
       process.env.METAMASK_ENVIRONMENT === 'test'
     ) {
