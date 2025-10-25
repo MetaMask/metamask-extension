@@ -101,6 +101,9 @@ export enum HardwareAffiliateLinks {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   onekey = 'https://onekey.so/products/onekey-pro-hardware-wallet/',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  kshell = 'https://get.keycard.tech/pages/keycard-shell',
 }
 
 export enum HardwareAffiliateTutorialLinks {
@@ -134,6 +137,9 @@ export enum HardwareAffiliateTutorialLinks {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   onekey = 'https://help.onekey.so/hc/articles/9426592069903',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  kshell = 'https://keycard.tech/help/connect-keycard-shell-to-a-wallet-app',
 }
 
 /**
