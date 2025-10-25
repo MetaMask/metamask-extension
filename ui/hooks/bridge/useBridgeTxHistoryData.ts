@@ -4,7 +4,7 @@ import {
   type TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { isBridgeComplete } from '../../../shared/lib/bridge-status/utils';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
@@ -34,7 +34,7 @@ export function useBridgeTxHistoryData({
   transactionGroup,
   isEarliestNonce,
 }: UseBridgeTxHistoryDataProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const txMeta = transactionGroup.initialTransaction;
   const srcTxMetaId = txMeta.id;
   const bridgeHistoryItem = useSelector((state) =>
@@ -50,8 +50,7 @@ export function useBridgeTxHistoryData({
   )
     ? undefined
     : () => {
-        history.push({
-          pathname: `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`,
+        navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`, {
           state: { transactionGroup, isEarliestNonce },
         });
       };
