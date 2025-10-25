@@ -39,14 +39,15 @@
       "popupGasPollTokens": "object",
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
-      "showShieldEntryModalOnce": "boolean",
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
       "isRampCardClosed": false,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true,
-      "hasShownMultichainAccountsIntroModal": "boolean"
+      "hasShownMultichainAccountsIntroModal": "boolean",
+      "showShieldEntryModalOnce": "boolean",
+      "appActiveTab": "object"
     },
     "BridgeController": {},
     "CurrencyController": {
@@ -83,7 +84,6 @@
       "metaMetricsDataDeletionId": null,
       "metaMetricsDataDeletionTimestamp": 0
     },
-    "MultichainAccountService": "object",
     "NetworkController": {
       "selectedNetworkClientId": "string",
       "networkConfigurations": "object",
@@ -154,6 +154,7 @@
       "allIgnoredTokens": {},
       "allTokens": {}
     },
+    "MultichainAccountService": "object",
     "TransactionController": { "transactions": "object" },
     "config": "object",
     "firstTimeInfo": "object"

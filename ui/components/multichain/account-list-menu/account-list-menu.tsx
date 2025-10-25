@@ -45,7 +45,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-
 import {
   InternalAccountWithBalance,
   AccountConnections,

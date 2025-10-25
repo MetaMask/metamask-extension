@@ -14,6 +14,26 @@
   }
 }
 
+.app--sidepanel {
+  .first-view-main-wrapper {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+    padding: 24px;
+  }
+
+  .first-view-main {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  .import-account {
+    margin: 24px 0;
+    width: 100%;
+  }
+}
+
 
 @include design-system.screen-lg-min {
   .first-view-main {
@@ -32,25 +52,10 @@
 @include design-system.screen-sm-max {
   .import-account {
     margin: 24px;
-    display: flex;
-    flex-flow: column nowrap;
-    width: calc(100vw - 80px);
   }
 
   .import-account__title {
     width: initial !important;
-  }
-
-  .first-view-main {
-    height: 100%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    margin-top: 12px;
-  }
-
-  .first-view-phone-invisible {
-    display: none;
   }
 
   .first-time-flow__input {

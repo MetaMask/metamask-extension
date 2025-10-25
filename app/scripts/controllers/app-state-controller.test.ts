@@ -736,6 +736,7 @@ describe('AppStateController', () => {
             {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
+              "appActiveTab": undefined,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
@@ -821,6 +822,7 @@ describe('AppStateController', () => {
           ).toMatchInlineSnapshot(`
             {
               "addressSecurityAlertResponses": {},
+              "appActiveTab": undefined,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
@@ -980,6 +982,7 @@ describe('AppStateController', () => {
             {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
+              "appActiveTab": undefined,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
