@@ -20,8 +20,14 @@ import { useConfirmationNavigation } from '../../pages/confirmations/hooks/useCo
 import {
   encodeDisableDelegation,
   Delegation,
+  getDelegationHashOffchain,
 } from '../../../shared/lib/delegation/delegation';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import {
+  addPendingRevocation,
+  submitRevocation,
+  isDelegationDisabled,
+} from '../../store/controller-actions/gator-permissions-controller';
 
 export type RevokeGatorPermissionArgs = {
   accountAddress: Hex;
@@ -213,6 +219,34 @@ export function useRevokeGatorPermissions({
       const delegation =
         extractDelegationFromGatorPermissionContext(permissionContext);
 
+      const delegationHash = getDelegationHashOffchain(delegation);
+      // const delegationHash =
+      //   '0xfd165b374563126931d2be865bbec75623dca111840d148cf88492c0bb997f96';
+      console.log('🔐 Delegation hash:', delegationHash);
+
+      // Check if delegation is already disabled on-chain
+      console.log('⏳ About to call isDelegationDisabled...');
+      const isDisabled = await isDelegationDisabled(
+        delegationManagerAddress,
+        delegationHash,
+        networkClientId,
+      );
+      console.log('⏳ isDelegationDisabled completed, result:', isDisabled);
+
+      if (isDisabled) {
+        console.log(
+          '✅ Delegation already disabled on-chain, submitting revocation directly',
+        );
+        await submitRevocation(permissionContext);
+        // Return a mock transaction meta since no actual transaction is needed
+        return {
+          id: `revoked-${Date.now()}`,
+          status: 'confirmed',
+        } as TransactionMeta;
+      }
+
+      console.log('⚠️ Delegation is active, creating disable transaction');
+
       const encodedCallData = encodeDisableDelegation({
         delegation,
       });
@@ -237,6 +271,8 @@ export function useRevokeGatorPermissions({
       if (!transactionMeta.id) {
         throw new Error('No transaction id found');
       }
+
+      await addPendingRevocation(transactionMeta.id, permissionContext);
 
       return transactionMeta;
     },

@@ -2265,6 +2265,19 @@ export default class MetamaskController extends EventEmitter {
     return {
       // etc
       getState: this.getState.bind(this),
+      call: async (method, params, networkClientId) => {
+        // Handle eth_call specifically
+        if (method === 'eth_call') {
+          const networkClient =
+            this.networkController.getNetworkClientById(networkClientId);
+          return await networkClient.provider.request({
+            method: 'eth_call',
+            params,
+          });
+        }
+        // For other methods, use the controller messenger
+        return await this.controllerMessenger.call(method, ...params);
+      },
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
