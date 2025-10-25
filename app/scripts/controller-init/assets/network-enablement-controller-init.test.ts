@@ -1,6 +1,11 @@
 import { Messenger } from '@metamask/base-controller';
 import { NetworkEnablementController } from '@metamask/network-enablement-controller';
-import { BtcScope, SolAccountType, SolScope } from '@metamask/keyring-api';
+import {
+  BtcScope,
+  SolAccountType,
+  SolScope,
+  TrxScope,
+} from '@metamask/keyring-api';
 import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
 import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
@@ -42,6 +47,7 @@ function getInitRequestMock(
           multichainNetworkConfigurationsByChainId: {
             [SolScope.Mainnet]: {},
             [BtcScope.Mainnet]: {},
+            [TrxScope.Mainnet]: {},
           },
         },
       };
@@ -206,6 +212,7 @@ describe('NetworkEnablementControllerInit', () => {
       enabledNetworkMap: {
         solana: { [SolScope.Mainnet]: true },
         bitcoin: { [BtcScope.Mainnet]: true },
+        tron: { [TrxScope.Mainnet]: true },
       },
     };
 
@@ -244,6 +251,9 @@ describe('NetworkEnablementControllerInit', () => {
           [KnownCaipNamespace.Bip122]: {
             [BtcScope.Mainnet]: true,
           },
+          [KnownCaipNamespace.Tron]: {
+            [TrxScope.Mainnet]: true,
+          },
         },
       },
     });
@@ -270,6 +280,9 @@ describe('NetworkEnablementControllerInit', () => {
           },
           [KnownCaipNamespace.Bip122]: {
             [BtcScope.Mainnet]: false,
+          },
+          [KnownCaipNamespace.Tron]: {
+            [TrxScope.Mainnet]: false,
           },
         },
       },
@@ -300,6 +313,9 @@ describe('NetworkEnablementControllerInit', () => {
           [KnownCaipNamespace.Bip122]: {
             [BtcScope.Mainnet]: false,
           },
+          [KnownCaipNamespace.Tron]: {
+            [TrxScope.Mainnet]: false,
+          },
         },
       },
     });
@@ -328,6 +344,9 @@ describe('NetworkEnablementControllerInit', () => {
           },
           [KnownCaipNamespace.Bip122]: {
             [BtcScope.Mainnet]: false,
+          },
+          [KnownCaipNamespace.Tron]: {
+            [TrxScope.Mainnet]: false,
           },
         },
       },

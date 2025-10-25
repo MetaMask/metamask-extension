@@ -9,6 +9,12 @@ import mockState from '../../../../test/data/mock-state.json';
 import { SOLANA_WALLET_SNAP_ID } from '../../../../shared/lib/accounts';
 import { NetworkManager } from './network-manager';
 
+// Mock the isFlask global
+Object.defineProperty(globalThis, 'isFlask', {
+  value: false,
+  writable: true,
+});
+
 // Mock the store actions
 jest.mock('../../../store/actions', () => ({
   hideModal: jest.fn(),
