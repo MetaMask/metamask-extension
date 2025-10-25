@@ -8,7 +8,7 @@ import {
   updateAlerts,
 } from '../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../helpers/constants/design-system';
-import setConfirmationAlerts from './setConfirmationAlerts';
+import useSetConfirmationAlerts from './useSetConfirmationAlerts';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
 jest.mock('react-redux', () => ({
@@ -38,14 +38,14 @@ const mockState = getMockPersonalSignConfirmStateForRequest(
   },
 );
 
-describe('setConfirmationAlerts', () => {
+describe('useSetConfirmationAlerts', () => {
   it('updates confirmation alerts', () => {
     const mockDispatch = jest.fn();
     (useDispatch as jest.Mock).mockReturnValue(mockDispatch);
     (useConfirmationAlerts as jest.Mock).mockReturnValue(alerts);
 
     renderHookWithConfirmContextProvider(
-      () => setConfirmationAlerts(),
+      () => useSetConfirmationAlerts(),
       mockState,
     );
 
@@ -60,7 +60,7 @@ describe('setConfirmationAlerts', () => {
     (useDispatch as jest.Mock).mockReturnValue(mockDispatch);
 
     const { unmount } = renderHookWithConfirmContextProvider(
-      () => setConfirmationAlerts(),
+      () => useSetConfirmationAlerts(),
       mockState,
     );
 

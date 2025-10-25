@@ -11,7 +11,8 @@
         "@babel/plugin-proposal-nullish-coalescing-operator": true,
         "@babel/plugin-proposal-object-rest-spread": true,
         "@babel/plugin-proposal-optional-chaining": true,
-        "@babel/preset-typescript": true
+        "@babel/preset-typescript": true,
+        "babel-plugin-react-compiler": true
       }
     },
     "@babel/eslint-parser": {
@@ -576,6 +577,22 @@
       "globals": {
         "process.stderr": true,
         "process.stdout": true
+      }
+    },
+    "babel-plugin-react-compiler": {
+      "builtin": {
+        "crypto": true,
+        "path": true,
+        "tty": true,
+        "util": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.stderr.fd": true,
+        "console": true
+      },
+      "packages": {
+        "@babel/core>@babel/types": true
       }
     }
   }

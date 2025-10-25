@@ -43,9 +43,10 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
       // Warning / Navigation
       if (isExternal) {
         setIsOpen(true);
-      } else {
-        useSnapNavigate(href);
+        return;
       }
+      // eslint-disable-next-line react-compiler/react-compiler, react-hooks/rules-of-hooks
+      useSnapNavigate(href);
     },
     [
       useSnapNavigate,

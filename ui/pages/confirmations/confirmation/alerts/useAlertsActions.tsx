@@ -11,19 +11,17 @@ import {
 
 export const useAlertsActions = (
   hideAlertModal: () => void,
-  pendingConfirmation: ApprovalRequest<{ id: string }>,
+  pendingConfirmation: ApprovalRequest<{ id: string }> | undefined,
 ) => {
+  const { origin } = pendingConfirmation ?? {};
   const pendingConfirmationsFromOrigin = useSelector((state) =>
-    getApprovalsByOrigin(
-      state as ApprovalsMetaMaskState,
-      pendingConfirmation?.origin,
-    ),
+    getApprovalsByOrigin(state as ApprovalsMetaMaskState, origin as string),
   );
 
   const { getIndex, navigateToIndex } = useConfirmationNavigation();
 
   const navigateToPendingConfirmation = useCallback(() => {
-    const { id } = pendingConfirmation;
+    const { id } = pendingConfirmation ?? {};
     const pendingConfirmations = pendingConfirmationsFromOrigin?.filter(
       (confirmation) => confirmation.id !== id,
     );

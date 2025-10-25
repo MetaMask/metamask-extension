@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
 import ConfirmationPage from '../confirmation';
 import { PendingApproval } from './util';
@@ -51,14 +51,20 @@ export default {
 export const DefaultStory = (args) => {
   const { blockExplorerUrl, ...finalArgs } = args;
 
-  finalArgs.rpcPrefs = {
-    blockExplorerUrl,
-  };
+  const requestData = useMemo(
+    () => ({
+      ...finalArgs,
+      rpcPrefs: {
+        blockExplorerUrl,
+      },
+    }),
+    [finalArgs, blockExplorerUrl],
+  );
 
   return (
     <PendingApproval
       type={ApprovalType.AddEthereumChain}
-      requestData={finalArgs}
+      requestData={requestData}
     >
       <ConfirmationPage />
     </PendingApproval>
