@@ -3,7 +3,9 @@ import { execSync, spawn, ChildProcess } from 'child_process';
 import path from 'path';
 import { chromium, type BrowserContext, Browser } from '@playwright/test';
 import { mean } from 'lodash';
-import { DAPP_URL } from '../../constants';
+import { DAPP_URL, WALLET_PASSWORD } from '../../constants';
+import FixtureServer from '../../fixture-server';
+import { Anvil } from '../../seeder/anvil';
 
 declare global {
   /**
@@ -78,6 +80,28 @@ export type BenchmarkMetrics = {
 };
 
 /**
+ * Performance metrics collected during transaction proposal benchmarking.
+ * All time values are in milliseconds unless otherwise specified.
+ */
+export type TransactionProposalMetrics = {
+  /**
+   * Time from transaction proposal initiation to MetaMask popup being fully visible and interactive.
+   * This is the main metric we're measuring for wallet pop open time.
+   */
+  popOpenTime: number;
+  /**
+   * Time from transaction proposal initiation to MetaMask popup window appearing.
+   * Measures how quickly the popup window becomes visible.
+   */
+  popupAppearTime: number;
+  /**
+   * Time from popup appearing to being fully interactive.
+   * Measures how quickly the popup becomes ready for user interaction.
+   */
+  popupInteractiveTime: number;
+};
+
+/**
  * Individual benchmark measurement result for a single page load test.
  * Contains the raw performance metrics for one specific test run.
  */
@@ -88,6 +112,22 @@ export type BenchmarkResult = {
   run: number;
   /** Performance metrics collected during this test run */
   metrics: BenchmarkMetrics;
+  /** Timestamp when this measurement was taken */
+  timestamp: number;
+};
+
+// TODO: [ffmcgee] DRY these types
+/**
+ * Individual benchmark measurement result for a single transaction proposal test.
+ * Contains the raw performance metrics for one specific test run.
+ */
+export type TransactionProposalResult = {
+  /** Type of transaction proposal that was tested */
+  proposalType: string;
+  /** Sequential run number for this test iteration */
+  run: number;
+  /** Performance metrics collected during this test run */
+  metrics: TransactionProposalMetrics;
   /** Timestamp when this measurement was taken */
   timestamp: number;
 };
@@ -116,6 +156,29 @@ export type BenchmarkSummary = {
 };
 
 /**
+ * Statistical summary of transaction proposal benchmark results for a specific proposal type.
+ * Contains aggregated statistics across multiple test runs for performance analysis.
+ */
+export type TransactionProposalSummary = {
+  /** Type of transaction proposal that was tested */
+  proposalType: string;
+  /** Number of test samples collected for this proposal type */
+  samples: number;
+  /** Mean (average) values for each performance metric */
+  mean: Partial<TransactionProposalMetrics>;
+  /** 95th percentile values for each performance metric */
+  p95: Partial<TransactionProposalMetrics>;
+  /** 99th percentile values for each performance metric */
+  p99: Partial<TransactionProposalMetrics>;
+  /** Minimum values for each performance metric */
+  min: Partial<TransactionProposalMetrics>;
+  /** Maximum values for each performance metric */
+  max: Partial<TransactionProposalMetrics>;
+  /** Standard deviation values for each performance metric */
+  standardDeviation: Partial<TransactionProposalMetrics>;
+};
+
+/**
  * Main class for conducting page load performance benchmarks using Playwright.
  * Manages browser lifecycle, extension loading, and performance measurement collection.
  */
@@ -132,8 +195,16 @@ export class PageLoadBenchmark {
   /** Collection of all benchmark results from test runs */
   private results: BenchmarkResult[] = [];
 
+  /** Collection of all transaction proposal benchmark results from test runs */
+  private transactionProposalResults: TransactionProposalResult[] = [];
+
   /** Dapp server process running in background */
   private dappServerProcess: ChildProcess | undefined;
+
+  /** Fixture server for managing wallet state */
+  private fixtureServer: FixtureServer;
+
+  private localNode: Anvil | undefined;
 
   private readonly userDataDirectory = 'temp-benchmark-user-data';
 
@@ -144,6 +215,7 @@ export class PageLoadBenchmark {
    */
   constructor(extensionPath: string) {
     this.extensionPath = extensionPath;
+    this.fixtureServer = new FixtureServer();
   }
 
   /**
@@ -151,10 +223,12 @@ export class PageLoadBenchmark {
    * Builds the extension if needed, launches browser with optimized settings,
    * and waits for the extension to fully load.
    *
+   * @param fixtures - Wallet state.
    * @throws {Error} If browser or context initialization fails
    */
-  async setup() {
+  async setup(fixtures?: unknown) {
     await this.buildExtension();
+    await this.startFixtureServer(fixtures);
     await this.createStaticDappServer();
 
     const userDataDir = path.join(process.cwd(), this.userDataDirectory);
@@ -183,6 +257,19 @@ export class PageLoadBenchmark {
     this.browser = browser;
 
     await this.waitForExtensionLoad();
+  }
+
+  /**
+   * Starts up local blockchain node and fixture server for wallet state management.
+   *
+   * @param fixtures - Wallet state.
+   */
+  private async startFixtureServer(fixtures: unknown = {}) {
+    this.localNode = new Anvil();
+    await this.localNode.start();
+    this.fixtureServer = new FixtureServer();
+    await this.fixtureServer.start();
+    this.fixtureServer.loadJsonState(fixtures);
   }
 
   /**
@@ -275,6 +362,50 @@ export class PageLoadBenchmark {
   }
 
   /**
+   * Unlocks the MetaMask wallet using the configured password.
+   * Finds the unlock page and enters the password to unlock the wallet.
+   * This should be called after the extension loads to ensure the wallet is ready for use.
+   */
+  private async unlockWallet() {
+    const walletPage = await this.context?.newPage();
+    walletPage?.goto(
+      'chrome-extension://hebhblbkkdabgoldnojllkipeoacjioc/home.html',
+    );
+
+    // Check if we're on the unlock page
+    try {
+      await walletPage?.waitForSelector('[data-testid="unlock-page"]', {
+        timeout: 5000,
+      });
+
+      console.log('Wallet is locked, unlocking...');
+
+      // Fill in the password
+      await walletPage?.fill(
+        '[data-testid="unlock-password"]',
+        WALLET_PASSWORD,
+      );
+
+      // Click the unlock button
+      await walletPage?.click('[data-testid="unlock-submit"]');
+
+      // Wait for the unlock page to disappear (indicating successful unlock)
+      await walletPage?.waitForSelector('[data-testid="unlock-page"]', {
+        state: 'detached',
+        timeout: 10000,
+      });
+
+      console.log('Wallet unlocked successfully');
+    } catch (error) {
+      // If unlock page selector is not found, wallet might already be unlocked
+      console.log(
+        'Wallet appears to already be unlocked or unlock page not found:',
+        error instanceof Error ? error.message : String(error),
+      );
+    }
+  }
+
+  /**
    * Measures performance metrics for a single page load.
    * Navigates to the specified URL, waits for the page to fully load,
    * and collects comprehensive performance data including timing and memory usage.
@@ -350,6 +481,130 @@ export class PageLoadBenchmark {
   }
 
   /**
+   * Measures performance metrics for a single transaction proposal.
+   * Navigates to the test dapp and measures the time from proposal initiation
+   * to when the extension responds (popup appears).
+   *
+   * @param proposalType - The type of transaction proposal to test (e.g., 'signTypedDataV4')
+   * @param runNumber - Sequential number identifying this test run
+   * @returns Promise resolving to the transaction proposal benchmark result
+   * @throws {Error} If browser context is not initialized or measurement fails
+   */
+  async measureTransactionProposal(
+    proposalType: string,
+    runNumber: number,
+  ): Promise<TransactionProposalResult> {
+    const dappPage = await this.context?.newPage();
+    if (!dappPage) {
+      throw new Error('Browser Context not initialized.');
+    }
+
+    try {
+      // Navigate to test dapp
+      await dappPage.goto(DAPP_URL, { waitUntil: 'networkidle' });
+      await dappPage.waitForLoadState('domcontentloaded');
+
+      // Record start time for proposal initiation
+      const proposalStartTime = Date.now();
+
+      // Trigger the transaction proposal
+      await dappPage.click(`#${proposalType}`);
+
+      // Wait for MetaMask popup to appear and measure timing
+      const metrics = await this.measurePopupTiming(proposalStartTime);
+
+      const result: TransactionProposalResult = {
+        proposalType,
+        run: runNumber,
+        metrics,
+        timestamp: new Date().getTime(),
+      };
+
+      this.transactionProposalResults.push(result);
+      return result;
+    } finally {
+      await dappPage.close();
+    }
+  }
+
+  /**
+   * Waits for MetaMask popup to appear and measures timing metrics.
+   *
+   * @param proposalStartTime - The timestamp when the proposal was initiated
+   */
+  private async measurePopupTiming(
+    proposalStartTime: number,
+  ): Promise<TransactionProposalMetrics> {
+    // Wait for popup to appear
+    const popupAppearTime = await this.waitForPopup();
+    const popupAppearDuration = popupAppearTime - proposalStartTime;
+
+    // Get the popup page
+    const popup = await this.getMetaMaskPopup();
+    if (!popup) {
+      throw new Error('MetaMask popup not found');
+    }
+
+    // Wait for popup to be fully interactive
+    const interactiveStartTime = Date.now();
+    await popup.waitForLoadState('networkidle');
+    await popup.waitForSelector('[data-testid="confirmation_message-section"]');
+    const interactiveEndTime = Date.now();
+    const popupInteractiveDuration = interactiveEndTime - interactiveStartTime;
+
+    await popup.click('[data-testid="confirm-footer-cancel-button"]');
+
+    // Calculate total pop open time
+    const popOpenTime = popupAppearDuration + popupInteractiveDuration;
+
+    return {
+      popOpenTime,
+      popupAppearTime: popupAppearDuration,
+      popupInteractiveTime: popupInteractiveDuration,
+    };
+  }
+
+  /**
+   * Waits for MetaMask popup to appear and returns the timestamp when it appears.
+   */
+  private async waitForPopup(): Promise<number> {
+    const maxWaitTime = 10000; // 10 seconds
+    const checkInterval = 100; // 100ms
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < maxWaitTime) {
+      const pages = (await this.context?.pages()) || [];
+      const popup = pages.find(
+        (page) =>
+          page.url().includes('chrome-extension://') &&
+          (page.url().includes('popup.html') ||
+            page.url().includes('notification.html')),
+      );
+
+      if (popup) {
+        return Date.now();
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, checkInterval));
+    }
+
+    throw new Error('MetaMask popup did not appear within timeout');
+  }
+
+  /**
+   * Gets the MetaMask popup page.
+   */
+  private async getMetaMaskPopup() {
+    const pages = (await this.context?.pages()) || [];
+    return pages.find(
+      (page) =>
+        page.url().includes('chrome-extension://') &&
+        (page.url().includes('popup.html') ||
+          page.url().includes('notification.html')),
+    );
+  }
+
+  /**
    * Executes the complete benchmark test suite across multiple browser loads and page loads.
    * Uses the persistent browser context to simulate real-world conditions,
    * and measures each URL multiple times to gather statistical data.
@@ -385,6 +640,47 @@ export class PageLoadBenchmark {
            */
           await new Promise((resolve) => setTimeout(resolve, 1000));
         }
+      }
+      await this.clearBrowserData();
+    }
+  }
+
+  /**
+   * Executes the complete transaction proposal benchmark test suite.
+   * Creates fresh browser contexts for each browser load to simulate real-world conditions,
+   * and measures each proposal type multiple times to gather statistical data.
+   *
+   * @param proposalType - Transaction proposal type to test
+   * @param browserLoads - Number of fresh browser contexts to create (default: 10)
+   * @param proposalLoads - Number of proposal tests per browser context (default: 10)
+   */
+  async runTransactionProposalBenchmark(
+    proposalType: string,
+    browserLoads: number = 10,
+    proposalLoads: number = 10,
+  ) {
+    console.log(
+      `Starting transaction proposal benchmark: ${browserLoads} browser loads, ${proposalLoads} proposal loads per browser`,
+    );
+
+    await this.waitForExtensionLoad();
+    await this.unlockWallet();
+
+    for (let browserLoad = 0; browserLoad < browserLoads; browserLoad++) {
+      console.log(`Browser load ${browserLoad + 1}/${browserLoads}`);
+
+      for (let proposalLoad = 0; proposalLoad < proposalLoads; proposalLoad++) {
+        const runNumber = browserLoad * proposalLoads + proposalLoad;
+        console.log(
+          `  Measuring ${proposalType} (run ${runNumber + 1}/${browserLoads * proposalLoads})`,
+        );
+
+        await this.measureTransactionProposal(proposalType, runNumber);
+        /**
+         * To make sure page setup & teardown doesn't have unexpected results in the next measurement,
+         * we add a small delay between measurements.
+         */
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
       await this.clearBrowserData();
     }
@@ -451,6 +747,67 @@ export class PageLoadBenchmark {
   }
 
   /**
+   * Calculates comprehensive statistical summaries for all transaction proposal benchmark results.
+   * Groups results by proposal type and computes mean, percentiles, min/max, and standard deviation
+   * for each performance metric across all test runs.
+   *
+   * @returns Array of statistical summaries, one for each tested proposal type
+   */
+  calculateTransactionProposalStatistics(): TransactionProposalSummary[] {
+    const summaries: TransactionProposalSummary[] = [];
+
+    const resultsByProposalType = this.transactionProposalResults.reduce(
+      (acc, result) => {
+        if (!acc[result.proposalType]) {
+          acc[result.proposalType] = [];
+        }
+        acc[result.proposalType].push(result);
+        return acc;
+      },
+      {} as Record<string, TransactionProposalResult[]>,
+    );
+
+    for (const [proposalType, proposalResults] of Object.entries(
+      resultsByProposalType,
+    )) {
+      const metrics = proposalResults.map((r) => r.metrics);
+      const metricKeys = Object.keys(
+        metrics[0],
+      ) as (keyof TransactionProposalMetrics)[];
+
+      const summary: TransactionProposalSummary = {
+        proposalType,
+        samples: metrics.length,
+        mean: {},
+        p95: {},
+        p99: {},
+        min: {},
+        max: {},
+        standardDeviation: {},
+      };
+
+      for (const key of metricKeys) {
+        const values = metrics
+          .map((m) => m[key])
+          .filter((v) => typeof v === 'number') as number[];
+        if (values.length > 0) {
+          summary.mean[key] = mean(values);
+          summary.p95[key] = this.calculatePercentile(values, 95);
+          summary.p99[key] = this.calculatePercentile(values, 99);
+          summary.min[key] = Math.min(...values);
+          summary.max[key] = Math.max(...values);
+          summary.standardDeviation[key] =
+            this.calculateStandardDeviation(values);
+        }
+      }
+
+      summaries.push(summary);
+    }
+
+    return summaries;
+  }
+
+  /**
    * Calculates the specified percentile value from an array of numbers.
    * Uses the nearest-rank method for percentile calculation.
    *
@@ -486,6 +843,7 @@ export class PageLoadBenchmark {
    * @throws {Error} If file writing fails or git command fails
    */
   async saveResults(outputPath: string) {
+    // TODO: [ffmcgee] DRY with saveTransactionProposalResults
     const commitSha = execSync('git rev-parse --short HEAD', {
       cwd: __dirname,
       encoding: 'utf8',
@@ -499,6 +857,29 @@ export class PageLoadBenchmark {
 
     await fs.writeFile(outputPath, JSON.stringify(output, null, 2));
     console.log(`Results saved to ${outputPath}`);
+  }
+
+  /**
+   * Saves transaction proposal benchmark results to a JSON file with comprehensive metadata.
+   * Includes timestamp, git commit SHA, and statistical summaries.
+   *
+   * @param outputPath - File path where results should be saved
+   * @throws {Error} If file writing fails or git command fails
+   */
+  async saveTransactionProposalResults(outputPath: string) {
+    const commitSha = execSync('git rev-parse --short HEAD', {
+      cwd: __dirname,
+      encoding: 'utf8',
+    }).slice(0, 7);
+
+    const output = {
+      timestamp: new Date().getTime(),
+      commit: commitSha,
+      summary: this.calculateTransactionProposalStatistics(),
+    };
+
+    await fs.writeFile(outputPath, JSON.stringify(output, null, 2));
+    console.log(`Transaction proposal results saved to ${outputPath}`);
   }
 
   /**
@@ -521,12 +902,22 @@ export class PageLoadBenchmark {
   }
 
   /**
+   * Shuts down local node if it's running.
+   */
+  private async shutdownLocalNode() {
+    if (this.localNode) {
+      await this.localNode.quit();
+    }
+  }
+
+  /**
    * Cleans up browser resources and closes all connections.
    * Should be called after benchmark testing is complete to free up system resources.
    */
   async cleanup() {
     await this.context?.close();
     await this.browser?.close();
+    await this.shutdownLocalNode();
     this.stopDappServer();
 
     // Clean up temporary user data directory
