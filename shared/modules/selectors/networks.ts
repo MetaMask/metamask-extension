@@ -133,7 +133,7 @@ export const getNetworkConfigurationsByCaipChainId = ({
     ([caipChainId, networkConfig]) => {
       const matchesAccount = Object.values(internalAccounts.accounts).some(
         (account) => {
-          const matchesScope = account.scopes?.some((scope) => {
+          const matchesScope = account.scopes.some((scope) => {
             return scope === caipChainId;
           });
 

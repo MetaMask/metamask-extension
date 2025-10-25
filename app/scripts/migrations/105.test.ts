@@ -71,6 +71,7 @@ function expectedInternalAccount(
     options: {},
     methods: ETH_EOA_METHODS,
     type: 'eip155:eoa',
+    scopes: ['eip155:0'],
   };
 }
 
