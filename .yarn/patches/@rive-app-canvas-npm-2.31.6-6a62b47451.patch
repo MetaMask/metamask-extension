@@ -1,0 +1,13 @@
+diff --git a/rive.js b/rive.js
+index 018c303ffaf25f8da0ab953a6d2215869e4d43ee..8b8e35dd05c1a632a0eb94190a89331b88999858 100644
+--- a/rive.js
++++ b/rive.js
+@@ -4190,7 +4190,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
+ };
+ var __generator = (undefined && undefined.__generator) || function (thisArg, body) {
+     var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g = Object.create((typeof Iterator === "function" ? Iterator : Object).prototype);
+-    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
++    return g.next = verb(0), g["throw"] = verb(1), g["return"] = verb(2), typeof Symbol === "function" && (Object.defineProperty(g, Symbol.iterator, { value: function() { return this; } })), g;
+     function verb(n) { return function (v) { return step([n, v]); }; }
+     function step(op) {
+         if (f) throw new TypeError("Generator is already executing.");

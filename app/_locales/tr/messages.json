@@ -4073,9 +4073,6 @@
     "message": "$1 simgesi",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Devam etmek için bir seçenek seçin"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Uzantıyı başlat"
   },
@@ -7147,9 +7144,6 @@
   },
   "welcomeBack": {
     "message": "Tekrar hoş geldiniz"
-  },
-  "welcomeToMetaMask": {
-    "message": "Başlayalım"
   },
   "whatsThis": {
     "message": "Bu nedir?"
