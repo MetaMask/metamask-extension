@@ -156,11 +156,11 @@ DefaultStory.args = {
   reverseColors: false,
 };
 
-export const Size = (args) => (
+export const Size = () => (
   <div>
-    <SunCheck size={16 || args.size} />
-    <SunCheck size={24 || args.size} />
-    <SunCheck size={32 || args.size} />
+    <SunCheck size={16} />
+    <SunCheck size={24} />
+    <SunCheck size={32} />
   </div>
 );
 
