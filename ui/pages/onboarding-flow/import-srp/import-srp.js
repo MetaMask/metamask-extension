@@ -101,13 +101,13 @@ export default function ImportSRP({
       return;
     }
 
-    if (submitSecretRecoveryPhrase) {
-      submitSecretRecoveryPhrase(secretRecoveryPhrase);
-    }
-
     if (onContinueCallback) {
       onContinueCallback(secretRecoveryPhrase);
       return;
+    }
+
+    if (submitSecretRecoveryPhrase) {
+      submitSecretRecoveryPhrase(secretRecoveryPhrase);
     }
 
     trackEvent({
