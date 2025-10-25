@@ -32378,6 +32378,7 @@ __metadata:
     react-focus-lock: "npm:^2.9.4"
     react-idle-timer: "npm:4.5.6"
     react-markdown: "npm:^6.0.3"
+    react-native-my-rust-lib: ./react-native-my-rust-lib-0.1.0.tgz
     react-popper: "npm:^2.2.3"
     react-redux: "npm:^7.2.9"
     react-responsive-carousel: "npm:^3.2.21"
@@ -36723,6 +36724,18 @@ __metadata:
   peerDependencies:
     react: ^0.14.9 || ^15.3.0 || ^16.0.0
   checksum: 10/a63229a09c1fd9d4afc62d2256261af28d2d982b722f680a1e979b8efa4120461646a07f59118264be37fdd19a554cf3d0788710c6fca7c8a50284644cb2ab98
+  languageName: node
+  linkType: hard
+
+"react-native-my-rust-lib@file:./react-native-my-rust-lib-0.1.0.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.1.0
+  resolution: "react-native-my-rust-lib@file:./react-native-my-rust-lib-0.1.0.tgz#./react-native-my-rust-lib-0.1.0.tgz::hash=1e6272&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    uniffi-bindgen-react-native: "npm:^0.29.3-1"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/6c9c44437957447665de6058ce457ac8337661187a63627c3297e45b038875e9c5954e549804545b4203e316e533367372a8fbabcec5d0bf3e1216131916799a
   languageName: node
   linkType: hard
 
@@ -42159,6 +42172,16 @@ __metadata:
   dependencies:
     ev-emitter: "npm:^2.0.0"
   checksum: 10/0e1ca1da000dd31266dc3b138db147b9cce7f81b87423875dee8e89fb19d1d1db1cb19951dcdc4cfce0375d4c3bc317b496a41501c7663beb30188a4d0442bb1
+  languageName: node
+  linkType: hard
+
+"uniffi-bindgen-react-native@npm:^0.29.3-1":
+  version: 0.29.3-1
+  resolution: "uniffi-bindgen-react-native@npm:0.29.3-1"
+  bin:
+    ubrn: bin/cli.cjs
+    uniffi-bindgen-react-native: bin/cli.cjs
+  checksum: 10/e16c855e072bcfb0e9abaeab0d3a29e850a08ec54fd59f82d54116a740e839cdb75f9a3270daccef4577d6261d9ba6bcfc58a95574bc590e06f9f757c5425d7f
   languageName: node
   linkType: hard
 

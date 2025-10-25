@@ -2,6 +2,12 @@ import EventEmitter from 'events';
 import React, { useCallback, useRef, useState } from 'react';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
+import {
+  Calculator,
+  type BinaryOperator,
+  SafeAddition,
+  // ComputationResult,
+} from 'react-native-my-rust-lib';
 import Mascot from '../../../components/ui/mascot';
 import {
   Box,
@@ -74,6 +80,33 @@ export default function WelcomeLogin({
     [dispatch, loginOption, onLogin],
   );
 
+  // A Rust object
+  const calculator = new Calculator();
+  // A Rust object implementing the Rust trait BinaryOperator
+  const addOp = new SafeAddition();
+
+  // A Typescript class, implementing BinaryOperator
+  class SafeMultiply implements BinaryOperator {
+    perform(lhs: bigint, rhs: bigint): bigint {
+      return lhs * rhs;
+    }
+  }
+  const multOp = new SafeMultiply();
+
+  // bigints
+  const three = 3n;
+  const seven = 7n;
+
+  // Perform the calculation, and to get an object
+  // representing the computation result.
+  const computation = calculator
+    .calculate(addOp, three, three)
+    .calculateMore(multOp, seven)
+    .lastResult();
+
+  // Unpack the bigint value into a string.
+  const result = computation?.value.toString();
+
   return (
     <Box
       display={Display.Flex}
@@ -131,7 +164,7 @@ export default function WelcomeLogin({
             }
           }}
         >
-          {t('onboardingCreateWallet')}
+          {result ?? t('onboardingCreateWallet')}
         </Button>
         <Button
           data-testid="onboarding-import-wallet"

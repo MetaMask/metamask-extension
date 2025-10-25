@@ -5,6 +5,7 @@ import { render } from 'react-dom';
 import browser from 'webextension-polyfill';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 
+import { uniffiInitAsync } from 'react-native-my-rust-lib';
 import { captureException } from '../shared/lib/sentry';
 import { withResolvers } from '../shared/lib/promise-with-resolvers';
 // TODO: Remove restricted import
@@ -85,6 +86,8 @@ export const connectToBackground = (
 };
 
 export default async function launchMetamaskUi(opts) {
+  await uniffiInitAsync();
+
   const { backgroundConnection, traceContext } = opts;
 
   const metamaskState = await trace(

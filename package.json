@@ -425,6 +425,7 @@
     "react-focus-lock": "^2.9.4",
     "react-idle-timer": "4.5.6",
     "react-markdown": "^6.0.3",
+    "react-native-my-rust-lib": "./react-native-my-rust-lib-0.1.0.tgz",
     "react-popper": "^2.2.3",
     "react-redux": "^7.2.9",
     "react-responsive-carousel": "^3.2.21",
