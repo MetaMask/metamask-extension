@@ -15,6 +15,7 @@ import { AccountsControllerGetNextAvailableAccountNameAction } from '@metamask/a
 ///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { captureException } from '../sentry';
+import { HardwareDeviceNames } from '../../constants/hardware-wallets';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 
@@ -94,6 +95,17 @@ export async function getNextAvailableSnapAccountName(
     }
     default:
       return defaultSnapAccountName;
+  }
+}
+
+export function isHardwareAccount(account: InternalAccount): boolean {
+  try {
+    const keyringType = account?.metadata?.keyring?.type;
+    return Object.values(HardwareDeviceNames).includes(
+      keyringType as HardwareDeviceNames,
+    );
+  } catch {
+    return false;
   }
 }
 

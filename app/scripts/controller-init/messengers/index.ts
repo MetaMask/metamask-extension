@@ -136,6 +136,10 @@ import {
   getRemoteFeatureFlagControllerMessenger,
 } from './remote-feature-flag-controller-messenger';
 import {
+  getRewardsControllerInitMessenger,
+  getRewardsControllerMessenger,
+} from './rewards-controller-messenger';
+import {
   getSwapsControllerInitMessenger,
   getSwapsControllerMessenger,
 } from './swaps-controller-messenger';
@@ -187,6 +191,7 @@ import {
   getSignatureControllerMessenger,
 } from './signature-controller-messenger';
 import { getUserOperationControllerMessenger } from './user-operation-controller-messenger';
+import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -333,6 +338,8 @@ export {
 } from './signature-controller-messenger';
 export type { SubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
+export type { RewardsControllerMessenger } from './rewards-controller-messenger';
+export { getRewardsControllerMessenger } from './rewards-controller-messenger';
 export type {
   SwapsControllerMessenger,
   SwapsControllerInitMessenger,
@@ -622,6 +629,14 @@ export const CONTROLLER_MESSENGERS = {
   SubscriptionService: {
     getMessenger: getSubscriptionServiceMessenger,
     getInitMessenger: noop,
+  },
+  RewardsDataService: {
+    getMessenger: getRewardsDataServiceMessenger,
+    getInitMessenger: noop,
+  },
+  RewardsController: {
+    getMessenger: getRewardsControllerMessenger,
+    getInitMessenger: getRewardsControllerInitMessenger,
   },
   SwapsController: {
     getMessenger: getSwapsControllerMessenger,
