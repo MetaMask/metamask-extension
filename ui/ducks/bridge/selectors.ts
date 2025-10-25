@@ -411,7 +411,7 @@ export const getAccountGroupNameByInternalAccount = createSelector(
     }
     return (
       accountGroups.find(({ accounts }) => accounts.includes(account.id))
-        ?.metadata.name ?? account?.metadata?.name
+        ?.metadata?.name ?? account?.metadata?.name
     );
   },
 );
@@ -457,7 +457,7 @@ export const getToAccounts = createSelector(
               ?.metadata.name,
       displayName:
         getAccountGroupNameByInternalAccount(state, account) ??
-        account.metadata.name ??
+        account.metadata?.name ??
         account.address,
     }));
   },

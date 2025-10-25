@@ -100,7 +100,7 @@ export const AddressQRCode = () => {
         <QrCodeView
           Qr={{ data: address as string }}
           location="Account Details Page"
-          accountName={account.metadata.name}
+          accountName={account?.metadata?.name ?? account.address}
         />
       </Content>
       <Footer>

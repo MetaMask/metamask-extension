@@ -284,7 +284,7 @@ export const MultichainAccountList = ({
 
     const walletSections = Object.entries(wallets).reduce(
       (walletsAccumulator, [walletId, walletData]) => {
-        const walletName = walletData.metadata?.name;
+        const walletName = (walletData as any)?.metadata?.name;
 
         const walletHeader = (
           <Box
@@ -307,7 +307,7 @@ export const MultichainAccountList = ({
           </Box>
         );
 
-        const groupsItems = Object.entries(walletData.groups || {}).flatMap(
+        const groupsItems = Object.entries((walletData as any)?.groups || {}).flatMap(
           ([groupId, groupData]) => {
             const shouldSkip =
               groupData.metadata?.pinned || groupData.metadata?.hidden;
@@ -318,7 +318,7 @@ export const MultichainAccountList = ({
           },
         );
 
-        if (!isInSearchMode && walletData.type === AccountWalletType.Entropy) {
+        if (!isInSearchMode && (walletData as any)?.type === AccountWalletType.Entropy) {
           groupsItems.push(
             <AddMultichainAccount
               walletId={walletId as AccountWalletId}
