@@ -1,18 +1,10 @@
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import { MultichainSrpBackup } from './multichain-srp-backup';
-
-const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
-  return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
-    useNavigate: () => mockUseNavigate,
-  };
-});
 
 const srpBackupRowTestId = 'multichain-srp-backup';
 const srpQuizHeaderTestId = 'srp-quiz-header';
@@ -58,20 +50,22 @@ describe('MultichainSrpBackup', () => {
   });
 
   it('navigates to SRP review route when shouldShowBackupReminder is true', () => {
-    renderComponent({ shouldShowBackupReminder: true });
+    const { history } = renderComponent({ shouldShowBackupReminder: true });
+    const mockHistoryPush = jest.spyOn(history, 'push');
 
     fireEvent.click(screen.getByTestId(srpBackupRowTestId));
 
-    expect(mockUseNavigate).toHaveBeenCalledWith(
+    expect(mockHistoryPush).toHaveBeenCalledWith(
       `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`,
     );
   });
 
   it('opens SRP quiz modal when shouldShowBackupReminder is false', async () => {
-    renderComponent({
+    const { history } = renderComponent({
       shouldShowBackupReminder: false,
       keyringId: 'test-keyring-id',
     });
+    const mockHistoryPush = jest.spyOn(history, 'push');
 
     fireEvent.click(screen.getByTestId(srpBackupRowTestId));
 
@@ -79,7 +73,7 @@ describe('MultichainSrpBackup', () => {
       expect(screen.getByText('Security quiz')).toBeInTheDocument();
     });
 
-    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(mockHistoryPush).not.toHaveBeenCalled();
   });
 
   it('closes SRP quiz modal when close button is clicked', async () => {
