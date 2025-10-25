@@ -83,7 +83,7 @@ export default function PasswordForm({
   }, [password.length]);
 
   return (
-    <Box>
+    <Box paddingInline={3}>
       <FormTextField
         label={t('newPasswordCreate')}
         id="create-password-new"
