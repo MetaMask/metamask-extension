@@ -57,7 +57,7 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
     if (templatedSnapApproval) {
       navigate(`${CONFIRMATION_V_NEXT_ROUTE}/${templatedSnapApproval.id}`);
     }
-  }, [unapprovedTemplatedConfirmations, history, account]);
+  }, [unapprovedTemplatedConfirmations, navigate, account]);
 
   return async () => {
     // Non-EVM (Snap) Send flow

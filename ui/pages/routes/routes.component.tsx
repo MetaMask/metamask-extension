@@ -947,7 +947,7 @@ export default function Routes() {
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
-      <ToastMaster />
+      <ToastMaster location={location} />
     </div>
   );
 }

@@ -79,7 +79,7 @@ export const MultichainAccountIntroModalContainer: React.FC<ContainerProps> = ({
 
     // Navigate to account list
     navigate(ACCOUNT_LIST_PAGE_ROUTE);
-  }, [alignmentPromise, dispatch, history, onClose]);
+  }, [alignmentPromise, dispatch, navigate, onClose]);
 
   const handleLearnMore = useCallback(() => {
     // Open multichain accounts support page

@@ -103,7 +103,7 @@ export default function TurnOnMetamaskNotifications() {
       hideModal();
       listNotifications();
     }
-  }, [isNotificationEnabled, error, history, hideModal, listNotifications]);
+  }, [isNotificationEnabled, error, navigate, hideModal, listNotifications]);
 
   const privacyLink = (
     <Text
