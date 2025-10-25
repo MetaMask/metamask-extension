@@ -1310,6 +1310,7 @@ export default class MetaMetricsController extends BaseController<
       page,
       referrer,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
+      timestamp,
     } = rawPayload;
 
     let chainId;
@@ -1353,6 +1354,7 @@ export default class MetaMetricsController extends BaseController<
         environment_type: environmentType,
       },
       context: this.#buildContext(referrer, page),
+      timestamp,
     };
   }
 
