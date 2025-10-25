@@ -108,7 +108,7 @@ export const SendPageAddressBook = () => {
       );
       trackEvent(
         {
-          event: MetaMetricsEventName.sendRecipientSelected,
+          event: MetaMetricsEventName.SendRecipientSelected,
           category: MetaMetricsEventCategory.Send,
           properties: {
             location: 'address book',

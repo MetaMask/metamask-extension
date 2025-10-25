@@ -71,7 +71,7 @@ export const SendPageRecipient = () => {
     );
     trackEvent(
       {
-        event: MetaMetricsEventName.sendRecipientSelected,
+        event: MetaMetricsEventName.SendRecipientSelected,
         category: MetaMetricsEventCategory.Send,
         properties: {
           location: 'send page recipient screen',
