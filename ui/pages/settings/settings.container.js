@@ -124,9 +124,6 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = SECURITY_ROUTE;
   }
 
-  let initialBreadCrumbRoute;
-  let initialBreadCrumbKey;
-
   const addressName = getAddressBookEntryOrAccountName(
     state,
     !isBurnAddress(pathNameTail) &&
@@ -152,8 +149,6 @@ const mapStateToProps = (state, ownProps) => {
     backRoute,
     conversionDate,
     currentPath: pathname,
-    initialBreadCrumbKey,
-    initialBreadCrumbRoute,
     isAddressEntryPage,
     isMetaMaskShieldFeatureEnabled: getIsMetaMaskShieldFeatureEnabled(),
     isPasswordChangePage,
