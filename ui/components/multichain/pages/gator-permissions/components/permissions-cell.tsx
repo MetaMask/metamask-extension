@@ -1,5 +1,9 @@
 import React from 'react';
+<<<<<<< HEAD
 import { useNavigate } from 'react-router-dom-v5-compat';
+=======
+import { useHistory } from 'react-router-dom';
+>>>>>>> origin/main
 import {
   Box,
   BoxBackgroundColor,
