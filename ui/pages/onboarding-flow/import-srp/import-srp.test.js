@@ -150,4 +150,32 @@ describe('Import SRP', () => {
       });
     });
   });
+
+  it('onContinueCallback is called when isExistingWallet is true while importing srp', async () => {
+    const mockStore = configureMockStore()(mockState);
+    const mockOnContinueCallback = jest.fn();
+
+    const { queryByTestId } = renderWithProvider(
+      <ImportSrp
+        onContinueCallback={mockOnContinueCallback}
+        isExistingWallet
+      />,
+      mockStore,
+    );
+
+    const srpNote = queryByTestId('srp-input-import__srp-note');
+    expect(srpNote).toBeInTheDocument();
+
+    srpNote.focus();
+
+    await userEvent.type(srpNote, TEST_SEED);
+
+    const confirmSrpButton = queryByTestId('import-srp-confirm');
+
+    expect(confirmSrpButton).not.toBeDisabled();
+
+    fireEvent.click(confirmSrpButton);
+
+    expect(mockOnContinueCallback).toHaveBeenCalledWith(TEST_SEED);
+  });
 });
