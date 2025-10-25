@@ -1,6 +1,5 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import reactRouterDom from 'react-router-dom';
 import { merge } from 'lodash';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { fireEvent, waitFor } from '../../../../test/jest';
@@ -42,10 +41,13 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => []),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('../../../hooks/accounts/useMultichainWalletSnapClient', () => ({
   ...jest.requireActual(
@@ -129,13 +131,8 @@ const render = (
 };
 
 describe('AccountMenu', () => {
-  const historyPushMock = jest.fn();
-
   beforeEach(() => {
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: historyPushMock });
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
@@ -217,7 +214,7 @@ describe('AccountMenu', () => {
     button.click();
 
     fireEvent.click(getByText('Hardware wallet'));
-    expect(historyPushMock).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
   });
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -390,7 +387,7 @@ describe('AccountMenu', () => {
       const addBtcAccountButton = getByTestId('submit-add-account-with-name');
       addBtcAccountButton.click();
 
-      expect(historyPushMock).toHaveBeenCalledWith(CONFIRMATION_V_NEXT_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(CONFIRMATION_V_NEXT_ROUTE);
       expect(mockBitcoinClientCreateAccount).toHaveBeenCalled();
     });
   });
@@ -409,7 +406,7 @@ describe('AccountMenu', () => {
       );
       addAccountButton.click();
 
-      expect(historyPushMock).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(IMPORT_SRP_ROUTE);
     });
 
     it('shows srp list if there are multiple srps when adding a new account', async () => {

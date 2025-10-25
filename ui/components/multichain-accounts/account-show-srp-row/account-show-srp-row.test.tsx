@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MOCK_ACCOUNT_EOA } from '../../../../test/data/mock-accounts';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import { AccountShowSrpRow } from './account-show-srp-row';
@@ -10,9 +10,21 @@ import { AccountShowSrpRow } from './account-show-srp-row';
 const middleware = [thunk];
 const mockStore = configureMockStore(middleware);
 
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
+
 jest.mock('../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
 }));
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 jest.mock('../../app/srp-quiz-modal', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -149,18 +161,14 @@ describe('AccountShowSrpRow', () => {
         },
       };
 
-      const { history } = renderWithProvider(
-        <AccountShowSrpRow account={account} />,
-        store,
-      );
-      const mockPush = jest.spyOn(history, 'push');
+      renderWithProvider(<AccountShowSrpRow account={account} />, store);
 
       const row = screen.getByText('secretRecoveryPhrase').closest('div');
       if (row) {
         fireEvent.click(row);
       }
 
-      expect(mockPush).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`,
       );
     });
@@ -169,11 +177,10 @@ describe('AccountShowSrpRow', () => {
       const state = createMockState(true);
       const store = mockStore(state);
 
-      const { history } = renderWithProvider(
+      renderWithProvider(
         <AccountShowSrpRow account={MOCK_ACCOUNT_EOA} />,
         store,
       );
-      const mockPush = jest.spyOn(history, 'push');
 
       const row = screen.getByText('secretRecoveryPhrase').closest('div');
       if (row) {
@@ -181,7 +188,7 @@ describe('AccountShowSrpRow', () => {
       }
 
       expect(screen.getByTestId('srp-quiz-modal')).toBeInTheDocument();
-      expect(mockPush).not.toHaveBeenCalled();
+      expect(mockUseNavigate).not.toHaveBeenCalled();
     });
   });
 

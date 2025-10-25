@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { setAccountDetailsAddress } from '../../../store/actions';
 
 import { MenuItem } from '../../ui/menu';
@@ -35,7 +35,7 @@ export const AccountDetailsMenuItem = ({
   const trackEvent = useContext(MetaMetricsContext);
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
-  const history = useHistory();
+  const navigate = useNavigate();
   const isMultichainAccountsState1Enabled = useSelector(
     getIsMultichainAccountsState1Enabled,
   );
@@ -55,11 +55,11 @@ export const AccountDetailsMenuItem = ({
       },
     });
     if (isMultichainAccountsState2Enabled) {
-      history.push(
+      navigate(
         `${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}`,
       );
     } else if (isMultichainAccountsState1Enabled) {
-      history.push(`${ACCOUNT_DETAILS_ROUTE}/${address}`);
+      navigate(`${ACCOUNT_DETAILS_ROUTE}/${address}`);
     }
     closeMenu?.();
   }, [
@@ -67,7 +67,7 @@ export const AccountDetailsMenuItem = ({
     closeMenu,
     dispatch,
     hdEntropyIndex,
-    history,
+    navigate,
     isMultichainAccountsState1Enabled,
     isMultichainAccountsState2Enabled,
     metricsLocation,

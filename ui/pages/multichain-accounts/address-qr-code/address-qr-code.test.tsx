@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom-v5-compat';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { ACCOUNT_DETAILS_QR_CODE_ROUTE } from '../../../helpers/constants/routes';
@@ -30,13 +30,23 @@ jest.mock('../../../hooks/useMultichainSelector', () => ({
 }));
 
 // Mock React Router
-const mockHistoryGoBack = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    goBack: mockHistoryGoBack,
-  }),
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+const mockUseLocation = jest.fn(() => ({
+  pathname: '',
+  search: '',
+  hash: '',
+  state: null,
+  key: 'default',
 }));
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useParams: () => mockUseParams(),
+    useLocation: () => mockUseLocation(),
+  };
+});
 
 // Mock i18n
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -122,9 +132,12 @@ const renderComponent = (state = mockState, address = mockAccount.address) => {
         initialEntries={[`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${address}`]}
       >
         <MetaMetricsContext.Provider value={mockTrackEvent}>
-          <Route path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}>
-            <AddressQRCode />
-          </Route>
+          <Routes>
+            <Route
+              path={`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/:address`}
+              element={<AddressQRCode />}
+            />
+          </Routes>
         </MetaMetricsContext.Provider>
       </MemoryRouter>
     </Provider>,
@@ -140,11 +153,15 @@ describe('AddressQRCode', () => {
 
     // Mock the block explorer URL helper
     mockGetMultichainAccountUrl.mockReturnValue(mockBlockExplorerUrl);
+
+    mockUseParams.mockReturnValue({
+      address: mockAccount.address,
+    });
   });
 
   describe('Component Rendering', () => {
-    it('should render the page with back button', () => {
-      renderComponent();
+      it('should render the page with back button', () => {
+        renderComponent();
 
       expect(screen.getByLabelText('Back')).toBeInTheDocument();
     });
@@ -165,8 +182,7 @@ describe('AddressQRCode', () => {
 
       const backButton = screen.getByLabelText('Back');
       fireEvent.click(backButton);
-
-      expect(mockHistoryGoBack).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
     });
   });
 

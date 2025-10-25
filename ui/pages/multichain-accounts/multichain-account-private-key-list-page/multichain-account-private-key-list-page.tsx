@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   BoxFlexDirection,
@@ -29,10 +29,13 @@ import {
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
-export const MultichainAccountPrivateKeyListPage = () => {
+export const MultichainAccountPrivateKeyListPage = ({
+  accountGroupId,
+}: {
+  accountGroupId: string;
+}) => {
   const t = useI18nContext();
-  const history = useHistory();
-  const { accountGroupId } = useParams<{ accountGroupId: string }>();
+  const navigate = useNavigate();
 
   const decodedAccountGroupId: AccountGroupId | null = accountGroupId
     ? (decodeURIComponent(accountGroupId) as AccountGroupId)
@@ -76,7 +79,7 @@ export const MultichainAccountPrivateKeyListPage = () => {
             size={ButtonIconSize.Md}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(-1)}
             data-testid="multichain-account-address-list-page-back-button"
           />
         }

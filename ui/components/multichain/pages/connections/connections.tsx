@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import { NonEmptyArray } from '@metamask/utils';
 import {
   AlignItems,
@@ -68,7 +68,7 @@ import { NoConnectionContent } from './components/no-connection';
 export const Connections = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [showConnectAccountsModal, setShowConnectAccountsModal] =
     useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
@@ -134,7 +134,7 @@ export const Connections = () => {
     );
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    history.push(`${CONNECT_ROUTE}/${requestId}`);
+    navigate(`${CONNECT_ROUTE}/${requestId}`);
   };
   const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
 
@@ -214,9 +214,7 @@ export const Connections = () => {
             iconName={IconName.ArrowLeft}
             className="connections-header__start-accessory"
             color={IconColor.iconDefault}
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onClick={() => (history as any).goBack()}
+            onClick={() => navigate(-1)}
             size={ButtonIconSize.Sm}
           />
         }

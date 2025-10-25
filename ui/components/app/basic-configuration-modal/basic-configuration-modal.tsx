@@ -1,5 +1,4 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Display,
@@ -50,7 +49,7 @@ import { ONBOARDING_PRIVACY_SETTINGS_ROUTE } from '../../../helpers/constants/ro
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export function BasicConfigurationModal() {
+export function BasicConfigurationModal({ location } = {} as any) {
   const t = useI18nContext();
   const [hasAgreed, setHasAgreed] = useState(false);
   const dispatch = useDispatch();
@@ -60,10 +59,9 @@ export function BasicConfigurationModal() {
   const isMetamaskNotificationsEnabled = useSelector(
     selectIsMetamaskNotificationsEnabled,
   );
-  const { pathname } = useLocation();
   const onboardingFlow = useMemo(() => {
-    return pathname === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
-  }, [pathname]);
+    return location?.pathname === ONBOARDING_PRIVACY_SETTINGS_ROUTE;
+  }, [location?.pathname]);
 
   function closeModal() {
     dispatch(hideBasicFunctionalityModal());

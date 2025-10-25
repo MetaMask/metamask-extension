@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { Hex } from '@metamask/utils';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
@@ -46,7 +46,7 @@ export const AccountOverviewTabs = ({
   showActivity,
   showDefi,
 }: AccountOverviewTabsProps) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
@@ -85,15 +85,13 @@ export const AccountOverviewTabs = ({
 
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
-      history.push(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
-    [history],
+      navigate(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+    [navigate],
   );
   const onClickDeFi = useCallback(
     (chainId: string, protocolId: string) =>
-      history.push(
-        `${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`,
-      ),
-    [history],
+      navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
+    [navigate],
   );
 
   const { safeChains } = useSafeChains();

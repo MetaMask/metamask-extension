@@ -1,15 +1,36 @@
 import React from 'react';
-import { MemoryRouter, Route } from 'react-router-dom';
 import mockState from '../../../../../test/data/mock-state.json';
-import {
-  fireEvent,
-  renderWithProvider,
-  waitFor,
-} from '../../../../../test/jest';
+import { fireEvent, waitFor } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import { Connections } from './connections';
 
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useParams: () => mockUseParams(),
+    useLocation: () => mockUseLocation(),
+  };
+});
+
 describe('Connections Content', () => {
+  beforeEach(() => {
+    mockUseParams.mockReturnValue({
+      origin: 'https%3A%2F%2Fmetamask.github.io',
+    });
+    mockUseLocation.mockReturnValue({
+      pathname: '/connect/https%3A%2F%2Fmetamask.github.io',
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   const connectedStore = configureStore({
     ...mockState,
     activeTab: {
@@ -110,14 +131,9 @@ describe('Connections Content', () => {
 
   it('should render correctly', () => {
     const { container, getByTestId } = renderWithProvider(
-      <MemoryRouter
-        initialEntries={['/connect/https%3A%2F%2Fmetamask.github.io']}
-      >
-        <Route path="/connect/:origin">
-          <Connections />
-        </Route>
-      </MemoryRouter>,
+      <Connections />,
       connectedStore,
+      '/connect/https%3A%2F%2Fmetamask.github.io',
     );
     expect(container).toMatchSnapshot();
     expect(getByTestId('connections-page')).toBeInTheDocument();
@@ -125,28 +141,18 @@ describe('Connections Content', () => {
 
   it('it should render Disconnect all Account button of the page', () => {
     const { getByText } = renderWithProvider(
-      <MemoryRouter
-        initialEntries={['/connect/https%3A%2F%2Fmetamask.github.io']}
-      >
-        <Route path="/connect/:origin">
-          <Connections />
-        </Route>
-      </MemoryRouter>,
+      <Connections />,
       connectedStore,
+      '/connect/https%3A%2F%2Fmetamask.github.io',
     );
     expect(getByText('Disconnect all accounts')).toBeInTheDocument();
   });
 
   it('it should trigger disconnect all accounts modal flow when disconnect all accounts button is clicked', async () => {
     const { getByText, getByTestId } = renderWithProvider(
-      <MemoryRouter
-        initialEntries={['/connect/https%3A%2F%2Fmetamask.github.io']}
-      >
-        <Route path="/connect/:origin">
-          <Connections />
-        </Route>
-      </MemoryRouter>,
+      <Connections />,
       connectedStore,
+      '/connect/https%3A%2F%2Fmetamask.github.io',
     );
 
     // Simulate click on disconnect-all-modal button
