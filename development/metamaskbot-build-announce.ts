@@ -157,7 +157,7 @@ async function start(): Promise<void> {
 
   const contentRows = [
     ...buildContentRows,
-    `build viz: ${depVizLink}`,
+    `build viz (only exists if policy files have changed): ${depVizLink}`,
     `bundle size: ${bundleSizeStatsLink}`,
     `user-actions-benchmark: ${userActionsStatsLink}`,
     `storybook: ${storybookLink}`,
