@@ -4669,18 +4669,15 @@ export function fetchHistoricalPricesForAsset(
 }
 
 // TokenDetectionController
-export function detectTokens(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function detectTokens(
+  chainIds?: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.detectTokens`);
-    await submitRequestToBackground('detectTokens');
+    await submitRequestToBackground('detectTokens', [{ chainIds }]);
     dispatch(hideLoadingIndication());
     await forceUpdateMetamaskState(dispatch);
   };
@@ -7529,6 +7526,7 @@ export async function getLayer1GasFeeValue({
  * Submits a shield claim.
  *
  * @param params - The parameters.
+ * @param params.chainId - The chain ID.
  * @param params.email - The email.
  * @param params.impactedWalletAddress - The impacted wallet address.
  * @param params.impactedTransactionHash - The impacted transaction hash.
@@ -7538,6 +7536,7 @@ export async function getLayer1GasFeeValue({
  * @returns The subscription response.
  */
 export async function submitShieldClaim(params: {
+  chainId: string;
   email: string;
   impactedWalletAddress: string;
   impactedTransactionHash: string;
@@ -7551,6 +7550,7 @@ export async function submitShieldClaim(params: {
 
   const claimsUrl = `${baseUrl}/claims`;
   const formData = new FormData();
+  formData.append('chainId', params.chainId);
   formData.append('email', params.email);
   formData.append('impactedWalletAddress', params.impactedWalletAddress);
   formData.append('impactedTxHash', params.impactedTransactionHash);
