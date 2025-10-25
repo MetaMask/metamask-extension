@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
 import * as fs from 'fs/promises';
-import { Mockttp, MockedEndpoint } from 'mockttp';
-import { regularDelayMs, withFixtures } from '../../helpers';
-import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
-import FixtureBuilder from '../../fixture-builder';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import { ACCOUNT_TYPE } from '../../constants';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import FixtureBuilder from '../../fixture-builder';
+import { regularDelayMs, withFixtures } from '../../helpers';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
+import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
+import { Driver } from '../../webdriver/driver';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -1247,8 +1247,8 @@ export async function mockGetTokenAccountsByOwnerDevnet(mockServer: Mockttp) {
     });
 }
 
-export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
-  console.log('mockGetTokenAccountInfo');
+// Mocks calls to 'getAccountInfo' for the wallet account 4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer
+export async function mockGetAccountInfoWallet(mockServer: Mockttp) {
   const response = {
     statusCode: 200,
     json: {
@@ -1274,11 +1274,6 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
     .forPost(SOLANA_URL_REGEX_MAINNET)
     .withJsonBodyIncluding({
       method: 'getAccountInfo',
-    })
-    // FIXME: This mock is too generic and will conflict with `mockGetAccountInfoDevnet` sometimes.
-    // It should probably be reworked so it add some filtering constraints to not conflict with the
-    // other mock.
-    /* .withJsonBodyIncluding({
       params: [
         '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
         {
@@ -1286,7 +1281,7 @@ export async function mockGetTokenAccountInfo(mockServer: Mockttp) {
           commitment: 'confirmed',
         },
       ],
-    })*/
+    })
     .thenCallback(() => {
       return response;
     });
@@ -1552,7 +1547,6 @@ export async function withSolanaAccountSnap(
     showSnapConfirmation = false,
     mockGetTransactionSuccess,
     mockGetTransactionFailed,
-    mockTokenAccountAccountInfo = true,
     mockZeroBalance,
     numberOfAccounts = 1,
     state = 0,
@@ -1572,7 +1566,6 @@ export async function withSolanaAccountSnap(
     numberOfAccounts?: number;
     mockGetTransactionSuccess?: boolean;
     mockGetTransactionFailed?: boolean;
-    mockTokenAccountAccountInfo?: boolean;
     mockZeroBalance?: boolean;
     sendFailedTransaction?: boolean;
     mockSwapUSDtoSOL?: boolean;
@@ -1676,9 +1669,7 @@ export async function withSolanaAccountSnap(
           await mockPhishingDetectionApi(mockServer),
         );
 
-        if (mockTokenAccountAccountInfo) {
-          await mockGetTokenAccountInfo(mockServer);
-        }
+        mockList.push(await mockGetAccountInfoWallet(mockServer));
 
         mockList.push(
           await mockTokenApiMainnetTest(mockServer),
