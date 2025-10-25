@@ -289,6 +289,9 @@
     "message": "Add $1",
     "description": "$1 represents network name"
   },
+  "addNetworkDescription": {
+    "message": "A site is suggesting additional network details."
+  },
   "addNewAccount": {
     "message": "Add a new Ethereum account"
   },
@@ -582,6 +585,13 @@
   },
   "allTimeLow": {
     "message": "All time low"
+  },
+  "allowAddRpc": {
+    "message": "Add RPC"
+  },
+  "allowAddRpcDescription": {
+    "message": "Allow the site to add a RPC URL for $1.\n\nSet your preferred RPC anytime by going to Networks in Settings",
+    "description": "$1 is the chain name"
   },
   "allowNotifications": {
     "message": "Allow notifications"
@@ -5712,8 +5722,14 @@
   "shieldClaim": {
     "message": "Submit a claim"
   },
+  "shieldClaimChainId": {
+    "message": "Chain ID"
+  },
   "shieldClaimDescription": {
     "message": "Description of case"
+  },
+  "shieldClaimDescriptionPlaceholder": {
+    "message": "Provide a brief summary of the incident"
   },
   "shieldClaimDetails": {
     "message": "You may file a single claim per incident within 21 days of the incident. View the full coverage policy $1.",
@@ -5743,8 +5759,14 @@
   "shieldClaimImpactedTxHashHelpTextLink": {
     "message": "Need help finding it?"
   },
+  "shieldClaimImpactedTxHashNotEligible": {
+    "message": "This transaction was not made within MetaMask and is not eligible for claims."
+  },
   "shieldClaimImpactedWalletAddress": {
     "message": "Impacted wallet address"
+  },
+  "shieldClaimInvalidChainId": {
+    "message": "Please enter a valid chain ID"
   },
   "shieldClaimInvalidEmail": {
     "message": "Please enter a valid email address"
