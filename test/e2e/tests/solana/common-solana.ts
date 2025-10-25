@@ -1607,7 +1607,7 @@ export async function withSolanaAccountSnap(
         '0x539': true,
       },
       solana: {
-        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': false,
       },
     });
   }
