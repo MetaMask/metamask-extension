@@ -297,16 +297,23 @@ class AccountListPage {
     options?: { isMultichainAccountsState2Enabled?: boolean },
   ): Promise<void> {
     console.log(`Adding new imported account`);
-
     if (options?.isMultichainAccountsState2Enabled) {
       await this.driver.clickElement(this.addMultichainWalletButton);
       await this.driver.clickElement(
         this.importAccountFromMultichainWalletModalButton,
       );
       await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
-      await this.driver.clickElementAndWaitToDisappear(
-        this.importAccountConfirmButton,
-      );
+      if (expectedErrorMessage) {
+        await this.driver.clickElement(this.importAccountConfirmButton);
+        await this.driver.waitForSelector({
+          css: '.mm-help-text',
+          text: expectedErrorMessage,
+        });
+      } else {
+        await this.driver.clickElementAndWaitToDisappear(
+          this.importAccountConfirmButton,
+        );
+      }
       return;
     }
 
@@ -484,8 +491,10 @@ class AccountListPage {
     password: string,
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    await this.driver.clickElement(this.createAccountButton);
-    await this.driver.clickElement(this.addImportedAccountButton);
+    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.driver.clickElement(
+      this.importAccountFromMultichainWalletModalButton,
+    );
     await this.driver.clickElement(this.importAccountDropdownOption);
     await this.driver.clickElement(this.importAccountJsonFileOption);
 
