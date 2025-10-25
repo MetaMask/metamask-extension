@@ -22,7 +22,7 @@ exports[`Json should match snapshot 1`] = `
     type="file"
   />
   <div
-    class="box mm-form-text-field box--margin-bottom-4 box--display-flex box--flex-direction-column"
+    class="mb-4 mm-form-text-field"
   >
     <div
       class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--error mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"

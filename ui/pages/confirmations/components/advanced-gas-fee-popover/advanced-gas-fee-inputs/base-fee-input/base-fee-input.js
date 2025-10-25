@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { Box } from '@metamask/design-system-react';
 import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../send-legacy/send.constants';
 import {
   EditGasModes,
@@ -12,7 +13,6 @@ import { useGasFeeContext } from '../../../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../../../hooks/useCurrencyDisplay';
-import Box from '../../../../../../components/ui/box';
 import FormField from '../../../../../../components/ui/form-field';
 
 import { useAdvancedGasFeePopoverContext } from '../../context';

@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import Box from '../../../../components/ui/box';
 
 import EditGasFeeButton from '../edit-gas-fee-button';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
@@ -20,7 +20,7 @@ export default function TransactionDetail({
   return (
     <div className="transaction-detail">
       {supportsEIP1559 && !disableEditGasFeeButton && (
-        <Box display="flex" justifyContent="flex-end" paddingTop={5}>
+        <Box justifyContent={BoxJustifyContent.flexEnd} paddingTop={5}>
           <EditGasFeeButton
             userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           />

@@ -8,6 +8,7 @@ import {
   IconName,
   IconSize,
   Text,
+  SizeNumber,
 } from '../../../../component-library';
 import {
   AlignItems,
@@ -23,7 +24,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { SizeNumber } from '../../../../ui/box/box';
+
 import { CopyIcon } from './copy-icon';
 
 export enum ConfirmInfoRowVariant {

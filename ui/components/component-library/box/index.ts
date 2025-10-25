@@ -5,4 +5,5 @@ export type {
   StyleUtilityProps,
   BoxProps,
   BoxComponent,
+  SizeNumber,
 } from './box.types';

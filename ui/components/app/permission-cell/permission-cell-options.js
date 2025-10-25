@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import Box from '../../ui/box';
+import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { IconName, ButtonIcon, Text } from '../../component-library';
 import { Menu, MenuItem } from '../../ui/menu';

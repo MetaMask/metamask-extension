@@ -3,7 +3,7 @@
 exports[`Reveal Seed Page should match snapshot 1`] = `
 <div>
   <div
-    class="box page-container box--padding-top-8 box--padding-right-4 box--padding-bottom-8 box--padding-left-4 box--gap-4 box--flex-direction-row"
+    class="gap-4 pt-8 pr-4 pb-8 pl-4 page-container"
   >
     <h2
       class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
@@ -103,7 +103,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       </div>
     </form>
     <div
-      class="box box--margin-top-auto box--display-flex box--gap-4 box--flex-direction-row"
+      class="flex flex-col gap-4 mt-auto"
     >
       <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
