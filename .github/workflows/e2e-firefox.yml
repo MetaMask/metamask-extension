@@ -59,11 +59,19 @@ jobs:
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
 
+  test-e2e-firefox-dist:
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-firefox-dist
+      build-artifact: build-dist-mv2-browserify
+      test-command: yarn test:e2e:firefox:dist
+
   test-e2e-firefox-report:
     needs:
       - test-e2e-firefox-browserify
       - test-e2e-firefox-webpack
       - test-e2e-firefox-flask
+      - test-e2e-firefox-dist
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: ${{ !cancelled() }}
