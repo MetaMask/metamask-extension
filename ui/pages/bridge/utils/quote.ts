@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js';
 import {
   type QuoteResponse,
-  isSolanaChainId,
   formatChainIdToCaip,
   isNativeAddress,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type {
   NetworkConfiguration,
@@ -65,12 +65,12 @@ export const isQuoteExpiredOrInvalid = ({
   isQuoteExpired: boolean;
   insufficientBal?: boolean;
 }): boolean => {
-  // 1. Ignore quotes that are expired (unless the only reason is an `insufficientBal` override for non-Solana chains)
+  // 1. Ignore quotes that are expired (unless the only reason is an `insufficientBal` override for non-EVM chains)
   if (
     isQuoteExpired &&
     (!insufficientBal ||
-      // `insufficientBal` is always true for Solana
-      (fromChain && isSolanaChainId(fromChain.chainId)))
+      // `insufficientBal` is always true for non-EVM chains (Solana, Bitcoin)
+      (fromChain && isNonEvmChainId(fromChain.chainId)))
   ) {
     return true;
   }

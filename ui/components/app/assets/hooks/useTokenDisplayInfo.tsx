@@ -3,8 +3,8 @@ import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { isCaipChainId } from '@metamask/utils';
 import {
+  getEnabledNetworksByNamespace,
   getIsMultichainAccountsState2Enabled,
-  getIsTestnet,
   getShowFiatInTestnets,
   getTokenList,
   selectERC20TokensByChain,
@@ -15,13 +15,12 @@ import {
   isChainIdMainnet,
   makeGetMultichainShouldShowFiatByChainId,
 } from '../../../../selectors/multichain';
-import { formatWithThreshold } from '../util/formatWithThreshold';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
+import { TEST_CHAINS } from '../../../../../shared/constants/network';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -37,7 +36,6 @@ export const useTokenDisplayInfo = ({
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
   const { formatCurrencyWithMinThreshold } = useFormatters();
-  const locale = useSelector(getIntlLocale);
   const tokenChainImage = getImageForChainId(token.chainId);
   const caipChainId = isCaipChainId(token.chainId)
     ? token.chainId
@@ -54,14 +52,26 @@ export const useTokenDisplayInfo = ({
     selectedAccount,
   );
 
-  const isTestnet = useSelector(getIsTestnet);
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
+  const isTestnetSelected = Boolean(
+    Object.keys(enabledNetworksByNamespace).length === 1 &&
+      TEST_CHAINS.includes(
+        Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
+      ),
+  );
 
-  const isMainnet = !isTestnet;
+  const isMainnet = !isTestnetSelected;
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
 
-  const shouldShowFiat =
-    showFiat && (isMainnet || (isTestnet && showFiatInTestnets));
+  // isTestnet value is tied to the value of state.metamask.selectedNetworkClientId;
+  // In some cases; the user has "all popular networks" selected or a specific popular network selected, while being on a dapp that is connected to a testnet,
+  // In this case, isTestnet will be true and the secondary value displayed will be undefined.
+  // I think this used to work before multichain was enabled when the tokens list depended only on a single selected network at a time
+  // which used to match the value of state.metamask.selectedNetworkClientId
+  // I think the tokenList page secondary values should only depend on whether the user has a popular network selected or a custom network or testnet
 
+  const shouldShowFiat =
+    showFiat && (isMainnet || (isTestnetSelected && showFiatInTestnets));
   // Format for fiat balance with currency style
   const secondary =
     shouldShowFiat &&
@@ -72,16 +82,6 @@ export const useTokenDisplayInfo = ({
           fixCurrencyToUSD ? 'USD' : currentCurrency,
         )
       : undefined;
-
-  const formattedPrimary = formatWithThreshold(
-    Number((isEvm ? token.string : token.primary) || token.balance),
-    0.00001,
-    locale,
-    {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 5,
-    },
-  );
 
   const isEvmMainnet =
     token.chainId && isEvm ? isChainIdMainnet(token.chainId) : false;
@@ -116,7 +116,6 @@ export const useTokenDisplayInfo = ({
     return {
       title,
       tokenImage,
-      primary: formattedPrimary,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       secondary,
@@ -136,7 +135,6 @@ export const useTokenDisplayInfo = ({
   return {
     title: token.title,
     tokenImage: token.image,
-    primary: formattedPrimary,
     secondary: showFiat ? nonEvmSecondary : null,
     isStakeable: false,
     tokenChainImage: token.image as string,

@@ -7,7 +7,7 @@ import {
 } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { importMnemonicToVault } from '../../../store/actions';
 import { ImportSrp } from './import-srp';
@@ -22,12 +22,28 @@ const VALID_SECRET_RECOVERY_PHRASE =
   'input turtle oil scorpion exile useless dry foster vessel knee area label';
 
 jest.mock('../../../store/actions', () => ({
-  importMnemonicToVault: jest
-    .fn()
-    .mockReturnValue(jest.fn().mockResolvedValue(null)),
+  importMnemonicToVault: jest.fn().mockReturnValue(
+    jest.fn().mockResolvedValue({
+      newAccountAddress: '0x123',
+      discoveredAccounts: { Bitcoin: 0, Solana: 0 },
+    }),
+  ),
   showAlert: jest.fn().mockReturnValue({ type: 'ALERT_OPEN' }),
   hideAlert: jest.fn().mockReturnValue({ type: 'ALERT_CLOSE' }),
   hideWarning: jest.fn().mockReturnValue({ type: 'HIDE_WARNING' }),
+}));
+
+jest.mock('../../../components/app/toast-master/utils', () => ({
+  setShowNewSrpAddedToast: jest.fn().mockImplementation((value: boolean) => ({
+    type: 'SET_SHOW_NEW_SRP_ADDED_TOAST',
+    payload: value,
+  })),
+}));
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: () => mockNavigate,
 }));
 
 const pasteSrpIntoFirstInput = (render: RenderResult, srp: string) => {
@@ -314,5 +330,29 @@ describe('ImportSrp', () => {
     }
 
     expect(getByText('Import wallet')).not.toBeEnabled();
+  });
+
+  it('shows successful toast message after successful import', async () => {
+    const render = renderWithProvider(<ImportSrp />, store);
+    const { getByText } = render;
+    const importButton = getByText('Import wallet');
+
+    expect(importButton).not.toBeEnabled();
+    pasteSrpIntoFirstInput(render, VALID_SECRET_RECOVERY_PHRASE);
+
+    fireEvent.click(importButton);
+
+    await waitFor(() => {
+      expect(importMnemonicToVault).toHaveBeenCalledWith(
+        VALID_SECRET_RECOVERY_PHRASE,
+      );
+    });
+
+    // Verify that the toast action was dispatched
+    const dispatchedActions = store.getActions();
+    expect(dispatchedActions).toContainEqual({
+      type: 'SET_SHOW_NEW_SRP_ADDED_TOAST',
+      payload: true,
+    });
   });
 });

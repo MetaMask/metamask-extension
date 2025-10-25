@@ -263,11 +263,18 @@ export async function onboardingMetricsFlow(
     await onboardingMetricsPage.clickDataCollectionForMarketingCheckbox();
     await onboardingMetricsPage.validateDataCollectionForMarketingIsChecked();
   }
+
+  // The participate in MetaMetrics checkbox defaults to checked.
+  // - If opting in (true): do not click; just validate it's checked.
+  // - If opting out (false): click once to uncheck and validate it's unchecked.
   if (participateInMetaMetrics) {
-    await onboardingMetricsPage.clickIAgreeButton();
+    await onboardingMetricsPage.validateParticipateInMetaMetricsIsChecked();
   } else {
-    await onboardingMetricsPage.clickNoThanksButton();
+    await onboardingMetricsPage.clickParticipateInMetaMetricsCheckbox();
+    await onboardingMetricsPage.validateParticipateInMetaMetricsIsUnchecked();
   }
+
+  await onboardingMetricsPage.clickOnContinueButton();
 }
 
 /**
@@ -499,7 +506,7 @@ export const completeVaultRecoveryOnboardingFlow = async ({
   await onboardingCompletePage.completeOnboarding();
 
   const homePage = new HomePage(driver);
-  homePage.checkPageIsLoaded();
+  await homePage.checkPageIsLoaded();
 
   // Because our state was reset, and the flow skips the welcome screen, we now
   // need to accept the terms of use again

@@ -136,6 +136,7 @@ class SecurityTab extends PureComponent {
     socialLoginType: PropTypes.string,
     setMarketingConsent: PropTypes.func,
     getMarketingConsent: PropTypes.func,
+    hasActiveShieldSubscription: PropTypes.bool,
   };
 
   state = {
@@ -374,7 +375,7 @@ class SecurityTab extends PureComponent {
 
   renderSecurityAlertsToggle() {
     const { t } = this.context;
-    const { securityAlertsEnabled } = this.props;
+    const { securityAlertsEnabled, hasActiveShieldSubscription } = this.props;
 
     return (
       <>
@@ -415,6 +416,7 @@ class SecurityTab extends PureComponent {
                 onToggle={this.toggleSecurityAlert.bind(this)}
                 offLabel={t('off')}
                 onLabel={t('on')}
+                disabled={hasActiveShieldSubscription}
               />
             </div>
           </Box>
@@ -425,7 +427,8 @@ class SecurityTab extends PureComponent {
 
   renderPhishingDetectionToggle() {
     const { t } = this.context;
-    const { usePhishDetect, setUsePhishDetect } = this.props;
+    const { usePhishDetect, setUsePhishDetect, hasActiveShieldSubscription } =
+      this.props;
 
     return (
       <Box
@@ -449,9 +452,12 @@ class SecurityTab extends PureComponent {
         >
           <ToggleButton
             value={usePhishDetect}
-            onToggle={(value) => setUsePhishDetect(!value)}
+            onToggle={(value) => {
+              setUsePhishDetect(!value);
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
+            disabled={hasActiveShieldSubscription}
           />
         </div>
       </Box>
@@ -1256,8 +1262,11 @@ class SecurityTab extends PureComponent {
 
   renderSimulationsToggle() {
     const { t } = this.context;
-    const { useTransactionSimulations, setUseTransactionSimulations } =
-      this.props;
+    const {
+      useTransactionSimulations,
+      setUseTransactionSimulations,
+      hasActiveShieldSubscription,
+    } = this.props;
 
     return (
       <Box
@@ -1290,9 +1299,12 @@ class SecurityTab extends PureComponent {
         >
           <ToggleButton
             value={useTransactionSimulations}
-            onToggle={(value) => setUseTransactionSimulations(!value)}
+            onToggle={(value) => {
+              setUseTransactionSimulations(!value);
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
+            disabled={hasActiveShieldSubscription}
           />
         </div>
       </Box>

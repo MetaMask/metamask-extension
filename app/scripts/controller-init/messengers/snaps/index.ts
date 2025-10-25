@@ -2,6 +2,8 @@ export { getCronjobControllerMessenger } from './cronjob-controller-messenger';
 export type { CronjobControllerMessenger } from './cronjob-controller-messenger';
 export { getExecutionServiceMessenger } from './execution-service-messenger';
 export type { ExecutionServiceMessenger } from './execution-service-messenger';
+export { getMultichainRouterMessenger } from './multichain-router-messenger';
+export type { MultichainRouterMessenger } from './multichain-router-messenger';
 export {
   getRateLimitControllerMessenger,
   getRateLimitControllerInitMessenger,

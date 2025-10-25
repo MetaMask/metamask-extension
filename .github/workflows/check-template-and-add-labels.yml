@@ -4,12 +4,13 @@ on:
   issues:
     types: [opened, edited, labeled, unlabeled, reopened]
   pull_request_target:
-    types: [opened, edited, labeled, unlabeled, reopened]
+    types: [opened, edited, labeled, unlabeled, reopened, synchronize]
   merge_group:
 
 jobs:
   check-template-and-add-labels:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: ${{ github.event_name != 'merge_group' }} # Skip this step for merge_group events
     steps:
       - name: Checkout and setup environment

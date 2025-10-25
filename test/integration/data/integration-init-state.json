@@ -315,6 +315,7 @@
     "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": 0.0017123,
     "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": 1.8e-9
   },
+  "coverageResults": {},
   "currencyRates": {
     "ETH": {
       "conversionRate": 556.12
@@ -739,6 +740,9 @@
       "nativeCurrency": "SepoliaETH"
     }
   },
+  "networkConnectionBanner": {
+    "status": "unknown"
+  },
   "networksMetadata": {
     "goerli-network-id": {
       "EIPS": {
@@ -1128,6 +1132,7 @@
       "subjectType": "snap"
     }
   },
+  "subscriptions": [],
   "swapsState": {
     "quotes": {},
     "quotesPollingLimitEnabled": false,

@@ -23,7 +23,7 @@ import {
   getIsSolanaSwap,
   getPriceImpactThresholds,
   getQuoteRequest,
-  getIsToOrFromSolana,
+  getIsToOrFromNonEvm,
   getIsStxEnabled,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -78,7 +78,7 @@ export const MultichainBridgeQuoteCard = ({
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
 
-  const isToOrFromSolana = useSelector(getIsToOrFromSolana);
+  const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -319,7 +319,7 @@ export const MultichainBridgeQuoteCard = ({
         </Row>
 
         {/* Minimum Received */}
-        {
+        {activeQuote.minToTokenAmount.valueInCurrency && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
               <Text
@@ -349,7 +349,7 @@ export const MultichainBridgeQuoteCard = ({
               )}
             </Text>
           </Row>
-        }
+        )}
 
         {/* Price Impact */}
         {shouldRenderPriceImpactRow && shouldShowPriceImpactWarning && (
@@ -387,7 +387,7 @@ export const MultichainBridgeQuoteCard = ({
         )}
 
         {/* Recipient */}
-        {isToOrFromSolana && selectedDestinationAccount && (
+        {isToOrFromNonEvm && selectedDestinationAccount && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Text
               variant={TextVariant.bodySm}
@@ -400,7 +400,7 @@ export const MultichainBridgeQuoteCard = ({
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
-                {selectedDestinationAccount.displayName}
+                {`${selectedDestinationAccount.walletName ? `${selectedDestinationAccount.walletName} / ` : ''}${selectedDestinationAccount.displayName}`}
               </Text>
               <ButtonIcon
                 iconName={IconName.Edit}

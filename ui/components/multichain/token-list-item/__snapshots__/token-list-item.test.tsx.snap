@@ -84,9 +84,7 @@ exports[`TokenListItem handles clicking staking opens tab 1`] = `
           <p
             class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
             data-testid="multichain-token-list-item-value"
-          >
-             
-          </p>
+          />
         </div>
       </div>
     </a>
@@ -166,8 +164,6 @@ exports[`TokenListItem should display warning scam modal 1`] = `
             data-testid="multichain-token-list-item-value"
           >
             11.9751 ETH
-             
-            SCAM_TOKEN
           </p>
         </div>
       </div>
@@ -248,8 +244,6 @@ exports[`TokenListItem should display warning scam modal fallback when safechain
             data-testid="multichain-token-list-item-value"
           >
             11.9751 ETH
-             
-            SCAM_TOKEN
           </p>
         </div>
       </div>
@@ -321,9 +315,7 @@ exports[`TokenListItem should render correctly 1`] = `
           <p
             class="mm-box mm-text mm-text--body-sm-medium mm-text--text-align-end mm-box--color-text-alternative"
             data-testid="multichain-token-list-item-value"
-          >
-             
-          </p>
+          />
         </div>
       </div>
     </a>
@@ -391,7 +383,6 @@ exports[`TokenListItem should render crypto balance 1`] = `
             data-testid="multichain-token-list-item-value"
           >
             11.9751 ETH
-             
           </p>
         </div>
       </div>
@@ -460,7 +451,6 @@ exports[`TokenListItem should render crypto balance with warning scam 1`] = `
             data-testid="multichain-token-list-item-value"
           >
             11.9751 ETH
-             
           </p>
         </div>
       </div>

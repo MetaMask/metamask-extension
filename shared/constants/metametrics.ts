@@ -739,6 +739,8 @@ export enum MetaMetricsEventName {
   NavConnectedSitesOpened = 'Connected Sites Opened',
   NavMainMenuOpened = 'Main Menu Opened',
   NavPermissionsOpened = 'Permissions Opened',
+  NetworkConnectionBannerShown = 'Network Connection Banner Shown',
+  NetworkConnectionBannerUpdateRpcClicked = 'Network Connection Banner Update RPC Clicked',
   UpdatePermissionedNetworks = 'Update Permissioned Networks',
   UpdatePermissionedAccounts = 'Update Permissioned Accounts',
   ViewPermissionedNetworks = 'View Permissioned Networks',
@@ -787,6 +789,7 @@ export enum MetaMetricsEventName {
   RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
   SettingsUpdated = 'Settings Updated',
+  SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',
@@ -844,7 +847,7 @@ export enum MetaMetricsEventName {
   RehydrationPasswordAttempted = 'Rehydration Password Attempted',
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
-  // BEGIN:ONLY_INCLUDE_IF(build-flask)
+  // BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
@@ -947,6 +950,8 @@ export enum MetaMetricsEventName {
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
   ExtensionPinned = 'Extension Pinned',
+  // Extension Port Stream
+  PortStreamChunked = 'Port Stream Chunked',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1010,6 +1015,7 @@ export enum MetaMetricsEventCategory {
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
   CrossChainSwaps = 'Cross Chain Swaps',
+  PortStream = 'Port Stream',
 }
 
 export enum MetaMetricsEventLinkType {
@@ -1042,6 +1048,7 @@ export enum MetaMetricsSwapsEventSource {
   MainView = 'Main View',
   TokenView = 'Token View',
   ActivityTabEmptyState = 'Activity Tab Empty State',
+  TransactionShield = 'Transaction Shield',
 }
 
 export enum MetaMetricsTokenEventSource {

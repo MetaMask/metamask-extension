@@ -13,6 +13,7 @@ import * as AmountValidation from '../../../hooks/send/useAmountValidation';
 import * as SendActions from '../../../hooks/send/useSendActions';
 import * as SendContext from '../../../context/send';
 import * as RecipientValidation from '../../../hooks/send/useRecipientValidation';
+import * as RecipientSelectionMetrics from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { AmountRecipient } from './amount-recipient';
 
 const MOCK_ADDRESS = '0xdB055877e6c13b6A6B25aBcAA29B393777dD0a73';
@@ -64,6 +65,7 @@ describe('AmountRecipient', () => {
       handleSubmit: mockHandleSubmit,
     } as unknown as ReturnType<typeof SendActions.useSendActions>);
     const mockCaptureAmountSelected = jest.fn();
+    const mockCaptureRecipientSelected = jest.fn();
     jest
       .spyOn(AmountSelectionMetrics, 'useAmountSelectionMetrics')
       .mockReturnValue({
@@ -71,7 +73,14 @@ describe('AmountRecipient', () => {
       } as unknown as ReturnType<
         typeof AmountSelectionMetrics.useAmountSelectionMetrics
       >);
-
+    jest
+      .spyOn(RecipientSelectionMetrics, 'useRecipientSelectionMetrics')
+      .mockReturnValue({
+        captureRecipientSelected: mockCaptureRecipientSelected,
+        setRecipientInputMethodManual: jest.fn(),
+      } as unknown as ReturnType<
+        typeof RecipientSelectionMetrics.useRecipientSelectionMetrics
+      >);
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       toResolved: MOCK_ADDRESS,
       asset: EVM_ASSET,
@@ -108,6 +117,7 @@ describe('AmountRecipient', () => {
     fireEvent.click(getByText('Continue'));
     expect(mockHandleSubmit).toHaveBeenCalled();
     expect(mockCaptureAmountSelected).toHaveBeenCalled();
+    expect(mockCaptureRecipientSelected).toHaveBeenCalled();
   });
 
   it('in case of error in amount submit button displays error and is disabled', async () => {

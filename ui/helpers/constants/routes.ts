@@ -16,6 +16,8 @@ export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
+export const TRANSACTION_SHIELD_CLAIM_ROUTE =
+  '/settings/transaction-shield/submit-claim';
 export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
 export const NETWORKS_ROUTE = '/settings/networks';
@@ -67,6 +69,7 @@ export const CONNECTIONS = '/connections';
 export const PERMISSIONS = '/permissions';
 export const GATOR_PERMISSIONS = '/gator-permissions';
 export const TOKEN_TRANSFER_ROUTE = '/gator-permissions/token-transfer';
+export const REVIEW_GATOR_PERMISSIONS_ROUTE = '/review-gator-permissions';
 export const REVIEW_PERMISSIONS = '/review-permissions';
 export const CONNECT_ROUTE = '/connect';
 export const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
@@ -117,8 +120,6 @@ export const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
 export const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 export const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
   '/onboarding/import-with-recovery-phrase';
-export const ONBOARDING_SECURE_YOUR_WALLET_ROUTE =
-  '/onboarding/secure-your-wallet';
 export const ONBOARDING_PRIVACY_SETTINGS_ROUTE = '/onboarding/privacy-settings';
 export const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 export const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
@@ -545,11 +546,6 @@ export const ROUTES = [
     trackInAnalytics: false,
   },
   {
-    path: ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-    label: 'Onboarding Secure Your Wallet',
-    trackInAnalytics: false,
-  },
-  {
     path: ONBOARDING_REVIEW_SRP_ROUTE,
     label: 'Onboarding Review Recovery Phrase',
     trackInAnalytics: false,
@@ -661,6 +657,11 @@ export const ROUTES = [
   {
     path: TOKEN_TRANSFER_ROUTE,
     label: 'Gator Permissions Token Transfer',
+    trackInAnalytics: false,
+  },
+  {
+    path: `${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`,
+    label: 'Review Gator Permissions',
     trackInAnalytics: false,
   },
 ] as const satisfies AppRoute[];

@@ -1,7 +1,11 @@
 import { waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
-import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
+import {
+  BITCOIN_ASSET,
+  EVM_ASSET,
+  SOLANA_ASSET,
+} from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSendContext } from '../../context/send';
@@ -52,7 +56,6 @@ describe('useRecipientValidation', () => {
       recipientError: undefined,
       recipientWarning: undefined,
       recipientResolvedLookup: undefined,
-      recipientValidationLoading: true,
       toAddressValidated: undefined,
     });
   });
@@ -77,38 +80,10 @@ describe('useRecipientValidation', () => {
         recipientConfusableCharacters: undefined,
         recipientError: 'invalidAddress',
         recipientResolvedLookup: undefined,
-        recipientValidationLoading: false,
         recipientWarning: undefined,
         toAddressValidated: '0x123',
       });
       expect(mockT).toHaveBeenCalledWith('invalidAddress');
-    });
-  });
-
-  it('translates warning messages', async () => {
-    mockUseSendContext.mockReturnValue({
-      asset: EVM_ASSET,
-      to: 'exаmple.eth',
-      chainId: '0x1',
-    } as unknown as ReturnType<typeof useSendContext>);
-
-    jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
-      validateName: () =>
-        Promise.resolve({
-          resolvedLookup: '0x123',
-          confusableCharacters: [
-            { point: 'а', similarTo: 'a' },
-            { point: 'е', similarTo: 'e' },
-          ],
-          warning: 'confusingDomain',
-        }),
-    });
-
-    const { result } = renderHook();
-
-    await waitFor(() => {
-      expect(result.current.recipientWarning).toEqual('confusingDomain');
-      expect(mockT).toHaveBeenLastCalledWith('confusingDomain');
     });
   });
 
@@ -120,7 +95,8 @@ describe('useRecipientValidation', () => {
     } as unknown as ReturnType<typeof useSendContext>);
 
     jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
-      validateName: () => Promise.resolve({ resolvedLookup: '0x123' }),
+      validateName: () =>
+        Promise.resolve({ resolvedLookup: '0x123', protocol: 'ens' }),
     });
 
     const { result } = renderHook();
@@ -145,7 +121,7 @@ describe('useRecipientValidation', () => {
             { point: 'а', similarTo: 'a' },
             { point: 'е', similarTo: 'e' },
           ],
-          warning: 'confusingDomain',
+          protocol: 'ens',
         }),
     });
 
@@ -173,7 +149,6 @@ describe('useRecipientValidation', () => {
         recipientConfusableCharacters: undefined,
         recipientError: undefined,
         recipientResolvedLookup: undefined,
-        recipientValidationLoading: false,
         recipientWarning: undefined,
         toAddressValidated: '',
       });
@@ -194,7 +169,6 @@ describe('useRecipientValidation', () => {
         recipientConfusableCharacters: undefined,
         recipientError: undefined,
         recipientResolvedLookup: undefined,
-        recipientValidationLoading: false,
         recipientWarning: undefined,
         toAddressValidated: undefined,
       });
@@ -236,7 +210,7 @@ describe('useRecipientValidation', () => {
     jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
       validateName: () =>
         Promise.resolve({
-          error: 'ensUnknownError',
+          error: 'nameResolutionFailedError',
         }),
     });
 
@@ -250,6 +224,40 @@ describe('useRecipientValidation', () => {
 
     await waitFor(() => {
       expect(mockValidateSolanaAddress).toHaveBeenCalled();
+      expect(result.current.recipientError).toEqual('invalidAddress');
+    });
+  });
+
+  it('validate bitcoin address for Bitcoin send type', async () => {
+    mockUseSendType.mockReturnValue({
+      isEvmSendType: false,
+      isSolanaSendType: false,
+      isBitcoinSendType: true,
+    } as unknown as ReturnType<typeof useSendType>);
+
+    mockUseSendContext.mockReturnValue({
+      asset: BITCOIN_ASSET,
+      to: 'bc1qux5pw7w5cjjs375at0c8j96le7nuky693uj3rm',
+      chainId: 'bip122:000000000019d6689c085ae165831e93',
+    } as unknown as ReturnType<typeof useSendContext>);
+
+    jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+      validateName: () =>
+        Promise.resolve({
+          error: 'nameResolutionFailedError',
+        }),
+    });
+
+    const mockValidateBtcAddress = jest
+      .spyOn(SendValidationUtils, 'validateBtcAddress')
+      .mockReturnValue({
+        error: 'invalidAddress',
+      });
+
+    const { result } = renderHook();
+
+    await waitFor(() => {
+      expect(mockValidateBtcAddress).toHaveBeenCalled();
       expect(result.current.recipientError).toEqual('invalidAddress');
     });
   });

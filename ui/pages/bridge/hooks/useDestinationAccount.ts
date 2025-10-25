@@ -5,7 +5,10 @@ import {
   getAccountGroupNameByInternalAccount,
   getToChain,
 } from '../../../ducks/bridge/selectors';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import {
+  getInternalAccountBySelectedAccountGroupAndCaip,
+  getWalletIdAndNameByAccountAddress,
+} from '../../../selectors/multichain-accounts/account-tree';
 import type { DestinationAccount } from '../prepare/types';
 
 /**
@@ -38,17 +41,31 @@ export const useDestinationAccount = () => {
     ),
   );
 
+  const walletName = useSelector((state) =>
+    defaultInternalDestinationAccount?.address
+      ? getWalletIdAndNameByAccountAddress(
+          state,
+          defaultInternalDestinationAccount?.address,
+        )?.name
+      : null,
+  );
+
   useEffect(() => {
-    setSelectedDestinationAccount(
-      defaultInternalDestinationAccount
-        ? {
-            ...defaultInternalDestinationAccount,
-            isExternal: false,
-            displayName: displayName ?? '',
-          }
-        : null,
-    );
-  }, [defaultInternalDestinationAccount, displayName]);
+    if (defaultInternalDestinationAccount) {
+      setSelectedDestinationAccount({
+        ...defaultInternalDestinationAccount,
+        walletName: walletName ?? '',
+        isExternal: false,
+        displayName: displayName ?? '',
+      });
+      setIsDestinationAccountPickerOpen(false);
+    } else {
+      // Open account picker when bridging between non-EVM and EVM chains and there is no matching account (edge case)
+      // Cases: non-EVM -> EVM, EVM -> non-EVM, or switching between different non-EVM chains
+      setSelectedDestinationAccount(null);
+      setIsDestinationAccountPickerOpen(true);
+    }
+  }, [defaultInternalDestinationAccount, displayName, walletName]);
 
   return {
     selectedDestinationAccount,

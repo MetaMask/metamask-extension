@@ -26,7 +26,10 @@ describe('useNameValidation', () => {
     jest.spyOn(SnapNameResolution, 'useSnapNameResolution').mockReturnValue({
       fetchResolutions: () =>
         Promise.resolve([
-          { resolvedAddress: 'dummy_address' } as unknown as AddressResolution,
+          {
+            resolvedAddress: 'dummy_address',
+            protocol: 'dummy_protocol',
+          } as unknown as AddressResolution,
         ]),
     });
     const { result } = renderHookWithProvider(
@@ -39,6 +42,7 @@ describe('useNameValidation', () => {
         'test.sol',
       ),
     ).toStrictEqual({
+      protocol: 'dummy_protocol',
       resolvedLookup: 'dummy_address',
     });
   });
@@ -53,7 +57,10 @@ describe('useNameValidation', () => {
     jest.spyOn(SnapNameResolution, 'useSnapNameResolution').mockReturnValue({
       fetchResolutions: () =>
         Promise.resolve([
-          { resolvedAddress: 'dummy_address' } as unknown as AddressResolution,
+          {
+            resolvedAddress: 'dummy_address',
+            protocol: 'dummy_protocol',
+          } as unknown as AddressResolution,
         ]),
     });
     const { result } = renderHookWithProvider(
@@ -67,6 +74,7 @@ describe('useNameValidation', () => {
       ),
     ).toStrictEqual({
       error: 'dummy_error',
+      protocol: 'dummy_protocol',
       warning: 'dummy_warning',
       resolvedLookup: 'dummy_address',
     });

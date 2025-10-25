@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom-v5-compat';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import {
@@ -37,11 +37,16 @@ import {
   ButtonSize,
 } from '../../../components/component-library';
 import SRPDetailsModal from '../../../components/app/srp-details-modal';
+import {
+  forceUpdateMetamaskState,
+  resetOnboarding,
+} from '../../../store/actions';
 
 const hasUpperCase = (draftSrp) => {
   return draftSrp !== draftSrp.toLowerCase();
 };
 export default function ImportSRP({ submitSecretRecoveryPhrase }) {
+  const dispatch = useDispatch();
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
   const [srpError, setSrpError] = useState('');
@@ -67,6 +72,15 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
     });
     setShowSrpDetailsModal(true);
   }, [trackEvent]);
+
+  const onBack = async (e) => {
+    e.preventDefault();
+    // reset onboarding flow
+    await dispatch(resetOnboarding());
+    await forceUpdateMetamaskState(dispatch);
+
+    navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+  };
 
   const onContinue = useCallback(() => {
     let newSrpError = '';
@@ -125,9 +139,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
             color={IconColor.iconDefault}
             size={ButtonIconSize.Md}
             data-testid="import-srp-back-button"
-            onClick={() => {
-              navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
-            }}
+            onClick={onBack}
             ariaLabel={t('back')}
           />
         </Box>

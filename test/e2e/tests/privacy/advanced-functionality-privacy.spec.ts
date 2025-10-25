@@ -116,7 +116,7 @@ describe('MetaMask onboarding ', function () {
         // Refresh tokens before asserting to mitigate flakiness
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed('42,500.00', '$');
         await homePage.refreshErc20TokenList();
         await homePage.checkPageIsLoaded();
         await homePage.headerNavbar.openAccountMenu();

@@ -36,6 +36,7 @@ import { SecurityAlertResponse } from '../lib/ppom/types';
 import {
   AccountOverviewTabKey,
   CarouselSlide,
+  NetworkConnectionBanner,
 } from '../../../shared/constants/app-state';
 import type {
   ThrottledOrigins,
@@ -78,6 +79,7 @@ export type AppStateControllerState = {
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
   lastViewedUserSurvey: number | null;
+  networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
   nftsDetectionNoticeDismissed: boolean;
@@ -99,12 +101,15 @@ export type AppStateControllerState = {
   slides: CarouselSlide[];
   snapsInstallPrivacyWarningShown?: boolean;
   surveyLinkLastClickedOrClosed: number | null;
+  shieldEndingToastLastClickedOrClosed: number | null;
+  shieldPausedToastLastClickedOrClosed: number | null;
   termsOfUseLastAgreed?: number;
   throttledOrigins: ThrottledOrigins;
   timeoutMinutes: number;
   trezorModel: string | null;
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
+  showShieldEntryModalOnce: boolean | null;
 };
 
 const controllerName = 'AppStateController';
@@ -191,6 +196,7 @@ type AppStateControllerInitState = Partial<
     | 'signatureSecurityAlertResponses'
     | 'addressSecurityAlertResponses'
     | 'currentExtensionPopupId'
+    | 'networkConnectionBanner'
   >
 >;
 
@@ -236,12 +242,14 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   showTestnetMessageInDropdown: true,
   slides: [],
   surveyLinkLastClickedOrClosed: null,
+  shieldEndingToastLastClickedOrClosed: null,
+  shieldPausedToastLastClickedOrClosed: null,
   throttledOrigins: {},
   timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
-
+  showShieldEntryModalOnce: null,
   ...getInitialStateOverrides(),
 });
 
@@ -258,6 +266,9 @@ function getInitialStateOverrides() {
     currentExtensionPopupId: 0,
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
+    networkConnectionBanner: {
+      status: 'unknown' as const,
+    },
   };
 }
 
@@ -370,6 +381,12 @@ const controllerMetadata = {
     includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
+  },
+  networkConnectionBanner: {
+    includeInStateLogs: false,
+    persist: false,
+    anonymous: false,
     usedInUi: true,
   },
   newPrivacyPolicyToastClickedOrClosed: {
@@ -498,6 +515,18 @@ const controllerMetadata = {
     anonymous: true,
     usedInUi: true,
   },
+  shieldEndingToastLastClickedOrClosed: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+  },
+  shieldPausedToastLastClickedOrClosed: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+  },
   termsOfUseLastAgreed: {
     includeInStateLogs: true,
     persist: true,
@@ -533,6 +562,12 @@ const controllerMetadata = {
     anonymous: true,
     usedInUi: true,
     includeInStateLogs: true,
+  },
+  showShieldEntryModalOnce: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
   },
 };
 
@@ -732,6 +767,18 @@ export class AppStateController extends BaseController<
   setNewPrivacyPolicyToastShownDate(time: number): void {
     this.update((state) => {
       state.newPrivacyPolicyToastShownDate = time;
+    });
+  }
+
+  setShieldPausedToastLastClickedOrClosed(time: number): void {
+    this.update((state) => {
+      state.shieldPausedToastLastClickedOrClosed = time;
+    });
+  }
+
+  setShieldEndingToastLastClickedOrClosed(time: number): void {
+    this.update((state) => {
+      state.shieldEndingToastLastClickedOrClosed = time;
     });
   }
 
@@ -1095,6 +1142,19 @@ export class AppStateController extends BaseController<
   }
 
   /**
+   * Updates the network connection banner state
+   *
+   * @param networkConnectionBanner - The new banner state
+   */
+  updateNetworkConnectionBanner(
+    networkConnectionBanner: AppStateControllerState['networkConnectionBanner'],
+  ): void {
+    this.update((state) => {
+      state.networkConnectionBanner = networkConnectionBanner;
+    });
+  }
+
+  /**
    * Sets whether the Account Banner should be shown
    *
    * @param showAccountBanner
@@ -1375,6 +1435,12 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
+    });
+  }
+
+  setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
+    this.update((state) => {
+      state.showShieldEntryModalOnce = showShieldEntryModalOnce;
     });
   }
 }

@@ -21,12 +21,16 @@ jobs:
   tag-release-branch:
     name: Tag Release Branch HEAD
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     # Restrict to users with write access (release team members)
     if: github.actor != 'dependabot[bot]' && github.actor != 'github-actions[bot]'
     outputs:
       release-branch: ${{ steps.determine-branch.outputs.branch }}
-      tag-name: ${{ steps.tag-release.outputs.tag }}
-      tag-sha: ${{ steps.tag-release.outputs.sha }}
+      # Only one of tag-release or existing-tag-output steps will run based on needs_retag condition
+      # The || operator ensures we get the output from whichever step executed
+      tag-name: ${{ steps.tag-release.outputs.tag || steps.existing-tag-output.outputs.tag }}
+      flask-tag-name: ${{ steps.tag-release.outputs.flask_tag || steps.existing-tag-output.outputs.flask_tag }}
+      tag-sha: ${{ steps.tag-release.outputs.sha || steps.existing-tag-output.outputs.sha }}
     steps:
       - name: Determine release branch
         id: determine-branch
@@ -36,18 +40,20 @@ jobs:
           # Set working branch variable
           BRANCH="${PROVIDED_BRANCH}"
 
-          # Extract version from branch name (supports Version-vX.Y.Z or release/X.Y.Z)
+          # Extract version from branch name (release/X.Y.Z)
           SEMVER_PATTERN='[0-9]+\.[0-9]+\.[0-9]+'
-          if [[ "${BRANCH}" =~ ^Version-v(${SEMVER_PATTERN})$ ]] || [[ "${BRANCH}" =~ ^release/(${SEMVER_PATTERN})$ ]]; then
+          if [[ "${BRANCH}" =~ ^release/(${SEMVER_PATTERN})$ ]]; then
             VERSION="${BASH_REMATCH[1]}"
           else
             echo "::error::Could not extract version from branch name: ${BRANCH}"
-            echo "::error::Expected 'Version-vX.Y.Z' or 'release/X.Y.Z'"
+            echo "::error::Expected 'release/X.Y.Z'"
             exit 1
           fi
 
-          echo "branch=${BRANCH}" >> "${GITHUB_OUTPUT}"
-          echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
+          {
+            echo "branch=${BRANCH}"
+            echo "version=${VERSION}"
+          } >> "${GITHUB_OUTPUT}"
           echo "Using release branch: ${BRANCH}"
           echo "Using version: ${VERSION}"
 
@@ -66,8 +72,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG_NAME="v${VERSION}"
+          FLASK_TAG_NAME="v${VERSION}-flask.0"
+          HEAD_SHA=$(git rev-parse HEAD)
+          # While shell scripts use exit codes (0=true, non-zero=false) for boolean logic,
+          # we use string values ("true"/"false") here for readability and explicit state tracking
+          needs_retag="false"
+          needs_flask_retag="false"
 
-          # Check if tag already exists
+          # Check main tag
           if git rev-parse "${TAG_NAME}" >/dev/null 2>&1; then
             echo "Tag ${TAG_NAME} already exists"
 
@@ -78,33 +90,78 @@ jobs:
               exit 1
             fi
 
-            # Get existing tag SHA and current HEAD SHA
+            # Get existing tag SHA
             TAG_SHA=$(git rev-parse "${TAG_NAME}")
-            HEAD_SHA=$(git rev-parse HEAD)
 
             if [[ "${TAG_SHA}" == "${HEAD_SHA}" ]]; then
-              echo "Tag already points to current HEAD. No action needed."
-              echo "needs_retag=false" >> "${GITHUB_OUTPUT}"
+              echo "Main tag already points to current HEAD."
             elif [[ "${FORCE_RETAG}" == "true" ]]; then
-              echo "Tag exists at different commit. Force re-tag is enabled."
+              echo "Main tag exists at different commit. Force re-tag is enabled."
               echo "Will move tag from ${TAG_SHA:0:7} to ${HEAD_SHA:0:7}"
 
               # Delete the old tag (local and remote)
               git tag -d "${TAG_NAME}"
               git push origin ":refs/tags/${TAG_NAME}"
 
-              echo "needs_retag=true" >> "${GITHUB_OUTPUT}"
-              echo "Old tag deleted. Will create new tag at HEAD."
+              needs_retag="true"
+              echo "Old main tag deleted. Will create new tag at HEAD."
             else
               echo "::error::Tag ${TAG_NAME} exists but not at HEAD."
               echo "::error::To move the tag, run this workflow again with 'force-retag' enabled."
-              # Log full details only to GitHub logs, not to error output
+              # Log debug details to stderr (for logs) but not as GitHub error annotation (::error::)
               echo "Debug: Tag is at ${TAG_SHA:0:7}, HEAD is at ${HEAD_SHA:0:7}" >&2
               exit 1
             fi
           else
-            echo "Tag does not exist yet. Will create it."
-            echo "needs_retag=true" >> "${GITHUB_OUTPUT}"
+            echo "Main tag does not exist yet. Will create it."
+            needs_retag="true"
+          fi
+
+          # Check Flask tag
+          if git rev-parse "${FLASK_TAG_NAME}" >/dev/null 2>&1; then
+            echo "Flask tag ${FLASK_TAG_NAME} already exists"
+
+            # Get existing Flask tag SHA
+            FLASK_TAG_SHA=$(git rev-parse "${FLASK_TAG_NAME}")
+
+            if [[ "${FLASK_TAG_SHA}" == "${HEAD_SHA}" ]]; then
+              echo "Flask tag already points to current HEAD."
+            elif [[ "${FORCE_RETAG}" == "true" ]]; then
+              echo "Flask tag exists at different commit. Force re-tag is enabled."
+              echo "Will move Flask tag from ${FLASK_TAG_SHA:0:7} to ${HEAD_SHA:0:7}"
+
+              # Delete the old Flask tag (local and remote)
+              git tag -d "${FLASK_TAG_NAME}"
+              git push origin ":refs/tags/${FLASK_TAG_NAME}"
+
+              needs_flask_retag="true"
+              echo "Old Flask tag deleted. Will create new Flask tag at HEAD."
+            else
+              echo "::error::Flask tag ${FLASK_TAG_NAME} exists but not at HEAD."
+              echo "::error::To move the tag, run this workflow again with 'force-retag' enabled."
+              # Log debug details to stderr (for logs) but not as GitHub error annotation (::error::)
+              echo "Debug: Flask tag is at ${FLASK_TAG_SHA:0:7}, HEAD is at ${HEAD_SHA:0:7}" >&2
+              exit 1
+            fi
+          else
+            echo "Flask tag does not exist yet. Will create it."
+            needs_flask_retag="true"
+          fi
+
+          # Set output based on whether we need to create/update any tags
+          if [[ "${needs_retag}" == "true" ]] || [[ "${needs_flask_retag}" == "true" ]]; then
+            {
+              echo "needs_retag=true"
+              echo "needs_main_tag=${needs_retag}"
+              echo "needs_flask_tag=${needs_flask_retag}"
+            } >> "${GITHUB_OUTPUT}"
+          else
+            {
+              echo "needs_retag=false"
+              echo "needs_main_tag=false"
+              echo "needs_flask_tag=false"
+            } >> "${GITHUB_OUTPUT}"
+            echo "No action needed for tags."
           fi
 
       - name: Create or update release tag
@@ -112,9 +169,12 @@ jobs:
         if: steps.check-existing-tag.outputs.needs_retag != 'false'
         env:
           VERSION: ${{ steps.determine-branch.outputs.version }}
+          NEEDS_MAIN_TAG: ${{ steps.check-existing-tag.outputs.needs_main_tag }}
+          NEEDS_FLASK_TAG: ${{ steps.check-existing-tag.outputs.needs_flask_tag }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG_NAME="v${VERSION}"
+          FLASK_TAG_NAME="v${VERSION}-flask.0"
 
           # Configure git
           git config user.email "metamaskbot@users.noreply.github.com"
@@ -123,15 +183,29 @@ jobs:
           # Get the current SHA
           SHA=$(git rev-parse HEAD)
 
-          # Create annotated tag at HEAD
-          git tag -a "${TAG_NAME}" -m "Release ${VERSION}"
+          # Create main tag if needed
+          if [[ "${NEEDS_MAIN_TAG}" == "true" ]]; then
+            git tag -a "${TAG_NAME}" -m "Release ${VERSION}"
+            git push origin "${TAG_NAME}"
+            echo "Created and pushed main tag: ${TAG_NAME} at ${SHA}"
+          else
+            echo "Main tag already exists at HEAD, skipping."
+          fi
 
-          # Push the tag
-          git push origin "${TAG_NAME}"
+          # Create Flask tag if needed
+          if [[ "${NEEDS_FLASK_TAG}" == "true" ]]; then
+            git tag -a "${FLASK_TAG_NAME}" -m "Flask version ${VERSION}-flask.0"
+            git push origin "${FLASK_TAG_NAME}"
+            echo "Created and pushed Flask tag: ${FLASK_TAG_NAME} at ${SHA}"
+          else
+            echo "Flask tag already exists at HEAD, skipping."
+          fi
 
-          echo "tag=${TAG_NAME}" >> "${GITHUB_OUTPUT}"
-          echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
-          echo "Created and pushed tag: ${TAG_NAME} at ${SHA}"
+          {
+            echo "tag=${TAG_NAME}"
+            echo "flask_tag=${FLASK_TAG_NAME}"
+            echo "sha=${SHA}"
+          } >> "${GITHUB_OUTPUT}"
 
       - name: Set output for existing tag
         id: existing-tag-output
@@ -140,9 +214,13 @@ jobs:
           VERSION: ${{ steps.determine-branch.outputs.version }}
         run: |
           TAG_NAME="v${VERSION}"
+          FLASK_TAG_NAME="v${VERSION}-flask.0"
           SHA=$(git rev-parse HEAD)
-          echo "tag=${TAG_NAME}" >> "${GITHUB_OUTPUT}"
-          echo "sha=${SHA}" >> "${GITHUB_OUTPUT}"
+          {
+            echo "tag=${TAG_NAME}"
+            echo "flask_tag=${FLASK_TAG_NAME}"
+            echo "sha=${SHA}"
+          } >> "${GITHUB_OUTPUT}"
 
       - name: Set status check on release branch
         env:

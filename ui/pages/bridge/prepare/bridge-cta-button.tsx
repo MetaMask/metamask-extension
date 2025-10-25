@@ -130,7 +130,7 @@ export const BridgeCTAButton = ({
   return activeQuote && !secondaryButtonLabel ? (
     <Button
       width={BlockSize.Full}
-      size={activeQuote ? ButtonSize.Md : ButtonSize.Lg}
+      size={ButtonSize.Lg}
       variant={ButtonVariant.Primary}
       data-testid="bridge-cta-button"
       style={{ boxShadow: 'none' }}
@@ -168,7 +168,7 @@ export const BridgeCTAButton = ({
       <Text
         variant={TextVariant.bodyMd}
         textAlign={TextAlign.Center}
-        color={TextColor.textAlternativeSoft}
+        color={TextColor.textAlternative}
       >
         {label ? t(label) : ''}
       </Text>

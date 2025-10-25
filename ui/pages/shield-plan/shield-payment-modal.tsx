@@ -53,6 +53,7 @@ export const ShieldPaymentModal = ({
   selectedToken,
   onAssetChange,
   hasStableTokenWithBalance,
+  tokensSupported,
 }: {
   isOpen: boolean;
   onClose: () => void;
@@ -62,21 +63,39 @@ export const ShieldPaymentModal = ({
   selectedToken?: TokenWithApprovalAmount;
   onAssetChange: (asset: TokenWithApprovalAmount) => void;
   hasStableTokenWithBalance: boolean;
+  tokensSupported: string[];
 }) => {
   const t = useI18nContext();
   const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
+
+  const hasMultipleTokenOptions = useMemo(() => {
+    return availableTokenBalances.length > 1;
+  }, [availableTokenBalances]);
 
   const selectPaymentMethod = useCallback(
     (selectedMethod: PaymentType) => {
       setSelectedPaymentMethod(selectedMethod);
 
       if (selectedMethod === PAYMENT_TYPES.byCrypto) {
-        setShowAssetPickerModal(true);
-      } else {
-        onClose();
+        // if there are multiple token options, show the asset picker modal
+        if (hasMultipleTokenOptions) {
+          setShowAssetPickerModal(true);
+          return;
+        }
+
+        // if there is only one token option, set it as the selected token
+        onAssetChange(availableTokenBalances[0]);
       }
+
+      onClose();
     },
-    [setSelectedPaymentMethod, onClose],
+    [
+      setSelectedPaymentMethod,
+      onClose,
+      hasMultipleTokenOptions,
+      onAssetChange,
+      availableTokenBalances,
+    ],
   );
 
   // Create custom token list generator that filters for USDT/USDC with balance
@@ -96,6 +115,21 @@ export const ShieldPaymentModal = ({
       }
     };
   }, [availableTokenBalances]);
+
+  const noCryptoFundsText = useMemo(() => {
+    const tokensSupportedCopy = [...tokensSupported];
+    const lastToken = tokensSupportedCopy.pop();
+
+    // multiple tokens to display eg. Insufficient USDC, USDT or mUSD
+    if (tokensSupportedCopy.length > 0) {
+      return t('shieldPlanNoFunds', [
+        tokensSupportedCopy.join(', '),
+        lastToken,
+      ]);
+    }
+    // single token to display eg. Insufficient USDC
+    return t('shieldPlanNoFundsOneToken', [lastToken]);
+  }, [tokensSupported, t]);
 
   return (
     <Modal
@@ -183,8 +217,8 @@ export const ShieldPaymentModal = ({
                   <Text variant={TextVariant.bodyMdMedium}>
                     {t('shieldPlanPayWithToken', [
                       hasStableTokenWithBalance
-                        ? selectedToken?.symbol
-                        : 'Crypto',
+                        ? (selectedToken?.symbol ?? '')
+                        : 'crypto',
                     ])}
                   </Text>
                   <Text
@@ -192,12 +226,12 @@ export const ShieldPaymentModal = ({
                     color={TextColor.textAlternative}
                   >
                     {hasStableTokenWithBalance
-                      ? `${t('balance')}: ${selectedToken?.string} ${selectedToken?.symbol}`
-                      : t('shieldPlanNoFunds')}
+                      ? `${t('balance')}: ${selectedToken?.string ?? ''} ${selectedToken?.symbol ?? ''}`
+                      : noCryptoFundsText}
                   </Text>
                 </Box>
               </Box>
-              {hasStableTokenWithBalance && (
+              {hasStableTokenWithBalance && hasMultipleTokenOptions && (
                 <Icon size={IconSize.Md} name={IconName.ArrowRight} />
               )}
             </Box>

@@ -53,10 +53,11 @@ export default function init() {
       window.addEventListener(
         'message',
         (event) => {
-          // Ensure origin
+          // Ensure origin, source is the browser tab, and data is a string (JSON to be parsed)
           if (
-            event.origin !== KnownOrigins.lattice &&
-            event.source === browserTab
+            event.origin !== KnownOrigins.lattice ||
+            event.source !== browserTab ||
+            typeof event.data !== 'string'
           ) {
             return;
           }
@@ -76,6 +77,7 @@ export default function init() {
               result: creds,
             });
           } catch (err) {
+            console.error('Error parsing Lattice credentials', err);
             sendResponse({
               error: err,
             });

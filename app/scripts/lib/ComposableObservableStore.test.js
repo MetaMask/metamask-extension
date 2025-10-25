@@ -179,6 +179,36 @@ describe('ComposableObservableStore', () => {
         Example: { bar: 'update', baz: 'update' },
       });
     });
+
+    it('includes patches in state change event', () => {
+      const messenger = new Messenger();
+      const exampleController = new ExampleController({
+        messenger,
+      });
+      const store = new ComposableObservableStore({
+        controllerMessenger: messenger,
+      });
+      store.updateStructure({
+        Example: exampleController,
+      });
+      const onStateChange = jest.fn();
+      store.on('stateChange', onStateChange);
+
+      exampleController.updateBar('update');
+
+      expect(onStateChange).toHaveBeenCalledWith({
+        controllerKey: 'Example',
+        newState: { bar: 'update', baz: 'baz' },
+        oldState: { bar: 'bar', baz: 'baz' },
+        patches: [
+          {
+            op: 'replace',
+            path: ['bar'],
+            value: 'update',
+          },
+        ],
+      });
+    });
   });
 
   describe('persisted', () => {
@@ -289,6 +319,41 @@ describe('ComposableObservableStore', () => {
       expect(store.getState()).toStrictEqual({
         Example: { bar: 'state' },
         Store: 'state',
+      });
+    });
+
+    it('includes patches in state change event', () => {
+      const messenger = new Messenger();
+
+      const exampleController = new ExampleController({
+        messenger,
+      });
+
+      const store = new ComposableObservableStore({
+        controllerMessenger: messenger,
+        persist: true,
+      });
+
+      store.updateStructure({
+        Example: exampleController,
+      });
+
+      const onStateChange = jest.fn();
+      store.on('stateChange', onStateChange);
+
+      exampleController.updateBar('update');
+
+      expect(onStateChange).toHaveBeenCalledWith({
+        controllerKey: 'Example',
+        newState: { bar: 'update' },
+        oldState: { bar: 'bar' },
+        patches: [
+          {
+            op: 'replace',
+            path: ['bar'],
+            value: 'update',
+          },
+        ],
       });
     });
   });

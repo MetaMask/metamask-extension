@@ -124,6 +124,8 @@ export type ControllerStatePropertiesEnumerated = {
   activeQrCodeScanRequest: AppStateControllerState['activeQrCodeScanRequest'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
+  shieldEndingToastLastClickedOrClosed: AppStateControllerState['shieldEndingToastLastClickedOrClosed'];
+  shieldPausedToastLastClickedOrClosed: AppStateControllerState['shieldPausedToastLastClickedOrClosed'];
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
@@ -135,11 +137,13 @@ export type ControllerStatePropertiesEnumerated = {
   isUpdateAvailable: AppStateControllerState['isUpdateAvailable'];
   updateModalLastDismissedAt: AppStateControllerState['updateModalLastDismissedAt'];
   lastUpdatedAt: AppStateControllerState['lastUpdatedAt'];
+  showShieldEntryModalOnce: AppStateControllerState['showShieldEntryModalOnce'];
   throttledOrigins: AppStateControllerState['throttledOrigins'];
   enableEnforcedSimulations: AppStateControllerState['enableEnforcedSimulations'];
   enableEnforcedSimulationsForTransactions: AppStateControllerState['enableEnforcedSimulationsForTransactions'];
   enforcedSimulationsSlippage: AppStateControllerState['enforcedSimulationsSlippage'];
   enforcedSimulationsSlippageForTransactions: AppStateControllerState['enforcedSimulationsSlippageForTransactions'];
+  networkConnectionBanner: AppStateControllerState['networkConnectionBanner'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -236,7 +240,6 @@ export type ControllerStatePropertiesEnumerated = {
   openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
   securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
   selectedAddress: PreferencesControllerState['selectedAddress'];
-  showIncomingTransactions: PreferencesControllerState['showIncomingTransactions'];
   useNftDetection: PreferencesControllerState['useNftDetection'];
   useTokenDetection: PreferencesControllerState['useTokenDetection'];
   useTransactionSimulations: PreferencesControllerState['useTransactionSimulations'];
@@ -248,7 +251,7 @@ export type ControllerStatePropertiesEnumerated = {
   useMultiAccountBalanceChecker: PreferencesControllerState['useMultiAccountBalanceChecker'];
   use4ByteResolution: PreferencesControllerState['use4ByteResolution'];
   useCurrencyRateCheck: PreferencesControllerState['useCurrencyRateCheck'];
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   watchEthereumAccountEnabled: PreferencesControllerState['watchEthereumAccountEnabled'];
   ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: PreferencesControllerState['addSnapAccountEnabled'];

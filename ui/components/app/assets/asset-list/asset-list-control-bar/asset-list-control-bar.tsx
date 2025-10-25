@@ -14,6 +14,7 @@ import {
   KnownCaipNamespace,
   parseCaipChainId,
 } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   getAllChainsToPoll,
   getIsLineaMainnet,
@@ -28,7 +29,10 @@ import {
   getEnabledNetworksByNamespace,
   getSelectedMultichainNetworkChainId,
 } from '../../../../../selectors/multichain/networks';
-import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
+import {
+  getAllNetworkConfigurationsByCaipChainId,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../../shared/modules/selectors/networks';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -108,6 +112,7 @@ const AssetListControlBar = ({
   const useNftDetection = useSelector(getUseNftDetection);
   const currentMultichainNetwork = useSelector(getMultichainNetwork);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const allCaipNetworks = useSelector(getAllNetworkConfigurationsByCaipChainId);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
@@ -269,7 +274,7 @@ const AssetListControlBar = ({
   };
 
   const handleRefresh = () => {
-    dispatch(detectTokens());
+    dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     closePopover();
     trackEvent({
       category: MetaMetricsEventCategory.Tokens,
@@ -366,9 +371,10 @@ const AssetListControlBar = ({
       Object.keys(allEnabledNetworksForAllNamespaces).length === 1
     ) {
       const chainId = allEnabledNetworksForAllNamespaces[0];
-      return isStrictHexString(chainId)
-        ? (allNetworks[chainId]?.name ?? t('currentNetwork'))
-        : (currentMultichainNetwork.network.nickname ?? t('currentNetwork'));
+      const caipChainId = isStrictHexString(chainId)
+        ? toEvmCaipChainId(chainId)
+        : chainId;
+      return allCaipNetworks[caipChainId]?.name ?? t('currentNetwork');
     }
 
     // > 1 network selected, show "all networks"
@@ -395,13 +401,12 @@ const AssetListControlBar = ({
 
     return t('popularNetworks');
   }, [
+    allEnabledNetworksForAllNamespaces,
     isTokenNetworkFilterEqualCurrentNetwork,
     currentMultichainNetwork.isEvmNetwork,
-    currentMultichainNetwork.network.nickname,
     currentMultichainNetwork?.nickname,
     t,
-    allNetworks,
-    allEnabledNetworksForAllNamespaces,
+    allCaipNetworks,
   ]);
 
   const singleNetworkIconUrl = useMemo(() => {

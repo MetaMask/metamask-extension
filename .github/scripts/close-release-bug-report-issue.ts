@@ -33,7 +33,7 @@ async function main(): Promise<void> {
 
   // Extract semver version number from the branch name
   const releaseVersionNumberMatch = branchName.match(
-    /^(?:Version-v|release\/)(\d+\.\d+\.\d+)$/,
+    /^release\/(\d+\.\d+\.\d+)$/,
   );
 
   if (!releaseVersionNumberMatch) {

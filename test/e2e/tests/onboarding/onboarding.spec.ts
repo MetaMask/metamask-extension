@@ -1,5 +1,6 @@
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
+import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
 import {
   convertToHexValue,
   TEST_SEED_PHRASE,
@@ -109,7 +110,10 @@ describe('MetaMask onboarding', function () {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          '$',
+        );
       },
     );
   });
@@ -128,7 +132,7 @@ describe('MetaMask onboarding', function () {
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.checkPageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
+          await onboardingMetricsPage.skipMetricAndContinue();
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
@@ -161,7 +165,7 @@ describe('MetaMask onboarding', function () {
         if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
           const onboardingMetricsPage = new OnboardingMetricsPage(driver);
           await onboardingMetricsPage.checkPageIsLoaded();
-          await onboardingMetricsPage.clickNoThanksButton();
+          await onboardingMetricsPage.skipMetricAndContinue();
         }
 
         const startOnboardingPage = new StartOnboardingPage(driver);
@@ -244,7 +248,7 @@ describe('MetaMask onboarding', function () {
 
         // Check the correct balance for the custom network is displayed
         if (localNodes[1] && Array.isArray(localNodes)) {
-          await homePage.checkExpectedBalanceIsDisplayed('10');
+          await homePage.checkExpectedBalanceIsDisplayed('17,000.00', '$');
         } else {
           throw new Error('Custom network server not available');
         }
@@ -308,7 +312,7 @@ describe('MetaMask onboarding', function () {
         // First screen we should be on is MetaMetrics
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         await onboardingMetricsPage.checkPageIsLoaded();
-        await onboardingMetricsPage.clickNoThanksButton();
+        await onboardingMetricsPage.skipMetricAndContinue();
 
         // Next screen should be Secure your wallet screen
         const secureWalletPage = new SecureWalletPage(driver);

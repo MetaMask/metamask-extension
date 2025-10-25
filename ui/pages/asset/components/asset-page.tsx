@@ -10,7 +10,7 @@ import {
 } from '@metamask/utils';
 import React, { ReactNode, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
@@ -92,7 +92,7 @@ const AssetPage = ({
   optionsButton: React.ReactNode;
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const currency = useSelector(getCurrentCurrency);
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const isEvm = isEvmChainId(asset.chainId);
@@ -174,7 +174,7 @@ const AssetPage = ({
     decimals: 0,
     aggregators: [],
     isNative: false,
-    primary: '',
+    balance: 0,
     secondary: 0,
   };
 
@@ -289,7 +289,7 @@ const AssetPage = ({
               ? asset.aggregators
               : [],
           isNative: type === AssetType.native,
-          primary: balance ? balance.toString() : '',
+          balance,
           secondary: balance ? Number(balance) : 0,
         }
       : (mutichainTokenWithFiatAmount as TokenWithFiatAmount);
@@ -324,7 +324,7 @@ const AssetPage = ({
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={() => navigate(DEFAULT_ROUTE)}
           />
         </Box>
         {optionsButton}
@@ -391,7 +391,7 @@ const AssetPage = ({
           borderColor={BorderColor.borderMuted}
           marginInline={4}
           style={{ height: '1px', borderBottomWidth: 0 }}
-        ></Box>
+        />
         <Box
           marginTop={2}
           display={Display.Flex}

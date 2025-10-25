@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import type { CaipChainId } from '@metamask/utils';
 import {
   formatChainIdToHex,
-  isSolanaChainId,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP } from '../../../../shared/constants/common';
 import {
@@ -23,7 +23,7 @@ const getBlockExplorerName = (
   blockExplorerUrl: string | undefined,
 ) => {
   const hexChainId =
-    chainId && !isSolanaChainId(chainId)
+    chainId && !isNonEvmChainId(chainId)
       ? formatChainIdToHex(chainId)
       : undefined;
   const humanReadableUrl = hexChainId
