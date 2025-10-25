@@ -17,7 +17,9 @@ export function useGatorPermissions() {
         setError(undefined);
         setLoading(true);
 
-        const newData = await fetchAndUpdateGatorPermissions();
+        const newData = await fetchAndUpdateGatorPermissions({
+          isRevoked: false,
+        });
         if (!cancelled) {
           setData(newData);
           await forceUpdateMetamaskState(dispatch);
