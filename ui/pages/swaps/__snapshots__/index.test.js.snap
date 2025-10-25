@@ -12,8 +12,9 @@ exports[`Swap renders the component with initial props 1`] = `
         class="swaps__header"
       >
         <div
-          class="box box--margin-left-4 box--display-flex box--flex-direction-row box--justify-content-center box--width-1/12"
+          class="justify-center ml-4"
           tabindex="0"
+          width="1/12"
         >
           <span
             class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-alternative"
@@ -27,8 +28,9 @@ exports[`Swap renders the component with initial props 1`] = `
           Swap
         </div>
         <div
-          class="box box--margin-right-4 box--display-flex box--flex-direction-row box--justify-content-center box--width-1/12"
+          class="justify-center mr-4"
           tabindex="0"
+          width="1/12"
         >
           <span
             class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-alternative"

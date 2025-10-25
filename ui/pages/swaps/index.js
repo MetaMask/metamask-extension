@@ -15,6 +15,7 @@ import {
 } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { I18nContext } from '../../contexts/i18n';
 
 import {
@@ -88,13 +89,7 @@ import {
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import { Icon, IconName, IconSize } from '../../components/component-library';
-import Box from '../../components/ui/box';
-import {
-  DISPLAY,
-  JustifyContent,
-  IconColor,
-  FRACTIONS,
-} from '../../helpers/constants/design-system';
+import { IconColor, FRACTIONS } from '../../helpers/constants/design-system';
 import useUpdateSwapsState from './hooks/useUpdateSwapsState';
 import AwaitingSignatures from './awaiting-signatures';
 import SmartTransactionStatus from './smart-transaction-status';
@@ -358,8 +353,7 @@ export default function Swap() {
       <div className="swaps__container">
         <div className="swaps__header">
           <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.center}
+            justifyContent={BoxJustifyContent.Center}
             marginLeft={4}
             width={FRACTIONS.ONE_TWELFTH}
             tabIndex="0"
@@ -384,8 +378,7 @@ export default function Swap() {
           </Box>
           <div className="swaps__title">{t('swap')}</div>
           <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.center}
+            justifyContent={BoxJustifyContent.Center}
             marginRight={4}
             width={FRACTIONS.ONE_TWELFTH}
             tabIndex="0"
