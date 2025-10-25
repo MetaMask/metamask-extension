@@ -6,7 +6,7 @@ import React, { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Route,
-  RouteComponentProps,
+  type RouteComponentProps,
   Switch,
   useHistory,
   useLocation,
@@ -16,8 +16,8 @@ import type { ApprovalType } from '@metamask/controller-utils';
 
 import { useAppSelector } from '../../store/store';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
+import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat';
 import Initialized from '../../helpers/higher-order-components/initialized';
-import PermissionsConnect from '../permissions-connect';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -238,6 +238,10 @@ const Swaps = mmLazy(
 const CrossChainSwap = mmLazy(
   (() => import('../bridge/index.tsx')) as unknown as DynamicImportType,
 );
+const PermissionsConnect = mmLazy(
+  (() =>
+    import('../permissions-connect/index.js')) as unknown as DynamicImportType,
+);
 const ConfirmAddSuggestedTokenPage = mmLazy(
   (() =>
     import(
@@ -359,13 +363,74 @@ const ShieldPlan = mmLazy(
 // End Lazy Routes
 
 const MemoizedReviewPermissionsWrapper = React.memo(
-  (props: RouteComponentProps) => (
-    <State2Wrapper
-      {...props}
-      state1Component={ReviewPermissions}
-      state2Component={MultichainReviewPermissions}
-    />
-  ),
+  (props: RouteComponentProps<{ origin: string }>) => {
+    // Extract origin from v5 route params and pass it to components
+    const origin = props.match?.params?.origin;
+    return (
+      <State2Wrapper
+        {...props}
+        origin={origin}
+        state1Component={ReviewPermissions}
+        state2Component={MultichainReviewPermissions}
+      />
+    );
+  },
+);
+
+const MemoizedMultichainAccountDetailsPageWrapper = React.memo(
+  (props: RouteComponentProps<{ id: string }>) => {
+    // Extract id from v5 route params and pass it to component
+    const id = props.match?.params?.id;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const MultichainAccountDetailsPageWithProps =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      MultichainAccountDetailsPage as any;
+    return <MultichainAccountDetailsPageWithProps id={id} />;
+  },
+);
+
+const MemoizedMultichainAccountAddressListPageWrapper = React.memo(
+  (props: RouteComponentProps<{ accountGroupId: string }>) => {
+    // Extract accountGroupId from v5 route params and pass it to component
+    const accountGroupId = props.match?.params?.accountGroupId;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const MultichainAccountAddressListPageWithProps =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      MultichainAccountAddressListPage as any;
+    return (
+      <MultichainAccountAddressListPageWithProps
+        accountGroupId={accountGroupId}
+      />
+    );
+  },
+);
+
+const MemoizedMultichainAccountPrivateKeyListPageWrapper = React.memo(
+  (props: RouteComponentProps<{ accountGroupId: string }>) => {
+    // Extract accountGroupId from v5 route params and pass it to component
+    const accountGroupId = props.match?.params?.accountGroupId;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const MultichainAccountPrivateKeyListPageWithProps =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      MultichainAccountPrivateKeyListPage as any;
+    return (
+      <MultichainAccountPrivateKeyListPageWithProps
+        accountGroupId={accountGroupId}
+      />
+    );
+  },
+);
+
+const MemoizedWalletDetailsPageWrapper = React.memo(
+  (props: RouteComponentProps<{ id: string }>) => {
+    // Extract id from v5 route params and pass it to component
+    const id = props.match?.params?.id;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const WalletDetailsPageWithProps =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      WalletDetailsPage as any;
+    return <WalletDetailsPageWithProps id={id} />;
+  },
 );
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -619,23 +684,94 @@ export default function Routes() {
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
           />
-          <Authenticated
-            path={`${CONNECT_ROUTE}/:id`}
-            component={PermissionsConnect}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/image/:asset/:id`}
-            component={NftFullImage}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
-            component={Asset}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/:chainId/:asset/`}
-            component={Asset}
-          />
-          <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
+          <Route path={`${CONNECT_ROUTE}/:id`}>
+            {(props: RouteComponentProps<{ id: string }>) => {
+              const {
+                history: v5History,
+                location: v5Location,
+                match: v5Match,
+              } = props;
+
+              // Create a navigate function compatible with v5-compat for the component
+              const navigate = (
+                to: string,
+                options: { replace?: boolean } = {},
+              ) => {
+                if (options.replace) {
+                  v5History.replace(to);
+                } else {
+                  v5History.push(to);
+                }
+              };
+
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const PermissionsConnectWithProps = PermissionsConnect as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <PermissionsConnectWithProps
+                    navigate={navigate}
+                    location={v5Location}
+                    match={v5Match}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/image/:asset/:id`}>
+            {(props: RouteComponentProps<{ asset: string; id: string }>) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const NftFullImageComponent = NftFullImage as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <NftFullImageComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId/:asset/:id`}>
+            {(
+              props: RouteComponentProps<{
+                chainId: string;
+                asset: string;
+                id: string;
+              }>,
+            ) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const AssetComponent = Asset as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId/:asset/`}>
+            {(
+              props: RouteComponentProps<{
+                chainId: string;
+                asset: string;
+              }>,
+            ) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const AssetComponent = Asset as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId`}>
+            {(props: RouteComponentProps<{ chainId: string }>) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const AssetComponent = Asset as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Authenticated
             path={`${DEFI_ROUTE}/:chainId/:protocolId`}
             component={DeFiPage}
@@ -672,12 +808,12 @@ export default function Routes() {
           />
           <Authenticated
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
-            component={MultichainAccountAddressListPage}
+            component={MemoizedMultichainAccountAddressListPageWrapper}
             exact
           />
           <Authenticated
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
-            component={MultichainAccountPrivateKeyListPage}
+            component={MemoizedMultichainAccountPrivateKeyListPageWrapper}
             exact
           />
           <Authenticated
@@ -687,7 +823,7 @@ export default function Routes() {
           />
           <Authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
-            component={MultichainAccountDetailsPage}
+            component={MemoizedMultichainAccountDetailsPageWrapper}
             exact
           />
           <Authenticated
@@ -697,7 +833,7 @@ export default function Routes() {
           />
           <Authenticated
             path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
-            component={WalletDetailsPage}
+            component={MemoizedWalletDetailsPageWrapper}
             exact
           />
           <Authenticated
@@ -841,7 +977,9 @@ export default function Routes() {
       {isIpfsModalOpen ? (
         <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
       ) : null}
-      {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
+      {isBasicConfigurationModalOpen ? (
+        <BasicConfigurationModal location={location} />
+      ) : null}
       {isImportTokensModalOpen ? (
         <ImportTokensModal onClose={() => dispatch(hideImportTokensModal())} />
       ) : null}
@@ -872,7 +1010,7 @@ export default function Routes() {
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
-      <ToastMaster />
+      <ToastMaster location={location} />
     </div>
   );
 }

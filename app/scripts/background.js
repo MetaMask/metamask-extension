@@ -272,13 +272,30 @@ const sendReadyMessageToTabs = async () => {
  * @param {MetamaskController} theController
  */
 function maybeDetectPhishing(theController) {
+  /**
+   * Redirects a tab to the phishing warning page.
+   *
+   * @param {number} tabId - The ID of the tab to redirect
+   * @param {string} url - The URL to redirect to (phishing warning page)
+   * @returns {Promise<boolean>} Returns true if the redirect was successful, false otherwise.
+   *   Returns false for Google pre-fetch requests or if the redirect fails.
+   */
   async function redirectTab(tabId, url) {
     try {
-      return await browser.tabs.update(tabId, {
+      const tab = await browser.tabs.get(tabId);
+
+      // Prevent redirect when due to Google pre-fetching
+      if (tab.url && tab.url.startsWith('https://www.google.com/search')) {
+        return false;
+      }
+
+      await browser.tabs.update(tabId, {
         url,
       });
+      return true;
     } catch (error) {
-      return sentry?.captureException(error);
+      sentry?.captureException(error);
+      return false;
     }
   }
   // we can use the blocking API in MV2, but not in MV3
@@ -354,32 +371,36 @@ function maybeDetectPhishing(theController) {
         blockedUrl = details.initiator;
       }
 
-      if (!isFirefox) {
-        theController.metaMetricsController.trackEvent(
-          {
-            // should we differentiate between background redirection and content script redirection?
-            event: MetaMetricsEventName.PhishingPageDisplayed,
-            category: MetaMetricsEventCategory.Phishing,
-            properties: {
-              url: blockedUrl,
-              referrer: {
-                url: blockedUrl,
-              },
-              reason: blockReason,
-              requestDomain: blockedRequestResponse.result
-                ? hostname
-                : undefined,
-            },
-          },
-          {
-            excludeMetaMetricsId: true,
-          },
-        );
-      }
       const querystring = new URLSearchParams({ hostname, href });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
       const redirectHref = redirectUrl.toString();
+
+      // Helper function to track phishing page metrics
+      const trackPhishingMetrics = () => {
+        if (!isFirefox) {
+          theController.metaMetricsController.trackEvent(
+            {
+              // should we differentiate between background redirection and content script redirection?
+              event: MetaMetricsEventName.PhishingPageDisplayed,
+              category: MetaMetricsEventCategory.Phishing,
+              properties: {
+                url: blockedUrl,
+                referrer: {
+                  url: blockedUrl,
+                },
+                reason: blockReason,
+                requestDomain: blockedRequestResponse.result
+                  ? hostname
+                  : undefined,
+              },
+            },
+            {
+              excludeMetaMetricsId: true,
+            },
+          );
+        }
+      };
 
       // blocking is better than tab redirection, as blocking will prevent
       // the browser from loading the page at all
@@ -388,13 +409,21 @@ function maybeDetectPhishing(theController) {
         // For non-`main_frame` requests (e.g. `sub_frame` or WebSocket), we cancel them
         // and redirect the whole tab asynchronously so that the user sees the warning.
         if (details.type === 'main_frame') {
+          trackPhishingMetrics();
           return { redirectUrl: redirectHref };
         }
-        redirectTab(details.tabId, redirectHref);
+        redirectTab(details.tabId, redirectHref).then((redirected) => {
+          if (redirected) {
+            trackPhishingMetrics();
+          }
+        });
         return { cancel: true };
       }
-      // redirect the whole tab (even if it's a sub_frame request)
-      redirectTab(details.tabId, redirectHref);
+      redirectTab(details.tabId, redirectHref).then((redirected) => {
+        if (redirected) {
+          trackPhishingMetrics();
+        }
+      });
       return {};
     },
     {

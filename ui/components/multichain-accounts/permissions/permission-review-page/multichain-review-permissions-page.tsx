@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { CaipChainId, NonEmptyArray } from '@metamask/utils';
 import {
   getAllScopesFromCaip25CaveatValue,
@@ -57,19 +57,26 @@ import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGrou
 import { getCaip25CaveatValueFromPermissions } from '../../../../pages/permissions-connect/connect-page/utils';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
 import { MultichainEditAccountsPage } from '../multichain-edit-accounts-page/multichain-edit-accounts-page';
+import {
+  AppState,
+  getPermissionMetaDataByOrigin,
+} from '../../../../selectors/gator-permissions/gator-permissions';
+import { PermissionsCell } from '../../../multichain/pages/gator-permissions/components';
+import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 
 export enum MultichainReviewPermissionsPageMode {
   Summary = 'summary',
   EditAccounts = 'edit-accounts',
 }
 
-export const MultichainReviewPermissions = () => {
+export const MultichainReviewPermissions = ({
+  origin: originProp,
+}: { origin?: string } = {}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
-  const urlParams = useParams<{ origin: string }>();
+  const navigate = useNavigate();
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
-  const securedOrigin = decodeURIComponent(urlParams.origin);
+  const securedOrigin = decodeURIComponent(originProp);
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
@@ -95,7 +102,7 @@ export const MultichainReviewPermissions = () => {
     );
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    history.push(`${CONNECT_ROUTE}/${requestId}`);
+    navigate(`${CONNECT_ROUTE}/${requestId}`);
   };
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -240,6 +247,25 @@ export const MultichainReviewPermissions = () => {
     [activeTabOrigin, connectedChainIds, dispatch, supportedAccountGroups],
   );
 
+  const gatorPermissionsGroupMetaData = useSelector((state) =>
+    getPermissionMetaDataByOrigin(state as AppState, activeTabOrigin),
+  );
+
+  const shouldRenderGatorPermissionGroupDetails = useMemo(() => {
+    if (!gatorPermissionsGroupMetaData) {
+      return false;
+    }
+
+    const isPermissionGroupDetailsMapEmpty = Object.values(
+      gatorPermissionsGroupMetaData,
+    ).every((details) => details.count === 0);
+
+    return (
+      isGatorPermissionsRevocationFeatureEnabled() &&
+      !isPermissionGroupDetailsMapEmpty
+    );
+  }, [gatorPermissionsGroupMetaData]);
+
   return pageMode === MultichainReviewPermissionsPageMode.Summary ? (
     <Page
       data-testid="connections-page"
@@ -264,6 +290,21 @@ export const MultichainReviewPermissions = () => {
           ) : (
             <NoConnectionContent />
           )}
+          {shouldRenderGatorPermissionGroupDetails
+            ? Object.entries(gatorPermissionsGroupMetaData).map(
+                ([permissionGroupName, details]) => (
+                  <PermissionsCell
+                    key={permissionGroupName}
+                    nonTestNetworks={nonTestNetworks}
+                    testNetworks={testNetworks}
+                    totalCount={details.count}
+                    chainIds={details.chains}
+                    paddingTop={connectedAccountGroups.length === 0 ? 4 : 0}
+                  />
+                ),
+              )
+            : null}
+
           {showDisconnectAllModal ? (
             <DisconnectAllModal
               type={DisconnectType.Account}

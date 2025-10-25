@@ -1,11 +1,10 @@
 import '@testing-library/jest-dom';
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { SolScope } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import type { AccountGroupId, AccountWalletId } from '@metamask/account-api';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { getWalletsWithAccounts } from '../../../selectors/multichain-accounts/account-tree';
@@ -78,19 +77,39 @@ jest.mock('../../../selectors', () => ({
   getMetaMaskHdKeyrings: jest.fn(),
   getIsBitcoinSupportEnabled: jest.fn(() => true),
   getIsSolanaSupportEnabled: jest.fn(() => true),
+  getTokensAcrossChainsByAccountAddressSelector: jest.fn(() => ({})),
+  getNativeTokenCachedBalanceByChainIdSelector: jest.fn(() => ({})),
+  getSelectedAccountTokensAcrossChains: jest.fn(() => ({})),
+  getCrossChainMetaMaskCachedBalances: jest.fn(() => ({})),
+  getInternalAccounts: jest.fn(() => ({})),
 }));
 
-jest.mock('react-router-dom', () => ({
-  useHistory: jest.fn(),
-  useParams: jest.fn(),
-}));
+const mockUseNavigate = jest.fn();
+const mockUseParams = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useParams: () => mockUseParams(),
+  };
+});
 
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
   getWalletsWithAccounts: jest.fn(),
+  getAllAccountGroups: jest.fn(() => []),
+  getSelectedAccountGroup: jest.fn(
+    () => 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+  ),
 }));
 
 jest.mock('../../../ducks/metamask/metamask', () => ({
   getIsPrimarySeedPhraseBackedUp: jest.fn(),
+  getTokenBalances: jest.fn(() => ({})),
+  getCurrentCurrency: jest.fn(() => 'usd'),
+  getMarketData: jest.fn(() => ({})),
+  getCurrencyRates: jest.fn(() => ({})),
+  getPreferences: jest.fn(() => ({ useNativeCurrencyAsPrimaryCurrency: true })),
+  getIsTokenNetworkFilterEqualCurrentNetwork: jest.fn(() => true),
 }));
 
 // Consolidated component mocks
@@ -326,27 +345,18 @@ describe('WalletDetails', () => {
       },
     ]);
     (getIsPrimarySeedPhraseBackedUp as jest.Mock).mockReturnValue(false);
-    (useParams as jest.Mock).mockReturnValue({
+    (mockUseParams as jest.Mock).mockReturnValue({
       id: 'entropy:test-entropy-wallet',
     });
 
-    return render(
-      <Provider store={configureStore(mockState)}>
-        <WalletDetails />
-      </Provider>,
-    );
+    return renderWithProvider(<WalletDetails />, configureStore(mockState));
   };
 
   const renderComponent = () =>
-    render(
-      <Provider store={configureStore(mockState)}>
-        <WalletDetails />
-      </Provider>,
-    );
+    renderWithProvider(<WalletDetails />, configureStore(mockState));
 
   beforeEach(() => {
-    (useHistory as jest.Mock).mockReturnValue(mockHistory);
-    (useParams as jest.Mock).mockReturnValue(mockParams);
+    mockUseParams.mockReturnValue(mockParams);
     setupMocks();
     [
       mockAddNewAccount,
@@ -391,7 +401,7 @@ describe('WalletDetails', () => {
   it('navigates back when back button is clicked', () => {
     const { getByLabelText } = renderComponent();
     fireEvent.click(getByLabelText('back'));
-    expect(mockHistory.goBack).toHaveBeenCalled();
+    expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
   describe('Add Account Button', () => {

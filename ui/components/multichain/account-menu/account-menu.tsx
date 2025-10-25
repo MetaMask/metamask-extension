@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import {
@@ -36,7 +36,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   getIsWatchEthereumAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -64,7 +64,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
 import {
   ACCOUNT_WATCHER_NAME,
   ACCOUNT_WATCHER_SNAP_ID,
@@ -100,7 +100,7 @@ export const ACTION_MODES = {
   MENU: 'menu',
   // Displays the add account form controls
   ADD: 'add',
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   // Displays the add account form controls (for watch-only account)
   ADD_WATCH_ONLY: 'add-watch-only',
   ///: END:ONLY_INCLUDE_IF
@@ -152,7 +152,7 @@ export const getActionTitle = (
       return t('addAccountFromNetwork', [t('networkNameEthereum')]);
     case ACTION_MODES.MENU:
       return t('addAccount');
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
     case ACTION_MODES.ADD_WATCH_ONLY:
       return t('addAccountFromNetwork', [t('networkNameEthereum')]);
     ///: END:ONLY_INCLUDE_IF
@@ -194,7 +194,7 @@ export const AccountMenu = ({
   useEffect(() => {
     endTrace({ name: TraceName.AccountList });
   }, []);
-  const history = useHistory();
+  const navigate = useNavigate();
   const isMultichainAccountsState1Enabled = useSelector(
     getIsMultichainAccountsState1Enabled,
   );
@@ -209,7 +209,7 @@ export const AccountMenu = ({
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   const isAddWatchEthereumAccountEnabled = useSelector(
     getIsWatchEthereumAccountEnabled,
   );
@@ -235,8 +235,8 @@ export const AccountMenu = ({
       },
     });
     onClose();
-    history.push(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
-  }, [trackEvent, hdEntropyIndex, onClose, history]);
+    navigate(`/snaps/view/${encodeURIComponent(ACCOUNT_WATCHER_SNAP_ID)}`);
+  }, [trackEvent, hdEntropyIndex, onClose, navigate]);
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
@@ -514,7 +514,7 @@ export const AccountMenu = ({
                       event:
                         MetaMetricsEventName.ImportSecretRecoveryPhraseClicked,
                     });
-                    history.push(IMPORT_SRP_ROUTE);
+                    navigate(IMPORT_SRP_ROUTE);
                     onClose();
                   }}
                   data-testid="multichain-account-menu-popover-import-srp"
@@ -583,7 +583,7 @@ export const AccountMenu = ({
                       CONNECT_HARDWARE_ROUTE,
                     );
                   } else {
-                    history.push(CONNECT_HARDWARE_ROUTE);
+                    navigate(CONNECT_HARDWARE_ROUTE);
                   }
                 }}
               >
@@ -625,7 +625,7 @@ export const AccountMenu = ({
               ///: END:ONLY_INCLUDE_IF
             }
             {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
               isAddWatchEthereumAccountEnabled && (
                 <Box marginTop={4}>
                   <ButtonLink
@@ -651,7 +651,7 @@ export const AccountMenu = ({
                   startIconName={IconName.Add}
                   onClick={() => {
                     onClose();
-                    history.push(
+                    navigate(
                       `/snaps/view/${encodeURIComponent(
                         INSTITUTIONAL_WALLET_SNAP_ID,
                       )}`,

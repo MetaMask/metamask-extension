@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -19,6 +19,14 @@ const VALID_ADDRESS = '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9';
 const INVALID_ADDRESS = 'aoinsafasdfa';
 const VALID_TOKENID = '1201';
 const INVALID_TOKENID = 'abcde';
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('../../../store/actions.ts', () => ({
   addNftVerifyOwnership: jest
@@ -259,32 +267,27 @@ describe('ImportNftsModal', () => {
 
   it('should route to default route when cancel button is clicked', () => {
     const onClose = jest.fn();
-    const { getByText, history } = renderWithProvider(
+    const { getByText } = renderWithProvider(
       <ImportNftsModal onClose={onClose} />,
       store,
     );
-    const mockPush = jest.spyOn(history, 'push');
 
     const cancelButton = getByText('Cancel');
     fireEvent.click(cancelButton);
 
     // Verify both onClose and history.push are called
     expect(onClose).toHaveBeenCalled();
-    expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('should route to default route when close button is clicked', () => {
     const onClose = jest.fn();
-    const { history } = renderWithProvider(
-      <ImportNftsModal onClose={onClose} />,
-      store,
-    );
-    const mockPush = jest.spyOn(history, 'push');
+    renderWithProvider(<ImportNftsModal onClose={onClose} />, store);
 
     fireEvent.click(document.querySelector('button[aria-label="Close"]'));
 
     // Verify both onClose and history.push are called
     expect(onClose).toHaveBeenCalled();
-    expect(mockPush).toHaveBeenCalledWith(DEFAULT_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 });

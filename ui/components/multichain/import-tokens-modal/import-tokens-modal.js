@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link/dist/token-tracker-link';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
@@ -134,7 +134,7 @@ const TAB_NAMES = {
 
 export const ImportTokensModal = ({ onClose }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [mode, setMode] = useState('');
@@ -293,13 +293,13 @@ export const ImportTokensModal = ({ onClose }) => {
       dispatch(setNewTokensImported(tokenSymbols.join(', ')));
       dispatch(clearPendingTokens());
       dispatch(hideImportTokensModal());
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     } catch (err) {
       dispatch(setNewTokensImportedError('error'));
       dispatch(clearPendingTokens());
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     }
-  }, [dispatch, history, pendingTokens, trackEvent]);
+  }, [dispatch, navigate, pendingTokens, trackEvent]);
 
   useEffect(() => {
     const pendingTokenKeys = Object.keys(pendingTokens);
@@ -766,7 +766,7 @@ export const ImportTokensModal = ({ onClose }) => {
                                 className="import-tokens-modal__autodetect"
                                 onClick={() => {
                                   onClose();
-                                  history.push(
+                                  navigate(
                                     `${SECURITY_ROUTE}#auto-detect-tokens`,
                                   );
                                 }}
@@ -862,7 +862,7 @@ export const ImportTokensModal = ({ onClose }) => {
                                     key="import-token-token-detection-announcement"
                                     onClick={() => {
                                       onClose();
-                                      history.push(
+                                      navigate(
                                         `${SECURITY_ROUTE}#auto-detect-tokens`,
                                       );
                                     }}
@@ -1038,7 +1038,7 @@ export const ImportTokensModal = ({ onClose }) => {
                 trace({ name: TraceName.ImportTokens });
                 await handleAddTokens();
                 endTrace({ name: TraceName.ImportTokens });
-                history.push(DEFAULT_ROUTE);
+                navigate(DEFAULT_ROUTE);
               }}
               block
               data-testid="import-tokens-modal-import-button"

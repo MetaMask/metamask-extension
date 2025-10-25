@@ -1,6 +1,4 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { Provider } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { AssetType } from '../../../../../shared/constants/transaction';
@@ -14,15 +12,17 @@ import {
 import { mockNetworkState } from '../../../../../test/stub/networks';
 
 import { ERC20Asset, NativeAsset, NFT } from '../asset-picker-modal/types';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { AssetPicker } from './asset-picker';
 
 const unknownChainId = '0x2489078';
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => ({
-    push: jest.fn(),
-  })),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const NATIVE_TICKER = 'NATIVE TICKER';
 const store = (
@@ -60,14 +60,13 @@ describe('AssetPicker', () => {
     } as NativeAsset;
     const mockAssetChange = jest.fn();
 
-    const { asFragment } = render(
-      <Provider store={store()}>
-        <AssetPicker
-          header={'testHeader'}
-          asset={asset}
-          onAssetChange={() => mockAssetChange()}
-        />
-      </Provider>,
+    const { asFragment } = renderWithProvider(
+      <AssetPicker
+        header={'testHeader'}
+        asset={asset}
+        onAssetChange={() => mockAssetChange()}
+      />,
+      store(),
     );
     expect(asFragment()).toMatchSnapshot();
   });
@@ -80,15 +79,14 @@ describe('AssetPicker', () => {
     } as NativeAsset;
     const mockAssetChange = jest.fn();
     const mockOnClick = jest.fn();
-    const { getByTestId } = render(
-      <Provider store={store('NATIVE')}>
-        <AssetPicker
-          header={'testHeader'}
-          asset={asset}
-          onAssetChange={() => mockAssetChange()}
-          onClick={mockOnClick}
-        />
-      </Provider>,
+    const { getByTestId } = renderWithProvider(
+      <AssetPicker
+        header={'testHeader'}
+        asset={asset}
+        onAssetChange={() => mockAssetChange()}
+        onClick={mockOnClick}
+      />,
+      store('NATIVE'),
     );
     getByTestId('asset-picker-button').click();
     expect(mockOnClick).toHaveBeenCalled();
@@ -102,14 +100,13 @@ describe('AssetPicker', () => {
     } as NativeAsset;
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByAltText } = render(
-      <Provider store={store('NATIVE')}>
-        <AssetPicker
-          header={'testHeader'}
-          asset={asset}
-          onAssetChange={() => mockAssetChange()}
-        />
-      </Provider>,
+    const { getByText, getByAltText } = renderWithProvider(
+      <AssetPicker
+        header={'testHeader'}
+        asset={asset}
+        onAssetChange={() => mockAssetChange()}
+      />,
+      store('NATIVE'),
     );
     expect(getByText('NATIVE')).toBeInTheDocument();
     const img = getByAltText('Ethereum logo');
@@ -129,14 +126,13 @@ describe('AssetPicker', () => {
     } as NativeAsset;
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByAltText } = render(
-      <Provider store={store(NATIVE_TICKER)}>
-        <AssetPicker
-          header={'testHeader'}
-          asset={asset}
-          onAssetChange={() => mockAssetChange()}
-        />
-      </Provider>,
+    const { getByText, getByAltText } = renderWithProvider(
+      <AssetPicker
+        header={'testHeader'}
+        asset={asset}
+        onAssetChange={() => mockAssetChange()}
+      />,
+      store(NATIVE_TICKER),
     );
     expect(getByText('NATIVE...')).toBeInTheDocument();
     const img = getByAltText('Ethereum logo');
@@ -157,14 +153,13 @@ describe('AssetPicker', () => {
     } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByAltText } = render(
-      <Provider store={store("SHOULDN'T MATTER")}>
-        <AssetPicker
-          header={'testHeader'}
-          asset={asset}
-          onAssetChange={() => mockAssetChange()}
-        />
-      </Provider>,
+    const { getByText, getByAltText } = renderWithProvider(
+      <AssetPicker
+        header={'testHeader'}
+        asset={asset}
+        onAssetChange={() => mockAssetChange()}
+      />,
+      store("SHOULDN'T MATTER"),
     );
     expect(getByText('symbol')).toBeInTheDocument();
     const img = getByAltText('symbol logo');
@@ -185,14 +180,13 @@ describe('AssetPicker', () => {
     } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
-    const { getByText, getByAltText } = render(
-      <Provider store={store("SHOULDN'T MATTER")}>
-        <AssetPicker
-          header={'testHeader'}
-          asset={asset}
-          onAssetChange={() => mockAssetChange()}
-        />
-      </Provider>,
+    const { getByText, getByAltText } = renderWithProvider(
+      <AssetPicker
+        header={'testHeader'}
+        asset={asset}
+        onAssetChange={() => mockAssetChange()}
+      />,
+      store("SHOULDN'T MATTER"),
     );
     expect(getByText('symbol...')).toBeInTheDocument();
     const img = getByAltText('symbol overflow logo');
@@ -212,20 +206,17 @@ describe('AssetPicker', () => {
     } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
-    const { getByText } = render(
-      <Provider
-        store={store(
-          "SHOULDN'T MATTER",
-          [{ address: 'token address', iconUrl: 'token icon url' }],
-          unknownChainId,
-        )}
-      >
-        <AssetPicker
-          header={'testHeader'}
-          asset={asset}
-          onAssetChange={() => mockAssetChange()}
-        />
-      </Provider>,
+    const { getByText } = renderWithProvider(
+      <AssetPicker
+        header={'testHeader'}
+        asset={asset}
+        onAssetChange={() => mockAssetChange()}
+      />,
+      store(
+        "SHOULDN'T MATTER",
+        [{ address: 'token address', iconUrl: 'token icon url' }],
+        unknownChainId,
+      ),
     );
     expect(getByText('symbol')).toBeInTheDocument();
     expect(getByText('?')).toBeInTheDocument();
@@ -239,14 +230,13 @@ describe('AssetPicker', () => {
     } as NFT;
     const mockAssetChange = jest.fn();
 
-    const { getByText } = render(
-      <Provider store={store()}>
-        <AssetPicker
-          header={'testHeader'}
-          asset={asset}
-          onAssetChange={() => mockAssetChange()}
-        />
-      </Provider>,
+    const { getByText } = renderWithProvider(
+      <AssetPicker
+        header={'testHeader'}
+        asset={asset}
+        onAssetChange={() => mockAssetChange()}
+      />,
+      store(),
     );
     expect(getByText('#1234567890')).toBeInTheDocument();
   });
@@ -259,14 +249,13 @@ describe('AssetPicker', () => {
     } as NFT;
     const mockAssetChange = jest.fn();
 
-    const { getByText } = render(
-      <Provider store={store()}>
-        <AssetPicker
-          header={'testHeader'}
-          asset={asset}
-          onAssetChange={() => mockAssetChange()}
-        />
-      </Provider>,
+    const { getByText } = renderWithProvider(
+      <AssetPicker
+        header={'testHeader'}
+        asset={asset}
+        onAssetChange={() => mockAssetChange()}
+      />,
+      store(),
     );
     expect(getByText('#123456...3456')).toBeInTheDocument();
   });
@@ -284,17 +273,14 @@ describe('AssetPicker', () => {
       image: images,
     } as NFT;
 
-    const { debug, getByAltText } = render(
-      <Provider store={store()}>
-        <AssetPicker
-          header={'testHeader'}
-          asset={asset}
-          onAssetChange={jest.fn()}
-        />
-      </Provider>,
+    const { getByAltText } = renderWithProvider(
+      <AssetPicker
+        header={'testHeader'}
+        asset={asset}
+        onAssetChange={() => mockAssetChange()}
+      />,
+      store(),
     );
-
-    debug();
     const elem = getByAltText('My NFT logo');
     expect(elem).toHaveAttribute('src', images[0]);
   });
@@ -307,21 +293,18 @@ describe('AssetPicker', () => {
     } as ERC20Asset;
     const mockAssetChange = jest.fn();
 
-    const { container } = render(
-      <Provider
-        store={store(
-          "SHOULDN'T MATTER",
-          [{ address: 'token address', iconUrl: 'token icon url' }],
-          unknownChainId,
-        )}
-      >
-        <AssetPicker
-          header={'testHeader'}
-          asset={asset}
-          onAssetChange={() => mockAssetChange()}
-          isDisabled
-        />
-      </Provider>,
+    const { container } = renderWithProvider(
+      <AssetPicker
+        header={'testHeader'}
+        asset={asset}
+        onAssetChange={() => mockAssetChange()}
+        isDisabled
+      />,
+      store(
+        "SHOULDN'T MATTER",
+        [{ address: 'token address', iconUrl: 'token icon url' }],
+        unknownChainId,
+      ),
     );
 
     expect(container).toMatchSnapshot();
@@ -336,15 +319,30 @@ describe('AssetPicker', () => {
 
     const mockAssetChange = jest.fn();
 
-    const { asFragment } = render(
-      <Provider store={store(NATIVE_TICKER)}>
-        <AssetPicker
-          header={'testHeader'}
-          asset={asset}
-          onAssetChange={() => mockAssetChange()}
-          isDisabled
-          networkProps={{
-            network: {
+    const { asFragment } = renderWithProvider(
+      <AssetPicker
+        header={'testHeader'}
+        asset={asset}
+        onAssetChange={() => mockAssetChange()}
+        isDisabled
+        networkProps={{
+          network: {
+            chainId: '0x1',
+            nativeCurrency: 'ETH',
+            defaultBlockExplorerUrlIndex: 0,
+            blockExplorerUrls: ['https://explorerurl'],
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                networkClientId: 'test1',
+                url: 'https://rpcurl',
+                type: RpcEndpointType.Custom,
+              },
+            ],
+            name: 'network',
+          },
+          networks: [
+            {
               chainId: '0x1',
               nativeCurrency: 'ETH',
               defaultBlockExplorerUrlIndex: 0,
@@ -357,44 +355,28 @@ describe('AssetPicker', () => {
                   type: RpcEndpointType.Custom,
                 },
               ],
-              name: 'network',
+              name: 'Network name 3',
             },
-            networks: [
-              {
-                chainId: '0x1',
-                nativeCurrency: 'ETH',
-                defaultBlockExplorerUrlIndex: 0,
-                blockExplorerUrls: ['https://explorerurl'],
-                defaultRpcEndpointIndex: 0,
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'test1',
-                    url: 'https://rpcurl',
-                    type: RpcEndpointType.Custom,
-                  },
-                ],
-                name: 'Network name 3',
-              },
-              {
-                chainId: '0xa',
-                nativeCurrency: 'ETH',
-                defaultBlockExplorerUrlIndex: 0,
-                blockExplorerUrls: ['https://explorerurl'],
-                defaultRpcEndpointIndex: 0,
-                rpcEndpoints: [
-                  {
-                    networkClientId: 'test2',
-                    url: 'https://rpcurl',
-                    type: RpcEndpointType.Custom,
-                  },
-                ],
-                name: 'Network name 4',
-              },
-            ],
-            onNetworkChange: jest.fn(),
-          }}
-        />
-      </Provider>,
+            {
+              chainId: '0xa',
+              nativeCurrency: 'ETH',
+              defaultBlockExplorerUrlIndex: 0,
+              blockExplorerUrls: ['https://explorerurl'],
+              defaultRpcEndpointIndex: 0,
+              rpcEndpoints: [
+                {
+                  networkClientId: 'test2',
+                  url: 'https://rpcurl',
+                  type: RpcEndpointType.Custom,
+                },
+              ],
+              name: 'Network name 4',
+            },
+          ],
+          onNetworkChange: jest.fn(),
+        }}
+      />,
+      store(NATIVE_TICKER),
     );
 
     expect(asFragment()).toMatchSnapshot();

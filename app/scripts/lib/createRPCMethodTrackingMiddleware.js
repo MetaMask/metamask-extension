@@ -536,6 +536,20 @@ export default function createRPCMethodTrackingMiddleware({
 
       CUSTOM_PROPERTIES_MAP[invokedMethod]?.(req, res, stage, eventProperties);
 
+      if (eventType.REQUESTED === MetaMetricsEventName.SignatureRequested) {
+        // get the snap and hardware info again in case we were not able to during the initial request
+        // because the KeyringController was locked
+        const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
+          getAccountType,
+          getDeviceModel,
+          getHardwareTypeForMetric,
+          snapAndHardwareMessenger,
+        );
+
+        // merge the snapAndHardwareInfo into eventProperties
+        Object.assign(eventProperties, snapAndHardwareInfo);
+      }
+
       let blockaidMetricProps = {};
       if (SIGNING_METHODS.includes(invokedMethod)) {
         const securityAlertResponse =

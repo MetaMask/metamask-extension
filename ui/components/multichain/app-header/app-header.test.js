@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { SEND_STAGES } from '../../../ducks/send';
 // TODO: Remove restricted import
@@ -15,10 +15,14 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  // eslint-disable-next-line react/prop-types
-  Link: ({ children, ...props }) => <a {...props}>{children}</a>,
-}));
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    matchPath: jest.fn(),
+    // eslint-disable-next-line react/prop-types
+    Link: ({ children, ...props }) => <a {...props}>{children}</a>,
+  };
+});
 
 const render = ({
   stateChanges = {},

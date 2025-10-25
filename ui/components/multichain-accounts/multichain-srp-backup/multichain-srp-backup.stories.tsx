@@ -1,6 +1,5 @@
 import React from 'react';
 import { StoryObj, Meta } from '@storybook/react';
-import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -27,11 +26,9 @@ const meta: Meta<typeof MultichainSrpBackup> = {
 
       return (
         <Provider store={store}>
-          <MemoryRouter>
-            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-              <Story />
-            </div>
-          </MemoryRouter>
+          <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+            <Story />
+          </div>
         </Provider>
       );
     },

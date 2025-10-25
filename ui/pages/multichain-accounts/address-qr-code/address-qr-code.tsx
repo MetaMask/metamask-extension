@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { parseCaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom-v5-compat';
 import {
   Page,
   Header,
@@ -35,7 +35,7 @@ import { getAccountTypeCategory } from '../account-details';
 
 export const AddressQRCode = () => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { address } = useParams();
   const trackEvent = useContext(MetaMetricsContext);
   const account = useSelector((state) =>
@@ -90,7 +90,7 @@ export const AddressQRCode = () => {
             ariaLabel="Back"
             iconName={IconName.ArrowLeft}
             size={ButtonIconSize.Sm}
-            onClick={() => history.goBack()}
+            onClick={() => navigate(-1)}
           />
         }
       >

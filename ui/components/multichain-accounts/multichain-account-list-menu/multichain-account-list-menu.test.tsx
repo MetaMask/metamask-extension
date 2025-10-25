@@ -21,7 +21,7 @@ import {
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainAccountListMenu } from '.';
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
