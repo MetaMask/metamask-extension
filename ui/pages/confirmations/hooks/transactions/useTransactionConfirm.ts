@@ -5,6 +5,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
@@ -13,6 +14,7 @@ import {
   getIsSmartTransaction,
   type SmartTransactionsState,
 } from '../../../../../shared/modules/selectors';
+import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
@@ -52,6 +54,43 @@ export function useTransactionConfirm() {
     newTransactionMeta.isExternalSign = true;
   }, [newTransactionMeta]);
 
+  const navigate = useNavigate();
+  /**
+   * Handle shield subscription approval transaction after confirm in UI
+   * (navigation)
+   *
+   * @param txMeta - The transaction meta
+   */
+  const handleShieldSubscriptionApprovalTransactionAfterConfirm = useCallback(
+    (txMeta: TransactionMeta) => {
+      if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
+        return;
+      }
+
+      navigate(`${TRANSACTION_SHIELD_ROUTE}/?waitForSubscriptionCreation=true`);
+    },
+    [navigate],
+  );
+
+  /**
+   * Handle shield subscription approval transaction approval error
+   * (navigation)
+   *
+   * @param txMeta - The transaction meta
+   */
+  const handleShieldSubscriptionApprovalTransactionAfterConfirmErr =
+    useCallback(
+      (txMeta: TransactionMeta) => {
+        if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
+          return;
+        }
+
+        // go back to previous screen from navigate in `handleShieldSubscriptionApprovalTransactionAfterConfirm`
+        navigate(-1);
+      },
+      [navigate],
+    );
+
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
 
@@ -61,7 +100,25 @@ export function useTransactionConfirm() {
       handleGasless7702();
     }
 
-    await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+    await dispatch(
+      updateAndApproveTx({
+        txMeta: newTransactionMeta,
+        dontShowLoadingIndicator: true,
+        loadingIndicatorMessage: '',
+        onBeforeApproveTx: () => {
+          // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
+          // navigate to shield settings page first before approving transaction to wait for subscription creation there
+          handleShieldSubscriptionApprovalTransactionAfterConfirm(
+            newTransactionMeta,
+          );
+        },
+        onApproveTxError: () => {
+          handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
+            newTransactionMeta,
+          );
+        },
+      }),
+    );
   }, [
     customNonceValue,
     dispatch,
@@ -70,6 +127,8 @@ export function useTransactionConfirm() {
     isSmartTransaction,
     newTransactionMeta,
     selectedGasFeeToken,
+    handleShieldSubscriptionApprovalTransactionAfterConfirm,
+    handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
   ]);
 
   return {

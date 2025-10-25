@@ -19,6 +19,11 @@ jest.mock('../../../../store/actions', () => ({
   updateAndApproveTx: jest.fn(),
 }));
 
+jest.mock('react-router-dom-v5-compat', () => ({
+  ...jest.requireActual('react-router-dom-v5-compat'),
+  useNavigate: jest.fn(),
+}));
+
 const CUSTOM_NONCE_VALUE = '1234';
 
 const TRANSACTION_META_MOCK =
@@ -78,7 +83,8 @@ describe('useTransactionConfirm', () => {
 
     await onTransactionConfirm();
 
-    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
+    const actualTransactionMeta =
+      updateAndApproveTxMock.mock.calls[0][0].txMeta;
 
     expect(actualTransactionMeta).toStrictEqual(
       expect.objectContaining({
@@ -97,7 +103,8 @@ describe('useTransactionConfirm', () => {
 
     await onTransactionConfirm();
 
-    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
+    const actualTransactionMeta =
+      updateAndApproveTxMock.mock.calls[0][0].txMeta;
 
     expect(actualTransactionMeta.batchTransactions).toStrictEqual([
       {
@@ -125,7 +132,8 @@ describe('useTransactionConfirm', () => {
 
     await onTransactionConfirm();
 
-    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
+    const actualTransactionMeta =
+      updateAndApproveTxMock.mock.calls[0][0].txMeta;
 
     expect(actualTransactionMeta.txParams).toStrictEqual(
       expect.objectContaining({
@@ -145,7 +153,8 @@ describe('useTransactionConfirm', () => {
 
     await onTransactionConfirm();
 
-    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
+    const actualTransactionMeta =
+      updateAndApproveTxMock.mock.calls[0][0].txMeta;
 
     expect(actualTransactionMeta.txParams).toStrictEqual(
       expect.objectContaining({
