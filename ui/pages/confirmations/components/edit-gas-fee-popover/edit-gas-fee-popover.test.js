@@ -67,19 +67,13 @@ const render = async ({ txProps, contextProps } = {}) => {
       ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI, ticker: 'ETH' }),
       accountsByChainId: {
         [CHAIN_IDS.GOERLI]: {
-          '0xAddress': { address: '0xAddress', balance: '0x1F4' },
-        },
-      },
-      accounts: {
-        '0xAddress': {
-          address: '0xAddress',
-          balance: '0x1F4',
+          '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc': { balance: '0x1F4' },
         },
       },
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-            address: '0xAddress',
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             metadata: {
               name: 'Test Account',
@@ -160,7 +154,10 @@ describe('EditGasFeePopover', () => {
         status: TransactionStatus.unapproved,
         type: TransactionType.simpleSend,
         userFeeLevel: 'high',
-        txParams: { value: '0x64', from: '0xAddress' },
+        txParams: {
+          value: '0x64',
+          from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        },
       },
     });
     expect(screen.queryByText('Insufficient funds.')).not.toBeInTheDocument();
@@ -172,7 +169,10 @@ describe('EditGasFeePopover', () => {
         status: TransactionStatus.unapproved,
         type: TransactionType.simpleSend,
         userFeeLevel: 'high',
-        txParams: { value: '0x5208', from: '0xAddress' },
+        txParams: {
+          value: '0x5208',
+          from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        },
       },
     });
     expect(screen.queryByText('Insufficient funds.')).toBeInTheDocument();

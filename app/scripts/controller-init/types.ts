@@ -7,7 +7,6 @@ import {
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import { Browser } from 'webextension-polyfill';
 import { ExportableKeyEncryptor } from '@metamask/keyring-controller';
 import { KeyringClass } from '@metamask/keyring-utils';
@@ -155,13 +154,6 @@ export type ControllerInitRequest<
    * The Infura project ID to use for the network controller.
    */
   infuraProjectId: string;
-
-  /**
-   * Function to update account balance for network of the transaction
-   */
-  updateAccountBalanceForTransactionNetwork(
-    transactionMeta: TransactionMeta,
-  ): void;
 
   /**
    * A promise that resolves when the offscreen document is ready.

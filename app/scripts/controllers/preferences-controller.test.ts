@@ -380,11 +380,17 @@ describe('preferences controller', () => {
       expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
         true,
       );
+      expect(controller.state.isMultiAccountBalancesEnabled).toStrictEqual(
+        true,
+      );
     });
 
     it('should set the setUseMultiAccountBalanceChecker property in state', () => {
       controller.setUseMultiAccountBalanceChecker(false);
       expect(controller.state.useMultiAccountBalanceChecker).toStrictEqual(
+        false,
+      );
+      expect(controller.state.isMultiAccountBalancesEnabled).toStrictEqual(
         false,
       );
     });

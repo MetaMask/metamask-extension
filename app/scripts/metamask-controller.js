@@ -201,6 +201,7 @@ import {
   isGatorPermissionsFeatureEnabled,
 } from '../../shared/modules/environment';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { getShieldGatewayConfig } from '../../shared/modules/shield';
 import {
   HYPERLIQUID_ORIGIN,
@@ -281,7 +282,6 @@ import {
   validateRequestWithPPOM,
 } from './lib/ppom/ppom-util';
 import createEvmMethodsToNonEvmAccountReqFilterMiddleware from './lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware';
-import { isEthAddress } from './lib/multichain/address';
 
 import { decodeTransactionData } from './lib/transaction/decode/util';
 import createTracingMiddleware from './lib/createTracingMiddleware';
@@ -751,13 +751,6 @@ export default class MetamaskController extends EventEmitter {
       this._onLock(),
     );
 
-    this.controllerMessenger.subscribe(
-      'KeyringController:stateChange',
-      (state) => {
-        this._onKeyringControllerUpdate(state);
-      },
-    );
-
     this.userOperationController.hub.on(
       'user-operation-added',
       this._onUserOperationAdded.bind(this),
@@ -1139,9 +1132,6 @@ export default class MetamaskController extends EventEmitter {
 
     // if this is the first time, clear the state of by calling these methods
     const resetMethods = [
-      this.accountTrackerController.resetState.bind(
-        this.accountTrackerController,
-      ),
       this.decryptMessageController.resetState.bind(
         this.decryptMessageController,
       ),
@@ -3121,10 +3111,9 @@ export default class MetamaskController extends EventEmitter {
         tokenRatesController.stopPollingByPollingToken.bind(
           tokenRatesController,
         ),
-      accountTrackerStartPolling:
-        accountTrackerController.startPollingByNetworkClientId.bind(
-          accountTrackerController,
-        ),
+      accountTrackerStartPolling: accountTrackerController.startPolling.bind(
+        accountTrackerController,
+      ),
       accountTrackerStopPollingByPollingToken:
         accountTrackerController.stopPollingByPollingToken.bind(
           accountTrackerController,
@@ -4523,9 +4512,6 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Update @metamask/accounts-controller to support this.
       this.accountOrderController.updateHiddenAccountsList([]);
 
-      // clear accounts in AccountTrackerController
-      this.accountTrackerController.clearAccounts();
-
       this.txController.clearUnapprovedTransactions();
 
       if (completedOnboarding) {
@@ -4840,7 +4826,7 @@ export default class MetamaskController extends EventEmitter {
       this.accountTrackerController.state.accountsByChainId[
         this.#getGlobalChainId()
       ];
-    const cached = accounts?.[address];
+    const cached = accounts?.[toChecksumHexAddress(address)];
 
     if (cached && cached.balance) {
       return cached.balance;
@@ -4930,10 +4916,6 @@ export default class MetamaskController extends EventEmitter {
     try {
       // Automatic login via config password
       await this.submitPassword(password);
-
-      // Updating accounts in this.accountTrackerController before starting UI syncing ensure that
-      // state has account balance before it is synced with UI
-      await this.accountTrackerController.updateAccountsAllActiveNetworks();
     } finally {
       this._startUISync();
     }
@@ -5061,16 +5043,6 @@ export default class MetamaskController extends EventEmitter {
             accounts = await keyring.getFirstPage();
         }
 
-        // Merge with existing accounts
-        // and make sure addresses are not repeated
-        const oldAccounts = await this.keyringController.getAccounts();
-
-        const accountsToTrack = [
-          ...new Set(
-            oldAccounts.concat(accounts.map((a) => a.address.toLowerCase())),
-          ),
-        ];
-        this.accountTrackerController.syncWithAddresses(accountsToTrack);
         return accounts;
       },
     );
@@ -7514,30 +7486,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   // handlers
-
-  /**
-   * Handle a KeyringController update
-   *
-   * @param {object} state - the KC state
-   * @returns {Promise<void>}
-   * @private
-   */
-  async _onKeyringControllerUpdate(state) {
-    const { keyrings } = state;
-
-    // The accounts tracker only supports EVM addresses and the keyring
-    // controller may pass non-EVM addresses, so we filter them out
-    const addresses = keyrings
-      .reduce((acc, { accounts }) => acc.concat(accounts), [])
-      .filter(isEthAddress);
-
-    if (!addresses.length) {
-      return;
-    }
-
-    this.accountTrackerController.syncWithAddresses(addresses);
-  }
-
   /**
    * Handle global application unlock.
    */
@@ -7727,7 +7675,7 @@ export default class MetamaskController extends EventEmitter {
       // Other dependencies
       getAccountBalance: (account, chainId) =>
         this.accountTrackerController.state.accountsByChainId?.[chainId]?.[
-          account
+          toChecksumHexAddress(account)
         ]?.balance,
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
@@ -7817,17 +7765,6 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:getSelectedNetworkClient',
       )?.provider,
     };
-  }
-
-  updateAccountBalanceForTransactionNetwork(transactionMeta) {
-    const {
-      networkClientId,
-      txParams: { from },
-    } = transactionMeta;
-    this.accountTrackerController.updateAccountByAddress({
-      address: from,
-      networkClientId,
-    });
   }
 
   toggleExternalServices(useExternal) {
@@ -8686,8 +8623,6 @@ export default class MetamaskController extends EventEmitter {
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
       keyringOverrides: this.opts.overrides?.keyrings,
-      updateAccountBalanceForTransactionNetwork:
-        this.updateAccountBalanceForTransactionNetwork.bind(this),
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,

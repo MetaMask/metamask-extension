@@ -872,6 +872,7 @@
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
         "@metamask/metamask-eth-abis": true,
@@ -886,7 +887,7 @@
         "lodash": true,
         "@metamask/assets-controllers>multiformats": true,
         "reselect": true,
-        "single-call-balance-checker-abi": true,
+        "@metamask/assets-controllers>single-call-balance-checker-abi": true,
         "uuid": true
       }
     },
