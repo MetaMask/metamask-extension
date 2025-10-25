@@ -156,4 +156,27 @@ describe('useIsGaslessSupported', () => {
       });
     });
   });
+
+  it('returns false if smart transaction is enabled but sendBundle is not supported', async () => {
+    getIsSmartTransactionMock.mockReturnValue(true);
+    isSendBundleSupportedMock.mockResolvedValue(false);
+    const result = await runHook();
+    expect(result).toStrictEqual({
+      isSupported: false,
+      isSmartTransaction: true,
+    });
+  });
+
+  it('returns false if atomic batch returns no matching chainId', async () => {
+    getIsSmartTransactionMock.mockReturnValue(false);
+    isRelaySupportedMock.mockResolvedValue(true);
+    isAtomicBatchSupportedMock.mockResolvedValue([
+      { chainId: '0x1', isSupported: true, delegationAddress: '0x123' },
+    ]);
+    const result = await runHook();
+    expect(result).toStrictEqual({
+      isSupported: false,
+      isSmartTransaction: false,
+    });
+  });
 });
