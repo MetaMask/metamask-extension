@@ -20,8 +20,14 @@ import { useConfirmationNavigation } from '../../pages/confirmations/hooks/useCo
 import {
   encodeDisableDelegation,
   Delegation,
+  getDelegationHashOffchain,
 } from '../../../shared/lib/delegation/delegation';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import {
+  addPendingRevocation,
+  submitRevocation,
+  isDelegationDisabled,
+} from '../../store/controller-actions/gator-permissions-controller';
 
 export type RevokeGatorPermissionArgs = {
   accountAddress: Hex;
@@ -213,6 +219,43 @@ export function useRevokeGatorPermissions({
       const delegation =
         extractDelegationFromGatorPermissionContext(permissionContext);
 
+      const delegationHash = getDelegationHashOffchain(delegation);
+
+      const isDisabled = await isDelegationDisabled(
+        delegationManagerAddress,
+        delegationHash,
+        networkClientId,
+      );
+
+      if (isDisabled) {
+        await submitRevocation(permissionContext);
+        // Return a mock transaction meta since no actual transaction is needed
+        const mockTransactionMeta = {
+          id: `revoked-${Date.now()}`,
+          status: 'confirmed' as const,
+          txParams: {
+            from: accountAddress,
+            to: delegationManagerAddress,
+            data: '0x',
+            value: '0x0',
+            gas: '0x0',
+            gasPrice: '0x0',
+            nonce: '0x0',
+          },
+          chainId,
+          networkClientId,
+          type: TransactionType.contractInteraction,
+          time: Date.now(),
+          history: [] as unknown[],
+        };
+
+        // Initialize history with the initial state
+        const initialHistoryEntry = { ...mockTransactionMeta };
+        mockTransactionMeta.history = [initialHistoryEntry];
+
+        return mockTransactionMeta as TransactionMeta;
+      }
+
       const encodedCallData = encodeDisableDelegation({
         delegation,
       });
@@ -238,12 +281,15 @@ export function useRevokeGatorPermissions({
         throw new Error('No transaction id found');
       }
 
+      await addPendingRevocation(transactionMeta.id, permissionContext);
+
       return transactionMeta;
     },
     [
       getDefaultRpcEndpoint,
       buildRevokeGatorPermissionArgs,
       extractDelegationFromGatorPermissionContext,
+      chainId,
     ],
   );
 

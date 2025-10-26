@@ -265,6 +265,37 @@ export const encodeDisableDelegation = ({
 };
 
 /**
+ * Encodes the calldata for a disabledDelegations(bytes32) view call.
+ * This is used to check if a delegation has already been disabled on-chain.
+ *
+ * @param params
+ * @param params.delegationHash - The hash of the delegation to check.
+ * @returns The encoded calldata.
+ */
+export const encodeDisabledDelegationsCheck = ({
+  delegationHash,
+}: {
+  delegationHash: Hex;
+}): Hex => {
+  const encodedSignature = toFunctionSelector('disabledDelegations(bytes32)');
+  const encodedData = toHex(encode(['bytes32'], [delegationHash]));
+  return concat([encodedSignature, encodedData]);
+};
+
+/**
+ * Decodes the result from a disabledDelegations(bytes32) view call.
+ *
+ * @param result - The raw hex result from the eth_call.
+ * @returns True if the delegation is disabled, false otherwise.
+ */
+export const decodeDisabledDelegationsResult = (result: Hex): boolean => {
+  if (!result || result === '0x') {
+    return false;
+  }
+  return BigInt(result) !== 0n;
+};
+
+/**
  * Encodes the calldata for a redeemDelegations(delegations,modes,executions) call.
  *
  * @param params
