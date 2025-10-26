@@ -18,11 +18,19 @@ import {
 } from '@metamask/gator-permissions-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { addTransaction } from '../../store/actions';
-import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
+import {
+  encodeDisableDelegation,
+  getDelegationHashOffchain,
+} from '../../../shared/lib/delegation/delegation';
 import {
   getInternalAccounts,
   selectDefaultRpcEndpointByChainId,
 } from '../../selectors';
+import {
+  addPendingRevocation,
+  submitRevocation,
+  isDelegationDisabled,
+} from '../../store/controller-actions/gator-permissions-controller';
 import { useRevokeGatorPermissions } from './useRevokeGatorPermissions';
 
 // Mock the dependencies
@@ -35,12 +43,22 @@ jest.mock('../../store/controller-actions/transaction-controller', () => ({
   addTransactionBatch: jest.fn(),
 }));
 
+jest.mock(
+  '../../store/controller-actions/gator-permissions-controller',
+  () => ({
+    addPendingRevocation: jest.fn(),
+    submitRevocation: jest.fn(),
+    isDelegationDisabled: jest.fn(),
+  }),
+);
+
 jest.mock('@metamask/delegation-core', () => ({
   decodeDelegations: jest.fn(),
 }));
 
 jest.mock('../../../shared/lib/delegation/delegation', () => ({
   encodeDisableDelegation: jest.fn(),
+  getDelegationHashOffchain: jest.fn(),
 }));
 
 jest.mock('../../../shared/lib/delegation', () => ({
@@ -76,6 +94,20 @@ const mockEncodeDisableDelegation =
   encodeDisableDelegation as jest.MockedFunction<
     typeof encodeDisableDelegation
   >;
+const mockGetDelegationHashOffchain =
+  getDelegationHashOffchain as jest.MockedFunction<
+    typeof getDelegationHashOffchain
+  >;
+
+const mockAddPendingRevocation = addPendingRevocation as jest.MockedFunction<
+  typeof addPendingRevocation
+>;
+const mockSubmitRevocation = submitRevocation as jest.MockedFunction<
+  typeof submitRevocation
+>;
+const mockIsDelegationDisabled = isDelegationDisabled as jest.MockedFunction<
+  typeof isDelegationDisabled
+>;
 
 const mockGetInternalAccounts = getInternalAccounts as jest.MockedFunction<
   typeof getInternalAccounts
@@ -227,6 +259,12 @@ describe('useRevokeGatorPermissions', () => {
     mockEncodeDisableDelegation.mockReturnValue(
       '0xencodeddata' as `0x${string}`,
     );
+    mockGetDelegationHashOffchain.mockReturnValue(
+      '0xfd165b374563126931d2be865bbec75623dca111840d148cf88492c0bb997f96' as `0x${string}`,
+    );
+    mockIsDelegationDisabled.mockResolvedValue(false);
+    mockSubmitRevocation.mockResolvedValue(undefined);
+    mockAddPendingRevocation.mockResolvedValue(undefined);
     mockAddTransaction.mockResolvedValue(mockTransactionMeta as never);
 
     // Setup selector mocks
