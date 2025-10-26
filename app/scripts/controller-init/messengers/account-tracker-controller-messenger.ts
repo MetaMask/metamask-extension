@@ -2,13 +2,13 @@ import { Messenger } from '@metamask/base-controller';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
+  NetworkControllerNetworkAddedEvent,
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerListAccountsAction,
-  AccountsControllerSelectedAccountChangeEvent,
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
 import { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
@@ -16,6 +16,7 @@ import {
   TransactionControllerTransactionConfirmedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
+import { KeyringControllerUnlockEvent } from '@metamask/keyring-controller';
 import { PreferencesControllerGetStateAction as InternalPreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
 export type AccountTrackerControllerMessenger = ReturnType<
@@ -30,10 +31,11 @@ type AllowedActions =
   | PreferencesControllerGetStateAction;
 
 type AllowedEvents =
-  | AccountsControllerSelectedAccountChangeEvent
   | AccountsControllerSelectedEvmAccountChangeEvent
   | TransactionControllerTransactionConfirmedEvent
-  | TransactionControllerUnapprovedTransactionAddedEvent;
+  | TransactionControllerUnapprovedTransactionAddedEvent
+  | NetworkControllerNetworkAddedEvent
+  | KeyringControllerUnlockEvent;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -55,10 +57,11 @@ export function getAccountTrackerControllerMessenger(
       'PreferencesController:getState',
     ],
     allowedEvents: [
-      'AccountsController:selectedAccountChange',
       'AccountsController:selectedEvmAccountChange',
       'TransactionController:transactionConfirmed',
       'TransactionController:unapprovedTransactionAdded',
+      'NetworkController:networkAdded',
+      'KeyringController:unlock',
     ],
   });
 }
