@@ -6,7 +6,7 @@ import React, { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Route,
-  RouteComponentProps,
+  type RouteComponentProps,
   Switch,
   useHistory,
   useLocation,
@@ -16,8 +16,8 @@ import type { ApprovalType } from '@metamask/controller-utils';
 
 import { useAppSelector } from '../../store/store';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
+import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat';
 import Initialized from '../../helpers/higher-order-components/initialized';
-import PermissionsConnect from '../permissions-connect';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -237,6 +237,10 @@ const Swaps = mmLazy(
 );
 const CrossChainSwap = mmLazy(
   (() => import('../bridge/index.tsx')) as unknown as DynamicImportType,
+);
+const PermissionsConnect = mmLazy(
+  (() =>
+    import('../permissions-connect/index.js')) as unknown as DynamicImportType,
 );
 const ConfirmAddSuggestedTokenPage = mmLazy(
   (() =>
@@ -619,23 +623,94 @@ export default function Routes() {
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
           />
-          <Authenticated
-            path={`${CONNECT_ROUTE}/:id`}
-            component={PermissionsConnect}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/image/:asset/:id`}
-            component={NftFullImage}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
-            component={Asset}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/:chainId/:asset/`}
-            component={Asset}
-          />
-          <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
+          <Route path={`${CONNECT_ROUTE}/:id`}>
+            {(props: RouteComponentProps<{ id: string }>) => {
+              const {
+                history: v5History,
+                location: v5Location,
+                match: v5Match,
+              } = props;
+
+              // Create a navigate function compatible with v5-compat for the component
+              const navigate = (
+                to: string,
+                options: { replace?: boolean } = {},
+              ) => {
+                if (options.replace) {
+                  v5History.replace(to);
+                } else {
+                  v5History.push(to);
+                }
+              };
+
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const PermissionsConnectWithProps = PermissionsConnect as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <PermissionsConnectWithProps
+                    navigate={navigate}
+                    location={v5Location}
+                    match={v5Match}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/image/:asset/:id`}>
+            {(props: RouteComponentProps<{ asset: string; id: string }>) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const NftFullImageComponent = NftFullImage as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <NftFullImageComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId/:asset/:id`}>
+            {(
+              props: RouteComponentProps<{
+                chainId: string;
+                asset: string;
+                id: string;
+              }>,
+            ) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const AssetComponent = Asset as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId/:asset/`}>
+            {(
+              props: RouteComponentProps<{
+                chainId: string;
+                asset: string;
+              }>,
+            ) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const AssetComponent = Asset as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId`}>
+            {(props: RouteComponentProps<{ chainId: string }>) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const AssetComponent = Asset as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Authenticated
             path={`${DEFI_ROUTE}/:chainId/:protocolId`}
             component={DeFiPage}

@@ -54,9 +54,10 @@ export const EditGasFeesRow = ({
   const tokenValue = gasFeeToken ? gasFeeToken.amountFormatted : nativeFee;
   const metamaskFeeFiat = gasFeeToken?.metamaskFeeFiat;
 
-  const tooltip = gasFeeToken
-    ? t('confirmGasFeeTokenTooltip', [metamaskFeeFiat])
-    : t('estimatedFeeTooltip');
+  const tooltip =
+    gasFeeToken?.metaMaskFee && gasFeeToken.metaMaskFee !== '0x0'
+      ? t('confirmGasFeeTokenTooltip', [metamaskFeeFiat])
+      : t('estimatedFeeTooltip');
 
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const isLoadingGasUsed = !simulationData || balanceChangesResult.pending;
@@ -122,7 +123,7 @@ export const EditGasFeesRow = ({
               color={TextColor.textAlternative}
               paddingBottom={gasFeeToken ? 2 : 0}
             >
-              {gasFeeToken
+              {gasFeeToken?.metaMaskFee && gasFeeToken?.metaMaskFee !== '0x0'
                 ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
                 : ' '}
             </Text>

@@ -1,6 +1,9 @@
 import type { ButtonBaseStyleUtilityProps } from '../button-base/button-base.types';
 import type { PolymorphicComponentPropWithRef } from '../box';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum ButtonSecondarySize {
   Sm = 'sm',
   Md = 'md',
