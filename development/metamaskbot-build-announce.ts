@@ -1,5 +1,6 @@
 import startCase from 'lodash/startCase';
 import { version as VERSION } from '../package.json';
+import { getPageLoadBenchmarkComment } from './page-load-benchmark-pr-comment';
 import { postCommentWithMetamaskBot } from './utils/benchmark-utils';
 
 const benchmarkPlatforms = ['chrome', 'firefox'];
@@ -329,6 +330,9 @@ async function start(): Promise<void> {
   } else {
     console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
   }
+
+  // Add the page load benchmark results (which used to be their own comment) to this comment
+  commentBody += `<details><summary>📊 Page Load Benchmark Results</summary>${await getPageLoadBenchmarkComment()}</details>`;
 
   try {
     const prBundleSizeStatsResponse = await fetch(bundleSizeStatsUrl);

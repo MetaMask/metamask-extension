@@ -13,6 +13,9 @@ on:
         required: false
         type: string
         default: '10'
+    secrets:
+      EXTENSION_BENCHMARK_STATS_TOKEN:
+        required: true
 
 jobs:
   page-load-benchmark-pr:
@@ -23,7 +26,7 @@ jobs:
       OWNER: ${{ github.repository_owner }}
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
-      GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+      GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -46,5 +49,11 @@ jobs:
       - name: Upload benchmark results (github artifacts)
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark-results
-          path: test-artifacts/benchmarks/benchmark-results.json
+          name: page-load-benchmark-results
+          path: test-artifacts/benchmarks/page-load-benchmark-results.json
+
+      - name: Upload benchmark results (historical data)
+        if: ${{ github.ref_name == 'main' }}
+        run: .github/scripts/benchmark-stats-commit.sh
+        env:
+          EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}

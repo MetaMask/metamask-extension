@@ -14,8 +14,8 @@ if [[ -z "${GITHUB_SHA:-}" ]]; then
     exit 1
 fi
 
-if [[ -z "${GITHUB_REPOSITORY_OWNER:-}" ]]; then
-    printf '%s\n' 'GITHUB_REPOSITORY_OWNER environment variable must be set'
+if [[ -z "${OWNER:-}" ]]; then
+    printf '%s\n' 'OWNER environment variable must be set'
     exit 1
 fi
 
@@ -33,7 +33,7 @@ git fetch origin main:main
 
 git checkout main
 
-BENCHMARK_FILE="../test-artifacts/benchmarks/benchmark-results.json"
+BENCHMARK_FILE="../test-artifacts/benchmarks/page-load-benchmark-results.json"
 STATS_FILE="stats/page_load_data.json"
 TEMP_FILE="stats/page_load_data.temp.json"
 
@@ -70,7 +70,7 @@ git add stats/page_load_data.json
 
 git commit --message "Adding page load benchmark data at commit: ${GITHUB_SHA}"
 
-repo_slug="${GITHUB_REPOSITORY_OWNER}/extension_benchmark_stats"
+repo_slug="${OWNER}/extension_benchmark_stats"
 
 git push "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${repo_slug}" main
 
