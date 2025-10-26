@@ -2,7 +2,11 @@ import { Messenger } from '@metamask/messenger';
 import { GatorPermissionsControllerStateChangeEvent } from '@metamask/gator-permissions-controller';
 import { HandleSnapRequest, HasSnap } from '@metamask/snaps-controllers';
 import { RootMessenger } from '../../../lib/messenger';
-import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
+import {
+  TransactionControllerTransactionConfirmedEvent,
+  TransactionControllerTransactionFailedEvent,
+  TransactionControllerTransactionDroppedEvent,
+} from '@metamask/transaction-controller';
 
 export type GatorPermissionsControllerMessenger = ReturnType<
   typeof getGatorPermissionsControllerMessenger
@@ -11,7 +15,9 @@ export type GatorPermissionsControllerMessenger = ReturnType<
 type MessengerActions = HandleSnapRequest | HasSnap;
 type MessengerEvents =
   | GatorPermissionsControllerStateChangeEvent
-  | TransactionControllerTransactionConfirmedEvent;
+  | TransactionControllerTransactionConfirmedEvent
+  | TransactionControllerTransactionFailedEvent
+  | TransactionControllerTransactionDroppedEvent;
 
 /**
  * Get a restricted messenger for the Gator Permissions controller. This is scoped to the
@@ -35,6 +41,11 @@ export function getGatorPermissionsControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: ['SnapController:handleRequest', 'SnapController:has'],
+    events: [
+      'TransactionController:transactionConfirmed',
+      'TransactionController:transactionFailed',
+      'TransactionController:transactionDropped',
+    ],
   });
   return controllerMessenger;
 }
