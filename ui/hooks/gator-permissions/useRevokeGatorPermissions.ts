@@ -220,32 +220,41 @@ export function useRevokeGatorPermissions({
         extractDelegationFromGatorPermissionContext(permissionContext);
 
       const delegationHash = getDelegationHashOffchain(delegation);
-      // const delegationHash =
-      //   '0xfd165b374563126931d2be865bbec75623dca111840d148cf88492c0bb997f96';
-      console.log('🔐 Delegation hash:', delegationHash);
 
-      // Check if delegation is already disabled on-chain
-      console.log('⏳ About to call isDelegationDisabled...');
       const isDisabled = await isDelegationDisabled(
         delegationManagerAddress,
         delegationHash,
         networkClientId,
       );
-      console.log('⏳ isDelegationDisabled completed, result:', isDisabled);
 
       if (isDisabled) {
-        console.log(
-          '✅ Delegation already disabled on-chain, submitting revocation directly',
-        );
         await submitRevocation(permissionContext);
         // Return a mock transaction meta since no actual transaction is needed
-        return {
+        const mockTransactionMeta = {
           id: `revoked-${Date.now()}`,
-          status: 'confirmed',
-        } as TransactionMeta;
-      }
+          status: 'confirmed' as const,
+          txParams: {
+            from: accountAddress,
+            to: delegationManagerAddress,
+            data: '0x',
+            value: '0x0',
+            gas: '0x0',
+            gasPrice: '0x0',
+            nonce: '0x0',
+          },
+          chainId,
+          networkClientId,
+          type: TransactionType.contractInteraction,
+          time: Date.now(),
+          history: [] as unknown[],
+        };
 
-      console.log('⚠️ Delegation is active, creating disable transaction');
+        // Initialize history with the initial state
+        const initialHistoryEntry = { ...mockTransactionMeta };
+        mockTransactionMeta.history = [initialHistoryEntry];
+
+        return mockTransactionMeta as TransactionMeta;
+      }
 
       const encodedCallData = encodeDisableDelegation({
         delegation,
@@ -280,6 +289,7 @@ export function useRevokeGatorPermissions({
       getDefaultRpcEndpoint,
       buildRevokeGatorPermissionArgs,
       extractDelegationFromGatorPermissionContext,
+      chainId,
     ],
   );
 
