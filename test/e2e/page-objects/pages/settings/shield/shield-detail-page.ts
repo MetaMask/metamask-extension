@@ -10,67 +10,84 @@ export default class ShieldDetailPage {
     tag: 'h4',
   };
 
-  // Main page container
   private readonly pageContainer = '[data-testid="transaction-shield-page"]';
 
-  // Membership status elements
-  private readonly membershipStatus =
-    '[data-testid="shield-detail-membership-status"]';
-
-  private readonly customerId = '[data-testid="shield-detail-customer-id"]';
-
-  private readonly trialTag = '[data-testid="shield-detail-trial-tag"]';
-
-  private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
-
-  // Action buttons
-  private readonly viewBenefitsButton =
-    '[data-testid="shield-detail-view-benefits-button"]';
-
-  private readonly submitCaseButton =
-    '[data-testid="shield-detail-submit-case-button"]';
-
-  private readonly resubscribeButton =
-    '[data-testid="shield-detail-resubscribe-button"]';
-
-  private readonly cancelButton =
-    '[data-testid="shield-tx-membership-cancel-button"]';
-
-  private readonly renewButton =
-    '[data-testid="shield-tx-membership-renew-button"]';
-
-  private readonly viewBillingHistoryButton =
-    '[data-testid="shield-detail-view-billing-history-button"]';
-
-  // Billing details section
-  private readonly billingDetailsTitle =
-    '[data-testid="shield-detail-billing-details-title"]';
-
-  private readonly nextBilling = '[data-testid="shield-detail-next-billing"]';
-
-  private readonly charges = '[data-testid="shield-detail-charges"]';
+  private readonly addFundsModal = '[data-testid="add-funds-modal"]';
 
   private readonly billingAccount =
     '[data-testid="shield-detail-billing-account"]';
 
-  private readonly paymentMethod =
-    '[data-testid="shield-detail-payment-method"]';
+  private readonly billingDetailsTitleElement = (text: string) => ({
+    css: '[data-testid="shield-detail-billing-details-title"]',
+    text,
+  });
 
-  // Notification banners
-  private readonly notificationShieldBanner =
-    '.transaction-shield-page__notification-banner';
-
-  private readonly membershipErrorBanner =
-    '[data-testid="membership-error-banner"]';
-
-  // Modal elements
-  private readonly cancelMembershipModal =
-    '[data-testid="cancel-membership-modal"]';
+  private readonly cancelButton =
+    '[data-testid="shield-tx-membership-cancel-button"]';
 
   private readonly cancelMembershipButton =
     'button[data-testid="cancel-membership-modal-submit-button"]';
 
-  private readonly addFundsModal = '[data-testid="add-funds-modal"]';
+  private readonly cancelMembershipModal =
+    '[data-testid="cancel-membership-modal"]';
+
+  private readonly chargesElement = (text: string) => ({
+    css: '[data-testid="shield-detail-charges"]',
+    text,
+  });
+
+  private readonly customerIdElement = (text: string) => ({
+    css: '[data-testid="shield-detail-customer-id"]',
+    text,
+  });
+
+  private readonly membershipErrorBanner =
+    '[data-testid="membership-error-banner"]';
+
+  private readonly membershipStatus =
+    '[data-testid="shield-detail-membership-status"]';
+
+  private readonly membershipStatusElement = (text: string) => ({
+    css: this.membershipStatus,
+    text,
+  });
+
+  private readonly nextBillingElement = (text: string) => ({
+    css: '[data-testid="shield-detail-next-billing"]',
+    text,
+  });
+
+  private readonly notificationShieldBanner =
+    '.transaction-shield-page__notification-banner';
+
+  private readonly notificationShieldBannerElement = (text: string) => ({
+    css: this.notificationShieldBanner,
+    text,
+  });
+
+  private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
+
+  private readonly paymentMethodElement = (text: string) => ({
+    css: '[data-testid="shield-detail-payment-method"]',
+    text,
+  });
+
+  private readonly renewButton =
+    '[data-testid="shield-tx-membership-uncancel-button"]';
+
+  private readonly resubscribeButton =
+    '[data-testid="shield-detail-resubscribe-button"]';
+
+  private readonly submitCaseButton =
+    '[data-testid="shield-detail-submit-case-button"]';
+
+  private readonly trialTag = '[data-testid="shield-detail-trial-tag"]';
+
+  private readonly viewBenefitsButton =
+    '[data-testid="shield-detail-view-benefits-button"]';
+
+  private readonly viewBillingHistoryButton =
+    '[data-testid="shield-detail-view-billing-history-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -92,25 +109,25 @@ export default class ShieldDetailPage {
   }
 
   /**
-   * Get the membership status text
+   * Check if membership status contains expected text
+   *
+   * @param expectedText - The expected text to verify
    */
-  async getMembershipStatus(): Promise<string> {
-    console.log('Getting membership status');
-    const element = await this.driver.findElement(this.membershipStatus);
-    const membershipStatusText = await element.getText();
-    console.log('Membership status text:', membershipStatusText);
-    return membershipStatusText;
+  async checkMembershipStatus(expectedText: string): Promise<void> {
+    console.log(`Checking membership status contains: ${expectedText}`);
+    await this.driver.waitForSelector(
+      this.membershipStatusElement(expectedText),
+    );
   }
 
   /**
-   * Get the customer ID text
+   * Check if customer ID contains expected text
+   *
+   * @param expectedText - The expected text to verify
    */
-  async getCustomerId(): Promise<string> {
-    console.log('Getting customer ID');
-    const element = await this.driver.findElement(this.customerId);
-    const customerIdText = await element.getText();
-    console.log('Customer ID text:', customerIdText);
-    return customerIdText;
+  async checkCustomerId(expectedText: string): Promise<void> {
+    console.log(`Checking customer ID contains: ${expectedText}`);
+    await this.driver.waitForSelector(this.customerIdElement(expectedText));
   }
 
   /**
@@ -167,7 +184,9 @@ export default class ShieldDetailPage {
   async cancelSubscription(): Promise<void> {
     console.log('Cancelling subscription');
     await this.driver.clickElement(this.cancelButton);
-    await this.driver.clickElement(this.cancelMembershipButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.cancelMembershipButton,
+    );
   }
 
   /**
@@ -187,80 +206,59 @@ export default class ShieldDetailPage {
   }
 
   /**
-   * Get the billing details title text
+   * Check if billing details title contains expected text
+   *
+   * @param expectedText - The expected text to verify
    */
-  async getBillingDetailsTitle(): Promise<string> {
-    console.log('Getting billing details title');
-
-    const element = await this.driver.findElement(this.billingDetailsTitle);
-    const billingDetailsTitleText = await element.getText();
-    console.log('Billing details title text:', billingDetailsTitleText);
-    return billingDetailsTitleText;
-  }
-
-  /**
-   * Get the next billing date text
-   */
-  async getNextBillingDate(): Promise<string> {
-    console.log('Getting next billing date');
-
-    const element = await this.driver.findElement(this.nextBilling);
-    const nextBillingDateText = await element.getText();
-    console.log('Next billing date text:', nextBillingDateText);
-    return nextBillingDateText;
-  }
-
-  /**
-   * Get the charges text
-   */
-  async getCharges(): Promise<string> {
-    console.log('Getting charges');
-
-    const element = await this.driver.findElement(this.charges);
-    const chargesText = await element.getText();
-    console.log('Charges text:', chargesText);
-    return chargesText;
-  }
-
-  /**
-   * Get the payment method text
-   */
-  async getPaymentMethod(): Promise<string> {
-    console.log('Getting payment method');
-
-    const element = await this.driver.findElement(this.paymentMethod);
-    const paymentMethodText = await element.getText();
-    console.log('Payment method text:', paymentMethodText);
-    return paymentMethodText;
-  }
-
-  /**
-   * Wait for the page to be fully loaded with all elements
-   */
-  async waitForPageToLoad(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.pageContainer,
-      this.membershipStatus,
-      this.billingDetailsTitle,
-    ]);
-    console.log('Shield Detail page fully loaded');
-  }
-
-  /**
-   * Get the notification shield banner text
-   */
-  async getNotificationShieldBanner(): Promise<string> {
-    console.log('Getting notification shield banner');
-
-    const element = await this.driver.findElement(
-      this.notificationShieldBanner,
+  async checkBillingDetailsTitle(expectedText: string): Promise<void> {
+    console.log(`Checking billing details title contains: ${expectedText}`);
+    await this.driver.waitForSelector(
+      this.billingDetailsTitleElement(expectedText),
     );
-    const notificationShieldBannerText = await element.getText();
+  }
+
+  /**
+   * Check if next billing date contains expected text
+   *
+   * @param expectedText - The expected text to verify
+   */
+  async checkNextBillingDate(expectedText: string): Promise<void> {
+    console.log(`Checking next billing date contains: ${expectedText}`);
+    await this.driver.waitForSelector(this.nextBillingElement(expectedText));
+  }
+
+  /**
+   * Check if charges contain expected text
+   *
+   * @param expectedText - The expected text to verify
+   */
+  async checkCharges(expectedText: string): Promise<void> {
+    console.log(`Checking charges contain: ${expectedText}`);
+    await this.driver.waitForSelector(this.chargesElement(expectedText));
+  }
+
+  /**
+   * Check if payment method contains expected text
+   *
+   * @param expectedText - The expected text to verify
+   */
+  async checkPaymentMethod(expectedText: string): Promise<void> {
+    console.log(`Checking payment method contains: ${expectedText}`);
+    await this.driver.waitForSelector(this.paymentMethodElement(expectedText));
+  }
+
+  /**
+   * Check if notification shield banner contains expected text
+   *
+   * @param expectedText - The expected text to verify
+   */
+  async checkNotificationShieldBanner(expectedText: string): Promise<void> {
     console.log(
-      'Notification shield banner text:',
-      notificationShieldBannerText,
+      `Checking notification shield banner contains: ${expectedText}`,
     );
-    return notificationShieldBannerText;
+    await this.driver.waitForSelector(
+      this.notificationShieldBannerElement(expectedText),
+    );
   }
 
   /**

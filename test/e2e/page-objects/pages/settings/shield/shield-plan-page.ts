@@ -4,10 +4,14 @@ import { Driver } from '../../../../webdriver/driver';
 export default class ShieldPlanPage {
   private readonly driver: Driver;
 
-  private readonly shieldPlanPageTitle = {
-    text: 'Choose your plan',
-    tag: 'h4',
-  };
+  private readonly annualPlanButton =
+    '[data-testid="shield-plan-annual-button"]';
+
+  private readonly continueButton =
+    '[data-testid="shield-plan-continue-button"]';
+
+  private readonly monthlyPlanButton =
+    '[data-testid="shield-plan-monthly-button"]';
 
   private readonly shieldPlanPageAnnualPlan = {
     text: 'Annual',
@@ -19,14 +23,10 @@ export default class ShieldPlanPage {
     tag: 'p',
   };
 
-  private readonly annualPlanButton =
-    '[data-testid="shield-plan-annual-button"]';
-
-  private readonly monthlyPlanButton =
-    '[data-testid="shield-plan-monthly-button"]';
-
-  private readonly continueButton =
-    '[data-testid="shield-plan-continue-button"]';
+  private readonly shieldPlanPageTitle = {
+    text: 'Choose your plan',
+    tag: 'h4',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;

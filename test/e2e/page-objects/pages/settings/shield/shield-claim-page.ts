@@ -4,50 +4,43 @@ import { Driver } from '../../../../webdriver/driver';
 export default class ShieldClaimPage {
   private readonly driver: Driver;
 
-  // Page identification
   private readonly pageContainer = '[data-testid="submit-claim-page"]';
-
-  // Form input fields
-  private readonly emailInput = '[data-testid="shield-claim-email-input"]';
-
-  private readonly impactedWalletAddressInput =
-    '[data-testid="shield-claim-impacted-wallet-address-input"]';
-
-  private readonly impactedTxHashInput =
-    '[data-testid="shield-claim-impacted-tx-hash-input"]';
-
-  private readonly reimbursementWalletAddressInput =
-    '[data-testid="shield-claim-reimbursement-wallet-address-input"]';
-
-  private readonly descriptionTextarea =
-    '[data-testid="shield-claim-description-textarea"]';
-
-  // Help text elements
-  private readonly emailHelpText = '[data-testid="shield-claim-help-text"]';
-
-  private readonly impactedWalletAddressHelpText =
-    '[data-testid="shield-claim-impacted-wallet-address-help-text"]';
-
-  private readonly reimbursementWalletAddressHelpText =
-    '[data-testid="shield-claim-reimbursement-wallet-address-help-text"]';
-
-  // Error message elements
-  private readonly descriptionError =
-    '[data-testid="shield-claim-description-error"]';
 
   private readonly claimSuccessToast = {
     text: 'Claim submitted successfully',
     tag: 'p',
   };
 
-  // File uploader
+  private readonly descriptionError =
+    '[data-testid="shield-claim-description-error"]';
+
+  private readonly descriptionTextarea =
+    '[data-testid="shield-claim-description-textarea"]';
+
+  private readonly emailHelpText = '[data-testid="shield-claim-help-text"]';
+
+  private readonly emailInput = '[data-testid="shield-claim-email-input"]';
+
   private readonly fileUploader = '[data-testid="upload-images-file-uploader"]';
 
-  // Submit button
-  private readonly submitButton = '[data-testid="shield-claim-submit-button"]';
-
-  // Links
   private readonly hereLink = 'a[href="#"]';
+
+  private readonly impactedTxHashInput =
+    '[data-testid="shield-claim-impacted-tx-hash-input"]';
+
+  private readonly impactedWalletAddressHelpText =
+    '[data-testid="shield-claim-impacted-wallet-address-help-text"]';
+
+  private readonly impactedWalletAddressInput =
+    '[data-testid="shield-claim-impacted-wallet-address-input"]';
+
+  private readonly reimbursementWalletAddressHelpText =
+    '[data-testid="shield-claim-reimbursement-wallet-address-help-text"]';
+
+  private readonly reimbursementWalletAddressInput =
+    '[data-testid="shield-claim-reimbursement-wallet-address-input"]';
+
+  private readonly submitButton = '[data-testid="shield-claim-submit-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -195,21 +188,5 @@ export default class ShieldClaimPage {
     await this.clickSubmitButton();
 
     console.log('Claim form submitted');
-  }
-
-  /**
-   * Wait for the page to be fully loaded
-   */
-  async waitForPageToLoad(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.pageContainer,
-      this.emailInput,
-      this.impactedWalletAddressInput,
-      this.impactedTxHashInput,
-      this.reimbursementWalletAddressInput,
-      this.descriptionTextarea,
-      this.submitButton,
-    ]);
-    console.log('Shield Claim page fully loaded');
   }
 }

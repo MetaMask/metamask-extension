@@ -1,7 +1,7 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -16,7 +16,35 @@ import {
   SHIELD_USER_EVENTS_RESPONSE,
 } from '../../helpers/shield/constants';
 import { Driver } from '../../webdriver/driver';
-import { createShieldFixture } from '../../helpers/shield/shield-fixture';
+
+// Local fixture for this spec file
+function createShieldFixture() {
+  return new FixtureBuilder()
+    .withNetworkControllerOnMainnet()
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+      },
+    })
+    .withTokensController({
+      allTokens: {
+        '0x1': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              symbol: 'WETH',
+              decimals: 18,
+              isERC721: false,
+              aggregators: [],
+            },
+          ],
+        },
+      },
+    })
+    .withAppStateController({
+      showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
+    });
+}
 
 async function mockSubscriptionApiCalls(
   mockServer: Mockttp,
@@ -90,46 +118,24 @@ async function mockSubscriptionApiCalls(
 async function validateShieldDetailPage(driver: Driver) {
   const shieldDetailPage = new ShieldDetailPage(driver);
   await shieldDetailPage.checkPageIsLoaded();
-  await shieldDetailPage.waitForPageToLoad();
 
   // Verify customer ID matches mock response
-  const customerId = await shieldDetailPage.getCustomerId();
-  console.log('Customer ID:', customerId);
-  assert(
-    customerId.includes('test_customer_id'),
-    `Expected customer ID to contain 'test_customer_id', but got: ${customerId}`,
-  );
+  await shieldDetailPage.checkCustomerId('test_customer_id');
 
   // Verify trial badge is displayed (status is 'trialing' in mock)
   await shieldDetailPage.checkTrialTagDisplayed();
 
   // Verify membership status
-  const membershipStatus = await shieldDetailPage.getMembershipStatus();
-  assert(
-    membershipStatus.includes('Active membership'),
-    `Expected membership status to indicate Active membership, but got: ${membershipStatus}`,
-  );
+  await shieldDetailPage.checkMembershipStatus('Active membership');
 
   // Verify next billing date (should be 2025-11-03 based on mock)
-  const nextBillingDate = await shieldDetailPage.getNextBillingDate();
-  assert(
-    nextBillingDate.includes('Nov 3'),
-    `Expected next billing date to contain '2025-11-03' or 'Nov 3', but got: ${nextBillingDate}`,
-  );
+  await shieldDetailPage.checkNextBillingDate('Nov 3');
 
   // Verify charges (should be $80.00 based on mock unitAmount: 8000, unitDecimals: 2)
-  const charges = await shieldDetailPage.getCharges();
-  assert(
-    charges.includes('$80'),
-    `Expected charges to contain '$80', but got: ${charges}`,
-  );
+  await shieldDetailPage.checkCharges('$80');
 
   // Verify payment method (should show Visa ending in 4242 based on mock)
-  const paymentMethod = await shieldDetailPage.getPaymentMethod();
-  assert(
-    paymentMethod.includes('Visa') && paymentMethod.includes('4242'),
-    `Expected payment method to contain 'visa' and '4242', but got: ${paymentMethod}`,
-  );
+  await shieldDetailPage.checkPaymentMethod('Visa');
 
   console.log('All Shield Detail page assertions passed successfully');
 }
@@ -151,13 +157,6 @@ async function completeShieldPlanSubscriptionFlow(
 
   // Wait for checkout tab to open and switch to it
   await driver.waitUntilXWindowHandles(2);
-
-  // Switch to the checkout tab and simulate successful payment completion
-  const windowHandles = await driver.getAllWindowHandles();
-
-  await driver.delay(2000);
-  await driver.closeWindowHandle(windowHandles[1]);
-  await driver.waitUntilXWindowHandles(1);
 
   // Switch back to the main MetaMask window
   await driver.switchToWindowWithTitle('MetaMask');

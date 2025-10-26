@@ -1,7 +1,7 @@
-import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -21,8 +21,36 @@ import {
   generateRandomWalletAddress,
   generateRandomTxHash,
   generateRandomDescription,
-} from '../../helpers/shield/test-data-generators';
-import { createShieldFixture } from '../../helpers/shield/shield-fixture';
+} from '../../helpers/test-data-generators';
+
+// Local fixture for this spec file
+function createShieldFixture() {
+  return new FixtureBuilder()
+    .withNetworkControllerOnMainnet()
+    .withEnabledNetworks({
+      eip155: {
+        '0x1': true,
+      },
+    })
+    .withTokensController({
+      allTokens: {
+        '0x1': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
+            {
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              symbol: 'WETH',
+              decimals: 18,
+              isERC721: false,
+              aggregators: [],
+            },
+          ],
+        },
+      },
+    })
+    .withAppStateController({
+      showShieldEntryModalOnce: null, // set the initial state to null so that the modal is shown
+    });
+}
 
 async function mockStripeSubscriptionFlow(mockServer: Mockttp) {
   const userStorageMockttpController = new UserStorageMockttpController();
@@ -127,7 +155,6 @@ describe('Shield Plan Stripe Integration', function () {
 
         const shieldDetailPage = new ShieldDetailPage(driver);
         await shieldDetailPage.checkPageIsLoaded();
-        await shieldDetailPage.waitForPageToLoad();
 
         // Click Claim button to navigate to claim page
         await shieldDetailPage.clickSubmitCaseButton();
@@ -135,7 +162,6 @@ describe('Shield Plan Stripe Integration', function () {
 
         const shieldClaimPage = new ShieldClaimPage(driver);
         await shieldClaimPage.checkPageIsLoaded();
-        await shieldClaimPage.waitForPageToLoad();
 
         // Generate random test data
         const randomEmail = generateRandomEmail();
@@ -185,36 +211,21 @@ describe('Shield Plan Stripe Integration', function () {
 
         const shieldDetailPage = new ShieldDetailPage(driver);
         await shieldDetailPage.checkPageIsLoaded();
-        await shieldDetailPage.waitForPageToLoad();
 
         // Cancel the subscription
         await shieldDetailPage.cancelSubscription();
 
         // Wait for cancellation confirmation and verify status
-        await shieldDetailPage.waitForPageToLoad();
-        const notificationShieldBanner =
-          await shieldDetailPage.getNotificationShieldBanner();
-
-        assert(
-          notificationShieldBanner.includes(
-            'Your membership will be cancelled on Nov 3, 2025.',
-          ),
-          `Expected notification shield banner to include 'Your membership will be cancelled on Nov 3, 2025.', but got: ${notificationShieldBanner}`,
+        await shieldDetailPage.checkNotificationShieldBanner(
+          'Your membership will be cancelled on Nov 3, 2025.',
         );
 
         // Renew the subscription
         await shieldDetailPage.clickRenewButton();
 
         // Wait for renewal confirmation and verify status
-        await shieldDetailPage.waitForPageToLoad();
         await shieldDetailPage.checkNotificationShieldBannerRemoved();
-        const renewedStatus = await shieldDetailPage.getMembershipStatus();
-
-        // Verify renewal status
-        assert(
-          renewedStatus.includes('Active membership'),
-          `Expected renewed status to indicate 'Active membership', but got: ${renewedStatus}`,
-        );
+        await shieldDetailPage.checkMembershipStatus('Active membership');
       },
     );
   });
