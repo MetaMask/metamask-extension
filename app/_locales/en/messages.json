@@ -2352,7 +2352,7 @@
     "message": " Enable it from Settings."
   },
   "enableSmartContractAccount": {
-    "message": "Enable smart contract account"
+    "message": "Enable smart account"
   },
   "enableSmartContractAccountDescription": {
     "message": "You can enable smart account features on supported networks."
@@ -7835,7 +7835,7 @@
     "message": "Username"
   },
   "userOpContractDeployError": {
-    "message": "Contract deployment from a smart contract account is not supported"
+    "message": "Contract deployment from a smart account is not supported"
   },
   "value": {
     "message": "Value"
