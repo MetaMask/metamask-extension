@@ -131,7 +131,6 @@ import { TokenStandard } from '../../shared/constants/transaction';
 import {
   CHAIN_IDS,
   CHAIN_SPEC_URL,
-  FEATURED_NETWORK_CHAIN_IDS,
   FEATURED_RPCS,
   NetworkStatus,
   SUPPORTED_NETWORKS_ACCOUNTS_API_V4,
