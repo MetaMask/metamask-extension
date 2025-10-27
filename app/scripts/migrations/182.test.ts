@@ -5,9 +5,6 @@ import {
 } from '../../../shared/constants/network';
 import { migrate, version } from './182';
 
-// Mock process.env.IN_TEST to allow migration logic to run in tests
-const originalEnv = process.env;
-
 // Mock uuid
 jest.mock('uuid', () => ({
   v4: jest.fn(() => 'mocked-uuid-123'),
@@ -19,13 +16,10 @@ describe(`migration #${version}`, () => {
   beforeEach(() => {
     global.sentry = { captureException: jest.fn() };
     // Mock process.env to allow migration logic to run
-    process.env = { ...originalEnv, IN_TEST: undefined };
   });
 
   afterEach(() => {
     global.sentry = undefined;
-    // Restore original environment
-    process.env = originalEnv;
   });
 
   it('updates the version metadata', async () => {
