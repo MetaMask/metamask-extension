@@ -34,7 +34,7 @@ const onboardingFixtureJson = require('./fixtures/onboarding-fixture.json');
 function onboardingFixture() {
   try {
     // If explicitly set for local runs, prefer the checked-in fixture file
-    if (process.env.LOCAL_FIXTURE) {
+    if (process.env.LOCAL_FIXTURE === 'true') {
       return onboardingFixtureJson;
     }
 
