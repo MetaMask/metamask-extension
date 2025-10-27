@@ -209,6 +209,7 @@ export default function ImportSRP({
           data-testid="import-srp-confirm"
           onClick={onContinue}
           disabled={!secretRecoveryPhrase.trim() || Boolean(srpError)}
+          className="import-srp__continue-button"
         >
           {t('continue')}
         </Button>
