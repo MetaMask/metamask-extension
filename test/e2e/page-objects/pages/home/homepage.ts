@@ -30,7 +30,7 @@ class HomePage {
   };
 
   protected readonly balance: string =
-    '[data-testid="eth-overview__primary-currency"]';
+    '[data-testid="multichain-token-list-item-value"]';
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
