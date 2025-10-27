@@ -19,6 +19,8 @@ import { useSendActions } from '../../../hooks/send/useSendActions';
 import { useSendContext } from '../../../context/send';
 import { useRecipientValidation } from '../../../hooks/send/useRecipientValidation';
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
+import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
+import { useSendType } from '../../../hooks/send/useSendType';
 import { SendHero } from '../../UI/send-hero';
 import { Amount } from '../amount/amount';
 import { Recipient } from '../recipient';
@@ -26,25 +28,38 @@ import { HexData } from '../hex-data';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();
-  const [amountValueError, setAmountValueError] = useState<string>();
   const [hexDataError, setHexDataError] = useState<string>();
   const { asset, toResolved } = useSendContext();
+  const { amountError, validateNonEvmAmountAsync } = useAmountValidation();
+  const { isNonEvmSendType } = useSendType();
   const { handleSubmit } = useSendActions();
   const { captureAmountSelected } = useAmountSelectionMetrics();
   const { captureRecipientSelected } = useRecipientSelectionMetrics();
   const recipientValidationResult = useRecipientValidation();
 
   const hasError =
-    Boolean(amountValueError) ||
+    Boolean(amountError) ||
     Boolean(recipientValidationResult.recipientError) ||
     Boolean(hexDataError);
   const isDisabled = hasError || !toResolved;
 
-  const onClick = useCallback(() => {
+  const onClick = useCallback(async () => {
+    if (isNonEvmSendType) {
+      const { isValid } = await validateNonEvmAmountAsync();
+      if (!isValid) {
+        return;
+      }
+    }
     handleSubmit();
     captureAmountSelected();
     captureRecipientSelected();
-  }, [captureAmountSelected, captureRecipientSelected, handleSubmit]);
+  }, [
+    captureAmountSelected,
+    captureRecipientSelected,
+    handleSubmit,
+    isNonEvmSendType,
+    validateNonEvmAmountAsync,
+  ]);
 
   if (!asset) {
     return <LoadingScreen />;
@@ -62,7 +77,7 @@ export const AmountRecipient = () => {
       <Box>
         <SendHero asset={asset as Asset} />
         <Recipient recipientValidationResult={recipientValidationResult} />
-        <Amount setAmountValueError={setAmountValueError} />
+        <Amount amountError={amountError} />
         <HexData setHexDataError={setHexDataError} />
       </Box>
       <Button
@@ -74,7 +89,7 @@ export const AmountRecipient = () => {
         }
         marginBottom={4}
       >
-        {amountValueError ?? hexDataError ?? t('continue')}
+        {amountError ?? hexDataError ?? t('continue')}
       </Button>
     </Box>
   );

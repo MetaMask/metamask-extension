@@ -1,59 +1,82 @@
-import { ERC1155 } from '@metamask/controller-utils';
-import { useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-import { Numeric } from '../../../../../shared/modules/Numeric';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Asset } from '../../types/send';
-import {
-  fromTokenMinUnitsNumeric,
-  isValidPositiveNumericString,
-} from '../../utils/send';
+import { isValidPositiveNumericString } from '../../utils/send';
 import { useSendContext } from '../../context/send';
-import { useBalance } from './useBalance';
+import { useSendType } from './useSendType';
+import { useSnapAmountOnInput } from './useSnapAmountOnInput';
 
-export const validateERC1155Balance = (
-  asset: Asset,
-  value: string | undefined,
-  t: ReturnType<typeof useI18nContext>,
-) => {
-  if (asset?.balance && value) {
-    if (parseInt(value, 10) > parseInt(asset.balance.toString(), 10)) {
-      return t('insufficientFundsSend');
-    }
-  }
-  return undefined;
-};
-
-export const validateTokenBalance = (
-  amount: string,
-  rawBalanceNumeric: Numeric,
-  t: ReturnType<typeof useI18nContext>,
-  decimals?: number,
-) => {
-  const amountInputNumeric = fromTokenMinUnitsNumeric(amount, 10, decimals);
-  if (rawBalanceNumeric.lessThan(amountInputNumeric)) {
-    return t('insufficientFundsSend');
-  }
-  return undefined;
+type ValidationResult = {
+  valid: boolean;
+  errors: { code: string }[];
 };
 
 export const useAmountValidation = () => {
   const t = useI18nContext();
-  const { asset, value } = useSendContext();
-  const { rawBalanceNumeric } = useBalance();
+  const { isNonEvmSendType } = useSendType();
+  const { value } = useSendContext();
+  const { validateAmountWithSnap } = useSnapAmountOnInput();
+  const [amountError, setAmountError] = useState<string | undefined>(undefined);
 
-  const amountError = useMemo(() => {
+  const validateNonEvmAmountAsync = useCallback(async () => {
+    if (isNonEvmSendType) {
+      try {
+        const result = (await validateAmountWithSnap(
+          value || ('0' as string),
+        )) as ValidationResult;
+
+        if (result.errors && result.errors.length > 0) {
+          console.log(
+            'OGP - using error from "onAmountInput" response: ',
+            result,
+          );
+          const errorCode = result.errors[0].code;
+          setAmountError(mapErrorCodeToMessage(errorCode, t));
+          return { isValid: false };
+        }
+
+        setAmountError(undefined);
+        return { isValid: true };
+      } catch (error) {
+        setAmountError(t('invalidValue'));
+
+        return { isValid: false };
+      }
+    }
+
+    return { isValid: true };
+  }, [t, value, validateAmountWithSnap, isNonEvmSendType]);
+
+  const validateAmountAsync = useCallback(async () => {
     if (value === undefined || value === null || value === '') {
-      return undefined;
+      setAmountError(undefined);
+      return { isValid: true };
     }
-    if (!isValidPositiveNumericString(value)) {
-      return t('invalidValue');
-    }
-    if (asset?.standard === ERC1155) {
-      return validateERC1155Balance(asset, value, t);
-    }
-    return validateTokenBalance(value, rawBalanceNumeric, t, asset?.decimals);
-  }, [asset, rawBalanceNumeric, t, value]);
 
-  return { amountError };
+    if (!isValidPositiveNumericString(value)) {
+      setAmountError(t('invalidValue'));
+      return { isValid: false };
+    }
+
+    return (await validateNonEvmAmountAsync()) as { isValid: boolean };
+  }, [t, value, validateNonEvmAmountAsync]);
+
+  useEffect(() => {
+    validateAmountAsync();
+  }, [validateAmountAsync]);
+
+  return { amountError, validateAmountAsync, validateNonEvmAmountAsync };
 };
+
+function mapErrorCodeToMessage(
+  errorCode: string,
+  t: ReturnType<typeof useI18nContext>,
+) {
+  switch (errorCode) {
+    case 'InsufficientBalance':
+      return t('insufficientFundsSend');
+    case 'Invalid':
+    default:
+      return t('invalidValue');
+  }
+}
