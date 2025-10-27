@@ -52,44 +52,36 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
                   },
                   accounts: [
                     'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
-                    '7be38d47-4dba-430e-9463-c7d84659fb2e',
+                    'c9e610f0-5617-48e7-a79f-d8cfd37f70f4',
                   ],
-                },
-              },
-            },
-            'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4': {
-              type: 'entropy',
-              id: 'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4',
-              metadata: {
-                name: 'Wallet 2',
-                entropy: {
-                  id: '01JNGTTNRVYNQVN5FN8YTFAMJ4',
-                },
-              },
-              status: 'ready',
-              groups: {
-                'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4/0': {
-                  type: 'multichain-account',
-                  id: 'entropy:01JNGTTNRVYNQVN5FN8YTFAMJ4/0',
-                  metadata: {
-                    name: 'Account 2',
-                    pinned: false,
-                    hidden: false,
-                    entropy: {
-                      groupIndex: 0,
-                    },
-                  },
-                  accounts: ['0c5d843d-5105-413d-b40a-cd8b6415a49c'],
                 },
               },
             },
           },
           selectedAccountGroup: 'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK/0',
         },
+        isAccountTreeSyncingInProgress: false,
+        hasAccountTreeSyncingSyncedAtLeastOnce: false,
+        accountGroupsMetadata: {
+          'entropy:01JNGTRZ3QCEEQ7GYYFXBSQSBK/0': {
+            name: {
+              value: "Account 1",
+              lastUpdatedAt: 0
+            },
+            pinned: {
+              value: false,
+              lastUpdatedAt: 0
+            },
+            hidden: {
+              value: false,
+              lastUpdatedAt: 0
+            }
+          }
+        },
+        accountWalletsMetadata: {},
       },
       AccountsController: {
         internalAccounts: {
-          selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
           accounts: {
             'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
               id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
@@ -124,81 +116,47 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
                 },
               },
             },
-            '0c5d843d-5105-413d-b40a-cd8b6415a49c': {
-              id: '0c5d843d-5105-413d-b40a-cd8b6415a49c',
-              address: '0xc6d5a3c98ec9073b54fa0969957bd582e8d874bf',
-              options: {
-                entropySource: '01JNGTTNRVYNQVN5FN8YTFAMJ4',
-                derivationPath: "m/44'/60'/0'/0/0",
-                groupIndex: 0,
-                entropy: {
-                  type: 'mnemonic',
-                  id: '01JNGTTNRVYNQVN5FN8YTFAMJ4',
-                  derivationPath: "m/44'/60'/0'/0/0",
-                  groupIndex: 0,
-                },
+            "c9e610f0-5617-48e7-a79f-d8cfd37f70f4": {
+              "type": "solana:data-account",
+              "id": "c9e610f0-5617-48e7-a79f-d8cfd37f70f4",
+              "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
+              "options": {
+                "entropySource": "01JNGTRZ3QCEEQ7GYYFXBSQSBK",
+                "derivationPath": "m/44'/501'/0'/0'",
+                "index": 0,
+                "entropy": {
+                  "type": "mnemonic",
+                  "id": "01JNGTRZ3QCEEQ7GYYFXBSQSBK",
+                  "groupIndex": 0,
+                  "derivationPath": "m/44'/501'/0'/0'"
+                }
               },
-              methods: [
-                'personal_sign',
-                'eth_sign',
-                'eth_signTransaction',
-                'eth_signTypedData_v1',
-                'eth_signTypedData_v3',
-                'eth_signTypedData_v4',
+              "methods": [
+                "signAndSendTransaction",
+                "signTransaction",
+                "signMessage",
+                "signIn"
               ],
-              scopes: ['eip155:0'],
-              type: 'eip155:eoa',
-              metadata: {
-                name: 'Account 2',
-                importTime: 1761093331303,
-                lastSelected: 0,
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-            },
-            '7be38d47-4dba-430e-9463-c7d84659fb2e': {
-              type: 'solana:data-account',
-              id: '7be38d47-4dba-430e-9463-c7d84659fb2e',
-              address: '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
-              options: {
-                scope: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-                entropySource: '01JNGTRZ3QCEEQ7GYYFXBSQSBK',
-                derivationPath: "m/44'/501'/0'/0'",
-                index: 0,
-                entropy: {
-                  type: 'mnemonic',
-                  id: '01JNGTRZ3QCEEQ7GYYFXBSQSBK',
-                  groupIndex: 0,
-                  derivationPath: "m/44'/501'/0'/0'",
-                },
-              },
-              methods: [
-                'signAndSendTransaction',
-                'signTransaction',
-                'signMessage',
-                'signIn',
+              "scopes": [
+                "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+                "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z",
+                "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
               ],
-              scopes: [
-                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-                'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
-                'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
-              ],
-              metadata: {
-                name: 'Solana 1',
-                importTime: 1761093334044,
-                keyring: {
-                  type: 'Snap Keyring',
+              "metadata": {
+                "name": "Solana Account 1",
+                "importTime": 1761353236138,
+                "keyring": {
+                  "type": "Snap Keyring"
                 },
-                snap: {
-                  id: 'npm:@metamask/solana-wallet-snap',
-                  name: 'Solana',
-                  enabled: true,
+                "snap": {
+                  "id": "npm:@metamask/solana-wallet-snap",
+                  "name": "Solana",
+                  "enabled": true
                 },
-                lastSelected: 1761093334047,
-                nameLastUpdatedAt: 1761093334047,
-              },
-            },
+                "lastSelected": 0,
+                "nameLastUpdatedAt": 1761353236170
+              }
+            }
           },
           selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
         },
