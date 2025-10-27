@@ -5579,9 +5579,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^83.0.0":
-  version: 83.0.0
-  resolution: "@metamask/assets-controllers@npm:83.0.0"
+"@metamask/assets-controllers@npm:^83.1.0":
+  version: 83.1.0
+  resolution: "@metamask/assets-controllers@npm:83.1.0"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5626,7 +5626,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/89696ec3be0c362c407de4dfc5ba303c95a9e8348109041ebed09b85c492cfd15f86fba3cc05e93c4ba2c918316f8a8b81e2ea13b0811bec217a3f03e198e591
+  checksum: 10/171079518cb82bbc06a844495d9cd31c45ec11164cfa841a3f5095f6708faa5af6261e3ffb93db807b9d4c9ea0538994d41e003ac07d1f53035d5a1fe422b058
   languageName: node
   linkType: hard
 
@@ -7296,15 +7296,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:^20.0.2":
-  version: 20.0.2
-  resolution: "@metamask/preferences-controller@npm:20.0.2"
+"@metamask/preferences-controller@npm:^20.1.0":
+  version: 20.1.1
+  resolution: "@metamask/preferences-controller@npm:20.1.1"
   dependencies:
-    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/base-controller": "npm:^8.4.2"
     "@metamask/controller-utils": "npm:^11.14.1"
   peerDependencies:
     "@metamask/keyring-controller": ^23.0.0
-  checksum: 10/f2ba7cf618bcc9f209abd2bfa482c7ba63cd31f076c2dae3196eab57ddeb430215093697a1be2ee0c6ffd2dd40c93186c73095065a7421b8aa2fb9b3901606d5
+  checksum: 10/b6bdfe23e69a7987d4a3b8c7fcd62854c961ff3685a06387c9224fb7d87a3359c9392eddcf1458d38fee50dea033afaf124f662f8db56a2f543d53d8a575e45b
   languageName: node
   linkType: hard
 
@@ -31820,7 +31820,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "npm:^83.0.0"
+    "@metamask/assets-controllers": "npm:^83.1.0"
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.3.0"
@@ -31901,7 +31901,7 @@ __metadata:
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.38.0"
-    "@metamask/preferences-controller": "npm:^20.0.2"
+    "@metamask/preferences-controller": "npm:^20.1.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.1"
     "@metamask/profile-sync-controller": "npm:^25.1.0"
     "@metamask/providers": "npm:^22.1.1"
