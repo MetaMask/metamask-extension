@@ -27,6 +27,8 @@ jobs:
       REPOSITORY: ${{ github.event.repository.name }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
+      BENCHMARK_BROWSER_LOADS: ${{ inputs.browser-loads }}
+      BENCHMARK_PAGE_LOADS: ${{ inputs.page-loads }}
     steps:
       - name: Checkout and setup environment
         if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
