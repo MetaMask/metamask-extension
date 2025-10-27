@@ -124,7 +124,7 @@ describe('Onboarding Metametrics Component', () => {
     expect(title).toBeInTheDocument();
     expect(description).toBeInTheDocument();
 
-    const checkboxLabel = queryByText('Gather basic usage data');
+    const checkboxLabel = queryByText('Basic usage data');
     expect(checkboxLabel).toBeInTheDocument();
 
     const checkbox = getAllByRole('checkbox')[0];

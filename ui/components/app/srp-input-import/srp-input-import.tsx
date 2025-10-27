@@ -278,11 +278,12 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
               <Box
                 display={Display.Grid}
                 className="srp-input-import__words-list"
-                gap={2}
+                gap={3}
               >
                 {draftSrp.map((word, index) => {
                   return (
                     <TextField
+                      backgroundColor={BackgroundColor.backgroundMuted}
                       inputProps={{
                         ref: (el) => {
                           if (el) {
