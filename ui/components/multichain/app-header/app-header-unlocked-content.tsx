@@ -87,6 +87,7 @@ import {
   getSelectedAccountGroup,
   getNetworkAddressCount,
 } from '../../../selectors/multichain-accounts/account-tree';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
 type AppHeaderUnlockedContentProps = {
   disableAccountPicker: boolean;
@@ -241,6 +242,10 @@ export const AppHeaderUnlockedContent = ({
             name={accountName}
             showAvatarAccount={false}
             onClick={() => {
+              trace({
+                name: TraceName.ShowAccountList,
+                op: TraceOperation.AccountUi,
+              });
               history.push(ACCOUNT_LIST_PAGE_ROUTE);
               trackEvent({
                 event: MetaMetricsEventName.NavAccountMenuOpened,
@@ -259,6 +264,12 @@ export const AppHeaderUnlockedContent = ({
         <Link
           to={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`}
           data-testid="networks-subtitle-test-id"
+          onClick={() => {
+            trace({
+              name: TraceName.ShowAccountAddressList,
+              op: TraceOperation.AccountUi,
+            });
+          }}
         >
           <Box
             display={Display.Flex}
@@ -299,6 +310,11 @@ export const AppHeaderUnlockedContent = ({
   const AppContent = useMemo(() => {
     const handleAccountMenuClick = () => {
       if (isMultichainAccountsState2Enabled) {
+        console.log('11111 click account list');
+        trace({
+          name: TraceName.ShowAccountList,
+          op: TraceOperation.AccountUi,
+        });
         history.push(ACCOUNT_LIST_PAGE_ROUTE);
       } else {
         dispatch(toggleAccountMenu());

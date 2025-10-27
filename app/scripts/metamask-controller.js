@@ -4239,6 +4239,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<Record<string, number>>} Discovered account counts by chain.
    */
   async discoverAndCreateAccounts(id) {
+    trace({
+      name: TraceName.DiscoverAccounts,
+      op: TraceOperation.AccountDiscover,
+    });
     try {
       // If no keyring id is provided, we assume one keyring was added to the vault
       const keyringIdToDiscover =
@@ -4267,6 +4271,11 @@ export default class MetamaskController extends EventEmitter {
         Bitcoin: 0,
         Solana: 0,
       };
+    } finally {
+      endTrace({
+        name: TraceName.DiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
     }
   }
 
@@ -4655,6 +4664,10 @@ export default class MetamaskController extends EventEmitter {
    * For the context, we do not need to import the Solana account if the onboarding flow has not completed yet during the social login import flow.
    */
   async _addAccountsWithBalance(keyringId, shouldImportSolanaAccount = true) {
+    trace({
+      name: TraceName.DiscoverAccounts,
+      op: TraceOperation.AccountDiscover,
+    });
     try {
       // Scan accounts until we find an empty one
       const chainId = this.#getGlobalChainId();
@@ -4676,6 +4689,10 @@ export default class MetamaskController extends EventEmitter {
         );
       let address = accounts[accounts.length - 1];
 
+      trace({
+        name: TraceName.EvmDiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
       for (let count = accounts.length; ; count++) {
         const balance = await this.getBalance(address, this.provider);
 
@@ -4712,6 +4729,10 @@ export default class MetamaskController extends EventEmitter {
           },
         );
       }
+      endTrace({
+        name: TraceName.EvmDiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
 
       const discoveredAccounts = {
         Bitcoin: 0,

@@ -80,15 +80,28 @@ export enum TraceName {
   OnboardingOAuthProviderLoginError = 'Onboarding - OAuth Provider Login Error',
   OnboardingOAuthBYOAServerGetAuthTokensError = 'Onboarding - OAuth BYOA Server Get Auth Tokens Error',
   OnboardingOAuthSeedlessAuthenticateError = 'Onboarding - OAuth Seedless Authenticate Error',
+  // Accounts
+  ShowAccountList = 'Show Account List',
+  ShowAccountAddressList = 'Show Account Address List',
+  ShowAccountPrivateKeyList = 'Show Account Private Key List',
+  CreateMultichainAccount = 'Create Multichain Account',
+  DiscoverAccounts = 'Discover Accounts',
+  EvmDiscoverAccounts = 'EVM Discover Accounts',
+  SnapDiscoverAccounts = 'Snap Discover Accounts',
 }
 
 /**
  * The operation names to use for the trace.
  */
 export enum TraceOperation {
+  AccountList = 'account.list',
   OnboardingUserJourney = 'onboarding.user_journey',
   OnboardingSecurityOp = 'onboarding.security_operation',
   OnboardingError = 'onboarding.error',
+  // Accounts
+  AccountCreate = 'account.create',
+  AccountUi = 'account.ui',
+  AccountDiscover = 'account.discover',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
@@ -191,6 +204,13 @@ export type EndTraceRequest = {
   data?: Record<string, number | string | boolean>;
 };
 
+const SHOULD_LOG: TraceName[] = [
+  TraceName.ShowAccountList,
+  TraceName.ShowAccountAddressList,
+  TraceName.ShowAccountPrivateKeyList,
+  TraceName.CreateMultichainAccount,
+];
+
 export function trace<ResultType>(
   request: TraceRequest,
   fn: TraceCallback<ResultType>,
@@ -214,6 +234,16 @@ export function trace<T>(
   request: TraceRequest,
   fn?: TraceCallback<T>,
 ): T | TraceContext {
+  if (SHOULD_LOG.includes(request.name)) {
+    /* eslint-disable no-console */
+    console.log('==========================================================');
+    console.log('>>> START TRACE');
+    console.log('>>>');
+    console.log('>>> Name:', request.name);
+    console.log('==========================================================');
+    /* eslint-enable no-console */
+  }
+
   if (!fn) {
     return startTrace(request);
   }
@@ -232,6 +262,16 @@ export function endTrace(request: EndTraceRequest): void {
   const id = getTraceId(request);
   const key = getTraceKey(request);
   const pendingTrace = tracesByKey.get(key);
+
+  if (SHOULD_LOG.includes(name)) {
+    /* eslint-disable no-console */
+    console.log('==========================================================');
+    console.log('>>> END TRACE');
+    console.log('>>>');
+    console.log('>>> Name:', name);
+    console.log('==========================================================');
+    /* eslint-enable no-console */
+  }
 
   if (!pendingTrace) {
     log('No pending trace found', name, id);
