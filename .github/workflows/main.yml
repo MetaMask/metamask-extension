@@ -208,33 +208,11 @@ jobs:
       build-artifact: build-dist-browserify
       test-command: yarn test:e2e:single test/e2e/wallet-fixture-export.spec.ts --browser chrome
       test-artifacts-path: test-artifacts/onboarding-fixture
+      comment-fixture: true
+    secrets:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
-  comment-onboarding-fixture:
-    name: Comment Fixture Ready
-    needs:
-      - export-onboarding-fixture
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}
-    steps:
-      - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v1
-        with:
-          is-high-risk-environment: false
-          skip-allow-scripts: true
-          use-yarn-hydrate: true
-      - name: Download onboarding fixture artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: export-onboarding-fixture
-          path: .
-      - name: Comment PR with fixture
-        if: ${{ env.PR_COMMENT_TOKEN }}
-        env:
-          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-          OWNER: ${{ github.repository_owner }}
-          REPOSITORY: ${{ github.event.repository.name }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: yarn tsx ./development/metamaskbot-fixture-announce.ts
+
 
   run-tests:
     name: Run tests
