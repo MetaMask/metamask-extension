@@ -76,7 +76,7 @@ describe('useBridging', () => {
         false,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d&swaps=true',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',
@@ -144,21 +144,21 @@ describe('useBridging', () => {
     it.each([
       [
         '/',
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60&swaps=true',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
         undefined,
         'Home',
         true,
       ],
       [
         '/asset/0xa/',
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/slip44:60&swaps=true',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/slip44:60',
         getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
         MetaMetricsSwapsEventSource.TokenView,
         true,
       ],
       [
         '/asset/0xa/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d&swaps=true',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',

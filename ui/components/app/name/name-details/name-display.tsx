@@ -30,7 +30,7 @@ const NameDisplay = memo(
     showFullName = false,
     ...props
   }: NameDisplayProps) => {
-    const { name, image, icon, displayState } = useDisplayName({
+    const { name, image, icon, displayState, isAccount } = useDisplayName({
       value,
       type,
       preferContractSymbol,
@@ -85,7 +85,7 @@ const NameDisplay = memo(
           name: true,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          name__clickable: Boolean(handleClick),
+          name__clickable: Boolean(handleClick) && !isAccount,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           name__saved: displayState === TrustSignalDisplayState.Petname,

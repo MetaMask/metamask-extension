@@ -11,7 +11,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
       data-testid="connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       >
         <div
           class="mm-box"
@@ -47,11 +47,16 @@ exports[`MultichainConnectPage renders correctly 1`] = `
                 />
               </div>
             </div>
-            <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
+            <div
+              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
             >
-              metamask.github.io
-            </h2>
+              <h2
+                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+                style="word-break: break-word; white-space: normal;"
+              >
+                metamask.github.io
+              </h2>
+            </div>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center"
             >
@@ -69,10 +74,10 @@ exports[`MultichainConnectPage renders correctly 1`] = `
         style="overflow: auto;"
       >
         <div
-          class="bg-transparent tabs transform-gpu"
+          class="tabs transform-gpu"
         >
           <div
-            class="flex flex-row gap-4 justify-center bg-transparent"
+            class="flex flex-row gap-4 justify-start bg-default"
             role="tablist"
           >
             <button
@@ -265,7 +270,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
       data-testid="connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       >
         <div
           class="mm-box"
@@ -301,11 +306,16 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
                 />
               </div>
             </div>
-            <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
+            <div
+              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
             >
-              metamask.github.io
-            </h2>
+              <h2
+                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+                style="word-break: break-word; white-space: normal;"
+              >
+                metamask.github.io
+              </h2>
+            </div>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center"
             >
@@ -323,10 +333,10 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
         style="overflow: auto;"
       >
         <div
-          class="bg-transparent tabs transform-gpu"
+          class="tabs transform-gpu"
         >
           <div
-            class="flex flex-row gap-4 justify-center bg-transparent"
+            class="flex flex-row gap-4 justify-start bg-default"
             role="tablist"
           >
             <button
@@ -519,7 +529,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
       data-testid="connect-page"
     >
       <div
-        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-0 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
+        class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--padding-top-8 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full"
       >
         <div
           class="mm-box"
@@ -555,11 +565,16 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
                 />
               </div>
             </div>
-            <h2
-              class="mm-box mm-text mm-text--heading-lg mm-box--margin-bottom-1 mm-box--color-text-default"
+            <div
+              class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
             >
-              metamask.github.io
-            </h2>
+              <h2
+                class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
+                style="word-break: break-word; white-space: normal;"
+              >
+                metamask.github.io
+              </h2>
+            </div>
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center"
             >
@@ -577,10 +592,10 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
         style="overflow: auto;"
       >
         <div
-          class="bg-transparent tabs transform-gpu"
+          class="tabs transform-gpu"
         >
           <div
-            class="flex flex-row gap-4 justify-center bg-transparent"
+            class="flex flex-row gap-4 justify-start bg-default"
             role="tablist"
           >
             <button

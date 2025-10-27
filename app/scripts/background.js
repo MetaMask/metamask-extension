@@ -15,8 +15,8 @@ import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { isObject, hasProperty } from '@metamask/utils';
-import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
@@ -272,13 +272,30 @@ const sendReadyMessageToTabs = async () => {
  * @param {MetamaskController} theController
  */
 function maybeDetectPhishing(theController) {
+  /**
+   * Redirects a tab to the phishing warning page.
+   *
+   * @param {number} tabId - The ID of the tab to redirect
+   * @param {string} url - The URL to redirect to (phishing warning page)
+   * @returns {Promise<boolean>} Returns true if the redirect was successful, false otherwise.
+   *   Returns false for Google pre-fetch requests or if the redirect fails.
+   */
   async function redirectTab(tabId, url) {
     try {
-      return await browser.tabs.update(tabId, {
+      const tab = await browser.tabs.get(tabId);
+
+      // Prevent redirect when due to Google pre-fetching
+      if (tab.url && tab.url.startsWith('https://www.google.com/search')) {
+        return false;
+      }
+
+      await browser.tabs.update(tabId, {
         url,
       });
+      return true;
     } catch (error) {
-      return sentry?.captureException(error);
+      sentry?.captureException(error);
+      return false;
     }
   }
   // we can use the blocking API in MV2, but not in MV3
@@ -354,32 +371,36 @@ function maybeDetectPhishing(theController) {
         blockedUrl = details.initiator;
       }
 
-      if (!isFirefox) {
-        theController.metaMetricsController.trackEvent(
-          {
-            // should we differentiate between background redirection and content script redirection?
-            event: MetaMetricsEventName.PhishingPageDisplayed,
-            category: MetaMetricsEventCategory.Phishing,
-            properties: {
-              url: blockedUrl,
-              referrer: {
-                url: blockedUrl,
-              },
-              reason: blockReason,
-              requestDomain: blockedRequestResponse.result
-                ? hostname
-                : undefined,
-            },
-          },
-          {
-            excludeMetaMetricsId: true,
-          },
-        );
-      }
       const querystring = new URLSearchParams({ hostname, href });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
       const redirectHref = redirectUrl.toString();
+
+      // Helper function to track phishing page metrics
+      const trackPhishingMetrics = () => {
+        if (!isFirefox) {
+          theController.metaMetricsController.trackEvent(
+            {
+              // should we differentiate between background redirection and content script redirection?
+              event: MetaMetricsEventName.PhishingPageDisplayed,
+              category: MetaMetricsEventCategory.Phishing,
+              properties: {
+                url: blockedUrl,
+                referrer: {
+                  url: blockedUrl,
+                },
+                reason: blockReason,
+                requestDomain: blockedRequestResponse.result
+                  ? hostname
+                  : undefined,
+              },
+            },
+            {
+              excludeMetaMetricsId: true,
+            },
+          );
+        }
+      };
 
       // blocking is better than tab redirection, as blocking will prevent
       // the browser from loading the page at all
@@ -388,13 +409,21 @@ function maybeDetectPhishing(theController) {
         // For non-`main_frame` requests (e.g. `sub_frame` or WebSocket), we cancel them
         // and redirect the whole tab asynchronously so that the user sees the warning.
         if (details.type === 'main_frame') {
+          trackPhishingMetrics();
           return { redirectUrl: redirectHref };
         }
-        redirectTab(details.tabId, redirectHref);
+        redirectTab(details.tabId, redirectHref).then((redirected) => {
+          if (redirected) {
+            trackPhishingMetrics();
+          }
+        });
         return { cancel: true };
       }
-      // redirect the whole tab (even if it's a sub_frame request)
-      redirectTab(details.tabId, redirectHref);
+      redirectTab(details.tabId, redirectHref).then((redirected) => {
+        if (redirected) {
+          trackPhishingMetrics();
+        }
+      });
       return {};
     },
     {
@@ -1136,8 +1165,34 @@ export function setupController(
     }
 
     if (isMetaMaskInternalProcess) {
+      /**
+       * @type {ExtensionPortStream}
+       */
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort);
+
+      /**
+       * send event to sentry with details about the event
+       *
+       * @param {import("extension-port-stream").MessageTooLargeEventData} details
+       */
+      const handleMessageTooLarge = function ({ chunkSize }) {
+        /**
+         * @type {MetamaskController}
+         */
+        const theController = controller;
+        theController.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PortStreamChunked,
+          category: MetaMetricsEventCategory.PortStream,
+          properties: { chunkSize },
+        });
+      };
+      remotePort.onDisconnect.addListener(() =>
+        portStream.off('message-too-large', handleMessageTooLarge),
+      );
+      portStream.on('message-too-large', handleMessageTooLarge);
+
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -1189,7 +1244,8 @@ export function setupController(
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
       const portStreamForPhishingPage =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort, { chunkSize: 0 });
       controller.setupPhishingCommunication({
         connectionStream: portStreamForPhishingPage,
       });
@@ -1218,14 +1274,16 @@ export function setupController(
         )
       ) {
         const portStreamForCookieHandlerPage =
-          overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+          overrides?.getPortStream?.(remotePort) ||
+          new ExtensionPortStream(remotePort, { chunkSize: 0 });
         controller.setUpCookieHandlerCommunication({
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
 
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
       connectEip1193(portStream, remotePort.sender);
 
@@ -1245,7 +1303,8 @@ export function setupController(
 
   connectExternallyConnectable = (remotePort) => {
     const portStream =
-      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+      overrides?.getPortStream?.(remotePort) ||
+      new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
     // if the sender.id value is present it means the caller is an extension rather
     // than a site. When the caller is an extension we want to fallback to connecting
@@ -1478,7 +1537,7 @@ export function setupController(
       (snap) => !snap.preinstalled,
     )
   ) {
-    controller.snapController.updateBlockedSnaps();
+    controller.snapController.updateRegistry();
   }
 }
 

@@ -214,7 +214,7 @@ export type AccountTrackerControllerOptions = {
   provider: Provider;
   blockTracker: BlockTracker;
   getNetworkIdentifier: (config?: NetworkClientConfiguration) => string;
-  useAccountApiBalances?: string[];
+  accountsApiChainIds?: () => string[];
 };
 
 /**
@@ -244,7 +244,7 @@ export default class AccountTrackerController extends BaseController<
 
   #selectedAccount: InternalAccount;
 
-  #useAccountApiBalances: string[];
+  #accountsApiChainIds: () => string[];
 
   /**
    * @param options - Options for initializing the controller
@@ -272,7 +272,7 @@ export default class AccountTrackerController extends BaseController<
     this.#getNetworkIdentifier = options.getNetworkIdentifier;
 
     // Initialize account API configuration
-    this.#useAccountApiBalances = options.useAccountApiBalances ?? [];
+    this.#accountsApiChainIds = options.accountsApiChainIds ?? (() => []);
 
     // subscribe to account removal
     this.messagingSystem.subscribe(
@@ -730,7 +730,7 @@ export default class AccountTrackerController extends BaseController<
     const { useExternalServices: allowExternalServices } =
       this.messagingSystem.call('PreferencesController:getState');
 
-    const hasAccountApiChains = this.#useAccountApiBalances.length > 0;
+    const hasAccountApiChains = this.#accountsApiChainIds().length > 0;
     if (
       hasAccountApiChains &&
       allowExternalServices &&
@@ -795,7 +795,7 @@ export default class AccountTrackerController extends BaseController<
 
     // Try account API first if chain is supported by feature flag
     let accountApiSuccess = false;
-    const isChainSupported = this.#useAccountApiBalances.includes(chainId);
+    const isChainSupported = this.#accountsApiChainIds().includes(chainId);
 
     if (
       isChainSupported &&
@@ -1015,20 +1015,26 @@ export default class AccountTrackerController extends BaseController<
   ) {
     this.update((state) => {
       balances.forEach(({ address, chainId, balance }) => {
+        // Temporary until moving AccountTrackerController in core with an normalized format
+        // accountsByChainId works with lowercase addresses, this is just a safe guard in case address is in checksum format
+        // Convert address to lowercase to match extension's accountsByChainId format
+        const lowercaseAddress = address.toLowerCase();
+
         // Ensure the chainId exists in the state
         if (!state.accountsByChainId[chainId]) {
           state.accountsByChainId[chainId] = {};
         }
         // Ensure the address exists for this chain
-        if (!state.accountsByChainId[chainId][address]) {
-          state.accountsByChainId[chainId][address] = {
-            address,
+        if (!state.accountsByChainId[chainId][lowercaseAddress]) {
+          state.accountsByChainId[chainId][lowercaseAddress] = {
+            address: lowercaseAddress,
             balance: '0x0',
           };
         }
         // Update the balance
         if (balance) {
-          state.accountsByChainId[chainId][address].balance = toHex(balance);
+          state.accountsByChainId[chainId][lowercaseAddress].balance =
+            toHex(balance);
         }
       });
     });
@@ -1096,7 +1102,7 @@ export default class AccountTrackerController extends BaseController<
 
       // Filter chain IDs by feature flag support (hex format), then convert to decimal for API
       const supportedChainIds = chainIds
-        .filter((chainId) => this.#useAccountApiBalances.includes(chainId))
+        .filter((chainId) => this.#accountsApiChainIds().includes(chainId))
         .map((chainId) => chainId);
 
       if (supportedChainIds.length === 0) {

@@ -26,7 +26,7 @@ const marginSizeControlOptions = [
 ];
 
 export default {
-  title: 'Components/ComponentLibrary/ButtonSecondary',
+  title: 'Components/ComponentLibrary/ButtonSecondary (deprecated)',
 
   component: ButtonSecondary,
   parameters: {

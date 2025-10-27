@@ -6,7 +6,7 @@ import React, { Suspense, useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   Route,
-  RouteComponentProps,
+  type RouteComponentProps,
   Switch,
   useHistory,
   useLocation,
@@ -16,8 +16,8 @@ import type { ApprovalType } from '@metamask/controller-utils';
 
 import { useAppSelector } from '../../store/store';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
+import AuthenticatedV5Compat from '../../helpers/higher-order-components/authenticated/authenticated-v5-compat';
 import Initialized from '../../helpers/higher-order-components/initialized';
-import PermissionsConnect from '../permissions-connect';
 import Loading from '../../components/ui/loading-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
@@ -75,6 +75,7 @@ import {
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
+  REVIEW_GATOR_PERMISSIONS_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -160,7 +161,6 @@ import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
 import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-import { useRedesignedSendFlow } from '../confirmations/hooks/useRedesignedSendFlow';
 import {
   getConnectingLabel,
   hideAppHeader,
@@ -232,18 +232,15 @@ const SendPage = mmLazy(
   (() =>
     import('../confirmations/send/index.ts')) as unknown as DynamicImportType,
 );
-const LegacySendPage = mmLazy(
-  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
-  (() =>
-    import(
-      '../../components/multichain/pages/send/index.js'
-    )) as unknown as DynamicImportType,
-);
 const Swaps = mmLazy(
   (() => import('../swaps/index.js')) as unknown as DynamicImportType,
 );
 const CrossChainSwap = mmLazy(
   (() => import('../bridge/index.tsx')) as unknown as DynamicImportType,
+);
+const PermissionsConnect = mmLazy(
+  (() =>
+    import('../permissions-connect/index.js')) as unknown as DynamicImportType,
 );
 const ConfirmAddSuggestedTokenPage = mmLazy(
   (() =>
@@ -300,6 +297,13 @@ const TokenTransferPage = mmLazy(
   (() =>
     import(
       '../../components/multichain/pages/gator-permissions/token-transfer/token-transfer-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+const ReviewGatorPermissionsPage = mmLazy(
+  // TODO: This is a named export. Fix incorrect type casting once `mmLazy` is updated to handle non-default export types.
+  (() =>
+    import(
+      '../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'
     )) as unknown as DynamicImportType,
 );
 const Connections = mmLazy(
@@ -449,7 +453,6 @@ export default function Routes() {
   const currentExtensionPopupId = useAppSelector(
     (state) => state.metamask.currentExtensionPopupId,
   );
-  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const isShowKeyringSnapRemovalResultModal = useAppSelector(
@@ -591,10 +594,7 @@ export default function Routes() {
             path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
             component={ConfirmTransaction}
           />
-          <Authenticated
-            path={`${SEND_ROUTE}/:page?`}
-            component={isSendRedesignEnabled ? SendPage : LegacySendPage}
-          />
+          <Authenticated path={`${SEND_ROUTE}/:page?`} component={SendPage} />
           <Authenticated path={SWAPS_ROUTE} component={Swaps} />
           <Authenticated
             path={`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/:srcTxMetaId`}
@@ -623,23 +623,94 @@ export default function Routes() {
             path={NEW_ACCOUNT_ROUTE}
             component={CreateAccountPage}
           />
-          <Authenticated
-            path={`${CONNECT_ROUTE}/:id`}
-            component={PermissionsConnect}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/image/:asset/:id`}
-            component={NftFullImage}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/:chainId/:asset/:id`}
-            component={Asset}
-          />
-          <Authenticated
-            path={`${ASSET_ROUTE}/:chainId/:asset/`}
-            component={Asset}
-          />
-          <Authenticated path={`${ASSET_ROUTE}/:chainId`} component={Asset} />
+          <Route path={`${CONNECT_ROUTE}/:id`}>
+            {(props: RouteComponentProps<{ id: string }>) => {
+              const {
+                history: v5History,
+                location: v5Location,
+                match: v5Match,
+              } = props;
+
+              // Create a navigate function compatible with v5-compat for the component
+              const navigate = (
+                to: string,
+                options: { replace?: boolean } = {},
+              ) => {
+                if (options.replace) {
+                  v5History.replace(to);
+                } else {
+                  v5History.push(to);
+                }
+              };
+
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const PermissionsConnectWithProps = PermissionsConnect as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <PermissionsConnectWithProps
+                    navigate={navigate}
+                    location={v5Location}
+                    match={v5Match}
+                  />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/image/:asset/:id`}>
+            {(props: RouteComponentProps<{ asset: string; id: string }>) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const NftFullImageComponent = NftFullImage as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <NftFullImageComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId/:asset/:id`}>
+            {(
+              props: RouteComponentProps<{
+                chainId: string;
+                asset: string;
+                id: string;
+              }>,
+            ) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const AssetComponent = Asset as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId/:asset/`}>
+            {(
+              props: RouteComponentProps<{
+                chainId: string;
+                asset: string;
+              }>,
+            ) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const AssetComponent = Asset as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
+          <Route path={`${ASSET_ROUTE}/:chainId`}>
+            {(props: RouteComponentProps<{ chainId: string }>) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const AssetComponent = Asset as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <AssetComponent params={props.match.params} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Authenticated
             path={`${DEFI_ROUTE}/:chainId/:protocolId`}
             component={DeFiPage}
@@ -657,6 +728,11 @@ export default function Routes() {
           <Authenticated
             path={TOKEN_TRANSFER_ROUTE}
             component={TokenTransferPage}
+            exact
+          />
+          <Authenticated
+            path={`${REVIEW_GATOR_PERMISSIONS_ROUTE}/:chainId/:permissionGroupName`}
+            component={ReviewGatorPermissionsPage}
             exact
           />
           <Authenticated

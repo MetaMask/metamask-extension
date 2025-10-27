@@ -12,6 +12,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom-v5-compat';
 import {
+  Icon,
+  IconName as IconNameDesignSystem,
+  IconSize as IconSizeDesignSystem,
+  IconColor as IconColorDesignSystem,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   BlockSize,
@@ -250,14 +256,26 @@ export const AppHeaderUnlockedContent = ({
           to={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedMultichainAccountId)}`}
           data-testid="networks-subtitle-test-id"
         >
-          <Text
+          <Box
+            display={Display.Flex}
             className="networks-subtitle"
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodyXsMedium}
+            alignItems={AlignItems.center}
+            gap={1}
             paddingInline={2}
           >
-            {networksLabel}
-          </Text>
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodyXsMedium}
+            >
+              {networksLabel}
+            </Text>
+            <Icon
+              name={IconNameDesignSystem.Copy}
+              size={IconSizeDesignSystem.Xs}
+              color={IconColorDesignSystem.IconAlternative}
+              data-testid="copy-network-addresses-icon"
+            />
+          </Box>
         </Link>
       </Box>
     );

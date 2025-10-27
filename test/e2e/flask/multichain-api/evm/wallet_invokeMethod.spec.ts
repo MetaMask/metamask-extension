@@ -4,7 +4,6 @@ import {
   ACCOUNT_1,
   ACCOUNT_2,
   convertETHToHexGwei,
-  largeDelayMs,
   WINDOW_TITLES,
   withFixtures,
 } from '../../../helpers';
@@ -13,7 +12,6 @@ import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
 import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
@@ -31,6 +29,55 @@ describe('Multichain API', function () {
   const DEFAULT_INITIAL_BALANCE_HEX = convertETHToHexGwei(
     DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   );
+
+  describe('Calling `wallet_invokeMethod` with permissions granted from EIP-1193 provider', function () {
+    it('should allow the request to be made', async function () {
+      await withFixtures(
+        {
+          title: this.test?.fullTitle(),
+          fixtures: new FixtureBuilder()
+            .withNetworkControllerTripleNode()
+            .build(),
+          ...DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,
+        },
+        async ({ driver, extensionId }: FixtureCallbackArgs) => {
+          await loginWithBalanceValidation(driver);
+
+          const testDapp = new TestDappMultichain(driver);
+          await testDapp.openTestDappPage();
+          await testDapp.checkPageIsLoaded();
+
+          const requestAccountRequest: string = JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'eth_requestAccounts',
+          });
+
+          driver.executeScript(
+            `return window.ethereum.request(${requestAccountRequest})`,
+          );
+
+          await driver.waitUntilXWindowHandles(3);
+          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+          const connectAccountConfirmation = new ConnectAccountConfirmation(
+            driver,
+          );
+          await connectAccountConfirmation.checkPageIsLoaded();
+          await connectAccountConfirmation.confirmConnect();
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.MultichainTestDApp,
+          );
+
+          await testDapp.connectExternallyConnectable(extensionId);
+          await testDapp.invokeMethodAndCheckResult({
+            scope: 'eip155:1337',
+            method: 'eth_getBalance',
+            expectedResult: DEFAULT_INITIAL_BALANCE_HEX,
+          });
+        },
+      );
+    });
+  });
 
   describe('Calling `wallet_invokeMethod` on the same dapp across three different connected chains', function () {
     describe('Read operations: calling different methods on each connected scope', function () {
@@ -155,10 +202,10 @@ describe('Multichain API', function () {
                 true,
               );
               await confirmation.checkNetworkIsDisplayed('Localhost 7777');
-              await confirmation.clickFooterConfirmButton();
+              await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
             } else {
               await confirmation.checkNetworkIsDisplayed('Localhost 7777');
-              await confirmation.clickFooterConfirmButton();
+              await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
               // third confirmation page should display Account 2 as sender account
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -168,7 +215,7 @@ describe('Multichain API', function () {
                 true,
               );
               await confirmation.checkNetworkIsDisplayed('Localhost 8546');
-              await confirmation.clickFooterConfirmButton();
+              await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
             }
           },
         );
@@ -215,9 +262,20 @@ describe('Multichain API', function () {
             const totalNumberOfScopes = GANACHE_SCOPES.length;
             for (let i = 0; i < totalNumberOfScopes; i++) {
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-              const confirmation = new Confirmation(driver);
+              const confirmation = new TransactionConfirmation(driver);
               await confirmation.checkPageIsLoaded();
-              await confirmation.clickFooterConfirmButton();
+              if (i < totalNumberOfScopes - 1) {
+                // if pending tx's, verify navigation and confirm
+                await confirmation.checkPageNumbers(1, totalNumberOfScopes - i);
+                await confirmation.checkNetworkIsDisplayed(
+                  `Localhost ${8545 + i}`,
+                );
+                await confirmation.clickFooterConfirmButton();
+              } else {
+                await confirmation.checkNetworkIsDisplayed('Localhost 7777');
+                // if no pending tx's, confirm and wait for window to close
+                await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+              }
             }
 
             await driver.switchToWindowWithTitle(
@@ -235,17 +293,26 @@ describe('Multichain API', function () {
             );
             await testDapp.checkPageIsLoaded();
             for (const scope of GANACHE_SCOPES) {
-              await driver.delay(largeDelayMs);
-              const currentBalance = await testDapp.invokeMethodAndReturnResult(
-                {
-                  scope,
-                  method: 'eth_getBalance',
+              let methodCount = 1;
+              await driver.waitUntil(
+                async () => {
+                  const currentBalance =
+                    await testDapp.invokeMethodAndReturnResult({
+                      scope,
+                      method: 'eth_getBalance',
+                      methodCount,
+                    });
+                  methodCount += 1;
+                  // Normalize balance to make strict comparison
+                  const normalizedBalance =
+                    typeof currentBalance === 'string' &&
+                    currentBalance.startsWith('"') &&
+                    currentBalance.endsWith('"')
+                      ? JSON.parse(currentBalance)
+                      : currentBalance;
+                  return normalizedBalance !== DEFAULT_INITIAL_BALANCE_HEX;
                 },
-              );
-              assert.notStrictEqual(
-                currentBalance,
-                `"${DEFAULT_INITIAL_BALANCE_HEX}"`,
-                `${scope} scope balance should be different after eth_sendTransaction due to gas`,
+                { timeout: 10000, interval: 1000 },
               );
             }
           },
@@ -352,7 +419,7 @@ describe('Multichain API', function () {
               driver,
             );
             await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
-            await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+            await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
@@ -427,7 +494,7 @@ describe('Multichain API', function () {
               driver,
             );
             await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
-            await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
+            await upgradeAndBatchTxConfirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
 
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.MultichainTestDApp,
