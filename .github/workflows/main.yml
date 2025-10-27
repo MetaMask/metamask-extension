@@ -212,8 +212,6 @@ jobs:
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
-
-
   run-tests:
     name: Run tests
     needs:
