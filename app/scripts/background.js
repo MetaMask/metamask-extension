@@ -24,6 +24,9 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
@@ -144,6 +147,9 @@ const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+let sidePanelIsOpen = false;
+///: END:ONLY_INCLUDE_IF
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -1120,7 +1126,11 @@ export function setupController(
     return (
       openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
-      notificationIsOpen
+      notificationIsOpen ||
+      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+      sidePanelIsOpen ||
+      ///: END:ONLY_INCLUDE_IF
+      false
     );
   };
 
@@ -1206,6 +1216,18 @@ export function setupController(
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
         });
       }
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+      if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
+        sidePanelIsOpen = true;
+        finished(portStream, () => {
+          sidePanelIsOpen = false;
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
+        });
+      }
+      ///: END:ONLY_INCLUDE_IF
 
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
@@ -1559,7 +1581,11 @@ async function triggerUi() {
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
-    !currentlyActiveMetamaskTab
+    !currentlyActiveMetamaskTab &&
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+    !sidePanelIsOpen &&
+    ///: END:ONLY_INCLUDE_IF
+    true
   ) {
     uiIsTriggering = true;
     try {
@@ -1623,6 +1649,42 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+// Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
+// and when the feature flag is enabled
+if (
+  browser.contextMenus &&
+  browser.sidePanel &&
+  process.env.IS_SIDEPANEL?.toString() === 'true'
+) {
+  browser.runtime.onInstalled.addListener(() => {
+    browser.contextMenus.create({
+      id: 'openSidePanel',
+      title: 'MetaMask Sidepanel',
+      contexts: ['all'],
+    });
+  });
+  browser.contextMenus.onClicked.addListener((info, tab) => {
+    if (info.menuItemId === 'openSidePanel') {
+      // This will open the panel in all the pages on the current window.
+      browser.sidePanel.open({ windowId: tab.windowId });
+    }
+  });
+}
+///: END:ONLY_INCLUDE_IF
+
+// // On first install, open a new tab with MetaMask
+// async function onInstall() {
+//   const storeAlreadyExisted = Boolean(await localStore.get());
+//   // If the store doesn't exist, then this is the first time running this script,
+//   // and is therefore an install
+//   if (process.env.IN_TEST) {
+//     addAppInstalledEvent();
+//   } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
+//     addAppInstalledEvent();
+//     platform.openExtensionInBrowser();
+//   }
+// }
 
 /**
  * Trigger actions that should happen only upon update installation
@@ -1685,6 +1747,181 @@ function onNavigateToTab() {
     }
   });
 }
+
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+// Sidepanel-specific functionality
+// Set initial side panel behavior based on user preference
+const initSidePanelBehavior = async () => {
+  // Only initialize sidepanel behavior if the feature flag is enabled
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+    return;
+  }
+
+  try {
+    // Wait for controller to be initialized
+    await isInitialized;
+
+    // Get user preference (default to true for side panel)
+    const useSidePanelAsDefault =
+      controller?.preferencesController?.state?.preferences
+        ?.useSidePanelAsDefault ?? true;
+
+    // Set panel behavior based on preference
+    if (browser?.sidePanel?.setPanelBehavior) {
+      await browser.sidePanel.setPanelBehavior({
+        openPanelOnActionClick: useSidePanelAsDefault,
+      });
+    }
+  } catch (error) {
+    console.error('Error setting side panel behavior:', error);
+  }
+};
+
+initSidePanelBehavior();
+
+// Listen for preference changes to update side panel behavior dynamically
+const setupPreferenceListener = async () => {
+  // Only setup preference listener if the feature flag is enabled
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+    return;
+  }
+
+  try {
+    await isInitialized;
+
+    // Listen for preference changes using the controller messenger
+    controller?.controllerMessenger?.subscribe(
+      'PreferencesController:stateChange',
+      (state) => {
+        const useSidePanelAsDefault =
+          state?.preferences?.useSidePanelAsDefault ?? true;
+        if (browser?.sidePanel?.setPanelBehavior) {
+          browser.sidePanel
+            .setPanelBehavior({
+              openPanelOnActionClick: useSidePanelAsDefault,
+            })
+            .catch((error) =>
+              console.error('Error updating panel behavior:', error),
+            );
+        }
+      },
+    );
+  } catch (error) {
+    console.error('Error setting up preference listener:', error);
+  }
+};
+
+setupPreferenceListener();
+
+// Tab listeners to populate appActiveTab
+browser.tabs.onActivated.addListener(async ({ tabId }) => {
+  // Wait for controller to be initialized
+  await isInitialized;
+  if (!controller) {
+    return {};
+  }
+
+  try {
+    const tabInfo = await browser.tabs.get(tabId);
+    const { id, title, url, favIconUrl } = tabInfo;
+
+    if (!url) {
+      return {};
+    }
+
+    const { origin, protocol, host, href } = new URL(url);
+
+    // Skip if no origin, null origin, or extension pages
+    if (
+      !origin ||
+      origin === 'null' ||
+      origin.startsWith('chrome-extension://') ||
+      origin.startsWith('moz-extension://')
+    ) {
+      return {};
+    }
+
+    // Update the app active tab state
+    controller.appStateController.setAppActiveTab({
+      id,
+      title,
+      origin,
+      protocol,
+      url,
+      host,
+      href,
+      favIconUrl,
+    });
+
+    // Update subject metadata for permission system
+    controller.subjectMetadataController.addSubjectMetadata({
+      origin,
+      name: title || host || origin,
+      iconUrl: favIconUrl || null,
+      subjectType: 'website',
+    });
+  } catch (error) {
+    // Ignore errors from tabs that don't exist or can't be accessed
+    console.log('Error in tabs.onActivated listener:', error.message);
+  }
+
+  return {};
+});
+
+browser.tabs.onUpdated.addListener(async (tabId) => {
+  // Wait for controller to be initialized
+  await isInitialized;
+  if (!controller) {
+    return {};
+  }
+
+  try {
+    const tabInfo = await browser.tabs.get(tabId);
+    const { id, title, url, favIconUrl } = tabInfo;
+
+    if (!url) {
+      return {};
+    }
+
+    const { origin, protocol, host, href } = new URL(url);
+
+    // Skip if no origin, null origin, or extension pages
+    if (
+      !origin ||
+      origin === 'null' ||
+      origin.startsWith('chrome-extension://') ||
+      origin.startsWith('moz-extension://')
+    ) {
+      return {};
+    }
+
+    // Update the app active tab state
+    controller.appStateController.setAppActiveTab({
+      id,
+      title,
+      origin,
+      protocol,
+      url,
+      host,
+      href,
+      favIconUrl,
+    });
+
+    // Update subject metadata for permission system
+    controller.subjectMetadataController.addSubjectMetadata({
+      origin,
+      name: title || host || origin,
+      iconUrl: favIconUrl || null,
+      subjectType: 'website',
+    });
+  } catch (error) {
+    // Ignore errors from tabs that don't exist or can't be accessed
+    console.log('Error in tabs.onUpdated listener:', error.message);
+  }
+
+  return {};
+});
+///: END:ONLY_INCLUDE_IF
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {

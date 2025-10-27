@@ -36,7 +36,7 @@ describe('useAccountTrackerPolling', () => {
     process.env.PORTFOLIO_VIEW = originalPortfolioView;
   });
 
-  it.only('should poll account trackers when enabled and stop on dismount', async () => {
+  it('should poll account trackers for network client IDs when enabled and stop on dismount', async () => {
     process.env.PORTFOLIO_VIEW = 'true';
 
     const state = {

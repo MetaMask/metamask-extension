@@ -151,6 +151,14 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.COMPLETE_ONBOARDING_WITH_SIDEPANEL: {
+      return {
+        ...metamaskState,
+        completedOnboarding: true,
+        openedWithSidepanel: true,
+      };
+    }
+
     case actionConstants.RESET_ONBOARDING: {
       return {
         ...metamaskState,
