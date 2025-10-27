@@ -47,9 +47,7 @@ export async function estimateGasLimitForSend({
 }) {
   let isSimpleSendOnNonStandardNetwork = false;
 
-  const blockGasLimit = sendToken
-    ? GAS_LIMITS.BASE_TOKEN_ESTIMATE
-    : MIN_GAS_LIMIT_HEX;
+  const blockGasLimit = GAS_LIMITS.BASE_TOKEN_ESTIMATE;
 
   // The parameters below will be sent to our background process to estimate
   // how much gas will be used for a transaction. That background process is
