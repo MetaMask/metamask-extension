@@ -7257,6 +7257,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/polling-controller@npm:^14.0.2":
+  version: 14.0.2
+  resolution: "@metamask/polling-controller@npm:14.0.2"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.4.2"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/utils": "npm:^11.8.1"
+    "@types/uuid": "npm:^8.3.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^24.0.0
+  checksum: 10/749e1bcaf100576616921d0291cac1ca548c371e37663d3ff11d84085faa14e195d4092694c94d25acc473c82f3459ba2f576379c73edd1983b5d29a4b2c90cb
+  languageName: node
+  linkType: hard
+
 "@metamask/post-message-stream@npm:^10.0.0":
   version: 10.0.0
   resolution: "@metamask/post-message-stream@npm:10.0.0"
@@ -7851,17 +7867,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/subscription-controller@npm:2.0.0"
+"@metamask/subscription-controller@npm:@metamask-previews/subscription-controller@2.1.0-preview-2bb073da":
+  version: 2.1.0-preview-2bb073da
+  resolution: "@metamask-previews/subscription-controller@npm:2.1.0-preview-2bb073da"
   dependencies:
-    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/base-controller": "npm:^8.4.2"
     "@metamask/controller-utils": "npm:^11.14.1"
-    "@metamask/polling-controller": "npm:^14.0.1"
+    "@metamask/polling-controller": "npm:^14.0.2"
     "@metamask/utils": "npm:^11.8.1"
   peerDependencies:
     "@metamask/profile-sync-controller": ^25.0.0
-  checksum: 10/6fcbf6e5619ab096964d5ffcf526c4c1b16d4f5269bf02e4fdcb793d0f812a679c197d17bdb76a24e4b9c58664d27fddbc6b96a91f9928fd6f8af8bac05258bc
+  checksum: 10/7b162c0259ce148da59e6d7fcb6fed7488968804bcf687e1c7e21b37dbbbd9f70fa70959edc73161b952ae57edad876796d25ca5269830ed4c229cf3da98c5c5
   languageName: node
   linkType: hard
 
@@ -31925,7 +31941,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.4.6"
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:^2.0.0"
+    "@metamask/subscription-controller": "npm:@metamask-previews/subscription-controller@2.1.0-preview-2bb073da"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"

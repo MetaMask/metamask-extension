@@ -139,6 +139,7 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:estimateGas',
       'TransactionController:getState',
       'SubscriptionController:getSubscriptionByProduct',
+      'SubscriptionController:submitSponsorshipIntents',
     ],
   });
 }

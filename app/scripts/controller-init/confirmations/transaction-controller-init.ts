@@ -1,4 +1,8 @@
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import {
+  PAYMENT_TYPES,
+  PRODUCT_TYPES,
+  RECURRING_INTERVALS,
+} from '@metamask/subscription-controller';
 import {
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
@@ -142,6 +146,16 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
+      afterAdd: async (_params: { transactionMeta: TransactionMeta }) => {
+        return {
+          updateTransaction: async (transactionMeta: TransactionMeta) => {
+            await submitShieldSubscriptionSponsorshipIntent(
+              initMessenger,
+              transactionMeta,
+            );
+          },
+        };
+      },
       afterSimulate: new EnforceSimulationHook({
         messenger: initMessenger,
       }).getAfterSimulateHook(),
@@ -465,4 +479,44 @@ export function publishBatchHook({
     featureFlags,
     transactionMeta,
   });
+}
+
+export async function submitShieldSubscriptionSponsorshipIntent(
+  initMessenger: TransactionControllerInitMessenger,
+  txMeta: TransactionMeta,
+) {
+  if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
+    return;
+  }
+
+  const { lastUsedSubscriptionPaymentDetails } = initMessenger.call(
+    'AppStateController:getState',
+  );
+
+  if (!lastUsedSubscriptionPaymentDetails) {
+    return;
+  }
+
+  const { paymentMethod, plan } = lastUsedSubscriptionPaymentDetails;
+  if (paymentMethod !== PAYMENT_TYPES.byCrypto) {
+    return;
+  }
+
+  const address = txMeta.txParams.from as `0x${string}`;
+  const recurringInterval = plan;
+  const billingCycles = recurringInterval === RECURRING_INTERVALS.year ? 1 : 12;
+
+  try {
+    await initMessenger.call(
+      'SubscriptionController:submitSponsorshipIntents',
+      {
+        address,
+        products: [PRODUCT_TYPES.SHIELD],
+        recurringInterval,
+        billingCycles,
+      },
+    );
+  } catch (error) {
+    console.error('Failed to submit sponsorship intent', error);
+  }
 }
