@@ -411,9 +411,16 @@ function hasChangelogEntry(body: string): boolean {
   // Remove HTML comments (including multiline)
   let uncommentedBody = body;
   let prevBody;
+  let iterationCount = 0;
+  const MAX_ITERATIONS = 100;
   do {
     prevBody = uncommentedBody;
     uncommentedBody = uncommentedBody.replace(/<!--[\s\S]*?-->/g, "");
+    iterationCount++;
+    if (iterationCount >= MAX_ITERATIONS) {
+      console.warn(`Reached maximum HTML comment removal iterations (${MAX_ITERATIONS}). Input may be malformed or malicious.`);
+      break;
+    }
   } while (uncommentedBody !== prevBody);
 
   // Split body into lines
