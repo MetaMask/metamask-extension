@@ -139,7 +139,7 @@ type InitActions =
   | MetaMetricsControllerTrackEventAction
   | SetClientActive;
 
-type InitEvents = KeyringControllerUnlockEvent;
+type InitEvents = KeyringControllerUnlockEvent | KeyringControllerLockEvent;
 
 export type SnapControllerInitMessenger = ReturnType<
   typeof getSnapControllerInitMessenger
@@ -163,6 +163,6 @@ export function getSnapControllerInitMessenger(
       'MetaMetricsController:trackEvent',
       'SnapController:setClientActive',
     ],
-    allowedEvents: ['KeyringController:unlock'],
+    allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
   });
 }
