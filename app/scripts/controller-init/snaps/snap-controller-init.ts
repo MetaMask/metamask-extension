@@ -137,6 +137,10 @@ export const SnapControllerInit: ControllerInitFunction<
     ) as unknown as TrackEventHook,
   });
 
+  initMessenger.subscribe('KeyringController:unlock', () => {
+    initMessenger.call('SnapController:setClientActive', true);
+  });
+
   return {
     controller,
   };

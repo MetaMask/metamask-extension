@@ -13,6 +13,7 @@ import {
   ErrorMessageEvent,
   OutboundRequest,
   OutboundResponse,
+  SetClientActive,
 } from '@metamask/snaps-controllers';
 import {
   GetEndowments,
@@ -36,6 +37,7 @@ import {
 import {
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import { SelectedNetworkControllerGetNetworkClientIdForDomainAction } from '@metamask/selected-network-controller';
 import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
@@ -134,7 +136,10 @@ export function getSnapControllerMessenger(
 type InitActions =
   | KeyringControllerGetKeyringsByTypeAction
   | PreferencesControllerGetStateAction
-  | MetaMetricsControllerTrackEventAction;
+  | MetaMetricsControllerTrackEventAction
+  | SetClientActive;
+
+type InitEvents = KeyringControllerUnlockEvent;
 
 export type SnapControllerInitMessenger = ReturnType<
   typeof getSnapControllerInitMessenger
@@ -148,15 +153,16 @@ export type SnapControllerInitMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getSnapControllerInitMessenger(
-  messenger: Messenger<InitActions, never>,
+  messenger: Messenger<InitActions, InitEvents>,
 ) {
   return messenger.getRestricted({
     name: 'SnapControllerInit',
-    allowedEvents: [],
     allowedActions: [
       'KeyringController:getKeyringsByType',
       'PreferencesController:getState',
       'MetaMetricsController:trackEvent',
+      'SnapController:setClientActive',
     ],
+    allowedEvents: ['KeyringController:unlock'],
   });
 }
