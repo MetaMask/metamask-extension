@@ -67,9 +67,9 @@ describe('Account tree selectors utils', () => {
       });
 
       it('throws an error when accountGroupId is an empty string', () => {
-        expect(() =>
-          extractWalletIdFromGroupId('' as AccountGroupId),
-        ).toThrow('Account group ID is required');
+        expect(() => extractWalletIdFromGroupId('' as AccountGroupId)).toThrow(
+          'Account group ID is required',
+        );
       });
     });
   });
