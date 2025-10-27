@@ -387,28 +387,6 @@ function maybeDetectPhishing(theController) {
         blockedUrl = href;
       }
 
-      if (!isFirefox) {
-        theController.metaMetricsController.trackEvent(
-          {
-            // should we differentiate between background redirection and content script redirection?
-            event: MetaMetricsEventName.PhishingPageDisplayed,
-            category: MetaMetricsEventCategory.Phishing,
-            properties: {
-              url: blockedHostname,
-              referrer: {
-                url: blockedHostname,
-              },
-              reason: blockReason,
-              requestDomain: blockedRequestResponse.result
-                ? hostname
-                : undefined,
-            },
-          },
-          {
-            excludeMetaMetricsId: true,
-          },
-        );
-      }
       const querystring = new URLSearchParams({
         hostname: blockedHostname, // used for creating the EPD issue title (false positive report)
         href: blockedUrl, // used for displaying the URL on the phsihing warning page + proceed anyway URL
