@@ -44,7 +44,7 @@ export default function TokenSearch({
 
   const filteredTokenList = useMemo(() => {
     if (isTokenNetworkFilterEqualCurrentNetwork) {
-      const dataObject = tokenList?.[chainId]?.data;
+      const dataObject = tokenList?.[chainId]?.data || {};
       return Object.fromEntries(
         Object.entries(dataObject).map(([key, value]) => [
           key,
@@ -89,6 +89,8 @@ export default function TokenSearch({
   useEffect(() => {
     clear();
   }, [isTokenNetworkFilterEqualCurrentNetwork]);
+
+  console.log('DEBUG TOKEN SEARCH RESULTS', filteredTokenList);
 
   return (
     <TextFieldSearch
