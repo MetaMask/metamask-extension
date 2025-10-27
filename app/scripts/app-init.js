@@ -9,7 +9,7 @@ const { chrome } = globalThis;
 
 // this needs to be run early so we can begin listening to these browser events
 // as soon as possible
-const listener = new ExtensionLazyListener(chrome, {
+const lazyListener = new ExtensionLazyListener(chrome, {
   runtime: ['onInstalled', 'onConnect'],
 });
 
@@ -20,7 +20,7 @@ globalThis.stateHooks = globalThis.stateHooks || {};
 
 // Set the lazy listener on globalThis.stateHooks so that other bundles can
 // access it.
-globalThis.stateHooks.lazyListener = listener;
+globalThis.stateHooks.lazyListener = lazyListener;
 
 // Represents if importAllScripts has been run
 // eslint-disable-next-line
