@@ -69,6 +69,7 @@ import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -109,6 +110,7 @@ const mapStateToProps = (state) => {
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
+  const isSidepanel = envType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -145,6 +147,7 @@ const mapStateToProps = (state) => {
     isPopup,
     isNotification,
     dataCollectionForMarketing,
+    isSidepanel,
     selectedAddress,
     totalUnapprovedCount,
     participateInMetaMetrics,
