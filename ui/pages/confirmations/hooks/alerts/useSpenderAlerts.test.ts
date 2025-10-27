@@ -103,37 +103,6 @@ describe('useSpenderAlerts', () => {
     mockIsSecurityAlertsAPIEnabled.mockReturnValue(true);
   });
 
-  it('returns an empty array when security alerts API is disabled', () => {
-    mockIsSecurityAlertsAPIEnabled.mockReturnValue(false);
-    mockUseTrustSignal.mockReturnValue({
-      state: TrustSignalDisplayState.Malicious,
-      label: 'Known malicious address',
-    });
-
-    // Mock transaction data
-    const mockTransaction = {
-      id: MOCK_TRANSACTION_ID,
-      type: TransactionType.tokenMethodApprove,
-      txParams: {
-        data: '0xapprovedata',
-      },
-    };
-
-    mockUseConfirmContext.mockReturnValue({
-      currentConfirmation: mockTransaction,
-      isScrollToBottomCompleted: false,
-      setIsScrollToBottomCompleted: jest.fn(),
-    });
-    mockParseApprovalTransactionData.mockReturnValue({
-      name: 'approve',
-      spender: MOCK_SPENDER_ADDRESS as `0x${string}`,
-    });
-
-    const { result } = renderHook(() => useSpenderAlerts());
-
-    expect(result.current).toEqual([]);
-  });
-
   describe('approval transactions', () => {
     it('should return alert for malicious spender in tokenMethodApprove', () => {
       // Mock transaction data

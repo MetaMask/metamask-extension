@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
@@ -21,8 +18,6 @@ import {
   useTrustSignal,
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
-// eslint-disable-next-line import/no-restricted-paths
-import { isSecurityAlertsAPIEnabled } from '../../../../../app/scripts/lib/ppom/security-alerts-api';
 
 /**
  * Hook to generate alerts for spender addresses in approval transactions and permit signatures.
@@ -40,22 +35,15 @@ export function useSpenderAlerts(): Alert[] {
     }
 
     // Handle approval transactions
-    if (
-      currentConfirmation.type &&
-      [
-        TransactionType.tokenMethodApprove,
-        TransactionType.tokenMethodIncreaseAllowance,
-        TransactionType.tokenMethodSetApprovalForAll,
-      ].includes(currentConfirmation.type as TransactionType)
-    ) {
-      const transactionMeta = currentConfirmation as TransactionMeta;
-      const txData = transactionMeta.txParams?.data;
+    const transactionMeta = currentConfirmation as TransactionMeta;
+    const txData = transactionMeta.txParams?.data;
 
-      if (txData) {
-        const approvalData = parseApprovalTransactionData(
-          txData as `0x${string}`,
-        );
-        return approvalData?.spender || null;
+    if (txData) {
+      const approvalData = parseApprovalTransactionData(
+        txData as `0x${string}`,
+      );
+      if (approvalData?.spender) {
+        return approvalData.spender;
       }
     }
     // Handle permit signatures
@@ -86,7 +74,7 @@ export function useSpenderAlerts(): Alert[] {
   );
 
   return useMemo(() => {
-    if (!spenderAddress || !isSecurityAlertsAPIEnabled()) {
+    if (!spenderAddress) {
       return [];
     }
 
