@@ -75,7 +75,9 @@ describe('UserOperationControllerInit', () => {
       };
     });
     const initRequest = getInitRequestMock();
-    const initMessengerCallSpy = jest.spyOn(initRequest.initMessenger, 'call');
+    const initMessengerCallSpy = jest
+      .spyOn(initRequest.initMessenger, 'call')
+      .mockImplementation(jest.fn());
 
     UserOperationControllerInit(initRequest);
     const onUserOperationAdded = onSpy.mock.calls.find(
@@ -101,7 +103,9 @@ describe('UserOperationControllerInit', () => {
       };
     });
     const initRequest = getInitRequestMock();
-    const initMessengerCallSpy = jest.spyOn(initRequest.initMessenger, 'call');
+    const initMessengerCallSpy = jest
+      .spyOn(initRequest.initMessenger, 'call')
+      .mockImplementation(jest.fn());
 
     UserOperationControllerInit(initRequest);
     const onTransactionUpdated = onSpy.mock.calls.find(
