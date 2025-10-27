@@ -8,6 +8,8 @@ import {
 } from '@metamask/bridge-controller';
 import { type TxAlert } from '../../../shared/types/security-alerts-api';
 
+export const INITIAL_SLIPPAGE = null;
+
 export type BridgeToken = {
   address: string;
   assetId?: CaipAssetType;
@@ -41,7 +43,7 @@ export type BridgeState = {
   sortOrder: SortOrder;
   selectedQuote: (QuoteResponse & QuoteMetadata) | null; // Alternate quote selected by user. When quotes refresh, the best match will be activated.
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
-  slippage?: number;
+  slippage?: number | null; // Null when user has not selected a slippage value, undefined when user selects AUTO
   txAlert: TxAlert | null;
 };
 

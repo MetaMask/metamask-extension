@@ -4,12 +4,17 @@ import {
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
+  formatAddressToAssetId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { SolAccountType, SolScope } from '@metamask/keyring-api';
-import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import { getAddress } from 'ethers/lib/utils';
+import {
+  createBridgeMockStore,
+  MOCK_SOLANA_ACCOUNT,
+} from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { mockNetworkState } from '../../../test/stub/networks';
@@ -33,8 +38,10 @@ import {
   getToTokenConversionRate,
   getFromTokenBalance,
   getFromAccount,
+  getSlippage,
 } from './selectors';
 import { toBridgeToken } from './utils';
+import { BridgeState, INITIAL_SLIPPAGE } from './types';
 
 describe('Bridge selectors', () => {
   describe('getFromChain', () => {
@@ -2281,5 +2288,187 @@ describe('Bridge selectors', () => {
         valueInCurrency: 1.1,
       });
     });
+  });
+
+  describe('getSlippage', () => {
+    // it('should return the default bridge slippage initially', () => {
+    //   const state = createBridgeMockStore();
+    //   const result = getSlippage(state);
+    //   expect(result).toBe(null);
+    // });
+
+    const USDC = formatAddressToAssetId(
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      1,
+    );
+    const USDT = formatAddressToAssetId(
+      getAddress('0xdac17f958d2ee523a2206206994597c13d831ec7'),
+      1,
+    );
+    const OTHER_COIN = formatAddressToAssetId(
+      formatAddressToAssetId('0xa0b86991c6218b36c1d19d4ab0ceunstalblecoin', 1),
+      1,
+    );
+    const OPT_STABLECOIN = formatAddressToAssetId(
+      getAddress('0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85'),
+      10,
+    );
+
+    // should return default bridge
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each([
+      [
+        'fromToken is a stablecoin',
+        {
+          fromAssetId: USDC,
+          toAssetId: OTHER_COIN,
+        },
+        2,
+      ],
+      [
+        'toToken is a stablecoin',
+        {
+          fromAssetId: OTHER_COIN,
+          toAssetId: USDC,
+        },
+        2,
+      ],
+      [
+        'fromToken and toToken are stablecoins',
+        {
+          fromAssetId: USDC,
+          toAssetId: USDT,
+        },
+        0.5,
+      ],
+      [
+        'fromToken and toToken are stablecoins (lowercased addresses)',
+        {
+          fromAssetId: USDC.toLowerCase(),
+          toAssetId: USDC.toLowerCase(),
+        },
+        0.5,
+      ],
+      [
+        'both tokens are stablecoins but on different chains',
+        {
+          fromAssetId: OPT_STABLECOIN,
+          toAssetId: USDC,
+        },
+        0.5,
+      ],
+      [
+        'neither token are stablecoins',
+        {
+          fromAssetId: OTHER_COIN,
+          toAssetId: formatAddressToAssetId(
+            '0xa0b86991c6218b36c1d19d4ab02eunstalblecoin',
+            1,
+          ),
+        },
+        2,
+      ],
+    ])(
+      'should return EVM swap slippage when %s',
+      (
+        _: string,
+        {
+          fromAssetId,
+          toAssetId: toAssetIdString,
+        }: {
+          fromAssetId: string;
+          toAssetId: string;
+        },
+        expectedSlippage: BridgeState['slippage'],
+      ) => {
+        const state = createBridgeMockStore({
+          featureFlagOverrides: {
+            bridgeConfig: {
+              stablecoins: [USDC, USDT, OPT_STABLECOIN],
+              chains: {
+                [ChainId.ETH]: {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+                [ChainId.OPTIMISM]: {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+              },
+            },
+          },
+          bridgeSliceOverrides: {
+            slippage: null,
+            fromToken: {
+              address: 'placeholder',
+              assetId: fromAssetId,
+            },
+            toChainId: toAssetIdString.split('/')[0],
+            toToken: {
+              assetId: formatAddressToAssetId(
+                toAssetIdString,
+                toAssetIdString.split('/')[0],
+              ),
+            },
+          },
+        });
+        const result = getSlippage(state);
+        expect(result).toBe(expectedSlippage);
+      },
+    );
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each([
+      [undefined, undefined],
+      [null, undefined],
+      [INITIAL_SLIPPAGE, undefined],
+      [0, 0],
+      [1, 1],
+    ])(
+      'should return the solana AUTO slippage when bridge.slippage is %s',
+      (
+        slippage: BridgeState['slippage'],
+        expectedSlippage: BridgeState['slippage'],
+      ) => {
+        const state = createBridgeMockStore({
+          bridgeSliceOverrides: {
+            slippage,
+            toToken: {
+              assetId:
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            },
+            fromToken: {
+              assetId: getNativeAssetForChainId(MultichainNetworks.SOLANA)
+                ?.assetId,
+            },
+          },
+          featureFlagOverrides: {
+            bridgeConfig: {
+              stablecoins: [USDC, USDT, OPT_STABLECOIN],
+              chains: {
+                [MultichainNetworks.SOLANA]: {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+                [ChainId.ETH]: {
+                  isActiveSrc: true,
+                  isActiveDest: true,
+                },
+              },
+            },
+          },
+          metamaskStateOverrides: {
+            internalAccounts: {
+              selectedAccount: MOCK_SOLANA_ACCOUNT.id,
+            },
+            accountTree: {
+              selectedAccountGroup: 'entropy:01K2FF18CTTXJYD34R78X4N1N1/0',
+            },
+          },
+        });
+        const result = getSlippage(state);
+        expect(result).toBe(expectedSlippage);
+      },
+    );
   });
 });

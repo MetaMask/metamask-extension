@@ -4,13 +4,12 @@ import { zeroAddress } from 'ethereumjs-util';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
   getNativeAssetForChainId,
+  formatAddressToAssetId,
 } from '@metamask/bridge-controller';
 import * as controllerUtils from '@metamask/controller-utils';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import { toAssetId } from '../../../shared/lib/asset-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
@@ -27,6 +26,7 @@ import {
   setWasTxDeclined,
   setSlippage,
 } from './actions';
+import { INITIAL_SLIPPAGE } from './types';
 
 const middleware = [thunk];
 
@@ -51,6 +51,33 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/setSlippage');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState.slippage).toStrictEqual(actionPayload);
+    });
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each([
+      ['toChainId', () => setToChainId(CHAIN_IDS.OPTIMISM as never)],
+      [
+        'toToken',
+        () => setToToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+      ],
+      [
+        'fromToken',
+        () => setFromToken(getNativeAssetForChainId(CHAIN_IDS.OPTIMISM)),
+      ],
+    ])('gets unset after changing %s', (_: string, action: () => void) => {
+      const state = store.getState().bridge;
+      const actionPayload = 0.1;
+
+      store.dispatch(setSlippage(actionPayload as never) as never);
+      store.dispatch(action() as never);
+
+      // Check redux state
+      const actions = store.getActions();
+      expect(actions[0].type).toStrictEqual('bridge/setSlippage');
+      const state1 = bridgeReducer(state, actions[0]);
+      const state2 = bridgeReducer(state1, actions[1]);
+      expect(state1.slippage).toStrictEqual(actionPayload);
+      expect(state2.slippage).toStrictEqual(null);
     });
   });
 
@@ -82,10 +109,11 @@ describe('Ducks - Bridge', () => {
       store.dispatch(setFromToken(actionPayload as never) as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setFromToken');
-      const newState = bridgeReducer(state, actions[0]);
+      const newState = bridgeReducer({ ...state, slippage: 5 }, actions[0]);
       expect(newState.fromToken).toStrictEqual(
         expect.objectContaining(actionPayload),
       );
+      expect(newState.slippage).toStrictEqual(null);
     });
   });
 
@@ -101,7 +129,7 @@ describe('Ducks - Bridge', () => {
       store.dispatch(setToToken(actionPayload as never) as never);
       const actions = store.getActions();
       expect(actions[0].type).toStrictEqual('bridge/setToToken');
-      const newState = bridgeReducer(state, actions[0]);
+      const newState = bridgeReducer({ ...state, slippage: 5 }, actions[0]);
       expect(newState.toToken).toStrictEqual(
         expect.objectContaining({
           ...actionPayload,
@@ -113,6 +141,7 @@ describe('Ducks - Bridge', () => {
           string: '0',
         }),
       );
+      expect(newState.slippage).toStrictEqual(null);
     });
   });
 
@@ -141,7 +170,7 @@ describe('Ducks - Bridge', () => {
         toChainId: null,
         fromToken: null,
         toToken: null,
-        slippage: BRIDGE_DEFAULT_SLIPPAGE,
+        slippage: INITIAL_SLIPPAGE,
         fromTokenInputValue: null,
         sortOrder: 'cost_ascending',
         toTokenExchangeRate: null,
@@ -240,7 +269,7 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         fromTokenInputValue: null,
         selectedQuote: null,
-        slippage: BRIDGE_DEFAULT_SLIPPAGE,
+        slippage: null,
         sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
@@ -301,6 +330,7 @@ describe('Ducks - Bridge', () => {
         toChainId: null,
         toTokenExchangeRate: 0.356628,
         sortOrder: 'cost_ascending',
+        slippage: null,
       });
     });
 
@@ -314,7 +344,7 @@ describe('Ducks - Bridge', () => {
       const fetchTokenExchangeRatesSpy = jest
         .spyOn(controllerUtils, 'handleFetch')
         .mockResolvedValue({
-          [toAssetId(
+          [formatAddressToAssetId(
             '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'.toLowerCase(),
             formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
           ) as never]: {
@@ -354,6 +384,7 @@ describe('Ducks - Bridge', () => {
         toChainId: null,
         toTokenExchangeRate: 0.999881,
         sortOrder: 'cost_ascending',
+        slippage: null,
       });
     });
   });

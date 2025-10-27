@@ -17,6 +17,8 @@ import {
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   isCrossChain,
+  formatAddressToAssetId,
+  getDefaultSlippagePercentage as calculateDefaultSlippagePercentage,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SolAccountType, BtcAccountType } from '@metamask/keyring-api';
@@ -94,7 +96,7 @@ import {
   toBridgeToken,
   isNonEvmChain,
 } from './utils';
-import type { BridgeState } from './types';
+import { INITIAL_SLIPPAGE, type BridgeState } from './types';
 
 /**
  * Helper function to determine the CAIP asset type for non-EVM native assets
@@ -525,7 +527,25 @@ export const getFromTokenBalance = createSelector(
   },
 );
 
-export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
+export const getSlippage = createSelector(
+  [
+    (state) => getFromToken(state)?.assetId,
+    (state) => getToToken(state)?.assetId,
+    (state) => getBridgeFeatureFlags(state).stablecoins,
+    (state) => state.bridge.slippage, // user-selected slippage value. this gets unset when the tokens change
+  ],
+  (srcAssetId, destAssetId, stablecoins, slippage) => {
+    // Use default slippage when no user-selected slippage is available
+    if (slippage === INITIAL_SLIPPAGE) {
+      return calculateDefaultSlippagePercentage({
+        srcAssetId,
+        destAssetId,
+        stablecoins,
+      });
+    }
+    return slippage;
+  },
+);
 
 export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask;

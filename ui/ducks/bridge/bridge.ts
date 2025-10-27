@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   SortOrder,
-  BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
   getNativeAssetForChainId,
   calcLatestSrcBalance,
@@ -16,6 +15,7 @@ import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-ale
 import { endTrace, TraceName } from '../../../shared/lib/trace';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
+import { INITIAL_SLIPPAGE } from './types';
 
 const initialState: BridgeState = {
   toChainId: null,
@@ -30,7 +30,7 @@ const initialState: BridgeState = {
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
   wasTxDeclined: false,
-  slippage: BRIDGE_DEFAULT_SLIPPAGE,
+  slippage: INITIAL_SLIPPAGE,
   txAlert: null,
 };
 
@@ -101,6 +101,7 @@ const bridgeSlice = createSlice({
     setToChainId: (state, { payload }: ChainIdPayload) => {
       state.toChainId = payload ? formatChainIdToCaip(payload) : null;
       state.toToken = null;
+      state.slippage = INITIAL_SLIPPAGE;
     },
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
@@ -115,6 +116,7 @@ const bridgeSlice = createSlice({
       ) {
         state.toToken = null;
       }
+      state.slippage = initialState.slippage;
     },
     setToToken: (state, { payload }: TokenPayload) => {
       const toToken = toBridgeToken(payload);
@@ -136,6 +138,7 @@ const bridgeSlice = createSlice({
       ) {
         state.toChainId = formatChainIdToCaip(toToken.chainId);
       }
+      state.slippage = initialState.slippage;
     },
     setFromTokenInputValue: (
       state,
