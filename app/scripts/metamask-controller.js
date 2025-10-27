@@ -4768,10 +4768,7 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this.networkEnablementController.enableNetwork(CHAIN_IDS.SEPOLIA);
     } else {
-      const supportedFeaturedNetworks = FEATURED_NETWORK_CHAIN_IDS.filter(
-        (chainId) => SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(chainId),
-      );
-      this.networkEnablementController.enableNetwork(supportedFeaturedNetworks);
+      this.networkEnablementController.enableAllPopularNetworks();
     }
   }
 
