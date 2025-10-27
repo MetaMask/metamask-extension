@@ -168,6 +168,7 @@ class SecureWalletPage {
 
   async skipSRPBackup(): Promise<void> {
     console.log('Skip SRP backup on Reveal SRP Onboarding page');
+    await this.driver.clickElement(this.secureWalletRecommendedButton);
     await this.driver.waitForSelector(this.skipAccountSecurityMessage);
     await this.driver.clickElement(this.skipSRPBackupCheckbox);
     await this.driver.clickElementAndWaitToDisappear(
