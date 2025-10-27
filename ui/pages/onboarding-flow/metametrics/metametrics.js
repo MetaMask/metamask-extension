@@ -160,7 +160,6 @@ export default function OnboardingMetametrics() {
         variant={TextVariant.headingLg}
         textAlign={TextAlign.Left}
         fontWeight={FontWeight.Bold}
-        marginBottom={4}
       >
         {t('onboardingMetametricsTitle')}
       </Text>
