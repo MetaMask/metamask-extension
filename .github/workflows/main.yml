@@ -198,6 +198,39 @@ jobs:
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
+  export-onboarding-fixture:
+    name: Export onboarding fixture
+    needs:
+      - build-dist-browserify
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: export-onboarding-fixture
+      build-artifact: build-dist-browserify
+      test-command: yarn test:e2e:single test/e2e/wallet-fixutre.spec.ts --browser chrome
+      test-artifacts-path: test-artifacts/onboarding-fixture
+    secrets:
+      PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          use-yarn-hydrate: true
+      - name: Download onboarding fixture artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: export-onboarding-fixture
+          path: .
+      - name: Comment PR with fixture
+        if: ${{ github.event_name == 'pull_request' && env.PR_COMMENT_TOKEN }}
+        env:
+          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.event.repository.name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: yarn tsx ./development/metamaskbot-fixture-announce.ts
+
   run-tests:
     name: Run tests
     needs:
@@ -270,6 +303,7 @@ jobs:
       - build-test-webpack
       - build-dist-browserify
       - build-test-flask-browserify
+      - export-onboarding-fixture
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
     secrets:
@@ -282,6 +316,7 @@ jobs:
       - build-test-mv2-browserify
       - build-test-webpack
       - build-test-flask-mv2-browserify
+      - export-onboarding-fixture
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
     secrets:

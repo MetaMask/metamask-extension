@@ -2,6 +2,8 @@ const {
   WALLET_SNAP_PERMISSION_KEY,
   SnapCaveatType,
 } = require('@metamask/snaps-utils');
+const fs = require('fs');
+const path = require('path');
 const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { mockNetworkStateOld } = require('../stub/networks');
@@ -30,6 +32,22 @@ const {
 const onboardingFixtureJson = require('./fixtures/onboarding-fixture.json');
 
 function onboardingFixture() {
+  try {
+    if (process.env.CI) {
+      const artifactPath = path.resolve(
+        process.cwd(),
+        'test-artifacts',
+        'onboarding-fixture',
+        'onboarding-fixture.json',
+      );
+      if (fs.existsSync(artifactPath)) {
+        const content = fs.readFileSync(artifactPath, 'utf8');
+        return JSON.parse(content);
+      }
+    }
+  } catch (e) {
+    // fall back to local file
+  }
   return onboardingFixtureJson;
 }
 
