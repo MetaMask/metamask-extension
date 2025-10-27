@@ -249,8 +249,8 @@ jobs:
     secrets:
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
     with:
-      browser-loads: '10'
-      page-loads: '10'
+      browser-loads: 10
+      page-loads: 10
 
   needs-e2e:
     needs:

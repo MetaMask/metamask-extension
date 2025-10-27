@@ -522,7 +522,7 @@ function generateBenchmarkComment(
  * Required environment variables:
  * - HEAD_COMMIT_HASH: Git commit hash of the current HEAD
  */
-export async function getPageLoadBenchmarkComment(): Promise<string> {
+export async function getPageLoadBenchmarkComment(): Promise<string | null> {
   const { HEAD_COMMIT_HASH } = process.env as Record<string, string>;
   const N_COMMITS = 10;
 
@@ -543,7 +543,7 @@ export async function getPageLoadBenchmarkComment(): Promise<string> {
 
   if (!benchmarkData) {
     console.warn('No benchmark results found, skipping comment');
-    return '';
+    return null;
   }
 
   benchmarkData.commit = HEAD_COMMIT_HASH;

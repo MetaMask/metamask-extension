@@ -331,8 +331,11 @@ async function start(): Promise<void> {
     console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
   }
 
-  // Add the page load benchmark results (which used to be their own comment) to this comment
-  commentBody += `<details><summary>📊 Page Load Benchmark Results</summary>${await getPageLoadBenchmarkComment()}</details>`;
+  // Add the page load benchmark results
+  const pageLoadBenchmarkComment = await getPageLoadBenchmarkComment();
+  if (pageLoadBenchmarkComment) {
+    commentBody += `<details><summary>📊 Page Load Benchmark Results</summary>${pageLoadBenchmarkComment}</details>`;
+  }
 
   try {
     const prBundleSizeStatsResponse = await fetch(bundleSizeStatsUrl);
