@@ -1,8 +1,5 @@
 import { NetworkState } from '@metamask/network-controller';
-import {
-  FEATURED_RPCS,
-  SUPPORTED_NETWORKS_ACCOUNTS_API_V4,
-} from '../../../shared/constants/network';
+import { FEATURED_RPCS, CHAIN_IDS } from '../../../shared/constants/network';
 import { migrate, version } from './182';
 
 // Mock uuid
@@ -11,6 +8,15 @@ jest.mock('uuid', () => ({
 }));
 
 const oldVersion = 181;
+
+// Define the networks that should be added by this migration
+const networksToAdd: string[] = [
+  CHAIN_IDS.ARBITRUM,
+  CHAIN_IDS.BSC,
+  CHAIN_IDS.POLYGON,
+  CHAIN_IDS.OPTIMISM,
+  CHAIN_IDS.SEI,
+];
 
 describe(`migration #${version}`, () => {
   beforeEach(() => {
@@ -113,8 +119,8 @@ describe(`migration #${version}`, () => {
     // Create a state with all supported FEATURED_RPCS networks already present
     const existingNetworks: Record<string, unknown> = {};
     FEATURED_RPCS.forEach((network) => {
-      // Only add supported networks
-      if (SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId)) {
+      // Only add networks in our specified list
+      if (networksToAdd.includes(network.chainId)) {
         existingNetworks[network.chainId] = {
           chainId: network.chainId,
           name: network.name,
@@ -146,7 +152,7 @@ describe(`migration #${version}`, () => {
 
     // Assert - All supported networks remain unchanged
     FEATURED_RPCS.forEach((network) => {
-      if (SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId)) {
+      if (networksToAdd.includes(network.chainId)) {
         expect(
           (newStorage.data.NetworkController as NetworkState)
             .networkConfigurationsByChainId[network.chainId],
@@ -176,7 +182,7 @@ describe(`migration #${version}`, () => {
 
     // Assert - All supported FEATURED_RPCS networks were added
     FEATURED_RPCS.forEach((network) => {
-      if (SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId)) {
+      if (networksToAdd.includes(network.chainId)) {
         const addedNetwork = (newStorage.data.NetworkController as NetworkState)
           .networkConfigurationsByChainId[network.chainId];
 
@@ -231,7 +237,7 @@ describe(`migration #${version}`, () => {
   it('adds only missing supported FEATURED_RPCS networks when some are already present', async () => {
     // Find the first supported FEATURED_RPCS network
     const firstSupportedNetwork = FEATURED_RPCS.find((network) =>
-      SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId),
+      networksToAdd.includes(network.chainId),
     );
 
     if (!firstSupportedNetwork) {
@@ -280,7 +286,7 @@ describe(`migration #${version}`, () => {
     // Assert - All other supported FEATURED_RPCS networks were added
     FEATURED_RPCS.forEach((network) => {
       if (
-        SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId) &&
+        networksToAdd.includes(network.chainId) &&
         network.chainId !== firstSupportedNetwork.chainId
       ) {
         const addedNetwork = (newStorage.data.NetworkController as NetworkState)
@@ -313,7 +319,7 @@ describe(`migration #${version}`, () => {
 
     // Assert - All supported FEATURED_RPCS networks were added
     FEATURED_RPCS.forEach((network) => {
-      if (SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId)) {
+      if (networksToAdd.includes(network.chainId)) {
         const addedNetwork = (newStorage.data.NetworkController as NetworkState)
           .networkConfigurationsByChainId[network.chainId];
 
@@ -362,7 +368,7 @@ describe(`migration #${version}`, () => {
 
     // Assert - All supported FEATURED_RPCS networks were added
     FEATURED_RPCS.forEach((network) => {
-      if (SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId)) {
+      if (networksToAdd.includes(network.chainId)) {
         const addedNetwork = (newStorage.data.NetworkController as NetworkState)
           .networkConfigurationsByChainId[network.chainId];
 
@@ -386,11 +392,10 @@ describe(`migration #${version}`, () => {
 
     // Assert - Only supported networks were added
     const supportedNetworks = FEATURED_RPCS.filter((network) =>
-      SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId),
+      networksToAdd.includes(network.chainId),
     );
     const unsupportedNetworks = FEATURED_RPCS.filter(
-      (network) =>
-        !SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(network.chainId),
+      (network) => !networksToAdd.includes(network.chainId),
     );
 
     // Check that supported networks were added

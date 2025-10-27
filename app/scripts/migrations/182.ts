@@ -1,10 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { v4 as uuidV4 } from 'uuid';
 import { hasProperty, isObject } from '@metamask/utils';
-import {
-  FEATURED_RPCS,
-  SUPPORTED_NETWORKS_ACCOUNTS_API_V4,
-} from '../../../shared/constants/network';
+import { FEATURED_RPCS, CHAIN_IDS } from '../../../shared/constants/network';
 
 type VersionedData = {
   meta: { version: number };
@@ -71,9 +68,19 @@ function transformState(state: Record<string, unknown>) {
   const existingNetworkConfigurations =
     networkState.networkConfigurationsByChainId;
 
-  // Add each FEATURED_RPCS network if it's not already present
+  // Define the chain IDs to add: Arbitrum, BSC, Polygon, Optimism, and Sei
+  const networksToAdd: string[] = [
+    CHAIN_IDS.ARBITRUM,
+    CHAIN_IDS.BSC,
+    CHAIN_IDS.POLYGON,
+    CHAIN_IDS.OPTIMISM,
+    CHAIN_IDS.SEI,
+  ];
+
+  // Add each network if it's not already present
   FEATURED_RPCS.forEach((featuredNetwork) => {
-    if (!SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(featuredNetwork.chainId)) {
+    // Only add networks in our specified list
+    if (!networksToAdd.includes(featuredNetwork.chainId)) {
       return;
     }
     const { chainId } = featuredNetwork;
