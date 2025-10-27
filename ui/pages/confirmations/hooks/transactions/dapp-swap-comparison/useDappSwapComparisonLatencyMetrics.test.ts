@@ -1,8 +1,8 @@
 import { act } from '@testing-library/react';
 
-import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
-import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
-import { Confirmation } from '../../types/confirm';
+import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { Confirmation } from '../../../types/confirm';
 import { useDappSwapComparisonLatencyMetrics } from './useDappSwapComparisonLatencyMetrics';
 
 jest.useFakeTimers();

@@ -1,27 +1,27 @@
 import { QuoteResponse } from '@metamask/bridge-controller';
 import { act } from '@testing-library/react';
 
-import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
-import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
-import { TokenStandAndDetails } from '../../../../store/actions';
-import { fetchQuotes } from '../../../../store/controller-actions/bridge-controller';
-import * as Utils from '../../../../helpers/utils/util';
-import * as TokenUtils from '../../utils/token';
-import { Confirmation } from '../../types/confirm';
+import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
+import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { TokenStandAndDetails } from '../../../../../store/actions';
+import { fetchQuotes } from '../../../../../store/controller-actions/bridge-controller';
+import * as Utils from '../../../../../helpers/utils/util';
+import * as TokenUtils from '../../../utils/token';
+import { Confirmation } from '../../../types/confirm';
 import { useDappSwapComparisonInfo } from './useDappSwapComparisonInfo';
 
 jest.useFakeTimers();
 
 const mockUpdateTransactionEventFragment = jest.fn();
-jest.mock('../../hooks/useTransactionEventFragment', () => ({
+jest.mock('../../../hooks/useTransactionEventFragment', () => ({
   useTransactionEventFragment: () => ({
     updateTransactionEventFragment: mockUpdateTransactionEventFragment,
   }),
 }));
 
-jest.mock('../../../../store/controller-actions/bridge-controller', () => ({
+jest.mock('../../../../../store/controller-actions/bridge-controller', () => ({
   ...jest.requireActual(
-    '../../../../store/controller-actions/bridge-controller',
+    '../../../../../store/controller-actions/bridge-controller',
   ),
   fetchQuotes: jest.fn(),
 }));

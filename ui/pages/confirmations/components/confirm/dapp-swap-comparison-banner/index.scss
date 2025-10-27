@@ -1,0 +1,22 @@
+.dapp-swap {
+  &_wrapper{
+    border-radius: 8px;
+  }
+
+  &_highlighted-button {
+    border-radius: 8px;
+    width: 50%;
+  }
+
+  &_text-button {
+    background: linear-gradient(89.59deg, #96C33C 0.16%, #FF8A2A 105.84%);
+    background-clip: text;
+    color: transparent;
+    width: 50%;
+
+    &:hover {
+      color: transparent !important;
+      text-decoration: none !important;
+    }
+  }
+}
