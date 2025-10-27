@@ -3095,14 +3095,15 @@ export function getUsePhishDetect(state) {
  * Gets the cached address security alert response for a given address
  *
  * @param {*} state
- * @param {string} address - The address to get security alert for
- * @returns the cached address security alert response for the given address
+ * @param {string} cacheKey - The cache key in format "chain:address" to get security alert for. Use createCacheKey to generate the cache key.
+ * @returns the cached address security alert response for the given cache key
  */
-export function getAddressSecurityAlertResponse(state, address) {
-  if (!address) {
+export function getAddressSecurityAlertResponse(state, cacheKey) {
+  if (!cacheKey) {
     return undefined;
   }
-  return state.metamask.addressSecurityAlertResponses?.[address.toLowerCase()];
+
+  return state.metamask.addressSecurityAlertResponses?.[cacheKey];
 }
 
 /**
