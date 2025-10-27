@@ -12,7 +12,7 @@ import { SIG_PARAM, SIG_PARAMS } from './constants';
  * @returns The canonicalized URL as a string.
  */
 export function canonicalize(url: URL): string {
-  let queryString = '';
+  let queryString: string | undefined;
 
   const sigParams = url.searchParams.get(SIG_PARAMS);
 
