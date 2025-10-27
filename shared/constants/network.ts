@@ -1397,15 +1397,15 @@ export function getFailoverUrlsForInfuraNetwork(
 }
 
 export const SUPPORTED_NETWORKS_ACCOUNTS_API_V4 = [
-  '0x1', // 1
-  '0x89', // 137
-  '0x38', // 56
-  '0xe728', // 59144
-  '0x2105', // 8453
-  '0xa', // 10
-  '0xa4b1', // 42161
-  '0x82750', // 534352
-  '0x531', // 1329
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.POLYGON,
+  CHAIN_IDS.BSC,
+  CHAIN_IDS.LINEA_MAINNET,
+  CHAIN_IDS.BASE,
+  CHAIN_IDS.OPTIMISM,
+  CHAIN_IDS.ARBITRUM,
+  CHAIN_IDS.SCROLL,
+  CHAIN_IDS.SEI,
 ];
 
 export const FEATURED_RPCS: AddNetworkFields[] = [

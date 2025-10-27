@@ -4740,9 +4740,6 @@ export default class MetamaskController extends EventEmitter {
    * Adds popular networks to the network controller.
    */
   _addPopularNetworks() {
-    if (process.env.IN_TEST) {
-      return;
-    }
     FEATURED_RPCS.forEach((rpc) => {
       if (!SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(rpc.chainId)) {
         return;
@@ -4762,7 +4759,7 @@ export default class MetamaskController extends EventEmitter {
    */
   _enableDefaultNetwork() {
     if (process.env.IN_TEST) {
-      return;
+      this.networkEnablementController.enableNetwork(CHAIN_IDS.LOCALHOST);
     }
     if (
       process.env.METAMASK_DEBUG ||
@@ -4770,9 +4767,10 @@ export default class MetamaskController extends EventEmitter {
     ) {
       this.networkEnablementController.enableNetwork(CHAIN_IDS.SEPOLIA);
     } else {
-      this.networkEnablementController.enableNetwork(
-        FEATURED_NETWORK_CHAIN_IDS,
+      const supportedFeaturedNetworks = FEATURED_NETWORK_CHAIN_IDS.filter(
+        (chainId) => SUPPORTED_NETWORKS_ACCOUNTS_API_V4.includes(chainId),
       );
+      this.networkEnablementController.enableNetwork(supportedFeaturedNetworks);
     }
   }
 
