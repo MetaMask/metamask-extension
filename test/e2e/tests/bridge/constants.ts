@@ -9,6 +9,7 @@ export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
   minimumVersion: '0.0.0',
   maxRefreshCount: 5,
   support: true,
+  stablecoins: [],
   chains: {
     '1': {
       isActiveSrc: true,

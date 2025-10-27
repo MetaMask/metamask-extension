@@ -280,6 +280,7 @@ async function mockETHtoETH(mockServer: Mockttp) {
     .withQuery({
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0x0000000000000000000000000000000000000000',
+      slippage: 0.5,
     })
     .thenCallback(() => {
       return {
@@ -295,6 +296,7 @@ async function mockETHtoWETH(mockServer: Mockttp) {
     .withQuery({
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f',
+      slippage: 0.5,
     })
     .thenCallback(() => {
       return {
@@ -310,6 +312,7 @@ async function mockETHtoUSDC(mockServer: Mockttp) {
     .withQuery({
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      slippage: 0.5,
     })
     .thenCallback(() => {
       return {
@@ -325,6 +328,7 @@ async function mockDAItoETH(mockServer: Mockttp) {
     .withQuery({
       srcTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
       destTokenAddress: '0x0000000000000000000000000000000000000000',
+      slippage: 0.5,
     })
     .always()
     .thenCallback(() => {
@@ -386,6 +390,7 @@ async function mockSwapETHtoMUSD(mockServer: Mockttp) {
     .withQuery({
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
       destTokenAddress: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+      slippage: 2,
     })
     .thenStream(
       200,
@@ -401,6 +406,7 @@ async function mockUSDCtoDAI(mockServer: Mockttp, sseEnabled?: boolean) {
       .withQuery({
         srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         destTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+        slippage: 0.5,
       })
       .thenStream(
         200,
@@ -414,6 +420,7 @@ async function mockUSDCtoDAI(mockServer: Mockttp, sseEnabled?: boolean) {
     .withQuery({
       srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       destTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+      slippage: 0.5,
     })
     .thenCallback(() => {
       return {
@@ -454,6 +461,7 @@ async function mockL2toMainnet(mockServer: Mockttp) {
       srcChainId: 59144,
       destChainId: 1,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      slippage: 0.5,
     })
     .thenCallback(() => {
       return {
@@ -470,6 +478,7 @@ async function mockNativeL2toL2(mockServer: Mockttp) {
       srcChainId: 59144,
       destChainId: 42161,
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      slippage: 0.5,
     })
     .thenCallback(() => {
       return {
@@ -485,6 +494,7 @@ async function mockDAIL2toL2(mockServer: Mockttp) {
       srcChainId: 59144,
       destChainId: 42161,
       srcTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+      slippage: 0.5,
     })
     .thenCallback(() => {
       return {
@@ -502,6 +512,7 @@ async function mockDAIL2toMainnet(mockServer: Mockttp) {
       destChainId: 1,
       srcTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
       destTokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+      slippage: 0.5,
     })
     .thenCallback(() => {
       return {

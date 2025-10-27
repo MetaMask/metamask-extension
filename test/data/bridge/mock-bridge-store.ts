@@ -180,6 +180,7 @@ export const createBridgeMockStore = ({
     bridge: {
       toChainId: null,
       sortOrder: 'cost_ascending',
+      slippage: null,
       ...bridgeSliceOverrides,
     },
     localeMessages: { currentLocale: 'es_419' },
@@ -352,6 +353,7 @@ export const createBridgeMockStore = ({
             support: false,
             refreshRate: 5000,
             maxRefreshCount: 5,
+            stablecoins: [],
             ...featureFlagOverrides?.extensionConfig,
             ...featureFlagOverrides?.bridgeConfig,
             chains: {
