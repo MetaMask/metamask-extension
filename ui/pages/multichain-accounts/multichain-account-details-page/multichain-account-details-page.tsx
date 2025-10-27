@@ -89,6 +89,12 @@ export const MultichainAccountDetailsPage = () => {
   const [isAccountRemoveModalOpen, setIsAccountRemoveModalOpen] =
     useState(false);
 
+  // Redirect if account doesn't exist
+  if (!multichainAccount) {
+    history.push(DEFAULT_ROUTE);
+    return null;
+  }
+
   const isEntropyWallet = wallet?.type === AccountWalletType.Entropy;
   const isPrivateKeyWallet = accountsWithAddresses.some(
     (account) => account.metadata.keyring.type === KeyringTypes.simple,
