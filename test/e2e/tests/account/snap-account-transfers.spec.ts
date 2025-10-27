@@ -100,9 +100,8 @@ describe('Snap Account Transfers', function (this: Suite) {
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
-        // check the balance of the 2 accounts are updated
+        // we can only check that the balance of the selected account is updated
         await driver.delay(veryLargeDelayMs);
-        await accountList.checkAccountBalanceDisplayed('$44,200');
         await accountList.checkAccountBalanceDisplayed('$40,799');
       },
     );
@@ -133,6 +132,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         );
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('SSK Account');
+        await driver.delay(veryLargeDelayMs);
 
         // send 1 ETH from snap account to account 1 and reject the transaction
         await sendRedesignedTransactionWithSnapAccount({
