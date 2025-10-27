@@ -29,6 +29,7 @@ jobs:
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - name: Checkout and setup environment
+        if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
@@ -36,17 +37,21 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Download artifact 'build-test-browserify'
+        if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
         uses: actions/download-artifact@v4
         with:
           name: build-test-browserify
 
       - name: Install Playwright browsers
+        if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
         run: yarn playwright install chromium
 
       - name: Run page load benchmarks
+        if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
         run: yarn test:e2e:benchmark
 
       - name: Upload benchmark results (github artifacts)
+        if: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref_name == 'main') }}
         uses: actions/upload-artifact@v4
         with:
           name: page-load-benchmark-results
