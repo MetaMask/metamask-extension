@@ -267,8 +267,12 @@ export const MultichainAccountsConnectPage: React.FC<
         )
       : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
-    // Early return for EIP-1193 or Solana wallet standard requests
-    if (isEip1193Request || isSolanaWalletStandardRequest) {
+
+    // If the request is an EIP-1193 request (with no specific chains requested) or a Solana wallet standard request , return the default selected network list
+    if (
+      (requestedCaipChainIds.length === 0 && isEip1193Request) ||
+      isSolanaWalletStandardRequest
+    ) {
       return defaultSelectedNetworkList;
     }
 
