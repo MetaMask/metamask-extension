@@ -1,10 +1,10 @@
+const fs = require('fs');
+const path = require('path');
+const { merge, mergeWith } = require('lodash');
 const {
   WALLET_SNAP_PERMISSION_KEY,
   SnapCaveatType,
 } = require('@metamask/snaps-utils');
-const fs = require('fs');
-const path = require('path');
-const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { mockNetworkStateOld } = require('../stub/networks');
 

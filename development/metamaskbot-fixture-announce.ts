@@ -3,7 +3,8 @@ import path from 'path';
 import { postCommentWithMetamaskBot } from './utils/benchmark-utils';
 
 async function start(): Promise<void> {
-  const { PR_COMMENT_TOKEN, OWNER, REPOSITORY, PR_NUMBER } = process.env as Record<string, string>;
+  const { PR_COMMENT_TOKEN, OWNER, REPOSITORY, PR_NUMBER } =
+    process.env as Record<string, string>;
 
   if (!PR_NUMBER) {
     console.warn('No pull request detected; skipping fixture announce');
@@ -41,14 +42,12 @@ async function start(): Promise<void> {
 
 function escapeHtml(input: string): string {
   return input
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/&/gu, '&amp;')
+    .replace(/</gu, '&lt;')
+    .replace(/>/gu, '&gt;');
 }
 
 start().catch((err) => {
   // eslint-disable-next-line no-console
   console.error(err);
 });
-
-

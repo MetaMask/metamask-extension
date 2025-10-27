@@ -16,10 +16,28 @@ describe('Wallet State', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // run script to export state
+        // wait for a non-empty persisted state
+        await driver.waitUntil(
+          async () => {
+            const state = await driver.executeScript(
+              'return window.stateHooks.getPersistedState()',
+            );
+            if (typeof state?.data !== 'object') {
+              return false;
+            }
+            const dataKeys = Object.keys(state.data).filter(
+              (k) => k !== 'config',
+            );
+            return dataKeys.length > 0;
+          },
+          { interval: 1000, timeout: 10000 },
+        );
+
         const persistedState = await driver.executeScript(
           'return window.stateHooks.getPersistedState()',
         );
+
+        console.log('persistedState', persistedState);
 
         const outDir = path.resolve(
           process.cwd(),
