@@ -65,7 +65,7 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
       getFailoverUrlsForInfuraNetwork('bsc-mainnet');
     networks[CHAIN_IDS.OPTIMISM].rpcEndpoints[0].failoverUrls =
       getFailoverUrlsForInfuraNetwork('optimism-mainnet');
-    networks[CHAIN_IDS.OPTIMISM].rpcEndpoints[0].failoverUrls =
+    networks[CHAIN_IDS.POLYGON].rpcEndpoints[0].failoverUrls =
       getFailoverUrlsForInfuraNetwork('polygon-mainnet');
 
     // Update default popular network names.
