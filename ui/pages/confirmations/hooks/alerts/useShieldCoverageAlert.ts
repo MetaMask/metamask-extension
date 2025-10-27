@@ -12,11 +12,7 @@ import {
 } from '../../../../selectors/shield/coverage';
 import { useConfirmContext } from '../../context/confirm';
 import { useEnableShieldCoverageChecks } from '../transactions/useEnableShieldCoverageChecks';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { ShieldCoverageAlertMessage } from './transactions/ShieldCoverageAlertMessage';
-
-const COVERAGE_AMOUNT = 10_000;
-const COVERAGE_CURRENCY = 'USD';
 
 const getModalBodyStr = (reasonCode: string | undefined) => {
   // grouping codes with a fallthrough pattern is not allowed by the linter
@@ -139,11 +135,6 @@ export function useShieldCoverageAlert(): Alert[] {
     TransactionMeta | SignatureRequest
   >();
 
-  const { formatCurrency } = useFormatters();
-  const coverageAmount = formatCurrency(COVERAGE_AMOUNT, COVERAGE_CURRENCY, {
-    trailingZeroDisplay: 'stripIfInteger',
-  });
-
   const { reasonCode, status } = useSelector((state) =>
     getCoverageStatus(state as ShieldState, currentConfirmation?.id),
   );
@@ -181,12 +172,14 @@ export function useShieldCoverageAlert(): Alert[] {
         reason: modalTitle,
         field: RowAlertKey.ShieldFooterCoverageIndicator,
         severity,
-        content: ShieldCoverageAlertMessage({ modalBodyStr, coverageAmount }),
+        content: ShieldCoverageAlertMessage({
+          modalBodyStr,
+        }),
         isBlocking: false,
         inlineAlertText,
         showArrow: false,
         isOpenModalOnClick: true,
       },
     ];
-  }, [status, modalBodyStr, showAlert, t, coverageAmount]);
+  }, [status, modalBodyStr, showAlert, t]);
 }
