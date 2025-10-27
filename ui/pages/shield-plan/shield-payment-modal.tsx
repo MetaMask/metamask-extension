@@ -308,6 +308,7 @@ export const ShieldPaymentModal = ({
           autoFocus={false}
           visibleTabs={[TabName.TOKENS]}
           customTokenListGenerator={customTokenListGenerator}
+          hideSearch
         />
       </ModalContent>
     </Modal>
