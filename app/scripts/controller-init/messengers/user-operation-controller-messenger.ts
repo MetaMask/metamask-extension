@@ -17,9 +17,7 @@ type AllowedActions =
   | KeyringControllerPatchUserOperationAction
   | KeyringControllerPrepareUserOperationAction
   | KeyringControllerSignUserOperationAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | TransactionControllerEmulateNewTransaction
-  | TransactionControllerEmulateTransactionUpdate;
+  | NetworkControllerGetNetworkClientByIdAction;
 
 export type UserOperationControllerMessenger = ReturnType<
   typeof getUserOperationControllerMessenger

@@ -1,8 +1,4 @@
 import { UserOperationController } from '@metamask/user-operation-controller';
-import type {
-  TransactionControllerEmulateNewTransaction,
-  TransactionControllerEmulateTransactionUpdate,
-} from '@metamask/transaction-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
@@ -28,11 +24,7 @@ function getInitRequestMock(): jest.Mocked<
     UserOperationControllerInitMessenger
   >
 > {
-  const baseMessenger = getRootMessenger<
-    | TransactionControllerEmulateNewTransaction
-    | TransactionControllerEmulateTransactionUpdate,
-    never
-  >();
+  const baseMessenger = getRootMessenger();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
