@@ -42,11 +42,22 @@ function onboardingFixture() {
     );
     if (fs.existsSync(artifactPath)) {
       const content = fs.readFileSync(artifactPath, 'utf8');
-      return JSON.parse(content);
+      const parsed = JSON.parse(content);
+      // eslint-disable-next-line no-console
+      console.log(
+        '[FixtureBuilder] Using onboarding fixture from CI artifact:',
+        artifactPath,
+      );
+      return parsed;
     }
   } catch (e) {
     // fall back to local file
   }
+  // eslint-disable-next-line no-console
+  console.log(
+    '[FixtureBuilder] Using local onboarding fixture file:',
+    'test/e2e/fixtures/onboarding-fixture.json',
+  );
   return onboardingFixtureJson;
 }
 
