@@ -113,17 +113,20 @@ export const MultichainAccountList = ({
     useState<AccountGroupId | null>(null);
 
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
+  const permittedAddresses = useMemo(
+    () =>
+      permittedAccounts.map(
+        (caipAccountId) => parseCaipAccountId(caipAccountId).address,
+      ),
+    [permittedAccounts],
+  );
+
   const connectedAccountGroups = useSelector(
     (state: MultichainAccountsState) => {
       if (!showConnectionStatus) {
         return [];
       }
-      return getAccountGroupsByAddress(
-        state,
-        permittedAccounts.map(
-          (caipAccoundId) => parseCaipAccountId(caipAccoundId).address,
-        ),
-      );
+      return getAccountGroupsByAddress(state, permittedAddresses);
     },
   );
   const [isHiddenAccountsExpanded, setIsHiddenAccountsExpanded] =
