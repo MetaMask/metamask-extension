@@ -87,6 +87,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         );
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('SSK Account');
+        await driver.delay(veryLargeDelayMs);
 
         // send 1 ETH from snap account to account 1 and approve the transaction
         await sendRedesignedTransactionWithSnapAccount({
