@@ -1,0 +1,261 @@
+diff --git a/dist/constants.cjs b/dist/constants.cjs
+index f9b783490614be568d3630680fc1c1b5468646a2..79171e4ed5b248bd3a76fd99a65cd0b7fda16b73 100644
+--- a/dist/constants.cjs
++++ b/dist/constants.cjs
+@@ -119,6 +119,41 @@ exports.BUILT_IN_NETWORKS = {
+             blockExplorerUrl: types_1.BlockExplorerUrl['base-mainnet'],
+         },
+     },
++    [types_1.NetworkType['arbitrum-one']]: {
++        chainId: types_1.ChainId['arbitrum-one'],
++        ticker: types_1.NetworksTicker['arbitrum-one'],
++        rpcPrefs: {
++            blockExplorerUrl: types_1.BlockExplorerUrl['arbitrum-one'],
++        },
++    },
++    [types_1.NetworkType['bsc-mainnet']]: {
++        chainId: types_1.ChainId['bsc-mainnet'],
++        ticker: types_1.NetworksTicker['bsc-mainnet'],
++        rpcPrefs: {
++            blockExplorerUrl: types_1.BlockExplorerUrl['bsc-mainnet'],
++        },
++    },
++    [types_1.NetworkType['optimism-mainnet']]: {
++        chainId: types_1.ChainId['optimism-mainnet'],
++        ticker: types_1.NetworksTicker['optimism-mainnet'],
++        rpcPrefs: {
++            blockExplorerUrl: types_1.BlockExplorerUrl['optimism-mainnet'],
++        },
++    },
++    [types_1.NetworkType['polygon-mainnet']]: {
++        chainId: types_1.ChainId['polygon-mainnet'],
++        ticker: types_1.NetworksTicker['polygon-mainnet'],
++        rpcPrefs: {
++            blockExplorerUrl: types_1.BlockExplorerUrl['polygon-mainnet'],
++        },
++    },
++    [types_1.NetworkType['sei-mainnet']]: {
++        chainId: types_1.ChainId['sei-mainnet'],
++        ticker: types_1.NetworksTicker['sei-mainnet'],
++        rpcPrefs: {
++            blockExplorerUrl: types_1.BlockExplorerUrl['sei-mainnet'],
++        },
++    },
+     [types_1.NetworkType.rpc]: {
+         chainId: undefined,
+         blockExplorerUrl: undefined,
+diff --git a/dist/constants.d.cts b/dist/constants.d.cts
+index 5fdb9a70f53ed8e9a6482e73ada4b2a85f094565..9897a7a25af0636a8940770b51f87d0ab905819f 100644
+--- a/dist/constants.d.cts
++++ b/dist/constants.d.cts
+@@ -109,6 +109,41 @@ export declare const BUILT_IN_NETWORKS: {
+             readonly blockExplorerUrl: "https://basescan.org";
+         };
+     };
++    readonly "arbitrum-one": {
++        readonly chainId: "0xa4b1";
++        readonly ticker: NetworksTicker.mainnet;
++        readonly rpcPrefs: {
++            readonly blockExplorerUrl: "https://arbiscan.io";
++        };
++    };
++    readonly "bsc-mainnet": {
++        readonly chainId: "0x38";
++        readonly ticker: (typeof NetworksTicker)["bsc-mainnet"];
++        readonly rpcPrefs: {
++            readonly blockExplorerUrl: "https://bscscan.com";
++        };
++    };
++    readonly "optimism-mainnet": {
++        readonly chainId: "0xa";
++        readonly ticker: NetworksTicker.mainnet;
++        readonly rpcPrefs: {
++            readonly blockExplorerUrl: "https://optimistic.etherscan.io";
++        };
++    };
++    readonly "polygon-mainnet": {
++        readonly chainId: "0x89";
++        readonly ticker: (typeof NetworksTicker)["polygon-mainnet"];
++        readonly rpcPrefs: {
++            readonly blockExplorerUrl: "https://polygonscan.com";
++        };
++    };
++    readonly "sei-mainnet": {
++        readonly chainId: "0x531";
++        readonly ticker: (typeof NetworksTicker)["sei-mainnet"];
++        readonly rpcPrefs: {
++            readonly blockExplorerUrl: "https://seitrace.com";
++        };
++    };
+     readonly rpc: {
+         readonly chainId: undefined;
+         readonly blockExplorerUrl: undefined;
+diff --git a/dist/types.cjs b/dist/types.cjs
+index 5b3d25bb9b601ee3f9dfada813dd7bb590b02bd1..2acdec24e88ec53f4c458c9d835e7c0a61ad62c4 100644
+--- a/dist/types.cjs
++++ b/dist/types.cjs
+@@ -12,6 +12,11 @@ exports.InfuraNetworkType = {
+     'linea-sepolia': 'linea-sepolia',
+     'linea-mainnet': 'linea-mainnet',
+     'base-mainnet': 'base-mainnet',
++    'arbitrum-one': 'arbitrum-one',
++    'bsc-mainnet': 'bsc-mainnet',
++    'optimism-mainnet': 'optimism-mainnet',
++    'polygon-mainnet': 'polygon-mainnet',
++    'sei-mainnet': 'sei-mainnet',
+ };
+ /**
+  * Custom network types that are not part of Infura.
+@@ -67,6 +72,11 @@ var BuiltInNetworkName;
+     BuiltInNetworkName["MegaETHTestnet"] = "megaeth-testnet";
+     BuiltInNetworkName["MonadTestnet"] = "monad-testnet";
+     BuiltInNetworkName["BaseMainnet"] = "base-mainnet";
++    BuiltInNetworkName["ArbitrumOne"] = "arbitrum-one";
++    BuiltInNetworkName["BscMainnet"] = "bsc-mainnet";
++    BuiltInNetworkName["OptimismMainnet"] = "optimism-mainnet";
++    BuiltInNetworkName["PolygonMainnet"] = "polygon-mainnet";
++    BuiltInNetworkName["SeiMainnet"] = "sei-mainnet";
+ })(BuiltInNetworkName || (exports.BuiltInNetworkName = BuiltInNetworkName = {}));
+ /**
+  * Decimal string chain IDs of built-in networks, by name.
+@@ -83,7 +93,12 @@ exports.ChainId = {
+     [BuiltInNetworkName.LineaMainnet]: '0xe708',
+     [BuiltInNetworkName.MegaETHTestnet]: '0x18c6',
+     [BuiltInNetworkName.MonadTestnet]: '0x279f',
+-    [BuiltInNetworkName.BaseMainnet]: '0x2105', // toHex(8453)
++    [BuiltInNetworkName.BaseMainnet]: '0x2105',
++    [BuiltInNetworkName.ArbitrumOne]: '0xa4b1',
++    [BuiltInNetworkName.BscMainnet]: '0x38',
++    [BuiltInNetworkName.OptimismMainnet]: '0xa',
++    [BuiltInNetworkName.PolygonMainnet]: '0x89',
++    [BuiltInNetworkName.SeiMainnet]: '0x531', // toHex(1329)
+ };
+ var NetworksTicker;
+ (function (NetworksTicker) {
+@@ -99,6 +114,12 @@ var NetworksTicker;
+     NetworksTicker["monad-testnet"] = "MON";
+     // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
+     NetworksTicker["base-mainnet"] = "ETH";
++    NetworksTicker["arbitrum-one"] = "ETH";
++    NetworksTicker["bsc-mainnet"] = "BNB";
++    // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
++    NetworksTicker["optimism-mainnet"] = "ETH";
++    NetworksTicker["polygon-mainnet"] = "POL";
++    NetworksTicker["sei-mainnet"] = "SEI";
+     NetworksTicker["rpc"] = "";
+ })(NetworksTicker || (exports.NetworksTicker = NetworksTicker = {}));
+ exports.BlockExplorerUrl = {
+@@ -111,6 +132,11 @@ exports.BlockExplorerUrl = {
+     [BuiltInNetworkName.MegaETHTestnet]: 'https://megaexplorer.xyz',
+     [BuiltInNetworkName.MonadTestnet]: 'https://testnet.monadexplorer.com',
+     [BuiltInNetworkName.BaseMainnet]: 'https://basescan.org',
++    [BuiltInNetworkName.ArbitrumOne]: 'https://arbiscan.io',
++    [BuiltInNetworkName.BscMainnet]: 'https://bscscan.com',
++    [BuiltInNetworkName.OptimismMainnet]: 'https://optimistic.etherscan.io',
++    [BuiltInNetworkName.PolygonMainnet]: 'https://polygonscan.com',
++    [BuiltInNetworkName.SeiMainnet]: 'https://seitrace.com',
+ };
+ exports.NetworkNickname = {
+     [BuiltInNetworkName.Mainnet]: 'Ethereum Mainnet',
+@@ -122,5 +148,10 @@ exports.NetworkNickname = {
+     [BuiltInNetworkName.MegaETHTestnet]: 'Mega Testnet',
+     [BuiltInNetworkName.MonadTestnet]: 'Monad Testnet',
+     [BuiltInNetworkName.BaseMainnet]: 'Base Mainnet',
++    [BuiltInNetworkName.ArbitrumOne]: 'Arbitrum One',
++    [BuiltInNetworkName.BscMainnet]: 'BSC Mainnet',
++    [BuiltInNetworkName.OptimismMainnet]: 'Optimism Mainnet',
++    [BuiltInNetworkName.PolygonMainnet]: 'Polygon Mainnet',
++    [BuiltInNetworkName.SeiMainnet]: 'Sei Mainnet',
+ };
+ //# sourceMappingURL=types.cjs.map
+\ No newline at end of file
+diff --git a/dist/types.d.cts b/dist/types.d.cts
+index 61a640582b3fc93d6eece49d04b63fa417ad61c0..b845d1fa256a942be43825782b1e827db38f740f 100644
+--- a/dist/types.d.cts
++++ b/dist/types.d.cts
+@@ -9,6 +9,11 @@ export declare const InfuraNetworkType: {
+     readonly 'linea-sepolia': "linea-sepolia";
+     readonly 'linea-mainnet': "linea-mainnet";
+     readonly 'base-mainnet': "base-mainnet";
++    readonly 'arbitrum-one': "arbitrum-one";
++    readonly 'bsc-mainnet': "bsc-mainnet";
++    readonly 'optimism-mainnet': "optimism-mainnet";
++    readonly 'polygon-mainnet': "polygon-mainnet";
++    readonly 'sei-mainnet': "sei-mainnet";
+ };
+ export type InfuraNetworkType = (typeof InfuraNetworkType)[keyof typeof InfuraNetworkType];
+ /**
+@@ -37,6 +42,11 @@ export declare const NetworkType: {
+     readonly 'linea-sepolia': "linea-sepolia";
+     readonly 'linea-mainnet': "linea-mainnet";
+     readonly 'base-mainnet': "base-mainnet";
++    readonly 'arbitrum-one': "arbitrum-one";
++    readonly 'bsc-mainnet': "bsc-mainnet";
++    readonly 'optimism-mainnet': "optimism-mainnet";
++    readonly 'polygon-mainnet': "polygon-mainnet";
++    readonly 'sei-mainnet': "sei-mainnet";
+ };
+ export type NetworkType = (typeof NetworkType)[keyof typeof NetworkType];
+ /**
+@@ -69,7 +79,12 @@ export declare enum BuiltInNetworkName {
+     Aurora = "aurora",
+     MegaETHTestnet = "megaeth-testnet",
+     MonadTestnet = "monad-testnet",
+-    BaseMainnet = "base-mainnet"
++    BaseMainnet = "base-mainnet",
++    ArbitrumOne = "arbitrum-one",
++    BscMainnet = "bsc-mainnet",
++    OptimismMainnet = "optimism-mainnet",
++    PolygonMainnet = "polygon-mainnet",
++    SeiMainnet = "sei-mainnet"
+ }
+ /**
+  * Decimal string chain IDs of built-in networks, by name.
+@@ -87,6 +102,11 @@ export declare const ChainId: {
+     readonly "megaeth-testnet": "0x18c6";
+     readonly "monad-testnet": "0x279f";
+     readonly "base-mainnet": "0x2105";
++    readonly "arbitrum-one": "0xa4b1";
++    readonly "bsc-mainnet": "0x38";
++    readonly "optimism-mainnet": "0xa";
++    readonly "polygon-mainnet": "0x89";
++    readonly "sei-mainnet": "0x531";
+ };
+ export type ChainId = (typeof ChainId)[keyof typeof ChainId];
+ export declare enum NetworksTicker {
+@@ -99,6 +119,11 @@ export declare enum NetworksTicker {
+     'megaeth-testnet' = "MegaETH",
+     'monad-testnet' = "MON",
+     'base-mainnet' = "ETH",
++    'arbitrum-one' = "ETH",
++    'bsc-mainnet' = "BNB",
++    'optimism-mainnet' = "ETH",
++    'polygon-mainnet' = "POL",
++    'sei-mainnet' = "SEI",
+     rpc = ""
+ }
+ export declare const BlockExplorerUrl: {
+@@ -111,6 +136,11 @@ export declare const BlockExplorerUrl: {
+     readonly "megaeth-testnet": "https://megaexplorer.xyz";
+     readonly "monad-testnet": "https://testnet.monadexplorer.com";
+     readonly "base-mainnet": "https://basescan.org";
++    readonly "arbitrum-one": "https://arbiscan.io";
++    readonly "bsc-mainnet": "https://bscscan.com";
++    readonly "optimism-mainnet": "https://optimistic.etherscan.io";
++    readonly "polygon-mainnet": "https://polygonscan.com";
++    readonly "sei-mainnet": "https://seitrace.com";
+ };
+ export type BlockExplorerUrl = (typeof BlockExplorerUrl)[keyof typeof BlockExplorerUrl];
+ export declare const NetworkNickname: {
+@@ -123,6 +153,11 @@ export declare const NetworkNickname: {
+     readonly "megaeth-testnet": "Mega Testnet";
+     readonly "monad-testnet": "Monad Testnet";
+     readonly "base-mainnet": "Base Mainnet";
++    readonly "arbitrum-one": "Arbitrum One";
++    readonly "bsc-mainnet": "BSC Mainnet";
++    readonly "optimism-mainnet": "Optimism Mainnet";
++    readonly "polygon-mainnet": "Polygon Mainnet";
++    readonly "sei-mainnet": "Sei Mainnet";
+ };
+ export type NetworkNickname = (typeof NetworkNickname)[keyof typeof NetworkNickname];
+ /**
