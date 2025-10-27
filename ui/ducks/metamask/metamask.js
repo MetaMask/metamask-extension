@@ -153,6 +153,14 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.COMPLETE_ONBOARDING_WITH_SIDEPANEL: {
+      return {
+        ...metamaskState,
+        completedOnboarding: true,
+        openedWithSidepanel: true,
+      };
+    }
+
     case actionConstants.RESET_ONBOARDING: {
       return {
         ...metamaskState,
@@ -186,12 +194,6 @@ export default function reduceMetamask(state = initialState, action) {
         nodeAuthTokens: undefined,
       };
     }
-
-    case actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE:
-      return {
-        ...metamaskState,
-        showShieldEntryModalOnce: action.payload,
-      };
 
     default:
       return metamaskState;

@@ -48,6 +48,9 @@ describe('Phishing Detection', function (this: Suite) {
   });
 
   it('should display the MetaMask Phishing Detection page and take the user to the blocked page if they continue', async function () {
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      this.skip();
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -61,7 +64,7 @@ describe('Phishing Detection', function (this: Suite) {
             blocklistPaths: [],
           });
         },
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -83,7 +86,7 @@ describe('Phishing Detection', function (this: Suite) {
   });
 
   describe('Via Iframe', function () {
-    const DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST = 'http://localhost:8080/';
+    const DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST = 'http://localhost:8081/';
     const IFRAMED_HOSTNAME = '127.0.0.1';
 
     const getFixtureOptions = (overrides: Record<string, unknown>) => {
@@ -98,19 +101,24 @@ describe('Phishing Detection', function (this: Suite) {
             blocklistPaths: [],
           });
         },
-        dapp: true,
-        dappOptions: {
-          numberOfDapps: 2,
-        },
+        dappOptions: { numberOfTestDapps: 2 },
         ...overrides,
       };
     };
 
     it('should redirect users to the the MetaMask Phishing Detection page when an iframe domain is on the phishing blocklist', async function () {
+      if (process.env.SELENIUM_BROWSER === 'firefox') {
+        this.skip();
+      }
       await withFixtures(
         getFixtureOptions({
           title: this.test?.fullTitle(),
-          dappPaths: ['./tests/phishing-controller/mock-page-with-iframe'],
+          dappOptions: {
+            numberOfTestDapps: 1,
+            customDappPaths: [
+              './tests/phishing-controller/mock-page-with-iframe',
+            ],
+          },
         }),
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -134,9 +142,12 @@ describe('Phishing Detection', function (this: Suite) {
       await withFixtures(
         getFixtureOptions({
           title: this.test?.fullTitle(),
-          dappPaths: [
-            './tests/phishing-controller/mock-page-with-iframe-but-disable-early-detection',
-          ],
+          dappOptions: {
+            numberOfTestDapps: 1,
+            customDappPaths: [
+              './tests/phishing-controller/mock-page-with-iframe-but-disable-early-detection',
+            ],
+          },
         }),
         async ({ driver }) => {
           await loginWithBalanceValidation(driver);
@@ -167,12 +178,10 @@ describe('Phishing Detection', function (this: Suite) {
             blocklistPaths: [],
           });
         },
-        dapp: true,
-        dappPaths: [
-          './tests/phishing-controller/mock-page-with-disallowed-iframe',
-        ],
         dappOptions: {
-          numberOfDapps: 2,
+          customDappPaths: [
+            './tests/phishing-controller/mock-page-with-disallowed-iframe',
+          ],
         },
       },
       async ({ driver }) => {
@@ -211,7 +220,7 @@ describe('Phishing Detection', function (this: Suite) {
           });
           mockConfigLookupOnWarningPage(mockServer, { statusCode: 500 });
         },
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -251,7 +260,7 @@ describe('Phishing Detection', function (this: Suite) {
             blocklistPaths: [],
           });
         },
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -289,12 +298,10 @@ describe('Phishing Detection', function (this: Suite) {
             blocklistPaths: [],
           });
         },
-        dapp: true,
-        dappPaths: [
-          './tests/phishing-controller/mock-page-with-disallowed-iframe',
-        ],
         dappOptions: {
-          numberOfDapps: 2,
+          customDappPaths: [
+            './tests/phishing-controller/mock-page-with-disallowed-iframe',
+          ],
         },
       },
       async ({ driver }) => {
@@ -332,7 +339,7 @@ describe('Phishing Detection', function (this: Suite) {
             blocklistPaths: [],
           });
         },
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -357,6 +364,7 @@ describe('Phishing Detection', function (this: Suite) {
     const testPageURL = 'http://localhost:8080/';
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: Mockttp) => {
@@ -369,7 +377,6 @@ describe('Phishing Detection', function (this: Suite) {
             blocklistPaths: [],
           });
         },
-        dapp: true,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -549,8 +556,11 @@ describe('Phishing Detection', function (this: Suite) {
                 blocklistPaths: ['127.0.0.1/path1'],
               });
             },
-            dapp: true,
-            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
+            dappOptions: {
+              customDappPaths: [
+                './tests/phishing-controller/mock-page-with-paths',
+              ],
+            },
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
@@ -577,8 +587,11 @@ describe('Phishing Detection', function (this: Suite) {
                 blocklistPaths: ['127.0.0.1/path1'],
               });
             },
-            dapp: true,
-            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
+            dappOptions: {
+              customDappPaths: [
+                './tests/phishing-controller/mock-page-with-paths',
+              ],
+            },
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
@@ -595,6 +608,9 @@ describe('Phishing Detection', function (this: Suite) {
 
     describe('whitelisted paths', function () {
       it('does not display the MetaMask Phishing Detection page when accessing a whitelisted path', async function () {
+        if (process.env.SELENIUM_BROWSER === 'firefox') {
+          this.skip();
+        }
         await withFixtures(
           {
             fixtures: new FixtureBuilder().build(),
@@ -608,8 +624,11 @@ describe('Phishing Detection', function (this: Suite) {
                 blocklistPaths: ['127.0.0.1/path1'],
               });
             },
-            dapp: true,
-            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
+            dappOptions: {
+              customDappPaths: [
+                './tests/phishing-controller/mock-page-with-paths',
+              ],
+            },
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);
@@ -633,6 +652,9 @@ describe('Phishing Detection', function (this: Suite) {
       });
 
       it('when the subpath is whitelisted, the phishing warning page is not displayed for the blocklisted path and all subpaths', async function () {
+        if (process.env.SELENIUM_BROWSER === 'firefox') {
+          this.skip();
+        }
         await withFixtures(
           {
             fixtures: new FixtureBuilder().build(),
@@ -646,8 +668,11 @@ describe('Phishing Detection', function (this: Suite) {
                 blocklistPaths: ['127.0.0.1/path1'],
               });
             },
-            dapp: true,
-            dappPaths: ['./tests/phishing-controller/mock-page-with-paths'],
+            dappOptions: {
+              customDappPaths: [
+                './tests/phishing-controller/mock-page-with-paths',
+              ],
+            },
           },
           async ({ driver }) => {
             await loginWithBalanceValidation(driver);

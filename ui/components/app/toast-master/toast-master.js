@@ -51,10 +51,14 @@ import {
 import { PreferredAvatar } from '../preferred-avatar';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
-import { PasswordChangeToastType } from '../../../../shared/constants/app-state';
+import {
+  PasswordChangeToastType,
+  ClaimSubmitToastType,
+} from '../../../../shared/constants/app-state';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
+  getIconSeedAddressByAccountGroupId,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
@@ -77,6 +81,7 @@ import {
   selectPasswordChangeToast,
   selectShowCopyAddressToast,
   selectShowConnectAccountGroupToast,
+  selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
 } from './selectors';
@@ -88,6 +93,7 @@ import {
   setShowNewSrpAddedToast,
   setShowPasswordChangeToast,
   setShowCopyAddressToast,
+  setShowClaimSubmitToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
 } from './utils';
@@ -126,6 +132,7 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         <PasswordChangeToast />
+        <ClaimSubmitToast />
       </ToastContainer>
     );
   }
@@ -235,8 +242,15 @@ function ConnectAccountGroupToast() {
       .map((account) => account.address);
   }, [existingChainIds, selectedAccountGroupInternalAccounts?.accounts]);
 
+  const seedAddress = useSelector((state) =>
+    getIconSeedAddressByAccountGroupId(
+      state,
+      selectedAccountGroupInternalAccounts?.id,
+    ),
+  );
+
   // Early return if selectedAccountGroupInternalAccounts is undefined
-  if (!selectedAccountGroupInternalAccounts) {
+  if (!selectedAccountGroupInternalAccounts || !seedAddress) {
     return null;
   }
 
@@ -246,10 +260,7 @@ function ConnectAccountGroupToast() {
         dataTestId="connect-account-toast"
         key="connect-account-toast"
         startAdornment={
-          <PreferredAvatar
-            address={selectedAccountGroupInternalAccounts.id}
-            className="self-center"
-          />
+          <PreferredAvatar address={seedAddress} className="self-center" />
         }
         text={t('accountIsntConnectedToastText', [
           selectedAccountGroupInternalAccounts.metadata?.name,
@@ -537,6 +548,64 @@ function CopyAddressToast() {
     )
   );
 }
+
+const ClaimSubmitToast = () => {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showClaimSubmitToast = useSelector(selectClaimSubmitToast);
+  const autoHideToastDelay = 5 * SECOND;
+
+  const description = useMemo(() => {
+    if (showClaimSubmitToast === ClaimSubmitToastType.Success) {
+      return t('shieldClaimSubmitSuccessDescription');
+    }
+    if (showClaimSubmitToast === ClaimSubmitToastType.Errored) {
+      return '';
+    }
+    return showClaimSubmitToast;
+  }, [showClaimSubmitToast, t]);
+
+  return (
+    showClaimSubmitToast !== null && (
+      <Toast
+        dataTestId={
+          showClaimSubmitToast === ClaimSubmitToastType.Success
+            ? 'claim-submit-toast-success'
+            : 'claim-submit-toast-error'
+        }
+        key="claim-submit-toast"
+        text={
+          showClaimSubmitToast === ClaimSubmitToastType.Success
+            ? t('shieldClaimSubmitSuccess')
+            : t('shieldClaimSubmitError')
+        }
+        description={description}
+        startAdornment={
+          <Icon
+            name={
+              showClaimSubmitToast === ClaimSubmitToastType.Success
+                ? IconName.CheckBold
+                : IconName.CircleX
+            }
+            color={
+              showClaimSubmitToast === ClaimSubmitToastType.Success
+                ? IconColor.successDefault
+                : IconColor.errorDefault
+            }
+          />
+        }
+        autoHideTime={autoHideToastDelay}
+        onAutoHideToast={() => {
+          dispatch(setShowClaimSubmitToast(null));
+        }}
+        onClose={() => {
+          dispatch(setShowClaimSubmitToast(null));
+        }}
+      />
+    )
+  );
+};
 
 function ShieldPausedToast() {
   const t = useI18nContext();
