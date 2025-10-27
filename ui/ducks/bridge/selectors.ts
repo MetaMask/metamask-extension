@@ -27,6 +27,7 @@ import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import {
+  parseCaipAssetType,
   parseCaipChainId,
   type CaipAssetType,
   type CaipChainId,
@@ -292,19 +293,6 @@ export const getToChains = createDeepEqualSelector(
           ?.isActiveDest,
     );
 
-    // Prevent Bitcoin from being selected as destination when source is Bitcoin
-    // (Bitcoin bridge only supports Bitcoin <-> EVM chains, not Bitcoin <-> Bitcoin)
-    if (fromChain && isBitcoinChainId(fromChain.chainId)) {
-      return availableChains.filter(
-        ({ chainId }) => !isBitcoinChainId(chainId),
-      );
-    }
-
-    // Similarly, prevent Solana from being selected as destination when source is Solana
-    // if (fromChain && isSolanaChainId(fromChain.chainId)) {
-    //   return availableChains.filter(({ chainId }) => !isSolanaChainId(chainId));
-    // }
-
     return availableChains;
   },
 );
@@ -320,36 +308,7 @@ export const getTopAssetsFromFeatureFlags = (
   return bridgeFeatureFlags?.chains[formatChainIdToCaip(chainId)]?.topAssets;
 };
 
-// If the user has selected a toChainId, return it as the destination chain
-// Otherwise, use the source chain as the destination chain (default to swap params)
-export const getToChain = createSelector(
-  [
-    getFromChain,
-    getToChains,
-    (state: BridgeAppState) => state.bridge?.toChainId,
-  ],
-  (fromChain, toChains, toChainId) => {
-    // If user has explicitly selected a destination, use it
-    if (toChainId) {
-      return toChains.find(
-        ({ chainId }) =>
-          chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
-      );
-    }
-
-    // Bitcoin can only bridge to EVM chains, not to Bitcoin
-    // So if source is Bitcoin, default to first available EVM chain instead
-    // If no chains are available, leave the chain unselected.
-    if (fromChain && isBitcoinChainId(fromChain.chainId)) {
-      return toChains[0] ?? undefined;
-    }
-
-    // For all other chains, default to same chain (swap mode)
-    return fromChain;
-  },
-);
-
-export const getDefaultTokenPair = createDeepEqualSelector(
+const getDefaultTokenPair = createDeepEqualSelector(
   [
     (state) => getFromChain(state)?.chainId,
     (state) => getBridgeFeatureFlags(state).bip44DefaultPairs,
@@ -367,6 +326,47 @@ export const getDefaultTokenPair = createDeepEqualSelector(
       ];
     }
     return null;
+  },
+);
+
+const getBIP44DefaultToChainId = createSelector(
+  [(state) => getDefaultTokenPair(state)?.[1]],
+  (defaulToAssetId) => {
+    if (!defaulToAssetId) {
+      return null;
+    }
+    return parseCaipAssetType(defaulToAssetId)?.chainId;
+  },
+);
+
+// If the user has selected a toChainId, return it as the destination chain
+// Otherwise, use the source chain as the destination chain (default to swap params)
+export const getToChain = createSelector(
+  [
+    getFromChain,
+    getToChains,
+    (state: BridgeAppState) => state.bridge?.toChainId,
+    getBIP44DefaultToChainId,
+  ],
+  (fromChain, toChains, toChainId, defaultToChainId) => {
+    // If user has explicitly selected a destination, use it
+    if (toChainId) {
+      return toChains.find(
+        ({ chainId }) =>
+          chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
+      );
+    }
+
+    // Bitcoin can only bridge to EVM chains, not to Bitcoin
+    // So if source is Bitcoin, default to BIP44 default chain
+    if (fromChain && isBitcoinChainId(fromChain.chainId)) {
+      return toChains.find(({ chainId }) => {
+        return formatChainIdToCaip(chainId) === defaultToChainId;
+      });
+    }
+
+    // For all other chains, default to same chain (swap mode)
+    return fromChain;
   },
 );
 
