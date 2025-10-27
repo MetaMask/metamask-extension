@@ -6,7 +6,7 @@ on:
       PR_COMMENT_TOKEN:
         required: true
     inputs:
-      changed:
+      lavamoat-policy-changed:
         description: 'Whether the Lavamoat policy files have changed'
         required: true
         type: boolean
@@ -30,7 +30,7 @@ jobs:
       MERGE_BASE_COMMIT_HASH: '' # placeholder so that we have autocomplete and logs
       CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ github.run_id }}
-      CHANGED: ${{ inputs.changed }}
+      LAVAMOAT_POLICY_CHANGED: ${{ inputs.lavamoat-policy-changed }}
     steps:
       - name: Checkout and setup high risk environment
         uses: MetaMask/action-checkout-and-setup@v1

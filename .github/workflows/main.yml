@@ -347,7 +347,7 @@ jobs:
       GOOGLE_FLASK_CLIENT_ID: 00000000000
       APPLE_FLASK_CLIENT_ID: 00000000000
     outputs:
-      changed: ${{ steps.policy-changed.outputs.changed }}
+      lavamoat-policy-changed: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -369,34 +369,34 @@ jobs:
       - run: yarn tsx .github/scripts/git-diff-default-branch.ts
         if: ${{ steps.download-changed-files.outcome == 'failure' }}
 
-      - name: See if policy.json files have changed
-        id: policy-changed
+      - name: See if lavamoat policy files have changed
+        id: lavamoat-policy-changed
         run: |
           # if 'changed-files/changed-files.json' exists, check if it contains any files named policy.json or policy-override.json
           if [ -f "changed-files/changed-files.json" ]; then
             if grep -q -e 'policy.json' -e 'policy-override.json' changed-files/changed-files.json; then
               echo "Lavamoat policy file changes detected."
-              echo "changed=true" >> "$GITHUB_OUTPUT"
+              echo "lavamoat-policy-changed=true" >> "$GITHUB_OUTPUT"
             else
               echo "No Lavamoat policy file changes detected."
-              echo "changed=false" >> "$GITHUB_OUTPUT"
+              echo "lavamoat-policy-changed=false" >> "$GITHUB_OUTPUT"
             fi
           else
             echo "Cannot find 'changed-files.json', assuming that Lavamoat policy files have changed."
-            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "lavamoat-policy-changed=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Download artifact 'build-dist-browserify'
-        if: ${{ steps.policy-changed.outputs.changed == 'true' }}
+        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
 
       - run: ./.github/scripts/create-lavamoat-viz.sh
-        if: ${{ steps.policy-changed.outputs.changed == 'true' }}
+        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
 
       - name: Upload 'build-viz' to S3
-        if: ${{ steps.policy-changed.outputs.changed == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
         uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
         with:
           aws-region: ${{ vars.AWS_REGION }}
@@ -425,7 +425,7 @@ jobs:
       - build-lavamoat-viz
     uses: ./.github/workflows/publish-prerelease.yml
     with:
-      changed: ${{ needs.build-lavamoat-viz.outputs.changed == 'true' }}
+      lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
