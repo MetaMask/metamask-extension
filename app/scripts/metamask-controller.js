@@ -1339,16 +1339,13 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // Use the last (oldest) notification
-    // eslint-disable-next-line camelcase
-    const { chain_id, data } = filteredNotifications.at(-1);
+    const { chain_id: chainId, data } = filteredNotifications.at(-1);
 
     // ERC20 transfers have `token` object, native transfers have `amount` object
-    // eslint-disable-next-line camelcase
-    if (chain_id && (data?.token?.usd || data?.amount?.usd)) {
+    if (chainId && (data?.token?.usd || data?.amount?.usd)) {
       this.metaMetricsController.trackEvent(
         getWalletFundsObtainedEventProperties({
-          // eslint-disable-next-line camelcase
-          chainId: chain_id,
+          chainId,
           amountUsd: data?.token?.usd || data?.amount?.usd,
         }),
       );
