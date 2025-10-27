@@ -876,7 +876,8 @@ describe('MultichainConnectPage', () => {
       mockGetCaip25CaveatValueFromPermissions.mockReturnValue({
         requiredScopes: {},
         optionalScopes: {
-          'wallet:eip155': { // wallet:eip155 is added to the the request to pass caveat validation when no specific chain IDs are requested
+          'wallet:eip155': {
+            // wallet:eip155 is added to the the request to pass caveat validation when no specific chain IDs are requested
             accounts: [],
           },
         },

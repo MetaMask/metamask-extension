@@ -254,6 +254,24 @@ export const MultichainAccountsConnectPage: React.FC<
       ...testNetworkConfigurations,
     ].map(({ caipChainId }) => caipChainId);
 
+    // If globally selected network is a test network, include that in the default selected networks for connection request
+    const currentlySelectedNetworkChainId = currentlySelectedNetwork.chainId;
+    const selectedNetworkIsTestNetwork = testNetworkConfigurations.find(
+      (network: { caipChainId: CaipChainId }) =>
+        network.caipChainId === currentlySelectedNetworkChainId,
+    );
+
+    const defaultSelectedNetworkList = selectedNetworkIsTestNetwork
+      ? [...nonTestNetworkConfigurations, selectedNetworkIsTestNetwork].map(
+          ({ caipChainId }) => caipChainId,
+        )
+      : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
+
+    // Early return for EIP-1193 or Solana wallet standard requests
+    if (isEip1193Request || isSolanaWalletStandardRequest) {
+      return defaultSelectedNetworkList;
+    }
+
     const walletRequest =
       requestedCaipChainIds.filter(
         (caipChainId) =>
@@ -280,25 +298,8 @@ export const MultichainAccountsConnectPage: React.FC<
       ]),
     );
 
-    // If globally selected network is a test network, include that in the default selected networks for connection request
-    const currentlySelectedNetworkChainId = currentlySelectedNetwork.chainId;
-    const selectedNetworkIsTestNetwork = testNetworkConfigurations.find(
-      (network: { caipChainId: CaipChainId }) =>
-        network.caipChainId === currentlySelectedNetworkChainId,
-    );
-
-    const defaultSelectedNetworkList = selectedNetworkIsTestNetwork
-      ? [...nonTestNetworkConfigurations, selectedNetworkIsTestNetwork].map(
-          ({ caipChainId }) => caipChainId,
-        )
-      : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
-
-    // if we have specifically requested chains and it's not a Solana wallet standard request, return the supported requested chains plus the already connected chains
-    // For Solana wallet standard requests, we want to proceed to return all default networks
-    if (
-      supportedRequestedCaipChainIds.length > 0 &&
-      !isSolanaWalletStandardRequest
-    ) {
+    // if we have specifically requested chains, return the supported requested chains plus the already connected chains
+    if (supportedRequestedCaipChainIds.length > 0) {
       return Array.from(
         new Set([
           ...supportedRequestedCaipChainIds,
@@ -307,11 +308,7 @@ export const MultichainAccountsConnectPage: React.FC<
       );
     }
 
-    if (
-      requestedNamespaces.length > 0 &&
-      !isEip1193Request &&
-      !isSolanaWalletStandardRequest
-    ) {
+    if (requestedNamespaces.length > 0) {
       return Array.from(
         new Set(
           defaultSelectedNetworkList.filter((caipChainId) => {
