@@ -2,6 +2,9 @@ import React, { useCallback, useMemo, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+import browser from 'webextension-polyfill';
+///: END:ONLY_INCLUDE_IF
 import {
   Button,
   ButtonSize,
@@ -49,8 +52,14 @@ import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask
 import {
   toggleExternalServices,
   setCompletedOnboarding,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  setCompletedOnboardingWithSidepanel,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+import { getIsSidePanelFeatureEnabled } from '../../../../shared/modules/environment';
+///: END:ONLY_INCLUDE_IF
 
 export default function CreationSuccessful() {
   const navigate = useNavigate();
@@ -162,10 +171,40 @@ export default function CreationSuccessful() {
       navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
     }
+
     await dispatch(
       toggleExternalServices(externalServicesOnboardingToggleState),
     );
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+    // Side Panel - only if feature flag is enabled
+    if (getIsSidePanelFeatureEnabled()) {
+      try {
+        if (browser?.sidePanel?.open) {
+          const tabs = await browser.tabs.query({
+            active: true,
+            currentWindow: true,
+          });
+          if (tabs && tabs.length > 0) {
+            await browser.sidePanel.open({ windowId: tabs[0].windowId });
+            // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
+            await dispatch(setCompletedOnboardingWithSidepanel());
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Error opening side panel:', error);
+        // Fall through to regular onboarding
+      }
+    }
+    // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    // Regular onboarding completion for non-experimental builds
+    await dispatch(setCompletedOnboarding());
+    ///: END:ONLY_INCLUDE_IF
+
     navigate(DEFAULT_ROUTE);
   }, [
     isWalletReady,
