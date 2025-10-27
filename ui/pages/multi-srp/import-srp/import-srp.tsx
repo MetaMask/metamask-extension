@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -21,6 +21,7 @@ export const ImportSrp = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
+  const [srpError, setSrpError] = useState('');
 
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
@@ -51,7 +52,7 @@ export const ImportSrp = () => {
       navigate(DEFAULT_ROUTE);
       dispatch(setShowNewSrpAddedToast(true));
     } catch (error) {
-      console.error(error);
+      setSrpError(t('srpAlreadyImportedError'));
     }
   }
 
@@ -82,7 +83,12 @@ export const ImportSrp = () => {
         {t('importSecretRecoveryPhrase')}
       </Header>
       {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
-      <OnboardingImportSRP isExistingWallet onContinueCallback={importWallet} />
+      <OnboardingImportSRP
+        isExistingWallet
+        onContinueCallback={importWallet}
+        duplicateSrpError={srpError}
+        onClearCallback={() => setSrpError('')}
+      />
     </Page>
   );
 };

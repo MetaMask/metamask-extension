@@ -44,11 +44,15 @@ type ListOfTextFieldRefs = {
 
 type SrpInputImportProps = {
   onChange: (srp: string) => void;
+  onClearCallback?: () => void;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function SrpInputImport({ onChange }: SrpInputImportProps) {
+export default function SrpInputImport({
+  onChange,
+  onClearCallback,
+}: SrpInputImportProps) {
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
@@ -370,6 +374,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
               variant={ButtonVariant.Link}
               onClick={async () => {
                 setDraftSrp([]);
+                onClearCallback?.();
               }}
             >
               {t('onboardingSrpInputClearAll')}

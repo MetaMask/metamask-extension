@@ -49,6 +49,8 @@ export default function ImportSRP({
   submitSecretRecoveryPhrase,
   isExistingWallet = false,
   onContinueCallback,
+  duplicateSrpError,
+  onClearCallback,
 }) {
   const dispatch = useDispatch();
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
@@ -65,6 +67,12 @@ export default function ImportSRP({
     }
   }, [currentKeyring, navigate, isExistingWallet]);
   const trackEvent = useContext(MetaMetricsContext);
+
+  useEffect(() => {
+    if (duplicateSrpError) {
+      setSrpError(duplicateSrpError);
+    }
+  }, [duplicateSrpError]);
 
   const onShowSrpDetailsModal = useCallback(() => {
     trackEvent({
@@ -179,7 +187,10 @@ export default function ImportSRP({
         </Box>
         <Box width={BlockSize.Full}>
           <form onSubmit={(e) => e.preventDefault()}>
-            <SrpInputImport onChange={setSecretRecoveryPhrase} />
+            <SrpInputImport
+              onChange={setSecretRecoveryPhrase}
+              onClearCallback={onClearCallback}
+            />
             {srpError && (
               <Box marginTop={2}>
                 <Text
@@ -222,4 +233,6 @@ ImportSRP.propTypes = {
   submitSecretRecoveryPhrase: PropTypes.func,
   isExistingWallet: PropTypes.bool,
   onContinueCallback: PropTypes.func,
+  duplicateSrpError: PropTypes.string,
+  onClearCallback: PropTypes.func,
 };
