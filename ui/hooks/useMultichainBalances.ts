@@ -27,6 +27,7 @@ import { useMultichainSelector } from './useMultichainSelector';
 
 const useNonEvmAssetsWithBalances = (
   accountId?: string,
+  accountType?: InternalAccount['type'],
 ): (Omit<TokenWithBalance, 'address' | 'chainId' | 'primary' | 'secondary'> & {
   chainId: `${string}:${string}`;
   decimals: number;
@@ -36,6 +37,7 @@ const useNonEvmAssetsWithBalances = (
   balance: string;
   tokenFiatAmount: number;
   symbol: string;
+  accountType?: InternalAccount['type'];
 })[] => {
   // non-evm tokens owned by non-evm account, includes native and non-native assets
   const assetsByAccountId = useSelector(getAccountAssets);
@@ -68,12 +70,13 @@ const useNonEvmAssetsWithBalances = (
           chainId,
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
           assetId: caipAssetId,
-          address: assetReference,
+          address: '',
           string: balancesByAssetId[caipAssetId]?.amount ?? '0',
           balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
           image: assetMetadataById[caipAssetId]?.iconUrl ?? '',
           type: assetNamespace === 'token' ? AssetType.token : AssetType.native,
+          accountType: accountType,
           tokenFiatAmount: new BigNumber(
             balancesByAssetId[caipAssetId]?.amount ?? '1',
           )
@@ -139,6 +142,7 @@ export const useMultichainBalances = (
   // Bitcoin balances
   const bitcoinBalancesWithFiat = useNonEvmAssetsWithBalances(
     bitcoinAccount?.id,
+    bitcoinAccount?.type,
   );
 
   // return TokenWithFiat sorted by fiat balance amount

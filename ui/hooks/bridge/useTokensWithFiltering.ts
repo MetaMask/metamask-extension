@@ -328,10 +328,7 @@ export const useTokensWithFiltering = (
                       token.address,
                       formatChainIdToCaip(token.chainId),
                     )),
-                ...(isBitcoinChainId(token.chainId) &&
-                  bitcoinAccount?.type && {
-                    accountType: bitcoinAccount.type,
-                  }),
+                accountType: token.accountType,
               };
             } else {
               yield {
