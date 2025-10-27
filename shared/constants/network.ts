@@ -203,6 +203,9 @@ export const CHAIN_IDS = {
   ACALA_TESTNET: '0x253',
   KARURA: '0x2ae',
   HEMI: '0xa867',
+  PLASMA: '0x2611',
+  LUKSO: '0x2a',
+  INJECTIVE: '0x6f0',
   MONAD: '0x8f',
 } as const;
 
@@ -362,6 +365,9 @@ export const ACALA_DISPLAY_NAME = 'Acala';
 export const ACALA_TESTNET_DISPLAY_NAME = 'Acala Testnet';
 export const KARURA_DISPLAY_NAME = 'Karura';
 export const HEMI_DISPLAY_NAME = 'Hemi';
+export const PLASMA_DISPLAY_NAME = 'Plasma';
+export const LUKSO_DISPLAY_NAME = 'Lukso';
+export const INJECTIVE_DISPLAY_NAME = 'Injective';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -442,6 +448,9 @@ export const CURRENCY_SYMBOLS = {
   ACALA: 'ACA',
   KARURA: 'KAR',
   HEMI: 'ETH',
+  PLASMA: 'XPL',
+  LUKSO: 'LYX',
+  INJECTIVE: 'INJ',
 } as const;
 
 // Non-EVM currency symbols
@@ -617,6 +626,8 @@ export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
 export const MEGAETH_MAINNET_IMAGE_URL = './images/MegaETH-logo-mainnet.png';
 export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
+export const SOLANA_TESTNET_IMAGE_URL = './images/solana-testnet-logo.svg';
+export const SOLANA_DEVNET_IMAGE_URL = './images/solana-devnet-logo.svg';
 export const BITCOIN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_IMAGE_URL = './images/bitcoin-testnet-logo.svg';
 export const BITCOIN_SIGNET_IMAGE_URL = './images/bitcoin-signet-logo.png';
@@ -652,6 +663,12 @@ export const ACALA_TOKEN_IMAGE_URL = './images/acala-token.svg';
 export const KARURA_IMAGE_URL = './images/karura.svg';
 export const KARURA_TOKEN_IMAGE_URL = './images/karura-token.svg';
 export const HEMI_IMAGE_URL = './images/hemi.svg';
+export const PLASMA_IMAGE_URL = './images/plasma.svg';
+export const PLASMA_NATIVE_TOKEN_IMAGE_URL = './images/plasma-native.svg';
+export const LUKSO_IMAGE_URL = './images/lukso.svg';
+export const LUKSO_NATIVE_TOKEN_IMAGE_URL = './images/lukso-native.svg';
+export const INJECTIVE_IMAGE_URL = './images/injective.svg';
+export const INJECTIVE_NATIVE_TOKEN_IMAGE_URL = './images/injective-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -809,6 +826,9 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TESTNET_DISPLAY_NAME,
   [CHAIN_IDS.KARURA]: KARURA_DISPLAY_NAME,
   [CHAIN_IDS.HEMI]: HEMI_DISPLAY_NAME,
+  [CHAIN_IDS.PLASMA]: PLASMA_DISPLAY_NAME,
+  [CHAIN_IDS.LUKSO]: LUKSO_DISPLAY_NAME,
+  [CHAIN_IDS.INJECTIVE]: INJECTIVE_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -962,6 +982,9 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.ACALA_TESTNET]: CURRENCY_SYMBOLS.ACALA,
   [CHAIN_IDS.KARURA]: CURRENCY_SYMBOLS.KARURA,
   [CHAIN_IDS.HEMI]: CURRENCY_SYMBOLS.HEMI,
+  [CHAIN_IDS.PLASMA]: CURRENCY_SYMBOLS.PLASMA,
+  [CHAIN_IDS.LUKSO]: CURRENCY_SYMBOLS.LUKSO,
+  [CHAIN_IDS.INJECTIVE]: CURRENCY_SYMBOLS.INJECTIVE,
 } as const;
 
 /**
@@ -1104,6 +1127,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
+  [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
+  [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
   [MultichainNetworks.BITCOIN]: BITCOIN_IMAGE_URL,
   [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_IMAGE_URL,
   [MultichainNetworks.BITCOIN_SIGNET]: BITCOIN_SIGNET_IMAGE_URL,
@@ -1129,6 +1154,9 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_IMAGE_URL,
   [CHAIN_IDS.HEMI]: HEMI_IMAGE_URL,
+  [CHAIN_IDS.PLASMA]: PLASMA_IMAGE_URL,
+  [CHAIN_IDS.LUKSO]: LUKSO_IMAGE_URL,
+  [CHAIN_IDS.INJECTIVE]: INJECTIVE_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1207,6 +1235,15 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.ACALA_TESTNET]: ACALA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.KARURA]: KARURA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.HEMI]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.PLASMA]: PLASMA_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.LUKSO]: LUKSO_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.INJECTIVE]: INJECTIVE_NATIVE_TOKEN_IMAGE_URL,
+  [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
+  [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
+  [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
+  [MultichainNetworks.BITCOIN]: BITCOIN_IMAGE_URL,
+  [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_IMAGE_URL,
+  [MultichainNetworks.BITCOIN_SIGNET]: BITCOIN_SIGNET_IMAGE_URL,
 } as const;
 
 /**

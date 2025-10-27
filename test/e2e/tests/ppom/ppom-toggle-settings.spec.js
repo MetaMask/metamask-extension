@@ -8,7 +8,7 @@ describe('PPOM Settings', function () {
   it.skip('should not show the PPOM warning when toggle is off', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -45,7 +45,7 @@ describe('PPOM Settings', function () {
   it.skip('should show the PPOM warning when the toggle is on', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()

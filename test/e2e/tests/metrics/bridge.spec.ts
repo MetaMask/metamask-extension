@@ -39,7 +39,12 @@ describe('Bridge tests', function (this: Suite) {
 
         const homePage = new HomePage(driver);
 
-        await bridgeTransaction(driver, quote, 2);
+        await bridgeTransaction({
+          driver,
+          quote,
+          expectedTransactionsCount: 2,
+          expectedDestAmount: '0.0157',
+        });
 
         // Start the flow again
         await homePage.startSwapFlow();

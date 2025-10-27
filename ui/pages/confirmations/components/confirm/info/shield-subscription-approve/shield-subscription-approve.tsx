@@ -9,10 +9,12 @@ import { useConfirmContext } from '../../../../context/confirm';
 import { useAssetDetails } from '../../../../hooks/useAssetDetails';
 import { useDecodedTransactionData } from '../hooks/useDecodedTransactionData';
 import { GasFeesSection } from '../shared/gas-fees-section/gas-fees-section';
+import { useShieldSubscriptionPricingFromTokenApproval } from '../../../../../../hooks/subscription/useSubscriptionPricing';
 import { AccountDetails } from './account-details';
 import { EstimatedChanges } from './estimated-changes';
 import ShieldSubscriptionApproveLoader from './shield-subscription-approve-loader';
 import { SubscriptionDetails } from './subscription-details';
+import BillingDetails from './billing-details';
 
 const ShieldSubscriptionApproveInfo = () => {
   const { currentConfirmation: transactionMeta } =
@@ -35,31 +37,44 @@ const ShieldSubscriptionApproveInfo = () => {
     .div(10 ** (decimals ?? 0))
     .toFixed();
 
+  const { productPrice, pending: productPricePending } =
+    useShieldSubscriptionPricingFromTokenApproval({
+      transactionMeta,
+      decodedApprovalAmount,
+    });
+
   const { trialedProducts, loading: subscriptionsLoading } =
     useUserSubscriptions();
   const isTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
 
   const isLoading =
-    subscriptionsLoading || decodeResponse?.pending || !decimals;
+    subscriptionsLoading ||
+    decodeResponse?.pending ||
+    !decimals ||
+    productPricePending;
   if (isLoading) {
     return <ShieldSubscriptionApproveLoader />;
   }
 
   return (
     <Box paddingTop={4}>
-      <SubscriptionDetails
-        approvalAmount={approvalAmount}
-        showTrial={!isTrialed}
-      />
+      <SubscriptionDetails showTrial={!isTrialed} productPrice={productPrice} />
       <EstimatedChanges
         approvalAmount={approvalAmount}
         tokenAddress={transactionMeta?.txParams?.to as Hex}
         chainId={transactionMeta?.chainId}
+        productPrice={productPrice}
       />
       <AccountDetails
         accountAddress={transactionMeta?.txParams?.from as Hex}
         chainId={transactionMeta?.chainId}
       />
+      {productPrice && (
+        <BillingDetails
+          productPrice={productPrice}
+          isTrialSubscription={!isTrialed}
+        />
+      )}
       <GasFeesSection />
     </Box>
   );

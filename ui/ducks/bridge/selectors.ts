@@ -82,6 +82,7 @@ import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
   getAllAccountGroups,
   getInternalAccountBySelectedAccountGroupAndCaip,
+  getWalletsWithAccounts,
 } from '../../selectors/multichain-accounts/account-tree';
 import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
 
@@ -435,8 +436,8 @@ export const getFromAccount = createSelector(
 );
 
 export const getToAccounts = createSelector(
-  [getToChain, (state) => state],
-  (toChain, state) => {
+  [getToChain, getWalletsWithAccounts, (state) => state],
+  (toChain, accountsByWallet, state) => {
     if (!toChain) {
       return [];
     }
@@ -448,6 +449,12 @@ export const getToAccounts = createSelector(
     return internalAccounts.map((account) => ({
       ...account,
       isExternal: false,
+      walletName:
+        account.options.entropy?.type === 'mnemonic'
+          ? accountsByWallet[`entropy:${account.options.entropy.id}`]?.metadata
+              .name
+          : accountsByWallet[`keyring:${account.metadata.keyring.type}`]
+              ?.metadata.name,
       displayName:
         getAccountGroupNameByInternalAccount(state, account) ??
         account.metadata.name ??
@@ -624,8 +631,6 @@ export const getFromTokenConversionRate = createSelector(
           ),
           nativeAssetRate,
         );
-        // Bitcoin doesn't have separate currency/USD rates in the rates object
-        // So we use the native asset rate for both
         return exchangeRatesFromNativeAndCurrencyRates(
           tokenToNativeAssetRate,
           Number(nativeToCurrencyRate),
@@ -973,11 +978,16 @@ export const getIsToOrFromNonEvm = createSelector(
       return false;
     }
 
-    const fromChainIsNonEvm = isNonEvmChain(fromChain.chainId);
-    const toChainIsNonEvm = isNonEvmChain(toChain.chainId);
+    // Parse the CAIP chain IDs to get their namespaces
+    const fromCaipChainId = formatChainIdToCaip(fromChain.chainId);
+    const toCaipChainId = formatChainIdToCaip(toChain.chainId);
 
-    // Return true if one chain is non-EVM and the other is EVM
-    return fromChainIsNonEvm !== toChainIsNonEvm;
+    const { namespace: fromNamespace } = parseCaipChainId(fromCaipChainId);
+    const { namespace: toNamespace } = parseCaipChainId(toCaipChainId);
+
+    // Return true if chains are in different namespaces
+    // This covers EVM <> non-EVM as well as non-EVM <> non-EVM (e.g., Solana <> Bitcoin)
+    return fromNamespace !== toNamespace;
   },
 );
 

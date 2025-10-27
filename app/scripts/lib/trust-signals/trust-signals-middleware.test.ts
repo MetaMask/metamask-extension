@@ -6,9 +6,9 @@ import {
   parseApprovalTransactionData,
   parseTypedDataMessage,
 } from '../../../../shared/modules/transaction.utils';
+import { ResultType } from '../../../../shared/lib/trust-signals';
 import { createTrustSignalsMiddleware } from './trust-signals-middleware';
 import { scanAddressAndAddToCache } from './security-alerts-api';
-import { ResultType } from './types';
 import { getChainId } from './trust-signals-util';
 
 jest.mock('./security-alerts-api');
@@ -49,12 +49,13 @@ const createMockRequest = (
   method: string,
   params: Json[] = [],
   origin: string = 'https://example.com',
-): JsonRpcRequest & { origin?: string } => ({
+): JsonRpcRequest & { origin?: string; networkClientId: string } => ({
   method,
   params,
   id: 1,
   jsonrpc: '2.0',
   origin,
+  networkClientId: 'testNetworkClientId',
 });
 
 const createMockResponse = (): JsonRpcResponse => ({
@@ -86,6 +87,13 @@ const createMiddleware = (
         ? { providerConfig: {} } // Simulate missing chainId by having empty providerConfig
         : mockNetworkState({ chainId: chainId || CHAIN_IDS.MAINNET })),
     },
+    getNetworkConfigurationByNetworkClientId: jest
+      .fn()
+      .mockReturnValue(
+        chainId === null
+          ? undefined
+          : { chainId: chainId || CHAIN_IDS.MAINNET },
+      ),
   } as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   const appStateController = {

@@ -1,34 +1,39 @@
 import { useState } from 'react';
 
 export const useClaimState = () => {
+  const [chainId, setChainId] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [impactedWalletAddress, setImpactedWalletAddress] =
     useState<string>('');
-  const [impactedTxHash, setImpactedTxHash] = useState<string>('');
+  const [impactedTransactionHash, setImpactedTransactionHash] =
+    useState<string>('');
   const [reimbursementWalletAddress, setReimbursementWalletAddress] =
     useState<string>('');
-  const [description, setDescription] = useState<string>('');
+  const [caseDescription, setCaseDescription] = useState<string>('');
   const [files, setFiles] = useState<FileList>();
 
   return {
+    chainId,
+    setChainId,
     email,
     setEmail,
     impactedWalletAddress,
     setImpactedWalletAddress,
-    impactedTxHash,
-    setImpactedTxHash,
+    impactedTransactionHash,
+    setImpactedTransactionHash,
     reimbursementWalletAddress,
     setReimbursementWalletAddress,
-    description,
-    setDescription,
+    caseDescription,
+    setCaseDescription,
     files,
     setFiles,
     clear: () => {
+      setChainId('');
       setEmail('');
       setImpactedWalletAddress('');
-      setImpactedTxHash('');
+      setImpactedTransactionHash('');
       setReimbursementWalletAddress('');
-      setDescription('');
+      setCaseDescription('');
       setFiles(undefined);
     },
   };

@@ -169,7 +169,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
   },
   [toEvmCaipChainId(CHAIN_IDS.SEI)]: {
     // SEI -> USDC on Sei
-    address: '0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1',
+    address: '0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392',
     symbol: 'USDC',
     decimals: 6,
     name: 'USD Coin',

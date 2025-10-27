@@ -235,7 +235,23 @@ export const NetworkControllerInit: ControllerInitFunction<
     },
   );
 
-  controller.initializeProvider();
+  initMessenger.subscribe(
+    'RemoteFeatureFlagController:stateChange',
+    (isRpcFailoverEnabled) => {
+      if (isRpcFailoverEnabled) {
+        console.log('Enabling RPC failover.');
+        controller.enableRpcFailover();
+      } else {
+        console.log('Disabling RPC failover.');
+        controller.disableRpcFailover();
+      }
+    },
+    (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
+  );
+
+  // Delay lookupNetwork until after onboarding to prevent network requests before the user can
+  // update their RPC endpoints.
+  controller.initializeProvider({ lookupNetwork: false });
 
   return {
     controller,

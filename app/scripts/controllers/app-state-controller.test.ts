@@ -479,6 +479,32 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setShieldPausedToastLastClickedOrClosed', () => {
+    it('set the shieldPausedToastLastClickedOrClosed time', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setShieldPausedToastLastClickedOrClosed(mockParams);
+
+        expect(
+          controller.state.shieldPausedToastLastClickedOrClosed,
+        ).toStrictEqual(mockParams);
+      });
+    });
+  });
+
+  describe('setShieldEndingToastLastClickedOrClosed', () => {
+    it('set the shieldEndingToastLastClickedOrClosed time', async () => {
+      await withController(({ controller }) => {
+        const mockParams = Date.now();
+        controller.setShieldEndingToastLastClickedOrClosed(mockParams);
+
+        expect(
+          controller.state.shieldEndingToastLastClickedOrClosed,
+        ).toStrictEqual(mockParams);
+      });
+    });
+  });
+
   describe('isUpdateAvailable', () => {
     it('defaults to false', async () => {
       await withController(({ controller }) => {
@@ -710,6 +736,7 @@ describe('AppStateController', () => {
             {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
+              "appActiveTab": undefined,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
@@ -743,11 +770,14 @@ describe('AppStateController', () => {
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
+              "shieldEndingToastLastClickedOrClosed": null,
+              "shieldPausedToastLastClickedOrClosed": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
               "showNetworkBanner": true,
               "showPermissionsTour": true,
+              "showShieldEntryModalOnce": null,
               "showTestnetMessageInDropdown": true,
               "signatureSecurityAlertResponses": {},
               "slides": [],
@@ -792,6 +822,7 @@ describe('AppStateController', () => {
           ).toMatchInlineSnapshot(`
             {
               "addressSecurityAlertResponses": {},
+              "appActiveTab": undefined,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
@@ -825,11 +856,14 @@ describe('AppStateController', () => {
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
+              "shieldEndingToastLastClickedOrClosed": null,
+              "shieldPausedToastLastClickedOrClosed": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
               "showNetworkBanner": true,
               "showPermissionsTour": true,
+              "showShieldEntryModalOnce": null,
               "showTestnetMessageInDropdown": true,
               "signatureSecurityAlertResponses": {},
               "slides": [],
@@ -897,11 +931,14 @@ describe('AppStateController', () => {
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
+              "shieldEndingToastLastClickedOrClosed": null,
+              "shieldPausedToastLastClickedOrClosed": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
               "showNetworkBanner": true,
               "showPermissionsTour": true,
+              "showShieldEntryModalOnce": null,
               "showTestnetMessageInDropdown": true,
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
@@ -945,6 +982,7 @@ describe('AppStateController', () => {
             {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
+              "appActiveTab": undefined,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
@@ -979,11 +1017,14 @@ describe('AppStateController', () => {
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
+              "shieldEndingToastLastClickedOrClosed": null,
+              "shieldPausedToastLastClickedOrClosed": null,
               "showAccountBanner": true,
               "showBetaHeader": false,
               "showDownloadMobileAppSlide": true,
               "showNetworkBanner": true,
               "showPermissionsTour": true,
+              "showShieldEntryModalOnce": null,
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,

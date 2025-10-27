@@ -24,6 +24,11 @@ import {
   getTransactionControllerInitMessenger,
 } from './transaction-controller-messenger';
 import {
+  getBackendWebSocketServiceMessenger,
+  getBackendWebSocketServiceInitMessenger,
+  getAccountActivityServiceMessenger,
+} from './core-backend';
+import {
   getMultichainBalancesControllerMessenger,
   getMultichainTransactionsControllerMessenger,
   getMultichainAssetsControllerMessenger,
@@ -46,9 +51,11 @@ import {
   getTokenRatesControllerInitMessenger,
   getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
+  getNetworkEnablementControllerInitMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
+  getNotificationServicesPushControllerInitMessenger,
   getNotificationServicesPushControllerMessenger,
 } from './notifications';
 import { getDeFiPositionsControllerMessenger } from './defi-positions';
@@ -530,7 +537,7 @@ export const CONTROLLER_MESSENGERS = {
   },
   NotificationServicesPushController: {
     getMessenger: getNotificationServicesPushControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getNotificationServicesPushControllerInitMessenger,
   },
   OAuthService: {
     getMessenger: getOAuthServiceMessenger,
@@ -680,6 +687,14 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getWebSocketServiceMessenger,
     getInitMessenger: noop,
   },
+  BackendWebSocketService: {
+    getMessenger: getBackendWebSocketServiceMessenger,
+    getInitMessenger: getBackendWebSocketServiceInitMessenger,
+  },
+  AccountActivityService: {
+    getMessenger: getAccountActivityServiceMessenger,
+    getInitMessenger: noop,
+  },
   SmartTransactionsController: {
     getMessenger: getSmartTransactionsControllerMessenger,
     getInitMessenger: getSmartTransactionsControllerInitMessenger,
@@ -694,6 +709,6 @@ export const CONTROLLER_MESSENGERS = {
   },
   NetworkEnablementController: {
     getMessenger: getNetworkEnablementControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getNetworkEnablementControllerInitMessenger,
   },
 } as const;

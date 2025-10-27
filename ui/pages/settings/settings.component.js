@@ -55,7 +55,10 @@ import MetafoxLogo from '../../components/ui/metafox-logo';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
@@ -162,7 +165,10 @@ class SettingsPage extends PureComponent {
     } = this.props;
 
     const { t } = this.context;
-    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const environmentType = getEnvironmentType();
+    const isPopup =
+      environmentType === ENVIRONMENT_TYPE_POPUP ||
+      environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
     const isSearchHidden =
       isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
 
@@ -441,7 +447,7 @@ class SettingsPage extends PureComponent {
       });
     }
 
-    if (isMetaMaskShieldFeatureEnabled) {
+    if (isMetaMaskShieldFeatureEnabled && useExternalServices) {
       tabs.splice(-4, 0, {
         content: t('shieldTx'),
         icon: <Icon name={IconName.ShieldLock} />,
