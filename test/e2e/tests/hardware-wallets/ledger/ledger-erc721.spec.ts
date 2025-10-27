@@ -35,7 +35,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          '1208925.8196',
+          '1.21M',
         );
 
         // deploy action
@@ -88,7 +88,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          '1.21M',
         );
 
         const contractAddress =
@@ -151,7 +151,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          '1.21M',
         );
 
         const contractAddress =
@@ -212,7 +212,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          '1.21M',
         );
 
         const contractAddress =

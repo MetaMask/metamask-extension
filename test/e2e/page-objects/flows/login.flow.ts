@@ -48,5 +48,5 @@ export const loginWithBalanceValidation = async (
   } else if (value) {
     await homePage.checkExpectedTokenBalanceIsDisplayed(value, 'ETH');
   }
-  await driver.delay(1000);
+  await driver.delay(2000);
 };

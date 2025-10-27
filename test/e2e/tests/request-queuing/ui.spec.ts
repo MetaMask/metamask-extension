@@ -625,7 +625,7 @@ describe('Request-queue UI changes', function () {
           driver,
           undefined,
           undefined,
-          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          '25 ETH',
         );
 
         // Open the first dapp
