@@ -10,14 +10,13 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
   AccountTrackerController,
   AccountTrackerControllerMessenger,
   AccountTrackerControllerInitMessenger
-> = ({ controllerMessenger, initMessenger, persistedState, getController }) => {
+> = ({ controllerMessenger, initMessenger, getController }) => {
   const getAssetsContractController = () =>
     getController('AssetsContractController');
 
   const onboardingController = () => getController('OnboardingController');
 
   const controller = new AccountTrackerController({
-    state: persistedState.AccountTrackerController,
     messenger: controllerMessenger,
     getStakedBalanceForChain: (
       addresses: string[],
