@@ -44,7 +44,13 @@ export default function TokenSearch({
 
   const filteredTokenList = useMemo(() => {
     if (isTokenNetworkFilterEqualCurrentNetwork) {
-      return tokenList?.[chainId]?.data;
+      const dataObject = tokenList?.[chainId]?.data;
+      return Object.fromEntries(
+        Object.entries(dataObject).map(([key, value]) => [
+          key,
+          { ...value, chainId },
+        ]),
+      );
     }
     return Object.entries(tokenList).flatMap(([networkId, { data }]) =>
       Object.values(data).map((item) => ({ ...item, chainId: networkId })),
