@@ -160,6 +160,20 @@ export const MultichainAccountsConnectPage: React.FC<
     [request.permissions],
   );
 
+  const requestedScopes = getAllScopesFromCaip25CaveatValue(
+    requestedCaip25CaveatValue,
+  );
+
+  const SOLANA_MAINNET_CAIP_CHAIN_ID =
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+
+  const isSolanaWalletStandardRequest =
+    requestedScopes.length === 1 &&
+    requestedScopes[0] === SOLANA_MAINNET_CAIP_CHAIN_ID &&
+    requestedCaip25CaveatValue.sessionProperties[
+      KnownSessionProperties.SolanaAccountChangedNotifications
+    ];
+
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
     () =>
       existingCaip25CaveatValue
@@ -174,20 +188,6 @@ export const MultichainAccountsConnectPage: React.FC<
   const requestedCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
     requestedCaip25CaveatValue,
   );
-
-  const requestedScopes = getAllScopesFromCaip25CaveatValue(
-    requestedCaip25CaveatValueWithExistingPermissions,
-  );
-
-  const SOLANA_MAINNET_CAIP_CHAIN_ID =
-    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
-
-  const isSolanaWalletStandardRequest =
-    requestedScopes.length === 1 &&
-    requestedScopes[0] === SOLANA_MAINNET_CAIP_CHAIN_ID &&
-    requestedCaip25CaveatValue.sessionProperties[
-      KnownSessionProperties.SolanaAccountChangedNotifications
-    ];
 
   const requestedNamespaces = useMemo(
     () =>
@@ -266,7 +266,6 @@ export const MultichainAccountsConnectPage: React.FC<
           ({ caipChainId }) => caipChainId,
         )
       : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
-
 
     // If the request is an EIP-1193 request (with no specific chains requested) or a Solana wallet standard request , return the default selected network list
     if (
