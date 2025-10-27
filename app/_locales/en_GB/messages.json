@@ -5810,6 +5810,9 @@
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
     "message": "Learn how coverage works"
   },
+  "shieldCoverageAlertMessagePotentialRisks": {
+    "message": "This transaction has potential risks, so it isn't protected by Transaction Shield. $1."
+  },
   "shieldCoverageAlertMessageSignatureNotSupported": {
     "message": "This signature isn't supported, so it isn't protected by Transaction Shield. $1."
   },
