@@ -2720,6 +2720,8 @@ export default class MetamaskController extends EventEmitter {
           appStateController,
         ),
 
+      setAppActiveTab:
+        appStateController.setAppActiveTab.bind(appStateController),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
