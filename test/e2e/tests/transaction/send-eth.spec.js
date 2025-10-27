@@ -168,7 +168,7 @@ describe('Send ETH', function () {
 
           // Go back to home screen to check txn
           const balance = await driver.findElement(
-            '[data-testid="eth-overview__primary-currency"]',
+            '[data-testid="multichain-token-list-item-value"]',
           );
 
           assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
