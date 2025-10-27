@@ -1,10 +1,8 @@
 import {
   CaipAssetType,
   parseCaipChainId,
-  CaipAssetTypeStruct,
   CaipChainId,
   type Hex,
-  isCaipAssetType,
   isCaipChainId,
   isStrictHexString,
   parseCaipAssetType,
@@ -13,38 +11,13 @@ import {
 
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
-import {
-  getNativeAssetForChainId,
-  isNativeAddress,
-} from '@metamask/bridge-controller';
+import { formatAddressToAssetId } from '@metamask/bridge-controller';
 import getFetchWithTimeout from '../modules/fetch-with-timeout';
 import { decimalToPrefixedHex } from '../modules/conversion.utils';
 import { TEN_SECONDS_IN_MILLISECONDS } from './transactions-controller-utils';
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 const STATIC_METAMASK_BASE_URL = 'https://static.cx.metamask.io';
-
-export const toAssetId = (
-  address: Hex | CaipAssetType | string,
-  chainId: CaipChainId,
-): CaipAssetType | undefined => {
-  if (isCaipAssetType(address)) {
-    return address;
-  }
-  if (isNativeAddress(address)) {
-    return getNativeAssetForChainId(chainId)?.assetId;
-  }
-  if (chainId === MultichainNetwork.Solana) {
-    return CaipAssetTypeStruct.create(`${chainId}/token:${address}`);
-  }
-  // EVM assets
-  if (isStrictHexString(address)) {
-    return CaipAssetTypeStruct.create(
-      `${chainId}/erc20:${address.toLowerCase()}`,
-    );
-  }
-  return undefined;
-};
 
 /**
  * Returns the image url for a caip-formatted asset
@@ -61,7 +34,7 @@ export const getAssetImageUrl = (
     ? chainId
     : toEvmCaipChainId(chainId);
 
-  const assetIdInCaip = toAssetId(assetId, chainIdInCaip);
+  const assetIdInCaip = formatAddressToAssetId(assetId, chainIdInCaip);
   if (!assetIdInCaip) {
     return undefined;
   }
@@ -97,7 +70,7 @@ export const fetchAssetMetadata = async (
       ? chainId
       : toEvmCaipChainId(chainId);
 
-    const assetId = toAssetId(address, chainIdInCaip);
+    const assetId = formatAddressToAssetId(address, chainId);
 
     if (!assetId) {
       return undefined;

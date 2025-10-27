@@ -72,7 +72,6 @@ import {
   HardwareKeyringNames,
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
-import { toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getIsSmartTransaction } from '../../../shared/modules/selectors';
@@ -587,9 +586,9 @@ export const getFromTokenConversionRate = createSelector(
       const nativeAssetId = getNativeAssetForChainId(
         fromChain.chainId,
       )?.assetId;
-      const tokenAssetId = toAssetId(
+      const tokenAssetId = formatAddressToAssetId(
         fromToken.address,
-        formatChainIdToCaip(fromChain.chainId),
+        fromChain.chainId,
       );
       const nativeToCurrencyRate = isNonEvmChain(fromChain.chainId)
         ? Number(
@@ -715,9 +714,9 @@ export const getToTokenConversionRate = createDeepEqualSelector(
     }
     if (toChain?.chainId && toToken) {
       const nativeAssetId = getNativeAssetForChainId(toChain.chainId)?.assetId;
-      const tokenAssetId = toAssetId(
+      const tokenAssetId = formatAddressToAssetId(
         toToken.address,
-        formatChainIdToCaip(toChain.chainId),
+        toChain.chainId,
       );
 
       if (isSolanaChainId(toChain.chainId) && nativeAssetId && tokenAssetId) {

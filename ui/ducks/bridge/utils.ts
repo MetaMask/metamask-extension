@@ -19,12 +19,13 @@ import {
   isNativeAddress,
   isNonEvmChainId,
   formatChainIdToHex,
+  formatAddressToAssetId,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
-import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
+import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
@@ -140,7 +141,7 @@ const fetchTokenExchangeRates = async (
   ...tokenAddresses: string[]
 ) => {
   const assetIds = tokenAddresses
-    .map((address) => toAssetId(address, formatChainIdToCaip(chainId)))
+    .map((address) => formatAddressToAssetId(address, chainId))
     .filter(Boolean);
   if (assetIds.length === 0) {
     return {};
@@ -184,7 +185,7 @@ export const getTokenExchangeRate = async (request: {
     signal,
     tokenAddress,
   );
-  const assetId = toAssetId(tokenAddress, formatChainIdToCaip(chainId));
+  const assetId = formatAddressToAssetId(tokenAddress, chainId);
   return assetId ? exchangeRates?.[assetId] : undefined;
 };
 
@@ -267,7 +268,7 @@ const getTokenImage = (payload: TokenPayload['payload']) => {
     return imageFromPayload;
   }
   // If there's no image from the payload, build the asset image URL and return it
-  const assetIdToUse = assetId ?? toAssetId(address, caipChainId);
+  const assetIdToUse = assetId ?? formatAddressToAssetId(address, caipChainId);
   return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
 };
 
@@ -277,14 +278,15 @@ export const toBridgeToken = (
   if (!payload) {
     return null;
   }
-  const caipChainId = formatChainIdToCaip(payload.chainId);
   return {
     ...payload,
     balance: payload.balance ?? '0',
     string: payload.string ?? '0',
     chainId: payload.chainId,
     image: getTokenImage(payload),
-    assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
+    assetId:
+      payload.assetId ??
+      formatAddressToAssetId(payload.address, payload.chainId),
   };
 };
 const createBridgeTokenPayload = (

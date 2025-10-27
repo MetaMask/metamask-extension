@@ -12,6 +12,7 @@ import {
   BridgeClientId,
   type BridgeAsset,
   getNativeAssetForChainId,
+  formatAddressToAssetId,
 } from '@metamask/bridge-controller';
 import type {
   TokenListMap,
@@ -34,7 +35,7 @@ import type {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
+import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { BridgeToken } from '../../ducks/bridge/types';
 
@@ -59,7 +60,7 @@ const buildTokenData = (
     assetId:
       'assetId' in token
         ? token.assetId
-        : toAssetId(token.address, formatChainIdToCaip(chainId)),
+        : formatAddressToAssetId(token.address, chainId),
   };
 
   if (isNativeAddress(token.address)) {

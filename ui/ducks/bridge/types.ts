@@ -12,7 +12,7 @@ export const INITIAL_SLIPPAGE = null;
 
 export type BridgeToken = {
   address: string;
-  assetId?: CaipAssetType;
+  assetId: CaipAssetType;
   symbol: string;
   image: string;
   decimals: number;

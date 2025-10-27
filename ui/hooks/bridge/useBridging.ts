@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
   type BridgeAsset,
-  formatChainIdToCaip,
   type GenericQuoteRequest,
   getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
+  formatAddressToAssetId,
 } from '@metamask/bridge-controller';
 import {
   resetInputFields,
@@ -30,7 +30,6 @@ import {
 } from '../../helpers/constants/routes';
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
-import { toAssetId } from '../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { getLastSelectedChainId } from '../../ducks/bridge/selectors';
 import { getMultichainProviderConfig } from '../../selectors/multichain';
@@ -59,7 +58,7 @@ const useBridging = () => {
       let srcAssetIdToUse =
         srcToken?.chainId &&
         ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(srcToken.chainId)
-          ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
+          ? formatAddressToAssetId(srcToken.address, srcToken.chainId)
           : undefined;
 
       /* If srcToken is not in a supported bridge chain, or is not specified
