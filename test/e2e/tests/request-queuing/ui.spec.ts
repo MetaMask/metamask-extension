@@ -620,12 +620,7 @@ describe('Request-queue UI changes', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '25',
-        );
+        await loginWithBalanceValidation(driver, undefined, undefined, '25');
 
         // Open the first dapp
         await openDappAndSwitchChain(driver, DAPP_URL, '0x539');
