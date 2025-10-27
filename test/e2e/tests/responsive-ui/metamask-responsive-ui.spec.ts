@@ -1,4 +1,5 @@
 import { Suite } from 'mocha';
+import { Mockttp } from 'mockttp';
 import { E2E_SRP } from '../../default-fixture';
 import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -11,6 +12,7 @@ import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { mockBitcoinBlockchain, mockBitcoinPriceApi } from './mocks/bitcoin';
 
 const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
@@ -40,6 +42,12 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          const bitcoinBlockchainMocks =
+            await mockBitcoinBlockchain(mockServer);
+          const bitcoinPriceMocks = await mockBitcoinPriceApi(mockServer);
+          return [...bitcoinBlockchainMocks, ...bitcoinPriceMocks];
+        },
       },
       async ({ driver }) => {
         await driver.navigate();
