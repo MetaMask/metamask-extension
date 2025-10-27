@@ -17,6 +17,7 @@ import OnboardingSrpPage from '../../../page-objects/pages/onboarding/onboarding
 import { onboardingMetricsFlow } from '../../../page-objects/flows/onboarding.flow';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import FixtureBuilder from '../../../fixture-builder';
+import { Mockttp } from 'mockttp';
 
 
 describe('MetaMask onboarding', function () {
@@ -33,6 +34,27 @@ describe('MetaMask onboarding', function () {
         useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         fixtures: new FixtureBuilder({ onboarding: true }).withEnabledNetworks(ALL_POPULAR_NETWORKS).build(),
+        testSpecificMock: async (server: Mockttp) => {
+          return [
+             server.forPost(/^https:\/\/sentry\.io\/api/).thenCallback(() => {
+               return {
+                 statusCode: 200,
+                 headers: {
+                   'Content-Type': 'application/json',
+                   'Access-Control-Allow-Origin': '*',
+                   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                 },
+                 // Typical Sentry envelope endpoint response with event IDs
+                 json: {
+                   "success": true,
+                 }
+                };
+             }),
+            server.forPost(/^https:\/\/api\.segment\.io\/v1\//).thenCallback(() => {
+              return { statusCode: 200 };
+            }),
+          ];
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         const timer1 = new TimerHelper('Time since the user clicks on "Import wallet" button until "Social" screen is visible');
@@ -75,12 +97,12 @@ describe('MetaMask onboarding', function () {
         await homePage.checkPageIsLoaded();
         await homePage.checkTokenListIsDisplayed();
         timer6.stop();
-        console.log(`Timer 1:  ${timer1.getDuration()} ms`);
-        console.log(`Timer 2:  ${timer2.getDuration()} ms`);
-        console.log(`Timer 3:  ${timer3.getDuration()} ms`);
-        console.log(`Timer 4:  ${timer4.getDuration()} ms`);
-        console.log(`Timer 5:  ${timer5.getDuration()} ms`);
-        console.log(`Timer 6:  ${timer6.getDuration()} ms`);
+        console.log(`Timer 1:  ${timer1.getDurationInSeconds()} s`);
+        console.log(`Timer 2:  ${timer2.getDurationInSeconds()} s`);
+        console.log(`Timer 3:  ${timer3.getDurationInSeconds()} s`);
+        console.log(`Timer 4:  ${timer4.getDurationInSeconds()} s`);
+        console.log(`Timer 5:  ${timer5.getDurationInSeconds()} s`);
+        console.log(`Timer 6:  ${timer6.getDurationInSeconds()} s`);
       },
     );
   });

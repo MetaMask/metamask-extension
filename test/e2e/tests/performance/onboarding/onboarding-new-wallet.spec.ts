@@ -14,8 +14,7 @@ import StartOnboardingPage from '../../../page-objects/pages/onboarding/start-on
 import TimerHelper from '../utils/TimersHelper';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import FixtureBuilder from '../../../fixture-builder';
-import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
-import { WITH_STATE_ONBOARDING_NEW_WALLET } from '../../../benchmarks/constants';
+import { Mockttp } from 'mockttp';
 
 
 describe('MetaMask onboarding', function () {
@@ -32,6 +31,27 @@ describe('MetaMask onboarding', function () {
         useMockingPassThrough: true,
         disableServerMochaToBackground: true,
         fixtures: new FixtureBuilder({ onboarding: true }).withEnabledNetworks(ALL_POPULAR_NETWORKS).build(),
+        testSpecificMock: async (server: Mockttp) => {
+          return [
+             server.forPost(/^https:\/\/sentry\.io\/api/).thenCallback(() => {
+               return {
+                 statusCode: 200,
+                 headers: {
+                   'Content-Type': 'application/json',
+                   'Access-Control-Allow-Origin': '*',
+                   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+                 },
+                 // Typical Sentry envelope endpoint response with event IDs
+                 json: {
+                   "success": true,
+                 }
+                };
+             }),
+            server.forPost(/^https:\/\/api\.segment\.io\/v1\//).thenCallback(() => {
+              return { statusCode: 200 };
+            }),
+          ];
+        },
       },
       async ({ driver }: { driver: Driver }) => {
         const timer1 = new TimerHelper('Time since the user clicks on "Create new wallet" button until "Social sign up" is visible');
