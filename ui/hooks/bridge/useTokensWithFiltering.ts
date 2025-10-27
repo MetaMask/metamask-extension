@@ -273,41 +273,16 @@ export const useTokensWithFiltering = (
           return;
         }
 
-        // Yield selected token first if it's defined
-        if (selectedToken) {
-          const token = buildTokenData(
-            chainId,
-            tokenList[selectedToken.address] ?? {
-              symbol: selectedToken.symbol,
-              address: selectedToken.address,
-              decimals: selectedToken.decimals,
-              iconUrl: selectedToken.image,
-              name: selectedToken.symbol,
-              occurrences: selectedToken.occurrences ?? 1,
-              aggregators: selectedToken.aggregators ?? [],
-            },
-          );
-          if (token) {
-            yield token;
-          }
-        }
-
         // Yield multichain tokens with balances and are not blocked
         for (const token of multichainTokensWithBalance) {
-          if (
-            shouldAddToken(
-              token.symbol,
-              token.address ?? undefined,
-              token.chainId,
-            )
-          ) {
+          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
             if (isNativeAddress(token.address) || token.isNative) {
               yield {
                 symbol: token.symbol,
                 chainId: token.chainId,
                 tokenFiatAmount: token.tokenFiatAmount,
                 decimals: token.decimals,
-                address: '',
+                address: token.address,
                 type: AssetType.native,
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
