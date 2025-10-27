@@ -46,6 +46,9 @@ class HeaderNavbar {
   private readonly connectedSitePopoverNetworkButton =
     '[data-testid="connected-site-popover-network-button"]';
 
+  private readonly networkAddressesLink =
+   '[data-testid="networks-subtitle-test-id"]'
+
   private readonly networkOption = (networkId: string) =>
     `[data-testid="${networkId}"]`;
 
@@ -243,6 +246,14 @@ class HeaderNavbar {
   async clickConnectedSitePopoverNetworkButton(): Promise<void> {
     console.log('Clicking connected site popover network button');
     await this.driver.clickElement(this.connectedSitePopoverNetworkButton);
+  }
+
+  /**
+   * Click the network addresses link
+   */
+  async clickNetworkAddresses(): Promise<void> {
+    console.log('Click the network addresses link');
+    await this.driver.clickElement(this.networkAddressesLink);
   }
 
   /**
