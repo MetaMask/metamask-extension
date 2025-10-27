@@ -214,7 +214,7 @@ jobs:
     needs:
       - export-onboarding-fixture
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' && secrets.PR_COMMENT_TOKEN }}
+    if: ${{ github.event_name == 'pull_request' }}
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -228,6 +228,7 @@ jobs:
           name: export-onboarding-fixture
           path: .
       - name: Comment PR with fixture
+        if: ${{ env.PR_COMMENT_TOKEN }}
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
           OWNER: ${{ github.repository_owner }}
