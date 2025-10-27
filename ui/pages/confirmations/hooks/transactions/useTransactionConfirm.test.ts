@@ -10,6 +10,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/co
 import { updateAndApproveTx } from '../../../../store/actions';
 import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
+import { AsyncResultNoIdle, useAsyncResult } from '../../../../hooks/useAsync';
 import { useTransactionConfirm } from './useTransactionConfirm';
 
 jest.mock('../../../../../shared/modules/selectors');
@@ -17,7 +18,10 @@ jest.mock('../../../../../shared/modules/selectors');
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   updateAndApproveTx: jest.fn(),
+  isSendBundleSupported: jest.fn(),
 }));
+
+jest.mock('../../../../hooks/useAsync');
 
 const CUSTOM_NONCE_VALUE = '1234';
 
@@ -55,6 +59,7 @@ function runHook({
 describe('useTransactionConfirm', () => {
   const updateAndApproveTxMock = jest.mocked(updateAndApproveTx);
   const getIsSmartTransactionMock = jest.mocked(getIsSmartTransaction);
+  const useAsyncResultMock = jest.mocked(useAsyncResult);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -63,6 +68,13 @@ describe('useTransactionConfirm', () => {
     updateAndApproveTxMock.mockReturnValue(() =>
       Promise.resolve({} as TransactionMeta),
     );
+    useAsyncResultMock.mockReturnValue({
+      value: true,
+      pending: false,
+      status: 'success',
+      idle: false,
+      error: undefined,
+    });
   });
 
   it('dispatches update and approve action', async () => {
@@ -154,6 +166,88 @@ describe('useTransactionConfirm', () => {
         maxPriorityFeePerGas:
           TRANSACTION_META_MOCK.txParams.maxPriorityFeePerGas,
       }),
+    );
+  });
+
+  it('calls handleSmartTransaction if chainSupportsSendBundle is true', async () => {
+    getIsSmartTransactionMock.mockReturnValue(true);
+
+    const mockSupportsSendBundle = true;
+    useAsyncResultMock.mockReturnValue({
+      pending: false,
+      value: mockSupportsSendBundle,
+    } as AsyncResultNoIdle<boolean>);
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actualTransactionMeta.batchTransactions).toStrictEqual([
+      {
+        data: `0xa9059cbb000000000000000000000000${GAS_FEE_TOKEN_MOCK.recipient.slice(
+          2,
+        )}0000000000000000000000000000000000000000000000000000000000000${GAS_FEE_TOKEN_MOCK.amount.slice(
+          2,
+        )}`,
+        gas: GAS_FEE_TOKEN_MOCK.gasTransfer,
+        maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
+        maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
+        to: GAS_FEE_TOKEN_MOCK.tokenAddress,
+        type: TransactionType.gasPayment,
+      },
+    ]);
+  });
+
+  it('does not call handleSmartTransaction if chainSupportsSendBundle is false', async () => {
+    getIsSmartTransactionMock.mockReturnValue(true);
+
+    const mockSupportsSendBundle = false;
+    useAsyncResultMock.mockReturnValue({
+      pending: false,
+      value: mockSupportsSendBundle,
+    } as AsyncResultNoIdle<boolean>);
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actualTransactionMeta.txParams).toStrictEqual(
+      expect.objectContaining({
+        gas: TRANSACTION_META_MOCK.txParams.gas,
+        maxFeePerGas: TRANSACTION_META_MOCK.txParams.maxFeePerGas,
+        maxPriorityFeePerGas:
+          TRANSACTION_META_MOCK.txParams.maxPriorityFeePerGas,
+      }),
+    );
+  });
+
+  it('returns false if chainId is undefined during chainSupportsSendBundle check', async () => {
+    getIsSmartTransactionMock.mockReturnValue(false);
+
+    useAsyncResultMock.mockReturnValue({
+      pending: false,
+      value: false,
+    } as AsyncResultNoIdle<boolean>);
+    const { onTransactionConfirm } = runHook({
+      customNonceValue: CUSTOM_NONCE_VALUE,
+    });
+
+    await onTransactionConfirm();
+
+    expect(updateAndApproveTxMock).toHaveBeenCalledWith(
+      expect.not.objectContaining({
+        batchTransactions: expect.any(Array),
+      }),
+      true,
+      '',
     );
   });
 });
