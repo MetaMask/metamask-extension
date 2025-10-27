@@ -124,7 +124,11 @@ function AlertHeader({
       textAlign={TextAlign.Center}
     >
       <Icon
-        name={severity === Severity.Info ? IconName.Info : IconName.Danger}
+        name={
+          severity === Severity.Info || severity === Severity.Success
+            ? IconName.Info
+            : IconName.Danger
+        }
         size={IconSize.Xl}
         color={severityStyle.icon}
       />

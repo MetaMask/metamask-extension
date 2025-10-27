@@ -9,7 +9,13 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 const SHIELD_LEARN_HOW_COVERAGE_WORKS_URL =
   'https://metamask.io/transaction-shield';
 
-export const ShieldCoverageAlertMessage = (modalBodyStr: string) => {
+export const ShieldCoverageAlertMessage = ({
+  modalBodyStr,
+  coverageAmount,
+}: {
+  modalBodyStr: string;
+  coverageAmount: string;
+}) => {
   const t = useI18nContext();
 
   return (
@@ -28,6 +34,7 @@ export const ShieldCoverageAlertMessage = (modalBodyStr: string) => {
         >
           {t('shieldCoverageAlertMessageLearnHowCoverageWorks')}
         </ButtonLink>,
+        coverageAmount,
       ])}
     </Text>
   );

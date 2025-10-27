@@ -5807,11 +5807,14 @@
   "shieldCoverageAlertMessageLearnHowCoverageWorks": {
     "message": "Learn how coverage works"
   },
-  "shieldCoverageAlertMessagePotentialRisks": {
-    "message": "This transaction has potential risks, so it isn't protected by Transaction Shield. $1."
+  "shieldCoverageAlertCovered": {
+    "message": "You're protected up to $2 with Metamask Transaction Shield. $1."
   },
   "shieldCoverageAlertMessageSignatureNotSupported": {
     "message": "This signature isn't supported, so it isn't protected by Transaction Shield. $1."
+  },
+  "shieldCoverageAlertMessageTitleCovered": {
+    "message": "This transaction is covered"
   },
   "shieldCoverageAlertMessageTitle": {
     "message": "This transaction isn't covered"
