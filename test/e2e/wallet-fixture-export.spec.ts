@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { WINDOW_TITLES, withFixtures } from './helpers';
+import StartOnboardingPage from './page-objects/pages/onboarding/start-onboarding-page';
 
 describe('Wallet State', function () {
   it('export onboarding fixture', async function () {
@@ -15,6 +16,8 @@ describe('Wallet State', function () {
           2,
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
+        const startOnboardingPage = new StartOnboardingPage(driver);
+        await startOnboardingPage.checkLoginPageIsLoaded();
 
         // wait for a non-empty persisted state
         await driver.waitUntil(
