@@ -20,6 +20,7 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   type BridgeController,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import { Hex, parseCaipChainId } from '@metamask/utils';
 import {
@@ -706,6 +707,9 @@ const PrepareBridgePage = ({
                 dispatch(setToChainId(networkConfig.chainId));
               },
               header: t('yourNetworks'),
+              shouldDisableNetwork: ({ chainId }) =>
+                isBitcoinChainId(chainId) &&
+                !isCrossChain(chainId, fromChain?.chainId),
             }}
             customTokenListGenerator={toTokenListGenerator}
             amountInFiat={

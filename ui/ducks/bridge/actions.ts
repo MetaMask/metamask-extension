@@ -7,6 +7,7 @@ import {
   getNativeAssetForChainId,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
+  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { type CaipChainId } from '@metamask/utils';
@@ -167,6 +168,10 @@ export const setFromChain = ({
     // Set the src network
     if (isNonEvm) {
       dispatch(setActiveNetworkWithError(networkConfig.chainId));
+      // if srcChain is bitcoin and toChainId is bitcoin, unset it
+      if (isBitcoinChainId(networkConfig.chainId)) {
+        dispatch(setToChainId(null));
+      }
     } else {
       const networkId = isNetworkAdded(networkConfig)
         ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
