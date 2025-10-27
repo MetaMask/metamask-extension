@@ -110,6 +110,12 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
+  ENVIRONMENT_TYPE_POPUP,
+} from '../../shared/constants/app';
+import {
   getConversionRate,
   isNotEIP1559Network,
   isEIP1559Network,
@@ -128,7 +134,6 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import { ENVIRONMENT_TYPE_POPUP } from '../../shared/constants/app';
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -296,6 +301,10 @@ export function getShowShieldEntryModal(state) {
 
 export function getShouldSubmitEventsForShieldEntryModal(state) {
   return state.appState.shieldEntryModal?.shouldSubmitEvents;
+}
+
+export function getLastUsedSubscriptionPaymentDetails(state) {
+  return state.appState.lastUsedSubscriptionPaymentDetails;
 }
 
 /** `metamask` slice selectors */
@@ -1828,7 +1837,20 @@ export function getFeatureFlags(state) {
   return state.metamask.featureFlags;
 }
 
+export function getAppActiveTab(state) {
+  // Safely access appActiveTab, return undefined if not available
+  return state?.metamask?.appActiveTab;
+}
+
 export function getOriginOfCurrentTab(state) {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  // For sidepanel, always use appActiveTab
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
+    const appActiveTab = getAppActiveTab(state);
+    return appActiveTab?.origin;
+  }
+  ///: END:ONLY_INCLUDE_IF
+  // For all other cases, use activeTab
   return state.activeTab.origin;
 }
 
@@ -2578,7 +2600,9 @@ export function getNetworkToAutomaticallySwitchTo(state) {
   // for a given dapp, when there are no pending confimrations
   // This allows the user to be connected on one chain
   // for one dapp, and automatically change for another
+
   const selectedTabOrigin = getOriginOfCurrentTab(state);
+
   if (
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
     getIsUnlocked(state) &&
@@ -3669,7 +3693,8 @@ export function getPermittedEVMAccountsForSelectedTab(state, activeTab) {
 }
 
 export function getAllPermittedAccountsForCurrentTab(state) {
-  return getAllPermittedAccounts(state, getOriginOfCurrentTab(state));
+  const origin = getOriginOfCurrentTab(state);
+  return getAllPermittedAccounts(state, origin);
 }
 
 export function getAllPermittedAccountsForSelectedTab(state, activeTab) {
@@ -3950,6 +3975,7 @@ export function getPermissionsForActiveTab(state) {
   const { subjects = {} } = metamask;
 
   const permissions = subjects[activeTab.origin]?.permissions ?? {};
+
   return Object.keys(permissions).map((parentCapability) => {
     return {
       key: parentCapability,

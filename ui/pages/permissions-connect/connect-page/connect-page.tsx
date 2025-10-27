@@ -548,6 +548,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
             name={t('accounts')}
             tabKey="accounts"
             data-testid="accounts-tab"
+            className="flex-1"
           >
             <Box marginTop={4}>
               <Box
@@ -652,6 +653,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
               !solanaAccountExistsInWallet &&
               selectedAccounts.length === 0
             }
+            className="flex-1"
           >
             <Box marginTop={4}>
               <SiteCell

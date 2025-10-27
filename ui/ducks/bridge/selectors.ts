@@ -82,6 +82,7 @@ import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
   getAllAccountGroups,
   getInternalAccountBySelectedAccountGroupAndCaip,
+  getWalletsWithAccounts,
 } from '../../selectors/multichain-accounts/account-tree';
 import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
 
@@ -435,8 +436,8 @@ export const getFromAccount = createSelector(
 );
 
 export const getToAccounts = createSelector(
-  [getToChain, (state) => state],
-  (toChain, state) => {
+  [getToChain, getWalletsWithAccounts, (state) => state],
+  (toChain, accountsByWallet, state) => {
     if (!toChain) {
       return [];
     }
@@ -448,6 +449,12 @@ export const getToAccounts = createSelector(
     return internalAccounts.map((account) => ({
       ...account,
       isExternal: false,
+      walletName:
+        account.options.entropy?.type === 'mnemonic'
+          ? accountsByWallet[`entropy:${account.options.entropy.id}`]?.metadata
+              .name
+          : accountsByWallet[`keyring:${account.metadata.keyring.type}`]
+              ?.metadata.name,
       displayName:
         getAccountGroupNameByInternalAccount(state, account) ??
         account.metadata.name ??

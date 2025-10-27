@@ -32,6 +32,10 @@ import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEn
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import {
+  isAddEthereumChainType,
+  useAddEthereumChain,
+} from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import OriginThrottleModal from './origin-throttle-modal';
@@ -190,6 +194,7 @@ const Footer = () => {
   const dispatch = useDispatch();
   const { onTransactionConfirm } = useTransactionConfirm();
   const { navigateNext } = useConfirmationNavigation();
+  const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
@@ -214,6 +219,7 @@ const Footer = () => {
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
     currentConfirmation?.type,
   );
+  const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
@@ -225,13 +231,15 @@ const Footer = () => {
       return;
     }
 
-    if (isTransactionConfirmation) {
+    if (isAddEthereumChain) {
+      onAddEthereumChain();
+    } else if (isTransactionConfirmation) {
       onTransactionConfirm();
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
 
-    navigateNext();
+    navigateNext(currentConfirmation.id);
     resetTransactionState();
   }, [
     currentConfirmation,
@@ -240,6 +248,8 @@ const Footer = () => {
     navigateNext,
     onTransactionConfirm,
     resetTransactionState,
+    isAddEthereumChain,
+    onAddEthereumChain,
   ]);
 
   const handleFooterCancel = useCallback(() => {
@@ -249,8 +259,8 @@ const Footer = () => {
     }
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
-    navigateNext();
-  }, [navigateNext, onCancel, shouldThrottleOrigin]);
+    navigateNext(currentConfirmation.id);
+  }, [navigateNext, onCancel, shouldThrottleOrigin, currentConfirmation]);
 
   const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
 

@@ -81,6 +81,9 @@ export const mockMultichainAccountsFeatureFlagStateTwo = (
               featureVersion: '2',
               minimumVersion: '12.19.0',
             },
+            sendRedesign: {
+              enabled: false,
+            },
           },
         ],
       };
