@@ -59,6 +59,7 @@ describe('parse', () => {
 
     const urlStr = 'https://example.com/test?sig=123';
     const result = await parse(new URL(urlStr));
+
     expect(result).toStrictEqual({
       destination: {
         path: 'destination-value',
