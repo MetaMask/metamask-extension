@@ -1532,7 +1532,6 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://monad-mainnet.infura.io/v3/${infuraProjectId}`,
-        failoverUrls: getFailoverUrlsForInfuraNetwork('monad-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
