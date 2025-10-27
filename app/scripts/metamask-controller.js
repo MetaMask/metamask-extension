@@ -868,10 +868,8 @@ export default class MetamaskController extends EventEmitter {
             selectedAddress: address,
           });
 
-          if (!process.env.IN_TEST) {
-            this._addPopularNetworks();
-            this._enableDefaultNetwork();
-          }
+          this._addPopularNetworks();
+          this._enableDefaultNetwork();
         }
       }, this.onboardingController.state),
     );
