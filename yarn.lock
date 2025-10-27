@@ -5579,9 +5579,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@83.1.0-preview-ebf01f52":
-  version: 83.1.0-preview-ebf01f52
-  resolution: "@metamask-previews/assets-controllers@npm:83.1.0-preview-ebf01f52"
+"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@83.1.0-preview-46e7ffff":
+  version: 83.1.0-preview-46e7ffff
+  resolution: "@metamask-previews/assets-controllers@npm:83.1.0-preview-46e7ffff"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5626,7 +5626,7 @@ __metadata:
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^60.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/0f76af7902477c4aab9e1ee9737f0d14093ea3b85f80664af65f91a5be6beaab935b8c345358a4ac800f7e58ad6ffa7682991f07b7ef6307ebe99f9eecefe181
+  checksum: 10/83c8b803ac015a2b44fdefda51df4cbf0b69f32847d90a5bc7b6fc55e199f4fc43a4757b3f2578c29c5383d6df403715171bdfad077cbb74d17ba33821563c69
   languageName: node
   linkType: hard
 
@@ -31836,7 +31836,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^7.0.3"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^7.0.0"
-    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@83.1.0-preview-ebf01f52"
+    "@metamask/assets-controllers": "npm:@metamask-previews/assets-controllers@83.1.0-preview-46e7ffff"
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^8.3.0"
     "@metamask/bitcoin-wallet-snap": "npm:^1.3.0"
