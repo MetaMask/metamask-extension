@@ -298,7 +298,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   appActiveTab: {
     includeInStateLogs: true,
     persist: false,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   browserEnvironment: {
