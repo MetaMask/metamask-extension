@@ -4,7 +4,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as browserRuntime from '../../../../shared/modules/browser-runtime.utils';
-import * as backgroundConnection from '../../../store/background-connection';
 import {
   PLATFORM_FIREFOX,
   PLATFORM_CHROME,
