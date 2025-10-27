@@ -18,6 +18,10 @@ import {
   KeyringControllerGetStateAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import {
+  PaymentType,
+  RecurringInterval,
+} from '@metamask/subscription-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -110,6 +114,11 @@ export type AppStateControllerState = {
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
   showShieldEntryModalOnce: boolean | null;
+  lastUsedSubscriptionPaymentDetails: {
+    paymentMethod: PaymentType;
+    paymentTokenAddress?: string;
+    plan: RecurringInterval;
+  } | null;
 };
 
 const controllerName = 'AppStateController';
@@ -250,6 +259,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
   showShieldEntryModalOnce: null,
+  lastUsedSubscriptionPaymentDetails: null,
   ...getInitialStateOverrides(),
 });
 
@@ -567,6 +577,12 @@ const controllerMetadata = {
     includeInStateLogs: true,
     persist: true,
     anonymous: true,
+    usedInUi: true,
+  },
+  lastUsedSubscriptionPaymentDetails: {
+    includeInStateLogs: false,
+    persist: true,
+    anonymous: false,
     usedInUi: true,
   },
 };
@@ -1441,6 +1457,19 @@ export class AppStateController extends BaseController<
   setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
     this.update((state) => {
       state.showShieldEntryModalOnce = showShieldEntryModalOnce;
+    });
+  }
+
+  setLastUsedSubscriptionPaymentDetails(
+    lastUsedSubscriptionPaymentDetails: {
+      paymentMethod: PaymentType;
+      paymentTokenAddress?: string;
+      plan: RecurringInterval;
+    } | null,
+  ): void {
+    this.update((state) => {
+      state.lastUsedSubscriptionPaymentDetails =
+        lastUsedSubscriptionPaymentDetails;
     });
   }
 }
