@@ -121,7 +121,11 @@ import {
   RecoveryError,
 } from '@metamask/seedless-onboarding-controller';
 
-import { PRODUCT_TYPES } from '@metamask/subscription-controller';
+import {
+  PAYMENT_TYPES,
+  PRODUCT_TYPES,
+  RECURRING_INTERVALS,
+} from '@metamask/subscription-controller';
 import {
   FEATURE_VERSION_2,
   isMultichainAccountsFeatureEnabled,
@@ -827,6 +831,7 @@ export default class MetamaskController extends EventEmitter {
       'TransactionController:transactionStatusUpdated',
       ({ transactionMeta }) => {
         this._onFinishedTransaction(transactionMeta);
+        this._onShieldSubscriptionApprovalTransaction(transactionMeta.id);
       },
     );
 
@@ -8253,6 +8258,131 @@ export default class MetamaskController extends EventEmitter {
       method: NOTIFICATION_NAMES.chainChanged,
       params: await this.getProviderNetworkState({ origin }),
     });
+  }
+
+  /**
+   * Handles the shield subscription approval transaction after confirm
+   *
+   * @param {string} transactionId - The id of the transaction
+   */
+  async _onShieldSubscriptionApprovalTransaction(transactionId) {
+    const transactionMeta = this.txController.getTransactions({
+      searchCriteria: { id: transactionId },
+    })[0];
+
+    if (!transactionMeta) {
+      throw new Error(
+        `Transaction meta not found for transaction id: ${transactionId}`,
+      );
+    }
+
+    if (
+      // NOTE: transaciton meta only has rawTx when transaction is submitted
+      transactionMeta.status !== TransactionStatus.submitted ||
+      transactionMeta.type !== TransactionType.shieldSubscriptionApprove
+    ) {
+      return;
+    }
+    const selectedAddress =
+      this.accountsController.getSelectedAccount().address;
+    if (!selectedAddress) {
+      return;
+    }
+    const { trialedProducts, pricing } = this.subscriptionController.state;
+    const pricingPlans = pricing?.products.find(
+      (product) => product.name === PRODUCT_TYPES.SHIELD,
+    )?.prices;
+    const cryptoPaymentMethod = pricing?.paymentMethods.find(
+      (paymentMethod) => paymentMethod.type === PAYMENT_TYPES.byCrypto,
+    );
+    const selectedTokenPrice = cryptoPaymentMethod?.chains
+      ?.find(
+        (chain) =>
+          chain.chainId.toLowerCase() ===
+          transactionMeta?.chainId.toLowerCase(),
+      )
+      ?.tokens.find(
+        (token) =>
+          token.address.toLowerCase() ===
+          transactionMeta?.txParams?.to?.toLowerCase(),
+      );
+    if (!selectedTokenPrice) {
+      log.error('Selected token price not found', pricing);
+      return;
+    }
+    if (!pricing) {
+      log.error('Subscription pricing not found', transactionMeta);
+      return;
+    }
+    const isTrialed = trialedProducts?.includes(PRODUCT_TYPES.SHIELD);
+
+    const { chainId, txParams, rawTx } = transactionMeta;
+    if (!chainId || !txParams || !rawTx) {
+      log.error('Missing required transaction meta', transactionMeta);
+      return;
+    }
+    const decodeResponse = await decodeTransactionData({
+      transactionData: txParams.data,
+      contractAddress: txParams.to,
+      chainId,
+      provider: this.provider,
+    });
+    if (!decodeResponse) {
+      return;
+    }
+    const decodedApprovalAmount = decodeResponse?.data?.[0]?.params?.find(
+      (param) => param.name === 'value' || param.name === 'amount',
+    )?.value;
+    if (!decodedApprovalAmount) {
+      return;
+    }
+
+    const getProductPriceByApprovalAmount = async () => {
+      const getCryptoApproveTransactionParams = {
+        chainId,
+        paymentTokenAddress: selectedTokenPrice.address,
+        productType: PRODUCT_TYPES.SHIELD,
+      };
+      // Get all intervals from RECURRING_INTERVALS
+      const intervals = Object.values(RECURRING_INTERVALS);
+
+      // Fetch approval amounts for all intervals
+      const approvalAmounts = await Promise.all(
+        intervals.map((interval) =>
+          this.subscriptionController.getCryptoApproveTransactionParams({
+            ...getCryptoApproveTransactionParams,
+            interval,
+          }),
+        ),
+      );
+
+      // Find the matching plan by comparing approval amounts
+      for (let i = 0; i < approvalAmounts.length; i++) {
+        if (approvalAmounts[i]?.approveAmount === decodedApprovalAmount) {
+          return pricingPlans?.find((plan) => plan.interval === intervals[i]);
+        }
+      }
+
+      return undefined;
+    };
+
+    const productPrice = await getProductPriceByApprovalAmount();
+    if (!productPrice) {
+      return;
+    }
+
+    const params = {
+      products: [PRODUCT_TYPES.SHIELD],
+      isTrialRequested: !isTrialed,
+      recurringInterval: productPrice.interval,
+      billingCycles: productPrice.minBillingCycles,
+      chainId,
+      payerAddress: selectedAddress,
+      tokenSymbol: selectedTokenPrice.symbol,
+      rawTransaction: rawTx,
+    };
+    await this.subscriptionController.startSubscriptionWithCrypto(params);
+    await this.subscriptionController.getSubscriptions();
   }
 
   /**
