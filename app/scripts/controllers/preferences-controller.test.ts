@@ -704,6 +704,9 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+        useSidePanelAsDefault: true,
+        ///: END:ONLY_INCLUDE_IF
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -734,6 +737,9 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+        useSidePanelAsDefault: true,
+        ///: END:ONLY_INCLUDE_IF
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -905,6 +911,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "theme": "os",
           "use4ByteResolution": true,
@@ -976,6 +983,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "hyperliquid": {},
@@ -1059,6 +1067,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "hyperliquid": {},
@@ -1142,6 +1151,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "hyperliquid": {},

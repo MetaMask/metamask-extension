@@ -762,16 +762,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    this.userOperationController.hub.on(
-      'user-operation-added',
-      this._onUserOperationAdded.bind(this),
-    );
-
-    this.userOperationController.hub.on(
-      'transaction-updated',
-      this._onUserOperationTransactionUpdated.bind(this),
-    );
-
     // on/off shield controller based on shield subscription
     this.controllerMessenger.subscribe(
       'SubscriptionController:stateChange',
@@ -2728,6 +2718,8 @@ export default class MetamaskController extends EventEmitter {
           appStateController,
         ),
 
+      setAppActiveTab:
+        appStateController.setAppActiveTab.bind(appStateController),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -7927,8 +7919,15 @@ export default class MetamaskController extends EventEmitter {
   set isClientOpen(open) {
     this._isClientOpen = open;
 
-    // Notify Snaps that the client is open or closed.
-    this.controllerMessenger.call('SnapController:setClientActive', open);
+    const { isUnlocked } = this.controllerMessenger.call(
+      'KeyringController:getState',
+    );
+
+    if (isUnlocked) {
+      // Notify Snaps that the client is open or closed when the client is
+      // unlocked.
+      this.controllerMessenger.call('SnapController:setClientActive', open);
+    }
 
     if (open) {
       this.controllerMessenger.call('BackendWebSocketService:connect');
@@ -8544,20 +8543,6 @@ export default class MetamaskController extends EventEmitter {
       {
         matomoEvent: true,
       },
-    );
-  }
-
-  _onUserOperationAdded(userOperationMeta) {
-    this.controllerMessenger.call(
-      'TransactionController:emulateNewTransaction',
-      userOperationMeta.id,
-    );
-  }
-
-  _onUserOperationTransactionUpdated(transactionMeta) {
-    this.controllerMessenger.call(
-      'TransactionController:emulateTransactionUpdate',
-      transactionMeta,
     );
   }
 

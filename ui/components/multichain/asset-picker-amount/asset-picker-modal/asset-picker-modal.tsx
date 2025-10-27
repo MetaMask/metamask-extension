@@ -120,6 +120,7 @@ type AssetPickerModalProps = {
   isTokenListLoading?: boolean;
   autoFocus: boolean;
   isDestinationToken?: boolean;
+  hideSearch?: boolean;
 } & Pick<
   React.ComponentProps<typeof AssetPickerModalTabs>,
   'visibleTabs' | 'defaultActiveTabKey'
@@ -151,6 +152,7 @@ export function AssetPickerModal({
   selectedChainIds,
   autoFocus,
   isDestinationToken = false,
+  hideSearch = false,
   ...tabProps
 }: AssetPickerModalProps) {
   const t = useI18nContext();
@@ -682,15 +684,17 @@ export function AssetPickerModal({
           ) : (
             <AssetPickerModalTabs {...tabProps}>
               <React.Fragment key={TabName.TOKENS}>
-                <Search
-                  searchQuery={searchQuery}
-                  onChange={(value) => {
-                    // Cancel previous asset metadata fetch
-                    abortControllerRef.current?.abort();
-                    setSearchQuery(() => value);
-                  }}
-                  autoFocus={autoFocus}
-                />
+                {!hideSearch && (
+                  <Search
+                    searchQuery={searchQuery}
+                    onChange={(value) => {
+                      // Cancel previous asset metadata fetch
+                      abortControllerRef.current?.abort();
+                      setSearchQuery(() => value);
+                    }}
+                    autoFocus={autoFocus}
+                  />
+                )}
                 <AssetList
                   network={network}
                   handleAssetChange={handleAssetChange}

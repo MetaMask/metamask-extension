@@ -48,7 +48,7 @@ import {
   CachedScanAddressResponse,
   GetAddressSecurityAlertResponse,
   AddAddressSecurityAlertResponse,
-} from '../lib/trust-signals/types';
+} from '../../../shared/lib/trust-signals';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
@@ -58,6 +58,16 @@ import type {
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
+  appActiveTab?: {
+    id: number;
+    title: string;
+    origin: string;
+    protocol: string;
+    url: string;
+    host: string;
+    href: string;
+    favIconUrl?: string;
+  };
   browserEnvironment: Record<string, string>;
   connectedStatusPopoverHasBeenShown: boolean;
   // States used for displaying the changed network toast
@@ -208,6 +218,7 @@ export type AppStateControllerOptions = {
 
 const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   activeQrCodeScanRequest: null,
+  appActiveTab: undefined,
   browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
   defaultHomeActiveTabName: null,
@@ -282,6 +293,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  appActiveTab: {
+    includeInStateLogs: true,
+    persist: false,
+    anonymous: true,
     usedInUi: true,
   },
   browserEnvironment: {
@@ -1215,10 +1232,9 @@ export class AppStateController extends BaseController<
   }
 
   getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse = (
-    address: string,
+    cacheKey: string,
   ): ScanAddressResponse | undefined => {
-    const cached =
-      this.state.addressSecurityAlertResponses[address.toLowerCase()];
+    const cached = this.state.addressSecurityAlertResponses[cacheKey];
 
     if (!cached) {
       return undefined;
@@ -1230,7 +1246,7 @@ export class AppStateController extends BaseController<
     if (now - cached.timestamp > ADDRESS_SECURITY_ALERT_TTL) {
       // Remove expired entry
       this.update((state) => {
-        delete state.addressSecurityAlertResponses[address.toLowerCase()];
+        delete state.addressSecurityAlertResponses[cacheKey];
       });
       return undefined;
     }
@@ -1241,11 +1257,11 @@ export class AppStateController extends BaseController<
   };
 
   addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse = (
-    address: string,
+    cacheKey: string,
     addressSecurityAlertResponse: ScanAddressResponse,
   ): void => {
     this.update((state) => {
-      state.addressSecurityAlertResponses[address.toLowerCase()] = {
+      state.addressSecurityAlertResponses[cacheKey] = {
         ...addressSecurityAlertResponse,
         timestamp: Date.now(),
       };
@@ -1432,6 +1448,27 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
+    });
+  }
+
+  /**
+   * Sets the active tab information
+   *
+   * @param tabData - The active tab data
+   */
+
+  setAppActiveTab(tabData: {
+    id: number;
+    title: string;
+    origin: string;
+    protocol: string;
+    url: string;
+    host: string;
+    href: string;
+    favIconUrl?: string;
+  }): void {
+    this.update((state) => {
+      state.appActiveTab = tabData;
     });
   }
 

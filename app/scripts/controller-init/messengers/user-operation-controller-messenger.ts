@@ -6,6 +6,10 @@ import {
   KeyringControllerPrepareUserOperationAction,
   KeyringControllerSignUserOperationAction,
 } from '@metamask/keyring-controller';
+import type {
+  TransactionControllerEmulateNewTransaction,
+  TransactionControllerEmulateTransactionUpdate,
+} from '@metamask/transaction-controller';
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
@@ -13,10 +17,16 @@ type AllowedActions =
   | KeyringControllerPatchUserOperationAction
   | KeyringControllerPrepareUserOperationAction
   | KeyringControllerSignUserOperationAction
-  | NetworkControllerGetNetworkClientByIdAction;
+  | NetworkControllerGetNetworkClientByIdAction
+  | TransactionControllerEmulateNewTransaction
+  | TransactionControllerEmulateTransactionUpdate;
 
 export type UserOperationControllerMessenger = ReturnType<
   typeof getUserOperationControllerMessenger
+>;
+
+export type UserOperationControllerInitMessenger = ReturnType<
+  typeof getUserOperationControllerInitMessenger
 >;
 
 /**
@@ -49,4 +59,39 @@ export function getUserOperationControllerMessenger(
     ],
   });
   return controllerMessenger;
+}
+
+type InitMessengerActions =
+  | TransactionControllerEmulateNewTransaction
+  | TransactionControllerEmulateTransactionUpdate;
+
+type InitMessengerEvents = never;
+
+/**
+ * Create a messenger restricted to the actions/events required to initialize
+ * the user operation controller.
+ *
+ * @param messenger - The base messenger used to create the restricted
+ * messenger.
+ */
+export function getUserOperationControllerInitMessenger(
+  messenger: RootMessenger<InitMessengerActions, InitMessengerEvents>,
+) {
+  const controllerInitMessenger = new Messenger<
+    'UserOperationControllerInit',
+    InitMessengerActions,
+    InitMessengerEvents,
+    typeof messenger
+  >({
+    namespace: 'UserOperationControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
+      'TransactionController:emulateNewTransaction',
+      'TransactionController:emulateTransactionUpdate',
+    ],
+  });
+  return controllerInitMessenger;
 }
