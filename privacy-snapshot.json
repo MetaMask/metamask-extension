@@ -15,6 +15,8 @@
   "app.metamask.io",
   "arb1.arbitrum.io",
   "arbitrum-mainnet.infura.io",
+  "bsc-mainnet.infura.io",
+  "optimism-mainnet.infura.io",
   "auth-service.dev-api.cx.metamask.io",
   "authentication.api.cx.metamask.io",
   "bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi.ipfs.dweb.link",
