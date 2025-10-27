@@ -1,8 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
-// eslint-disable-next-line import/no-restricted-paths
-import { ResultType } from '../../app/scripts/lib/trust-signals/types';
+import {
+  ResultType,
+  SupportedEVMChain,
+  mapChainIdToSupportedEVMChain,
+} from '../../shared/lib/trust-signals';
 import {
   useTrustSignal,
   useTrustSignals,
@@ -21,6 +24,14 @@ jest.mock('../selectors', () => ({
   getAddressSecurityAlertResponse: jest.fn(),
 }));
 
+jest.mock('../../shared/lib/trust-signals', () => {
+  const actual = jest.requireActual('../../shared/lib/trust-signals');
+  return {
+    ...actual,
+    mapChainIdToSupportedEVMChain: jest.fn(),
+  };
+});
+
 const VALUE_MOCK = '0x1234567890123456789012345678901234567890';
 const VALUE_MOCK_2 = '0x9876543210987654321098765432109876543210';
 const TRUST_LABEL_MOCK = 'Malicious Address';
@@ -31,9 +42,15 @@ describe('useTrustSignals', () => {
   const getAddressSecurityAlertResponseMock = jest.mocked(
     getAddressSecurityAlertResponse,
   );
+  const mapChainIdToSupportedEVMChainMock = jest.mocked(
+    mapChainIdToSupportedEVMChain,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
+    mapChainIdToSupportedEVMChainMock.mockReturnValue(
+      SupportedEVMChain.Ethereum,
+    );
   });
 
   describe('useTrustSignal', () => {
@@ -45,12 +62,10 @@ describe('useTrustSignals', () => {
         label: TRUST_LABEL_MOCK,
       });
 
-      const {
-        result: {
-          all: [result],
-        },
-      } = renderHook(() =>
-        useTrustSignal(VALUE_MOCK, NameType.ETHEREUM_ADDRESS),
+      const result = useTrustSignal(
+        VALUE_MOCK,
+        NameType.ETHEREUM_ADDRESS,
+        '0x1',
       );
 
       expect(result).toStrictEqual({
@@ -74,6 +89,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -91,8 +107,33 @@ describe('useTrustSignals', () => {
 
         expect(getAddressSecurityAlertResponseMock).toHaveBeenCalledWith(
           undefined,
-          VALUE_MOCK,
+          `ethereum:${VALUE_MOCK.toLowerCase()}`,
         );
+      });
+
+      it('returns unknown state when no chain id is provided', () => {
+        getAddressSecurityAlertResponseMock.mockReturnValue({
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ResultType.Malicious,
+          label: TRUST_LABEL_MOCK,
+        });
+
+        const requests: UseTrustSignalRequest[] = [
+          {
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            chainId: '',
+          },
+        ];
+
+        const results = useTrustSignals(requests);
+
+        expect(results).toHaveLength(1);
+        expect(results[0]).toStrictEqual({
+          state: TrustSignalDisplayState.Unknown,
+          label: null,
+        });
       });
 
       it('returns warning state for warning addresses', () => {
@@ -107,6 +148,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -135,6 +177,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -163,6 +206,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -191,6 +235,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -216,6 +261,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -243,6 +289,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -268,6 +315,7 @@ describe('useTrustSignals', () => {
           {
             value: '',
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -287,6 +335,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -315,6 +364,7 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -352,10 +402,12 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
           {
             value: VALUE_MOCK_2,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
         ];
 
@@ -379,12 +431,12 @@ describe('useTrustSignals', () => {
         expect(getAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
           1,
           undefined,
-          VALUE_MOCK,
+          `ethereum:${VALUE_MOCK.toLowerCase()}`,
         );
         expect(getAddressSecurityAlertResponseMock).toHaveBeenNthCalledWith(
           2,
           undefined,
-          VALUE_MOCK_2,
+          `ethereum:${VALUE_MOCK_2.toLowerCase()}`,
         );
       });
 
@@ -413,10 +465,12 @@ describe('useTrustSignals', () => {
           {
             value: VALUE_MOCK,
             type: NameType.ETHEREUM_ADDRESS,
+            chainId: '0x1',
           },
           {
             value: 'test.eth',
             type: NameType.ETHEREUM_ADDRESS, // Using ETHEREUM_ADDRESS as it's the only supported type
+            chainId: '0x1',
           },
         ];
 

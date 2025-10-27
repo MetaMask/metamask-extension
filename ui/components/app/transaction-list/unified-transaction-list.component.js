@@ -366,6 +366,17 @@ export const groupAnyTransactionsByDate = (items) =>
   );
 
 function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
+  if (tokenChainIdOverride) {
+    const isNonEvm =
+      tokenChainIdOverride.startsWith('solana') ||
+      tokenChainIdOverride.startsWith('bip122');
+
+    return {
+      evmChainIds: isNonEvm ? [] : [tokenChainIdOverride],
+      nonEvmChainIds: isNonEvm ? [tokenChainIdOverride] : [],
+    };
+  }
+
   const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
   const filteredUniqueNonEvmChainIds =
     [
@@ -378,23 +389,12 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
       ),
     ] ?? [];
 
-  if (tokenChainIdOverride && !tokenChainIdOverride.startsWith('solana')) {
-    return {
-      evmChainIds: [tokenChainIdOverride],
-      nonEvmChainIds: [],
-    };
-  }
-  if (tokenChainIdOverride && tokenChainIdOverride.startsWith('solana')) {
-    return {
-      evmChainIds: [],
-      nonEvmChainIds: [tokenChainIdOverride],
-    };
-  }
   return {
     evmChainIds: filteredUniqueEVMChainIds,
     nonEvmChainIds: filteredUniqueNonEvmChainIds,
   };
 }
+
 export default function UnifiedTransactionList({
   hideTokenTransactions,
   tokenAddress,
