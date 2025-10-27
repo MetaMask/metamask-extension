@@ -1396,7 +1396,7 @@ export function getFailoverUrlsForInfuraNetwork(
   return [];
 }
 
-export const SUPPORTED_NETWORKS_ACCOUNTS_API_V4 = [
+export const SUPPORTED_NETWORKS_ACCOUNTS_API_V4: Hex[] = [
   CHAIN_IDS.MAINNET,
   CHAIN_IDS.POLYGON,
   CHAIN_IDS.BSC,

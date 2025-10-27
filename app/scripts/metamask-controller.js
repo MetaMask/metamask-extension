@@ -869,9 +869,10 @@ export default class MetamaskController extends EventEmitter {
             selectedAddress: address,
           });
 
-          // add list of popular networks to the state
-          this._addPopularNetworks();
-          this._enableDefaultNetwork();
+          if (!process.env.IN_TEST) {
+            this._addPopularNetworks();
+            this._enableDefaultNetwork();
+          }
         }
       }, this.onboardingController.state),
     );
