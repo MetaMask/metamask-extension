@@ -174,7 +174,7 @@ export default function OnboardingMetametrics() {
         <img
           src="images/user-control.png"
           alt="User control"
-          height={200}
+          height={175}
           width={200}
         />
       </Box>

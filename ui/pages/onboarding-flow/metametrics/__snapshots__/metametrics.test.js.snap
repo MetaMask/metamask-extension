@@ -16,7 +16,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
     >
       <img
         alt="User control"
-        height="200"
+        height="175"
         src="images/user-control.png"
         width="200"
       />
@@ -129,7 +129,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
     >
       <img
         alt="User control"
-        height="200"
+        height="175"
         src="images/user-control.png"
         width="200"
       />
