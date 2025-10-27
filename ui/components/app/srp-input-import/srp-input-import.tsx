@@ -107,8 +107,9 @@ export default function SrpInputImport({
       const targetIndex = newDraftSrp.findIndex((word) => word.id === id);
       newDraftSrp[targetIndex] = { ...newDraftSrp[targetIndex], word: value };
       setDraftSrp(setWordActive(newDraftSrp, id));
+      onClearCallback?.();
     },
-    [draftSrp],
+    [draftSrp, onClearCallback],
   );
 
   const nextWord = useCallback(
