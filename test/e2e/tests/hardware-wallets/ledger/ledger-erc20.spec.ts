@@ -35,7 +35,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          '1208925.8196',
+          '1.21M',
         );
         const testDappPage = new TestDappPage(driver);
         await testDappPage.openTestDappPage();
@@ -96,7 +96,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          '1208925.8196',
+          '1.21M',
         );
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
@@ -164,7 +164,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          '1208925.8196',
+          '1.21M',
         );
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
@@ -223,7 +223,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          '1208925.8196',
+          '1.21M',
         );
         const contractAddress = contractRegistry.getContractAddress(erc20);
         const testDappPage = new TestDappPage(driver);
