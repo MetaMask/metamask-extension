@@ -6217,6 +6217,18 @@
   "siweURI": {
     "message": "URL"
   },
+  "skipAccountSecurity": {
+    "message": "Skip account security?"
+  },
+  "skipAccountSecurityDetails": {
+    "message": "If you lose this Secret Recovery Phrase, you won’t be able to access this wallet."
+  },
+  "skipAccountSecuritySecureNow": {
+    "message": "Secure now"
+  },
+  "skipAccountSecuritySkip": {
+    "message": "Skip"
+  },
   "skipDeepLinkInterstitial": {
     "message": "Don't show interstitial screen when opening deep links"
   },

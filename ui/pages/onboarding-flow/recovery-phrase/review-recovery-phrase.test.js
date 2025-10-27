@@ -1,4 +1,4 @@
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -168,6 +168,32 @@ describe('Review Recovery Phrase Component', () => {
 
     expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE, {
       replace: true,
+    });
+  });
+
+  it('should show skip srp backup popover when not from reminder and not from settings security', async () => {
+    const { getByTestId } = renderWithProvider(
+      <RecoveryPhrase {...props} />,
+      mockStore,
+    );
+
+    const remindLaterButton = getByTestId('recovery-phrase-remind-later');
+
+    fireEvent.click(remindLaterButton);
+
+    expect(getByTestId('skip-srp-backup-modal')).toBeInTheDocument();
+
+    const checkbox = getByTestId('skip-srp-backup-checkbox');
+    expect(checkbox).toBeInTheDocument();
+
+    const confirmSkip = getByTestId('skip-srp-backup-button');
+    expect(confirmSkip).toBeInTheDocument();
+    expect(confirmSkip).toBeDisabled();
+
+    fireEvent.click(checkbox);
+
+    await waitFor(() => {
+      expect(confirmSkip).toBeEnabled();
     });
   });
 });

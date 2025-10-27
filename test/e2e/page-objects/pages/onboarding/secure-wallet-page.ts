@@ -25,6 +25,17 @@ class SecureWalletPage {
   private readonly revealSecretRecoveryPhraseButton =
     '[data-testid="recovery-phrase-reveal"]';
 
+  private readonly skipAccountSecurityMessage = {
+    text: 'Skip account security?',
+    tag: 'h3',
+  };
+
+  private readonly skipSRPBackupCheckbox =
+    '[data-testid="skip-srp-backup-checkbox"]';
+
+  private readonly skipSRPBackupConfirmButton =
+    '[data-testid="skip-srp-backup-button"]';
+
   private readonly secureWalletRecommendedButton =
     '[data-testid="recovery-phrase-remind-later"]';
 
@@ -157,7 +168,11 @@ class SecureWalletPage {
 
   async skipSRPBackup(): Promise<void> {
     console.log('Skip SRP backup on Reveal SRP Onboarding page');
-    await this.driver.clickElement(this.secureWalletRecommendedButton);
+    await this.driver.waitForSelector(this.skipAccountSecurityMessage);
+    await this.driver.clickElement(this.skipSRPBackupCheckbox);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.skipSRPBackupConfirmButton,
+    );
   }
 }
 

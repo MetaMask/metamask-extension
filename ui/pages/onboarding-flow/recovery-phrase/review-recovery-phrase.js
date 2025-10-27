@@ -1,13 +1,11 @@
 import React, { useState, useContext, useCallback, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_CONFIRM_SRP_ROUTE,
-  ONBOARDING_METAMETRICS,
   ONBOARDING_REVEAL_SRP_ROUTE,
-  ONBOARDING_COMPLETION_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
@@ -39,26 +37,21 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getHDEntropyIndex, getFirstTimeFlowType } from '../../../selectors';
+import { getHDEntropyIndex } from '../../../selectors';
 import SRPDetailsModal from '../../../components/app/srp-details-modal';
-import { setSeedPhraseBackedUp } from '../../../store/actions';
-import { TraceName } from '../../../../shared/lib/trace';
-import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import RecoveryPhraseChips from './recovery-phrase-chips';
+import SkipSRPBackup from './skip-srp-backup-popover';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
   const navigate = useNavigate();
   const t = useI18nContext();
   const { search } = useLocation();
-  const dispatch = useDispatch();
-  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
-  const { bufferedEndTrace } = trackEvent;
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
   const [phraseRevealed, setPhraseRevealed] = useState(false);
   const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
+  const [showSkipSRPBackupPopover, setShowSkipSRPBackupPopover] =
+    useState(false);
   const searchParams = new URLSearchParams(search);
   const isFromReminder = searchParams.get('isFromReminder');
   const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
@@ -112,37 +105,16 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
     setShowSrpDetailsModal(true);
   }, [trackEvent]);
 
-  const handleRemindLater = useCallback(async () => {
-    await dispatch(setSeedPhraseBackedUp(false));
-
+  const handleClickNotRecommended = () => {
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.OnboardingWalletSecuritySkipConfirmed,
+      event: MetaMetricsEventName.OnboardingWalletSecuritySkipInitiated,
       properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        hd_entropy_index: hdEntropyIndex,
+        hd_entropy_index: hdEntropyIndex ?? 0,
       },
     });
-    bufferedEndTrace?.({ name: TraceName.OnboardingNewSrpCreateWallet });
-    bufferedEndTrace?.({ name: TraceName.OnboardingJourneyOverall });
-
-    if (
-      getBrowserName() === PLATFORM_FIREFOX ||
-      firstTimeFlowType === FirstTimeFlowType.restore
-    ) {
-      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
-    } else {
-      navigate(ONBOARDING_METAMETRICS, { replace: true });
-    }
-  }, [
-    bufferedEndTrace,
-    dispatch,
-    firstTimeFlowType,
-    hdEntropyIndex,
-    navigate,
-    trackEvent,
-  ]);
+    setShowSkipSRPBackupPopover(true);
+  };
 
   const handleBack = useCallback(() => {
     navigate(
@@ -169,6 +141,14 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
       data-testid="recovery-phrase"
     >
       <Box>
+        {showSkipSRPBackupPopover &&
+          !isFromReminder &&
+          !isFromSettingsSecurity && (
+            <SkipSRPBackup
+              onClose={() => setShowSkipSRPBackupPopover(false)}
+              secureYourWallet={handleContinue}
+            />
+          )}
         {showSrpDetailsModal && (
           <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
         )}
@@ -274,7 +254,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             width={BlockSize.Full}
             variant={ButtonVariant.Link}
             size={ButtonSize.Lg}
-            onClick={handleRemindLater}
+            onClick={handleClickNotRecommended}
             type="button"
             data-testid="recovery-phrase-remind-later"
           >
