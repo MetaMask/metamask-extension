@@ -2,7 +2,7 @@ import { addHexPrefix, toChecksumAddress } from 'ethereumjs-util';
 import BigNumber from 'bignumber.js';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { getErrorMessage } from '../../../shared/modules/error';
-import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
+import { GAS_LIMITS } from '../../../shared/constants/gas';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
 import {
