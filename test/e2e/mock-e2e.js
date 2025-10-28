@@ -927,7 +927,66 @@ async function setupMocking(
     .thenCallback(() => {
       return {
         statusCode: 200,
-        json: [],
+        json: [
+          {
+            txid: 'af11e7ef215bf37d76a86e30b4e211d70cd4f6ee93fc1e446484855f0e579a3b',
+            version: 2,
+            locktime: 918319,
+            vin: [
+              {
+                txid: 'dff3d5c9ea3b9499ad92884c018dce048c36dd4810e6e09570f96ce3270934a5',
+                vout: 1,
+                prevout: {
+                  scriptpubkey: '0014f62a91ebc18bb83b451e94a94bca45f4bcc67d29',
+                  scriptpubkey_asm:
+                    'OP_0 OP_PUSHBYTES_20 f62a91ebc18bb83b451e94a94bca45f4bcc67d29',
+                  scriptpubkey_type: 'v0_p2wpkh',
+                  scriptpubkey_address:
+                    'bc1q7c4fr67p3wurk3g7jj55hjj97j7vvlffgrkt2g',
+                  value: 2990,
+                },
+                scriptsig: '',
+                scriptsig_asm: '',
+                witness: [
+                  '304402201d9114b9c4f97ef090537a73d514fae87049f6bc065aaee1613bdabe40b8e95c022021cb2c9ea3646c8ee0aefa15a2cc723a9faff15df06ecf25b88de65c8510a64e01',
+                  '032c5794a4ed53df227fef0ae4900ce9ce4d41e9890644f8772b8eb505d28d39b9',
+                ],
+                is_coinbase: false,
+                sequence: 4294967293,
+              },
+            ],
+            vout: [
+              {
+                scriptpubkey: '0014df4d63b5ef2f042e7171c3a21614cb51b0b8cddb',
+                scriptpubkey_asm:
+                  'OP_0 OP_PUSHBYTES_20 df4d63b5ef2f042e7171c3a21614cb51b0b8cddb',
+                scriptpubkey_type: 'v0_p2wpkh',
+                scriptpubkey_address:
+                  'bc1qmaxk8d009uzzuut3cw3pv9xt2xct3nwmc5x496',
+                value: 1000,
+              },
+              {
+                scriptpubkey: '0014c5b36db4d09d7dce99680c24da7db8e51e38ef4c',
+                scriptpubkey_asm:
+                  'OP_0 OP_PUSHBYTES_20 c5b36db4d09d7dce99680c24da7db8e51e38ef4c',
+                scriptpubkey_type: 'v0_p2wpkh',
+                scriptpubkey_address:
+                  'bc1qckekmdxsn47uaxtgpsjd5ldcu50r3m6vxfkvuc',
+                value: 1709,
+              },
+            ],
+            size: 222,
+            weight: 561,
+            fee: 281,
+            status: {
+              confirmed: true,
+              block_height: 918321,
+              block_hash:
+                '00000000000000000000895c32ebe12eb9e13fc803fba5ba1a3d87c0f4c6e6ce',
+              block_time: 1760020791,
+            },
+          },
+        ],
       };
     });
 
