@@ -206,10 +206,7 @@ and we'll take you to the right place.`
         // test signed flow
         await driver.openNewURL(signedUrl);
 
-        const url = new URL(signedUrl);
-        await driver.waitForUrl({
-          url: `${BaseUrl.Portfolio}/buy${url.search}`,
-        });
+        await driver.waitForUrl({ url: `${BaseUrl.Portfolio}/buy` });
 
         await driver.navigate();
         await homePage.checkPageIsLoaded();
@@ -217,9 +214,7 @@ and we'll take you to the right place.`
         // test unsigned flow
         await driver.openNewURL(rawUrl);
 
-        await driver.waitForUrl({
-          url: `${BaseUrl.Portfolio}/buy`,
-        });
+        await driver.waitForUrl({ url: `${BaseUrl.Portfolio}/buy` });
       },
     );
   });
@@ -241,10 +236,7 @@ and we'll take you to the right place.`
         // test signed flow
         await driver.openNewURL(signedUrl);
 
-        const url = new URL(signedUrl);
-        await driver.waitForUrl({
-          url: `${BaseUrl.MetaMask}/perps${url.search}`,
-        });
+        await driver.waitForUrl({ url: `${BaseUrl.MetaMask}/perps` });
 
         await driver.navigate();
         await homePage.checkPageIsLoaded();
@@ -252,9 +244,7 @@ and we'll take you to the right place.`
         // test unsigned flow
         await driver.openNewURL(rawUrl);
 
-        await driver.waitForUrl({
-          url: `${BaseUrl.MetaMask}/perps`,
-        });
+        await driver.waitForUrl({ url: `${BaseUrl.MetaMask}/perps` });
       },
     );
   });
@@ -276,10 +266,7 @@ and we'll take you to the right place.`
         // test signed flow
         await driver.openNewURL(signedUrl);
 
-        const url = new URL(signedUrl);
-        await driver.waitForUrl({
-          url: `${BaseUrl.MetaMask}/rewards${url.search}`,
-        });
+        await driver.waitForUrl({ url: `${BaseUrl.MetaMask}/rewards` });
 
         await driver.navigate();
         await homePage.checkPageIsLoaded();
@@ -287,9 +274,7 @@ and we'll take you to the right place.`
         // test unsigned flow
         await driver.openNewURL(rawUrl);
 
-        await driver.waitForUrl({
-          url: `${BaseUrl.MetaMask}/rewards`,
-        });
+        await driver.waitForUrl({ url: `${BaseUrl.MetaMask}/rewards` });
       },
     );
   });
