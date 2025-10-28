@@ -79,7 +79,6 @@ import {
   selectNetworkConfigurationByChainId,
 } from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
-import { TRIAL_DAYS } from '../../../shared/constants/subscriptions';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -285,7 +284,9 @@ const ShieldPlan = () => {
   const planDetails = useMemo(() => {
     const details = [];
     if (!isTrialed) {
-      details.push(t('shieldPlanDetails1', [TRIAL_DAYS]));
+      details.push(
+        t('shieldPlanDetails1', [selectedProductPrice?.trialPeriodDays]),
+      );
     }
     details.push(
       selectedPaymentMethod === PAYMENT_TYPES.byCrypto
@@ -294,7 +295,7 @@ const ShieldPlan = () => {
     );
     details.push(t('shieldPlanDetails3'));
     return details;
-  }, [t, selectedPaymentMethod, isTrialed]);
+  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice]);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 

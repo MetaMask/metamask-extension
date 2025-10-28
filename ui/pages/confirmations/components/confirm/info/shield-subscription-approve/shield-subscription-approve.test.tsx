@@ -4,7 +4,6 @@ import { ProductPrice } from '@metamask/subscription-controller';
 import { getMockApproveConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { tEn } from '../../../../../../../test/lib/i18n-helpers';
-import { TRIAL_DAYS } from '../../../../../../../shared/constants/subscriptions';
 import ShieldSubscriptionApproveInfo from './shield-subscription-approve';
 
 jest.mock('../hooks/useDecodedTransactionData', () => ({
@@ -55,7 +54,7 @@ jest.mock('../../../../../../hooks/subscription/useSubscriptionPricing', () => {
     unitAmount: 8000000,
     unitDecimals: 6,
     currency: 'usd',
-    trialPeriodDays: 7,
+    trialPeriodDays: 14,
   };
   return {
     useShieldSubscriptionPricingFromTokenApproval: jest.fn(() => ({
@@ -76,7 +75,7 @@ describe('ShieldSubscriptionApproveInfo', () => {
 
     expect(getByText(tEn('transactionShield') as string)).toBeInTheDocument();
     expect(getByText('$8/month (Monthly)' as string)).toBeInTheDocument();
-    expect(getByText(`${TRIAL_DAYS} days free trial`)).toBeInTheDocument();
+    expect(getByText('14 days free trial')).toBeInTheDocument();
     expect(getByText(tEn('estimatedChanges') as string)).toBeInTheDocument();
     expect(getByText(tEn('youApprove') as string)).toBeInTheDocument();
     expect(getByText('96')).toBeInTheDocument();
