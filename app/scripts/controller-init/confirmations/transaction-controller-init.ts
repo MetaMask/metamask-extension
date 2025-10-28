@@ -382,11 +382,7 @@ export async function publishHook({
     transactionMeta.chainId,
   );
 
-  if (
-    !isSmartTransaction ||
-    !sendBundleSupport ||
-    transactionMeta.isGasFeeSponsored
-  ) {
+  if (!isSmartTransaction || !sendBundleSupport) {
     const hook = new Delegation7702PublishHook({
       isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
         transactionController,

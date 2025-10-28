@@ -63,9 +63,10 @@ export const SubscriptionDetails = ({
         {showTrial && (
           <Box
             data-testid="free-seven-day-trial"
+            className="rounded-lg"
             alignItems={BoxAlignItems.Center}
-            paddingLeft={1}
-            paddingRight={1}
+            paddingLeft={2}
+            paddingRight={2}
             style={{
               color: 'var(--color-primary-default)',
               backgroundColor: 'var(--color-primary-muted-hover)',

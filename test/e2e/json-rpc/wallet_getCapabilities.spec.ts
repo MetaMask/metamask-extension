@@ -10,7 +10,7 @@ describe('wallet_getCapabilities', function () {
   it('should indicate auxiliaryFunds support for chains with bridge support', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDappWithChains(['0x1'])
           .build(),
@@ -41,7 +41,7 @@ describe('wallet_getCapabilities', function () {
   it('should not include auxiliaryFunds for chains without bridge support', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
           .build(),

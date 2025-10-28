@@ -9,7 +9,7 @@ describe('eth_subscribe', function () {
   it('executes a subscription event', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
