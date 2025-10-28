@@ -15,53 +15,57 @@ describe('Bridge tests', function (this: Suite) {
         // Add Arbitrum
         await searchAndSwitchToNetworkFromGlobalMenuFlow(driver, 'Arbitrum');
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '1',
             tokenFrom: 'ETH',
             tokenTo: 'ETH',
             fromChain: 'Linea',
             toChain: 'Ethereum',
           },
-          1,
-        );
+          expectedTransactionsCount: 1,
+          expectedDestAmount: '0.991',
+        });
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '1',
             tokenFrom: 'ETH',
             tokenTo: 'ETH',
             fromChain: 'Linea',
             toChain: 'Arbitrum',
           },
-          2,
-        );
+          expectedTransactionsCount: 2,
+          expectedDestAmount: '0.991',
+        });
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '10',
             tokenFrom: 'DAI',
             tokenTo: 'DAI',
             fromChain: 'Linea',
             toChain: 'Arbitrum',
           },
-          4,
-        );
+          expectedTransactionsCount: 4,
+          expectedDestAmount: '9.905',
+        });
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '10',
             tokenFrom: 'DAI',
             tokenTo: 'DAI',
             fromChain: 'Linea',
             toChain: 'Ethereum',
           },
-          6,
-        );
+          expectedTransactionsCount: 6,
+          expectedDestAmount: '9.67',
+        });
       },
     );
   });

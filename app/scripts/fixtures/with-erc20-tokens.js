@@ -506,8 +506,8 @@ export const FIXTURES_ERC20_TOKENS = {
           decimals: 18,
         },
         {
-          address: '0x3894085ef7ff0f0aedf52e2a2704928d1ec074f1',
-          symbol: 'USDCN',
+          address: '0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392',
+          symbol: 'USDC',
           decimals: 6,
         },
         {
