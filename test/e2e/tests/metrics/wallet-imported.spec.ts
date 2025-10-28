@@ -58,6 +58,7 @@ describe('Wallet Created Events - Imported Account', function () {
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
 
+        await driver.delay(1000)
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
