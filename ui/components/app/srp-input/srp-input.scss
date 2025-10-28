@@ -80,4 +80,10 @@
     margin-top: 4px;
     grid-area: too-many-words-error;
   }
+
+  &__continue-button {
+    @include design-system.screen-sm-max {
+      margin-bottom: 20px;
+    }
+  }
 }

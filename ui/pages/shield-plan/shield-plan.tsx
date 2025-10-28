@@ -79,6 +79,7 @@ import {
   selectNetworkConfigurationByChainId,
 } from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -275,15 +276,24 @@ const ShieldPlan = () => {
   );
   const selectedPlanData = plans.find((plan) => plan.id === selectedPlan);
 
-  const planDetails = [
-    t('shieldPlanDetails1'),
-    t(
+  const planDetails = useMemo(() => {
+    const details = [];
+    if (!isTrialed) {
+      details.push(
+        t('shieldPlanDetails1', [
+          selectedProductPrice?.trialPeriodDays ??
+            SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
+        ]),
+      );
+    }
+    details.push(
       selectedPaymentMethod === PAYMENT_TYPES.byCrypto
-        ? 'shieldPlanDetails2'
-        : 'shieldPlanDetails2Card',
-    ),
-    t('shieldPlanDetails3'),
-  ];
+        ? t('shieldPlanDetails2')
+        : t('shieldPlanDetails2Card'),
+    );
+    details.push(t('shieldPlanDetails3'));
+    return details;
+  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice]);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -424,7 +434,7 @@ const ShieldPlan = () => {
                       ? selectedToken?.symbol || ''
                       : t('shieldPlanCard')}
                   </Text>
-                  <Icon size={IconSize.Md} name={IconName.ArrowRight} />
+                  <Icon size={IconSize.Md} name={IconName.ArrowDown} />
                 </Box>
               </Box>
             </Box>
