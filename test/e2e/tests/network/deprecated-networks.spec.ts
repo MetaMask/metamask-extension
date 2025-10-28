@@ -14,7 +14,7 @@ describe('Deprecated networks', function (this: Suite) {
   it('User should not find goerli network when clicking on the network selector', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
@@ -80,7 +80,7 @@ describe('Deprecated networks', function (this: Suite) {
 
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
@@ -150,7 +150,7 @@ describe('Deprecated networks', function (this: Suite) {
 
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
@@ -215,7 +215,7 @@ describe('Deprecated networks', function (this: Suite) {
 
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })

@@ -4424,7 +4424,7 @@
     "message": "We’d like to request these permissions. You can opt out or delete your usage data at any time."
   },
   "onboardingMetametricsTitle": {
-    "message": "Help us improve MetaMask"
+    "message": "Help improve MetaMask"
   },
   "onboardingOptionIcon": {
     "message": "$1 icon",
@@ -4917,6 +4917,9 @@
   },
   "popularNetworks": {
     "message": "Popular networks"
+  },
+  "popupView": {
+    "message": "Popup view"
   },
   "preparingSwap": {
     "message": "Preparing swap..."
@@ -6104,6 +6107,9 @@
   },
   "showTestnetNetworksDescription": {
     "message": "Select this to show test networks in network list"
+  },
+  "sidePanelView": {
+    "message": "Side panel view"
   },
   "sign": {
     "message": "Sign"
