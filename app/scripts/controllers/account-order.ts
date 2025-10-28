@@ -1,7 +1,7 @@
-import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import {
   BaseController,
   ControllerGetStateAction,
+  ControllerStateChangeEvent,
   StateMetadata,
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
