@@ -7,7 +7,6 @@ import {
   getNativeAssetForChainId,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
-  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { type InternalAccount } from '@metamask/keyring-internal-api';
 import { type CaipChainId } from '@metamask/utils';

@@ -282,8 +282,7 @@ export const getFromChain = createDeepEqualSelector(
 export const getToChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   getBridgeFeatureFlags,
-  getFromChain,
-  (allBridgeableNetworks, bridgeFeatureFlags, fromChain) => {
+  (allBridgeableNetworks, bridgeFeatureFlags) => {
     const availableChains = uniqBy(
       [...allBridgeableNetworks, ...FEATURED_RPCS],
       'chainId',
