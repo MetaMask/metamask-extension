@@ -72,7 +72,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockActiveNetworks,
         title: this.test?.fullTitle(),
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }: { driver: Driver; mockServer?: Mockttp }) => {
         await loginWithBalanceValidation(driver);
