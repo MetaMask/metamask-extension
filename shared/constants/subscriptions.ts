@@ -11,3 +11,5 @@ export const PausedSubscriptionStatuses: string[] = [
   SUBSCRIPTION_STATUSES.pastDue,
   SUBSCRIPTION_STATUSES.unpaid,
 ];
+
+export const TRIAL_DAYS = 14;

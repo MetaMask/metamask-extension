@@ -2600,8 +2600,8 @@
   "form": {
     "message": "foirm"
   },
-  "freeSevenDayTrial": {
-    "message": "Triail 7 lá saor in aisce"
+  "freeTrailDays": {
+    "message": "$1 days free trial"
   },
   "from": {
     "message": "Ó"
@@ -5738,7 +5738,7 @@
     "message": "Sonraí an phlean"
   },
   "shieldPlanDetails1": {
-    "message": "Gan aon táille anois, bain triail as saor in aisce ar feadh 14 lá"
+    "message": "Gan aon táille anois, bain triail as saor in aisce ar feadh $1 lá"
   },
   "shieldPlanDetails2": {
     "message": "Réamhcheadú ballraíochta (1 bhliain réamhshocraithe), agus táillí á ngearradh go míosúil amháin"

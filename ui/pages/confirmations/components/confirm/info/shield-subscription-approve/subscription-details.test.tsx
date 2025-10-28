@@ -7,6 +7,7 @@ import {
 import { getMockConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { tEn } from '../../../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { TRIAL_DAYS } from '../../../../../../../shared/constants/subscriptions';
 import { SubscriptionDetails } from './subscription-details';
 
 const mockProductPrice: ProductPrice = {
@@ -29,7 +30,7 @@ describe('SubscriptionDetails', () => {
 
     expect(getByText(tEn('transactionShield') as string)).toBeInTheDocument();
     expect(getByText('$80/year (Annual)' as string)).toBeInTheDocument();
-    expect(getByText(tEn('freeSevenDayTrial') as string)).toBeInTheDocument();
+    expect(getByText(`${TRIAL_DAYS} days free trial`)).toBeInTheDocument();
   });
 
   it('renders monthly plan without trial correctly', () => {
