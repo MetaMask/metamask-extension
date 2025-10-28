@@ -107,16 +107,20 @@ export const useCarouselManagement = ({
     remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
   const [downloadEligible, setDownloadEligible] = useState<boolean>(false);
+  const [downloadEligibilityReady, setDownloadEligibilityReady] =
+    useState<boolean>(false);
 
   useEffect(() => {
-    if (
-      !contentfulEnabled ||
-      !useExternalServices ||
-      !showDownloadMobileAppSlide
-    ) {
+    const eligibilityNeeded =
+      contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
+
+    if (!eligibilityNeeded) {
       setDownloadEligible(false);
-      return;
+      setDownloadEligibilityReady(true);
+      return () => undefined;
     }
+
+    setDownloadEligibilityReady(false);
 
     let cancelled = false;
 
@@ -128,11 +132,13 @@ export const useCarouselManagement = ({
             lineage?.lineage?.some((l) => l.agent === Platform.MOBILE),
           );
           setDownloadEligible(!onMobile);
+          setDownloadEligibilityReady(true);
         }
       } catch (error) {
         if (!cancelled) {
           log.warn('Failed to fetch user profile lineage:', error);
           setDownloadEligible(false);
+          setDownloadEligibilityReady(true);
         }
       }
     })();
@@ -148,6 +154,11 @@ export const useCarouselManagement = ({
   ]);
 
   useEffect(() => {
+    // Wait until eligibility is resolved (or not required) to avoid double fetch
+    if (!downloadEligibilityReady) {
+      return;
+    }
+
     // If carousel is disabled, clear the slides
     if (!enabled) {
       const empty: CarouselSlide[] = [];
@@ -244,7 +255,7 @@ export const useCarouselManagement = ({
     testDate,
     inTest,
     slides,
-    downloadEligible,
+    downloadEligibilityReady,
   ]);
 
   return { slides };
