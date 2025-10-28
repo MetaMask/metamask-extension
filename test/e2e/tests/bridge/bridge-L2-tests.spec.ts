@@ -1,6 +1,5 @@
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
-import { searchAndSwitchToNetworkFromGlobalMenuFlow } from '../../page-objects/flows/network.flow';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
 import { bridgeTransaction, getBridgeL2Fixtures } from './bridge-test-utils';
 
