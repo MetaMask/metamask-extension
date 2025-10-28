@@ -193,15 +193,15 @@ describe('Network Manager', function (this: Suite) {
           method: 'wallet_addEthereumChain',
           params: [
             {
-              chainId: '0x89', // Polygon
-              chainName: 'Polygon',
+              chainId: '0xa86a', // avalanche mainnet
+              chainName: 'Avalanche',
               nativeCurrency: {
-                name: 'MATIC',
-                symbol: 'MATIC',
+                name: 'AVAX',
+                symbol: 'AVAX',
                 decimals: 18,
               },
               rpcUrls: ['http://localhost:8546'],
-              blockExplorerUrls: ['https://polygonscan.com'],
+              blockExplorerUrls: ['https://snowtrace.io'],
             },
           ],
         });
@@ -213,7 +213,7 @@ describe('Network Manager', function (this: Suite) {
         // Approve the network addition
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.checkPageIsLoaded('Polygon');
+        await addNetworkConfirmation.checkPageIsLoaded('Avalanche');
         await addNetworkConfirmation.approveAddNetwork();
 
         // Switch back to MetaMask to verify preservation
@@ -229,7 +229,7 @@ describe('Network Manager', function (this: Suite) {
         await networkManager.checkTabIsSelected('Popular');
 
         // New network is selected (we do not keep both networks on, as UI does only supports single or all popular networks)
-        await networkManager.checkNetworkIsSelected(NetworkId.POLYGON);
+        await networkManager.checkNetworkIsSelected(NetworkId.AVALANCHE);
       },
     );
   });

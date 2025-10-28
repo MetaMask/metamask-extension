@@ -22,8 +22,8 @@ import {
   importSRPOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
 
-const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,000.00';
 describe('MultiRpc:', function (this: Suite) {
   it('should migrate to multi rpc', async function () {
     async function mockRPCURLAndChainId(mockServer: Mockttp) {
