@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { userEvent } from '@testing-library/user-event';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
-import SrpInputForm from './index';
+import SrpInputForm from '.';
 
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';

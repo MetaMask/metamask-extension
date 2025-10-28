@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import {
   Box,
   Text,
@@ -17,7 +17,6 @@ import {
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import SrpInputImport from '../../components/app/srp-input-import';
-import { useCallback, useContext, useState } from 'react';
 import SRPDetailsModal from '../../components/app/srp-details-modal';
 import {
   MetaMetricsEventCategory,
@@ -25,11 +24,11 @@ import {
 } from '../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 
-interface SrpInputFormProps {
+type SrpInputFormProps = {
   error?: string;
   setSecretRecoveryPhrase: (secretRecoveryPhrase: string) => void;
   onClearCallback: () => void;
-}
+};
 
 const SrpInputForm = ({
   error,

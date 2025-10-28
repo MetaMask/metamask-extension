@@ -13,6 +13,7 @@ import {
   IconName,
   Box,
   Button,
+  Text,
 } from '../../../components/component-library';
 import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
@@ -29,6 +30,7 @@ import {
   Display,
   JustifyContent,
   TextAlign,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 export const ImportSrp = () => {
@@ -97,6 +99,9 @@ export const ImportSrp = () => {
         {t('importSecretRecoveryPhrase')}
       </Header>
       {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
+      <Box textAlign={TextAlign.Left} marginBottom={2}>
+        <Text variant={TextVariant.headingLg}>{t('importAWallet')}</Text>
+      </Box>
       <SrpInputForm
         error={srpError}
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
