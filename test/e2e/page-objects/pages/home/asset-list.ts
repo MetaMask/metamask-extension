@@ -52,6 +52,10 @@ class AssetListPage {
   private readonly importTokensNextButton =
     '[data-testid="import-tokens-button-next"]';
 
+  private readonly multichainTokenListItem = {
+    testId: 'multichain-token-list-item',
+  };
+
   private readonly networksToggle = '[data-testid="sort-by-networks"]';
 
   private readonly priceChart = '[data-testid="asset-price-chart"]';
@@ -258,6 +262,7 @@ class AssetListPage {
     symbol?: string,
   ): Promise<void> {
     console.log(`Creating custom token ${symbol} on homepage`);
+    await this.driver.waitForSelector(this.multichainTokenListItem);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
@@ -290,6 +295,7 @@ class AssetListPage {
 
   async importTokenBySearch(tokenName: string) {
     console.log(`Import token ${tokenName} on homepage by search`);
+    await this.driver.waitForSelector(this.multichainTokenListItem);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
@@ -306,6 +312,7 @@ class AssetListPage {
     console.log(
       `Importing tokens ${tokenNames.join(', ')} on homepage by search`,
     );
+    await this.driver.waitForSelector(this.multichainTokenListItem);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
