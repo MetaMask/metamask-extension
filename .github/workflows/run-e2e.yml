@@ -139,21 +139,6 @@ jobs:
           name: export-onboarding-fixture
           path: .
 
-      - name: Debug - List downloaded artifact contents
-        if: steps.download-onboarding-fixture.outcome == 'success'
-        run: |
-          echo "=== Listing current directory ==="
-          ls -la
-          echo "=== Checking for test-artifacts directory ==="
-          if [ -d "test-artifacts" ]; then
-            echo "test-artifacts directory exists"
-            find test-artifacts -type f
-          else
-            echo "test-artifacts directory NOT found"
-          fi
-          echo "=== Full workspace tree (test-artifacts and export-onboarding-fixture) ==="
-          find . -name "onboarding-fixture.json" 2>/dev/null || echo "No onboarding-fixture.json found"
-
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1

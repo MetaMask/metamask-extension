@@ -186,6 +186,17 @@ Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.
 For example, to run the `account-details` tests using Chrome, with debug logging and with the browser set to remain open upon failure, you would use:
 `yarn test:e2e:single test/e2e/tests/account-menu/account-details.spec.js --browser=chrome --leave-running`
 
+#### Onboarding fixture setup
+
+The e2e tests require a wallet state fixture for running. To set up your local fixture:
+
+1. Copy the sample: `cp test/e2e/fixtures/.onboarding-fixture-sample.json test/e2e/fixtures/.onboarding-fixture.json`
+2. Update with your wallet state by either:
+   - Downloading from a PR comment (look for "🧪 e2e Wallet State Fixture File")
+   - Exporting your own: `yarn dist && yarn test:e2e:single test/e2e/wallet-fixture-export.spec.ts --browser chrome` then copy from `test-artifacts/onboarding-fixture/onboarding-fixture.json`
+
+Note: In CI, the fixture is automatically generated and shared across test jobs.
+
 #### Running e2e tests against specific feature flag
 
 While developing new features, we often use feature flags. As we prepare to make these features generally available (GA), we remove the feature flags. Existing feature flags are listed in the `.metamaskrc.dist` file. To execute e2e tests with a particular feature flag enabled, it's necessary to first generate a test build with that feature flag activated. There are two ways to achieve this:
