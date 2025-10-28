@@ -286,7 +286,7 @@ const TransactionShield = () => {
           <Skeleton width={24} height={24} borderRadius={BorderRadius.full} />
         ) : (
           <Icon
-            name={IconName.ArrowDown}
+            name={IconName.ArrowRight}
             size={IconSize.Lg}
             color={IconColor.iconAlternative}
           />
