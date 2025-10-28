@@ -25,7 +25,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
   it('confirms transaction if successful', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerSmartTransactionsOptedOut()
@@ -81,7 +81,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
   it('fails transaction if error', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withNetworkControllerOnMainnet()

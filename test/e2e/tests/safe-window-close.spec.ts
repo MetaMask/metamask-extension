@@ -9,7 +9,7 @@ describe('Notification window closing', function () {
   it('closes the window when running in a popup', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.title,
       },
