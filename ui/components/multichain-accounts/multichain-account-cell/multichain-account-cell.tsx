@@ -17,7 +17,6 @@ import { ConnectedStatus } from '../../multichain/connected-status/connected-sta
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
-  STATUS_NOT_CONNECTED,
 } from '../../../helpers/constants/connected-sites';
 
 export type MultichainAccountCellProps = {
@@ -33,8 +32,7 @@ export type MultichainAccountCellProps = {
   disableHoverEffect?: boolean;
   connectionStatus?:
     | typeof STATUS_CONNECTED
-    | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT
-    | typeof STATUS_NOT_CONNECTED;
+    | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
   privacyMode?: boolean;
 };
 

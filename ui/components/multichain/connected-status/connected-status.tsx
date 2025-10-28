@@ -40,8 +40,9 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
   const t = useI18nContext();
 
   const isState2Enabled = useSelector(getIsMultichainAccountsState2Enabled);
+  const addressArray = useMemo(() => [address], [address]);
   const [accountGroup] = useSelector((state: MultichainAccountsState) =>
-    getAccountGroupsByAddress(state, [address]),
+    getAccountGroupsByAddress(state, addressArray),
   );
 
   // Get the permitted accounts and the internal account for the address

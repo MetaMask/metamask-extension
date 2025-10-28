@@ -775,29 +775,6 @@ describe('MultichainAccountList', () => {
       ).toBe(0);
     });
 
-    it('shows not connected status when showConnectionStatus is true and no accounts are connected', () => {
-      mockGetAccountGroupsByAddress.mockReturnValue([]);
-      mockIsInternalAccountInPermittedAccountIds.mockReturnValue(false);
-
-      renderComponent({
-        showConnectionStatus: true,
-        selectedAccountGroups: [walletOneGroupId],
-      });
-
-      expect(
-        screen.getByTestId(`multichain-account-cell-${walletOneGroupId}`),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByTestId(`multichain-account-cell-${walletTwoGroupId}`),
-      ).toBeInTheDocument();
-
-      expect(mockGetAccountGroupsByAddress).toHaveBeenCalled();
-
-      // BadgeStatus should be rendered for both accounts when showConnectionStatus is true
-      const badgeStatuses = screen.getAllByTestId('multichain-badge-status');
-      expect(badgeStatuses).toHaveLength(2);
-    });
-
     it('shows connected status for selected connected account', () => {
       mockGetAccountGroupsByAddress.mockReturnValue([
         {

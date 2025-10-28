@@ -6,7 +6,6 @@ import mockDefaultState from '../../../../test/data/mock-state.json';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
-  STATUS_NOT_CONNECTED,
 } from '../../../helpers/constants/connected-sites';
 import {
   MultichainAccountCell,
@@ -254,32 +253,6 @@ describe('MultichainAccountCell', () => {
       expect(connectedBadge).toBeInTheDocument();
 
       // Should show tooltip with "Not connected" text (since current account is not the active one)
-      const tooltipElement = document.querySelector(
-        '[data-original-title="Not connected"]',
-      );
-      expect(tooltipElement).toBeInTheDocument();
-    });
-
-    it('shows connected status badge when connectionStatus is STATUS_NOT_CONNECTED', () => {
-      renderWithProvider(
-        <MultichainAccountCell
-          {...defaultProps}
-          connectionStatus={STATUS_NOT_CONNECTED}
-        />,
-        store,
-      );
-
-      // Should show the badge status component with connection indicator
-      const badgeStatus = screen.getByTestId('multichain-badge-status');
-      expect(badgeStatus).toBeInTheDocument();
-
-      // Should show the connection status badge with alternative background for not connected
-      const connectedBadge = document.querySelector(
-        '.multichain-badge-status__badge--bg-icon-alternative, .mm-box--background-color-icon-alternative',
-      );
-      expect(connectedBadge).toBeInTheDocument();
-
-      // Should show tooltip with "Not connected" text
       const tooltipElement = document.querySelector(
         '[data-original-title="Not connected"]',
       );

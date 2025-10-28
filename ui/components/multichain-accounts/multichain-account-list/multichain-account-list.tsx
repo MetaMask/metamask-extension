@@ -64,7 +64,6 @@ import { getAccountGroupsByAddress } from '../../../selectors/multichain-account
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
-  STATUS_NOT_CONNECTED,
 } from '../../../helpers/constants/connected-sites';
 import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { useFormatters } from '../../../hooks/useFormatters';
@@ -236,7 +235,6 @@ export const MultichainAccountList = ({
       );
 
       let connectedStatus:
-        | typeof STATUS_NOT_CONNECTED
         | typeof STATUS_CONNECTED
         | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT
         | undefined;
@@ -247,8 +245,6 @@ export const MultichainAccountList = ({
           } else {
             connectedStatus = STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;
           }
-        } else {
-          connectedStatus = STATUS_NOT_CONNECTED;
         }
       }
 
@@ -266,7 +262,6 @@ export const MultichainAccountList = ({
             onClick={handleAccountClickToUse}
             connectionStatus={
               connectedStatus as
-                | typeof STATUS_NOT_CONNECTED
                 | typeof STATUS_CONNECTED
                 | typeof STATUS_CONNECTED_TO_ANOTHER_ACCOUNT
                 | undefined
