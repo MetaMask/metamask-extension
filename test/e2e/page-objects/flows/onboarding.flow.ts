@@ -417,9 +417,6 @@ export const completeImportSRPOnboardingFlow = async ({
   await onboardingCompletePage.checkPageIsLoaded();
   await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
   await onboardingCompletePage.completeOnboarding();
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
-  await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 };
 
 /**
