@@ -24,7 +24,7 @@ const enum SwapType {
 
 const enum SwapButtonType {
   Text = 'text',
-  Button = 'button',
+  ButtonType = 'button',
 }
 
 const SwapButton = ({
@@ -36,7 +36,7 @@ const SwapButton = ({
   label: string;
   onClick: () => void;
 }) => {
-  if (type === SwapButtonType.Button) {
+  if (type === SwapButtonType.ButtonType) {
     return (
       <Button
         className="dapp-swap_highlighted-button"
@@ -81,7 +81,7 @@ const DappSwapComparisonInner = () => {
       <SwapButton
         type={
           selectedSwapType === SwapType.Current
-            ? SwapButtonType.Button
+            ? SwapButtonType.ButtonType
             : SwapButtonType.Text
         }
         onClick={() => setSelectedSwapType(SwapType.Current)}
@@ -90,7 +90,7 @@ const DappSwapComparisonInner = () => {
       <SwapButton
         type={
           selectedSwapType === SwapType.Metamask
-            ? SwapButtonType.Button
+            ? SwapButtonType.ButtonType
             : SwapButtonType.Text
         }
         onClick={() => setSelectedSwapType(SwapType.Metamask)}
