@@ -5,6 +5,8 @@ import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { mockSegment } from './mocks/segment';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
 
 describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
@@ -52,7 +54,13 @@ describe('Wallet Created Events - Imported Account', function () {
           participateInMetaMetrics: true,
         });
 
-        await driver.delay(1000);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
+
+        const header = new HeaderNavbar(driver);
+        await header.checkPageIsLoaded();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 
