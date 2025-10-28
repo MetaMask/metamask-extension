@@ -1671,11 +1671,11 @@
     "message": "Create"
   },
   "createMultichainAccountButton": {
-    "message": "Create account",
+    "message": "Add account",
     "description": "Name of a button used on multichain account related pages for triggering the account creation process."
   },
   "createMultichainAccountButtonLoading": {
-    "message": "Creating account...",
+    "message": "Adding account...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
   "createNewAccountHeader": {
