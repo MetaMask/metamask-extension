@@ -889,6 +889,118 @@ async function setupMocking(
       };
     });
 
+  // Bitcoin Esplora API: Blocks endpoint
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[^/]+\/esplora\/blocks$/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [
+          {
+            bits: 386001697,
+            difficulty: 146716052770107.47,
+            height: 921209,
+            id: '000000000000000000009a3b61425fd8e7dc2251f1b159f1e524d3b6c6fc956f',
+            mediantime: 1761669270,
+            merkle_root:
+              'a98b47208e0ff99d20661d30fe2348013cfbf34ab7f2dba3f3946c9ac494ac21',
+            nonce: 1732185422,
+            previousblockhash:
+              '00000000000000000001c9a17a71b64e6c6c36196d7b286b60492844a6557e63',
+            size: 1739004,
+            timestamp: 1761671009,
+            tx_count: 3120,
+            version: 537395200,
+            weight: 3994101,
+          },
+        ],
+      };
+    });
+
+  // Bitcoin Esplora API: Scripthash transactions endpoint
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[^/]+\/esplora\/scripthash\/[a-f0-9]+\/txs$/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [],
+      };
+    });
+
+  // Bitcoin Esplora API: Block height endpoint
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[^/]+\/esplora\/block-height\/\d+$/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: '000000000000000000009a3b61425fd8e7dc2251f1b159f1e524d3b6c6fc956f',
+      };
+    });
+
+  // Bitcoin Price API: Spot prices
+  await server
+    .forGet('https://price.api.cx.metamask.io/v1/spot-prices/bitcoin')
+    .withQuery({ vsCurrency: 'usd' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          id: 'bitcoin',
+          price: 115407,
+          marketCap: 2300814913382,
+          allTimeHigh: 126080,
+          allTimeLow: 67.81,
+          totalVolume: 55374819965,
+          high1d: 116041,
+          low1d: 113599,
+          circulatingSupply: 19941234,
+          dilutedMarketCap: 2300814913382,
+          marketCapPercentChange1d: -0.1064,
+          priceChange1d: -70.80645745049696,
+          pricePercentChange1h: 0.6431842737367786,
+          pricePercentChange1d: -0.06131590307788112,
+          pricePercentChange7d: 1.9608986456365316,
+          pricePercentChange14d: 2.4311117309298473,
+          pricePercentChange30d: 4.887696574513847,
+          pricePercentChange200d: 39.920932502950635,
+          pricePercentChange1y: 68.68006213662316,
+        },
+      };
+    });
+
+  // Price API: Fiat exchange rates
+  // await server
+  //   .forGet('https://price.api.cx.metamask.io/v1/exchange-rates/fiat')
+  //   .thenCallback(() => {
+  //     return {
+  //       statusCode: 200,
+  //       json: {
+  //         usd: {
+  //           conversionRate: 1,
+  //           conversionDate: 1761671009,
+  //         },
+  //         eur: {
+  //           conversionRate: 0.85,
+  //           conversionDate: 1761671009,
+  //         },
+  //         gbp: {
+  //           conversionRate: 0.73,
+  //           conversionDate: 1761671009,
+  //         },
+  //         jpy: {
+  //           conversionRate: 110.5,
+  //           conversionDate: 1761671009,
+  //         },
+  //       },
+  //     };
+  //   });
+
   const PPOM_VERSION = fs.readFileSync(PPOM_VERSION_PATH);
   const PPOM_VERSION_HEADERS = fs.readFileSync(PPOM_VERSION_HEADERS_PATH);
   const CDN_CONFIG = fs.readFileSync(CDN_CONFIG_PATH);
