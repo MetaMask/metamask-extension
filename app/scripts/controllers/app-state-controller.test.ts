@@ -752,6 +752,7 @@ describe('AppStateController', () => {
             {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
+              "appActiveTab": undefined,
               "browserEnvironment": {},
               "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
@@ -838,6 +839,7 @@ describe('AppStateController', () => {
           ).toMatchInlineSnapshot(`
             {
               "addressSecurityAlertResponses": {},
+              "appActiveTab": undefined,
               "browserEnvironment": {},
               "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
@@ -999,6 +1001,7 @@ describe('AppStateController', () => {
             {
               "activeQrCodeScanRequest": null,
               "addressSecurityAlertResponses": {},
+              "appActiveTab": undefined,
               "browserEnvironment": {},
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
