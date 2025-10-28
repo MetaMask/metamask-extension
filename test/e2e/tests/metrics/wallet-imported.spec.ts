@@ -52,6 +52,8 @@ describe('Wallet Created Events - Imported Account', function () {
           participateInMetaMetrics: true,
         });
 
+        await driver.delay(1000);
+
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         // Only include track events not identify events
