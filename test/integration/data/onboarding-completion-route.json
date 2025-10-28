@@ -9,9 +9,7 @@
           "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
             "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
             "type": "multichain-account",
-            "accounts": [
-              "51737ecb-beb4-4a2b-bcab-c99d0f587a33"
-            ],
+            "accounts": ["51737ecb-beb4-4a2b-bcab-c99d0f587a33"],
             "metadata": {
               "name": "Account 1",
               "entropy": {
