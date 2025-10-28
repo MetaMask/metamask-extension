@@ -3,7 +3,7 @@ import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sd
 import FixtureBuilder from '../../fixture-builder';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import ShieldPlanPage from '../../page-objects/pages/settings/shield-plan-page';
+import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
@@ -20,12 +20,6 @@ async function mockSubscriptionApiCalls(
     mockServer,
   );
   return [
-    await mockServer
-      .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
-      .thenJson(200, {
-        subscriptions: [],
-        trialedProducts: [],
-      }),
     await mockServer
       .forGet('https://subscription.dev-api.cx.metamask.io/v1/pricing')
       .thenJson(200, {
@@ -62,6 +56,7 @@ async function mockSubscriptionApiCalls(
       .forGet(
         'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
       )
+      .always()
       .thenJson(200, [
         {
           canSubscribe: !overrides?.mockNotEligible,
@@ -112,7 +107,6 @@ describe('Shield Entry Modal', function () {
         testSpecificMock: mockSubscriptionApiCalls,
       },
       async ({ driver }) => {
-        await driver.delay(5_000);
         await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
@@ -129,11 +123,7 @@ describe('Shield Entry Modal', function () {
   it('should not show the shield entry modal if user does not have a shield subscription and has a balance less than the minimum fiat balance threshold', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withAppStateController({
-            showShieldEntryModalOnce: null,
-          })
-          .build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSubscriptionApiCalls,
       },

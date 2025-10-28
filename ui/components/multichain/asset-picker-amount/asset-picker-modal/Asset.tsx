@@ -32,6 +32,7 @@ export default function Asset({
   tooltipText,
   tokenFiatAmount,
   chainId,
+  accountType,
   assetItemProps = {},
   isDestinationToken = false,
 }: AssetProps) {
@@ -77,6 +78,7 @@ export default function Asset({
       tokenChainImage={getImageForChainId(chainId)}
       isDestinationToken={isDestinationToken}
       address={address}
+      accountType={accountType}
       {...assetItemProps}
     />
   );
