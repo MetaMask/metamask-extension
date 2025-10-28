@@ -981,11 +981,13 @@ function setupBundlerDefaults(
   },
 ) {
   const { bundlerOpts } = buildConfiguration;
-  const extensions = ['.js', '.ts', '.tsx'];
+  const extensions = ['.js', '.ts', '.tsx', '.wasm'];
 
   Object.assign(bundlerOpts, {
     // Source transforms
     transform: [
+      // Rewrite .wasm imports from react-native-my-rust-lib to a runtime URL string
+      [createReplaceWasmImportTransform(), { global: true }],
       // // Remove code that should be excluded from builds of the current type
       createRemoveFencedCodeTransform(features, shouldLintFenceFiles),
       // Transpile top-level code
@@ -1017,6 +1019,7 @@ function setupBundlerDefaults(
             './**/node_modules/@metamask/snaps-rpc-methods',
             './**/node_modules/@metamask/snaps-sdk',
             './**/node_modules/@metamask/snaps-utils',
+            './**/node_modules/react-native-my-rust-lib',
           ],
           global: true,
         },
@@ -1064,6 +1067,41 @@ function setupBundlerDefaults(
     // Setup wrapping of code against scuttling (before sourcemaps generation)
     setupScuttlingWrapping(buildConfiguration, applyLavaMoat);
   }
+}
+
+function createReplaceWasmImportTransform() {
+  return function (file) {
+    // Only rewrite the JS wrapper that imports the wasm from react-native-my-rust-lib
+    const shouldRewrite =
+      file.includes(`${path.sep}react-native-my-rust-lib${path.sep}`) &&
+      file.endsWith(`${path.sep}lib${path.sep}commonjs${path.sep}index.web.js`);
+    if (!shouldRewrite) {
+      return through();
+    }
+    let src = '';
+    return through(
+      function (chunk, _enc, next) {
+        src += chunk.toString('utf8');
+        next();
+      },
+      function (next) {
+        // Replace require/import of index_bg.wasm with a string path to our copied asset
+        const assetPath = './assets/rn-rust-lib/index_bg.wasm';
+        const out = src
+          .replace(
+            /require\((['"])\.\/generated\/web\/wasm-bindgen\/index_bg\.wasm\1\)/gu,
+            `'${assetPath}'`,
+          )
+          .replace(
+            /(import\s+[^;]*from\s+)(['"])\.\/generated\/web\/wasm-bindgen\/index_bg\.wasm\2/gu,
+            (_, imp, q) => `${imp}${q}${assetPath}${q}`,
+          );
+        this.push(out);
+        this.push(null);
+        next();
+      },
+    );
+  };
 }
 
 function setupReloadOnChange({ bundlerOpts, events }) {

@@ -28,6 +28,7 @@ import {
   __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
+  RN_RUST_LIB_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
@@ -329,6 +330,9 @@ const config = {
               // these trezor libraries are .js files with CJS exports, they
               // must be processed with the CJS loader
               TREZOR_MODULE_RE,
+
+              // route react-native-my-rust-lib through the CJS loader
+              RN_RUST_LIB_RE,
             ],
             use: npmLoader,
           },

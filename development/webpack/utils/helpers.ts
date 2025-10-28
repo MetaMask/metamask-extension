@@ -53,6 +53,15 @@ export const TREZOR_MODULE_RE = new RegExp(
 );
 
 /**
+ * Regular expression to match files in the `react-native-my-rust-lib` package.
+ * This library emits CommonJS and should be handled by the CJS loader.
+ */
+export const RN_RUST_LIB_RE = new RegExp(
+  `^.*${slash}node_modules${slash}react-native-my-rust-lib${slash}.*$`,
+  'u',
+);
+
+/**
  * No Operation. A function that does nothing and returns nothing.
  *
  * @returns `undefined`

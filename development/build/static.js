@@ -196,6 +196,15 @@ function getCopyTargets(
       pattern: '*.wasm',
       dest: isManifestV3 ? 'scripts/' : '',
     },
+    // Copy wasm used by react-native-my-rust-lib for web bindings
+    {
+      src: getPathInsideNodeModules(
+        'react-native-my-rust-lib',
+        'lib/commonjs/generated/web/wasm-bindgen/',
+      ),
+      pattern: 'index_bg.wasm',
+      dest: 'assets/rn-rust-lib/',
+    },
     ...(isManifestV3
       ? [
           {
