@@ -2687,8 +2687,8 @@
   "form": {
     "message": "form"
   },
-  "freeSevenDayTrial": {
-    "message": "14 days free trial"
+  "freeTrialDays": {
+    "message": "$1 days free trial"
   },
   "from": {
     "message": "From"
@@ -5900,7 +5900,7 @@
     "message": "Plan details"
   },
   "shieldPlanDetails1": {
-    "message": "No charge now, try free for 14 days"
+    "message": "No charge now, try free for $1 days"
   },
   "shieldPlanDetails2": {
     "message": "Pre-approve membership (default 1 year), with fees charged only on a monthly basis"
