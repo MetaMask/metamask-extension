@@ -56,6 +56,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isTxAlertPresent,
+    isEstimatedReturnLow,
   } = useSelector(getValidationErrors);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
@@ -150,6 +151,12 @@ export const BridgeCTAButton = ({
       }}
       loading={isSubmitting}
       disabled={
+        // If there are validation errors for the recommended quote,
+        // disable submission until all other quotes have been fetched
+        (isLoading &&
+          (isInsufficientGasBalance ||
+            isTxAlertPresent ||
+            isEstimatedReturnLow)) ||
         !isTxSubmittable ||
         isTxAlertPresent ||
         isQuoteExpired ||

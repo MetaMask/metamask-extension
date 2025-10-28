@@ -14,7 +14,7 @@ export const useIsTxSubmittable = () => {
   const toToken = useSelector(getToToken);
   const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
   const fromAmount = useSelector(getFromAmount);
-  const { activeQuote, isLoading } = useSelector(getBridgeQuotes);
+  const { activeQuote } = useSelector(getBridgeQuotes);
 
   const {
     isInsufficientBalance,
@@ -29,8 +29,6 @@ export const useIsTxSubmittable = () => {
       fromChainId &&
       fromAmount &&
       activeQuote &&
-      // Disable submission untill all quotes have been fetched
-      !isLoading &&
       !isInsufficientBalance &&
       !isInsufficientGasBalance &&
       !isInsufficientGasForQuote &&
