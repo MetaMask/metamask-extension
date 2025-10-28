@@ -7,7 +7,10 @@ import {
   getSnapsMetadata,
   getUseExternalServices,
 } from '../../selectors';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -101,7 +104,10 @@ const mapStateToProps = (state, ownProps) => {
   );
   const isSnapSettingsRoute = Boolean(pathname.match(SNAP_SETTINGS_ROUTE));
 
-  const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+  const environmentType = getEnvironmentType();
+  const isPopup =
+    environmentType === ENVIRONMENT_TYPE_POPUP ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const socialLoginEnabled = Boolean(socialLoginEmail);
 
   let pathnameI18nKey = ROUTES_TO_I18N_KEYS[pathname];

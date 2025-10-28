@@ -21,6 +21,7 @@ export const WITH_STATE_POWER_USER = {
   withContacts: 40,
   withErc20Tokens: true,
   withNetworks: true,
+  withNfts: 20,
   withPreferences: true,
   withUnreadNotifications: 15,
 };

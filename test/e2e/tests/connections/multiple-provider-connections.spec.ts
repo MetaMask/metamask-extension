@@ -178,7 +178,7 @@ describe('Multiple Standard Dapp Connections', function () {
   it('should default account selection to already permitted account(s) plus the selected account (if not already permissioned) when `wallet_requestPermissions` is called with no accounts specified', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()
@@ -228,7 +228,7 @@ describe('Multiple Standard Dapp Connections', function () {
   it('should default account selection to both accounts when `wallet_requestPermissions` is called with specific account while another is already connected', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()
