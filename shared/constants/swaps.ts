@@ -545,7 +545,7 @@ export const StablecoinsByChainId: Partial<Record<string, Set<string>>> = {
     '0x493257fD37EDB34451f62EDf8D2a0C418852bA4C', // USDT
   ]),
   [CHAIN_IDS.SEI]: new Set([
-    '0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1', // USDC
+    '0xe15fC38F6D8c56aF07bbCBe3BAf5708A2Bf42392', // USDC
   ]),
   [CHAIN_IDS.MONAD]: new Set([
     '0x754704Bc059F8C67012fEd69BC8A327a5aafb603', // USDC

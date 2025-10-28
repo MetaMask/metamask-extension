@@ -52,7 +52,7 @@ describe('Test Survey', function () {
   it('should show 2 surveys, and then none', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesController()
           .withMetaMetricsController({
