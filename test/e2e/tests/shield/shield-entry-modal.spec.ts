@@ -107,7 +107,6 @@ describe('Shield Entry Modal', function () {
         testSpecificMock: mockSubscriptionApiCalls,
       },
       async ({ driver }) => {
-        await driver.delay(5_000);
         await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);

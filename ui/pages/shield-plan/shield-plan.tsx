@@ -285,7 +285,7 @@ const ShieldPlan = () => {
     const details = [];
     if (!isTrialed) {
       details.push(
-        t('shieldPlanDetails1', [selectedProductPrice?.trialPeriodDays]),
+        t('shieldPlanDetails1', [selectedProductPrice?.trialPeriodDays ?? '']),
       );
     }
     details.push(

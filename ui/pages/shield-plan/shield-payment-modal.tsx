@@ -128,7 +128,7 @@ export const ShieldPaymentModal = ({
       ]);
     }
     // single token to display eg. Insufficient USDC
-    return t('shieldPlanNoFundsOneToken', [lastToken]);
+    return t('shieldPlanNoFundsOneToken', [lastToken ?? '']);
   }, [tokensSupported, t]);
 
   return (

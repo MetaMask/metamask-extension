@@ -73,7 +73,7 @@ export const SubscriptionDetails = ({
             }}
           >
             <Text variant={TextVariant.bodySm} color={TextColor.inherit}>
-              {t('freeTrialDays', [productPrice?.trialPeriodDays])}
+              {t('freeTrialDays', [productPrice?.trialPeriodDays ?? ''])}
             </Text>
           </Box>
         )}
