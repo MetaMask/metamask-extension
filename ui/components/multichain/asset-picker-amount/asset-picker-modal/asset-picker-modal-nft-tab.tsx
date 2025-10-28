@@ -79,7 +79,7 @@ export function AssetPickerModalNftTab({
   const handleNftClick = async (nft: NFT) => {
     trackEvent(
       {
-        event: MetaMetricsEventName.sendAssetSelected,
+        event: MetaMetricsEventName.SendAssetSelected,
         category: MetaMetricsEventCategory.Send,
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

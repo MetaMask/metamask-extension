@@ -154,7 +154,7 @@ export const SendPage = () => {
 
       trackEvent(
         {
-          event: MetaMetricsEventName.sendAssetSelected,
+          event: MetaMetricsEventName.SendAssetSelected,
           category: MetaMetricsEventCategory.Send,
           properties: {
             is_destination_asset_picker_modal: Boolean(isReceived),
