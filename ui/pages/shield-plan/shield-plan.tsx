@@ -79,6 +79,7 @@ import {
   selectNetworkConfigurationByChainId,
 } from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -285,7 +286,10 @@ const ShieldPlan = () => {
     const details = [];
     if (!isTrialed) {
       details.push(
-        t('shieldPlanDetails1', [selectedProductPrice?.trialPeriodDays ?? '']),
+        t('shieldPlanDetails1', [
+          selectedProductPrice?.trialPeriodDays ??
+            SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
+        ]),
       );
     }
     details.push(
