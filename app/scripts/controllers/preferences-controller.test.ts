@@ -550,7 +550,6 @@ describe('preferences controller', () => {
     });
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   describe('setUseExternalNameSources', () => {
     const { controller } = setupController({});
     it('should default to true', () => {
@@ -562,7 +561,6 @@ describe('preferences controller', () => {
       expect(controller.state.useExternalNameSources).toStrictEqual(false);
     });
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('setUseTransactionSimulations', () => {
     const { controller } = setupController({});
@@ -695,6 +693,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        useSidePanelAsDefault: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -725,6 +724,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        useSidePanelAsDefault: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -896,6 +896,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "theme": "os",
           "use4ByteResolution": true,
@@ -967,6 +968,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "hyperliquid": {},
@@ -1050,6 +1052,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "hyperliquid": {},
@@ -1133,6 +1136,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "hyperliquid": {},

@@ -63,7 +63,10 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { NotificationsTagCounter } from '../notifications-tag-counter';
@@ -150,7 +153,8 @@ export const AppHeaderUnlockedContent = ({
   }, [copied, dispatch]);
 
   const showConnectedStatus =
-    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) &&
     origin &&
     origin !== browser.runtime.id;
 
