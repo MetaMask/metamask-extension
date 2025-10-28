@@ -6,19 +6,6 @@ import {
 } from '@metamask/subscription-controller';
 import { ControllerInitFunction } from '../types';
 import { SubscriptionControllerInitMessenger } from '../messengers/subscription';
-import { ENVIRONMENT } from '../../../../development/build/constants';
-
-/**
- * Check if the build is a Development or Test build.
- *
- * @returns true if the build is a Development or Test build, false otherwise
- */
-function isDevOrTestBuild() {
-  return (
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.DEVELOPMENT ||
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING
-  );
-}
 
 export const SubscriptionControllerInit: ControllerInitFunction<
   SubscriptionController,
@@ -27,7 +14,7 @@ export const SubscriptionControllerInit: ControllerInitFunction<
 > = (request) => {
   const { initMessenger, controllerMessenger, persistedState } = request;
   const subscriptionService = new SubscriptionService({
-    env: isDevOrTestBuild() ? Env.DEV : Env.PRD,
+    env: Env.DEV,
     auth: {
       getAccessToken: () =>
         initMessenger.call('AuthenticationController:getBearerToken'),

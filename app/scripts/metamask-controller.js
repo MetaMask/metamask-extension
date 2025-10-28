@@ -8371,6 +8371,10 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
+    const { smartTransactions } = this.smartTransactionsController.state;
+    const smartTransaction = smartTransactions.find(
+      (stx) => stx.txHash === transactionMeta.txHash,
+    );
     const params = {
       products: [PRODUCT_TYPES.SHIELD],
       isTrialRequested: !isTrialed,
@@ -8380,6 +8384,8 @@ export default class MetamaskController extends EventEmitter {
       payerAddress: selectedAddress,
       tokenSymbol: selectedTokenPrice.symbol,
       rawTransaction: rawTx,
+      isSponsored: transactionMeta.isGasFeeSponsored,
+      smartTransactionId: smartTransaction?.uuid,
     };
     await this.subscriptionController.startSubscriptionWithCrypto(params);
     await this.subscriptionController.getSubscriptions();

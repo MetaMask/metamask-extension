@@ -7867,9 +7867,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:@metamask-previews/subscription-controller@2.1.0-preview-2bb073da":
-  version: 2.1.0-preview-2bb073da
-  resolution: "@metamask-previews/subscription-controller@npm:2.1.0-preview-2bb073da"
+"@metamask/subscription-controller@file:./subscription-controller.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 2.1.0
+  resolution: "@metamask/subscription-controller@file:./subscription-controller.tgz#./subscription-controller.tgz::hash=7a8c9e&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^8.4.2"
     "@metamask/controller-utils": "npm:^11.14.1"
@@ -7877,7 +7877,7 @@ __metadata:
     "@metamask/utils": "npm:^11.8.1"
   peerDependencies:
     "@metamask/profile-sync-controller": ^25.0.0
-  checksum: 10/7b162c0259ce148da59e6d7fcb6fed7488968804bcf687e1c7e21b37dbbbd9f70fa70959edc73161b952ae57edad876796d25ca5269830ed4c229cf3da98c5c5
+  checksum: 10/329de888af92a9cc033e035439515238cecb55344e977f0a3f4d0cf7246392aede056b41a4639d9a9dedbf280c022acc7d75a7f780062324f2e95aebcb778837
   languageName: node
   linkType: hard
 
@@ -7967,6 +7967,43 @@ __metadata:
     "@toruslabs/http-helpers": "npm:^8.1.1"
     bn.js: "npm:^5.2.1"
   checksum: 10/3089a58bb613ed75e2ee825bdee23c526f564687e7ee7143e5166eba7a759067499cec8a1ee65f46586f26cd8ff7aca75db3c04cade42753486fc3bfc11fdfec
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-controller@file:./transaction-controller.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 60.10.0
+  resolution: "@metamask/transaction-controller@file:./transaction-controller.tgz#./transaction-controller.tgz::hash=7d0595&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@ethereumjs/common": "npm:^4.4.0"
+    "@ethereumjs/tx": "npm:^5.4.0"
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@ethersproject/wallet": "npm:^5.7.0"
+    "@metamask/base-controller": "npm:^8.4.2"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/metamask-eth-abis": "npm:^3.1.1"
+    "@metamask/nonce-tracker": "npm:^6.0.0"
+    "@metamask/rpc-errors": "npm:^7.0.2"
+    "@metamask/utils": "npm:^11.8.1"
+    async-mutex: "npm:^0.5.0"
+    bn.js: "npm:^5.2.1"
+    eth-method-registry: "npm:^4.0.0"
+    fast-json-patch: "npm:^3.1.1"
+    lodash: "npm:^4.17.21"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@babel/runtime": ^7.0.0
+    "@metamask/accounts-controller": ^33.0.0
+    "@metamask/approval-controller": ^7.0.0
+    "@metamask/eth-block-tracker": ">=9"
+    "@metamask/gas-fee-controller": ^24.0.0
+    "@metamask/network-controller": ^24.0.0
+    "@metamask/remote-feature-flag-controller": ^1.5.0
+  checksum: 10/04f5be601298accab7575bc314178b965c47cdd6766ac2c87ff7136acda9880d870242a78eaa3bb1b5ea325a24b70594e46c4b900dd7a22e87e9fd346bbb452c
   languageName: node
   linkType: hard
 
@@ -31941,13 +31978,13 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.4.6"
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:@metamask-previews/subscription-controller@2.1.0-preview-2bb073da"
+    "@metamask/subscription-controller": ./subscription-controller.tgz
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
-    "@metamask/transaction-controller": "npm:^60.7.0"
+    "@metamask/transaction-controller": ./transaction-controller.tgz
     "@metamask/user-operation-controller": "npm:^39.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"

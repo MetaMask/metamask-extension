@@ -150,6 +150,7 @@ export const TransactionControllerInit: ControllerInitFunction<
         return {
           updateTransaction: async (transactionMeta: TransactionMeta) => {
             await submitShieldSubscriptionSponsorshipIntent(
+              getFlatState(),
               initMessenger,
               transactionMeta,
             );
@@ -482,10 +483,20 @@ export function publishBatchHook({
 }
 
 export async function submitShieldSubscriptionSponsorshipIntent(
+  flatState: ControllerFlatState,
   initMessenger: TransactionControllerInitMessenger,
   txMeta: TransactionMeta,
 ) {
   if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
+    return;
+  }
+
+  const { isSmartTransaction } = getSmartTransactionCommonParams(
+    flatState,
+    txMeta.chainId,
+  );
+  console.log('isSmartTransaction', isSmartTransaction);
+  if (!isSmartTransaction) {
     return;
   }
 
@@ -510,6 +521,7 @@ export async function submitShieldSubscriptionSponsorshipIntent(
     await initMessenger.call(
       'SubscriptionController:submitSponsorshipIntents',
       {
+        chainId: txMeta.chainId,
         address,
         products: [PRODUCT_TYPES.SHIELD],
         recurringInterval,

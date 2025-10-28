@@ -2,7 +2,7 @@ import { Hex } from '@metamask/utils';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
 
-const BASE_URL = 'https://tx-sentinel-{0}.api.cx.metamask.io/';
+const BASE_URL = 'https://tx-sentinel-{0}.dev-api.cx.metamask.io/';
 const ENDPOINT_NETWORKS = 'networks';
 
 export type SentinelNetwork = {

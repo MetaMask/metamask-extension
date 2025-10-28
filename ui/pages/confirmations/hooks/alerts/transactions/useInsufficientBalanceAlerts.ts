@@ -33,6 +33,7 @@ export function useInsufficientBalanceAlerts({
     selectedGasFeeToken,
     gasFeeTokens,
     txParams: { value = '0x0' } = {},
+    isGasFeeSponsored = false,
   } = currentConfirmation ?? {};
 
   const batchTransactionValues =
@@ -71,6 +72,7 @@ export function useInsufficientBalanceAlerts({
     canSkipSimulationChecks || Boolean(gasFeeTokens);
 
   const showAlert =
+    !isGasFeeSponsored &&
     insufficientBalance &&
     hasGaslessSimulationFinished &&
     (ignoreGasFeeToken || !selectedGasFeeToken);
