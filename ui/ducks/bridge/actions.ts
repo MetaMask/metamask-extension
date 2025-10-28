@@ -168,10 +168,6 @@ export const setFromChain = ({
     // Set the src network
     if (isNonEvm) {
       dispatch(setActiveNetworkWithError(networkConfig.chainId));
-      // if srcChain is bitcoin and toChainId is bitcoin, unset it
-      if (isBitcoinChainId(networkConfig.chainId)) {
-        dispatch(setToChainId(null));
-      }
     } else {
       const networkId = isNetworkAdded(networkConfig)
         ? networkConfig.rpcEndpoints?.[networkConfig.defaultRpcEndpointIndex]
