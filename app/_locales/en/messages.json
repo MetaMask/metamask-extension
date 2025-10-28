@@ -2687,8 +2687,8 @@
   "form": {
     "message": "form"
   },
-  "freeSevenDayTrial": {
-    "message": "14 days free trial"
+  "freeTrialDays": {
+    "message": "$1 days free trial"
   },
   "from": {
     "message": "From"
@@ -3009,32 +3009,11 @@
   "importNFTTokenIdToolTip": {
     "message": "An NFT's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
   },
-  "importNWordSRP": {
-    "message": "I have a $1 word recovery phrase",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Private Key"
   },
-  "importSRPDescription": {
-    "message": "Import an existing wallet with your 12 or 24-word secret recovery phrase."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Secret Recovery Phrases contain 12, or 24 words"
-  },
-  "importSRPWordError": {
-    "message": "Word $1 is incorrect or misspelled.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Word $1 and $2 is incorrect or misspelled.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "An unknown error occurred."
   },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
@@ -3053,9 +3032,6 @@
   },
   "importTokensError": {
     "message": "We could not import the tokens. Please try again later."
-  },
-  "importWallet": {
-    "message": "Import wallet"
   },
   "importWalletOrAccountHeader": {
     "message": "Import a wallet or account"
@@ -4421,7 +4397,7 @@
     "message": "We’d like to request these permissions. You can opt out or delete your usage data at any time."
   },
   "onboardingMetametricsTitle": {
-    "message": "Help us improve MetaMask"
+    "message": "Help improve MetaMask"
   },
   "onboardingOptionIcon": {
     "message": "$1 icon",
@@ -5900,7 +5876,7 @@
     "message": "Plan details"
   },
   "shieldPlanDetails1": {
-    "message": "No charge now, try free for 14 days"
+    "message": "No charge now, try free for $1 days"
   },
   "shieldPlanDetails2": {
     "message": "Pre-approve membership (default 1 year), with fees charged only on a monthly basis"
@@ -6594,6 +6570,9 @@
   },
   "spendingCaps": {
     "message": "Spending caps"
+  },
+  "srpAlreadyImportedError": {
+    "message": "This Secret Recovery Phrase has already been imported."
   },
   "srpDetailsDescription": {
     "message": "A Secret Recovery Phrase, also called a seed phrase or mnemonic, is a set of words that lets you access and control your crypto wallet. To move your wallet to MetaMask, you need this phrase."
