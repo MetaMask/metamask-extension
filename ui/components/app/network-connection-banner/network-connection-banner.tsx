@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BannerBase,
-  Box,
   ButtonLink,
   ButtonLinkSize,
   Icon,
@@ -13,7 +12,6 @@ import {
 } from '../../component-library';
 import {
   BackgroundColor,
-  BlockSize,
   BorderRadius,
   IconColor,
   TextVariant,
