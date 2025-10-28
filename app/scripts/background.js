@@ -1638,7 +1638,7 @@ function handleOnInstalled(details) {
     details.previousVersion &&
     details.previousVersion !== platform.getVersion()
   ) {
-    onUpdate();
+    onUpdate(details.previousVersion);
   }
 }
 
@@ -1691,11 +1691,16 @@ if (
 
 /**
  * Trigger actions that should happen only upon update installation
+ *
+ * @param previousVersion
  */
-async function onUpdate() {
+async function onUpdate(previousVersion) {
   await isInitialized;
   log.debug('Update installation detected');
   controller.appStateController.setLastUpdatedAt(Date.now());
+  if (previousVersion) {
+    controller.appStateController.setLastUpdatedFromVersion(previousVersion);
+  }
 }
 
 /**

@@ -88,6 +88,7 @@ export type AppStateControllerState = {
   isUpdateAvailable: boolean;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
+  lastUpdatedFromVersion: string | null;
   lastViewedUserSurvey: number | null;
   networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
@@ -234,6 +235,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   isRampCardClosed: false,
   isUpdateAvailable: false,
   lastUpdatedAt: null,
+  lastUpdatedFromVersion: null,
   lastViewedUserSurvey: null,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
@@ -389,6 +391,12 @@ const controllerMetadata = {
     usedInUi: true,
   },
   lastUpdatedAt: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
+    usedInUi: true,
+  },
+  lastUpdatedFromVersion: {
     includeInStateLogs: true,
     persist: true,
     anonymous: true,
@@ -927,6 +935,17 @@ export class AppStateController extends BaseController<
   setLastUpdatedAt(lastUpdatedAt: number): void {
     this.update((state) => {
       state.lastUpdatedAt = lastUpdatedAt;
+    });
+  }
+
+  /**
+   * Record the previous version the user updated from
+   *
+   * @param fromVersion - the version the user updated from
+   */
+  setLastUpdatedFromVersion(fromVersion: string): void {
+    this.update((state) => {
+      state.lastUpdatedFromVersion = fromVersion;
     });
   }
 

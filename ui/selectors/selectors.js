@@ -4097,6 +4097,16 @@ export function getShowUpdateModal(state) {
 }
 
 /**
+ * Gets the previous version that the extension was updated from.
+ *
+ * @param {import('../../ui/store/store').MetaMaskReduxState} state - The MetaMask state.
+ * @returns {string | null} The previous version string, or null if not available.
+ */
+export function getLastUpdatedFromVersion(state) {
+  return state.metamask.lastUpdatedFromVersion;
+}
+
+/**
  * Selector to get the allow list for non-zero unused approvals from remote feature flags.
  *
  * @param state - The MetaMask state object

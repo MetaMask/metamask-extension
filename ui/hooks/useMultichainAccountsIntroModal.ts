@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import semver from 'semver';
 import { useAppSelector } from '../store/store';
 import { getIsMultichainAccountsState2Enabled } from '../selectors/multichain-accounts/feature-flags';
+import { getLastUpdatedFromVersion } from '../selectors/selectors';
 import { DEFAULT_ROUTE } from '../helpers/constants/routes';
 
 /**
@@ -28,17 +30,26 @@ export function useMultichainAccountsIntroModal(
   );
 
   const lastUpdatedAt = useAppSelector((state) => state.metamask.lastUpdatedAt);
+  const lastUpdatedFromVersion = useAppSelector(getLastUpdatedFromVersion);
 
   useEffect(() => {
     // Only show modal on the main wallet/home route
     const isMainWalletArea = location.pathname === DEFAULT_ROUTE;
 
-    // Show modal for upgrades only (simple lastUpdatedAt pattern like update modal)
+    // Check if this is an upgrade from a version lower than 13.5.0
+    const isUpgradeFromLowerThanBip44Version = Boolean(
+      lastUpdatedFromVersion &&
+      semver.valid(semver.coerce(lastUpdatedFromVersion)) &&
+      semver.lt(semver.coerce(lastUpdatedFromVersion)!, '13.5.0')
+    );
+
+    // Show modal only for upgrades from versions < 13.5.0
     const shouldShowModal =
       isUnlocked &&
       isMultichainAccountsState2Enabled &&
       !hasShownMultichainAccountsIntroModal &&
       lastUpdatedAt !== null && // null = fresh install, timestamp = upgrade
+      isUpgradeFromLowerThanBip44Version &&
       isMainWalletArea;
 
     setShowMultichainIntroModal(shouldShowModal);
@@ -47,6 +58,7 @@ export function useMultichainAccountsIntroModal(
     isMultichainAccountsState2Enabled,
     hasShownMultichainAccountsIntroModal,
     lastUpdatedAt,
+    lastUpdatedFromVersion,
     location.pathname,
   ]);
 
