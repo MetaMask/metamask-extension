@@ -207,11 +207,6 @@ import {
   METAMASK_REFERRAL_CODE,
 } from '../../shared/constants/referrals';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
-import {
-  hasNonZeroTokenBalance,
-  hasNonZeroMultichainBalance,
-  getWalletFundsObtainedEventProperties,
-} from '../../shared/lib/wallet-funds-obtained-metric';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -219,6 +214,7 @@ import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
+import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import { createTrustSignalsMiddleware } from './lib/trust-signals/trust-signals-middleware';
 import {
@@ -532,7 +528,7 @@ export default class MetamaskController extends EventEmitter {
         completedOnboarding &&
         this.appStateController.state.canTrackWalletFundsObtained
       ) {
-        this._setupWalletFundsObtainedMonitoring();
+        this.walletFundsObtainedMonitor.setupMonitoring();
       }
     });
 
@@ -822,6 +818,27 @@ export default class MetamaskController extends EventEmitter {
       nameController: this.nameController,
       messenger: petnamesBridgeMessenger,
     }).init();
+
+    // Set up wallet funds monitoring
+    const walletFundsObtainedMonitorMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'WalletFundsObtainedMonitor',
+        allowedEvents: [
+          'NotificationServicesController:notificationsListUpdated',
+        ],
+        allowedActions: [
+          'MetaMetricsController:trackEvent',
+          'AppStateController:setCanTrackWalletFundsObtained',
+          'OnboardingController:getState',
+          'NotificationServicesController:getState',
+          'TokenBalancesController:getState',
+          'MultichainBalancesController:getState',
+        ],
+      });
+
+    this.walletFundsObtainedMonitor = new WalletFundsObtainedMonitor({
+      messenger: walletFundsObtainedMonitorMessenger,
+    });
 
     this.getSecurityAlertsConfig = async (url) => {
       const getShieldSubscription = () =>
@@ -1298,99 +1315,6 @@ export default class MetamaskController extends EventEmitter {
     this.txController.stopIncomingTransactionPolling();
     this.tokenDetectionController.disable();
     this.multichainRatesController.stop();
-  }
-
-  /**
-   * Checks if user has an existing balance in tokenBalancesState or multichainBalancesState
-   *
-   * @returns {boolean} true if an existing balance is found
-   */
-  _hasExistingFunds() {
-    try {
-      return (
-        hasNonZeroTokenBalance(
-          this.tokenBalancesController.state?.tokenBalances,
-        ) ||
-        hasNonZeroMultichainBalance(
-          this.multichainBalancesController.state?.balances,
-        )
-      );
-    } catch (error) {
-      log.error('Error checking for existing funds: ', error);
-      return false;
-    }
-  }
-
-  /**
-   * Detects and tracks the first wallet funding event from ETH/ERC20 received notifications.
-   *
-   * @param {Array} notifications - List of notifications to process
-   */
-  _handleWalletFundingNotification = (notifications) => {
-    // Filter for erc20 or eth received notifications
-    const filteredNotifications = notifications.filter(
-      (n) =>
-        n.type === TRIGGER_TYPES.ERC20_RECEIVED ||
-        n.type === TRIGGER_TYPES.ETH_RECEIVED,
-    );
-
-    if (filteredNotifications.length < 1) {
-      return;
-    }
-
-    // Use the last (oldest) notification
-    const { chain_id: chainId, data } = filteredNotifications.at(-1);
-
-    // ERC20 transfers have `token` object, native transfers have `amount` object
-    if (chainId && (data?.token?.usd || data?.amount?.usd)) {
-      this.metaMetricsController.trackEvent(
-        getWalletFundsObtainedEventProperties({
-          chainId,
-          amountUsd: data?.token?.usd || data?.amount?.usd,
-        }),
-      );
-
-      this.appStateController.setCanTrackWalletFundsObtained(false);
-      this.controllerMessenger.unsubscribe(
-        METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
-        this._handleWalletFundingNotification,
-      );
-    }
-  };
-
-  /**
-   * Sets up monitoring to detect and track when a non-imported wallet first receives funds
-   * via ERC20 or ETH received events from the notification service.
-   */
-  _setupWalletFundsObtainedMonitoring() {
-    // Only target created wallets (not imported or restored)
-    const { firstTimeFlowType } = this.onboardingController.state;
-    if (
-      firstTimeFlowType !== FirstTimeFlowType.create &&
-      firstTimeFlowType !== FirstTimeFlowType.socialCreate
-    ) {
-      this.appStateController.setCanTrackWalletFundsObtained(false);
-      return;
-    }
-
-    // Only target wallets with notifications enabled
-    if (
-      !this.notificationServicesController.state.isNotificationServicesEnabled
-    ) {
-      this.appStateController.setCanTrackWalletFundsObtained(false);
-
-      return;
-    }
-
-    if (this._hasExistingFunds()) {
-      this.appStateController.setCanTrackWalletFundsObtained(false);
-    } else if (!this.walletFundsObtainedListenerSetup) {
-      this.controllerMessenger.subscribe(
-        METAMASK_CONTROLLER_EVENTS.METAMASK_NOTIFICATIONS_LIST_UPDATED,
-        this._handleWalletFundingNotification,
-      );
-      this.walletFundsObtainedListenerSetup = true;
-    }
   }
 
   resetStates(resetMethods) {

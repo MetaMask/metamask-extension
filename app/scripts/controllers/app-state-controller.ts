@@ -133,13 +133,19 @@ export type AppStateControllerRequestQrCodeScanAction = {
   handler: (request: QrScanRequest) => Promise<SerializedUR>;
 };
 
+export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
+  type: 'AppStateController:setCanTrackWalletFundsObtained';
+  handler: AppStateController['setCanTrackWalletFundsObtained'];
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
 export type AppStateControllerActions =
   | AppStateControllerGetStateAction
   | AppStateControllerGetUnlockPromiseAction
-  | AppStateControllerRequestQrCodeScanAction;
+  | AppStateControllerRequestQrCodeScanAction
+  | AppStateControllerSetCanTrackWalletFundsObtainedAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -652,6 +658,11 @@ export class AppStateController extends BaseController<
     this.messagingSystem.registerActionHandler(
       'AppStateController:requestQrCodeScan',
       this.#requestQrCodeScan.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AppStateController:setCanTrackWalletFundsObtained',
+      this.setCanTrackWalletFundsObtained.bind(this),
     );
 
     this.#approvalRequestId = null;
