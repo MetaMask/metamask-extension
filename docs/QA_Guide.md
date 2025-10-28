@@ -11,7 +11,7 @@ Steps to mark a full pass of QA complete.
   - Transactions (unapproved txs -> rejected/submitted -> confirmed)
   - Nonces/LocalNonces
 - Vault integrity
-  - create vault
+  - Create vault
   - Log out
   - Log in again
   - Log out
@@ -35,10 +35,10 @@ Steps to mark a full pass of QA complete.
     - (https://tmashuang.github.io/demo-dapp)
   - Check account balances
 - Token Management
-  - create a token with tokenfactory (http://tokenfactory.surge.sh/#/factory)
+  - Create a token with tokenfactory (http://tokenfactory.surge.sh/#/factory)
   - Add that token to the token view
   - Send that token to another metamask address.
-  - confirm the token arrived.
+  - Confirm the token arrived.
 - Send a transaction and sign a message (https://danfinlay.github.io/js-eth-personal-sign-examples/) for each keyring type
   - hd keyring
   - imported keyring
