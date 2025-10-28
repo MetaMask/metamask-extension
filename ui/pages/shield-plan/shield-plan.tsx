@@ -60,8 +60,8 @@ import {
   TokenWithApprovalAmount,
   useAvailableTokenBalances,
   useSubscriptionPaymentMethods,
-  useSubscriptionPricing,
   useSubscriptionProductPlans,
+  useUseSubscriptionsWithPricing,
 } from '../../hooks/subscription/useSubscriptionPricing';
 import {
   setLastUsedSubscriptionPaymentDetails,
@@ -70,7 +70,6 @@ import {
 import {
   useSubscriptionCryptoApprovalTransaction,
   useUserSubscriptionByProduct,
-  useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -96,13 +95,13 @@ const ShieldPlan = () => {
     getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
   );
   const {
+    subscriptionPricing,
     subscriptions,
     trialedProducts,
-    loading: subscriptionsLoading,
-    error: subscriptionsError,
-  } = useUserSubscriptions({
-    refetch: true, // always fetch latest subscriptions state in shield plan screen
-  });
+    loading: subscriptionsAndPricingRequestLoading,
+    error: subscriptionsAndPricingRequestError,
+  } = useUseSubscriptionsWithPricing();
+
   const shieldSubscription = useUserSubscriptionByProduct(
     PRODUCT_TYPES.SHIELD,
     subscriptions,
@@ -119,14 +118,6 @@ const ShieldPlan = () => {
   const [selectedPlan, setSelectedPlan] = useState<RecurringInterval>(
     lastUsedPaymentDetails?.plan || RECURRING_INTERVALS.year,
   );
-
-  const {
-    subscriptionPricing,
-    loading: subscriptionPricingLoading,
-    error: subscriptionPricingError,
-  } = useSubscriptionPricing({
-    refetch: true, // always fetch latest price
-  });
 
   const pricingPlans = useSubscriptionProductPlans(
     PRODUCT_TYPES.SHIELD,
@@ -253,11 +244,8 @@ const ShieldPlan = () => {
   }, [cryptoPaymentMethod?.chains]);
 
   const loading =
-    subscriptionsLoading ||
-    subscriptionPricingLoading ||
-    subscriptionResult.pending;
-  const error =
-    subscriptionsError || subscriptionPricingError || subscriptionResult.error;
+    subscriptionsAndPricingRequestLoading || subscriptionResult.pending;
+  const error = subscriptionsAndPricingRequestError || subscriptionResult.error;
 
   const plans: Plan[] = useMemo(
     () =>
