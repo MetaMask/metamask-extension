@@ -19,7 +19,16 @@
     },
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": {
-      "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+      "orderedNetworkList": {
+        "0": "object",
+        "1": "object",
+        "2": "object",
+        "3": "object",
+        "4": "object",
+        "5": "object",
+        "6": "object",
+        "7": "object"
+      }
     },
     "NetworkEnablementController": {
       "enabledNetworkMap": { "eip155": "object", "solana": "object" }
