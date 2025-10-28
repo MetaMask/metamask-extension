@@ -69,7 +69,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { ActivityListItem } from '../../multichain/activity-list-item';
 import {
