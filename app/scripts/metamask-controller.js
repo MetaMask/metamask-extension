@@ -751,16 +751,6 @@ export default class MetamaskController extends EventEmitter {
       this._onLock(),
     );
 
-    this.userOperationController.hub.on(
-      'user-operation-added',
-      this._onUserOperationAdded.bind(this),
-    );
-
-    this.userOperationController.hub.on(
-      'transaction-updated',
-      this._onUserOperationTransactionUpdated.bind(this),
-    );
-
     // on/off shield controller based on shield subscription
     this.controllerMessenger.subscribe(
       'SubscriptionController:stateChange',
@@ -8456,58 +8446,6 @@ export default class MetamaskController extends EventEmitter {
       {
         matomoEvent: true,
       },
-    );
-  }
-
-  _onUserOperationAdded(userOperationMeta) {
-    const transactionMeta = this.txController.state.transactions.find(
-      (tx) => tx.id === userOperationMeta.id,
-    );
-
-    if (!transactionMeta) {
-      return;
-    }
-
-    if (transactionMeta.type === TransactionType.swap) {
-      this.controllerMessenger.publish(
-        'TransactionController:transactionNewSwap',
-        { transactionMeta },
-      );
-    } else if (transactionMeta.type === TransactionType.swapApproval) {
-      this.controllerMessenger.publish(
-        'TransactionController:transactionNewSwapApproval',
-        { transactionMeta },
-      );
-    }
-  }
-
-  _onUserOperationTransactionUpdated(transactionMeta) {
-    const updatedTransactionMeta = {
-      ...transactionMeta,
-      txParams: {
-        ...transactionMeta.txParams,
-        from: this.accountsController.getSelectedAccount().address,
-      },
-    };
-
-    const transactionExists = this.txController.state.transactions.some(
-      (tx) => tx.id === updatedTransactionMeta.id,
-    );
-
-    if (!transactionExists) {
-      this.txController.update((state) => {
-        state.transactions.push(updatedTransactionMeta);
-      });
-    }
-
-    this.txController.updateTransaction(
-      updatedTransactionMeta,
-      'Generated from user operation',
-    );
-
-    this.controllerMessenger.publish(
-      'TransactionController:transactionStatusUpdated',
-      { transactionMeta: updatedTransactionMeta },
     );
   }
 
