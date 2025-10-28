@@ -16,6 +16,7 @@ import {
   getAllChainsToPoll,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
+import { getAllNfts, getNftContracts } from '../../../ducks/metamask/metamask';
 import { detectNfts, updateIncomingTransactions } from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
@@ -49,6 +50,8 @@ export const AccountOverviewTabs = ({
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const allChainIds = useSelector(getAllChainsToPoll);
+  const allNfts = useSelector(getAllNfts);
+  const nftContracts = useSelector(getNftContracts);
 
   useAssetListTokenDetection();
 
@@ -56,7 +59,11 @@ export const AccountOverviewTabs = ({
     (tabName: AccountOverviewTabKey) => {
       onTabClick(tabName);
       if (tabName === AccountOverviewTabKey.Nfts) {
-        dispatch(detectNfts(allChainIds));
+        // Check if NFTs have already been detected to avoid unnecessary re-detection
+        const hasExistingNftData = Object.keys(allNfts).length > 0 || Object.keys(nftContracts).length > 0;
+        if (!hasExistingNftData) {
+          dispatch(detectNfts(allChainIds));
+        }
       }
       if (tabName === AccountOverviewTabKey.Activity) {
         dispatch(updateIncomingTransactions());
@@ -76,7 +83,7 @@ export const AccountOverviewTabs = ({
         name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
       });
     },
-    [onTabClick],
+    [onTabClick, allChainIds, allNfts, nftContracts, dispatch],
   );
 
   const onClickAsset = useCallback(
