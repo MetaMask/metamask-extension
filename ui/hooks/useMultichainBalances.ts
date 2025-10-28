@@ -70,13 +70,13 @@ const useNonEvmAssetsWithBalances = (
           chainId,
           symbol: assetMetadataById[caipAssetId]?.symbol ?? '',
           assetId: caipAssetId,
-          address: '',
+          address: assetReference,
           string: balancesByAssetId[caipAssetId]?.amount ?? '0',
           balance: balancesByAssetId[caipAssetId]?.amount ?? '0',
           decimals: assetMetadataById[caipAssetId]?.units[0]?.decimals,
           image: assetMetadataById[caipAssetId]?.iconUrl ?? '',
           type: assetNamespace === 'token' ? AssetType.token : AssetType.native,
-          accountType: accountType,
+          accountType,
           tokenFiatAmount: new BigNumber(
             balancesByAssetId[caipAssetId]?.amount ?? '1',
           )
@@ -91,6 +91,7 @@ const useNonEvmAssetsWithBalances = (
     assetsByAccountId,
     accountId,
     nonEvmBalancesByAccountId,
+    accountType,
   ]);
 
   return nonEvmTokensWithFiatBalances;

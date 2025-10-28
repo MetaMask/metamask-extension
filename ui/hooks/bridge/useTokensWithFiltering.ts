@@ -37,7 +37,6 @@ import type {
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
 import type { BridgeToken } from '../../ducks/bridge/types';
-import { getInternalAccountsByScope } from '../../selectors/accounts';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
 const buildTokenData = (
@@ -114,7 +113,6 @@ type FilterPredicate = (
  * - all other tokens
  *
  * @param chainId - the selected src/dest chainId
- * @param selectedToken - the selected token to show at the top of the token list
  * @param tokenToExclude - a token to exclude from the token list, usually the token being swapped from
  * @param tokenToExclude.symbol
  * @param tokenToExclude.address
@@ -123,7 +121,6 @@ type FilterPredicate = (
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
-  selectedToken?: BridgeToken,
   tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
   accountAddress?: string,
 ) => {
@@ -133,20 +130,6 @@ export const useTokensWithFiltering = (
 
   const { assetsWithBalance: multichainTokensWithBalance } =
     useMultichainBalances(accountAddress);
-
-  // Get Bitcoin account for the selected chain to access its account type
-  // Match by address to ensure we get the correct account type for the specific account
-  const bitcoinAccount = useSelector((state: BridgeAppState) => {
-    if (!chainId || !isBitcoinChainId(chainId) || !accountAddress) {
-      return undefined;
-    }
-    const caipChainId = formatChainIdToCaip(chainId);
-    const accounts = getInternalAccountsByScope(state, caipChainId);
-    // Find the specific account that matches the accountAddress
-    return accounts.find(
-      (acc) => acc.address.toLowerCase() === accountAddress.toLowerCase(),
-    );
-  });
 
   const cachedTokens = useSelector(
     (state: BridgeAppState) => state.metamask.tokensChainsCache,
@@ -282,7 +265,7 @@ export const useTokensWithFiltering = (
                 chainId: token.chainId,
                 tokenFiatAmount: token.tokenFiatAmount,
                 decimals: token.decimals,
-                address: token.address,
+                address: '',
                 type: AssetType.native,
                 balance: token.balance ?? '0',
                 string: token.string ?? undefined,
@@ -366,8 +349,6 @@ export const useTokensWithFiltering = (
       chainId,
       tokenList,
       tokenToExclude,
-      selectedToken,
-      bitcoinAccount,
     ],
   );
   return {

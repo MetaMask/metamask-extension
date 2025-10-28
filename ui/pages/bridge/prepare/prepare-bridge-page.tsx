@@ -274,7 +274,6 @@ const PrepareBridgePage = ({
     isLoading: isToTokensLoading,
   } = useTokensWithFiltering(
     toChain?.chainId ?? fromChain?.chainId,
-    toToken,
     fromChain?.chainId === toChain?.chainId && fromToken && fromChain
       ? (() => {
           // Determine the address format based on chain type
