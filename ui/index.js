@@ -249,10 +249,14 @@ async function runInitialActions(store) {
     const browserName = getBrowserName().toLowerCase();
     const { os } = initialState.metamask.browserEnvironment || {};
     if (os && browserName) {
-      await store.dispatch(actions.setBrowserEnvironment(os, browserName));
+      store
+        .dispatch(actions.setBrowserEnvironment(os, browserName))
+        .catch((err) => {
+          log.error('Failed to update browser environment:', err);
+        });
     }
   } catch (error) {
-    log.error('Failed to update browser environment:', error);
+    log.error('Failed to get browser name:', error);
   }
 
   // This block autoswitches chains based on the last chain used
