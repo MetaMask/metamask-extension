@@ -75,7 +75,7 @@ describe('ShieldSubscriptionApproveInfo', () => {
 
     expect(getByText(tEn('transactionShield') as string)).toBeInTheDocument();
     expect(getByText('$8/month (Monthly)' as string)).toBeInTheDocument();
-    expect(getByText('14 days free trial')).toBeInTheDocument();
+    expect(getByText(tEn('freeTrialDays', [14]) as string)).toBeInTheDocument();
     expect(getByText(tEn('estimatedChanges') as string)).toBeInTheDocument();
     expect(getByText(tEn('youApprove') as string)).toBeInTheDocument();
     expect(getByText('96')).toBeInTheDocument();

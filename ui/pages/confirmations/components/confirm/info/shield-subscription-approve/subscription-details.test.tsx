@@ -29,7 +29,7 @@ describe('SubscriptionDetails', () => {
 
     expect(getByText(tEn('transactionShield') as string)).toBeInTheDocument();
     expect(getByText('$80/year (Annual)' as string)).toBeInTheDocument();
-    expect(getByText('14 days free trial')).toBeInTheDocument();
+    expect(getByText(tEn('freeTrialDays', [14]) as string)).toBeInTheDocument();
   });
 
   it('renders monthly plan without trial correctly', () => {
