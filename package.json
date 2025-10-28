@@ -359,7 +359,7 @@
     "@metamask/solana-wallet-snap": "^2.4.6",
     "@metamask/solana-wallet-standard": "^0.6.0",
     "@metamask/streams": "^0.4.0",
-    "@metamask/subscription-controller": "^2.0.0",
+    "@metamask/subscription-controller": "npm:@metamask-previews/subscription-controller@3.0.0-preview-d74d2f9f",
     "@metamask/transaction-controller": "^60.10.0",
     "@metamask/user-operation-controller": "^39.0.0",
     "@metamask/utils": "^11.4.2",

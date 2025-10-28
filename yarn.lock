@@ -5675,6 +5675,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/base-controller@npm:9.0.0"
+  dependencies:
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
+    immer: "npm:^9.0.6"
+  checksum: 10/27554d34ec85c4b585b87850c90dfeaaf9c7e6430f2ab2fa80a1ec06ccc17641e118afab7ad765a0b7255ffef37bc9f6ca5065d459228a2dc660bc463293310d
+  languageName: node
+  linkType: hard
+
 "@metamask/bitcoin-wallet-snap@npm:^1.3.0":
   version: 1.3.0
   resolution: "@metamask/bitcoin-wallet-snap@npm:1.3.0"
@@ -7257,6 +7268,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/polling-controller@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@metamask/polling-controller@npm:15.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/utils": "npm:^11.8.1"
+    "@types/uuid": "npm:^8.3.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^25.0.0
+  checksum: 10/e1f5d45ce3b083d154ccacba54453bdeea6bbfafc461be559ce15ae435e0df500ebab8ffd06a5e7bc52e904c29d06c1a5ca0a29193f8778ca39dfd134a7f0794
+  languageName: node
+  linkType: hard
+
 "@metamask/post-message-stream@npm:^10.0.0":
   version: 10.0.0
   resolution: "@metamask/post-message-stream@npm:10.0.0"
@@ -7851,17 +7878,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/subscription-controller@npm:2.0.0"
+"@metamask/subscription-controller@npm:@metamask-previews/subscription-controller@3.0.0-preview-d74d2f9f":
+  version: 3.0.0-preview-d74d2f9f
+  resolution: "@metamask-previews/subscription-controller@npm:3.0.0-preview-d74d2f9f"
   dependencies:
-    "@metamask/base-controller": "npm:^8.4.1"
+    "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.14.1"
-    "@metamask/polling-controller": "npm:^14.0.1"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/polling-controller": "npm:^15.0.0"
     "@metamask/utils": "npm:^11.8.1"
   peerDependencies:
-    "@metamask/profile-sync-controller": ^25.0.0
-  checksum: 10/6fcbf6e5619ab096964d5ffcf526c4c1b16d4f5269bf02e4fdcb793d0f812a679c197d17bdb76a24e4b9c58664d27fddbc6b96a91f9928fd6f8af8bac05258bc
+    "@metamask/profile-sync-controller": ^26.0.0
+  checksum: 10/50ef8bd814a496ad126e9ef8ff9b8da6438763525c1e4e1995a5f35d096139a7b8c2428db7c9123c4c58fbfc118132915e97396a8ef3b0a7d33670c1e0471640
   languageName: node
   linkType: hard
 
@@ -31925,7 +31953,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.4.6"
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:^2.0.0"
+    "@metamask/subscription-controller": "npm:@metamask-previews/subscription-controller@3.0.0-preview-d74d2f9f"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
