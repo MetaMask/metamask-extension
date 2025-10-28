@@ -931,6 +931,10 @@ describe('Balance change selectors', () => {
 });
 
 describe('getAssetsBySelectedAccountGroup', () => {
+  beforeEach(() => {
+    getAssetsBySelectedAccountGroup.memoizedResultFunc.clearCache();
+  });
+
   const mockState = {
     metamask: {
       accountTree: 'mockAccountTree',
@@ -952,17 +956,21 @@ describe('getAssetsBySelectedAccountGroup', () => {
 
   it('calls the imported selector with the prepared initial state', () => {
     const selectorMock = jest.mocked(selectAssetsBySelectedAccountGroup);
-    const expectedResult = {};
-    selectorMock.mockReturnValue(expectedResult);
+    const selectorMockResult = {};
+    selectorMock.mockReturnValueOnce(selectorMockResult);
 
     const result = getAssetsBySelectedAccountGroup(mockState);
 
     expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
-    expect(result).toBe(expectedResult);
+    expect(result).toBe(selectorMockResult);
   });
 });
 
 describe('getAsset', () => {
+  beforeEach(() => {
+    getAssetsBySelectedAccountGroup.memoizedResultFunc.clearCache();
+  });
+
   const mockState = {
     metamask: {
       accountTree: 'mockAccountTree',
@@ -979,12 +987,13 @@ describe('getAsset', () => {
       assetsMetadata: 'mockAssetsMetadata',
       balances: 'mockBalances',
       conversionRates: 'mockConversionRates',
+      testId: 'yyyy',
     },
   };
 
   it('returns the asset for the given assetId and chainId', () => {
     const selectorMock = jest.mocked(selectAssetsBySelectedAccountGroup);
-    const expectedResult = {
+    const selectorMockResult = {
       '0x1': [
         {
           accountType: 'eip155:eoa',
@@ -1027,7 +1036,7 @@ describe('getAsset', () => {
         },
       ],
     } as AccountGroupAssets;
-    selectorMock.mockReturnValue(expectedResult);
+    selectorMock.mockReturnValueOnce(selectorMockResult);
 
     const result = getAsset(
       mockState,
