@@ -28,6 +28,7 @@ import {
 import {
   BlockSize,
   BorderRadius,
+  TextColor as DsTextColor,
 } from '../../../../helpers/constants/design-system';
 import { useClaimState } from '../../../../hooks/claims/useClaimState';
 // TODO: Remove restricted import
@@ -319,22 +320,11 @@ const SubmitClaimForm = () => {
         placeholder="johncarpenter@sample.com"
         inputProps={{ 'data-testid': 'shield-claim-email-input' }}
         helpText={
-          <Box>
-            {errors.email && (
-              <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
-                {errors.email.msg}
-              </Text>
-            )}
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {t('shieldClaimEmailHelpText')}
-            </Text>
-          </Box>
+          errors.email ? errors.email.msg : t('shieldClaimEmailHelpText')
         }
         helpTextProps={{
           'data-testid': 'shield-claim-help-text',
+          color: DsTextColor.textAlternative,
         }}
         id="email"
         name="email"
@@ -354,6 +344,7 @@ const SubmitClaimForm = () => {
         }}
         helpTextProps={{
           'data-testid': 'shield-claim-impacted-wallet-address-help-text',
+          color: DsTextColor.textAlternative,
         }}
         helpText={
           errors.impactedWalletAddress
@@ -373,16 +364,19 @@ const SubmitClaimForm = () => {
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
         placeholder={'e.g. a1084235686add...q46q8wurgw'}
-        inputProps={{
-          'data-testid': 'shield-claim-impacted-tx-hash-input',
-        }}
         helpText={
-          <Box>
-            {errors.impactedTransactionHash && (
-              <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
-                {errors.impactedTransactionHash.msg}
-              </Text>
-            )}
+          errors.impactedTransactionHash ? (
+            <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
+              {`${errors.impactedTransactionHash?.msg}. `}
+              <TextButton
+                size={TextButtonSize.BodySm}
+                className="min-w-0"
+                asChild
+              >
+                <a href="#">{t('shieldClaimImpactedTxHashHelpTextLink')}</a>
+              </TextButton>
+            </Text>
+          ) : (
             <Text
               variant={TextVariant.BodySm}
               color={TextColor.TextAlternative}
@@ -396,7 +390,7 @@ const SubmitClaimForm = () => {
                 <a href="#">{t('shieldClaimImpactedTxHashHelpTextLink')}</a>
               </TextButton>
             </Text>
-          </Box>
+          )
         }
         id="impacted-tx-hash"
         name="impacted-tx-hash"
@@ -416,21 +410,12 @@ const SubmitClaimForm = () => {
         }}
         helpTextProps={{
           'data-testid': 'shield-claim-reimbursement-wallet-address-help-text',
+          color: DsTextColor.textAlternative,
         }}
         helpText={
-          <Box>
-            {errors.reimbursementWalletAddress && (
-              <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
-                {errors.reimbursementWalletAddress.msg}
-              </Text>
-            )}
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {t('shieldClaimReimbursementWalletAddressHelpText')}
-            </Text>
-          </Box>
+          errors.reimbursementWalletAddress
+            ? errors.reimbursementWalletAddress.msg
+            : t('shieldClaimReimbursementWalletAddressHelpText')
         }
         id="reimbursement-wallet-address"
         name="reimbursement-wallet-address"
