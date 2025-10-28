@@ -8,7 +8,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
-import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import { completeOnboardFlowIdentity } from '../identity/flows';
 import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import {
   accountsToMockForAccountsSync,
@@ -49,12 +49,7 @@ describe('Add wallet', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await completeImportSRPOnboardingFlow({
-          driver,
-          fillSrpWordByWord: true,
-        });
-        // Allow syncing to finish
-        await driver.delay(3000);
+        await completeOnboardFlowIdentity(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
