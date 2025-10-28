@@ -908,6 +908,23 @@
     },
     "@metamask/base-controller": {
       "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/chain-agnostic-permission>@metamask/network-controller>@metamask/base-controller": {
+      "globals": {
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/multichain-api-middleware>@metamask/network-controller>@metamask/base-controller": {
+      "globals": {
         "console.error": true,
         "setTimeout": true
       },
@@ -980,7 +997,7 @@
       "packages": {
         "@metamask/chain-agnostic-permission>@metamask/api-specs": true,
         "@metamask/controller-utils": true,
-        "@metamask/permission-controller": true,
+        "@metamask/chain-agnostic-permission>@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "lodash": true
@@ -1062,7 +1079,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/eip-5792-middleware>@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "lodash": true,
         "uuid": true
@@ -1559,7 +1576,7 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
         "@metamask/json-rpc-engine": true,
-        "@metamask/permission-controller": true,
+        "@metamask/multichain-api-middleware>@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
@@ -1700,6 +1717,36 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "deep-freeze-strict": true,
+        "immer": true,
+        "nanoid": true
+      }
+    },
+    "@metamask/chain-agnostic-permission>@metamask/permission-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/chain-agnostic-permission>@metamask/network-controller>@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "deep-freeze-strict": true,
+        "immer": true,
+        "nanoid": true
+      }
+    },
+    "@metamask/multichain-api-middleware>@metamask/permission-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/multichain-api-middleware>@metamask/network-controller>@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
@@ -1952,7 +1999,7 @@
         "@metamask/post-message-stream": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
-        "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": true,
+        "@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -1981,18 +2028,6 @@
       }
     },
     "@metamask/snaps-rpc-methods": {
-      "packages": {
-        "@metamask/snaps-sdk>@metamask/key-tree": true,
-        "@metamask/permission-controller": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/snaps-sdk": true,
-        "@metamask/snaps-utils": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@noble/hashes": true
-      }
-    },
-    "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": {
       "packages": {
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/permission-controller": true,
