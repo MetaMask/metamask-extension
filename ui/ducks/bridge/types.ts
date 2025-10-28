@@ -6,6 +6,7 @@ import {
   type ChainId,
   type GenericQuoteRequest,
 } from '@metamask/bridge-controller';
+import { type KeyringAccountType } from '@metamask/keyring-api';
 import { type TxAlert } from '../../../shared/types/security-alerts-api';
 
 export type BridgeToken = {
@@ -21,6 +22,7 @@ export type BridgeToken = {
   tokenFiatAmount?: number | null;
   occurrences?: number;
   aggregators?: string[];
+  accountType?: KeyringAccountType;
 };
 
 export type BridgeState = {

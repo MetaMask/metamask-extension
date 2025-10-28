@@ -73,6 +73,7 @@ describe('lockdown', function (this: Mocha.Suite) {
         ignoredConsoleErrors: [
           'Error: Could not establish connection.',
           'Error: Premature close', // issue #35241
+          'Error: Port disconnected', // issue #37190
         ],
         title: this.test?.fullTitle(),
       },

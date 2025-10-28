@@ -72,6 +72,8 @@ import {
 } from '../../../../selectors/multichain';
 import { MultichainNetworks } from '../../../../../shared/constants/multichain/networks';
 import { Numeric } from '../../../../../shared/modules/Numeric';
+import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
+
 import { useAssetMetadata } from './hooks/useAssetMetadata';
 import type {
   ERC20Asset,
@@ -381,7 +383,7 @@ export function AssetPickerModal({
 
       // Return early when SOLANA is selected since blocked and top tokens are not available
       // All available solana tokens are in the multichainTokensWithBalance results
-      if (selectedNetwork?.chainId === MultichainNetworks.SOLANA) {
+      if (!isEvmChainId(selectedNetwork?.chainId)) {
         return;
       }
 
