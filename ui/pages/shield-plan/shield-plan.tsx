@@ -98,7 +98,6 @@ const ShieldPlan = () => {
     subscriptions,
     trialedProducts,
     loading: subscriptionsLoading,
-    error: subscriptionsError,
   } = useUserSubscriptions({
     refetch: true, // always fetch latest subscriptions state in shield plan screen
   });
@@ -119,13 +118,10 @@ const ShieldPlan = () => {
     lastUsedPaymentDetails?.plan || RECURRING_INTERVALS.year,
   );
 
-  const {
-    subscriptionPricing,
-    loading: subscriptionPricingLoading,
-    error: subscriptionPricingError,
-  } = useSubscriptionPricing({
-    refetch: true, // always fetch latest price
-  });
+  const { subscriptionPricing, loading: subscriptionPricingLoading } =
+    useSubscriptionPricing({
+      refetch: true, // always fetch latest price
+    });
 
   const pricingPlans = useSubscriptionProductPlans(
     PRODUCT_TYPES.SHIELD,
@@ -255,8 +251,6 @@ const ShieldPlan = () => {
     subscriptionsLoading ||
     subscriptionPricingLoading ||
     subscriptionResult.pending;
-  const error =
-    subscriptionsError || subscriptionPricingError || subscriptionResult.error;
 
   const plans: Plan[] = useMemo(
     () =>
@@ -324,7 +318,6 @@ const ShieldPlan = () => {
       >
         {t('shieldPlanTitle')}
       </Header>
-      {error && <Text variant={TextVariant.bodySm}>{error.message}</Text>}
       {loading && <LoadingScreen />}
       {subscriptionPricing && (
         <>
