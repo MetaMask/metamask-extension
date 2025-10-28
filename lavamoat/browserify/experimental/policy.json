@@ -2266,7 +2266,7 @@
         "define": false,
         "devicePixelRatio": false,
         "document": true,
-        "fetch": true,
+        "fetch": false,
         "h": false,
         "importScripts": false,
         "location.href": false,
