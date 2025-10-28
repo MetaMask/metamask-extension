@@ -28,12 +28,15 @@ export async function setupMockingPassThrough(
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
       console.log('Request going to a live server ============', req.url);
-      numNetworkReqs += 1;
       return {};
     },
   });
 
   const mockedEndpoint = await testSpecificMock(server);
+
+  server.on('request-initiated', () => {
+    numNetworkReqs += 1;
+  });
 
   function getNetworkReport(): NetworkReport {
     return { numNetworkReqs };
