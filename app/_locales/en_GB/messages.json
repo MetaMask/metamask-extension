@@ -2687,7 +2687,7 @@
   "form": {
     "message": "form"
   },
-  "freeTrailDays": {
+  "freeTrialDays": {
     "message": "$1 days free trial"
   },
   "from": {
