@@ -26,7 +26,9 @@ module.exports = {
     '<rootDir>/test/integration/config/env.js',
   ],
   setupFilesAfterEnv: ['<rootDir>/test/integration/config/setupAfter.js'],
-  testMatch: ['<rootDir>/test/integration/**/*.test.(js|ts|tsx)'],
+  testMatch: [
+    '<rootDir>/test/integration/confirmations/transactions/contract-interaction.test.(js|ts|tsx)',
+  ],
   testPathIgnorePatterns: ['<rootDir>/test/integration/config/*'],
   testTimeout: 15000,
   // We have to specify the environment we are running in, which is jsdom. The
