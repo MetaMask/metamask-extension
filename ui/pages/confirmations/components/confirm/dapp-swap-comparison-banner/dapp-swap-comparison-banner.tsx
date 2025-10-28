@@ -7,13 +7,13 @@ import {
   ButtonVariant,
   TextButton,
 } from '@metamask/design-system-react';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 
-import { TransactionMeta } from '../../../../../../app/scripts/background';
 import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
 

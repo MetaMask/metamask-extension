@@ -2,6 +2,7 @@ import { QuoteResponse } from '@metamask/bridge-controller';
 import { act } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
+import { mockSwapConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { fetchQuotes } from '../../../../../store/controller-actions/bridge-controller';
@@ -26,51 +27,25 @@ jest.mock('../../../../../store/controller-actions/bridge-controller', () => ({
   fetchQuotes: jest.fn(),
 }));
 
-const confirmationDataMock = {
-  time: new Date().getTime(),
-  chainId: '0xa4b1',
-  id: '66b489a0-aa87-11f0-a866-c513455971f9',
-  networkClientId: 'cc8a125a-ac7e-4390-8ac9-02cb19a9a116',
-  origin: 'https://app.uniswap.org',
-  status: 'unapproved',
-  txParams: {
-    from: '0x178239802520a9c99dcbd791f81326b70298d629',
-    data: '0x3593564c000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000068f0e4df000000000000000000000000000000000000000000000000000000000000000110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000003c0000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000003070b0e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000022000000000000000000000000000000000000000000000000000000000000002a000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e583100000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000002710000000000000000000000000000000000000000000000000000000000000261600000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000020000000000000000000000000fd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb900000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000af88d065e77c8cc2239327c5edb3a432268e5831000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000060000000000000000000000000fd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9000000000000000000000000178239802520a9c99dcbd791f81326b70298d62900000000000000000000000000000000000000000000000000000000000000000c',
-    gas: '0x2af63',
-    to: '0xa51afafe0263b40edaef0df8781ea9aa03e381a3',
-    value: '0x0',
-    estimatedBaseFee: '0xe4e1c0',
-    maxFeePerGas: '0xe4e1c0',
-    maxPriorityFeePerGas: '0xe4e1c0',
-    type: '0x2',
-  },
-  type: 'contractInteraction',
-  simulationData: {
-    tokenBalanceChanges: [
-      {
-        address: '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
-        standard: 'erc20',
-        previousBalance: '0x61467',
-        newBalance: '0x5ed57',
-        difference: '0x2710',
-        isDecrease: true,
-      },
-      {
-        address: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
-        standard: 'erc20',
-        previousBalance: '0x2af0',
-        newBalance: '0x51fa',
-        difference: '0x270a',
-        isDecrease: false,
-      },
-    ],
-  },
+const mockUseDappSwapComparisonLatencyMetricsResponse = {
+  requestDetectionLatency: '1200',
+  quoteRequestLatency: '2400',
+  quoteResponseLatency: '3600',
+  swapComparisonLatency: '1500',
+  updateRequestDetectionLatency: jest.fn(),
+  updateQuoteRequestLatency: jest.fn(),
+  updateQuoteResponseLatency: jest.fn(),
+  updateSwapComparisonLatency: jest.fn(),
 };
+jest.mock('./useDappSwapComparisonLatencyMetrics', () => ({
+  useDappSwapComparisonLatencyMetrics: () =>
+    mockUseDappSwapComparisonLatencyMetricsResponse,
+}));
 
 async function runHook() {
   const response = renderHookWithConfirmContextProvider(
     useDappSwapComparisonInfo,
-    getMockConfirmStateForTransaction(confirmationDataMock as Confirmation),
+    getMockConfirmStateForTransaction(mockSwapConfirmation as Confirmation),
   );
 
   await act(async () => {
@@ -246,15 +221,15 @@ describe('useDappSwapComparisonInfo', () => {
           dapp_swap_comparison: 'loading',
         },
       },
-      '66b489a0-aa87-11f0-a866-c513455971f9',
+      'f8172040-b3d0-11f0-a882-3f99aa2e9f0c',
     );
   });
 
   it('updateTransactionEventFragment with all values', async () => {
     jest.spyOn(Utils, 'fetchTokenExchangeRates').mockResolvedValue({
       '0x0000000000000000000000000000000000000000': 4052.27,
-      '0xaf88d065e77c8cC2239327C5EDb3A432268e5831': 0.999804,
-      '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9': 1,
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': 0.999804,
+      '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798': 1,
     });
     jest.spyOn(TokenUtils, 'fetchAllTokenDetails').mockResolvedValue({
       '0xaf88d065e77c8cc2239327c5edb3a432268e5831': {
@@ -274,47 +249,47 @@ describe('useDappSwapComparisonInfo', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           dapp_swap_comparison: 'completed',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_comparison_total_latency_ms: '0',
+          swap_comparison_total_latency_ms: '1500',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_dapp_from_token_simulated_value_usd: '0.00999804',
+          swap_dapp_from_token_simulated_value_usd: '1',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_dapp_minimum_received_value_usd: '0.00975',
+          swap_dapp_minimum_received_value_usd: '0.000000000000972677317872',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_dapp_network_fee_usd: '0.01069623006255',
+          swap_dapp_network_fee_usd: '0.01119466650091628514',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_dapp_request_detection_latency_ms: '0',
+          swap_dapp_request_detection_latency_ms: '1200',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_dapp_to_token_simulated_value_usd: '0.009994',
+          swap_dapp_to_token_simulated_value_usd: '0.000000000000996995550564',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_from_token_simulated_value_usd: '0.00999804',
+          swap_mm_from_token_simulated_value_usd: '1',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_minimum_received_value_usd: '0.009708',
+          swap_mm_minimum_received_value_usd: '0.000000000000009706097232',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_network_fee_usd: '0.02183867583615',
+          swap_mm_network_fee_usd: '0.01393686346576541082',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_provider: 'openocean',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_quote_request_latency_ms: '0',
+          swap_mm_quote_request_latency_ms: '2400',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_quote_response_latency_ms: '0',
+          swap_mm_quote_response_latency_ms: '3600',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_slippage: 2,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_to_token_simulated_value_usd: '0.009907',
+          swap_mm_to_token_simulated_value_usd: '0.000000000000009905058228',
         },
         sensitiveProperties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_from_token_contract:
-            '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
+            '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_from_token_symbol: 'USDC',
+          swap_from_token_symbol: 'N/A',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_to_token_contract: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
+          swap_to_token_contract: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_to_token_symbol: 'USDT',
+          swap_to_token_symbol: 'N/A',
         },
       },
-      '66b489a0-aa87-11f0-a866-c513455971f9',
+      'f8172040-b3d0-11f0-a882-3f99aa2e9f0c',
     );
   });
 });

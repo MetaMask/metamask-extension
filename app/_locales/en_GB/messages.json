@@ -1753,6 +1753,9 @@
   "currencySymbolDefinition": {
     "message": "The ticker symbol displayed for this network’s currency."
   },
+  "current": {
+    "message": "Current"
+  },
   "currentAccountNotConnected": {
     "message": "Your current account is not connected"
   },
@@ -5435,6 +5438,9 @@
   },
   "save": {
     "message": "Save"
+  },
+  "saveAndEarn": {
+    "message": "Save + Earn"
   },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"
