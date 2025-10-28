@@ -55,7 +55,7 @@ class HomePage {
 
   private readonly multichainTokenListItem = {
     testId: 'multichain-token-list-item-token-name',
-  }
+  };
 
   private readonly nftTab = {
     testId: 'account-overview__nfts-tab',
