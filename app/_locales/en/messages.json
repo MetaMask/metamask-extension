@@ -289,6 +289,9 @@
     "message": "Add $1",
     "description": "$1 represents network name"
   },
+  "addNetworkDescription": {
+    "message": "A site is suggesting additional network details."
+  },
   "addNewAccount": {
     "message": "Add a new Ethereum account"
   },
@@ -582,6 +585,13 @@
   },
   "allTimeLow": {
     "message": "All time low"
+  },
+  "allowAddRpc": {
+    "message": "Add RPC"
+  },
+  "allowAddRpcDescription": {
+    "message": "Allow the site to add a RPC URL for $1.\n\nSet your preferred RPC anytime by going to Networks in Settings",
+    "description": "$1 is the chain name"
   },
   "allowNotifications": {
     "message": "Allow notifications"
@@ -1182,6 +1192,13 @@
   },
   "changePasswordWarningDescription": {
     "message": "Changing your password here will lock MetaMask on other devices you’re using. You’ll need to log in again with your new password."
+  },
+  "checkNetworkConnectivity": {
+    "message": "Check network connectivity."
+  },
+  "checkNetworkConnectivityOr": {
+    "message": "Check network connectivity, or $1.",
+    "description": "$1 is a link to update the network."
   },
   "chooseYourNetwork": {
     "message": "Choose your network"
@@ -1938,6 +1955,9 @@
   "deepLink_thePerpsPage": {
     "message": "the perps page"
   },
+  "deepLink_theRewardsPage": {
+    "message": "the MetaMask Rewards page"
+  },
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
   },
@@ -2668,7 +2688,7 @@
     "message": "form"
   },
   "freeSevenDayTrial": {
-    "message": "Free 7-day trial"
+    "message": "14 days free trial"
   },
   "from": {
     "message": "From"
@@ -4892,6 +4912,9 @@
   "popularNetworks": {
     "message": "Popular networks"
   },
+  "popupView": {
+    "message": "Popup view"
+  },
   "preparingSwap": {
     "message": "Preparing swap..."
   },
@@ -5699,8 +5722,14 @@
   "shieldClaim": {
     "message": "Submit a claim"
   },
+  "shieldClaimChainId": {
+    "message": "Chain ID"
+  },
   "shieldClaimDescription": {
     "message": "Description of case"
+  },
+  "shieldClaimDescriptionPlaceholder": {
+    "message": "Provide a brief summary of the incident"
   },
   "shieldClaimDetails": {
     "message": "You may file a single claim per incident within 21 days of the incident. View the full coverage policy $1.",
@@ -5730,8 +5759,14 @@
   "shieldClaimImpactedTxHashHelpTextLink": {
     "message": "Need help finding it?"
   },
+  "shieldClaimImpactedTxHashNotEligible": {
+    "message": "This transaction was not made within MetaMask and is not eligible for claims."
+  },
   "shieldClaimImpactedWalletAddress": {
     "message": "Impacted wallet address"
+  },
+  "shieldClaimInvalidChainId": {
+    "message": "Please enter a valid chain ID"
   },
   "shieldClaimInvalidEmail": {
     "message": "Please enter a valid email address"
@@ -5852,6 +5887,9 @@
     "message": "Auto renews for $1 until canceled",
     "description": "The $1 is the price of the monthly plan"
   },
+  "shieldPlanBillingDate": {
+    "message": "Billing date"
+  },
   "shieldPlanCard": {
     "message": "Card"
   },
@@ -5878,7 +5916,12 @@
     "description": "The $1 is the price of the monthly plan"
   },
   "shieldPlanNoFunds": {
-    "message": "No available funds"
+    "message": "Insufficient $1 or $2",
+    "description": "$1 or $2 shows the supported token eg. USDC, USDT or mUSD"
+  },
+  "shieldPlanNoFundsOneToken": {
+    "message": "Insufficient $1",
+    "description": "$1 is the one token supported"
   },
   "shieldPlanPayWith": {
     "message": "Pay with"
@@ -6055,6 +6098,9 @@
   },
   "showTestnetNetworksDescription": {
     "message": "Select this to show test networks in network list"
+  },
+  "sidePanelView": {
+    "message": "Side panel view"
   },
   "sign": {
     "message": "Sign"

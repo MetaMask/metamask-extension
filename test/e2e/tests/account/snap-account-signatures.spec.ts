@@ -9,6 +9,7 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
+import { DAPP_PATH } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   personalSignWithSnapAccount,
@@ -31,8 +32,10 @@ describe('Snap Account Signatures', function (this: Suite) {
     it(title, async function () {
       await withFixtures(
         {
-          dapp: true,
-          dappPaths: ['test-dapp', 'snap-simple-keyring-site'],
+          dappOptions: {
+            numberOfTestDapps: 1,
+            customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+          },
           fixtures: new FixtureBuilder().build(),
           testSpecificMock: async (mockServer: Mockttp) => {
             const snapMocks = await mockSnapSimpleKeyringAndSite(
