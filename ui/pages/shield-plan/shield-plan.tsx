@@ -431,7 +431,7 @@ const ShieldPlan = () => {
                       ? selectedToken?.symbol || ''
                       : t('shieldPlanCard')}
                   </Text>
-                  <Icon size={IconSize.Md} name={IconName.ArrowRight} />
+                  <Icon size={IconSize.Md} name={IconName.ArrowDown} />
                 </Box>
               </Box>
             </Box>

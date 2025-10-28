@@ -232,7 +232,7 @@ export const ShieldPaymentModal = ({
                 </Box>
               </Box>
               {hasStableTokenWithBalance && hasMultipleTokenOptions && (
-                <Icon size={IconSize.Md} name={IconName.ArrowRight} />
+                <Icon size={IconSize.Md} name={IconName.ArrowDown} />
               )}
             </Box>
           </Box>
