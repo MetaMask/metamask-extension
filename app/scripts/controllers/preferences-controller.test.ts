@@ -559,7 +559,6 @@ describe('preferences controller', () => {
     });
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   describe('setUseExternalNameSources', () => {
     const { controller } = setupController({});
     it('should default to true', () => {
@@ -571,7 +570,6 @@ describe('preferences controller', () => {
       expect(controller.state.useExternalNameSources).toStrictEqual(false);
     });
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('setUseTransactionSimulations', () => {
     const { controller } = setupController({});
@@ -704,9 +702,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
         useSidePanelAsDefault: true,
-        ///: END:ONLY_INCLUDE_IF
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -737,9 +733,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
         useSidePanelAsDefault: true,
-        ///: END:ONLY_INCLUDE_IF
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
