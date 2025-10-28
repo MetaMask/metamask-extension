@@ -7,7 +7,9 @@ import {
 import { SnapKeyringBuilderMessenger } from '../../../app/scripts/lib/snap-keyring/types';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
+///: BEGIN:ONLY_INCLUDE_IF(tron)
 import { TRON_WALLET_SNAP_ID } from './tron-wallet-snap';
+///: END:ONLY_INCLUDE_IF
 
 /**
  * A constant array that contains the IDs of whitelisted multichain
@@ -20,7 +22,9 @@ import { TRON_WALLET_SNAP_ID } from './tron-wallet-snap';
 const WHITELISTED_SNAPS = [
   BITCOIN_WALLET_SNAP_ID,
   SOLANA_WALLET_SNAP_ID,
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
   TRON_WALLET_SNAP_ID,
+  ///: END:ONLY_INCLUDE_IF
 ];
 
 /**

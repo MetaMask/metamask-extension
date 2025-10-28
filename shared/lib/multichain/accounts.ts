@@ -1,6 +1,7 @@
 import { CaipNamespace, KnownCaipNamespace } from '@metamask/utils';
 import { validate, Network } from 'bitcoin-address-validation';
 import { isAddress } from '@solana/addresses';
+import { TronWeb } from 'tronweb';
 
 /**
  * Returns whether an address is on the Bitcoin mainnet.
@@ -48,7 +49,7 @@ export function isSolanaAddress(address: string): boolean {
  * @returns `true` if the address is a valid Tron address, `false` otherwise.
  */
 export function isTronAddress(address: string): boolean {
-  return address.startsWith('T');
+  return TronWeb.isAddress(address);
 }
 
 /**

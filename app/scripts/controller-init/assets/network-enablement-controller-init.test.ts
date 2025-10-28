@@ -4,12 +4,7 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { NetworkEnablementController } from '@metamask/network-enablement-controller';
-import {
-  BtcScope,
-  SolAccountType,
-  SolScope,
-  TrxScope,
-} from '@metamask/keyring-api';
+import { BtcScope, SolAccountType, SolScope } from '@metamask/keyring-api';
 import { AccountsControllerSelectedAccountChangeEvent } from '@metamask/accounts-controller';
 import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
@@ -52,7 +47,6 @@ function getInitRequestMock(
           multichainNetworkConfigurationsByChainId: {
             [SolScope.Mainnet]: {},
             [BtcScope.Mainnet]: {},
-            [TrxScope.Mainnet]: {},
           },
         },
       };
@@ -176,37 +170,6 @@ describe('NetworkEnablementControllerInit', () => {
     expect(controller.enableNetwork).toHaveBeenCalledWith('0x1');
   });
 
-  it('enables the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted, the current chain ID is Tron mainnet, and there are no Tron accounts', () => {
-    const messenger = new Messenger<
-      AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
-      AccountTreeControllerSelectedAccountGroupChangeEvent
-    >();
-
-    messenger.registerActionHandler(
-      'AccountTreeController:getAccountsFromSelectedAccountGroup',
-      () => [],
-    );
-
-    const request = getInitRequestMock(messenger);
-    const { controller } = NetworkEnablementControllerInit(request);
-
-    controller.state = {
-      enabledNetworkMap: {
-        tron: { [TrxScope.Mainnet]: true },
-      },
-    };
-
-    expect(controller.enableNetwork).not.toHaveBeenCalled();
-
-    messenger.publish(
-      'AccountTreeController:selectedAccountGroupChange',
-      '',
-      '',
-    );
-
-    expect(controller.enableNetwork).toHaveBeenCalledWith('0x1');
-  });
-
   it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted and there are accounts', () => {
     const messenger = new Messenger<
       MockAnyNamespace,
@@ -240,38 +203,6 @@ describe('NetworkEnablementControllerInit', () => {
     expect(controller.enableNetwork).not.toHaveBeenCalled();
   });
 
-  it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted, the current chain ID is Tron mainnet, and there are Tron accounts', () => {
-    const messenger = new Messenger<
-      AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
-      AccountTreeControllerSelectedAccountGroupChangeEvent
-    >();
-
-    messenger.registerActionHandler(
-      'AccountTreeController:getAccountsFromSelectedAccountGroup',
-      // @ts-expect-error: Partial mock.
-      () => [{ type: 'tron:eoa' }],
-    );
-
-    const request = getInitRequestMock(messenger);
-    const { controller } = NetworkEnablementControllerInit(request);
-
-    controller.state = {
-      enabledNetworkMap: {
-        tron: { [TrxScope.Mainnet]: true },
-      },
-    };
-
-    expect(controller.enableNetwork).not.toHaveBeenCalled();
-
-    messenger.publish(
-      'AccountTreeController:selectedAccountGroupChange',
-      '',
-      '',
-    );
-
-    expect(controller.enableNetwork).not.toHaveBeenCalled();
-  });
-
   it('does not enable the Ethereum network when `AccountTreeController:selectedAccountGroupChange` is emitted and multiple networks are enabled', () => {
     const messenger = new Messenger<
       MockAnyNamespace,
@@ -291,7 +222,6 @@ describe('NetworkEnablementControllerInit', () => {
       enabledNetworkMap: {
         solana: { [SolScope.Mainnet]: true },
         bitcoin: { [BtcScope.Mainnet]: true },
-        tron: { [TrxScope.Mainnet]: true },
       },
     };
 
@@ -330,9 +260,6 @@ describe('NetworkEnablementControllerInit', () => {
           [KnownCaipNamespace.Bip122]: {
             [BtcScope.Mainnet]: true,
           },
-          [KnownCaipNamespace.Tron]: {
-            [TrxScope.Mainnet]: true,
-          },
         },
       },
     });
@@ -359,9 +286,6 @@ describe('NetworkEnablementControllerInit', () => {
           },
           [KnownCaipNamespace.Bip122]: {
             [BtcScope.Mainnet]: false,
-          },
-          [KnownCaipNamespace.Tron]: {
-            [TrxScope.Mainnet]: false,
           },
         },
       },
@@ -392,9 +316,6 @@ describe('NetworkEnablementControllerInit', () => {
           [KnownCaipNamespace.Bip122]: {
             [BtcScope.Mainnet]: false,
           },
-          [KnownCaipNamespace.Tron]: {
-            [TrxScope.Mainnet]: false,
-          },
         },
       },
     });
@@ -423,9 +344,6 @@ describe('NetworkEnablementControllerInit', () => {
           },
           [KnownCaipNamespace.Bip122]: {
             [BtcScope.Mainnet]: false,
-          },
-          [KnownCaipNamespace.Tron]: {
-            [TrxScope.Mainnet]: false,
           },
         },
       },

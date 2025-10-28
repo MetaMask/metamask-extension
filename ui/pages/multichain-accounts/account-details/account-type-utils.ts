@@ -140,7 +140,7 @@ export const isBitcoinAccount = (account: InternalAccount): boolean => {
 };
 
 /**
- * Checks if an account is a Bitcoin account
+ * Checks if an account is a Tron account
  *
  * @param account - The internal account object to check.
  */

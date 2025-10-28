@@ -2,7 +2,7 @@ import { Cryptocurrency } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
-import { BtcScope, TrxScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import {
   type SupportedCaipChainId,
   AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,

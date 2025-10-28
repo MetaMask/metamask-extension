@@ -23,20 +23,12 @@ const PORTFOLIO_ORIGINS: string[] = [
 const METAMASK_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
-  KeyringRpcMethod.CreateAccount,
-  KeyringRpcMethod.GetAccountBalances,
   KeyringRpcMethod.FilterAccountChains,
-  KeyringRpcMethod.UpdateAccount,
   KeyringRpcMethod.DeleteAccount,
-  KeyringRpcMethod.ExportAccount,
   KeyringRpcMethod.ListRequests,
   KeyringRpcMethod.GetRequest,
   KeyringRpcMethod.SubmitRequest,
-  KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
-  KeyringRpcMethod.ListAccountTransactions,
-  KeyringRpcMethod.ListAccountAssets,
-  KeyringRpcMethod.DiscoverAccounts,
 ];
 
 /**
@@ -47,19 +39,14 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
   KeyringRpcMethod.CreateAccount,
-  KeyringRpcMethod.GetAccountBalances,
   KeyringRpcMethod.FilterAccountChains,
   KeyringRpcMethod.UpdateAccount,
   KeyringRpcMethod.DeleteAccount,
   KeyringRpcMethod.ExportAccount,
   KeyringRpcMethod.ListRequests,
   KeyringRpcMethod.GetRequest,
-  KeyringRpcMethod.SubmitRequest,
   KeyringRpcMethod.ApproveRequest,
   KeyringRpcMethod.RejectRequest,
-  KeyringRpcMethod.ListAccountTransactions,
-  KeyringRpcMethod.ListAccountAssets,
-  KeyringRpcMethod.DiscoverAccounts,
 ];
 
 /**
@@ -68,20 +55,8 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
 const PORTFOLIO_ALLOWED_METHODS: string[] = [
   KeyringRpcMethod.ListAccounts,
   KeyringRpcMethod.GetAccount,
-  KeyringRpcMethod.CreateAccount,
   KeyringRpcMethod.GetAccountBalances,
-  KeyringRpcMethod.FilterAccountChains,
-  KeyringRpcMethod.UpdateAccount,
-  KeyringRpcMethod.DeleteAccount,
-  KeyringRpcMethod.ExportAccount,
-  KeyringRpcMethod.ListRequests,
-  KeyringRpcMethod.GetRequest,
   KeyringRpcMethod.SubmitRequest,
-  KeyringRpcMethod.ApproveRequest,
-  KeyringRpcMethod.RejectRequest,
-  KeyringRpcMethod.ListAccountTransactions,
-  KeyringRpcMethod.ListAccountAssets,
-  KeyringRpcMethod.DiscoverAccounts,
 ];
 
 /**

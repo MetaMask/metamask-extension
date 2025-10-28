@@ -3239,12 +3239,16 @@ export function getIsSolanaSupportEnabled(state) {
 /**
  * Get the state of the `tronSupportEnabled` remote feature flag.
  *
- * @param {*} state
+ * @param {*} _state
  * @returns The state of the `tronSupportEnabled` remote feature flag.
  */
-export function getIsTronSupportEnabled(state) {
-  const { addTronAccount } = getRemoteFeatureFlags(state);
-  return Boolean(addTronAccount);
+export function getIsTronSupportEnabled(_state) {
+  let enabled = false;
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  const { tronAccounts } = getRemoteFeatureFlags(_state);
+  enabled = isMultichainFeatureEnabled(tronAccounts);
+  ///: END:ONLY_INCLUDE_IF
+  return enabled;
 }
 
 /**
