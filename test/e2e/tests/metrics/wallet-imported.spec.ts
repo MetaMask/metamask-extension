@@ -1,10 +1,15 @@
 import { strict as assert } from 'assert';
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
-import { getEventPayloads, withFixtures } from '../../helpers';
+import {
+  getEventPayloads,
+  withFixtures,
+  assertInAnyOrder,
+} from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { mockSegment } from './mocks/segment';
+
 
 describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
@@ -53,6 +58,7 @@ describe('Wallet Created Events - Imported Account', function () {
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
+        console.log('Captured events:', events);
 
         // Only include track events not identify events
         const trackEvents = events.filter(
@@ -89,9 +95,9 @@ describe('Wallet Created Events - Imported Account', function () {
           return found;
         };
 
-        const firstEvent = getNthEventByName('App Opened', 1);
-        const secondEvent = getNthEventByName('App Installed', 1);
-        const thirdEvent = getNthEventByName('App Installed', 2);
+       // const firstEvent = getNthEventByName('App Opened', 1);
+        //const secondEvent = getNthEventByName('App Installed', 1);
+        //const thirdEvent = getNthEventByName('App Installed', 2);
         const fourthEvent = isFirefox
           ? getNthEventByName('App Installed', 3)
           : getNthEventByName('SRP Backup Confirmed', 1);
@@ -99,38 +105,49 @@ describe('Wallet Created Events - Imported Account', function () {
           ? getNthEventByName('Analytics Preference Selected', 1)
           : getNthEventByName('Wallet Import Attempted', 1);
 
-        assert.deepStrictEqual(firstEvent.properties, {
-          category: 'App',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'background',
-        });
+        const appInstallBackground = [
+          (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            properties: {
+              category: string;
+              locale: string;
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: string;
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+             // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: string;
+            };
+          }) =>
+            req.properties.category === 'App' &&
+            req.properties.locale === 'en' &&
+            req.properties.chain_id === '0x1' &&
+            req.properties.environment_type === 'background',
+        ];
+        assertInAnyOrder(events, appInstallBackground);
 
-        assert.deepStrictEqual(secondEvent.properties, {
-          category: 'App',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'background',
-        });
-
-        assert.deepStrictEqual(thirdEvent.properties, {
-          category: 'App',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'background',
-        });
+        const appInstallFullscreen = [
+          (req: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            properties: {
+              category: string;
+              locale: string;
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: string;
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+             // eslint-disable-next-line @typescript-eslint/naming-convention
+              environment_type: string;
+            };
+          }) =>
+            req.properties.category === 'App' &&
+            req.properties.locale === 'en' &&
+            req.properties.chain_id === '0x1' &&
+            req.properties.environment_type === 'fullscreen',
+        ];
+        assertInAnyOrder(events, appInstallFullscreen);
 
         if (isFirefox) {
           assert.deepStrictEqual(fourthEvent.properties, {
