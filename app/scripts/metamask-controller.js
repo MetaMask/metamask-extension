@@ -819,7 +819,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: petnamesBridgeMessenger,
     }).init();
 
-    // Set up wallet funds monitoring
     const walletFundsObtainedMonitorMessenger =
       this.controllerMessenger.getRestricted({
         name: 'WalletFundsObtainedMonitor',

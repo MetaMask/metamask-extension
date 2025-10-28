@@ -140,6 +140,15 @@ describe('WalletFundsObtainedMonitor', () => {
         expect.any(Function),
       );
     });
+
+    it('should not subscribe multiple times when setupMonitoring is called repeatedly', () => {
+      walletFundsObtainedMonitor.setupMonitoring();
+      walletFundsObtainedMonitor.setupMonitoring();
+      walletFundsObtainedMonitor.setupMonitoring();
+
+      // Should only subscribe once
+      expect(messenger.subscribe).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('createWalletFundingNotificationHandler', () => {

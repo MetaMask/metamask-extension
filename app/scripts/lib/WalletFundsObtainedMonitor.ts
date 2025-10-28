@@ -105,7 +105,8 @@ export class WalletFundsObtainedMonitor {
       }
 
       // Use the last (oldest) notification
-      const { chain_id: chainId, data } = filteredNotifications.at(-1)! as {
+      const { chain_id: chainId, data } = filteredNotifications.at(-1) as {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: number;
         data: { token?: { usd?: string }; amount?: { usd?: string } };
       };
@@ -143,6 +144,11 @@ export class WalletFundsObtainedMonitor {
    * via ERC20 or ETH received events from the notification service.
    */
   setupMonitoring(): void {
+    // Avoid setting up the listener multiple times
+    if (this.#listenerSetup) {
+      return;
+    }
+
     // Only target created wallets (not imported or restored)
     const onboardingState = this.#messenger.call(
       'OnboardingController:getState',
@@ -178,7 +184,7 @@ export class WalletFundsObtainedMonitor {
         'AppStateController:setCanTrackWalletFundsObtained',
         false,
       );
-    } else if (!this.#listenerSetup) {
+    } else {
       this.#handleWalletFundingNotification =
         this.#createWalletFundingNotificationHandler();
       this.#messenger.subscribe(
