@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
@@ -68,7 +68,7 @@ export const BaseAccountDetails = ({
   account,
   address,
 }: BaseAccountDetailsProps) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -89,7 +89,7 @@ export const BaseAccountDetails = ({
   const [isEditingAccountName, setIsEditingAccountName] = useState(false);
 
   const handleShowAddress = () => {
-    history.push(`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${address}`);
+    navigate(`${ACCOUNT_DETAILS_QR_CODE_ROUTE}/${address}`);
   };
 
   const { keyring } = account.metadata;
@@ -97,8 +97,8 @@ export const BaseAccountDetails = ({
 
   const handleNavigation = useCallback(() => {
     dispatch(setAccountDetailsAddress(''));
-    history.goBack();
-  }, [history, dispatch]);
+    navigate(-1);
+  }, [navigate, dispatch]);
 
   // we can never have a scenario where an account is not associated with a wallet.
   const { id: walletId, name: walletName } = useSelector((state) =>
@@ -140,7 +140,7 @@ export const BaseAccountDetails = ({
     });
 
     dispatch(setAccountDetailsAddress(''));
-    history.push(DEFAULT_ROUTE);
+    navigate(DEFAULT_ROUTE);
   }, [
     dispatch,
     account.address,
@@ -222,7 +222,7 @@ export const BaseAccountDetails = ({
               />
             }
             onClick={() => {
-              history.push(walletRoute);
+              navigate(walletRoute);
             }}
           />
         </Box>

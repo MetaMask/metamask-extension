@@ -1,18 +1,17 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { ButtonVariant } from '../../component-library';
 import {
   NotificationDetailButton,
   NotificationDetailButtonProps,
 } from './notification-detail-button';
 
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
   return {
-    ...original,
-    useHistory: () => ({
-      push: jest.fn(),
-    }),
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
   };
 });
 
@@ -25,7 +24,7 @@ describe('NotificationDetailButton', () => {
   };
 
   it('renders without crashing', () => {
-    render(<NotificationDetailButton {...defaultProps} />);
+    renderWithProvider(<NotificationDetailButton {...defaultProps} />);
     expect(screen.getByText(defaultProps.text)).toBeInTheDocument();
     const button = screen.getByRole('link', { name: defaultProps.text });
     expect(button).toHaveAttribute('href', defaultProps.href);

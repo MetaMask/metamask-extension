@@ -1,9 +1,17 @@
 import React from 'react';
 import { fireEvent, act } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
@@ -162,13 +170,12 @@ describe('MultichainAccountMenu', () => {
   });
 
   it('navigates to account details page when clicking the account details option', async () => {
-    const { history } = renderComponent({
+    renderComponent({
       accountGroupId: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default',
       isRemovable: false,
       isOpen: true,
       onToggle: jest.fn(),
     });
-    const mockHistoryPush = jest.spyOn(history, 'push');
 
     const accountDetailsOption = document.querySelector(menuItemSelector);
     expect(accountDetailsOption).not.toBeNull();
@@ -179,7 +186,7 @@ describe('MultichainAccountMenu', () => {
       });
     }
 
-    expect(mockHistoryPush).toHaveBeenCalledWith(
+    expect(mockUseNavigate).toHaveBeenCalledWith(
       '/multichain-account-details/entropy%3A01JKAF3DSGM3AB87EM9N0K41AJ%2Fdefault',
     );
   });

@@ -12,7 +12,7 @@ import {
   AccountWalletType,
 } from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   Box,
   Checkbox,
@@ -76,7 +76,7 @@ export const MultichainAccountList = ({
   showAccountCheckbox = false,
 }: MultichainAccountListProps) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
@@ -181,7 +181,7 @@ export const MultichainAccountList = ({
       });
 
       dispatch(setSelectedMultichainAccount(accountGroupId));
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     };
 
     const handleAccountClickToUse =
@@ -396,7 +396,7 @@ export const MultichainAccountList = ({
     hdEntropyIndex,
     defaultHomeActiveTabName,
     dispatch,
-    history,
+    navigate,
     isInSearchMode,
     displayWalletHeader,
     allBalances,

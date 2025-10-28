@@ -372,13 +372,74 @@ const ShieldPlan = mmLazy(
 // End Lazy Routes
 
 const MemoizedReviewPermissionsWrapper = React.memo(
-  (props: RouteComponentProps) => (
-    <State2Wrapper
-      {...props}
-      state1Component={ReviewPermissions}
-      state2Component={MultichainReviewPermissions}
-    />
-  ),
+  (props: RouteComponentProps<{ origin: string }>) => {
+    // Extract origin from v5 route params and pass it to components
+    const origin = props.match?.params?.origin;
+    return (
+      <State2Wrapper
+        {...props}
+        origin={origin}
+        state1Component={ReviewPermissions}
+        state2Component={MultichainReviewPermissions}
+      />
+    );
+  },
+);
+
+const MemoizedMultichainAccountDetailsPageWrapper = React.memo(
+  (props: RouteComponentProps<{ id: string }>) => {
+    // Extract id from v5 route params and pass it to component
+    const id = props.match?.params?.id;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const MultichainAccountDetailsPageWithProps =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      MultichainAccountDetailsPage as any;
+    return <MultichainAccountDetailsPageWithProps id={id} />;
+  },
+);
+
+const MemoizedMultichainAccountAddressListPageWrapper = React.memo(
+  (props: RouteComponentProps<{ accountGroupId: string }>) => {
+    // Extract accountGroupId from v5 route params and pass it to component
+    const accountGroupId = props.match?.params?.accountGroupId;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const MultichainAccountAddressListPageWithProps =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      MultichainAccountAddressListPage as any;
+    return (
+      <MultichainAccountAddressListPageWithProps
+        accountGroupId={accountGroupId}
+      />
+    );
+  },
+);
+
+const MemoizedMultichainAccountPrivateKeyListPageWrapper = React.memo(
+  (props: RouteComponentProps<{ accountGroupId: string }>) => {
+    // Extract accountGroupId from v5 route params and pass it to component
+    const accountGroupId = props.match?.params?.accountGroupId;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const MultichainAccountPrivateKeyListPageWithProps =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      MultichainAccountPrivateKeyListPage as any;
+    return (
+      <MultichainAccountPrivateKeyListPageWithProps
+        accountGroupId={accountGroupId}
+      />
+    );
+  },
+);
+
+const MemoizedWalletDetailsPageWrapper = React.memo(
+  (props: RouteComponentProps<{ id: string }>) => {
+    // Extract id from v5 route params and pass it to component
+    const id = props.match?.params?.id;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const WalletDetailsPageWithProps =
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      WalletDetailsPage as any;
+    return <WalletDetailsPageWithProps id={id} />;
+  },
 );
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -776,12 +837,12 @@ export default function Routes() {
           />
           <Authenticated
             path={`${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/:accountGroupId`}
-            component={MultichainAccountAddressListPage}
+            component={MemoizedMultichainAccountAddressListPageWrapper}
             exact
           />
           <Authenticated
             path={`${MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE}/:accountGroupId`}
-            component={MultichainAccountPrivateKeyListPage}
+            component={MemoizedMultichainAccountPrivateKeyListPageWrapper}
             exact
           />
           <Authenticated
@@ -791,7 +852,7 @@ export default function Routes() {
           />
           <Authenticated
             path={`${MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE}/:id`}
-            component={MultichainAccountDetailsPage}
+            component={MemoizedMultichainAccountDetailsPageWrapper}
             exact
           />
           <Authenticated
@@ -801,7 +862,7 @@ export default function Routes() {
           />
           <Authenticated
             path={`${MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE}/:id`}
-            component={WalletDetailsPage}
+            component={MemoizedWalletDetailsPageWrapper}
             exact
           />
           <Authenticated
@@ -952,7 +1013,9 @@ export default function Routes() {
       {isIpfsModalOpen ? (
         <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
       ) : null}
-      {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
+      {isBasicConfigurationModalOpen ? (
+        <BasicConfigurationModal location={location} />
+      ) : null}
       {isImportTokensModalOpen ? (
         <ImportTokensModal onClose={() => dispatch(hideImportTokensModal())} />
       ) : null}
@@ -983,7 +1046,7 @@ export default function Routes() {
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
-      <ToastMaster />
+      <ToastMaster location={location} />
     </div>
   );
 }

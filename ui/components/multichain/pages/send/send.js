@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
 import { Tooltip } from 'react-tippy';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
@@ -92,7 +92,7 @@ export const SendPage = () => {
   const sendStage = useSelector(getSendStage);
   const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
@@ -168,9 +168,9 @@ export const SendPage = () => {
         },
         { excludeMetaMetricsId: false },
       );
-      history.push(SEND_ROUTE);
+      navigate(SEND_ROUTE);
     },
-    [dispatch, history, sendAnalytics, trackEvent],
+    [dispatch, navigate, sendAnalytics, trackEvent],
   );
 
   const handleAssetPickerClick = useCallback(
@@ -256,7 +256,7 @@ export const SendPage = () => {
 
     const nextRoute =
       sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
-    history.push(nextRoute);
+    navigate(nextRoute);
   };
 
   useEffect(() => {
