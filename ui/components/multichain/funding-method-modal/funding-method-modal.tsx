@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import {
   Modal,
+  type ModalProps,
   ModalContent,
   ModalOverlay,
   ModalHeader,
@@ -36,9 +37,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import FundingMethodItem from './funding-method-item';
 
-type FundingMethodModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
+type FundingMethodModalProps = Omit<ModalProps, 'children'> & {
   title: string;
   onClickReceive: () => void;
 };
@@ -48,6 +47,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
   onClose,
   title,
   onClickReceive,
+  ...props
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -113,7 +113,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
   }, [chainId, symbol]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} data-testid="funding-method-modal">
+    <Modal isOpen={isOpen} onClose={onClose} {...props}>
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader paddingBottom={2} onClose={onClose}>
