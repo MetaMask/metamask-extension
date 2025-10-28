@@ -65,7 +65,7 @@ const MOCK_CHAINLIST_RESPONSE = [
 ];
 
 describe('Popular Networks', function (this: Suite) {
-  it.only('add custom network and switch the network', async function () {
+  it('add custom network and switch the network', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),

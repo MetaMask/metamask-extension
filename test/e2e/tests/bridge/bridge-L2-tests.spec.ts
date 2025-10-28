@@ -12,9 +12,6 @@ describe('Bridge tests', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // Add Arbitrum
-        await searchAndSwitchToNetworkFromGlobalMenuFlow(driver, 'Arbitrum');
-
         await bridgeTransaction({
           driver,
           quote: {
