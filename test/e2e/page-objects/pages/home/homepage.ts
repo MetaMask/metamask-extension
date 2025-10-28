@@ -53,6 +53,10 @@ class HomePage {
     text: 'Connecting to Localhost 8545',
   };
 
+  private readonly multichainTokenListItem = {
+    testId: 'multichain-token-list-item-token-name',
+  }
+
   private readonly nftTab = {
     testId: 'account-overview__nfts-tab',
   };
@@ -107,8 +111,9 @@ class HomePage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.sendButton,
         this.activityTab,
+        this.sendButton,
+        this.multichainTokenListItem,
         this.tokensTab,
       ]);
     } catch (e) {
