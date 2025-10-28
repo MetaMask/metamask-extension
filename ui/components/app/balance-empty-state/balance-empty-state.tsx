@@ -56,7 +56,6 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = ({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-
   // Track when component is displayed
   useEffect(() => {
     trackEvent({
