@@ -1,10 +1,5 @@
 import { Suite } from 'mocha';
-import {
-  veryLargeDelayMs,
-  PRIVATE_KEY_TWO,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
+import { PRIVATE_KEY_TWO, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { DAPP_PATH, DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -54,13 +49,14 @@ describe('Snap Account Transfers', function (this: Suite) {
           recipientAddress: DEFAULT_FIXTURE_ACCOUNT,
           amount: '1',
         });
+        await driver.waitForSelector('.transaction-status-label--confirmed');
+
         await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
         // check the balance of the 2 accounts are updated
-        await driver.delay(veryLargeDelayMs);
         await accountList.checkAccountBalanceDisplayed('$44,200');
         await accountList.checkAccountBalanceDisplayed('$40,799');
       },
@@ -103,13 +99,14 @@ describe('Snap Account Transfers', function (this: Suite) {
           amount: '1',
           isSyncFlow: false,
         });
+        await driver.waitForSelector('.transaction-status-label--confirmed');
+
         await headerNavbar.checkPageIsLoaded();
         await headerNavbar.openAccountMenu();
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();
 
         // check the balance of the 2 accounts are updated
-        await driver.delay(veryLargeDelayMs);
         await accountList.checkAccountBalanceDisplayed('$44,200');
         await accountList.checkAccountBalanceDisplayed('$40,799');
       },
