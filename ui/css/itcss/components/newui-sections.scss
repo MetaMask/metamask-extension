@@ -199,3 +199,17 @@
   padding: 0 10px;
   background: var(--color-background-default);
 }
+.app.browser-brave.app--sidepanel {
+  .main-container,
+  .multichain-app-header__contents,
+  .page-container,
+  .multichain-page,
+  .multichain-page__inner-container,
+  .multichain-send-page,
+  .snaps,
+  .permissions-connect,
+  .redesigned__send__container,
+  .redesigned__send__wrapper {
+    min-width: 320px;
+  }
+}

@@ -19,6 +19,7 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
 } from '../shared/constants/app';
+import { getBrowserName } from '../shared/modules/browser-runtime.utils';
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
@@ -241,6 +242,18 @@ async function startApp(metamaskState, opts) {
 
 async function runInitialActions(store) {
   const initialState = store.getState();
+
+  // Update browser environment with accurate browser detection from UI
+  // This corrects the initial detection from background which can't detect Brave
+  try {
+    const browserName = getBrowserName().toLowerCase();
+    const { os } = initialState.metamask.browserEnvironment || {};
+    if (os && browserName) {
+      await store.dispatch(actions.setBrowserEnvironment(os, browserName));
+    }
+  } catch (error) {
+    log.error('Failed to update browser environment:', error);
+  }
 
   // This block autoswitches chains based on the last chain used
   // for a given dapp, when there are no pending confimrations

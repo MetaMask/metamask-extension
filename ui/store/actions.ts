@@ -3329,6 +3329,19 @@ export function setCurrentExtensionPopupId(
   };
 }
 
+export function setBrowserEnvironment(
+  os: string,
+  _browserName: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground<void>('setBrowserEnvironment', [
+      os,
+      _browserName,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function abortTransactionSigning(
   transactionId: string,
 
