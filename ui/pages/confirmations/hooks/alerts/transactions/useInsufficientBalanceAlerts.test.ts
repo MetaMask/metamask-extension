@@ -58,10 +58,6 @@ function buildState({
   chainId?: string;
 } = {}) {
   const accountAddress = transaction?.txParams?.from as string;
-  const mockAccount = createMockInternalAccount({
-    address: accountAddress,
-    name: 'Account 1',
-  });
 
   let pendingApprovals = {};
   if (currentConfirmation) {
