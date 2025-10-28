@@ -129,6 +129,8 @@ describe('Snap Account Transfers', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
@@ -142,7 +144,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         );
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('SSK Account');
-        await driver.delay(veryLargeDelayMs);
+        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
         // send 1 ETH from snap account to account 1 and reject the transaction
         await sendRedesignedTransactionWithSnapAccount({
