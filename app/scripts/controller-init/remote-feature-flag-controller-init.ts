@@ -34,16 +34,20 @@ export function getConfigForRemoteFeatureFlagRequest() {
     process.env.METAMASK_ENVIRONMENT,
     'METAMASK_ENVIRONMENT is not defined',
   );
+  const buildType = process.env.METAMASK_BUILD_TYPE;
 
   const distribution =
-    BUILD_TYPE_MAPPING[
-      process.env.METAMASK_BUILD_TYPE as keyof typeof BUILD_TYPE_MAPPING
-    ] || DistributionType.Main;
+    BUILD_TYPE_MAPPING[buildType as keyof typeof BUILD_TYPE_MAPPING] ||
+    DistributionType.Main;
 
-  const environment =
+  let environment =
     ENVIRONMENT_MAPPING[
       process.env.METAMASK_ENVIRONMENT as keyof typeof ENVIRONMENT_MAPPING
     ] || EnvironmentType.Development;
+
+  if (buildType === 'experimental') {
+    environment = EnvironmentType.Exp;
+  }
 
   return { distribution, environment };
 }

@@ -2,6 +2,7 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
+import { DAPP_PATH } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
@@ -22,8 +23,10 @@ describe('Snap Account Contract interaction', function (this: Suite) {
   it('deposits to piggybank contract', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['test-dapp', 'snap-simple-keyring-site'],
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         fixtures: new FixtureBuilder()
           .withPermissionControllerSnapAccountConnectedToTestDapp()
           .build(),

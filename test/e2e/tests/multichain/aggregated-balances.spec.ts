@@ -25,7 +25,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({

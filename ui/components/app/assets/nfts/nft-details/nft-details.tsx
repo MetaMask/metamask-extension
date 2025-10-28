@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { isEqual } from 'lodash';
 import { getTokenTrackerLink, getAccountLink } from '@metamask/etherscan-link';
 import { Nft } from '@metamask/assets-controllers';
@@ -122,7 +122,7 @@ export function NftDetailsComponent({
   } = nft;
 
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const ipfsGateway = useSelector(getIpfsGateway);
   const currentNetwork = useSelector(getCurrentChainId);
@@ -133,6 +133,7 @@ export function NftDetailsComponent({
   const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
+
   const nftChainNetwork = nftNetworkConfigs[nftChainId as Hex];
   const { defaultRpcEndpointIndex } = nftChainNetwork;
   const { networkClientId: nftNetworkClientId } =
@@ -264,7 +265,7 @@ export function NftDetailsComponent({
           isSuccessful: isSuccessfulEvent,
         },
       });
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     }
   };
 
@@ -337,7 +338,7 @@ export function NftDetailsComponent({
       }),
     );
     // We only allow sending one NFT at a time
-    navigateToSendRoute(history, isSendRedesignEnabled, {
+    navigateToSendRoute(navigate, isSendRedesignEnabled, {
       address: nft.address,
       chainId: nftChainId,
     });
@@ -376,7 +377,7 @@ export function NftDetailsComponent({
   };
 
   const handleImageClick = () => {
-    return history.push(`${ASSET_ROUTE}/image/${address}/${tokenId}`);
+    return navigate(`${ASSET_ROUTE}/image/${address}/${tokenId}`);
   };
 
   const getValueInFormattedCurrency = (
@@ -412,7 +413,7 @@ export function NftDetailsComponent({
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+            onClick={() => navigate(DEFAULT_ROUTE)}
             data-testid="nft__back"
           />
           <NftOptions
@@ -985,10 +986,8 @@ export function NftDetailsComponent({
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-function NftDetails({ nft }: { nft: Nft }) {
-  const { chainId } = useParams();
-
-  return <NftDetailsComponent nft={nft} nftChainId={chainId ?? ''} />;
+function NftDetails({ nft, nftChainId }: { nft: Nft; nftChainId?: string }) {
+  return <NftDetailsComponent nft={nft} nftChainId={nftChainId ?? ''} />;
 }
 
 export default NftDetails;

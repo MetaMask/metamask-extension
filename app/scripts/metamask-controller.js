@@ -758,16 +758,6 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    this.userOperationController.hub.on(
-      'user-operation-added',
-      this._onUserOperationAdded.bind(this),
-    );
-
-    this.userOperationController.hub.on(
-      'transaction-updated',
-      this._onUserOperationTransactionUpdated.bind(this),
-    );
-
     // on/off shield controller based on shield subscription
     this.controllerMessenger.subscribe(
       'SubscriptionController:stateChange',
@@ -2165,6 +2155,21 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Adds a network and sets it as the active network.
+   *
+   * @param {object} networkConfiguration - The network configuration to add.
+   * @returns {Promise<object>} The added network configuration.
+   */
+  async _addNetworkAndSetActive(networkConfiguration) {
+    const addedNetwork =
+      await this.networkController.addNetwork(networkConfiguration);
+    const { networkClientId } =
+      addedNetwork?.rpcEndpoints?.[addedNetwork.defaultRpcEndpointIndex] ?? {};
+    await this.networkController.setActiveNetwork(networkClientId);
+    return addedNetwork;
+  }
+
+  /**
    * Returns an Object containing API Callback Functions.
    * These functions are the interface for the UI.
    * The API object can be transmitted over a stream via JSON-RPC.
@@ -2437,9 +2442,7 @@ export default class MetamaskController extends EventEmitter {
       },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
-      addNetwork: this.networkController.addNetwork.bind(
-        this.networkController,
-      ),
+      addNetwork: this._addNetworkAndSetActive.bind(this),
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
@@ -2707,6 +2710,8 @@ export default class MetamaskController extends EventEmitter {
           appStateController,
         ),
 
+      setAppActiveTab:
+        appStateController.setAppActiveTab.bind(appStateController),
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -6603,9 +6608,7 @@ export default class MetamaskController extends EventEmitter {
         }),
 
       // Network configuration-related
-      addNetwork: this.networkController.addNetwork.bind(
-        this.networkController,
-      ),
+      addNetwork: this._addNetworkAndSetActive.bind(this),
       updateNetwork: this.networkController.updateNetwork.bind(
         this.networkController,
       ),
@@ -7882,8 +7885,15 @@ export default class MetamaskController extends EventEmitter {
   set isClientOpen(open) {
     this._isClientOpen = open;
 
-    // Notify Snaps that the client is open or closed.
-    this.controllerMessenger.call('SnapController:setClientActive', open);
+    const { isUnlocked } = this.controllerMessenger.call(
+      'KeyringController:getState',
+    );
+
+    if (isUnlocked) {
+      // Notify Snaps that the client is open or closed when the client is
+      // unlocked.
+      this.controllerMessenger.call('SnapController:setClientActive', open);
+    }
 
     if (open) {
       this.controllerMessenger.call('BackendWebSocketService:connect');
@@ -8499,58 +8509,6 @@ export default class MetamaskController extends EventEmitter {
       {
         matomoEvent: true,
       },
-    );
-  }
-
-  _onUserOperationAdded(userOperationMeta) {
-    const transactionMeta = this.txController.state.transactions.find(
-      (tx) => tx.id === userOperationMeta.id,
-    );
-
-    if (!transactionMeta) {
-      return;
-    }
-
-    if (transactionMeta.type === TransactionType.swap) {
-      this.controllerMessenger.publish(
-        'TransactionController:transactionNewSwap',
-        { transactionMeta },
-      );
-    } else if (transactionMeta.type === TransactionType.swapApproval) {
-      this.controllerMessenger.publish(
-        'TransactionController:transactionNewSwapApproval',
-        { transactionMeta },
-      );
-    }
-  }
-
-  _onUserOperationTransactionUpdated(transactionMeta) {
-    const updatedTransactionMeta = {
-      ...transactionMeta,
-      txParams: {
-        ...transactionMeta.txParams,
-        from: this.accountsController.getSelectedAccount().address,
-      },
-    };
-
-    const transactionExists = this.txController.state.transactions.some(
-      (tx) => tx.id === updatedTransactionMeta.id,
-    );
-
-    if (!transactionExists) {
-      this.txController.update((state) => {
-        state.transactions.push(updatedTransactionMeta);
-      });
-    }
-
-    this.txController.updateTransaction(
-      updatedTransactionMeta,
-      'Generated from user operation',
-    );
-
-    this.controllerMessenger.publish(
-      'TransactionController:transactionStatusUpdated',
-      { transactionMeta: updatedTransactionMeta },
     );
   }
 

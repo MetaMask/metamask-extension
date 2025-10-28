@@ -850,7 +850,7 @@
         "bn.js": true,
         "immer": true,
         "lodash": true,
-        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true,
+        "@metamask/assets-controllers>multiformats": true,
         "reselect": true,
         "single-call-balance-checker-abi": true,
         "uuid": true
@@ -976,6 +976,7 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/controller-utils": true,
         "@metamask/utils": true,
         "uuid": true
       }
@@ -4262,7 +4263,7 @@
         "sass-embedded>varint": true
       }
     },
-    "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": {
+    "@metamask/assets-controllers>multiformats": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true,
@@ -5397,7 +5398,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@ensdomains/content-hash>multicodec>uint8arrays>multiformats": true
+        "@metamask/assets-controllers>multiformats": true
       }
     },
     "@ensdomains/content-hash>cids>multihashes>uint8arrays": {

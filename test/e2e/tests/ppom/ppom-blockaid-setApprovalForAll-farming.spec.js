@@ -246,7 +246,7 @@ describe('PPOM Blockaid Alert - Set Approval to All', function () {
   it.skip('should show banner alert', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
