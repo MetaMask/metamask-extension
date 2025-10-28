@@ -43,7 +43,7 @@ describe('Add Ethereum Chain', function () {
     it('automatically permits and switches to the chain when the rpc endpoint is added and no rpc endpoint previously existed for the chain', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder().build(),
           localNodeOptions: [
             {
@@ -108,7 +108,7 @@ describe('Add Ethereum Chain', function () {
     it('automatically permits and switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleNode()
             .build(),
@@ -178,7 +178,7 @@ describe('Add Ethereum Chain', function () {
     it('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleNode()
             .build(),
@@ -252,7 +252,7 @@ describe('Add Ethereum Chain', function () {
     it('automatically permits and switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder().build(),
           title: this.test?.fullTitle(),
         },
@@ -308,7 +308,7 @@ describe('Add Ethereum Chain', function () {
     it('prompts to switch to the chain when the rpc endpoint being added already exists', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleNode()
             .build(),
@@ -371,7 +371,7 @@ describe('Add Ethereum Chain', function () {
     it('automatically switches to the chain when the rpc endpoint is added but a different rpc endpoint already existed for the chain', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleNode()
             .withPermissionControllerConnectedToTestDappWithChains([
@@ -450,7 +450,7 @@ describe('Add Ethereum Chain', function () {
     it('automatically switches to the chain when the rpc endpoint being added already exists for the chain', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleNode()
             .withPermissionControllerConnectedToTestDappWithChains([
@@ -521,7 +521,7 @@ describe('Add Ethereum Chain', function () {
     it('prompts to add the rpc endpoint to the chain networkConfiguration and set it as the default', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDappWithChains(['0x539'])
             .build(),
@@ -583,7 +583,7 @@ describe('Add Ethereum Chain', function () {
     it('alert user about pending confirmations', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withNetworkControllerDoubleNode()
             .withPermissionControllerConnectedToTestDappWithChains(['0x539'])

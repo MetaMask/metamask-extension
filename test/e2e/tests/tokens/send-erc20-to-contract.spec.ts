@@ -13,7 +13,7 @@ describe('Send ERC20 token to contract address', function () {
   it('should display the token contract warning to the user', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
         smartContract,
         title: this.test?.fullTitle(),

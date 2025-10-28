@@ -96,6 +96,78 @@
   }
 }
 
+// Side panel specific styles - all width constraints in one place
+.app--sidepanel {
+  // Main containers
+  .main-container {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  // Header components
+  .multichain-app-header {
+    &__contents,
+    &__lock-contents {
+      max-width: 490px;
+      min-width: 360px;
+      width: 100%;
+    }
+  }
+
+  // Page containers and modals
+  .page-container {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  // Multichain pages
+  .multichain-page {
+    max-width: 490px;
+    min-width: 360px;
+
+    &__inner-container {
+      max-width: 490px;
+      min-width: 360px;
+    }
+  }
+
+  // Send page
+  .multichain-send-page {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  // Snaps pages
+  .snaps {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  // Permissions and connect pages
+  .permissions-connect {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  // Redesigned send flow
+  .redesigned__send__container {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  .redesigned__send__wrapper {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+}
+
 // first time
 .first-view-main {
   display: flex;

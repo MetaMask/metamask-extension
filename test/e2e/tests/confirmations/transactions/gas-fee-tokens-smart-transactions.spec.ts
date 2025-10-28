@@ -24,7 +24,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
   it('confirms two transactions if successful', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withNetworkControllerOnMainnet()
@@ -82,7 +82,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
   it('fails two transactions if error', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withNetworkControllerOnMainnet()
