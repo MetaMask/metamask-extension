@@ -90,8 +90,6 @@ export default function TokenSearch({
     clear();
   }, [isTokenNetworkFilterEqualCurrentNetwork]);
 
-  console.log('DEBUG TOKEN SEARCH RESULTS', filteredTokenList);
-
   return (
     <TextFieldSearch
       className={searchClassName}
