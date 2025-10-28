@@ -42175,13 +42175,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uniffi-bindgen-react-native@npm:^0.29.3-1":
+"uniffi-bindgen-react-native@file:uniffi-bindgen-react-native-0.29.3-1.tgz::locator=metamask-crx%40workspace%3A.":
   version: 0.29.3-1
-  resolution: "uniffi-bindgen-react-native@npm:0.29.3-1"
+  resolution: "uniffi-bindgen-react-native@file:uniffi-bindgen-react-native-0.29.3-1.tgz#uniffi-bindgen-react-native-0.29.3-1.tgz::hash=01c6ce&locator=metamask-crx%40workspace%3A."
   bin:
-    ubrn: bin/cli.cjs
-    uniffi-bindgen-react-native: bin/cli.cjs
-  checksum: 10/e16c855e072bcfb0e9abaeab0d3a29e850a08ec54fd59f82d54116a740e839cdb75f9a3270daccef4577d6261d9ba6bcfc58a95574bc590e06f9f757c5425d7f
+    ubrn: ./bin/cli.cjs
+    uniffi-bindgen-react-native: ./bin/cli.cjs
+  checksum: 10/dc5eba388e5c3a50a70d169f9fad7ad373473eb41b8ad11e395fe9e96d130245049c9398b0cae02f2681ae5359a9b52d294fc1ce03c41bddcb5a106d44edef50
   languageName: node
   linkType: hard
 
