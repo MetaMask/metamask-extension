@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { deriveStateFromMetadata } from '@metamask/base-controller/next';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { ChainId, InfuraNetworkType } from '@metamask/controller-utils';
 import BigNumberjs from 'bignumber.js';
 import { mapValues } from 'lodash';

@@ -2,7 +2,7 @@ import { TokenRatesControllerGetStateAction } from '@metamask/assets-controllers
 import {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-} from '@metamask/base-controller/next';
+} from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import { GasFeeState } from '@metamask/gas-fee-controller';
 import {

@@ -12,7 +12,7 @@ import {
 } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
-import { deriveStateFromMetadata } from '@metamask/base-controller/next';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
   MOCK_ANY_NAMESPACE,
   Messenger,

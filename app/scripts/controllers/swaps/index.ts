@@ -1,6 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { BaseController, StateMetadata } from '@metamask/base-controller/next';
+import { BaseController, StateMetadata } from '@metamask/base-controller';
 import { GasFeeState } from '@metamask/gas-fee-controller';
 import { TransactionParams } from '@metamask/transaction-controller';
 import { BigNumber } from 'bignumber.js';

@@ -12,7 +12,7 @@ import {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
   StateMetadata,
-} from '@metamask/base-controller/next';
+} from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import { type PreferencesState } from '@metamask/preferences-controller';

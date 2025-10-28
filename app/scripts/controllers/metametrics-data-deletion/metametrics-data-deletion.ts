@@ -3,7 +3,7 @@ import {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
   StateMetadata,
-} from '@metamask/base-controller/next';
+} from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import { PublicInterface } from '@metamask/utils';
 import type { DataDeletionService } from '../../services/data-deletion-service';

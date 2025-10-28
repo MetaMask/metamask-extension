@@ -12,7 +12,7 @@ import type {
   EncryptionPublicKeyManagerState,
   EncryptionPublicKeyManagerUnapprovedMessageAddedEvent,
 } from '@metamask/message-manager';
-import { BaseController, StateMetadata } from '@metamask/base-controller/next';
+import { BaseController, StateMetadata } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import { Patch } from 'immer';
 import {

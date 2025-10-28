@@ -36,7 +36,7 @@ import {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
   StateMetadata,
-} from '@metamask/base-controller/next';
+} from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { Json } from '@metamask/utils';
 import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';

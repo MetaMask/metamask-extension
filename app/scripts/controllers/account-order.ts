@@ -3,7 +3,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   StateMetadata,
-} from '@metamask/base-controller/next';
+} from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 
 // Unique name for the controller

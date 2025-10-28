@@ -1,4 +1,4 @@
-import { ControllerStateChangeEvent } from '@metamask/base-controller/next';
+import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import { Messenger } from '@metamask/messenger';
 import type { ErrorReportingServiceCaptureExceptionAction } from '@metamask/error-reporting-service';
 import {

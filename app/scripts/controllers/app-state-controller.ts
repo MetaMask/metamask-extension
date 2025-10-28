@@ -6,7 +6,7 @@ import {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
   StateMetadata,
-} from '@metamask/base-controller/next';
+} from '@metamask/base-controller';
 import {
   AcceptRequest,
   AddApprovalRequest,

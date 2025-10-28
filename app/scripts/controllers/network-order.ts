@@ -1,5 +1,5 @@
 import { BtcScope, SolScope } from '@metamask/keyring-api';
-import { BaseController, StateMetadata } from '@metamask/base-controller/next';
+import { BaseController, StateMetadata } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerSetActiveNetworkAction,

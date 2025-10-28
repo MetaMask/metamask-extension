@@ -10,7 +10,7 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-} from '@metamask/base-controller/next';
+} from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';

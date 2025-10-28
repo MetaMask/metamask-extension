@@ -2,7 +2,7 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
-import { ControllerGetStateAction } from '@metamask/base-controller/next';
+import { ControllerGetStateAction } from '@metamask/base-controller';
 import { CurrencyRateController } from '@metamask/assets-controllers';
 import {
   ClearSnapState,
