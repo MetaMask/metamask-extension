@@ -1,12 +1,12 @@
 import React from 'react';
-import { NameType } from "@metamask/name-controller";
-import { renderWithProvider } from "../../../../../test/lib/render-helpers";
-import NameDisplay from "./name-display";
+import { NameType } from '@metamask/name-controller';
+import { useDispatch, useSelector } from 'react-redux';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
 import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
-import { useDispatch, useSelector } from 'react-redux';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
+import NameDisplay from './name-display';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -23,7 +23,6 @@ describe('NameDisplay', () => {
   const useSelectorMock = jest.mocked(useSelector);
   const useDisplayNameMock = jest.mocked(useDisplayName);
 
-
   beforeEach(() => {
     jest.resetAllMocks();
     useDispatchMock.mockReturnValue(jest.fn());
@@ -38,9 +37,15 @@ describe('NameDisplay', () => {
       isAccount: false,
     });
     const { getByText } = renderWithProvider(
-      <NameDisplay value={'0xdeadbeef'} type={NameType.ETHEREUM_ADDRESS} variation={'0x5'} />,
+      <NameDisplay
+        value={'0xdeadbeef'}
+        type={NameType.ETHEREUM_ADDRESS}
+        variation={'0x5'}
+      />,
     );
-    expect(getByText(shortenAddress(toChecksumHexAddress('0xdeadbeef')))).toBeInTheDocument();
+    expect(
+      getByText(shortenAddress(toChecksumHexAddress('0xdeadbeef'))),
+    ).toBeInTheDocument();
   });
 
   it('should render name from useDisplayName if available', () => {
@@ -51,7 +56,11 @@ describe('NameDisplay', () => {
       isAccount: false,
     });
     const { getByText } = renderWithProvider(
-      <NameDisplay value={'0xdeadbeef'} type={NameType.ETHEREUM_ADDRESS} variation={'0x5'} />,
+      <NameDisplay
+        value={'0xdeadbeef'}
+        type={NameType.ETHEREUM_ADDRESS}
+        variation={'0x5'}
+      />,
     );
     expect(getByText('DisplayName')).toBeInTheDocument();
   });
@@ -64,7 +73,12 @@ describe('NameDisplay', () => {
       isAccount: false,
     });
     const { getByText } = renderWithProvider(
-      <NameDisplay value={'0xdeadbeef'} type={NameType.ETHEREUM_ADDRESS} variation={'0x5'} fallbackName={'TEST'} />,
+      <NameDisplay
+        value={'0xdeadbeef'}
+        type={NameType.ETHEREUM_ADDRESS}
+        variation={'0x5'}
+        fallbackName={'TEST'}
+      />,
     );
     expect(getByText('TEST')).toBeInTheDocument();
   });
