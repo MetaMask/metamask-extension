@@ -6925,22 +6925,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-middleware@npm:^1.2.3":
-  version: 1.2.3
-  resolution: "@metamask/multichain-api-middleware@npm:1.2.3"
+"@metamask/multichain-api-middleware@npm:^1.2.4":
+  version: 1.2.4
+  resolution: "@metamask/multichain-api-middleware@npm:1.2.4"
   dependencies:
     "@metamask/api-specs": "npm:^0.14.0"
     "@metamask/chain-agnostic-permission": "npm:^1.2.2"
     "@metamask/controller-utils": "npm:^11.14.1"
     "@metamask/json-rpc-engine": "npm:^10.1.1"
     "@metamask/network-controller": "npm:^25.0.0"
-    "@metamask/permission-controller": "npm:^12.0.0"
+    "@metamask/permission-controller": "npm:^12.1.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.8.1"
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
     jsonschema: "npm:^1.4.1"
-  checksum: 10/5309cd131d934334182ef804d8fd1a83c28553eb731eaf275676c0d23685a958447d2d12e0c4a8f39063acf2e4377aa053554c2e20827cffeac2d715d70b4da9
+  checksum: 10/0572858dec7bb47a75d4da531e3d030fe0ba67aee46dfd72daab7fe8669da0216d344fa17cee1cd8d0c428c4c1b975e1a2085fd7064114a8ebb5e4ce01b32782
   languageName: node
   linkType: hard
 
@@ -7147,28 +7147,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^11.0.6":
-  version: 11.1.1
-  resolution: "@metamask/permission-controller@npm:11.1.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.4.2"
-    "@metamask/controller-utils": "npm:^11.14.1"
-    "@metamask/json-rpc-engine": "npm:^10.1.1"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/utils": "npm:^11.8.1"
-    "@types/deep-freeze-strict": "npm:^1.1.0"
-    deep-freeze-strict: "npm:^1.1.1"
-    immer: "npm:^9.0.6"
-    nanoid: "npm:^3.3.8"
-  peerDependencies:
-    "@metamask/approval-controller": ^7.0.0
-  checksum: 10/98d618ee3280603ac08f127c7a36c9c8d264f8d3a5656c3287866bbe56707625a43c491ad87bb50be00798861191f1ef0173ed9899b56c0db029437d9d3ad853
-  languageName: node
-  linkType: hard
-
-"@metamask/permission-controller@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/permission-controller@npm:12.0.0"
+"@metamask/permission-controller@npm:^12.0.0, @metamask/permission-controller@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "@metamask/permission-controller@npm:12.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.14.1"
@@ -7182,7 +7163,7 @@ __metadata:
     nanoid: "npm:^3.3.8"
   peerDependencies:
     "@metamask/approval-controller": ^8.0.0
-  checksum: 10/81ac553db8ab90d23161c5268d37728a0d0b263480dd9050a94efb64d3d317f00b8c00254b529ead823723c9eb7ae4efd3374da58440d4632411860753e1c94a
+  checksum: 10/c9a881bbeb477a9080653c6f8b57a326ce7e722d9b324bcd2613bc3caae595906a4759c49982be4bec6742390e2f03dcf8009ad3c8b5fceedadbf600a51597eb
   languageName: node
   linkType: hard
 
@@ -7582,7 +7563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/slip44@npm:^4.2.0, @metamask/slip44@npm:^4.3.0":
+"@metamask/slip44@npm:^4.3.0":
   version: 4.3.0
   resolution: "@metamask/slip44@npm:4.3.0"
   checksum: 10/508983a48911f2be8d9de117d390ecfb5b949a6032f5d6c5cc63f7f23302b87468be6ff08dee4881d39e8f5f66b5545eab15e6fc0511acea10fd4c99852a8212
@@ -7778,7 +7759,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^11.0.0, @metamask/snaps-utils@npm:^11.6.0, @metamask/snaps-utils@npm:^11.6.1":
+"@metamask/snaps-utils@npm:^11.6.1":
   version: 11.6.1
   resolution: "@metamask/snaps-utils@npm:11.6.1"
   dependencies:
@@ -7807,38 +7788,6 @@ __metadata:
     ses: "npm:^1.14.0"
     validate-npm-package-name: "npm:^5.0.0"
   checksum: 10/ad694a02aeea9ab8dc159a032681b5eb57b75debf636ac229669ece479fc38deda423b3e79a1ef2af30ef69be627ad5fcd7852a24448eeb58799f510d07b8216
-  languageName: node
-  linkType: hard
-
-"@metamask/snaps-utils@npm:^9.1.0":
-  version: 9.4.0
-  resolution: "@metamask/snaps-utils@npm:9.4.0"
-  dependencies:
-    "@babel/core": "npm:^7.23.2"
-    "@babel/types": "npm:^7.23.0"
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/permission-controller": "npm:^11.0.6"
-    "@metamask/rpc-errors": "npm:^7.0.2"
-    "@metamask/slip44": "npm:^4.2.0"
-    "@metamask/snaps-registry": "npm:^3.2.3"
-    "@metamask/snaps-sdk": "npm:^7.1.0"
-    "@metamask/superstruct": "npm:^3.2.1"
-    "@metamask/utils": "npm:^11.4.0"
-    "@noble/hashes": "npm:^1.7.1"
-    "@scure/base": "npm:^1.1.1"
-    chalk: "npm:^4.1.2"
-    cron-parser: "npm:^4.5.0"
-    fast-deep-equal: "npm:^3.1.3"
-    fast-json-stable-stringify: "npm:^2.1.0"
-    fast-xml-parser: "npm:^4.4.1"
-    luxon: "npm:^3.5.0"
-    marked: "npm:^12.0.1"
-    rfdc: "npm:^1.3.0"
-    semver: "npm:^7.5.4"
-    ses: "npm:^1.12.0"
-    validate-npm-package-name: "npm:^5.0.0"
-  checksum: 10/cda4c8f631859e3c6c364851064f132ad02fea0074493383e0e0facfff7b814321c87b1186c30b399fd2f1dc79ec97ed388450c59c627fd6db73549f964e0618
   languageName: node
   linkType: hard
 
@@ -31951,7 +31900,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "npm:^2.0.0"
     "@metamask/multichain-api-client": "npm:^0.7.0"
-    "@metamask/multichain-api-middleware": "npm:^1.2.3"
+    "@metamask/multichain-api-middleware": "npm:^1.2.4"
     "@metamask/multichain-network-controller": "npm:^2.0.0"
     "@metamask/multichain-transactions-controller": "npm:^6.0.0"
     "@metamask/name-controller": "npm:^9.0.0"
@@ -31960,7 +31909,7 @@ __metadata:
     "@metamask/notification-services-controller": "npm:^19.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
-    "@metamask/permission-controller": "npm:^12.0.0"
+    "@metamask/permission-controller": "npm:^12.1.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
     "@metamask/permissions-kernel-snap": "npm:^0.4.0"
     "@metamask/phishing-controller": "npm:^15.0.0"
@@ -38852,7 +38801,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:1.14.0, ses@npm:^1.1.0, ses@npm:^1.12.0, ses@npm:^1.14.0":
+"ses@npm:1.14.0, ses@npm:^1.1.0, ses@npm:^1.14.0":
   version: 1.14.0
   resolution: "ses@npm:1.14.0"
   dependencies:
