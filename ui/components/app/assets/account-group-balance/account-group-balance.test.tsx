@@ -6,7 +6,10 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { getPreferences } from '../../../../selectors';
+import {
+  getPreferences,
+  getEnabledNetworksByNamespace,
+} from '../../../../selectors';
 import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
 import {
@@ -41,6 +44,12 @@ describe('AccountGroupBalance', () => {
       .mocked(getPreferences)
       .mockReturnValue({ privacyMode: false, showNativeTokenAsMainBalance });
 
+    const mockGetEnabledNetworksByNamespace = jest
+      .mocked(getEnabledNetworksByNamespace)
+      .mockReturnValue({
+        '0x1': true,
+      });
+
     const mockGetIntlLocale = jest.mocked(getIntlLocale).mockReturnValue('en');
 
     const mockGetCurrentCurrency = jest
@@ -52,6 +61,7 @@ describe('AccountGroupBalance', () => {
       mockGetPreferences,
       mockGetIntlLocale,
       mockGetCurrentCurrency,
+      mockGetEnabledNetworksByNamespace,
     };
   };
 
