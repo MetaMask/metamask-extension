@@ -364,6 +364,9 @@ const SubmitClaimForm = () => {
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
         placeholder={'e.g. a1084235686add...q46q8wurgw'}
+        inputProps={{
+          'data-testid': 'shield-claim-impacted-tx-hash-input',
+        }}
         helpText={
           errors.impactedTransactionHash ? (
             <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
