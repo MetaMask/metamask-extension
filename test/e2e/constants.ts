@@ -44,7 +44,7 @@ export const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';
 /* Default local node ETH balance in decimal when first login */
 export const DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC = '25';
 /* Default local node USD balance in format for when first login */
-export const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,000.00';
+export const DEFAULT_LOCAL_NODE_USD_BALANCE = '127,500.00';
 
 /* Dapp host addresses and URL*/
 export const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
