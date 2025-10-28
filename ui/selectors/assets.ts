@@ -1003,3 +1003,23 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
   (assetListState: AssetListState) =>
     selectAssetsBySelectedAccountGroup(assetListState),
 );
+
+export const getAsset = createSelector(
+  [
+    getAssetsBySelectedAccountGroup,
+    (_, assetId: string, _chainId: Hex | CaipChainId) => assetId,
+    (_, _assetId: string, chainId: Hex | CaipChainId) => chainId,
+  ],
+  (assetsBySelectedAccountGroup, assetId, chainId) => {
+    const chainAssets = assetsBySelectedAccountGroup[chainId];
+    if (!chainAssets) {
+      return undefined;
+    }
+    const asset = chainAssets.find((item) => item.assetId === assetId);
+    if (!asset) {
+      return undefined;
+    }
+
+    return asset;
+  },
+);

@@ -7,7 +7,10 @@ import {
   calculateBalanceChangeForAllWallets,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
-import type { BalanceChangeResult } from '@metamask/assets-controllers';
+import type {
+  AccountGroupAssets,
+  BalanceChangeResult,
+} from '@metamask/assets-controllers';
 import {
   AssetsRatesState,
   AssetsState,
@@ -26,6 +29,7 @@ import {
   selectBalanceChangeForAllWallets,
   selectBalanceChangeBySelectedAccountGroup,
   getAssetsBySelectedAccountGroup,
+  getAsset,
 } from './assets';
 
 jest.mock('@metamask/assets-controllers', () => {
@@ -955,5 +959,98 @@ describe('getAssetsBySelectedAccountGroup', () => {
 
     expect(selectorMock).toHaveBeenCalledWith(mockState.metamask);
     expect(result).toBe(expectedResult);
+  });
+});
+
+describe('getAsset', () => {
+  const mockState = {
+    metamask: {
+      accountTree: 'mockAccountTree',
+      internalAccounts: 'mockInternalAccounts',
+      allTokens: 'mockAllTokens',
+      allIgnoredTokens: 'mockAllIgnoredTokens',
+      tokenBalances: 'mockTokenBalances',
+      marketData: 'mockMarketData',
+      currencyRates: 'mockCurrencyRates',
+      currentCurrency: 'mockCurrentCurrency',
+      networkConfigurationsByChainId: 'mockNetworkConfigurationsByChainId',
+      accountsByChainId: 'mockAccountsByChainId',
+      accountsAssets: 'mockAccountsAssets',
+      assetsMetadata: 'mockAssetsMetadata',
+      balances: 'mockBalances',
+      conversionRates: 'mockConversionRates',
+    },
+  };
+
+  it('returns the asset for the given assetId and chainId', () => {
+    const selectorMock = jest.mocked(selectAssetsBySelectedAccountGroup);
+    const expectedResult = {
+      '0x1': [
+        {
+          accountType: 'eip155:eoa',
+          accountId: 'd7f11451-9d79-4df4-a012-afd253443639',
+          chainId: '0x1',
+          assetId: '0x0000000000000000000000000000000000000000',
+          address: '0x0000000000000000000000000000000000000000',
+          image: '',
+          name: 'Ethereum',
+          symbol: 'ETH',
+          isNative: true,
+          decimals: 18,
+          rawBalance: '0x8AC7230489E80000',
+          balance: '10',
+          fiat: {
+            balance: 24000,
+            conversionRate: 2400,
+            currency: 'USD',
+          },
+        },
+      ],
+      'bip122:000000000019d6689c085ae165831e93': [
+        {
+          accountType: 'bip122:p2wpkh',
+          accountId: '2d89e6a0-b4e6-45a8-a707-f10cef143b42',
+          chainId: 'bip122:000000000019d6689c085ae165831e93',
+          assetId: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+          image: '',
+          name: 'Bitcoin',
+          symbol: 'BTC',
+          isNative: true,
+          decimals: 9,
+          rawBalance: '0x2540be400',
+          balance: '10',
+          fiat: {
+            balance: 1635.5,
+            conversionRate: 163.55,
+            currency: 'USD',
+          },
+        },
+      ],
+    } as AccountGroupAssets;
+    selectorMock.mockReturnValue(expectedResult);
+
+    const result = getAsset(
+      mockState,
+      'bip122:000000000019d6689c085ae165831e93/slip44:0',
+      'bip122:000000000019d6689c085ae165831e93',
+    );
+    expect(result).toStrictEqual({
+      accountType: 'bip122:p2wpkh',
+      accountId: '2d89e6a0-b4e6-45a8-a707-f10cef143b42',
+      chainId: 'bip122:000000000019d6689c085ae165831e93',
+      assetId: 'bip122:000000000019d6689c085ae165831e93/slip44:0',
+      image: '',
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      isNative: true,
+      decimals: 9,
+      rawBalance: '0x2540be400',
+      balance: '10',
+      fiat: {
+        balance: 1635.5,
+        conversionRate: 163.55,
+        currency: 'USD',
+      },
+    });
   });
 });
