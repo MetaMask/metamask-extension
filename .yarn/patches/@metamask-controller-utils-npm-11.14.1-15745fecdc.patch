@@ -1,16 +1,16 @@
 diff --git a/dist/constants.cjs b/dist/constants.cjs
-index f9b783490614be568d3630680fc1c1b5468646a2..79171e4ed5b248bd3a76fd99a65cd0b7fda16b73 100644
+index f9b783490614be568d3630680fc1c1b5468646a2..abdc291c26f90ec79f32236ceaee976e4fd63109 100644
 --- a/dist/constants.cjs
 +++ b/dist/constants.cjs
 @@ -119,6 +119,41 @@ exports.BUILT_IN_NETWORKS = {
              blockExplorerUrl: types_1.BlockExplorerUrl['base-mainnet'],
          },
      },
-+    [types_1.NetworkType['arbitrum-one']]: {
-+        chainId: types_1.ChainId['arbitrum-one'],
-+        ticker: types_1.NetworksTicker['arbitrum-one'],
++    [types_1.NetworkType['arbitrum-mainnet']]: {
++        chainId: types_1.ChainId['arbitrum-mainnet'],
++        ticker: types_1.NetworksTicker['arbitrum-mainnet'],
 +        rpcPrefs: {
-+            blockExplorerUrl: types_1.BlockExplorerUrl['arbitrum-one'],
++            blockExplorerUrl: types_1.BlockExplorerUrl['arbitrum-mainnet'],
 +        },
 +    },
 +    [types_1.NetworkType['bsc-mainnet']]: {
@@ -45,14 +45,14 @@ index f9b783490614be568d3630680fc1c1b5468646a2..79171e4ed5b248bd3a76fd99a65cd0b7
          chainId: undefined,
          blockExplorerUrl: undefined,
 diff --git a/dist/constants.d.cts b/dist/constants.d.cts
-index 5fdb9a70f53ed8e9a6482e73ada4b2a85f094565..9897a7a25af0636a8940770b51f87d0ab905819f 100644
+index 5fdb9a70f53ed8e9a6482e73ada4b2a85f094565..64684531594b539d17085566ef2bda6d4e5a936e 100644
 --- a/dist/constants.d.cts
 +++ b/dist/constants.d.cts
 @@ -109,6 +109,41 @@ export declare const BUILT_IN_NETWORKS: {
              readonly blockExplorerUrl: "https://basescan.org";
          };
      };
-+    readonly "arbitrum-one": {
++    readonly "arbitrum-mainnet": {
 +        readonly chainId: "0xa4b1";
 +        readonly ticker: NetworksTicker.mainnet;
 +        readonly rpcPrefs: {
@@ -91,14 +91,14 @@ index 5fdb9a70f53ed8e9a6482e73ada4b2a85f094565..9897a7a25af0636a8940770b51f87d0a
          readonly chainId: undefined;
          readonly blockExplorerUrl: undefined;
 diff --git a/dist/types.cjs b/dist/types.cjs
-index 5b3d25bb9b601ee3f9dfada813dd7bb590b02bd1..2acdec24e88ec53f4c458c9d835e7c0a61ad62c4 100644
+index 5b3d25bb9b601ee3f9dfada813dd7bb590b02bd1..cdcc3c09ef7bc6b8d42e3914dfc9602790a463d0 100644
 --- a/dist/types.cjs
 +++ b/dist/types.cjs
 @@ -12,6 +12,11 @@ exports.InfuraNetworkType = {
      'linea-sepolia': 'linea-sepolia',
      'linea-mainnet': 'linea-mainnet',
      'base-mainnet': 'base-mainnet',
-+    'arbitrum-one': 'arbitrum-one',
++    'arbitrum-mainnet': 'arbitrum-mainnet',
 +    'bsc-mainnet': 'bsc-mainnet',
 +    'optimism-mainnet': 'optimism-mainnet',
 +    'polygon-mainnet': 'polygon-mainnet',
@@ -110,7 +110,7 @@ index 5b3d25bb9b601ee3f9dfada813dd7bb590b02bd1..2acdec24e88ec53f4c458c9d835e7c0a
      BuiltInNetworkName["MegaETHTestnet"] = "megaeth-testnet";
      BuiltInNetworkName["MonadTestnet"] = "monad-testnet";
      BuiltInNetworkName["BaseMainnet"] = "base-mainnet";
-+    BuiltInNetworkName["ArbitrumOne"] = "arbitrum-one";
++    BuiltInNetworkName["ArbitrumOne"] = "arbitrum-mainnet";
 +    BuiltInNetworkName["BscMainnet"] = "bsc-mainnet";
 +    BuiltInNetworkName["OptimismMainnet"] = "optimism-mainnet";
 +    BuiltInNetworkName["PolygonMainnet"] = "polygon-mainnet";
@@ -136,7 +136,7 @@ index 5b3d25bb9b601ee3f9dfada813dd7bb590b02bd1..2acdec24e88ec53f4c458c9d835e7c0a
      NetworksTicker["monad-testnet"] = "MON";
      // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
      NetworksTicker["base-mainnet"] = "ETH";
-+    NetworksTicker["arbitrum-one"] = "ETH";
++    NetworksTicker["arbitrum-mainnet"] = "ETH";
 +    NetworksTicker["bsc-mainnet"] = "BNB";
 +    // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
 +    NetworksTicker["optimism-mainnet"] = "ETH";
@@ -170,14 +170,14 @@ index 5b3d25bb9b601ee3f9dfada813dd7bb590b02bd1..2acdec24e88ec53f4c458c9d835e7c0a
  //# sourceMappingURL=types.cjs.map
 \ No newline at end of file
 diff --git a/dist/types.d.cts b/dist/types.d.cts
-index 61a640582b3fc93d6eece49d04b63fa417ad61c0..b845d1fa256a942be43825782b1e827db38f740f 100644
+index 61a640582b3fc93d6eece49d04b63fa417ad61c0..f1131b12b9f25e934888d11872b31011b770ae9b 100644
 --- a/dist/types.d.cts
 +++ b/dist/types.d.cts
 @@ -9,6 +9,11 @@ export declare const InfuraNetworkType: {
      readonly 'linea-sepolia': "linea-sepolia";
      readonly 'linea-mainnet': "linea-mainnet";
      readonly 'base-mainnet': "base-mainnet";
-+    readonly 'arbitrum-one': "arbitrum-one";
++    readonly 'arbitrum-mainnet': "arbitrum-mainnet";
 +    readonly 'bsc-mainnet': "bsc-mainnet";
 +    readonly 'optimism-mainnet': "optimism-mainnet";
 +    readonly 'polygon-mainnet': "polygon-mainnet";
@@ -189,7 +189,7 @@ index 61a640582b3fc93d6eece49d04b63fa417ad61c0..b845d1fa256a942be43825782b1e827d
      readonly 'linea-sepolia': "linea-sepolia";
      readonly 'linea-mainnet': "linea-mainnet";
      readonly 'base-mainnet': "base-mainnet";
-+    readonly 'arbitrum-one': "arbitrum-one";
++    readonly 'arbitrum-mainnet': "arbitrum-mainnet";
 +    readonly 'bsc-mainnet': "bsc-mainnet";
 +    readonly 'optimism-mainnet': "optimism-mainnet";
 +    readonly 'polygon-mainnet': "polygon-mainnet";
@@ -203,7 +203,7 @@ index 61a640582b3fc93d6eece49d04b63fa417ad61c0..b845d1fa256a942be43825782b1e827d
      MonadTestnet = "monad-testnet",
 -    BaseMainnet = "base-mainnet"
 +    BaseMainnet = "base-mainnet",
-+    ArbitrumOne = "arbitrum-one",
++    ArbitrumOne = "arbitrum-mainnet",
 +    BscMainnet = "bsc-mainnet",
 +    OptimismMainnet = "optimism-mainnet",
 +    PolygonMainnet = "polygon-mainnet",
@@ -215,7 +215,7 @@ index 61a640582b3fc93d6eece49d04b63fa417ad61c0..b845d1fa256a942be43825782b1e827d
      readonly "megaeth-testnet": "0x18c6";
      readonly "monad-testnet": "0x279f";
      readonly "base-mainnet": "0x2105";
-+    readonly "arbitrum-one": "0xa4b1";
++    readonly "arbitrum-mainnet": "0xa4b1";
 +    readonly "bsc-mainnet": "0x38";
 +    readonly "optimism-mainnet": "0xa";
 +    readonly "polygon-mainnet": "0x89";
@@ -227,7 +227,7 @@ index 61a640582b3fc93d6eece49d04b63fa417ad61c0..b845d1fa256a942be43825782b1e827d
      'megaeth-testnet' = "MegaETH",
      'monad-testnet' = "MON",
      'base-mainnet' = "ETH",
-+    'arbitrum-one' = "ETH",
++    'arbitrum-mainnet' = "ETH",
 +    'bsc-mainnet' = "BNB",
 +    'optimism-mainnet' = "ETH",
 +    'polygon-mainnet' = "POL",
@@ -239,7 +239,7 @@ index 61a640582b3fc93d6eece49d04b63fa417ad61c0..b845d1fa256a942be43825782b1e827d
      readonly "megaeth-testnet": "https://megaexplorer.xyz";
      readonly "monad-testnet": "https://testnet.monadexplorer.com";
      readonly "base-mainnet": "https://basescan.org";
-+    readonly "arbitrum-one": "https://arbiscan.io";
++    readonly "arbitrum-mainnet": "https://arbiscan.io";
 +    readonly "bsc-mainnet": "https://bscscan.com";
 +    readonly "optimism-mainnet": "https://optimistic.etherscan.io";
 +    readonly "polygon-mainnet": "https://polygonscan.com";
@@ -251,7 +251,7 @@ index 61a640582b3fc93d6eece49d04b63fa417ad61c0..b845d1fa256a942be43825782b1e827d
      readonly "megaeth-testnet": "Mega Testnet";
      readonly "monad-testnet": "Monad Testnet";
      readonly "base-mainnet": "Base Mainnet";
-+    readonly "arbitrum-one": "Arbitrum One";
++    readonly "arbitrum-mainnet": "Arbitrum One";
 +    readonly "bsc-mainnet": "BSC Mainnet";
 +    readonly "optimism-mainnet": "Optimism Mainnet";
 +    readonly "polygon-mainnet": "Polygon Mainnet";

@@ -5799,7 +5799,7 @@ __metadata:
 
 "@metamask/controller-utils@patch:@metamask/controller-utils@npm%3A11.14.1#~/.yarn/patches/@metamask-controller-utils-npm-11.14.1-15745fecdc.patch":
   version: 11.14.1
-  resolution: "@metamask/controller-utils@patch:@metamask/controller-utils@npm%3A11.14.1#~/.yarn/patches/@metamask-controller-utils-npm-11.14.1-15745fecdc.patch::version=11.14.1&hash=36dc1c"
+  resolution: "@metamask/controller-utils@patch:@metamask/controller-utils@npm%3A11.14.1#~/.yarn/patches/@metamask-controller-utils-npm-11.14.1-15745fecdc.patch::version=11.14.1&hash=e89ae9"
   dependencies:
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/ethjs-unit": "npm:^0.3.0"
@@ -5814,7 +5814,7 @@ __metadata:
     lodash: "npm:^4.17.21"
   peerDependencies:
     "@babel/runtime": ^7.0.0
-  checksum: 10/c474f5a864c657ed3ead12faf3c5982c1c136338f056b8a5d039831f400a5c555b9fdbe11dbf8c8a139d6eb6c442019eed5d585ff301a3c3a669e33d5d995e9d
+  checksum: 10/db13d4dcfbdd7430c549e35056fc3804a58c539f4e59f582595946802e6aec2b44bcbe384b51119d505c2fa47088a1b27dc5d0bf83b1b4903fd3ee81f4370d6d
   languageName: node
   linkType: hard
 
