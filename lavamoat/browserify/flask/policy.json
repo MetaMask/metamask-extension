@@ -878,24 +878,6 @@
         "immer": true
       }
     },
-    "@metamask/chain-agnostic-permission>@metamask/network-controller>@metamask/base-controller": {
-      "globals": {
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/multichain-api-middleware>@metamask/network-controller>@metamask/base-controller": {
-      "globals": {
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
     "@metamask/eip-5792-middleware>@metamask/transaction-controller>@metamask/base-controller": {
       "globals": {
         "console.error": true,
@@ -969,7 +951,7 @@
       "packages": {
         "@metamask/chain-agnostic-permission>@metamask/api-specs": true,
         "@metamask/controller-utils": true,
-        "@metamask/chain-agnostic-permission>@metamask/permission-controller": true,
+        "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "lodash": true
@@ -1508,7 +1490,7 @@
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
         "@metamask/json-rpc-engine": true,
-        "@metamask/multichain-api-middleware>@metamask/permission-controller": true,
+        "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
@@ -1644,36 +1626,6 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "deep-freeze-strict": true,
-        "immer": true,
-        "nanoid": true
-      }
-    },
-    "@metamask/chain-agnostic-permission>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/chain-agnostic-permission>@metamask/network-controller>@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "deep-freeze-strict": true,
-        "immer": true,
-        "nanoid": true
-      }
-    },
-    "@metamask/multichain-api-middleware>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/multichain-api-middleware>@metamask/network-controller>@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
