@@ -12,7 +12,7 @@ describe('Switch ethereum chain', function (this: Suite) {
   it('should successfully change the network in response to wallet_switchEthereumChain', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -54,7 +54,7 @@ describe('Switch ethereum chain', function (this: Suite) {
   it('should only show additional network requested when multiple network permissions already exist', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPopularNetworks()
           .withPermissionControllerConnectedToTestDappWithChains([
@@ -103,7 +103,7 @@ describe('Switch ethereum chain', function (this: Suite) {
   it('should incrementally add new requested network to existing permissions without overriding them', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp() // Connected to Localhost
           .build(),

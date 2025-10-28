@@ -18,6 +18,8 @@ import {
 } from '../../../component-library';
 
 export type InlineAlertProps = {
+  /** The key of the alert */
+  alertKey?: string;
   /** The onClick handler for the inline alerts */
   onClick?: () => void;
   /** The severity of the alert, e.g. Severity.Warning */
@@ -33,6 +35,7 @@ export type InlineAlertProps = {
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function InlineAlert({
+  alertKey = '',
   onClick,
   severity = Severity.Info,
   style,
@@ -45,6 +48,7 @@ export default function InlineAlert({
     <Box display={Display.Flex}>
       <Box
         data-testid="inline-alert"
+        {...(alertKey && { 'data-alert-key': alertKey })}
         borderRadius={BorderRadius.SM}
         gap={1}
         display={Display.InlineFlex}

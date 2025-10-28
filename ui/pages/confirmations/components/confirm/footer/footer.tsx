@@ -24,6 +24,7 @@ import {
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
+import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
@@ -31,6 +32,10 @@ import { useEnableShieldCoverageChecks } from '../../../hooks/transactions/useEn
 import { useTransactionConfirm } from '../../../hooks/transactions/useTransactionConfirm';
 import { useConfirmActions } from '../../../hooks/useConfirmActions';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
+import {
+  isAddEthereumChainType,
+  useAddEthereumChain,
+} from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import OriginThrottleModal from './origin-throttle-modal';
@@ -188,6 +193,8 @@ const CancelButton = ({
 const Footer = () => {
   const dispatch = useDispatch();
   const { onTransactionConfirm } = useTransactionConfirm();
+  const { navigateNext } = useConfirmationNavigation();
+  const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
@@ -209,6 +216,10 @@ const Footer = () => {
   });
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
+  const isTransactionConfirmation = isCorrectDeveloperTransactionType(
+    currentConfirmation?.type,
+  );
+  const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
@@ -220,21 +231,25 @@ const Footer = () => {
       return;
     }
 
-    const isTransactionConfirmation = isCorrectDeveloperTransactionType(
-      currentConfirmation?.type,
-    );
-
-    if (isTransactionConfirmation) {
+    if (isAddEthereumChain) {
+      onAddEthereumChain();
+    } else if (isTransactionConfirmation) {
       onTransactionConfirm();
     } else {
       dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
     }
+
+    navigateNext(currentConfirmation.id);
     resetTransactionState();
   }, [
     currentConfirmation,
     dispatch,
+    isTransactionConfirmation,
+    navigateNext,
     onTransactionConfirm,
     resetTransactionState,
+    isAddEthereumChain,
+    onAddEthereumChain,
   ]);
 
   const handleFooterCancel = useCallback(() => {
@@ -243,7 +258,9 @@ const Footer = () => {
       return;
     }
     onCancel({ location: MetaMetricsEventLocation.Confirmation });
-  }, [onCancel, shouldThrottleOrigin]);
+
+    navigateNext(currentConfirmation.id);
+  }, [navigateNext, onCancel, shouldThrottleOrigin, currentConfirmation]);
 
   const isShowShieldFooterCoverageIndicator = useEnableShieldCoverageChecks();
 

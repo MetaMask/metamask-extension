@@ -21,12 +21,6 @@ async function mockSubscriptionApiCalls(
   );
   return [
     await mockServer
-      .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
-      .thenJson(200, {
-        subscriptions: [],
-        trialedProducts: [],
-      }),
-    await mockServer
       .forGet('https://subscription.dev-api.cx.metamask.io/v1/pricing')
       .thenJson(200, {
         products: [
@@ -62,6 +56,7 @@ async function mockSubscriptionApiCalls(
       .forGet(
         'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
       )
+      .always()
       .thenJson(200, [
         {
           canSubscribe: !overrides?.mockNotEligible,
@@ -129,11 +124,7 @@ describe('Shield Entry Modal', function () {
   it('should not show the shield entry modal if user does not have a shield subscription and has a balance less than the minimum fiat balance threshold', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withAppStateController({
-            showShieldEntryModalOnce: null,
-          })
-          .build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSubscriptionApiCalls,
       },
