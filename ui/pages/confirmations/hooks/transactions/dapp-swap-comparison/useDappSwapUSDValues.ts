@@ -85,7 +85,7 @@ export function useDappSwapUSDValues({
       }
       return getTokenUSDValue(tokenAmount, destTokenAddress as Hex);
     },
-    [fiatRates, getTokenUSDValue, destTokenAddress],
+    [getTokenUSDValue, destTokenAddress],
   );
 
   const getGasUSDValue = useCallback(
