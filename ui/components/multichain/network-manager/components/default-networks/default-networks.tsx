@@ -104,11 +104,11 @@ const DefaultNetworks = memo(() => {
 
   let trxAccountGroup = null;
 
-  if (isFlask()) {
-    trxAccountGroup = useSelector((state) =>
-      getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
-    );
-  }
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  trxAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
+  );
+  ///: END:ONLY_INCLUDE_IF
 
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
@@ -197,11 +197,7 @@ const DefaultNetworks = memo(() => {
           if (btcAccountGroup && network.chainId === BtcScope.Mainnet) {
             return true;
           }
-          if (
-            trxAccountGroup &&
-            isFlask() &&
-            network.chainId === TrxScope.Mainnet
-          ) {
+          if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
             return true;
           }
           return false;
