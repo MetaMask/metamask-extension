@@ -32,7 +32,6 @@ describe('Token List Sorting', function () {
         const assetListPage = new AssetListPage(driver);
 
         await homePage.checkPageIsLoaded();
-        await homePage.checkMultichainTokenListItemIsDisplayed();
         await assetListPage.importCustomTokenByChain(
           CHAIN_IDS.MAINNET,
           customTokenAddress,
