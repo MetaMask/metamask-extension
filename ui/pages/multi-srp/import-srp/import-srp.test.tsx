@@ -59,11 +59,9 @@ describe('ImportSrp', () => {
     const mockStore = configureMockStore()(mockState);
     const { queryByTestId } = renderWithProvider(<ImportSrp />, mockStore);
 
-    const importSrpTestId = queryByTestId('import-srp');
-    expect(importSrpTestId).toBeInTheDocument();
-
     const confirmSrpButton = queryByTestId('import-srp-confirm');
 
+    expect(confirmSrpButton).toBeInTheDocument();
     expect(confirmSrpButton).toBeDisabled();
   });
 

@@ -11,7 +11,6 @@ import {
   IconColor,
   JustifyContent,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -19,7 +18,6 @@ import {
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import SrpInputImport from '../../../components/app/srp-input-import';
 import { getCurrentKeyring } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -36,25 +34,21 @@ import {
   ButtonIconSize,
   ButtonSize,
 } from '../../../components/component-library';
-import SRPDetailsModal from '../../../components/app/srp-details-modal';
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
 } from '../../../store/actions';
+import SrpInputForm from '../../srp-input-form';
 
 const hasUpperCase = (draftSrp) => {
   return draftSrp !== draftSrp.toLowerCase();
 };
 export default function ImportSRP({
-  submitSecretRecoveryPhrase,
-  isExistingWallet = false,
-  onContinueCallback,
-  duplicateSrpError,
   onClearCallback,
+  submitSecretRecoveryPhrase,
 }) {
   const dispatch = useDispatch();
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
-  const [showSrpDetailsModal, setShowSrpDetailsModal] = useState(false);
   const [srpError, setSrpError] = useState('');
   const navigate = useNavigate();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
@@ -62,28 +56,11 @@ export default function ImportSRP({
   const currentKeyring = useSelector(getCurrentKeyring);
 
   useEffect(() => {
-    if (currentKeyring && !isExistingWallet) {
+    if (currentKeyring) {
       navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
     }
-  }, [currentKeyring, navigate, isExistingWallet]);
+  }, [currentKeyring, navigate]);
   const trackEvent = useContext(MetaMetricsContext);
-
-  useEffect(() => {
-    if (duplicateSrpError) {
-      setSrpError(duplicateSrpError);
-    }
-  }, [duplicateSrpError]);
-
-  const onShowSrpDetailsModal = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.SrpDefinitionClicked,
-      properties: {
-        location: 'import_srp',
-      },
-    });
-    setShowSrpDetailsModal(true);
-  }, [trackEvent]);
 
   const onBack = async (e) => {
     e.preventDefault();
@@ -109,11 +86,6 @@ export default function ImportSRP({
       return;
     }
 
-    if (onContinueCallback) {
-      onContinueCallback(secretRecoveryPhrase);
-      return;
-    }
-
     if (submitSecretRecoveryPhrase) {
       submitSecretRecoveryPhrase(secretRecoveryPhrase);
     }
@@ -133,7 +105,6 @@ export default function ImportSRP({
     trackEvent,
     navigate,
     submitSecretRecoveryPhrase,
-    onContinueCallback,
   ]);
 
   useEffect(() => {
@@ -150,60 +121,25 @@ export default function ImportSRP({
       className="import-srp"
       data-testid="import-srp"
     >
-      {showSrpDetailsModal && (
-        <SRPDetailsModal onClose={() => setShowSrpDetailsModal(false)} />
-      )}
       <Box>
-        {!isExistingWallet && (
-          <Box marginBottom={4}>
-            <ButtonIcon
-              iconName={IconName.ArrowLeft}
-              color={IconColor.iconDefault}
-              size={ButtonIconSize.Md}
-              data-testid="import-srp-back-button"
-              onClick={onBack}
-              ariaLabel={t('back')}
-            />
-          </Box>
-        )}
+        <Box marginBottom={4}>
+          <ButtonIcon
+            iconName={IconName.ArrowLeft}
+            color={IconColor.iconDefault}
+            size={ButtonIconSize.Md}
+            data-testid="import-srp-back-button"
+            onClick={onBack}
+            ariaLabel={t('back')}
+          />
+        </Box>
         <Box textAlign={TextAlign.Left} marginBottom={2}>
           <Text variant={TextVariant.headingLg}>{t('importAWallet')}</Text>
         </Box>
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          marginBottom={4}
-        >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {t('typeYourSRP')}
-          </Text>
-          <ButtonIcon
-            iconName={IconName.Info}
-            size={ButtonIconSize.Sm}
-            color={IconColor.iconAlternative}
-            onClick={onShowSrpDetailsModal}
-            ariaLabel="info"
-          />
-        </Box>
-        <Box width={BlockSize.Full}>
-          <form onSubmit={(e) => e.preventDefault()}>
-            <SrpInputImport
-              onChange={setSecretRecoveryPhrase}
-              onClearCallback={onClearCallback}
-            />
-            {srpError && (
-              <Box marginTop={2}>
-                <Text
-                  data-testid="import-srp-error"
-                  variant={TextVariant.bodySm}
-                  color={TextColor.errorDefault}
-                >
-                  {srpError}
-                </Text>
-              </Box>
-            )}
-          </form>
-        </Box>
+        <SrpInputForm
+          error={srpError}
+          setSecretRecoveryPhrase={setSecretRecoveryPhrase}
+          onClearCallback={onClearCallback}
+        />
       </Box>
       <Box
         display={Display.Flex}
@@ -231,8 +167,5 @@ export default function ImportSRP({
 
 ImportSRP.propTypes = {
   submitSecretRecoveryPhrase: PropTypes.func,
-  isExistingWallet: PropTypes.bool,
-  onContinueCallback: PropTypes.func,
-  duplicateSrpError: PropTypes.string,
   onClearCallback: PropTypes.func,
 };

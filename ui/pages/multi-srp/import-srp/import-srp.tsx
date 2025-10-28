@@ -7,7 +7,13 @@ import {
   checkIsSeedlessPasswordOutdated,
   importMnemonicToVault,
 } from '../../../store/actions';
-import { ButtonIcon, IconName } from '../../../components/component-library';
+import {
+  ButtonIcon,
+  ButtonSize,
+  IconName,
+  Box,
+  Button,
+} from '../../../components/component-library';
 import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
@@ -15,14 +21,22 @@ import { getIsSocialLoginFlow } from '../../../selectors';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
 import { MetaMaskReduxDispatch } from '../../../store/store';
-import OnboardingImportSRP from '../../onboarding-flow/import-srp/import-srp';
+import SrpInputForm from '../../srp-input-form';
+import {
+  BlockSize,
+  FlexDirection,
+  AlignItems,
+  Display,
+  JustifyContent,
+  TextAlign,
+} from '../../../helpers/constants/design-system';
 
 export const ImportSrp = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const [srpError, setSrpError] = useState('');
-
+  const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
 
@@ -34,9 +48,9 @@ export const ImportSrp = () => {
     };
   }, [dispatch]);
 
-  async function importWallet(srp: string) {
+  async function importWallet() {
     try {
-      if (!srp) {
+      if (!secretRecoveryPhrase) {
         return;
       }
 
@@ -48,7 +62,7 @@ export const ImportSrp = () => {
           return;
         }
       }
-      await dispatch(importMnemonicToVault(srp));
+      await dispatch(importMnemonicToVault(secretRecoveryPhrase));
       navigate(DEFAULT_ROUTE);
       dispatch(setShowNewSrpAddedToast(true));
     } catch (error) {
@@ -83,12 +97,31 @@ export const ImportSrp = () => {
         {t('importSecretRecoveryPhrase')}
       </Header>
       {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
-      <OnboardingImportSRP
-        isExistingWallet
-        onContinueCallback={importWallet}
-        duplicateSrpError={srpError}
+      <SrpInputForm
+        error={srpError}
+        setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClearCallback={() => setSrpError('')}
       />
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        width={BlockSize.Full}
+        textAlign={TextAlign.Left}
+      >
+        <Button
+          width={BlockSize.Full}
+          size={ButtonSize.Lg}
+          type="primary"
+          data-testid="import-srp-confirm"
+          onClick={importWallet}
+          disabled={!secretRecoveryPhrase.trim() || Boolean(srpError)}
+          className="import-srp__continue-button"
+        >
+          {t('continue')}
+        </Button>
+      </Box>
     </Page>
   );
 };
