@@ -5,10 +5,6 @@ import {
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getIsSmartTransaction,
-  type SmartTransactionsState,
-} from '../../../../../shared/modules/selectors';
 import { getCustomNonceValue } from '../../../../selectors';
 import {
   updateAndApproveTx,
@@ -26,10 +22,9 @@ export function useTransactionConfirm() {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const { chainId } = transactionMeta ?? {};
-  const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
-    getIsSmartTransaction(state, chainId),
-  );
-  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
+
+  const { isSmartTransaction, isSupported: isGaslessSupported } =
+    useIsGaslessSupported();
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),

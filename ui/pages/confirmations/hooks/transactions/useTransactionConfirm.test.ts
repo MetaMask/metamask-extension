@@ -8,9 +8,9 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../tes
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { updateAndApproveTx } from '../../../../store/actions';
-import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { AsyncResultNoIdle, useAsyncResult } from '../../../../hooks/useAsync';
+import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
 import { useTransactionConfirm } from './useTransactionConfirm';
 
 jest.mock('../../../../../shared/modules/selectors');
@@ -22,6 +22,8 @@ jest.mock('../../../../store/actions', () => ({
 }));
 
 jest.mock('../../../../hooks/useAsync');
+
+jest.mock('../gas/useIsGaslessSupported');
 
 const CUSTOM_NONCE_VALUE = '1234';
 
@@ -58,13 +60,16 @@ function runHook({
 
 describe('useTransactionConfirm', () => {
   const updateAndApproveTxMock = jest.mocked(updateAndApproveTx);
-  const getIsSmartTransactionMock = jest.mocked(getIsSmartTransaction);
+  const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
   const useAsyncResultMock = jest.mocked(useAsyncResult);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    getIsSmartTransactionMock.mockReturnValue(false);
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: false,
+    });
     updateAndApproveTxMock.mockReturnValue(() =>
       Promise.resolve({} as TransactionMeta),
     );
@@ -100,7 +105,10 @@ describe('useTransactionConfirm', () => {
   });
 
   it('updates batch transaction if smart transaction and selected gas fee token', async () => {
-    getIsSmartTransactionMock.mockReturnValue(true);
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+    });
 
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
@@ -128,7 +136,10 @@ describe('useTransactionConfirm', () => {
   });
 
   it('updates transaction params if smart transaction and selected gas fee token', async () => {
-    getIsSmartTransactionMock.mockReturnValue(true);
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+    });
 
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
@@ -149,7 +160,10 @@ describe('useTransactionConfirm', () => {
   });
 
   it('does not update transaction params if smart transaction and no selected gas fee token', async () => {
-    getIsSmartTransactionMock.mockReturnValue(true);
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+    });
 
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
@@ -170,7 +184,10 @@ describe('useTransactionConfirm', () => {
   });
 
   it('calls handleSmartTransaction if chainSupportsSendBundle is true', async () => {
-    getIsSmartTransactionMock.mockReturnValue(true);
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+    });
 
     const mockSupportsSendBundle = true;
     useAsyncResultMock.mockReturnValue({
@@ -203,7 +220,10 @@ describe('useTransactionConfirm', () => {
   });
 
   it('does not call handleSmartTransaction if chainSupportsSendBundle is false', async () => {
-    getIsSmartTransactionMock.mockReturnValue(true);
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: true,
+      isSupported: true,
+    });
 
     const mockSupportsSendBundle = false;
     useAsyncResultMock.mockReturnValue({
@@ -230,7 +250,10 @@ describe('useTransactionConfirm', () => {
   });
 
   it('returns false if chainId is undefined during chainSupportsSendBundle check', async () => {
-    getIsSmartTransactionMock.mockReturnValue(false);
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+    });
 
     useAsyncResultMock.mockReturnValue({
       pending: false,
