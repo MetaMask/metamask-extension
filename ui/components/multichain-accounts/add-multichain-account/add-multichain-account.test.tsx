@@ -36,8 +36,8 @@ describe('AddMultichainAccount', () => {
     metamask: {
       localeMessages: {
         current: {
-          createMultichainAccountButton: 'Create account',
-          createMultichainAccountButtonLoading: 'Creating account...',
+          createMultichainAccountButton: 'Add account',
+          createMultichainAccountButtonLoading: 'Adding account...',
         },
         currentLocale: 'en',
       },
