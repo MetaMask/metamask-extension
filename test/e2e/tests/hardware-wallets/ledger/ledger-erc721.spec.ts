@@ -83,7 +83,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          `${(balance / 1000000).toFixed(2)}M`,
+          `${(Number(balance) / 1000000).toFixed(2)}M`,
         );
 
         const contractAddress =
@@ -146,7 +146,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          `${(balance / 1000000).toFixed(2)}M`,
+          `${(Number(balance) / 1000000).toFixed(2)}M`,
         );
 
         const contractAddress =
@@ -207,7 +207,7 @@ describe('Ledger Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          `${(balance / 1000000).toFixed(2)}M`,
+          `${(Number(balance) / 1000000).toFixed(2)}M`,
         );
 
         const contractAddress =
