@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useRive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
+import {
+  useRive,
+  useRiveFile,
+  Layout,
+  Fit,
+  Alignment,
+} from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
 import { isWasmReady as checkWasmReady } from '../rive-wasm';
 
@@ -16,6 +22,7 @@ export default function FoxAppearAnimation({
 }: FoxAppearAnimationProps) {
   const isTestEnvironment = Boolean(process.env.IN_TEST);
   const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
+  const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(undefined);
 
   // Check if WASM is ready (initialized in parent OnboardingFlow)
   useEffect(() => {
@@ -44,13 +51,29 @@ export default function FoxAppearAnimation({
     return () => clearInterval(checkInterval);
   }, [isTestEnvironment]);
 
-  // Only initialize Rive after WASM is ready to avoid "source file required" error
-  // We always need to provide a valid config to useRive (hooks can't be conditional)
-  // but we control when to actually render the component
+  // Fetch the .riv file and convert to ArrayBuffer
+  useEffect(() => {
+    if (!isWasmReady || isTestEnvironment || buffer) {
+      return;
+    }
+
+    fetch('./images/riv_animations/fox_appear.riv')
+      .then((response) => response.arrayBuffer())
+      .then((arrayBuffer) => setBuffer(arrayBuffer))
+      .catch((error) => {
+        console.error('[Rive Fox] Failed to load .riv file:', error);
+      });
+  }, [isWasmReady, isTestEnvironment, buffer]);
+
+  // Use the buffer parameter instead of src
+  const { riveFile, status } = useRiveFile({
+    buffer,
+  });
+
+  // Only initialize Rive after WASM is ready and riveFile is loaded
   const { rive, RiveComponent } = useRive({
-    src: isWasmReady ? './images/riv_animations/fox_appear.riv' : undefined,
-    stateMachines: isWasmReady ? 'FoxRaiseUp' : undefined,
-    enableRiveAssetCDN: !isTestEnvironment,
+    riveFile: riveFile ?? undefined,
+    stateMachines: riveFile ? 'FoxRaiseUp' : undefined,
     autoplay: false,
     layout: new Layout({
       fit: Fit.Contain,
@@ -94,7 +117,7 @@ export default function FoxAppearAnimation({
         rive.play();
       }
     }
-  }, [rive, isLoader, isWasmReady]);
+  }, [rive, isLoader, isWasmReady, skipTransition]);
 
   // In test environments, skip animation entirely to avoid CDN network requests
   if (isTestEnvironment) {
@@ -107,8 +130,27 @@ export default function FoxAppearAnimation({
     );
   }
 
-  // Don't render Rive component until WASM is ready to avoid "source file required" error
-  if (!isWasmReady) {
+  // Don't render Rive component until WASM is ready and file is loaded
+  if (!isWasmReady || status === 'loading') {
+    return (
+      <Box
+        className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
+      >
+        {isLoader && (
+          <img
+            data-testid="loading-indicator"
+            className="riv-animation__spinner"
+            src="./images/spinner.gif"
+            alt=""
+          />
+        )}
+      </Box>
+    );
+  }
+
+  // Handle file loading failure
+  if (status === 'failed') {
+    console.error('[Rive Fox] Failed to load .riv file');
     return (
       <Box
         className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
