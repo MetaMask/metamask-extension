@@ -1,5 +1,4 @@
 import { Suite } from 'mocha';
-import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
 import { unlockWallet, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
@@ -16,6 +15,8 @@ import {
   FAILED_DEST_TRANSACTION,
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from './constants';
+
+const DEFAULT_LOCAL_NODE_USD_BALANCE = '127,500.00';
 
 describe('Bridge functionality', function (this: Suite) {
   it('should show that more funds are needed to execute the Bridge', async function () {
