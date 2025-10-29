@@ -312,6 +312,14 @@
     },
     "cacheTimestamp": "number"
   },
+  "RewardsController": {
+    "rewardsAccounts": "object",
+    "rewardsActiveAccount": null,
+    "rewardsSeasonStatuses": "object",
+    "rewardsSeasons": "object",
+    "rewardsSubscriptionTokens": "object",
+    "rewardsSubscriptions": "object"
+  },
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "ShieldController": "object",

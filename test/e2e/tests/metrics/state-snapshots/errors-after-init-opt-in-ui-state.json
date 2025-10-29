@@ -334,6 +334,12 @@
       "feature3": { "name": "groupC", "value": "valueC" },
       "sendRedesign": { "enabled": false }
     },
+    "rewardsAccounts": "object",
+    "rewardsActiveAccount": null,
+    "rewardsSeasonStatuses": "object",
+    "rewardsSeasons": "object",
+    "rewardsSubscriptionTokens": "object",
+    "rewardsSubscriptions": "object",
     "cacheTimestamp": "number",
     "allDeFiPositions": "object",
     "allDeFiPositionsCount": "object",
