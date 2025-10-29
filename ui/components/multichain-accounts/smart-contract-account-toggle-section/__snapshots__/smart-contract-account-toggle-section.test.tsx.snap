@@ -12,13 +12,13 @@ exports[`SmartContractAccountToggleSection Disabled State Handling disables all 
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
       >
-        Enable smart contract account
+        Enable smart account
       </p>
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
       >
         You can enable smart account features on supported networks.
-         
+
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           rel="noopener noreferrer"
@@ -153,13 +153,13 @@ exports[`SmartContractAccountToggleSection Learn More Button opens Zendesk artic
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
       >
-        Enable smart contract account
+        Enable smart account
       </p>
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
       >
         You can enable smart account features on supported networks.
-         
+
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           rel="noopener noreferrer"
@@ -193,13 +193,13 @@ exports[`SmartContractAccountToggleSection Loading State shows loading spinner w
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
       >
-        Enable smart contract account
+        Enable smart account
       </p>
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
       >
         You can enable smart account features on supported networks.
-         
+
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           rel="noopener noreferrer"
@@ -274,13 +274,13 @@ exports[`SmartContractAccountToggleSection Network Integration displays toggle f
       <p
         class="mm-box mm-text mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--color-text-default"
       >
-        Enable smart contract account
+        Enable smart account
       </p>
       <p
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
       >
         You can enable smart account features on supported networks.
-         
+
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           rel="noopener noreferrer"
