@@ -5850,6 +5850,9 @@
   "shieldConfirmMembership": {
     "message": "Confirm membership"
   },
+  "shieldCoverageAlertCovered": {
+    "message": "You're protected up to $2 with Metamask Transaction Shield. $1."
+  },
   "shieldCoverageAlertMessageChainNotSupported": {
     "message": "This chain is not supported, so it isn't protected by Transaction Shield. $1."
   },
@@ -5864,6 +5867,9 @@
   },
   "shieldCoverageAlertMessageTitle": {
     "message": "This transaction isn't covered"
+  },
+  "shieldCoverageAlertMessageTitleCovered": {
+    "message": "This transaction is covered"
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
     "message": "This transaction type is not supported, so it isn't protected by Transaction Shield. $1."
