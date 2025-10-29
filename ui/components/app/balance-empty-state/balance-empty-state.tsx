@@ -157,6 +157,7 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = ({
         onClose={handleModalClose}
         title={t('addFunds')}
         onClickReceive={handleReceive}
+        data-testid="balance-empty-state-funding-modal"
       />
     </Box>
   );
