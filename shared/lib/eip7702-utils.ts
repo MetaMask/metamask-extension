@@ -2,6 +2,7 @@ import {
   TransactionEnvelopeType,
   TransactionType,
   TransactionParams,
+  TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 
@@ -36,7 +37,7 @@ export async function createEIP7702UpgradeTransaction(
       requireApproval?: boolean;
       type?: TransactionType;
     },
-  ) => Promise<Record<string, unknown>>,
+  ) => Promise<TransactionMeta>,
 ): Promise<EIP7702TransactionResult> {
   const { address, upgradeContractAddress, networkClientId } = params;
 
@@ -64,10 +65,18 @@ export async function createEIP7702UpgradeTransaction(
     },
   );
 
+  if (!transactionMeta.hash) {
+    throw new Error('Transaction hash is missing from transaction metadata');
+  }
+
+  if (!transactionMeta.id) {
+    throw new Error('Transaction ID is missing from transaction metadata');
+  }
+
   return {
-    transactionHash: transactionMeta.hash as string,
+    transactionHash: transactionMeta.hash,
     delegatedTo: upgradeContractAddress,
-    transactionId: transactionMeta.id as string,
+    transactionId: transactionMeta.id,
   };
 }
 
@@ -87,7 +96,7 @@ export async function createEIP7702DowngradeTransaction(
       requireApproval?: boolean;
       type?: TransactionType;
     },
-  ) => Promise<Record<string, unknown>>,
+  ) => Promise<TransactionMeta>,
 ): Promise<EIP7702TransactionResult> {
   const { address, networkClientId } = params;
 
@@ -111,9 +120,17 @@ export async function createEIP7702DowngradeTransaction(
     },
   );
 
+  if (!transactionMeta.hash) {
+    throw new Error('Transaction hash is missing from transaction metadata');
+  }
+
+  if (!transactionMeta.id) {
+    throw new Error('Transaction ID is missing from transaction metadata');
+  }
+
   return {
-    transactionHash: transactionMeta.hash as string,
-    transactionId: transactionMeta.id as string,
+    transactionHash: transactionMeta.hash,
+    transactionId: transactionMeta.id,
   };
 }
 

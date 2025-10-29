@@ -1240,7 +1240,6 @@ export default class MetamaskController extends EventEmitter {
 
   /**
    * Returns the current chainId (hex string) for a given domain/origin.
-   * Used by EIP-7702 middleware hooks.
    *
    * @param {string} domain
    * @returns {string | undefined}
@@ -1248,11 +1247,19 @@ export default class MetamaskController extends EventEmitter {
   getCurrentChainIdForDomain(domain) {
     const networkClientId =
       this.selectedNetworkController.getNetworkClientIdForDomain(domain);
-    const { chainId } =
+    const networkConfig =
       this.networkController.getNetworkConfigurationByNetworkClientId(
         networkClientId,
       );
-    return chainId;
+
+    if (!networkConfig) {
+      log.warn(
+        `No network configuration found for clientId: ${networkClientId}`,
+      );
+      return undefined;
+    }
+
+    return networkConfig.chainId;
   }
 
   /**
@@ -6733,15 +6740,7 @@ export default class MetamaskController extends EventEmitter {
           {}
         );
       },
-      getCurrentChainIdForDomain: (domain) => {
-        const networkClientId =
-          this.selectedNetworkController.getNetworkClientIdForDomain(domain);
-        const { chainId } =
-          this.networkController.getNetworkConfigurationByNetworkClientId(
-            networkClientId,
-          );
-        return chainId;
-      },
+      getCurrentChainIdForDomain: this.getCurrentChainIdForDomain.bind(this),
 
       // Web3 shim-related
       getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
