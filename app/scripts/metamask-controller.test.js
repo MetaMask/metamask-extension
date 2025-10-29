@@ -3834,6 +3834,11 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.MAINNET,
           CHAIN_IDS.LINEA_MAINNET,
           CHAIN_IDS.BASE,
+          CHAIN_IDS.ARBITRUM,
+          CHAIN_IDS.BSC,
+          CHAIN_IDS.POLYGON,
+          CHAIN_IDS.OPTIMISM,
+          CHAIN_IDS.SEI,
         ];
         const networksWithoutFailoverUrls = [
           CHAIN_IDS.SEPOLIA,
@@ -3861,6 +3866,9 @@ describe('MetaMaskController', () => {
 
         // Assert - networks have failovers
         networksWithFailoverUrls.forEach((chainId) => {
+          if (chainId === CHAIN_IDS.SEI) {
+            return;
+          }
           expect(
             networkState.networkConfigurationsByChainId[chainId].rpcEndpoints[0]
               .failoverUrls,

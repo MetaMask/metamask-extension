@@ -304,7 +304,6 @@ const SubmitClaimForm = () => {
         helpText={errors.chainId ? errors.chainId.msg : undefined}
         helpTextProps={{
           'data-testid': 'shield-claim-chain-id-help-text',
-          color: DsTextColor.textAlternative,
         }}
         id="chain-id"
         name="chain-id"
@@ -370,7 +369,16 @@ const SubmitClaimForm = () => {
         }}
         helpText={
           errors.impactedTransactionHash ? (
-            errors.impactedTransactionHash?.msg
+            <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
+              {`${errors.impactedTransactionHash?.msg}. `}
+              <TextButton
+                size={TextButtonSize.BodySm}
+                className="min-w-0"
+                asChild
+              >
+                <a href="#">{t('shieldClaimImpactedTxHashHelpTextLink')}</a>
+              </TextButton>
+            </Text>
           ) : (
             <Text
               variant={TextVariant.BodySm}

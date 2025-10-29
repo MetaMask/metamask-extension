@@ -18,6 +18,7 @@ import {
 } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
+import { NameType } from '@metamask/name-controller';
 import {
   BannerAlert,
   BannerAlertSeverity,
@@ -91,6 +92,7 @@ import {
   getIsShieldSubscriptionPaused,
 } from '../../../../shared/lib/shield';
 import { useAsyncResult } from '../../../hooks/useAsync';
+import Name from '../../../components/app/name';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCryptoPaymentMethod } from './types';
 
@@ -520,9 +522,30 @@ const TransactionShield = () => {
         </ButtonLink>
       );
     }
-    return isCryptoPaymentMethod(shieldSubscription.paymentMethod)
-      ? shieldSubscription.paymentMethod.crypto.tokenSymbol
-      : `${shieldSubscription.paymentMethod.card.brand.charAt(0).toUpperCase() + shieldSubscription.paymentMethod.card.brand.slice(1)} - ${shieldSubscription.paymentMethod.card.last4}`; // display card info for card payment method;
+
+    if (isCryptoPaymentMethod(shieldSubscription.paymentMethod)) {
+      const tokenInfo = shieldSubscription.paymentMethod.crypto;
+      const tokenAddress = cryptoPaymentMethod?.chains
+        ?.find((chain) => chain.chainId === tokenInfo.chainId)
+        ?.tokens.find(
+          (token) => token.symbol === tokenInfo.tokenSymbol,
+        )?.address;
+
+      if (!tokenAddress) {
+        return tokenInfo.tokenSymbol;
+      }
+      return (
+        <Name
+          value={tokenAddress}
+          type={NameType.ETHEREUM_ADDRESS}
+          preferContractSymbol
+          variation={tokenInfo.chainId}
+          fallbackName={tokenInfo.tokenSymbol}
+        />
+      );
+    }
+
+    return `${shieldSubscription.paymentMethod.card.brand.charAt(0).toUpperCase() + shieldSubscription.paymentMethod.card.brand.slice(1)} - ${shieldSubscription.paymentMethod.card.last4}`; // display card info for card payment method;
   }, [
     isPaused,
     shieldSubscription,
@@ -530,6 +553,7 @@ const TransactionShield = () => {
     isSubscriptionEndingSoon,
     t,
     handlePaymentError,
+    cryptoPaymentMethod,
   ]);
 
   return (
