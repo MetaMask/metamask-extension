@@ -192,8 +192,8 @@ The e2e tests require a wallet state fixture for running. To set up your local f
 
 1. Copy the sample: `cp test/e2e/fixtures/.onboarding-fixture-sample.json test/e2e/fixtures/.onboarding-fixture.json`
 2. Update with your wallet state by either:
-   - Downloading from a PR comment (look for "🧪 e2e Wallet State Fixture File")
-   - Exporting your own: `yarn dist && yarn test:e2e:single test/e2e/wallet-fixture-export.spec.ts --browser chrome` then copy from `test-artifacts/onboarding-fixture/onboarding-fixture.json`
+   - Downloading from a PR comment (look for "🧪 e2e Wallet State Fixture File") and saving to `test-artifacts/onboarding-fixture/onboarding-fixture.json`
+   - Exporting your own: `yarn dist && yarn test:e2e:single test/e2e/wallet-fixture-export.spec.ts --browser chrome` (file will be saved automatically to the correct location)
 
 Note: In CI, the fixture is automatically generated and shared across test jobs.
 

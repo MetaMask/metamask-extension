@@ -51,9 +51,10 @@ function onboardingFixture() {
 
   // Try to load local fixture file
   const localFixturePath = path.resolve(
-    __dirname,
-    'fixtures',
-    '.onboarding-fixture.json',
+    process.cwd(),
+    'test-artifacts',
+    'onboarding-fixture',
+    'onboarding-fixture.json',
   );
   if (fs.existsSync(localFixturePath)) {
     try {
@@ -71,13 +72,6 @@ function onboardingFixture() {
     }
   }
 
-  // If no fixture file found, provide instructions
-  const samplePath = path.resolve(
-    __dirname,
-    'fixtures',
-    '.onboarding-fixture-sample.json',
-  );
-
   // eslint-disable-next-line no-console
   console.error('\n');
   // eslint-disable-next-line no-console
@@ -93,13 +87,11 @@ function onboardingFixture() {
   // eslint-disable-next-line no-console
   console.error('\n📝 To create your local fixture:\n');
   // eslint-disable-next-line no-console
-  console.error('📋 STEP 1: Copy the sample file');
+  console.error('📋 STEP 1: Create the test-artifacts directory');
   // eslint-disable-next-line no-console
-  console.error(`   cp ${samplePath} ${localFixturePath}`);
+  console.error(`   mkdir -p test-artifacts/onboarding-fixture`);
   // eslint-disable-next-line no-console
-  console.error(
-    '\n📋 STEP 2: Update the contents with your own wallet state:',
-  );
+  console.error('\n📋 STEP 2: Update the contents with your own wallet state');
   // eslint-disable-next-line no-console
   console.error('   Option A - 📥 Download from PR comment:');
   // eslint-disable-next-line no-console
@@ -116,7 +108,7 @@ function onboardingFixture() {
   );
   // eslint-disable-next-line no-console
   console.error(
-    `      📦 c) Copy:   cp test-artifacts/onboarding-fixture/onboarding-fixture.json ${localFixturePath}`,
+    `      📦 c) Copy:   # File will be saved directly to test-artifacts/onboarding-fixture/onboarding-fixture.json`,
   );
   // eslint-disable-next-line no-console
   console.error(

@@ -42,9 +42,6 @@ test-artifacts
 test-builds
 build-artifacts
 
-# Wallet state fixture for running e2e tests locally
-test/e2e/fixtures/.onboarding-fixture.json
-
 #ignore css output and sourcemaps
 ui/css/output/
 

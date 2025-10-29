@@ -49,6 +49,19 @@ describe('Wallet State', function () {
         );
         await fs.ensureDir(outDir);
         const outPath = path.join(outDir, 'onboarding-fixture.json');
+        console.log(
+          '\n=============================================================================\n',
+        );
+        console.log('📁 WALLET FIXTURE STATE EXPORT');
+        console.log(
+          '=============================================================================\n',
+        );
+        console.log(`📂 Output directory: ${outDir}`);
+        console.log(`📄 Output file: ${outPath}`);
+        console.log(
+          '=============================================================================\n',
+        );
+
         await fs.writeJson(outPath, persistedState, { spaces: 2 });
       },
     );
