@@ -281,7 +281,7 @@ type StateHooks = {
   captureBackgroundError?: (msg?: string) => Promise<void>;
 
   /**
-   * This is set in `app-init.js`
+   * This is set in `app-init.js`. It is handled in `background.js`.
    */
   lazyListener?: ExtensionLazyListener<Browser>;
 };
