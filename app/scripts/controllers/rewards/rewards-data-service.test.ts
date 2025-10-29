@@ -6,7 +6,6 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { ENVIRONMENT } from '../../../../development/build/constants';
-import type { PreferencesControllerGetStateAction } from '../preferences-controller';
 import { RewardsDataServiceMessenger } from '../../controller-init/messengers/reward-data-service-messenger';
 import { REWARDS_API_URL } from '../../../../shared/constants/rewards';
 import {
@@ -43,15 +42,16 @@ jest.mock('loglevel', () => ({
 const mockConsoleWarn = jest.spyOn(console, 'warn').mockImplementation();
 const mockConsoleError = jest.spyOn(console, 'error').mockImplementation();
 
+type AllActions = MessengerActions<RewardsDataServiceMessenger>;
+type AllEvents = MessengerEvents<RewardsDataServiceMessenger>;
+
+type RootMessenger = Messenger<MockAnyNamespace, AllActions, AllEvents>;
+
 describe('RewardsDataService', () => {
   let messenger: RewardsDataServiceMessenger;
   let mockFetch: jest.MockedFunction<typeof fetch>;
   let service: RewardsDataService;
-  let baseMessenger: Messenger<
-    MockAnyNamespace,
-    PreferencesControllerGetStateAction,
-    never
-  >;
+  let baseMessenger: RootMessenger;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -179,11 +179,9 @@ describe('RewardsDataService', () => {
 
     it('preserves locale with underscore region code format', async () => {
       // Create a new messenger with underscore format locale
-      const customBaseMessenger = new Messenger<
-        MockAnyNamespace,
-        PreferencesControllerGetStateAction,
-        never
-      >({ namespace: MOCK_ANY_NAMESPACE });
+      const customBaseMessenger: RootMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       customBaseMessenger.registerActionHandler(
         'PreferencesController:getState',
@@ -230,11 +228,9 @@ describe('RewardsDataService', () => {
 
     it('preserves locale with hyphen region code format', async () => {
       // Create a new messenger with hyphen format locale
-      const customBaseMessenger = new Messenger<
-        MockAnyNamespace,
-        PreferencesControllerGetStateAction,
-        never
-      >({ namespace: MOCK_ANY_NAMESPACE });
+      const customBaseMessenger: RootMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       customBaseMessenger.registerActionHandler(
         'PreferencesController:getState',
@@ -281,11 +277,9 @@ describe('RewardsDataService', () => {
 
     it('preserves locale with hyphen region code format (en-GB)', async () => {
       // Create a new messenger with en-GB locale
-      const customBaseMessenger = new Messenger<
-        MockAnyNamespace,
-        PreferencesControllerGetStateAction,
-        never
-      >({ namespace: MOCK_ANY_NAMESPACE });
+      const customBaseMessenger: RootMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       customBaseMessenger.registerActionHandler(
         'PreferencesController:getState',
@@ -332,11 +326,9 @@ describe('RewardsDataService', () => {
 
     it('retries without normalization when first attempt fails, then falls back to en-US', async () => {
       // Create a new messenger that succeeds on retry but returns raw locale
-      const customBaseMessenger = new Messenger<
-        MockAnyNamespace,
-        PreferencesControllerGetStateAction,
-        never
-      >({ namespace: MOCK_ANY_NAMESPACE });
+      const customBaseMessenger: RootMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       let callCount = 0;
       customBaseMessenger.registerActionHandler(
@@ -391,11 +383,9 @@ describe('RewardsDataService', () => {
 
     it('falls back to en-US when both attempts to get locale fail', async () => {
       // Create a new messenger that throws an error on both attempts
-      const customBaseMessenger = new Messenger<
-        MockAnyNamespace,
-        PreferencesControllerGetStateAction,
-        never
-      >({ namespace: MOCK_ANY_NAMESPACE });
+      const customBaseMessenger: RootMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       let callCount = 0;
       customBaseMessenger.registerActionHandler(
@@ -447,11 +437,9 @@ describe('RewardsDataService', () => {
 
     it('uses different locale when PreferencesController returns different locale', async () => {
       // Create a new messenger with French locale
-      const customBaseMessenger = new Messenger<
-        MockAnyNamespace,
-        PreferencesControllerGetStateAction,
-        never
-      >({ namespace: MOCK_ANY_NAMESPACE });
+      const customBaseMessenger: RootMessenger = new Messenger({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
 
       customBaseMessenger.registerActionHandler(
         'PreferencesController:getState',
