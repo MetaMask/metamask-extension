@@ -1,4 +1,7 @@
 import { useCallback } from 'react';
+import { InternalAccount } from '@metamask/keyring-internal-api';
+import { CaipAssetType } from '@metamask/utils';
+
 import { useSendContext } from '../../context/send';
 import { validateAmountMultichain } from '../../utils/multichain-snaps';
 
@@ -7,17 +10,14 @@ export const useSnapAmountOnInput = () => {
 
   const validateAmountWithSnap = useCallback(
     async (amount: string) => {
-      console.log('OGP - validateAmountWithSnap executed with amount : ', {
-        amount,
-      });
-      const result = await validateAmountMultichain(fromAccount as any, {
-        value: amount,
-        accountId: (fromAccount as unknown as any).id,
-        assetId: asset?.assetId as `${string}:${string}/${string}:${string}`,
-      });
-      console.log('OGP - validateAmountWithSnap returned result : ', {
-        result,
-      });
+      const result = await validateAmountMultichain(
+        fromAccount as InternalAccount,
+        {
+          value: amount,
+          accountId: (fromAccount as InternalAccount).id,
+          assetId: asset?.assetId as CaipAssetType,
+        },
+      );
       return result;
     },
     [fromAccount, value, asset],
