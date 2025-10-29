@@ -919,11 +919,12 @@ async function setupMocking(
       };
     });
 
-  // Bitcoin Esplora API: Scripthash transactions endpoint
+  // Bitcoin Esplora API: Scripthash transactions endpoint once to mock first account discovery
   await server
     .forGet(
       /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[^/]+\/esplora\/scripthash\/[a-f0-9]+\/txs$/u,
     )
+    .once()
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -987,6 +988,18 @@ async function setupMocking(
             },
           },
         ],
+      };
+    });
+
+  // Bitcoin Esplora API: Scripthash transactions endpoint
+  await server
+    .forGet(
+      /^https:\/\/bitcoin-mainnet\.infura\.io\/v3\/[^/]+\/esplora\/scripthash\/[a-f0-9]+\/txs$/u,
+    )
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: [],
       };
     });
 
