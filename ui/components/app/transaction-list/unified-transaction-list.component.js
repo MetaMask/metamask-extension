@@ -378,16 +378,15 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
   }
 
   const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
-  const filteredUniqueNonEvmChainIds =
-    [
-      ...new Set(
-        Object.keys(enabledNetworks)
-          .filter((namespace) => namespace !== 'eip155')
-          .reduce((acc, namespace) => {
-            return [...acc, ...Object.keys(enabledNetworks[namespace])];
-          }, []),
-      ),
-    ] ?? [];
+  const filteredUniqueNonEvmChainIds = [
+    ...new Set(
+      Object.keys(enabledNetworks)
+        .filter((namespace) => namespace !== 'eip155')
+        .reduce((acc, namespace) => {
+          return [...acc, ...Object.keys(enabledNetworks[namespace])];
+        }, []),
+    ),
+  ];
 
   return {
     evmChainIds: filteredUniqueEVMChainIds,
