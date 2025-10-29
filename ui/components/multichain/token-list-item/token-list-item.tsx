@@ -57,7 +57,7 @@ import { setEditedNetwork } from '../../../store/actions';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { selectNoFeeAssets } from '../../../ducks/bridge/selectors';
-import { accountTypeLabel } from '../../app/assets/token-cell/cells/token-cell-title';
+import { accountTypeLabel } from '../../../pages/confirmations/constants/network';
 import { PercentageChange } from './price/percentage-change/percentage-change';
 import { StakeableLink } from './stakeable-link';
 
