@@ -709,7 +709,6 @@ export enum MetaMetricsEventName {
   EmptyReceiveBannerDisplayed = 'Empty Receive Banner Displayed',
   EmptyReceiveBannerClicked = 'Empty Receive Banner Clicked',
   EmptyNftsBannerClicked = 'Empty NFTs Banner Clicked',
-  EnablingNotifications = 'Notifications Enabled',
   EncryptionPublicKeyApproved = 'Encryption Approved',
   EncryptionPublicKeyRejected = 'Encryption Rejected',
   EncryptionPublicKeyRequested = 'Encryption Requested',
