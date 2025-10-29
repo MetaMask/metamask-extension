@@ -35,13 +35,15 @@ export async function generateWalletState(withState, fromTest) {
     FIXTURES_CONFIG = withState;
   }
 
-  const { vault, accounts } = await generateVaultAndAccount(
+  const { vault, accounts, entropy } = await generateVaultAndAccount(
     process.env.TEST_SRP || E2E_SRP,
     fromTest ? WALLET_PASSWORD : process.env.PASSWORD,
   );
+  const solanaAccount = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer'
 
   fixtureBuilder
-    .withAccountsController(generateAccountsControllerState(accounts))
+    .withAccountsController(generateAccountsControllerState(entropy, accounts,solanaAccount))
+    .withAccountTreeController(generateAccountTreeControllerState(entropy, accounts,solanaAccount))
     .withAddressBookController(generateAddressBookControllerState())
     .withAnnouncementController(generateAnnouncementControllerState())
     .withAppStateController(FIXTURES_APP_STATE)
@@ -93,6 +95,7 @@ async function generateVaultAndAccount(encodedSeedPhrase, password) {
 
   const accounts = [];
   const account = krCtrl.state.keyrings[0].accounts[0];
+  const entropy = krCtrl.state.keyrings[0].metadata.id;
   accounts.push(account);
 
   for (let i = 1; i < FIXTURES_CONFIG.withAccounts; i++) {
@@ -101,7 +104,7 @@ async function generateVaultAndAccount(encodedSeedPhrase, password) {
   }
   const { vault } = krCtrl.state;
 
-  return { vault, accounts };
+  return { vault, accounts, entropy };
 }
 
 /**
@@ -122,10 +125,12 @@ function generateKeyringControllerState(vault) {
 /**
  * Generates the state for the AccountsController.
  *
+ * @param {string} entropy - The entropy id.
  * @param {Array<string>} accounts - The account addresses.
+ * @param {string} solanaAccount - The solana account.
  * @returns {object} The generated AccountsController state.
  */
-function generateAccountsControllerState(accounts) {
+function generateAccountsControllerState(entropy, accounts, solanaAccount) {
   console.log('Generating AccountsController state');
   const internalAccounts = {
     selectedAccount: 'account-id',
@@ -134,7 +139,6 @@ function generateAccountsControllerState(accounts) {
 
   accounts.forEach((account, index) => {
     internalAccounts.accounts[`acount-id-${index}`] = {
-      selectedAccount: 'account-id',
       id: 'account-id',
       address: account,
       metadata: {
@@ -144,7 +148,17 @@ function generateAccountsControllerState(accounts) {
           type: 'HD Key Tree',
         },
       },
-      options: {},
+      options: {
+        entropySource: entropy,
+        derivationPath: "m/44'/60'/0'/0/0",
+        groupIndex: index,
+        entropy: {
+          type: 'mnemonic',
+          id: entropy,
+          derivationPath: "m/44'/60'/0'/0/0",
+          groupIndex: index,
+        },
+      },
       methods: [
         'personal_sign',
         'eth_signTransaction',
@@ -153,10 +167,107 @@ function generateAccountsControllerState(accounts) {
         'eth_signTypedData_v4',
       ],
       type: 'eip155:eoa',
+      scopes: ['eip155:0'],
     };
   });
+
+  internalAccounts.accounts['c9e610f0-5617-48e7-a79f-d8cfd37f70f4'] = {
+    type: 'solana:data-account',
+    id: 'c9e610f0-5617-48e7-a79f-d8cfd37f70f4',
+    address: solanaAccount,
+    options: {
+      entropySource: entropy,
+      derivationPath: "m/44'/501'/0'/0'",
+      index: 0,
+      entropy: {
+        type: 'mnemonic',
+        id: entropy,
+        groupIndex: 0,
+        derivationPath: "m/44'/501'/0'/0'",
+      },
+    },
+    methods: [
+      'signAndSendTransaction',
+      'signTransaction',
+      'signMessage',
+      'signIn',
+    ],
+    scopes: [
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+    ],
+    metadata: {
+      name: 'Solana Account 1',
+      importTime: 1761353236138,
+      keyring: {
+        type: 'Snap Keyring',
+      },
+      snap: {
+        id: 'npm:@metamask/solana-wallet-snap',
+        name: 'Solana',
+        enabled: true,
+      },
+      lastSelected: 0,
+      nameLastUpdatedAt: 1761353236170,
+    },
+  }
+
   return {
     internalAccounts,
+  };
+}
+
+/**
+ * Generates the state for the AccountTreeController.
+ *
+ * @param {string} entropy - The entropy id.
+ * @param {Array<string>} accounts - The account addresses.
+ * @param {string} solanaAccount - The solana account.
+ * @returns {object} The generated AccountTreeController state.
+ */
+function generateAccountTreeControllerState(entropy, accounts) {
+  console.log('Generating AccountTreeController state');
+  const accountTree = {
+    isAccountTreeSyncingInProgress: false,
+    hasAccountTreeSyncingSyncedAtLeastOnce: false,
+    wallets: {
+      selectedAccountGroup: `entropy:${entropy}/0`,
+      [`entropy:${entropy}`]: {
+        type: 'entropy',
+        id: `entropy:${entropy}`,
+        metadata: {
+          name: 'Wallet 1',
+          entropy: {
+            id: entropy,
+          },
+        },
+        status: 'ready',
+        groups: {},
+      },
+    },
+  };
+
+  accounts.forEach((account, index) => {
+    accountTree.wallets[`entropy:${entropy}`].groups[`entropy:${entropy}/${index}`] = {
+      type: 'multichain-account',
+      id: `entropy:${entropy}/${index}`,
+      metadata: {
+        name: `Account ${index + 1}`,
+        pinned: false,
+        hidden: false,
+        entropy: {
+          groupIndex: index
+        }
+      },
+      accounts: [account]
+    }
+  });
+
+  accountTree.wallets[`entropy:${entropy}`].groups[`entropy:${entropy}/0`].accounts.push('c9e610f0-5617-48e7-a79f-d8cfd37f70f4')
+
+  return {
+    accountTree,
   };
 }
 

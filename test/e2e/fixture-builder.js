@@ -845,6 +845,11 @@ class FixtureBuilder {
     return this;
   }
 
+  withAccountTreeController(data) {
+    merge(this.fixture.data.AccountTreeController, data);
+    return this;
+  }
+
   withAccountsControllerImportedAccount() {
     return this.withAccountsController({
       internalAccounts: {
