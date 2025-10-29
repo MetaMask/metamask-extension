@@ -1818,9 +1818,6 @@
   "customizeYourNotificationsText": {
     "message": "Turn on the types of notifications you want to receive:"
   },
-  "daily": {
-    "message": "daily"
-  },
   "dappSuggested": {
     "message": "Site suggested"
   },
@@ -2549,18 +2546,6 @@
   },
   "etherscanViewOn": {
     "message": "View on Etherscan"
-  },
-  "everyXDays": {
-    "message": "every $1 days"
-  },
-  "everyXHours": {
-    "message": "every $1 hours"
-  },
-  "everyXMinutes": {
-    "message": "every $1 minutes"
-  },
-  "everyXSeconds": {
-    "message": "every $1 seconds"
   },
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
