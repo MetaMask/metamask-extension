@@ -120,11 +120,9 @@ export const AppHeaderUnlockedContent = ({
   const shortenedAddress =
     internalAccount &&
     shortenAddress(normalizeSafeAddress(internalAccount.address));
-  const accountName =
-    (isMultichainAccountsState2Enabled
-      ? (selectedMultichainAccount?.metadata.name ??
-        internalAccount?.metadata.name)
-      : internalAccount?.metadata.name) ?? '';
+  const accountName = isMultichainAccountsState2Enabled
+    ? (selectedMultichainAccount?.metadata.name ?? '')
+    : (internalAccount?.metadata.name ?? '');
 
   // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
