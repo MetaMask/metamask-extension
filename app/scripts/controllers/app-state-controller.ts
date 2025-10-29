@@ -380,7 +380,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   canTrackWalletFundsObtained: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: false,
   },
   isRampCardClosed: {
@@ -676,7 +676,7 @@ export class AppStateController extends BaseController<
       this.#requestQrCodeScan.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'AppStateController:setCanTrackWalletFundsObtained',
       this.setCanTrackWalletFundsObtained.bind(this),
     );
