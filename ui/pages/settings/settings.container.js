@@ -103,6 +103,9 @@ const mapStateToProps = (state, ownProps) => {
     pathname.match(ADD_POPULAR_CUSTOM_NETWORK),
   );
   const isSnapSettingsRoute = Boolean(pathname.match(SNAP_SETTINGS_ROUTE));
+  const isShieldClaimPage = Boolean(
+    pathname.match(TRANSACTION_SHIELD_CLAIM_ROUTE),
+  );
 
   const environmentType = getEnvironmentType();
   const isPopup =
@@ -128,6 +131,8 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = NETWORKS_ROUTE;
   } else if (isRevealSrpListPage || isPasswordChangePage) {
     backRoute = SECURITY_ROUTE;
+  } else if (isShieldClaimPage) {
+    backRoute = TRANSACTION_SHIELD_ROUTE;
   }
 
   let initialBreadCrumbRoute;
