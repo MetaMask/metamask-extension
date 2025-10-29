@@ -194,10 +194,11 @@ class AccountListPage {
     tag: 'p',
   };
 
-  private readonly importSrpInput = '#import-srp__multi-srp__srp-word-0';
+  private readonly importSrpInput =
+    '[data-testid="srp-input-import__srp-note"]';
 
   private readonly importSrpConfirmButton = {
-    text: 'Import wallet',
+    text: 'Continue',
     tag: 'button',
   };
 
