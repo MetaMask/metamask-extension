@@ -64,15 +64,13 @@ export function useTransactionConfirm() {
   ]);
 
   const handleGasless7702 = useCallback(() => {
-    if (!selectedGasFeeToken) {
-      return;
-    }
     newTransactionMeta.isExternalSign = true;
-    newTransactionMeta.isGasFeeSponsored = transactionMeta.isGasFeeSponsored;
+    newTransactionMeta.isGasFeeSponsored =
+      isGaslessSupported && transactionMeta.isGasFeeSponsored;
   }, [
+    isGaslessSupported,
     newTransactionMeta,
-    selectedGasFeeToken,
-    transactionMeta.isGasFeeSponsored,
+    transactionMeta?.isGasFeeSponsored,
   ]);
 
   const onTransactionConfirm = useCallback(async () => {
@@ -80,7 +78,7 @@ export function useTransactionConfirm() {
 
     if (isGaslessSupportedSTX) {
       handleSmartTransaction();
-    } else if (isGaslessSupported) {
+    } else if (selectedGasFeeToken) {
       handleGasless7702();
     }
 
@@ -89,10 +87,10 @@ export function useTransactionConfirm() {
     newTransactionMeta,
     customNonceValue,
     isGaslessSupportedSTX,
-    isGaslessSupported,
     dispatch,
     handleSmartTransaction,
     handleGasless7702,
+    selectedGasFeeToken,
   ]);
 
   return {

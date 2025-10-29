@@ -1,9 +1,7 @@
 import { act } from 'react-dom/test-utils';
 import { Hex } from '@metamask/utils';
 import { getIsSmartTransaction } from '../../../../../shared/modules/selectors';
-import {
-  genUnapprovedContractInteractionConfirmation,
-} from '../../../../../test/data/confirmations/contract-interaction';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { isSendBundleSupported } from '../../../../store/actions';
@@ -56,7 +54,9 @@ describe('useGaslessSupportedSmartTransactions', () => {
       pending: false,
     });
 
-    expect(isSendBundleSupportedMock).toHaveBeenCalledWith(CHAIN_ID_MOCK as Hex);
+    expect(isSendBundleSupportedMock).toHaveBeenCalledWith(
+      CHAIN_ID_MOCK as Hex,
+    );
   });
 
   it('returns isSupported = false when smart transaction enabled but sendBundle not supported', async () => {
@@ -92,7 +92,9 @@ describe('useGaslessSupportedSmartTransactions', () => {
     const pendingPromise = new Promise<boolean>((resolve) => {
       resolvePromise = resolve;
     });
-    isSendBundleSupportedMock.mockReturnValue(pendingPromise as Promise<boolean>);
+    isSendBundleSupportedMock.mockReturnValue(
+      pendingPromise as Promise<boolean>,
+    );
 
     const { result, waitForNextUpdate } = renderHookWithConfirmContextProvider(
       useGaslessSupportedSmartTransactions,
@@ -108,7 +110,7 @@ describe('useGaslessSupportedSmartTransactions', () => {
 
     // Resolve and wait for next update
     await act(async () => {
-      resolvePromise!(true);
+      resolvePromise(true);
       await waitForNextUpdate();
     });
 
