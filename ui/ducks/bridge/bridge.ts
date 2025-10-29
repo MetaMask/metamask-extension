@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   SortOrder,
-  BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
   getNativeAssetForChainId,
   calcLatestSrcBalance,
@@ -17,6 +16,7 @@ import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-ale
 import { endTrace, TraceName } from '../../../shared/lib/trace';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
+import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 
 const initialState: BridgeState = {
   toChainId: null,
@@ -31,7 +31,7 @@ const initialState: BridgeState = {
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
   wasTxDeclined: false,
-  slippage: BRIDGE_DEFAULT_SLIPPAGE,
+  slippage: SlippageValue.BridgeDefault,
   txAlert: null,
 };
 
