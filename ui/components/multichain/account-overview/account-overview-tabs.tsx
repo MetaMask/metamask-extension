@@ -65,10 +65,15 @@ export const AccountOverviewTabs = ({
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
-      trackEvent({
-        category: MetaMetricsEventCategory.Home,
-        event: ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[tabName],
-      });
+      if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Home,
+          event:
+            ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[
+              tabName as keyof typeof ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP
+            ],
+        });
+      }
       if (defaultHomeActiveTabName) {
         endTrace({
           name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
