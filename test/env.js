@@ -18,4 +18,4 @@ process.env.METAMASK_VERSION = 'MOCK_VERSION';
 process.env.TZ = 'UTC';
 process.env.SEEDLESS_ONBOARDING_ENABLED = 'true';
 process.env.METAMASK_SHIELD_ENABLED = 'false';
-process.env.IS_SIDEPANEL = 'false';
+process.env.IS_SIDEPANEL = 'true';
