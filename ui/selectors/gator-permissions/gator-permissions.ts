@@ -524,3 +524,45 @@ export const getMergedConnectionsListWithGatorPermissions = createSelector(
     return mergedConnections;
   },
 );
+
+/**
+ * Get aggregated list of gator permissions for a specific chainId.
+ *
+ * @param _state - The current state
+ * @param options - The options to get permissions for (e.g. { aggregatedPermissionType: 'token-transfer', chainId: '0x1' })
+ * @param options.aggregatedPermissionType - The aggregated permission type to get permissions for (e.g. 'token-transfer' is a combination of the token streams and token subscriptions types)
+ * @param options.chainId - The chainId to get permissions for (e.g. 0x1)
+ * @returns A aggregated list of gator permissions filtered by chainId.
+ */
+export const getAggregatedGatorPermissionByChainId = createSelector(
+  [
+    getGatorPermissionsMap,
+    (
+      _state: AppState,
+      options: { aggregatedPermissionType: string; chainId: Hex },
+    ) => options,
+  ],
+  (
+    gatorPermissionsMap,
+    { aggregatedPermissionType, chainId },
+  ): StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>[] => {
+    switch (aggregatedPermissionType) {
+      case 'token-transfer': {
+        return TOKEN_TRANSFER_PERMISSION_TYPES.flatMap(
+          (permissionType) =>
+            (gatorPermissionsMap[permissionType][chainId] ||
+              []) as StoredGatorPermissionSanitized<
+              Signer,
+              PermissionTypesWithCustom
+            >[],
+        );
+      }
+      default: {
+        console.warn(
+          `Unknown aggregated permission type: ${aggregatedPermissionType}`,
+        );
+        return [];
+      }
+    }
+  },
+);

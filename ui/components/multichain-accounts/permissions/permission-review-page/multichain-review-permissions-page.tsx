@@ -274,17 +274,18 @@ export const MultichainReviewPermissions = () => {
   );
 
   // Group permissions by chain ID for proper revocation
-  const permissionsByChainId = useMemo(() => {
-    const grouped: Record<Hex, typeof tokenTransferPermissions> = {};
-    tokenTransferPermissions.forEach((permission) => {
-      const { chainId } = permission.permissionResponse;
-      if (!grouped[chainId]) {
-        grouped[chainId] = [];
-      }
-      grouped[chainId].push(permission);
-    });
-    return grouped;
-  }, [tokenTransferPermissions]);
+  const permissionsByChainId = useMemo(
+    () =>
+      tokenTransferPermissions.reduce(
+        (acc, permission) => {
+          const { chainId } = permission.permissionResponse;
+          (acc[chainId] ||= []).push(permission);
+          return acc;
+        },
+        {} as Record<Hex, typeof tokenTransferPermissions>,
+      ),
+    [tokenTransferPermissions],
+  );
 
   // Hook for multi-chain permission revocation
   const { revokeGatorPermissionsBatchMultiChain } =
@@ -325,12 +326,7 @@ export const MultichainReviewPermissions = () => {
 
       // Revoke gator permissions if they exist (run in background)
       if (tokenTransferPermissions.length > 0) {
-        // Start revocation process in the background (don't await)
-        revokeGatorPermissionsBatchMultiChain(permissionsByChainId).catch(
-          (gatorError) => {
-            log.error('Error revoking gator permissions:', gatorError);
-          },
-        );
+        await revokeGatorPermissionsBatchMultiChain(permissionsByChainId);
       }
     } catch (error) {
       log.error('Error removing permissions:', error);
