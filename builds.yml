@@ -17,6 +17,7 @@ buildTypes:
     id: 10
     features:
       - build-main
+      - build-experimental
       - keyring-snaps
       - multi-srp
       - multichain
@@ -48,6 +49,7 @@ buildTypes:
     id: 11
     features:
       - build-beta
+      - build-experimental
       - keyring-snaps
       - multichain
       - bitcoin
@@ -114,6 +116,7 @@ buildTypes:
     # will not be removed
     features:
       - build-flask
+      - build-experimental
       - keyring-snaps
       - bitcoin
       - multi-srp
