@@ -130,7 +130,6 @@ describe('Deep Link', function () {
           const preparedUrl = isSigned
             ? await signDeepLink(keyPair.privateKey, rawUrl, withSigParams)
             : rawUrl;
-
           console.log('Opening deep link URL');
           await driver.openNewURL(preparedUrl);
 
