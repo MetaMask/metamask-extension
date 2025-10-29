@@ -45,6 +45,9 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
 
   const allowExternalServices = useSelector(getUseExternalServices);
 
+  const networkConfig =
+    networkConfigurationsByCaipChainId?.[permission.chainId];
+
   // Resolve token info (native or ERC-20) for this permission
   const [resolvedTokenInfo, setResolvedTokenInfo] = useState<{
     symbol: string;
@@ -58,7 +61,7 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
       const info = await getGatorPermissionTokenInfo({
         permissionType: permission.permissionType,
         chainId: permission.chainId,
-        networkConfig: networkConfigurationsByCaipChainId?.[permission.chainId],
+        networkConfig,
         permissionData,
         allowExternalServices,
         getTokenStandardAndDetailsByChain,
@@ -74,8 +77,8 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
     allowExternalServices,
     permission.permissionType,
     permission.chainId,
+    networkConfig,
     permissionData,
-    networkConfigurationsByCaipChainId,
   ]);
 
   // Format amount description for this permission
@@ -103,8 +106,6 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
   );
 
   // Network configuration values (simple derived values, no need for memoization)
-  const networkConfig =
-    networkConfigurationsByCaipChainId?.[permission.chainId];
   const networkIcon =
     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[permission.chainId] || '';
   const networkName = networkConfig?.name || permission.chainId;

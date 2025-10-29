@@ -3,6 +3,10 @@ import log from 'loglevel';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../constants/network';
 import { fetchAssetMetadata } from '../asset-utils';
 import { getPeriodFrequencyValueTranslationKey } from './time-utils';
+import {
+  MINIMUM_DISPLAYABLE_TOKEN_AMOUNT,
+  DEFAULT_TOKEN_AMOUNT_FORMAT_OPTIONS,
+} from './numbers-utils';
 
 // Token info type used across helpers
 export type GatorTokenInfo = { symbol: string; decimals: number };
@@ -218,11 +222,8 @@ export function formatGatorAmountLabel(params: {
     frequency,
     tokenDecimals,
     locale,
-    threshold = 0.00001,
-    numberFormatOptions = {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 5,
-    },
+    threshold = MINIMUM_DISPLAYABLE_TOKEN_AMOUNT,
+    numberFormatOptions = DEFAULT_TOKEN_AMOUNT_FORMAT_OPTIONS,
   } = params;
 
   if (!amount || amount === '0' || amount === '0x0') {

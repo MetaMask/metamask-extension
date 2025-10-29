@@ -68,7 +68,6 @@ export function useRevokeGatorPermissionsMultiChain({
       const results: RevokeGatorPermissionsMultiChainResults = {};
       const allTransactionIds: string[] = [];
 
-      // Process each chain
       for (const [currentChainId, permissions] of Object.entries(
         permissionsByChain,
       )) {

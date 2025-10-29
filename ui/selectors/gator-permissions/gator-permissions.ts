@@ -377,24 +377,14 @@ export const getAggregatedGatorPermissionByChainId = createSelector(
   ): StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>[] => {
     switch (aggregatedPermissionType) {
       case 'token-transfer': {
-        const nativeTokenStreams =
-          gatorPermissionsMap['native-token-stream'][chainId] || [];
-
-        const erc20TokenStreams =
-          gatorPermissionsMap['erc20-token-stream'][chainId] || [];
-
-        const nativeTokenPeriodicPermissions =
-          gatorPermissionsMap['native-token-periodic'][chainId] || [];
-
-        const erc20TokenPeriodicPermissions =
-          gatorPermissionsMap['erc20-token-periodic'][chainId] || [];
-
-        return [
-          ...nativeTokenStreams,
-          ...erc20TokenStreams,
-          ...nativeTokenPeriodicPermissions,
-          ...erc20TokenPeriodicPermissions,
-        ];
+        return TOKEN_TRANSFER_PERMISSION_TYPES.flatMap(
+          (permissionType) =>
+            (gatorPermissionsMap[permissionType][chainId] ||
+              []) as StoredGatorPermissionSanitized<
+              Signer,
+              PermissionTypesWithCustom
+            >[],
+        );
       }
       default: {
         console.warn(
