@@ -1,10 +1,8 @@
 import { Hex } from '@metamask/utils';
+import log from 'loglevel';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../constants/network';
 import { fetchAssetMetadata } from '../asset-utils';
-import {
-  getPeriodFrequencyValueTranslationKey,
-} from './time-utils';
-import log from 'loglevel';
+import { getPeriodFrequencyValueTranslationKey } from './time-utils';
 
 // Token info type used across helpers
 export type GatorTokenInfo = { symbol: string; decimals: number };

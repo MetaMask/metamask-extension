@@ -1820,4 +1820,3 @@ describe('Gator Permissions Selectors', () => {
     });
   });
 });
-
