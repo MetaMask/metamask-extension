@@ -325,12 +325,7 @@ export const MultichainReviewPermissions = () => {
 
       // Revoke gator permissions if they exist (run in background)
       if (tokenTransferPermissions.length > 0) {
-        // Start revocation process in the background (don't await)
-        revokeGatorPermissionsBatchMultiChain(permissionsByChainId).catch(
-          (gatorError) => {
-            log.error('Error revoking gator permissions:', gatorError);
-          },
-        );
+        await revokeGatorPermissionsBatchMultiChain(permissionsByChainId);
       }
     } catch (error) {
       log.error('Error removing permissions:', error);
