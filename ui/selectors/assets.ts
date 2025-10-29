@@ -1012,14 +1012,7 @@ export const getAsset = createSelector(
   ],
   (assetsBySelectedAccountGroup, assetId, chainId) => {
     const chainAssets = assetsBySelectedAccountGroup[chainId];
-    if (!chainAssets) {
-      return undefined;
-    }
-    const asset = chainAssets.find((item) => item.assetId === assetId);
-    if (!asset) {
-      return undefined;
-    }
 
-    return asset;
+    return chainAssets?.find((item) => item.assetId === assetId);
   },
 );
