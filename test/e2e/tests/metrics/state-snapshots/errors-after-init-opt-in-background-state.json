@@ -195,7 +195,16 @@
     "enabledNetworkMap": { "eip155": "object", "solana": "object" }
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+    "orderedNetworkList": {
+      "0": "object",
+      "1": "object",
+      "2": "object",
+      "3": "object",
+      "4": "object",
+      "5": "object",
+      "6": "object",
+      "7": "object"
+    }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -303,6 +312,15 @@
     },
     "cacheTimestamp": "number"
   },
+  "RewardsController": {
+    "rewardsAccounts": "object",
+    "rewardsActiveAccount": null,
+    "rewardsSeasonStatuses": "object",
+    "rewardsSeasons": "object",
+    "rewardsSubscriptionTokens": "object",
+    "rewardsSubscriptions": "object"
+  },
+  "RewardsDataService": "undefined",
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "ShieldController": "object",

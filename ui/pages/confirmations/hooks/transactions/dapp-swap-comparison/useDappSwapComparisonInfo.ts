@@ -1,30 +1,23 @@
 import { BigNumber } from 'bignumber.js';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import {
-  getNativeAssetForChainId,
-  isNativeAddress,
-  QuoteResponse,
-  TxData,
-} from '@metamask/bridge-controller';
+import { QuoteResponse, TxData } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { captureException } from '@sentry/browser';
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { TokenStandAndDetails } from '../../../../store/actions';
-import { fetchQuotes } from '../../../../store/controller-actions/bridge-controller';
-import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
-import { useAsyncResult } from '../../../../hooks/useAsync';
-import { fetchAllTokenDetails } from '../../utils/token';
+import { TokenStandAndDetails } from '../../../../../store/actions';
+import { fetchQuotes } from '../../../../../store/controller-actions/bridge-controller';
+import { useAsyncResult } from '../../../../../hooks/useAsync';
 import {
   getDataFromSwap,
   getBestQuote,
   getTokenValueFromRecord,
   getBalanceChangeFromSimulationData,
-} from '../../utils/dapp-swap-comparison-utils';
-import { useConfirmContext } from '../../context/confirm';
-import { useTransactionEventFragment } from '../useTransactionEventFragment';
+} from '../../../utils/dapp-swap-comparison-utils';
+import { useConfirmContext } from '../../../context/confirm';
+import { useTransactionEventFragment } from '../../useTransactionEventFragment';
 import { useDappSwapComparisonLatencyMetrics } from './useDappSwapComparisonLatencyMetrics';
+import { useDappSwapUSDValues } from './useDappSwapUSDValues';
 
 const FOUR_BYTE_EXECUTE_SWAP_CONTRACT = '0x3593564c';
 
@@ -41,7 +34,7 @@ export function useDappSwapComparisonInfo() {
   } = currentConfirmation ?? {
     txParams: {},
   };
-  const { data, gas, maxFeePerGas } = txParams ?? {};
+  const { data, gas } = txParams ?? {};
   const { updateTransactionEventFragment } = useTransactionEventFragment();
   const {
     requestDetectionLatency,
@@ -90,64 +83,16 @@ export function useDappSwapComparisonInfo() {
     }
   }, [chainId, data, nestedTransactions, updateRequestDetectionLatency]);
 
-  const { value: fiatRates } = useAsyncResult<Record<Hex, number | undefined>>(
-    () => fetchTokenExchangeRates('usd', tokenAddresses, chainId),
-    [chainId, tokenAddresses?.length],
-  );
-
-  const { value: tokenDetails } = useAsyncResult<
-    Record<Hex, TokenStandAndDetails>
-  >(async () => {
-    let result = await fetchAllTokenDetails(tokenAddresses as Hex[], chainId);
-    tokenAddresses.forEach((tokenAddress) => {
-      if (isNativeAddress(tokenAddress)) {
-        result = {
-          ...result,
-          [tokenAddress as Hex]: getNativeAssetForChainId(chainId),
-        };
-      }
-    });
-    return result;
-  }, [chainId, tokenAddresses?.length]);
-
-  const getUSDValue = useCallback(
-    (tokenAmount: string, tokenAddress: Hex) => {
-      if (!tokenDetails || !fiatRates) {
-        return '0';
-      }
-      const decimals = new BigNumber(
-        Math.pow(
-          10,
-          parseInt(
-            getTokenValueFromRecord<TokenStandAndDetails>(
-              tokenDetails,
-              tokenAddress,
-            )?.decimals ?? '18',
-            10,
-          ),
-        ),
-      );
-      const conversionRate = new BigNumber(
-        getTokenValueFromRecord(fiatRates, tokenAddress) ?? 0,
-      );
-      return new BigNumber(tokenAmount ?? 0)
-        .dividedBy(decimals)
-        .times(conversionRate)
-        .toString(10);
-    },
-    [fiatRates, tokenDetails],
-  );
-
-  const getUSDValueForDestinationToken = useCallback(
-    (tokenAmount: string) => {
-      if (!quotesInput) {
-        return '0';
-      }
-      const { destTokenAddress } = quotesInput;
-      return getUSDValue(tokenAmount, destTokenAddress as Hex);
-    },
-    [fiatRates, getUSDValue, quotesInput],
-  );
+  const {
+    getGasUSDValue,
+    getTokenUSDValue,
+    getDestinationTokenUSDValue,
+    tokenDetails,
+    tokenInfoPending,
+  } = useDappSwapUSDValues({
+    tokenAddresses: tokenAddresses as Hex[],
+    destTokenAddress: quotesInput?.destTokenAddress as Hex,
+  });
 
   const { value: quotes } = useAsyncResult<
     QuoteResponse[] | undefined
@@ -176,40 +121,28 @@ export function useDappSwapComparisonInfo() {
     requestDetectionLatency,
   ]);
 
-  const getGasUSDValue = useCallback(
-    (gasValue: BigNumber) => {
-      if (!maxFeePerGas) {
-        return '0';
-      }
-      const gasPrice = new BigNumber(maxFeePerGas, 16);
-      const totalGas = gasPrice.times(gasValue).toString(10);
-      const nativeTokenAddress = getNativeTokenAddress(chainId);
-      return getUSDValue(totalGas, nativeTokenAddress);
-    },
-    [chainId, getUSDValue, maxFeePerGas],
-  );
+  const { bestQuote, bestFilteredQuote } = useMemo(() => {
+    if (!amountMin || !quotes?.length || tokenInfoPending) {
+      return { bestQuote: undefined, bestFilteredQuote: undefined };
+    }
+
+    return getBestQuote(
+      quotes,
+      amountMin,
+      getDestinationTokenUSDValue,
+      getGasUSDValue,
+    );
+  }, [amountMin, getGasUSDValue, getDestinationTokenUSDValue, quotes]);
 
   useEffect(() => {
     try {
       if (
         !amountMin ||
-        !tokenDetails ||
-        !fiatRates ||
-        !quotes?.length ||
+        !bestQuote ||
         !quotesInput ||
-        !simulationData
+        !simulationData ||
+        !tokenDetails
       ) {
-        return;
-      }
-
-      const selectedQuote: QuoteResponse | undefined = getBestQuote(
-        quotes,
-        amountMin,
-        getUSDValueForDestinationToken,
-        getGasUSDValue,
-      );
-
-      if (!selectedQuote) {
         return;
       }
 
@@ -220,7 +153,7 @@ export function useDappSwapComparisonInfo() {
         approval,
         quote: { destTokenAmount, minDestTokenAmount },
         trade,
-      } = selectedQuote;
+      } = bestQuote;
 
       const totalGasInQuote = getGasUSDValue(
         new BigNumber(
@@ -248,36 +181,36 @@ export function useDappSwapComparisonInfo() {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           dapp_swap_comparison: 'completed',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_dapp_from_token_simulated_value_usd: getUSDValue(
+          swap_dapp_from_token_simulated_value_usd: getTokenUSDValue(
             srcTokenAmount,
             srcTokenAddress as Hex,
           ),
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_dapp_to_token_simulated_value_usd:
-            getUSDValueForDestinationToken(destTokenBalanceChange),
+          swap_dapp_to_token_simulated_value_usd: getDestinationTokenUSDValue(
+            destTokenBalanceChange,
+          ),
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_minimum_received_value_usd:
-            getUSDValueForDestinationToken(amountMin),
+            getDestinationTokenUSDValue(amountMin),
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_dapp_network_fee_usd: confirmationGasUsd,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_from_token_simulated_value_usd: getUSDValue(
+          swap_mm_from_token_simulated_value_usd: getTokenUSDValue(
             srcTokenAmount,
             srcTokenAddress as Hex,
           ),
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_to_token_simulated_value_usd:
-            getUSDValueForDestinationToken(destTokenAmount),
+            getDestinationTokenUSDValue(destTokenAmount),
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_minimum_received_value_usd:
-            getUSDValueForDestinationToken(minDestTokenAmount),
+            getDestinationTokenUSDValue(minDestTokenAmount),
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          swap_mm_slippage: (
-            selectedQuote.quote as unknown as { slippage: string }
-          ).slippage,
+          swap_mm_slippage: (bestQuote.quote as unknown as { slippage: string })
+            .slippage,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_quote_provider: (
-            selectedQuote.quote as unknown as { aggregator: string }
+            bestQuote.quote as unknown as { aggregator: string }
           ).aggregator,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           swap_mm_network_fee_usd: totalGasInQuote,
@@ -314,14 +247,14 @@ export function useDappSwapComparisonInfo() {
     }
   }, [
     amountMin,
+    bestQuote,
     captureDappSwapComparisonMetricsProperties,
-    fiatRates,
     gas,
     gasLimitNoBuffer,
     gasUsed,
     getGasUSDValue,
-    getUSDValueForDestinationToken,
-    getUSDValue,
+    getDestinationTokenUSDValue,
+    getTokenUSDValue,
     quotes,
     quotesInput,
     quoteRequestLatency,
@@ -331,5 +264,8 @@ export function useDappSwapComparisonInfo() {
     simulationData,
     swapComparisonLatency,
     tokenDetails,
+    tokenInfoPending,
   ]);
+
+  return { selectedQuote: bestFilteredQuote };
 }
