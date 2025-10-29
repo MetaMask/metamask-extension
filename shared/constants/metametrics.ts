@@ -819,7 +819,6 @@ export enum MetaMetricsEventName {
   TokenImportButtonClicked = 'Import Token Button Clicked',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
-  TokenRemoved = 'Token Removed',
   TokenSortPreference = 'Token Sort Preference',
   NFTRemoved = 'NFT Removed',
   EmptyNFTTabButtonClicked = 'Empty NFT Tab Button Clicked',
