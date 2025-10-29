@@ -9,8 +9,8 @@ import { getMockConfirmStateForTransaction } from '../../../../../test/data/conf
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { updateAndApproveTx } from '../../../../store/actions';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
-import { AsyncResultNoIdle, useAsyncResult } from '../../../../hooks/useAsync';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
+import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useTransactionConfirm } from './useTransactionConfirm';
 
 jest.mock('../../../../../shared/modules/selectors');
@@ -18,12 +18,11 @@ jest.mock('../../../../../shared/modules/selectors');
 jest.mock('../../../../store/actions', () => ({
   ...jest.requireActual('../../../../store/actions'),
   updateAndApproveTx: jest.fn(),
-  isSendBundleSupported: jest.fn(),
 }));
 
-jest.mock('../../../../hooks/useAsync');
-
 jest.mock('../gas/useIsGaslessSupported');
+
+jest.mock('../gas/useGaslessSupportedSmartTransactions');
 
 const CUSTOM_NONCE_VALUE = '1234';
 
@@ -61,7 +60,9 @@ function runHook({
 describe('useTransactionConfirm', () => {
   const updateAndApproveTxMock = jest.mocked(updateAndApproveTx);
   const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
-  const useAsyncResultMock = jest.mocked(useAsyncResult);
+  const useGaslessSupportedSmartTransactionsMock = jest.mocked(
+    useGaslessSupportedSmartTransactions,
+  );
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -73,13 +74,21 @@ describe('useTransactionConfirm', () => {
     updateAndApproveTxMock.mockReturnValue(() =>
       Promise.resolve({} as TransactionMeta),
     );
-    useAsyncResultMock.mockReturnValue({
-      value: true,
-      pending: false,
-      status: 'success',
-      idle: false,
-      error: undefined,
+
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
     });
+
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+
+    updateAndApproveTxMock.mockReturnValue(() =>
+      Promise.resolve({} as TransactionMeta),
+    );
   });
 
   it('dispatches update and approve action', async () => {
@@ -108,6 +117,11 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+    });
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
     });
 
     const { onTransactionConfirm } = runHook({
@@ -139,6 +153,11 @@ describe('useTransactionConfirm', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+    });
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
     });
 
     const { onTransactionConfirm } = runHook({
@@ -188,12 +207,11 @@ describe('useTransactionConfirm', () => {
       isSmartTransaction: true,
       isSupported: true,
     });
-
-    const mockSupportsSendBundle = true;
-    useAsyncResultMock.mockReturnValue({
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
       pending: false,
-      value: mockSupportsSendBundle,
-    } as AsyncResultNoIdle<boolean>);
+    });
 
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
@@ -224,12 +242,11 @@ describe('useTransactionConfirm', () => {
       isSmartTransaction: true,
       isSupported: true,
     });
-
-    const mockSupportsSendBundle = false;
-    useAsyncResultMock.mockReturnValue({
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: true,
       pending: false,
-      value: mockSupportsSendBundle,
-    } as AsyncResultNoIdle<boolean>);
+    });
 
     const { onTransactionConfirm } = runHook({
       gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
@@ -255,10 +272,6 @@ describe('useTransactionConfirm', () => {
       isSupported: true,
     });
 
-    useAsyncResultMock.mockReturnValue({
-      pending: false,
-      value: false,
-    } as AsyncResultNoIdle<boolean>);
     const { onTransactionConfirm } = runHook({
       customNonceValue: CUSTOM_NONCE_VALUE,
     });
@@ -271,6 +284,119 @@ describe('useTransactionConfirm', () => {
       }),
       true,
       '',
+    );
+  });
+
+  it('dispatches update and approve action', async () => {
+    const { onTransactionConfirm } = runHook();
+
+    await onTransactionConfirm();
+
+    expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('updates custom nonce', async () => {
+    const { onTransactionConfirm } = runHook({ customNonceValue: '1234' });
+
+    await onTransactionConfirm();
+
+    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actualTransactionMeta.customNonceValue).toBe(CUSTOM_NONCE_VALUE);
+  });
+
+  it('updates batch transaction if smart transaction and selected gas fee token', async () => {
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.batchTransactions).toStrictEqual([
+      expect.objectContaining({
+        to: GAS_FEE_TOKEN_MOCK.tokenAddress,
+        type: TransactionType.gasPayment,
+      }),
+    ]);
+  });
+
+  it('updates transaction params if smart transaction and selected gas fee token', async () => {
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.txParams).toStrictEqual(
+      expect.objectContaining({
+        gas: GAS_FEE_TOKEN_MOCK.gas,
+        maxFeePerGas: GAS_FEE_TOKEN_MOCK.maxFeePerGas,
+        maxPriorityFeePerGas: GAS_FEE_TOKEN_MOCK.maxPriorityFeePerGas,
+      }),
+    );
+  });
+
+  it('uses 7702 flow if gasless supported and not smart tx supported', async () => {
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: false,
+      isSmartTransaction: false,
+      pending: false,
+    });
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+      selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.isExternalSign).toBe(true);
+    expect(actual.isGasFeeSponsored).toBe(
+      TRANSACTION_META_MOCK.isGasFeeSponsored,
+    );
+  });
+
+  it('does not call handleSmartTransaction if no selected gas fee token', async () => {
+    useGaslessSupportedSmartTransactionsMock.mockReturnValue({
+      isSupported: true,
+      isSmartTransaction: true,
+      pending: false,
+    });
+
+    const { onTransactionConfirm } = runHook({
+      gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+    });
+
+    await onTransactionConfirm();
+
+    const actual = updateAndApproveTxMock.mock.calls[0][0];
+    expect(actual.txParams).toStrictEqual(
+      expect.objectContaining({
+        gas: TRANSACTION_META_MOCK.txParams.gas,
+        maxFeePerGas: TRANSACTION_META_MOCK.txParams.maxFeePerGas,
+        maxPriorityFeePerGas:
+          TRANSACTION_META_MOCK.txParams.maxPriorityFeePerGas,
+      }),
     );
   });
 });

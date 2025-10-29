@@ -6,14 +6,11 @@ import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCustomNonceValue } from '../../../../selectors';
-import {
-  updateAndApproveTx,
-  isSendBundleSupported,
-} from '../../../../store/actions';
+import { updateAndApproveTx } from '../../../../store/actions';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { useConfirmContext } from '../../context/confirm';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
-import { useAsyncResult } from '../../../../hooks/useAsync';
+import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
@@ -21,19 +18,14 @@ export function useTransactionConfirm() {
   const selectedGasFeeToken = useSelectedGasFeeToken();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const { chainId } = transactionMeta ?? {};
 
-  const { isSmartTransaction, isSupported: isGaslessSupported } =
-    useIsGaslessSupported();
+  const { isSupported: isGaslessSupportedSTX } =
+    useGaslessSupportedSmartTransactions();
+  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
 
   const newTransactionMeta = useMemo(
     () => cloneDeep(transactionMeta),
     [transactionMeta],
-  );
-
-  const { value: chainSupportsSendBundle } = useAsyncResult(
-    async () => (chainId ? isSendBundleSupported(chainId) : false),
-    [chainId],
   );
 
   const handleSmartTransaction = useCallback(() => {
@@ -72,34 +64,35 @@ export function useTransactionConfirm() {
   ]);
 
   const handleGasless7702 = useCallback(() => {
+    if (!selectedGasFeeToken) {
+      return;
+    }
     newTransactionMeta.isExternalSign = true;
-    newTransactionMeta.isGasFeeSponsored =
-      isGaslessSupported && transactionMeta.isGasFeeSponsored;
+    newTransactionMeta.isGasFeeSponsored = transactionMeta.isGasFeeSponsored;
   }, [
-    isGaslessSupported,
     newTransactionMeta,
-    transactionMeta?.isGasFeeSponsored,
+    selectedGasFeeToken,
+    transactionMeta.isGasFeeSponsored,
   ]);
 
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
 
-    if (isSmartTransaction && chainSupportsSendBundle) {
+    if (isGaslessSupportedSTX) {
       handleSmartTransaction();
-    } else if (selectedGasFeeToken) {
+    } else if (isGaslessSupported) {
       handleGasless7702();
     }
 
     await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
   }, [
-    chainSupportsSendBundle,
-    customNonceValue,
-    dispatch,
-    handleGasless7702,
-    handleSmartTransaction,
-    isSmartTransaction,
     newTransactionMeta,
-    selectedGasFeeToken,
+    customNonceValue,
+    isGaslessSupportedSTX,
+    isGaslessSupported,
+    dispatch,
+    handleSmartTransaction,
+    handleGasless7702,
   ]);
 
   return {

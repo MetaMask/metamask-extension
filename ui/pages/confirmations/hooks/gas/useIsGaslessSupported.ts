@@ -1,17 +1,10 @@
-import { useSelector } from 'react-redux';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import {
-  getIsSmartTransaction,
-  type SmartTransactionsState,
-} from '../../../../../shared/modules/selectors';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isAtomicBatchSupported } from '../../../../store/controller-actions/transaction-controller';
 import { useConfirmContext } from '../../context/confirm';
-import {
-  isRelaySupported,
-  isSendBundleSupported,
-} from '../../../../store/actions';
+import { isRelaySupported } from '../../../../store/actions';
+import { useGaslessSupportedSmartTransactions } from './useGaslessSupportedSmartTransactions';
 
 /**
  * Hook to determine if gasless transactions are supported for the current confirmation context.
@@ -31,20 +24,17 @@ export function useIsGaslessSupported() {
   const { chainId, txParams } = transactionMeta ?? {};
   const { from } = txParams ?? {};
 
-  const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
-    getIsSmartTransaction(state, chainId),
-  );
+  const {
+    isSmartTransaction,
+    isSupported: isSmartTransactionAndBundleSupported,
+    pending,
+  } = useGaslessSupportedSmartTransactions();
 
-  const { value: sendBundleSupportsChain } = useAsyncResult(async () => {
-    return isSendBundleSupported(chainId);
-  }, [chainId]);
-
-  const isSmartTransactionAndBundleSupported = Boolean(
-    isSmartTransaction && sendBundleSupportsChain,
-  );
+  const shouldCheck7702Eligibility =
+    !pending && !isSmartTransactionAndBundleSupported;
 
   const { value: atomicBatchSupportResult } = useAsyncResult(async () => {
-    if (isSmartTransactionAndBundleSupported) {
+    if (!shouldCheck7702Eligibility) {
       return undefined;
     }
 
@@ -52,15 +42,15 @@ export function useIsGaslessSupported() {
       address: from as Hex,
       chainIds: [chainId],
     });
-  }, [chainId, from, isSmartTransactionAndBundleSupported]);
+  }, [chainId, from, shouldCheck7702Eligibility]);
 
   const { value: relaySupportsChain } = useAsyncResult(async () => {
-    if (isSmartTransactionAndBundleSupported) {
+    if (!shouldCheck7702Eligibility) {
       return undefined;
     }
 
     return isRelaySupported(chainId);
-  }, [chainId, isSmartTransactionAndBundleSupported]);
+  }, [chainId, shouldCheck7702Eligibility]);
 
   const atomicBatchChainSupport = atomicBatchSupportResult?.find(
     (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
