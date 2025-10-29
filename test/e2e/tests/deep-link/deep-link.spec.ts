@@ -79,7 +79,11 @@ describe('Deep Link', function () {
 
   const scenarios = cartesianProduct(
     ['locked', 'unlocked'] as const,
-    ['signed', 'unsigned'] as const,
+    [
+      'signed with sig_params',
+      'signed without sig_params',
+      'unsigned',
+    ] as const,
     ['/home', '/swap', '/INVALID'] as const,
     ['continue'] as const,
   ).map(([locked, signed, route, action]) => {
@@ -91,7 +95,10 @@ describe('Deep Link', function () {
       await withFixtures(
         await getConfig(this.test?.fullTitle()),
         async ({ driver }: { driver: Driver }) => {
-          const isSigned = signed === 'signed';
+          const isSigned =
+            signed === 'signed with sig_params' ||
+            signed === 'signed without sig_params';
+          const withSigParams = signed === 'signed with sig_params';
           const isInvalidRoute = route === '/INVALID';
 
           // ensure the background is ready to process deep links (by waiting
@@ -120,7 +127,7 @@ describe('Deep Link', function () {
           // longer exist/match should be treated handled the same way as
           // unsigned links. We test for this below.
           const preparedUrl = isSigned
-            ? await signDeepLink(keyPair.privateKey, rawUrl)
+            ? await signDeepLink(keyPair.privateKey, rawUrl, withSigParams)
             : rawUrl;
           console.log('Opening deep link URL');
           await driver.openNewURL(preparedUrl);
