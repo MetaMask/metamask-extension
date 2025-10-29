@@ -31,6 +31,7 @@
     "activeQrCodeScanRequest": null,
     "appActiveTab": "object",
     "browserEnvironment": { "os": "string", "browser": "string" },
+    "canTrackWalletFundsObtained": false,
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "enableEnforcedSimulations": true,

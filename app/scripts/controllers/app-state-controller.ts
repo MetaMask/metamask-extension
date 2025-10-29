@@ -85,6 +85,7 @@ export type AppStateControllerState = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
+  canTrackWalletFundsObtained: boolean;
   isRampCardClosed: boolean;
   isUpdateAvailable: boolean;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
@@ -143,13 +144,19 @@ export type AppStateControllerRequestQrCodeScanAction = {
   handler: (request: QrScanRequest) => Promise<SerializedUR>;
 };
 
+export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
+  type: 'AppStateController:setCanTrackWalletFundsObtained';
+  handler: AppStateController['setCanTrackWalletFundsObtained'];
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
 export type AppStateControllerActions =
   | AppStateControllerGetStateAction
   | AppStateControllerGetUnlockPromiseAction
-  | AppStateControllerRequestQrCodeScanAction;
+  | AppStateControllerRequestQrCodeScanAction
+  | AppStateControllerSetCanTrackWalletFundsObtainedAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -230,6 +237,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
+  canTrackWalletFundsObtained: true,
   isRampCardClosed: false,
   isUpdateAvailable: false,
   lastUpdatedAt: null,
@@ -367,6 +375,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
+    usedInUi: false,
+  },
+  canTrackWalletFundsObtained: {
+    includeInStateLogs: true,
+    persist: true,
+    anonymous: true,
     usedInUi: false,
   },
   isRampCardClosed: {
@@ -660,6 +674,11 @@ export class AppStateController extends BaseController<
     this.messenger.registerActionHandler(
       'AppStateController:requestQrCodeScan',
       this.#requestQrCodeScan.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      'AppStateController:setCanTrackWalletFundsObtained',
+      this.setCanTrackWalletFundsObtained.bind(this),
     );
 
     this.#approvalRequestId = null;
@@ -1475,6 +1494,12 @@ export class AppStateController extends BaseController<
   setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
     this.update((state) => {
       state.showShieldEntryModalOnce = showShieldEntryModalOnce;
+    });
+  }
+
+  setCanTrackWalletFundsObtained(enabled: boolean): void {
+    this.update((state) => {
+      state.canTrackWalletFundsObtained = enabled;
     });
   }
 }

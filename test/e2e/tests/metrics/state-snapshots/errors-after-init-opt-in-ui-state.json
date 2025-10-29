@@ -413,6 +413,7 @@
     "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "accountGroupsMetadata": "object",
     "accountWalletsMetadata": "object",
+    "canTrackWalletFundsObtained": false,
     "delegations": "object",
     "isGatorPermissionsEnabled": "boolean",
     "gatorPermissionsMapSerialized": "string",

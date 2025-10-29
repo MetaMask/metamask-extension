@@ -711,6 +711,22 @@ describe('AppStateController', () => {
     });
   });
 
+  describe('setCanTrackWalletFundsObtained', () => {
+    it('updates the canTrackWalletFundsObtained state with a boolean value', async () => {
+      await withController(({ controller }) => {
+        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
+
+        controller.setCanTrackWalletFundsObtained(false);
+
+        expect(controller.state.canTrackWalletFundsObtained).toBe(false);
+
+        controller.setCanTrackWalletFundsObtained(true);
+
+        expect(controller.state.canTrackWalletFundsObtained).toBe(true);
+      });
+    });
+  });
+
   describe('metadata', () => {
     it('includes expected state in debug snapshots', async () => {
       await withController(
@@ -743,6 +759,7 @@ describe('AppStateController', () => {
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
               "browserEnvironment": {},
+              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
@@ -829,6 +846,7 @@ describe('AppStateController', () => {
               "addressSecurityAlertResponses": {},
               "appActiveTab": undefined,
               "browserEnvironment": {},
+              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "currentExtensionPopupId": 0,
               "currentPopupId": 0,
@@ -913,6 +931,7 @@ describe('AppStateController', () => {
           ).toMatchInlineSnapshot(`
             {
               "browserEnvironment": {},
+              "canTrackWalletFundsObtained": true,
               "connectedStatusPopoverHasBeenShown": true,
               "defaultHomeActiveTabName": null,
               "enableEnforcedSimulations": true,
