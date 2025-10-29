@@ -5,9 +5,6 @@ import { SIG_PARAM, SIG_PARAMS_PARAM } from './constants';
  * keeping the query parameters included in `sig_params` if it exists
  * and sorting the remaining parameters.
  *
- * This is NOT the same as the `canonicalize` function in the server side signing
- * application.
- *
  * @param url - The URL to canonicalize.
  * @returns The canonicalized URL as a string.
  */
