@@ -1,6 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Routes, useNavigate } from 'react-router-dom-v5-compat';
+import {
+  Route,
+  Routes,
+  useNavigate,
+  CompatRouter,
+} from 'react-router-dom-v5-compat';
 import {
   UnifiedSwapBridgeEventName,
   // TODO: update this with all non-EVM chains when bitcoin added.
@@ -154,37 +159,39 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
         {t('swap')}
       </Header>
       <Content padding={0}>
-        <Routes>
-          <Route
-            path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
-            element={
-              <>
-                <BridgeTransactionSettingsModal
-                  isOpen={isSettingsModalOpen}
-                  onClose={() => {
-                    setIsSettingsModalOpen(false);
-                  }}
-                />
-                <PrepareBridgePage
-                  onOpenSettings={() => setIsSettingsModalOpen(true)}
-                />
-              </>
-            }
-          />
-          <Route
-            path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}
-            element={
-              <>
-                <Content>
-                  <AwaitingSignatures />
-                </Content>
-                <Footer>
-                  <AwaitingSignaturesCancelButton />
-                </Footer>
-              </>
-            }
-          />
-        </Routes>
+        <CompatRouter>
+          <Routes>
+            <Route
+              path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
+              element={
+                <>
+                  <BridgeTransactionSettingsModal
+                    isOpen={isSettingsModalOpen}
+                    onClose={() => {
+                      setIsSettingsModalOpen(false);
+                    }}
+                  />
+                  <PrepareBridgePage
+                    onOpenSettings={() => setIsSettingsModalOpen(true)}
+                  />
+                </>
+              }
+            />
+            <Route
+              path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}
+              element={
+                <>
+                  <Content>
+                    <AwaitingSignatures />
+                  </Content>
+                  <Footer>
+                    <AwaitingSignaturesCancelButton />
+                  </Footer>
+                </>
+              }
+            />
+          </Routes>
+        </CompatRouter>
       </Content>
     </Page>
   );
