@@ -1,6 +1,5 @@
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
-import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
 import {
   convertToHexValue,
   TEST_SEED_PHRASE,
@@ -27,6 +26,7 @@ import {
   onboardingMetricsFlow,
 } from '../../page-objects/flows/onboarding.flow';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { DEFAULT_LOCAL_NODE_USD_BALANCE } from '../../constants';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 

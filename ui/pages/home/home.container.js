@@ -1,3 +1,4 @@
+import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -250,7 +251,14 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+// Strip unused 'match' prop from withRouter
+// It causes cascading, unnecessary re-renders
+// eslint-disable-next-line react/prop-types
+const HomeWithRouter = ({ match: _match, ...props }) => {
+  return <Home {...props} />;
+};
+
 export default compose(
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-)(Home);
+)(HomeWithRouter);
