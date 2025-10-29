@@ -340,6 +340,7 @@ async function withFixtures(options, testSuite) {
     // and doing nothing here means we get state 2
 
     if (forceBip44Version === 0) {
+      await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
       console.log('Applying multichain accounts feature flag disabled mock');
     } else if (forceBip44Version === 1) {
       console.log(
