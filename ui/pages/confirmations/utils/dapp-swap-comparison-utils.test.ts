@@ -8,6 +8,56 @@ import {
   getTokenValueFromRecord,
 } from './dapp-swap-comparison-utils';
 
+const MOCK_QUOTES = [
+  {
+    quote: {
+      requestId:
+        '0x953edd7a1725891162e49f7a1e449522abd8209dd7377b8772d04edaba02de44',
+      bridgeId: 'kyberswap',
+      srcChainId: 42161,
+      destTokenAmount: '45',
+      minDestTokenAmount: '40',
+      walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
+    },
+    approval: {
+      gasLimit: 15,
+    },
+    trade: { gasLimit: 18 },
+    estimatedProcessingTimeInSeconds: 0,
+  },
+  {
+    quote: {
+      requestId:
+        '0x9ade5d2412cacb2c2332108aa83c759a84f39ab72c931da3296fbe8733f3b7f3',
+      bridgeId: '0x',
+      srcChainId: 42161,
+      destTokenAmount: '98',
+      minDestTokenAmount: '90',
+      walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
+    },
+    approval: {
+      gasLimit: 22,
+    },
+    trade: { gasLimit: 34 },
+    estimatedProcessingTimeInSeconds: 0,
+  },
+  {
+    quote: {
+      requestId:
+        '0x18359d76a875338da1b455a4f22ab88f4ec467d64e89df5d2daf5e37f7d2f1be',
+      bridgeId: 'okx',
+      srcChainId: 42161,
+      destTokenAmount: '96',
+      minDestTokenAmount: '90',
+    },
+    approval: {
+      gasLimit: 20,
+    },
+    trade: { gasLimit: 30 },
+    estimatedProcessingTimeInSeconds: 0,
+  },
+];
+
 describe('dapp-swap utils', () => {
   describe('getDataFromSwap', () => {
     it('returns the correst data from sweep function', () => {
@@ -58,62 +108,25 @@ describe('dapp-swap utils', () => {
 
   describe('getBestQuote', () => {
     it('returns the best quote', () => {
-      const quotes = [
-        {
-          quote: {
-            requestId:
-              '0x953edd7a1725891162e49f7a1e449522abd8209dd7377b8772d04edaba02de44',
-            bridgeId: 'kyberswap',
-            srcChainId: 42161,
-            destTokenAmount: '45',
-            minDestTokenAmount: '40',
-            walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
-          },
-          approval: {
-            gasLimit: 15,
-          },
-          trade: { gasLimit: 18 },
-          estimatedProcessingTimeInSeconds: 0,
-        },
-        {
-          quote: {
-            requestId:
-              '0x9ade5d2412cacb2c2332108aa83c759a84f39ab72c931da3296fbe8733f3b7f3',
-            bridgeId: '0x',
-            srcChainId: 42161,
-            destTokenAmount: '98',
-            minDestTokenAmount: '90',
-            walletAddress: '0x178239802520a9C99DCBD791f81326B70298d629',
-          },
-          approval: {
-            gasLimit: 22,
-          },
-          trade: { gasLimit: 34 },
-          estimatedProcessingTimeInSeconds: 0,
-        },
-        {
-          quote: {
-            requestId:
-              '0x18359d76a875338da1b455a4f22ab88f4ec467d64e89df5d2daf5e37f7d2f1be',
-            bridgeId: 'okx',
-            srcChainId: 42161,
-            destTokenAmount: '96',
-            minDestTokenAmount: '90',
-          },
-          approval: {
-            gasLimit: 20,
-          },
-          trade: { gasLimit: 30 },
-          estimatedProcessingTimeInSeconds: 0,
-        },
-      ];
       const result = getBestQuote(
-        quotes as unknown as QuoteResponse[],
+        MOCK_QUOTES as unknown as QuoteResponse[],
         '0x32',
         (val) => val,
         (val) => val.toString(),
       );
-      expect(result).toEqual(quotes[2]);
+      expect(result.bestQuote).toEqual(MOCK_QUOTES[2]);
+      expect(result.bestFilteredQuote).toEqual(MOCK_QUOTES[2]);
+    });
+
+    it('bestFilteredQuote is undefined if no quote has minimum amount greater than confirmation', () => {
+      const result = getBestQuote(
+        MOCK_QUOTES as unknown as QuoteResponse[],
+        '0x64',
+        (val) => val,
+        (val) => val.toString(),
+      );
+      expect(result.bestQuote).toEqual(MOCK_QUOTES[2]);
+      expect(result.bestFilteredQuote).toEqual(undefined);
     });
 
     it('returns undefined for empty quotes array', () => {
@@ -123,7 +136,8 @@ describe('dapp-swap utils', () => {
         (val) => val,
         (val) => val.toString(),
       );
-      expect(result).toEqual(undefined);
+      expect(result.bestQuote).toEqual(undefined);
+      expect(result.bestFilteredQuote).toEqual(undefined);
     });
   });
 
