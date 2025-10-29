@@ -48,7 +48,7 @@ export function useAddressTrustSignalAlerts(): Alert[] {
   const { state: trustSignalDisplayState } = useTrustSignal(
     addressToCheck || '',
     NameType.ETHEREUM_ADDRESS,
-    currentConfirmation?.chainId,
+    currentConfirmation.chainId,
   );
 
   return useMemo(() => {
