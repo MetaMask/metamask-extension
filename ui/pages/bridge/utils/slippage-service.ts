@@ -8,7 +8,7 @@ import { STABLECOINS_BY_CHAIN_ID } from './stablecoins';
 export enum SlippageValue {
   EvmStablecoin = 0.5,
   EvmDefault = 2,
-  BridgeDefault = 0.5,
+  BridgeDefault = 2,
 }
 
 /**
