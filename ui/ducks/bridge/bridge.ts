@@ -14,9 +14,9 @@ import {
 import { zeroAddress } from 'ethereumjs-util';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { endTrace, TraceName } from '../../../shared/lib/trace';
+import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
-import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 
 const initialState: BridgeState = {
   toChainId: null,
