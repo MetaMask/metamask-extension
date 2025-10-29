@@ -59,43 +59,43 @@ const metadata = {
   rewardsActiveAccount: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   rewardsAccounts: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   rewardsSubscriptions: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   rewardsSeasons: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   rewardsSeasonStatuses: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   rewardsSubscriptionTokens: {
     includeInStateLogs: false,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: false,
   },
   rewardsEnabled: {
     includeInStateLogs: true,
     persist: false,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
 };
@@ -339,63 +339,63 @@ export class RewardsController extends BaseController<
    * Register action handlers for this controller
    */
   #registerActionHandlers(): void {
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:getHasAccountOptedIn',
       this.getHasAccountOptedIn.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:estimatePoints',
       this.estimatePoints.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:isRewardsFeatureEnabled',
       this.isRewardsFeatureEnabled.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:getSeasonMetadata',
       this.getSeasonMetadata.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:getSeasonStatus',
       this.getSeasonStatus.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:optIn',
       this.optIn.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:getGeoRewardsMetadata',
       this.getGeoRewardsMetadata.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:validateReferralCode',
       this.validateReferralCode.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:linkAccountToSubscriptionCandidate',
       this.linkAccountToSubscriptionCandidate.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:linkAccountsToSubscriptionCandidate',
       this.linkAccountsToSubscriptionCandidate.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:getCandidateSubscriptionId',
       this.getCandidateSubscriptionId.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:getOptInStatus',
       this.getOptInStatus.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:isOptInSupported',
       this.isOptInSupported.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:getActualSubscriptionId',
       this.getActualSubscriptionId.bind(this),
     );
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'RewardsController:getFirstSubscriptionId',
       this.getFirstSubscriptionId.bind(this),
     );
@@ -406,13 +406,13 @@ export class RewardsController extends BaseController<
    */
   #initializeEventSubscriptions(): void {
     // Subscribe to account changes for silent authentication
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'AccountTreeController:selectedAccountGroupChange',
       () => this.handleAuthenticationTrigger('Account Group changed'),
     );
 
     // Subscribe to KeyringController unlock events to retry silent auth
-    this.messagingSystem.subscribe('KeyringController:unlock', () =>
+    this.messenger.subscribe('KeyringController:unlock', () =>
       this.handleAuthenticationTrigger('KeyringController unlocked'),
     );
   }
@@ -486,8 +486,8 @@ export class RewardsController extends BaseController<
 
     if (isSolanaAddress(account.address)) {
       const result = await signSolanaRewardsMessage(
-        this.messagingSystem.call.bind(
-          this.messagingSystem,
+        this.messenger.call.bind(
+          this.messenger,
           'SnapController:handleRequest',
         ) as unknown as HandleSnapRequest['handler'],
         account.id,
@@ -512,7 +512,7 @@ export class RewardsController extends BaseController<
     const hexMessage = `0x${Buffer.from(message, 'utf8').toString('hex')}`;
 
     // Use KeyringController to sign the message
-    const signature = await this.messagingSystem.call(
+    const signature = await this.messenger.call(
       'KeyringController:signPersonalMessage',
       {
         data: hexMessage,
@@ -540,7 +540,7 @@ export class RewardsController extends BaseController<
     log.log('RewardsController: handleAuthenticationTrigger', reason);
 
     try {
-      const accounts = this.messagingSystem.call(
+      const accounts = this.messenger.call(
         'AccountTreeController:getAccountsFromSelectedAccountGroup',
       );
 
@@ -809,7 +809,7 @@ export class RewardsController extends BaseController<
         sig: string,
       ): Promise<LoginResponseDto> => {
         try {
-          return await this.messagingSystem.call('RewardsDataService:login', {
+          return await this.messenger.call('RewardsDataService:login', {
             account: internalAccount.address,
             timestamp: ts,
             signature: sig,
@@ -989,7 +989,7 @@ export class RewardsController extends BaseController<
 
     try {
       // Get all internal accounts to convert addresses to CAIP format
-      const allAccounts = this.messagingSystem.call(
+      const allAccounts = this.messenger.call(
         'AccountsController:listMultichainAccounts',
       );
 
@@ -1021,7 +1021,7 @@ export class RewardsController extends BaseController<
           },
         );
 
-        const freshResponse = await this.messagingSystem.call(
+        const freshResponse = await this.messenger.call(
           'RewardsDataService:getOptInStatus',
           { addresses: addressesNeedingFresh },
         );
@@ -1118,7 +1118,7 @@ export class RewardsController extends BaseController<
       return { pointsEstimate: 0, bonusBips: 0 };
     }
     try {
-      const estimatedPoints = await this.messagingSystem.call(
+      const estimatedPoints = await this.messenger.call(
         'RewardsDataService:estimatePoints',
         request,
       );
@@ -1172,7 +1172,7 @@ export class RewardsController extends BaseController<
         );
 
         // Get discover seasons to find if this season has a valid start date
-        const discoverSeasons = (await this.messagingSystem.call(
+        const discoverSeasons = (await this.messenger.call(
           'RewardsDataService:getDiscoverSeasons',
         )) as DiscoverSeasonsDto;
 
@@ -1192,7 +1192,7 @@ export class RewardsController extends BaseController<
           );
 
           // Fetch season metadata
-          const seasonMetadata = (await this.messagingSystem.call(
+          const seasonMetadata = (await this.messenger.call(
             'RewardsDataService:getSeasonMetadata',
             seasonInfo.id,
           )) as SeasonMetadataDto;
@@ -1284,7 +1284,7 @@ export class RewardsController extends BaseController<
             );
           }
           // Now fetch season status (balance, currentTierId, etc.)
-          const seasonState = await this.messagingSystem.call(
+          const seasonState = await this.messenger.call(
             'RewardsDataService:getSeasonStatus',
             seasonId,
             subscriptionToken,
@@ -1303,7 +1303,7 @@ export class RewardsController extends BaseController<
                 this.state.rewardsActiveAccount?.subscriptionId ===
                 subscriptionId
               ) {
-                const account = await this.messagingSystem.call(
+                const account = await this.messenger.call(
                   'AccountsController:getSelectedMultichainAccount',
                 );
                 log.info(
@@ -1318,7 +1318,7 @@ export class RewardsController extends BaseController<
                   this.state.rewardsAccounts,
                 ).find((acc) => acc.subscriptionId === subscriptionId);
                 if (accountForSub) {
-                  const accounts = await this.messagingSystem.call(
+                  const accounts = await this.messenger.call(
                     'AccountsController:listMultichainAccounts',
                   );
                   const { convertInternalAccountToCaipAccountId } = this;
@@ -1350,7 +1350,7 @@ export class RewardsController extends BaseController<
                 );
               }
               // Now fetch season status (balance, currentTierId, etc.)
-              const seasonState = await this.messagingSystem.call(
+              const seasonState = await this.messenger.call(
                 'RewardsDataService:getSeasonStatus',
                 season.id,
                 subscriptionToken,
@@ -1424,7 +1424,7 @@ export class RewardsController extends BaseController<
       return null;
     }
 
-    const accounts = await this.messagingSystem.call(
+    const accounts = await this.messenger.call(
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
     );
 
@@ -1533,15 +1533,12 @@ export class RewardsController extends BaseController<
       sig: string,
     ): Promise<LoginResponseDto> => {
       try {
-        return await this.messagingSystem.call(
-          'RewardsDataService:mobileOptin',
-          {
-            account: account.address,
-            timestamp: ts,
-            signature: sig as `0x${string}`,
-            referralCode,
-          },
-        );
+        return await this.messenger.call('RewardsDataService:mobileOptin', {
+          account: account.address,
+          timestamp: ts,
+          signature: sig as `0x${string}`,
+          referralCode,
+        });
       } catch (error) {
         // Check if it's an InvalidTimestampError and we haven't exceeded retry attempts
         if (
@@ -1664,7 +1661,7 @@ export class RewardsController extends BaseController<
       log.log('RewardsController: Fetching geo location for rewards metadata');
 
       // Get geo location from data service
-      const geoLocation = await this.messagingSystem.call(
+      const geoLocation = await this.messenger.call(
         'RewardsDataService:fetchGeoLocation',
       );
 
@@ -1716,7 +1713,7 @@ export class RewardsController extends BaseController<
     }
 
     try {
-      const response = await this.messagingSystem.call(
+      const response = await this.messenger.call(
         'RewardsDataService:validateReferralCode',
         code,
       );
@@ -1753,7 +1750,7 @@ export class RewardsController extends BaseController<
 
     // If no subscriptions found, call optinstatus for all internal accounts
     try {
-      const allAccounts = this.messagingSystem.call(
+      const allAccounts = this.messenger.call(
         'AccountsController:listMultichainAccounts',
       );
 
@@ -1916,7 +1913,7 @@ export class RewardsController extends BaseController<
               `No subscription token found for subscription ID: ${candidateSubscriptionId}`,
             );
           }
-          return await this.messagingSystem.call(
+          return await this.messenger.call(
             'RewardsDataService:mobileJoin',
             {
               account: account.address,
@@ -1996,7 +1993,7 @@ export class RewardsController extends BaseController<
         this.invalidateSubscriptionCache(updatedSubscription.id);
 
         // Emit event to trigger UI refresh
-        this.messagingSystem.publish('RewardsController:accountLinked', {
+        this.messenger.publish('RewardsController:accountLinked', {
           subscriptionId: updatedSubscription.id,
           account: caipAccount,
         });
@@ -2074,7 +2071,7 @@ export class RewardsController extends BaseController<
       this.invalidateSubscriptionCache(lastSuccessfullyLinked.subscriptionId);
 
       // Emit event to trigger UI refresh
-      this.messagingSystem.publish('RewardsController:accountLinked', {
+      this.messenger.publish('RewardsController:accountLinked', {
         subscriptionId: lastSuccessfullyLinked.subscriptionId,
         account: lastSuccessfullyLinked.account,
       });

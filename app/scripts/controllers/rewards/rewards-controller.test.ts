@@ -1,7 +1,11 @@
 /**
  * @jest-environment node
  */
-import { Messenger } from '@metamask/base-controller';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import { EthAccountType } from '@metamask/keyring-api';
 import type { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipAccountId } from '@metamask/utils';
@@ -24,6 +28,7 @@ import {
   RewardsControllerEvents,
   RewardsControllerMessenger,
 } from '../../controller-init/messengers';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   RewardsController,
   getRewardsControllerDefaultState,
@@ -59,6 +64,10 @@ import {
   RewardsDataServiceMobileOptinAction,
   RewardsDataServiceValidateReferralCodeAction,
 } from './rewards-data-service-types';
+
+type AllActions = MessengerActions<RewardsControllerMessenger>;
+
+type AllEvents = MessengerEvents<RewardsControllerMessenger>;
 
 // Mock loglevel
 jest.mock('loglevel', () => ({
@@ -207,14 +216,23 @@ async function withController<ReturnValue>(
     | KeyringControllerUnlockEvent
     | AccountTreeControllerSelectedAccountGroupChangeEvent;
 
-  const globalMessenger = new Messenger<
+  const messenger = getRootMessenger<
     RewardsControllerActions | TestAllowedActions,
     RewardsControllerEvents | TestAllowedEvents
   >();
 
-  const restrictedMessenger = globalMessenger.getRestricted({
-    name: 'RewardsController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'RewardsController',
+    AllActions,
+    AllEvents,
+    typeof messenger
+  >({
+    namespace: 'RewardsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'RewardsDataService:login',
       'RewardsDataService:estimatePoints',
       'RewardsDataService:getOptInStatus',
@@ -231,27 +249,27 @@ async function withController<ReturnValue>(
       'KeyringController:signPersonalMessage',
       'SnapController:handleRequest',
     ],
-    allowedEvents: [
+    events: [
       'AccountTreeController:selectedAccountGroupChange',
       'KeyringController:unlock',
     ],
-  }) as RewardsControllerMessenger;
+  });
 
   // Setup default mocks
   const mockMessengerCall = jest.fn();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  jest.spyOn(restrictedMessenger, 'call').mockImplementation(mockMessengerCall);
+  jest.spyOn(controllerMessenger, 'call').mockImplementation(mockMessengerCall);
 
   const controller = new RewardsController({
-    messenger: restrictedMessenger,
+    messenger: controllerMessenger,
     state,
     isDisabled: () => isDisabled,
   });
 
   return await fn({
     controller,
-    messenger: globalMessenger,
+    messenger,
     mockMessengerCall,
   });
 }

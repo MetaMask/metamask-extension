@@ -1,8 +1,9 @@
+import { ControllerGetStateAction } from '@metamask/base-controller';
 import {
-  ControllerGetStateAction,
   Messenger,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 
 import {
   AccountsControllerGetSelectedMultichainAccountAction,
@@ -51,6 +52,7 @@ import {
   RewardsControllerGetSeasonMetadataAction,
   RewardsControllerGetSeasonStatusAction,
 } from '../../controllers/rewards/rewards-controller.types';
+import { RootMessenger } from '../../lib/messenger';
 
 const name = 'RewardsController';
 
@@ -107,23 +109,30 @@ type AllowedEvents =
   | KeyringControllerUnlockEvent
   | AccountTreeControllerSelectedAccountGroupChangeEvent;
 
-export type RewardsControllerMessenger = RestrictedMessenger<
+export type RewardsControllerMessenger = Messenger<
   typeof name,
   RewardsControllerActions | AllowedActions,
-  RewardsControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  RewardsControllerEvents | AllowedEvents
 >;
 
 export function getRewardsControllerMessenger(
-  messenger: Messenger<
+  messenger: RootMessenger<
     RewardsControllerActions | AllowedActions,
     RewardsControllerEvents | AllowedEvents
   >,
 ): RewardsControllerMessenger {
-  return messenger.getRestricted({
-    name,
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    typeof name,
+    MessengerActions<RewardsControllerMessenger>,
+    MessengerEvents<RewardsControllerMessenger>,
+    typeof messenger
+  >({
+    namespace: name,
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'AccountsController:getSelectedMultichainAccount',
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
       'AccountsController:listMultichainAccounts',
@@ -140,11 +149,12 @@ export function getRewardsControllerMessenger(
       'RewardsDataService:getDiscoverSeasons',
       'SnapController:handleRequest',
     ],
-    allowedEvents: [
+    events: [
       'AccountTreeController:selectedAccountGroupChange',
       'KeyringController:unlock',
     ],
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions =
@@ -156,14 +166,23 @@ export type RewardsControllerInitMessenger = ReturnType<
 >;
 
 export function getRewardsControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'RewardsControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'RewardsControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'RewardsControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'RemoteFeatureFlagController:getState',
       'PreferencesController:getState',
     ],
-    allowedEvents: [],
   });
+  return controllerInitMessenger;
 }

@@ -1,24 +1,30 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import type { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { getRootMessenger } from '../../lib/messenger';
 import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
 
 describe('getRewardsDataServiceMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<
+    const messenger = getRootMessenger<
       PreferencesControllerGetStateAction,
       never
     >();
     const rewardsDataServiceMessenger =
       getRewardsDataServiceMessenger(messenger);
 
-    expect(rewardsDataServiceMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(rewardsDataServiceMessenger).toBeInstanceOf(Messenger);
   });
 
   it('allows PreferencesController:getState action', () => {
     const baseMessenger = new Messenger<
+      MockAnyNamespace,
       PreferencesControllerGetStateAction,
       never
-    >();
+    >({ namespace: MOCK_ANY_NAMESPACE });
 
     // Register a mock handler for PreferencesController:getState
     baseMessenger.registerActionHandler(

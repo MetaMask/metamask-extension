@@ -2,13 +2,16 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipChainId } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { DiscoveredAccount, KeyringAccount } from '@metamask/keyring-api';
-import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
+import {
+  KeyringInternalSnapClient,
+  KeyringInternalSnapClientMessenger,
+} from '@metamask/keyring-internal-snap-client';
 import {
   SnapKeyring,
   SnapKeyringInternalOptions,
 } from '@metamask/eth-snap-keyring';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { SnapId } from '@metamask/snaps-sdk';
 import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
 import { AccountsControllerGetNextAvailableAccountNameAction } from '@metamask/accounts-controller';
@@ -132,6 +135,7 @@ export type WalletSnapClient = {
 };
 
 export type MultichainWalletSnapClientMessenger = Messenger<
+  'MultichainWalletSnapClient',
   | SnapControllerHandleRequest
   | AccountsControllerGetNextAvailableAccountNameAction,
   never
@@ -156,13 +160,17 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
 
     this.#messenger = messenger;
 
+    const clientMessenger: KeyringInternalSnapClientMessenger = new Messenger({
+      namespace: 'KeyringInternalSnapClient',
+      parent: messenger,
+    });
+    messenger.delegate({
+      messenger: clientMessenger,
+      actions: ['SnapController:handleRequest'],
+    });
     this.#client = new KeyringInternalSnapClient({
       snapId,
-      messenger: messenger.getRestricted({
-        name: 'KeyringInternalSnapClient',
-        allowedActions: ['SnapController:handleRequest'],
-        allowedEvents: [],
-      }),
+      messenger: clientMessenger,
     });
   }
 
