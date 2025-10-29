@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
+import {
+  selectBalanceBySelectedAccountGroup,
+  selectedAccountNativeBalance,
+} from '../../../../selectors/assets';
 
 import {
   AlignItems,
@@ -25,33 +28,61 @@ type AccountGroupBalanceProps = {
   handleSensitiveToggle: () => void;
 };
 
+type BalanceDisplayData = {
+  totalToDisplay: string | null;
+  isLoading: boolean;
+};
+
 export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   classPrefix,
   balanceIsCached,
   handleSensitiveToggle,
 }) => {
-  const { privacyMode } = useSelector(getPreferences);
+  const { privacyMode, showNativeTokenAsMainBalance } =
+    useSelector(getPreferences);
   const { formatCurrency } = useFormatters();
 
   const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup);
+  const selectedAccountNativeBalanceValue = useSelector(
+    selectedAccountNativeBalance,
+  );
   const fallbackCurrency = useSelector(getCurrentCurrency);
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  const total = selectedGroupBalance?.totalBalanceInUserCurrency;
-  const currency = selectedGroupBalance
-    ? (selectedGroupBalance.userCurrency ?? fallbackCurrency)
-    : undefined;
+  const balanceDisplayData = useMemo((): BalanceDisplayData => {
+    const total = selectedGroupBalance?.totalBalanceInUserCurrency;
+    const currency = selectedGroupBalance?.userCurrency ?? fallbackCurrency;
+
+    let totalToDisplay: string | null = null;
+
+    if (showNativeTokenAsMainBalance && selectedAccountNativeBalanceValue) {
+      // Handle null case when multiple chains are enabled
+      totalToDisplay = selectedAccountNativeBalanceValue;
+    } else if (total !== undefined && currency) {
+      totalToDisplay = formatCurrency(total, currency);
+    }
+
+    const isLoading =
+      !anyEnabledNetworksAreAvailable &&
+      (isZeroAmount(total) || currency === undefined);
+
+    return {
+      totalToDisplay,
+      isLoading,
+    };
+  }, [
+    selectedGroupBalance,
+    selectedAccountNativeBalanceValue,
+    showNativeTokenAsMainBalance,
+    fallbackCurrency,
+    anyEnabledNetworksAreAvailable,
+    formatCurrency,
+  ]);
 
   return (
-    <Skeleton
-      isLoading={
-        !anyEnabledNetworksAreAvailable &&
-        (isZeroAmount(total) || currency === undefined)
-      }
-      marginBottom={1}
-    >
+    <Skeleton isLoading={balanceDisplayData.isLoading} marginBottom={1}>
       <Box
         className={classnames(`${classPrefix}-overview__primary-balance`, {
           [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
@@ -69,8 +100,7 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
           onClick={handleSensitiveToggle}
           className="cursor-pointer transition-colors duration-200 hover:text-text-alternative"
         >
-          {/* We should always show something but the check is just to appease TypeScript */}
-          {total === undefined ? null : formatCurrency(total, currency)}
+          {balanceDisplayData.totalToDisplay}
         </SensitiveText>
       </Box>
     </Skeleton>

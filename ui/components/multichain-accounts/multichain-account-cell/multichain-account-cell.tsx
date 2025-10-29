@@ -14,6 +14,11 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import {
+  selectBalanceByAccountGroup,
+  selectedAccountNativeBalanceByAccountGroup,
+} from '../../../selectors/assets';
+import { getPreferences } from '../../../selectors/selectors';
 
 export type MultichainAccountCellProps = {
   accountId: AccountGroupId;
@@ -50,6 +55,16 @@ export const MultichainAccountCell = ({
     (typeof accountName === 'string' ? accountName : 'Account');
   const seedAddressIcon = useSelector((state) =>
     getIconSeedAddressByAccountGroupId(state, accountId),
+  );
+
+  const { showNativeTokenAsMainBalance } = useSelector(getPreferences);
+
+  const balanceByAccountGroup = useSelector((state) =>
+    selectBalanceByAccountGroup(accountId)(state),
+  );
+
+  const selectedNativeBalanceSelector = useSelector((state) =>
+    selectedAccountNativeBalanceByAccountGroup(balanceByAccountGroup)(state),
   );
 
   return (
@@ -139,7 +154,9 @@ export const MultichainAccountCell = ({
           isHidden={privacyMode}
           ellipsis
         >
-          {balance}
+          {showNativeTokenAsMainBalance && selectedNativeBalanceSelector
+            ? selectedNativeBalanceSelector
+            : balance}
         </SensitiveText>
         <Box
           className="multichain-account-cell__end_accessory"
