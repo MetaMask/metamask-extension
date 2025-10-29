@@ -1,4 +1,4 @@
-import { SIG_PARAM, SIG_PARAMS } from './constants';
+import { SIG_PARAM, SIG_PARAMS_PARAM } from './constants';
 
 /**
  * Canonicalizes a URL by removing the `sig` query parameter
@@ -14,7 +14,7 @@ import { SIG_PARAM, SIG_PARAMS } from './constants';
 export function canonicalize(url: URL): string {
   let queryString: string | undefined;
 
-  const sigParams = url.searchParams.get(SIG_PARAMS);
+  const sigParams = url.searchParams.get(SIG_PARAMS_PARAM);
 
   if (sigParams) {
     const allowedParams = sigParams.split(',');
@@ -27,7 +27,7 @@ export function canonicalize(url: URL): string {
       }
     }
 
-    signedParams.append(SIG_PARAMS, sigParams);
+    signedParams.append(SIG_PARAMS_PARAM, sigParams);
 
     signedParams.sort();
     queryString = signedParams.toString();
