@@ -257,27 +257,35 @@ describe('submitSmartTransactionHook', () => {
     });
   });
 
-  it('falls back to regular transaction submit if the transaction is unsigned and /getFees throws an error', async () => {
-    withRequest(
-      {
-        options: {
-          signedTransactionInHex: undefined,
-        },
-      },
-      async ({ request, endFlowSpy }) => {
-        jest
-          .spyOn(request.smartTransactionsController, 'getFees')
-          .mockImplementation(() => {
-            throw new Error('Backend call to /getFees failed');
-          });
-        const result = await submitSmartTransactionHook(request);
-        expect(request.smartTransactionsController.getFees).toHaveBeenCalled();
-        expect(endFlowSpy).toHaveBeenCalledWith({
-          id: 'approvalId',
+  it('falls back to regular transaction submit if /getFees throws an error', async () => {
+    withRequest(async ({ request, endFlowSpy }) => {
+      jest
+        .spyOn(request.smartTransactionsController, 'getFees')
+        .mockImplementation(() => {
+          throw new Error('Backend call to /getFees failed');
         });
-        expect(result).toEqual({ transactionHash: undefined });
-      },
-    );
+      const result = await submitSmartTransactionHook(request);
+      expect(request.smartTransactionsController.getFees).toHaveBeenCalled();
+      expect(endFlowSpy).toHaveBeenCalledWith({
+        id: 'approvalId',
+      });
+      expect(result).toEqual({ transactionHash: undefined });
+    });
+  });
+
+  it('skips getting fees if the transaction is sponsored', async () => {
+    withRequest(async ({ request }) => {
+      request.transactionMeta.isGasFeeSponsored = true;
+      request.featureFlags.smartTransactions.extensionReturnTxHashAsap = true;
+      const result = await submitSmartTransactionHook(request);
+      expect(
+        request.smartTransactionsController.getFees,
+      ).not.toHaveBeenCalled();
+      expect(
+        request.smartTransactionsController.submitSignedTransactions,
+      ).toHaveBeenCalled();
+      expect(result).toEqual({ transactionHash: txHash });
+    });
   });
 
   it('returns a txHash asap if the feature flag requires it', async () => {
