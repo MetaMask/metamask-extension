@@ -133,6 +133,7 @@ describe('useEIP7702Account', () => {
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
+          hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
         }),
       );
@@ -157,6 +158,7 @@ describe('useEIP7702Account', () => {
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
+          hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
         }),
       );
@@ -206,6 +208,7 @@ describe('useEIP7702Account', () => {
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
+          hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
         }),
       );
@@ -230,6 +233,7 @@ describe('useEIP7702Account', () => {
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
+          hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
         }),
       );
