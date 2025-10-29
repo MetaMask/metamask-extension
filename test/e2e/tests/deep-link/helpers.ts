@@ -94,3 +94,13 @@ export function cartesianProduct<T extends unknown[][]>(...sets: T) {
     [K in keyof T]: T[K] extends (infer U)[] ? U : never;
   }[];
 }
+
+export function getHashParams(url: URL) {
+  const hash = url.hash.slice(1); // remove leading '#'
+  const hashQuery = hash.split('?')[1] ?? '';
+  const hashParams = new URLSearchParams(hashQuery);
+  const encodedUrl = hashParams.get('u') ?? '';
+  const decodedUrl = decodeURIComponent(encodedUrl);
+  const decodedQuery = decodedUrl.split('?')[1] ?? '';
+  return new URLSearchParams(decodedQuery);
+}
