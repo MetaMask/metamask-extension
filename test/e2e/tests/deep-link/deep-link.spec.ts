@@ -85,13 +85,14 @@ describe('Deep Link', function () {
       'unsigned',
     ] as const,
     ['/home', '/swap', '/INVALID'] as const,
+    ['', '?test=test'] as const,
     ['continue'] as const,
-  ).map(([locked, signed, route, action]) => {
-    return { locked, signed, route, action };
+  ).map(([locked, signed, route, params, action]) => {
+    return { locked, signed, route, params, action };
   });
 
-  scenarios.forEach(({ locked, signed, route, action }) => {
-    it(`handles ${locked} and ${signed} ${route} deep link with ${action} action`, async function () {
+  scenarios.forEach(({ locked, signed, route, params, action }) => {
+    it(`handles ${locked} and ${signed} ${route}${params} deep link with ${action} action`, async function () {
       await withFixtures(
         await getConfig(this.test?.fullTitle()),
         async ({ driver }: { driver: Driver }) => {
@@ -120,9 +121,9 @@ describe('Deep Link', function () {
             await homePage.checkPageIsLoaded();
           }
 
-          // navigate to https://link.metamask.io/home and make sure it
+          // navigate to the route and make sure it
           // redirects to the deep link interstitial page
-          const rawUrl = `https://link.metamask.io${route}`;
+          const rawUrl = `https://link.metamask.io${route}${params}`;
           // note: we sign the "/INVALID" link as well, as signed links that no
           // longer exist/match should be treated handled the same way as
           // unsigned links. We test for this below.
@@ -133,7 +134,7 @@ describe('Deep Link', function () {
           );
 
           // Validate URL signature
-          if (isSigned && withSigParams) {
+          if (isSigned && withSigParams && params) {
             assert.equal(
               preparedUrl.searchParams.has('sig_params'),
               true,
@@ -144,7 +145,7 @@ describe('Deep Link', function () {
               true,
               'signed URLs must include sig',
             );
-          } else if (isSigned && !withSigParams) {
+          } else if (isSigned) {
             assert.equal(
               preparedUrl.searchParams.has('sig_params'),
               false,
