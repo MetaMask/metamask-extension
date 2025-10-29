@@ -84,7 +84,7 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
               }
               onError={handleOnError}
               src={src}
-              alt={`${name} logo` || 'token logo'}
+              alt={`${name} logo`}
             />
           </>
         )}
