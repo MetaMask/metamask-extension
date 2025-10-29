@@ -1,7 +1,7 @@
 import React, { useContext, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeSlide, setSelectedAccount } from '../../../store/actions';
-import { CarouselWithEmptyState } from '..';
+import { CarouselWithEmptyState } from '../carousel';
 import {
   getAppIsLoading,
   getRemoteFeatureFlags,
@@ -48,9 +48,9 @@ export const Carousel = () => {
     return m;
   }, [slides]);
 
-  const handleCarouselClick = (id: string): void => {
+  const handleCarouselClick = (id: string) => {
     const slide = slideById.get(id);
-    const key = slide && slide.variableName ? slide.variableName : id;
+    const key = slide?.variableName ?? id;
 
     if (key === 'solana') {
       if (hasSolanaAccount && selectedSolanaAccount) {
@@ -75,7 +75,7 @@ export const Carousel = () => {
     });
   };
 
-  const handleRemoveSlide = (slideId: string, isLastSlide: boolean): void => {
+  const handleRemoveSlide = (slideId: string, isLastSlide: boolean) => {
     if (isLastSlide) {
       trackEvent({
         event: MetaMetricsEventName.BannerCloseAll,
