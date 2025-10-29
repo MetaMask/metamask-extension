@@ -241,7 +241,6 @@ describe('AccountListItem', () => {
     expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   it('renders the tag with the snap name for named snap accounts', () => {
     const { container } = render(
       {
@@ -305,7 +304,6 @@ describe('AccountListItem', () => {
     const tag = container.querySelector('.mm-tag');
     expect(tag).not.toBeInTheDocument();
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('Multichain Behaviour', () => {
     describe('currency display', () => {
