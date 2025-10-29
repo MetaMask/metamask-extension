@@ -22,9 +22,6 @@ export type GetTokenStandardAndDetailsByChain = (
   [key: string]: unknown;
 }>;
 
-// Type for translation function
-export type TranslationFunction = (key: string, ...args: unknown[]) => string;
-
 // Types for permission data
 export type GatorPermissionData = {
   tokenAddress?: string;
@@ -262,32 +259,31 @@ export function formatGatorAmountLabel(params: {
         : formatter.format(numericAmount);
 
     return `${formattedAmount} ${tokenSymbol} ${frequency}`;
-  } catch (_err) {
+  } catch (error) {
     return 'Permission details unavailable';
   }
 }
 
 /**
  * Derive display metadata from a gator permission type and data.
+ * Returns translation keys that should be translated at the UI layer.
  *
  * @param permissionType - The type of permission
  * @param permissionDataParam - The permission data containing amount and frequency information
- * @param t - Translation function for internationalization
- * @returns Object containing display name, amount, and frequency
+ * @returns Object containing translation keys for display name and frequency, plus the amount value
  */
 export function getGatorPermissionDisplayMetadata(
   permissionType: string,
   permissionDataParam: GatorPermissionData,
-  t: TranslationFunction,
-): { displayName: string; amount: string; frequency: string } {
+): { displayNameKey: string; amount: string; frequencyKey: string } {
   if (
     permissionType === 'native-token-stream' ||
     permissionType === 'erc20-token-stream'
   ) {
     return {
-      displayName: t('tokenStream'),
+      displayNameKey: 'tokenStream',
       amount: permissionDataParam.amountPerSecond as string,
-      frequency: t('perSecond'),
+      frequencyKey: 'perSecond',
     };
   }
 
@@ -301,15 +297,15 @@ export function getGatorPermissionDisplayMetadata(
         ? parseInt(periodDurationStr, 10)
         : 0;
     return {
-      displayName: t('tokenSubscription'),
+      displayNameKey: 'tokenSubscription',
       amount: permissionDataParam.periodAmount as string,
-      frequency: t(getPeriodFrequencyValueTranslationKey(periodDuration)),
+      frequencyKey: getPeriodFrequencyValueTranslationKey(periodDuration),
     };
   }
 
   return {
-    displayName: 'Permission',
+    displayNameKey: 'permission',
     amount: '',
-    frequency: '',
+    frequencyKey: '',
   };
 }

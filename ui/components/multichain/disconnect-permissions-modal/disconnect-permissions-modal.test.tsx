@@ -15,9 +15,9 @@ jest.mock('../../../../shared/lib/gator-permissions', () => ({
   }),
   formatGatorAmountLabel: jest.fn().mockReturnValue('1 ETH per second'),
   getGatorPermissionDisplayMetadata: jest.fn().mockReturnValue({
-    displayName: 'Token Stream',
+    displayNameKey: 'tokenStream',
     amount: '0xde0b6b3a7640000',
-    frequency: 'per second',
+    frequencyKey: 'perSecond',
   }),
 }));
 

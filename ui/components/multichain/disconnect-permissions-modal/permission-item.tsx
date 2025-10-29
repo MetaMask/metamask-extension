@@ -20,7 +20,6 @@ import {
   getGatorPermissionDisplayMetadata,
   getGatorPermissionTokenInfo,
   GatorPermissionData,
-  TranslationFunction,
 } from '../../../../shared/lib/gator-permissions';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { getUseExternalServices } from '../../../selectors';
@@ -97,17 +96,6 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
     [locale],
   );
 
-  // Get permission metadata for this permission
-  const getPermissionMetadata = useCallback(
-    (permissionType: string, permissionDataParam: GatorPermissionData) =>
-      getGatorPermissionDisplayMetadata(
-        permissionType,
-        permissionDataParam,
-        t as TranslationFunction,
-      ),
-    [t],
-  );
-
   const signerAddress = permission.permission.permissionResponse.address;
 
   const accountName = useSelector((state: AccountsMetaMaskState) =>
@@ -121,11 +109,16 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
     CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[permission.chainId] || '';
   const networkName = networkConfig?.name || permission.chainId;
 
-  // Get permission display metadata
-  const { displayName, amount, frequency } = getPermissionMetadata(
-    permission.permissionType,
-    permissionData,
-  );
+  // Get permission display metadata (returns translation keys)
+  const { displayNameKey, amount, frequencyKey } =
+    getGatorPermissionDisplayMetadata(
+      permission.permissionType,
+      permissionData,
+    );
+
+  // Translate the keys to get display strings
+  const displayName = t(displayNameKey);
+  const frequency = t(frequencyKey);
 
   // Only memoize the formatted description since it depends on multiple values
   const formattedDescription = useMemo(() => {
