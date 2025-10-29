@@ -26,10 +26,6 @@ export const useAmountValidation = () => {
         )) as ValidationResult;
 
         if (result.errors && result.errors.length > 0) {
-          console.log(
-            'OGP - using error from "onAmountInput" response: ',
-            result,
-          );
           const errorCode = result.errors[0].code;
           setAmountError(mapErrorCodeToMessage(errorCode, t));
           return { isValid: false };
