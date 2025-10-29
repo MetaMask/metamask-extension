@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -16,6 +16,12 @@ import { MetaMetricsEventCategory } from '../../../../../shared/constants/metame
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/common';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '../../../../components/component-library';
+import { TokenInsightsModal } from '../../token-insights-modal';
 
 export default function ItemList({
   results = [],
@@ -29,6 +35,7 @@ export default function ItemList({
   hideRightLabels,
   hideItemIf,
   listContainerClassName,
+  isSourceList = false,
 }) {
   const t = useContext(I18nContext);
   const chainId = useSelector(getCurrentChainId);
@@ -40,6 +47,10 @@ export default function ItemList({
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const blockExplorerHostName = getURLHostName(blockExplorerLink);
   const trackEvent = useContext(MetaMetricsContext);
+
+  // State for managing hover and modal
+  const [hoveredItem, setHoveredItem] = useState(null);
+  const [modalToken, setModalToken] = useState(null);
 
   // If there is a token for import based on a contract address, it's the only one in the list.
   const hasTokenForImport = results.length === 1 && results[0].notImported;
@@ -103,6 +114,8 @@ export default function ItemList({
               onKeyUp={(e) => e.key === 'Enter' && onClick()}
               key={`searchable-item-list-item-${i}`}
               title={blocked ? t('swapTokenNotAvailable') : null}
+              onMouseEnter={() => setHoveredItem(result.address || i)}
+              onMouseLeave={() => setHoveredItem(null)}
             >
               {iconUrl || primaryLabel ? (
                 <UrlIcon url={iconUrl} name={primaryLabel} />
@@ -145,6 +158,41 @@ export default function ItemList({
                   </div>
                 ) : null}
               </div>
+              {/* Info icon for destination tokens only */}
+              {!isSourceList && !result.notImported && (
+                <ButtonIcon
+                  className={classnames(
+                    'searchable-item-list__item__info-icon',
+                    {
+                      'searchable-item-list__item__info-icon--visible':
+                        hoveredItem === (result.address || i),
+                    },
+                  )}
+                  iconName={IconName.Info}
+                  size={ButtonIconSize.Sm}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    trackEvent({
+                      event: 'Token Insights Opened',
+                      category: MetaMetricsEventCategory.Swaps,
+                      properties: {
+                        token_symbol: result.symbol || result.primaryLabel,
+                        token_address: result.address,
+                        source: 'swaps_destination_list',
+                      },
+                    });
+                    setModalToken({
+                      address: result.address,
+                      symbol: result.symbol || result.primaryLabel,
+                      name: result.name || result.secondaryLabel,
+                      chainId,
+                      iconUrl: result.iconUrl,
+                    });
+                  }}
+                  ariaLabel={t('viewTokenDetails')}
+                  data-testid={`token-insights-icon-${result.symbol || result.primaryLabel}`}
+                />
+              )}
               {result.notImported && (
                 <Button
                   type="primary"
@@ -192,6 +240,15 @@ export default function ItemList({
           </div>
         )}
       </div>
+
+      {/* Token Insights Modal */}
+      {modalToken && (
+        <TokenInsightsModal
+          isOpen={Boolean(modalToken)}
+          onClose={() => setModalToken(null)}
+          token={modalToken}
+        />
+      )}
     </div>
   );
 }
@@ -220,4 +277,5 @@ ItemList.propTypes = {
   hideRightLabels: PropTypes.bool,
   hideItemIf: PropTypes.func,
   listContainerClassName: PropTypes.string,
+  isSourceList: PropTypes.bool,
 };

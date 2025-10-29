@@ -36,6 +36,7 @@ export default function ListWithSearch({
   listContainerClassName,
   searchQuery,
   setSearchQuery,
+  isSourceList = false,
 }) {
   const itemListRef = useRef();
   const t = useContext(I18nContext);
@@ -145,6 +146,7 @@ export default function ListWithSearch({
           hideRightLabels={hideRightLabels}
           hideItemIf={hideItemIf}
           listContainerClassName={listContainerClassName}
+          isSourceList={isSourceList}
         />
       )}
       {items?.length === 0 && (
@@ -177,4 +179,5 @@ ListWithSearch.propTypes = {
   listContainerClassName: PropTypes.string,
   searchQuery: PropTypes.string,
   setSearchQuery: PropTypes.func,
+  isSourceList: PropTypes.bool,
 };

@@ -1,0 +1,30 @@
+@use "design-system";
+
+.token-insights-modal {
+  .mm-modal-content {
+    max-width: 400px;
+  }
+
+  .verified-badge {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: var(--color-success-muted);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .market-data {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    &-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 32px;
+    }
+  }
+}

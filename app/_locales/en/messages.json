@@ -2593,6 +2593,9 @@
   "failed": {
     "message": "Failed"
   },
+  "failedToLoadTokenData": {
+    "message": "Failed to load token data"
+  },
   "failedToFetchChainId": {
     "message": "Could not fetch chain ID. Is your RPC URL correct?"
   },
@@ -3118,6 +3121,9 @@
   "inYourSettings": {
     "message": "in your Settings"
   },
+  "insights": {
+    "message": "Insights"
+  },
   "included": {
     "message": "included"
   },
@@ -3559,6 +3565,12 @@
   },
   "marketDetails": {
     "message": "Market details"
+  },
+  "volume": {
+    "message": "24h volume"
+  },
+  "marketCapFDV": {
+    "message": "Market cap"
   },
   "maskicons": {
     "message": "Polycons"
@@ -4617,6 +4629,9 @@
   },
   "pending": {
     "message": "Pending"
+  },
+  "percentChange": {
+    "message": "24h change"
   },
   "pendingConfirmationAddNetworkAlertMessage": {
     "message": "Updating network will cancel $1 pending transactions from this site.",
@@ -7492,6 +7507,10 @@
   "tokenList": {
     "message": "Token lists"
   },
+  "tokenLists": {
+    "message": "$1 token lists",
+    "description": "$1 is the number of token lists"
+  },
   "tokenMarketplace": {
     "message": "Token marketplace"
   },
@@ -7514,6 +7533,9 @@
   },
   "tokenTransfer": {
     "message": "Token transfer"
+  },
+  "verifiedToken": {
+    "message": "Verified token"
   },
   "tokens": {
     "message": "Tokens"
@@ -7926,6 +7948,9 @@
   "viewOnCustomBlockExplorer": {
     "message": "View $1 at $2",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap) and $2 is the Custom Block Explorer URL"
+  },
+  "viewTokenDetails": {
+    "message": "View token details"
   },
   "viewOnEtherscan": {
     "message": "View $1 on Etherscan",
