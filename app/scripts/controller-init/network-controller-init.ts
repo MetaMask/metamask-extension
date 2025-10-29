@@ -4,7 +4,11 @@ import {
   NetworkController,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { BlockExplorerUrl, ChainId } from '@metamask/controller-utils';
+import {
+  DEFAULT_MAX_RETRIES,
+  BlockExplorerUrl,
+  ChainId,
+} from '@metamask/controller-utils';
 import { hasProperty } from '@metamask/utils';
 import { SECOND } from '../../../shared/constants/time';
 import { getIsQuicknodeEndpointUrl } from '../../../shared/lib/network-utils';
@@ -157,17 +161,17 @@ export const NetworkControllerInit: ControllerInitFunction<
   };
 
   const getRpcServiceOptions = (rpcEndpointUrl: string) => {
-    // This is the default, but we define it here to be explicit.
-    // Note that the total number of attempts is 1 more than this.
-    const maxRetries = 3;
+    // Note that the total number of attempts is 1 more than this
+    // (which is why we add 1 below).
+    const maxRetries = DEFAULT_MAX_RETRIES;
     const commonOptions = {
       fetch: globalThis.fetch.bind(globalThis),
       btoa: globalThis.btoa.bind(globalThis),
-      maxRetries,
     };
     const commonPolicyOptions = {
       // Ensure that the "cooldown" period after breaking the circuit is short.
       circuitBreakDuration: 30 * SECOND,
+      maxRetries,
     };
 
     if (getIsQuicknodeEndpointUrl(rpcEndpointUrl)) {
@@ -195,9 +199,8 @@ export const NetworkControllerInit: ControllerInitFunction<
         //
         // Note that the circuit will break much faster if the errors are
         // retriable (e.g. 503) than if not (e.g. 500), so we attempt to strike
-        // a balance here. (In testing, it takes about 1 minute to break the
-        // circuit with a continual non-retriable error.)
-        maxConsecutiveFailures: (maxRetries + 1) * 2,
+        // a balance here.
+        maxConsecutiveFailures: (maxRetries + 1) * 3,
       },
     };
   };
