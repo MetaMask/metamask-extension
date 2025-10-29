@@ -214,6 +214,7 @@ import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-
 
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
 import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
+import { WalletFundsObtainedMonitor } from './lib/WalletFundsObtainedMonitor';
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
 import { createTrustSignalsMiddleware } from './lib/trust-signals/trust-signals-middleware';
 import {
@@ -521,6 +522,18 @@ export default class MetamaskController extends EventEmitter {
       }
     });
 
+    // Monitor for first wallet funding event based on activeControllerConnections
+    this.on('controllerConnectionChanged', (activeControllerConnections) => {
+      const { completedOnboarding } = this.onboardingController.state;
+      if (
+        activeControllerConnections > 0 &&
+        completedOnboarding &&
+        this.appStateController.state.canTrackWalletFundsObtained
+      ) {
+        this.walletFundsObtainedMonitor.setupMonitoring();
+      }
+    });
+
     /** @type {import('./controller-init/utils').InitFunctions} */
     const controllerInitFunctions = {
       ApprovalController: ApprovalControllerInit,
@@ -799,6 +812,26 @@ export default class MetamaskController extends EventEmitter {
       nameController: this.nameController,
       messenger: petnamesBridgeMessenger,
     }).init();
+
+    const walletFundsObtainedMonitorMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'WalletFundsObtainedMonitor',
+        allowedEvents: [
+          'NotificationServicesController:notificationsListUpdated',
+        ],
+        allowedActions: [
+          'MetaMetricsController:trackEvent',
+          'AppStateController:setCanTrackWalletFundsObtained',
+          'OnboardingController:getState',
+          'NotificationServicesController:getState',
+          'TokenBalancesController:getState',
+          'MultichainBalancesController:getState',
+        ],
+      });
+
+    this.walletFundsObtainedMonitor = new WalletFundsObtainedMonitor({
+      messenger: walletFundsObtainedMonitorMessenger,
+    });
 
     this.getSecurityAlertsConfig = async (url) => {
       const getShieldSubscription = () =>
