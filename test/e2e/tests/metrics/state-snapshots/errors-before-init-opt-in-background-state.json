@@ -42,10 +42,10 @@
       "showTestnetMessageInDropdown": true,
       "trezorModel": null,
       "isRampCardClosed": false,
+      "lastUpdatedFromVersion": null,
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "snapsInstallPrivacyWarningShown": true,
-      "lastUpdatedFromVersion": null,
       "hasShownMultichainAccountsIntroModal": "boolean",
       "showShieldEntryModalOnce": "boolean",
       "appActiveTab": "object"
