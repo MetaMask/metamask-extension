@@ -172,6 +172,7 @@ describe('Shield Plan Stripe Integration', function () {
 
         // Fill the claim form with random data
         await shieldClaimPage.fillForm({
+          chainId: '1',
           email: randomEmail,
           impactedWalletAddress: randomWalletAddress,
           impactedTransactionHash: randomTxHash,
