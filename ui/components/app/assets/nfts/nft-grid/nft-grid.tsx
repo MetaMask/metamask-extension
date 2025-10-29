@@ -89,14 +89,9 @@ export default function NftGrid({
   return (
     <Box style={{ margin: 16 }}>
       <Box display={Display.Grid} gap={4} className="nft-items__wrapper">
-        {nfts.map((nft: NFT, index) => {
-          const { tokenURI } = nft;
-
+        {nfts.map((nft: NFT, index: number) => {
           return (
-            <NFTGridItemErrorBoundary
-              key={tokenURI ?? index}
-              fallback={() => null}
-            >
+            <NFTGridItemErrorBoundary key={index} fallback={() => null}>
               <Box
                 data-testid="nft-wrapper"
                 className="nft-items__image-wrapper"

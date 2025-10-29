@@ -124,7 +124,11 @@ function AlertHeader({
       textAlign={TextAlign.Center}
     >
       <Icon
-        name={severity === Severity.Info ? IconName.Info : IconName.Danger}
+        name={
+          severity === Severity.Info || severity === Severity.Success
+            ? IconName.Info
+            : IconName.Danger
+        }
         size={IconSize.Xl}
         color={severityStyle.icon}
       />
@@ -394,7 +398,12 @@ export function AlertModal({
   }
 
   return (
-    <Modal isOpen onClose={handleClose} data-testid="alert-modal">
+    <Modal
+      isOpen
+      onClose={handleClose}
+      data-testid="alert-modal"
+      autoFocus={false}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader

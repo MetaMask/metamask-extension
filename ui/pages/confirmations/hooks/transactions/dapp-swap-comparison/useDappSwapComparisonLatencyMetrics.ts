@@ -1,7 +1,7 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback, useState } from 'react';
 
-import { useConfirmContext } from '../../context/confirm';
+import { useConfirmContext } from '../../../context/confirm';
 
 const N_A = 'N/A';
 
