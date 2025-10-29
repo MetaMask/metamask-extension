@@ -172,14 +172,16 @@ export default class SecurityTab extends PureComponent {
   }
 
   toggleSetting(value, eventName, eventAction, toggleMethod) {
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: eventName,
-      properties: {
-        action: eventAction,
-        legacy_event: true,
-      },
-    });
+    if (eventName && eventAction) {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: eventName,
+        properties: {
+          action: eventAction,
+          legacy_event: true,
+        },
+      });
+    }
     toggleMethod(!value);
   }
 
@@ -851,8 +853,8 @@ export default class SecurityTab extends PureComponent {
             onToggle={(value) => {
               this.toggleSetting(
                 value,
-                MetaMetricsEventName.KeyAutoDetectTokens,
-                MetaMetricsEventName.KeyAutoDetectTokens,
+                undefined,
+                undefined,
                 setUseTokenDetection,
               );
             }}
