@@ -7,16 +7,13 @@ import {
   RECURRING_INTERVALS,
   RecurringInterval,
 } from '@metamask/subscription-controller';
-import { TransactionType } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { BigNumber } from 'bignumber.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
-import { decimalToHex } from '../../../shared/modules/conversion.utils';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -56,7 +53,6 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import {
-  CONFIRM_TRANSACTION_ROUTE,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
@@ -67,16 +63,23 @@ import {
   useSubscriptionPricing,
   useSubscriptionProductPlans,
 } from '../../hooks/subscription/useSubscriptionPricing';
-import { addTransaction, startSubscriptionWithCard } from '../../store/actions';
 import {
+  setLastUsedSubscriptionPaymentDetails,
+  startSubscriptionWithCard,
+} from '../../store/actions';
+import {
+  useSubscriptionCryptoApprovalTransaction,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { selectNetworkConfigurationByChainId } from '../../selectors';
+import {
+  getLastUsedSubscriptionPaymentDetails,
+  selectNetworkConfigurationByChainId,
+} from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
-import { generateERC20ApprovalData } from '../confirmations/send-legacy/send.utils';
+import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -85,7 +88,9 @@ const ShieldPlan = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
-
+  const lastUsedPaymentDetails = useSelector(
+    getLastUsedSubscriptionPaymentDetails,
+  );
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
     getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
@@ -94,7 +99,6 @@ const ShieldPlan = () => {
     subscriptions,
     trialedProducts,
     loading: subscriptionsLoading,
-    error: subscriptionsError,
   } = useUserSubscriptions({
     refetch: true, // always fetch latest subscriptions state in shield plan screen
   });
@@ -112,16 +116,13 @@ const ShieldPlan = () => {
   }, [navigate, shieldSubscription]);
 
   const [selectedPlan, setSelectedPlan] = useState<RecurringInterval>(
-    RECURRING_INTERVALS.year,
+    lastUsedPaymentDetails?.plan || RECURRING_INTERVALS.year,
   );
 
-  const {
-    subscriptionPricing,
-    loading: subscriptionPricingLoading,
-    error: subscriptionPricingError,
-  } = useSubscriptionPricing({
-    refetch: true, // always fetch latest price
-  });
+  const { subscriptionPricing, loading: subscriptionPricingLoading } =
+    useSubscriptionPricing({
+      refetch: true, // always fetch latest price
+    });
 
   const pricingPlans = useSubscriptionProductPlans(
     PRODUCT_TYPES.SHIELD,
@@ -144,9 +145,12 @@ const ShieldPlan = () => {
   const hasAvailableToken = availableTokenBalances.length > 0;
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<PaymentType>(
-      hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard,
-    );
+    useState<PaymentType>(() => {
+      if (lastUsedPaymentDetails?.paymentMethod) {
+        return lastUsedPaymentDetails.paymentMethod;
+      }
+      return hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard;
+    });
 
   const [selectedToken, setSelectedToken] = useState<
     TokenWithApprovalAmount | undefined
@@ -163,13 +167,52 @@ const ShieldPlan = () => {
 
   // set selected token to the first available token if no token is selected
   useEffect(() => {
-    if (!selectedToken) {
-      setSelectedToken(availableTokenBalances[0]);
+    if (selectedToken || availableTokenBalances.length === 0) {
+      return;
     }
-  }, [availableTokenBalances, selectedToken, setSelectedToken]);
+
+    const lastUsedPaymentToken = lastUsedPaymentDetails?.paymentTokenAddress;
+    const lastUsedPaymentMethod = lastUsedPaymentDetails?.paymentMethod;
+
+    let lastUsedSelectedToken = availableTokenBalances[0];
+    if (
+      lastUsedPaymentToken &&
+      lastUsedPaymentMethod === PAYMENT_TYPES.byCrypto
+    ) {
+      lastUsedSelectedToken =
+        availableTokenBalances.find(
+          (token) => token.address === lastUsedPaymentToken,
+        ) || availableTokenBalances[0];
+    }
+
+    setSelectedToken(lastUsedSelectedToken);
+  }, [
+    availableTokenBalances,
+    selectedToken,
+    setSelectedToken,
+    lastUsedPaymentDetails,
+  ]);
+
+  // set default selected payment method to crypto if selected token available
+  useEffect(() => {
+    if (selectedToken) {
+      setSelectedPaymentMethod(PAYMENT_TYPES.byCrypto);
+    }
+  }, [selectedToken, setSelectedPaymentMethod]);
+
+  const { execute: executeSubscriptionCryptoApprovalTransaction } =
+    useSubscriptionCryptoApprovalTransaction(selectedToken);
 
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
+      // save the last used subscription payment method and plan to Redux store
+      await dispatch(
+        setLastUsedSubscriptionPaymentDetails({
+          paymentMethod: selectedPaymentMethod,
+          paymentTokenAddress: selectedToken?.address as Hex,
+          plan: selectedPlan,
+        }),
+      );
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
         await dispatch(
           startSubscriptionWithCard({
@@ -179,42 +222,7 @@ const ShieldPlan = () => {
           }),
         );
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
-        const approvalAmount = new BigNumber(
-          selectedToken?.approvalAmount?.approveAmount ?? '0',
-        );
-        const balance = new BigNumber(selectedToken?.balance ?? '0');
-        const balanceInWei = balance.mul(10 ** (selectedToken?.decimals ?? 18));
-        const userHasEnoughBalance = balanceInWei.gte(approvalAmount);
-
-        if (!userHasEnoughBalance) {
-          throw new Error('Insufficient balance');
-        }
-
-        if (!selectedToken) {
-          throw new Error('No token selected');
-        }
-
-        const spenderAddress = subscriptionPricing?.paymentMethods
-          ?.find((method) => method.type === PAYMENT_TYPES.byCrypto)
-          ?.chains?.find(
-            (chain) => chain.chainId === selectedToken?.chainId,
-          )?.paymentAddress;
-        const approvalData = generateERC20ApprovalData({
-          spenderAddress,
-          amount: decimalToHex(selectedToken.approvalAmount.approveAmount),
-        });
-        const transactionParams = {
-          from: evmInternalAccount?.address as Hex,
-          to: selectedToken.address as Hex,
-          value: '0x0',
-          data: approvalData,
-        };
-        const transactionOptions = {
-          type: TransactionType.shieldSubscriptionApprove,
-          networkClientId: networkClientId as string,
-        };
-        await addTransaction(transactionParams, transactionOptions);
-        navigate(CONFIRM_TRANSACTION_ROUTE);
+        await executeSubscriptionCryptoApprovalTransaction();
       }
     }, [
       dispatch,
@@ -228,12 +236,22 @@ const ShieldPlan = () => {
       subscriptionPricing,
     ]);
 
+  const tokensSupported = useMemo(() => {
+    const chainsAndTokensSupported = cryptoPaymentMethod?.chains ?? [];
+
+    return [
+      ...new Set(
+        chainsAndTokensSupported.flatMap((chain) =>
+          chain.tokens.map((token) => token.symbol),
+        ),
+      ),
+    ];
+  }, [cryptoPaymentMethod?.chains]);
+
   const loading =
     subscriptionsLoading ||
     subscriptionPricingLoading ||
     subscriptionResult.pending;
-  const error =
-    subscriptionsError || subscriptionPricingError || subscriptionResult.error;
 
   const plans: Plan[] = useMemo(
     () =>
@@ -258,15 +276,24 @@ const ShieldPlan = () => {
   );
   const selectedPlanData = plans.find((plan) => plan.id === selectedPlan);
 
-  const planDetails = [
-    t('shieldPlanDetails1'),
-    t(
+  const planDetails = useMemo(() => {
+    const details = [];
+    if (!isTrialed) {
+      details.push(
+        t('shieldPlanDetails1', [
+          selectedProductPrice?.trialPeriodDays ??
+            SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
+        ]),
+      );
+    }
+    details.push(
       selectedPaymentMethod === PAYMENT_TYPES.byCrypto
-        ? 'shieldPlanDetails2'
-        : 'shieldPlanDetails2Card',
-    ),
-    t('shieldPlanDetails3'),
-  ];
+        ? t('shieldPlanDetails2')
+        : t('shieldPlanDetails2Card'),
+    );
+    details.push(t('shieldPlanDetails3'));
+    return details;
+  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice]);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -301,7 +328,6 @@ const ShieldPlan = () => {
       >
         {t('shieldPlanTitle')}
       </Header>
-      {error && <Text variant={TextVariant.bodySm}>{error.message}</Text>}
       {loading && <LoadingScreen />}
       {subscriptionPricing && (
         <>
@@ -326,6 +352,7 @@ const ShieldPlan = () => {
                     'shield-plan-page__plan--selected':
                       plan.id === selectedPlan,
                   })}
+                  data-testid={`shield-plan-${plan.label.toLowerCase()}-button`}
                   onClick={() => setSelectedPlan(plan.id)}
                 >
                   <div className="shield-plan-page__radio" />
@@ -346,7 +373,7 @@ const ShieldPlan = () => {
                       className="shield-plan-page__save-badge"
                     >
                       <Text
-                        variant={TextVariant.bodyXs}
+                        variant={TextVariant.bodyXsMedium}
                         color={TextColor.iconInverse}
                       >
                         {t('shieldPlanSave')}
@@ -407,7 +434,7 @@ const ShieldPlan = () => {
                       ? selectedToken?.symbol || ''
                       : t('shieldPlanCard')}
                   </Text>
-                  <Icon size={IconSize.Md} name={IconName.ArrowRight} />
+                  <Icon size={IconSize.Md} name={IconName.ArrowDown} />
                 </Box>
               </Box>
             </Box>
@@ -453,6 +480,7 @@ const ShieldPlan = () => {
               setSelectedPaymentMethod={setSelectedPaymentMethod}
               onAssetChange={setSelectedToken}
               availableTokenBalances={availableTokenBalances}
+              tokensSupported={tokensSupported}
             />
           </Content>
           <Footer
@@ -466,6 +494,7 @@ const ShieldPlan = () => {
               variant={ButtonVariant.Primary}
               block
               onClick={handleSubscription}
+              data-testid="shield-plan-continue-button"
             >
               {t('continue')}
             </Button>

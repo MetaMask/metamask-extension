@@ -202,7 +202,7 @@ describe('addEthereumChainHandler', () => {
 
   describe('if a networkConfiguration for the given chainId already exists', () => {
     describe('if the proposed networkConfiguration has a different rpcUrl from the one already in state', () => {
-      it('updates the network with a new networkConfiguration and switches to it', async () => {
+      it('updates the network with a new networkConfiguration', async () => {
         const { mocks, end, handler } = createMockedHandler();
         mocks.getCurrentChainIdForDomain.mockReturnValue(CHAIN_IDS.SEPOLIA);
         mocks.getNetworkConfigurationByChainId.mockReturnValue(
@@ -231,7 +231,7 @@ describe('addEthereumChainHandler', () => {
             blockExplorerUrls: ['https://etherscan.io'],
             chainId: '0x1',
             defaultBlockExplorerUrlIndex: 0,
-            defaultRpcEndpointIndex: 1,
+            defaultRpcEndpointIndex: 0, // Keep the original RPC endpoint
             name: 'Ethereum Mainnet',
             nativeCurrency: 'ETH',
             rpcEndpoints: [
@@ -254,7 +254,7 @@ describe('addEthereumChainHandler', () => {
           {},
           end,
           '0x1',
-          123,
+          'mainnet', // Keep the original networkClientId
           {
             autoApprove: true,
             getCaveat: mocks.getCaveat,

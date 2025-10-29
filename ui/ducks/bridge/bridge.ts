@@ -10,6 +10,7 @@ import {
   formatChainIdToHex,
   type GenericQuoteRequest,
   type QuoteResponse,
+  isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
@@ -113,6 +114,16 @@ const bridgeSlice = createSlice({
         state.fromToken.assetId?.toLowerCase() ===
           state.toToken.assetId?.toLowerCase()
       ) {
+        state.toToken = null;
+      }
+      // if new fromToken is BTC, and toToken is BTC, unset toChain and toToken
+      if (
+        state.fromToken?.chainId &&
+        isBitcoinChainId(state.fromToken.chainId) &&
+        state.toChainId &&
+        isBitcoinChainId(state.toChainId)
+      ) {
+        state.toChainId = null;
         state.toToken = null;
       }
     },

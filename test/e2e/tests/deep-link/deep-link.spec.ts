@@ -212,7 +212,7 @@ and we'll take you to the right place.`
         });
 
         await driver.navigate();
-        homePage.checkPageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         // test unsigned flow
         await driver.openNewURL(rawUrl);
@@ -247,13 +247,71 @@ and we'll take you to the right place.`
         });
 
         await driver.navigate();
-        homePage.checkPageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         // test unsigned flow
         await driver.openNewURL(rawUrl);
 
         await driver.waitForUrl({
           url: `${BaseUrl.MetaMask}/perps`,
+        });
+      },
+    );
+  });
+
+  it('handles /rewards route redirect', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        const rawUrl = `https://link.metamask.io/rewards`;
+        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+
+        // test signed flow
+        await driver.openNewURL(signedUrl);
+
+        const url = new URL(signedUrl);
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/rewards${url.search}`,
+        });
+
+        await driver.navigate();
+        await homePage.checkPageIsLoaded();
+
+        // test unsigned flow
+        await driver.openNewURL(rawUrl);
+
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/rewards`,
+        });
+      },
+    );
+  });
+
+  it('handles /rewards referral route redirect', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        const rawUrl = `https://link.metamask.io/rewards?referral=MIAMI5`;
+
+        // test unsigned flow
+        await driver.openNewURL(rawUrl);
+
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/rewards?referral=MIAMI5`,
         });
       },
     );

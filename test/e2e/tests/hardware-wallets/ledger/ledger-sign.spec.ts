@@ -10,6 +10,7 @@ describe('Ledger Hardware Signatures', function (this: Suite) {
   it('sign typed v4', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -17,7 +18,6 @@ describe('Ledger Hardware Signatures', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);

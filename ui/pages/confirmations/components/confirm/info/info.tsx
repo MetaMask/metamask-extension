@@ -1,4 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
 import { isGatorPermissionsFeatureEnabled } from '../../../../../../shared/modules/environment';
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
@@ -6,6 +7,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
 import { SignatureRequestType } from '../../../types/confirm';
+import { AddEthereumChain } from '../../../external/add-ethereum-chain/add-ethereum-chain';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
@@ -60,6 +62,8 @@ const Info = () => {
         SetApprovalForAllInfo,
       [TransactionType.tokenMethodTransfer]: () => TokenTransferInfo,
       [TransactionType.tokenMethodTransferFrom]: () => NFTTokenTransferInfo,
+
+      [ApprovalType.AddEthereumChain]: () => AddEthereumChain,
     }),
     [currentConfirmation],
   );

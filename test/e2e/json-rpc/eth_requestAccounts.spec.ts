@@ -11,7 +11,7 @@ describe('eth_requestAccounts', function () {
   it('returns permitted accounts when there are permitted accounts and the wallet is unlocked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -44,7 +44,7 @@ describe('eth_requestAccounts', function () {
   it('returns permitted accounts when there are permitted accounts and the wallet is locked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -75,7 +75,7 @@ describe('eth_requestAccounts', function () {
   it('prompts for login when there are no permitted accounts and the wallet is locked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },

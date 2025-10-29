@@ -33,7 +33,7 @@ const marginSizeControlOptions = [
 ];
 
 export default {
-  title: 'Components/ComponentLibrary/ButtonBase',
+  title: 'Components/ComponentLibrary/ButtonBase (deprecated)',
 
   component: ButtonBase,
   parameters: {

@@ -1,5 +1,9 @@
 import { SnapController } from '@metamask/snaps-controllers';
 import { Messenger } from '@metamask/base-controller';
+import {
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import {
@@ -12,11 +16,11 @@ import { SnapControllerInit } from './snap-controller-init';
 
 jest.mock('@metamask/snaps-controllers');
 
-function getInitRequestMock(): jest.Mocked<
+function getInitRequestMock(
+  baseMessenger = new Messenger<never, never>(),
+): jest.Mocked<
   ControllerInitRequest<SnapControllerMessenger, SnapControllerInitMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
-
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getSnapControllerMessenger(baseMessenger),
@@ -28,6 +32,10 @@ function getInitRequestMock(): jest.Mocked<
 }
 
 describe('SnapControllerInit', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('initializes the controller', () => {
     const { controller } = SnapControllerInit(getInitRequestMock());
     expect(controller).toBeInstanceOf(SnapController);
@@ -56,5 +64,33 @@ describe('SnapControllerInit', () => {
       preinstalledSnaps: expect.any(Array),
       trackEvent: expect.any(Function),
     });
+  });
+
+  it('calls `SnapController:setClientActive` when the client is locked', () => {
+    const baseMessenger = new Messenger<never, KeyringControllerLockEvent>();
+
+    const request = getInitRequestMock(baseMessenger);
+    const { initMessenger } = request;
+
+    const spy = jest.spyOn(initMessenger, 'call');
+
+    SnapControllerInit(request);
+    baseMessenger.publish('KeyringController:lock');
+
+    expect(spy).toHaveBeenCalledWith('SnapController:setClientActive', false);
+  });
+
+  it('calls `SnapController:setClientActive` when the client is unlocked', () => {
+    const baseMessenger = new Messenger<never, KeyringControllerUnlockEvent>();
+
+    const request = getInitRequestMock(baseMessenger);
+    const { initMessenger } = request;
+
+    const spy = jest.spyOn(initMessenger, 'call');
+
+    SnapControllerInit(request);
+    baseMessenger.publish('KeyringController:unlock');
+
+    expect(spy).toHaveBeenCalledWith('SnapController:setClientActive', true);
   });
 });

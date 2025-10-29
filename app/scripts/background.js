@@ -15,8 +15,8 @@ import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { isObject, hasProperty } from '@metamask/utils';
-import PortStream from 'extension-port-stream';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
+import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 
@@ -24,6 +24,9 @@ import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  ENVIRONMENT_TYPE_SIDEPANEL,
+  ///: END:ONLY_INCLUDE_IF
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
@@ -144,6 +147,9 @@ const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+let sidePanelIsOpen = false;
+///: END:ONLY_INCLUDE_IF
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
@@ -272,13 +278,30 @@ const sendReadyMessageToTabs = async () => {
  * @param {MetamaskController} theController
  */
 function maybeDetectPhishing(theController) {
+  /**
+   * Redirects a tab to the phishing warning page.
+   *
+   * @param {number} tabId - The ID of the tab to redirect
+   * @param {string} url - The URL to redirect to (phishing warning page)
+   * @returns {Promise<boolean>} Returns true if the redirect was successful, false otherwise.
+   *   Returns false for Google pre-fetch requests or if the redirect fails.
+   */
   async function redirectTab(tabId, url) {
     try {
-      return await browser.tabs.update(tabId, {
+      const tab = await browser.tabs.get(tabId);
+
+      // Prevent redirect when due to Google pre-fetching
+      if (tab.url && tab.url.startsWith('https://www.google.com/search')) {
+        return false;
+      }
+
+      await browser.tabs.update(tabId, {
         url,
       });
+      return true;
     } catch (error) {
-      return sentry?.captureException(error);
+      sentry?.captureException(error);
+      return false;
     }
   }
   // we can use the blocking API in MV2, but not in MV3
@@ -354,32 +377,36 @@ function maybeDetectPhishing(theController) {
         blockedUrl = details.initiator;
       }
 
-      if (!isFirefox) {
-        theController.metaMetricsController.trackEvent(
-          {
-            // should we differentiate between background redirection and content script redirection?
-            event: MetaMetricsEventName.PhishingPageDisplayed,
-            category: MetaMetricsEventCategory.Phishing,
-            properties: {
-              url: blockedUrl,
-              referrer: {
-                url: blockedUrl,
-              },
-              reason: blockReason,
-              requestDomain: blockedRequestResponse.result
-                ? hostname
-                : undefined,
-            },
-          },
-          {
-            excludeMetaMetricsId: true,
-          },
-        );
-      }
       const querystring = new URLSearchParams({ hostname, href });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
       const redirectHref = redirectUrl.toString();
+
+      // Helper function to track phishing page metrics
+      const trackPhishingMetrics = () => {
+        if (!isFirefox) {
+          theController.metaMetricsController.trackEvent(
+            {
+              // should we differentiate between background redirection and content script redirection?
+              event: MetaMetricsEventName.PhishingPageDisplayed,
+              category: MetaMetricsEventCategory.Phishing,
+              properties: {
+                url: blockedUrl,
+                referrer: {
+                  url: blockedUrl,
+                },
+                reason: blockReason,
+                requestDomain: blockedRequestResponse.result
+                  ? hostname
+                  : undefined,
+              },
+            },
+            {
+              excludeMetaMetricsId: true,
+            },
+          );
+        }
+      };
 
       // blocking is better than tab redirection, as blocking will prevent
       // the browser from loading the page at all
@@ -388,13 +415,21 @@ function maybeDetectPhishing(theController) {
         // For non-`main_frame` requests (e.g. `sub_frame` or WebSocket), we cancel them
         // and redirect the whole tab asynchronously so that the user sees the warning.
         if (details.type === 'main_frame') {
+          trackPhishingMetrics();
           return { redirectUrl: redirectHref };
         }
-        redirectTab(details.tabId, redirectHref);
+        redirectTab(details.tabId, redirectHref).then((redirected) => {
+          if (redirected) {
+            trackPhishingMetrics();
+          }
+        });
         return { cancel: true };
       }
-      // redirect the whole tab (even if it's a sub_frame request)
-      redirectTab(details.tabId, redirectHref);
+      redirectTab(details.tabId, redirectHref).then((redirected) => {
+        if (redirected) {
+          trackPhishingMetrics();
+        }
+      });
       return {};
     },
     {
@@ -1094,7 +1129,11 @@ export function setupController(
     return (
       openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
-      notificationIsOpen
+      notificationIsOpen ||
+      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+      sidePanelIsOpen ||
+      ///: END:ONLY_INCLUDE_IF
+      false
     );
   };
 
@@ -1136,8 +1175,34 @@ export function setupController(
     }
 
     if (isMetaMaskInternalProcess) {
+      /**
+       * @type {ExtensionPortStream}
+       */
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort);
+
+      /**
+       * send event to sentry with details about the event
+       *
+       * @param {import("extension-port-stream").MessageTooLargeEventData} details
+       */
+      const handleMessageTooLarge = function ({ chunkSize }) {
+        /**
+         * @type {MetamaskController}
+         */
+        const theController = controller;
+        theController.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PortStreamChunked,
+          category: MetaMetricsEventCategory.PortStream,
+          properties: { chunkSize },
+        });
+      };
+      remotePort.onDisconnect.addListener(() =>
+        portStream.off('message-too-large', handleMessageTooLarge),
+      );
+      portStream.on('message-too-large', handleMessageTooLarge);
+
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -1154,6 +1219,18 @@ export function setupController(
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
         });
       }
+
+      ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+      if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
+        sidePanelIsOpen = true;
+        finished(portStream, () => {
+          sidePanelIsOpen = false;
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
+        });
+      }
+      ///: END:ONLY_INCLUDE_IF
 
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
@@ -1189,7 +1266,8 @@ export function setupController(
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
       const portStreamForPhishingPage =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort, { chunkSize: 0 });
       controller.setupPhishingCommunication({
         connectionStream: portStreamForPhishingPage,
       });
@@ -1218,14 +1296,16 @@ export function setupController(
         )
       ) {
         const portStreamForCookieHandlerPage =
-          overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+          overrides?.getPortStream?.(remotePort) ||
+          new ExtensionPortStream(remotePort, { chunkSize: 0 });
         controller.setUpCookieHandlerCommunication({
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
 
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
       connectEip1193(portStream, remotePort.sender);
 
@@ -1245,7 +1325,8 @@ export function setupController(
 
   connectExternallyConnectable = (remotePort) => {
     const portStream =
-      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+      overrides?.getPortStream?.(remotePort) ||
+      new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
     // if the sender.id value is present it means the caller is an extension rather
     // than a site. When the caller is an extension we want to fallback to connecting
@@ -1503,7 +1584,11 @@ async function triggerUi() {
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
-    !currentlyActiveMetamaskTab
+    !currentlyActiveMetamaskTab &&
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+    !sidePanelIsOpen &&
+    ///: END:ONLY_INCLUDE_IF
+    true
   ) {
     uiIsTriggering = true;
     try {
@@ -1567,6 +1652,42 @@ function onInstall() {
     platform.openExtensionInBrowser();
   }
 }
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+// Only register sidepanel context menu for browsers that support it (Chrome/Edge/Brave)
+// and when the feature flag is enabled
+if (
+  browser.contextMenus &&
+  browser.sidePanel &&
+  process.env.IS_SIDEPANEL?.toString() === 'true'
+) {
+  browser.runtime.onInstalled.addListener(() => {
+    browser.contextMenus.create({
+      id: 'openSidePanel',
+      title: 'MetaMask Sidepanel',
+      contexts: ['all'],
+    });
+  });
+  browser.contextMenus.onClicked.addListener((info, tab) => {
+    if (info.menuItemId === 'openSidePanel') {
+      // This will open the panel in all the pages on the current window.
+      browser.sidePanel.open({ windowId: tab.windowId });
+    }
+  });
+}
+///: END:ONLY_INCLUDE_IF
+
+// // On first install, open a new tab with MetaMask
+// async function onInstall() {
+//   const storeAlreadyExisted = Boolean(await localStore.get());
+//   // If the store doesn't exist, then this is the first time running this script,
+//   // and is therefore an install
+//   if (process.env.IN_TEST) {
+//     addAppInstalledEvent();
+//   } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
+//     addAppInstalledEvent();
+//     platform.openExtensionInBrowser();
+//   }
+// }
 
 /**
  * Trigger actions that should happen only upon update installation
@@ -1629,6 +1750,181 @@ function onNavigateToTab() {
     }
   });
 }
+
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+// Sidepanel-specific functionality
+// Set initial side panel behavior based on user preference
+const initSidePanelBehavior = async () => {
+  // Only initialize sidepanel behavior if the feature flag is enabled
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+    return;
+  }
+
+  try {
+    // Wait for controller to be initialized
+    await isInitialized;
+
+    // Get user preference (default to true for side panel)
+    const useSidePanelAsDefault =
+      controller?.preferencesController?.state?.preferences
+        ?.useSidePanelAsDefault ?? true;
+
+    // Set panel behavior based on preference
+    if (browser?.sidePanel?.setPanelBehavior) {
+      await browser.sidePanel.setPanelBehavior({
+        openPanelOnActionClick: useSidePanelAsDefault,
+      });
+    }
+  } catch (error) {
+    console.error('Error setting side panel behavior:', error);
+  }
+};
+
+initSidePanelBehavior();
+
+// Listen for preference changes to update side panel behavior dynamically
+const setupPreferenceListener = async () => {
+  // Only setup preference listener if the feature flag is enabled
+  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
+    return;
+  }
+
+  try {
+    await isInitialized;
+
+    // Listen for preference changes using the controller messenger
+    controller?.controllerMessenger?.subscribe(
+      'PreferencesController:stateChange',
+      (state) => {
+        const useSidePanelAsDefault =
+          state?.preferences?.useSidePanelAsDefault ?? true;
+        if (browser?.sidePanel?.setPanelBehavior) {
+          browser.sidePanel
+            .setPanelBehavior({
+              openPanelOnActionClick: useSidePanelAsDefault,
+            })
+            .catch((error) =>
+              console.error('Error updating panel behavior:', error),
+            );
+        }
+      },
+    );
+  } catch (error) {
+    console.error('Error setting up preference listener:', error);
+  }
+};
+
+setupPreferenceListener();
+
+// Tab listeners to populate appActiveTab
+browser.tabs.onActivated.addListener(async ({ tabId }) => {
+  // Wait for controller to be initialized
+  await isInitialized;
+  if (!controller) {
+    return {};
+  }
+
+  try {
+    const tabInfo = await browser.tabs.get(tabId);
+    const { id, title, url, favIconUrl } = tabInfo;
+
+    if (!url) {
+      return {};
+    }
+
+    const { origin, protocol, host, href } = new URL(url);
+
+    // Skip if no origin, null origin, or extension pages
+    if (
+      !origin ||
+      origin === 'null' ||
+      origin.startsWith('chrome-extension://') ||
+      origin.startsWith('moz-extension://')
+    ) {
+      return {};
+    }
+
+    // Update the app active tab state
+    controller.appStateController.setAppActiveTab({
+      id,
+      title,
+      origin,
+      protocol,
+      url,
+      host,
+      href,
+      favIconUrl,
+    });
+
+    // Update subject metadata for permission system
+    controller.subjectMetadataController.addSubjectMetadata({
+      origin,
+      name: title || host || origin,
+      iconUrl: favIconUrl || null,
+      subjectType: 'website',
+    });
+  } catch (error) {
+    // Ignore errors from tabs that don't exist or can't be accessed
+    console.log('Error in tabs.onActivated listener:', error.message);
+  }
+
+  return {};
+});
+
+browser.tabs.onUpdated.addListener(async (tabId) => {
+  // Wait for controller to be initialized
+  await isInitialized;
+  if (!controller) {
+    return {};
+  }
+
+  try {
+    const tabInfo = await browser.tabs.get(tabId);
+    const { id, title, url, favIconUrl } = tabInfo;
+
+    if (!url) {
+      return {};
+    }
+
+    const { origin, protocol, host, href } = new URL(url);
+
+    // Skip if no origin, null origin, or extension pages
+    if (
+      !origin ||
+      origin === 'null' ||
+      origin.startsWith('chrome-extension://') ||
+      origin.startsWith('moz-extension://')
+    ) {
+      return {};
+    }
+
+    // Update the app active tab state
+    controller.appStateController.setAppActiveTab({
+      id,
+      title,
+      origin,
+      protocol,
+      url,
+      host,
+      href,
+      favIconUrl,
+    });
+
+    // Update subject metadata for permission system
+    controller.subjectMetadataController.addSubjectMetadata({
+      origin,
+      name: title || host || origin,
+      iconUrl: favIconUrl || null,
+      subjectType: 'website',
+    });
+  } catch (error) {
+    // Ignore errors from tabs that don't exist or can't be accessed
+    console.log('Error in tabs.onUpdated listener:', error.message);
+  }
+
+  return {};
+});
+///: END:ONLY_INCLUDE_IF
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
