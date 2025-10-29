@@ -334,21 +334,12 @@ async function withFixtures(options, testSuite) {
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
-    // The feature flag wrapper chooses state 2 by default
-    // but we want most tests to be able to run with state 0 (bip-44 disabled)
-    // So the default argument is 0
-    // and doing nothing here means we get state 2
-
-    if (forceBip44Version === 0) {
-      await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
-      console.log('Applying multichain accounts feature flag disabled mock');
-    } else if (forceBip44Version === 1) {
-      console.log(
-        'Applying multichain accounts state 1 feature state 1 enabled mock',
-      );
+    if (forceBip44Version === 1) {
+      console.log('Applying multichain accounts stage 1');
       await mockMultichainAccountsFeatureFlagStateOne(mockServer);
     } else {
-      console.log('BIP-44 state 2 enabled');
+      // This sets BIP44 stage 2 by default
+      console.log('BIP-44 stage 2 enabled');
       await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
     }
 

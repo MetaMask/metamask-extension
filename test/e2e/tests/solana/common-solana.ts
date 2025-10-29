@@ -1790,9 +1790,7 @@ export async function withSolanaAccountSnap(
         text: 'Popular',
         tag: 'button',
       });
-      await driver.clickElement(
-        '[data-testid="Solana"]',
-      );
+      await driver.clickElement('[data-testid="Solana"]');
 
       await test(driver, mockServer, extensionId);
     },
