@@ -1,4 +1,8 @@
 import { canonicalize } from '../../../../shared/lib/deep-links/canonicalize';
+import {
+  SIG_PARAM,
+  SIG_PARAMS_PARAM,
+} from '../../../../shared/lib/deep-links/constants';
 
 /**
  * Generates an ECDSA key pair for signing deep links for testing purposes.
@@ -35,7 +39,7 @@ export async function signDeepLink(
     const sigParams = [...new Set(signedUrl.searchParams.keys())];
 
     if (sigParams.length) {
-      signedUrl.searchParams.append('sig_params', sigParams.join(','));
+      signedUrl.searchParams.append(SIG_PARAMS_PARAM, sigParams.join(','));
       signedUrl.searchParams.sort();
     }
   }
@@ -47,7 +51,7 @@ export async function signDeepLink(
   );
   const sig = bytesToB64Url(signed);
 
-  signedUrl.searchParams.append('sig', sig);
+  signedUrl.searchParams.append(SIG_PARAM, sig);
 
   return signedUrl.toString();
 }
