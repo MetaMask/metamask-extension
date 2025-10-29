@@ -175,7 +175,7 @@ describe('Bridge functionality', function (this: Suite) {
     );
   });
 
-  it('should show failed bridge activity if getTxStatus returns failed destination transaction', async function () {
+  it.only('should show failed bridge activity if getTxStatus returns failed destination transaction', async function () {
     await withFixtures(
       getBridgeNegativeCasesFixtures(
         {

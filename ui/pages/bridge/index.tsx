@@ -4,7 +4,6 @@ import {
   Route,
   Routes,
   useNavigate,
-  CompatRouter,
 } from 'react-router-dom-v5-compat';
 import {
   UnifiedSwapBridgeEventName,
@@ -46,6 +45,7 @@ import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
 import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
+import { useSafeNavigation } from '../../hooks/useSafeNavigation';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -64,7 +64,7 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
   useSwapsFeatureFlags();
   useBridging();
 
-  const navigate = useNavigate();
+  const { navigate } = useSafeNavigation();
   const dispatch = useDispatch();
 
   const { search } = location ?? {};
@@ -159,39 +159,37 @@ const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
         {t('swap')}
       </Header>
       <Content padding={0}>
-        <CompatRouter>
-          <Routes>
-            <Route
-              path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
-              element={
-                <>
-                  <BridgeTransactionSettingsModal
-                    isOpen={isSettingsModalOpen}
-                    onClose={() => {
-                      setIsSettingsModalOpen(false);
-                    }}
-                  />
-                  <PrepareBridgePage
-                    onOpenSettings={() => setIsSettingsModalOpen(true)}
-                  />
-                </>
-              }
-            />
-            <Route
-              path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}
-              element={
-                <>
-                  <Content>
-                    <AwaitingSignatures />
-                  </Content>
-                  <Footer>
-                    <AwaitingSignaturesCancelButton />
-                  </Footer>
-                </>
-              }
-            />
-          </Routes>
-        </CompatRouter>
+        <Routes>
+          <Route
+            path={CROSS_CHAIN_SWAP_ROUTE + PREPARE_SWAP_ROUTE}
+            element={
+              <>
+                <BridgeTransactionSettingsModal
+                  isOpen={isSettingsModalOpen}
+                  onClose={() => {
+                    setIsSettingsModalOpen(false);
+                  }}
+                />
+                <PrepareBridgePage
+                  onOpenSettings={() => setIsSettingsModalOpen(true)}
+                />
+              </>
+            }
+          />
+          <Route
+            path={CROSS_CHAIN_SWAP_ROUTE + AWAITING_SIGNATURES_ROUTE}
+            element={
+              <>
+                <Content>
+                  <AwaitingSignatures />
+                </Content>
+                <Footer>
+                  <AwaitingSignaturesCancelButton />
+                </Footer>
+              </>
+            }
+          />
+        </Routes>
       </Content>
     </Page>
   );

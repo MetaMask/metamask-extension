@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
 import { isSolanaChainId, isBitcoinChainId } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
@@ -17,6 +16,7 @@ import {
   getIsStxEnabled,
 } from '../../../ducks/bridge/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
+import { useSafeNavigation } from '../../../hooks/useSafeNavigation';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
@@ -52,7 +52,7 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const navigate = useNavigate();
+  const { navigate } = useSafeNavigation();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
