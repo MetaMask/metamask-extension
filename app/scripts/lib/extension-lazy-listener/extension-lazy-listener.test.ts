@@ -41,7 +41,7 @@ class MockEvent
     // copy to tolerate mutation (e.g., removing listener mid-iteration)
     const current = [...this.#listeners];
     for (const l of current) {
-      l(...(args as never[]));
+      l(...args);
     }
   };
 }

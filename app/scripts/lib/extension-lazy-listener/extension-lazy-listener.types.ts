@@ -74,15 +74,10 @@ export type Listener = (...args: Args) => void;
 
 /**
  * Supertype of all function types.
- *
- * Counterintuitively, the parameters have to be typed as `never`.
- * This is because function types are contravariant over their parameter types.
- *
- * Any callback is assignable to (or can be passed into) a variable or parameter of type `CallbackConstraint`.
- * However, when invoking a variable of type `CallbackConstraint`, its arguments need to be cast as `never`.
- * This is inaccurate but type-safe, since the casting doesn't affect downstream code (that is internal to the invoked function).
  */
-export type CallbackConstraint = (...args: never[]) => void;
+// This is a type-safe usage of `any` that doesn't pollute downstream types.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type CallbackConstraint = (...args: any[]) => void;
 
 /**
  * Generic browser interface type.
