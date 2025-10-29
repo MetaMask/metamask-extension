@@ -4,6 +4,7 @@ import { fetchAssetMetadata } from '../asset-utils';
 import {
   getPeriodFrequencyValueTranslationKey,
 } from './time-utils';
+import log from 'loglevel';
 
 // Token info type used across helpers
 export type GatorTokenInfo = { symbol: string; decimals: number };
@@ -88,7 +89,12 @@ export async function fetchGatorErc20TokenInfo(
           }
         }
         symbol = details?.symbol ?? symbol;
-      } catch (_e) {
+      } catch (error) {
+        log.error('Failed to fetch token details from blockchain', {
+          address,
+          chainId,
+          error: error instanceof Error ? error.message : String(error),
+        });
         // ignore and keep fallbacks
       }
     }
