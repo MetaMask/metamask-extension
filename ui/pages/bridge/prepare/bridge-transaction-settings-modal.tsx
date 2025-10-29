@@ -32,7 +32,10 @@ import { setSlippage } from '../../../ducks/bridge/actions';
 import { SlippageValue } from '../utils/slippage-service';
 import { Column, Row, Tooltip } from '../layout';
 
-const HARDCODED_SLIPPAGE_OPTIONS = [SlippageValue.EvmStablecoin, SlippageValue.BridgeDefault];
+const HARDCODED_SLIPPAGE_OPTIONS = [
+  SlippageValue.EvmStablecoin,
+  SlippageValue.BridgeDefault,
+];
 
 export const BridgeTransactionSettingsModal = ({
   onClose,
