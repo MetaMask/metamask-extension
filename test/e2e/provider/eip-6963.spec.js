@@ -13,7 +13,7 @@ describe('EIP-6963 Provider', function () {
   it('should respond to the request provider event', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

@@ -2463,10 +2463,6 @@
   "from": {
     "message": "自"
   },
-  "fromAddress": {
-    "message": "从：$1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "从代币列表：$1"
   },
@@ -2757,32 +2753,11 @@
   "importNFTTokenIdToolTip": {
     "message": "NFT的ID是唯一标识符，因为所有NFT都是独一无二的。同样，在OpenSea上，此数字位于“详情”下方。记下它，或将它复制到剪贴板上。"
   },
-  "importNWordSRP": {
-    "message": "我有 $1 个单词组成的助记词",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "私钥"
   },
-  "importSRPDescription": {
-    "message": "通过您的 12 个或 24 个单词私钥助记词导入现有钱包。"
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "私钥助记词包含 12 个或 24 个单词"
-  },
-  "importSRPWordError": {
-    "message": "单词 $1 不正确或拼写错误。",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "单词 $1 和 $2 不正确或拼写错误。",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "导入私钥助记词"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "出现未知错误。"
   },
   "importSelectedTokens": {
     "message": "要导入所选代币吗？"
@@ -2801,9 +2776,6 @@
   },
   "importTokensError": {
     "message": "我们无法导入代币。请稍后再试。"
-  },
-  "importWallet": {
-    "message": "导入钱包"
   },
   "importWalletOrAccountHeader": {
     "message": "导入钱包或账户"
@@ -6598,10 +6570,6 @@
   },
   "to": {
     "message": "至"
-  },
-  "toAddress": {
-    "message": "至：$1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "我们使用 4byte.directory 和 Sourcify 服务来解码和显示更易读的交易数据。这可以帮助您了解待定交易和过去交易的结果，但可能会导致您的 IP 地址共享。"

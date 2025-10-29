@@ -2463,10 +2463,6 @@
   "from": {
     "message": "Từ"
   },
-  "fromAddress": {
-    "message": "Từ: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "Từ danh sách token: $1"
   },
@@ -2757,32 +2753,11 @@
   "importNFTTokenIdToolTip": {
     "message": "ID của NFT là một mã nhận dạng duy nhất vì không có hai NFT nào giống hệt nhau. Một lần nữa, trên OpenSea, mã số này nằm bên dưới mục \"Chi tiết\". Hãy ghi chú lại hoặc sao chép vào bộ nhớ đệm."
   },
-  "importNWordSRP": {
-    "message": "Tôi có cụm từ khôi phục gồm $1 từ",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Khóa riêng tư"
   },
-  "importSRPDescription": {
-    "message": "Nhập ví hiện có bằng cụm từ khôi phục gồm 12 hoặc 24 từ của bạn."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Cụm từ khôi phục bí mật gồm 12 hoặc 24 từ"
-  },
-  "importSRPWordError": {
-    "message": "Từ $1 không đúng hoặc sai chính tả.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Từ $1 và $2 không đúng hoặc sai chính tả.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Nhập Cụm từ khôi phục bí mật"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Đã xảy ra lỗi không xác định."
   },
   "importSelectedTokens": {
     "message": "Nhập các token đã chọn?"
@@ -2801,9 +2776,6 @@
   },
   "importTokensError": {
     "message": "Chúng tôi không thể nhập token. Vui lòng thử lại sau."
-  },
-  "importWallet": {
-    "message": "Nhập ví"
   },
   "importWalletOrAccountHeader": {
     "message": "Nhập ví hoặc tài khoản"
@@ -6598,10 +6570,6 @@
   },
   "to": {
     "message": "Đến"
-  },
-  "toAddress": {
-    "message": "Đến: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "Chúng tôi sử dụng các dịch vụ 4byte.directory và Sourcify để giải mã và hiển thị dữ liệu giao dịch dễ đọc hơn. Điều này giúp bạn hiểu rõ kết quả của các giao dịch đang chờ xử lý và đã thực hiện, nhưng có thể dẫn đến việc địa chỉ IP của bạn được chia sẻ."

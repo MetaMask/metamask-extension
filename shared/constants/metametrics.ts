@@ -761,9 +761,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseRevealed = 'SRP Revealed',
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
-  OnboardingWalletAdvancedSettings = 'Settings Updated',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
-  OnboardingTwitterClick = 'External Link Clicked',
   OnrampProviderSelected = 'On-ramp Provider Selected',
   PasswordChanged = 'Password Changed',
   ForgotPasswordClicked = 'Forgot Password Clicked',
@@ -847,7 +845,7 @@ export enum MetaMetricsEventName {
   RehydrationPasswordAttempted = 'Rehydration Password Attempted',
   RehydrationCompleted = 'Rehydration Completed',
   RehydrationPasswordFailed = 'Rehydration Password Failed',
-  // BEGIN:ONLY_INCLUDE_IF(build-flask)
+  // BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   // END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
@@ -923,13 +921,7 @@ export enum MetaMetricsEventName {
   // Send
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  sendAssetSelected = 'Send Asset Selected',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   sendFlowExited = 'Send Flow Exited',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  sendRecipientSelected = 'Send Recipient Selected',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   sendSwapQuoteError = 'Send Swap Quote Error',
@@ -950,6 +942,8 @@ export enum MetaMetricsEventName {
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
   ExtensionPinned = 'Extension Pinned',
+  // Extension Port Stream
+  PortStreamChunked = 'Port Stream Chunked',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1013,6 +1007,7 @@ export enum MetaMetricsEventCategory {
   Wallet = 'Wallet',
   Confirmations = 'Confirmations',
   CrossChainSwaps = 'Cross Chain Swaps',
+  PortStream = 'Port Stream',
 }
 
 export enum MetaMetricsEventLinkType {

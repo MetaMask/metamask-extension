@@ -60,6 +60,7 @@ async function start(): Promise<void> {
     HEAD_COMMIT_HASH,
     MERGE_BASE_COMMIT_HASH,
     HOST_URL,
+    LAVAMOAT_POLICY_CHANGED,
   } = process.env as Record<string, string>;
 
   if (!PR_NUMBER) {
@@ -155,9 +156,14 @@ async function start(): Promise<void> {
 
   const allArtifactsUrl = `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}#artifacts`;
 
-  const contentRows = [
-    ...buildContentRows,
-    `build viz: ${depVizLink}`,
+  const contentRows = [...buildContentRows];
+
+  // Only show lavamoat build viz link if the policy files changed
+  if (LAVAMOAT_POLICY_CHANGED === 'true') {
+    contentRows.push(`lavamoat build viz: ${depVizLink}`);
+  }
+
+  contentRows.push(
     `bundle size: ${bundleSizeStatsLink}`,
     `user-actions-benchmark: ${userActionsStatsLink}`,
     `storybook: ${storybookLink}`,
@@ -167,7 +173,8 @@ async function start(): Promise<void> {
        <summary>bundle viz:</summary>
        ${bundleMarkup}
      </details>`,
-  ];
+  );
+
   const hiddenContent = `<ul>${contentRows
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;

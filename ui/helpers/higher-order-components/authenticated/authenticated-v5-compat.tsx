@@ -43,4 +43,3 @@ const AuthenticatedV5Compat = ({ children }: AuthenticatedV5CompatProps) => {
 };
 
 export default AuthenticatedV5Compat;
-
