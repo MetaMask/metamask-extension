@@ -12,6 +12,11 @@ import {
   LINEA_MAINNET_DISPLAY_NAME,
   LOCALHOST_DISPLAY_NAME,
   MAINNET_DISPLAY_NAME,
+  ARBITRUM_DISPLAY_NAME,
+  BSC_DISPLAY_NAME,
+  POLYGON_DISPLAY_NAME,
+  OPTIMISM_DISPLAY_NAME,
+  SEI_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import Homepage from '../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
@@ -347,7 +352,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(4);
+        await sitePermissionPage.checkConnectedNetworksNumber(9);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -356,6 +361,11 @@ describe('Multiple Standard Dapp Connections', function () {
             MAINNET_DISPLAY_NAME,
             LINEA_MAINNET_DISPLAY_NAME,
             BASE_DISPLAY_NAME,
+            ARBITRUM_DISPLAY_NAME,
+            BSC_DISPLAY_NAME,
+            POLYGON_DISPLAY_NAME,
+            OPTIMISM_DISPLAY_NAME,
+            SEI_DISPLAY_NAME,
             'Solana',
           ],
           [EVM_ACCOUNT_LABEL_ONE, SOLANA_ACCOUNT_LABEL_ONE],
@@ -416,7 +426,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(4);
+        await sitePermissionPage.checkConnectedNetworksNumber(9);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -425,6 +435,11 @@ describe('Multiple Standard Dapp Connections', function () {
             MAINNET_DISPLAY_NAME,
             LINEA_MAINNET_DISPLAY_NAME,
             BASE_DISPLAY_NAME,
+            ARBITRUM_DISPLAY_NAME,
+            BSC_DISPLAY_NAME,
+            POLYGON_DISPLAY_NAME,
+            OPTIMISM_DISPLAY_NAME,
+            SEI_DISPLAY_NAME,
             'Solana',
           ],
           [EVM_ACCOUNT_LABEL_TWO, SOLANA_ACCOUNT_LABEL_ONE],
