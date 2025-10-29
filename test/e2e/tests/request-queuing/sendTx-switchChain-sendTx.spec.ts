@@ -16,7 +16,7 @@ describe('Request Queuing Send Tx -> SwitchChain -> SendTx', function (this: Sui
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()

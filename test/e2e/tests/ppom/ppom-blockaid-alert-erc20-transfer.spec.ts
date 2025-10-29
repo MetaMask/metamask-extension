@@ -81,7 +81,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer', function (this: Suite
     // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkController({
             selectedNetworkClientId: 'networkConfigurationId',

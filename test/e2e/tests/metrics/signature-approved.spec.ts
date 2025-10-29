@@ -71,7 +71,7 @@ describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData_v4', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
@@ -130,7 +130,7 @@ describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData_v3', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
@@ -183,7 +183,7 @@ describe('Signature Approved Event', function () {
   it('Successfully tracked for signTypedData', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
@@ -236,7 +236,7 @@ describe('Signature Approved Event', function () {
   it('Successfully tracked for personalSign', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withMetaMetricsController({
