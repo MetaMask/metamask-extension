@@ -560,6 +560,7 @@ and we'll take you to the right place.`
         const rawUrl =
           'https://link.metamask.io/home?foo=0&foo=1&bar=2&baz=3&sig_params=foo,bar';
         const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl, false);
+
         await driver.openNewURL(signedUrl);
         const deepLink = new DeepLink(driver);
         await deepLink.checkPageIsLoaded();
