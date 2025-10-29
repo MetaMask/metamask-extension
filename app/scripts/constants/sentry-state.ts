@@ -270,6 +270,14 @@ export const SENTRY_BACKGROUND_STATE = {
     remoteFeatureFlags: true,
     cacheTimestamp: false,
   },
+  RewardsController: {
+    rewardsActiveAccount: false,
+    rewardsAccounts: false,
+    rewardsSubscriptions: false,
+    rewardsSeasons: false,
+    rewardsSeasonStatuses: false,
+    rewardsSubscriptionTokens: false,
+  },
   NotificationServicesPushController: {
     fcmToken: false,
   },
