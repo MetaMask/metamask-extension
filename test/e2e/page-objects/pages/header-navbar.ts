@@ -47,7 +47,7 @@ class HeaderNavbar {
     '[data-testid="connected-site-popover-network-button"]';
 
   private readonly networkAddressesLink =
-   '[data-testid="networks-subtitle-test-id"]'
+    '[data-testid="networks-subtitle-test-id"]';
 
   private readonly networkOption = (networkId: string) =>
     `[data-testid="${networkId}"]`;
