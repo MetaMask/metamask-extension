@@ -8,7 +8,12 @@ import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import { getMockConfirmState } from '../../../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 import { useInsufficientBalanceAlerts } from './useInsufficientBalanceAlerts';
+
+jest.mock('../../gas/useIsGaslessSupported');
+
+const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
 
 const TRANSACTION_ID_MOCK = '123-456';
 const TRANSACTION_ID_MOCK_2 = '456-789';
@@ -107,10 +112,35 @@ function runHook(
 describe('useInsufficientBalanceAlerts', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: false,
+    });
   });
 
   it('returns no alerts if no confirmation', () => {
     expect(runHook()).toEqual([]);
+  });
+
+  it('returns no alerts if transaction is gas fee sponsored and gasless transactions are supported', () => {
+    useIsGaslessSupportedMock.mockReturnValue({
+      isSmartTransaction: false,
+      isSupported: true,
+    });
+
+    const alerts = runHook({
+      balance: 7,
+      currentConfirmation: {
+        ...TRANSACTION_MOCK,
+        isGasFeeSponsored: true,
+      },
+      transaction: {
+        ...TRANSACTION_MOCK,
+        isGasFeeSponsored: true,
+      },
+    });
+
+    expect(alerts).toEqual([]);
   });
 
   it('returns no alerts if no transaction matching confirmation', () => {

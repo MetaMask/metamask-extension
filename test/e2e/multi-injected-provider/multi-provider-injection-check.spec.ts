@@ -7,7 +7,7 @@ describe('Multi injected provider interactions', function () {
   it('should check for multiple providers', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
