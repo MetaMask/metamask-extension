@@ -1,9 +1,7 @@
 import { strict as assert } from 'assert';
-import { MockttpServer } from 'mockttp';
 import { withFixtures, getEventPayloads } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixture-builder';
-import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { MOCK_META_METRICS_ID } from '../../../constants';
 import Homepage from '../../../page-objects/pages/home/homepage';
@@ -11,26 +9,10 @@ import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
-async function mockedNftRemoved(mockServer: MockttpServer) {
-  return await mockServer
-    .forPost('https://api.segment.io/v1/batch')
-    .withJsonBodyIncluding({
-      batch: [{ type: 'track', event: MetaMetricsEventName.NFTRemoved }],
-    })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-      };
-    });
-}
-
 describe('Remove NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
 
   it('user should be able to remove ERC721 NFT on details page and removeNft event should be emitted', async function () {
-    async function mockSegment(mockServer: MockttpServer) {
-      return [await mockedNftRemoved(mockServer)];
-    }
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -43,7 +25,6 @@ describe('Remove NFT', function () {
           .build(),
         smartContract,
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
       },
       async ({
         driver,
