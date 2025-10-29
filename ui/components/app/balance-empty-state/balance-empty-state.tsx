@@ -24,9 +24,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import useRamps, {
-  RampsMetaMaskEntry,
-} from '../../../hooks/ramps/useRamps/useRamps';
+
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 
@@ -58,8 +56,6 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = ({
   const { nickname } = useSelector(getMultichainCurrentNetwork);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const { openBuyCryptoInPdapp } = useRamps(RampsMetaMaskEntry.TokensBanner);
 
   // Track when component is displayed
   useEffect(() => {
