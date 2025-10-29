@@ -149,14 +149,10 @@ export const BridgeCTAButton = ({
           }
         }
       }}
-      loading={isSubmitting}
+      loading={isSubmitting || isLoading}
       disabled={
-        // If there are validation errors for the recommended quote,
-        // disable submission until all other quotes have been fetched
-        (isLoading &&
-          (isInsufficientGasBalance ||
-            isTxAlertPresent ||
-            isEstimatedReturnLow)) ||
+        // Disable submission until all quotes have been fetched
+        isLoading ||
         !isTxSubmittable ||
         isTxAlertPresent ||
         isQuoteExpired ||
