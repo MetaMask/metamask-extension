@@ -696,7 +696,7 @@ export enum MetaMetricsEventName {
   BannerSelect = 'Banner Select',
   BridgeLinkClicked = 'Bridge Link Clicked',
   SwapLinkClicked = 'Swap Link Clicked',
-  CurrentCurrency = 'Current Currency',
+  CurrentCurrency = 'Selected Currency Changed',
   DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',

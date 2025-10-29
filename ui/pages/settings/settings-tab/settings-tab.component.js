@@ -125,6 +125,7 @@ export default class SettingsTab extends PureComponent {
                   event: MetaMetricsEventName.CurrentCurrency,
                   properties: {
                     current_currency: newCurrency,
+                    location: 'settings-page',
                   },
                 });
               }}
