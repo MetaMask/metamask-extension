@@ -110,7 +110,6 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
-        canTrackWalletFundsObtained: true,
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
         recoveryPhraseReminderHasBeenShown: true,

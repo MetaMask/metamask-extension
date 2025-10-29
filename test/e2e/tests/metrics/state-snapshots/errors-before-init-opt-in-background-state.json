@@ -35,7 +35,6 @@
       "termsOfUseLastAgreed": "number",
       "defaultHomeActiveTabName": null,
       "fullScreenGasPollTokens": "object",
-      "canTrackWalletFundsObtained": true,
       "notificationGasPollTokens": "object",
       "popupGasPollTokens": "object",
       "recoveryPhraseReminderHasBeenShown": true,
