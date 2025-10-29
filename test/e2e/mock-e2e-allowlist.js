@@ -10,10 +10,6 @@ const ALLOWLISTED_URLS = [
   'https://metamask.github.io/ledger-iframe-bridge/8.0.3/',
   'https://metamask.github.io/ledger-iframe-bridge/8.0.3/assets/index-j_SGnqki.js',
   'https://metamask.github.io/ledger-iframe-bridge/8.0.3/assets/vendor-BlXVsT1S.js',
-  'https://metamask.github.io/snaps/test-snaps/2.28.1',
-  'https://metamask.github.io/snaps/test-snaps/2.28.1/',
-  'https://metamask.github.io/snaps/test-snaps/2.28.1/main.js',
-  'https://metamask.github.io/snaps/test-snaps/2.28.1/test-data.json',
   // Vault Decryptor
   'https://metamask.github.io/vault-decryptor',
   'https://metamask.github.io/vault-decryptor/',
