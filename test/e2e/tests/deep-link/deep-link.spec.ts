@@ -126,11 +126,39 @@ describe('Deep Link', function () {
           // note: we sign the "/INVALID" link as well, as signed links that no
           // longer exist/match should be treated handled the same way as
           // unsigned links. We test for this below.
-          const preparedUrl = isSigned
-            ? await signDeepLink(keyPair.privateKey, rawUrl, withSigParams)
-            : rawUrl;
+          const preparedUrl = new URL(
+            isSigned
+              ? await signDeepLink(keyPair.privateKey, rawUrl, withSigParams)
+              : rawUrl,
+          );
+
+          // Validate URL signature
+          if (isSigned && withSigParams) {
+            assert.equal(
+              preparedUrl.searchParams.has('sig_params'),
+              true,
+              'signed with sig_params URLs must include sig_params',
+            );
+            assert.equal(
+              preparedUrl.searchParams.has('sig'),
+              true,
+              'signed URLs must include sig',
+            );
+          } else if (isSigned && !withSigParams) {
+            assert.equal(
+              preparedUrl.searchParams.has('sig_params'),
+              false,
+              'signed without sig_params URLs must NOT include sig_params',
+            );
+            assert.equal(
+              preparedUrl.searchParams.has('sig'),
+              true,
+              'signed URLs must include sig',
+            );
+          }
+
           console.log('Opening deep link URL');
-          await driver.openNewURL(preparedUrl);
+          await driver.openNewURL(preparedUrl.toString());
 
           const deepLink = new DeepLink(driver);
           console.log('Checking if deep link page is loaded');
