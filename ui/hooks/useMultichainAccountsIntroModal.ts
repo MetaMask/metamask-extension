@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import semver from 'semver';
+import { lt as semverLt } from 'semver';
 import { useAppSelector } from '../store/store';
 import { getIsMultichainAccountsState2Enabled } from '../selectors/multichain-accounts/feature-flags';
 import { getLastUpdatedFromVersion } from '../selectors/selectors';
@@ -38,9 +38,7 @@ export function useMultichainAccountsIntroModal(
 
     // Check if this is an upgrade from a version lower than 13.5.0
     const isUpgradeFromLowerThanBip44Version = Boolean(
-      lastUpdatedFromVersion &&
-      semver.valid(semver.coerce(lastUpdatedFromVersion)) &&
-      semver.lt(semver.coerce(lastUpdatedFromVersion)!, '13.5.0')
+      lastUpdatedFromVersion && semverLt(lastUpdatedFromVersion, '13.5.0'),
     );
 
     // Show modal only for upgrades from versions < 13.5.0
