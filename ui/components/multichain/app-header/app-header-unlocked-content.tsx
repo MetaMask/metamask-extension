@@ -310,7 +310,9 @@ export const AppHeaderUnlockedContent = ({
     return (
       <>
         <div ref={tourAnchorRef} className="flex">
-          <PreferredAvatar address={internalAccount.address} />
+          {internalAccount && (
+            <PreferredAvatar address={internalAccount.address} />
+          )}
         </div>
 
         {internalAccount && (
