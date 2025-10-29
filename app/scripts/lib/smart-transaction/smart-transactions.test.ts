@@ -257,19 +257,27 @@ describe('submitSmartTransactionHook', () => {
     });
   });
 
-  it('falls back to regular transaction submit if /getFees throws an error', async () => {
-    withRequest(async ({ request, endFlowSpy }) => {
-      jest
-        .spyOn(request.smartTransactionsController, 'getFees')
-        .mockImplementation(() => {
-          throw new Error('Backend call to /getFees failed');
+  it('falls back to regular transaction submit if the transaction is unsigned and /getFees throws an error', async () => {
+    withRequest(
+      {
+        options: {
+          signedTransactionInHex: undefined,
+        },
+      },
+      async ({ request, endFlowSpy }) => {
+        jest
+          .spyOn(request.smartTransactionsController, 'getFees')
+          .mockImplementation(() => {
+            throw new Error('Backend call to /getFees failed');
+          });
+        const result = await submitSmartTransactionHook(request);
+        expect(request.smartTransactionsController.getFees).toHaveBeenCalled();
+        expect(endFlowSpy).toHaveBeenCalledWith({
+          id: 'approvalId',
         });
-      const result = await submitSmartTransactionHook(request);
-      expect(endFlowSpy).toHaveBeenCalledWith({
-        id: 'approvalId',
-      });
-      expect(result).toEqual({ transactionHash: undefined });
-    });
+        expect(result).toEqual({ transactionHash: undefined });
+      },
+    );
   });
 
   it('returns a txHash asap if the feature flag requires it', async () => {
