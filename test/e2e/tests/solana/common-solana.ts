@@ -173,6 +173,41 @@ export async function mockPriceApiSpotPriceSolanaUsdc(mockServer: Mockttp) {
       };
     });
 }
+export async function mockPriceApiNative(mockServer: Mockttp) {
+  return await mockServer
+    .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+    .withQuery({
+      tokenAddresses: '0x0000000000000000000000000000000000000000',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          '0x0000000000000000000000000000000000000000': {
+            id: 'ethereum',
+            price: 0.999117772642222,
+            marketCap: 120730309.278268,
+            allTimeHigh: 1.24053260919415,
+            allTimeLow: 0.000108596671808063,
+            totalVolume: 9010559.46688706,
+            high1d: 1.04615771175613,
+            low1d: 0.989917959436686,
+            circulatingSupply: 120698129.773088,
+            dilutedMarketCap: 120730309.278268,
+            marketCapPercentChange1d: -3.34335,
+            priceChange1d: -140.536403039107,
+            pricePercentChange1h: -0.127159732673363,
+            pricePercentChange1d: -3.40772116422561,
+            pricePercentChange7d: 0.946312983866069,
+            pricePercentChange14d: -3.47111933351513,
+            pricePercentChange30d: -3.63371831966747,
+            pricePercentChange200d: 153.231041911147,
+            pricePercentChange1y: 54.625598917999,
+          },
+        },
+      };
+    });
+}
 
 export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
   return await mockServer.forGet(SPOT_PRICE_API).thenCallback(() => {
