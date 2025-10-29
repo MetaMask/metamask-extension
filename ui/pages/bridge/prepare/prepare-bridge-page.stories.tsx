@@ -79,7 +79,7 @@ const mockBridgeSlice = {
   fromTokenInputValue: '1',
 };
 export const DefaultStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 DefaultStory.storyName = 'Default';
 DefaultStory.decorators = [
@@ -129,7 +129,7 @@ DefaultStory.decorators = [
 ];
 
 export const LoadingStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 LoadingStory.storyName = 'Loading Quotes';
 LoadingStory.decorators = [
@@ -180,7 +180,7 @@ LoadingStory.decorators = [
 ];
 
 export const NoQuotesStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 NoQuotesStory.storyName = 'No Quotes';
 NoQuotesStory.decorators = [
@@ -235,7 +235,7 @@ NoQuotesStory.decorators = [
 ];
 
 export const QuotesFetchedStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 QuotesFetchedStory.storyName = 'Quotes Available';
 QuotesFetchedStory.decorators = [
@@ -290,7 +290,7 @@ const mockHardwareAccount = createMockInternalAccount({
   keyringType: KeyringTypes.ledger,
 });
 export const AlertsPresentStory = () => {
-  return <CrossChainSwap />;
+  return <CrossChainSwap location={{ search: '' }} />;
 };
 AlertsPresentStory.storyName = 'Alerts present';
 AlertsPresentStory.decorators = [

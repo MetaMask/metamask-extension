@@ -1,11 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Route,
-  Routes,
-  useNavigate,
-  useLocation,
-} from 'react-router-dom-v5-compat';
+import { Route, Routes, useNavigate } from 'react-router-dom-v5-compat';
 import {
   UnifiedSwapBridgeEventName,
   // TODO: update this with all non-EVM chains when bitcoin added.
@@ -51,7 +46,13 @@ import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signa
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 
-const CrossChainSwap = () => {
+type CrossChainSwapProps = {
+  location?: {
+    search?: string;
+  };
+};
+
+const CrossChainSwap = ({ location }: CrossChainSwapProps) => {
   const t = useContext(I18nContext);
 
   // Load swaps feature flags so that we can use smart transactions
@@ -61,9 +62,9 @@ const CrossChainSwap = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { search } = useLocation();
+  const { search } = location ?? {};
 
-  const isFromTransactionShield = new URLSearchParams(search).get(
+  const isFromTransactionShield = new URLSearchParams(search || '').get(
     'isFromTransactionShield',
   );
 
