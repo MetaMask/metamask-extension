@@ -320,6 +320,7 @@
     "rewardsSubscriptionTokens": "object",
     "rewardsSubscriptions": "object"
   },
+  "RewardsDataService": "undefined",
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "ShieldController": "object",
