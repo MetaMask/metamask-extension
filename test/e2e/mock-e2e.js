@@ -172,8 +172,18 @@ async function setupMocking(
     },
   });
 
-  const mockedEndpoint = await testSpecificMock(server);
-  // Mocks below this line can be overridden by test-specific mocks
+  // Global subscription mocks - these provide defaults but can be overridden by test-specific mocks
+  await server
+    .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          subscriptions: [],
+          trialedProducts: [],
+        },
+      };
+    });
 
   await server
     .forGet(
@@ -185,6 +195,9 @@ async function setupMocking(
         json: [],
       };
     });
+
+  const mockedEndpoint = await testSpecificMock(server);
+  // Mocks below this line can be overridden by test-specific mocks
 
   // User Profile Lineage
   await server
