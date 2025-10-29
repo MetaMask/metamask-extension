@@ -114,20 +114,26 @@ export const MultichainAccountList = ({
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
   const permittedAddresses = useMemo(
     () =>
-      permittedAccounts.map(
-        (caipAccountId) => parseCaipAccountId(caipAccountId).address,
-      ),
-    [permittedAccounts],
+      showConnectionStatus
+        ? permittedAccounts.map(
+            (caipAccountId) => parseCaipAccountId(caipAccountId).address,
+          )
+        : [],
+    [permittedAccounts, showConnectionStatus],
   );
 
-  const connectedAccountGroups = useSelector(
+  // Memoize selector to avoid recreating it on every render
+  const selectConnectedAccountGroups = useCallback(
     (state: MultichainAccountsState) => {
-      if (!showConnectionStatus) {
+      if (!showConnectionStatus || permittedAddresses.length === 0) {
         return [];
       }
       return getAccountGroupsByAddress(state, permittedAddresses);
     },
+    [showConnectionStatus, permittedAddresses],
   );
+
+  const connectedAccountGroups = useSelector(selectConnectedAccountGroups);
   const [isHiddenAccountsExpanded, setIsHiddenAccountsExpanded] =
     useState(false);
 
