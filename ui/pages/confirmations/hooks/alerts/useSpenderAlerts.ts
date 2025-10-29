@@ -71,7 +71,7 @@ export function useSpenderAlerts(): Alert[] {
   const { state: trustSignalDisplayState } = useTrustSignal(
     spenderAddress || '',
     NameType.ETHEREUM_ADDRESS,
-    currentConfirmation.chainId,
+    currentConfirmation?.chainId,
   );
 
   return useMemo(() => {
