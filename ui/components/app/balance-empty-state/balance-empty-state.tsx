@@ -111,15 +111,10 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = ({
       {...props}
       className={twMerge('rounded-lg', props.className)}
     >
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
-        gap={1}
-      >
+      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
         <Box
+          flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
-          justifyContent={BoxJustifyContent.Center}
         >
           <img
             src="./images/bank-transfer.png"
