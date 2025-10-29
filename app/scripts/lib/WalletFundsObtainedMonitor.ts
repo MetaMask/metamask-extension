@@ -1,4 +1,4 @@
-import { RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import type {
   TokenBalancesControllerGetStateAction,
   MultichainBalancesControllerGetStateAction,
@@ -30,12 +30,10 @@ type WalletFundsObtainedMonitorAllowedActions =
   | NotificationServicesControllerGetStateAction
   | AppStateControllerSetCanTrackWalletFundsObtainedAction;
 
-export type WalletFundsObtainedMonitorMessenger = RestrictedMessenger<
+export type WalletFundsObtainedMonitorMessenger = Messenger<
   'WalletFundsObtainedMonitor',
   WalletFundsObtainedMonitorAllowedActions,
-  WalletFundsObtainedMonitorAllowedEvents,
-  WalletFundsObtainedMonitorAllowedActions['type'],
-  WalletFundsObtainedMonitorAllowedEvents['type']
+  WalletFundsObtainedMonitorAllowedEvents
 >;
 
 /**
