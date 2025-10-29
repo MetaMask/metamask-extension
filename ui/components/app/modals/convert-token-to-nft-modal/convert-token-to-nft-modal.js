@@ -34,9 +34,7 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
             }),
           );
           const { tokenId } = tokenAddedAsNFT;
-          navigate({
-            pathname: `${ASSET_ROUTE}/${tokenAddress}/${tokenId}`,
-          });
+          navigate(`${ASSET_ROUTE}/${tokenAddress}/${tokenId}`);
         } else {
           dispatch(
             showImportNftsModal({ tokenAddress, ignoreErc20Token: true }),
