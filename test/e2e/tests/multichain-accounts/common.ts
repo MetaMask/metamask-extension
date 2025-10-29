@@ -68,7 +68,7 @@ export async function withMultichainAccountsDesignEnabled(
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
       // State 2 uses unified account group balance (fiat) and may not equal '25 ETH'.
       // Skip strict balance validation for hardware wallets and state 2 flows.
-      if (accountType === AccountType.HardwareWallet || state === 2) {
+      if (accountType === AccountType.HardwareWallet) {
         await loginWithoutBalanceValidation(driver);
       } else {
         await loginWithBalanceValidation(driver);
