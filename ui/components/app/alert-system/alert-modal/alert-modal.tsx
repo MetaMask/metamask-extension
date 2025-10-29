@@ -396,7 +396,12 @@ export function AlertModal({
   }
 
   return (
-    <Modal isOpen onClose={handleClose} data-testid="alert-modal">
+    <Modal
+      isOpen
+      onClose={handleClose}
+      data-testid="alert-modal"
+      autoFocus={false}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader

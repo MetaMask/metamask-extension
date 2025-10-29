@@ -495,14 +495,6 @@ const controllerMetadata = {
     anonymous: false,
     usedInUi: true,
   },
-  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-  'preferences.useSidePanelAsDefault': {
-    includeInStateLogs: true,
-    persist: true,
-    anonymous: true,
-    usedInUi: true,
-  },
-  ///: END:ONLY_INCLUDE_IF
 };
 
 export class PreferencesController extends BaseController<
