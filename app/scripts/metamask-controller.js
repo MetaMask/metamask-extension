@@ -821,21 +821,22 @@ export default class MetamaskController extends EventEmitter {
       messenger: petnamesBridgeMessenger,
     }).init();
 
-    const walletFundsObtainedMonitorMessenger =
-      this.controllerMessenger.getRestricted({
-        name: 'WalletFundsObtainedMonitor',
-        allowedEvents: [
-          'NotificationServicesController:notificationsListUpdated',
-        ],
-        allowedActions: [
-          'MetaMetricsController:trackEvent',
-          'AppStateController:setCanTrackWalletFundsObtained',
-          'OnboardingController:getState',
-          'NotificationServicesController:getState',
-          'TokenBalancesController:getState',
-          'MultichainBalancesController:getState',
-        ],
-      });
+    const walletFundsObtainedMonitorMessenger = new Messenger({
+      namespace: 'WalletFundsObtainedMonitor',
+      parent: this.controllerMessenger,
+    });
+    this.controllerMessenger.delegate({
+      messenger: walletFundsObtainedMonitorMessenger,
+      events: ['NotificationServicesController:notificationsListUpdated'],
+      actions: [
+        'MetaMetricsController:trackEvent',
+        'AppStateController:setCanTrackWalletFundsObtained',
+        'OnboardingController:getState',
+        'NotificationServicesController:getState',
+        'TokenBalancesController:getState',
+        'MultichainBalancesController:getState',
+      ],
+    });
 
     this.walletFundsObtainedMonitor = new WalletFundsObtainedMonitor({
       messenger: walletFundsObtainedMonitorMessenger,
