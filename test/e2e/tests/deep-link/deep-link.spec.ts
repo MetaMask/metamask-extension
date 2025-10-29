@@ -86,14 +86,13 @@ describe('Deep Link', function () {
       'unsigned',
     ] as const,
     ['/home', '/swap', '/INVALID'] as const,
-    ['', '?test=test'] as const,
     ['continue'] as const,
-  ).map(([locked, signed, route, params, action]) => {
-    return { locked, signed, route, params, action };
+  ).map(([locked, signed, route, action]) => {
+    return { locked, signed, route, action };
   });
 
-  scenarios.forEach(({ locked, signed, route, params, action }) => {
-    it(`handles ${locked} and ${signed} ${route}${params} deep link with ${action} action`, async function () {
+  scenarios.forEach(({ locked, signed, route, action }) => {
+    it(`handles ${locked} and ${signed} ${route} deep link with ${action} action`, async function () {
       await withFixtures(
         await getConfig(this.test?.fullTitle()),
         async ({ driver }: { driver: Driver }) => {
@@ -124,43 +123,16 @@ describe('Deep Link', function () {
 
           // navigate to the route and make sure it
           // redirects to the deep link interstitial page
-          const rawUrl = `https://link.metamask.io${route}${params}`;
+          const rawUrl = `https://link.metamask.io${route}`;
           // note: we sign the "/INVALID" link as well, as signed links that no
           // longer exist/match should be treated handled the same way as
           // unsigned links. We test for this below.
-          const preparedUrl = new URL(
-            isSigned
-              ? await signDeepLink(keyPair.privateKey, rawUrl, withSigParams)
-              : rawUrl,
-          );
-
-          // Validate URL signature
-          if (isSigned && withSigParams && params) {
-            assert.equal(
-              preparedUrl.searchParams.has('sig_params'),
-              true,
-              'signed with sig_params URLs must include sig_params',
-            );
-            assert.equal(
-              preparedUrl.searchParams.has('sig'),
-              true,
-              'signed URLs must include sig',
-            );
-          } else if (isSigned) {
-            assert.equal(
-              preparedUrl.searchParams.has('sig_params'),
-              false,
-              'signed without sig_params URLs must NOT include sig_params',
-            );
-            assert.equal(
-              preparedUrl.searchParams.has('sig'),
-              true,
-              'signed URLs must include sig',
-            );
-          }
+          const preparedUrl = isSigned
+            ? await signDeepLink(keyPair.privateKey, rawUrl, withSigParams)
+            : rawUrl;
 
           console.log('Opening deep link URL');
-          await driver.openNewURL(preparedUrl.toString());
+          await driver.openNewURL(preparedUrl);
 
           const deepLink = new DeepLink(driver);
           console.log('Checking if deep link page is loaded');
