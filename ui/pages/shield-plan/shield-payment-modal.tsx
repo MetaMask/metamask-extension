@@ -43,6 +43,7 @@ import {
   ERC20Asset,
   NativeAsset,
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { SUBSCRIPTION_DEFAULT_PAYMENT_TOKEN } from '../../../shared/constants/subscriptions';
 
 export const ShieldPaymentModal = ({
   isOpen,
@@ -128,7 +129,9 @@ export const ShieldPaymentModal = ({
       ]);
     }
     // single token to display eg. Insufficient USDC
-    return t('shieldPlanNoFundsOneToken', [lastToken]);
+    return t('shieldPlanNoFundsOneToken', [
+      lastToken ?? SUBSCRIPTION_DEFAULT_PAYMENT_TOKEN,
+    ]);
   }, [tokensSupported, t]);
 
   return (
