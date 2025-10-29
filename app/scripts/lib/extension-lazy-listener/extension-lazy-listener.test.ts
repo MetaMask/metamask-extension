@@ -1,15 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /*
  * Tests for ExtensionLazyListener
  */
 import { Browser, Events, Runtime } from 'webextension-polyfill';
 import { ExtensionLazyListener } from './extension-lazy-listener';
-import { BrowserInterface, Entries } from './extension-lazy-listener.types';
-
-/**
- * A mock listener type just for testing.
- */
-type MockListener = (...args: any[]) => void;
+import {
+  BrowserInterface,
+  CallbackConstraint as MockListener,
+  Entries,
+} from './extension-lazy-listener.types';
 
 /**
  * A mock Events.Event implementation for testing.
@@ -17,7 +15,7 @@ type MockListener = (...args: any[]) => void;
  * e.g., `browser.runtime.onConnect` implements this sort of interface
  */
 class MockEvent
-  implements Partial<import('webextension-polyfill').Events.Event<any>>
+  implements Partial<import('webextension-polyfill').Events.Event<MockListener>>
 {
   #listeners: MockListener[] = [];
 
@@ -43,7 +41,7 @@ class MockEvent
     // copy to tolerate mutation (e.g., removing listener mid-iteration)
     const current = [...this.#listeners];
     for (const l of current) {
-      l(...args);
+      l(...(args as never[]));
     }
   };
 }
@@ -62,7 +60,7 @@ function buildMockBrowser<
     [Key in keyof MockBrowser]: {
       [EventName in MockBrowser[Key][number]]: MockEventsEvent;
     };
-  } = {} as any;
+  } = {} as never;
   for (const [namespace, events] of Object.entries(namespaces) as Entries) {
     // @ts-expect-error - dynamic assignment
     browser[namespace] = {};
@@ -108,7 +106,7 @@ describe('ExtensionLazyListener', () => {
     const lazy = new ExtensionLazyListener(browser, undefined, 150); // omit options
     browser.runtime.onMessage.trigger('pre2');
     // Add listener; neither pre nor pre2 should have been buffered
-    const received: any[] = [];
+    const received: unknown[] = [];
     lazy.addListener('runtime', 'onMessage', (...a) => received.push(a));
     expect(received).toEqual([]);
     browser.runtime.onMessage.trigger('live');
@@ -299,7 +297,7 @@ describe('ExtensionLazyListener', () => {
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onFoo'] });
     // Trigger onBar before adding a listener; should NOT be buffered
     browser.runtime.onBar.trigger('pre');
-    const received: any[] = [];
+    const received: unknown[] = [];
     lazy.addListener('runtime', 'onBar', (...a) => received.push(a));
     expect(received).toEqual([]);
     browser.runtime.onBar.trigger('post');
@@ -314,7 +312,7 @@ describe('ExtensionLazyListener', () => {
     // Only runtime.onFoo tracked
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onFoo'] });
     browser.tabs.onUpdated.trigger('pre');
-    const received: any[] = [];
+    const received: unknown[] = [];
     lazy.addListener('tabs', 'onUpdated', (...a) => received.push(a));
     expect(received).toEqual([]);
     browser.tabs.onUpdated.trigger('post');
@@ -326,7 +324,7 @@ describe('ExtensionLazyListener', () => {
     const lazy = new ExtensionLazyListener(browser, { runtime: ['onMessage'] });
     browser.runtime.onMessage.trigger('one');
     browser.runtime.onMessage.trigger('two'); // last buffered call
-    const received: any[] = [];
+    const received: unknown[] = [];
     const cb = jest.fn((v: string) => {
       received.push(v);
       if (v === 'two') {
@@ -337,7 +335,7 @@ describe('ExtensionLazyListener', () => {
     expect(received).toEqual(['one', 'two']);
     // Fire another event while no listener is attached and ensure it is NOT buffered
     browser.runtime.onMessage.trigger('gap');
-    const later: any[] = [];
+    const later: unknown[] = [];
     lazy.addListener('runtime', 'onMessage', (v: string) => later.push(v));
     // 'gap' should not appear because lazy listener was not re-added.
     expect(later).toEqual([]);
@@ -378,7 +376,7 @@ describe('ExtensionLazyListener', () => {
     expect(first).toEqual(['only']);
     // Second once should wait for a new emission (since tracker removed)
     const secondPromise = lazy.once('runtime', 'onInstalled');
-    let resolved: any[] | undefined;
+    let resolved: unknown[] | undefined;
     secondPromise.then((r) => (resolved = r));
     expect(resolved).toBeUndefined();
     browser.runtime.onInstalled.trigger('new');
@@ -407,7 +405,7 @@ describe('ExtensionLazyListener', () => {
     expect(spy.mock.calls[0][0]).toMatch(/2 buffered calls/u);
   });
 
-  it('constructor with empty options does not schedule any leak warnings', () => {
+  it('constructor with empty options does not schedule  leak warnings', () => {
     jest.useFakeTimers();
     const browser = buildMockBrowser({ runtime: ['onMessage'] });
     const instance = new ExtensionLazyListener(browser, {}, 200);
@@ -475,13 +473,17 @@ describe('ExtensionLazyListener', () => {
     it('`once` enforces types for tracked namespaces and events', () => {
       const instance = new ExtensionLazyListener(everyThingBrowser);
 
-      function onMessageGood(_args: [any, Runtime.MessageSender, () => void]) {
+      function onMessageGood(
+        _args: [unknown, Runtime.MessageSender, () => void],
+      ) {
         // intentionally empty
       }
       // this is valid
       instance.once('runtime', 'onMessage').then(onMessageGood);
 
-      function onMessageBad(_args: [any, 'not the right type', () => void]) {
+      function onMessageBad(
+        _args: [unknown, 'not the right type', () => void],
+      ) {
         // intentionally empty
       }
       // @ts-expect-error - onMessageBad is the wrong type
@@ -493,7 +495,7 @@ describe('ExtensionLazyListener', () => {
       const instance = new ExtensionLazyListener(everyThingBrowser);
 
       function onMessageGood(
-        _msg: any,
+        _msg: unknown,
         _sender: Runtime.MessageSender,
         _sendResponse: () => void,
       ) {
@@ -502,7 +504,7 @@ describe('ExtensionLazyListener', () => {
       // this is valid
       instance.addListener('runtime', 'onMessage', onMessageGood);
       function onMessageBad(
-        _msg: any,
+        _msg: unknown,
         _sender: 'not the right type',
         _sendResponse: () => void,
       ) {

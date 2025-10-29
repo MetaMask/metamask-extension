@@ -8,6 +8,7 @@ import {
   BrowserEventName,
   EventCallback,
   Entries,
+  CallbackConstraint,
 } from './extension-lazy-listener.types';
 
 type ListenerInfo = {
@@ -99,7 +100,7 @@ export class ExtensionLazyListener<
     // @ts-expect-error - we don't need valid types here, as we're just
     // doing this to cast to `Events.Event<...>`
     const event = this.#browser[namespace][eventName];
-    return event as Events.Event<(...args: unknown[]) => void>;
+    return event as Events.Event<CallbackConstraint>;
   }
 
   /**
@@ -138,7 +139,7 @@ export class ExtensionLazyListener<
         const { args } = tracker;
         for (let i = 0, { length } = args; i < length; i++) {
           try {
-            callback(...args[i]);
+            callback(...(args[i] as never[]));
 
             // if the application removed the listener during one of the
             // buffered calls, we need to stop flushing the rest of them.

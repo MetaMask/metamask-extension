@@ -11,13 +11,10 @@ export type BrowserEventName<
 > = Extract<
   {
     [EventKey in keyof Browser[Namespace]]: Browser[Namespace][EventKey] extends Events.Event<
-      infer Callback
+      infer Callback extends CallbackConstraint
     >
-      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        Callback extends (...args: any[]) => infer ReturnValue
-        ? ReturnValue extends void
-          ? EventKey
-          : never
+      ? void extends ReturnType<Callback>
+        ? EventKey
         : never
       : never;
   }[keyof Browser[Namespace]],
@@ -33,13 +30,10 @@ export type BrowserNamespace<Browser> = Extract<
   {
     [NamespaceKey in keyof Browser]: {
       [EventKey in keyof Browser[NamespaceKey]]: Browser[NamespaceKey][EventKey] extends Events.Event<
-        infer Callback
+        infer Callback extends CallbackConstraint
       >
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          Callback extends (...args: any[]) => infer ReturnValue
-          ? ReturnValue extends void
-            ? NamespaceKey
-            : never
+        ? void extends ReturnType<Callback>
+          ? NamespaceKey
           : never
         : never;
     }[keyof Browser[NamespaceKey]];
@@ -55,7 +49,9 @@ export type EventCallback<
   Namespace extends keyof BrowserType,
   EventName extends keyof BrowserType[Namespace],
 > =
-  BrowserType[Namespace][EventName] extends Events.Event<infer Callback>
+  BrowserType[Namespace][EventName] extends Events.Event<
+    infer Callback extends CallbackConstraint
+  >
     ? Callback
     : never;
 
@@ -75,6 +71,18 @@ export type Args = unknown[];
  * Event Listener function type.
  */
 export type Listener = (...args: Args) => void;
+
+/**
+ * Supertype of all function types.
+ *
+ * Counterintuitively, the parameters have to be typed as `never`.
+ * This is because function types are contravariant over their parameter types.
+ *
+ * Any callback is assignable to (or can be passed into) a variable or parameter of type `CallbackConstraint`.
+ * However, when invoking a variable of type `CallbackConstraint`, its arguments need to be cast as `never`.
+ * This is inaccurate but type-safe, since the casting doesn't affect downstream code (that is internal to the invoked function).
+ */
+export type CallbackConstraint = (...args: never[]) => void;
 
 /**
  * Generic browser interface type.
