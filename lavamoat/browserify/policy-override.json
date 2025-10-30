@@ -87,7 +87,11 @@
         "readline": false,
         "webkitAudioContext": false,
         "fetch": false,
-        "XMLHttpRequest": false
+        "XMLHttpRequest": false,
+        "document": false,
+        "documnet.createElement": true,
+        "navigator": false,
+        "navigator.userAgent": true
       }
     },
     "@rive-app/react-canvas": {
