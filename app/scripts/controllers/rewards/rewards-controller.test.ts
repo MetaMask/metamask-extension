@@ -29,13 +29,13 @@ import {
   RewardsControllerMessenger,
 } from '../../controller-init/messengers';
 import { getRootMessenger } from '../../lib/messenger';
+import { SeasonDtoState } from '../../../../shared/types/rewards';
 import {
   RewardsController,
   getRewardsControllerDefaultState,
   wrapWithCache,
   DEFAULT_BLOCKED_REGIONS,
 } from './rewards-controller';
-import { SeasonDtoState } from '../../../../shared/types/rewards';
 import type {
   RewardsControllerState,
   SeasonTierDto,
