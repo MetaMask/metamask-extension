@@ -13,6 +13,11 @@ import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { RewardsControllerMessenger } from '../../controller-init/messengers/rewards-controller-messenger';
 import { isHardwareAccount } from '../../../../shared/lib/accounts';
 import {
+  SeasonDtoState,
+  SeasonStatusState,
+  SeasonTierState,
+} from '../../../../shared/types/rewards';
+import {
   type RewardsControllerState,
   type RewardsAccountState,
   type LoginResponseDto,
@@ -35,11 +40,7 @@ import {
 } from './rewards-data-service';
 import { signSolanaRewardsMessage } from './utils/solana-snap';
 import { sortAccounts } from './utils/sortAccounts';
-import {
-  SeasonDtoState,
-  SeasonStatusState,
-  SeasonTierState,
-} from '../../../../shared/types/rewards';
+
 
 export const DEFAULT_BLOCKED_REGIONS = ['UK'];
 
