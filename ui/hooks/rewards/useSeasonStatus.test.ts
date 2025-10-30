@@ -1,12 +1,11 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import log from 'loglevel';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
-import mockState from '../../../test/data/mock-state.json';
+import { SeasonStatusState } from '../../../shared/types/rewards';
 import { useSeasonStatus } from './useSeasonStatus';
 import { useRewardsEnabled } from './useRewardsEnabled';
-import { SeasonStatusState } from '../../../shared/types/rewards';
 
 // Mock dependencies
 jest.mock('../../store/background-connection', () => ({
@@ -313,7 +312,7 @@ describe('useSeasonStatus', () => {
   describe('loading states', () => {
     it('should show loading state during fetch', async () => {
       mockUseRewardsEnabled.mockReturnValue(true); // Enable rewards for this test
-      let resolvePromise: (value: SeasonStatusState) => void;
+      let resolvePromise!: (value: SeasonStatusState) => void;
       const promise = new Promise<SeasonStatusState>((resolve) => {
         resolvePromise = resolve;
       });
@@ -337,7 +336,7 @@ describe('useSeasonStatus', () => {
       expect(result.current.seasonStatusError).toBeNull();
 
       // Resolve the promise
-      resolvePromise!(mockSeasonStatus);
+      resolvePromise(mockSeasonStatus);
 
       await waitFor(() => {
         expect(result.current.seasonStatusLoading).toBe(false);
