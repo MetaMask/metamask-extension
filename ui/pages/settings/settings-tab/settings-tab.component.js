@@ -323,7 +323,7 @@ export default class SettingsTab extends PureComponent {
     const geShowNativeTokenAsMainBalanceForMetrics = (value) => {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.ShowNativeTokenAsMainBalance,
+        event: MetaMetricsEventName.SettingsUpdated,
         properties: {
           show_native_token_as_main_balance: value,
         },
