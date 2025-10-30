@@ -1,5 +1,6 @@
 import { AccountTrackerController } from '@metamask/assets-controllers';
 import { NetworkClientId } from '@metamask/network-controller';
+import { PreferencesControllerState } from '../controllers/preferences-controller';
 import { ControllerInitFunction } from './types';
 import {
   AccountTrackerControllerInitMessenger,
@@ -32,7 +33,7 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
     allowExternalServices: () => {
       const { useExternalServices } = initMessenger.call(
         'PreferencesController:getState',
-      );
+      ) as unknown as PreferencesControllerState;
       return useExternalServices;
     },
     accountsApiChainIds: () => {

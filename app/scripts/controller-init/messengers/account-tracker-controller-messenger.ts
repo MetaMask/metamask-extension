@@ -16,7 +16,7 @@ import {
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
 import { KeyringControllerUnlockEvent } from '@metamask/keyring-controller';
-import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
 
 export type AccountTrackerControllerMessenger = ReturnType<
