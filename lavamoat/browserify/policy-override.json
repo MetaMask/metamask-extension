@@ -89,7 +89,7 @@
         "fetch": false,
         "XMLHttpRequest": false,
         "document": false,
-        "documnet.createElement": true,
+        "document.createElement": true,
         "navigator": false,
         "navigator.userAgent": true
       }
