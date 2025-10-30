@@ -46,7 +46,7 @@ export function OneKeyForceUpdateFirmware() {
       paddingLeft={8}
       paddingRight={8}
       paddingBottom={8}
-      data-testid="notifications-settings-allow-notifications"
+      data-testid="onekey-hardware-force-update-firmware"
     >
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
         {t('onekeyForceUpdate', [privacyLink])}

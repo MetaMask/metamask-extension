@@ -6,7 +6,6 @@ import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { KeyringClass } from '@metamask/keyring-utils';
 import LatticeKeyring from 'eth-lattice-keyring';
 import {
-  OneKeyKeyring,
   TrezorConnectBridge,
   TrezorKeyring,
 } from '@metamask/eth-trezor-keyring';
@@ -14,15 +13,16 @@ import {
   LedgerIframeBridge,
   LedgerKeyring,
 } from '@metamask/eth-ledger-bridge-keyring';
+import { OneKeyWebBridge, OneKeyKeyring } from '@metamask/eth-onekey-keyring';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { encryptorFactory } from '../lib/encryptor-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
-import { OneKeyOffscreenBridge } from './lib/offscreen-bridge/onekey-offscreen-bridge';
+import { OneKeyOffscreenBridge } from '../lib/offscreen-bridge/onekey-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
-import { hardwareOneKeyKeyringBuilderFactory } from './lib/hardware-onekey-keyring-builder-factory';
+import { hardwareOneKeyKeyringBuilderFactory } from '../lib/hardware-onekey-keyring-builder-factory';
 import { ControllerInitFunction } from './types';
 import {
   KeyringControllerMessenger,
@@ -42,6 +42,7 @@ import {
  * bridges.
  * @param request.encryptor - Optional encryptor to use for the controller.
  * @param request.getController - Function to get other controllers.
+ * @param request.platform
  * @returns The initialized controller.
  */
 export const KeyringControllerInit: ControllerInitFunction<
@@ -55,6 +56,7 @@ export const KeyringControllerInit: ControllerInitFunction<
   keyringOverrides,
   encryptor,
   getController,
+  platform,
 }) => {
   const additionalKeyrings = [
     qrKeyringBuilderFactory(
@@ -85,6 +87,10 @@ export const KeyringControllerInit: ControllerInitFunction<
         LedgerKeyring as unknown as KeyringClass,
         keyringOverrides?.ledgerBridge || LedgerIframeBridge,
       ),
+      hardwareKeyringBuilderFactory(
+        OneKeyKeyring as unknown as KeyringClass,
+        keyringOverrides?.oneKey || OneKeyWebBridge,
+      ),
     );
   } else {
     additionalKeyrings.push(
@@ -93,16 +99,13 @@ export const KeyringControllerInit: ControllerInitFunction<
         keyringOverrides?.trezorBridge || TrezorOffscreenBridge,
       ),
       hardwareKeyringBuilderFactory(
-        OneKeyKeyring as unknown as KeyringClass,
-        keyringOverrides?.oneKey || TrezorOffscreenBridge,
-      ),
-      hardwareKeyringBuilderFactory(
         LedgerKeyring as unknown as KeyringClass,
         keyringOverrides?.ledgerBridge || LedgerOffscreenBridge,
       ),
       hardwareOneKeyKeyringBuilderFactory(
-        OneKeyKeyring,
+        OneKeyKeyring as unknown as KeyringClass,
         keyringOverrides?.oneKey || OneKeyOffscreenBridge,
+        platform,
       ),
       keyringBuilderFactory(LatticeKeyringOffscreen as unknown as KeyringClass),
     );

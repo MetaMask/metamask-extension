@@ -37,7 +37,7 @@ export function OneKeyAllowWebUSBConnect() {
       paddingLeft={8}
       paddingRight={8}
       paddingBottom={8}
-      data-testid="notifications-settings-allow-notifications"
+      data-testid="onekey-hardware-allow-webusb-connect"
     >
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
         {t('onekeyWebUSBNotConnectedErrorMessage')}

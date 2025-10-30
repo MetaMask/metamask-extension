@@ -1,11 +1,8 @@
-import {
-  ONEKEY_HARDWARE_UI_EVENT,
-  type OneKeyBridge,
-} from '@metamask/eth-onekey-keyring';
-import { KeyringClass, Json } from '@metamask/utils';
-import { Platform } from '../../../types/global';
+import { type OneKeyBridge } from '@metamask/eth-onekey-keyring';
+import { KeyringClass } from '@metamask/keyring-utils';
 // eslint-disable-next-line import/no-restricted-paths
 import { HARDWARE_ONEKEY_ERRORS_ROUTE } from '../../../ui/helpers/constants/routes';
+import ExtensionPlatform from '../platforms/extension';
 
 /**
  * A transport bridge between the keyring and the hardware device.
@@ -24,23 +21,24 @@ export type HardwareTransportBridgeClass = new () => OneKeyBridge;
  * @returns A builder function for the given Keyring.
  */
 export function hardwareOneKeyKeyringBuilderFactory(
-  Keyring: KeyringClass<Json>,
+  Keyring: KeyringClass,
   Bridge: HardwareTransportBridgeClass,
-  platform?: Platform,
+  platform?: ExtensionPlatform,
 ) {
   const builder = () => {
-    const keyring = new Keyring({ bridge: new Bridge() });
-    if ('on' in keyring && typeof keyring.on === 'function') {
-      keyring.on(
-        ONEKEY_HARDWARE_UI_EVENT,
-        (payload: { type: string; code: number }) => {
-          platform?.openExtensionInBrowser?.(
-            `${HARDWARE_ONEKEY_ERRORS_ROUTE}/${payload.type ?? payload.code}`,
-          );
-        },
-      );
+    const bridge = new Bridge();
+    if (
+      'setUiEventCallback' in bridge &&
+      typeof bridge.setUiEventCallback === 'function'
+    ) {
+      bridge.setUiEventCallback((payload: { type: string; code: number }) => {
+        platform?.openExtensionInBrowser?.(
+          `${HARDWARE_ONEKEY_ERRORS_ROUTE}/${payload.type ?? payload.code}`,
+        );
+      });
     }
-    return keyring;
+
+    return new Keyring({ bridge });
   };
 
   builder.type = Keyring.type;

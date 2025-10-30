@@ -1,7 +1,4 @@
-import {
-  ONEKEY_HARDWARE_UI_EVENT,
-  OneKeyBridge,
-} from '@metamask/eth-onekey-keyring';
+import { OneKeyBridge } from '@metamask/eth-onekey-keyring';
 import type {
   Params,
   Response as OneKeyResponse,
@@ -9,6 +6,7 @@ import type {
   EVMSignTransactionParams,
   EVMSignMessageParams,
   EVMSignTypedDataParams,
+  Unsuccessful,
 } from '@onekeyfe/hd-core';
 import type { EthereumMessageSignature } from '@onekeyfe/hd-transport';
 import {
@@ -30,17 +28,10 @@ import {
 export class OneKeyOffscreenBridge implements OneKeyBridge {
   model: string | undefined;
 
-  private listeners: Map<string, (payload: unknown) => void> = new Map();
+  private onUIEvent?: ((event: Unsuccessful['payload']) => void) | undefined;
 
-  on(event: string, listener: (payload: unknown) => void) {
-    this.listeners.set(event, listener);
-  }
-
-  off(event: string) {
-    if (!this.listeners.has(event)) {
-      return;
-    }
-    this.listeners.delete(event);
+  setUiEventCallback(callback: (event: Unsuccessful['payload']) => void): void {
+    this.onUIEvent = callback;
   }
 
   init() {
@@ -54,9 +45,8 @@ export class OneKeyOffscreenBridge implements OneKeyBridge {
         msg.target === OffscreenCommunicationTarget.extension &&
         msg.event === OffscreenCommunicationEvents.onekeyDeviceConnectError
       ) {
-        const listener = this.listeners.get(ONEKEY_HARDWARE_UI_EVENT);
-        if (listener) {
-          listener(msg.payload);
+        if (this.onUIEvent) {
+          this.onUIEvent(msg.payload);
         }
       }
     });
@@ -79,6 +69,7 @@ export class OneKeyOffscreenBridge implements OneKeyBridge {
 
   dispose() {
     return new Promise<void>((resolve) => {
+      this.onUIEvent = undefined;
       chrome.runtime.sendMessage(
         {
           target: OffscreenCommunicationTarget.onekeyOffscreen,
