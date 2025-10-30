@@ -2249,7 +2249,6 @@
         "URL.revokeObjectURL": true,
         "WebAssembly": true,
         "XMLHttpRequest": false,
-        "atob": true,
         "cancelAnimationFrame": true,
         "clearInterval": true,
         "clearTimeout": true,
