@@ -174,6 +174,8 @@ import {
   ClaimSubmitToastType,
   type NetworkConnectionBanner,
 } from '../../shared/constants/app-state';
+import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
+import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -7639,11 +7641,11 @@ export async function submitShieldClaim(params: {
   });
 
   if (!response.ok) {
-    const errorMessage = await response.json();
-    if (errorMessage.message) {
-      throw new Error(errorMessage.message);
+    const error = (await response.json()) as SubmitClaimErrorResponse;
+    if (error?.errorCode) {
+      throw new SubmitClaimError(error.message, error);
     }
-    throw new Error(ClaimSubmitToastType.Errored);
+    throw new SubmitClaimError(ClaimSubmitToastType.Errored, error);
   }
 
   return ClaimSubmitToastType.Success;

@@ -41,19 +41,47 @@ import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state'
 import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import { isSafeChainId } from '../../../../../shared/modules/network.utils';
+import {
+  SUBMIT_CLAIM_ERROR_CODES,
+  SUBMIT_CLAIM_FIELDS,
+  SubmitClaimErrorCode,
+  SubmitClaimField,
+} from '../types';
+import { SubmitClaimError } from '../claim-error';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-const BACKEND_ERROR_MAP: Record<string, { key: string; msg: string }> = {
-  'Please enter a valid transaction hash': {
-    key: 'impactedTransactionHash',
-    msg: 'shieldClaimInvalidTxHash',
-  },
-  'This transaction was not made within MetaMask and is not eligible for claims.':
-    {
-      key: 'impactedTransactionHash',
-      msg: 'shieldClaimImpactedTxHashNotEligible',
-    },
+const ERROR_MESSAGE_MAP: Partial<Record<SubmitClaimErrorCode, string>> = {
+  [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_ELIGIBLE]:
+    'shieldClaimImpactedTxHashNotEligible',
+  // TODO: use const for 21 days
+  [SUBMIT_CLAIM_ERROR_CODES.SUBMISSION_WINDOW_EXPIRED]:
+    'shieldClaimSubmissionWindowExpired',
+  [SUBMIT_CLAIM_ERROR_CODES.MAX_CLAIMS_LIMIT_EXCEEDED]:
+    'shieldClaimMaxClaimsLimitExceeded',
+  [SUBMIT_CLAIM_ERROR_CODES.DUPLICATE_CLAIM_EXISTS]:
+    'shieldClaimDuplicateClaimExists',
+  [SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]:
+    'shieldClaimSameWalletAddressesError',
+  [SUBMIT_CLAIM_ERROR_CODES.FILES_SIZE_EXCEEDED]:
+    'shieldClaimFileErrorSizeExceeded',
+  [SUBMIT_CLAIM_ERROR_CODES.FILES_COUNT_EXCEEDED]:
+    'shieldClaimFileErrorCountExceeded',
+  [SUBMIT_CLAIM_ERROR_CODES.INVALID_FILES_TYPE]:
+    'shieldClaimFileErrorInvalidType',
+  [SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]: 'shieldClaimInvalidRequired',
+};
+
+const SUBMIT_CLAIM_FIELD_ERROR_MESSAGE_MAP: Partial<
+  Record<SubmitClaimField, string>
+> = {
+  [SUBMIT_CLAIM_FIELDS.CHAIN_ID]: 'shieldClaimInvalidChainId',
+  [SUBMIT_CLAIM_FIELDS.EMAIL]: 'shieldClaimInvalidEmail',
+  [SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS]:
+    'shieldClaimInvalidWalletAddress',
+  [SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH]: 'shieldClaimInvalidTxHash',
+  [SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS]:
+    'shieldClaimInvalidWalletAddress',
 };
 
 function isValidTransactionHash(hash: string): boolean {
@@ -85,92 +113,130 @@ const SubmitClaimForm = () => {
   } = useClaimState();
 
   const [errors, setErrors] = useState<
-    Record<string, { key: string; msg: string } | undefined>
+    Partial<
+      Record<
+        SubmitClaimField,
+        { key: SubmitClaimField; msg: string } | undefined
+      >
+    >
   >({});
+
+  const setErrorMessage = useCallback(
+    (field: SubmitClaimField, message: string | undefined) => {
+      setErrors((state) => ({
+        ...state,
+        [field]: message ? { key: field, msg: message } : undefined,
+      }));
+    },
+    [setErrors],
+  );
 
   const validateChainId = useCallback(() => {
     if (chainId) {
       const isChainIdValid = isSafeChainId(Number(chainId));
-      setErrors((state) => ({
-        ...state,
-        chainId: isChainIdValid
-          ? undefined
-          : { key: 'chainId', msg: t('shieldClaimInvalidChainId') },
-      }));
+      setErrorMessage(
+        SUBMIT_CLAIM_FIELDS.CHAIN_ID,
+        isChainIdValid ? undefined : t('shieldClaimInvalidChainId'),
+      );
     } else {
-      setErrors((state) => ({
-        ...state,
-        chainId: { key: 'chainId', msg: t('shieldClaimInvalidRequired') },
-      }));
+      setErrorMessage(
+        SUBMIT_CLAIM_FIELDS.CHAIN_ID,
+        t('shieldClaimInvalidRequired'),
+      );
     }
-  }, [chainId, t]);
+  }, [chainId, setErrorMessage, t]);
 
   const validateEmail = useCallback(() => {
     if (email) {
       const isEmailValid = isValidEmail(email);
-      setErrors((state) => ({
-        ...state,
-        email: isEmailValid
-          ? undefined
-          : { key: 'email', msg: t('shieldClaimInvalidEmail') },
-      }));
+      setErrorMessage(
+        SUBMIT_CLAIM_FIELDS.EMAIL,
+        isEmailValid ? undefined : t('shieldClaimInvalidEmail'),
+      );
     } else {
-      setErrors((state) => ({
-        ...state,
-        email: { key: 'email', msg: t('shieldClaimInvalidRequired') },
-      }));
+      setErrorMessage(
+        SUBMIT_CLAIM_FIELDS.EMAIL,
+        t('shieldClaimInvalidRequired'),
+      );
     }
-  }, [t, email]);
+  }, [email, setErrorMessage, t]);
 
   const validateImpactedWalletAddress = useCallback(() => {
     if (impactedWalletAddress) {
       const isImpactedWalletAddressValid = isValidHexAddress(
         impactedWalletAddress,
       );
-      setErrors((state) => ({
-        ...state,
-        impactedWalletAddress: isImpactedWalletAddressValid
+      setErrorMessage(
+        SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS,
+        isImpactedWalletAddressValid
           ? undefined
-          : {
-              key: 'impactedWalletAddress',
-              msg: t('shieldClaimInvalidWalletAddress'),
-            },
-      }));
+          : t('shieldClaimInvalidWalletAddress'),
+      );
     } else {
-      setErrors((state) => ({
-        ...state,
-        impactedWalletAddress: {
-          key: 'impactedWalletAddress',
-          msg: t('shieldClaimInvalidRequired'),
-        },
-      }));
+      setErrorMessage(
+        SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS,
+        t('shieldClaimInvalidRequired'),
+      );
     }
-  }, [impactedWalletAddress, t]);
+  }, [impactedWalletAddress, setErrorMessage, t]);
 
   const validateReimbursementWalletAddress = useCallback(() => {
     if (reimbursementWalletAddress) {
       const isReimbursementWalletAddressValid = isValidHexAddress(
         reimbursementWalletAddress,
       );
-      setErrors((state) => ({
-        ...state,
-        reimbursementWalletAddress: isReimbursementWalletAddressValid
-          ? undefined
-          : {
-              key: 'reimbursementWalletAddress',
-              msg: t('shieldClaimInvalidWalletAddress'),
-            },
-      }));
+
+      if (!isReimbursementWalletAddressValid) {
+        setErrorMessage(
+          SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+          t('shieldClaimInvalidWalletAddress'),
+        );
+      } else if (
+        reimbursementWalletAddress.toLowerCase() ===
+        impactedWalletAddress.toLowerCase()
+      ) {
+        setErrorMessage(
+          SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+          t('shieldClaimSameWalletAddressesError'),
+        );
+      } else {
+        setErrorMessage(
+          SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+          undefined,
+        );
+      }
     } else {
-      setErrors((state) => ({
-        ...state,
-        reimbursementWalletAddress: {
-          key: 'reimbursementWalletAddress',
-          msg: t('shieldClaimInvalidRequired'),
-        },
-      }));
+      setErrorMessage(
+        SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+        t('shieldClaimInvalidRequired'),
+      );
     }
-  }, [reimbursementWalletAddress, t]);
+  }, [impactedWalletAddress, reimbursementWalletAddress, setErrorMessage, t]);
+
+  const validateImpactedTxHash = useCallback(() => {
+    if (impactedTransactionHash) {
+      const isImpactedTxHashValid = isValidTransactionHash(
+        impactedTransactionHash,
+      );
+
+      setErrorMessage(
+        SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
+        isImpactedTxHashValid ? undefined : t('shieldClaimInvalidTxHash'),
+      );
+    } else {
+      setErrorMessage(
+        SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
+        t('shieldClaimInvalidRequired'),
+      );
+    }
+  }, [impactedTransactionHash, setErrorMessage, t]);
+
+  const validateDescription = useCallback(() => {
+    setErrorMessage(
+      SUBMIT_CLAIM_FIELDS.CASE_DESCRIPTION,
+      caseDescription ? undefined : t('shieldClaimInvalidRequired'),
+    );
+  }, [caseDescription, setErrorMessage, t]);
 
   const isInvalidData = useMemo(() => {
     return (
@@ -192,40 +258,41 @@ const SubmitClaimForm = () => {
     caseDescription,
   ]);
 
-  const validateImpactedTxHash = useCallback(() => {
-    if (impactedTransactionHash) {
-      const isImpactedTxHashValid = isValidTransactionHash(
-        impactedTransactionHash,
-      );
+  const handleSubmitClaimError = useCallback(
+    (error: SubmitClaimError) => {
+      const { message, data } = error;
+      if (data.errorsDetails) {
+        data.errorsDetails.forEach((detailError) => {
+          let errorMessage = '';
+          if (
+            SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED === detailError.errorCode
+          ) {
+            // if error code is field required, set the error message for the field
+            errorMessage = 'shieldClaimInvalidRequired';
+          } else {
+            // if error is format error get error per field
+            errorMessage =
+              SUBMIT_CLAIM_FIELD_ERROR_MESSAGE_MAP[detailError.field] ?? '';
+          }
 
-      setErrors((state) => ({
-        ...state,
-        impactedTransactionHash: isImpactedTxHashValid
-          ? undefined
-          : {
-              key: 'impactedTransactionHash',
-              msg: t('shieldClaimInvalidTxHash'),
-            },
-      }));
-    } else {
-      setErrors((state) => ({
-        ...state,
-        impactedTransactionHash: {
-          key: 'impactedTransactionHash',
-          msg: t('shieldClaimInvalidRequired'),
-        },
-      }));
-    }
-  }, [impactedTransactionHash, t]);
-
-  const validateDescription = useCallback(() => {
-    setErrors((state) => ({
-      ...state,
-      caseDescription: caseDescription
-        ? undefined
-        : { key: 'caseDescription', msg: t('shieldClaimInvalidRequired') },
-    }));
-  }, [caseDescription, t]);
+          if (errorMessage) {
+            setErrorMessage(detailError.field, t(errorMessage));
+          }
+        });
+      } else {
+        // if no error details, show error using toast message
+        let toastMessage = '';
+        if (message === ClaimSubmitToastType.Errored) {
+          toastMessage = ClaimSubmitToastType.Errored;
+        } else {
+          const messageFromErrorMap = ERROR_MESSAGE_MAP[data.errorCode];
+          toastMessage = messageFromErrorMap ? t(messageFromErrorMap) : message;
+        }
+        dispatch(setShowClaimSubmitToast(toastMessage));
+      }
+    },
+    [dispatch, setErrorMessage, t],
+  );
 
   const handleSubmitClaim = useCallback(async () => {
     if (isInvalidData) {
@@ -245,41 +312,24 @@ const SubmitClaimForm = () => {
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
       navigate(TRANSACTION_SHIELD_ROUTE);
     } catch (error) {
-      const { message } = error as Error;
-      const backendErrorMessage = BACKEND_ERROR_MAP[message];
-      // if backend error message is specific to a field, set the error for that field, otherwise show the error in the toast
-      if (backendErrorMessage) {
-        setErrors((state) => ({
-          ...state,
-          [backendErrorMessage.key]: {
-            key: backendErrorMessage.key,
-            msg: t(backendErrorMessage.msg),
-          },
-        }));
-      } else {
-        dispatch(
-          setShowClaimSubmitToast(
-            message === ClaimSubmitToastType.Errored
-              ? ClaimSubmitToastType.Errored
-              : message,
-          ),
-        );
-      }
+      // reset errors
+      setErrors({});
+      handleSubmitClaimError(error as SubmitClaimError);
     } finally {
       setClaimSubmitLoading(false);
     }
   }, [
-    dispatch,
     isInvalidData,
     chainId,
     email,
-    impactedTransactionHash,
     impactedWalletAddress,
+    impactedTransactionHash,
     reimbursementWalletAddress,
     caseDescription,
     files,
+    dispatch,
     navigate,
-    t,
+    handleSubmitClaimError,
   ]);
 
   return (
@@ -368,9 +418,9 @@ const SubmitClaimForm = () => {
           'data-testid': 'shield-claim-impacted-tx-hash-input',
         }}
         helpText={
-          errors.impactedTransactionHash ? (
+          errors.impactedTxHash ? (
             <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
-              {`${errors.impactedTransactionHash?.msg}. `}
+              {`${errors.impactedTxHash?.msg}. `}
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
@@ -401,7 +451,7 @@ const SubmitClaimForm = () => {
         onChange={(e) => setImpactedTransactionHash(e.target.value)}
         onBlur={() => validateImpactedTxHash()}
         value={impactedTransactionHash}
-        error={Boolean(errors.impactedTransactionHash)}
+        error={Boolean(errors.impactedTxHash)}
         required
         width={BlockSize.Full}
       />
