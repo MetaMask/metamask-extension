@@ -109,6 +109,7 @@ describe('useSpenderAlerts', () => {
       const mockTransaction = {
         id: MOCK_TRANSACTION_ID,
         type: TransactionType.tokenMethodApprove,
+        chainId: '0x1',
         txParams: {
           data: '0xapprovedata',
         },
@@ -135,6 +136,7 @@ describe('useSpenderAlerts', () => {
       expect(mockUseTrustSignal).toHaveBeenCalledWith(
         MOCK_SPENDER_ADDRESS,
         NameType.ETHEREUM_ADDRESS,
+        '0x1',
       );
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual(expectedMaliciousAlert);
