@@ -2446,6 +2446,10 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // rewards
+      getCandidateSubscriptionId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'RewardsController:getCandidateSubscriptionId',
+      ),
       getRewardsSeasonMetadata: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'RewardsController:getSeasonMetadata',

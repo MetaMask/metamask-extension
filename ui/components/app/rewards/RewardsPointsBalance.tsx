@@ -14,15 +14,24 @@ import { Skeleton } from '../../component-library/skeleton';
 export const RewardsPointsBalance = () => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
-  const { rewardsEnabled, seasonStatus, seasonStatusLoading } =
-    useRewardsContext();
+
+  const {
+    rewardsEnabled,
+    seasonStatus,
+    seasonStatusLoading,
+    candidateSubscriptionId,
+  } = useRewardsContext();
 
   if (!rewardsEnabled) {
     return null;
   }
 
+  if (!candidateSubscriptionId) {
+    return <RewardsBadge text={t('rewardsOptIn')} />;
+  }
+
   if (seasonStatusLoading && !seasonStatus?.balance) {
-    return <Skeleton />;
+    return <Skeleton width="100px" />;
   }
 
   // Don't render if there's no points balance to show
@@ -35,21 +44,27 @@ export const RewardsPointsBalance = () => {
     seasonStatus?.balance?.total ?? 0,
   );
 
+  return <RewardsBadge text={t('rewardsPointsBalance', [formattedPoints])} />;
+};
+
+const RewardsBadge = ({ text }: { text: string }) => {
+  const t = useI18nContext();
+
   return (
     <Box
-      className="flex items-center gap-1"
+      className="flex items-center gap-2 px-2 bg-background-muted rounded"
       data-testid="rewards-points-balance"
     >
       <img
         src="./images/metamask-rewards-points.svg"
         alt={t('rewardsPointsIcon')}
-        style={{ width: '20px', height: '20px' }}
+        style={{ width: '16px', height: '16px' }}
       />
       <Text
-        variant={TextVariant.BodyMd}
+        variant={TextVariant.BodySm}
         data-testid="rewards-points-balance-value"
       >
-        {t('rewardsPointsBalance', [formattedPoints])}
+        {text}
       </Text>
     </Box>
   );
