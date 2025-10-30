@@ -91,25 +91,17 @@ export function useTransactionConfirm() {
       handleGasless7702();
     }
 
-    await dispatch(
-      updateAndApproveTx({
-        txMeta: newTransactionMeta,
-        dontShowLoadingIndicator: true,
-        loadingIndicatorMessage: '',
-        onBeforeApproveTx: () => {
-          // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
-          // navigate to shield settings page first before approving transaction to wait for subscription creation there
-          handleShieldSubscriptionApprovalTransactionAfterConfirm(
-            newTransactionMeta,
-          );
-        },
-        onApproveTxError: () => {
-          handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
-            newTransactionMeta,
-          );
-        },
-      }),
-    );
+    // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
+    // navigate to shield settings page first before approving transaction to wait for subscription creation there
+    handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
+    try {
+      await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+    } catch (error) {
+      handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
+        newTransactionMeta,
+      );
+      throw error;
+    }
   }, [
     customNonceValue,
     dispatch,
