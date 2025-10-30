@@ -133,7 +133,7 @@ export enum HardwareAffiliateTutorialLinks {
   imtoken = 'https://support.token.im/hc/en-us/articles/24652624775961/',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  onekey = 'https://help.onekey.so/hc/articles/9426592069903',
+  onekey = 'https://help.onekey.so/en/articles/11461108-connect-onekey-pro-to-metamask-via-qr-codes-air-gapped',
 }
 
 /**
