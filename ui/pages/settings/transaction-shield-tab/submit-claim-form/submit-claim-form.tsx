@@ -279,8 +279,8 @@ const SubmitClaimForm = () => {
   const handleSubmitClaimError = useCallback(
     (error: SubmitClaimError) => {
       const { message, data } = error;
-      if (data.errorsDetails) {
-        data.errorsDetails.forEach((detailError) => {
+      if (data?.errorsDetails) {
+        data?.errorsDetails.forEach((detailError) => {
           let errorMessage = '';
           if (
             SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED === detailError.errorCode
@@ -303,7 +303,9 @@ const SubmitClaimForm = () => {
         if (message === ClaimSubmitToastType.Errored) {
           toastMessage = ClaimSubmitToastType.Errored;
         } else {
-          const messageFromErrorMap = ERROR_MESSAGE_MAP[data.errorCode];
+          const messageFromErrorMap = data
+            ? ERROR_MESSAGE_MAP[data.errorCode]
+            : undefined;
           toastMessage = messageFromErrorMap
             ? t(messageFromErrorMap.message, messageFromErrorMap.params)
             : message;
@@ -341,8 +343,6 @@ const SubmitClaimForm = () => {
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
       navigate(TRANSACTION_SHIELD_ROUTE);
     } catch (error) {
-      // reset errors
-      setErrors({});
       handleSubmitClaimError(error as SubmitClaimError);
     } finally {
       setClaimSubmitLoading(false);

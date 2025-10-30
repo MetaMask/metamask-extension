@@ -7645,7 +7645,7 @@ export async function submitShieldClaim(params: {
     if (error?.errorCode) {
       throw new SubmitClaimError(error.message, error);
     }
-    throw new SubmitClaimError(ClaimSubmitToastType.Errored, error);
+    throw new SubmitClaimError(ClaimSubmitToastType.Errored);
   }
 
   return ClaimSubmitToastType.Success;
