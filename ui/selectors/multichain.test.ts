@@ -47,6 +47,7 @@ import {
   getMultichainIsBitcoin,
   getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
+  getMultichainAssetsControllerState,
 } from './multichain';
 import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
@@ -123,6 +124,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
       historicalPrices: {},
       assetsMetadata: {},
       accountsAssets: {},
+      allIgnoredAssets: {},
       isEvmSelected: false,
       multichainNetworkConfigurationsByChainId: {
         ...AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
@@ -604,6 +606,63 @@ describe('Multichain Selectors', () => {
       expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(
         false,
       );
+    });
+  });
+
+  describe('getMultichainAssetsControllerState', () => {
+    it('returns the multichain assets controller state', () => {
+      const state = getEvmState();
+      const mockAccountsAssets = {
+        'account-1': [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        ],
+      };
+      const mockAssetsMetadata = { 'asset-1': { name: 'Asset 1' } };
+      const mockAllIgnoredAssets = {
+        'account-1': [
+          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:ignored-asset-1',
+        ],
+      };
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (state.metamask as any).accountsAssets = mockAccountsAssets;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (state.metamask as any).assetsMetadata = mockAssetsMetadata;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (state.metamask as any).allIgnoredAssets = mockAllIgnoredAssets;
+
+      const result = getMultichainAssetsControllerState(state);
+
+      expect(result).toEqual({
+        accountsAssets: mockAccountsAssets,
+        assetsMetadata: mockAssetsMetadata,
+        allIgnoredAssets: mockAllIgnoredAssets,
+      });
+    });
+
+    it('returns empty objects when properties are undefined', () => {
+      const state = getEvmState();
+      // Create a state without the properties to test undefined case
+      const stateWithoutAssets = {
+        ...state,
+        metamask: {
+          ...state.metamask,
+          accountsAssets: undefined,
+          assetsMetadata: undefined,
+          allIgnoredAssets: undefined,
+        },
+      };
+
+      const result = getMultichainAssetsControllerState(
+        stateWithoutAssets as unknown as MultichainState,
+      );
+
+      expect(result).toEqual({
+        accountsAssets: undefined,
+        assetsMetadata: undefined,
+        allIgnoredAssets: undefined,
+      });
     });
   });
 });
