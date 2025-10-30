@@ -103,7 +103,7 @@ export function getAccountTrackerControllerInitMessenger(
     'AccountTrackerControllerInit',
     AllowedInitializationActions,
     AllowedInitializationEvents,
-    RootMessenger
+    typeof messenger
   >({
     namespace: 'AccountTrackerControllerInit',
     parent: messenger,
