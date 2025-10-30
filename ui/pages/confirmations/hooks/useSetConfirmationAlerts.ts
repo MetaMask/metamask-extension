@@ -8,7 +8,7 @@ import {
 import { useConfirmContext } from '../context/confirm';
 import useConfirmationAlerts from './useConfirmationAlerts';
 
-const setConfirmationAlerts = () => {
+const useSetConfirmationAlerts = () => {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext();
   const alerts = useConfirmationAlerts();
@@ -25,4 +25,4 @@ const setConfirmationAlerts = () => {
   }, []);
 };
 
-export default setConfirmationAlerts;
+export default useSetConfirmationAlerts;
