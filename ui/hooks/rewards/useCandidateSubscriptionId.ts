@@ -1,15 +1,15 @@
 import { useState, useCallback, useEffect } from 'react';
 import log from 'loglevel';
-import { submitRequestToBackground } from '../../store/background-connection';
 import { useSelector } from 'react-redux';
+import { submitRequestToBackground } from '../../store/background-connection';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { useRewardsEnabled } from './useRewardsEnabled';
 
-interface UseCandidateSubscriptionIdReturn {
+type UseCandidateSubscriptionIdReturn = {
   candidateSubscriptionId: string | null;
   candidateSubscriptionIdError: boolean;
   fetchCandidateSubscriptionId: () => Promise<void>;
-}
+};
 
 /**
  * Hook to fetch and manage candidate subscription ID

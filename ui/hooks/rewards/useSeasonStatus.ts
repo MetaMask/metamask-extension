@@ -3,23 +3,30 @@ import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import {
+  SeasonDtoState,
+  SeasonStatusState,
+} from '../../../shared/types/rewards';
 import { useRewardsEnabled } from './useRewardsEnabled';
-import { SeasonDtoState, SeasonStatusState } from '../../../shared/types/rewards';
 
-interface UseSeasonStatusOptions {
+type UseSeasonStatusOptions = {
   subscriptionId: string | null;
   onAuthorizationError: () => Promise<void>;
-}
+};
 
-interface UseSeasonStatusReturn {
+type UseSeasonStatusReturn = {
   seasonStatus: SeasonStatusState | null;
   seasonStatusError: string | null;
   seasonStatusLoading: boolean;
   fetchSeasonStatus: () => Promise<void>;
-}
+};
 
 /**
  * Hook to fetch and manage season status
+ *
+ * @param options0
+ * @param options0.subscriptionId
+ * @param options0.onAuthorizationError
  */
 export const useSeasonStatus = ({
   subscriptionId,
