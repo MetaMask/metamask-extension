@@ -184,16 +184,17 @@ jest.mock('./lib/rpc-method-middleware', () => ({
   },
 }));
 
-const mockTrace = jest.fn();
-const mockEndTrace = jest.fn();
-
 jest.mock('../../shared/lib/trace', () => ({
   ...jest.requireActual('../../shared/lib/trace'),
-  trace: mockTrace,
-  endTrace: mockEndTrace,
+  trace: jest.fn(),
+  endTrace: jest.fn(),
 }));
 
 const { TraceName, TraceOperation } = jest.requireActual(
+  '../../shared/lib/trace',
+);
+
+const { trace: mockTrace, endTrace: mockEndTrace } = jest.requireMock(
   '../../shared/lib/trace',
 );
 
@@ -5363,7 +5364,7 @@ describe('MetaMaskController', () => {
     });
 
     afterEach(() => {
-      jest.clearAllMocks();
+      jest.resetAllMocks();
     });
 
     it('should start and end both DiscoverAccounts and EvmDiscoverAccounts traces on successful execution', async () => {

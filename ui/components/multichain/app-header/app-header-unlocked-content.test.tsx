@@ -24,7 +24,14 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('react-router-dom-v5-compat', () => ({
   ...jest.requireActual('react-router-dom-v5-compat'),
-  Link: ({ children, to, ...props }: any) => (
+  Link: ({
+    children,
+    to,
+    ...props
+  }: React.PropsWithChildren<{
+    to: string;
+  }> &
+    React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
     <a href={to} {...props}>
       {children}
     </a>

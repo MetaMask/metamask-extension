@@ -4693,46 +4693,51 @@ export default class MetamaskController extends EventEmitter {
         name: TraceName.EvmDiscoverAccounts,
         op: TraceOperation.AccountDiscover,
       });
-      for (let count = accounts.length; ; count++) {
-        const balance = await this.getBalance(address, this.provider);
+      try {
+        for (let count = accounts.length; ; count++) {
+          const balance = await this.getBalance(address, this.provider);
 
-        if (balance === '0x0') {
-          // This account has no balance, so check for tokens
-          await this.tokenDetectionController.detectTokens({
-            chainIds: [chainId],
-            selectedAddress: address,
-          });
+          if (balance === '0x0') {
+            // This account has no balance, so check for tokens
+            await this.tokenDetectionController.detectTokens({
+              chainIds: [chainId],
+              selectedAddress: address,
+            });
 
-          const tokens =
-            this.tokensController.state.allTokens?.[chainId]?.[address];
-          const detectedTokens =
-            this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
+            const tokens =
+              this.tokensController.state.allTokens?.[chainId]?.[address];
+            const detectedTokens =
+              this.tokensController.state.allDetectedTokens?.[chainId]?.[
+                address
+              ];
 
-          if (
-            (tokens?.length ?? 0) === 0 &&
-            (detectedTokens?.length ?? 0) === 0
-          ) {
-            // This account has no balance or tokens
-            if (count !== 1) {
-              await this.removeAccount(address);
+            if (
+              (tokens?.length ?? 0) === 0 &&
+              (detectedTokens?.length ?? 0) === 0
+            ) {
+              // This account has no balance or tokens
+              if (count !== 1) {
+                await this.removeAccount(address);
+              }
+              break;
             }
-            break;
           }
-        }
 
-        // This account has assets, so check the next one
-        address = await this.keyringController.withKeyring(
-          keyringSelector,
-          async ({ keyring }) => {
-            const [newAddress] = await keyring.addAccounts(1);
-            return newAddress;
-          },
-        );
+          // This account has assets, so check the next one
+          address = await this.keyringController.withKeyring(
+            keyringSelector,
+            async ({ keyring }) => {
+              const [newAddress] = await keyring.addAccounts(1);
+              return newAddress;
+            },
+          );
+        }
+      } finally {
+        endTrace({
+          name: TraceName.EvmDiscoverAccounts,
+          op: TraceOperation.AccountDiscover,
+        });
       }
-      endTrace({
-        name: TraceName.EvmDiscoverAccounts,
-        op: TraceOperation.AccountDiscover,
-      });
 
       const discoveredAccounts = {
         Bitcoin: 0,
