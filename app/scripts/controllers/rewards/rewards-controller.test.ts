@@ -35,6 +35,7 @@ import {
   wrapWithCache,
   DEFAULT_BLOCKED_REGIONS,
 } from './rewards-controller';
+import { SeasonDtoState } from '../../../../shared/types/rewards';
 import type {
   RewardsControllerState,
   SeasonTierDto,
@@ -63,7 +64,6 @@ import {
   RewardsDataServiceMobileOptinAction,
   RewardsDataServiceValidateReferralCodeAction,
 } from './rewards-data-service-types';
-import { SeasonDtoState } from '../../../../shared/types/rewards';
 
 type AllActions = MessengerActions<RewardsControllerMessenger>;
 
