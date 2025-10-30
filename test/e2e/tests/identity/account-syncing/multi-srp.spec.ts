@@ -55,9 +55,7 @@ describe('Account syncing - Multiple SRPs', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        // Balance is 0 because aggregated balance has changed and doesn't display dev networks
-        // The method should be udpdated to use the new selector and we can then remove checkExpectedTokenBalanceIsDisplayed
-        await loginWithBalanceValidation(driver, undefined, undefined, '0');
+        await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
@@ -161,7 +159,7 @@ describe('Account syncing - Multiple SRPs', function () {
       async ({ driver }) => {
         // Balance is 0 because aggregated balance has changed and doesn't display dev networks
         // The method should be udpdated to use the new selector and we can then remove checkExpectedTokenBalanceIsDisplayed
-        await loginWithBalanceValidation(driver, undefined, undefined, '0');
+        await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
