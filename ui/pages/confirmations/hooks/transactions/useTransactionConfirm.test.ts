@@ -83,8 +83,7 @@ describe('useTransactionConfirm', () => {
 
     await onTransactionConfirm();
 
-    const actualTransactionMeta =
-      updateAndApproveTxMock.mock.calls[0][0].txMeta;
+    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
 
     expect(actualTransactionMeta).toStrictEqual(
       expect.objectContaining({
@@ -103,8 +102,7 @@ describe('useTransactionConfirm', () => {
 
     await onTransactionConfirm();
 
-    const actualTransactionMeta =
-      updateAndApproveTxMock.mock.calls[0][0].txMeta;
+    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
 
     expect(actualTransactionMeta.batchTransactions).toStrictEqual([
       {
@@ -132,8 +130,7 @@ describe('useTransactionConfirm', () => {
 
     await onTransactionConfirm();
 
-    const actualTransactionMeta =
-      updateAndApproveTxMock.mock.calls[0][0].txMeta;
+    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
 
     expect(actualTransactionMeta.txParams).toStrictEqual(
       expect.objectContaining({
@@ -153,8 +150,7 @@ describe('useTransactionConfirm', () => {
 
     await onTransactionConfirm();
 
-    const actualTransactionMeta =
-      updateAndApproveTxMock.mock.calls[0][0].txMeta;
+    const actualTransactionMeta = updateAndApproveTxMock.mock.calls[0][0];
 
     expect(actualTransactionMeta.txParams).toStrictEqual(
       expect.objectContaining({
