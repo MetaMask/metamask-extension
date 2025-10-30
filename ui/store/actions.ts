@@ -586,14 +586,21 @@ export function setShowShieldEntryModalOnceAction(payload: {
   };
 }
 
-export function setLastUsedSubscriptionPaymentDetails(payload: {
-  paymentMethod: PaymentType;
-  plan: RecurringInterval;
-  paymentTokenAddress?: string;
+export function cacheLastSelectedPaymentMethod(payload: {
+  product: ProductType;
+  paymentMethod: {
+    type: PaymentType;
+    paymentTokenAddress?: Hex;
+    paymentTokenSymbol?: string;
+    plan: RecurringInterval;
+  };
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return {
-    type: actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_DETAILS,
-    payload,
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('cacheLastSelectedPaymentMethod', [
+      payload.product,
+      payload.paymentMethod,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
   };
 }
 
