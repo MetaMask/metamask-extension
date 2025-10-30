@@ -68,9 +68,7 @@ describe('Add wallet', function () {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountsPage();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 1',
@@ -88,17 +86,13 @@ describe('Add wallet', function () {
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.startImportSecretPhrase(E2E_SRP, {
           isMultichainAccountsState2Enabled: true,
         });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountsPage();
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
         await accountListPage.checkNumberOfAvailableAccounts(3);
       },
     );
@@ -136,9 +130,7 @@ describe('Add wallet', function () {
         await headerNavbar.checkAccountLabel('Account 1');
         await headerNavbar.openAccountsPage();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Imports an account with JSON file
         const jsonFile = path.join(
@@ -194,9 +186,7 @@ describe('Add wallet', function () {
         await headerNavbar.checkAccountLabel('Account 1');
         await headerNavbar.openAccountsPage();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // import active account with private key from the account menu and check error message
         await accountListPage.addNewImportedAccount(

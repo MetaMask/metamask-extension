@@ -22,9 +22,7 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
         await accountListPage.checkAccountNameIsDisplayed('Account 1');
