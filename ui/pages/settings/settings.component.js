@@ -95,11 +95,8 @@ class SettingsPage extends PureComponent {
     addNewNetwork: PropTypes.bool,
     addressName: PropTypes.string,
     backRoute: PropTypes.string,
-    breadCrumbTextKey: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
-    initialBreadCrumbKey: PropTypes.string,
-    initialBreadCrumbRoute: PropTypes.string,
     isAddressEntryPage: PropTypes.bool,
     isMetaMaskShieldFeatureEnabled: PropTypes.bool,
     isPasswordChangePage: PropTypes.bool,
@@ -326,10 +323,6 @@ class SettingsPage extends PureComponent {
       isAddressEntryPage,
       pathnameI18nKey,
       addressName,
-      initialBreadCrumbRoute,
-      breadCrumbTextKey,
-      navigate,
-      initialBreadCrumbKey,
     } = this.props;
     let subheaderText;
 
@@ -337,8 +330,6 @@ class SettingsPage extends PureComponent {
       subheaderText = t('settings');
     } else if (isAddressEntryPage) {
       subheaderText = t('contacts');
-    } else if (initialBreadCrumbKey) {
-      subheaderText = t(initialBreadCrumbKey);
     } else {
       subheaderText = t(pathnameI18nKey || 'general');
     }
@@ -354,23 +345,7 @@ class SettingsPage extends PureComponent {
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
         >
-          <Text
-            className={classnames({
-              'settings-page__subheader--link': initialBreadCrumbRoute,
-            })}
-            variant={TextVariant.headingSm}
-            onClick={() =>
-              initialBreadCrumbRoute && navigate(initialBreadCrumbRoute)
-            }
-          >
-            {subheaderText}
-          </Text>
-          {breadCrumbTextKey && (
-            <div className="settings-page__subheader--break">
-              <span>{' > '}</span>
-              {t(breadCrumbTextKey)}
-            </div>
-          )}
+          <Text variant={TextVariant.headingSm}>{subheaderText}</Text>
           {isAddressEntryPage && (
             <div className="settings-page__subheader--break">
               <span>{' > '}</span>
