@@ -2321,7 +2321,6 @@
       "globals": {
         "AudioContext": true,
         "Blob": true,
-        "Buffer": true,
         "DOMMatrix": true,
         "FinalizationRegistry": true,
         "HTMLCanvasElement": true,
@@ -2356,9 +2355,6 @@
         "requestAnimationFrame": true,
         "setTimeout": true,
         "webkitAudioContext": true
-      },
-      "packages": {
-        "buffer": true
       }
     },
     "@rive-app/react-canvas": {

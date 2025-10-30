@@ -2269,9 +2269,6 @@
         "requestAnimationFrame": true,
         "setTimeout": true,
         "webkitAudioContext": false
-      },
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "@rive-app/react-canvas": {
