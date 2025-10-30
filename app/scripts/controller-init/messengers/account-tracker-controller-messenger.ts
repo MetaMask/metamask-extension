@@ -44,12 +44,14 @@ type AllowedEvents =
  * @param messenger - The base messenger used to create the restricted
  * messenger.
  */
-export function getAccountTrackerControllerMessenger(messenger: RootMessenger) {
+export function getAccountTrackerControllerMessenger(
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
+) {
   const accountTrackerControllerMessenger = new Messenger<
     'AccountTrackerController',
     AllowedActions,
     AllowedEvents,
-    RootMessenger
+    typeof messenger
   >({
     namespace: 'AccountTrackerController',
     parent: messenger,
