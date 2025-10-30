@@ -406,6 +406,7 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
+    if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     needs:
       - build-dist-browserify
       - build-dist-mv2-browserify
