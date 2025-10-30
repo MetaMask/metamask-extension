@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
@@ -55,6 +55,7 @@ import PasswordForm from '../../../components/app/password-form/password-form';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import {
+  checkIsSeedlessOnboardingUserAuthenticated,
   forceUpdateMetamaskState,
   resetOnboarding,
   setDataCollectionForMarketing,
@@ -103,6 +104,15 @@ export default function CreatePassword({
     analyticsIframeQuery,
   )}`;
 
+  const validateSocialLoginAuthenticatedState = useCallback(async () => {
+    const isSeedlessOnboardingUserAuthenticated = await dispatch(
+      checkIsSeedlessOnboardingUserAuthenticated(),
+    );
+    if (!isSeedlessOnboardingUserAuthenticated) {
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    }
+  }, [dispatch, navigate]);
+
   useEffect(() => {
     if (currentKeyring && !newAccountCreationInProgress) {
       if (
@@ -133,6 +143,8 @@ export default function CreatePassword({
       !secretRecoveryPhrase
     ) {
       navigate(ONBOARDING_IMPORT_WITH_SRP_ROUTE, { replace: true });
+    } else if (isSocialLoginFlow) {
+      validateSocialLoginAuthenticatedState();
     }
   }, [
     currentKeyring,
@@ -141,6 +153,8 @@ export default function CreatePassword({
     newAccountCreationInProgress,
     secretRecoveryPhrase,
     isParticipateInMetaMetricsSet,
+    isSocialLoginFlow,
+    validateSocialLoginAuthenticatedState,
   ]);
 
   const handleLearnMoreClick = (event) => {
