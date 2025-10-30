@@ -91,7 +91,7 @@ const browserPolyfillMock = {
     onMessageExternal: {
       addListener: jest.fn(),
     },
-    getPlatformInfo: jest.fn().mockResolvedValue('mac'),
+    getPlatformInfo: jest.fn().mockResolvedValue({ os: 'mac' }),
   },
   storage: {
     session: {
@@ -5357,6 +5357,11 @@ describe('MetaMaskController', () => {
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
         isFirstMetaMaskControllerSetup: true,
+        cronjobControllerStorageManager:
+          createMockCronjobControllerStorageManager(),
+        controllerMessenger: new Messenger({
+          namespace: MOCK_ANY_NAMESPACE,
+        }),
       });
 
       mockTrace.mockClear();
@@ -5364,10 +5369,10 @@ describe('MetaMaskController', () => {
     });
 
     afterEach(() => {
-      jest.resetAllMocks();
+      jest.clearAllMocks();
     });
 
-    it('should start and end both DiscoverAccounts and EvmDiscoverAccounts traces on successful execution', async () => {
+    it('starts and ends both DiscoverAccounts and EvmDiscoverAccounts traces on successful execution', async () => {
       jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
       jest
         .spyOn(metamaskController.tokenDetectionController, 'detectTokens')
@@ -5459,7 +5464,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    it('should end DiscoverAccounts trace even if an error occurs', async () => {
+    it('ends DiscoverAccounts trace even if an error occurs', async () => {
       const testError = new Error('Test error');
 
       jest
@@ -5489,7 +5494,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    it('should not import Solana accounts when shouldImportSolanaAccount is false', async () => {
+    it('does not import Solana accounts when shouldImportSolanaAccount is false', async () => {
       jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
       jest
         .spyOn(metamaskController.tokenDetectionController, 'detectTokens')
@@ -5776,7 +5781,7 @@ describe('MetaMaskController', () => {
       ).not.toHaveBeenCalled();
     });
 
-    it('should not notify when account address has not changed', async () => {
+    it('does not notify when account address has not changed', async () => {
       setupMocks();
 
       // First call to set the lastSelectedSolanaAccountAddress
