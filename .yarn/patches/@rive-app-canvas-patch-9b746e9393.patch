@@ -1,40 +1,8 @@
 diff --git a/rive.js b/rive.js
-index 44112630e4ea885e7a374fdb922dd09a21e17ef1..378391aa44a8dbb1fccbf37fd03277a02d0f4dbf 100644
+index 44112630e4ea885e7a374fdb922dd09a21e17ef1..03eeff276d0495d77ce0c4715160db4b80a5fc87 100644
 --- a/rive.js
 +++ b/rive.js
-@@ -650,14 +650,23 @@ if (na || oa) {
-     b.send(null);
-     return new Uint8Array(b.response);
-   }), qa = (a, b, c) => {
--    var d = new XMLHttpRequest();
--    d.open("GET", a, !0);
--    d.responseType = "arraybuffer";
--    d.onload = () => {
--      200 == d.status || 0 == d.status && d.response ? b(d.response) : c();
--    };
--    d.onerror = c;
--    d.send(null);
-+    // Use setTimeout to make it async like the original XMLHttpRequest
-+    setTimeout(() => {
-+      try {
-+        // Decode base64 string to binary using polyfill
-+        const binaryString = atob(a);
-+        const bytes = new Uint8Array(binaryString.length);
-+        for (let i = 0; i < binaryString.length; i++) {
-+          bytes[i] = binaryString.charCodeAt(i);
-+        }
-+        // Call success callback with ArrayBuffer
-+        b(bytes.buffer);
-+      } catch (error) {
-+        console.error("Failed to decode WASM from base64:", error);
-+        // Call error callback
-+        c();
-+      }
-+    }, 0);
-   };
- }
- var va = m.print || console.log.bind(console), wa = m.printErr || console.error.bind(console);
-@@ -4366,6 +4375,7 @@ var RuntimeLoader = /** @class */ (function () {
+@@ -4366,6 +4366,7 @@ var RuntimeLoader = /** @class */ (function () {
          _rive_advanced_mjs__WEBPACK_IMPORTED_MODULE_0__["default"]({
              // Loads Wasm bundle
              locateFile: function () { return RuntimeLoader.wasmURL; },
