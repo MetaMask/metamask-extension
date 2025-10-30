@@ -1,9 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import BigNumber from 'bignumber.js';
 import {
   getAllDetectedTokens,
@@ -23,14 +20,12 @@ import {
   getTokenAddressParam,
   getTokenIdParam,
 } from '../helpers/utils/token-util';
-import { formatDateWithYearContext } from '../helpers/utils/util';
 
 import {
   PENDING_STATUS_HASH,
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
 import { getNfts } from '../ducks/metamask/metamask';
-import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
@@ -76,17 +71,14 @@ const signatureTypes = [
 
 /**
  * @typedef {object} TransactionDisplayData
- * @property {string} category - the transaction category that will be used for rendering the icon in the activity list
  * @property {string} primaryCurrency - the currency string to display in the primary position
  * @property {string} recipientAddress - the Ethereum address of the recipient
  * @property {string} senderAddress - the Ethereum address of the sender
  * @property {string} status - the status of the transaction
  * @property {string} title - the primary title of the tx that will be displayed in the activity list
  * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
- * @property {string} date - the formatted date of the transaction
  * @property {string} displayedStatusKey - the key representing the displayed status of the transaction
  * @property {boolean} isPending - indicates if the transaction is pending
- * @property {boolean} isSubmitted - indicates if the transaction has been submitted
  */
 
 /**
@@ -143,11 +135,9 @@ export function useTransactionDisplayData(transactionGroup) {
 
   const displayedStatusKey = getStatusKey(primaryTransaction);
   const isPending = displayedStatusKey in PENDING_STATUS_HASH;
-  const isSubmitted = displayedStatusKey === TransactionStatus.submitted;
   const mounted = useRef(true);
 
   const primaryValue = primaryTransaction.txParams?.value;
-  const date = formatDateWithYearContext(initialTransaction.time);
 
   let prefix = '-';
   let recipientAddress = to;
@@ -273,7 +263,6 @@ export function useTransactionDisplayData(transactionGroup) {
   // but can later be modified if dealing with a swap
   let secondaryDisplayValue = isTokenCategory ? tokenFiatAmount : undefined;
 
-  let category;
   let title;
 
   const {
@@ -286,10 +275,8 @@ export function useTransactionDisplayData(transactionGroup) {
   const bridgeTokenDisplayData = useBridgeTokenDisplayData(transactionGroup);
 
   if (signatureTypes.includes(type)) {
-    category = TransactionGroupCategory.signatureRequest;
     title = t('signatureRequest');
   } else if (type === TransactionType.swap) {
-    category = TransactionGroupCategory.swap;
     title = t('swapTokenToToken', [
       bridgeTokenDisplayData.sourceTokenSymbol ??
         initialTransaction.sourceTokenSymbol,
@@ -322,7 +309,6 @@ export function useTransactionDisplayData(transactionGroup) {
 
     recipientAddress = initialTransaction.swapAndSendRecipient;
 
-    category = TransactionGroupCategory.swapAndSend;
     title = t('sentTokenAsToken', [
       initialTransaction.sourceTokenSymbol,
       initialTransaction.destinationTokenSymbol,
@@ -342,7 +328,6 @@ export function useTransactionDisplayData(transactionGroup) {
       prefix = '-';
     }
   } else if (type === TransactionType.swapApproval) {
-    category = TransactionGroupCategory.approval;
     title = t('swapApproval', [
       bridgeTokenDisplayData.sourceTokenSymbol ??
         primaryTransaction.sourceTokenSymbol,
@@ -351,7 +336,6 @@ export function useTransactionDisplayData(transactionGroup) {
       bridgeTokenDisplayData.sourceTokenSymbol ??
       primaryTransaction.sourceTokenSymbol;
   } else if (type === TransactionType.tokenMethodApprove) {
-    category = TransactionGroupCategory.approval;
     prefix = '';
     title = t('approveSpendingCap', [
       token?.symbol || t('token').toLowerCase(),
@@ -359,13 +343,11 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.tokenMethodSetApprovalForAll) {
     const isRevoke = !tokenData?.args?.[1];
 
-    category = TransactionGroupCategory.approval;
     prefix = '';
     title = isRevoke
       ? t('revokePermissionTitle', [token?.symbol || nft?.name || t('token')])
       : t('setApprovalForAllTitle', [token?.symbol || t('token')]);
   } else if (type === TransactionType.tokenMethodIncreaseAllowance) {
-    category = TransactionGroupCategory.approval;
     prefix = '';
     title = t('approveIncreaseAllowance', [token?.symbol || t('token')]);
   } else if (
@@ -373,42 +355,33 @@ export function useTransactionDisplayData(transactionGroup) {
     type === TransactionType.batch ||
     type === TransactionType.revokeDelegation
   ) {
-    category = TransactionGroupCategory.interaction;
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
     title =
       (methodData?.name && camelCaseToCapitalize(methodData.name)) ||
       transactionTypeTitle;
   } else if (type === TransactionType.deployContract) {
-    // @todo Should perhaps be a separate group?
-    category = TransactionGroupCategory.interaction;
     title = getTransactionTypeTitle(t, type);
   } else if (type === TransactionType.incoming) {
-    category = TransactionGroupCategory.receive;
     title = t('received');
     prefix = '';
   } else if (
     type === TransactionType.tokenMethodTransferFrom ||
     type === TransactionType.tokenMethodTransfer
   ) {
-    category = TransactionGroupCategory.send;
     title = t('sentSpecifiedTokens', [
       token?.symbol || nft?.name || t('token'),
     ]);
     recipientAddress = getTokenAddressParam(tokenData);
   } else if (type === TransactionType.tokenMethodSafeTransferFrom) {
-    category = TransactionGroupCategory.send;
     title = t('safeTransferFrom');
     recipientAddress = getTokenAddressParam(tokenData);
   } else if (type === TransactionType.simpleSend) {
-    category = TransactionGroupCategory.send;
     title = t('sent');
   } else if (type === TransactionType.bridgeApproval) {
-    category = TransactionGroupCategory.approval;
     title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
     title = destChainName ? t('bridgedToChain', [destChainName]) : t('bridged');
-    category = bridgeTokenDisplayData.category;
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
     primaryDisplayValue = formatAmount(
       locale,
@@ -462,8 +435,6 @@ export function useTransactionDisplayData(transactionGroup) {
 
   return {
     title,
-    category,
-    date,
     primaryCurrency:
       type === TransactionType.swap && isPending ? '' : primaryCurrency,
     senderAddress,
@@ -478,7 +449,6 @@ export function useTransactionDisplayData(transactionGroup) {
         : secondaryCurrency,
     displayedStatusKey,
     isPending,
-    isSubmitted,
     detailsTitle,
   };
 }

@@ -2,7 +2,7 @@
 import React, { useMemo, useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -70,6 +70,7 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { mapTransactionTypeToCategory } from './helpers';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -78,7 +79,7 @@ function TransactionListItemInner({
   chainId,
 }) {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { hasCancelled } = transactionGroup;
   const [showDetails, setShowDetails] = useState(false);
   const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
@@ -180,9 +181,12 @@ function TransactionListItemInner({
     isEarliestNonce,
   );
 
+  const category = mapTransactionTypeToCategory(
+    transactionGroup.initialTransaction.type,
+  );
+
   const {
     title,
-    category,
     primaryCurrency,
     recipientAddress,
     secondaryCurrency,
@@ -232,7 +236,7 @@ function TransactionListItemInner({
 
   const toggleShowDetails = useCallback(() => {
     if (isUnapproved) {
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`);
+      navigate(`${CONFIRM_TRANSACTION_ROUTE}/${id}`);
       return;
     }
     setShowDetails((prev) => {
@@ -247,7 +251,7 @@ function TransactionListItemInner({
       });
       return !prev;
     });
-  }, [isUnapproved, history, id, trackEvent, category]);
+  }, [isUnapproved, navigate, id, trackEvent, category]);
 
   const isSpeedUpButtonVisible = useMemo(() => {
     if (

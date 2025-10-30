@@ -1,4 +1,5 @@
 import { Driver } from '../../../webdriver/driver';
+import { regularDelayMs } from '../../../helpers';
 
 class UpdateModal {
   private driver: Driver;
@@ -31,10 +32,9 @@ class UpdateModal {
 
   async checkPageIsNotPresent() {
     console.log('Checking if update modal is not present');
-    const isPresent = await this.driver.isElementPresent(this.updateModal);
-    if (isPresent) {
-      throw new Error('Update modal should not be present');
-    }
+    await this.driver.assertElementNotPresent(this.updateModal, {
+      waitAtLeastGuard: regularDelayMs,
+    });
   }
 
   async confirm() {

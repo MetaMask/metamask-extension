@@ -1,4 +1,3 @@
-import { Messenger } from '@metamask/base-controller';
 import {
   AccountsControllerAccountAddedEvent,
   AccountsControllerAccountRemovedEvent,
@@ -8,6 +7,7 @@ import {
   AccountsControllerSelectedAccountChangeEvent,
   AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   AuthenticationController,
   UserStorageController,
@@ -19,6 +19,8 @@ import {
   MultichainAccountServiceWalletStatusChangeEvent,
 } from '@metamask/multichain-account-service';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { RootMessenger } from '../../../lib/messenger';
+import { AccountOrderControllerGetStateAction } from '../../../controllers/account-order';
 
 type Actions =
   | AccountsControllerGetAccountAction
@@ -33,8 +35,7 @@ type Actions =
   | UserStorageController.UserStorageControllerPerformSetStorage
   | UserStorageController.UserStorageControllerPerformBatchSetStorage
   | AuthenticationController.AuthenticationControllerGetSessionProfile
-  | MultichainAccountServiceCreateMultichainAccountGroupAction
-  | MetaMetricsControllerTrackEventAction;
+  | MultichainAccountServiceCreateMultichainAccountGroupAction;
 
 type Events =
   | AccountsControllerAccountAddedEvent
@@ -55,18 +56,27 @@ export type AccountTreeControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getAccountTreeControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'AccountTreeController',
-    allowedEvents: [
+  const accountTreeControllerMessenger = new Messenger<
+    'AccountTreeController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'AccountTreeController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: accountTreeControllerMessenger,
+    events: [
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'AccountsController:selectedAccountChange',
       'UserStorageController:stateChange',
       'MultichainAccountService:walletStatusChange',
     ],
-    allowedActions: [
+    actions: [
       'AccountsController:listMultichainAccounts',
       'AccountsController:getAccount',
       'AccountsController:getSelectedMultichainAccount',
@@ -82,10 +92,13 @@ export function getAccountTreeControllerMessenger(
       'KeyringController:getState',
     ],
   });
+  return accountTreeControllerMessenger;
 }
 
 export type AllowedInitializationActions =
-  MetaMetricsControllerTrackEventAction;
+  | MetaMetricsControllerTrackEventAction
+  | AccountsControllerGetAccountAction
+  | AccountOrderControllerGetStateAction;
 
 export type AccountTreeControllerInitMessenger = ReturnType<
   typeof getAccountTreeControllerInitMessenger
@@ -99,11 +112,25 @@ export type AccountTreeControllerInitMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getAccountTreeControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, Events>,
+  messenger: RootMessenger<AllowedInitializationActions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'AccountTreeControllerInit',
-    allowedActions: ['MetaMetricsController:trackEvent'],
-    allowedEvents: [],
+  const accountTreeControllerInitMessenger = new Messenger<
+    'AccountTreeControllerInit',
+    AllowedInitializationActions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'AccountTreeControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: accountTreeControllerInitMessenger,
+    actions: [
+      'MetaMetricsController:trackEvent',
+      'AccountsController:getAccount',
+      'AccountOrderController:getState',
+    ],
+    events: [],
+  });
+  return accountTreeControllerInitMessenger;
 }

@@ -11,7 +11,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {

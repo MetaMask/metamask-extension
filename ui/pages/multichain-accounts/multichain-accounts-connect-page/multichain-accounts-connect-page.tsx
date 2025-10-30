@@ -21,10 +21,7 @@ import {
 
 import { isEqual } from 'lodash';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
-import {
-  BoxBackgroundColor,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
+
 import { Tooltip } from 'react-tippy';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissions } from '../../../selectors';
@@ -522,7 +519,7 @@ export const MultichainAccountsConnectPage: React.FC<
       className="main-container multichain-connect-page"
       backgroundColor={BackgroundColor.backgroundDefault}
     >
-      <Header paddingTop={8} paddingBottom={0}>
+      <Header paddingTop={8} paddingBottom={4}>
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.center}
@@ -606,17 +603,9 @@ export const MultichainAccountsConnectPage: React.FC<
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs
-          onTabClick={() => null}
-          backgroundColor={BoxBackgroundColor.Transparent}
-          defaultActiveTabKey="accounts"
-          tabListProps={{
-            backgroundColor: BoxBackgroundColor.Transparent,
-            justifyContent: BoxJustifyContent.Center,
-          }}
-        >
+        <Tabs onTabClick={() => null} defaultActiveTabKey="accounts">
           <Tab
-            className="multichain-connect-page__tab"
+            className="multichain-connect-page__tab flex-1"
             name={t('accounts')}
             tabKey="accounts"
             data-testid="accounts-tab"
@@ -680,7 +669,7 @@ export const MultichainAccountsConnectPage: React.FC<
           </Tab>
           <Tab
             name={t('permissions')}
-            className="multichain-connect-page__tab"
+            className="multichain-connect-page__tab flex-1"
             tabKey="permissions"
             data-testid="permissions-tab"
             disabled={selectedAccountGroupIds.length === 0}

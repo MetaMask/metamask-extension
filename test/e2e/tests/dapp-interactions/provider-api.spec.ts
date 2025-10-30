@@ -10,7 +10,7 @@ describe('MetaMask', function (this: Suite) {
   it('should reject unsupported methods', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
