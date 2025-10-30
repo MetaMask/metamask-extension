@@ -334,7 +334,7 @@ async function start(): Promise<void> {
   // Add the page load benchmark results
   const pageLoadBenchmarkComment = await getPageLoadBenchmarkComment();
   if (pageLoadBenchmarkComment) {
-    commentBody += `<details><summary>📊 Page Load Benchmark Results</summary>${pageLoadBenchmarkComment}</details>`;
+    commentBody += pageLoadBenchmarkComment;
   }
 
   try {

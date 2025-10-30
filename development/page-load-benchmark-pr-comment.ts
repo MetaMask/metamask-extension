@@ -437,6 +437,7 @@ function generateBenchmarkComment(
   const date = new Date(timestamp).toLocaleDateString();
 
   let comment = `\n\n**Current Commit**: \`${shortCommit}\` | **Date**: ${date}\n\n`;
+  let commentHeader = `📊 Page Load Benchmark Results`;
 
   // Track significant increases for warning
   const significantIncreases: {
@@ -510,9 +511,11 @@ function generateBenchmarkComment(
     }
 
     comment += `\n`;
+
+    commentHeader += ` **🚨 Significant performance regression detected!**`;
   }
 
-  return comment;
+  return `<details><summary>${commentHeader}</summary>${comment}</details>`;
 }
 
 /**
