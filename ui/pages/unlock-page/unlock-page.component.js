@@ -85,6 +85,10 @@ class UnlockPage extends Component {
      */
     checkIsSeedlessPasswordOutdated: PropTypes.func,
     /**
+     * check if the seedless onboarding user is authenticated for social login flow to do the rehydration
+     */
+    checkIsSeedlessOnboardingUserAuthenticated: PropTypes.func,
+    /**
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
@@ -155,7 +159,18 @@ class UnlockPage extends Component {
     });
 
     try {
-      await this.props.checkIsSeedlessPasswordOutdated();
+      if (this.props.isOnboardingCompleted) {
+        await this.props.checkIsSeedlessPasswordOutdated();
+      } else {
+        // if the onboarding is not completed, check if the seedless onboarding user is authenticated to do the rehydration
+        // we have to consider the case where required tokens for rehydration are removed when user closed the browser app after social login is completed.
+        const isSeedlessOnboardingUserAuthenticated =
+          await this.props.checkIsSeedlessOnboardingUserAuthenticated();
+        if (!isSeedlessOnboardingUserAuthenticated) {
+          // if the seedless onboarding user is not authenticated, redirect to the onboarding welcome page
+          this.props.history.push(ONBOARDING_WELCOME_ROUTE);
+        }
+      }
     } catch (error) {
       log.error('unlock page - checkIsSeedlessPasswordOutdated error', error);
     }

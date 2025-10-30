@@ -14,6 +14,7 @@ import {
   markPasswordForgotten,
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
+  checkIsSeedlessOnboardingUserAuthenticated,
   resetOnboarding,
 } from '../../store/actions';
 import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
@@ -40,6 +41,8 @@ const mapDispatchToProps = (dispatch) => {
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>
       dispatch(checkIsSeedlessPasswordOutdated()),
+    checkIsSeedlessOnboardingUserAuthenticated: () =>
+      dispatch(checkIsSeedlessOnboardingUserAuthenticated()),
   };
 };
 

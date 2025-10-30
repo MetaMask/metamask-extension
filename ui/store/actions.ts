@@ -751,6 +751,45 @@ export function checkIsSeedlessPasswordOutdated(
 }
 
 /**
+ * Checks if the seedless onboarding user is authenticated.
+ *
+ * @returns True if the seedless onboarding user is authenticated, false otherwise.
+ */
+export function checkIsSeedlessOnboardingUserAuthenticated(): ThunkAction<
+  boolean,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
+    const state = getState();
+    const isSocialLoginFlow = getIsSocialLoginFlow(state);
+
+    if (!isSocialLoginFlow) {
+      // if not social login flow, return true
+      return true;
+    }
+
+    try {
+      dispatch(showLoadingIndication());
+      const isAuthenticated = await submitRequestToBackground<boolean>(
+        'checkIsSeedlessOnboardingUserAuthenticated',
+        [],
+      );
+      return isAuthenticated;
+    } catch (error) {
+      log.warn('checkIsSeedlessOnboardingUserAuthenticated error', error);
+      return false;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
  * Adds a new account where all data is encrypted using the given password and
  * where all addresses are generated from a given seed phrase.
  *
