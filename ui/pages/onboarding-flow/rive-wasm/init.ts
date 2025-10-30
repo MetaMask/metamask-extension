@@ -29,20 +29,49 @@ export function initializeRiveWASM(): Promise<void> {
         return;
       }
 
-      // Set the WASM URL to our local bundled file
-      const wasmUrl = RIVE_WASM_URL;
-      console.log('[Rive] Initializing WASM from:', wasmUrl);
-      RuntimeLoader.setWasmUrl(wasmUrl);
+      console.log('[Rive] Loading WASM from:', RIVE_WASM_URL);
 
-      // Preload the WASM by explicitly fetching and instantiating it
-      RuntimeLoader.awaitInstance()
-        .then(() => {
-          console.log('[Rive] WASM loaded and initialized successfully');
-          wasmIsReady = true;
-          resolve();
+      // Fetch once and convert to base64
+      fetch(RIVE_WASM_URL)
+        .then((response) => response.arrayBuffer())
+        .then((arrayBuffer) => {
+          // Convert to base64 in chunks to avoid stack overflow
+          const bytes = new Uint8Array(arrayBuffer);
+          const chunkSize = 8192; // Process 8KB at a time
+          let binaryString = '';
+
+          for (let i = 0; i < bytes.length; i += chunkSize) {
+            const chunk = bytes.subarray(
+              i,
+              Math.min(i + chunkSize, bytes.length),
+            );
+            binaryString += String.fromCharCode.apply(null, Array.from(chunk));
+          }
+
+          const wasmBase64 = btoa(binaryString);
+          console.log(
+            '[Rive] WASM converted to base64, length:',
+            wasmBase64.length,
+          );
+
+          // Pass the base64 string as the "URL"
+          // Your patched qa() function will decode it using atob()
+          RuntimeLoader.setWasmUrl(wasmBase64);
+
+          // Preload the WASM by explicitly fetching and instantiating it
+          RuntimeLoader.awaitInstance()
+            .then(() => {
+              console.log('[Rive] WASM loaded and initialized successfully');
+              wasmIsReady = true;
+              resolve();
+            })
+            .catch((error: Error) => {
+              console.error('[Rive] WASM initialization failed:', error);
+              reject(error);
+            });
         })
-        .catch((error: Error) => {
-          console.error('[Rive] WASM initialization failed:', error);
+        .catch((error) => {
+          console.error('[Rive] Failed to fetch WASM:', error);
           reject(error);
         });
     } catch (error) {

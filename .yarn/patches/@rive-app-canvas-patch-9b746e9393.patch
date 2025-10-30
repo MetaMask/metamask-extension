@@ -1,0 +1,66 @@
+diff --git a/rive.js b/rive.js
+index 44112630e4ea885e7a374fdb922dd09a21e17ef1..12044b728e397a6497876e3f907c3b5867c0b23f 100644
+--- a/rive.js
++++ b/rive.js
+@@ -126,6 +126,7 @@ m.onRuntimeInitialized = function() {
+       return !1;
+     }
+     (function(g, n) {
++      console.log("Loading asset from CDN:", g);
+       var p = new XMLHttpRequest();
+       p.responseType = "arraybuffer";
+       p.onreadystatechange = function() {
+@@ -641,23 +642,45 @@ m.onRuntimeInitialized = function() {
+     w && w.delete();
+   };
+ };
++var atobPolyfill =
++  typeof atob !== "undefined"
++    ? atob
++    : function (base64) {
++        // Simple base64 decode for Node.js-like environments
++        if (typeof Buffer !== "undefined") {
++          return Buffer.from(base64, "base64").toString("binary");
++        }
++        throw new Error("atob is not available and Buffer is not defined");
++      };
+ var la = Object.assign({}, m), ma = "./this.program", na = "object" == typeof window, oa = "function" == typeof importScripts, pa = "", qa, ua;
+ if (na || oa) {
+   oa ? pa = self.location.href : "undefined" != typeof document && document.currentScript && (pa = document.currentScript.src), _scriptDir && (pa = _scriptDir), 0 !== pa.indexOf("blob:") ? pa = pa.substr(0, pa.replace(/[?#].*/, "").lastIndexOf("/") + 1) : pa = "", oa && (ua = a => {
+     var b = new XMLHttpRequest();
++    console.log("XMLHttpRequest: GET 1", a);
+     b.open("GET", a, !1);
+     b.responseType = "arraybuffer";
+     b.send(null);
+     return new Uint8Array(b.response);
+   }), qa = (a, b, c) => {
+-    var d = new XMLHttpRequest();
+-    d.open("GET", a, !0);
+-    d.responseType = "arraybuffer";
+-    d.onload = () => {
+-      200 == d.status || 0 == d.status && d.response ? b(d.response) : c();
+-    };
+-    d.onerror = c;
+-    d.send(null);
++    // Use setTimeout to make it async like the original XMLHttpRequest
++    setTimeout(() => {
++      try {
++        console.log("Loading WASM from base64 data, length:", a.length);
++        // Decode base64 string to binary using polyfill
++        const binaryString = atobPolyfill(a);
++        const bytes = new Uint8Array(binaryString.length);
++        for (let i = 0; i < binaryString.length; i++) {
++          bytes[i] = binaryString.charCodeAt(i);
++        }
++        console.log("WASM decoded from base64, byte length:", bytes.length);
++        // Call success callback with ArrayBuffer
++        b(bytes.buffer);
++      } catch (error) {
++        console.error("Failed to decode WASM from base64:", error);
++        // Call error callback
++        c();
++      }
++    }, 0);
+   };
+ }
+ var va = m.print || console.log.bind(console), wa = m.printErr || console.error.bind(console);

@@ -264,7 +264,8 @@
         "prompt": false,
         "readline": false,
         "webkitAudioContext": false,
-        "fetch": false
+        "fetch": false,
+        "XMLHttpRequest": false
       }
     },
     "@rive-app/react-canvas": {
