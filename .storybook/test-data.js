@@ -690,6 +690,7 @@ const state = {
     ],
     accountsAssets: {},
     assetsMetadata: {},
+    allIgnoredAssets: {},
     balances: {},
     conversionRates: {},
     networkConfigurationsByChainId: {},
