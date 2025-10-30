@@ -1,5 +1,5 @@
 import {
-  CachedLastSelectedPaymentMethods,
+  CachedLastSelectedPaymentMethod,
   PricingResponse,
   PRODUCT_TYPES,
   ProductType,
@@ -46,6 +46,6 @@ export function getHasShieldEntryModalShownOnce(
 
 export function getLastUsedShieldSubscriptionPaymentDetails(
   state: SubscriptionState,
-): CachedLastSelectedPaymentMethods | undefined {
+): CachedLastSelectedPaymentMethod | undefined {
   return state.metamask.lastSelectedPaymentMethod?.[PRODUCT_TYPES.SHIELD];
 }
