@@ -943,27 +943,11 @@
         "define": true
       },
       "packages": {
-        "@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
-        "terser-webpack-plugin>@jridgewell/trace-mapping": true
-      }
-    },
-    "tailwindcss>sucrase>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
     "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
       "globals": {
         "define": true
       }
@@ -1888,7 +1872,6 @@
         "chokidar>anymatch": true,
         "chokidar>braces": true,
         "chokidar>fsevents": true,
-        "tsx>fsevents": true,
         "eslint>glob-parent": true,
         "chokidar>is-binary-path": true,
         "del>is-glob": true,
@@ -4614,14 +4597,6 @@
         "watchify>xtend": true
       }
     },
-    "nanoid": {
-      "builtin": {
-        "crypto.randomFillSync": true
-      },
-      "globals": {
-        "Buffer.allocUnsafe": true
-      }
-    },
     "gulp>gulp-cli>matchdep>micromatch>nanomatch": {
       "builtin": {
         "path.basename": true,
@@ -7068,7 +7043,7 @@
     },
     "tailwindcss>sucrase": {
       "packages": {
-        "tailwindcss>sucrase>@jridgewell/gen-mapping": true,
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "tailwindcss>sucrase>lines-and-columns": true,
         "tailwindcss>sucrase>ts-interface-checker": true
       }
@@ -7184,10 +7159,10 @@
         "chokidar>normalize-path": true,
         "tailwindcss>object-hash": true,
         "postcss>picocolors": true,
+        "postcss": true,
         "tailwindcss>postcss-js": true,
         "tailwindcss>postcss-nested": true,
         "stylelint>postcss-selector-parser": true,
-        "tailwindcss>postcss": true,
         "tailwindcss>sucrase": true
       }
     },

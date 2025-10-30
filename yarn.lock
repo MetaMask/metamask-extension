@@ -6604,21 +6604,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-onekey-keyring@npm:@metamask-previews/eth-onekey-keyring@0.1.0-7d43e97":
-  version: 0.1.0-7d43e97
-  resolution: "@metamask-previews/eth-onekey-keyring@npm:0.1.0-7d43e97"
+"@metamask/eth-onekey-keyring@npm:@metamask-previews/eth-onekey-keyring@0.1.0-e40d1ad":
+  version: 0.1.0-e40d1ad
+  resolution: "@metamask-previews/eth-onekey-keyring@npm:0.1.0-e40d1ad"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/utils": "npm:^11.1.0"
     "@noble/hashes": "npm:^1.7.0"
-    "@onekeyfe/hd-core": "npm:1.1.6-patch.4"
-    "@onekeyfe/hd-shared": "npm:1.1.6-patch.4"
-    "@onekeyfe/hd-transport": "npm:1.1.6-patch.4"
-    "@onekeyfe/hd-web-sdk": "npm:1.1.6-patch.4"
+    "@onekeyfe/hd-core": "npm:1.1.17-patch.1"
+    "@onekeyfe/hd-shared": "npm:1.1.17-patch.1"
+    "@onekeyfe/hd-transport": "npm:1.1.17-patch.1"
+    "@onekeyfe/hd-web-sdk": "npm:1.1.17-patch.1"
     hdkey: "npm:^2.1.0"
-  checksum: 10/3c036cfe2307d96b583f398cfbe92f0ef9c32520ebb49e609faa14c9159802e41f01d5549d54c16971bbfaca9fdb4a762cbecede4dfda5276a1f49e904aa3ff5
+  checksum: 10/7b067597d12540fb198cacf199dcdecaab9342dde4d2671a407249adfa32ac254e97d2ca01f80ed483673c5f7122905fa7f3aae67580ef6d9e7fa5bcef8690cb
   languageName: node
   linkType: hard
 
@@ -9883,6 +9883,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@onekeyfe/hd-core@npm:1.1.17-patch.1":
+  version: 1.1.17-patch.1
+  resolution: "@onekeyfe/hd-core@npm:1.1.17-patch.1"
+  dependencies:
+    "@onekeyfe/hd-shared": "npm:1.1.17-patch.1"
+    "@onekeyfe/hd-transport": "npm:1.1.17-patch.1"
+    axios: "npm:1.12.2"
+    bignumber.js: "npm:^9.0.2"
+    bytebuffer: "npm:^5.0.1"
+    jszip: "npm:^3.10.1"
+    parse-uri: "npm:^1.0.7"
+    semver: "npm:^7.3.7"
+  peerDependencies:
+    "@noble/hashes": ^1.1.3
+  checksum: 10/0dfab528b3c7ecf3881eb4a7abd317104f6f07e71c29c1ef9900c6beaeb68f67259d38ae0221bfbcf5ae713abc8cfde379f2fb29fa6760b4da29d86d034833c3
+  languageName: node
+  linkType: hard
+
 "@onekeyfe/hd-core@npm:1.1.6-patch.4":
   version: 1.1.6-patch.4
   resolution: "@onekeyfe/hd-core@npm:1.1.6-patch.4"
@@ -9901,10 +9919,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@onekeyfe/hd-shared@npm:1.1.17-patch.1":
+  version: 1.1.17-patch.1
+  resolution: "@onekeyfe/hd-shared@npm:1.1.17-patch.1"
+  checksum: 10/906a3f38b44eaa00835addcc16e383355a59296d0abb2df69647316be90a350e6b22ba0a38ce727080c2fc965339bd79d39d842664436fe21003b9916ed12ff9
+  languageName: node
+  linkType: hard
+
 "@onekeyfe/hd-shared@npm:1.1.6-patch.4":
   version: 1.1.6-patch.4
   resolution: "@onekeyfe/hd-shared@npm:1.1.6-patch.4"
   checksum: 10/458aa1305ce98ed1229cb04f0372b69a5811cae2b19e768864ba5161a5e832b9da7023bd5ae9050a9fdbe7416fffab016c160bee3fba8e05b9f175a362a0a072
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/hd-transport-http@npm:1.1.17-patch.1":
+  version: 1.1.17-patch.1
+  resolution: "@onekeyfe/hd-transport-http@npm:1.1.17-patch.1"
+  dependencies:
+    "@onekeyfe/hd-shared": "npm:1.1.17-patch.1"
+    "@onekeyfe/hd-transport": "npm:1.1.17-patch.1"
+    axios: "npm:1.12.2"
+    secure-json-parse: "npm:^4.0.0"
+  checksum: 10/55fc66153a8c407382182d4f0b7647ceaa2f03486be6799c7d3ddbf9d4cc17167c1bc8a1caf8be1b089c5c65db20e16c200104852447101edf5bce36a7d98eab
   languageName: node
   linkType: hard
 
@@ -9920,6 +9957,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@onekeyfe/hd-transport-web-device@npm:1.1.17-patch.1":
+  version: 1.1.17-patch.1
+  resolution: "@onekeyfe/hd-transport-web-device@npm:1.1.17-patch.1"
+  dependencies:
+    "@onekeyfe/hd-shared": "npm:1.1.17-patch.1"
+    "@onekeyfe/hd-transport": "npm:1.1.17-patch.1"
+  checksum: 10/bf6adcdeb7a14173f971be4fb456ca7d10e5f59be63f3b15d25538e2693ab9940e8890556d203ce45fd9ba264840f5f4d78a4e9d2ff1d09796fc6d7d900c5828
+  languageName: node
+  linkType: hard
+
 "@onekeyfe/hd-transport-web-device@npm:1.1.6-patch.4":
   version: 1.1.6-patch.4
   resolution: "@onekeyfe/hd-transport-web-device@npm:1.1.6-patch.4"
@@ -9927,6 +9974,17 @@ __metadata:
     "@onekeyfe/hd-shared": "npm:1.1.6-patch.4"
     "@onekeyfe/hd-transport": "npm:1.1.6-patch.4"
   checksum: 10/34848a6f0716cd8f8d89e6b0eb11ecb739bda52e30fa0d2bacfa92480271a18ca28559f0d88eeff74d27efc8c7c4de05000c5654fa22247b2f9a8ba5dca43f3f
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/hd-transport@npm:1.1.17-patch.1":
+  version: 1.1.17-patch.1
+  resolution: "@onekeyfe/hd-transport@npm:1.1.17-patch.1"
+  dependencies:
+    bytebuffer: "npm:^5.0.1"
+    long: "npm:^4.0.0"
+    protobufjs: "npm:^6.11.2"
+  checksum: 10/570505354696375aa8b2734491c7e582ae35b828e7b269e3654c64754069d6409bb75a18a5ecdff35a3e4a82724dec4be55376a81992d87e661c4aa9f2e5bfa6
   languageName: node
   linkType: hard
 
@@ -9938,6 +9996,19 @@ __metadata:
     long: "npm:^4.0.0"
     protobufjs: "npm:^6.11.2"
   checksum: 10/285e8a1abf2663bf3914b14f59a7273116432704688115b5de70218a08e8bc06b9579558bfcbf966bd225c7960babe764d32a21dd4bc8b6d0fbb03cfd7532fa1
+  languageName: node
+  linkType: hard
+
+"@onekeyfe/hd-web-sdk@npm:1.1.17-patch.1":
+  version: 1.1.17-patch.1
+  resolution: "@onekeyfe/hd-web-sdk@npm:1.1.17-patch.1"
+  dependencies:
+    "@onekeyfe/cross-inpage-provider-core": "npm:^0.0.17"
+    "@onekeyfe/hd-core": "npm:1.1.17-patch.1"
+    "@onekeyfe/hd-shared": "npm:1.1.17-patch.1"
+    "@onekeyfe/hd-transport-http": "npm:1.1.17-patch.1"
+    "@onekeyfe/hd-transport-web-device": "npm:1.1.17-patch.1"
+  checksum: 10/a0ab9dc148c8728367f6e9ec02b254364c39b9b22c455f2ebf315c11926ff672f2b527e6127677b9992c23c0c26857cbe7a520d09e4d5f4a5294fbf2c651073c
   languageName: node
   linkType: hard
 
@@ -19574,6 +19645,17 @@ __metadata:
   version: 4.3.3
   resolution: "axe-core@npm:4.3.3"
   checksum: 10/f987c3e7ec3c1dc38686e6ced47b2e73008d999adc8a306d63dcc527c5f31dd82b09006b3ae7d7f3910cd1f0f5a232394bce6b12aaf370486d9e1a00a61267f8
+  languageName: node
+  linkType: hard
+
+"axios@npm:1.12.2":
+  version: 1.12.2
+  resolution: "axios@npm:1.12.2"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.4"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 10/886a79770594eaad76493fecf90344b567bd956240609b5dcd09bd0afe8d3e6f1ad6d3257a93a483b6192b409d4b673d9515a34619e3e3ed1b2c0ec2a83b20ba
   languageName: node
   linkType: hard
 
@@ -33708,7 +33790,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^23.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
-    "@metamask/eth-onekey-keyring": "npm:@metamask-previews/eth-onekey-keyring@0.1.0-7d43e97"
+    "@metamask/eth-onekey-keyring": "npm:@metamask-previews/eth-onekey-keyring@0.1.0-e40d1ad"
     "@metamask/eth-qr-keyring": "npm:^1.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^18.0.2"
@@ -33803,7 +33885,7 @@ __metadata:
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.3.3"
     "@octokit/types": "npm:^14.0.0"
-    "@onekeyfe/hd-web-sdk": "npm:1.1.6-patch.4"
+    "@onekeyfe/hd-web-sdk": "npm:1.1.17-patch.1"
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/mock-server": "npm:^1.7.5"
     "@open-rpc/schema-utils-js": "npm:^2.0.5"

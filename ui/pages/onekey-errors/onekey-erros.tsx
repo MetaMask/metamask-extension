@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { HardwareErrorCode } from '@onekeyfe/hd-shared';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -29,7 +29,7 @@ import { OneKeyCommonError } from './onekey-common-error';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function OneKeyErrors() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const t = useI18nContext();
   const { error } = useParams<{ error: string }>();
@@ -87,7 +87,7 @@ export default function OneKeyErrors() {
       >
         <MetaFoxLogo
           unsetIconHeight
-          onClick={() => history.push(DEFAULT_ROUTE)}
+          onClick={() => navigate(DEFAULT_ROUTE)}
           theme={theme}
         />
       </Box>
@@ -100,9 +100,7 @@ export default function OneKeyErrors() {
               iconName={IconName.ArrowLeft}
               size={ButtonIconSize.Sm}
               onClick={() =>
-                previousPage
-                  ? history.push(previousPage)
-                  : history.push(DEFAULT_ROUTE)
+                previousPage ? navigate(previousPage) : navigate(DEFAULT_ROUTE)
               }
             />
           }

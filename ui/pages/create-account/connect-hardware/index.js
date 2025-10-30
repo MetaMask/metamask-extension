@@ -74,16 +74,11 @@ export const TREZOR_HD_PATHS = [
 ];
 
 const ONEKEY_STANDARD_BIP44_PATH = `m/44'/60'/0'/0/x`;
-// const ONEKEY_LEDGER_LIVE_PATH = `m/44'/60'/x'/0/0`;
 export const ONEKEY_HD_PATHS = [
   {
     name: `Standard (${ONEKEY_STANDARD_BIP44_PATH})`,
     value: ONEKEY_STANDARD_BIP44_PATH,
   },
-  // {
-  //   name: `Ledger Live (${ONEKEY_LEDGER_LIVE_PATH})`,
-  //   value: ONEKEY_LEDGER_LIVE_PATH,
-  // },
 ];
 
 const HD_PATHS = {
@@ -230,7 +225,7 @@ class ConnectHardwareForm extends Component {
   }
 
   connectHardwareBeforeCheck = async (device) => {
-    this.props.connectHardwareBeforeCheck(device);
+    await this.props.connectHardwareBeforeCheck(device);
   };
 
   getPage = (device, page, hdPath, loadHid) => {

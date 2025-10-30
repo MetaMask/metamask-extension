@@ -1,6 +1,6 @@
 import React from 'react';
 import { ONEKEY_WEBUSB_FILTER } from '@onekeyfe/hd-shared';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   Box,
@@ -22,7 +22,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 export function OneKeyAllowWebUSBConnect() {
   const t = useI18nContext();
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   // Previous page
   const previousPage = location.state?.fromPage;
@@ -37,7 +37,7 @@ export function OneKeyAllowWebUSBConnect() {
       paddingLeft={8}
       paddingRight={8}
       paddingBottom={8}
-      data-testid="notifications-settings-allow-notifications"
+      data-testid="onekey-hardware-allow-webusb-connect"
     >
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
         {t('onekeyWebUSBNotConnectedErrorMessage')}
@@ -50,9 +50,7 @@ export function OneKeyAllowWebUSBConnect() {
             filters: ONEKEY_WEBUSB_FILTER,
           });
           if (connectedDevice) {
-            previousPage
-              ? history.push(previousPage)
-              : history.push(DEFAULT_ROUTE);
+            previousPage ? navigate(previousPage) : navigate(DEFAULT_ROUTE);
           }
         }}
       >

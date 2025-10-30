@@ -22,7 +22,7 @@ export function OneKeyCommonError({ error }: { error: string }) {
       paddingLeft={8}
       paddingRight={8}
       paddingBottom={8}
-      data-testid="notifications-settings-allow-notifications"
+      data-testid="onekey-hardware-common-error"
     >
       <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
         {error}

@@ -164,10 +164,13 @@ export function hideAppHeader(props) {
   }
 
   const isOneKeyErrorsPage = Boolean(
-    matchPath(location.pathname, {
-      path: HARDWARE_ONEKEY_ERRORS_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: HARDWARE_ONEKEY_ERRORS_ROUTE,
+        end: false,
+      },
+      location.pathname,
+    ),
   );
 
   if (isOneKeyErrorsPage) {
