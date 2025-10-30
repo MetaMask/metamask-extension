@@ -210,8 +210,8 @@ const SubmitClaimForm = () => {
           t('shieldClaimInvalidWalletAddress'),
         );
       } else if (
-        reimbursementWalletAddress.toLowerCase() ===
-        impactedWalletAddress.toLowerCase()
+        reimbursementWalletAddress?.toLowerCase() ===
+        impactedWalletAddress?.toLowerCase()
       ) {
         setErrorMessage(
           SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
@@ -295,6 +295,9 @@ const SubmitClaimForm = () => {
 
           if (errorMessage) {
             setErrorMessage(detailError.field, t(errorMessage));
+          } else {
+            // if error is not on message map, use message coming from backend
+            setErrorMessage(detailError.field, detailError.error);
           }
         });
       } else {
