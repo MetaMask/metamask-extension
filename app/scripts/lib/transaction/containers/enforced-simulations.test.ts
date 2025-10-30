@@ -4,7 +4,11 @@ import {
   TransactionMeta,
   TransactionParams,
 } from '@metamask/transaction-controller';
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { cloneDeep } from 'lodash';
 import { DELEGATOR_CONTRACTS } from '@metamask/delegation-deployments';
 import { Hex, remove0x } from '@metamask/utils';
@@ -63,10 +67,13 @@ describe('Enforced Simulations Utils', () => {
     jest.resetAllMocks();
 
     const baseMessenger = new Messenger<
+      MockAnyNamespace,
       | AppStateControllerGetStateAction
       | DelegationControllerSignDelegationAction,
       never
-    >();
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
 
     baseMessenger.registerActionHandler(
       'AppStateController:getState',
@@ -78,13 +85,22 @@ describe('Enforced Simulations Utils', () => {
       signDelegationMock,
     );
 
-    messenger = baseMessenger.getRestricted({
-      name: 'TransactionControllerInitMessenger',
-      allowedActions: [
+    messenger = new Messenger<
+      'TransactionControllerInitMessenger',
+      | AppStateControllerGetStateAction
+      | DelegationControllerSignDelegationAction,
+      never,
+      typeof baseMessenger
+    >({
+      namespace: 'TransactionControllerInitMessenger',
+      parent: baseMessenger,
+    });
+    baseMessenger.delegate({
+      messenger,
+      actions: [
         'AppStateController:getState',
         'DelegationController:signDelegation',
       ],
-      allowedEvents: [],
     });
 
     getAppStateMock.mockReturnValue({

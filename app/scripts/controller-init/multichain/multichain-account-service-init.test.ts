@@ -1,5 +1,10 @@
 import { MultichainAccountService } from '@metamask/multichain-account-service';
-import { ActionConstraint, Messenger } from '@metamask/base-controller';
+import {
+  ActionConstraint,
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
@@ -21,11 +26,12 @@ function buildInitRequestMock(): jest.Mocked<
   >
 > {
   const baseControllerMessenger = new Messenger<
+    MockAnyNamespace,
     | PreferencesControllerGetStateAction
     | RemoteFeatureFlagControllerGetStateAction
     | ActionConstraint,
     never
-  >();
+  >({ namespace: MOCK_ANY_NAMESPACE });
 
   baseControllerMessenger.registerActionHandler(
     'PreferencesController:getState',

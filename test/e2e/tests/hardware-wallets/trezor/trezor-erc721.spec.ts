@@ -19,6 +19,7 @@ describe('Trezor Hardware', function (this: Suite) {
   it('deploys an ERC-721 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -27,7 +28,6 @@ describe('Trezor Hardware', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         smartContract,
-        dapp: true,
       },
       async ({ driver, localNodes }) => {
         await localNodes?.[0]?.setAccountBalance(
@@ -61,6 +61,7 @@ describe('Trezor Hardware', function (this: Suite) {
   it('mints an ERC-721 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -69,7 +70,6 @@ describe('Trezor Hardware', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         smartContract,
-        dapp: true,
       },
       async ({ driver, localNodes, contractRegistry }: TestSuiteArguments) => {
         await localNodes?.[0]?.setAccountBalance(
@@ -117,6 +117,7 @@ describe('Trezor Hardware', function (this: Suite) {
   it('approves an ERC-721 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -124,7 +125,6 @@ describe('Trezor Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
         smartContract: [
           {
             name: smartContract,
@@ -180,6 +180,7 @@ describe('Trezor Hardware', function (this: Suite) {
   it('sets approval for all an ERC-721 token', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withTrezorAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -188,7 +189,6 @@ describe('Trezor Hardware', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
         smartContract,
-        dapp: true,
       },
       async ({ driver, localNodes, contractRegistry }: TestSuiteArguments) => {
         await localNodes?.[0]?.setAccountBalance(
