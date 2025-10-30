@@ -38,6 +38,8 @@ export default class MenuDroppoComponent extends Component {
 
   globalClickOccurred = (event) => {
     const { target } = event;
+
+    // TODO: Remove `findDOMNode`
     // eslint-disable-next-line react/no-find-dom-node
     const container = findDOMNode(this);
 
@@ -53,6 +55,8 @@ export default class MenuDroppoComponent extends Component {
   componentDidMount() {
     if (this && document.body) {
       document.body.addEventListener('click', this.globalClickOccurred);
+
+      // TODO: Remove `findDOMNode`
       // eslint-disable-next-line react/no-find-dom-node
       const container = findDOMNode(this);
       this.container = container;

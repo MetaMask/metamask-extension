@@ -44,7 +44,7 @@ import {
   fetchSwapsSmartTransactionFees,
   getSmartTransactionFees,
   getCurrentSmartTransactionsEnabled,
-  getIsEstimatedReturnLow,
+  useIsEstimatedReturnLow,
 } from '../../../ducks/swaps/swaps';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -1133,7 +1133,7 @@ export default function ReviewQuote({
     currentCurrency,
   ]);
 
-  const isEstimatedReturnLow = getIsEstimatedReturnLow({
+  const isEstimatedReturnLow = useIsEstimatedReturnLow({
     usedQuote,
     rawNetworkFees,
   });

@@ -61,7 +61,7 @@ export const useAssetMetadata = (
       const metadata = await fetchAssetMetadata(
         trimmedSearchQuery,
         chainId,
-        abortControllerRef.current.signal,
+        abortControllerRef.current?.signal,
       );
 
       if (metadata) {

@@ -48,6 +48,8 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
         // eslint-disable-next-line react-compiler/react-compiler, react-hooks/rules-of-hooks
         useSnapNavigate(href);
       }
+      // eslint-disable-next-line react-compiler/react-compiler, react-hooks/rules-of-hooks
+      useSnapNavigate(href);
     },
     [
       useSnapNavigate,

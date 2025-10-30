@@ -27,8 +27,6 @@ const usePolling = <PollingInput>(
       };
     }
 
-    isMounted = true;
-
     const cleanup = () => {
       if (pollTokenRef.current) {
         usePollingOptions.stopPollingByPollingToken(pollTokenRef.current);

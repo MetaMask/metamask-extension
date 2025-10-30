@@ -269,6 +269,7 @@ const DefaultNetworks = memo(() => {
     solAccountGroup,
     isMultichainAccountsState2Enabled,
     evmAccountGroup,
+    selectedAccount.scopes,
     dispatch,
     selectedAccount,
     enabledChainIds,

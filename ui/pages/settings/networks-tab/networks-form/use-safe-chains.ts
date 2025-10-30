@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isStrictHexString } from '@metamask/utils';
 
@@ -16,6 +16,14 @@ export type SafeChain = {
 };
 
 export const useSafeChains = () => {
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
   );
@@ -26,8 +34,7 @@ export const useSafeChains = () => {
   }>({ safeChains: [] });
 
   useEffect(() => {
-    let isMounted = true;
-    if (useSafeChainsListValidation) {
+    if (isMounted.current && useSafeChainsListValidation) {
       fetchWithCache({
         url: CHAIN_SPEC_URL,
         functionName: 'getSafeChainsList',
@@ -35,20 +42,16 @@ export const useSafeChains = () => {
         cacheOptions: { cacheRefreshTime: DAY },
       })
         .then((response) => {
-          if (isMounted) {
+          if (isMounted.current) {
             setSafeChains({ safeChains: response });
           }
         })
         .catch((error) => {
-          if (isMounted) {
+          if (isMounted.current) {
             setSafeChains({ error });
           }
         });
     }
-
-    return () => {
-      isMounted = false;
-    };
   }, [useSafeChainsListValidation]);
 
   return safeChains;
