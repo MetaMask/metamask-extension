@@ -229,7 +229,7 @@ class AccountListPage {
         ? [
             {
               css: this.createMultichainAccountButton,
-              text: 'Create account',
+              text: 'Add account',
             },
             this.multichainAccountOptionsMenuButton,
           ]
