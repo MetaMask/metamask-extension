@@ -267,7 +267,7 @@
         "fetch": false,
         "XMLHttpRequest": false,
         "document": false,
-        "document.createElement": true,
+        "documnet.createElement": true,
         "navigator": false,
         "navigator.userAgent": true
       }
