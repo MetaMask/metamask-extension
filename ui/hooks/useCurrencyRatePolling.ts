@@ -41,6 +41,7 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
     : chainIds;
 
   useEffect(() => {
+    let isMounted = true;
     // Use validated currency tickers
     const fetchNativeCurrencies = async () => {
       const nativeCurrenciesArray = await Promise.all(
@@ -64,9 +65,14 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
           currency !== null,
       );
       const uniqueCurrencies = [...new Set(filteredCurrencies)];
-      setNativeCurrencies(uniqueCurrencies);
+      if (isMounted) {
+        setNativeCurrencies(uniqueCurrencies);
+      }
     };
     fetchNativeCurrencies();
+    return () => {
+      isMounted = false;
+    };
   }, [
     chainIds,
     isPollingEnabled,
