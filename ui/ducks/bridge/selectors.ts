@@ -27,6 +27,7 @@ import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
 import {
+  parseCaipAssetType,
   parseCaipChainId,
   type CaipAssetType,
   type CaipChainId,
@@ -82,6 +83,7 @@ import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
 import {
   getAllAccountGroups,
   getInternalAccountBySelectedAccountGroupAndCaip,
+  getWalletsWithAccounts,
 } from '../../selectors/multichain-accounts/account-tree';
 import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
 
@@ -280,8 +282,7 @@ export const getFromChain = createDeepEqualSelector(
 export const getToChains = createDeepEqualSelector(
   getAllBridgeableNetworks,
   getBridgeFeatureFlags,
-  getFromChain,
-  (allBridgeableNetworks, bridgeFeatureFlags, fromChain) => {
+  (allBridgeableNetworks, bridgeFeatureFlags) => {
     const availableChains = uniqBy(
       [...allBridgeableNetworks, ...FEATURED_RPCS],
       'chainId',
@@ -290,19 +291,6 @@ export const getToChains = createDeepEqualSelector(
         bridgeFeatureFlags?.chains?.[formatChainIdToCaip(chainId)]
           ?.isActiveDest,
     );
-
-    // Prevent Bitcoin from being selected as destination when source is Bitcoin
-    // (Bitcoin bridge only supports Bitcoin <-> EVM chains, not Bitcoin <-> Bitcoin)
-    if (fromChain && isBitcoinChainId(fromChain.chainId)) {
-      return availableChains.filter(
-        ({ chainId }) => !isBitcoinChainId(chainId),
-      );
-    }
-
-    // Similarly, prevent Solana from being selected as destination when source is Solana
-    // if (fromChain && isSolanaChainId(fromChain.chainId)) {
-    //   return availableChains.filter(({ chainId }) => !isSolanaChainId(chainId));
-    // }
 
     return availableChains;
   },
@@ -319,24 +307,7 @@ export const getTopAssetsFromFeatureFlags = (
   return bridgeFeatureFlags?.chains[formatChainIdToCaip(chainId)]?.topAssets;
 };
 
-// If the user has selected a toChainId, return it as the destination chain
-// Otherwise, use the source chain as the destination chain (default to swap params)
-export const getToChain = createSelector(
-  [
-    getFromChain,
-    getToChains,
-    (state: BridgeAppState) => state.bridge?.toChainId,
-  ],
-  (fromChain, toChains, toChainId) =>
-    toChainId
-      ? toChains.find(
-          ({ chainId }) =>
-            chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
-        )
-      : fromChain,
-);
-
-export const getDefaultTokenPair = createDeepEqualSelector(
+const getDefaultTokenPair = createDeepEqualSelector(
   [
     (state) => getFromChain(state)?.chainId,
     (state) => getBridgeFeatureFlags(state).bip44DefaultPairs,
@@ -354,6 +325,47 @@ export const getDefaultTokenPair = createDeepEqualSelector(
       ];
     }
     return null;
+  },
+);
+
+const getBIP44DefaultToChainId = createSelector(
+  [(state) => getDefaultTokenPair(state)?.[1]],
+  (defaulToAssetId) => {
+    if (!defaulToAssetId) {
+      return null;
+    }
+    return parseCaipAssetType(defaulToAssetId)?.chainId;
+  },
+);
+
+// If the user has selected a toChainId, return it as the destination chain
+// Otherwise, use the source chain as the destination chain (default to swap params)
+export const getToChain = createSelector(
+  [
+    getFromChain,
+    getToChains,
+    (state: BridgeAppState) => state.bridge?.toChainId,
+    getBIP44DefaultToChainId,
+  ],
+  (fromChain, toChains, toChainId, defaultToChainId) => {
+    // If user has explicitly selected a destination, use it
+    if (toChainId) {
+      return toChains.find(
+        ({ chainId }) =>
+          chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
+      );
+    }
+
+    // Bitcoin can only bridge to EVM chains, not to Bitcoin
+    // So if source is Bitcoin, default to BIP44 default chain
+    if (fromChain && isBitcoinChainId(fromChain.chainId)) {
+      return toChains.find(({ chainId }) => {
+        return formatChainIdToCaip(chainId) === defaultToChainId;
+      });
+    }
+
+    // For all other chains, default to same chain (swap mode)
+    return fromChain;
   },
 );
 
@@ -435,8 +447,8 @@ export const getFromAccount = createSelector(
 );
 
 export const getToAccounts = createSelector(
-  [getToChain, (state) => state],
-  (toChain, state) => {
+  [getToChain, getWalletsWithAccounts, (state) => state],
+  (toChain, accountsByWallet, state) => {
     if (!toChain) {
       return [];
     }
@@ -448,6 +460,12 @@ export const getToAccounts = createSelector(
     return internalAccounts.map((account) => ({
       ...account,
       isExternal: false,
+      walletName:
+        account.options.entropy?.type === 'mnemonic'
+          ? accountsByWallet[`entropy:${account.options.entropy.id}`]?.metadata
+              .name
+          : accountsByWallet[`keyring:${account.metadata.keyring.type}`]
+              ?.metadata.name,
       displayName:
         getAccountGroupNameByInternalAccount(state, account) ??
         account.metadata.name ??

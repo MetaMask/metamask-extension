@@ -1335,15 +1335,13 @@ describe('Multichain Accounts Selectors', () => {
       expect(result).toBe(ACCOUNT_3_ADDRESS);
     });
 
-    it('throws error when no group ID is found', () => {
-      expect(() =>
-        getIconSeedAddressByAccountGroupId(
-          typedMockState,
-          'nonExistentGroupId' as AccountGroupId,
-        ),
-      ).toThrow(
-        'Error in getIconSeedAddressByAccountGroupId: No accounts found in the specified group',
+    it('returns empty when no group ID is found', () => {
+      const result = getIconSeedAddressByAccountGroupId(
+        typedMockState,
+        'nonExistentGroupId' as AccountGroupId,
       );
+
+      expect(result).toBe('');
     });
   });
 

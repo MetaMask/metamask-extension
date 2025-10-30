@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '../../lib/messenger';
 
 export type PermissionLogControllerMessenger = ReturnType<
   typeof getPermissionLogControllerMessenger
@@ -12,13 +13,15 @@ export type PermissionLogControllerMessenger = ReturnType<
  * messenger.
  */
 export function getPermissionLogControllerMessenger(
-  messenger: Messenger<never, never>,
+  messenger: RootMessenger<never, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'PermissionLogController',
-
-    // This controller does not call any actions or subscribe to any events.
-    allowedActions: [],
-    allowedEvents: [],
+  return new Messenger<
+    'PermissionLogController',
+    never,
+    never,
+    typeof messenger
+  >({
+    namespace: 'PermissionLogController',
+    parent: messenger,
   });
 }

@@ -33,6 +33,7 @@ export function useFirstTimeInteractionAlert(): Alert[] {
   const { state: trustSignalDisplayState } = useTrustSignal(
     recipient || '',
     NameType.ETHEREUM_ADDRESS,
+    chainId,
   );
 
   const isVerifiedAddress =

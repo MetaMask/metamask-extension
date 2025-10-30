@@ -2753,32 +2753,11 @@
   "importNFTTokenIdToolTip": {
     "message": "ID NFT merupakan pengenal unik karena tidak ada dua NFT yang sama. Sekali lagi, angka ini berada di bawah 'Detail' pada OpenSea. Catat atau salin ke papan klip."
   },
-  "importNWordSRP": {
-    "message": "Saya memiliki frasa pemulihan $1 kata",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Kunci Pribadi"
   },
-  "importSRPDescription": {
-    "message": "Impor dompet yang ada dengan frasa pemulihan rahasia 12 atau 24 kata."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Frasa Pemulihan Rahasia terdiri dari 12 atau 24 kata"
-  },
-  "importSRPWordError": {
-    "message": "Kata $1 salah atau salah eja.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Kata $1 dan $2 salah atau salah eja.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Impor Frasa Pemulihan Rahasia"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Terjadi kesalahan yang tidak dikenal."
   },
   "importSelectedTokens": {
     "message": "Impor token yang dipilih?"
@@ -2797,9 +2776,6 @@
   },
   "importTokensError": {
     "message": "Kami tidak dapat mengimpor token. Coba lagi nanti."
-  },
-  "importWallet": {
-    "message": "Impor dompet"
   },
   "importWalletOrAccountHeader": {
     "message": "Impor dompet atau akun"

@@ -263,7 +263,13 @@
         "location.href": false,
         "prompt": false,
         "readline": false,
-        "webkitAudioContext": false
+        "webkitAudioContext": false,
+        "fetch": false,
+        "XMLHttpRequest": false,
+        "document": false,
+        "document.createElement": true,
+        "navigator": false,
+        "navigator.userAgent": true
       }
     },
     "@rive-app/react-canvas": {

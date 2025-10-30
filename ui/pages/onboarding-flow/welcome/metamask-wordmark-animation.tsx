@@ -1,9 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useRive, Layout, Fit, Alignment } from '@rive-app/react-canvas';
+import {
+  useRive,
+  useRiveFile,
+  Layout,
+  Fit,
+  Alignment,
+} from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
 import { useTheme } from '../../../hooks/useTheme';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { isWasmReady as checkWasmReady } from '../rive-wasm';
+import { waitForWasmReady } from '../rive-wasm';
 
 type MetamaskWordMarkAnimationProps = {
   setIsAnimationComplete: (isAnimationComplete: boolean) => void;
@@ -22,6 +28,7 @@ export default function MetamaskWordMarkAnimation({
   const theme = useTheme();
   const isTestEnvironment = Boolean(process.env.IN_TEST);
   const [isWasmReady, setIsWasmReady] = useState(isTestEnvironment);
+  const [buffer, setBuffer] = useState<ArrayBuffer | undefined>(undefined);
 
   // Check if WASM is ready (initialized in parent OnboardingFlow)
   useEffect(() => {
@@ -30,35 +37,43 @@ export default function MetamaskWordMarkAnimation({
       return undefined;
     }
 
-    // Check if WASM is already ready from parent initialization
-    if (checkWasmReady()) {
-      console.log('[Rive] WASM already ready from parent initialization');
-      setIsWasmReady(true);
-      return undefined;
-    }
-
-    // Poll for WASM readiness if not ready yet
-    const checkInterval = setInterval(() => {
-      if (checkWasmReady()) {
-        console.log('[Rive] WASM became ready');
+    // Wait for WASM to be ready using promise instead of polling
+    waitForWasmReady()
+      .then(() => {
+        console.log('[Rive] WASM is ready');
         setIsWasmReady(true);
-        clearInterval(checkInterval);
-      }
-    }, 100); // Check every 100ms
+      })
+      .catch((error) => {
+        console.error('[Rive] WASM failed to load:', error);
+        // Could set an error state here if needed
+      });
 
-    // Cleanup
-    return () => clearInterval(checkInterval);
+    return undefined;
   }, [isTestEnvironment]);
 
-  // Only initialize Rive after WASM is ready to avoid "source file required" error
-  // We always need to provide a valid config to useRive (hooks can't be conditional)
-  // but we control when to actually render the component
+  // Fetch the .riv file and convert to ArrayBuffer
+  useEffect(() => {
+    if (!isWasmReady || isTestEnvironment || buffer) {
+      return;
+    }
+
+    fetch('./images/riv_animations/metamask_wordmark.riv')
+      .then((response) => response.arrayBuffer())
+      .then((arrayBuffer) => setBuffer(arrayBuffer))
+      .catch((error) => {
+        console.error('[Rive] Failed to load .riv file:', error);
+      });
+  }, [isWasmReady, isTestEnvironment, buffer]);
+
+  // Use the buffer parameter instead of src
+  const { riveFile, status } = useRiveFile({
+    buffer,
+  });
+
+  // Only initialize Rive after WASM is ready and riveFile is loaded
   const { rive, RiveComponent } = useRive({
-    src: isWasmReady
-      ? './images/riv_animations/metamask_wordmark.riv'
-      : undefined,
-    stateMachines: isWasmReady ? 'WordmarkBuildUp' : undefined,
-    enableRiveAssetCDN: !isTestEnvironment,
+    riveFile: riveFile ?? undefined,
+    stateMachines: riveFile ? 'WordmarkBuildUp' : undefined,
     autoplay: false,
     layout: new Layout({
       fit: Fit.Contain,
@@ -152,12 +167,24 @@ export default function MetamaskWordMarkAnimation({
     );
   }
 
-  // Don't render Rive component until WASM is ready to avoid "source file required" error
-  if (!isWasmReady) {
+  // Don't render Rive component until WASM is ready and file is loaded
+  if (!isWasmReady || status === 'loading') {
     return (
       <Box className="riv-animation__wordmark-container">
-        {/* Placeholder while WASM loads */}
+        {/* Placeholder while WASM loads or file is being fetched */}
       </Box>
+    );
+  }
+
+  // Handle file loading failure
+  if (status === 'failed') {
+    console.error('[Rive] Failed to load .riv file');
+    // Trigger animation complete to show the UI
+    if (!isAnimationComplete) {
+      setIsAnimationComplete(true);
+    }
+    return (
+      <Box className="riv-animation__wordmark-container riv-animation__wordmark-container--complete" />
     );
   }
 
