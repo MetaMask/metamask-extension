@@ -8,6 +8,7 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Tooltip } from 'react-tippy';
+import { browser } from 'webextension-polyfill';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   ButtonIcon,
@@ -37,7 +38,8 @@ import {
   updateSendAmount,
   updateSendAsset,
 } from '../../../../ducks/send';
-
+import { getTransactions } from '../../../../selectors/transactions';
+import { getInternalAccounts } from '../../../../selectors/accounts';
 import {
   TokenStandard,
   AssetType,
@@ -65,6 +67,11 @@ import { smartTransactionsListSelector } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
+import {
+  getDomainResolutions,
+  checkForAddressPoisoning,
+  getAddressPoisoningDetectionEnabled,
+} from '../../../../ducks/domains';
 import {
   SendPageAccountPicker,
   SendPageRecipientContent,
@@ -279,6 +286,14 @@ export const SendPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackEvent, swapQuotesError]);
 
+  const domainResolutions = useSelector(getDomainResolutions);
+  const recipient = useSelector(getRecipient);
+  const addressPoisoningDetectionEnabled = useSelector(
+    getAddressPoisoningDetectionEnabled,
+  );
+  const transactions = useSelector(getTransactions);
+  const internalAccounts = useSelector(getInternalAccounts);
+
   const onSubmit = async (event) => {
     event.preventDefault();
 
@@ -286,6 +301,97 @@ export const SendPage = () => {
     setError(undefined);
 
     try {
+      // Store ENS domain names and their resolved addresses in local storage
+      // First, get the existing items from localStorage
+      let existingEntries = [];
+      // Get existing items from extension storage
+      await new Promise((resolve) => {
+        browser.storage.local.get('ensAndResolvedAddresses', (result) => {
+          try {
+            existingEntries = JSON.parse(
+              result.ensAndResolvedAddresses || '[]',
+            );
+          } catch (e) {
+            console.error('Error parsing extension storage entries:', e);
+            existingEntries = [];
+          }
+          resolve();
+        });
+      });
+
+      // Process the current domain resolutions
+      const updatedEntries = [...existingEntries];
+      const currentTimestamp = Date.now();
+
+      if (domainResolutions && domainResolutions.length > 0) {
+        domainResolutions.forEach((resolution) => {
+          const { domainName, resolvedAddress } = resolution;
+
+          const existingEntryIndex = updatedEntries.findIndex(
+            (entry) => entry.ensName.toLowerCase() === domainName.toLowerCase(),
+          );
+
+          if (existingEntryIndex >= 0) {
+            // Update existing entry
+            updatedEntries[existingEntryIndex] = {
+              ...updatedEntries[existingEntryIndex],
+              resolvedAddress,
+              lastUpdated: currentTimestamp,
+            };
+          } else {
+            // Add new entry
+            updatedEntries.push({
+              ensName: domainName,
+              resolvedAddress,
+              created: currentTimestamp,
+              lastUpdated: currentTimestamp,
+            });
+          }
+        });
+      }
+
+      // Save updated entries back to extension storage
+      await new Promise((resolve) => {
+        browser.storage.local.set(
+          { ensAndResolvedAddresses: JSON.stringify(updatedEntries) },
+          () => resolve(),
+        );
+      });
+
+      // Check for address poisoning using transaction history from selectors
+      const recipientAddress = recipient.address;
+
+      const addressPoisoningWarning = checkForAddressPoisoning(
+        recipientAddress,
+        addressPoisoningDetectionEnabled,
+        transactions,
+        internalAccounts,
+      );
+
+      if (addressPoisoningWarning) {
+        setIsSubmitting(false);
+        return;
+      }
+
+      await dispatch(signTransaction(history));
+
+      // If transaction is successful, store the recipient address in transaction history
+      try {
+        const transactionAddresses = JSON.parse(
+          window.localStorage.getItem('transactionAddresses') || '[]',
+        );
+
+        if (!transactionAddresses.includes(recipientAddress)) {
+          transactionAddresses.push(recipientAddress);
+          window.localStorage.setItem(
+            'transactionAddresses',
+            JSON.stringify(transactionAddresses),
+          );
+        }
+      } catch (e) {
+        console.error('Error updating transaction addresses:', e);
+      }
+
       await trace(
         {
           name: TraceName.SendCompleted,
@@ -314,7 +420,7 @@ export const SendPage = () => {
   };
 
   // Submit button
-  const recipient = useSelector(getRecipient);
+  // const recipient = useSelector(getRecipient);
   const showKnownRecipientWarning =
     recipient.warning === 'knownAddressRecipient';
   const recipientWarningAcknowledged = useSelector(

@@ -1,4 +1,8 @@
 {
+  "AddressPoisoningDetectionToggled": {
+    "message": "Address Poisoning Detection Toggled",
+    "description": "Metrics event name when address poisoning detection is toggled"
+  },
   "CSS_loadingTakingTooLongActionText": {
     "message": "Relaunch MetaMask if the problem persists.",
     "description": "Second line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
@@ -5343,7 +5347,7 @@
     "message": "MetaMask doesn’t keep a copy of your password. If you’re having trouble unlocking your account, you’ll need to reset your wallet. If you have a Secret Recovery Phrase, you can use it to erase your current wallet from this device, along with the list of your accounts."
   },
   "resetWalletUsingSRP": {
-    "message": "This action will delete your current wallet and Secret Recovery Phrase from this device, along with the list of accounts you’ve curated. After resetting with a Secret Recovery Phrase, you’ll see a list of accounts based on the Secret Recovery Phrase you use to reset. This new list will automatically include accounts that have a balance. You’ll also be able to $1 created previously. Custom accounts that you’ve imported will need to be $2, and any custom tokens you’ve added to an account will need to be $3 as well."
+    "message": "This action will delete your current wallet and Secret Recovery Phrase from this device, along with the list of accounts you’ve curated. After resetting with a Secret Recovery Phrase, you’ll see a list of accounts based on the Secret Recovery Phrase you use to reset. This new list will automatically include accounts that have a balance. You’ll also be able to $1 created previously. Custom accounts that you’ve imported will need to be $2, and any custom tokens that you’ve added to an account will need to be $3 as well."
   },
   "resetWalletUsingSRPSocial": {
     "message": "After resetting with a Secret Recovery Phrase, you’ll see a new list of accounts. This list will include accounts that have a balance. You can $1 you made before. But you’ll need to add back any $2 and $3 you imported. "
@@ -7843,6 +7847,20 @@
   "use4ByteResolution": {
     "message": "Decode smart contracts"
   },
+  "useAddressPoisoningDetection": {
+    "message": "Address Poisoning Detection",
+    "description": "Toggle option in the Security tab settings"
+  },
+  "useAddressPoisoningDetectionDescription": {
+    "message": "Warns you when sending to an address that looks suspiciously similar to addresses you've previously sent to.",
+    "description": "Description of the Address Poisoning Detection feature"
+  },
+  "useDomainDropCatchingDetection": {
+    "message": "Use domain drop catching detection"
+  },
+  "useDomainDropCatchingDetectionDescription": {
+    "message": "Display a warning for domains that may have been recently expired and re-registered (potential drop catching)."
+  },
   "useDifferentLoginMethod": {
     "message": "Use a different login method"
   },
@@ -7882,6 +7900,12 @@
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
+  },
+  "useTypoDetection": {
+    "message": "Use typo detection"
+  },
+  "useTypoDetectionDescription": {
+    "message": "Display a warning if the entered domain is potentially a typo of a previously used domain."
   },
   "usedByClients": {
     "message": "Used by a variety of different clients"
