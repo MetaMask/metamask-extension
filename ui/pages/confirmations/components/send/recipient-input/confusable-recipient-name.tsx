@@ -33,11 +33,10 @@ export const ConfusableRecipientName = ({
   const t = useI18nContext();
   const { to } = useSendContext();
 
-  if (!to) {
-    return null;
-  }
-
   const nameSplits = useMemo(() => {
+    if (!to) {
+      return null;
+    }
     const confusableList = confusableCharacters.flatMap((confusable) =>
       findAllIndexesOfConfusable(to, confusable),
     );
@@ -59,20 +58,21 @@ export const ConfusableRecipientName = ({
     return splits;
   }, [to, confusableCharacters]);
 
-  return (
+  return nameSplits ? (
     <Box display={Display.Flex}>
-      {nameSplits.map((split) => {
+      {nameSplits.map((split, index) => {
         if (split.confusable) {
           return (
             <Tooltip
+              key={index}
               position="top"
               html={
                 <Text>
                   {t('confusableCharacterTooltip', [
-                    <Box className="confusable-character">
+                    <Box key={index * 10} className="confusable-character">
                       {` ‘${split.confusable.point}’ `}
                     </Box>,
-                    <Box className="confusable-character">
+                    <Box key={index * 100} className="confusable-character">
                       {` ‘${split.confusable.similarTo}’`}.
                     </Box>,
                   ])}
@@ -89,8 +89,12 @@ export const ConfusableRecipientName = ({
             </Tooltip>
           );
         }
-        return <Text variant={TextVariant.bodyMd}>{split.str}</Text>;
+        return (
+          <Text key={index} variant={TextVariant.bodyMd}>
+            {split.str}
+          </Text>
+        );
       })}
     </Box>
-  );
+  ) : null;
 };
