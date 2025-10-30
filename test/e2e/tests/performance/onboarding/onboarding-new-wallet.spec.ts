@@ -15,6 +15,7 @@ import TimerHelper from '../utils/TimersHelper';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import FixtureBuilder from '../../../fixture-builder';
 import { Mockttp } from 'mockttp';
+import { getCommonMocks } from '../utils/commonMocks';
 
 
 describe('MetaMask onboarding', function () {
@@ -32,25 +33,7 @@ describe('MetaMask onboarding', function () {
         disableServerMochaToBackground: true,
         fixtures: new FixtureBuilder({ onboarding: true }).withEnabledNetworks(ALL_POPULAR_NETWORKS).build(),
         testSpecificMock: async (server: Mockttp) => {
-          return [
-             server.forPost(/^https:\/\/sentry\.io\/api/).thenCallback(() => {
-               return {
-                 statusCode: 200,
-                 headers: {
-                   'Content-Type': 'application/json',
-                   'Access-Control-Allow-Origin': '*',
-                   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                 },
-                 // Typical Sentry envelope endpoint response with event IDs
-                 json: {
-                   "success": true,
-                 }
-                };
-             }),
-            server.forPost(/^https:\/\/api\.segment\.io\/v1\//).thenCallback(() => {
-              return { statusCode: 200 };
-            }),
-          ];
+          return [...getCommonMocks(server)];
         },
       },
       async ({ driver }: { driver: Driver }) => {
