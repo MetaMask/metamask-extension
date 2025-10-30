@@ -2,11 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useSelector } from 'react-redux';
-import { RewardsPointsBalance } from './RewardsPointsBalance';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRewardsContext } from '../../../contexts/rewards';
 import type { RewardsContextValue } from '../../../contexts/rewards';
-import type { SeasonStatusState } from '../../../../app/scripts/controllers/rewards/rewards-controller.types';
+import { RewardsPointsBalance } from './RewardsPointsBalance';
 
 // Mock dependencies
 jest.mock('react-redux', () => ({
@@ -39,14 +38,20 @@ const mockUseRewardsContext = useRewardsContext as jest.MockedFunction<
 
 describe('RewardsPointsBalance', () => {
   const mockT = jest.fn((key: string, values?: string[]) => {
-    if (key === 'rewardsOptIn') return 'Opt In';
-    if (key === 'rewardsPointsBalance' && values) return `${values[0]} points`;
-    if (key === 'rewardsPointsIcon') return 'Rewards Points Icon';
+    if (key === 'rewardsOptIn') {
+      return 'Opt In';
+    }
+    if (key === 'rewardsPointsBalance' && values) {
+      return `${values[0]} points`;
+    }
+    if (key === 'rewardsPointsIcon') {
+      return 'Rewards Points Icon';
+    }
     return key;
   });
 
   // Mock season status with complete structure
-  const mockSeasonStatus: SeasonStatusState = {
+  const mockSeasonStatus = {
     season: {
       id: 'test-season',
       name: 'Test Season',

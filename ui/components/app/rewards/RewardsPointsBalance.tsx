@@ -6,6 +6,29 @@ import { getIntlLocale } from '../../../ducks/locale/locale';
 import { useRewardsContext } from '../../../contexts/rewards';
 import { Skeleton } from '../../component-library/skeleton';
 
+const RewardsBadge = ({ text }: { text: string }) => {
+  const t = useI18nContext();
+
+  return (
+    <Box
+      className="flex items-center gap-2 px-2 bg-background-muted rounded"
+      data-testid="rewards-points-balance"
+    >
+      <img
+        src="./images/metamask-rewards-points.svg"
+        alt={t('rewardsPointsIcon')}
+        style={{ width: '16px', height: '16px' }}
+      />
+      <Text
+        variant={TextVariant.BodySm}
+        data-testid="rewards-points-balance-value"
+      >
+        {text}
+      </Text>
+    </Box>
+  );
+};
+
 /**
  * Component to display the rewards points balance
  * Shows the points balance with an icon for users who haven't opted in yet
@@ -40,27 +63,4 @@ export const RewardsPointsBalance = () => {
   );
 
   return <RewardsBadge text={t('rewardsPointsBalance', [formattedPoints])} />;
-};
-
-const RewardsBadge = ({ text }: { text: string }) => {
-  const t = useI18nContext();
-
-  return (
-    <Box
-      className="flex items-center gap-2 px-2 bg-background-muted rounded"
-      data-testid="rewards-points-balance"
-    >
-      <img
-        src="./images/metamask-rewards-points.svg"
-        alt={t('rewardsPointsIcon')}
-        style={{ width: '16px', height: '16px' }}
-      />
-      <Text
-        variant={TextVariant.BodySm}
-        data-testid="rewards-points-balance-value"
-      >
-        {text}
-      </Text>
-    </Box>
-  );
 };
