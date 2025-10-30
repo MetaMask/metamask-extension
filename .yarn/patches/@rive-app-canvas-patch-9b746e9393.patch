@@ -1,5 +1,5 @@
 diff --git a/rive.js b/rive.js
-index 44112630e4ea885e7a374fdb922dd09a21e17ef1..bc89c57d69ebc3e4578b03ff09fbe8fc28ac3bdf 100644
+index 44112630e4ea885e7a374fdb922dd09a21e17ef1..378391aa44a8dbb1fccbf37fd03277a02d0f4dbf 100644
 --- a/rive.js
 +++ b/rive.js
 @@ -650,14 +650,23 @@ if (na || oa) {
@@ -34,3 +34,11 @@ index 44112630e4ea885e7a374fdb922dd09a21e17ef1..bc89c57d69ebc3e4578b03ff09fbe8fc
    };
  }
  var va = m.print || console.log.bind(console), wa = m.printErr || console.error.bind(console);
+@@ -4366,6 +4375,7 @@ var RuntimeLoader = /** @class */ (function () {
+         _rive_advanced_mjs__WEBPACK_IMPORTED_MODULE_0__["default"]({
+             // Loads Wasm bundle
+             locateFile: function () { return RuntimeLoader.wasmURL; },
++            wasmBinary: RuntimeLoader.wasmBinary
+         })
+             .then(function (rive) {
+             var _a;

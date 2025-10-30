@@ -34,14 +34,9 @@ export function initializeRiveWASM(): Promise<void> {
       fetch(RIVE_WASM_URL)
         .then((response) => response.arrayBuffer())
         .then((arrayBuffer) => {
-          const bytes = new Uint8Array(arrayBuffer);
-
-          const binaryString = Array.from(bytes, (byte) =>
-            String.fromCharCode(byte),
-          ).join('');
-
-          const wasmBase64 = btoa(binaryString);
-          RuntimeLoader.setWasmUrl(wasmBase64);
+          (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
+            arrayBuffer;
+          RuntimeLoader.setWasmUrl('should not fetch wasm'); // easier to debug if something goes wrong
 
           // Preload the WASM
           RuntimeLoader.awaitInstance()
