@@ -4787,6 +4787,11 @@ export default class MetamaskController extends EventEmitter {
         Bitcoin: 0,
         Solana: 0,
       };
+    } finally {
+      endTrace({
+        name: TraceName.DiscoverAccounts,
+        op: TraceOperation.AccountDiscover,
+      });
     }
   }
 

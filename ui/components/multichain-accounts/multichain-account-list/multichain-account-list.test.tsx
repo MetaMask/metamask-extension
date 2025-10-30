@@ -16,6 +16,15 @@ import {
   MultichainAccountListProps,
 } from './multichain-account-list';
 
+jest.mock('../../../../shared/lib/trace', () => {
+  const actual = jest.requireActual('../../../../shared/lib/trace');
+  return {
+    ...actual,
+    trace: jest.fn(),
+    endTrace: jest.fn(),
+  };
+});
+
 jest.mock('../../../store/actions', () => {
   const actualActions = jest.requireActual('../../../store/actions');
   return {
@@ -1040,6 +1049,33 @@ describe('MultichainAccountList', () => {
       expect(
         screen.queryByTestId(`multichain-account-cell-${walletTwoGroupId}`),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Trace events', () => {
+    it('ends AccountList and ShowAccountList traces on mount', () => {
+      renderComponent();
+      const traceLib = jest.requireMock('../../../../shared/lib/trace');
+      expect(traceLib.endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({ name: traceLib.TraceName.AccountList }),
+      );
+      expect(traceLib.endTrace).toHaveBeenCalledWith(
+        expect.objectContaining({ name: traceLib.TraceName.ShowAccountList }),
+      );
+    });
+
+    it('calls ShowAccountList trace on account click', () => {
+      renderComponent();
+      const cell = screen.getByTestId(
+        `multichain-account-cell-${walletTwoGroupId}`,
+      );
+      cell.click();
+      const traceLib = jest.requireMock('../../../../shared/lib/trace');
+      expect(traceLib.trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: traceLib.TraceName.ShowAccountList,
+        }),
+      );
     });
   });
 });
