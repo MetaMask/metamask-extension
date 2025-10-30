@@ -4,9 +4,7 @@ import {
   CRYPTO_PAYMENT_METHOD_ERRORS,
   PAYMENT_TYPES,
   PRODUCT_TYPES,
-  SUBSCRIPTION_STATUSES,
   SubscriptionCryptoPaymentMethod,
-  SubscriptionStatus,
 } from '@metamask/subscription-controller';
 import log from 'loglevel';
 import { useTokenBalances as pollAndUpdateEvmBalances } from '../../hooks/useTokenBalances';
@@ -15,6 +13,7 @@ import {
   useUserSubscriptions,
 } from '../../hooks/subscription/useSubscription';
 import {
+  getSubscriptionCryptoApprovalAmount,
   getSubscriptions,
   updateSubscriptionCryptoPaymentMethod,
 } from '../../store/actions';
@@ -27,9 +26,10 @@ import {
 import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
 import { getTokenBalancesEvm } from '../../selectors/assets';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { calculateSubscriptionRemainingBillingCycles } from '../../../shared/modules/shield';
 import { useThrottle } from '../../hooks/useThrottle';
 import { MINUTE } from '../../../shared/constants/time';
+import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
+import { useAsyncResult } from '../../hooks/useAsync';
 
 const SHIELD_ADD_FUND_TRIGGER_INTERVAL = 5 * MINUTE;
 
@@ -44,16 +44,7 @@ export const useShieldAddFundTrigger = () => {
     PRODUCT_TYPES.SHIELD,
     subscriptions,
   );
-  // TODO: update to correct subscription status after implementation
-  const isSubscriptionPaused =
-    shieldSubscription &&
-    (
-      [
-        SUBSCRIPTION_STATUSES.paused,
-        SUBSCRIPTION_STATUSES.pastDue,
-        SUBSCRIPTION_STATUSES.unpaid,
-      ] as SubscriptionStatus[]
-    ).includes(shieldSubscription.status);
+  const isSubscriptionPaused = shieldSubscription && getIsShieldSubscriptionPaused(shieldSubscription);
 
   const { subscriptionPricing } = useSubscriptionPricing();
   const pricingPlans = useSubscriptionProductPlans(
@@ -98,55 +89,73 @@ export const useShieldAddFundTrigger = () => {
     getTokenBalancesEvm(state, selectedAccount?.address),
   );
 
+  // need to do async here since `getSubscriptionCryptoApprovalAmount` make call to background script
+  const { value: subscriptionCryptoApprovalAmount, pending: subscriptionCryptoApprovalAmountPending } = useAsyncResult(async () => {
+    if (!shieldSubscription || !cryptoPaymentInfo || !selectedTokenPrice) {
+      return undefined;
+    }
+
+    const params = {
+      chainId: cryptoPaymentInfo.crypto.chainId,
+      paymentTokenAddress: selectedTokenPrice.address,
+      productType: PRODUCT_TYPES.SHIELD,
+      interval: shieldSubscription.interval,
+    };
+
+    return await getSubscriptionCryptoApprovalAmount(params);
+  }, [cryptoPaymentInfo, selectedTokenPrice, shieldSubscription]);
+
   // Poll and update evm balances for payment chains
   pollAndUpdateEvmBalances({ chainIds: paymentChainIds });
   // valid token balances for checking
-  const validTokenBalances = useMemo(() => {
-    return evmBalances.filter((token) => {
-      const supportedTokensForChain =
-        cryptoPaymentInfo?.crypto.chainId === token.chainId;
-      const isSupportedChain = Boolean(supportedTokensForChain);
-      if (!isSupportedChain) {
-        return false;
-      }
-      const isSupportedToken =
-        cryptoPaymentInfo?.crypto.tokenSymbol.toLowerCase() ===
-        token.symbol.toLowerCase();
-      if (!isSupportedToken) {
-        return false;
-      }
-      const hasBalance = token.balance && parseFloat(token.balance) > 0;
-      if (!hasBalance) {
-        return false;
-      }
-      if (!selectedProductPrice || !shieldSubscription?.endDate) {
-        return false;
-      }
-
-      const remainingBillingCycles =
-        calculateSubscriptionRemainingBillingCycles({
-          currentPeriodEnd: new Date(shieldSubscription.currentPeriodEnd),
-          endDate: new Date(shieldSubscription.endDate),
-          interval: shieldSubscription.interval,
-        });
-      // no need to use BigInt since max unitDecimals are always 2 for price
-      const remainingFundBalanceNeeded =
-        (selectedProductPrice.unitAmount /
-          10 ** selectedProductPrice.unitDecimals) *
-        remainingBillingCycles;
-
-      return (
-        token.balance && parseFloat(token.balance) >= remainingFundBalanceNeeded
-      );
+  const validTokenBalance = useMemo(() => {
+    console.log('>>>> hehrersubscriptionCryptoApprovalAmount', {
+      cryptoPaymentInfo,
+      selectedTokenPrice,
+      subscriptionCryptoApprovalAmountPending,
+      subscriptionCryptoApprovalAmount,
     });
+    if (!cryptoPaymentInfo || !selectedTokenPrice || subscriptionCryptoApprovalAmountPending || !subscriptionCryptoApprovalAmount) {
+      return undefined;
+    }
+
+    const token = evmBalances.find((token) => cryptoPaymentInfo.crypto.chainId === token.chainId && selectedTokenPrice.address.toLowerCase() === token.address.toLowerCase());
+    console.log('>>>> hehrertoken', {
+      token,
+      evmBalances,
+    });
+    if (!token || !token.balance) {
+      return undefined;
+    }
+
+    // NOTE: we are using stable coin for subscription atm, so we need to scale the balance by the decimals
+    const scaledFactor = 10n ** 6n;
+    const scaledBalance =
+      BigInt(Math.round(Number(token.balance) * Number(scaledFactor))) /
+      scaledFactor;
+    const tokenHasEnoughBalance =
+      subscriptionCryptoApprovalAmount &&
+      scaledBalance * BigInt(10 ** token.decimals) >=
+        BigInt(subscriptionCryptoApprovalAmount.approveAmount);
+    console.log('>>>> hehrertokenHasEnoughBalance', {
+      tokenHasEnoughBalance,
+      token,
+    });
+
+    if (!tokenHasEnoughBalance) {
+      return undefined;
+    }
+
+    return token;
   }, [
+    subscriptionCryptoApprovalAmount,
+    subscriptionCryptoApprovalAmountPending,
     evmBalances,
     cryptoPaymentInfo,
-    selectedProductPrice,
     shieldSubscription,
   ]);
 
-  const hasAvailableSelectedToken = validTokenBalances.length > 0;
+  const hasAvailableSelectedToken = !!validTokenBalance;
 
   // throttle the hasAvailableSelectedToken to avoid multiple triggers
   const { value: hasAvailableSelectedTokenThrottled } = useThrottle({
