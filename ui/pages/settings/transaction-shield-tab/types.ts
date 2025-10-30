@@ -30,43 +30,44 @@ export const SUBMIT_CLAIM_FIELDS = {
 export type SubmitClaimField =
   (typeof SUBMIT_CLAIM_FIELDS)[keyof typeof SUBMIT_CLAIM_FIELDS];
 
-// Error codes with specific locale for submit claim errors from backend
+// Error codes for submit claim errors from backend
+// Based on https://github.com/consensys-vertical-apps/va-mmcx-shield-claims-api/blob/main/src/errors/error-codes.ts
 export const SUBMIT_CLAIM_ERROR_CODES = {
   // System & General Errors (E001-E099)
-  INTERNAL_SERVER_ERROR: 'E001', // Claim submission failed
-  VALIDATION_ERROR: 'E002', // Show detailed error message in errorsDetails
-  RESOURCE_NOT_FOUND: 'E003', // Claim not found
-  DATABASE_FAILED: 'E004', // Claim submission failed
+  INTERNAL_SERVER_ERROR: 'E001',
+  VALIDATION_ERROR: 'E002',
+  RESOURCE_NOT_FOUND: 'E003',
+  DATABASE_FAILED: 'E004',
 
   // Coverage Validation (E100-E199)
-  COVERAGE_API_NOT_CONFIGURED: 'E101', // Claim submission failed
-  TRANSACTION_NOT_ELIGIBLE: 'E102', // This transaction was not made within MetaMask and is not eligible for claims.
-  SUBMISSION_WINDOW_EXPIRED: 'E103', // Submission window expired. Claims must be filed within ${validPeriodInDays} days of the incident.
-  TRANSACTION_NOT_COVERED: 'E104', // Claim submission failed
-  COVERAGE_VALIDATION_FAILED: 'E105', // Claim submission failed
+  COVERAGE_API_NOT_CONFIGURED: 'E101',
+  TRANSACTION_NOT_ELIGIBLE: 'E102',
+  SUBMISSION_WINDOW_EXPIRED: 'E103',
+  TRANSACTION_NOT_COVERED: 'E104',
+  COVERAGE_VALIDATION_FAILED: 'E105',
 
   // Claims Validation (E200-E299)
-  CLAIM_VALIDATION_FAILED: 'E201', // Claim submission failed
-  MAX_CLAIMS_LIMIT_EXCEEDED: 'E202', // You have reached the maximum limit of open claims. Please contact support if you need to submit additional claims.
-  DUPLICATE_CLAIM_EXISTS: 'E203', // A claim has already been submitted for this transaction hash
-  INVALID_WALLET_ADDRESSES: 'E204', // Impacted wallet address and reimbursement wallet address must be different
+  CLAIM_VALIDATION_FAILED: 'E201',
+  MAX_CLAIMS_LIMIT_EXCEEDED: 'E202',
+  DUPLICATE_CLAIM_EXISTS: 'E203',
+  INVALID_WALLET_ADDRESSES: 'E204',
 
   // Field Validation Errors (E250-E299)
-  FIELD_REQUIRED: 'E250', // This field is required
-  FIELD_IS_NOT_STRING: 'E251', // Invalid format for field
-  FIELD_IS_NOT_NUMBER: 'E252', // Invalid format for field
-  FIELD_IS_NOT_OBJECT: 'E253', // Invalid format for field
-  FIELD_INVALID_EMAIL: 'E254', // Invalid email address
-  FIELD_INVALID_UUID: 'E255', // Invalid UUID
-  FIELD_INVALID_TYPE: 'E256', // Invalid type for field
-  FIELD_INVALID_VALUE: 'E257', // Invalid value for field
-  FIELD_INVALID_FORMAT: 'E258', // Invalid format for field
-  FIELD_INVALID_ETHEREUM_ADDRESS: 'E259', // Invalid Ethereum address
+  FIELD_REQUIRED: 'E250',
+  FIELD_IS_NOT_STRING: 'E251',
+  FIELD_IS_NOT_NUMBER: 'E252',
+  FIELD_IS_NOT_OBJECT: 'E253',
+  FIELD_INVALID_EMAIL: 'E254',
+  FIELD_INVALID_UUID: 'E255',
+  FIELD_INVALID_TYPE: 'E256',
+  FIELD_INVALID_VALUE: 'E257',
+  FIELD_INVALID_FORMAT: 'E258',
+  FIELD_INVALID_ETHEREUM_ADDRESS: 'E259',
 
   // File Operations (E300-E399)
-  FILES_SIZE_EXCEEDED: 'E301', // Total file size exceeds the maximum allowed size
-  FILES_COUNT_EXCEEDED: 'E302', // Number of files exceeds the maximum allowed count
-  INVALID_FILES_TYPE: 'E303', // Invalid file type
+  FILES_SIZE_EXCEEDED: 'E301',
+  FILES_COUNT_EXCEEDED: 'E302',
+  INVALID_FILES_TYPE: 'E303',
 } as const;
 
 export type SubmitClaimErrorCode =
