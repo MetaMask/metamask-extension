@@ -41,7 +41,6 @@ import {
 import { signSolanaRewardsMessage } from './utils/solana-snap';
 import { sortAccounts } from './utils/sortAccounts';
 
-
 export const DEFAULT_BLOCKED_REGIONS = ['UK'];
 
 const controllerName = 'RewardsController';
