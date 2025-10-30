@@ -194,7 +194,6 @@ function TransactionListItemInner({
     isPending,
     senderAddress,
     detailsTitle,
-    remoteSignerAddress,
   } = useTransactionDisplayData(transactionGroup);
   const displayedStatusKey =
     isBridgeTx && isBridgeFailed
@@ -417,7 +416,6 @@ function TransactionListItemInner({
             />
           )}
           chainId={chainId}
-          remoteSignerAddress={remoteSignerAddress}
         />
       )}
       {!supportsEIP1559 && showRetryEditGasPopover && (
