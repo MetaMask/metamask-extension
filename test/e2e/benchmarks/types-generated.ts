@@ -17,6 +17,7 @@ export type Metrics = {
   'Initial Actions': number;
   'Load Scripts': number;
   'Setup Store': number;
+  numNetworkReqs: number;
 };
 
 export type StatisticalResult = {
@@ -39,4 +40,8 @@ export type BenchmarkArguments = {
   out?: string;
   retries: number;
   persona: 'standard' | 'powerUser';
+};
+
+export type NetworkReport = {
+  numNetworkReqs: number;
 };
