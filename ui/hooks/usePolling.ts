@@ -13,9 +13,15 @@ const usePolling = <PollingInput>(
 ) => {
   const pollTokenRef = useRef<null | string>(null);
   const cleanupRef = useRef<null | ((pollingToken: string) => void)>(null);
-  let isMounted = false;
+
+  const prevPollingInputStringified = useRef<string | null>(null);
+  const hasPollingInputChanged =
+    JSON.stringify(usePollingOptions.input) !==
+    prevPollingInputStringified.current;
+
   useEffect(() => {
-    if (usePollingOptions.enabled === false) {
+    let isMounted = false;
+    if (usePollingOptions.enabled === false || !hasPollingInputChanged) {
       return () => {
         // noop
       };
@@ -43,15 +49,17 @@ const usePolling = <PollingInput>(
         }
       });
 
+    prevPollingInputStringified.current = JSON.stringify(
+      usePollingOptions.input,
+    );
+
     // Return a cleanup function to stop polling when the component unmounts
     return () => {
       isMounted = false;
+      prevPollingInputStringified.current = null;
       cleanup();
     };
-  }, [
-    usePollingOptions.input && JSON.stringify(usePollingOptions.input),
-    usePollingOptions.enabled,
-  ]);
+  }, [hasPollingInputChanged, usePollingOptions.enabled]);
 };
 
 export default usePolling;
