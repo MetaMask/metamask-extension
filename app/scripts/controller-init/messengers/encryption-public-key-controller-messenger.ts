@@ -1,10 +1,11 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { KeyringControllerGetEncryptionPublicKeyAction } from '@metamask/keyring-controller';
 import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/encryption-public-key';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 export type EncryptionPublicKeyControllerMessenger = ReturnType<
   typeof getEncryptionPublicKeyControllerMessenger
@@ -18,20 +19,30 @@ export type EncryptionPublicKeyControllerMessenger = ReturnType<
  * messenger.
  */
 export function getEncryptionPublicKeyControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'EncryptionPublicKeyController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'EncryptionPublicKeyController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'EncryptionPublicKeyController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'ApprovalController:addRequest',
       'ApprovalController:acceptRequest',
       'ApprovalController:rejectRequest',
     ],
-    allowedEvents: [
+    events: [
       'EncryptionPublicKeyManager:stateChange',
       'EncryptionPublicKeyManager:unapprovedMessage',
     ],
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions =
@@ -50,14 +61,23 @@ export type EncryptionPublicKeyControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getEncryptionPublicKeyControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'EncryptionPublicKeyControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'EncryptionPublicKeyControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'EncryptionPublicKeyControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'KeyringController:getEncryptionPublicKey',
       'MetaMetricsController:trackEvent',
     ],
-    allowedEvents: [],
   });
+  return controllerInitMessenger;
 }

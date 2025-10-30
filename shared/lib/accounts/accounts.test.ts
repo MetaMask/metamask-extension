@@ -8,7 +8,11 @@ import {
   SnapKeyring,
   SnapKeyringInternalOptions,
 } from '@metamask/eth-snap-keyring';
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { AccountsControllerActions } from '@metamask/accounts-controller';
 import { SnapControllerActions } from '@metamask/snaps-controllers';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
@@ -98,9 +102,12 @@ describe('accounts', () => {
 
     const getRootMessenger = () => {
       return new Messenger<
+        MockAnyNamespace,
         AccountsControllerActions | SnapControllerActions,
         never
-      >();
+      >({
+        namespace: MOCK_ANY_NAMESPACE,
+      });
     };
 
     const getMessenger = () => {
