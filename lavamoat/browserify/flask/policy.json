@@ -2245,7 +2245,8 @@
         "URL.createObjectURL": true,
         "URL.revokeObjectURL": true,
         "WebAssembly": true,
-        "XMLHttpRequest": true,
+        "XMLHttpRequest": false,
+        "atob": true,
         "cancelAnimationFrame": true,
         "clearInterval": true,
         "clearTimeout": true,
@@ -2265,6 +2266,9 @@
         "requestAnimationFrame": true,
         "setTimeout": true,
         "webkitAudioContext": false
+      },
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "@rive-app/react-canvas": {

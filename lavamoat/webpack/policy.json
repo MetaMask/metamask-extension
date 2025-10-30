@@ -2313,6 +2313,7 @@
       "globals": {
         "AudioContext": true,
         "Blob": true,
+        "Buffer": true,
         "DOMMatrix": true,
         "FinalizationRegistry": true,
         "HTMLCanvasElement": true,
@@ -2327,6 +2328,7 @@
         "URL.revokeObjectURL": true,
         "WebAssembly": true,
         "XMLHttpRequest": true,
+        "atob": true,
         "cancelAnimationFrame": true,
         "clearInterval": true,
         "clearTimeout": true,
@@ -2346,6 +2348,9 @@
         "requestAnimationFrame": true,
         "setTimeout": true,
         "webkitAudioContext": true
+      },
+      "packages": {
+        "buffer": true
       }
     },
     "@rive-app/react-canvas": {
