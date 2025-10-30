@@ -231,13 +231,18 @@ class TransactionConfirmation extends Confirmation {
     console.log(
       `Checking sender account ${account} on transaction confirmation page.`,
     );
-    return await this.driver.isElementPresentAndVisible(
-      {
+    try {
+      await this.driver.waitForSelector({
         css: this.senderAccount,
         text: account,
-      },
-      5000,
-    );
+      });
+      return true;
+    } catch (err) {
+      console.log(
+        `Sender account ${account} is not displayed on transaction confirmation page.`,
+      );
+      return false;
+    }
   }
 
   /**
