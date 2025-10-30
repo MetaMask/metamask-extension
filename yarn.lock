@@ -7567,17 +7567,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/shield-controller@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/shield-controller@npm:1.0.0"
+"@metamask/shield-controller@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/shield-controller@npm:1.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/controller-utils": "npm:^11.14.1"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.8.1"
+    cockatiel: "npm:^3.1.2"
   peerDependencies:
     "@metamask/signature-controller": ^35.0.0
     "@metamask/transaction-controller": ^61.0.0
-  checksum: 10/75cc4e1eac7ffc923cb823a49dbb6bfc3b665c18cf64c0b4b7730587da557eab851460f288471d08f7a1a4038e3a7468fd639e185a3628d161a96b48410e3d0c
+  checksum: 10/b84030af1df9b6ba7e1ce2a9315426b2cd73109b026b39154b36bc105aa0414c6bb1584fadef466b17e20e3ec7e6845f5b11f52b796d8d451427597e3d44752e
   languageName: node
   linkType: hard
 
@@ -7899,18 +7901,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/subscription-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/subscription-controller@npm:3.0.0"
+"@metamask/subscription-controller@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/subscription-controller@npm:3.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.14.1"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/polling-controller": "npm:^15.0.0"
+    "@metamask/transaction-controller": "npm:^61.0.0"
     "@metamask/utils": "npm:^11.8.1"
   peerDependencies:
     "@metamask/profile-sync-controller": ^26.0.0
-  checksum: 10/d190c0a8707682ef683f47be3cabf0a0acd4e022068e24e0eca9b2d562fe0dca853337d41cc714db5b66641a7793877190997e56727735e2bdefabe871c6de33
+  checksum: 10/079995bcaeb4b8b01faa815aba285ec5e8588f923d9842b36c584493e0ddfcb9ed6afc334016002471f253eb8e3dc21eb7b0c24ffc5d8a8a0b6be42b22dc0c95
   languageName: node
   linkType: hard
 
@@ -32088,7 +32091,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^5.0.0"
     "@metamask/selected-network-controller": "npm:^25.0.0"
-    "@metamask/shield-controller": "npm:^1.0.0"
+    "@metamask/shield-controller": "npm:^1.1.0"
     "@metamask/signature-controller": "npm:^35.0.0"
     "@metamask/smart-transactions-controller": "npm:^20.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
@@ -32101,7 +32104,7 @@ __metadata:
     "@metamask/solana-wallet-snap": "npm:^2.4.6"
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
     "@metamask/streams": "npm:^0.4.0"
-    "@metamask/subscription-controller": "npm:^3.0.0"
+    "@metamask/subscription-controller": "npm:^3.1.0"
     "@metamask/superstruct": "npm:^3.2.1"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.3.0"
