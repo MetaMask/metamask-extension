@@ -949,20 +949,12 @@
       }
     },
     "tailwindcss>sucrase>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
     "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
       "globals": {
         "define": true
       }
@@ -7679,6 +7671,7 @@
     },
     "tailwindcss>sucrase": {
       "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "tailwindcss>sucrase>@jridgewell/gen-mapping": true,
         "tailwindcss>sucrase>lines-and-columns": true,
         "tailwindcss>sucrase>ts-interface-checker": true
