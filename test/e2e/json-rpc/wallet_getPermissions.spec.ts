@@ -10,7 +10,7 @@ describe('wallet_getPermissions', function () {
   it('returns permissions when the wallet is unlocked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -46,7 +46,7 @@ describe('wallet_getPermissions', function () {
   it('returns permissions when the wallet is locked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

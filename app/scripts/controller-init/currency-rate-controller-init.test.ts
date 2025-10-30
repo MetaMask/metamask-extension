@@ -1,8 +1,8 @@
-import { Messenger } from '@metamask/base-controller';
 import {
   CodefiTokenPricesServiceV2,
   CurrencyRateController,
 } from '@metamask/assets-controllers';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -29,17 +29,13 @@ jest.mock('@metamask/assets-controllers', () => ({
   },
 }));
 
-/* type CurrencyRateControllerPriceApi = ReturnType<
-  typeof AbstractTokenPricesService
->; */
-
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<
     CurrencyRateControllerMessenger,
     CurrencyRateControllerInitMessenger
   >
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

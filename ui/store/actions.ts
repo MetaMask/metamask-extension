@@ -75,6 +75,7 @@ import {
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
 } from '@metamask/subscription-controller';
+
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -581,6 +582,17 @@ export function setShowShieldEntryModalOnceAction(payload: {
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return {
     type: actionConstants.SET_SHOW_SHIELD_ENTRY_MODAL_ONCE,
+    payload,
+  };
+}
+
+export function setLastUsedSubscriptionPaymentDetails(payload: {
+  paymentMethod: PaymentType;
+  plan: RecurringInterval;
+  paymentTokenAddress?: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return {
+    type: actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_DETAILS,
     payload,
   };
 }
@@ -2523,6 +2535,58 @@ export function createNextMultichainAccountGroup(
 }
 
 /**
+ * Set the pinned state of an account group.
+ *
+ * @param accountGroupId - ID of an account group.
+ * @param pinned - Whether the account group should be pinned.
+ */
+export function setAccountGroupPinned(
+  accountGroupId: AccountGroupId,
+  pinned: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setAccountGroupPinned`);
+    try {
+      await submitRequestToBackground('setAccountGroupPinned', [
+        accountGroupId,
+        pinned,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
+/**
+ * Set the hidden state of an account group.
+ *
+ * @param accountGroupId - ID of an account group.
+ * @param hidden - Whether the account group should be hidden.
+ */
+export function setAccountGroupHidden(
+  accountGroupId: AccountGroupId,
+  hidden: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setAccountGroupHidden`);
+    try {
+      await submitRequestToBackground('setAccountGroupHidden', [
+        accountGroupId,
+        hidden,
+      ]);
+      // Forcing update of the state speeds up the UI update process
+      // and makes UX better
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
+/**
  * Set a new account group name (rename a multichain account).
  *
  * @param accountGroupId - ID of a multichain account group.
@@ -3261,6 +3325,19 @@ export function setCurrentExtensionPopupId(
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground<void>('setCurrentExtensionPopupId', [id]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function setBrowserEnvironment(
+  os: string,
+  _browserName: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground<void>('setBrowserEnvironment', [
+      os,
+      _browserName,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -4224,6 +4301,10 @@ export function setShowMultiRpcModal(value: boolean) {
   return setPreference('showMultiRpcModal', value);
 }
 
+export function setUseSidePanelAsDefault(value: boolean) {
+  return setPreference('useSidePanelAsDefault', value);
+}
+
 export function setAutoLockTimeLimit(value: number | null) {
   return setPreference('autoLockTimeLimit', value);
 }
@@ -4251,9 +4332,38 @@ export function setCompletedOnboarding(): ThunkAction<
   };
 }
 
+export function setCompletedOnboardingWithSidepanel(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+
+    try {
+      await submitRequestToBackground('completeOnboarding');
+      dispatch(completeOnboardingWithSidepanel());
+    } catch (err) {
+      dispatch(displayWarning(err));
+      throw err;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function completeOnboarding() {
   return {
     type: actionConstants.COMPLETE_ONBOARDING,
+  };
+}
+
+export function completeOnboardingWithSidepanel() {
+  return {
+    type: actionConstants.COMPLETE_ONBOARDING_WITH_SIDEPANEL,
   };
 }
 
@@ -4605,18 +4715,15 @@ export function fetchHistoricalPricesForAsset(
 }
 
 // TokenDetectionController
-export function detectTokens(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function detectTokens(
+  chainIds?: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.detectTokens`);
-    await submitRequestToBackground('detectTokens');
+    await submitRequestToBackground('detectTokens', [{ chainIds }]);
     dispatch(hideLoadingIndication());
     await forceUpdateMetamaskState(dispatch);
   };
@@ -6180,7 +6287,7 @@ export function fetchSmartTransactionFees(
       approveTxParams.value = '0x0';
     }
     try {
-      const smartTransactionFees = await await submitRequestToBackground(
+      const smartTransactionFees = await submitRequestToBackground(
         'fetchSmartTransactionFees',
         [unsignedTransaction, approveTxParams],
       );
@@ -7465,6 +7572,7 @@ export async function getLayer1GasFeeValue({
  * Submits a shield claim.
  *
  * @param params - The parameters.
+ * @param params.chainId - The chain ID.
  * @param params.email - The email.
  * @param params.impactedWalletAddress - The impacted wallet address.
  * @param params.impactedTransactionHash - The impacted transaction hash.
@@ -7474,6 +7582,7 @@ export async function getLayer1GasFeeValue({
  * @returns The subscription response.
  */
 export async function submitShieldClaim(params: {
+  chainId: string;
   email: string;
   impactedWalletAddress: string;
   impactedTransactionHash: string;
@@ -7487,6 +7596,7 @@ export async function submitShieldClaim(params: {
 
   const claimsUrl = `${baseUrl}/claims`;
   const formData = new FormData();
+  formData.append('chainId', params.chainId);
   formData.append('email', params.email);
   formData.append('impactedWalletAddress', params.impactedWalletAddress);
   formData.append('impactedTxHash', params.impactedTransactionHash);

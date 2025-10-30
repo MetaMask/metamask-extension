@@ -50,7 +50,7 @@ export const SendPageYourAccounts = ({
       );
       trackEvent(
         {
-          event: MetaMetricsEventName.sendRecipientSelected,
+          event: MetaMetricsEventName.SendRecipientSelected,
           category: MetaMetricsEventCategory.Send,
           properties: {
             location: 'my accounts',
