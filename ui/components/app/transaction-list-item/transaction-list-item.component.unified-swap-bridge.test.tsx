@@ -10,12 +10,38 @@ import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import TransactionListItem from '.';
 
+const mockUseNavigate = jest.fn();
+const mockUseLocation = jest.fn();
+
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation(),
+  };
+});
+
 jest.mock('../../../store/background-connection', () => ({
   ...jest.requireActual('../../../store/background-connection'),
   submitRequestToBackground: jest.fn(),
 }));
 
 describe('TransactionListItem for Unified Swap and Bridge', () => {
+  beforeEach(() => {
+    mockUseLocation.mockReturnValue({
+      pathname: '/',
+      search: '',
+      hash: '',
+      state: null,
+      key: 'test',
+    });
+    mockUseNavigate.mockClear();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should render confirmed unified swap tx summary', () => {
     const { queryByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={jest.fn()}>
@@ -89,7 +115,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OPTransaction 2 of 2-2 USDC',
+      '?Bridged to OPTransaction 2 of 2-2 USDC-USD 0.00',
     );
   });
 
@@ -130,7 +156,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
 
   it('should render completed bridge tx summary', () => {
     const { bridgeHistoryItem, srcTxMetaId } = mockBridgeTxData;
-    const { queryByTestId, getByTestId, history } = renderWithProvider(
+    const { queryByTestId, getByTestId } = renderWithProvider(
       <TransactionListItem
         transactionGroup={mockBridgeTxData.transactionGroup}
       />,
@@ -144,20 +170,21 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
         }),
       ),
     );
-    const mockPush = jest.spyOn(history, 'push');
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OPConfirmed-2 USDC',
+      '?Bridged to OPConfirmed-2 USDC-USD 0.00',
     );
 
     fireEvent.click(getByTestId('activity-list-item'));
-    expect(mockPush).toHaveBeenCalledWith({
-      pathname: '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
-      state: {
-        transactionGroup: mockBridgeTxData.transactionGroup,
-        isEarliestNonce: false,
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
+      {
+        state: {
+          transactionGroup: mockBridgeTxData.transactionGroup,
+          isEarliestNonce: false,
+        },
       },
-    });
+    );
   });
 
   it('should render failed bridge tx summary', () => {
@@ -169,33 +196,33 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
         status: TransactionStatus.failed,
       },
     };
-    const { queryByTestId, getByTestId, getByText, history } =
-      renderWithProvider(
-        <TransactionListItem transactionGroup={failedTransactionGroup} />,
-        configureStore()(
-          createBridgeMockStore({
-            bridgeStatusStateOverrides: {
-              txHistory: {
-                [srcTxMetaId]: bridgeHistoryItem,
-              },
+    const { queryByTestId, getByTestId, getByText } = renderWithProvider(
+      <TransactionListItem transactionGroup={failedTransactionGroup} />,
+      configureStore()(
+        createBridgeMockStore({
+          bridgeStatusStateOverrides: {
+            txHistory: {
+              [srcTxMetaId]: bridgeHistoryItem,
             },
-          }),
-        ),
-      );
-    const mockPush = jest.spyOn(history, 'push');
+          },
+        }),
+      ),
+    );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OPFailed-2 USDC',
+      '?Bridged to OPFailed-2 USDC-USD 0.00',
     );
     expect(getByText('Failed')).toBeInTheDocument();
 
     fireEvent.click(getByTestId('activity-list-item'));
-    expect(mockPush).toHaveBeenCalledWith({
-      pathname: '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
-      state: {
-        transactionGroup: failedTransactionGroup,
-        isEarliestNonce: false,
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/cross-chain/tx-details/ba5f53b0-4e38-11f0-88dc-53f7e315d450',
+      {
+        state: {
+          transactionGroup: failedTransactionGroup,
+          isEarliestNonce: false,
+        },
       },
-    });
+    );
   });
 });

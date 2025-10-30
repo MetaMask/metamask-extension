@@ -1,4 +1,4 @@
-import { RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   SubscriptionControllerGetBillingPortalUrlAction,
   SubscriptionControllerGetCryptoApproveTransactionParamsAction,
@@ -26,12 +26,10 @@ export type SubscriptionServiceAction =
 
 export type SubscriptionServiceEvent = never;
 
-export type SubscriptionServiceMessenger = RestrictedMessenger<
+export type SubscriptionServiceMessenger = Messenger<
   ServiceName,
   SubscriptionServiceAction,
-  SubscriptionServiceEvent,
-  SubscriptionServiceAction['type'],
-  SubscriptionServiceEvent['type']
+  SubscriptionServiceEvent
 >;
 
 export type SubscriptionServiceOptions = {

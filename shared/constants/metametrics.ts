@@ -141,6 +141,11 @@ export type MetaMetricsEventPayload = {
    * Whether the event is a duplicate of an anonymized event.
    */
   isDuplicateAnonymizedEvent?: boolean;
+  /**
+   * The timestamp of the event. If provided, this timestamp will be used
+   * instead of the current time when sending to Segment.
+   */
+  timestamp?: string;
 };
 
 export type UnsanitizedMetaMetricsEventPayload = Omit<
@@ -832,6 +837,7 @@ export enum MetaMetricsEventName {
   TokenImportClicked = 'Token Import Clicked',
   ShowNativeTokenAsMainBalance = 'Show native token as main balance',
   WalletSetupStarted = 'Wallet Setup Started',
+  WalletFundsObtained = 'Wallet Funds Obtained',
   WalletImportStarted = 'Wallet Import Started',
   WalletImportAttempted = 'Wallet Import Attempted',
   WalletImported = 'Wallet Imported',
