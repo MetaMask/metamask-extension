@@ -55,11 +55,12 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ERROR_MESSAGE_MAP: Partial<
   Record<
     SubmitClaimErrorCode,
-    { message: string; params?: (string | number)[] }
+    { message: string; params?: (string | number)[]; field?: SubmitClaimField }
   >
 > = {
   [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_ELIGIBLE]: {
     message: 'shieldClaimImpactedTxHashNotEligible',
+    field: SUBMIT_CLAIM_FIELDS.IMPACTED_TRANSACTION_HASH,
   },
   [SUBMIT_CLAIM_ERROR_CODES.SUBMISSION_WINDOW_EXPIRED]: {
     message: 'shieldClaimSubmissionWindowExpired',
@@ -73,6 +74,7 @@ const ERROR_MESSAGE_MAP: Partial<
   },
   [SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]: {
     message: 'shieldClaimSameWalletAddressesError',
+    field: SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
   },
   [SUBMIT_CLAIM_ERROR_CODES.FILES_SIZE_EXCEEDED]: {
     message: 'shieldClaimFileErrorSizeExceeded',
@@ -305,6 +307,15 @@ const SubmitClaimForm = () => {
           toastMessage = messageFromErrorMap
             ? t(messageFromErrorMap.message, messageFromErrorMap.params)
             : message;
+
+          // if error message has field, set error message for the field instead of showing toast message
+          if (messageFromErrorMap?.field) {
+            setErrorMessage(
+              messageFromErrorMap.field,
+              t(messageFromErrorMap.message, messageFromErrorMap.params),
+            );
+            return;
+          }
         }
         dispatch(setShowClaimSubmitToast(toastMessage));
       }

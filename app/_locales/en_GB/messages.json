@@ -5821,7 +5821,7 @@
     "message": "Need help finding it?"
   },
   "shieldClaimImpactedTxHashNotEligible": {
-    "message": "This transaction was not made within MetaMask and is not eligible for claims."
+    "message": "This transaction is not done within MetaMask, hence it is not eligible for claims"
   },
   "shieldClaimImpactedWalletAddress": {
     "message": "Impacted wallet address"
