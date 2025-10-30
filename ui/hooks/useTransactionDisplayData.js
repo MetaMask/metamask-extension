@@ -121,7 +121,7 @@ export function useTransactionDisplayData(transactionGroup) {
   const { initialTransaction, primaryTransaction } = transactionGroup;
   // initialTransaction contains the data we need to derive the primary purpose of this transaction group
   const { transferInformation, type } = initialTransaction;
-  const { from, to } = initialTransaction.txParams || {};
+  const { from: senderAddress, to } = initialTransaction.txParams || {};
 
   const isUnifiedSwapTx =
     [TransactionType.swap, TransactionType.bridge].includes(type) &&
@@ -141,7 +141,6 @@ export function useTransactionDisplayData(transactionGroup) {
 
   let prefix = '-';
   let recipientAddress = to;
-  const senderAddress = from;
   const transactionData = initialTransaction?.txParams?.data;
 
   // This value is used to determine whether we should look inside txParams.data
@@ -396,8 +395,6 @@ export function useTransactionDisplayData(transactionGroup) {
     );
   }
 
-  const detailsTitle = title;
-
   const primaryCurrencyPreferences = useUserPreferencedCurrency(
     PRIMARY,
     {},
@@ -437,7 +434,6 @@ export function useTransactionDisplayData(transactionGroup) {
     title,
     primaryCurrency:
       type === TransactionType.swap && isPending ? '' : primaryCurrency,
-    senderAddress,
     recipientAddress,
     secondaryCurrency:
       (isTokenCategory && !tokenFiatAmount) ||
@@ -449,6 +445,5 @@ export function useTransactionDisplayData(transactionGroup) {
         : secondaryCurrency,
     displayedStatusKey,
     isPending,
-    detailsTitle,
   };
 }

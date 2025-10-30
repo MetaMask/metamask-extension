@@ -118,9 +118,11 @@ function TransactionListItemInner({
   };
 
   const {
-    initialTransaction: { id },
+    initialTransaction: { id, txParams },
     primaryTransaction: { error, status },
   } = transactionGroup;
+
+  const senderAddress = txParams?.from;
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -192,8 +194,6 @@ function TransactionListItemInner({
     secondaryCurrency,
     displayedStatusKey: displayedStatusKeyFromSrcTransaction,
     isPending,
-    senderAddress,
-    detailsTitle,
   } = useTransactionDisplayData(transactionGroup);
   const displayedStatusKey =
     isBridgeTx && isBridgeFailed
@@ -394,7 +394,7 @@ function TransactionListItemInner({
       </ActivityListItem>
       {showDetails && (
         <TransactionListItemDetails
-          title={detailsTitle}
+          title={title}
           onClose={toggleShowDetails}
           transactionGroup={transactionGroup}
           primaryCurrency={primaryCurrency}
