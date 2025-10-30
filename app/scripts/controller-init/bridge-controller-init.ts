@@ -93,7 +93,7 @@ export const BridgeControllerInit: ControllerInitFunction<
         category: UNIFIED_SWAP_BRIDGE_EVENT_CATEGORY,
         event,
         properties: {
-          ...(properties ?? {}),
+          ...properties,
           environmentType: getEnvironmentType(),
           actionId,
         },
