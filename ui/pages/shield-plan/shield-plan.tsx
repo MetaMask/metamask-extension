@@ -93,16 +93,7 @@ const ShieldPlan = () => {
     // Account address will be the same for all EVM accounts
     getInternalAccountBySelectedAccountGroupAndCaip(state, 'eip155:1'),
   );
-  const {
-    subscriptions,
-    trialedProducts,
-<<<<<<< HEAD
-    // loading: subscriptionsLoading,
-    error: subscriptionsError,
-=======
-    loading: subscriptionsLoading,
->>>>>>> feat/handle-subscription-after-confirm
-  } = useUserSubscriptions({
+  const { subscriptions, trialedProducts } = useUserSubscriptions({
     refetch: true, // always fetch latest subscriptions state in shield plan screen
   });
   const shieldSubscription = useUserSubscriptionByProduct(
@@ -122,20 +113,9 @@ const ShieldPlan = () => {
     lastUsedPaymentDetails?.plan || RECURRING_INTERVALS.year,
   );
 
-<<<<<<< HEAD
-  const {
-    subscriptionPricing,
-    // loading: subscriptionPricingLoading,
-    error: subscriptionPricingError,
-  } = useSubscriptionPricing({
+  const { subscriptionPricing } = useSubscriptionPricing({
     refetch: true, // always fetch latest price
   });
-=======
-  const { subscriptionPricing, loading: subscriptionPricingLoading } =
-    useSubscriptionPricing({
-      refetch: true, // always fetch latest price
-    });
->>>>>>> feat/handle-subscription-after-confirm
 
   const pricingPlans = useSubscriptionProductPlans(
     PRODUCT_TYPES.SHIELD,
