@@ -2753,32 +2753,11 @@
   "importNFTTokenIdToolTip": {
     "message": "La ID de un NFT es un identificador único, ya que no hay dos NFT iguales. Nuevamente, en OpenSea, este número se encuentra en 'Detalles'. Tome nota de ello o cópielo en su portapapeles."
   },
-  "importNWordSRP": {
-    "message": "Tengo una frase de recuperación de $1 palabras",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Clave privada"
   },
-  "importSRPDescription": {
-    "message": "Importe una billetera existente con su frase secreta de recuperación de 12 o 24 palabras."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Las frases secretas de recuperación contienen 12 o 24 palabras"
-  },
-  "importSRPWordError": {
-    "message": "La palabra $1 es incorrecta o está mal escrita.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Las palabras $1 y $2 son incorrectas o están mal escritas.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Importar frase secreta de recuperación"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Se produjo un error desconocido."
   },
   "importSelectedTokens": {
     "message": "¿Agregar los tokens seleccionados?"
@@ -2797,9 +2776,6 @@
   },
   "importTokensError": {
     "message": "No pudimos importar los tokens. Por favor, inténtelo de nuevo más tarde."
-  },
-  "importWallet": {
-    "message": "Importar monedero"
   },
   "importWalletOrAccountHeader": {
     "message": "Importar un monedero o una cuenta"

@@ -1,4 +1,5 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getSignatureControllerMessenger,
   getSignatureControllerInitMessenger,
@@ -6,22 +7,20 @@ import {
 
 describe('getSignatureControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const signatureControllerMessenger =
       getSignatureControllerMessenger(messenger);
 
-    expect(signatureControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(signatureControllerMessenger).toBeInstanceOf(Messenger);
   });
 });
 
 describe('getSignatureControllerInitMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const signatureControllerInitMessenger =
       getSignatureControllerInitMessenger(messenger);
 
-    expect(signatureControllerInitMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(signatureControllerInitMessenger).toBeInstanceOf(Messenger);
   });
 });

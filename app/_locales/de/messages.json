@@ -2753,32 +2753,11 @@
   "importNFTTokenIdToolTip": {
     "message": "Die ID eines NFTs ist eine eindeutige Kennung, da keine zwei NFTs gleich sind. Auch diese Nummer finden Sie in OpenSea unter „Details“. Notieren Sie diese oder kopieren Sie sie in Ihre Zwischenablage."
   },
-  "importNWordSRP": {
-    "message": "Ich habe eine $1-Wort-Wiederherstellungsphrase",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Privater Schlüssel"
   },
-  "importSRPDescription": {
-    "message": "Importieren Sie eine bereits vorhandene Wallet mit Ihrer geheimen 12- oder 24-Wort-Wiederherstellungsphrase."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Geheime Wiederherstellungsphrasen bestehen aus 12 oder 24 Wörtern"
-  },
-  "importSRPWordError": {
-    "message": "Das Wort $1 ist falsch oder falsch geschrieben.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Wort $1 und $2 sind falsch oder falsch geschrieben.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase importieren"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Ein unbekannter Fehler ist aufgetreten."
   },
   "importSelectedTokens": {
     "message": "Ausgewählte Tokens importieren?"
@@ -2797,9 +2776,6 @@
   },
   "importTokensError": {
     "message": "Wir konnten die Tokens nicht importieren. Bitte versuchen Sie es später erneut."
-  },
-  "importWallet": {
-    "message": "Wallet importieren"
   },
   "importWalletOrAccountHeader": {
     "message": "Wallet oder Konto importieren"
