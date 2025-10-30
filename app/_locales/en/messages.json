@@ -5478,6 +5478,9 @@
     "message": "Rewards Points",
     "description": "Alt text for the rewards points icon"
   },
+  "rewardsOptIn": {
+    "message": "Sign up for Rewards"
+  },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
   },
