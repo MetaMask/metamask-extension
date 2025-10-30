@@ -7528,9 +7528,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/seedless-onboarding-controller@npm:@metamask-previews/seedless-onboarding-controller@5.0.0-preview-dc6dbaa5":
-  version: 5.0.0-preview-dc6dbaa5
-  resolution: "@metamask-previews/seedless-onboarding-controller@npm:5.0.0-preview-dc6dbaa5"
+"@metamask/seedless-onboarding-controller@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/seedless-onboarding-controller@npm:6.0.0"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -7543,7 +7543,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
   peerDependencies:
     "@metamask/keyring-controller": ^24.0.0
-  checksum: 10/c5922df71485415ef04123755d0f4e7d7f2c2233960a06051fa428ee9cc6cf39d42e181e678db39b2074326a59c3a6b29f3e3d6616e30693e66d8c39cb189432
+  checksum: 10/d2196efcec8e3a20166a6950a4cc7e53f313fe47086a4a3c2135e543ee3f8db7a72ed659b54b53b281795e2573e778cda35a06e9e01113593f333d2cf7462a6c
   languageName: node
   linkType: hard
 
@@ -10480,9 +10480,9 @@ __metadata:
   linkType: hard
 
 "@sentry/core@npm:^9.10.0":
-  version: 9.30.0
-  resolution: "@sentry/core@npm:9.30.0"
-  checksum: 10/2957927aaae6ffafe7f6fffa8bc43631e10d584192fd679ba35b2527ed4f03364f8bebbc0f9a988e3cdb16f67d9fb23f244a796c7851961476270e0ec1dfd57e
+  version: 9.46.0
+  resolution: "@sentry/core@npm:9.46.0"
+  checksum: 10/a42a5e92f4650ba89b5caa1885cd2cf2766b2726dfb03d567299ba6d6ada6c87436d20af2cd0444a14df082e71415f526b4597e0af69927b216ad8e09a233ad9
   languageName: node
   linkType: hard
 
@@ -31970,7 +31970,7 @@ __metadata:
     "@metamask/rpc-errors": "npm:^7.0.0"
     "@metamask/safe-event-emitter": "npm:^3.1.1"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/seedless-onboarding-controller": "npm:@metamask-previews/seedless-onboarding-controller@5.0.0-preview-dc6dbaa5"
+    "@metamask/seedless-onboarding-controller": "npm:^6.0.0"
     "@metamask/selected-network-controller": "npm:^25.0.0"
     "@metamask/shield-controller": "npm:^1.1.0"
     "@metamask/signature-controller": "npm:^35.0.0"
