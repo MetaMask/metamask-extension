@@ -202,7 +202,8 @@
     },
     "MultichainAssetsController": {
       "accountsAssets": {},
-      "assetsMetadata": {}
+      "assetsMetadata": {},
+      "allIgnoredAssets": {}
     },
     "MultichainAssetsRatesController": {
       "conversionRates": {}

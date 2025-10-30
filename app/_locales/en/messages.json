@@ -1688,11 +1688,11 @@
     "message": "Create"
   },
   "createMultichainAccountButton": {
-    "message": "Create account",
+    "message": "Add account",
     "description": "Name of a button used on multichain account related pages for triggering the account creation process."
   },
   "createMultichainAccountButtonLoading": {
-    "message": "Creating account...",
+    "message": "Adding account...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
   "createNewAccountHeader": {
@@ -1752,6 +1752,9 @@
   },
   "currencySymbolDefinition": {
     "message": "The ticker symbol displayed for this network’s currency."
+  },
+  "current": {
+    "message": "Current"
   },
   "currentAccountNotConnected": {
     "message": "Your current account is not connected"
@@ -2352,10 +2355,10 @@
     "message": " Enable it from Settings."
   },
   "enableSmartContractAccount": {
-    "message": "Enable smart contract account"
+    "message": "Use smart account"
   },
   "enableSmartContractAccountDescription": {
-    "message": "You can enable smart account features on supported networks."
+    "message": "Unlock faster transactions, lower network fees, and added security on supported networks."
   },
   "enableSnap": {
     "message": "Enable"
@@ -2757,6 +2760,70 @@
   },
   "gasUsed": {
     "message": "Gas used"
+  },
+  "gatorPermissionAnnualFrequency": {
+    "message": "Yearly",
+    "description": "Time period for annual recurring permissions redemption"
+  },
+  "gatorPermissionCustomFrequency": {
+    "message": "Custom",
+    "description": "Time period for custom recurring permissions redemption"
+  },
+  "gatorPermissionDailyFrequency": {
+    "message": "Daily",
+    "description": "Time period for daily recurring permissions redemption"
+  },
+  "gatorPermissionFortnightlyFrequency": {
+    "message": "Bi-Weekly",
+    "description": "Time period for fortnightly recurring permissions redemption"
+  },
+  "gatorPermissionMonthlyFrequency": {
+    "message": "Monthly",
+    "description": "Time period for monthly recurring permissions redemption"
+  },
+  "gatorPermissionNoExpiration": {
+    "message": "No expiration",
+    "description": "Label for a permission with no expiration"
+  },
+  "gatorPermissionTokenPeriodicFrequencyLabel": {
+    "message": "Transfer Window",
+    "description": "Label for the transfer window of a token periodic permission"
+  },
+  "gatorPermissionTokenStreamFrequencyLabel": {
+    "message": "Period",
+    "description": "Label for the period of a token stream permission"
+  },
+  "gatorPermissionUnknownTokenAmount": {
+    "message": "Unknown amount",
+    "description": "Text for an unknown amount with no decimals"
+  },
+  "gatorPermissionWeeklyFrequency": {
+    "message": "Weekly",
+    "description": "Time period for weekly recurring permissions redemption"
+  },
+  "gatorPermissionsExpirationDate": {
+    "message": "Expiration date",
+    "description": "Label for the expiration date of a permission"
+  },
+  "gatorPermissionsInitialAllowance": {
+    "message": "Initial allowance",
+    "description": "Label for the initial allowance of a permission"
+  },
+  "gatorPermissionsMaxAllowance": {
+    "message": "Max allowance",
+    "description": "Label for the max allowance of a permission"
+  },
+  "gatorPermissionsStartDate": {
+    "message": "Start date",
+    "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStreamRate": {
+    "message": "Stream rate",
+    "description": "Label for the stream rate of a permission"
+  },
+  "gatorPermissionsStreamingAmountLabel": {
+    "message": "Streaming amount",
+    "description": "Label for the stream rate of a permission"
   },
   "general": {
     "message": "General"
@@ -5415,6 +5482,9 @@
   "save": {
     "message": "Save"
   },
+  "saveAndEarn": {
+    "message": "Save + Earn"
+  },
   "scanInstructions": {
     "message": "Place the QR code in front of your camera"
   },
@@ -5780,6 +5850,9 @@
   "shieldConfirmMembership": {
     "message": "Confirm membership"
   },
+  "shieldCoverageAlertCovered": {
+    "message": "You're protected up to $2 with Metamask Transaction Shield. $1."
+  },
   "shieldCoverageAlertMessageChainNotSupported": {
     "message": "This chain is not supported, so it isn't protected by Transaction Shield. $1."
   },
@@ -5794,6 +5867,9 @@
   },
   "shieldCoverageAlertMessageTitle": {
     "message": "This transaction isn't covered"
+  },
+  "shieldCoverageAlertMessageTitleCovered": {
+    "message": "This transaction is covered"
   },
   "shieldCoverageAlertMessageTxTypeNotSupported": {
     "message": "This transaction type is not supported, so it isn't protected by Transaction Shield. $1."
@@ -7814,7 +7890,7 @@
     "message": "Username"
   },
   "userOpContractDeployError": {
-    "message": "Contract deployment from a smart contract account is not supported"
+    "message": "Contract deployment from a smart account is not supported"
   },
   "value": {
     "message": "Value"
