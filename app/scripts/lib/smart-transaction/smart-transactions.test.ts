@@ -273,11 +273,13 @@ describe('submitSmartTransactionHook', () => {
     });
   });
 
-  it('skips getting fees if the transaction is sponsored', async () => {
+  it('skips getting fees if the transaction is signed and sponsored', async () => {
     withRequest(async ({ request }) => {
       request.transactionMeta.isGasFeeSponsored = true;
       request.featureFlags.smartTransactions.extensionReturnTxHashAsap = true;
+
       const result = await submitSmartTransactionHook(request);
+
       expect(
         request.smartTransactionsController.getFees,
       ).not.toHaveBeenCalled();

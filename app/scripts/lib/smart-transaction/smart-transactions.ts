@@ -173,8 +173,11 @@ class SmartTransactionHook {
     }
 
     let getFeesResponse;
-    // Skip getting fees if the tx is sponsored
-    if (!this.#transactionMeta.isGasFeeSponsored) {
+    // Skip getting fees if the tx is signed and sponsored
+    if (
+      !this.#signedTransactionInHex ||
+      !this.#transactionMeta.isGasFeeSponsored
+    ) {
       try {
         getFeesResponse = await this.#smartTransactionsController.getFees(
           { ...this.#txParams, chainId: this.#chainId },
