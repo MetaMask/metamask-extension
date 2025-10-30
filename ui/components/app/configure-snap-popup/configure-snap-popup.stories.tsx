@@ -46,7 +46,7 @@ export const Configure: Story = {
   args: {
     type: ConfigureSnapPopupType.CONFIGURE,
   },
-  render: (args) => {
+  render: function Render(args) {
     const [{ isOpen }, updateArgs] = useArgs();
     const handleClose = () => {
       updateArgs({ isOpen: false });
@@ -67,7 +67,7 @@ export const Install: Story = {
   args: {
     type: ConfigureSnapPopupType.INSTALL,
   },
-  render: (args) => {
+  render: function Render(args) {
     const [{ isOpen }, updateArgs] = useArgs();
     const handleClose = () => {
       updateArgs({ isOpen: false });
