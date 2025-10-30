@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // Helpers
 import {
@@ -33,11 +33,11 @@ import {
 
 export default function RecoveryPhraseReminder({ onConfirm }) {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleBackUp = () => {
     const backUpSRPRoute = `${ONBOARDING_REVEAL_SRP_ROUTE}/?isFromReminder=true`;
-    history.push(backUpSRPRoute);
+    navigate(backUpSRPRoute);
   };
 
   return (
