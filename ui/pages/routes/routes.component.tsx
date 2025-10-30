@@ -561,10 +561,11 @@ export default function Routes() {
   }, [currentCurrency, dispatch]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-  // Navigate to confirmations when there are pending approvals (from any page)
+  // Navigate to confirmations when there are pending approvals (from non-home pages)
   useEffect(() => {
-    // Don't navigate if already on a confirmation-related route or snap flow
+    // Don't navigate if already on a confirmation-related route, snap flow, or homepage
     const isOnConfirmationRoute =
+      location.pathname === DEFAULT_ROUTE ||
       location.pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
       location.pathname.startsWith(CONNECT_ROUTE) ||
       location.pathname.startsWith(PERMISSIONS) ||
@@ -1004,6 +1005,7 @@ export default function Routes() {
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
+      {/* @ts-expect-error - ToastMaster is JS and accepts location prop */}
       <ToastMaster location={location} />
     </div>
   );
