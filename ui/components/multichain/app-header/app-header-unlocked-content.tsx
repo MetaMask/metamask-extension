@@ -310,7 +310,6 @@ export const AppHeaderUnlockedContent = ({
   const AppContent = useMemo(() => {
     const handleAccountMenuClick = () => {
       if (isMultichainAccountsState2Enabled) {
-        console.log('11111 click account list');
         trace({
           name: TraceName.ShowAccountList,
           op: TraceOperation.AccountUi,
