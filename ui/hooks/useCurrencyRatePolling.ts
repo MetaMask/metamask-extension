@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getChainIdsToPoll,
@@ -40,8 +40,15 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
     ? enabledChainIds
     : chainIds;
 
+  const isMounted = useRef(false);
   useEffect(() => {
-    let isMounted = true;
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  });
+
+  useEffect(() => {
     // Use validated currency tickers
     const fetchNativeCurrencies = async () => {
       const nativeCurrenciesArray = await Promise.all(
@@ -58,21 +65,17 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
           return originalToken ?? n.nativeCurrency;
         }),
       );
-
-      // Use a type predicate to filter out null values.
-      const filteredCurrencies = nativeCurrenciesArray.filter(
-        (currency): currency is NonNullable<typeof currency> =>
-          currency !== null,
-      );
-      const uniqueCurrencies = [...new Set(filteredCurrencies)];
-      if (isMounted) {
+      if (isMounted.current) {
+        // Use a type predicate to filter out null values.
+        const filteredCurrencies = nativeCurrenciesArray.filter(
+          (currency): currency is NonNullable<typeof currency> =>
+            currency !== null,
+        );
+        const uniqueCurrencies = [...new Set(filteredCurrencies)];
         setNativeCurrencies(uniqueCurrencies);
       }
     };
     fetchNativeCurrencies();
-    return () => {
-      isMounted = false;
-    };
   }, [
     chainIds,
     isPollingEnabled,
