@@ -151,8 +151,15 @@ export function useCurrencyDisplay(
   );
 
   const currencyRates = useMultichainSelector(getCurrencyRates, account);
+
+  // Use chainId-based native currency if chainId is provided, otherwise use account-based
+  const effectiveNativeCurrency = chainId
+    ? CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId] || nativeCurrency
+    : nativeCurrency;
+
   const isUserPreferredCurrency = currency === currentCurrency;
   const isNativeCurrency =
+    currency === effectiveNativeCurrency ||
     currency === nativeCurrency ||
     currency === CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId];
 
@@ -182,11 +189,18 @@ export function useCurrencyDisplay(
     }
 
     if (!isNativeCurrency && isUserPreferredCurrency && conversionRate) {
+      // Use chainId-based conversionRate if available
+      const effectiveConversionRate =
+        chainId && currencyRates
+          ? currencyRates[CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId]]
+              ?.conversionRate || conversionRate
+          : conversionRate;
+
       const valueFromHex = getValueFromWeiHex({
         value: inputValue,
-        fromCurrency: nativeCurrency,
+        fromCurrency: effectiveNativeCurrency,
         toCurrency: currency,
-        conversionRate,
+        conversionRate: effectiveConversionRate,
         numberOfDecimals: numberOfDecimals || 2,
         toDenomination: denomination,
       });
@@ -196,7 +210,7 @@ export function useCurrencyDisplay(
     return formatEthCurrencyDisplay({
       isNativeCurrency,
       isUserPreferredCurrency,
-      nativeCurrency,
+      nativeCurrency: effectiveNativeCurrency,
       inputValue,
       denomination,
       numberOfDecimals,
@@ -208,6 +222,7 @@ export function useCurrencyDisplay(
     isUserPreferredCurrency,
     currency,
     nativeCurrency,
+    effectiveNativeCurrency,
     inputValue,
     conversionRate,
     denomination,

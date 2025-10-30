@@ -241,12 +241,15 @@ export function useTransactionDisplayData(transactionGroup) {
     ).toString(10);
   }
 
+  const txChainId = transactionGroup?.initialTransaction?.chainId;
+
   const tokenFiatAmount = useTokenFiatAmount(
     token?.address,
     tokenDisplayValue,
     token?.symbol,
     undefined,
     true,
+    txChainId,
   );
 
   // used to append to the primary display value. initialized to either token.symbol or undefined
@@ -395,9 +398,13 @@ export function useTransactionDisplayData(transactionGroup) {
   const primaryCurrencyPreferences = useUserPreferencedCurrency(
     PRIMARY,
     {},
-    transactionGroup?.initialTransaction?.chainId,
+    txChainId,
   );
-  const secondaryCurrencyPreferences = useUserPreferencedCurrency(SECONDARY);
+  const secondaryCurrencyPreferences = useUserPreferencedCurrency(
+    SECONDARY,
+    {},
+    txChainId,
+  );
 
   const [primaryCurrency] = useCurrencyDisplay(
     primaryValue,
@@ -407,7 +414,7 @@ export function useTransactionDisplayData(transactionGroup) {
       suffix: primarySuffix,
       ...primaryCurrencyPreferences,
     },
-    transactionGroup?.initialTransaction?.chainId,
+    txChainId,
   );
 
   const [secondaryCurrency] = useCurrencyDisplay(
@@ -420,7 +427,7 @@ export function useTransactionDisplayData(transactionGroup) {
       hideLabel: isTokenCategory || Boolean(swapTokenValue),
       ...secondaryCurrencyPreferences,
     },
-    transactionGroup?.initialTransaction?.chainId,
+    txChainId,
   );
 
   if (!recipientAddress && transferInformation) {
