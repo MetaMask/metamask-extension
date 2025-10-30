@@ -236,7 +236,7 @@ class TransactionConfirmation extends Confirmation {
         css: this.senderAccount,
         text: account,
       },
-      2000,
+      5000,
     );
   }
 
