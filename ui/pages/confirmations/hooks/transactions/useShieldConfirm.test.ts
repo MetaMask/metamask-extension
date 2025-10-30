@@ -1,4 +1,7 @@
-import { TransactionMeta, TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
 import { useShieldConfirm } from './useShieldConfirm';
 
@@ -24,7 +27,9 @@ describe('useShieldConfirm', () => {
         type: TransactionType.shieldSubscriptionApprove,
       } as TransactionMeta;
 
-      result.current.handleShieldSubscriptionApprovalTransactionAfterConfirm(txMeta);
+      result.current.handleShieldSubscriptionApprovalTransactionAfterConfirm(
+        txMeta,
+      );
 
       expect(mockNavigate).toHaveBeenCalledWith(
         '/settings/transaction-shield/?waitForSubscriptionCreation=true',
@@ -38,7 +43,9 @@ describe('useShieldConfirm', () => {
         type: TransactionType.contractInteraction,
       } as TransactionMeta;
 
-      result.current.handleShieldSubscriptionApprovalTransactionAfterConfirm(txMeta);
+      result.current.handleShieldSubscriptionApprovalTransactionAfterConfirm(
+        txMeta,
+      );
 
       expect(mockNavigate).not.toHaveBeenCalled();
     });
@@ -52,7 +59,9 @@ describe('useShieldConfirm', () => {
         type: TransactionType.shieldSubscriptionApprove,
       } as TransactionMeta;
 
-      result.current.handleShieldSubscriptionApprovalTransactionAfterConfirmErr(txMeta);
+      result.current.handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
+        txMeta,
+      );
 
       expect(mockNavigate).toHaveBeenCalledWith(-1);
     });
@@ -64,7 +73,9 @@ describe('useShieldConfirm', () => {
         type: TransactionType.contractInteraction,
       } as TransactionMeta;
 
-      result.current.handleShieldSubscriptionApprovalTransactionAfterConfirmErr(txMeta);
+      result.current.handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
+        txMeta,
+      );
 
       expect(mockNavigate).not.toHaveBeenCalled();
     });

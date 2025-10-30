@@ -1,7 +1,10 @@
-import { TransactionMeta, TransactionType } from "@metamask/transaction-controller";
-import { useCallback } from "react";
-import { useNavigate } from "react-router-dom-v5-compat";
-import { TRANSACTION_SHIELD_ROUTE } from "../../../../helpers/constants/routes";
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom-v5-compat';
+import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 
 /**
  * Handlers for shield subscription approval transaction after confirm in UI
