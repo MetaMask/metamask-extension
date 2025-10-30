@@ -87,9 +87,12 @@ jobs:
       test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
 
   test-e2e-chrome-api-specs:
+    strategy:
+      matrix:
+        run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     uses: ./.github/workflows/run-e2e.yml
     with:
-      test-suite-name: test-e2e-chrome-api-specs
+      test-suite-name: test-e2e-chrome-api-specs-run-${{ matrix.run }}
       build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:api-specs
