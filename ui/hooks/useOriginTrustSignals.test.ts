@@ -1,3 +1,4 @@
+import { renderHook } from '@testing-library/react-hooks';
 import { RecommendedAction } from '@metamask/phishing-controller';
 import { getUrlScanCacheResult } from '../selectors/selectors';
 import { TrustSignalDisplayState } from './useTrustSignals';
@@ -29,16 +30,18 @@ describe('useOriginTrustSignals', () => {
   it('returns unknown state when selector returns undefined', () => {
     getUrlScanCacheResultMock.mockReturnValue(undefined);
 
-    const result = useOriginTrustSignals('');
+    renderHook(() => {
+      const result = useOriginTrustSignals('');
 
-    expect(result).toStrictEqual({
-      state: TrustSignalDisplayState.Unknown,
-      label: null,
+      expect(result).toStrictEqual({
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      });
+      expect(getUrlScanCacheResultMock).toHaveBeenCalledWith(
+        undefined,
+        undefined,
+      );
     });
-    expect(getUrlScanCacheResultMock).toHaveBeenCalledWith(
-      undefined,
-      undefined,
-    );
   });
 
   it('returns malicious state when recommendedAction is Block', () => {
@@ -50,16 +53,18 @@ describe('useOriginTrustSignals', () => {
       timestamp: TIMESTAMP_MOCK,
     });
 
-    const result = useOriginTrustSignals(ORIGIN_MOCK);
+    renderHook(() => {
+      const result = useOriginTrustSignals(ORIGIN_MOCK);
 
-    expect(result).toStrictEqual({
-      state: TrustSignalDisplayState.Malicious,
-      label: null,
+      expect(result).toStrictEqual({
+        state: TrustSignalDisplayState.Malicious,
+        label: null,
+      });
+      expect(getUrlScanCacheResultMock).toHaveBeenCalledWith(
+        undefined,
+        DOMAIN_NAME_MOCK,
+      );
     });
-    expect(getUrlScanCacheResultMock).toHaveBeenCalledWith(
-      undefined,
-      DOMAIN_NAME_MOCK,
-    );
   });
 
   it('returns warning state when recommendedAction is Warn', () => {
@@ -71,11 +76,13 @@ describe('useOriginTrustSignals', () => {
       timestamp: TIMESTAMP_MOCK,
     });
 
-    const result = useOriginTrustSignals(ORIGIN_MOCK);
+    renderHook(() => {
+      const result = useOriginTrustSignals(ORIGIN_MOCK);
 
-    expect(result).toStrictEqual({
-      state: TrustSignalDisplayState.Warning,
-      label: null,
+      expect(result).toStrictEqual({
+        state: TrustSignalDisplayState.Warning,
+        label: null,
+      });
     });
   });
 
@@ -88,11 +95,13 @@ describe('useOriginTrustSignals', () => {
       timestamp: TIMESTAMP_MOCK,
     });
 
-    const result = useOriginTrustSignals(ORIGIN_MOCK);
+    renderHook(() => {
+      const result = useOriginTrustSignals(ORIGIN_MOCK);
 
-    expect(result).toStrictEqual({
-      state: TrustSignalDisplayState.Verified,
-      label: null,
+      expect(result).toStrictEqual({
+        state: TrustSignalDisplayState.Verified,
+        label: null,
+      });
     });
   });
 
@@ -105,11 +114,13 @@ describe('useOriginTrustSignals', () => {
       timestamp: TIMESTAMP_MOCK,
     });
 
-    const result = useOriginTrustSignals(ORIGIN_MOCK);
+    renderHook(() => {
+      const result = useOriginTrustSignals(ORIGIN_MOCK);
 
-    expect(result).toStrictEqual({
-      state: TrustSignalDisplayState.Unknown,
-      label: null,
+      expect(result).toStrictEqual({
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      });
     });
   });
 
@@ -122,11 +133,13 @@ describe('useOriginTrustSignals', () => {
       timestamp: TIMESTAMP_MOCK,
     });
 
-    const result = useOriginTrustSignals(ORIGIN_MOCK);
+    renderHook(() => {
+      const result = useOriginTrustSignals(ORIGIN_MOCK);
 
-    expect(result).toStrictEqual({
-      state: TrustSignalDisplayState.Unknown,
-      label: null,
+      expect(result).toStrictEqual({
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      });
     });
   });
 
@@ -139,26 +152,30 @@ describe('useOriginTrustSignals', () => {
       timestamp: TIMESTAMP_MOCK,
     });
 
-    const result = useOriginTrustSignals(ORIGIN_MOCK);
+    renderHook(() => {
+      const result = useOriginTrustSignals(ORIGIN_MOCK);
 
-    expect(result).toStrictEqual({
-      state: TrustSignalDisplayState.Unknown,
-      label: null,
+      expect(result).toStrictEqual({
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      });
     });
   });
 
   it('returns unknown state when origin is invalid URL', () => {
     getUrlScanCacheResultMock.mockReturnValue(undefined);
 
-    const result = useOriginTrustSignals('not-a-valid-url');
+    renderHook(() => {
+      const result = useOriginTrustSignals('not-a-valid-url');
 
-    expect(result).toStrictEqual({
-      state: TrustSignalDisplayState.Unknown,
-      label: null,
+      expect(result).toStrictEqual({
+        state: TrustSignalDisplayState.Unknown,
+        label: null,
+      });
+      expect(getUrlScanCacheResultMock).toHaveBeenCalledWith(
+        undefined,
+        undefined,
+      );
     });
-    expect(getUrlScanCacheResultMock).toHaveBeenCalledWith(
-      undefined,
-      undefined,
-    );
   });
 });
