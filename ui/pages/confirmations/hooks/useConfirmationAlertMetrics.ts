@@ -145,7 +145,13 @@ export function useConfirmationAlertMetrics() {
     } else {
       updateTransactionEventFragment({ properties }, ownerId);
     }
-  }, [JSON.stringify(properties), updateTransactionEventFragment, ownerId]);
+  }, [
+    updateSignatureEventFragment,
+    updateTransactionEventFragment,
+    ownerId,
+    properties,
+    currentConfirmation,
+  ]);
 
   useEffect(() => {
     updateAlertMetrics();
