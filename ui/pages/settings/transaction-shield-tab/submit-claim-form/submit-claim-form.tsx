@@ -49,27 +49,43 @@ import {
 } from '../types';
 import { SubmitClaimError } from '../claim-error';
 
+const VALID_SUBMISSION_WINDOW_DAYS = 21;
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-const ERROR_MESSAGE_MAP: Partial<Record<SubmitClaimErrorCode, string>> = {
-  [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_ELIGIBLE]:
-    'shieldClaimImpactedTxHashNotEligible',
-  // TODO: use const for 21 days
-  [SUBMIT_CLAIM_ERROR_CODES.SUBMISSION_WINDOW_EXPIRED]:
-    'shieldClaimSubmissionWindowExpired',
-  [SUBMIT_CLAIM_ERROR_CODES.MAX_CLAIMS_LIMIT_EXCEEDED]:
-    'shieldClaimMaxClaimsLimitExceeded',
-  [SUBMIT_CLAIM_ERROR_CODES.DUPLICATE_CLAIM_EXISTS]:
-    'shieldClaimDuplicateClaimExists',
-  [SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]:
-    'shieldClaimSameWalletAddressesError',
-  [SUBMIT_CLAIM_ERROR_CODES.FILES_SIZE_EXCEEDED]:
-    'shieldClaimFileErrorSizeExceeded',
-  [SUBMIT_CLAIM_ERROR_CODES.FILES_COUNT_EXCEEDED]:
-    'shieldClaimFileErrorCountExceeded',
-  [SUBMIT_CLAIM_ERROR_CODES.INVALID_FILES_TYPE]:
-    'shieldClaimFileErrorInvalidType',
-  [SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]: 'shieldClaimInvalidRequired',
+const ERROR_MESSAGE_MAP: Partial<
+  Record<
+    SubmitClaimErrorCode,
+    { message: string; params?: (string | number)[] }
+  >
+> = {
+  [SUBMIT_CLAIM_ERROR_CODES.TRANSACTION_NOT_ELIGIBLE]: {
+    message: 'shieldClaimImpactedTxHashNotEligible',
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.SUBMISSION_WINDOW_EXPIRED]: {
+    message: 'shieldClaimSubmissionWindowExpired',
+    params: [VALID_SUBMISSION_WINDOW_DAYS.toString()],
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.MAX_CLAIMS_LIMIT_EXCEEDED]: {
+    message: 'shieldClaimMaxClaimsLimitExceeded',
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.DUPLICATE_CLAIM_EXISTS]: {
+    message: 'shieldClaimDuplicateClaimExists',
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]: {
+    message: 'shieldClaimSameWalletAddressesError',
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.FILES_SIZE_EXCEEDED]: {
+    message: 'shieldClaimFileErrorSizeExceeded',
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.FILES_COUNT_EXCEEDED]: {
+    message: 'shieldClaimFileErrorCountExceeded',
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.INVALID_FILES_TYPE]: {
+    message: 'shieldClaimFileErrorInvalidType',
+  },
+  [SUBMIT_CLAIM_ERROR_CODES.FIELD_REQUIRED]: {
+    message: 'shieldClaimInvalidRequired',
+  },
 };
 
 const SUBMIT_CLAIM_FIELD_ERROR_MESSAGE_MAP: Partial<
@@ -286,7 +302,9 @@ const SubmitClaimForm = () => {
           toastMessage = ClaimSubmitToastType.Errored;
         } else {
           const messageFromErrorMap = ERROR_MESSAGE_MAP[data.errorCode];
-          toastMessage = messageFromErrorMap ? t(messageFromErrorMap) : message;
+          toastMessage = messageFromErrorMap
+            ? t(messageFromErrorMap.message, messageFromErrorMap.params)
+            : message;
         }
         dispatch(setShowClaimSubmitToast(toastMessage));
       }
@@ -341,6 +359,7 @@ const SubmitClaimForm = () => {
     >
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {t('shieldClaimDetails', [
+          VALID_SUBMISSION_WINDOW_DAYS,
           <TextButton key="here-link" className="min-w-0" asChild>
             <a href="#">{t('here')}</a>
           </TextButton>,
@@ -527,7 +546,7 @@ const SubmitClaimForm = () => {
           data-testid="shield-claim-submit-button"
           variant={ButtonVariant.Primary}
           size={ButtonSize.Lg}
-          disabled={isInvalidData}
+          disabled={isInvalidData || claimSubmitLoading}
           onClick={handleSubmitClaim}
         >
           {t('shieldClaimSubmit')}

@@ -5781,8 +5781,8 @@
     "message": "Provide a brief summary of the incident"
   },
   "shieldClaimDetails": {
-    "message": "You may file a single claim per incident within 21 days of the incident. View the full coverage policy $1.",
-    "description": "The $1 is a link to the full coverage policy"
+    "message": "You may file a single claim per incident within $1 days of the incident. View the full coverage policy $2.",
+    "description": "The $1 is the number of days and $2 is a link to the full coverage policy"
   },
   "shieldClaimDuplicateClaimExists": {
     "message": "A claim has already been submitted for this transaction hash."
@@ -5854,7 +5854,8 @@
     "message": "Impacted wallet address and reimbursement wallet address must be different."
   },
   "shieldClaimSubmissionWindowExpired": {
-    "message": "Submission window expired. Claims must be filed within 21 days of the incident."
+    "message": "Submission window expired. Claims must be filed within $1 days of the incident.",
+    "description": "The $1 is the number of days"
   },
   "shieldClaimSubmit": {
     "message": "Submit a claim"
