@@ -8,20 +8,23 @@ export const RewardsBadge = ({
   textClassName,
   withPointsSuffix = true,
   useAlternativeIconColor = false,
+  onClick,
 }: {
   formattedPoints: string;
   boxClassName?: string;
   textClassName?: string;
   withPointsSuffix?: boolean;
   useAlternativeIconColor?: boolean;
+  onClick?: () => void;
 }) => {
   const t = useI18nContext();
   const [imageLoadError, setImageLoadError] = useState(false);
 
   return (
     <Box
-      className={`flex items-center${boxClassName ? ` ${boxClassName}` : ''}`}
+      className={`flex items-center${boxClassName ? ` ${boxClassName}` : ''}${onClick ? ' cursor-pointer' : ''}`}
       data-testid="rewards-points-balance"
+      onClick={onClick}
     >
       {!imageLoadError && (
         <img

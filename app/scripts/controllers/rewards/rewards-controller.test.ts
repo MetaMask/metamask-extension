@@ -1206,7 +1206,7 @@ describe('RewardsController', () => {
   describe('getGeoRewardsMetadata', () => {
     it('should return unknown location when rewards are disabled', async () => {
       await withController({ isDisabled: true }, async ({ controller }) => {
-        const result = await controller.getGeoRewardsMetadata();
+        const result = await controller.getRewardsGeoMetadata();
 
         expect(result).toEqual({
           geoLocation: 'UNKNOWN',
@@ -1226,7 +1226,7 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.getGeoRewardsMetadata();
+          const result = await controller.getRewardsGeoMetadata();
 
           expect(result).toEqual({
             geoLocation: 'US',
@@ -1234,7 +1234,7 @@ describe('RewardsController', () => {
           });
 
           // Verify caching - second call should not fetch again
-          const cachedResult = await controller.getGeoRewardsMetadata();
+          const cachedResult = await controller.getRewardsGeoMetadata();
           expect(cachedResult).toEqual(result);
         },
       );
@@ -1251,7 +1251,7 @@ describe('RewardsController', () => {
             return undefined;
           });
 
-          const result = await controller.getGeoRewardsMetadata();
+          const result = await controller.getRewardsGeoMetadata();
 
           expect(result).toEqual({
             geoLocation: 'UK',
@@ -3050,7 +3050,7 @@ describe('Additional RewardsController edge cases', () => {
             return undefined;
           });
 
-          const result = await controller.getGeoRewardsMetadata();
+          const result = await controller.getRewardsGeoMetadata();
 
           expect(result).toEqual({
             geoLocation: 'UNKNOWN',

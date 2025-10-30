@@ -1,15 +1,30 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useSelector } from 'react-redux';
-import { useRewardsContext } from '../../../contexts/rewards';
-import type { RewardsContextValue } from '../../../contexts/rewards';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  selectCandidateSubscriptionId,
+  selectRewardsEnabled,
+  selectSeasonStatus,
+  selectSeasonStatusLoading,
+} from '../../../ducks/rewards/selectors';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { RewardsPointsBalance } from './RewardsPointsBalance';
 
 // Mock dependencies
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
+  useDispatch: jest.fn(() => jest.fn()),
+}));
+
+// Mock rewards hooks to avoid side effects during tests
+jest.mock('../../../hooks/rewards/useCandidateSubscriptionId', () => ({
+  useCandidateSubscriptionId: () => ({
+    fetchCandidateSubscriptionId: jest.fn(),
+  }),
+}));
+jest.mock('../../../hooks/rewards/useSeasonStatus', () => ({
+  useSeasonStatus: jest.fn(),
 }));
 
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -27,9 +42,7 @@ jest.mock('../../../hooks/useI18nContext', () => ({
   }),
 }));
 
-jest.mock('../../../contexts/rewards', () => ({
-  useRewardsContext: jest.fn(),
-}));
+// No rewards context anymore; tests will drive values via useSelector
 
 jest.mock('../../component-library/skeleton', () => ({
   Skeleton: ({ width }: { width: string }) => (
@@ -40,9 +53,7 @@ jest.mock('../../component-library/skeleton', () => ({
 }));
 
 const mockUseSelector = useSelector as jest.MockedFunction<typeof useSelector>;
-const mockUseRewardsContext = useRewardsContext as jest.MockedFunction<
-  typeof useRewardsContext
->;
+const mockUseDispatch = useDispatch as jest.MockedFunction<typeof useDispatch>;
 
 describe('RewardsPointsBalance', () => {
   // Mock season status with complete structure
@@ -74,66 +85,76 @@ describe('RewardsPointsBalance', () => {
     },
   };
 
-  // Mock rewards context value with complete structure
-  const mockRewardsContextValue: RewardsContextValue = {
-    rewardsEnabled: true,
-    candidateSubscriptionId: 'test-subscription-id',
-    candidateSubscriptionIdError: false,
-    seasonStatus: mockSeasonStatus,
-    seasonStatusError: null,
-    seasonStatusLoading: false,
-    refetchSeasonStatus: jest.fn(),
+  const setSelectorValues = ({
+    locale = 'en-US',
+    rewardsEnabled = true,
+    candidateSubscriptionId = 'test-subscription-id',
+    seasonStatus = mockSeasonStatus,
+    seasonStatusLoading = false,
+  }: {
+    locale?: string;
+    rewardsEnabled?: boolean;
+    candidateSubscriptionId?: string | null;
+    seasonStatus?: typeof mockSeasonStatus | null;
+    seasonStatusLoading?: boolean;
+  }) => {
+    mockUseSelector.mockImplementation((selector: unknown) => {
+      if (selector === getIntlLocale) {
+        return locale;
+      }
+      if (selector === selectRewardsEnabled) {
+        return rewardsEnabled;
+      }
+      if (selector === selectCandidateSubscriptionId) {
+        return candidateSubscriptionId;
+      }
+      if (selector === selectSeasonStatus) {
+        return seasonStatus;
+      }
+      if (selector === selectSeasonStatusLoading) {
+        return seasonStatusLoading;
+      }
+      return undefined;
+    });
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseSelector.mockReturnValue('en-US'); // Default locale
+    setSelectorValues({});
+    mockUseDispatch.mockReturnValue(jest.fn());
   });
 
   it('should render null when rewards are not enabled', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
+    setSelectorValues({
       rewardsEnabled: false,
-      seasonStatus: null,
       candidateSubscriptionId: null,
+      seasonStatus: null,
     });
-
     const { container } = render(<RewardsPointsBalance />);
     expect(container.firstChild).toBeNull();
   });
 
-  it('should render null when candidateSubscriptionId is null', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
-      seasonStatus: null,
-      candidateSubscriptionId: null,
-    });
-
-    const { container } = render(<RewardsPointsBalance />);
-    expect(container.firstChild).toBeNull();
+  it('should render sign-up badge when candidateSubscriptionId is null', () => {
+    setSelectorValues({ candidateSubscriptionId: null, seasonStatus: null });
+    render(<RewardsPointsBalance />);
+    const container = screen.getByTestId('rewards-points-balance');
+    expect(container).toBeInTheDocument();
+    // Displays i18n key returned by mocked t('rewardsSignUp') without suffix
+    expect(
+      screen.getByTestId('rewards-points-balance-value'),
+    ).toHaveTextContent('rewardsSignUp');
   });
 
   it('should render skeleton when loading and no balance exists', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
-      seasonStatus: null,
-      seasonStatusLoading: true,
-    });
-
+    setSelectorValues({ seasonStatus: null, seasonStatusLoading: true });
     render(<RewardsPointsBalance />);
-
     expect(screen.getByTestId('skeleton')).toBeInTheDocument();
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
   it('should not render skeleton when loading but balance exists', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
-      seasonStatusLoading: true,
-    });
-
+    setSelectorValues({ seasonStatusLoading: true });
     render(<RewardsPointsBalance />);
-
     expect(screen.queryByTestId('skeleton')).not.toBeInTheDocument();
     expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
     expect(
@@ -142,18 +163,10 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should render formatted points balance with default locale', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
-      seasonStatus: {
-        ...mockSeasonStatus,
-        balance: {
-          total: 12345,
-        },
-      },
+    setSelectorValues({
+      seasonStatus: { ...mockSeasonStatus, balance: { total: 12345 } },
     });
-
     render(<RewardsPointsBalance />);
-
     expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
     expect(
       screen.getByTestId('rewards-points-balance-value'),
@@ -162,19 +175,11 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should render formatted points balance with German locale', () => {
-    mockUseSelector.mockReturnValue('de-DE');
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
-      seasonStatus: {
-        ...mockSeasonStatus,
-        balance: {
-          total: 12345,
-        },
-      },
+    setSelectorValues({
+      locale: 'de-DE',
+      seasonStatus: { ...mockSeasonStatus, balance: { total: 12345 } },
     });
-
     render(<RewardsPointsBalance />);
-
     expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
     expect(
       screen.getByTestId('rewards-points-balance-value'),
@@ -182,18 +187,10 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should render zero points correctly', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
-      seasonStatus: {
-        ...mockSeasonStatus,
-        balance: {
-          total: 0,
-        },
-      },
+    setSelectorValues({
+      seasonStatus: { ...mockSeasonStatus, balance: { total: 0 } },
     });
-
     render(<RewardsPointsBalance />);
-
     expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
     expect(
       screen.getByTestId('rewards-points-balance-value'),
@@ -201,13 +198,8 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should handle undefined seasonStatus gracefully', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
-      seasonStatus: null,
-    });
-
+    setSelectorValues({ seasonStatus: null });
     render(<RewardsPointsBalance />);
-
     expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
     expect(
       screen.getByTestId('rewards-points-balance-value'),
@@ -215,10 +207,8 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should render with correct CSS classes and structure', () => {
-    mockUseRewardsContext.mockReturnValue(mockRewardsContextValue);
-
+    setSelectorValues({});
     render(<RewardsPointsBalance />);
-
     const container = screen.getByTestId('rewards-points-balance');
     expect(container).toHaveClass(
       'flex',
@@ -228,7 +218,6 @@ describe('RewardsPointsBalance', () => {
       'bg-background-muted',
       'rounded',
     );
-
     const image = screen.getByAltText('Rewards Points Icon');
     expect(image).toHaveAttribute(
       'src',
@@ -237,34 +226,28 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should call useSelector with getIntlLocale selector', () => {
-    mockUseRewardsContext.mockReturnValue(mockRewardsContextValue);
-
+    setSelectorValues({});
     render(<RewardsPointsBalance />);
-
     expect(mockUseSelector).toHaveBeenCalledWith(getIntlLocale);
   });
 
-  it('should call useRewardsContext hook', () => {
-    mockUseRewardsContext.mockReturnValue(mockRewardsContextValue);
-
+  it('should select rewards values from Redux', () => {
+    setSelectorValues({});
     render(<RewardsPointsBalance />);
-
-    expect(mockUseRewardsContext).toHaveBeenCalled();
+    expect(mockUseSelector).toHaveBeenCalledWith(selectRewardsEnabled);
+    expect(mockUseSelector).toHaveBeenCalledWith(selectSeasonStatus);
+    expect(mockUseSelector).toHaveBeenCalledWith(selectSeasonStatusLoading);
+    expect(mockUseSelector).toHaveBeenCalledWith(selectCandidateSubscriptionId);
   });
 
   it('should handle undefined balance total gracefully', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
+    setSelectorValues({
       seasonStatus: {
         ...mockSeasonStatus,
-        balance: {
-          total: undefined as unknown as number,
-        },
-      },
+        balance: { total: undefined as unknown as number },
+      } as unknown as typeof mockSeasonStatus,
     });
-
     render(<RewardsPointsBalance />);
-
     expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
     expect(
       screen.getByTestId('rewards-points-balance-value'),
@@ -272,16 +255,13 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should handle null balance gracefully', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
+    setSelectorValues({
       seasonStatus: {
         ...mockSeasonStatus,
         balance: null as unknown as { total: number },
-      },
+      } as unknown as typeof mockSeasonStatus,
     });
-
     render(<RewardsPointsBalance />);
-
     expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
     expect(
       screen.getByTestId('rewards-points-balance-value'),
@@ -289,82 +269,52 @@ describe('RewardsPointsBalance', () => {
   });
 
   it('should format large numbers correctly with US locale', () => {
-    mockUseSelector.mockReturnValue('en-US');
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
-      seasonStatus: {
-        ...mockSeasonStatus,
-        balance: {
-          total: 1234567,
-        },
-      },
+    setSelectorValues({
+      locale: 'en-US',
+      seasonStatus: { ...mockSeasonStatus, balance: { total: 1234567 } },
     });
-
     render(<RewardsPointsBalance />);
-
     expect(
       screen.getByTestId('rewards-points-balance-value'),
     ).toHaveTextContent('1,234,567 points');
   });
 
   it('should format numbers correctly with French locale', () => {
-    mockUseSelector.mockReturnValue('fr-FR');
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
-      seasonStatus: {
-        ...mockSeasonStatus,
-        balance: {
-          total: 12345,
-        },
-      },
+    setSelectorValues({
+      locale: 'fr-FR',
+      seasonStatus: { ...mockSeasonStatus, balance: { total: 12345 } },
     });
-
     render(<RewardsPointsBalance />);
-
     expect(
       screen.getByTestId('rewards-points-balance-value'),
     ).toHaveTextContent('12 345 points');
   });
 
   it('should format numbers correctly with Spanish locale', () => {
-    mockUseSelector.mockReturnValue('es-ES');
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
-      seasonStatus: {
-        ...mockSeasonStatus,
-        balance: {
-          total: 12345,
-        },
-      },
+    setSelectorValues({
+      locale: 'es-ES',
+      seasonStatus: { ...mockSeasonStatus, balance: { total: 12345 } },
     });
-
     render(<RewardsPointsBalance />);
-
     expect(
       screen.getByTestId('rewards-points-balance-value'),
     ).toHaveTextContent('12.345 points');
   });
 
   it('should not render skeleton when seasonStatus is null and not loading', () => {
-    mockUseRewardsContext.mockReturnValue({
-      ...mockRewardsContextValue,
-      seasonStatus: null,
-      seasonStatusLoading: false,
-    });
-
+    setSelectorValues({ seasonStatus: null, seasonStatusLoading: false });
     render(<RewardsPointsBalance />);
-
     expect(screen.queryByTestId('skeleton')).not.toBeInTheDocument();
     expect(screen.getByTestId('rewards-points-balance')).toBeInTheDocument();
   });
 
   it('should apply correct boxClassName to RewardsBadge', () => {
-    mockUseRewardsContext.mockReturnValue(mockRewardsContextValue);
-
+    setSelectorValues({});
     render(<RewardsPointsBalance />);
-
     const container = screen.getByTestId('rewards-points-balance');
     expect(container).toHaveClass(
+      'flex',
+      'items-center',
       'gap-1',
       'px-1.5',
       'bg-background-muted',

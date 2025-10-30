@@ -101,7 +101,7 @@ import {
   getIsShieldSubscriptionActive,
   getIsShieldSubscriptionPaused,
 } from '../../../../shared/lib/shield';
-import { useRewardsContext } from '../../../contexts/rewards';
+import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
 
 const METRICS_LOCATION = 'Global Menu';
 
@@ -120,7 +120,7 @@ export const GlobalMenu = ({
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const basicFunctionality = useSelector(getUseExternalServices);
-  const { rewardsEnabled } = useRewardsContext();
+  const rewardsEnabled = useSelector(selectRewardsEnabled);
 
   const history = useHistory();
 

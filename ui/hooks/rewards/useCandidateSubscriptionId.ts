@@ -1,14 +1,20 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import log from 'loglevel';
 import { useSelector, useDispatch } from 'react-redux';
 import { getRewardsCandidateSubscriptionId } from '../../store/actions';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { useAppSelector } from '../../store/store';
-import { useRewardsEnabled } from './useRewardsEnabled';
+import {
+  selectCandidateSubscriptionId,
+  selectRewardsEnabled,
+} from '../../ducks/rewards/selectors';
+import {
+  setCandidateSubscriptionId,
+  setCandidateSubscriptionIdError,
+  setCandidateSubscriptionIdLoading,
+} from '../../ducks/rewards';
 
 type UseCandidateSubscriptionIdReturn = {
-  candidateSubscriptionId: string | null;
-  candidateSubscriptionIdError: boolean;
   fetchCandidateSubscriptionId: () => Promise<void>;
 };
 
@@ -18,13 +24,10 @@ type UseCandidateSubscriptionIdReturn = {
 export const useCandidateSubscriptionId =
   (): UseCandidateSubscriptionIdReturn => {
     const dispatch = useDispatch();
-    const [candidateSubscriptionId, setCandidateSubscriptionId] = useState<
-      string | null
-    >(null);
-    const [candidateSubscriptionIdError, setCandidateSubscriptionIdError] =
-      useState(false);
+
     const isUnlocked = useSelector(getIsUnlocked);
-    const isRewardsEnabled = useRewardsEnabled();
+    const isRewardsEnabled = useSelector(selectRewardsEnabled);
+    const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
     const rewardsActiveAccountSubscriptionId = useAppSelector(
       (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
     );
@@ -38,21 +41,25 @@ export const useCandidateSubscriptionId =
     const fetchCandidateSubscriptionId = useCallback(async () => {
       try {
         if (!isRewardsEnabled) {
-          setCandidateSubscriptionId(null);
-          setCandidateSubscriptionIdError(false);
+          dispatch(setCandidateSubscriptionId(null));
+          dispatch(setCandidateSubscriptionIdLoading(false));
+          dispatch(setCandidateSubscriptionIdError(false));
           return;
         }
+        dispatch(setCandidateSubscriptionIdLoading(true));
         const candidateId = (await dispatch(
           getRewardsCandidateSubscriptionId(),
         )) as unknown as string | null;
-        setCandidateSubscriptionId(candidateId);
-        setCandidateSubscriptionIdError(false);
+        dispatch(setCandidateSubscriptionId(candidateId));
+        dispatch(setCandidateSubscriptionIdError(false));
       } catch (error) {
         log.error(
           '[useCandidateSubscriptionId] Error fetching candidate subscription ID:',
           error,
         );
-        setCandidateSubscriptionIdError(true);
+        dispatch(setCandidateSubscriptionIdError(true));
+      } finally {
+        dispatch(setCandidateSubscriptionIdLoading(false));
       }
     }, [isRewardsEnabled, dispatch]);
 
@@ -74,8 +81,6 @@ export const useCandidateSubscriptionId =
       rewardsSubscriptions,
     ]);
     return {
-      candidateSubscriptionId,
-      candidateSubscriptionIdError,
       fetchCandidateSubscriptionId,
     };
   };

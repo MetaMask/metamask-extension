@@ -10,13 +10,13 @@ import { FALLBACK_LOCALE } from '../../../../shared/modules/i18n';
 import {
   EstimatePointsDto,
   EstimatedPointsDto,
+  OptInStatusDto,
+  OptInStatusInputDto,
 } from '../../../../shared/types/rewards';
 import type {
   LoginResponseDto,
   MobileLoginDto,
   SubscriptionDto,
-  OptInStatusInputDto,
-  OptInStatusDto,
   MobileOptinDto,
   SeasonStateDto,
   SeasonMetadataDto,
