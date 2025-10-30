@@ -563,7 +563,19 @@ export default function Routes() {
   ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   // Navigate to confirmations when there are pending approvals (from any page)
   useEffect(() => {
+    // Don't navigate if already on a confirmation-related route or snap flow
+    const isOnConfirmationRoute =
+      location.pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
+      location.pathname.startsWith(CONNECT_ROUTE) ||
+      location.pathname.startsWith(PERMISSIONS) ||
+      location.pathname.startsWith(REVIEW_PERMISSIONS) ||
+      location.pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
+      location.pathname.startsWith(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE) ||
+      location.pathname.startsWith(CONFIRM_ADD_SUGGESTED_NFT_ROUTE) ||
+      location.pathname.startsWith(SNAPS_ROUTE);
+
     if (
+      !isOnConfirmationRoute &&
       isUnlocked &&
       (pendingApprovals.length > 0 || approvalFlows?.length > 0)
     ) {
@@ -574,7 +586,7 @@ export default function Routes() {
         history,
       );
     }
-  }, [isUnlocked, pendingApprovals, approvalFlows, history]);
+  }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
   ///: END:ONLY_INCLUDE_IF
 
   const renderRoutes = useCallback(() => {
