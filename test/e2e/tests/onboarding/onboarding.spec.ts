@@ -26,7 +26,6 @@ import {
   incompleteCreateNewWalletOnboardingFlow,
   onboardingMetricsFlow,
 } from '../../page-objects/flows/onboarding.flow';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -243,15 +242,8 @@ describe('MetaMask onboarding', function () {
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await switchToNetworkFromSendFlow(driver, networkName);
+        await homePage.checkExpectedBalanceIsDisplayed('17,000.00', '$');
         await homePage.checkAddNetworkMessageIsDisplayed(networkName);
-
-        // Check the correct balance for the custom network is displayed
-        if (localNodes[1] && Array.isArray(localNodes)) {
-          await homePage.checkExpectedBalanceIsDisplayed('17,000.00', '$');
-        } else {
-          throw new Error('Custom network server not available');
-        }
       },
     );
   });
