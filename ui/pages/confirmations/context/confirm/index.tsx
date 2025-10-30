@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 
 import { setAccountDetailsAddress } from '../../../../store/actions';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
-import useSyncConfirmPath from '../../hooks/syncConfirmPath';
+import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
 
 export type ConfirmContextType = {

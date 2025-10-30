@@ -43,7 +43,10 @@ export const SnapFooterButton = (props: { notification: SnapNotification }) => {
       // Warning / Navigation
       if (isExternal) {
         setIsOpen(true);
-        return;
+      } else {
+        // This hook is safe to call in this event handler, because its only reactive component is `useNavigate`
+        // eslint-disable-next-line react-compiler/react-compiler, react-hooks/rules-of-hooks
+        useSnapNavigate(href);
       }
       // eslint-disable-next-line react-compiler/react-compiler, react-hooks/rules-of-hooks
       useSnapNavigate(href);
