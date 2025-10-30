@@ -1,5 +1,7 @@
 import {
+  CachedLastSelectedPaymentMethod,
   PricingResponse,
+  PRODUCT_TYPES,
   ProductType,
   Subscription,
   SubscriptionControllerState,
@@ -40,4 +42,10 @@ export function getHasShieldEntryModalShownOnce(
   state: SubscriptionState,
 ): boolean {
   return Boolean(state.metamask.showShieldEntryModalOnce !== null);
+}
+
+export function getLastUsedShieldSubscriptionPaymentDetails(
+  state: SubscriptionState,
+): CachedLastSelectedPaymentMethod | undefined {
+  return state.metamask.lastSelectedPaymentMethod?.[PRODUCT_TYPES.SHIELD];
 }

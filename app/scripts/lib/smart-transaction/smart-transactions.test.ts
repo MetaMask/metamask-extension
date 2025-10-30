@@ -285,10 +285,28 @@ describe('submitSmartTransactionHook', () => {
           throw new Error('Backend call to /getFees failed');
         });
       const result = await submitSmartTransactionHook(request);
+      expect(request.smartTransactionsController.getFees).toHaveBeenCalled();
       expect(endFlowSpy).toHaveBeenCalledWith({
         id: 'approvalId',
       });
       expect(result).toEqual({ transactionHash: undefined });
+    });
+  });
+
+  it('skips getting fees if the transaction is signed and sponsored', async () => {
+    withRequest(async ({ request }) => {
+      request.transactionMeta.isGasFeeSponsored = true;
+      request.featureFlags.smartTransactions.extensionReturnTxHashAsap = true;
+
+      const result = await submitSmartTransactionHook(request);
+
+      expect(
+        request.smartTransactionsController.getFees,
+      ).not.toHaveBeenCalled();
+      expect(
+        request.smartTransactionsController.submitSignedTransactions,
+      ).toHaveBeenCalled();
+      expect(result).toEqual({ transactionHash: txHash });
     });
   });
 

@@ -30,6 +30,7 @@ import {
   selectBalanceChangeBySelectedAccountGroup,
   getAssetsBySelectedAccountGroup,
   getAsset,
+  getAllIgnoredAssets,
 } from './assets';
 
 jest.mock('@metamask/assets-controllers', () => {
@@ -88,6 +89,7 @@ const mockAssetsState: AssetsState = {
         units: [{ symbol: 'TKN1', name: 'Token 1', decimals: 9 }],
       },
     },
+    allIgnoredAssets: {},
   },
 };
 
@@ -107,6 +109,13 @@ describe('getAssetsMetadata', () => {
   it('should return undefined if state does not have metamask property', () => {
     const invalidState = {} as AssetsState;
     expect(() => getAssetsMetadata(invalidState)).toThrow();
+  });
+});
+
+describe('getAllIgnoredAssets', () => {
+  it('should return the all ignored assets from the state', () => {
+    const result = getAllIgnoredAssets(mockAssetsState);
+    expect(result).toEqual(mockAssetsState.metamask.allIgnoredAssets);
   });
 });
 
@@ -347,6 +356,7 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
           units: [{ symbol: 'TKN1', name: 'Token 1', decimals: 9 }],
         },
       },
+      allIgnoredAssets: {},
       allTokens: {
         'eip155:1': {
           '0x458036e7bc0612e9b207640dc07ca7711346aae5': [
@@ -713,8 +723,9 @@ describe('Aggregated balance adapters/selectors', () => {
     expect(args[3]).toHaveProperty('marketData');
     expect(args[4]).toEqual({ conversionRates: {}, historicalPrices: {} });
     expect(args[5]).toHaveProperty('balances');
-    expect(args[6]).toHaveProperty('allTokens');
-    expect(args[7]).toEqual({ currentCurrency: 'usd', currencyRates: {} });
+    expect(args[6]).toHaveProperty('accountsAssets');
+    expect(args[7]).toHaveProperty('allTokens');
+    expect(args[8]).toEqual({ currentCurrency: 'usd', currencyRates: {} });
   });
 
   it('memoizes aggregate output for identical state', () => {
@@ -791,6 +802,9 @@ describe('Aggregated balance recomputation behavior', () => {
     const balances = {};
     const allTokens = {};
     const currencyRates = {};
+    const accountsAssets = {};
+    const assetsMetadata = {};
+    const allIgnoredAssets = {};
 
     const baseState: BalanceCalculationState = {
       metamask: {
@@ -805,6 +819,9 @@ describe('Aggregated balance recomputation behavior', () => {
         currencyRates,
         conversionRates,
         historicalPrices,
+        accountsAssets,
+        assetsMetadata,
+        allIgnoredAssets,
       } as unknown as BalanceCalculationState['metamask'],
     };
 
@@ -824,6 +841,9 @@ describe('Aggregated balance recomputation behavior', () => {
         currencyRates,
         conversionRates,
         historicalPrices,
+        accountsAssets,
+        assetsMetadata,
+        allIgnoredAssets,
         // unrelated field
         remoteFeatureFlags: { foo: true },
       } as unknown as BalanceCalculationState['metamask'],
@@ -854,6 +874,9 @@ describe('Aggregated balance recomputation behavior', () => {
         currencyRates: {},
         conversionRates: {},
         historicalPrices: {},
+        accountsAssets: {},
+        assetsMetadata: {},
+        allIgnoredAssets: {},
       } as unknown as BalanceCalculationState['metamask'],
     };
 
@@ -911,9 +934,10 @@ describe('Balance change selectors', () => {
     expect(args[3]).toHaveProperty('marketData');
     expect(args[4]).toHaveProperty('conversionRates');
     expect(args[5]).toHaveProperty('balances');
-    expect(args[6]).toHaveProperty('allTokens');
-    expect(args[7]).toHaveProperty('currentCurrency');
-    expect(args[9]).toBe('1d');
+    expect(args[6]).toHaveProperty('accountsAssets');
+    expect(args[7]).toHaveProperty('allTokens');
+    expect(args[8]).toHaveProperty('currentCurrency');
+    expect(args[10]).toBe('1d');
   });
 
   it('memoizes balance change output for identical state', () => {
@@ -949,6 +973,7 @@ describe('getAssetsBySelectedAccountGroup', () => {
       accountsByChainId: 'mockAccountsByChainId',
       accountsAssets: 'mockAccountsAssets',
       assetsMetadata: 'mockAssetsMetadata',
+      allIgnoredAssets: 'mockAllIgnoredAssets',
       balances: 'mockBalances',
       conversionRates: 'mockConversionRates',
     },
@@ -985,6 +1010,7 @@ describe('getAsset', () => {
       accountsByChainId: 'mockAccountsByChainId',
       accountsAssets: 'mockAccountsAssets',
       assetsMetadata: 'mockAssetsMetadata',
+      allIgnoredAssets: 'mockAllIgnoredAssets',
       balances: 'mockBalances',
       conversionRates: 'mockConversionRates',
       testId: 'yyyy',

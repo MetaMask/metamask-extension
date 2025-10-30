@@ -123,6 +123,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
       historicalPrices: {},
       assetsMetadata: {},
       accountsAssets: {},
+      allIgnoredAssets: {},
       isEvmSelected: false,
       multichainNetworkConfigurationsByChainId: {
         ...AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
