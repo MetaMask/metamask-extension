@@ -10,11 +10,12 @@ const RIVE_WASM_URL = './images/riv_animations/rive.wasm';
 
 // Track WASM initialization state globally
 let wasmInitializationPromise: Promise<void> | null = null;
-let wasmIsReady = false;
 
 /**
  * Initialize Rive WASM once using the bundled WASM file
  * This function ensures WASM is loaded before Rive components try to use it
+ *
+ * @returns Promise that resolves when WASM is ready, rejects on error
  */
 export function initializeRiveWASM(): Promise<void> {
   if (wasmInitializationPromise) {
@@ -29,40 +30,23 @@ export function initializeRiveWASM(): Promise<void> {
         return;
       }
 
-      console.log('[Rive] Loading WASM from:', RIVE_WASM_URL);
-
-      // Fetch once and convert to base64
+      // Fetch the WASM binary and convert to base64 data URI
       fetch(RIVE_WASM_URL)
         .then((response) => response.arrayBuffer())
         .then((arrayBuffer) => {
-          // Convert to base64 in chunks to avoid stack overflow
           const bytes = new Uint8Array(arrayBuffer);
-          const chunkSize = 8192; // Process 8KB at a time
-          let binaryString = '';
 
-          for (let i = 0; i < bytes.length; i += chunkSize) {
-            const chunk = bytes.subarray(
-              i,
-              Math.min(i + chunkSize, bytes.length),
-            );
-            binaryString += String.fromCharCode.apply(null, Array.from(chunk));
-          }
+          const binaryString = Array.from(bytes, (byte) =>
+            String.fromCharCode(byte),
+          ).join('');
 
           const wasmBase64 = btoa(binaryString);
-          console.log(
-            '[Rive] WASM converted to base64, length:',
-            wasmBase64.length,
-          );
-
-          // Pass the base64 string as the "URL"
-          // Your patched qa() function will decode it using atob()
           RuntimeLoader.setWasmUrl(wasmBase64);
 
-          // Preload the WASM by explicitly fetching and instantiating it
+          // Preload the WASM
           RuntimeLoader.awaitInstance()
             .then(() => {
               console.log('[Rive] WASM loaded and initialized successfully');
-              wasmIsReady = true;
               resolve();
             })
             .catch((error: Error) => {
@@ -84,8 +68,17 @@ export function initializeRiveWASM(): Promise<void> {
 }
 
 /**
- * Check if WASM is ready
+ * Wait for WASM to be ready
+ *
+ * @returns Promise that resolves when WASM is initialized and ready to use
+ * This allows components to await WASM readiness without polling
  */
-export function isWasmReady(): boolean {
-  return wasmIsReady;
+export function waitForWasmReady(): Promise<void> {
+  // If already initialized, return that promise
+  if (wasmInitializationPromise) {
+    return wasmInitializationPromise;
+  }
+
+  // If not initialized yet, initialize it
+  return initializeRiveWASM();
 }

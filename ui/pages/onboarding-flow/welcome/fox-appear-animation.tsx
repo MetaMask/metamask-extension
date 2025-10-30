@@ -7,7 +7,7 @@ import {
   Alignment,
 } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
-import { isWasmReady as checkWasmReady } from '../rive-wasm';
+import { waitForWasmReady } from '../rive-wasm';
 
 type FoxAppearAnimationProps = {
   isLoader: boolean;
@@ -31,24 +31,18 @@ export default function FoxAppearAnimation({
       return undefined;
     }
 
-    // Check if WASM is already ready from parent initialization
-    if (checkWasmReady()) {
-      console.log('[Rive Fox] WASM already ready from parent initialization');
-      setIsWasmReady(true);
-      return undefined;
-    }
-
-    // Poll for WASM readiness if not ready yet
-    const checkInterval = setInterval(() => {
-      if (checkWasmReady()) {
-        console.log('[Rive Fox] WASM became ready');
+    // Wait for WASM to be ready using promise instead of polling
+    waitForWasmReady()
+      .then(() => {
+        console.log('[Rive Fox] WASM is ready');
         setIsWasmReady(true);
-        clearInterval(checkInterval);
-      }
-    }, 100); // Check every 100ms
+      })
+      .catch((error) => {
+        console.error('[Rive Fox] WASM failed to load:', error);
+        // Could set an error state here if needed
+      });
 
-    // Cleanup
-    return () => clearInterval(checkInterval);
+    return undefined;
   }, [isTestEnvironment]);
 
   // Fetch the .riv file and convert to ArrayBuffer
