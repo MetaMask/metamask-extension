@@ -2446,10 +2446,6 @@ export default class MetamaskController extends EventEmitter {
         this.subscriptionController.submitUserEvent.bind(
           this.subscriptionController,
         ),
-      cacheLastSelectedPaymentMethod:
-        this.subscriptionController.cacheLastSelectedPaymentMethod.bind(
-          this.subscriptionController,
-        ),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),

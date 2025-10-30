@@ -64,7 +64,7 @@ import {
   useSubscriptionProductPlans,
 } from '../../hooks/subscription/useSubscriptionPricing';
 import {
-  cacheLastSelectedPaymentMethod,
+  setLastUsedSubscriptionPaymentDetails,
   startSubscriptionWithCard,
 } from '../../store/actions';
 import {
@@ -74,13 +74,12 @@ import {
 } from '../../hooks/subscription/useSubscription';
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { selectNetworkConfigurationByChainId } from '../../selectors';
+import {
+  getLastUsedSubscriptionPaymentDetails,
+  selectNetworkConfigurationByChainId,
+} from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
-import {
-  getLastSelectedSubscriptionPaymentMethod,
-  SubscriptionState,
-} from '../../selectors/subscription';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -89,11 +88,8 @@ const ShieldPlan = () => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const lastUsedPaymentDetails = useSelector((state) =>
-    getLastSelectedSubscriptionPaymentMethod(
-      state as SubscriptionState,
-      PRODUCT_TYPES.SHIELD,
-    ),
+  const lastUsedPaymentDetails = useSelector(
+    getLastUsedSubscriptionPaymentDetails,
   );
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
@@ -150,8 +146,8 @@ const ShieldPlan = () => {
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentType>(() => {
-      if (lastUsedPaymentDetails?.type) {
-        return lastUsedPaymentDetails.type;
+      if (lastUsedPaymentDetails?.paymentMethod) {
+        return lastUsedPaymentDetails.paymentMethod;
       }
       return hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard;
     });
@@ -176,7 +172,7 @@ const ShieldPlan = () => {
     }
 
     const lastUsedPaymentToken = lastUsedPaymentDetails?.paymentTokenAddress;
-    const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
+    const lastUsedPaymentMethod = lastUsedPaymentDetails?.paymentMethod;
 
     let lastUsedSelectedToken = availableTokenBalances[0];
     if (
@@ -209,16 +205,12 @@ const ShieldPlan = () => {
 
   const [handleSubscription, subscriptionResult] =
     useAsyncCallback(async () => {
-      // save the last used subscription payment method and plan
+      // save the last used subscription payment method and plan to Redux store
       await dispatch(
-        cacheLastSelectedPaymentMethod({
-          product: PRODUCT_TYPES.SHIELD,
-          paymentMethod: {
-            type: selectedPaymentMethod,
-            paymentTokenAddress: selectedToken?.address as Hex,
-            paymentTokenSymbol: selectedToken?.symbol,
-            plan: selectedPlan,
-          },
+        setLastUsedSubscriptionPaymentDetails({
+          paymentMethod: selectedPaymentMethod,
+          paymentTokenAddress: selectedToken?.address as Hex,
+          plan: selectedPlan,
         }),
       );
       if (selectedPaymentMethod === PAYMENT_TYPES.byCard) {
