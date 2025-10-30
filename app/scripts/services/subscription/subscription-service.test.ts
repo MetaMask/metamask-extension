@@ -1,4 +1,10 @@
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import {
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
@@ -8,7 +14,13 @@ import ExtensionPlatform from '../../platforms/extension';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { WebAuthenticator } from '../oauth/types';
 import { SubscriptionService } from './subscription-service';
-import { SubscriptionServiceAction } from './types';
+import { SubscriptionServiceMessenger } from './types';
+
+type Actions = MessengerActions<SubscriptionServiceMessenger>;
+
+type Events = MessengerEvents<SubscriptionServiceMessenger>;
+
+type RootMessenger = Messenger<MockAnyNamespace, Actions, Events>;
 
 jest.mock('../../platforms/extension');
 
@@ -37,7 +49,9 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
   });
 
   it('should start the subscription with card', async () => {
-    const rootMessenger = new Messenger<SubscriptionServiceAction, never>();
+    const rootMessenger: RootMessenger = new Messenger({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
     const mockCheckoutSessionUrl = 'https://mocked-checkout-session-url';
     const mockStartShieldSubscriptionWithCard = jest.fn().mockResolvedValue({
       checkoutSessionUrl: mockCheckoutSessionUrl,
@@ -52,13 +66,16 @@ describe('SubscriptionService - startSubscriptionWithCard', () => {
       mockGetSubscriptions,
     );
 
-    const messenger = rootMessenger.getRestricted({
-      name: 'SubscriptionService',
-      allowedActions: [
+    const messenger: SubscriptionServiceMessenger = new Messenger({
+      namespace: 'SubscriptionService',
+      parent: rootMessenger,
+    });
+    rootMessenger.delegate({
+      messenger,
+      actions: [
         'SubscriptionController:startShieldSubscriptionWithCard',
         'SubscriptionController:getSubscriptions',
       ],
-      allowedEvents: [],
     });
 
     const mockPlatform = new ExtensionPlatform();

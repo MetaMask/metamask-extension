@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import type {
   GetCurrencyRateState,
@@ -13,6 +13,7 @@ import type {
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | AccountsControllerGetAccountByAddressAction
@@ -37,11 +38,21 @@ export type BridgeControllerMessenger = ReturnType<
  * messenger.
  */
 export function getBridgeControllerMessenger(
-  messenger: Messenger<AllowedActions, never>,
+  messenger: RootMessenger<AllowedActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'BridgeController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'BridgeController',
+    AllowedActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'BridgeController',
+    parent: messenger,
+  });
+
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'AccountsController:getAccountByAddress',
       'SnapController:handleRequest',
       'NetworkController:getState',
@@ -52,8 +63,8 @@ export function getBridgeControllerMessenger(
       'RemoteFeatureFlagController:getState',
       'CurrencyRateController:getState',
     ],
-    allowedEvents: [],
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions = MetaMetricsControllerTrackEventAction;
@@ -70,11 +81,20 @@ export type BridgeControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getBridgeControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'BridgeControllerInit',
-    allowedActions: ['MetaMetricsController:trackEvent'],
-    allowedEvents: [],
+  const controllerInitMessenger = new Messenger<
+    'BridgeControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'BridgeControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['MetaMetricsController:trackEvent'],
+  });
+  return controllerInitMessenger;
 }
