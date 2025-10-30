@@ -65,6 +65,7 @@ export const SENTRY_BACKGROUND_STATE = {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
+    canTrackWalletFundsObtained: true,
     isRampCardClosed: true,
     nftsDetectionNoticeDismissed: true,
     nftsDropdownState: true,
@@ -98,6 +99,7 @@ export const SENTRY_BACKGROUND_STATE = {
   MultichainAssetsController: {
     accountsAssets: false,
     assetsMetadata: false,
+    allIgnoredAssets: false,
   },
   MultichainAssetsRatesController: {
     assetsRates: false,
@@ -266,6 +268,14 @@ export const SENTRY_BACKGROUND_STATE = {
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,
     cacheTimestamp: false,
+  },
+  RewardsController: {
+    rewardsActiveAccount: false,
+    rewardsAccounts: false,
+    rewardsSubscriptions: false,
+    rewardsSeasons: false,
+    rewardsSeasonStatuses: false,
+    rewardsSubscriptionTokens: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,

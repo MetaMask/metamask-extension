@@ -1,4 +1,9 @@
-import { ActionConstraint, Messenger } from '@metamask/base-controller';
+import {
+  ActionConstraint,
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { AccountTrackerController } from '@metamask/assets-controllers';
 import {
@@ -26,13 +31,14 @@ jest.mock('@metamask/assets-controllers');
 
 function getInitRequestMock(
   baseMessenger = new Messenger<
+    MockAnyNamespace,
     | RemoteFeatureFlagControllerGetStateAction
     | NetworkControllerGetStateAction
     | NetworkControllerGetNetworkClientByIdAction
     | PreferencesControllerGetStateAction
     | ActionConstraint,
     never
-  >(),
+  >({ namespace: MOCK_ANY_NAMESPACE }),
 ): jest.Mocked<
   ControllerInitRequest<
     AccountTrackerControllerMessenger,

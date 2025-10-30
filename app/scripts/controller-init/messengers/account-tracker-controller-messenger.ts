@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
@@ -11,13 +11,13 @@ import {
   AccountsControllerListAccountsAction,
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
-import { PreferencesControllerGetStateAction } from '@metamask/preferences-controller';
 import {
   TransactionControllerTransactionConfirmedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
 } from '@metamask/transaction-controller';
 import { KeyringControllerUnlockEvent } from '@metamask/keyring-controller';
-import { PreferencesControllerGetStateAction as InternalPreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 export type AccountTrackerControllerMessenger = ReturnType<
   typeof getAccountTrackerControllerMessenger
@@ -44,19 +44,26 @@ type AllowedEvents =
  * @param messenger - The base messenger used to create the restricted
  * messenger.
  */
-export function getAccountTrackerControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
-) {
-  return messenger.getRestricted({
-    name: 'AccountTrackerController',
-    allowedActions: [
+export function getAccountTrackerControllerMessenger(messenger: RootMessenger) {
+  const accountTrackerControllerMessenger = new Messenger<
+    'AccountTrackerController',
+    AllowedActions,
+    AllowedEvents,
+    RootMessenger
+  >({
+    namespace: 'AccountTrackerController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: accountTrackerControllerMessenger,
+    actions: [
       'AccountsController:getSelectedAccount',
       'AccountsController:listAccounts',
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
       'PreferencesController:getState',
     ],
-    allowedEvents: [
+    events: [
       'AccountsController:selectedEvmAccountChange',
       'TransactionController:transactionConfirmed',
       'TransactionController:unapprovedTransactionAdded',
@@ -64,11 +71,12 @@ export function getAccountTrackerControllerMessenger(
       'KeyringController:unlock',
     ],
   });
+  return accountTrackerControllerMessenger;
 }
 
 type AllowedInitializationActions =
   | RemoteFeatureFlagControllerGetStateAction
-  | InternalPreferencesControllerGetStateAction;
+  | PreferencesControllerGetStateAction;
 
 type AllowedInitializationEvents = NetworkControllerNetworkDidChangeEvent;
 
@@ -84,17 +92,27 @@ export type AccountTrackerControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getAccountTrackerControllerInitMessenger(
-  messenger: Messenger<
+  messenger: RootMessenger<
     AllowedInitializationActions,
     AllowedInitializationEvents
   >,
 ) {
-  return messenger.getRestricted({
-    name: 'AccountTrackerControllerInit',
-    allowedActions: [
+  const accountTrackerControllerInitMessenger = new Messenger<
+    'AccountTrackerControllerInit',
+    AllowedInitializationActions,
+    AllowedInitializationEvents,
+    RootMessenger
+  >({
+    namespace: 'AccountTrackerControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: accountTrackerControllerInitMessenger,
+    actions: [
       'RemoteFeatureFlagController:getState',
       'PreferencesController:getState',
     ],
-    allowedEvents: ['NetworkController:networkDidChange'],
+    events: ['NetworkController:networkDidChange'],
   });
+  return accountTrackerControllerInitMessenger;
 }

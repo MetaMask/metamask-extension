@@ -1,23 +1,23 @@
 /**
  * @jest-environment node
  */
-import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
-import { AccountsController } from '@metamask/accounts-controller';
-import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
-import type { MultichainNetworkControllerNetworkDidChangeEvent } from '@metamask/multichain-network-controller';
-import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
-  SnapKeyringAccountAssetListUpdatedEvent,
-  SnapKeyringAccountBalancesUpdatedEvent,
-  SnapKeyringAccountTransactionsUpdatedEvent,
-} from '@metamask/eth-snap-keyring';
+  AccountsController,
+  AccountsControllerMessenger,
+} from '@metamask/accounts-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
 import type {
-  AllowedActions,
-  AllowedEvents,
   PreferencesControllerMessenger,
   PreferencesControllerState,
 } from './preferences-controller';
@@ -49,27 +49,28 @@ const setupController = ({
   state?: Partial<PreferencesControllerState>;
 } = {}) => {
   const messenger = new Messenger<
-    AllowedActions,
-    | AllowedEvents
-    | KeyringControllerStateChangeEvent
-    | SnapControllerStateChangeEvent
-    | SnapKeyringAccountAssetListUpdatedEvent
-    | SnapKeyringAccountBalancesUpdatedEvent
-    | SnapKeyringAccountTransactionsUpdatedEvent
-    | MultichainNetworkControllerNetworkDidChangeEvent
-  >();
+    MockAnyNamespace,
+    | MessengerActions<PreferencesControllerMessenger>
+    | MessengerActions<AccountsControllerMessenger>,
+    | MessengerEvents<PreferencesControllerMessenger>
+    | MessengerEvents<AccountsControllerMessenger>
+  >({ namespace: MOCK_ANY_NAMESPACE });
   const preferencesControllerMessenger: PreferencesControllerMessenger =
-    messenger.getRestricted({
-      name: 'PreferencesController',
-      allowedActions: [
-        'AccountsController:getAccountByAddress',
-        'AccountsController:setAccountName',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:setSelectedAccount',
-        'NetworkController:getState',
-      ],
-      allowedEvents: ['AccountsController:stateChange'],
+    new Messenger({
+      namespace: 'PreferencesController',
+      parent: messenger,
     });
+  messenger.delegate({
+    messenger: preferencesControllerMessenger,
+    actions: [
+      'AccountsController:getAccountByAddress',
+      'AccountsController:setAccountName',
+      'AccountsController:getSelectedAccount',
+      'AccountsController:setSelectedAccount',
+      'NetworkController:getState',
+    ],
+    events: ['AccountsController:stateChange'],
+  });
 
   messenger.registerActionHandler(
     'NetworkController:getState',
@@ -82,9 +83,18 @@ const setupController = ({
     state,
   });
 
-  const accountsControllerMessenger = messenger.getRestricted({
-    name: 'AccountsController',
-    allowedEvents: [
+  const accountsControllerMessenger = new Messenger<
+    'AccountsController',
+    MessengerActions<AccountsControllerMessenger>,
+    MessengerEvents<AccountsControllerMessenger>,
+    typeof messenger
+  >({
+    namespace: 'AccountsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: accountsControllerMessenger,
+    events: [
       'KeyringController:stateChange',
       'SnapController:stateChange',
       'SnapKeyring:accountAssetListUpdated',
@@ -92,7 +102,6 @@ const setupController = ({
       'SnapKeyring:accountTransactionsUpdated',
       'MultichainNetworkController:networkDidChange',
     ],
-    allowedActions: [],
   });
   const mockAccountsControllerState = {
     internalAccounts: {
@@ -556,7 +565,6 @@ describe('preferences controller', () => {
     });
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   describe('setUseExternalNameSources', () => {
     const { controller } = setupController({});
     it('should default to true', () => {
@@ -568,7 +576,6 @@ describe('preferences controller', () => {
       expect(controller.state.useExternalNameSources).toStrictEqual(false);
     });
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('setUseTransactionSimulations', () => {
     const { controller } = setupController({});
@@ -701,9 +708,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
         useSidePanelAsDefault: true,
-        ///: END:ONLY_INCLUDE_IF
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -734,9 +739,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
         useSidePanelAsDefault: true,
-        ///: END:ONLY_INCLUDE_IF
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -869,7 +872,7 @@ describe('preferences controller', () => {
         deriveStateFromMetadata(
           controller.state,
           controller.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`
         {
