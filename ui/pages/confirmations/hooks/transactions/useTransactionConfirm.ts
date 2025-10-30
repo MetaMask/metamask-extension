@@ -4,7 +4,6 @@ import {
 } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
 import { useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
@@ -14,8 +13,8 @@ import {
   getIsSmartTransaction,
   type SmartTransactionsState,
 } from '../../../../../shared/modules/selectors';
-import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
+import { useShieldConfirm } from './useShieldConfirm';
 
 export function useTransactionConfirm() {
   const dispatch = useDispatch();
@@ -78,42 +77,10 @@ export function useTransactionConfirm() {
     transactionMeta?.isGasFeeSponsored,
   ]);
 
-  const navigate = useNavigate();
-  /**
-   * Handle shield subscription approval transaction after confirm in UI
-   * (navigation)
-   *
-   * @param txMeta - The transaction meta
-   */
-  const handleShieldSubscriptionApprovalTransactionAfterConfirm = useCallback(
-    (txMeta: TransactionMeta) => {
-      if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
-        return;
-      }
-
-      navigate(`${TRANSACTION_SHIELD_ROUTE}/?waitForSubscriptionCreation=true`);
-    },
-    [navigate],
-  );
-
-  /**
-   * Handle shield subscription approval transaction approval error
-   * (navigation)
-   *
-   * @param txMeta - The transaction meta
-   */
-  const handleShieldSubscriptionApprovalTransactionAfterConfirmErr =
-    useCallback(
-      (txMeta: TransactionMeta) => {
-        if (txMeta.type !== TransactionType.shieldSubscriptionApprove) {
-          return;
-        }
-
-        // go back to previous screen from navigate in `handleShieldSubscriptionApprovalTransactionAfterConfirm`
-        navigate(-1);
-      },
-      [navigate],
-    );
+  const {
+    handleShieldSubscriptionApprovalTransactionAfterConfirm,
+    handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
+  } = useShieldConfirm();
 
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
