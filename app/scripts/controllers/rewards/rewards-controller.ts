@@ -18,9 +18,6 @@ import {
   type LoginResponseDto,
   type EstimatePointsDto,
   type EstimatedPointsDto,
-  type SeasonDtoState,
-  type SeasonStatusState,
-  type SeasonTierState,
   type SeasonTierDto,
   type SeasonStatusDto,
   type SubscriptionDto,
@@ -38,6 +35,11 @@ import {
 } from './rewards-data-service';
 import { signSolanaRewardsMessage } from './utils/solana-snap';
 import { sortAccounts } from './utils/sortAccounts';
+import {
+  SeasonDtoState,
+  SeasonStatusState,
+  SeasonTierState,
+} from '../../../../shared/types/rewards';
 
 export const DEFAULT_BLOCKED_REGIONS = ['UK'];
 

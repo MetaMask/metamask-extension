@@ -2,12 +2,9 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import log from 'loglevel';
 import { submitRequestToBackground } from '../../store/background-connection';
-import type {
-  SeasonStatusState,
-  SeasonDtoState,
-} from '../../../app/scripts/controllers/rewards/rewards-controller.types';
 import { getIsUnlocked } from '../../ducks/metamask/metamask';
 import { useRewardsEnabled } from './useRewardsEnabled';
+import { SeasonDtoState, SeasonStatusState } from '../../../shared/types/rewards';
 
 interface UseSeasonStatusOptions {
   subscriptionId: string | null;

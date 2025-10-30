@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRewardsContext } from '../../../contexts/rewards';
 import type { RewardsContextValue } from '../../../contexts/rewards';
+import type { SeasonStatusState } from '../../../../shared/types/rewards';
 import { RewardsPointsBalance } from './RewardsPointsBalance';
 
 // Mock dependencies
