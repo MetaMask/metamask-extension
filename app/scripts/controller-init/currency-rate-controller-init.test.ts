@@ -1,5 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
 import { CurrencyRateController } from '@metamask/assets-controllers';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -23,7 +23,7 @@ function getInitRequestMock(): jest.Mocked<
     CurrencyRateControllerInitMessenger
   >
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

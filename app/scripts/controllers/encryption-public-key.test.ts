@@ -367,7 +367,7 @@ describe('EncryptionPublicKeyController', () => {
         deriveStateFromMetadata(
           encryptionPublicKeyController.state,
           encryptionPublicKeyController.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`{}`);
     });
