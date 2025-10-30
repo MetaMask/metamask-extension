@@ -19,10 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Handle crypto approval in shield settings update payment method (#37057)
 - Update shield-controller to `v0.4.0`. (#37071)
 - Use SSE to stream swap quotes (#36481)
-- Added address pattern matching to accounts list search (#37005)
 - Adds network and native token logos for Injective network. (#36923)
 - Add `auxiliaryFunds` + `requiredAssets` support defined under [ERC-7682](https://eips.ethereum.org/EIPS/eip-7682) (#36061)
-  ([#36061](https://github.com/MetaMask/metamask-extension/pull/36061))
 - Add bitcoin ff to main build (#36940)
 - Improves user experience in permission confirmation dialogs. (#36490)
 - Adapted the payload of request `signRewardsMessage` for improved performance (#36921)
@@ -41,7 +39,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Toast avatar icon (#37124)
-- When adding a network the `selectedNetworkClientId` was not being updated and many of our components still depend on it (#37062)
 - Shield subscription default payment method crypto if available (#37101)
 - Fix a bug when multiple confirmation exist but navigation fails to when approving (#36990)
 - Fix coverage status not showing (#37097)
@@ -57,6 +54,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   dapp.
 - Improves gator permissions page loading performance with cache-first strategy. (#36833)
 - Removes extra transactions call to improve performance (#36968)
+- Prevents quick reconnection when websocket connection is misbehaving (#37118)
+- Fixes the incorrect USDC address for SEI (#37221)
+- Only triggers onActive and onInactive Snap lifecycle hooks when client is unlocked (#37222)
+- Fixes a bug where the Authentication API was called infinitely in useCarouselManagement (#37334)
 
 ## [13.6.0]
 
