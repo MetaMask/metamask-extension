@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import type { AccountsControllerGetStateAction } from '@metamask/accounts-controller';
 import type { AddApprovalRequest } from '@metamask/approval-controller';
 import type { AddLog } from '@metamask/logging-controller';
@@ -11,6 +11,7 @@ import type {
 } from '@metamask/keyring-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | AccountsControllerGetStateAction
@@ -34,11 +35,20 @@ export type SignatureControllerMessenger = ReturnType<
  * messenger.
  */
 export function getSignatureControllerMessenger(
-  messenger: Messenger<AllowedActions, never>,
+  messenger: RootMessenger<AllowedActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'SignatureController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'SignatureController',
+    AllowedActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'SignatureController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'AccountsController:getState',
       'ApprovalController:addRequest',
       'KeyringController:signMessage',
@@ -48,8 +58,8 @@ export function getSignatureControllerMessenger(
       'NetworkController:getNetworkClientById',
       'GatorPermissionsController:decodePermissionFromPermissionContextForOrigin',
     ],
-    allowedEvents: [],
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions =
@@ -68,14 +78,23 @@ export type SignatureControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getSignatureControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'SignatureControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'SignatureControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'SignatureControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'MetaMetricsController:trackEvent',
       'PreferencesController:getState',
     ],
-    allowedEvents: [],
   });
+  return controllerInitMessenger;
 }
