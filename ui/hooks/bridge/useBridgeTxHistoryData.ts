@@ -4,11 +4,11 @@ import {
   type TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { StatusTypes } from '@metamask/bridge-controller';
 import { isBridgeComplete } from '../../../shared/lib/bridge-status/utils';
 import { CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE } from '../../helpers/constants/routes';
 import { selectBridgeHistoryItemForTxMetaId } from '../../ducks/bridge-status/selectors';
-import { useSafeNavigation } from '../../hooks/useSafeNavigation';
 
 export const FINAL_NON_CONFIRMED_STATUSES = [
   TransactionStatus.failed,
@@ -34,7 +34,7 @@ export function useBridgeTxHistoryData({
   transactionGroup,
   isEarliestNonce,
 }: UseBridgeTxHistoryDataProps) {
-  const { navigate } = useSafeNavigation();
+  const navigate = useNavigate();
   const txMeta = transactionGroup.initialTransaction;
   const srcTxMetaId = txMeta.id;
   const bridgeHistoryItem = useSelector((state) =>
@@ -50,10 +50,9 @@ export function useBridgeTxHistoryData({
   )
     ? undefined
     : () => {
-        navigate(
-          `${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`,
-          { state: { transactionGroup, isEarliestNonce } },
-        );
+        navigate(`${CROSS_CHAIN_SWAP_TX_DETAILS_ROUTE}/${srcTxMetaId}`, {
+          state: { transactionGroup, isEarliestNonce },
+        });
       };
 
   return {

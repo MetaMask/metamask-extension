@@ -4,9 +4,10 @@ import {
   AccountsControllerAccountRemovedEvent,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { GetPermissions } from '@metamask/permission-controller';
 import { GetAllSnaps, HandleSnapRequest } from '@metamask/snaps-controllers';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | HandleSnapRequest
@@ -31,20 +32,30 @@ export type MultichainAssetsControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getMultichainAssetsControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'MultichainAssetsController',
-    allowedEvents: [
+  const controllerMessenger = new Messenger<
+    'MultichainAssetsController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'MultichainAssetsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    events: [
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'AccountsController:accountAssetListUpdated',
     ],
-    allowedActions: [
+    actions: [
       'PermissionController:getPermissions',
       'SnapController:handleRequest',
       'SnapController:getAll',
       'AccountsController:listMultichainAccounts',
     ],
   });
+  return controllerMessenger;
 }
