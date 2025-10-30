@@ -2258,7 +2258,7 @@
         "define": false,
         "devicePixelRatio": false,
         "document": false,
-        "documnet.createElement": true,
+        "document.createElement": true,
         "fetch": false,
         "h": false,
         "importScripts": false,
