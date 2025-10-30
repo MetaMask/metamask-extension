@@ -15,7 +15,7 @@ const mockProductPrice: ProductPrice = {
   unitAmount: 80000000,
   unitDecimals: 6,
   currency: 'usd',
-  trialPeriodDays: 7,
+  trialPeriodDays: 14,
 };
 
 describe('SubscriptionDetails', () => {
@@ -29,7 +29,7 @@ describe('SubscriptionDetails', () => {
 
     expect(getByText(tEn('transactionShield') as string)).toBeInTheDocument();
     expect(getByText('$80/year (Annual)' as string)).toBeInTheDocument();
-    expect(getByText(tEn('freeSevenDayTrial') as string)).toBeInTheDocument();
+    expect(getByText(tEn('freeTrialDays', [14]) as string)).toBeInTheDocument();
   });
 
   it('renders monthly plan without trial correctly', () => {

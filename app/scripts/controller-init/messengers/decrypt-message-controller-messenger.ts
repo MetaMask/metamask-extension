@@ -1,9 +1,10 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/decrypt-message';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 export type DecryptMessageControllerMessenger = ReturnType<
   typeof getDecryptMessageControllerMessenger
@@ -17,21 +18,31 @@ export type DecryptMessageControllerMessenger = ReturnType<
  * messenger.
  */
 export function getDecryptMessageControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'DecryptMessageController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'DecryptMessageController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'DecryptMessageController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'ApprovalController:addRequest',
       'ApprovalController:acceptRequest',
       'ApprovalController:rejectRequest',
       'KeyringController:decryptMessage',
     ],
-    allowedEvents: [
+    events: [
       'DecryptMessageManager:stateChange',
       'DecryptMessageManager:unapprovedMessage',
     ],
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions = MetaMetricsControllerTrackEventAction;
@@ -48,11 +59,20 @@ export type DecryptMessageControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getDecryptMessageControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'DecryptMessageControllerInit',
-    allowedActions: ['MetaMetricsController:trackEvent'],
-    allowedEvents: [],
+  const controllerInitMessenger = new Messenger<
+    'DecryptMessageControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'DecryptMessageControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['MetaMetricsController:trackEvent'],
+  });
+  return controllerInitMessenger;
 }

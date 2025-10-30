@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { toHex } from '@metamask/controller-utils';
 import {
   AlignItems,
@@ -37,7 +37,7 @@ import { NftEmptyState } from '../nft-empty-state';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftsTab() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const { privacyMode } = useSelector(getPreferences);
@@ -87,7 +87,7 @@ export default function NftsTab() {
   }, [nftsLoading, nftsStillFetchingIndication]);
 
   const handleNftClick = (nft: NFT) => {
-    history.push(
+    navigate(
       `${ASSET_ROUTE}/${toHex(nft.chainId)}/${nft.address}/${nft.tokenId}`,
     );
   };

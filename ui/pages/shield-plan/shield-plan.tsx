@@ -74,11 +74,10 @@ import {
 } from '../../hooks/subscription/useSubscription';
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  getLastUsedSubscriptionPaymentDetails,
-  selectNetworkConfigurationByChainId,
-} from '../../selectors';
+import { selectNetworkConfigurationByChainId } from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
+import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../shared/constants/subscriptions';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -88,7 +87,7 @@ const ShieldPlan = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const lastUsedPaymentDetails = useSelector(
-    getLastUsedSubscriptionPaymentDetails,
+    getLastUsedShieldSubscriptionPaymentDetails,
   );
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
@@ -97,8 +96,12 @@ const ShieldPlan = () => {
   const {
     subscriptions,
     trialedProducts,
+<<<<<<< HEAD
     // loading: subscriptionsLoading,
     error: subscriptionsError,
+=======
+    loading: subscriptionsLoading,
+>>>>>>> feat/handle-subscription-after-confirm
   } = useUserSubscriptions({
     refetch: true, // always fetch latest subscriptions state in shield plan screen
   });
@@ -119,6 +122,7 @@ const ShieldPlan = () => {
     lastUsedPaymentDetails?.plan || RECURRING_INTERVALS.year,
   );
 
+<<<<<<< HEAD
   const {
     subscriptionPricing,
     // loading: subscriptionPricingLoading,
@@ -126,6 +130,12 @@ const ShieldPlan = () => {
   } = useSubscriptionPricing({
     refetch: true, // always fetch latest price
   });
+=======
+  const { subscriptionPricing, loading: subscriptionPricingLoading } =
+    useSubscriptionPricing({
+      refetch: true, // always fetch latest price
+    });
+>>>>>>> feat/handle-subscription-after-confirm
 
   const pricingPlans = useSubscriptionProductPlans(
     PRODUCT_TYPES.SHIELD,
@@ -149,8 +159,8 @@ const ShieldPlan = () => {
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentType>(() => {
-      if (lastUsedPaymentDetails?.paymentMethod) {
-        return lastUsedPaymentDetails.paymentMethod;
+      if (lastUsedPaymentDetails?.type) {
+        return lastUsedPaymentDetails.type;
       }
       return hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard;
     });
@@ -175,7 +185,7 @@ const ShieldPlan = () => {
     }
 
     const lastUsedPaymentToken = lastUsedPaymentDetails?.paymentTokenAddress;
-    const lastUsedPaymentMethod = lastUsedPaymentDetails?.paymentMethod;
+    const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
 
     let lastUsedSelectedToken = availableTokenBalances[0];
     if (
@@ -210,9 +220,10 @@ const ShieldPlan = () => {
     useAsyncCallback(async () => {
       // save the last used subscription payment method and plan to Redux store
       await dispatch(
-        setLastUsedSubscriptionPaymentDetails({
-          paymentMethod: selectedPaymentMethod,
+        setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+          type: selectedPaymentMethod,
           paymentTokenAddress: selectedToken?.address as Hex,
+          paymentTokenSymbol: selectedToken?.symbol,
           plan: selectedPlan,
         }),
       );
@@ -252,8 +263,6 @@ const ShieldPlan = () => {
   }, [cryptoPaymentMethod?.chains]);
 
   const loading = !subscriptionPricing || subscriptionResult.pending;
-  const error =
-    subscriptionsError || subscriptionPricingError || subscriptionResult.error;
 
   const plans: Plan[] = useMemo(
     () =>
@@ -278,15 +287,24 @@ const ShieldPlan = () => {
   );
   const selectedPlanData = plans.find((plan) => plan.id === selectedPlan);
 
-  const planDetails = [
-    t('shieldPlanDetails1'),
-    t(
+  const planDetails = useMemo(() => {
+    const details = [];
+    if (!isTrialed) {
+      details.push(
+        t('shieldPlanDetails1', [
+          selectedProductPrice?.trialPeriodDays ??
+            SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
+        ]),
+      );
+    }
+    details.push(
       selectedPaymentMethod === PAYMENT_TYPES.byCrypto
-        ? 'shieldPlanDetails2'
-        : 'shieldPlanDetails2Card',
-    ),
-    t('shieldPlanDetails3'),
-  ];
+        ? t('shieldPlanDetails2')
+        : t('shieldPlanDetails2Card'),
+    );
+    details.push(t('shieldPlanDetails3'));
+    return details;
+  }, [t, selectedPaymentMethod, isTrialed, selectedProductPrice]);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -321,7 +339,6 @@ const ShieldPlan = () => {
       >
         {t('shieldPlanTitle')}
       </Header>
-      {error && <Text variant={TextVariant.bodySm}>{error.message}</Text>}
       {loading && <LoadingScreen />}
       {subscriptionPricing && (
         <>
@@ -346,6 +363,7 @@ const ShieldPlan = () => {
                     'shield-plan-page__plan--selected':
                       plan.id === selectedPlan,
                   })}
+                  data-testid={`shield-plan-${plan.label.toLowerCase()}-button`}
                   onClick={() => setSelectedPlan(plan.id)}
                 >
                   <div className="shield-plan-page__radio" />
@@ -427,7 +445,7 @@ const ShieldPlan = () => {
                       ? selectedToken?.symbol || ''
                       : t('shieldPlanCard')}
                   </Text>
-                  <Icon size={IconSize.Md} name={IconName.ArrowRight} />
+                  <Icon size={IconSize.Md} name={IconName.ArrowDown} />
                 </Box>
               </Box>
             </Box>
@@ -487,6 +505,7 @@ const ShieldPlan = () => {
               variant={ButtonVariant.Primary}
               block
               onClick={handleSubscription}
+              data-testid="shield-plan-continue-button"
             >
               {t('continue')}
             </Button>

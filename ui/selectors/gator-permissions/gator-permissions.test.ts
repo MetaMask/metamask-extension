@@ -12,6 +12,8 @@ import { SnapId } from '@metamask/snaps-sdk';
 import {
   getGatorPermissionsMap,
   getAggregatedGatorPermissionsCountAcrossAllChains,
+  getAggregatedGatorPermissionByChainId,
+  AppState,
   getPermissionGroupMetaData,
   getPermissionMetaDataByOrigin,
 } from './gator-permissions';
@@ -251,12 +253,11 @@ describe('Gator Permissions Selectors', () => {
       siteOrigin: 'http://localhost:8001',
     },
   });
-  const mockState = {
+  const mockState: AppState = {
     metamask: {
       gatorPermissionsMapSerialized: JSON.stringify(mockGatorPermissionsMap),
       isGatorPermissionsEnabled: true,
       isFetchingGatorPermissions: false,
-      isUpdatingGatorPermissions: false,
       gatorPermissionsProviderSnapId: 'local:http://localhost:8080/' as SnapId,
     },
   };
@@ -307,7 +308,6 @@ describe('Gator Permissions Selectors', () => {
             }),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -344,7 +344,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -410,7 +409,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -457,7 +455,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -504,7 +501,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -551,7 +547,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -623,7 +618,6 @@ describe('Gator Permissions Selectors', () => {
             }),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -657,7 +651,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -704,7 +697,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -751,7 +743,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -798,7 +789,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -851,7 +841,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -895,7 +884,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1003,7 +991,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1049,7 +1036,6 @@ describe('Gator Permissions Selectors', () => {
             }),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1101,7 +1087,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1148,7 +1133,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1195,7 +1179,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1242,7 +1225,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1275,7 +1257,6 @@ describe('Gator Permissions Selectors', () => {
             ),
             isGatorPermissionsEnabled: true,
             isFetchingGatorPermissions: false,
-            isUpdatingGatorPermissions: false,
             gatorPermissionsProviderSnapId:
               'local:http://localhost:8080/' as SnapId,
           },
@@ -1319,6 +1300,182 @@ describe('Gator Permissions Selectors', () => {
         expect(result.tokenTransfer.count).toBe(3);
         expect(result.tokenTransfer.chains).toEqual([MOCK_CHAIN_ID_MAINNET]);
       });
+    });
+  });
+
+  describe('getAggregatedGatorPermissionByChainId', () => {
+    it('should return aggregated token-transfer permissions for a given chainId', () => {
+      const result = getAggregatedGatorPermissionByChainId(mockState, {
+        aggregatedPermissionType: 'token-transfer',
+        chainId: MOCK_CHAIN_ID_MAINNET,
+      });
+
+      expect(result).toHaveLength(3);
+
+      const permissionTypes = result.map(
+        (
+          permission: StoredGatorPermissionSanitized<
+            Signer,
+            PermissionTypesWithCustom
+          >,
+        ) => permission.permissionResponse.permission.type,
+      );
+      expect(permissionTypes).toContain('native-token-stream');
+      expect(permissionTypes).toContain('erc20-token-stream');
+      expect(permissionTypes).toContain('native-token-periodic');
+    });
+
+    it('should return aggregated token-transfer permissions for a different chainId', () => {
+      const result = getAggregatedGatorPermissionByChainId(mockState, {
+        aggregatedPermissionType: 'token-transfer',
+        chainId: MOCK_CHAIN_ID_POLYGON,
+      });
+
+      expect(result).toHaveLength(3);
+
+      const permissionTypes = result.map(
+        (
+          permission: StoredGatorPermissionSanitized<
+            Signer,
+            PermissionTypesWithCustom
+          >,
+        ) => permission.permissionResponse.permission.type,
+      );
+      expect(permissionTypes).toContain('native-token-stream');
+      expect(permissionTypes).toContain('erc20-token-stream');
+      expect(permissionTypes).toContain('native-token-periodic');
+    });
+
+    it('should return empty array for non-existent chainId', () => {
+      const result = getAggregatedGatorPermissionByChainId(mockState, {
+        aggregatedPermissionType: 'token-transfer',
+        chainId: '0x1111111111111111111111111111111111111111' as Hex,
+      });
+
+      expect(result).toEqual([]);
+    });
+
+    it('should return empty array for unknown aggregated permission type', () => {
+      const result = getAggregatedGatorPermissionByChainId(mockState, {
+        aggregatedPermissionType: 'unknown-type',
+        chainId: MOCK_CHAIN_ID_MAINNET,
+      });
+
+      expect(result).toEqual([]);
+    });
+
+    it('should handle state with only some permission types populated', () => {
+      const mockStateWithPartialPermissions = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify({
+            'native-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [
+                {
+                  permissionResponse: {
+                    chainId: MOCK_CHAIN_ID_MAINNET as Hex,
+                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    expiry: 1750291200,
+                    permission: {
+                      type: 'native-token-stream',
+                      data: {
+                        maxAmount: '0x22b1c8c1227a0000',
+                        initialAmount: '0x6f05b59d3b20000',
+                        amountPerSecond: '0x6f05b59d3b20000',
+                        startTime: 1747699200,
+                        justification: 'Test justification',
+                      },
+                      rules: {},
+                    },
+                    context: '0x00000000',
+                    signerMeta: {
+                      delegationManager:
+                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+                    },
+                  },
+                  siteOrigin: 'http://localhost:8000',
+                },
+              ],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'native-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            other: {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+          }),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+        },
+      };
+
+      const result = getAggregatedGatorPermissionByChainId(
+        mockStateWithPartialPermissions,
+        {
+          aggregatedPermissionType: 'token-transfer',
+          chainId: MOCK_CHAIN_ID_MAINNET,
+        },
+      );
+
+      expect(result).toHaveLength(1);
+      expect(result[0].permissionResponse.permission.type).toBe(
+        'native-token-stream',
+      );
+    });
+
+    it('should handle state with empty permission arrays', () => {
+      const mockStateWithEmptyPermissions = {
+        metamask: {
+          gatorPermissionsMapSerialized: JSON.stringify({
+            'native-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-stream': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'native-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            'erc20-token-periodic': {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+            other: {
+              [MOCK_CHAIN_ID_MAINNET]: [],
+              [MOCK_CHAIN_ID_POLYGON]: [],
+            },
+          }),
+          isGatorPermissionsEnabled: true,
+          isFetchingGatorPermissions: false,
+          gatorPermissionsProviderSnapId:
+            'local:http://localhost:8080/' as SnapId,
+        },
+      };
+
+      const result = getAggregatedGatorPermissionByChainId(
+        mockStateWithEmptyPermissions,
+        {
+          aggregatedPermissionType: 'token-transfer',
+          chainId: MOCK_CHAIN_ID_MAINNET,
+        },
+      );
+
+      expect(result).toEqual([]);
     });
   });
 });

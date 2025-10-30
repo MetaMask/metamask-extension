@@ -304,7 +304,6 @@ const SubmitClaimForm = () => {
         helpText={errors.chainId ? errors.chainId.msg : undefined}
         helpTextProps={{
           'data-testid': 'shield-claim-chain-id-help-text',
-          color: DsTextColor.textAlternative,
         }}
         id="chain-id"
         name="chain-id"
@@ -365,9 +364,21 @@ const SubmitClaimForm = () => {
       <FormTextField
         label={`${t('shieldClaimImpactedTxHash')}*`}
         placeholder={'e.g. a1084235686add...q46q8wurgw'}
+        inputProps={{
+          'data-testid': 'shield-claim-impacted-tx-hash-input',
+        }}
         helpText={
           errors.impactedTransactionHash ? (
-            errors.impactedTransactionHash?.msg
+            <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
+              {`${errors.impactedTransactionHash?.msg}. `}
+              <TextButton
+                size={TextButtonSize.BodySm}
+                className="min-w-0"
+                asChild
+              >
+                <a href="#">{t('shieldClaimImpactedTxHashHelpTextLink')}</a>
+              </TextButton>
+            </Text>
           ) : (
             <Text
               variant={TextVariant.BodySm}
@@ -426,6 +437,7 @@ const SubmitClaimForm = () => {
         <Textarea
           id="description"
           name="description"
+          data-testid="shield-claim-description-textarea"
           placeholder={t('shieldClaimDescriptionPlaceholder')}
           onChange={(e) => setCaseDescription(e.target.value)}
           onBlur={() => validateDescription()}
@@ -444,6 +456,7 @@ const SubmitClaimForm = () => {
             variant={TextVariant.BodySm}
             color={TextColor.ErrorDefault}
             className="mt-0.5"
+            data-testid="shield-claim-description-error"
           >
             {errors.caseDescription.msg}
           </Text>

@@ -32,8 +32,9 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
+  StateMetadata,
 } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import { toHex } from '@metamask/controller-utils';
 import {
   AccountsControllerGetSelectedAccountAction,
@@ -93,29 +94,29 @@ export type AccountTrackerControllerState = {
  * using the `persist` flag; and if they can be sent to Sentry or not, using
  * the `anonymous` flag.
  */
-const controllerMetadata = {
+const controllerMetadata: StateMetadata<AccountTrackerControllerState> = {
   accounts: {
     includeInStateLogs: false,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   currentBlockGasLimit: {
     includeInStateLogs: false,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   accountsByChainId: {
     includeInStateLogs: false,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   currentBlockGasLimitByChainId: {
     includeInStateLogs: false,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
 };
@@ -200,12 +201,10 @@ export type AllowedEvents =
 /**
  * Messenger type for the {@link AccountTrackerController}.
  */
-export type AccountTrackerControllerMessenger = RestrictedMessenger<
+export type AccountTrackerControllerMessenger = Messenger<
   typeof controllerName,
   AccountTrackerControllerActions | AllowedActions,
-  AccountTrackerControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  AccountTrackerControllerEvents | AllowedEvents
 >;
 
 export type AccountTrackerControllerOptions = {
@@ -275,15 +274,14 @@ export default class AccountTrackerController extends BaseController<
     this.#accountsApiChainIds = options.accountsApiChainIds ?? (() => []);
 
     // subscribe to account removal
-    this.messagingSystem.subscribe(
-      'KeyringController:accountRemoved',
-      (address) => this.removeAccounts([address]),
+    this.messenger.subscribe('KeyringController:accountRemoved', (address) =>
+      this.removeAccounts([address]),
     );
 
-    const onboardingState = this.messagingSystem.call(
+    const onboardingState = this.messenger.call(
       'OnboardingController:getState',
     );
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'OnboardingController:stateChange',
       previousValueComparator((prevState, currState) => {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
@@ -295,14 +293,14 @@ export default class AccountTrackerController extends BaseController<
       }, onboardingState),
     );
 
-    this.#selectedAccount = this.messagingSystem.call(
+    this.#selectedAccount = this.messenger.call(
       'AccountsController:getSelectedAccount',
     );
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'AccountsController:selectedEvmAccountChange',
       (newAccount) => {
-        const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+        const { useMultiAccountBalanceChecker } = this.messenger.call(
           'PreferencesController:getState',
         );
 
@@ -374,12 +372,12 @@ export default class AccountTrackerController extends BaseController<
    * Gets the current chain ID.
    */
   #getCurrentChainId(): Hex {
-    const { selectedNetworkClientId } = this.messagingSystem.call(
+    const { selectedNetworkClientId } = this.messenger.call(
       'NetworkController:getState',
     );
     const {
       configuration: { chainId },
-    } = this.messagingSystem.call(
+    } = this.messenger.call(
       'NetworkController:getNetworkClientById',
       selectedNetworkClientId,
     );
@@ -400,11 +398,10 @@ export default class AccountTrackerController extends BaseController<
     identifier: string;
   } {
     if (networkClientId) {
-      const { configuration, provider, blockTracker } =
-        this.messagingSystem.call(
-          'NetworkController:getNetworkClientById',
-          networkClientId,
-        );
+      const { configuration, provider, blockTracker } = this.messenger.call(
+        'NetworkController:getNetworkClientById',
+        networkClientId,
+      );
 
       return {
         chainId: configuration.chainId,
@@ -704,14 +701,14 @@ export default class AccountTrackerController extends BaseController<
    * Uses v4 multiaccount API when possible for efficiency.
    */
   async updateAccountsAllActiveNetworks(): Promise<void> {
-    const { completedOnboarding } = this.messagingSystem.call(
+    const { completedOnboarding } = this.messenger.call(
       'OnboardingController:getState',
     );
     if (!completedOnboarding) {
       return;
     }
 
-    const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+    const { useMultiAccountBalanceChecker } = this.messenger.call(
       'PreferencesController:getState',
     );
 
@@ -720,15 +717,16 @@ export default class AccountTrackerController extends BaseController<
       const { accounts } = this.state;
       addresses = Object.keys(accounts);
     } else {
-      const selectedAddress = this.messagingSystem.call(
+      const selectedAddress = this.messenger.call(
         'AccountsController:getSelectedAccount',
       ).address;
       addresses = [selectedAddress];
     }
 
     // Try multichain API first if we have supported chains and multiple accounts
-    const { useExternalServices: allowExternalServices } =
-      this.messagingSystem.call('PreferencesController:getState');
+    const { useExternalServices: allowExternalServices } = this.messenger.call(
+      'PreferencesController:getState',
+    );
 
     const hasAccountApiChains = this.#accountsApiChainIds().length > 0;
     if (
@@ -768,7 +766,7 @@ export default class AccountTrackerController extends BaseController<
    * @param networkClientId - optional network client ID to use instead of the globally selected network.
    */
   async updateAccounts(networkClientId?: NetworkClientId): Promise<void> {
-    const { completedOnboarding } = this.messagingSystem.call(
+    const { completedOnboarding } = this.messenger.call(
       'OnboardingController:getState',
     );
     if (!completedOnboarding) {
@@ -778,7 +776,7 @@ export default class AccountTrackerController extends BaseController<
     const { chainId, provider, identifier } =
       this.#getCorrectNetworkClient(networkClientId);
     const { useMultiAccountBalanceChecker, useExternalServices } =
-      this.messagingSystem.call('PreferencesController:getState');
+      this.messenger.call('PreferencesController:getState');
 
     let addresses = [];
     if (useMultiAccountBalanceChecker) {
@@ -786,7 +784,7 @@ export default class AccountTrackerController extends BaseController<
 
       addresses = Object.keys(accounts);
     } else {
-      const selectedAddress = this.messagingSystem.call(
+      const selectedAddress = this.messenger.call(
         'AccountsController:getSelectedAccount',
       ).address;
 
@@ -851,7 +849,7 @@ export default class AccountTrackerController extends BaseController<
     address?: string;
     networkClientId?: NetworkClientId;
   } = {}): Promise<void> {
-    const { completedOnboarding } = this.messagingSystem.call(
+    const { completedOnboarding } = this.messenger.call(
       'OnboardingController:getState',
     );
     if (!completedOnboarding) {
@@ -862,8 +860,7 @@ export default class AccountTrackerController extends BaseController<
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       address ||
-      this.messagingSystem.call('AccountsController:getSelectedAccount')
-        .address;
+      this.messenger.call('AccountsController:getSelectedAccount').address;
 
     if (!selectedAddress) {
       return;
@@ -889,7 +886,7 @@ export default class AccountTrackerController extends BaseController<
     provider: Provider,
     chainId: Hex,
   ): Promise<void> {
-    const { useMultiAccountBalanceChecker } = this.messagingSystem.call(
+    const { useMultiAccountBalanceChecker } = this.messenger.call(
       'PreferencesController:getState',
     );
 
@@ -1093,7 +1090,7 @@ export default class AccountTrackerController extends BaseController<
   ): Promise<AccountApiBalanceResponse | null> {
     try {
       // Check if external services are allowed
-      const { useExternalServices } = this.messagingSystem.call(
+      const { useExternalServices } = this.messenger.call(
         'PreferencesController:getState',
       );
       if (!useExternalServices) {
@@ -1280,12 +1277,12 @@ export default class AccountTrackerController extends BaseController<
   }
 
   _registerMessageHandlers() {
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `${controllerName}:updateNativeBalances` as const,
       this.updateNativeBalances.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `${controllerName}:updateStakedBalances` as const,
       this.updateStakedBalances.bind(this),
     );
