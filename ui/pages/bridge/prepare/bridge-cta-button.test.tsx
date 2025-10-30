@@ -205,7 +205,7 @@ describe('BridgeCTAButton', () => {
     expect(container).toMatchSnapshot();
   });
 
-  // @ts-expect-error: each is not a valid test function in jest
+  // @ts-expect-error: each is a valid test function in jest
   it.each([
     ['disable', 'there is a tx alert', { isTxAlertPresent: true }],
     [
