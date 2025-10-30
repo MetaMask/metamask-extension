@@ -130,8 +130,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     );
 
     return accountAssets;
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isEvm,
     evmBalances,
