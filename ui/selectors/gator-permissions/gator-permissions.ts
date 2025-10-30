@@ -38,6 +38,21 @@ export type MetDataByPermissionTypeGroup = Record<
   }
 >;
 
+export type ConnectionInfo = {
+  addresses: string[];
+  addressToNameMap?: Record<string, string>;
+  origin: string;
+  name: string;
+  iconUrl: string | null;
+  subjectType: SubjectType;
+  networkIconUrl: string;
+  networkName: string;
+  extensionId: string | null;
+  svgIcon?: string;
+  version?: string;
+  advancedPermissionsCount?: number;
+};
+
 const TOKEN_TRANSFER_PERMISSION_TYPES: SupportedGatorPermissionType[] = [
   'native-token-stream',
   'erc20-token-stream',
@@ -384,9 +399,7 @@ export const getUniqueSiteOriginsFromTokenTransferPermissions = createSelector(
         // Get all permissions across all chains for this permission type
         return Object.values(permissionsByChain).flat();
       },
-    )
-      .filter((permission) => permission !== undefined && permission !== null)
-      .map((permission) => permission.siteOrigin);
+    ).map((permission) => permission.siteOrigin);
 
     return [...new Set(siteOrigins)];
   },
@@ -407,24 +420,25 @@ export const getGatorPermissionCountsBySiteOrigin = createSelector(
   (gatorPermissionsMap): Map<string, number> => {
     const sitePermissionCounts = new Map<string, number>();
 
-    Object.values(gatorPermissionsMap).forEach((permissionTypeMap) => {
-      Object.values(permissionTypeMap).forEach((permissions) => {
-        permissions.forEach(
-          (
-            permission: StoredGatorPermissionSanitized<
-              Signer,
-              PermissionTypesWithCustom
-            >,
-          ) => {
-            if (permission?.siteOrigin) {
-              const currentCount =
-                sitePermissionCounts.get(permission.siteOrigin) || 0;
-              sitePermissionCounts.set(permission.siteOrigin, currentCount + 1);
-            }
-          },
-        );
-      });
-    });
+    const allPermissions = Object.values(gatorPermissionsMap).flatMap(
+      (permissionTypeMap) =>
+        Object.values(permissionTypeMap).flatMap((permissions) => permissions),
+    );
+
+    allPermissions.forEach(
+      (
+        permission: StoredGatorPermissionSanitized<
+          Signer,
+          PermissionTypesWithCustom
+        >,
+      ) => {
+        if (permission?.siteOrigin) {
+          const currentCount =
+            sitePermissionCounts.get(permission.siteOrigin) || 0;
+          sitePermissionCounts.set(permission.siteOrigin, currentCount + 1);
+        }
+      },
+    );
 
     return sitePermissionCounts;
   },
@@ -494,8 +508,9 @@ export const getMergedConnectionsListWithGatorPermissions = createSelector(
     (state: AppState) => state,
   ],
   (sitesConnectionsList, gatorPermissionCounts, state) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mergedConnections: Record<string, any> = { ...sitesConnectionsList };
+    const mergedConnections: Record<string, ConnectionInfo> = {
+      ...sitesConnectionsList,
+    };
 
     gatorPermissionCounts.forEach((permissionCount, siteOrigin) => {
       if (mergedConnections[siteOrigin]) {
