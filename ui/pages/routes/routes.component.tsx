@@ -563,7 +563,7 @@ export default function Routes() {
   ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
   // Navigate to confirmations when there are pending approvals (from non-home pages)
   useEffect(() => {
-    // Don't navigate if already on a confirmation-related route, snap flow, or homepage
+    // Don't navigate if already on a confirmation-related route, snap flow, homepage, send, or swaps flow
     const isOnConfirmationRoute =
       location.pathname === DEFAULT_ROUTE ||
       location.pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
@@ -573,7 +573,9 @@ export default function Routes() {
       location.pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
       location.pathname.startsWith(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE) ||
       location.pathname.startsWith(CONFIRM_ADD_SUGGESTED_NFT_ROUTE) ||
-      location.pathname.startsWith(SNAPS_ROUTE);
+      location.pathname.startsWith(SNAPS_ROUTE) ||
+      location.pathname.startsWith(SEND_ROUTE) ||
+      location.pathname.startsWith(SWAPS_ROUTE);
 
     // Network operations (addEthereumChain, switchEthereumChain) have their own UI
     // and shouldn't trigger auto-navigation
