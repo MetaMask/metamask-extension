@@ -6,7 +6,7 @@ import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import mockState from '../../../test/data/mock-state.json';
 import { useSeasonStatus } from './useSeasonStatus';
 import { useRewardsEnabled } from './useRewardsEnabled';
-import type { SeasonStatusState } from '../../../app/scripts/controllers/rewards/rewards-controller.types';
+import { SeasonStatusState } from '../../../shared/types/rewards';
 
 // Mock dependencies
 jest.mock('../../store/background-connection', () => ({

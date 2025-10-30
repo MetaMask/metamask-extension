@@ -1,5 +1,10 @@
 import { CaipAccountId, CaipAssetType } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import {
+  SeasonDtoState,
+  SeasonRewardType,
+  SeasonStatusState,
+} from '../../../../shared/types/rewards';
 
 export type LoginResponseDto = {
   sessionId: string;
@@ -410,13 +415,6 @@ export type SeasonRewardDto = {
   rewardType: SeasonRewardType;
 };
 
-export enum SeasonRewardType {
-  Generic = 'Generic',
-  PerpsDiscount = 'PerpsDiscount',
-  PointsBoost = 'PointsBoost',
-  AlphaFoxInvite = 'AlphaFoxInvite',
-}
-
 export type SeasonDto = {
   id: string;
   name: string;
@@ -605,68 +603,6 @@ export enum RewardClaimStatus {
 export type ThemeImage = {
   lightModeUrl: string;
   darkModeUrl: string;
-};
-
-export type ClaimRewardDto = {
-  data?: Record<string, string>;
-};
-
-// Serializable versions for state storage (Date objects converted to timestamps)
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SeasonRewardDtoState = {
-  id: string;
-  name: string;
-  shortDescription: string;
-  longDescription: string;
-  shortUnlockedDescription: string;
-  longUnlockedDescription: string;
-  claimUrl?: string;
-  iconName: string;
-  rewardType: SeasonRewardType;
-};
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SeasonTierDtoState = {
-  id: string;
-  name: string;
-  pointsNeeded: number;
-  image: {
-    lightModeUrl: string;
-    darkModeUrl: string;
-  };
-  levelNumber: string;
-  rewards: SeasonRewardDtoState[];
-};
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SeasonDtoState = {
-  id: string;
-  name: string;
-  startDate: number; // timestamp
-  endDate: number; // timestamp
-  tiers: SeasonTierDtoState[];
-  lastFetched?: number;
-};
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SeasonStatusBalanceDtoState = {
-  total: number;
-  updatedAt?: number; // timestamp
-};
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SeasonTierState = {
-  currentTier: SeasonTierDtoState;
-  nextTier: SeasonTierDtoState | null;
-  nextTierPointsNeeded: number | null;
-};
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type SeasonStatusState = {
-  season: SeasonDtoState;
-  balance: SeasonStatusBalanceDtoState;
-  tier: SeasonTierState;
-  lastFetched?: number;
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
-import type { SeasonStatusState } from '../../../app/scripts/controllers/rewards/rewards-controller.types';
+import type { SeasonStatusState } from '../../../shared/types/rewards';
 import { useCandidateSubscriptionId } from '../../hooks/rewards/useCandidateSubscriptionId';
 import { useSeasonStatus } from '../../hooks/rewards/useSeasonStatus';
 import { useRewardsEnabled } from '../../hooks/rewards/useRewardsEnabled';
 
-export interface RewardsContextValue {
+export type RewardsContextValue = {
   rewardsEnabled: boolean;
   candidateSubscriptionId: string | null;
   candidateSubscriptionIdError: boolean;
@@ -12,7 +12,7 @@ export interface RewardsContextValue {
   seasonStatusError: string | null;
   seasonStatusLoading: boolean;
   refetchSeasonStatus: () => Promise<void>;
-}
+};
 
 export const RewardsContext = React.createContext<RewardsContextValue>({
   rewardsEnabled: false,

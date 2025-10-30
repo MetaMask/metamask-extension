@@ -42,7 +42,6 @@ import type {
   SubscriptionDto,
   EstimatePointsDto,
   EstimatedPointsDto,
-  SeasonDtoState,
   DiscoverSeasonsDto,
   SeasonMetadataDto,
   SeasonStateDto,
@@ -64,6 +63,7 @@ import {
   RewardsDataServiceMobileOptinAction,
   RewardsDataServiceValidateReferralCodeAction,
 } from './rewards-data-service-types';
+import { SeasonDtoState } from '../../../../shared/types/rewards';
 
 type AllActions = MessengerActions<RewardsControllerMessenger>;
 
