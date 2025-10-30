@@ -42,10 +42,7 @@ import {
 import { findAssetByAddress } from '../pages/asset/util';
 import { isEvmChainId } from '../../shared/lib/asset-utils';
 import { getSelectedInternalAccount } from './accounts';
-import {
-  getMultichainAssetsControllerState,
-  getMultichainBalances,
-} from './multichain';
+import { getMultichainBalances } from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
   getCurrencyRates,
@@ -105,6 +102,16 @@ export function getAccountAssets(state: AssetsState) {
  */
 export function getAssetsMetadata(state: AssetsState) {
   return state.metamask.assetsMetadata;
+}
+
+/**
+ * Gets non-EVM ignored assets.
+ *
+ * @param state - Redux state object.
+ * @returns An object containing all ignored assets.
+ */
+export function getAllIgnoredAssets(state: AssetsState) {
+  return state.metamask.allIgnoredAssets;
 }
 
 /**
@@ -656,8 +663,12 @@ const selectMultichainBalancesStateForBalances = createSelector(
  * Wraps multichain assets for core balance computations.
  */
 const selectMultichainAssetsStateForBalances = createSelector(
-  [getMultichainAssetsControllerState],
-  (multichainAssetsState) => multichainAssetsState,
+  [getAccountAssets, getAssetsMetadata, getAllIgnoredAssets],
+  (accountsAssets, assetsMetadata, allIgnoredAssets) => ({
+    accountsAssets,
+    assetsMetadata,
+    allIgnoredAssets,
+  }),
 );
 
 /**

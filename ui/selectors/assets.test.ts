@@ -30,6 +30,7 @@ import {
   selectBalanceChangeBySelectedAccountGroup,
   getAssetsBySelectedAccountGroup,
   getAsset,
+  getAllIgnoredAssets,
 } from './assets';
 
 jest.mock('@metamask/assets-controllers', () => {
@@ -108,6 +109,13 @@ describe('getAssetsMetadata', () => {
   it('should return undefined if state does not have metamask property', () => {
     const invalidState = {} as AssetsState;
     expect(() => getAssetsMetadata(invalidState)).toThrow();
+  });
+});
+
+describe('getAllIgnoredAssets', () => {
+  it('should return the all ignored assets from the state', () => {
+    const result = getAllIgnoredAssets(mockAssetsState);
+    expect(result).toEqual(mockAssetsState.metamask.allIgnoredAssets);
   });
 });
 
