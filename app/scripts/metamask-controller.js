@@ -2374,6 +2374,10 @@ export default class MetamaskController extends EventEmitter {
       getSubscriptionPricing: this.subscriptionController.getPricing.bind(
         this.subscriptionController,
       ),
+      cacheLastSelectedPaymentMethod:
+        this.subscriptionController.cacheLastSelectedPaymentMethod.bind(
+          this.subscriptionController,
+        ),
       getSubscriptionCryptoApprovalAmount:
         this.subscriptionController.getCryptoApproveTransactionParams.bind(
           this.subscriptionController,
@@ -8371,10 +8375,6 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    const { smartTransactions } = this.smartTransactionsController.state;
-    const smartTransaction = smartTransactions.find(
-      (stx) => stx.txHash === transactionMeta.txHash,
-    );
     const params = {
       products: [PRODUCT_TYPES.SHIELD],
       isTrialRequested: !isTrialed,
@@ -8385,7 +8385,6 @@ export default class MetamaskController extends EventEmitter {
       tokenSymbol: selectedTokenPrice.symbol,
       rawTransaction: rawTx,
       isSponsored: transactionMeta.isGasFeeSponsored,
-      smartTransactionId: smartTransaction?.uuid,
     };
     await this.subscriptionController.startSubscriptionWithCrypto(params);
     await this.subscriptionController.getSubscriptions();

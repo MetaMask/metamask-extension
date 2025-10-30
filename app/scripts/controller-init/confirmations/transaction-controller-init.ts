@@ -1,8 +1,4 @@
-import {
-  PAYMENT_TYPES,
-  PRODUCT_TYPES,
-  RECURRING_INTERVALS,
-} from '@metamask/subscription-controller';
+import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import {
   type PublishBatchHookRequest,
   type PublishBatchHookTransaction,
@@ -500,22 +496,7 @@ export async function submitShieldSubscriptionSponsorshipIntent(
     return;
   }
 
-  const { lastUsedSubscriptionPaymentDetails } = initMessenger.call(
-    'AppStateController:getState',
-  );
-
-  if (!lastUsedSubscriptionPaymentDetails) {
-    return;
-  }
-
-  const { paymentMethod, plan } = lastUsedSubscriptionPaymentDetails;
-  if (paymentMethod !== PAYMENT_TYPES.byCrypto) {
-    return;
-  }
-
   const address = txMeta.txParams.from as `0x${string}`;
-  const recurringInterval = plan;
-  const billingCycles = recurringInterval === RECURRING_INTERVALS.year ? 1 : 12;
 
   try {
     await initMessenger.call(
@@ -524,8 +505,6 @@ export async function submitShieldSubscriptionSponsorshipIntent(
         chainId: txMeta.chainId,
         address,
         products: [PRODUCT_TYPES.SHIELD],
-        recurringInterval,
-        billingCycles,
       },
     );
   } catch (error) {

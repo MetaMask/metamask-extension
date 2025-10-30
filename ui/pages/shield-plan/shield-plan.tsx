@@ -74,11 +74,9 @@ import {
 } from '../../hooks/subscription/useSubscription';
 import { useAsyncCallback } from '../../hooks/useAsync';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import {
-  getLastUsedSubscriptionPaymentDetails,
-  selectNetworkConfigurationByChainId,
-} from '../../selectors';
+import { selectNetworkConfigurationByChainId } from '../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
+import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { Plan } from './types';
 import { getProductPrice } from './utils';
@@ -88,7 +86,7 @@ const ShieldPlan = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const lastUsedPaymentDetails = useSelector(
-    getLastUsedSubscriptionPaymentDetails,
+    getLastUsedShieldSubscriptionPaymentDetails,
   );
   const evmInternalAccount = useSelector((state) =>
     // Account address will be the same for all EVM accounts
@@ -149,8 +147,8 @@ const ShieldPlan = () => {
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentType>(() => {
-      if (lastUsedPaymentDetails?.paymentMethod) {
-        return lastUsedPaymentDetails.paymentMethod;
+      if (lastUsedPaymentDetails?.type) {
+        return lastUsedPaymentDetails.type;
       }
       return hasAvailableToken ? PAYMENT_TYPES.byCrypto : PAYMENT_TYPES.byCard;
     });
@@ -175,7 +173,7 @@ const ShieldPlan = () => {
     }
 
     const lastUsedPaymentToken = lastUsedPaymentDetails?.paymentTokenAddress;
-    const lastUsedPaymentMethod = lastUsedPaymentDetails?.paymentMethod;
+    const lastUsedPaymentMethod = lastUsedPaymentDetails?.type;
 
     let lastUsedSelectedToken = availableTokenBalances[0];
     if (
@@ -210,9 +208,10 @@ const ShieldPlan = () => {
     useAsyncCallback(async () => {
       // save the last used subscription payment method and plan to Redux store
       await dispatch(
-        setLastUsedSubscriptionPaymentDetails({
-          paymentMethod: selectedPaymentMethod,
+        setLastUsedSubscriptionPaymentDetails(PRODUCT_TYPES.SHIELD, {
+          type: selectedPaymentMethod,
           paymentTokenAddress: selectedToken?.address as Hex,
+          paymentTokenSymbol: selectedToken?.symbol,
           plan: selectedPlan,
         }),
       );

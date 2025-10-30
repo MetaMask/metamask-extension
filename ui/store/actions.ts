@@ -74,6 +74,7 @@ import {
   Subscription,
   UpdatePaymentMethodOpts,
   SubmitUserEventRequest,
+  CachedLastSelectedPaymentMethod,
 } from '@metamask/subscription-controller';
 
 import { captureException } from '../../shared/lib/sentry';
@@ -586,33 +587,21 @@ export function setShowShieldEntryModalOnceAction(payload: {
   };
 }
 
-export function setLastUsedSubscriptionPaymentDetails(payload: {
-  paymentMethod: PaymentType;
-  plan: RecurringInterval;
-  paymentTokenAddress?: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function setLastUsedSubscriptionPaymentDetails(
+  product: ProductType,
+  payload: CachedLastSelectedPaymentMethod,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('setLastUsedSubscriptionPaymentDetails', [
+      await submitRequestToBackground('cacheLastSelectedPaymentMethod', [
+        product,
         payload,
       ]);
-      dispatch(setLastUsedSubscriptionPaymentDetailsAction(payload));
     } catch (error) {
       log.error('[setLastUsedSubscriptionPaymentDetails] error', error);
       dispatch(displayWarning(error));
       throw error;
     }
-  };
-}
-
-export function setLastUsedSubscriptionPaymentDetailsAction(payload: {
-  paymentMethod: PaymentType;
-  plan: RecurringInterval;
-  paymentTokenAddress?: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return {
-    type: actionConstants.SET_LAST_USED_SUBSCRIPTION_PAYMENT_DETAILS,
-    payload,
   };
 }
 
