@@ -2,10 +2,8 @@ import { defineReactCompilerLoaderOption } from 'react-compiler-webpack';
 
 export const reactCompilerOptions = {
   target: '17',
-  // environment: EnvironmentConfig,
   logger: null,
   gating: null,
-  // panicThreshold: PanicThresholdOptions,
   noEmit: true,
   compilationMode: 'all',
   eslintSuppressionRules: null,
