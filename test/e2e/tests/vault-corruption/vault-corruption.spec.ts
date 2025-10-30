@@ -168,6 +168,7 @@ describe('Vault Corruption', function () {
 
     // use the home page to destroy the vault
     await driver.executeAsyncScript(script);
+    await driver.delay(2000);
 
     // the previous tab we were using is now closed, so we need to tell Selenium
     // to switch back to the other page (required for Chrome)
@@ -176,8 +177,12 @@ describe('Vault Corruption', function () {
     // get a new tab ready to use (required for Firefox)
     await driver.openNewPage('about:blank');
 
+    await driver.delay(2000);
+
     // wait for the background page to reload
     await waitForVaultRestorePage(driver);
+
+    await driver.delay(2000);
 
     return firstAddress;
   }
@@ -197,13 +202,18 @@ describe('Vault Corruption', function () {
     confirm: boolean;
   }) {
     // click the Recovery/Reset button
+    await driver.delay(2000);
+
     await driver.clickElement('#critical-error-button');
 
     // Confirm we want to recover/reset.
     const prompt = await driver.driver.switchTo().alert();
     if (confirm) {
+      await driver.delay(2000);
+
       await prompt.accept();
     } else {
+      await driver.delay(2000);
       await prompt.dismiss();
     }
 
