@@ -574,8 +574,17 @@ export default function Routes() {
       location.pathname.startsWith(CONFIRM_ADD_SUGGESTED_NFT_ROUTE) ||
       location.pathname.startsWith(SNAPS_ROUTE);
 
+    // Network operations (addEthereumChain, switchEthereumChain) have their own UI
+    // and shouldn't trigger auto-navigation
+    const hasNonNavigableApprovals = pendingApprovals.some(
+      (approval) =>
+        approval.type === 'wallet_addEthereumChain' ||
+        approval.type === 'wallet_switchEthereumChain',
+    );
+
     if (
       !isOnConfirmationRoute &&
+      !hasNonNavigableApprovals &&
       isUnlocked &&
       (pendingApprovals.length > 0 || approvalFlows?.length > 0)
     ) {
