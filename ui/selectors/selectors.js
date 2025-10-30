@@ -3436,7 +3436,7 @@ export const getUpdatedAndSortedAccountsWithCaipAccountId =
     });
   });
 
-export const useSafeChainsListValidationSelector = (state) => {
+export const getUseSafeChainsListValidation = (state) => {
   return state.metamask.useSafeChainsListValidation;
 };
 
