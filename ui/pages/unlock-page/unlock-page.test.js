@@ -158,6 +158,41 @@ describe('Unlock Page', () => {
     expect(history.location.pathname).toBe(intendedPath);
   });
 
+  it('should redirect to onboarding welcome page when seedless onboarding user is not authenticated and onboarding is not completed yet', async () => {
+    const mockStateWithoutUnlock = {
+      metamask: { isUnlocked: false, completedOnboarding: false },
+    };
+    const store = configureMockStore([thunk])(mockStateWithoutUnlock);
+    const history = createMemoryHistory({
+      initialEntries: [{ pathname: '/unlock' }],
+    });
+
+    jest.spyOn(history, 'replace');
+
+    const mockCheckIsSeedlessOnboardingUserAuthenticated = jest
+      .fn()
+      .mockResolvedValue(false);
+
+    renderWithProvider(
+      <Router history={history}>
+        <UnlockPage
+          checkIsSeedlessOnboardingUserAuthenticated={
+            mockCheckIsSeedlessOnboardingUserAuthenticated
+          }
+        />
+      </Router>,
+      store,
+    );
+
+    await waitFor(() => {
+      expect(
+        mockCheckIsSeedlessOnboardingUserAuthenticated,
+      ).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledTimes(1);
+      expect(history.replace).toHaveBeenCalledWith(ONBOARDING_WELCOME_ROUTE);
+    });
+  });
+
   it('changes password, submits, and redirects to the specified route', async () => {
     const intendedPath = '/intended-route';
     const intendedSearch = '?abc=123';
