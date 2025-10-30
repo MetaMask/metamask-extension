@@ -466,6 +466,16 @@ export function getMultichainBalances(
   return state.metamask.balances;
 }
 
+export function getMultichainAssetsControllerState(
+  state: MultichainState,
+): MultichainAssetsControllerState {
+  return {
+    accountsAssets: state.metamask.accountsAssets,
+    assetsMetadata: state.metamask.assetsMetadata,
+    allIgnoredAssets: state.metamask.allIgnoredAssets,
+  };
+}
+
 export function getMultichainTransactions(
   state: MultichainState,
 ): TransactionsState['metamask']['nonEvmTransactions'] {
