@@ -51,7 +51,7 @@ async function tokensMock(mockServer: Mockttp) {
         return {
           statusCode: 200,
           json: {
-            ETH: {
+            ELY: {
               USD: 1700,
             },
           },
