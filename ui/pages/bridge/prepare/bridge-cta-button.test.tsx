@@ -319,20 +319,12 @@ describe('BridgeCTAButton', () => {
     expect(getByRole('button')).toBeDisabled();
     expect(getByRole('button')).toMatchInlineSnapshot(`
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--loading mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-transparent mm-box--background-color-icon-default mm-box--rounded-xl"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
         data-testid="bridge-cta-button"
         disabled=""
         style="box-shadow: none;"
       >
-        <span
-          class="mm-box mm-text mm-text--inherit mm-box--color-transparent"
-        >
-          Swap
-        </span>
-        <span
-          class="mm-box mm-button-base__icon-loading mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-inverse"
-          style="mask-image: url('./images/icons/loading.svg');"
-        />
+        Swap
       </button>
     `);
   });
