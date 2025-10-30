@@ -36,6 +36,7 @@ import {
   Text,
 } from '../../component-library';
 
+import { getStatusKey } from '../../../helpers/utils/transactions.util';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -192,13 +193,12 @@ function TransactionListItemInner({
     primaryCurrency,
     recipientAddress,
     secondaryCurrency,
-    displayedStatusKey: displayedStatusKeyFromSrcTransaction,
     isPending,
   } = useTransactionDisplayData(transactionGroup);
   const displayedStatusKey =
     isBridgeTx && isBridgeFailed
       ? TransactionStatus.failed
-      : displayedStatusKeyFromSrcTransaction;
+      : getStatusKey(transactionGroup.primaryTransaction);
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
     'MMM d, y',

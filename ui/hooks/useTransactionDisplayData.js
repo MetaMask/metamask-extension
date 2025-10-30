@@ -73,11 +73,8 @@ const signatureTypes = [
  * @typedef {object} TransactionDisplayData
  * @property {string} primaryCurrency - the currency string to display in the primary position
  * @property {string} recipientAddress - the Ethereum address of the recipient
- * @property {string} senderAddress - the Ethereum address of the sender
- * @property {string} status - the status of the transaction
  * @property {string} title - the primary title of the tx that will be displayed in the activity list
  * @property {string} [secondaryCurrency] - the currency string to display in the secondary position
- * @property {string} displayedStatusKey - the key representing the displayed status of the transaction
  * @property {boolean} isPending - indicates if the transaction is pending
  */
 
@@ -443,7 +440,6 @@ export function useTransactionDisplayData(transactionGroup) {
       (isUnifiedSwapTx && !secondaryCurrency)
         ? undefined
         : secondaryCurrency,
-    displayedStatusKey,
     isPending,
   };
 }
