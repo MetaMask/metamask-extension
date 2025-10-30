@@ -34,11 +34,6 @@ export const RewardsPointsBalance = () => {
     return <Skeleton width="100px" />;
   }
 
-  // Don't render if there's no points balance to show
-  if (seasonStatus?.balance?.total === null) {
-    return null;
-  }
-
   // Format the points balance with proper locale-aware number formatting
   const formattedPoints = new Intl.NumberFormat(locale).format(
     seasonStatus?.balance?.total ?? 0,
