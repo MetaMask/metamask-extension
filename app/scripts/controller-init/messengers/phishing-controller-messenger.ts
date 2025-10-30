@@ -1,5 +1,6 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { AllowedEvents } from '@metamask/phishing-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 export type PhishingControllerMessenger = ReturnType<
   typeof getPhishingControllerMessenger
@@ -13,11 +14,20 @@ export type PhishingControllerMessenger = ReturnType<
  * messenger.
  */
 export function getPhishingControllerMessenger(
-  messenger: Messenger<never, AllowedEvents>,
+  messenger: RootMessenger<never, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'PhishingController',
-    allowedActions: [],
-    allowedEvents: ['TransactionController:stateChange'],
+  const controllerMessenger = new Messenger<
+    'PhishingController',
+    never,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'PhishingController',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    events: ['TransactionController:stateChange'],
+  });
+  return controllerMessenger;
 }
