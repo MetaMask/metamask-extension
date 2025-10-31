@@ -6,6 +6,7 @@ import type TerserPluginType from 'terser-webpack-plugin';
 export type Manifest = chrome.runtime.Manifest;
 export type ManifestV2 = chrome.runtime.ManifestV2;
 export type ManifestV3 = chrome.runtime.ManifestV3;
+export type EntryDescription = Exclude<EntryObject[string], string | string[]>;
 
 // HMR (Hot Module Reloading) can't be used until all circular dependencies in
 // the codebase are removed
@@ -60,6 +61,13 @@ export const TREZOR_MODULE_RE = new RegExp(
 export const noop = () => undefined;
 
 /**
+ * @param filename
+ * @returns filename with .js extension (.ts | .tsx | .mjs -> .js)
+ */
+export const extensionToJs = (filename: string) =>
+  filename.replace(/\.(ts|tsx|mjs)$/u, '.js');
+
+/**
  * Collects all entry files for use with webpack.
  *
  * TODO: move this logic into the ManifestPlugin
@@ -83,40 +91,67 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     'bootstrap',
   ]);
 
-  function addManifestScript(filename?: string) {
-    if (filename) {
-      selfContainedScripts.add(filename);
-      entry[filename] = {
-        chunkLoading: false,
-        filename, // output filename
-        import: join(appRoot, filename), // the path to the file to use as an entry
-      };
-    }
+  function addManifestScript(filename: string) {
+    selfContainedScripts.add(filename);
+    entry[filename] = {
+      chunkLoading: false,
+      filename: extensionToJs(filename), // output filename with .js extension
+      import: join(appRoot, filename), // the path to the file to use as an entry
+    };
   }
 
-  function addHtml(filename?: string) {
-    if (filename) {
-      assertValidEntryFileName(filename, appRoot);
-      entry[parse(filename).name] = join(appRoot, filename);
+  function addHtml(filename: string) {
+    assertValidEntryFileName(filename, appRoot);
+    const parsedFileName = parse(filename).name;
+    // MV3 background script chunks need to be imported using importScripts
+    // because it is executed in a service worker
+    if (manifest.manifest_version === 3 && parsedFileName === 'background') {
+      entry[parsedFileName] = {
+        chunkLoading: 'import-scripts',
+        filename: 'scripts/background.js',
+        import: join(appRoot, 'scripts/background.js'),
+      };
+    } else {
+      entry[parsedFileName] = join(appRoot, filename);
     }
   }
 
   // add content_scripts to entries
-  manifest.content_scripts?.forEach((s) => s.js?.forEach(addManifestScript));
+  for (const contentScript of manifest.content_scripts ?? []) {
+    for (const script of contentScript.js ?? []) {
+      addManifestScript(script);
+    }
+  }
 
-  if (manifest.manifest_version === 3) {
-    addManifestScript(manifest.background?.service_worker);
-    manifest.web_accessible_resources?.forEach(({ resources }) =>
-      resources.forEach((filename) => {
-        filename.endsWith('.js') && addManifestScript(filename);
-      }),
-    );
-  } else {
-    manifest.web_accessible_resources?.forEach((filename) => {
-      filename.endsWith('.js') && addManifestScript(filename);
-    });
-    manifest.background?.scripts?.forEach(addManifestScript);
-    addHtml(manifest.background?.page);
+  if (manifest.manifest_version === 2) {
+    if (!manifest.background?.page) {
+      throw new Error(
+        'Manifest V2 requires a background.page entry in the manifest',
+      );
+    }
+    addHtml(manifest.background.page);
+    for (const resource of manifest.web_accessible_resources ?? []) {
+      if (resource.endsWith('.js')) {
+        addManifestScript(resource);
+      }
+    }
+    for (const script of manifest.background?.scripts ?? []) {
+      addManifestScript(script);
+    }
+  } else if (manifest.manifest_version === 3) {
+    if (!manifest.background?.service_worker) {
+      throw new Error(
+        'Manifest V3 requires a background.service_worker entry in the manifest',
+      );
+    }
+    addManifestScript(manifest.background.service_worker);
+    for (const resource of manifest.web_accessible_resources ?? []) {
+      for (const filename of resource.resources) {
+        if (filename.endsWith('.js')) {
+          addManifestScript(filename);
+        }
+      }
+    }
   }
 
   for (const filename of readdirSync(appRoot)) {

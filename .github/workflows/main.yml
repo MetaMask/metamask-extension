@@ -187,6 +187,14 @@ jobs:
       validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
     secrets: inherit
 
+  build-test-mv2-webpack:
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-test-mv2-webpack
+      build-command: yarn build:test:webpack:mv2
+      validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
+    secrets: inherit
+
   run-benchmarks:
     # If not a fork, run benchmarks
     if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
@@ -194,7 +202,9 @@ jobs:
     needs:
       - prep-deps
       - build-test-browserify
+      - build-test-mv2-browserify
       - build-test-webpack
+      - build-test-mv2-webpack
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
@@ -273,7 +283,7 @@ jobs:
     needs:
       - needs-e2e
       - build-test-mv2-browserify
-      - build-test-webpack
+      - build-test-mv2-webpack
       - build-test-flask-mv2-browserify
     if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
@@ -461,6 +471,7 @@ jobs:
       - build-test-flask-browserify
       - build-test-flask-mv2-browserify
       - build-test-webpack
+      - build-test-mv2-webpack
       - run-tests
       - build-storybook
       - build-ts-migration-dashboard
