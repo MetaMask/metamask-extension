@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -32,7 +32,7 @@ import { setShowPasswordChangeToast } from '../toast-master/utils';
 export default function PasswordOutdatedModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <Modal
@@ -73,7 +73,7 @@ export default function PasswordOutdatedModal() {
                 // remove the password change toast from the app state
                 await dispatch(setShowPasswordChangeToast(null));
                 await dispatch(lockMetamask());
-                history.push(DEFAULT_ROUTE);
+                navigate(DEFAULT_ROUTE);
               }}
             >
               {t('continue')}

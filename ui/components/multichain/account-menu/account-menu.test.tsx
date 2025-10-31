@@ -6,7 +6,6 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { fireEvent, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import messages from '../../../../app/_locales/en/messages.json';
@@ -15,12 +14,10 @@ import {
   CONNECT_HARDWARE_ROUTE,
   IMPORT_SRP_ROUTE,
 } from '../../../helpers/constants/routes';
-///: END:ONLY_INCLUDE_IF
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { AccountMenu } from '.';
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockOnClose = jest.fn();
 const mockGetEnvironmentType = jest.fn();
 const mockNextAccountName = jest.fn().mockReturnValue('Test Account 2');
@@ -32,7 +29,6 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => () => mockGetEnvironmentType(),
 }));
-///: END:ONLY_INCLUDE_IF
 
 jest.mock('../../../store/actions', () => {
   return {
@@ -220,7 +216,6 @@ describe('AccountMenu', () => {
     expect(historyPushMock).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   describe('addSnapAccountButton', () => {
     const renderWithState = (
       state: { addSnapAccountEnabled: boolean },
@@ -341,7 +336,6 @@ describe('AccountMenu', () => {
       expect(global.platform.openTab).toHaveBeenCalledTimes(1);
     });
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('BTC account creation', () => {
     afterEach(() => {

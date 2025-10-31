@@ -1,4 +1,5 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getEncryptionPublicKeyControllerInitMessenger,
   getEncryptionPublicKeyControllerMessenger,
@@ -6,24 +7,22 @@ import {
 
 describe('getEncryptionPublicKeyControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const encryptionPublicKeyControllerMessenger =
       getEncryptionPublicKeyControllerMessenger(messenger);
 
-    expect(encryptionPublicKeyControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(encryptionPublicKeyControllerMessenger).toBeInstanceOf(Messenger);
   });
 });
 
 describe('getEncryptionPublicKeyControllerInitMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const encryptionPublicKeyControllerInitMessenger =
       getEncryptionPublicKeyControllerInitMessenger(messenger);
 
     expect(encryptionPublicKeyControllerInitMessenger).toBeInstanceOf(
-      RestrictedMessenger,
+      Messenger,
     );
   });
 });

@@ -605,7 +605,7 @@ export const MultichainAccountsConnectPage: React.FC<
       >
         <Tabs onTabClick={() => null} defaultActiveTabKey="accounts">
           <Tab
-            className="multichain-connect-page__tab"
+            className="multichain-connect-page__tab flex-1"
             name={t('accounts')}
             tabKey="accounts"
             data-testid="accounts-tab"
@@ -669,7 +669,7 @@ export const MultichainAccountsConnectPage: React.FC<
           </Tab>
           <Tab
             name={t('permissions')}
-            className="multichain-connect-page__tab"
+            className="multichain-connect-page__tab flex-1"
             tabKey="permissions"
             data-testid="permissions-tab"
             disabled={selectedAccountGroupIds.length === 0}

@@ -1,6 +1,6 @@
-import { Messenger } from '@metamask/base-controller';
 import { MetaMetricsDataDeletionController } from '../controllers/metametrics-data-deletion/metametrics-data-deletion';
 import { DataDeletionService } from '../services/data-deletion-service';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -14,7 +14,7 @@ jest.mock('../controllers/metametrics-data-deletion/metametrics-data-deletion');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<MetaMetricsDataDeletionControllerMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

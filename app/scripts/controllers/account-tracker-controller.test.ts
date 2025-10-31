@@ -1,14 +1,20 @@
 import EventEmitter from 'events';
-import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { BlockTracker, Provider } from '@metamask/network-controller';
 
 import { flushPromises } from '../../../test/lib/timer-helpers';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import type {
+  AccountTrackerControllerMessenger,
   AccountTrackerControllerOptions,
-  AllowedActions,
-  AllowedEvents,
 } from './account-tracker-controller';
 import AccountTrackerController, {
   getDefaultAccountTrackerControllerState,
@@ -82,6 +88,12 @@ function buildMockBlockTracker({ shouldStubListeners = true } = {}) {
   return blockTrackerStub;
 }
 
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  MessengerActions<AccountTrackerControllerMessenger>,
+  MessengerEvents<AccountTrackerControllerMessenger>
+>;
+
 type WithControllerOptions = {
   completedOnboarding?: boolean;
   useMultiAccountBalanceChecker?: boolean;
@@ -137,7 +149,9 @@ async function withController<ReturnValue>(
   });
   const blockTrackerStub = buildMockBlockTracker();
 
-  const messenger = new Messenger<AllowedActions, AllowedEvents>();
+  const messenger: RootMessenger = new Messenger({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
   const getSelectedAccountStub = () =>
     ({
       id: 'accountId',
@@ -206,27 +220,34 @@ async function withController<ReturnValue>(
     getPreferencesControllerState,
   );
 
+  const accountTrackerMessenger: AccountTrackerControllerMessenger =
+    new Messenger({
+      namespace: 'AccountTrackerController',
+      parent: messenger,
+    });
+  messenger.delegate({
+    messenger: accountTrackerMessenger,
+    actions: [
+      'AccountsController:getSelectedAccount',
+      'NetworkController:getState',
+      'NetworkController:getNetworkClientById',
+      'OnboardingController:getState',
+      'PreferencesController:getState',
+    ],
+    events: [
+      'AccountsController:selectedEvmAccountChange',
+      'OnboardingController:stateChange',
+      'KeyringController:accountRemoved',
+    ],
+  });
+
   const controller = new AccountTrackerController({
     state: getDefaultAccountTrackerControllerState(),
     provider: provider as Provider,
     blockTracker: blockTrackerStub as unknown as BlockTracker,
     getNetworkIdentifier: jest.fn(),
     accountsApiChainIds,
-    messenger: messenger.getRestricted({
-      name: 'AccountTrackerController',
-      allowedActions: [
-        'AccountsController:getSelectedAccount',
-        'NetworkController:getState',
-        'NetworkController:getNetworkClientById',
-        'OnboardingController:getState',
-        'PreferencesController:getState',
-      ],
-      allowedEvents: [
-        'AccountsController:selectedEvmAccountChange',
-        'OnboardingController:stateChange',
-        'KeyringController:accountRemoved',
-      ],
-    }),
+    messenger: accountTrackerMessenger,
     ...accountTrackerOptions,
   });
 
@@ -1545,7 +1566,7 @@ describe('AccountTrackerController', () => {
           deriveStateFromMetadata(
             controller.state,
             controller.metadata,
-            'anonymous',
+            'includeInDebugSnapshot',
           ),
         ).toMatchInlineSnapshot(`
           {

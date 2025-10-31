@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom-v5-compat';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Display,

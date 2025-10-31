@@ -20,7 +20,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
     it(`decodes 4 bytes transaction data`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -58,7 +58,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
   it(`decodes Sourcify transaction data`, async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -91,7 +91,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
   it(`falls back to raw hexadecimal when no data is retreived`, async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -125,7 +125,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
   it(`decodes uniswap transaction data`, async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({

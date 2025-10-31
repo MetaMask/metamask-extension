@@ -1,9 +1,6 @@
-import { Messenger } from '@metamask/base-controller';
-import {
-  AllowedActions,
-  AllowedEvents,
-} from '../../controllers/account-tracker-controller';
+import { Messenger } from '@metamask/messenger';
 import { AppStateControllerRequestQrCodeScanAction } from '../../controllers/app-state-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 export type KeyringControllerMessenger = ReturnType<
   typeof getKeyringControllerMessenger
@@ -17,14 +14,11 @@ export type KeyringControllerMessenger = ReturnType<
  * messenger.
  */
 export function getKeyringControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<never, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'KeyringController',
-
-    // This controller does not call any actions or subscribe to any events.
-    allowedActions: [],
-    allowedEvents: [],
+  return new Messenger<'KeyringController', never, never, typeof messenger>({
+    namespace: 'KeyringController',
+    parent: messenger,
   });
 }
 
@@ -42,11 +36,21 @@ export type KeyringControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getKeyringControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'KeyringControllerInit',
-    allowedActions: ['AppStateController:requestQrCodeScan'],
-    allowedEvents: [],
+  const controllerInitMessenger = new Messenger<
+    'KeyringControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'KeyringControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['AppStateController:requestQrCodeScan'],
+    events: [],
+  });
+  return controllerInitMessenger;
 }

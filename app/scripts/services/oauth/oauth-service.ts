@@ -1,5 +1,4 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-import { RestrictedMessenger } from '@metamask/base-controller';
 import log from 'loglevel';
 import { OAuthErrorMessages } from '../../../../shared/modules/error';
 import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
@@ -11,8 +10,7 @@ import {
   OAuthLoginEnv,
   OAuthLoginResult,
   OAuthRefreshTokenResult,
-  OAuthServiceAction,
-  OAuthServiceEvent,
+  OAuthServiceMessenger,
   OAuthServiceOptions,
   SERVICE_NAME,
   ServiceName,
@@ -29,13 +27,7 @@ export default class OAuthService {
 
   state = null;
 
-  #messenger: RestrictedMessenger<
-    typeof SERVICE_NAME,
-    OAuthServiceAction,
-    OAuthServiceEvent,
-    OAuthServiceAction['type'],
-    OAuthServiceEvent['type']
-  >;
+  #messenger: OAuthServiceMessenger;
 
   #env: OAuthConfig & OAuthLoginEnv;
 

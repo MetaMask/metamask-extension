@@ -2,8 +2,9 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
+  StateMetadata,
 } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 
 // Unique name for the controller
 const controllerName = 'AppMetadataController';
@@ -75,12 +76,10 @@ type AllowedEvents = never;
 /**
  * Messenger type for the {@link AppMetadataController}.
  */
-type AppMetadataControllerMessenger = RestrictedMessenger<
+type AppMetadataControllerMessenger = Messenger<
   typeof controllerName,
   AppMetadataControllerActions | AllowedActions,
-  AppMetadataControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  AppMetadataControllerEvents | AllowedEvents
 >;
 
 /**
@@ -90,29 +89,29 @@ type AppMetadataControllerMessenger = RestrictedMessenger<
  * using the `persist` flag; and if they can be sent to Sentry or not, using
  * the `anonymous` flag.
  */
-const controllerMetadata = {
+const controllerMetadata: StateMetadata<AppMetadataControllerState> = {
   currentAppVersion: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: false,
   },
   previousAppVersion: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: false,
   },
   previousMigrationVersion: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: false,
   },
   currentMigrationVersion: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: false,
   },
 };

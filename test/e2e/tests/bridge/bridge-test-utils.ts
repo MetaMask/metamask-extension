@@ -1,3 +1,5 @@
+import { ReadableStream as ReadableStreamWeb } from 'stream/web';
+import { Readable } from 'stream';
 import { Mockttp } from 'mockttp';
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 
@@ -33,7 +35,9 @@ import {
   TOP_ASSETS_API_ARBITRUM_MOCK_RESULT,
   MOCK_BRIDGE_ETH_TO_WETH_LINEA,
   MOCK_SWAP_API_AGGREGATOR_LINEA,
+  SSE_RESPONSE_HEADER,
 } from './constants';
+import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 
 export class BridgePage {
   driver: Driver;
@@ -82,12 +86,35 @@ export class BridgePage {
   };
 }
 
-export async function bridgeTransaction(
-  driver: Driver,
-  quote: BridgeQuote,
-  transactionsCount: number,
-  expectedWalletBalance?: string,
-) {
+/**
+ * Execute a bridge transaction and checks the activity list
+ *
+ * @param testParams - The test parameters
+ * @param testParams.driver - The driver instance
+ * @param testParams.quote - The quote input parameters
+ * @param testParams.expectedTransactionsCount - The number of transactions to expect in the activity list
+ * @param testParams.expectedWalletBalance - The expected wallet balance after the transaction
+ * @param testParams.expectedSwapTokens - The expected swap tokens shown in the activity list
+ * @param testParams.expectedDestAmount - The expected quoted destination amounts in the quote page
+ * @param testParams.submitDelay - The delay to wait before submitting the transaction, must be less than the refresh interval of the stream
+ */
+export const bridgeTransaction = async ({
+  driver,
+  quote,
+  expectedTransactionsCount = 1,
+  expectedWalletBalance,
+  expectedSwapTokens,
+  expectedDestAmount,
+  submitDelay,
+}: {
+  driver: Driver;
+  quote: BridgeQuote;
+  expectedTransactionsCount: number;
+  expectedWalletBalance?: string;
+  expectedSwapTokens?: Pick<BridgeQuote, 'tokenFrom' | 'tokenTo'>;
+  expectedDestAmount: string;
+  submitDelay?: number;
+}) => {
   // Navigate to Bridge page
   const homePage = new HomePage(driver);
   await homePage.startSwapFlow();
@@ -96,32 +123,47 @@ export async function bridgeTransaction(
   await bridgePage.enterBridgeQuote(quote);
   await bridgePage.waitForQuote();
   await bridgePage.checkExpectedNetworkFeeIsDisplayed();
+  submitDelay && (await driver.delay(submitDelay));
+  if (expectedDestAmount) {
+    await bridgePage.checkDestAmount(expectedDestAmount);
+  }
   await bridgePage.submitQuote();
 
   await homePage.goToActivityList();
 
   const activityList = new ActivityListPage(driver);
-  await activityList.checkCompletedBridgeTransactionActivity(transactionsCount);
+  await activityList.checkCompletedBridgeTransactionActivity(
+    expectedTransactionsCount,
+  );
+
+  const isBridge =
+    quote.fromChain && quote.toChain
+      ? quote.fromChain !== quote.toChain
+      : false;
 
   if (quote.unapproved) {
     await activityList.checkTxAction({
-      action: `Bridged to ${quote.toChain}`,
-      completedTxs: transactionsCount,
+      action: isBridge
+        ? `Bridged to ${quote.toChain}`
+        : `Swapped ${quote.tokenFrom} to ${quote.tokenTo}`,
+      completedTxs: expectedTransactionsCount,
     });
     await activityList.checkTxAction({
-      action: `Approve ${quote.tokenFrom} for bridge`,
-      completedTxs: transactionsCount,
+      action: `Approve ${quote.tokenFrom} for ${isBridge ? 'bridge' : 'swap'}`,
+      completedTxs: expectedTransactionsCount,
       txIndex: 2,
     });
   } else {
     await activityList.checkTxAction({
-      action: `Bridged to ${quote.toChain}`,
-      completedTxs: transactionsCount,
+      action: isBridge
+        ? `Bridged to ${quote.toChain}`
+        : `Swap ${quote.tokenFrom ?? expectedSwapTokens?.tokenFrom} to ${quote.tokenTo ?? expectedSwapTokens?.tokenTo}`,
+      completedTxs: expectedTransactionsCount,
     });
   }
   // Check the amount of ETH deducted in the activity is correct
   await activityList.checkTxAmountInActivity(
-    `-${quote.amount} ${quote.tokenFrom}`,
+    `-${quote.amount} ${quote.tokenFrom ?? expectedSwapTokens?.tokenFrom}`,
   );
 
   // Check the wallet ETH balance is correct
@@ -131,7 +173,7 @@ export async function bridgeTransaction(
       expectedWalletBalance,
     );
   }
-}
+};
 
 async function mockPortfolioPage(mockServer: Mockttp) {
   return await mockServer
@@ -293,7 +335,80 @@ async function mockDAItoETH(mockServer: Mockttp) {
     });
 }
 
-async function mockUSDCtoDAI(mockServer: Mockttp) {
+const getEventId = (index: number) => `${Date.now().toString()}-${index}`;
+const emitLine = (controller: ReadableStreamDefaultController, line: string) =>
+  controller.enqueue(Buffer.from(line));
+
+/**
+ * Mocks the bridge-api getQuoteStream endpoint's response body
+ *
+ * @param mockQuotes - The quotes to emit
+ * @param delay - The delay to wait between emitting each quote
+ * @returns The Readable stream
+ */
+const mockSseEventSource = (mockQuotes: unknown[], delay: number = 2000) => {
+  let index = 0;
+  return Readable.fromWeb(
+    new ReadableStreamWeb({
+      async pull(controller) {
+        const quote = mockQuotes[index];
+        if (index === mockQuotes.length) {
+          controller.close();
+        }
+        emitLine(controller, `event: quote\n`);
+        emitLine(controller, `id: ${getEventId(index + 1)}\n`);
+        emitLine(controller, `data: ${JSON.stringify(quote)}\n\n`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        index += 1;
+      },
+    }),
+  );
+};
+
+async function mockFeatureFlags(
+  mockServer: Mockttp,
+  featureFlags: Partial<FeatureFlagResponse>,
+) {
+  await mockServer
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [{ bridgeConfig: featureFlags }],
+      };
+    });
+}
+
+async function mockSwapETHtoMUSD(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/getQuoteStream/u)
+    .withQuery({
+      srcTokenAddress: '0x0000000000000000000000000000000000000000',
+      destTokenAddress: '0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
+    })
+    .thenStream(
+      200,
+      mockSseEventSource(MOCK_SWAP_QUOTES_ETH_MUSD),
+      SSE_RESPONSE_HEADER,
+    );
+}
+
+async function mockUSDCtoDAI(mockServer: Mockttp, sseEnabled?: boolean) {
+  if (sseEnabled) {
+    return await mockServer
+      .forGet(/getQuoteStream/u)
+      .withQuery({
+        srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        destTokenAddress: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+      })
+      .thenStream(
+        200,
+        mockSseEventSource(MOCK_BRIDGE_USDC_TO_DAI_LINEA),
+        SSE_RESPONSE_HEADER,
+      );
+  }
+
   return await mockServer
     .forGet(/getQuote/u)
     .withQuery({
@@ -475,6 +590,12 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
               // eslint-disable-next-line @typescript-eslint/naming-convention
               usd_24h_change: 0.1,
             },
+            '0xaca92e438df0b2401ff60da7e4337b687a2435da': {
+              usd: 0.9999,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              usd_24h_change: 0.1,
+            },
           },
         },
       };
@@ -499,6 +620,12 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             usd_24h_change: 2.5,
+          },
+          'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': {
+            usd: 0.9999,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            usd_24h_change: 0.1,
           },
         },
       };
@@ -723,7 +850,13 @@ export const getBridgeFixtures = (
         await mockETHtoETH(mockServer),
         await mockETHtoUSDC(mockServer),
         await mockDAItoETH(mockServer),
-        await mockUSDCtoDAI(mockServer),
+        await mockSwapETHtoMUSD(mockServer),
+        await mockSwapETHtoMUSD(mockServer),
+        await mockSwapETHtoMUSD(mockServer),
+        await mockSwapETHtoMUSD(mockServer),
+        await mockSwapETHtoMUSD(mockServer),
+        await mockUSDCtoDAI(mockServer, featureFlags.sse?.enabled),
+        await mockFeatureFlags(mockServer, featureFlags),
         await mockAccountsTransactions(mockServer),
         await mockAccountsBalances(mockServer),
         await mockPriceSpotPrices(mockServer),

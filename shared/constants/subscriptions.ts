@@ -11,3 +11,7 @@ export const PausedSubscriptionStatuses: string[] = [
   SUBSCRIPTION_STATUSES.pastDue,
   SUBSCRIPTION_STATUSES.unpaid,
 ];
+
+export const SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS = 14;
+
+export const SUBSCRIPTION_DEFAULT_PAYMENT_TOKEN = 'mUSD';

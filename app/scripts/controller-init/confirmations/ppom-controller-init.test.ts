@@ -2,7 +2,12 @@ import {
   PPOMController,
   PPOMControllerMessenger,
 } from '@metamask/ppom-validator';
-import { ActionConstraint, Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+  ActionConstraint,
+} from '@metamask/messenger';
 import {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetSelectedNetworkClientAction,
@@ -47,12 +52,15 @@ function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<PPOMControllerMessenger, PPOMControllerInitMessenger>
 > {
   const baseControllerMessenger = new Messenger<
+    MockAnyNamespace,
     | NetworkControllerGetNetworkClientByIdAction
     | NetworkControllerGetSelectedNetworkClientAction
     | NetworkControllerGetStateAction
     | ActionConstraint,
     never
-  >();
+  >({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 
   baseControllerMessenger.registerActionHandler(
     'NetworkController:getNetworkClientById',

@@ -98,7 +98,7 @@ async function main() {
   // Multichain API excluding `wallet_invokeMethod`
   await withFixtures(
     {
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilder().build(),
       localNodeOptions: 'none',
       title: 'api-specs-multichain coverage',
@@ -163,7 +163,7 @@ async function main() {
   // requests made via wallet_invokeMethod
   await withFixtures(
     {
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToMultichainTestDapp()
         .build(),

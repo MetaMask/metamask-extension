@@ -8,6 +8,7 @@ import {
   ModalHeader,
   Text,
   IconName,
+  type ModalProps,
 } from '../../component-library';
 import {
   TextVariant,
@@ -36,7 +37,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import FundingMethodItem from './funding-method-item';
 
-type FundingMethodModalProps = {
+type FundingMethodModalProps = Omit<ModalProps, 'children'> & {
   isOpen: boolean;
   onClose: () => void;
   title: string;
@@ -48,6 +49,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
   onClose,
   title,
   onClickReceive,
+  ...props
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -113,7 +115,7 @@ export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
   }, [chainId, symbol]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} data-testid="funding-method-modal">
+    <Modal isOpen={isOpen} onClose={onClose} {...props}>
       <ModalOverlay />
       <ModalContent modalDialogProps={{ padding: 0 }}>
         <ModalHeader paddingBottom={2} onClose={onClose}>

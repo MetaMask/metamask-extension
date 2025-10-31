@@ -19,7 +19,7 @@ describe('Edit Accounts Permissions', function () {
   it('should be able to edit accounts', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },

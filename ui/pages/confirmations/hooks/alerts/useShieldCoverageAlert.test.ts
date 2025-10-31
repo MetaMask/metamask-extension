@@ -86,9 +86,9 @@ describe('useShieldCoverageAlert', () => {
     expect(alert.field).toBe(RowAlertKey.ShieldFooterCoverageIndicator);
     expect(alert.severity).toBe(Severity.Success);
     expect(alert.inlineAlertText).toBe(tEn('shieldCovered'));
-    expect(alert.isOpenModalOnClick).toBe(false);
+    expect(alert.isOpenModalOnClick).toBe(true);
     expect(alert.showArrow).toBe(false);
-    expect(alert.reason).toBe(tEn('shieldCoverageAlertMessageTitle'));
+    expect(alert.reason).toBe(tEn('shieldCoverageAlertMessageTitleCovered'));
     expect(alert.content).toBeTruthy();
   });
 

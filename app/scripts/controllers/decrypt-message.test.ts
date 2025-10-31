@@ -314,7 +314,7 @@ describe('DecryptMessageController', () => {
         deriveStateFromMetadata(
           decryptMessageController.state,
           decryptMessageController.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`{}`);
     });

@@ -2,10 +2,7 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-rpc-methods';
-import {
-  ControllerGetStateAction,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
+import { ControllerGetStateAction } from '@metamask/base-controller';
 import { CurrencyRateController } from '@metamask/assets-controllers';
 import {
   ClearSnapState,
@@ -35,6 +32,7 @@ import {
 import { PreferencesControllerGetStateAction } from '../../preferences-controller';
 import { KeyringType } from '../../../../../shared/constants/keyring';
 import { AppStateControllerGetUnlockPromiseAction } from '../../app-state-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type SnapPermissionSpecificationsActions =
   | AppStateControllerGetUnlockPromiseAction
@@ -73,13 +71,7 @@ type SnapPermissionSpecificationsHooks = {
  * controllers don't expose the required methods over the messenger yet.
  */
 export function getSnapPermissionSpecifications(
-  messenger: RestrictedMessenger<
-    never,
-    SnapPermissionSpecificationsActions,
-    never,
-    SnapPermissionSpecificationsActions['type'],
-    never
-  >,
+  messenger: RootMessenger<SnapPermissionSpecificationsActions, never>,
   hooks: SnapPermissionSpecificationsHooks,
 ) {
   return {

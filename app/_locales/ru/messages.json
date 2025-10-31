@@ -2753,32 +2753,11 @@
   "importNFTTokenIdToolTip": {
     "message": "ID NFT является уникальным идентификатором, поскольку нет двух одинаковых NFT. Опять же, в OpenSea этот номер находится в разделе «Подробности». Запишите его или скопируйте в буфер обмена."
   },
-  "importNWordSRP": {
-    "message": "У меня есть фраза для восстановления из $1 слов",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Закрытый ключ"
   },
-  "importSRPDescription": {
-    "message": "Импортируйте существующий кошелек с помощью секретной фразы для восстановления из 12 или 24 слов."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Секретные фразы для восстановления содержат 12 слов или 24 слова"
-  },
-  "importSRPWordError": {
-    "message": "Слово $1 неверное или содержит орфографические ошибки.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Слова $1 и $2 неверные или содержат орфографические ошибки.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Импортировать секретную фразу для восстановления"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Произошла неизвестная ошибка."
   },
   "importSelectedTokens": {
     "message": "Импортировать выбранные токены?"
@@ -2797,9 +2776,6 @@
   },
   "importTokensError": {
     "message": "Нам не удалось импортировать токены. Повторите попытку позже."
-  },
-  "importWallet": {
-    "message": "Импортировать кошелек"
   },
   "importWalletOrAccountHeader": {
     "message": "Импортировать кошелек или счет"

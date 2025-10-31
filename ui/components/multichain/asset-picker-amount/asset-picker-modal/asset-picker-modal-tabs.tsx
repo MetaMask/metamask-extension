@@ -36,7 +36,12 @@ export const AssetPickerModalTabs = ({
       >
         {visibleTabs.map((tabName) => {
           return (
-            <Tab key={tabName} name={t(tabName)} tabKey={tabName}>
+            <Tab
+              key={tabName}
+              name={t(tabName)}
+              tabKey={tabName}
+              className="flex-1"
+            >
               {children.find(({ key }) => key === tabName)}
             </Tab>
           );

@@ -1,5 +1,9 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { getPersistentState } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+
+function getPersistentState(state, metadata) {
+  return deriveStateFromMetadata(state, metadata, 'persist');
+}
 
 /**
  * @typedef {import('@metamask/base-controller').Messenger} Messenger

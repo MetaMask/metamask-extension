@@ -28,7 +28,7 @@ describe('Remove ERC1155 NFT', function () {
   it('user should be able to remove ERC1155 NFT on details page', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNftControllerERC1155()
           .withEnabledNetworks({

@@ -2753,32 +2753,11 @@
   "importNFTTokenIdToolTip": {
     "message": "Ang ID ng NFT ay isang natatanging pagkakakilanlan dahil walang dalawang NFT ang magkatulad. Muli, sa OpenSea ang numerong ito ay nasa ilalim ng 'Mga Detalye'. Itala ito, o kopyahin ito sa iyong clipboard."
   },
-  "importNWordSRP": {
-    "message": "Mayroon akong $1 (na) word recovery phrase",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Pribadong Key"
   },
-  "importSRPDescription": {
-    "message": "Mag-import ng dati nang wallet gamit ang iyong 12 o 24 word secret recovery phrase."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Naglalaman ang Secret Recovery Phrase ng 12 o 24 na salita"
-  },
-  "importSRPWordError": {
-    "message": "Mali ang salitang $1 o mali ang baybay nito.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Mali ang salitang $1 at $2 o mali ang baybay ng mga ito.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Mag-import ng Secret Recovery Phrase"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Nagkaroon ng hindi matukoy na error."
   },
   "importSelectedTokens": {
     "message": "I-import ang mga napiling token?"
@@ -2797,9 +2776,6 @@
   },
   "importTokensError": {
     "message": "Hindi namin ma-import ang mga token. Pakisubukan ulit mamaya."
-  },
-  "importWallet": {
-    "message": "Mag-import ng wallet"
   },
   "importWalletOrAccountHeader": {
     "message": "Mag-import ng wallet o account"

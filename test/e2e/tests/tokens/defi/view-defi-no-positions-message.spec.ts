@@ -14,7 +14,7 @@ describe('Check DeFi empty state when no defi positions', function () {
   it('user should be able to view empty', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockNoDeFiPositionFeatureFlag,

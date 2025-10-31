@@ -1,8 +1,11 @@
-import type { Mockttp, MockedEndpoint } from 'mockttp';
+import type { MockedEndpoint, Mockttp } from 'mockttp';
+import { NetworkReport } from './benchmarks/types-generated';
 
 type SetupMockReturn = {
   mockedEndpoint: MockedEndpoint[];
   getPrivacyReport: () => string[];
+  getNetworkReport: () => NetworkReport;
+  clearNetworkReport: () => void;
 };
 
 /**
@@ -20,6 +23,8 @@ export async function setupMockingPassThrough(
   _options = undefined,
   _withSolanaWebSocket = undefined,
 ): Promise<SetupMockReturn> {
+  let numNetworkReqs = 0;
+
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
       console.log('Request going to a live server ============', req.url);
@@ -29,7 +34,24 @@ export async function setupMockingPassThrough(
 
   const mockedEndpoint = await testSpecificMock(server);
 
-  return { mockedEndpoint, getPrivacyReport };
+  server.on('request-initiated', () => {
+    numNetworkReqs += 1;
+  });
+
+  function getNetworkReport(): NetworkReport {
+    return { numNetworkReqs };
+  }
+
+  function clearNetworkReport() {
+    numNetworkReqs = 0;
+  }
+
+  return {
+    mockedEndpoint,
+    getPrivacyReport,
+    getNetworkReport,
+    clearNetworkReport,
+  };
 }
 
 /**

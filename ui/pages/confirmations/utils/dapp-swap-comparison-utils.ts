@@ -52,7 +52,7 @@ export const ABI = [
 ];
 
 const COMMAND_BYTE_SWEEP = '04';
-const COMMAND_BYTE_SEAPORT = '10';
+const COMMAND_BYTE_PERMIT2PERMIT = '10';
 const COMMAND_BYTE_UNWRAP_WETH = '0c';
 
 function getArgsFromInput(input: string) {
@@ -108,28 +108,28 @@ function getCommandArgs(
   return getArgsFromInput(inputs[commandIndex]);
 }
 
-function addSeaportCommandValues(
+function addPermit2PermitCommandValues(
   commandBytes: string[],
   inputs: string[],
   quotesInput: GenericQuoteRequest,
 ) {
-  const seaportArgs = getCommandArgs(
+  const permit2PermitArgs = getCommandArgs(
     commandBytes,
     inputs,
-    COMMAND_BYTE_SEAPORT,
+    COMMAND_BYTE_PERMIT2PERMIT,
   );
-  if (seaportArgs === undefined) {
+  if (permit2PermitArgs === undefined) {
     return undefined;
   }
 
   return {
-    amountMin: argToAmount(seaportArgs[13]),
+    amountMin: argToAmount(permit2PermitArgs[13]),
     quotesInput: {
       ...quotesInput,
-      destTokenAddress: argToAddress(seaportArgs[16]),
-      srcTokenAddress: argToAddress(seaportArgs[10]),
-      srcTokenAmount: argToAmount(seaportArgs[12]),
-      walletAddress: argToAddress(seaportArgs[28]),
+      destTokenAddress: argToAddress(permit2PermitArgs[16]),
+      srcTokenAddress: argToAddress(permit2PermitArgs[10]),
+      srcTokenAmount: argToAmount(permit2PermitArgs[12]),
+      walletAddress: argToAddress(permit2PermitArgs[28]),
     } as GenericQuoteRequest,
   };
 }
@@ -190,14 +190,14 @@ export function getDataFromSwap(chainId: Hex, data?: string) {
     gasIncluded7702: false,
   } as GenericQuoteRequest;
 
-  const seaportResult = addSeaportCommandValues(
+  const permit2PermitResult = addPermit2PermitCommandValues(
     commandBytes,
     inputs,
     quotesInput,
   );
-  if (seaportResult) {
-    amountMin = seaportResult.amountMin;
-    quotesInput = seaportResult.quotesInput;
+  if (permit2PermitResult) {
+    amountMin = permit2PermitResult.amountMin;
+    quotesInput = permit2PermitResult.quotesInput;
   } else {
     return { quotesInput: undefined, amountMin: undefined, tokenAddresses: [] };
   }
@@ -231,14 +231,14 @@ export function getBestQuote(
   amountMin: string,
   getUSDValueForToken: (tokenAmount: string) => string,
   getGasUSDValue: (gasValue: BigNumber) => string,
-): QuoteResponse | undefined {
+): {
+  bestQuote: QuoteResponse | undefined;
+  bestFilteredQuote: QuoteResponse | undefined;
+} {
   let selectedQuoteIndex = -1;
+  let bestFilteredQuoteIndex = -1;
   let highestQuoteValue = new BigNumber(-1, 10);
   let minBelowAmountMin = true;
-  const amountMinInUSD = new BigNumber(
-    getUSDValueForToken(new BigNumber(amountMin, 16).toString(10)),
-    10,
-  );
 
   quotes.forEach((currentQuote, index) => {
     const { quote, approval, trade } = currentQuote;
@@ -264,7 +264,7 @@ export function getBestQuote(
     const quoteMinGreaterThanAmountMin = new BigNumber(
       quote.minDestTokenAmount,
       10,
-    ).greaterThanOrEqualTo(amountMinInUSD);
+    ).greaterThanOrEqualTo(new BigNumber(amountMin, 16));
 
     if (
       (minBelowAmountMin && quoteMinGreaterThanAmountMin) ||
@@ -274,10 +274,17 @@ export function getBestQuote(
       minBelowAmountMin = !quoteMinGreaterThanAmountMin;
       highestQuoteValue = quoteValue;
       selectedQuoteIndex = index;
+      if (quoteMinGreaterThanAmountMin) {
+        bestFilteredQuoteIndex = index;
+      }
     }
   });
 
-  return selectedQuoteIndex > -1 ? quotes[selectedQuoteIndex] : undefined;
+  return {
+    bestQuote: selectedQuoteIndex > -1 ? quotes[selectedQuoteIndex] : undefined,
+    bestFilteredQuote:
+      bestFilteredQuoteIndex > -1 ? quotes[bestFilteredQuoteIndex] : undefined,
+  };
 }
 
 export function getTokenValueFromRecord<Type>(

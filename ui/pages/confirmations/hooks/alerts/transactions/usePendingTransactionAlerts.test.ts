@@ -9,11 +9,12 @@ import { getMockConfirmState } from '../../../../../../test/data/confirmations/h
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../helpers/constants/design-system';
-import { PendingTransactionAlertMessage } from './PendingTransactionAlertMessage';
 import { usePendingTransactionAlerts } from './usePendingTransactionAlerts';
 
 jest.mock('./PendingTransactionAlertMessage', () => ({
-  PendingTransactionAlertMessage: () => 'PendingTransactionAlertMessage',
+  PendingTransactionAlertMessage: (
+    _t: (key: string, ...args: unknown[]) => string,
+  ) => 'PendingTransactionAlertMessage',
 }));
 
 const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
@@ -137,7 +138,7 @@ describe('usePendingTransactionAlerts', () => {
       {
         field: RowAlertKey.Speed,
         key: 'pendingTransactions',
-        content: PendingTransactionAlertMessage(),
+        content: 'PendingTransactionAlertMessage',
         reason: 'Pending transaction',
         severity: Severity.Warning,
       },

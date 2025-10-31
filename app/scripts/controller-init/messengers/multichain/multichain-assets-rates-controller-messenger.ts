@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   AccountsControllerAccountAddedEvent,
   AccountsControllerGetSelectedMultichainAccountAction,
@@ -15,6 +15,7 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | HandleSnapRequest
@@ -42,18 +43,27 @@ export type MultichainAssetsRatesControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getMultichainAssetsRatesControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'MultichainAssetsRatesController',
-    allowedEvents: [
+  const controllerMessenger = new Messenger<
+    'MultichainAssetsRatesController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'MultichainAssetsRatesController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    events: [
       'AccountsController:accountAdded',
       'KeyringController:lock',
       'KeyringController:unlock',
       'CurrencyRateController:stateChange',
       'MultichainAssetsController:accountAssetListUpdated',
     ],
-    allowedActions: [
+    actions: [
       'AccountsController:listMultichainAccounts',
       'SnapController:handleRequest',
       'CurrencyRateController:getState',
@@ -61,4 +71,5 @@ export function getMultichainAssetsRatesControllerMessenger(
       'AccountsController:getSelectedMultichainAccount',
     ],
   });
+  return controllerMessenger;
 }

@@ -141,6 +141,11 @@ export function navigateToConfirmation(
     return;
   }
 
+  if (type === ApprovalType.AddEthereumChain) {
+    history.replace(`${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`);
+    return;
+  }
+
   if (type === ApprovalType.EthDecrypt) {
     history.replace(
       `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${DECRYPT_MESSAGE_REQUEST_PATH}`,

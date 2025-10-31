@@ -6,8 +6,9 @@ import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
+  StateMetadata,
 } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import {
   TOGGLEABLE_ALERT_TYPES,
   Web3ShimUsageAlertStates,
@@ -51,12 +52,10 @@ export type AllowedActions = AccountsControllerGetSelectedAccountAction;
  */
 export type AllowedEvents = AccountsControllerSelectedAccountChangeEvent;
 
-export type AlertControllerMessenger = RestrictedMessenger<
+export type AlertControllerMessenger = Messenger<
   typeof controllerName,
   AlertControllerActions | AllowedActions,
-  AlertControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  AlertControllerEvents | AllowedEvents
 >;
 
 /**
@@ -107,23 +106,23 @@ export const getDefaultAlertControllerState = (): AlertControllerState => ({
  * using the `persist` flag; and if they can be sent to Sentry or not, using
  * the `anonymous` flag.
  */
-const controllerMetadata = {
+const controllerMetadata: StateMetadata<AlertControllerState> = {
   alertEnabledness: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   unconnectedAccountAlertShownOrigins: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   web3ShimUsageOrigins: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
 };
@@ -149,11 +148,11 @@ export class AlertController extends BaseController<
       },
     });
 
-    this.#selectedAddress = this.messagingSystem.call(
+    this.#selectedAddress = this.messenger.call(
       'AccountsController:getSelectedAccount',
     ).address;
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'AccountsController:selectedAccountChange',
       (account: { address: string }) => {
         const currentState = this.state;

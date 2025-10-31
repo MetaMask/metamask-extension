@@ -9,12 +9,24 @@ import LoginPage from '../../page-objects/pages/login-page';
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import { Driver } from '../../webdriver/driver';
-import { withMultichainAccountsDesignEnabled } from './common';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  withImportedAccount,
+  withMultichainAccountsDesignEnabled,
+} from './common';
+
+const SECOND_ACCOUNT_NAME = 'Account 2';
+const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';
+const CUSTOM_ACCOUNT_NAME = 'Custom 1';
+const TEST_PRIVATE_KEY =
+  '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
+
+const importedAccount = {
+  name: 'Imported Account 1',
+  address: '0x7A46ce51fbBB29C34aea1fE9833c27b5D2781925',
+};
 
 describe('Add account', function () {
-  const SECOND_ACCOUNT_NAME = 'Account 2';
-  const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';
-
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
     await withMultichainAccountsDesignEnabled(
       {
@@ -69,6 +81,36 @@ describe('Add account', function () {
         await headerNavbar.checkAccountLabel(SECOND_ACCOUNT_NAME);
         // BUG 37030 With BIP44 enabled wallet is not showing balance
         // await homePage.checkExpectedBalanceIsDisplayed('2.8');
+      },
+    );
+  });
+
+  it('should remove imported private key account successfully', async function () {
+    await withImportedAccount(
+      {
+        title: this.test?.fullTitle(),
+        privateKey: TEST_PRIVATE_KEY,
+      },
+      async (driver: Driver) => {
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
+        await accountListPage.openMultichainAccountMenu({
+          accountLabel: importedAccount.name,
+        });
+        await accountListPage.clickMultichainAccountMenuItem('Account details');
+
+        const accountDetailsPage = new MultichainAccountDetailsPage(driver);
+        await accountDetailsPage.checkPageIsLoaded();
+
+        await accountDetailsPage.clickRemoveAccountButton();
+
+        await accountDetailsPage.clickRemoveAccountConfirmButton();
+
+        await accountListPage.checkAccountIsNotDisplayedInAccountList(
+          importedAccount.name,
+        );
       },
     );
   });
@@ -131,6 +173,49 @@ describe('Add account', function () {
         });
         await accountListPage.checkAccountNotDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,
+        );
+      },
+    );
+  });
+
+  it('added account should persiste after wallet lock', async function () {
+    await withMultichainAccountsDesignEnabled(
+      {
+        title: this.test?.fullTitle(),
+      },
+      async (driver: Driver) => {
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
+        await accountListPage.addMultichainAccount();
+        await accountListPage.openMultichainAccountMenu({
+          accountLabel: 'Account 2',
+        });
+        await accountListPage.clickMultichainAccountMenuItem('Rename');
+        await accountListPage.changeMultichainAccountLabel(CUSTOM_ACCOUNT_NAME);
+
+        await accountListPage.checkAccountDisplayedInAccountList(
+          CUSTOM_ACCOUNT_NAME,
+        );
+        await accountListPage.switchToAccount(CUSTOM_ACCOUNT_NAME);
+
+        const headerNavbar = new HeaderNavbar(driver);
+        await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);
+
+        // Lock and unlock wallet
+        await headerNavbar.lockMetaMask();
+        await loginWithoutBalanceValidation(driver);
+
+        // Verify both account labels persist after unlock
+        await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);
+        await headerNavbar.openAccountsPage();
+
+        await accountListPage.checkPageIsLoaded({
+          isMultichainAccountsState2Enabled: true,
+        });
+        await accountListPage.checkAccountDisplayedInAccountList(
+          CUSTOM_ACCOUNT_NAME,
         );
       },
     );

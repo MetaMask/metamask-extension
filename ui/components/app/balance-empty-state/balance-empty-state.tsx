@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -16,7 +16,6 @@ import {
   ButtonSize,
   twMerge,
 } from '@metamask/design-system-react';
-import { CaipChainId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { getMultichainCurrentNetwork } from '../../../selectors/multichain';
@@ -25,12 +24,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import useRamps, {
-  RampsMetaMaskEntry,
-} from '../../../hooks/ramps/useRamps/useRamps';
+
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
-import { ChainId } from '../../../../shared/constants/network';
+
+import { FundingMethodModal } from '../../multichain/funding-method-modal/funding-method-modal';
 
 export type BalanceEmptyStateProps = {
   /**
@@ -41,16 +39,23 @@ export type BalanceEmptyStateProps = {
    * Additional className to apply to the component
    */
   className?: string;
+  /**
+   * Callback function to handle receive crypto action
+   */
+  onClickReceive?: () => void;
 };
 
-export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = (props) => {
+export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = ({
+  onClickReceive,
+  ...props
+}) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const currentLocale = useSelector(getCurrentLocale);
   const chainId = useSelector(getCurrentChainId);
   const { nickname } = useSelector(getMultichainCurrentNetwork);
 
-  const { openBuyCryptoInPdapp } = useRamps(RampsMetaMaskEntry.TokensBanner);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Track when component is displayed
   useEffect(() => {
@@ -79,8 +84,21 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = (props) => {
       },
     });
 
-    openBuyCryptoInPdapp(chainId as ChainId | CaipChainId);
-  }, [chainId, openBuyCryptoInPdapp, trackEvent]);
+    setIsModalOpen(true);
+  }, [chainId, trackEvent]);
+
+  // Handle modal close
+  const handleModalClose = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
+  // Handle receive crypto option
+  const handleReceive = useCallback(() => {
+    // Close modal and handle receive flow
+    setIsModalOpen(false);
+    // Always call the onClickReceive callback
+    onClickReceive?.();
+  }, [onClickReceive]);
 
   return (
     <Box
@@ -88,38 +106,39 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = (props) => {
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       padding={6}
-      margin={4}
       backgroundColor={BoxBackgroundColor.BackgroundSection}
-      gap={4}
+      gap={5}
       {...props}
       className={twMerge('rounded-lg', props.className)}
     >
-      <Box
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
-      >
-        <img
-          src="./images/bank-transfer.png"
-          alt={t('fundYourWallet')}
-          width="100"
-          height="100"
-        />
+      <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+        >
+          <img
+            src="./images/bank-transfer.png"
+            alt={t('fundYourWallet')}
+            width="100"
+            height="100"
+          />
+        </Box>
+        <Text
+          variant={TextVariant.HeadingLg}
+          color={TextColor.TextDefault}
+          fontWeight={FontWeight.Bold}
+          textAlign={TextAlign.Center}
+        >
+          {t('fundYourWallet')}
+        </Text>
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          textAlign={TextAlign.Center}
+        >
+          {t('getYourWalletReadyToUseWeb3')}
+        </Text>
       </Box>
-      <Text
-        variant={TextVariant.HeadingMd}
-        color={TextColor.TextDefault}
-        fontWeight={FontWeight.Bold}
-        textAlign={TextAlign.Center}
-      >
-        {t('fundYourWallet')}
-      </Text>
-      <Text
-        variant={TextVariant.BodyMd}
-        color={TextColor.TextAlternative}
-        textAlign={TextAlign.Center}
-      >
-        {t('getYourWalletReadyToUseWeb3')}
-      </Text>
       <Button
         variant={ButtonVariant.Primary}
         size={ButtonSize.Lg}
@@ -128,6 +147,13 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = (props) => {
       >
         {t('addFunds')}
       </Button>
+      <FundingMethodModal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        title={t('addFunds')}
+        onClickReceive={handleReceive}
+        data-testid="balance-empty-state-funding-modal"
+      />
     </Box>
   );
 };

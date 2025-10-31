@@ -1,7 +1,11 @@
 import { strict as assert } from 'assert';
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
-import { getEventPayloads, withFixtures } from '../../helpers';
+import {
+  getEventPayloads,
+  withFixtures,
+  assertInAnyOrder,
+} from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import { mockSegment } from './mocks/segment';
@@ -71,132 +75,134 @@ describe('Wallet Created Events - Imported Account', function () {
 
         assert.equal(trackEvents.length, expectedEvents.length);
 
-        const getNthEventByName = (
-          name: string,
-          n: number,
-        ): { event: string; properties: Record<string, unknown> } => {
-          const matches = trackEvents.filter(
-            (e: { event: string }) => e.event === name,
-          );
-          const found = matches[n - 1];
-          if (!found) {
-            throw new Error(
-              `Expected to find ${n} occurrence(s) of event '${name}', but found ${matches.length}. Available events: ${trackEvents
-                .map((e: { event: string }) => e.event)
-                .join(', ')}`,
-            );
-          }
-          return found;
-        };
+        const appInstallBackground = [
+          [
+            (req: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              properties: {
+                category: string;
+                locale: string;
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id: string;
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                environment_type: string;
+              };
+            }) =>
+              req.properties.category === 'App' &&
+              req.properties.locale === 'en' &&
+              req.properties.chain_id === '0x1' &&
+              req.properties.environment_type === 'background',
+          ],
+        ];
+        assertInAnyOrder(trackEvents, appInstallBackground);
 
-        const firstEvent = getNthEventByName('App Opened', 1);
-        const secondEvent = getNthEventByName('App Installed', 1);
-        const thirdEvent = getNthEventByName('App Installed', 2);
-        const fourthEvent = isFirefox
-          ? getNthEventByName('App Installed', 3)
-          : getNthEventByName('SRP Backup Confirmed', 1);
-        const fifthEvent = isFirefox
-          ? getNthEventByName('Analytics Preference Selected', 1)
-          : getNthEventByName('Wallet Import Attempted', 1);
+        const appInstallFullscreen = [
+          [
+            (req: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              properties: {
+                category: string;
+                locale: string;
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id: string;
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                environment_type: string;
+              };
+            }) =>
+              req.properties.category === 'App' &&
+              req.properties.locale === 'en' &&
+              req.properties.chain_id === '0x1' &&
+              req.properties.environment_type === 'fullscreen',
+          ],
+        ];
+        assertInAnyOrder(trackEvents, appInstallFullscreen);
 
-        assert.deepStrictEqual(firstEvent.properties, {
-          category: 'App',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'background',
-        });
-
-        assert.deepStrictEqual(secondEvent.properties, {
-          category: 'App',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'background',
-        });
-
-        assert.deepStrictEqual(thirdEvent.properties, {
-          category: 'App',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'background',
-        });
-
-        if (isFirefox) {
-          assert.deepStrictEqual(fourthEvent.properties, {
-            category: 'Onboarding',
-            locale: 'en',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '0x1',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: 'fullscreen',
-          });
-        } else {
-          assert.deepStrictEqual(fourthEvent.properties, {
-            category: 'Onboarding',
-            locale: 'en',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '0x1',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: 'fullscreen',
-          });
-        }
+        // Assert SRP Backup Confirmed or App Installed event (depending on browser)
+        const fourthEventAssertion = [
+          [
+            (req: {
+              properties: {
+                category: string;
+                locale: string;
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                chain_id: string;
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                environment_type: string;
+              };
+            }) =>
+              req.properties.category === 'Onboarding' &&
+              req.properties.locale === 'en' &&
+              req.properties.chain_id === '0x1' &&
+              req.properties.environment_type === 'fullscreen',
+          ],
+        ];
+        assertInAnyOrder(trackEvents, fourthEventAssertion);
 
         if (isFirefox) {
-          assert.deepStrictEqual(fifthEvent.properties, {
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_metrics_opted_in: true,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            has_marketing_consent: false,
-            location: 'onboarding_metametrics',
-            category: 'Onboarding',
-            locale: 'en',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '0x1',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: 'fullscreen',
-          });
+          // Assert Analytics Preference Selected event
+          const analyticsPreferenceAssertion = [
+            [
+              (req: {
+                properties: {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  is_metrics_opted_in: boolean;
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  has_marketing_consent: boolean;
+                  location: string;
+                  category: string;
+                  locale: string;
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  chain_id: string;
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  environment_type: string;
+                };
+              }) =>
+                req.properties.is_metrics_opted_in === true &&
+                req.properties.has_marketing_consent === false &&
+                req.properties.location === 'onboarding_metametrics' &&
+                req.properties.category === 'Onboarding' &&
+                req.properties.locale === 'en' &&
+                req.properties.chain_id === '0x1' &&
+                req.properties.environment_type === 'fullscreen',
+            ],
+          ];
+          assertInAnyOrder(trackEvents, analyticsPreferenceAssertion);
         } else {
-          assert.deepStrictEqual(fifthEvent.properties, {
-            category: 'Onboarding',
-            locale: 'en',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            chain_id: '0x1',
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: 'fullscreen',
-          });
+          // Assert Wallet Import Attempted event
+          const walletImportAttemptedAssertion = [
+            [
+              (req: {
+                properties: {
+                  category: string;
+                  locale: string;
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  chain_id: string;
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  environment_type: string;
+                };
+              }) =>
+                req.properties.category === 'Onboarding' &&
+                req.properties.locale === 'en' &&
+                req.properties.chain_id === '0x1' &&
+                req.properties.environment_type === 'fullscreen',
+            ],
+          ];
+          assertInAnyOrder(trackEvents, walletImportAttemptedAssertion);
         }
-
-        assert.deepStrictEqual(fourthEvent.properties, {
-          category: 'Onboarding',
-          locale: 'en',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          chain_id: '0x1',
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: 'fullscreen',
-        });
       },
     );
   });

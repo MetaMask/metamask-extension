@@ -104,7 +104,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
   it('can queue multiple personal signs and confirm', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

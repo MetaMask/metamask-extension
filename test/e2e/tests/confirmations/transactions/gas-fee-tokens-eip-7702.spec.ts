@@ -1,18 +1,19 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { Anvil } from '@viem/anvil';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { Driver } from '../../../webdriver/driver';
+import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
+import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
+import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import FixtureBuilder from '../../../fixture-builder';
 import { WINDOW_TITLES, unlockWallet, withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/redesign/gas-fee-token-modal';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
+import { Driver } from '../../../webdriver/driver';
 import { mockEip7702FeatureFlag } from '../helpers';
-import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 
 const UUID = '1234-5678';
 const TRANSACTION_HASH =
@@ -22,7 +23,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
   it('confirms transaction if successful', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerSmartTransactionsOptedOut()
@@ -89,7 +90,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
   it('fails transaction if error', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withNetworkControllerOnMainnet()
@@ -176,6 +177,7 @@ async function mockSimulationResponse(mockServer: MockttpServer) {
                         feeRecipient:
                           '0xBAB951a55b61dfAe21Ff7C3501142B397367F026',
                         rateWei: '0x216FF33813A80',
+                        serviceFee: `0x${decimalToHex(430000)}`,
                       },
                       {
                         token: {

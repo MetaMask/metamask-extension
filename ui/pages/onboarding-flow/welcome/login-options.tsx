@@ -13,6 +13,7 @@ import {
   ModalContentSize,
   ModalHeader,
   PolymorphicRef,
+  ModalOverlay,
   Text,
 } from '../../../components/component-library';
 import {
@@ -87,6 +88,7 @@ export default function LoginOptions({
       isClosedOnOutsideClick={false}
       data-theme={ThemeType.dark}
     >
+      <ModalOverlay />
       <ModalContent size={ModalContentSize.Sm} alignItems={AlignItems.center}>
         <ModalHeader onClose={onClose}>
           {t('onboardingOptionTitle')}

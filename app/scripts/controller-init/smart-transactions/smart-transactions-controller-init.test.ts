@@ -2,7 +2,13 @@ import {
   SmartTransactionsController,
   ClientId,
 } from '@metamask/smart-transactions-controller';
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import type { AccountsController } from '@metamask/accounts-controller';
 import type { TransactionController } from '@metamask/transaction-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
@@ -39,6 +45,13 @@ type TestInitRequest = ControllerInitRequest<
   SmartTransactionsControllerMessenger,
   SmartTransactionsControllerInitMessenger
 > & {
+  baseControllerMessenger: Messenger<
+    MockAnyNamespace,
+    | MessengerActions<SmartTransactionsControllerMessenger>
+    | MessengerActions<SmartTransactionsControllerInitMessenger>,
+    | MessengerEvents<SmartTransactionsControllerMessenger>
+    | MessengerEvents<SmartTransactionsControllerInitMessenger>
+  >;
   getStateUI: () => { metamask: ControllerFlatState };
   getGlobalNetworkClientId: () => string;
   getAccountType: (address: string) => Promise<string>;
@@ -58,8 +71,16 @@ describe('SmartTransactionsController Init', () => {
    * @returns An object with mocked dependencies
    */
   function buildMockDependencies() {
-    const baseControllerMessenger = new Messenger();
-    const restrictedMessenger = {
+    const baseControllerMessenger = new Messenger<
+      MockAnyNamespace,
+      | MessengerActions<SmartTransactionsControllerMessenger>
+      | MessengerActions<SmartTransactionsControllerInitMessenger>,
+      | MessengerEvents<SmartTransactionsControllerMessenger>
+      | MessengerEvents<SmartTransactionsControllerInitMessenger>
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
+    const controllerMessenger = {
       subscribe: jest.fn(),
       publish: jest.fn(),
       call: jest.fn(),
@@ -68,10 +89,6 @@ describe('SmartTransactionsController Init', () => {
       clearEventHandlers: jest.fn(),
       clearActionHandlers: jest.fn(),
     } as unknown as BaseRestrictedControllerMessenger;
-
-    baseControllerMessenger.getRestricted = jest
-      .fn()
-      .mockReturnValue(restrictedMessenger);
 
     const accountsController: MockAccountsController = {
       getSelectedAccount: jest.fn().mockReturnValue({ address: '0x123' }),
@@ -86,7 +103,7 @@ describe('SmartTransactionsController Init', () => {
 
     return {
       baseControllerMessenger,
-      restrictedMessenger,
+      controllerMessenger,
       accountsController,
       transactionController,
     };
@@ -105,8 +122,7 @@ describe('SmartTransactionsController Init', () => {
     const fullRequest = {
       ...requestMock,
       baseControllerMessenger: mocks.baseControllerMessenger,
-      controllerMessenger:
-        mocks.restrictedMessenger as SmartTransactionsControllerMessenger,
+      controllerMessenger: mocks.controllerMessenger,
       initMessenger: getSmartTransactionsControllerInitMessenger(
         mocks.baseControllerMessenger,
       ),
@@ -280,6 +296,11 @@ describe('SmartTransactionsController Init', () => {
 
   it('configures trackMetaMetricsEvent correctly', () => {
     const { fullRequest } = buildInitRequest();
+    const listener = jest.fn();
+    fullRequest.baseControllerMessenger.registerActionHandler(
+      'MetaMetricsController:trackEvent',
+      listener,
+    );
     SmartTransactionsControllerInit(fullRequest);
 
     const constructorCall =
@@ -300,10 +321,7 @@ describe('SmartTransactionsController Init', () => {
 
     trackMetaMetricsEvent(testPayload);
 
-    expect(fullRequest.initMessenger.call).toHaveBeenCalledWith(
-      'MetaMetricsController:trackEvent',
-      testPayload,
-    );
+    expect(listener).toHaveBeenCalledWith(testPayload);
   });
 
   describe('getFeatureFlags', () => {

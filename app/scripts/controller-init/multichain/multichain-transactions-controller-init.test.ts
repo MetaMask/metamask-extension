@@ -1,11 +1,11 @@
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
-import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
   getMultichainTransactionsControllerMessenger,
   MultichainTransactionsControllerMessenger,
 } from '../messengers/multichain';
+import { getRootMessenger } from '../../lib/messenger';
 import { MultichainTransactionsControllerInit } from './multichain-transactions-controller-init';
 
 jest.mock('@metamask/multichain-transactions-controller');
@@ -13,7 +13,7 @@ jest.mock('@metamask/multichain-transactions-controller');
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<MultichainTransactionsControllerMessenger>
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   return {
     ...buildControllerInitRequestMock(),

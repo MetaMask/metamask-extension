@@ -9,7 +9,6 @@ class SwitchNetworkConfirmation {
 
   private readonly switchNetworkMessage = {
     text: 'Allow this site to switch the network',
-    tag: 'h3',
   };
 
   constructor(driver: Driver) {

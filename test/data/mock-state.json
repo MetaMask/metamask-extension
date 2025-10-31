@@ -2340,6 +2340,8 @@
     "throttledOrigins": {},
     "delegations": {},
     "accountsAssets": {},
+    "assetsMetadata": {},
+    "allIgnoredAssets": {},
     "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
     "isGatorPermissionsEnabled": false,
     "isFetchingGatorPermissions": false,

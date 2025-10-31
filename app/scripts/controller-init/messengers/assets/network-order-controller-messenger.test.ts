@@ -1,11 +1,12 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../../lib/messenger';
 import { getNetworkOrderControllerMessenger } from './network-order-controller-messenger';
 
 describe('getNetworkOrderControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const nftControllerMessenger =
       getNetworkOrderControllerMessenger(messenger);
-    expect(nftControllerMessenger).toBeInstanceOf(RestrictedMessenger);
+    expect(nftControllerMessenger).toBeInstanceOf(Messenger);
   });
 });

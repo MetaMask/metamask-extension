@@ -8,7 +8,7 @@ describe('eth_coinbase', function () {
   it('executes a eth_coinbase json rpc call', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

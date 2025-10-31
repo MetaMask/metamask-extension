@@ -16,7 +16,6 @@ import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { AccountListMenu } from '.';
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockGetEnvironmentType = jest.fn();
 const mockDetectNfts = jest.fn();
 
@@ -24,7 +23,6 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => () => mockGetEnvironmentType(),
 }));
-///: END:ONLY_INCLUDE_IF
 
 jest.mock('../../../store/actions', () => {
   return {
@@ -373,7 +371,6 @@ describe('AccountListMenu', () => {
     const tag = listItems[0].querySelector('.mm-tag') as Element;
     expect(tag.textContent).toBe('mock snap name (Beta)');
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('prop `allowedAccountTypes`', () => {
     const mockAccount = createMockInternalAccount();

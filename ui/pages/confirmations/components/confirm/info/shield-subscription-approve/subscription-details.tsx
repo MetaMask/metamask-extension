@@ -17,6 +17,7 @@ import {
 } from '../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { getProductPrice } from '../../../../../shield-plan/utils';
+import { SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS } from '../../../../../../../shared/constants/subscriptions';
 
 export const SubscriptionDetails = ({
   showTrial,
@@ -63,16 +64,20 @@ export const SubscriptionDetails = ({
         {showTrial && (
           <Box
             data-testid="free-seven-day-trial"
+            className="rounded-lg"
             alignItems={BoxAlignItems.Center}
-            paddingLeft={1}
-            paddingRight={1}
+            paddingLeft={2}
+            paddingRight={2}
             style={{
               color: 'var(--color-primary-default)',
               backgroundColor: 'var(--color-primary-muted-hover)',
             }}
           >
             <Text variant={TextVariant.bodySm} color={TextColor.inherit}>
-              {t('freeSevenDayTrial')}
+              {t('freeTrialDays', [
+                productPrice?.trialPeriodDays ??
+                  SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
+              ])}
             </Text>
           </Box>
         )}

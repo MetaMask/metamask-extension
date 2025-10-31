@@ -115,6 +115,7 @@ export default class Home extends PureComponent {
     showUpdateModal: PropTypes.bool.isRequired,
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
+    isSidepanel: PropTypes.bool.isRequired,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
@@ -289,6 +290,7 @@ export default class Home extends PureComponent {
       newNetworkAddedConfigurationId,
       setActiveNetwork,
       clearNewNetworkAdded,
+      isSidepanel,
     } = this.props;
 
     const {
@@ -306,7 +308,11 @@ export default class Home extends PureComponent {
 
     if (notificationClosing && !prevState.notificationClosing) {
       attemptCloseNotificationPopup();
-    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
+    } else if (
+      isNotification ||
+      hasAllowedPopupRedirectApprovals ||
+      isSidepanel
+    ) {
       this.checkStatusAndNavigate();
     }
 

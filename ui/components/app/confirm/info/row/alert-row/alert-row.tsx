@@ -27,6 +27,7 @@ export type ConfirmInfoAlertRowProps = ConfirmInfoRowProps & {
 
 export function getAlertTextColors(
   variant?: ConfirmInfoRowVariant | Severity,
+  defaultColor?: TextColor,
 ): TextColor {
   switch (variant) {
     case ConfirmInfoRowVariant.Critical:
@@ -37,7 +38,7 @@ export function getAlertTextColors(
       return TextColor.warningDefault;
     case ConfirmInfoRowVariant.Default:
     default:
-      return TextColor.textDefault;
+      return defaultColor ?? TextColor.textDefault;
   }
 }
 
@@ -78,7 +79,10 @@ export const ConfirmInfoAlertRow = ({
   const confirmInfoRowProps = {
     ...rowProperties,
     style: { background: 'transparent', ...rowProperties.style },
-    color: getAlertTextColors(variant ?? selectedAlertSeverity),
+    color: getAlertTextColors(
+      variant ?? selectedAlertSeverity,
+      rowProperties?.color,
+    ),
     variant,
     onClick: onClickHandler,
     labelChildrenStyleOverride: rowProperties.labelChildren
@@ -99,6 +103,7 @@ export const ConfirmInfoAlertRow = ({
   const inlineAlert = hasFieldAlert ? (
     <Box marginLeft={1}>
       <InlineAlert
+        alertKey={alertKey}
         severity={selectedAlertSeverity}
         showArrow={selectedAlertShowArrow}
         textOverride={selectedAlertInlineAlertText}

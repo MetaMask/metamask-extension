@@ -1,5 +1,14 @@
 import { AccountActivityServiceMessenger } from '@metamask/core-backend';
-import { BaseControllerMessenger } from '../../types';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { RootMessenger } from '../../../lib/messenger';
+
+type Actions = MessengerActions<AccountActivityServiceMessenger>;
+
+type Events = MessengerEvents<AccountActivityServiceMessenger>;
 
 /**
  * Get a restricted messenger for the Account Activity service. This is scoped to the
@@ -9,11 +18,20 @@ import { BaseControllerMessenger } from '../../types';
  * @returns The restricted messenger.
  */
 export function getAccountActivityServiceMessenger(
-  messenger: BaseControllerMessenger,
+  messenger: RootMessenger<Actions, Events>,
 ): AccountActivityServiceMessenger {
-  return messenger.getRestricted({
-    name: 'AccountActivityService',
-    allowedActions: [
+  const serviceMessenger = new Messenger<
+    'AccountActivityService',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'AccountActivityService',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: serviceMessenger,
+    actions: [
       'AccountsController:getSelectedAccount',
       'BackendWebSocketService:connect',
       'BackendWebSocketService:forceReconnection',
@@ -25,9 +43,10 @@ export function getAccountActivityServiceMessenger(
       'BackendWebSocketService:addChannelCallback',
       'BackendWebSocketService:removeChannelCallback',
     ],
-    allowedEvents: [
+    events: [
       'AccountsController:selectedAccountChange',
       'BackendWebSocketService:connectionStateChanged',
     ],
   });
+  return serviceMessenger;
 }

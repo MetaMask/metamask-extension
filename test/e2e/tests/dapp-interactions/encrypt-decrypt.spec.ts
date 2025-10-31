@@ -16,7 +16,7 @@ describe('Encrypt Decrypt', function (this: Suite) {
   it('should decrypt an encrypted message', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -49,7 +49,7 @@ describe('Encrypt Decrypt', function (this: Suite) {
     const message2 = 'Hello, Alice!';
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

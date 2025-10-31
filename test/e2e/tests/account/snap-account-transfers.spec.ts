@@ -5,7 +5,7 @@ import {
   WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import { DAPP_PATH, DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
@@ -24,8 +24,9 @@ describe('Snap Account Transfers', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -68,8 +69,9 @@ describe('Snap Account Transfers', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -113,8 +115,9 @@ describe('Snap Account Transfers', function (this: Suite) {
       {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapSimpleKeyringAndSite,
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['Request rejected by user or snap.'],
       },

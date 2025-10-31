@@ -1,6 +1,6 @@
 import {
   formatChainIdToHex,
-  isSolanaChainId,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { Hex } from '@metamask/utils';
 import { useEffect, useState } from 'react';
@@ -66,7 +66,7 @@ export function useGasIncluded7702({
         return;
       }
 
-      if (isSolanaChainId(fromChain.chainId)) {
+      if (isNonEvmChainId(fromChain.chainId)) {
         setIsGasIncluded7702Supported(false);
         return;
       }

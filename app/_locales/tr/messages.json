@@ -2753,32 +2753,11 @@
   "importNFTTokenIdToolTip": {
     "message": "Hiçbir iki NFT kimliği birbiriyle aynı olmadığı için her NFT kimliği benzersiz bir tanımlayıcıdır. Yine, OpenSea'de bu sayı 'Detaylar' kısmının altında yer alır. Not alın veya panonuza kopyalayın."
   },
-  "importNWordSRP": {
-    "message": "$1 sözcükten oluşan kurtarma ifadem var",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Özel Anahtar"
   },
-  "importSRPDescription": {
-    "message": "12 veya 24 sözcükten oluşan gizli kurtarma ifadenizle mevcut bir cüzdanı içe aktarın."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Gizli Kurtarma İfadeleri 12 veya 24 sözcükten oluşur"
-  },
-  "importSRPWordError": {
-    "message": "$1 sözcüğü yanlış veya yanlış yazılmış.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "$1 ve $2 sözcükleri yanlış veya yanlış yazılmış.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesini İçe Aktar"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Bilinmeyen bir hata oluştu."
   },
   "importSelectedTokens": {
     "message": "Seçilen tokenleri içe aktar?"
@@ -2797,9 +2776,6 @@
   },
   "importTokensError": {
     "message": "Tokenleri içe aktaramadık. Lütfen daha sonra tekrar deneyin."
-  },
-  "importWallet": {
-    "message": "Cüzdanı içe aktar"
   },
   "importWalletOrAccountHeader": {
     "message": "Bir cüzdanı veya hesabı içe aktar"

@@ -5,7 +5,7 @@ import thunk from 'redux-thunk';
 import { toHex } from '@metamask/controller-utils';
 import { useSelector } from 'react-redux';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as UseGetAssetImageUrlModule from '../../../../../hooks/useGetAssetImageUrl';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
@@ -21,14 +21,13 @@ const selectedAddress =
 const nfts = mockState.metamask.allNfts[selectedAddress][toHex(5)];
 const mockAsset = nfts[0].address;
 const mockId = nfts[0].tokenId;
-jest.mock('react-router-dom', () => {
-  const original = jest.requireActual('react-router-dom');
+
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
   return {
-    ...original,
-    useParams: () => ({
-      asset: mockAsset,
-      id: mockId,
-    }),
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+    useNavigationType: () => 'PUSH',
   };
 });
 
@@ -62,12 +61,17 @@ describe('NFT full image', () => {
     return undefined;
   });
 
+  const mockParams = { asset: mockAsset, id: mockId };
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('should match snapshot', async () => {
-    const { container } = renderWithProvider(<NftFullImage />, mockStore);
+    const { container } = renderWithProvider(
+      <NftFullImage params={mockParams} />,
+      mockStore,
+    );
 
     await waitFor(() => {
       expect(container).toMatchSnapshot();
@@ -87,7 +91,10 @@ describe('NFT full image', () => {
 
     nfts[0].image = images;
 
-    const { findByTestId } = renderWithProvider(<NftFullImage />, mockStore);
+    const { findByTestId } = renderWithProvider(
+      <NftFullImage params={mockParams} />,
+      mockStore,
+    );
 
     const imageElem = await findByTestId('nft-image');
     expect(imageElem).toHaveAttribute('src', mockImageUrl);

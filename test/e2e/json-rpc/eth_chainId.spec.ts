@@ -8,7 +8,7 @@ describe('eth_chainId', function () {
   it('returns the chain ID of the current network', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

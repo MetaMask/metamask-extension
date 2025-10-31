@@ -626,6 +626,8 @@ export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
 export const MEGAETH_MAINNET_IMAGE_URL = './images/MegaETH-logo-mainnet.png';
 export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
+export const SOLANA_TESTNET_IMAGE_URL = './images/solana-testnet-logo.svg';
+export const SOLANA_DEVNET_IMAGE_URL = './images/solana-devnet-logo.svg';
 export const BITCOIN_IMAGE_URL = './images/bitcoin-logo.svg';
 export const BITCOIN_TESTNET_IMAGE_URL = './images/bitcoin-testnet-logo.svg';
 export const BITCOIN_SIGNET_IMAGE_URL = './images/bitcoin-signet-logo.png';
@@ -1125,6 +1127,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN]: UNICHAIN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.UNICHAIN_SEPOLIA]: UNICHAIN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
+  [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
+  [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
   [MultichainNetworks.BITCOIN]: BITCOIN_IMAGE_URL,
   [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_IMAGE_URL,
   [MultichainNetworks.BITCOIN_SIGNET]: BITCOIN_SIGNET_IMAGE_URL,
@@ -1234,6 +1238,12 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.PLASMA]: PLASMA_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.LUKSO]: LUKSO_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_NATIVE_TOKEN_IMAGE_URL,
+  [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
+  [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
+  [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
+  [MultichainNetworks.BITCOIN]: BITCOIN_IMAGE_URL,
+  [MultichainNetworks.BITCOIN_TESTNET]: BITCOIN_TESTNET_IMAGE_URL,
+  [MultichainNetworks.BITCOIN_SIGNET]: BITCOIN_SIGNET_IMAGE_URL,
 } as const;
 
 /**

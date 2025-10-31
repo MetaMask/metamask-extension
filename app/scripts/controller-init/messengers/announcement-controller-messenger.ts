@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '../../lib/messenger';
 
 export type AnnouncementControllerMessenger = ReturnType<
   typeof getAnnouncementControllerMessenger
@@ -12,13 +13,15 @@ export type AnnouncementControllerMessenger = ReturnType<
  * messenger.
  */
 export function getAnnouncementControllerMessenger(
-  messenger: Messenger<never, never>,
+  messenger: RootMessenger<never, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'AnnouncementController',
-
-    // This controller does not call any actions or subscribe to any events.
-    allowedActions: [],
-    allowedEvents: [],
+  return new Messenger<
+    'AnnouncementController',
+    never,
+    never,
+    typeof messenger
+  >({
+    namespace: 'AnnouncementController',
+    parent: messenger,
   });
 }

@@ -28,3 +28,7 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
     process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED?.toString() === 'true'
   );
 };
+
+export const getIsSidePanelFeatureEnabled = (): boolean => {
+  return process.env.IS_SIDEPANEL?.toString() === 'true';
+};

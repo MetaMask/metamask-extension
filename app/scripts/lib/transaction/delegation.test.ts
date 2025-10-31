@@ -2,7 +2,11 @@ import {
   KeyringControllerSignTypedMessageAction,
   SignTypedDataVersion,
 } from '@metamask/keyring-controller';
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { TransactionControllerInitMessenger } from '../../controller-init/messengers/transaction-controller-messenger';
 import {
   Delegation,
@@ -50,19 +54,30 @@ describe('Delegation Utils', () => {
     keyringControllerSignTypedMessageMock = jest.fn();
 
     const baseMessenger = new Messenger<
+      MockAnyNamespace,
       KeyringControllerSignTypedMessageAction,
       never
-    >();
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
 
     baseMessenger.registerActionHandler(
       'KeyringController:signTypedMessage',
       keyringControllerSignTypedMessageMock,
     );
 
-    initMessenger = baseMessenger.getRestricted({
-      name: 'Test',
-      allowedActions: ['KeyringController:signTypedMessage'],
-      allowedEvents: [],
+    initMessenger = new Messenger<
+      'Test',
+      KeyringControllerSignTypedMessageAction,
+      never,
+      typeof baseMessenger
+    >({
+      namespace: 'Test',
+      parent: baseMessenger,
+    });
+    baseMessenger.delegate({
+      messenger: initMessenger,
+      actions: ['KeyringController:signTypedMessage'],
     });
   });
 

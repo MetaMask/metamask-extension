@@ -1,4 +1,7 @@
-import { CurrencyRateController } from '@metamask/assets-controllers';
+import {
+  CodefiTokenPricesServiceV2,
+  CurrencyRateController,
+} from '@metamask/assets-controllers';
 import {
   CurrencyRateControllerInitMessenger,
   CurrencyRateControllerMessenger,
@@ -28,6 +31,7 @@ export const CurrencyRateControllerInit: ControllerInitFunction<
     includeUsdRate: true,
     useExternalServices: () =>
       initMessenger.call('PreferencesController:getState').useExternalServices,
+    tokenPricesService: new CodefiTokenPricesServiceV2(),
   });
 
   // TODO: This logic should be ported to `CurrencyRateController` directly.

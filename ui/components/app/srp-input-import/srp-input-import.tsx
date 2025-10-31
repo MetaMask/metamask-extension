@@ -44,11 +44,15 @@ type ListOfTextFieldRefs = {
 
 type SrpInputImportProps = {
   onChange: (srp: string) => void;
+  onClearCallback?: () => void;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function SrpInputImport({ onChange }: SrpInputImportProps) {
+export default function SrpInputImport({
+  onChange,
+  onClearCallback,
+}: SrpInputImportProps) {
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
@@ -103,8 +107,9 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
       const targetIndex = newDraftSrp.findIndex((word) => word.id === id);
       newDraftSrp[targetIndex] = { ...newDraftSrp[targetIndex], word: value };
       setDraftSrp(setWordActive(newDraftSrp, id));
+      onClearCallback?.();
     },
-    [draftSrp],
+    [draftSrp, onClearCallback],
   );
 
   const nextWord = useCallback(
@@ -370,6 +375,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
               variant={ButtonVariant.Link}
               onClick={async () => {
                 setDraftSrp([]);
+                onClearCallback?.();
               }}
             >
               {t('onboardingSrpInputClearAll')}

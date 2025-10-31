@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '../../lib/messenger';
 
 export type OnboardingControllerMessenger = ReturnType<
   typeof getOnboardingControllerMessenger
@@ -11,14 +12,9 @@ export type OnboardingControllerMessenger = ReturnType<
  * @param messenger - The base messenger used to create the restricted
  * messenger.
  */
-export function getOnboardingControllerMessenger(
-  messenger: Messenger<never, never>,
-) {
-  return messenger.getRestricted({
-    name: 'OnboardingController',
-
-    // This controller doesn't call any actions or subscribe to any events.
-    allowedActions: [],
-    allowedEvents: [],
+export function getOnboardingControllerMessenger(messenger: RootMessenger) {
+  return new Messenger({
+    namespace: 'OnboardingController',
+    parent: messenger,
   });
 }

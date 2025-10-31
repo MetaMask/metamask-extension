@@ -3,6 +3,10 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import * as networksModule from '../../../../shared/modules/selectors/networks';
 import {
+  SupportedEVMChain,
+  mapChainIdToSupportedEVMChain,
+} from '../../../../shared/lib/trust-signals';
+import {
   isEthSendTransaction,
   hasValidTransactionParams,
   isEthSignTypedData,
@@ -10,9 +14,7 @@ import {
   getChainId,
   isConnected,
   connectScreenHasBeenPrompted,
-  mapChainIdToSupportedEVMChain,
 } from './trust-signals-util';
-import { SupportedEVMChain } from './types';
 
 jest.mock('../../../../shared/modules/selectors/networks');
 

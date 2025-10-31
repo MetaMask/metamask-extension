@@ -1560,7 +1560,7 @@ export async function withSolanaAccountSnap(
     mockSwapSOLtoUSDC,
     mockSwapWithNoQuotes,
     walletConnect = false,
-    dappPaths,
+    dappOptions,
     withProtocolSnap,
     withCustomMocks,
     withFixtureBuilder,
@@ -1579,7 +1579,10 @@ export async function withSolanaAccountSnap(
     mockSwapSOLtoUSDC?: boolean;
     mockSwapWithNoQuotes?: boolean;
     walletConnect?: boolean;
-    dappPaths?: string[];
+    dappOptions?: {
+      numberOfTestDapps?: number;
+      customDappPaths?: string[];
+    };
     withProtocolSnap?: boolean;
     withCustomMocks?: (
       mockServer: Mockttp,
@@ -1617,7 +1620,7 @@ export async function withSolanaAccountSnap(
       fixtures: fixtures.build(),
       title,
       forceBip44Version: state === 2 ? 2 : 0,
-      dapp: true,
+      dappOptions: dappOptions ?? { numberOfTestDapps: 1 },
       manifestFlags: {
         // This flag is used to enable/disable the remote mode for the carousel
         // component, which will impact to the slides count.
@@ -1630,7 +1633,6 @@ export async function withSolanaAccountSnap(
             : featureFlags,
         },
       },
-      dappPaths,
       testSpecificMock: async (mockServer: Mockttp) => {
         const mockList: MockedEndpoint[] = [];
         mockList.push(await simulateSolanaTransaction(mockServer));

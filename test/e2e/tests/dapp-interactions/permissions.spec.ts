@@ -11,7 +11,7 @@ describe('Permissions', function (this: Suite) {
   it('sets permissions and connect to Dapp', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

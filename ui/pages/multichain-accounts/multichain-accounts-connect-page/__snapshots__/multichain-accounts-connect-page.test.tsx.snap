@@ -83,7 +83,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             <button
               aria-disabled="false"
               aria-selected="true"
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab flex-1"
               data-testid="accounts-tab"
               role="tab"
               tabindex="0"
@@ -93,7 +93,7 @@ exports[`MultichainConnectPage renders correctly 1`] = `
             <button
               aria-disabled="false"
               aria-selected="false"
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab flex-1"
               data-testid="permissions-tab"
               role="tab"
               tabindex="-1"
@@ -330,7 +330,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             <button
               aria-disabled="false"
               aria-selected="true"
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab flex-1"
               data-testid="accounts-tab"
               role="tab"
               tabindex="0"
@@ -340,7 +340,7 @@ exports[`MultichainConnectPage renders with existing permissions correctly 1`] =
             <button
               aria-disabled="false"
               aria-selected="false"
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab flex-1"
               data-testid="permissions-tab"
               role="tab"
               tabindex="-1"
@@ -577,7 +577,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             <button
               aria-disabled="false"
               aria-selected="true"
-              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab"
+              class="text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default text-default border-b-text-default multichain-connect-page__tab flex-1"
               data-testid="accounts-tab"
               role="tab"
               tabindex="0"
@@ -587,7 +587,7 @@ exports[`MultichainConnectPage renders with multichain origin request correctly 
             <button
               aria-disabled="false"
               aria-selected="false"
-              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab"
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-medium font-default text-center flex align-middle justify-center border-b-2 border-transparent px-0 py-1 transition-all duration-200 cubic-bezier(0.7, 0, 0.15, 1) hover:enabled:text-default multichain-connect-page__tab flex-1"
               data-testid="permissions-tab"
               role="tab"
               tabindex="-1"

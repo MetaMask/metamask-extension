@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   type NetworkControllerGetEIP1559CompatibilityAction,
   NetworkControllerGetNetworkClientByIdAction,
@@ -7,6 +7,7 @@ import {
   NetworkControllerNetworkDidChangeEvent,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | NetworkControllerGetStateAction
@@ -27,17 +28,27 @@ export type GasFeeControllerMessenger = ReturnType<
  * messenger.
  */
 export function getGasFeeControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'GasFeeController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'GasFeeController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'GasFeeController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'NetworkController:getEIP1559Compatibility',
       'NetworkController:getNetworkClientById',
       'NetworkController:getState',
     ],
-    allowedEvents: ['NetworkController:stateChange'],
+    events: ['NetworkController:stateChange'],
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions =
@@ -60,19 +71,29 @@ export type GasFeeControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getGasFeeControllerInitMessenger(
-  messenger: Messenger<
+  messenger: RootMessenger<
     AllowedInitializationActions,
     AllowedInitializationEvents
   >,
 ) {
-  return messenger.getRestricted({
-    name: 'GasFeeControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'GasFeeControllerInit',
+    AllowedInitializationActions,
+    AllowedInitializationEvents,
+    typeof messenger
+  >({
+    namespace: 'GasFeeControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'NetworkController:getEIP1559Compatibility',
       'NetworkController:getNetworkClientById',
       'NetworkController:getSelectedNetworkClient',
       'NetworkController:getState',
     ],
-    allowedEvents: ['NetworkController:networkDidChange'],
+    events: ['NetworkController:networkDidChange'],
   });
+  return controllerInitMessenger;
 }

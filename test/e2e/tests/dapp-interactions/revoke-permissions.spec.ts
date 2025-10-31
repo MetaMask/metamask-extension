@@ -8,7 +8,7 @@ describe('Wallet Revoke Permissions', function (this: Suite) {
   it('should revoke "eth_accounts" permissions via test dapp', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -35,7 +35,7 @@ describe('Wallet Revoke Permissions', function (this: Suite) {
   it('should revoke "endowment:permitted-chains" permissions', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

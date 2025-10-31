@@ -37,11 +37,14 @@ const ShieldSubscriptionApproveInfo = () => {
     .div(10 ** (decimals ?? 0))
     .toFixed();
 
-  const { productPrice, pending: productPricePending } =
-    useShieldSubscriptionPricingFromTokenApproval({
-      transactionMeta,
-      decodedApprovalAmount,
-    });
+  const {
+    productPrice,
+    pending: productPricePending,
+    selectedTokenPrice,
+  } = useShieldSubscriptionPricingFromTokenApproval({
+    transactionMeta,
+    decodedApprovalAmount,
+  });
 
   const { trialedProducts, loading: subscriptionsLoading } =
     useUserSubscriptions();
@@ -64,6 +67,7 @@ const ShieldSubscriptionApproveInfo = () => {
         tokenAddress={transactionMeta?.txParams?.to as Hex}
         chainId={transactionMeta?.chainId}
         productPrice={productPrice}
+        tokenSymbol={selectedTokenPrice?.symbol}
       />
       <AccountDetails
         accountAddress={transactionMeta?.txParams?.from as Hex}

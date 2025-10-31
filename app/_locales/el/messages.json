@@ -2753,32 +2753,11 @@
   "importNFTTokenIdToolTip": {
     "message": "Το αναγνωριστικό ενός NFT είναι μοναδικό δεδομένου ότι δεν υπάρχουν δύο ίδια NFT. Και πάλι, στο OpenSea αυτός ο αριθμός βρίσκεται στην ενότητα \"Λεπτομέρειες\". Σημειώστε τον ή αντιγράψτε τον στο πρόχειρο σας."
   },
-  "importNWordSRP": {
-    "message": "Έχω μια φράση ανάκτησης $1 λέξεων",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Ιδιωτικό κλειδί"
   },
-  "importSRPDescription": {
-    "message": "Εισάγετε ένα υπάρχον πορτοφόλι με τη μυστική φράση ανάκτησης 12 ή 24 λέξεων."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Οι Μυστικές Φράσεις Ανάκτησης περιλαμβάνουν 12 ή 24 λέξεις"
-  },
-  "importSRPWordError": {
-    "message": "Η λέξη $1 είναι λανθασμένη ή ανορθόγραφη.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Οι λέξεις $1 και $2 είναι λανθασμένες ή ανορθόγραφες.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Εισαγωγή της Μυστικής Φράσης Ανάκτησης"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Προέκυψε άγνωστο σφάλμα."
   },
   "importSelectedTokens": {
     "message": "Εισαγωγή επιλεγμένων tokens;"
@@ -2797,9 +2776,6 @@
   },
   "importTokensError": {
     "message": "Δεν μπορέσαμε να εισάγουμε τα tokens. Προσπαθήστε ξανά αργότερα."
-  },
-  "importWallet": {
-    "message": "Εισαγωγή πορτοφολιού"
   },
   "importWalletOrAccountHeader": {
     "message": "Εισαγωγή πορτοφολιού ή λογαριασμού"

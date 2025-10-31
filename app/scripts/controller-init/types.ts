@@ -1,9 +1,8 @@
-import {
-  ActionConstraint,
+import type {
   Messenger,
+  ActionConstraint,
   EventConstraint,
-  RestrictedMessenger,
-} from '@metamask/base-controller';
+} from '@metamask/messenger';
 import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
@@ -44,17 +43,16 @@ export type ControllerPersistedState = Partial<{
 
 /** Generic controller messenger using base template types. */
 export type BaseControllerMessenger = Messenger<
+  string,
   ActionConstraint,
   EventConstraint
 >;
 
 /** Generic restricted controller messenger using base template types. */
-export type BaseRestrictedControllerMessenger = RestrictedMessenger<
+export type BaseRestrictedControllerMessenger = Messenger<
   string,
   ActionConstraint,
-  EventConstraint,
-  string,
-  string
+  EventConstraint
 >;
 
 type SnapSender = {

@@ -58,6 +58,7 @@
       "balance": "0x0"
     }
   },
+  "accountsAssets": {},
   "accountsByChainId": {
     "0xaa36a7": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
@@ -88,6 +89,7 @@
   "alertEnabledness": {
     "unconnectedAccount": true
   },
+  "allIgnoredAssets": {},
   "allNftContracts": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
       "0x1": [
@@ -302,6 +304,7 @@
   },
   "announcements": [],
   "approvalFlows": [],
+  "assetsMetadata": {},
   "browserEnvironment": {
     "os": "mac",
     "browser": "chrome"

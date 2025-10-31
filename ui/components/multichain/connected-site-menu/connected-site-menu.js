@@ -38,13 +38,13 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
   const referenceElement = useRef(null);
 
   const subjectMetadata = useSelector(getSubjectMetadata);
-  const connectedOrigin = useSelector(getOriginOfCurrentTab);
+  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const permittedAccountsByOrigin = useSelector((state) =>
-    getAllPermittedAccounts(state, connectedOrigin),
+    getAllPermittedAccounts(state, activeTabOrigin),
   );
   const dappActiveNetwork = useSelector(getDappActiveNetwork);
   const currentTabHasNoAccounts = !permittedAccountsByOrigin?.length;
-  const connectedSubjectsMetadata = subjectMetadata[connectedOrigin];
+  const connectedSubjectsMetadata = subjectMetadata[activeTabOrigin];
 
   // Get network image URL for the badge
   const getNetworkImageSrc = () => {
@@ -108,7 +108,7 @@ export const ConnectedSiteMenu = ({ className, disabled, onClick, status }) => {
           isConnected={status === STATUS_CONNECTED}
           onClick={onClick}
           onClose={() => setShowPopover(false)}
-          connectedOrigin={connectedOrigin}
+          connectedOrigin={activeTabOrigin}
         />
       )}
     </>

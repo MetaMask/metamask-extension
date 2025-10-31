@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
 import type {
   AddApprovalRequest,
@@ -15,6 +15,7 @@ import {
   MultichainRouterIsSupportedScopeAction,
 } from '@metamask/snaps-controllers';
 import { SnapPermissionSpecificationsActions } from '../../controllers/permissions/snaps/specifications';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | AddApprovalRequest
@@ -37,11 +38,20 @@ export type PermissionControllerMessenger = ReturnType<
  * messenger.
  */
 export function getPermissionControllerMessenger(
-  messenger: Messenger<AllowedActions, never>,
+  messenger: RootMessenger<AllowedActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'PermissionController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'PermissionController',
+    AllowedActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'PermissionController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'ApprovalController:addRequest',
       'ApprovalController:hasRequest',
       'ApprovalController:acceptRequest',
@@ -50,8 +60,8 @@ export function getPermissionControllerMessenger(
       'SnapController:install',
       'SubjectMetadataController:getSubjectMetadata',
     ],
-    allowedEvents: [],
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions =
@@ -73,11 +83,20 @@ export type PermissionControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getPermissionControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'PermissionControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'PermissionControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'PermissionControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'AppStateController:getUnlockPromise',
       'AccountsController:listAccounts',
       'CurrencyRateController:getState',
@@ -98,6 +117,6 @@ export function getPermissionControllerInitMessenger(
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
     ],
-    allowedEvents: [],
   });
+  return controllerInitMessenger;
 }

@@ -687,13 +687,15 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
                     value={showTestnets || currentlyOnTestnet}
                     disabled={currentlyOnTestnet}
                     onToggle={(value: boolean) => {
-                      dispatch(setShowTestNetworks(!value));
-                      if (!value) {
-                        trackEvent({
-                          event: MetaMetricsEventName.TestNetworksDisplayed,
-                          category: MetaMetricsEventCategory.Network,
-                        });
-                      }
+                      const newVal = !value;
+                      dispatch(setShowTestNetworks(newVal));
+                      trackEvent({
+                        event: MetaMetricsEventName.TestNetworksDisplayed,
+                        category: MetaMetricsEventCategory.Network,
+                        properties: {
+                          value: newVal,
+                        },
+                      });
                     }}
                   />
                 </Box>
