@@ -50,7 +50,8 @@ import {
 import { SubmitClaimError } from '../claim-error';
 
 const VALID_SUBMISSION_WINDOW_DAYS = 21;
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const MAX_FILE_SIZE_MB = 5;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 const ERROR_MESSAGE_MAP: Partial<
   Record<
@@ -551,9 +552,9 @@ const SubmitClaimForm = () => {
         label={t('shieldClaimFileUploader')}
         onChange={(inputFiles) => setFiles(inputFiles as FileList)}
         accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
-        acceptText={t('shieldClaimFileUploaderAcceptText')}
+        acceptText={t('shieldClaimFileUploaderAcceptText', [MAX_FILE_SIZE_MB])}
         helpText={t('shieldClaimFileUploaderHelpText')}
-        maxFileSize={MAX_FILE_SIZE}
+        maxFileSize={MAX_FILE_SIZE_BYTES}
       />
       <Box className="settings-page__content-item-col">
         <Button
