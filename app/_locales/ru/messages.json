@@ -4049,9 +4049,6 @@
     "message": "Значок $1",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Выберите вариант продолжения"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Запустить расширение"
   },
@@ -7123,9 +7120,6 @@
   },
   "welcomeBack": {
     "message": "С возвращением!"
-  },
-  "welcomeToMetaMask": {
-    "message": "Давайте приступим к делу"
   },
   "whatsThis": {
     "message": "Что это?"

@@ -4049,9 +4049,6 @@
     "message": "$1 아이콘",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "계속하려면 옵션을 선택하세요"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "확장 프로그램 실행"
   },
@@ -7123,9 +7120,6 @@
   },
   "welcomeBack": {
     "message": "재방문을 환영합니다!"
-  },
-  "welcomeToMetaMask": {
-    "message": "시작하기"
   },
   "whatsThis": {
     "message": "이것은 무엇인가요?"

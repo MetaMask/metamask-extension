@@ -81,12 +81,21 @@
   &__dropdown--welcome--login {
     .dropdown__select {
       border: 0;
-      background-color: var(--color-accent02-light);
-      color: var(--color-accent02-dark);
+      background-color: black;
+      color: white;
+
+      @media (prefers-color-scheme: dark) {
+        background-color: var(--color-accent02-light);
+        color: var(--color-accent02-dark);
+      }
     }
 
     .dropdown__icon-caret-down {
-      color: var(--color-accent02-dark);
+      color: white;
+
+      @media (prefers-color-scheme: dark) {
+        color: var(--color-accent02-dark);
+      }
     }
   }
 

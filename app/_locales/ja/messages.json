@@ -4049,9 +4049,6 @@
     "message": "$1アイコン",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "オプションを1つ選択して続行します"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "拡張機能を起動する"
   },
@@ -7123,9 +7120,6 @@
   },
   "welcomeBack": {
     "message": "お帰りなさい"
-  },
-  "welcomeToMetaMask": {
-    "message": "始めましょう"
   },
   "whatsThis": {
     "message": "これは何ですか？"

@@ -4049,9 +4049,6 @@
     "message": "Ikon $1",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Pilih opsi untuk melanjutkan"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Luncurkan ekstensi"
   },
@@ -7123,9 +7120,6 @@
   },
   "welcomeBack": {
     "message": "Selamat datang kembali"
-  },
-  "welcomeToMetaMask": {
-    "message": "Mari kita mulai"
   },
   "whatsThis": {
     "message": "Apa ini?"

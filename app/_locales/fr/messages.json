@@ -4049,9 +4049,6 @@
     "message": "Icône $1",
     "description": "$1 is the icon name"
   },
-  "onboardingOptionTitle": {
-    "message": "Choisissez une option pour continuer"
-  },
   "onboardingPinExtensionAltLaunch": {
     "message": "Lancer l’extension"
   },
@@ -7123,9 +7120,6 @@
   },
   "welcomeBack": {
     "message": "Nous sommes heureux de vous revoir"
-  },
-  "welcomeToMetaMask": {
-    "message": "C’est parti !"
   },
   "whatsThis": {
     "message": "Qu’est-ce que c’est ?"
