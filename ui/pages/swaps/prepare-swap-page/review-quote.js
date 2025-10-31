@@ -12,6 +12,12 @@ import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
 import { captureException } from '../../../../shared/lib/sentry';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { I18nContext } from '../../../contexts/i18n';
@@ -102,17 +108,12 @@ import {
 import { GasRecommendations } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
-import Box from '../../../components/ui/box';
 import {
   TextColor,
-  JustifyContent,
-  DISPLAY,
-  AlignItems,
   TextVariant,
   FRACTIONS,
   TEXT_ALIGN,
   Size,
-  FlexDirection,
   Severity,
   FontStyle,
 } from '../../../helpers/constants/design-system';
@@ -1204,14 +1205,12 @@ export default function ReviewQuote({
         <Box
           marginTop={1}
           marginBottom={0}
-          display={DISPLAY.FLEX}
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
           className="review-quote__overview"
         >
           <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.center}
+            justifyContent={BoxJustifyContent.SpaceBetween}
+            alignItems={BoxAlignItems.Center}
           >
             <Text
               variant={TextVariant.bodyMd}
@@ -1237,13 +1236,11 @@ export default function ReviewQuote({
           </Box>
           {isGasIncludedTrade && (
             <Box
-              display={DISPLAY.FLEX}
-              justifyContent={JustifyContent.spaceBetween}
-              alignItems={AlignItems.stretch}
+              justifyContent={BoxJustifyContent.SpaceBetween}
+              alignItems={BoxAlignItems.Stretch}
             >
               <Box
-                display={DISPLAY.FLEX}
-                alignItems={AlignItems.center}
+                alignItems={BoxAlignItems.Center}
                 width={FRACTIONS.SIX_TWELFTHS}
               >
                 <Text
@@ -1283,9 +1280,8 @@ export default function ReviewQuote({
                 />
               </Box>
               <Box
-                display={DISPLAY.FLEX}
-                justifyContent={JustifyContent.flexEnd}
-                alignItems={AlignItems.flexEnd}
+                justifyContent={BoxJustifyContent.FlexEnd}
+                alignItems={BoxAlignItems.FlexEnd}
                 width={FRACTIONS.SIX_TWELFTHS}
               >
                 <Text
@@ -1313,13 +1309,11 @@ export default function ReviewQuote({
           )}
           {!isGasIncludedTrade && (
             <Box
-              display={DISPLAY.FLEX}
-              justifyContent={JustifyContent.spaceBetween}
-              alignItems={AlignItems.stretch}
+              justifyContent={BoxJustifyContent.SpaceBetween}
+              alignItems={BoxAlignItems.Stretch}
             >
               <Box
-                display={DISPLAY.FLEX}
-                alignItems={AlignItems.center}
+                alignItems={BoxAlignItems.Center}
                 width={FRACTIONS.SIX_TWELFTHS}
               >
                 <Text
@@ -1357,8 +1351,7 @@ export default function ReviewQuote({
                 />
               </Box>
               <Box
-                display={DISPLAY.FLEX}
-                alignItems={AlignItems.flexEnd}
+                alignItems={BoxAlignItems.FlexEnd}
                 width={FRACTIONS.SIX_TWELFTHS}
               >
                 <Text
@@ -1385,11 +1378,10 @@ export default function ReviewQuote({
             </Box>
           )}
           {!isGasIncludedTrade && (maxFeeInFiat || maxFeeInEth) && (
-            <Box display={DISPLAY.FLEX}>
-              <Box display={DISPLAY.FLEX} width={FRACTIONS.SIX_TWELFTHS}></Box>
+            <Box>
+              <Box width={FRACTIONS.SIX_TWELFTHS}></Box>
               <Box
-                display={DISPLAY.FLEX}
-                justifyContent={JustifyContent.flexEnd}
+                justifyContent={BoxJustifyContent.FlexEnd}
                 width={FRACTIONS.SIX_TWELFTHS}
               >
                 <Text
@@ -1413,10 +1405,7 @@ export default function ReviewQuote({
             </Box>
           )}
           {!hideTokenApprovalRow && (
-            <Box
-              display={DISPLAY.FLEX}
-              justifyContent={JustifyContent.spaceBetween}
-            >
+            <Box justifyContent={BoxJustifyContent.SpaceBetween}>
               <Text
                 variant={TextVariant.bodyMd}
                 as="h6"
@@ -1438,11 +1427,10 @@ export default function ReviewQuote({
           )}
           {isGasIncludedTrade && (
             <Box
-              display={DISPLAY.FLEX}
               marginTop={3}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-              flexDirection={FlexDirection.Column}
+              justifyContent={BoxJustifyContent.Center}
+              alignItems={BoxAlignItems.Center}
+              flexDirection={BoxFlexDirection.Column}
             >
               <Text
                 variant={TextVariant.bodySm}
@@ -1461,10 +1449,9 @@ export default function ReviewQuote({
           )}
           {!isGasIncludedTrade && (
             <Box
-              display={DISPLAY.FLEX}
               marginTop={3}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
+              justifyContent={BoxJustifyContent.Center}
+              alignItems={BoxAlignItems.Center}
             >
               <Text
                 variant={TextVariant.bodySm}

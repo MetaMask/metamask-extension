@@ -3,14 +3,15 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import { setSwapsErrorKey } from '../../../store/actions';
-import Box from '../../../components/ui/box';
 import {
-  DISPLAY,
-  AlignItems,
   TextVariant,
-  FLEX_DIRECTION,
   TEXT_ALIGN,
   IconColor,
 } from '../../../helpers/constants/design-system';
@@ -38,9 +39,8 @@ export default function NotificationPage({ notificationKey }) {
   return (
     <div className="notification-page">
       <Box
-        alignItems={AlignItems.center}
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        alignItems={BoxAlignItems.Center}
+        flexDirection={BoxFlexDirection.Column}
         marginTop={10}
         marginLeft={4}
         marginRight={4}
