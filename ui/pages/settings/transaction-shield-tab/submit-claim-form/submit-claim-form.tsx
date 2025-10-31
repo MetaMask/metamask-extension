@@ -34,11 +34,18 @@ import { useClaimState } from '../../../../hooks/claims/useClaimState';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
-import { submitShieldClaim } from '../../../../store/actions';
+import {
+  submitShieldClaim,
+  setDefaultHomeActiveTabName,
+} from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
-import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  TRANSACTION_SHIELD_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../helpers/constants/routes';
+import { TRANSACTION_SHIELD_LINK } from '../../../../helpers/constants/common';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import {
   SUBMIT_CLAIM_ERROR_CODES,
@@ -313,6 +320,11 @@ const SubmitClaimForm = () => {
     [dispatch, setErrorMessage, t],
   );
 
+  const handleOpenActivityTab = useCallback(async () => {
+    dispatch(setDefaultHomeActiveTabName('activity'));
+    navigate(DEFAULT_ROUTE);
+  }, [dispatch, navigate]);
+
   const handleSubmitClaim = useCallback(async () => {
     if (isInvalidData) {
       return;
@@ -360,7 +372,13 @@ const SubmitClaimForm = () => {
         {t('shieldClaimDetails', [
           VALID_SUBMISSION_WINDOW_DAYS,
           <TextButton key="here-link" className="min-w-0" asChild>
-            <a href="#">{t('here')}</a>
+            <a
+              href={TRANSACTION_SHIELD_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t('here')}
+            </a>
           </TextButton>,
         ])}
       </Text>
@@ -475,9 +493,9 @@ const SubmitClaimForm = () => {
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
-                asChild
+                onClick={handleOpenActivityTab}
               >
-                <a href="#">{t('shieldClaimImpactedTxHashHelpTextLink')}</a>
+                {t('shieldClaimImpactedTxHashHelpTextLink')}
               </TextButton>
             </Text>
           ) : (
@@ -489,9 +507,9 @@ const SubmitClaimForm = () => {
               <TextButton
                 size={TextButtonSize.BodySm}
                 className="min-w-0"
-                asChild
+                onClick={handleOpenActivityTab}
               >
-                <a href="#">{t('shieldClaimImpactedTxHashHelpTextLink')}</a>
+                {t('shieldClaimImpactedTxHashHelpTextLink')}
               </TextButton>
             </Text>
           )
