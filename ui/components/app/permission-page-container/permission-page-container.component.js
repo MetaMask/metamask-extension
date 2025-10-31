@@ -134,7 +134,7 @@ export default class PermissionPageContainer extends Component {
 
   onCancel = () => {
     const { request, rejectPermissionsRequest } = this.props;
-    rejectPermissionsRequest(request.metadata.id);
+    rejectPermissionsRequest(request?.metadata?.id);
   };
 
   onSubmit = () => {
@@ -169,7 +169,7 @@ export default class PermissionPageContainer extends Component {
     if (Object.keys(request.permissions).length > 0) {
       approvePermissionsRequest(request);
     } else {
-      rejectPermissionsRequest(request.metadata.id);
+      rejectPermissionsRequest(request?.metadata?.id);
     }
   };
 
