@@ -126,7 +126,7 @@ describe('Account syncing - Multiple SRPs', function () {
 
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
-        await driver.delay(2000); // Since we'll have two potential 'Account 2's, it's difficult to wait for the new one to appear, so just wait a bit
+        await waitUntilSyncedAccountsNumberEquals(4);
 
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 2',
