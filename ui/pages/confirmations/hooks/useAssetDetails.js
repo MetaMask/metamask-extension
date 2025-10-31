@@ -43,8 +43,9 @@ export function useAssetDetails(
   const prevTokenBalance = usePrevious(tokensWithBalances);
 
   useEffect(() => {
+    let isMounted = true;
     if (!tokenAddress && !userAddress && !transactionData) {
-      return;
+      return () => undefined;
     }
 
     async function getAndSetAssetDetails() {
@@ -57,7 +58,9 @@ export function useAssetDetails(
           nfts,
           chainId,
         );
-        setCurrentAsset(assetDetails);
+        if (isMounted) {
+          setCurrentAsset(assetDetails);
+        }
       } catch (e) {
         console.warn('Unable to set asset details', {
           error: e,
@@ -74,6 +77,10 @@ export function useAssetDetails(
     ) {
       getAndSetAssetDetails();
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [
     chainId,
     dispatch,
