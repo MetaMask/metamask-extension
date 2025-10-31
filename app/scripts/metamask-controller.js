@@ -3818,7 +3818,6 @@ export default class MetamaskController extends EventEmitter {
    * and user has changed password more than 20 times since the last time they used the app on this device.
    */
   async syncPasswordAndUnlockWallet(password) {
-    let isPasswordSynced = false;
     const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
     // check if the password is outdated
     let isPasswordOutdated = false;
@@ -3854,8 +3853,7 @@ export default class MetamaskController extends EventEmitter {
               });
           });
       }
-      isPasswordSynced = true;
-      return isPasswordSynced;
+      return;
     }
     const releaseLock = await this.seedlessOperationMutex.acquire();
 
@@ -3880,10 +3878,6 @@ export default class MetamaskController extends EventEmitter {
           globalPassword: password,
           maxKeyChainLength: 20,
         })
-        .then(() => {
-          // Case 1.
-          isPasswordSynced = true;
-        })
         .catch((err) => {
           log.error(
             `error while submitting global password: ${err.message} , isKeyringPasswordValid: ${isKeyringPasswordValid}`,
@@ -3900,21 +3894,10 @@ export default class MetamaskController extends EventEmitter {
               );
             }
             throw new JsonRpcError(-32603, err.message, err.data);
-          } else if (
-            err.message ===
-            SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded
-          ) {
-            isPasswordSynced = false;
           } else {
             throw err;
           }
         });
-
-      // we are unable to recover the old pwd enc key as user is on a very old device.
-      // we will ask user to restart the social login flow to continue.
-      if (!isPasswordSynced) {
-        return isPasswordSynced;
-      }
 
       // re-encrypt the old vault data with the latest global password
       const keyringEncryptionKey =
@@ -3981,7 +3964,6 @@ export default class MetamaskController extends EventEmitter {
           data: { success: changePasswordSuccess },
         });
       }
-      return isPasswordSynced;
     } finally {
       releaseLock();
     }

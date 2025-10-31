@@ -92,10 +92,6 @@ class UnlockPage extends Component {
      */
     checkIsSeedlessOnboardingUserAuthenticated: PropTypes.func,
     /**
-     * show connections removed modal
-     */
-    showConnectionsRemovedModal: PropTypes.bool,
-    /**
      * Force update metamask data state
      */
     forceUpdateMetamaskState: PropTypes.func,
@@ -129,6 +125,7 @@ class UnlockPage extends Component {
     isSubmitting: false,
     unlockDelayPeriod: 0,
     showLoginErrorModal: false,
+    showConnectionsRemovedModal: false,
   };
 
   failed_attempts = 0;
@@ -330,6 +327,10 @@ class UnlockPage extends Component {
         finalErrorMessage = message;
         this.setState({ showLoginErrorModal: true });
         break;
+      case SeedlessOnboardingControllerErrorMessage.MaxKeyChainLengthExceeded:
+        finalErrorMessage = message;
+        this.setState({ showConnectionsRemovedModal: true });
+        break;
       default:
         finalErrorMessage = message;
         break;
@@ -461,7 +462,10 @@ class UnlockPage extends Component {
   };
 
   onResetWallet = async () => {
-    this.setState({ showLoginErrorModal: false });
+    this.setState({
+      showLoginErrorModal: false,
+      showConnectionsRemovedModal: false,
+    });
     await this.props.resetWallet();
     this.props.history.replace(DEFAULT_ROUTE);
   };
@@ -473,12 +477,9 @@ class UnlockPage extends Component {
       isLocked,
       showResetPasswordModal,
       showLoginErrorModal,
-    } = this.state;
-    const {
-      isOnboardingCompleted,
-      isSocialLoginFlow,
       showConnectionsRemovedModal,
-    } = this.props;
+    } = this.state;
+    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');

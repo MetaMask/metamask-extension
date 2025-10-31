@@ -18,6 +18,8 @@ const OnboardingRoute = { pathname: ONBOARDING_ROUTE };
  */
 export default function Authenticated(props) {
   const { isUnlocked, completedOnboarding } = props;
+  console.log('isUnlocked', isUnlocked);
+  console.log('completedOnboarding', completedOnboarding);
   const location = useLocation();
 
   switch (true) {

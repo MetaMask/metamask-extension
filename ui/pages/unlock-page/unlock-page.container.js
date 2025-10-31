@@ -25,7 +25,6 @@ import {
 } from '../../selectors';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import UnlockPage from './unlock-page.component';
-import log from 'loglevel';
 
 const mapStateToProps = (state) => {
   const {
@@ -77,12 +76,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 
   const onSubmit = async (password) => {
-    const isPasswordSynced = await propsTryUnlockMetamask(password);
-    console.log('isPasswordSynced in container', isPasswordSynced);
-    if (!isPasswordSynced) {
-      log.warn('Password is not synced, showing connections removed modal');
-      return;
-    }
+    await propsTryUnlockMetamask(password);
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     let redirectTo = DEFAULT_ROUTE;
     if (location.state?.from?.pathname) {
