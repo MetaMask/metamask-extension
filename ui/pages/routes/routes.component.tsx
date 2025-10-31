@@ -630,10 +630,17 @@ export default function Routes() {
             component={CrossChainSwapTxDetails}
             exact
           />
-          <Authenticated
-            path={CROSS_CHAIN_SWAP_ROUTE}
-            component={CrossChainSwap}
-          />
+          <Route path={CROSS_CHAIN_SWAP_ROUTE}>
+            {(props: RouteComponentProps) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const CrossChainSwapComponent = CrossChainSwap as any;
+              return (
+                <AuthenticatedV5Compat>
+                  <CrossChainSwapComponent location={props.location} />
+                </AuthenticatedV5Compat>
+              );
+            }}
+          </Route>
           <Authenticated
             path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
             component={ConfirmAddSuggestedTokenPage}
