@@ -1788,6 +1788,14 @@ export async function withSolanaAccountSnap(
     }) => {
       await loginWithBalanceValidation(driver);
 
+      // Change to Solana
+      await driver.clickElement('[data-testid="sort-by-networks"]');
+      await driver.clickElement({
+        text: 'Popular',
+        tag: 'button',
+      });
+      await driver.clickElement('[data-testid="Solana"]');
+
       await test(driver, mockServer, extensionId);
     },
   );

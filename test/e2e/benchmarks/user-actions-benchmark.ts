@@ -13,6 +13,8 @@ import { unlockWallet, withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import BridgeQuotePage from '../page-objects/pages/bridge/quote-page';
 import HomePage from '../page-objects/pages/home/homepage';
+import HeaderNavbar from '../page-objects/pages/header-navbar';
+import AccountListPage from '../page-objects/pages/account-list-page';
 import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
   MOCK_TOKENS_ETHEREUM,
@@ -45,20 +47,13 @@ async function loadNewAccount(): Promise<number> {
     async ({ driver }: { driver: Driver }) => {
       await unlockWallet(driver);
 
-      await driver.clickElement('[data-testid="account-menu-icon"]');
-      await driver.clickElement(
-        '[data-testid="multichain-account-menu-popover-action-button"]',
-      );
+      const headerNavbar = new HeaderNavbar(driver);
+      await headerNavbar.openAccountsPage();
+      const accountListPage = new AccountListPage(driver);
+      await accountListPage.checkPageIsLoaded();
+
       const timestampBeforeAction = new Date();
-      await driver.clickElement(
-        '[data-testid="multichain-account-menu-popover-add-account"]',
-      );
-      await driver.fill('[placeholder="Account 2"]', '2nd account');
-      await driver.clickElement({ text: 'Add account', tag: 'button' });
-      await driver.waitForSelector({
-        css: '.currency-display-component__text',
-        text: '0',
-      });
+      await accountListPage.addMultichainAccount()
       const timestampAfterAction = new Date();
       loadingTimes =
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
@@ -101,11 +96,10 @@ async function confirmTx(): Promise<number> {
       );
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
+          '[data-testid="activity-list-item-action"]'
         );
         return confirmedTxes.length === 1;
       }, 10000);
-
       await driver.waitForSelector('.transaction-status-label--confirmed');
       const timestampAfterAction = new Date();
       loadingTimes =

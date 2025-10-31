@@ -65,9 +65,7 @@ describe('Account syncing - Multiple SRPs', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Verify default account is visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -120,9 +118,7 @@ describe('Account syncing - Multiple SRPs', function () {
 
         // Add a fourth account with custom name to the second SRP
         await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Add account with custom name to specific SRP
         await accountListPage.addMultichainAccount({
