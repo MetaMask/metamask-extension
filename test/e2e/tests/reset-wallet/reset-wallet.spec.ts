@@ -42,8 +42,7 @@ describe('Reset Wallet - ', function () {
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        const isSocialImportFlow = true;
-        await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
+        await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -80,7 +79,7 @@ describe('Reset Wallet - ', function () {
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage(WALLET_PASSWORD);
 
-        await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
+        await onboardingCompletePage.completeOnboarding();
         await homePage.headerNavbar.checkPageIsLoaded();
       },
     );
@@ -109,8 +108,7 @@ describe('Reset Wallet - ', function () {
         });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        const isSocialImportFlow = true;
-        await onboardingCompletePage.completeOnboarding(isSocialImportFlow);
+        await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
