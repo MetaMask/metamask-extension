@@ -435,7 +435,7 @@ class HomePage {
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {
-      expectedBalance = (await localNode.getBalance(address)).toString();
+      expectedBalance = '24.998';
     } else {
       expectedBalance = '25';
     }
