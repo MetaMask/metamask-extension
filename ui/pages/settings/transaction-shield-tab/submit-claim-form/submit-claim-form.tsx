@@ -2,24 +2,19 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { isValidHexAddress } from '@metamask/controller-utils';
 import { isStrictHexString } from '@metamask/utils';
 import {
-  AvatarAccountSize,
   Box,
   BoxBorderColor,
   Button,
   ButtonSize,
   ButtonVariant,
   FontWeight,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   Text,
   TextButton,
   TextButtonSize,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -48,17 +43,13 @@ import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import { isSafeChainId } from '../../../../../shared/modules/network.utils';
 import {
-  AccountSelectorWallet,
   SUBMIT_CLAIM_ERROR_CODES,
   SUBMIT_CLAIM_FIELDS,
   SubmitClaimErrorCode,
   SubmitClaimField,
 } from '../types';
 import { SubmitClaimError } from '../claim-error';
-import AccountSelectorModal from '../account-selector-modal';
-import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
-import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
-import { useAccountAddressSeedIconMap } from '../../../confirmations/hooks/send/useAccountAddressSeedIconMap';
+import AccountSelector from '../account-selector';
 
 const VALID_SUBMISSION_WINDOW_DAYS = 21;
 const MAX_FILE_SIZE_MB = 5;
@@ -124,7 +115,6 @@ const SubmitClaimForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [claimSubmitLoading, setClaimSubmitLoading] = useState(false);
-  const [showAccountListMenu, setShowAccountListMenu] = useState(false);
 
   const {
     chainId,
@@ -142,64 +132,6 @@ const SubmitClaimForm = () => {
     files,
     setFiles,
   } = useClaimState();
-
-  // Account list
-  const wallets = useSelector(getWalletsWithAccounts);
-  const { accountAddressSeedIconMap } = useAccountAddressSeedIconMap();
-
-  // Group recipients by wallet name
-  const accountsGroupedByWallet: Record<string, AccountSelectorWallet> =
-    useMemo(() => {
-      return Object.values(wallets).reduce(
-        (acc, wallet) => {
-          const walletName = wallet.metadata.name;
-          if (!acc[walletName]) {
-            acc[walletName] = {
-              id: wallet.id,
-              name: wallet.metadata.name,
-              accounts: [],
-            };
-          }
-          Object.values(wallet.groups).forEach((group) => {
-            // get evm account from group
-            const evmAccount = group.accounts.find((account) =>
-              account.type.startsWith('eip155:'),
-            );
-            if (evmAccount) {
-              acc[walletName].accounts.push({
-                id: group.id,
-                name: group.metadata.name,
-                address: evmAccount.address,
-                seedIcon: accountAddressSeedIconMap.get(
-                  evmAccount.address.toLowerCase(),
-                ),
-                type: evmAccount.type,
-              });
-            }
-          });
-          return acc;
-        },
-        {} as Record<string, AccountSelectorWallet>,
-      );
-    }, [wallets, accountAddressSeedIconMap]);
-
-  const selectedAccountInfo = useMemo(() => {
-    const selectedWallet = Object.values(accountsGroupedByWallet).find(
-      (wallet) =>
-        wallet.accounts.some(
-          (account) => account.address === impactedWalletAddress,
-        ),
-    );
-
-    if (selectedWallet) {
-      return (
-        selectedWallet.accounts.find(
-          (account) => account.address === impactedWalletAddress,
-        ) ?? null
-      );
-    }
-    return null;
-  }, [accountsGroupedByWallet, impactedWalletAddress]);
 
   const [errors, setErrors] = useState<
     Partial<
@@ -250,22 +182,28 @@ const SubmitClaimForm = () => {
     }
   }, [email, setErrorMessage, t]);
 
-  const validateReimbursementEqualsImpactedWalletAddress = useCallback(() => {
-    if (!reimbursementWalletAddress || !impactedWalletAddress) {
-      return;
-    }
+  const validateReimbursementEqualsImpactedWalletAddress = useCallback(
+    (newImpactedWalletAddress?: string) => {
+      const addressToCompare =
+        newImpactedWalletAddress ?? impactedWalletAddress;
 
-    const isReimbursementEqualsImpactedWalletAddress =
-      reimbursementWalletAddress.toLowerCase() ===
-      impactedWalletAddress.toLowerCase();
+      if (!reimbursementWalletAddress || !addressToCompare) {
+        return;
+      }
 
-    setErrorMessage(
-      SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-      isReimbursementEqualsImpactedWalletAddress
-        ? t('shieldClaimSameWalletAddressesError')
-        : undefined,
-    );
-  }, [reimbursementWalletAddress, impactedWalletAddress, setErrorMessage, t]);
+      const isReimbursementEqualsImpactedWalletAddress =
+        reimbursementWalletAddress.toLowerCase() ===
+        addressToCompare.toLowerCase();
+
+      setErrorMessage(
+        SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+        isReimbursementEqualsImpactedWalletAddress
+          ? t('shieldClaimSameWalletAddressesError')
+          : undefined,
+      );
+    },
+    [reimbursementWalletAddress, impactedWalletAddress, setErrorMessage, t],
+  );
 
   const validateReimbursementWalletAddress = useCallback(() => {
     if (reimbursementWalletAddress) {
@@ -525,38 +463,13 @@ const SubmitClaimForm = () => {
         ></Box>
       </Box>
 
-      <Box>
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-          {t('shieldClaimImpactedWalletAddress')}*
-        </Text>
-        <Box
-          asChild
-          borderColor={BoxBorderColor.BorderDefault}
-          className="w-full flex items-center gap-2 px-4 h-12 border rounded-lg"
-          onClick={() => setShowAccountListMenu(true)}
-        >
-          <button>
-            {selectedAccountInfo ? (
-              <>
-                <PreferredAvatar
-                  address={selectedAccountInfo?.seedIcon ?? ''}
-                  size={AvatarAccountSize.Sm}
-                />
-                <Text>{selectedAccountInfo?.name}</Text>
-              </>
-            ) : (
-              <Text>Select an account</Text>
-            )}
-
-            <Icon
-              className="ml-auto"
-              size={IconSize.Sm}
-              color={IconColor.IconDefault}
-              name={IconName.ArrowDown}
-            />
-          </button>
-        </Box>
-      </Box>
+      <AccountSelector
+        impactedWalletAddress={impactedWalletAddress}
+        onAccountSelect={(address) => {
+          setImpactedWalletAddress(address);
+          validateReimbursementEqualsImpactedWalletAddress(address);
+        }}
+      />
 
       <FormTextField
         label={`${t('shieldClaimChainId')}*`}
@@ -676,18 +589,6 @@ const SubmitClaimForm = () => {
         </Button>
       </Box>
       {claimSubmitLoading && <LoadingScreen />}
-
-      {showAccountListMenu && (
-        <AccountSelectorModal
-          onClose={() => setShowAccountListMenu(false)}
-          wallets={accountsGroupedByWallet}
-          onAccountSelect={(address) => {
-            setImpactedWalletAddress(address);
-            setShowAccountListMenu(false);
-            validateReimbursementEqualsImpactedWalletAddress();
-          }}
-        />
-      )}
     </Box>
   );
 };
