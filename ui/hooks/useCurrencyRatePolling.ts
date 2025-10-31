@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getChainIdsToPoll,
   getUseCurrencyRateCheck,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
 } from '../selectors';
 import { getEnabledChainIds } from '../selectors/multichain/networks';
 import {
@@ -28,9 +28,10 @@ const usePollingEnabled = () => {
 };
 
 const useNativeCurrencies = (isPollingEnabled: boolean) => {
+  const isMounted = useRef(false);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    getUseSafeChainsListValidation,
   );
   const [nativeCurrencies, setNativeCurrencies] = useState<string[]>([]);
   const chainIds = useSelector(getChainIdsToPoll);
@@ -39,6 +40,13 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
   const pollableChains = isGlobalNetworkSelectorRemoved
     ? enabledChainIds
     : chainIds;
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     // Use validated currency tickers
@@ -64,7 +72,9 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
           currency !== null,
       );
       const uniqueCurrencies = [...new Set(filteredCurrencies)];
-      setNativeCurrencies(uniqueCurrencies);
+      if (isMounted.current) {
+        setNativeCurrencies(uniqueCurrencies);
+      }
     };
     fetchNativeCurrencies();
   }, [

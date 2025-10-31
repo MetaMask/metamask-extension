@@ -16,10 +16,14 @@ const useMultiPolling = <PollingInput>(
 ) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const pollingTokens = useRef<Map<string, string>>(new Map());
+  const prevPollingInputStringified = useRef<string | null>(null);
+  const hasPollingInputUpdated =
+    JSON.stringify(usePollingOptions.input) !==
+    prevPollingInputStringified.current;
 
   useEffect(() => {
-    if (!completedOnboarding) {
-      // don't start polling if no selected account or onboarding is not completed yet
+    // don't start polling if no selected account or onboarding is not completed yet
+    if (!completedOnboarding || !hasPollingInputUpdated) {
       return;
     }
 
@@ -44,10 +48,15 @@ const useMultiPolling = <PollingInput>(
         pollingTokens.current.delete(inputKey);
       }
     }
-  }, [
-    completedOnboarding,
-    usePollingOptions.input && JSON.stringify(usePollingOptions.input),
-  ]);
+
+    prevPollingInputStringified.current = JSON.stringify(
+      usePollingOptions.input,
+    );
+    // React Compiler doesn't allow logic that relies on the props being mutated.
+    // It also disables `JSON.stringify` deep-compares in the dependency array.
+    // So for this effect to respond to polling input changes, it needs to run on every re-render.
+    // Performance is not affected, because the early exit conditions prevent the callback from running unnecessarily.
+  });
 
   // stop all polling on dismount
   useEffect(() => {
@@ -55,6 +64,8 @@ const useMultiPolling = <PollingInput>(
       for (const token of pollingTokens.current.values()) {
         usePollingOptions.stopPollingByPollingToken(token);
       }
+      pollingTokens.current.clear();
+      prevPollingInputStringified.current = null;
     };
   }, []);
 };
