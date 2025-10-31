@@ -52,6 +52,11 @@ jest.mock('./welcome/metamask-wordmark-animation', () => ({
   },
 }));
 
+jest.mock('./creation-successful/wallet-ready-animation', () => ({
+  __esModule: true,
+  default: () => <div data-testid="wallet-ready-animation" />,
+}));
+
 // Mock the useBackupAndSync hook to avoid thunk dispatch issues
 jest.mock('../../hooks/identity/useBackupAndSync', () => ({
   useBackupAndSync: () => ({
@@ -289,15 +294,17 @@ describe('Onboarding Flow', () => {
     expect(privacySettings).toBeInTheDocument();
   });
 
-  it('should render onboarding creation/completion successful', () => {
+  it('should render onboarding creation/completion successful', async () => {
     const { queryByTestId } = renderWithProvider(
       <OnboardingFlow />,
       store,
       ONBOARDING_COMPLETION_ROUTE,
     );
 
-    const creationSuccessful = queryByTestId('wallet-ready');
-    expect(creationSuccessful).toBeInTheDocument();
+    await waitFor(() => {
+      const creationSuccessful = queryByTestId('wallet-ready');
+      expect(creationSuccessful).toBeInTheDocument();
+    });
   });
 
   it('should render onboarding Login page screen', async () => {
