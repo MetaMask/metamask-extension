@@ -1,4 +1,5 @@
 import { Duration } from 'luxon';
+import { assert } from '@metamask/utils';
 import { PriceApiTimePeriod } from './types/PriceApiTimePeriod';
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */

@@ -112,7 +112,7 @@ const useHistoricalPricesEvm = ({
       return;
     }
 
-    const chainSupported = showFiat && isChainSupportsPricing(chainId as Hex);
+    const chainSupported = showFiat && isChainSupportsPricing;
     if (!chainSupported) {
       return;
     }
