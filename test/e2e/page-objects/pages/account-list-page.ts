@@ -221,33 +221,25 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(options?: {
-    isMultichainAccountsState2Enabled?: boolean;
-  }): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
-      const selectorsToWaitFor = options?.isMultichainAccountsState2Enabled
-        ? [
-            {
-              css: this.createMultichainAccountButton,
-              text: 'Add account',
-            },
-            this.multichainAccountOptionsMenuButton,
-          ]
-        : [this.createAccountButton, this.accountOptionsMenuButton];
-      await this.driver.waitForMultipleSelectors(selectorsToWaitFor);
+      await this.driver.waitForMultipleSelectors([
+        {
+          css: this.createMultichainAccountButton,
+          text: 'Create account',
+        },
+        this.multichainAccountOptionsMenuButton,
+      ]);
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
     }
 
-    if (options?.isMultichainAccountsState2Enabled) {
-      console.log(`Check that account syncing not displayed in account list`);
-      await this.driver.assertElementNotPresent({
-        css: this.createMultichainAccountButton,
-        text: 'Syncing',
-      });
-    }
-
+    console.log(`Check that account syncing not displayed in account list`);
+    await this.driver.assertElementNotPresent({
+      css: this.createMultichainAccountButton,
+      text: 'Syncing',
+    });
     console.log('Account list is loaded');
   }
 
