@@ -31,7 +31,7 @@ export const useAssetMetadata = (
       abortControllerRef.current?.abort();
       abortControllerRef.current = null;
     };
-  }, [abortControllerRef]);
+  }, []);
 
   const { value: assetMetadata } = useAsyncResult<
     | {
@@ -61,7 +61,7 @@ export const useAssetMetadata = (
       const metadata = await fetchAssetMetadata(
         trimmedSearchQuery,
         chainId,
-        abortControllerRef.current.signal,
+        abortControllerRef.current?.signal,
       );
 
       if (metadata) {

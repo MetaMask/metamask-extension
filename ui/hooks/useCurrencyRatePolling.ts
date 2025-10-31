@@ -28,6 +28,7 @@ const usePollingEnabled = () => {
 };
 
 const useNativeCurrencies = (isPollingEnabled: boolean) => {
+  const isMounted = useRef(true);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
@@ -39,8 +40,6 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
   const pollableChains = isGlobalNetworkSelectorRemoved
     ? enabledChainIds
     : chainIds;
-
-  const isMounted = useRef(true);
 
   useEffect(() => {
     // Use validated currency tickers
@@ -59,13 +58,14 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
           return originalToken ?? n.nativeCurrency;
         }),
       );
+
+      // Use a type predicate to filter out null values.
+      const filteredCurrencies = nativeCurrenciesArray.filter(
+        (currency): currency is NonNullable<typeof currency> =>
+          currency !== null,
+      );
+      const uniqueCurrencies = [...new Set(filteredCurrencies)];
       if (isMounted.current) {
-        // Use a type predicate to filter out null values.
-        const filteredCurrencies = nativeCurrenciesArray.filter(
-          (currency): currency is NonNullable<typeof currency> =>
-            currency !== null,
-        );
-        const uniqueCurrencies = [...new Set(filteredCurrencies)];
         setNativeCurrencies(uniqueCurrencies);
       }
     };

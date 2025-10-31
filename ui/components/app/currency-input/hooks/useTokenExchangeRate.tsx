@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
@@ -45,6 +45,8 @@ export default function useTokenExchangeRate(
     ? contractExchangeRates[tokenAddress] || exchangeRates[tokenAddress]
     : undefined;
 
+  const isMounted = useRef(true);
+
   useEffect(() => {
     if (!contractExchangeRate && tokenAddress) {
       setExchangeRates((prev) => ({
@@ -52,6 +54,9 @@ export default function useTokenExchangeRate(
         [tokenAddress]: LOADING,
       }));
     }
+    return () => {
+      isMounted.current = false;
+    };
   }, [contractExchangeRate, tokenAddress]);
 
   return useMemo(() => {
@@ -78,18 +83,22 @@ export default function useTokenExchangeRate(
     if (!contractExchangeRate) {
       fetchTokenExchangeRates(nativeCurrency, [tokenAddress], chainId)
         .then((addressToExchangeRate) => {
-          setExchangeRates((prev) => ({
-            ...prev,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-            [tokenAddress]: addressToExchangeRate[tokenAddress] || FAILED,
-          }));
+          if (isMounted.current) {
+            setExchangeRates((prev) => ({
+              ...prev,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
+              // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+              [tokenAddress]: addressToExchangeRate[tokenAddress] || FAILED,
+            }));
+          }
         })
         .catch(() => {
-          setExchangeRates((prev) => ({
-            ...prev,
-            [tokenAddress]: FAILED,
-          }));
+          if (isMounted.current) {
+            setExchangeRates((prev) => ({
+              ...prev,
+              [tokenAddress]: FAILED,
+            }));
+          }
         });
       return undefined;
     }

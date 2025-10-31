@@ -9,10 +9,17 @@ export type ShieldState = {
 
 export function getCoverageStatus(
   state: ShieldState,
-  confirmationId: string,
+  confirmationId: string | undefined,
 ): { status: CoverageStatus | undefined; reasonCode: string | undefined } {
-  const coverageResults = state.metamask.coverageResults[confirmationId];
-  if (!coverageResults || coverageResults.results.length === 0) {
+  const coverageResults =
+    typeof confirmationId === 'string'
+      ? state.metamask.coverageResults[confirmationId]
+      : undefined;
+  if (
+    !coverageResults ||
+    !('results' in coverageResults) ||
+    (coverageResults.results ?? []).length === 0
+  ) {
     return { status: undefined, reasonCode: undefined };
   }
 
