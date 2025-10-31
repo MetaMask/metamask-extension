@@ -57,7 +57,6 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 const {
-  mockMultichainAccountsFeatureFlagStateOne,
   mockMultichainAccountsFeatureFlagStateTwo,
 } = require('./tests/multichain-accounts/feature-flag-mocks');
 

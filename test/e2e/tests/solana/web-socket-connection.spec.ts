@@ -9,6 +9,8 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import FixtureBuilder from '../../fixture-builder';
 import LocalWebSocketServer from '../../websocket-server';
 
+// These tests fails with BIP44 as it's no longer possible to add a Solana account
+// eslint-disable-next-line mocha/no-skipped-tests
 describe('Solana Web Socket', function (this: Suite) {
   it('a websocket connection is open when MetaMask full view is open', async function () {
     await withFixtures(

@@ -65,7 +65,7 @@ describe('Add wallet', function () {
 
         // Open account details modal and check displayed account address
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountsPage();
+        await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
@@ -90,7 +90,7 @@ describe('Add wallet', function () {
           isMultichainAccountsState2Enabled: true,
         });
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountsPage();
+        await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkNumberOfAvailableAccounts(3);
       },
@@ -126,7 +126,7 @@ describe('Add wallet', function () {
         // Wait until account list is loaded to mitigate race condition
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('Account 1');
-        await headerNavbar.openAccountsPage();
+        await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
@@ -181,7 +181,7 @@ describe('Add wallet', function () {
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.checkAccountLabel('Account 1');
-        await headerNavbar.openAccountsPage();
+        await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
