@@ -3911,14 +3911,8 @@ export default class MetamaskController extends EventEmitter {
         });
 
       // we are unable to recover the old pwd enc key as user is on a very old device.
-      // create a new vault and encrypt the new vault with the latest global password.
-      // also show a info popup to user.
+      // we will ask user to restart the social login flow to continue.
       if (!isPasswordSynced) {
-        // refresh the current auth tokens to get the latest auth tokens
-        await this.seedlessOnboardingController.refreshAuthTokens();
-        // create a new vault and encrypt the new vault with the latest global password
-        await this.restoreSocialBackupAndGetSeedPhrase(password);
-        // display info popup to user based on the password sync status
         return isPasswordSynced;
       }
 

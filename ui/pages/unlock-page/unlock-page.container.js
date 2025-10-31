@@ -18,9 +18,14 @@ import {
   resetOnboarding,
   resetWallet,
 } from '../../store/actions';
-import { getIsSocialLoginFlow, getFirstTimeFlowType } from '../../selectors';
+import {
+  getIsSocialLoginFlow,
+  getFirstTimeFlowType,
+  getShowConnectionsRemovedModal,
+} from '../../selectors';
 import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
 import UnlockPage from './unlock-page.component';
+import log from 'loglevel';
 
 const mapStateToProps = (state) => {
   const {
@@ -31,6 +36,7 @@ const mapStateToProps = (state) => {
     isSocialLoginFlow: getIsSocialLoginFlow(state),
     isOnboardingCompleted: getCompletedOnboarding(state),
     firstTimeFlowType: getFirstTimeFlowType(state),
+    showConnectionsRemovedModal: getShowConnectionsRemovedModal(state),
   };
 };
 
@@ -71,7 +77,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 
   const onSubmit = async (password) => {
-    await propsTryUnlockMetamask(password);
+    const isPasswordSynced = await propsTryUnlockMetamask(password);
+    console.log('isPasswordSynced in container', isPasswordSynced);
+    if (!isPasswordSynced) {
+      log.warn('Password is not synced, showing connections removed modal');
+      return;
+    }
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     let redirectTo = DEFAULT_ROUTE;
     if (location.state?.from?.pathname) {

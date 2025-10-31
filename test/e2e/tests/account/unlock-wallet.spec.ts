@@ -95,8 +95,8 @@ describe('Unlock wallet - ', function () {
         const loginPage = new LoginPage(driver);
         await loginPage.loginToHomepage(WALLET_PASSWORD);
 
-        await homePage.checkPageIsLoaded();
-        await homePage.checkConnectionsRemovedModalIsDisplayed();
+        // user should see the connections removed modal and reset the wallet
+        await loginPage.checkConnectionsRemovedModalIsDisplayed();
       },
     );
   });

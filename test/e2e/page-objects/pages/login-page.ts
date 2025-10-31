@@ -18,6 +18,10 @@ class LoginPage {
 
   private incorrectPasswordMessage: { css: string; text: string };
 
+  private connectionsRemovedModal: string;
+
+  private connectionsRemovedModalConfirmButton: string;
+
   constructor(driver: Driver) {
     this.driver = driver;
     this.passwordInput = '[data-testid="unlock-password"]';
@@ -37,6 +41,10 @@ class LoginPage {
     };
 
     this.resetWalletButton = '[data-testid="login-error-modal-button"]';
+
+    this.connectionsRemovedModal = '[data-testid="connections-removed-modal"]';
+    this.connectionsRemovedModalConfirmButton =
+      '[data-testid="connections-removed-modal-confirm-button"]';
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -74,6 +82,10 @@ class LoginPage {
     }
   }
 
+  async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.connectionsRemovedModal);
+  }
+
   async gotoResetPasswordPage(): Promise<void> {
     console.log('Navigating to reset password page');
     await this.driver.clickElement(this.forgotPasswordButton);
@@ -87,6 +99,12 @@ class LoginPage {
       'Resetting wallet due to unrecoverable error in social login unlock',
     );
     await this.driver.clickElementAndWaitToDisappear(this.resetWalletButton);
+  }
+
+  async resetWalletFromConnectionsRemovedModal(): Promise<void> {
+    console.log('Resetting wallet from connections removed modal');
+    await this.driver.waitForSelector(this.connectionsRemovedModal);
+    await this.driver.clickElement(this.connectionsRemovedModalConfirmButton);
   }
 }
 

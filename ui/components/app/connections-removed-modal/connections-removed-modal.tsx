@@ -26,15 +26,21 @@ import {
 } from '../../component-library';
 import { setShowConnectionsRemovedModal } from '../../../store/actions';
 
+type ConnectionsRemovedModalProps = {
+  onConfirm?: () => void;
+};
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function ConnectionsRemovedModal() {
+export default function ConnectionsRemovedModal({
+  onConfirm,
+}: ConnectionsRemovedModalProps) {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
-  const onConfirm = useCallback(() => {
+  const handleConfirm = useCallback(() => {
     dispatch(setShowConnectionsRemovedModal(false));
-  }, [dispatch]);
+    onConfirm?.();
+  }, [dispatch, onConfirm]);
 
   return (
     <Modal
@@ -64,7 +70,12 @@ export default function ConnectionsRemovedModal() {
         </ModalHeader>
         <ModalBody>{t('connectionsRemovedModalDescription')}</ModalBody>
         <ModalFooter>
-          <Button size={ButtonSize.Lg} block onClick={onConfirm}>
+          <Button
+            size={ButtonSize.Lg}
+            block
+            onClick={handleConfirm}
+            data-testid="connections-removed-modal-confirm-button"
+          >
             {t('gotIt')}
           </Button>
         </ModalFooter>

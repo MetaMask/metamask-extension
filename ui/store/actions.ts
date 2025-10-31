@@ -703,31 +703,41 @@ export function tryUnlockMetamask(
     dispatch(unlockInProgress());
     log.debug(`background.syncPasswordAndUnlockWallet`);
 
+    let isPasswordSynced = false;
+
     return new Promise<void>((resolve, reject) => {
       callBackgroundMethod(
         'syncPasswordAndUnlockWallet',
         [password],
-        (error, isPasswordSynced) => {
+        (error, isPasswordSyncedResult) => {
           if (error) {
             reject(error);
             return;
           }
+          console.log('isPasswordSynced', isPasswordSyncedResult);
           // if password is not synced show connections removal warning to user.
-          if (!isPasswordSynced) {
+          if (!isPasswordSyncedResult) {
             dispatch(setShowConnectionsRemovedModal(true));
           }
 
+          isPasswordSynced = isPasswordSyncedResult;
           resolve();
         },
       );
     })
       .then(() => {
-        dispatch(unlockSucceeded());
-        return forceUpdateMetamaskState(dispatch);
+        console.log('isPasswordSynced in then 1', isPasswordSynced);
+        if (isPasswordSynced) {
+          dispatch(unlockSucceeded());
+        }
+        forceUpdateMetamaskState(dispatch);
+        return isPasswordSynced;
       })
       .then(() => {
+        console.log('isPasswordSynced in then 2', isPasswordSynced);
         dispatch(hideLoadingIndication());
         dispatch(hideWarning());
+        return isPasswordSynced;
       })
       .catch((err) => {
         dispatch(unlockFailed(getErrorMessage(err)));

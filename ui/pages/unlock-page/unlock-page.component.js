@@ -44,6 +44,7 @@ import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
+import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
@@ -90,6 +91,10 @@ class UnlockPage extends Component {
      * check if the seedless onboarding user is authenticated for social login flow to do the rehydration
      */
     checkIsSeedlessOnboardingUserAuthenticated: PropTypes.func,
+    /**
+     * show connections removed modal
+     */
+    showConnectionsRemovedModal: PropTypes.bool,
     /**
      * Force update metamask data state
      */
@@ -469,7 +474,11 @@ class UnlockPage extends Component {
       showResetPasswordModal,
       showLoginErrorModal,
     } = this.state;
-    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
+    const {
+      isOnboardingCompleted,
+      isSocialLoginFlow,
+      showConnectionsRemovedModal,
+    } = this.props;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
@@ -495,6 +504,9 @@ class UnlockPage extends Component {
             onDone={this.onResetWallet}
             loginError={LOGIN_ERROR.RESET_WALLET}
           />
+        )}
+        {showConnectionsRemovedModal && (
+          <ConnectionsRemovedModal onConfirm={this.onResetWallet} />
         )}
         <Box
           as="form"
