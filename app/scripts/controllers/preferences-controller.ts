@@ -1093,8 +1093,10 @@ export class PreferencesController extends BaseController<
   }
 
   resetState() {
+    const defaultState = getDefaultPreferencesControllerState();
     this.update((state) => {
-      Object.assign(state, getDefaultPreferencesControllerState());
+      Object.assign(state, defaultState);
+      Object.assign(state.preferences, defaultState.preferences);
     });
   }
 }

@@ -41,9 +41,6 @@ describe('Reset Wallet - ', function () {
           driver,
         });
 
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.completeOnboarding();
-
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
 
@@ -78,8 +75,6 @@ describe('Reset Wallet - ', function () {
 
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage(WALLET_PASSWORD);
-
-        await onboardingCompletePage.completeOnboarding();
         await homePage.headerNavbar.checkPageIsLoaded();
       },
     );
@@ -106,9 +101,6 @@ describe('Reset Wallet - ', function () {
         await importWalletWithSocialLoginOnboardingFlow({
           driver,
         });
-
-        const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.completeOnboarding();
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -156,7 +148,7 @@ describe('Reset Wallet - ', function () {
           });
         }
 
-        await onboardingCompletePage.checkPageIsLoaded();
+        const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.completeOnboarding();
 
         await homePage.headerNavbar.checkPageIsLoaded();

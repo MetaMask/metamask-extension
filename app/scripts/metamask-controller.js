@@ -3426,6 +3426,9 @@ export default class MetamaskController extends EventEmitter {
     // clear SeedlessOnboardingController state
     this.seedlessOnboardingController.clearState();
 
+    // reset onboarding state
+    this.onboardingController.resetOnboarding();
+
     // clear metametrics state
     this.metaMetricsController.resetState();
 
@@ -4245,6 +4248,9 @@ export default class MetamaskController extends EventEmitter {
 
       await this.keyringController.createNewVaultAndKeychain(password);
 
+      // set is resetting wallet in progress to false, after new vault and keychain are created
+      this.appStateController.setIsWalletResetInProgress(false);
+
       const primaryKeyring = this.keyringController.state.keyrings[0];
 
       // Once we have our first HD keyring available, we re-create the internal list of
@@ -4259,9 +4265,6 @@ export default class MetamaskController extends EventEmitter {
         await this.getSnapKeyring(),
         this.accountTreeController.getSelectedAccountGroup(),
       );
-
-      // set is resetting wallet in progress to false, after new vault and keychain are created
-      this.appStateController.setIsWalletResetInProgress(false);
 
       return primaryKeyring;
     } finally {
@@ -4642,6 +4645,9 @@ export default class MetamaskController extends EventEmitter {
         seedPhraseAsUint8Array,
       );
 
+      // set is resetting wallet in progress to false, after new vault and keychain are created
+      this.appStateController.setIsWalletResetInProgress(false);
+
       // We re-created the vault, meaning we only have 1 new HD keyring
       // now. We re-create the internal list of accounts (which is
       // not an expensive operation, since we should only have 1 HD
@@ -4695,9 +4701,9 @@ export default class MetamaskController extends EventEmitter {
           await this.syncKeyringEncryptionKey();
         }
       }
-
-      // set is resetting wallet in progress to false, in case of createNewVaultAndRestore being called from resetWallet
-      this.appStateController.setIsWalletResetInProgress(false);
+    } catch (error) {
+      log.error('Error creating new vault and restoring', error);
+      throw error;
     } finally {
       releaseLock();
     }
