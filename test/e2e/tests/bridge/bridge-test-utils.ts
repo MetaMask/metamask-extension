@@ -16,6 +16,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { mockSegment } from '../metrics/mocks/segment';
+import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
@@ -38,7 +39,6 @@ import {
   SSE_RESPONSE_HEADER,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
-import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 
 export class BridgePage {
   driver: Driver;
@@ -376,9 +376,7 @@ async function mockFeatureFlags(
       return {
         ok: true,
         statusCode: 200,
-        json: [
-          { bridgeConfig: featureFlags, ...BIP44_STAGE_TWO },
-        ],
+        json: [{ bridgeConfig: featureFlags, ...BIP44_STAGE_TWO }],
       };
     });
 }
@@ -1016,7 +1014,7 @@ export const getBridgeNegativeCasesFixtures = (
   };
 };
 
-export const  getInsufficientFundsFixtures = (
+export const getInsufficientFundsFixtures = (
   featureFlags: Partial<FeatureFlagResponse> = {},
   title?: string,
 ) => {
@@ -1043,7 +1041,7 @@ export const  getInsufficientFundsFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...BIP44_STAGE_TWO
+        ...BIP44_STAGE_TWO,
       },
     },
     smartContract: SMART_CONTRACTS.HST,
