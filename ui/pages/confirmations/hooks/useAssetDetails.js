@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getTokensByChainId } from '../../../ducks/metamask/metamask';
 import { getAssetDetails } from '../../../helpers/utils/token-util';
@@ -18,6 +18,7 @@ export function useAssetDetails(
   transactionData,
   chainId,
 ) {
+  const isMounted = useRef(false);
   const dispatch = useDispatch();
 
   // state selectors
@@ -43,8 +44,17 @@ export function useAssetDetails(
   const prevTokenBalance = usePrevious(tokensWithBalances);
 
   useEffect(() => {
-    let isMounted = true;
-    if (!tokenAddress && !userAddress && !transactionData) {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  });
+
+  useEffect(() => {
+    if (
+      !isMounted.current ||
+      (!tokenAddress && !userAddress && !transactionData)
+    ) {
       return () => undefined;
     }
 
@@ -58,7 +68,7 @@ export function useAssetDetails(
           nfts,
           chainId,
         );
-        if (isMounted) {
+        if (isMounted.current) {
           setCurrentAsset(assetDetails);
         }
       } catch (e) {
@@ -79,7 +89,7 @@ export function useAssetDetails(
     }
 
     return () => {
-      isMounted = false;
+      isMounted.current = false;
     };
   }, [
     chainId,

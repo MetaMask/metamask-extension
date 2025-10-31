@@ -24,7 +24,7 @@ const STATE_MOCK = {
   },
 };
 
-describe('syncConfirmPath', () => {
+describe('useSyncConfirmPath', () => {
   it('should execute correctly', () => {
     const result = renderHookWithConfirmContextProvider(
       () => useSyncConfirmPath(unapprovedPersonalSignMsg),

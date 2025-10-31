@@ -16,7 +16,6 @@ const useMultiPolling = <PollingInput>(
 ) => {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const pollingTokens = useRef<Map<string, string>>(new Map());
-
   const prevPollingInputStringified = useRef<string | null>(null);
   const hasPollingInputChanged =
     JSON.stringify(usePollingOptions.input) !==
