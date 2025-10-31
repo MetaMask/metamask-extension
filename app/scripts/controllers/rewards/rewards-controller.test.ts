@@ -29,6 +29,7 @@ import {
   RewardsControllerMessenger,
 } from '../../controller-init/messengers';
 import { getRootMessenger } from '../../lib/messenger';
+import { SeasonDtoState } from '../../../../shared/types/rewards';
 import {
   RewardsController,
   getRewardsControllerDefaultState,
@@ -42,7 +43,6 @@ import type {
   SubscriptionDto,
   EstimatePointsDto,
   EstimatedPointsDto,
-  SeasonDtoState,
   DiscoverSeasonsDto,
   SeasonMetadataDto,
   SeasonStateDto,

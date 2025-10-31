@@ -2434,6 +2434,20 @@ export default class MetamaskController extends EventEmitter {
           this.subscriptionController,
         ),
 
+      // rewards
+      getCandidateSubscriptionId: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'RewardsController:getCandidateSubscriptionId',
+      ),
+      getRewardsSeasonMetadata: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'RewardsController:getSeasonMetadata',
+      ),
+      getRewardsSeasonStatus: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'RewardsController:getSeasonStatus',
+      ),
+
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
       forgetDevice: this.forgetDevice.bind(this),

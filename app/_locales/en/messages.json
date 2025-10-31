@@ -5470,6 +5470,17 @@
   "reward": {
     "message": "Reward"
   },
+  "rewardsOptIn": {
+    "message": "Sign up for Rewards"
+  },
+  "rewardsPointsBalance": {
+    "message": "$1 points",
+    "description": "$1 is the formatted number of rewards points"
+  },
+  "rewardsPointsIcon": {
+    "message": "Rewards Points",
+    "description": "Alt text for the rewards points icon"
+  },
   "rpcNameOptional": {
     "message": "RPC Name (Optional)"
   },
