@@ -166,13 +166,13 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   title="966.988 ETH"
                 >
                   <span
-                    class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                    class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                     data-testid="account-value-and-suffix"
                   >
                     966.988
                   </span>
                   <span
-                    class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                    class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                   >
                     ETH
                   </span>
@@ -447,13 +447,13 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   title="0 ETH"
                 >
                   <span
-                    class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                    class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                     data-testid="account-value-and-suffix"
                   >
                     0
                   </span>
                   <span
-                    class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                    class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                   >
                     ETH
                   </span>
@@ -728,13 +728,13 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   title="0 ETH"
                 >
                   <span
-                    class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                    class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                     data-testid="account-value-and-suffix"
                   >
                     0
                   </span>
                   <span
-                    class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                    class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                   >
                     ETH
                   </span>
@@ -850,7 +850,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             class="mm-box mm-box--flex-direction-row"
           >
             <div
-              class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-tag mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-section mm-box--rounded-sm"
               data-testid="account-list-item-tag-15e69915-2a1a-4019-93b3-916e11fd432f-Ledger"
             >
               <p
@@ -1023,13 +1023,13 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   title="0 ETH"
                 >
                   <span
-                    class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                    class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                     data-testid="account-value-and-suffix"
                   >
                     0
                   </span>
                   <span
-                    class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                    class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                   >
                     ETH
                   </span>
@@ -1304,13 +1304,13 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   title="0 ETH"
                 >
                   <span
-                    class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                    class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                     data-testid="account-value-and-suffix"
                   >
                     0
                   </span>
                   <span
-                    class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                    class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                   >
                     ETH
                   </span>
@@ -1426,7 +1426,7 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
             class="mm-box mm-box--flex-direction-row"
           >
             <div
-              class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+              class="mm-box mm-tag mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-section mm-box--rounded-sm"
               data-testid="account-list-item-tag-c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3-mock snap name (Beta)"
             >
               <span
@@ -1603,13 +1603,13 @@ exports[`SendPageYourAccounts render renders correctly 1`] = `
                   title="0 ETH"
                 >
                   <span
-                    class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+                    class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                     data-testid="account-value-and-suffix"
                   >
                     0
                   </span>
                   <span
-                    class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+                    class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                   >
                     ETH
                   </span>

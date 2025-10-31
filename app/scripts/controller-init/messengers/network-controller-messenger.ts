@@ -1,13 +1,16 @@
-import { Messenger } from '@metamask/base-controller';
+import { ControllerStateChangeEvent } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import type { ErrorReportingServiceCaptureExceptionAction } from '@metamask/error-reporting-service';
 import {
   NetworkControllerRpcEndpointDegradedEvent,
   NetworkControllerRpcEndpointUnavailableEvent,
 } from '@metamask/network-controller';
+import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import {
   MetaMetricsControllerGetMetaMetricsIdAction,
   MetaMetricsControllerTrackEventAction,
 } from '../../controllers/metametrics-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions = ErrorReportingServiceCaptureExceptionAction;
 
@@ -22,13 +25,22 @@ export type NetworkControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getNetworkControllerMessenger(
-  messenger: Messenger<AllowedActions, never>,
+  messenger: RootMessenger<AllowedActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'NetworkController',
-    allowedActions: ['ErrorReportingService:captureException'],
-    allowedEvents: [],
+  const controllerMessenger = new Messenger<
+    'NetworkController',
+    AllowedActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'NetworkController',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: ['ErrorReportingService:captureException'],
+  });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions =
@@ -37,7 +49,11 @@ type AllowedInitializationActions =
 
 type AllowedInitializationEvents =
   | NetworkControllerRpcEndpointUnavailableEvent
-  | NetworkControllerRpcEndpointDegradedEvent;
+  | NetworkControllerRpcEndpointDegradedEvent
+  | ControllerStateChangeEvent<
+      'RemoteFeatureFlagController',
+      RemoteFeatureFlagControllerState
+    >;
 
 export type NetworkControllerInitMessenger = ReturnType<
   typeof getNetworkControllerInitMessenger
@@ -51,20 +67,31 @@ export type NetworkControllerInitMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getNetworkControllerInitMessenger(
-  messenger: Messenger<
+  messenger: RootMessenger<
     AllowedInitializationActions,
     AllowedInitializationEvents
   >,
 ) {
-  return messenger.getRestricted({
-    name: 'NetworkControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'NetworkControllerInit',
+    AllowedInitializationActions,
+    AllowedInitializationEvents,
+    typeof messenger
+  >({
+    namespace: 'NetworkControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'MetaMetricsController:getMetaMetricsId',
       'MetaMetricsController:trackEvent',
     ],
-    allowedEvents: [
+    events: [
       'NetworkController:rpcEndpointUnavailable',
       'NetworkController:rpcEndpointDegraded',
+      'RemoteFeatureFlagController:stateChange',
     ],
   });
+  return controllerInitMessenger;
 }

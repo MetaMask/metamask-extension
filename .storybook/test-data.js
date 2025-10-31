@@ -455,56 +455,6 @@ const state = {
         address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
       },
     },
-    transactions: [
-      {
-        id: 3111025347726181,
-        time: 1620710815484,
-        status: 'unapproved',
-        msgParams: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-        chainId: '0x5',
-        loadingDefaults: false,
-        txParams: {
-          from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-          to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-          value: '0x0',
-          data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
-          gas: '0xcb28',
-          gasPrice: '0x77359400',
-        },
-        type: 'standard',
-        origin: 'metamask',
-        transactionCategory: 'transfer',
-        history: [
-          {
-            id: 7786962153682822,
-            time: 1620710815484,
-            status: 'unapproved',
-            chainId: '0x5',
-            loadingDefaults: true,
-            txParams: {
-              from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-              to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-              value: '0x0',
-              data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
-              gas: '0xcb28',
-              gasPrice: '0x77359400',
-            },
-            type: 'standard',
-            origin: 'metamask',
-            transactionCategory: 'transfer',
-          },
-          [
-            {
-              op: 'replace',
-              path: '/loadingDefaults',
-              value: false,
-              note: 'Added new unapproved transaction.',
-              timestamp: 1620710815497,
-            },
-          ],
-        ],
-      },
-    ],
     transactionBatches: {},
     addressBook: {
       undefined: {
@@ -740,6 +690,7 @@ const state = {
     ],
     accountsAssets: {},
     assetsMetadata: {},
+    allIgnoredAssets: {},
     balances: {},
     conversionRates: {},
     networkConfigurationsByChainId: {},
@@ -1710,6 +1661,10 @@ const state = {
       },
     },
     openSeaEnabled: true,
+    networkConnectionBanner: {
+      status: 'unknown',
+    },
+    coverageResults: {},
   },
   appState: {
     isAccountMenuOpen: false,

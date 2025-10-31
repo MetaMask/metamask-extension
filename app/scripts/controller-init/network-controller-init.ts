@@ -7,7 +7,7 @@ import {
 import { BlockExplorerUrl, ChainId } from '@metamask/controller-utils';
 import { hasProperty } from '@metamask/utils';
 import { SECOND } from '../../../shared/constants/time';
-import { getIsQuicknodeEndpointUrl } from '../lib/network-controller/utils';
+import { getIsQuicknodeEndpointUrl } from '../../../shared/lib/network-utils';
 import {
   onRpcEndpointDegraded,
   onRpcEndpointUnavailable,
@@ -59,6 +59,22 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
       getFailoverUrlsForInfuraNetwork('linea-mainnet');
     networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
       getFailoverUrlsForInfuraNetwork('base-mainnet');
+    if (networks[CHAIN_IDS.ARBITRUM]?.rpcEndpoints?.[0]) {
+      networks[CHAIN_IDS.ARBITRUM].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('arbitrum-mainnet');
+    }
+    if (networks[CHAIN_IDS.BSC]?.rpcEndpoints?.[0]) {
+      networks[CHAIN_IDS.BSC].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('bsc-mainnet');
+    }
+    if (networks[CHAIN_IDS.OPTIMISM]?.rpcEndpoints?.[0]) {
+      networks[CHAIN_IDS.OPTIMISM].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('optimism-mainnet');
+    }
+    if (networks[CHAIN_IDS.POLYGON]?.rpcEndpoints?.[0]) {
+      networks[CHAIN_IDS.POLYGON].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('polygon-mainnet');
+    }
 
     // Update default popular network names.
     networks[CHAIN_IDS.MAINNET].name = 'Ethereum';
@@ -235,7 +251,23 @@ export const NetworkControllerInit: ControllerInitFunction<
     },
   );
 
-  controller.initializeProvider();
+  initMessenger.subscribe(
+    'RemoteFeatureFlagController:stateChange',
+    (isRpcFailoverEnabled) => {
+      if (isRpcFailoverEnabled) {
+        console.log('Enabling RPC failover.');
+        controller.enableRpcFailover();
+      } else {
+        console.log('Disabling RPC failover.');
+        controller.disableRpcFailover();
+      }
+    },
+    (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
+  );
+
+  // Delay lookupNetwork until after onboarding to prevent network requests before the user can
+  // update their RPC endpoints.
+  controller.initializeProvider({ lookupNetwork: false });
 
   return {
     controller,

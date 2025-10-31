@@ -19,8 +19,10 @@ import { setupInitialStore, connectToBackground } from '../../ui';
 import Root from '../../ui/pages';
 
 // Mock MetaMetrics context for tests
-const createMockTrackEvent = () => {
-  const mockTrackEvent = () => Promise.resolve();
+const createMockTrackEvent = (
+  getMockTrackEvent = () => () => Promise.resolve(),
+) => {
+  const mockTrackEvent = getMockTrackEvent();
   Object.assign(mockTrackEvent, {
     bufferedTrace: () => Promise.resolve(),
     bufferedEndTrace: () => Promise.resolve(),
@@ -54,9 +56,13 @@ I18nProvider.defaultProps = {
   children: undefined,
 };
 
-const createProviderWrapper = (store, pathname = '/') => {
+const createProviderWrapper = (
+  store,
+  pathname = '/',
+  getMockTrackEvent = () => () => Promise.resolve(),
+) => {
   const history = createMemoryHistory({ initialEntries: [pathname] });
-  const mockTrackEvent = createMockTrackEvent();
+  const mockTrackEvent = createMockTrackEvent(getMockTrackEvent);
 
   const Wrapper = ({ children }) =>
     store ? (
@@ -89,6 +95,7 @@ const createProviderWrapper = (store, pathname = '/') => {
   return {
     Wrapper,
     history,
+    mockTrackEvent,
   };
 };
 
@@ -98,19 +105,30 @@ export function renderWithProvider(
   pathname = '/',
   renderer = render,
 ) {
-  const { history, Wrapper } = createProviderWrapper(store, pathname);
+  const { history, Wrapper, mockTrackEvent } = createProviderWrapper(
+    store,
+    pathname,
+  );
   return {
     ...renderer(component, { wrapper: Wrapper }),
     history,
+    mockTrackEvent,
   };
 }
 
-export function renderHookWithProvider(hook, state, pathname = '/', Container) {
+export function renderHookWithProvider(
+  hook,
+  state,
+  pathname = '/',
+  Container,
+  getMockTrackEvent = () => () => Promise.resolve(),
+) {
   const store = state ? configureStore(state) : undefined;
 
   const { history, Wrapper: ProviderWrapper } = createProviderWrapper(
     store,
     pathname,
+    getMockTrackEvent,
   );
 
   const wrapper = Container
@@ -140,6 +158,7 @@ export function renderHookWithProvider(hook, state, pathname = '/', Container) {
  * @param [state] - The initial state for the store.
  * @param [pathname] - The initial pathname for the history.
  * @param [Container] - An optional container component.
+ * @param {() => () => Promise<void>} [getMockTrackEvent] - A placeholder function for tracking a MetaMetrics event.
  * @returns {RenderHookResult & { history: History }} The result of the rendered hook and the history object.
  */
 export const renderHookWithProviderTyped = (
@@ -147,7 +166,9 @@ export const renderHookWithProviderTyped = (
   state,
   pathname = '/',
   Container,
-) => renderHookWithProvider(hook, state, pathname, Container);
+  getMockTrackEvent = () => () => Promise.resolve(),
+) =>
+  renderHookWithProvider(hook, state, pathname, Container, getMockTrackEvent);
 
 export function renderWithLocalization(component) {
   const Wrapper = ({ children }) => (

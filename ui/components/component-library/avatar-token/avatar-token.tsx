@@ -12,6 +12,9 @@ import type { PolymorphicRef } from '../box';
 import type { AvatarTokenComponent } from './avatar-token.types';
 import { AvatarTokenProps, AvatarTokenSize } from './avatar-token.types';
 
+/**
+ * @deprecated Please update your code to use `AvatarToken` from `@metamask/design-system-react`
+ */
 export const AvatarToken: AvatarTokenComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -81,7 +84,7 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
               }
               onError={handleOnError}
               src={src}
-              alt={`${name} logo` || 'token logo'}
+              alt={`${name} logo`}
             />
           </>
         )}

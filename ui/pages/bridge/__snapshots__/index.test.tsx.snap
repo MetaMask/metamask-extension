@@ -32,7 +32,7 @@ exports[`Bridge renders the component with initial props 1`] = `
           <h4
             class="mm-box mm-text mm-text--heading-sm mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-2 mm-box--padding-inline-end-2 mm-box--display-block mm-box--color-text-default"
           >
-            Bridge
+            Swap
           </h4>
         </div>
         <div
@@ -133,31 +133,35 @@ exports[`Bridge renders the component with initial props 1`] = `
               style="height: 24px;"
             >
               <p
-                class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
+                class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative"
               />
             </div>
           </div>
           <div
-            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-alternative-soft"
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
             style="position: relative;"
           >
             <div
-              class="mm-box prepare-bridge-page__switch-tokens mm-box--display-flex mm-box--background-color-background-alternative-soft"
+              class="mm-box prepare-bridge-page__switch-tokens mm-box--display-flex mm-box--background-color-background-section"
               style="position: absolute; top: -20px; right: calc(50% - 20px); border-radius: 100%; opacity: 1; width: 40px; height: 40px; justify-content: center;"
             >
               <button
                 aria-label="switch-tokens"
-                class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative-soft mm-box--background-color-transparent mm-box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-lg mm-button-icon--disabled mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="switch-tokens"
                 disabled=""
                 style="align-self: center; border-radius: 100%; width: 100%; height: 100%;"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/arrow-2-down.svg');"
+                  style="mask-image: url('./images/icons/swap-vertical.svg');"
                 />
               </button>
             </div>
+            <div
+              class="mm-box mm-box--padding-inline-4"
+              style="margin-top: -16px;"
+            />
             <div
               class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
             >
@@ -236,10 +240,10 @@ exports[`Bridge renders the component with initial props 1`] = `
                 style="height: 24px;"
               >
                 <p
-                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative-soft"
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-end mm-box--color-text-alternative"
                 />
                 <a
-                  class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative-soft"
+                  class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--gap-1 mm-box--color-text-alternative"
                   style="cursor: pointer; text-decoration: underline;"
                 >
                   0xac...35da
@@ -256,7 +260,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                   class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-center mm-box--align-items-center"
                 >
                   <p
-                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative-soft"
+                    class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-alternative"
                   >
                     Select amount
                   </p>
@@ -266,7 +270,7 @@ exports[`Bridge renders the component with initial props 1`] = `
           </div>
         </div>
         <div
-          class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-alternative-soft"
+          class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--width-full mm-box--background-color-background-default"
         >
           <div />
         </div>

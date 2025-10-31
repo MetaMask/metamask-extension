@@ -1,7 +1,10 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { capitalize } from 'lodash';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+import browser from 'webextension-polyfill';
+///: END:ONLY_INCLUDE_IF
 import {
   Button,
   ButtonSize,
@@ -33,19 +36,44 @@ import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
-  ONBOARDING_DOWNLOAD_APP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getSocialLoginType } from '../../../selectors';
+import {
+  getSocialLoginType,
+  getExternalServicesOnboardingToggleState,
+  getFirstTimeFlowType,
+} from '../../../selectors';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
-
+import {
+  toggleExternalServices,
+  setCompletedOnboarding,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  setCompletedOnboardingWithSidepanel,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+import { getIsSidePanelFeatureEnabled } from '../../../../shared/modules/environment';
+///: END:ONLY_INCLUDE_IF
 
 export default function CreationSuccessful() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const { search } = useLocation();
   const isWalletReady = useSelector(getIsPrimarySeedPhraseBackedUp);
   const userSocialLoginType = useSelector(getSocialLoginType);
+  const externalServicesOnboardingToggleState = useSelector(
+    getExternalServicesOnboardingToggleState,
+  );
+  const trackEvent = useContext(MetaMetricsContext);
+  const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
 
@@ -124,13 +152,70 @@ export default function CreationSuccessful() {
     );
   }, [isWalletReady, isFromReminder]);
 
-  const onDone = useCallback(() => {
+  const onDone = useCallback(async () => {
+    if (isWalletReady) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.ExtensionPinned,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          wallet_setup_type:
+            firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
+        },
+      });
+    }
+
     if (isFromReminder) {
       navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
     }
-    navigate(ONBOARDING_DOWNLOAD_APP_ROUTE);
-  }, [navigate, isFromReminder, isFromSettingsSecurity]);
+
+    await dispatch(
+      toggleExternalServices(externalServicesOnboardingToggleState),
+    );
+
+    ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+    // Side Panel - only if feature flag is enabled
+    if (getIsSidePanelFeatureEnabled()) {
+      try {
+        if (browser?.sidePanel?.open) {
+          const tabs = await browser.tabs.query({
+            active: true,
+            currentWindow: true,
+          });
+          if (tabs && tabs.length > 0) {
+            await browser.sidePanel.open({ windowId: tabs[0].windowId });
+            // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
+            await dispatch(setCompletedOnboardingWithSidepanel());
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Error opening side panel:', error);
+        // Fall through to regular onboarding
+      }
+    }
+    // Fallback to regular onboarding completion
+    await dispatch(setCompletedOnboarding());
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+    // Regular onboarding completion for non-experimental builds
+    await dispatch(setCompletedOnboarding());
+    ///: END:ONLY_INCLUDE_IF
+
+    navigate(DEFAULT_ROUTE);
+  }, [
+    isWalletReady,
+    isFromReminder,
+    dispatch,
+    externalServicesOnboardingToggleState,
+    navigate,
+    trackEvent,
+    firstTimeFlowType,
+    isFromSettingsSecurity,
+  ]);
 
   return (
     <Box

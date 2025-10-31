@@ -8,6 +8,9 @@ import type { PolymorphicRef } from '../box';
 
 import { IconSize, IconProps, IconComponent } from './icon.types';
 
+/**
+ * @deprecated Please update your code to use `Icon` from `@metamask/design-system-react`
+ */
 export const Icon: IconComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

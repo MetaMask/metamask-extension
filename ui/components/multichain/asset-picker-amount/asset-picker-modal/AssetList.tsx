@@ -185,7 +185,6 @@ export default function AssetList({
                     tokenSymbol={token.symbol}
                     secondary={secondaryCurrencyValue}
                     tokenImage={token.image}
-                    isPrimaryTokenSymbolHidden
                     tokenChainImage={getImageForChainId(token.chainId)}
                     nativeCurrencySymbol={nativeCurrencySymbol}
                     {...assetItemProps}

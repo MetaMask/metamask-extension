@@ -4,12 +4,10 @@
 import { confusables } from 'unicode-confusables';
 
 import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
-import {
-  findNetworkClientIdByChainId,
-  getERC721AssetSymbol,
-} from '../../../store/actions';
+import { getTokenStandardAndDetailsByChain } from '../../../store/actions';
 import {
   findConfusablesInRecipient,
+  validateBtcAddress,
   validateEvmHexAddress,
   validateSolanaAddress,
 } from './sendValidations';
@@ -17,14 +15,12 @@ import {
 jest.mock('unicode-confusables');
 jest.mock('../../../../shared/lib/multichain/accounts');
 jest.mock('../../../store/actions', () => ({
-  findNetworkClientIdByChainId: jest.fn(),
-  getERC721AssetSymbol: jest.fn(),
+  getTokenStandardAndDetailsByChain: jest.fn(),
 }));
 
 const mockIsSolanaAddress = jest.mocked(isSolanaAddress);
-const mockGetERC721AssetSymbol = jest.mocked(getERC721AssetSymbol);
-const mockFindNetworkClientIdByChainId = jest.mocked(
-  findNetworkClientIdByChainId,
+const mockGetTokenStandardAndDetailsByChain = jest.mocked(
+  getTokenStandardAndDetailsByChain,
 );
 
 describe('SendValidations', () => {
@@ -55,7 +51,6 @@ describe('SendValidations', () => {
           { point: 'а', similarTo: 'a' },
           { point: 'е', similarTo: 'e' },
         ],
-        warning: 'confusingDomain',
       });
     });
 
@@ -134,10 +129,9 @@ describe('SendValidations', () => {
     });
 
     it('rejects ERC721 token address', async () => {
-      mockGetERC721AssetSymbol.mockResolvedValue('NFT' as never);
-      mockFindNetworkClientIdByChainId.mockResolvedValue(
-        'networkClientId' as never,
-      );
+      mockGetTokenStandardAndDetailsByChain.mockResolvedValue({
+        standard: 'ERC721',
+      });
 
       expect(
         await validateEvmHexAddress(
@@ -145,13 +139,14 @@ describe('SendValidations', () => {
           '0x1',
         ),
       ).toEqual({
-        error: 'invalidAddress',
+        error: 'tokenContractError',
       });
 
-      expect(mockFindNetworkClientIdByChainId).toHaveBeenCalledWith('0x1');
-      expect(mockGetERC721AssetSymbol).toHaveBeenCalledWith(
+      expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
         '0x1234567890123456789012345678901234567890',
-        'networkClientId',
+        undefined,
+        undefined,
+        '0x1',
       );
     });
   });
@@ -185,6 +180,15 @@ describe('SendValidations', () => {
 
       const invalidAddress = 'invalid-address';
       expect(validateSolanaAddress(invalidAddress)).toEqual({
+        error: 'invalidAddress',
+      });
+    });
+  });
+
+  describe('validateBtcAddress', () => {
+    it('returns error for invalid Bitcoin address', async () => {
+      const invalidAddress = 'invalid-address';
+      expect(validateBtcAddress(invalidAddress)).toEqual({
         error: 'invalidAddress',
       });
     });

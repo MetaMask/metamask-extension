@@ -2339,7 +2339,17 @@
     "txHistory": {},
     "throttledOrigins": {},
     "delegations": {},
-    "accountsAssets": {}
+    "accountsAssets": {},
+    "assetsMetadata": {},
+    "allIgnoredAssets": {},
+    "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
+    "isGatorPermissionsEnabled": false,
+    "isFetchingGatorPermissions": false,
+    "isUpdatingGatorPermissions": false,
+    "networkConnectionBanner": {
+      "status": "unknown"
+    },
+    "coverageResults": {}
   },
   "ramps": {
     "buyableChains": [

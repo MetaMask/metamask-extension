@@ -12,16 +12,14 @@ import {
   ModalContent,
   ModalContentSize,
   ModalHeader,
-  ModalOverlay,
   PolymorphicRef,
+  ModalOverlay,
   Text,
 } from '../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderColor,
-  BorderRadius,
   Display,
   FontWeight,
   IconColor,
@@ -32,6 +30,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ThemeType } from '../../../../shared/constants/preferences';
 import { LOGIN_TYPE, LoginType, LoginOptionType, LOGIN_OPTION } from './types';
 
 export const SocialButton = React.forwardRef(
@@ -44,25 +43,26 @@ export const SocialButton = React.forwardRef(
     ref?: PolymorphicRef<'button'>,
   ) => {
     return (
-      <Text
+      <Button
         ref={ref}
-        as="button"
         className="options-modal__plain-button"
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
-        width={BlockSize.Full}
-        borderRadius={BorderRadius.XL}
-        borderColor={BorderColor.borderMuted}
-        backgroundColor={BackgroundColor.transparent}
-        gap={2}
+        variant={ButtonVariant.Primary}
+        size={ButtonSize.Lg}
+        block
+        data-theme={ThemeType.dark}
         {...props}
       >
-        {icon}
-        <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-          {label}
-        </Text>
-      </Text>
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          width={BlockSize.Full}
+          gap={2}
+        >
+          {icon}
+          <Box>{label}</Box>
+        </Box>
+      </Button>
     );
   },
 );
@@ -86,6 +86,7 @@ export default function LoginOptions({
       onClose={onClose}
       className="options-modal"
       isClosedOnOutsideClick={false}
+      data-theme={ThemeType.dark}
     >
       <ModalOverlay />
       <ModalContent size={ModalContentSize.Sm} alignItems={AlignItems.center}>
@@ -123,7 +124,7 @@ export default function LoginOptions({
             icon={
               <Icon
                 name={IconName.Apple}
-                color={IconColor.iconDefault}
+                color={IconColor.infoInverse}
                 size={IconSize.Lg}
               />
             }

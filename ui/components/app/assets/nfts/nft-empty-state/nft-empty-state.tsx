@@ -1,21 +1,16 @@
 import React, { useContext, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { twMerge } from '@metamask/design-system-react';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { TabEmptyState } from '../../../../ui/tab-empty-state';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  getTheme,
-  getMetaMetricsId,
-  getParticipateInMetaMetrics,
-  getDataCollectionForMarketing,
-} from '../../../../../selectors';
-import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
+import { getTheme } from '../../../../../selectors';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../../shared/constants/metametrics';
+import { showImportNftsModal } from '../../../../../store/actions';
 
 export type NftEmptyStateProps = {
   className?: string;
@@ -25,9 +20,7 @@ export const NftEmptyState = ({ className }: NftEmptyStateProps) => {
   const t = useI18nContext();
   const theme = useSelector(getTheme);
   const trackEvent = useContext(MetaMetricsContext);
-  const metaMetricsId = useSelector(getMetaMetricsId);
-  const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
-  const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
+  const dispatch = useDispatch();
 
   // Theme-aware icon
   const nftIcon =
@@ -35,15 +28,8 @@ export const NftEmptyState = ({ className }: NftEmptyStateProps) => {
       ? './images/empty-state-nfts-dark.png'
       : './images/empty-state-nfts-light.png';
 
-  const handleDiscoverNfts = useCallback(() => {
-    const url = getPortfolioUrl(
-      'explore/nfts',
-      'ext_nft_empty_state_button',
-      metaMetricsId,
-      isMetaMetricsEnabled,
-      isMarketingEnabled,
-    );
-    global.platform.openTab({ url });
+  const handleImportNfts = useCallback(() => {
+    dispatch(showImportNftsModal({}));
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.EmptyNFTTabButtonClicked,
@@ -51,14 +37,14 @@ export const NftEmptyState = ({ className }: NftEmptyStateProps) => {
         location: 'NFT_Empty_State',
       },
     });
-  }, [metaMetricsId, isMetaMetricsEnabled, isMarketingEnabled, trackEvent]);
+  }, [dispatch, trackEvent]);
 
   return (
     <TabEmptyState
       icon={<img src={nftIcon} alt={t('nfts')} width={72} height={72} />}
       description={t('nftEmptyDescription')}
-      actionButtonText={t('discoverNFTs')}
-      onAction={handleDiscoverNfts}
+      actionButtonText={t('importNFT')}
+      onAction={handleImportNfts}
       data-testid="nft-tab-empty-state"
       className={twMerge('max-w-64', className)}
     />

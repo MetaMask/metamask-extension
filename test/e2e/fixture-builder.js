@@ -4,18 +4,13 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge, mergeWith } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
-const {
-  ETHERSCAN_SUPPORTED_CHAIN_IDS,
-} = require('@metamask/preferences-controller');
 const { mockNetworkStateOld } = require('../stub/networks');
 
 const {
-  ARBITRUM_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
   BNB_DISPLAY_NAME,
   CHAIN_IDS,
   LOCALHOST_DISPLAY_NAME,
-  OPTIMISM_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   ZK_SYNC_ERA_DISPLAY_NAME,
 } = require('../../shared/constants/network');
@@ -30,142 +25,10 @@ const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
 } = require('./default-fixture');
+const onboardingFixtureJson = require('./fixtures/onboarding-fixture.json');
 
 function onboardingFixture() {
-  return {
-    data: {
-      AppStateController: {
-        browserEnvironment: {},
-        nftsDropdownState: {},
-        connectedStatusPopoverHasBeenShown: true,
-        defaultHomeActiveTabName: null,
-        fullScreenGasPollTokens: [],
-        notificationGasPollTokens: [],
-        popupGasPollTokens: [],
-        recoveryPhraseReminderHasBeenShown: false,
-        recoveryPhraseReminderLastShown:
-          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
-        showTestnetMessageInDropdown: true,
-        trezorModel: null,
-        hasShownMultichainAccountsIntroModal: true,
-      },
-      NetworkController: {
-        ...mockNetworkStateOld({
-          id: 'networkConfigurationId',
-          chainId: CHAIN_IDS.LOCALHOST,
-          nickname: LOCALHOST_DISPLAY_NAME,
-          rpcUrl: 'http://localhost:8545',
-          ticker: 'ETH',
-          blockExplorerUrl: undefined,
-        }),
-        providerConfig: { id: 'networkConfigurationId' },
-      },
-      NetworkOrderController: {},
-      NetworkEnablementController: {
-        enabledNetworkMap: {
-          eip155: {
-            [CHAIN_IDS.LOCALHOST]: true,
-          },
-          solana: {
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
-          },
-        },
-      },
-      NotificationServicesController: {},
-      PreferencesController: {
-        advancedGasFee: {},
-        currentLocale: 'en',
-        dismissSeedBackUpReminder: false,
-        overrideContentSecurityPolicyHeader: true,
-        featureFlags: {},
-        forgottenPassword: false,
-        identities: {},
-        ipfsGateway: 'dweb.linkssssss',
-        knownMethodData: {},
-        ledgerTransportType: 'webhid',
-        lostIdentities: {},
-        openSeaEnabled: false,
-        preferences: {
-          hideZeroBalanceTokens: false,
-          showExtensionInFullSizeView: false,
-          showFiatInTestnets: false,
-          privacyMode: false,
-          showTestNetworks: false,
-          smartTransactionsOptInStatus: true,
-          showNativeTokenAsMainBalance: true,
-          petnamesEnabled: true,
-          showMultiRpcModal: false,
-          showConfirmationAdvancedDetails: false,
-          tokenSortConfig: {
-            key: 'tokenFiatAmount',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
-          tokenNetworkFilter: {},
-          shouldShowAggregatedBalancePopover: true,
-          avatarType: 'maskicon',
-        },
-        useExternalServices: true,
-        theme: 'light',
-        useBlockie: false,
-        useNftDetection: false,
-        usePhishDetect: true,
-        useTokenDetection: false,
-        useCurrencyRateCheck: true,
-        useMultiAccountBalanceChecker: true,
-        isMultiAccountBalancesEnabled: true,
-        showIncomingTransactions: {
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MAINNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GOERLI]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.BSC_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.OPTIMISM_SEPOLIA]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.POLYGON_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.AVALANCHE_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.FANTOM_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.SEPOLIA]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_GOERLI]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_SEPOLIA]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.LINEA_MAINNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONBEAM_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MOONRIVER]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.GNOSIS]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MEGAETH_TESTNET]: true,
-          [ETHERSCAN_SUPPORTED_CHAIN_IDS.MONAD_TESTNET]: true,
-        },
-      },
-      SelectedNetworkController: {
-        domains: {},
-      },
-      SmartTransactionsController: {
-        smartTransactionsState: {
-          fees: {},
-          liveness: true,
-          smartTransactions: {
-            [CHAIN_IDS.MAINNET]: [],
-          },
-        },
-      },
-      UserStorageController: {},
-      MultichainAccountService: {},
-      TokensController: {
-        allDetectedTokens: {},
-        allIgnoredTokens: {},
-        allTokens: {},
-      },
-      TransactionController: {},
-      config: {},
-      firstTimeInfo: {
-        date: 1665507600000,
-        version: '10.21.0',
-      },
-    },
-  };
+  return onboardingFixtureJson;
 }
 
 class FixtureBuilder {
@@ -1951,30 +1814,6 @@ class FixtureBuilder {
   withPopularNetworks() {
     return this.withNetworkController({
       networkConfigurations: {
-        'op-mainnet': {
-          chainId: CHAIN_IDS.OPTIMISM,
-          nickname: OPTIMISM_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://mainnet.optimism.io',
-          ticker: 'ETH',
-          id: 'op-mainnet',
-        },
-        'polygon-mainnet': {
-          chainId: CHAIN_IDS.POLYGON,
-          nickname: POLYGON_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://polygon-rpc.com',
-          ticker: 'MATIC',
-          id: 'polygon-mainnet',
-        },
-        'arbitrum-one': {
-          chainId: CHAIN_IDS.ARBITRUM,
-          nickname: ARBITRUM_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://arb1.arbitrum.io/rpc',
-          ticker: 'ETH',
-          id: 'arbitrum-one',
-        },
         'avalanche-mainnet': {
           chainId: CHAIN_IDS.AVALANCHE,
           nickname: AVALANCHE_DISPLAY_NAME,
@@ -1982,14 +1821,6 @@ class FixtureBuilder {
           rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
           ticker: 'AVAX',
           id: 'avalanche-mainnet',
-        },
-        'bnb-mainnet': {
-          chainId: CHAIN_IDS.BSC,
-          nickname: BNB_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://bsc-dataseed.binance.org',
-          ticker: 'BNB',
-          id: 'bnb-mainnet',
         },
         'zksync-mainnet': {
           chainId: CHAIN_IDS.ZKSYNC_ERA,
@@ -2104,9 +1935,11 @@ class FixtureBuilder {
   }
 
   build() {
-    this.fixture.meta = {
-      version: FIXTURE_STATE_METADATA_VERSION,
-    };
+    if (!this.fixture.meta) {
+      this.fixture.meta = {
+        version: FIXTURE_STATE_METADATA_VERSION,
+      };
+    }
     return this.fixture;
   }
 }

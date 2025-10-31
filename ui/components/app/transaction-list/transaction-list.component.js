@@ -69,7 +69,6 @@ import {
   BadgeWrapper,
   AvatarNetwork,
   AvatarNetworkSize,
-  BadgeWrapperAnchorElementShape,
   ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -654,10 +653,10 @@ export default function TransactionList({
                   (dateGroup) => (
                     <Fragment key={dateGroup.date}>
                       <Text
-                        paddingTop={4}
+                        paddingTop={3}
                         paddingInline={4}
-                        variant={TextVariant.bodyMd}
-                        color={TextColor.textDefault}
+                        variant={TextVariant.bodyMdMedium}
+                        color={TextColor.textAlternative}
                       >
                         {dateGroup.date}
                       </Text>
@@ -718,7 +717,10 @@ export default function TransactionList({
                 )}
               </Box>
             ) : (
-              <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+              <TransactionActivityEmptyState
+                className="mx-auto mt-5 mb-6"
+                account={selectedAccount}
+              />
             )}
           </Box>
         </Box>
@@ -736,7 +738,10 @@ export default function TransactionList({
         ) : null}
         {pendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
-          <TransactionActivityEmptyState className="mx-auto mt-5 mb-6" />
+          <TransactionActivityEmptyState
+            className="mx-auto mt-5 mb-6"
+            account={selectedAccount}
+          />
         ) : (
           <Box className="transaction-list__transactions">
             {pendingTransactions.length > 0 && (
@@ -827,7 +832,7 @@ export default function TransactionList({
               {completedTransactions.length > limit && (
                 <Button
                   className="transaction-list__view-more"
-                  type="secondary"
+                  variant={ButtonVariant.Secondary}
                   onClick={viewMore}
                 >
                   {t('viewMore')}
@@ -865,7 +870,6 @@ const MultichainTransactionListItem = ({
         onClick={() => toggleShowDetails(transaction)}
         icon={
           <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
             display={Display.Block}
             badge={
               <AvatarNetwork
@@ -915,7 +919,6 @@ const MultichainTransactionListItem = ({
       onClick={() => toggleShowDetails(transaction)}
       icon={
         <BadgeWrapper
-          anchorElementShape={BadgeWrapperAnchorElementShape.circular}
           display={Display.Block}
           badge={
             <AvatarNetwork
@@ -924,6 +927,7 @@ const MultichainTransactionListItem = ({
               size={AvatarNetworkSize.Xs}
               name={transaction.chain}
               src={networkLogo}
+              borderWidth={2}
               borderColor={BackgroundColor.backgroundDefault}
             />
           }
@@ -934,13 +938,12 @@ const MultichainTransactionListItem = ({
       rightContent={
         <Text
           className="activity-list-item__primary-currency"
-          color="text-default"
           data-testid="transaction-list-item-primary-currency"
+          color={TextColor.textDefault}
+          variant={TextVariant.bodyMdMedium}
           ellipsis
-          fontWeight="medium"
           textAlign="right"
           title="Primary Currency"
-          variant="body-md-medium"
         >
           {amount} {unit}
         </Text>

@@ -18,20 +18,22 @@ export const useNameValidation = () => {
 
         if (resolutions.length === 0) {
           return {
-            error: 'ensUnknownError',
+            error: 'nameResolutionFailedError',
           };
         }
 
         const resolvedLookup = resolutions[0]?.resolvedAddress;
+        const protocol = resolutions[0]?.protocol;
 
         return {
           resolvedLookup,
+          protocol,
           ...findConfusablesInRecipient(to),
         };
       }
 
       return {
-        error: 'ensUnknownError',
+        error: 'nameResolutionFailedError',
       };
     },
     [fetchResolutions],

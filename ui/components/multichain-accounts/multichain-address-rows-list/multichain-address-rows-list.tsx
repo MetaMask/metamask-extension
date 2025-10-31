@@ -120,19 +120,21 @@ export const MultichainAddressRowsList = ({
       flexDirection={FlexDirection.Column}
       data-testid="multichain-address-rows-list"
     >
-      <TextFieldSearch
-        size={TextFieldSearchSize.Lg}
-        placeholder={t('searchNetworks')}
-        value={searchPattern}
-        onChange={handleSearchChange}
-        clearButtonOnClick={handleClearSearch}
-        width={BlockSize.Full}
-        borderWidth={0}
-        marginBottom={2}
-        backgroundColor={BackgroundColor.backgroundMuted}
-        borderRadius={BorderRadius.LG}
-        data-testid="multichain-address-rows-list-search"
-      />
+      <Box paddingLeft={4} paddingRight={4}>
+        <TextFieldSearch
+          size={TextFieldSearchSize.Lg}
+          placeholder={t('searchNetworks')}
+          value={searchPattern}
+          onChange={handleSearchChange}
+          clearButtonOnClick={handleClearSearch}
+          width={BlockSize.Full}
+          borderWidth={0}
+          marginBottom={2}
+          backgroundColor={BackgroundColor.backgroundMuted}
+          borderRadius={BorderRadius.LG}
+          data-testid="multichain-address-rows-list-search"
+        />
+      </Box>
 
       <Box>
         {filteredItems.length > 0 ? (

@@ -5,7 +5,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
-  ONBOARDING_DOWNLOAD_APP_ROUTE,
+  DEFAULT_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import CreationSuccessful from './creation-successful';
@@ -45,6 +45,9 @@ describe('Wallet Ready Page', () => {
       ],
       firstTimeFlowType: FirstTimeFlowType.create,
       seedPhraseBackedUp: true,
+    },
+    appState: {
+      externalServicesOnboardingToggleState: true,
     },
   };
 
@@ -98,9 +101,7 @@ describe('Wallet Ready Page', () => {
     const doneButton = getByTestId('onboarding-complete-done');
     fireEvent.click(doneButton);
     await waitFor(() => {
-      expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_DOWNLOAD_APP_ROUTE,
-      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
     });
   });
 });

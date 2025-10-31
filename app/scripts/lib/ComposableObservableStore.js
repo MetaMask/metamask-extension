@@ -1,5 +1,9 @@
 import { ObservableStore } from '@metamask/obs-store';
-import { getPersistentState } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+
+function getPersistentState(state, metadata) {
+  return deriveStateFromMetadata(state, metadata, 'persist');
+}
 
 /**
  * @typedef {import('@metamask/base-controller').Messenger} Messenger
@@ -71,6 +75,7 @@ export default class ComposableObservableStore extends ObservableStore {
               this.#onStateChange(
                 key,
                 getPersistentState(state, config[key].metadata),
+                patches,
               );
             }
           },
@@ -78,7 +83,7 @@ export default class ComposableObservableStore extends ObservableStore {
       } else {
         this.controllerMessenger.subscribe(
           `${store.name}:stateChange`,
-          (state) => this.#onStateChange(key, state),
+          (state, patches) => this.#onStateChange(key, state, patches),
         );
       }
 
@@ -113,12 +118,12 @@ export default class ComposableObservableStore extends ObservableStore {
     return flatState;
   }
 
-  #onStateChange(controllerKey, newState) {
+  #onStateChange(controllerKey, newState, patches) {
     const oldState = this.getState()[controllerKey];
 
     this.updateState({ [controllerKey]: newState });
 
-    this.emit('stateChange', { oldState, newState, controllerKey });
+    this.emit('stateChange', { controllerKey, newState, oldState, patches });
   }
 
   /**

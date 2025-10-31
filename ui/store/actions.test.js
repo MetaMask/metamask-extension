@@ -9,6 +9,7 @@ import { EthAccountType } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
+import { SubscriptionUserEvent } from '@metamask/subscription-controller';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import enLocale from '../../app/_locales/en/messages.json';
@@ -3348,6 +3349,62 @@ describe('Actions', () => {
       }
 
       expect(background.syncSeedPhrases.calledOnceWith()).toBe(true);
+    });
+  });
+
+  describe('submitSubscriptionUserEvents', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls submitSubscriptionUserEvents in the background', async () => {
+      const store = mockStore();
+      const submitSubscriptionUserEventsStub = sinon.stub().resolves();
+      background.getApi.returns({
+        submitSubscriptionUserEvents: submitSubscriptionUserEventsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(
+        actions.submitSubscriptionUserEvents({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      );
+
+      expect(
+        submitSubscriptionUserEventsStub.calledOnceWith({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      ).toBe(true);
+    });
+
+    it('handles error when submitSubscriptionUserEvents fails', async () => {
+      const errorMessage = 'Failed to submit subscription user events';
+      const store = mockStore();
+      const submitSubscriptionUserEventsStub = sinon
+        .stub()
+        .rejects(new Error(errorMessage));
+      background.getApi.returns({
+        submitSubscriptionUserEvents: submitSubscriptionUserEventsStub,
+      });
+      setBackgroundConnection(background.getApi());
+
+      const expectedActions = [
+        { type: 'DISPLAY_WARNING', payload: errorMessage },
+      ];
+
+      await store.dispatch(
+        actions.submitSubscriptionUserEvents({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      );
+
+      expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(
+        submitSubscriptionUserEventsStub.calledOnceWith({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      ).toBe(true);
     });
   });
 });

@@ -96,6 +96,78 @@
   }
 }
 
+// Side panel specific styles - all width constraints in one place
+.app--sidepanel {
+  // Main containers
+  .main-container {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  // Header components
+  .multichain-app-header {
+    &__contents,
+    &__lock-contents {
+      max-width: 490px;
+      min-width: 360px;
+      width: 100%;
+    }
+  }
+
+  // Page containers and modals
+  .page-container {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  // Multichain pages
+  .multichain-page {
+    max-width: 490px;
+    min-width: 360px;
+
+    &__inner-container {
+      max-width: 490px;
+      min-width: 360px;
+    }
+  }
+
+  // Send page
+  .multichain-send-page {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  // Snaps pages
+  .snaps {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  // Permissions and connect pages
+  .permissions-connect {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  // Redesigned send flow
+  .redesigned__send__container {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+
+  .redesigned__send__wrapper {
+    max-width: 490px;
+    min-width: 360px;
+    width: 100%;
+  }
+}
+
 // first time
 .first-view-main {
   display: flex;
@@ -126,4 +198,19 @@
   justify-content: center;
   padding: 0 10px;
   background: var(--color-background-default);
+}
+
+.app.browser-brave.app--sidepanel {
+  .main-container,
+  .multichain-app-header__contents,
+  .page-container,
+  .multichain-page,
+  .multichain-page__inner-container,
+  .multichain-send-page,
+  .snaps,
+  .permissions-connect,
+  .redesigned__send__container,
+  .redesigned__send__wrapper {
+    min-width: 320px;
+  }
 }

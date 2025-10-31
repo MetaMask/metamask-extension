@@ -1,23 +1,23 @@
 /**
  * @jest-environment node
  */
-import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
-import { AccountsController } from '@metamask/accounts-controller';
-import { KeyringControllerStateChangeEvent } from '@metamask/keyring-controller';
-import type { MultichainNetworkControllerNetworkDidChangeEvent } from '@metamask/multichain-network-controller';
-import { SnapControllerStateChangeEvent } from '@metamask/snaps-controllers';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import {
-  SnapKeyringAccountAssetListUpdatedEvent,
-  SnapKeyringAccountBalancesUpdatedEvent,
-  SnapKeyringAccountTransactionsUpdatedEvent,
-} from '@metamask/eth-snap-keyring';
+  AccountsController,
+  AccountsControllerMessenger,
+} from '@metamask/accounts-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
 import type {
-  AllowedActions,
-  AllowedEvents,
   PreferencesControllerMessenger,
   PreferencesControllerState,
 } from './preferences-controller';
@@ -49,27 +49,28 @@ const setupController = ({
   state?: Partial<PreferencesControllerState>;
 } = {}) => {
   const messenger = new Messenger<
-    AllowedActions,
-    | AllowedEvents
-    | KeyringControllerStateChangeEvent
-    | SnapControllerStateChangeEvent
-    | SnapKeyringAccountAssetListUpdatedEvent
-    | SnapKeyringAccountBalancesUpdatedEvent
-    | SnapKeyringAccountTransactionsUpdatedEvent
-    | MultichainNetworkControllerNetworkDidChangeEvent
-  >();
+    MockAnyNamespace,
+    | MessengerActions<PreferencesControllerMessenger>
+    | MessengerActions<AccountsControllerMessenger>,
+    | MessengerEvents<PreferencesControllerMessenger>
+    | MessengerEvents<AccountsControllerMessenger>
+  >({ namespace: MOCK_ANY_NAMESPACE });
   const preferencesControllerMessenger: PreferencesControllerMessenger =
-    messenger.getRestricted({
-      name: 'PreferencesController',
-      allowedActions: [
-        'AccountsController:getAccountByAddress',
-        'AccountsController:setAccountName',
-        'AccountsController:getSelectedAccount',
-        'AccountsController:setSelectedAccount',
-        'NetworkController:getState',
-      ],
-      allowedEvents: ['AccountsController:stateChange'],
+    new Messenger({
+      namespace: 'PreferencesController',
+      parent: messenger,
     });
+  messenger.delegate({
+    messenger: preferencesControllerMessenger,
+    actions: [
+      'AccountsController:getAccountByAddress',
+      'AccountsController:setAccountName',
+      'AccountsController:getSelectedAccount',
+      'AccountsController:setSelectedAccount',
+      'NetworkController:getState',
+    ],
+    events: ['AccountsController:stateChange'],
+  });
 
   messenger.registerActionHandler(
     'NetworkController:getState',
@@ -82,9 +83,18 @@ const setupController = ({
     state,
   });
 
-  const accountsControllerMessenger = messenger.getRestricted({
-    name: 'AccountsController',
-    allowedEvents: [
+  const accountsControllerMessenger = new Messenger<
+    'AccountsController',
+    MessengerActions<AccountsControllerMessenger>,
+    MessengerEvents<AccountsControllerMessenger>,
+    typeof messenger
+  >({
+    namespace: 'AccountsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: accountsControllerMessenger,
+    events: [
       'KeyringController:stateChange',
       'SnapController:stateChange',
       'SnapKeyring:accountAssetListUpdated',
@@ -92,7 +102,6 @@ const setupController = ({
       'SnapKeyring:accountTransactionsUpdated',
       'MultichainNetworkController:networkDidChange',
     ],
-    allowedActions: [],
   });
   const mockAccountsControllerState = {
     internalAccounts: {
@@ -113,6 +122,29 @@ const setupController = ({
 };
 
 describe('preferences controller', () => {
+  describe('initialization and merging', () => {
+    it('defaults avatarType to maskicon', () => {
+      const { controller } = setupController({});
+      expect(controller.state.preferences.avatarType).toBe('maskicon');
+    });
+
+    it('preserves existing avatarType', () => {
+      const { controller } = setupController({});
+      const defaultPreferences = controller.state.preferences;
+
+      const { controller: mergedController } = setupController({
+        state: {
+          preferences: {
+            ...defaultPreferences,
+            avatarType: 'jazzicon',
+          },
+        },
+      });
+
+      expect(mergedController.state.preferences.avatarType).toBe('jazzicon');
+    });
+  });
+
   describe('useBlockie', () => {
     it('defaults useBlockie to false', () => {
       const { controller } = setupController({});
@@ -527,7 +559,6 @@ describe('preferences controller', () => {
     });
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   describe('setUseExternalNameSources', () => {
     const { controller } = setupController({});
     it('should default to true', () => {
@@ -539,7 +570,6 @@ describe('preferences controller', () => {
       expect(controller.state.useExternalNameSources).toStrictEqual(false);
     });
   });
-  ///: END:ONLY_INCLUDE_IF
 
   describe('setUseTransactionSimulations', () => {
     const { controller } = setupController({});
@@ -672,6 +702,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        useSidePanelAsDefault: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -702,6 +733,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
+        useSidePanelAsDefault: true,
         hideZeroBalanceTokens: false,
         petnamesEnabled: true,
         skipDeepLinkInterstitial: false,
@@ -834,7 +866,7 @@ describe('preferences controller', () => {
         deriveStateFromMetadata(
           controller.state,
           controller.metadata,
-          'anonymous',
+          'includeInDebugSnapshot',
         ),
       ).toMatchInlineSnapshot(`
         {
@@ -873,29 +905,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-          },
-          "showIncomingTransactions": {
-            "0x1": true,
-            "0x13881": true,
-            "0x38": true,
-            "0x5": true,
-            "0x504": true,
-            "0x505": true,
-            "0x507": true,
-            "0x531": true,
-            "0x61": true,
-            "0x64": true,
-            "0x89": true,
-            "0xa": true,
-            "0xa869": true,
-            "0xa86a": true,
-            "0xaa36a7": true,
-            "0xaa37dc": true,
-            "0xe704": true,
-            "0xe705": true,
-            "0xe708": true,
-            "0xfa": true,
-            "0xfa2": true,
+            "useSidePanelAsDefault": true,
           },
           "theme": "os",
           "use4ByteResolution": true,
@@ -967,35 +977,13 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
-          "showIncomingTransactions": {
-            "0x1": true,
-            "0x13881": true,
-            "0x38": true,
-            "0x5": true,
-            "0x504": true,
-            "0x505": true,
-            "0x507": true,
-            "0x531": true,
-            "0x61": true,
-            "0x64": true,
-            "0x89": true,
-            "0xa": true,
-            "0xa869": true,
-            "0xa86a": true,
-            "0xaa36a7": true,
-            "0xaa37dc": true,
-            "0xe704": true,
-            "0xe705": true,
-            "0xe708": true,
-            "0xfa": true,
-            "0xfa2": true,
-          },
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -1073,35 +1061,13 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
-          "showIncomingTransactions": {
-            "0x1": true,
-            "0x13881": true,
-            "0x38": true,
-            "0x5": true,
-            "0x504": true,
-            "0x505": true,
-            "0x507": true,
-            "0x531": true,
-            "0x61": true,
-            "0x64": true,
-            "0x89": true,
-            "0xa": true,
-            "0xa869": true,
-            "0xa86a": true,
-            "0xaa36a7": true,
-            "0xaa37dc": true,
-            "0xe704": true,
-            "0xe705": true,
-            "0xe708": true,
-            "0xfa": true,
-            "0xfa2": true,
-          },
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -1179,35 +1145,13 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
           "selectedAddress": "",
-          "showIncomingTransactions": {
-            "0x1": true,
-            "0x13881": true,
-            "0x38": true,
-            "0x5": true,
-            "0x504": true,
-            "0x505": true,
-            "0x507": true,
-            "0x531": true,
-            "0x61": true,
-            "0x64": true,
-            "0x89": true,
-            "0xa": true,
-            "0xa869": true,
-            "0xa86a": true,
-            "0xaa36a7": true,
-            "0xaa37dc": true,
-            "0xe704": true,
-            "0xe705": true,
-            "0xe708": true,
-            "0xfa": true,
-            "0xfa2": true,
-          },
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",

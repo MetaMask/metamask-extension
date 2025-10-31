@@ -15,7 +15,13 @@ import { maskObject } from '../shared/modules/object.utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { SENTRY_UI_STATE } from '../app/scripts/constants/sentry-state';
-import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../shared/constants/app';
+///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+import { getBrowserName } from '../shared/modules/browser-runtime.utils';
+///: END:ONLY_INCLUDE_IF
 import { COPY_OPTIONS } from '../shared/constants/copy';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
@@ -139,8 +145,10 @@ export async function setupInitialStore(metamaskState, activeTab) {
       en: enLocaleMessages,
     },
   };
-
-  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+  if (
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
+    getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
+  ) {
     const { origin } = draftInitialState.activeTab;
     const permittedAccountsForCurrentTab =
       getAllPermittedAccountsForCurrentTab(draftInitialState);
@@ -238,6 +246,24 @@ async function startApp(metamaskState, opts) {
 
 async function runInitialActions(store) {
   const initialState = store.getState();
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
+  // Update browser environment with accurate browser detection from UI
+  // This corrects the initial detection from background which can't detect Brave
+  try {
+    const browserName = getBrowserName().toLowerCase();
+    const { os } = initialState.metamask.browserEnvironment || {};
+    if (os && browserName) {
+      store
+        .dispatch(actions.setBrowserEnvironment(os, browserName))
+        .catch((err) => {
+          log.error('Failed to update browser environment:', err);
+        });
+    }
+  } catch (error) {
+    log.error('Failed to get browser name:', error);
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   // This block autoswitches chains based on the last chain used
   // for a given dapp, when there are no pending confimrations

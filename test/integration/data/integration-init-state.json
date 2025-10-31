@@ -58,6 +58,7 @@
       "balance": "0x0"
     }
   },
+  "accountsAssets": {},
   "accountsByChainId": {
     "0xaa36a7": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
@@ -88,6 +89,7 @@
   "alertEnabledness": {
     "unconnectedAccount": true
   },
+  "allIgnoredAssets": {},
   "allNftContracts": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
       "0x1": [
@@ -302,6 +304,7 @@
   },
   "announcements": [],
   "approvalFlows": [],
+  "assetsMetadata": {},
   "browserEnvironment": {
     "os": "mac",
     "browser": "chrome"
@@ -315,6 +318,7 @@
     "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": 0.0017123,
     "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": 1.8e-9
   },
+  "coverageResults": {},
   "currencyRates": {
     "ETH": {
       "conversionRate": 556.12
@@ -739,6 +743,9 @@
       "nativeCurrency": "SepoliaETH"
     }
   },
+  "networkConnectionBanner": {
+    "status": "unknown"
+  },
   "networksMetadata": {
     "goerli-network-id": {
       "EIPS": {
@@ -1128,6 +1135,7 @@
       "subjectType": "snap"
     }
   },
+  "subscriptions": [],
   "swapsState": {
     "quotes": {},
     "quotesPollingLimitEnabled": false,

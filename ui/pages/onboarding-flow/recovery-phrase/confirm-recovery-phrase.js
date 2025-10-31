@@ -26,6 +26,8 @@ import {
   IconColor,
   Display,
   FlexDirection,
+  AlignItems,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
@@ -39,6 +41,7 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVEAL_SRP_ROUTE,
+  REVEAL_SRP_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { TraceName } from '../../../../shared/lib/trace';
@@ -174,6 +177,10 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
     bufferedEndTrace,
   ]);
 
+  const onClose = useCallback(() => {
+    navigate(REVEAL_SRP_LIST_ROUTE, { replace: true });
+  }, [navigate]);
+
   return (
     <Box
       display={Display.Flex}
@@ -195,39 +202,64 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
             }}
           />
         )}
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            color={IconColor.iconDefault}
-            size={ButtonIconSize.Md}
-            data-testid="confirm-recovery-phrase-back-button"
-            onClick={() => navigate(-1)}
-            ariaLabel={t('back')}
-          />
-        </Box>
-        <Box
-          justifyContent={JustifyContent.flexStart}
-          marginBottom={4}
-          width={BlockSize.Full}
-        >
-          {!isFromReminder && (
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-            >
-              {t('stepOf', [3, 3])}
+        {isFromReminder && isFromSettingsSecurity ? (
+          <Box
+            className="recovery-phrase__header"
+            display={Display.Grid}
+            alignItems={AlignItems.center}
+            gap={1}
+            marginBottom={4}
+            width={BlockSize.Full}
+          >
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              color={IconColor.iconDefault}
+              size={ButtonIconSize.Md}
+              data-testid="reveal-recovery-phrase-confirm-back-button"
+              onClick={() => navigate(-1)}
+              ariaLabel={t('back')}
+            />
+            <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+              {t('confirmRecoveryPhraseTitleSettings')}
             </Text>
-          )}
-          <Text variant={TextVariant.headingLg} as="h2">
-            {t('confirmRecoveryPhraseTitle')}
-          </Text>
-        </Box>
+            <ButtonIcon
+              iconName={IconName.Close}
+              color={IconColor.iconDefault}
+              size={ButtonIconSize.Md}
+              data-testid="reveal-recovery-phrase-confirm-close-button"
+              onClick={onClose}
+              ariaLabel={t('close')}
+            />
+          </Box>
+        ) : (
+          <>
+            <Box
+              justifyContent={JustifyContent.flexStart}
+              marginBottom={4}
+              width={BlockSize.Full}
+            >
+              <ButtonIcon
+                iconName={IconName.ArrowLeft}
+                color={IconColor.iconDefault}
+                size={ButtonIconSize.Md}
+                data-testid="confirm-recovery-phrase-back-button"
+                onClick={() => navigate(-1)}
+                ariaLabel={t('back')}
+              />
+            </Box>
+            <Box
+              justifyContent={JustifyContent.flexStart}
+              marginBottom={4}
+              width={BlockSize.Full}
+            >
+              <Text variant={TextVariant.headingLg} as="h2">
+                {t('confirmRecoveryPhraseTitle')}
+              </Text>
+            </Box>
+          </>
+        )}
         <Box marginBottom={6}>
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
             {t('confirmRecoveryPhraseDetails')}
           </Text>
         </Box>

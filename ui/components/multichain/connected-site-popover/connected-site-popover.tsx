@@ -20,7 +20,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import { getOriginOfCurrentTab, getAllDomains } from '../../../selectors';
+import { getAllDomains, getOriginOfCurrentTab } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
@@ -44,6 +44,7 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const siteName = getURLHost(activeTabOrigin);
+
   const allDomains = useSelector(getAllDomains);
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
