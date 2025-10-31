@@ -120,7 +120,6 @@ describe('Vault Corruption', function () {
    * @param driver - The WebDriver instance.
    */
   async function waitForVaultRestorePage(driver: Driver) {
-    await driver.delay(10000);
     await driver.waitUntil(
       async () => {
         await driver.navigate(PAGES.HOME, { waitForControllers: false });
@@ -207,7 +206,7 @@ describe('Vault Corruption', function () {
 
     if (confirm) {
       // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing to window to become stale
-      await driver.delay(3000);
+      await driver.delay(8000);
       try {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
