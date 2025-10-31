@@ -179,6 +179,10 @@ const SubmitClaimForm = () => {
         newImpactedWalletAddress ?? impactedWalletAddress;
 
       if (!reimbursementWalletAddress || !addressToCompare) {
+        setErrorMessage(
+          SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+          undefined,
+        );
         return;
       }
 
@@ -331,8 +335,9 @@ const SubmitClaimForm = () => {
     }
     try {
       setClaimSubmitLoading(true);
+      const chainIdNumber = Number(chainId);
       await submitShieldClaim({
-        chainId,
+        chainId: chainIdNumber.toString(),
         email,
         impactedWalletAddress,
         impactedTransactionHash,
@@ -469,7 +474,15 @@ const SubmitClaimForm = () => {
         impactedWalletAddress={impactedWalletAddress}
         onAccountSelect={(address) => {
           setImpactedWalletAddress(address);
-          validateReimbursementEqualsImpactedWalletAddress(address);
+          // only validate equality if reimbursement wallet address is set and valid format
+          if (
+            reimbursementWalletAddress &&
+            (!errors.reimbursementWalletAddress ||
+              errors.reimbursementWalletAddress.msg ===
+                t('shieldClaimSameWalletAddressesError'))
+          ) {
+            validateReimbursementEqualsImpactedWalletAddress(address);
+          }
         }}
       />
 
