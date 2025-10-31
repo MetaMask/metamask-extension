@@ -119,8 +119,6 @@ export const lavamoatPlugin = (args: Args) =>
                 'getSelection',
                 // globals opera needs to function
                 'opr',
-                // for @popperjs/core and snap simple keyring site
-                'devicePixelRatio',
                 // globals used by e2e
                 ...(args.test
                   ? [
@@ -131,8 +129,6 @@ export const lavamoatPlugin = (args: Args) =>
                       'devicePixelRatio',
                     ]
                   : []),
-                // globals webpack needs to function
-                'webpackChunk',
               ],
             },
           },
@@ -212,8 +208,6 @@ export const lavamoatPlugin = (args: Args) =>
                 'getSelection',
                 // globals opera needs to function
                 'opr',
-                // for @popperjs/core and snap simple keyring site
-                'devicePixelRatio',
                 // globals used by e2e
                 ...(args.test
                   ? [
@@ -224,8 +218,6 @@ export const lavamoatPlugin = (args: Args) =>
                       'devicePixelRatio',
                     ]
                   : []),
-                // globals webpack needs to function
-                'webpackChunk',
               ],
             },
           },
