@@ -53,6 +53,16 @@ jest.mock('react-router-dom-v5-compat', () => {
 
 const middleware = [thunk];
 const mockedAssetDetails = jest.mocked(useAssetDetails);
+const flushPromises = () => new Promise((resolve) => setImmediate(resolve));
+
+const renderConfirm = async (mockStore) => {
+  let renderResult;
+  await act(async () => {
+    renderResult = renderWithConfirmContextProvider(<Confirm />, mockStore);
+    await flushPromises();
+  });
+  return renderResult;
+};
 
 describe('Confirm', () => {
   afterEach(() => {
@@ -70,16 +80,11 @@ describe('Confirm', () => {
     }));
   });
 
-  it('should render', () => {
+  it('should render', async () => {
     const mockStore = configureMockStore(middleware)(mockState);
 
-    act(() => {
-      const { container } = renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStore,
-      );
-      expect(container).toBeDefined();
-    });
+    const { container } = await renderConfirm(mockStore);
+    expect(container).toBeDefined();
   });
 
   it('should match snapshot for signature - typed sign - permit', async () => {
@@ -96,15 +101,7 @@ describe('Confirm', () => {
     });
 
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
-    let container;
-
-    await act(async () => {
-      const { container: renderContainer } = renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStore,
-      );
-      container = renderContainer;
-    });
+    const { container } = await renderConfirm(mockStore);
 
     expect(container).toMatchSnapshot();
   });
@@ -112,14 +109,7 @@ describe('Confirm', () => {
   it('matches snapshot for signature - personal sign type', async () => {
     const mockStatePersonalSign = getMockPersonalSignConfirmState();
     const mockStore = configureMockStore(middleware)(mockStatePersonalSign);
-
-    let container;
-    await act(async () => {
-      const { container: renderContainer } =
-        await renderWithConfirmContextProvider(<Confirm />, mockStore);
-
-      container = renderContainer;
-    });
+    const { container } = await renderConfirm(mockStore);
 
     expect(container).toMatchSnapshot();
   });
@@ -140,15 +130,7 @@ describe('Confirm', () => {
     });
 
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
-
-    let container;
-    await act(async () => {
-      const { container: renderContainer } = renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStore,
-      );
-      container = renderContainer;
-    });
+    const { container } = await renderConfirm(mockStore);
 
     expect(container).toMatchSnapshot();
   });
@@ -156,14 +138,7 @@ describe('Confirm', () => {
   it('should match snapshot for signature - typed sign - V4', async () => {
     const mockStateTypedSign = getMockTypedSignConfirmState();
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
-
-    let container;
-    await act(async () => {
-      const { container: renderContainer } =
-        await renderWithConfirmContextProvider(<Confirm />, mockStore);
-
-      container = renderContainer;
-    });
+    const { container } = await renderConfirm(mockStore);
 
     expect(container).toMatchSnapshot();
   });
@@ -182,14 +157,9 @@ describe('Confirm', () => {
       standard: 'ERC20',
     });
 
-    await act(async () => {
-      const { container } = await renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStore,
-      );
+    const renderResult = await renderConfirm(mockStore);
 
-      expect(container).toMatchSnapshot();
-    });
+    expect(renderResult.container).toMatchSnapshot();
   });
 
   it('should match snapshot for signature - typed sign - V4 - PermitBatch', async () => {
@@ -206,14 +176,9 @@ describe('Confirm', () => {
       standard: 'ERC20',
     });
 
-    await act(async () => {
-      const { container } = await renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStore,
-      );
+    const renderResult = await renderConfirm(mockStore);
 
-      expect(container).toMatchSnapshot();
-    });
+    expect(renderResult.container).toMatchSnapshot();
   });
 
   it('should render SmartTransactionsBannerAlert for transaction types but not signature types', async () => {
@@ -235,24 +200,14 @@ describe('Confirm', () => {
     const mockStoreTransaction =
       configureMockStore(middleware)(mockStateTransaction);
 
-    await act(async () => {
-      const { container } = renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStoreTransaction,
-      );
-      expect(container).toMatchSnapshot();
-    });
+    const transactionRender = await renderConfirm(mockStoreTransaction);
+    expect(transactionRender.container).toMatchSnapshot();
 
     // Test with a signature type (reuse existing mock)
     const mockStateTypedSign = getMockTypedSignConfirmState();
     const mockStoreSign = configureMockStore(middleware)(mockStateTypedSign);
 
-    await act(async () => {
-      const { container } = renderWithConfirmContextProvider(
-        <Confirm />,
-        mockStoreSign,
-      );
-      expect(container).toMatchSnapshot();
-    });
+    const signatureRender = await renderConfirm(mockStoreSign);
+    expect(signatureRender.container).toMatchSnapshot();
   });
 });
