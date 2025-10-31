@@ -47,7 +47,12 @@ export default function WalletReadyAnimation() {
     }
 
     fetch('./images/riv_animations/wallet_ready.riv')
-      .then((response) => response.arrayBuffer())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.arrayBuffer();
+      })
       .then((arrayBuffer) => setBuffer(arrayBuffer))
       .catch((error) => {
         console.error('[Rive Fox] Failed to load .riv file:', error);
