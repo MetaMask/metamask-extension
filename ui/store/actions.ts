@@ -6069,23 +6069,6 @@ export async function tokenRatesStopPollingByPollingToken(
 }
 
 /**
- * Starts polling on accountTrackerController with the networkClientId
- *
- * @param networkClientId - The network client ID to pull balances for.
- * @returns polling token used to stop polling
- */
-export async function accountTrackerStartPolling(
-  networkClientId: string,
-): Promise<string> {
-  const pollingToken = await submitRequestToBackground(
-    'accountTrackerStartPolling',
-    [networkClientId],
-  );
-  await addPollingTokenToAppState(pollingToken);
-  return pollingToken;
-}
-
-/**
  * Stops polling on the account tracker controller.
  *
  * @param pollingToken - polling token to use to stop polling.
