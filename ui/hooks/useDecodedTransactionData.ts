@@ -39,7 +39,7 @@ export function useDecodedTransactionDataValue(
   });
   const value = useMemo(
     () =>
-      decodeResponse?.value?.data[0]?.params?.find(
+      decodeResponse?.value?.data?.[0]?.params?.find(
         (param) => param.name === 'value' || param.name === 'amount',
       )?.value,
     [decodeResponse],
