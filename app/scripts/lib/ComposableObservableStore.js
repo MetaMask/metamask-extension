@@ -107,13 +107,13 @@ export default class ComposableObservableStore extends ObservableStore {
     if (!this.config) {
       return {};
     }
-    let flatState = {};
+    const flatState = {};
     for (const key of Object.keys(this.config)) {
       const controller = this.config[key];
       const state = controller.getState
         ? controller.getState()
         : controller.state;
-      flatState = { ...flatState, ...state };
+      Object.assign(flatState, state);
     }
     return flatState;
   }

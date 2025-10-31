@@ -25,21 +25,19 @@ export const LISTED_CONTRACT_ADDRESSES = Object.keys(contractMap).map(
  * @property {boolean} [isERC721] - True when the asset is a ERC721 token.
  */
 
-export const STATIC_MAINNET_TOKEN_LIST = Object.keys(contractMap).reduce(
-  (acc, base) => {
-    const { logo, ...tokenMetadata } = contractMap[base];
-    return {
-      ...acc,
-      [base.toLowerCase()]: {
-        ...tokenMetadata,
-        address: base.toLowerCase(),
-        iconUrl: `images/contract/${logo}`,
-        aggregators: [],
-      },
-    };
-  },
-  {},
-);
+const STATIC_MAINNET_TOKEN_LIST = {};
+
+for (const base of Object.keys(contractMap)) {
+  const { logo, ...tokenMetadata } = contractMap[base];
+  STATIC_MAINNET_TOKEN_LIST[base.toLowerCase()] = {
+    ...tokenMetadata,
+    address: base.toLowerCase(),
+    iconUrl: `images/contract/${logo}`,
+    aggregators: [],
+  };
+}
+
+export { STATIC_MAINNET_TOKEN_LIST };
 
 export const TOKEN_API_METASWAP_CODEFI_URL =
   'https://token.api.cx.metamask.io/tokens/';

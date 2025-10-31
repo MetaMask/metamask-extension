@@ -586,18 +586,16 @@ class FixtureBuilder {
   withPermissionControllerConnectedToMultichainTestDappWithTwoAccounts({
     scopes = ['eip155:1337'],
   }) {
-    const optionalScopes = scopes
-      .map((scope) => ({
-        [scope]: {
-          accounts: [
-            `${scope}:0x5cfe73b6021e818b776b421b1c4db2474086a7e1`,
-            `${scope}:0x09781764c08de8ca82e156bbf156a3ca217c7950`,
-          ],
-        },
-      }))
-      .reduce((acc, curr) => {
-        return { ...acc, ...curr };
-      }, {});
+    const optionalScopes = {};
+
+    for (const scope of scopes) {
+      optionalScopes[scope] = {
+        accounts: [
+          `${scope}:0x5cfe73b6021e818b776b421b1c4db2474086a7e1`,
+          `${scope}:0x09781764c08de8ca82e156bbf156a3ca217c7950`,
+        ],
+      };
+    }
 
     const subjects = {
       [DAPP_URL]: {
