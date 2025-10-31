@@ -1037,7 +1037,7 @@ export class PreferencesController extends BaseController<
         }
         return acc;
       },
-      { ...(lostIdentities ?? {}) },
+      { ...lostIdentities },
     );
 
     const updatedIdentities = Object.values(accounts).reduce(
