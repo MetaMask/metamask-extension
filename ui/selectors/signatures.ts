@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import { DefaultRootState } from 'react-redux';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {
   unapprovedPersonalMsgsSelector,
   unapprovedTypedMessagesSelector,
@@ -21,7 +20,4 @@ const internalSelectUnapprovedMessage = createSelector(
   (messages, messageId) => messages[messageId],
 );
 
-export const selectUnapprovedMessage = createDeepEqualSelector(
-  internalSelectUnapprovedMessage,
-  (message) => message,
-);
+export const selectUnapprovedMessage = internalSelectUnapprovedMessage;

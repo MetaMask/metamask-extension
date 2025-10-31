@@ -50,20 +50,10 @@ export const getTransactions = createDeepEqualSelector(
 
     return [...transactions].sort((a, b) => a.time - b.time); // Ascending
   },
-  (transactions) => transactions,
+  (transactions) => [...transactions],
 );
 
-export const getAllNetworkTransactions = createDeepEqualSelector(
-  // Input Selector: Retrieve all transactions from the state.
-  getTransactions,
-  // Output Selector: Filter transactions by popular networks.
-  (transactions) => {
-    if (!transactions.length) {
-      return [];
-    }
-    return transactions;
-  },
-);
+export const getAllNetworkTransactions = getTransactions;
 
 export const getCurrentNetworkTransactions = createDeepEqualSelector(
   (state) => {
@@ -79,7 +69,7 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
       (transaction) => transaction.chainId === chainId,
     );
   },
-  (transactions) => transactions,
+  (transactions) => [...transactions],
 );
 
 export const incomingTxListSelectorAllChains = createDeepEqualSelector(
@@ -93,23 +83,20 @@ export const incomingTxListSelectorAllChains = createDeepEqualSelector(
         tx.txParams.to === selectedAddress,
     );
   },
-  (transactions) => transactions,
+  (transactions) => [...transactions],
 );
 
 export const getUnapprovedTransactions = createDeepEqualSelector(
-  (state) => {
-    const transactions = getTransactions(state);
-    return filterAndShapeUnapprovedTransactions(transactions);
-  },
-  (transactions) => transactions,
+  getTransactions,
+  (transactions) => filterAndShapeUnapprovedTransactions(transactions),
 );
 
 // Unlike `getUnapprovedTransactions` and `getCurrentNetworkTransactions`
 // returns the total number of unapproved transactions on all networks
 export const getAllUnapprovedTransactions = createDeepEqualSelector(
-  (state) => {
-    const { transactions } = state.metamask || [];
-    if (!transactions?.length) {
+  (state) => state.metamask?.transactions ?? [],
+  (transactions) => {
+    if (!transactions.length) {
       return [];
     }
 
@@ -119,22 +106,30 @@ export const getAllUnapprovedTransactions = createDeepEqualSelector(
 
     return filterAndShapeUnapprovedTransactions(sortedTransactions);
   },
-  (transactions) => transactions,
 );
 
 export const getApprovedAndSignedTransactions = createDeepEqualSelector(
-  (state) => {
-    // Fetch transactions across all networks to address a nonce management limitation.
-    // This issue arises when a pending transaction exists on one network, and the user initiates another transaction on a different network.
-    const transactions = getTransactions(state);
+  getTransactions,
+  (transactions) => {
+    if (!Array.isArray(transactions)) {
+      return [];
+    }
 
-    return transactions.filter((transaction) =>
-      [TransactionStatus.approved, TransactionStatus.signed].includes(
-        transaction.status,
-      ),
-    );
+    if (transactions.length === 0) {
+      return [];
+    }
+
+    return transactions.reduce((result, transaction) => {
+      if (
+        [TransactionStatus.approved, TransactionStatus.signed].includes(
+          transaction.status,
+        )
+      ) {
+        result.push({ ...transaction });
+      }
+      return result;
+    }, []);
   },
-  (transactions) => transactions,
 );
 
 export const incomingTxListSelector = createDeepEqualSelector(
@@ -148,7 +143,7 @@ export const incomingTxListSelector = createDeepEqualSelector(
         tx.txParams.to === selectedAddress,
     );
   },
-  (transactions) => transactions,
+  (transactions) => [...transactions],
 );
 
 export const unapprovedPersonalMsgsSelector = (state) =>
@@ -679,10 +674,22 @@ export const nonceSortedCompletedTransactionsSelector = createSelector(
 
 export const submittedPendingTransactionsSelector = createSelector(
   transactionsSelector,
-  (transactions = []) =>
-    transactions.filter(
-      (transaction) => transaction.status === TransactionStatus.submitted,
-    ),
+  (transactions = []) => {
+    if (!Array.isArray(transactions)) {
+      return [];
+    }
+
+    if (transactions.length === 0) {
+      return [];
+    }
+
+    return transactions.reduce((result, transaction) => {
+      if (transaction.status === TransactionStatus.submitted) {
+        result.push({ ...transaction });
+      }
+      return result;
+    }, []);
+  },
 );
 
 const TRANSACTION_APPROVAL_TYPES = [

@@ -1,9 +1,12 @@
 import { ApprovalType } from '@metamask/controller-utils';
 
 import { createSelector } from 'reselect';
-import { getPendingApprovals } from '../../../selectors/approvals';
+import { getPendingApprovals, selectPendingApproval } from '../../../selectors/approvals';
+import { getUnapprovedTransaction } from '../../../selectors/selectors';
 import { createDeepEqualSelector } from '../../../../shared/modules/selectors/util';
+import { selectUnapprovedMessage } from '../../../selectors/signatures';
 import { ConfirmMetamaskState } from '../types/confirm';
+import { ApprovalsMetaMaskState } from '../../../selectors/approvals';
 
 const ConfirmationApprovalTypes = [
   ApprovalType.PersonalSign,
@@ -11,30 +14,64 @@ const ConfirmationApprovalTypes = [
   ApprovalType.Transaction,
 ];
 
-export function pendingConfirmationsSelector(state: ConfirmMetamaskState) {
-  return getPendingApprovals(state).filter(({ type }) =>
-    ConfirmationApprovalTypes.includes(type as ApprovalType),
-  );
-}
-
-export function pendingConfirmationsSortedSelector(
-  state: ConfirmMetamaskState,
-) {
-  return getPendingApprovals(state)
-    .filter(({ type }) =>
+export const pendingConfirmationsSelector = createSelector(
+  getPendingApprovals,
+  (pendingApprovals) =>
+    pendingApprovals.filter(({ type }) =>
       ConfirmationApprovalTypes.includes(type as ApprovalType),
-    )
-    .sort((a1, a2) => a1.time - a2.time);
-}
+    ),
+);
+
+export const pendingConfirmationsSortedSelector = createSelector(
+  pendingConfirmationsSelector,
+  (pendingConfirmations) =>
+    [...pendingConfirmations].sort((a1, a2) => a1.time - a2.time),
+);
 
 const firstPendingConfirmationSelector = createSelector(
   pendingConfirmationsSortedSelector,
   (pendingConfirmations) => pendingConfirmations[0],
 );
 
-export const oldestPendingConfirmationSelector = createDeepEqualSelector(
-  firstPendingConfirmationSelector,
-  (firstPendingConfirmation) => firstPendingConfirmation,
+export const oldestPendingConfirmationSelector = firstPendingConfirmationSelector;
+
+export type ConfirmationSelection = {
+  id?: string;
+  pendingApproval?: ReturnType<typeof selectPendingApproval>;
+  transactionMeta?: ReturnType<typeof getUnapprovedTransaction>;
+  signatureMessage?: ReturnType<typeof selectUnapprovedMessage>;
+};
+
+export const selectConfirmationData = createDeepEqualSelector(
+  (
+    state: ConfirmMetamaskState,
+    confirmationId?: string,
+  ) => confirmationId ?? oldestPendingConfirmationSelector(state)?.id,
+  (state: ConfirmMetamaskState) => state,
+  (effectiveId, state): ConfirmationSelection => {
+    if (!effectiveId) {
+      return {
+        id: undefined,
+        pendingApproval: undefined,
+        transactionMeta: undefined,
+        signatureMessage: undefined,
+      };
+    }
+
+    const pendingApproval = selectPendingApproval(
+      state as ApprovalsMetaMaskState,
+      effectiveId,
+    );
+    const transactionMeta = getUnapprovedTransaction(state, effectiveId);
+    const signatureMessage = selectUnapprovedMessage(state, effectiveId);
+
+    return {
+      id: effectiveId,
+      pendingApproval,
+      transactionMeta,
+      signatureMessage,
+    };
+  },
 );
 
 export function selectEnableEnforcedSimulations(
