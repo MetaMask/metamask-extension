@@ -4241,9 +4241,6 @@ export default class MetamaskController extends EventEmitter {
         this.txController.clearUnapprovedTransactions();
 
         this.tokenDetectionController.enable();
-
-        // set is resetting wallet in progress to false, in case of createNewVaultAndKeychain being called from resetWallet
-        this.appStateController.setIsWalletResetInProgress(false);
       }
 
       await this.keyringController.createNewVaultAndKeychain(password);
@@ -4262,6 +4259,9 @@ export default class MetamaskController extends EventEmitter {
         await this.getSnapKeyring(),
         this.accountTreeController.getSelectedAccountGroup(),
       );
+
+      // set is resetting wallet in progress to false, after new vault and keychain are created
+      this.appStateController.setIsWalletResetInProgress(false);
 
       return primaryKeyring;
     } finally {

@@ -272,7 +272,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   trezorModel: null,
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
-  showShieldEntryModalOnce: null,  isWalletResetInProgress: false,
+  showShieldEntryModalOnce: null,
+  isWalletResetInProgress: false,
 
   ...getInitialStateOverrides(),
 });
