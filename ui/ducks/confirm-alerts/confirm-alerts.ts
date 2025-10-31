@@ -116,7 +116,7 @@ export type ConfirmAlertsState = {
 
 type UpdateAlertsAction = {
   type: 'UPDATE_ALERTS';
-  ownerId: string;
+  ownerId: string | undefined;
   alerts: Alert[];
 };
 
@@ -129,7 +129,7 @@ type SetAlertConfirmedAction = {
 
 type ClearAlertsAction = {
   type: 'CLEAR_ALERTS';
-  ownerId: string;
+  ownerId: string | undefined;
 };
 
 type Action = UpdateAlertsAction | SetAlertConfirmedAction | ClearAlertsAction;
@@ -150,7 +150,7 @@ export default function confirmAlertsReducer(
         ...state,
         alerts: {
           ...state.alerts,
-          [action.ownerId]: action.alerts,
+          [action.ownerId ?? '']: action.alerts,
         },
       };
 
@@ -171,11 +171,11 @@ export default function confirmAlertsReducer(
         ...state,
         alerts: {
           ...state.alerts,
-          [action.ownerId]: [],
+          [action.ownerId ?? '']: [],
         },
         confirmed: {
           ...state.confirmed,
-          [action.ownerId]: {},
+          [action.ownerId ?? '']: {},
         },
       };
 
@@ -185,7 +185,7 @@ export default function confirmAlertsReducer(
 }
 
 export function updateAlerts(
-  ownerId: string,
+  ownerId: string | undefined,
   alerts: Alert[],
 ): UpdateAlertsAction {
   return {
@@ -208,7 +208,7 @@ export function setAlertConfirmed(
   };
 }
 
-export function clearAlerts(ownerId: string): ClearAlertsAction {
+export function clearAlerts(ownerId: string | undefined): ClearAlertsAction {
   return {
     type: 'CLEAR_ALERTS',
     ownerId,

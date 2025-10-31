@@ -10,7 +10,7 @@ import {
 import { useUpdateEthereumChainAlerts } from './useUpdateEthereumChainAlerts';
 
 export const useTemplateConfirmationAlerts = (
-  pendingConfirmation: ApprovalRequest<{ id: string }>,
+  pendingConfirmation: ApprovalRequest<{ id: string }> | undefined,
 ) => {
   const dispatch = useDispatch();
   const addEthereumChainAlerts =
