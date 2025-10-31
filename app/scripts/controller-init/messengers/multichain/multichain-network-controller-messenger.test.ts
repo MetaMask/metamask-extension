@@ -1,14 +1,13 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../../lib/messenger';
 import { getMultichainNetworkControllerMessenger } from './multichain-network-controller-messenger';
 
 describe('getMultichainNetworkControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const multichainNetworkControllerMessenger =
       getMultichainNetworkControllerMessenger(messenger);
 
-    expect(multichainNetworkControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(multichainNetworkControllerMessenger).toBeInstanceOf(Messenger);
   });
 });

@@ -26,12 +26,13 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom-v5-compat', () => {
+  return {
+    ...jest.requireActual('react-router-dom-v5-compat'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const mockSetIsBackupAndSyncFeatureEnabled = jest.fn();
 jest.mock('../../../../../hooks/identity/useBackupAndSync', () => ({
@@ -151,7 +152,7 @@ describe('TurnOnBackupAndSyncModal', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(mockHistoryPush).toHaveBeenCalledWith(BACKUPANDSYNC_ROUTE);
+      expect(mockUseNavigate).toHaveBeenCalledWith(BACKUPANDSYNC_ROUTE);
       expect(mockSetIsBackupAndSyncFeatureEnabled).toHaveBeenCalledWith(
         BACKUPANDSYNC_FEATURES.main,
         true,

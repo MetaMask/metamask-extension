@@ -2,12 +2,11 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom-v5-compat';
 import classnames from 'classnames';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
-import { useNavigate } from 'react-router-dom-v5-compat';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
@@ -98,14 +97,15 @@ import {
   setShieldEndingToastLastClickedOrClosed,
 } from './utils';
 
-export function ToastMaster() {
-  const location = useLocation();
+export function ToastMaster({ location } = {}) {
   const isMultichainAccountsFeatureState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
 
-  const onHomeScreen = location.pathname === DEFAULT_ROUTE;
-  const onSettingsScreen = location.pathname.startsWith(SETTINGS_ROUTE);
+  // Use passed location or fallback to DEFAULT_ROUTE
+  const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
+  const onHomeScreen = currentPathname === DEFAULT_ROUTE;
+  const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
   if (onHomeScreen) {
     return (
@@ -391,7 +391,7 @@ function PermittedNetworkToast() {
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const dappActiveNetwork = useSelector(getDappActiveNetwork);
   const safeEncodedHost = encodeURIComponent(activeTabOrigin);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // Use dapp's active network if available, otherwise fall back to global network
   const displayNetwork = dappActiveNetwork || currentNetwork;
@@ -429,7 +429,7 @@ function PermittedNetworkToast() {
         actionText={t('editPermissions')}
         onActionClick={() => {
           dispatch(hidePermittedNetworkToast());
-          history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+          navigate(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
         }}
         onClose={() => dispatch(hidePermittedNetworkToast())}
       />

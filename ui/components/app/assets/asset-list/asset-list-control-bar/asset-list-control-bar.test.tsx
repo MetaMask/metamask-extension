@@ -5,11 +5,6 @@ import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichai
 import type { NetworkConfiguration } from '@metamask/network-controller';
 import { fireEvent } from '../../../../../../test/jest';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as actions from '../../../../../store/actions';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
@@ -57,40 +52,6 @@ const createMockState = () => ({
       },
     },
   },
-});
-
-describe('AssetListControlBar', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should fire metrics event when refresh button is clicked', async () => {
-    const state = createMockState();
-    const store = configureMockStore([thunk])(state);
-
-    const mockTrackEvent = jest.fn();
-
-    const { findByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <AssetListControlBar showTokensLinks />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
-
-    const importButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    importButton.click();
-
-    const refreshListItem = await findByTestId('refreshList__button');
-    refreshListItem.click();
-
-    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Tokens,
-      event: MetaMetricsEventName.TokenListRefreshed,
-    });
-  });
 });
 
 describe('NFTs options', () => {

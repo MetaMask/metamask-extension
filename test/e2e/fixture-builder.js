@@ -9,12 +9,10 @@ const { toHex } = require('@metamask/controller-utils');
 const { mockNetworkStateOld } = require('../stub/networks');
 
 const {
-  ARBITRUM_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
   BNB_DISPLAY_NAME,
   CHAIN_IDS,
   LOCALHOST_DISPLAY_NAME,
-  OPTIMISM_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   ZK_SYNC_ERA_DISPLAY_NAME,
 } = require('../../shared/constants/network');
@@ -1903,30 +1901,6 @@ class FixtureBuilder {
   withPopularNetworks() {
     return this.withNetworkController({
       networkConfigurations: {
-        'op-mainnet': {
-          chainId: CHAIN_IDS.OPTIMISM,
-          nickname: OPTIMISM_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://mainnet.optimism.io',
-          ticker: 'ETH',
-          id: 'op-mainnet',
-        },
-        'polygon-mainnet': {
-          chainId: CHAIN_IDS.POLYGON,
-          nickname: POLYGON_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://polygon-rpc.com',
-          ticker: 'MATIC',
-          id: 'polygon-mainnet',
-        },
-        'arbitrum-one': {
-          chainId: CHAIN_IDS.ARBITRUM,
-          nickname: ARBITRUM_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://arb1.arbitrum.io/rpc',
-          ticker: 'ETH',
-          id: 'arbitrum-one',
-        },
         'avalanche-mainnet': {
           chainId: CHAIN_IDS.AVALANCHE,
           nickname: AVALANCHE_DISPLAY_NAME,
@@ -1934,14 +1908,6 @@ class FixtureBuilder {
           rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
           ticker: 'AVAX',
           id: 'avalanche-mainnet',
-        },
-        'bnb-mainnet': {
-          chainId: CHAIN_IDS.BSC,
-          nickname: BNB_DISPLAY_NAME,
-          rpcPrefs: {},
-          rpcUrl: 'https://bsc-dataseed.binance.org',
-          ticker: 'BNB',
-          id: 'bnb-mainnet',
         },
         'zksync-mainnet': {
           chainId: CHAIN_IDS.ZKSYNC_ERA,

@@ -22,7 +22,7 @@ on:
     - cron: '0 2-6 * * *'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref == 'refs/heads/main' && github.sha || github.ref }}
   cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
 env:
@@ -422,6 +422,7 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
+    if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
     needs:
       - build-dist-browserify
       - build-dist-mv2-browserify
