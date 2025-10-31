@@ -28,7 +28,7 @@ const usePollingEnabled = () => {
 };
 
 const useNativeCurrencies = (isPollingEnabled: boolean) => {
-  const isMounted = useRef(false);
+  const isMounted = useRef(true);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
@@ -40,13 +40,6 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
   const pollableChains = isGlobalNetworkSelectorRemoved
     ? enabledChainIds
     : chainIds;
-
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
 
   useEffect(() => {
     // Use validated currency tickers

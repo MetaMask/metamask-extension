@@ -56,11 +56,7 @@ const usePolling = <PollingInput>(
       prevPollingInputStringified.current = null;
       cleanup();
     };
-  }, [
-    usePollingOptions.input,
-    hasPollingInputChanged,
-    usePollingOptions.enabled,
-  ]);
+  }, [usePollingOptions, hasPollingInputChanged, usePollingOptions.enabled]);
 };
 
 export default usePolling;

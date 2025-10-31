@@ -32,6 +32,7 @@ export const useGetTokenStandardAndDetails = (
   if (!details) {
     return { decimalsNumber: undefined };
   }
+
   const { decimals, standard } = details;
 
   if (standard === TokenStandard.ERC20) {

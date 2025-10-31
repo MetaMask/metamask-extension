@@ -18,7 +18,7 @@ export function useAssetDetails(
   transactionData,
   chainId,
 ) {
-  const isMounted = useRef(false);
+  const isMounted = useRef(true);
   const dispatch = useDispatch();
 
   // state selectors
@@ -44,17 +44,7 @@ export function useAssetDetails(
   const prevTokenBalance = usePrevious(tokensWithBalances);
 
   useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  });
-
-  useEffect(() => {
-    if (
-      !isMounted.current ||
-      (!tokenAddress && !userAddress && !transactionData)
-    ) {
+    if (!tokenAddress && !userAddress && !transactionData) {
       return () => undefined;
     }
 

@@ -31,7 +31,7 @@ export const useAssetMetadata = (
       abortControllerRef.current?.abort();
       abortControllerRef.current = null;
     };
-  }, [abortControllerRef]);
+  }, []);
 
   const { value: assetMetadata } = useAsyncResult<
     | {
