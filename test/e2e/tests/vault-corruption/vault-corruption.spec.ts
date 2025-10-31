@@ -207,6 +207,7 @@ describe('Vault Corruption', function () {
 
     if (confirm) {
       // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing to window to become stale
+      await driver.delay(3000);
       try {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
