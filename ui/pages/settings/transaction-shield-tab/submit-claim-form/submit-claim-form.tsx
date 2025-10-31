@@ -42,7 +42,8 @@ import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import { isSafeChainId } from '../../../../../shared/modules/network.utils';
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const MAX_FILE_SIZE_MB = 5;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 const BACKEND_ERROR_MAP: Record<string, { key: string; msg: string }> = {
   'Please enter a valid transaction hash': {
@@ -468,9 +469,9 @@ const SubmitClaimForm = () => {
         label={t('shieldClaimFileUploader')}
         onChange={(inputFiles) => setFiles(inputFiles as FileList)}
         accept={['application/pdf', 'image/png', 'image/jpeg'].join(',')}
-        acceptText={t('shieldClaimFileUploaderAcceptText')}
+        acceptText={t('shieldClaimFileUploaderAcceptText', [MAX_FILE_SIZE_MB])}
         helpText={t('shieldClaimFileUploaderHelpText')}
-        maxFileSize={MAX_FILE_SIZE}
+        maxFileSize={MAX_FILE_SIZE_BYTES}
       />
       <Box className="settings-page__content-item-col">
         <Button
