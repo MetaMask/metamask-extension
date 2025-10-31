@@ -83,9 +83,14 @@ type MaskedPrimitive = JsonPrimitive;
 type MaskedArray = MaskedValue[] | 'array';
 
 /**
+ * The result of masking the root object.
+ */
+type MaskedStrictPlainObject = { [prop: string]: MaskedValue };
+
+/**
  * The result of masking a JSON-serializable plain object.
  */
-type MaskedPlainObject = { [prop: string]: MaskedValue } | 'object';
+type MaskedPlainObject = MaskedStrictPlainObject | 'object';
 
 /**
  * The result of masking a JSON-serializable value.
@@ -221,7 +226,19 @@ function validatePlainObjectMask(
 }
 
 /**
- * Masks a plain object.
+ * Masks a root plain object.
+ *
+ * @param plainObject - The object to mask.
+ * @param mask - The mask to apply to the object.
+ * @returns The masked object.
+ */
+function maskPlainObject(
+  plainObject: MaskablePlainObject,
+  mask: StrictPlainObjectMask,
+): MaskedStrictPlainObject;
+
+/**
+ * Masks a non-root plain object.
  *
  * @param plainObject - The object to mask.
  * @param mask - The mask to apply to the object.
@@ -230,7 +247,12 @@ function validatePlainObjectMask(
 function maskPlainObject(
   plainObject: MaskablePlainObject,
   mask: PlainObjectMask,
-): MaskedPlainObject {
+): MaskedPlainObject;
+
+function maskPlainObject(
+  plainObject: MaskablePlainObject,
+  mask: PlainObjectMask | StrictPlainObjectMask,
+): MaskedPlainObject | StrictPlainObjectMask {
   if (mask === true) {
     // Don't mask any properties in the object
     return plainObject;
@@ -267,12 +289,16 @@ function maskPlainObject(
  * @throws If mask is not a boolean, a plain object, or undefined.
  */
 function maskValue(value: MaskableValue, mask: Mask): MaskedValue {
+  if (value === undefined) {
+    // There is no value to mask, so use it as-is
+    return value;
+  }
+
   if (
     typeof value === 'string' ||
     typeof value === 'number' ||
     typeof value === 'boolean' ||
-    value === null ||
-    value === undefined
+    value === null
   ) {
     if (!(typeof mask === 'boolean' || mask === undefined)) {
       throw new Error(
@@ -318,7 +344,7 @@ function maskValue(value: MaskableValue, mask: Mask): MaskedValue {
 export function maskObject(
   plainObject: MaskablePlainObject,
   mask: StrictPlainObjectMask,
-): MaskedPlainObject {
+): MaskedStrictPlainObject {
   if (!isPlainObject(plainObject)) {
     throw new Error('Cannot mask a non-JSON-serializable object');
   }

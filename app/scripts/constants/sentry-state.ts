@@ -35,14 +35,20 @@ export const SENTRY_BACKGROUND_STATE = {
     srpSessionData: false,
   },
   NetworkOrderController: {
-    orderedNetworkList: [],
+    orderedNetworkList: {
+      [AllProperties]: false,
+    },
   },
   NetworkEnablementController: {
     enabledNetworkMap: {},
   },
   AccountOrderController: {
-    pinnedAccountList: [],
-    hiddenAccountList: [],
+    pinnedAccountList: {
+      [AllProperties]: false,
+    },
+    hiddenAccountList: {
+      [AllProperties]: false,
+    },
   },
   AppMetadataController: {
     currentAppVersion: true,
@@ -119,7 +125,9 @@ export const SENTRY_BACKGROUND_STATE = {
       destTokenAddress: true,
       srcTokenAmount: true,
     },
-    quotes: [],
+    quotes: {
+      [AllProperties]: false,
+    },
     quotesInitialLoadTime: true,
     quotesLastFetched: true,
     quotesLoadingStatus: true,
@@ -213,8 +221,12 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   PPOMController: {
     securityAlertsEnabled: false,
-    storageMetadata: [],
-    versionInfo: [],
+    storageMetadata: {
+      [AllProperties]: false,
+    },
+    versionInfo: {
+      [AllProperties]: false,
+    },
   },
   PermissionController: {
     subjects: false,

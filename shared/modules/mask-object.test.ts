@@ -340,5 +340,36 @@ describe('maskObject', () => {
         'The mask for a plain object must be a boolean, a plain object, or undefined',
       );
     });
+
+    it('does not throw if attempting to mask a property that is not present', () => {
+      const object = {};
+      const mask = {
+        foo: false,
+      };
+      const maskedObject = {};
+
+      const result = maskObject(object, mask);
+
+      expect(result).toStrictEqual(maskedObject);
+    });
+
+    it('does not throw if attempting to mask an undefined property (same as absent)', () => {
+      const object = {
+        foo: undefined,
+      };
+      const mask = {
+        foo: false,
+      };
+      const maskedObject = {
+        foo: undefined,
+      };
+
+      // @ts-expect-error The type error *should* prevent this from happening,
+      // but this assumes that the type of the object is correct, which it is
+      // not in Mobile
+      const result = maskObject(object, mask);
+
+      expect(result).toStrictEqual(maskedObject);
+    });
   });
 });
