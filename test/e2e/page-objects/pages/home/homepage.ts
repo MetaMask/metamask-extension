@@ -431,10 +431,11 @@ class HomePage {
 
   async checkLocalNodeBalanceIsDisplayed(
     localNode?: Ganache | Anvil,
+    address = null,
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {
-      expectedBalance = '24.998';
+      expectedBalance = (await localNode.getBalance(address)).toString();
     } else {
       expectedBalance = '25';
     }
