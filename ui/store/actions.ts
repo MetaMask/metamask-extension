@@ -77,6 +77,7 @@ import {
   CachedLastSelectedPaymentMethods,
 } from '@metamask/subscription-controller';
 
+import { isNonEvmChainId } from '@metamask/bridge-controller';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
@@ -174,6 +175,7 @@ import {
   ClaimSubmitToastType,
   type NetworkConnectionBanner,
 } from '../../shared/constants/app-state';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../selectors/multichain-accounts/account-tree';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -2994,15 +2996,18 @@ export function addImportedTokens(
  * @param options.tokensToIgnore
  * @param options.networkClientId
  * @param options.dontShowLoadingIndicator
+ * @param options.chainId
  */
 export function ignoreTokens({
   tokensToIgnore,
   dontShowLoadingIndicator = false,
   networkClientId = null,
+  chainId,
 }: {
   tokensToIgnore: string[];
   dontShowLoadingIndicator: boolean;
   networkClientId?: NetworkClientId;
+  chainId?: CaipChainId;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   const _tokensToIgnore = Array.isArray(tokensToIgnore)
     ? tokensToIgnore
@@ -3010,15 +3015,33 @@ export function ignoreTokens({
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
     if (!dontShowLoadingIndicator) {
       dispatch(showLoadingIndication());
     }
     try {
-      await submitRequestToBackground('ignoreTokens', [
-        _tokensToIgnore,
-        networkClientId,
-      ]);
+      const state = getState();
+      const selectedAccount = getInternalAccountBySelectedAccountGroupAndCaip(
+        state,
+        chainId,
+      );
+
+      if (!selectedAccount) {
+        throw new Error('No selected account found');
+      }
+
+      if (isNonEvmChainId(chainId)) {
+        console.log('JJJJ');
+        await submitRequestToBackground('multichainIgnoreAssets', [
+          _tokensToIgnore,
+          selectedAccount.id,
+        ]);
+      } else {
+        await submitRequestToBackground('ignoreTokens', [
+          _tokensToIgnore,
+          networkClientId,
+        ]);
+      }
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));
