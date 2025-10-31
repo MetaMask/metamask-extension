@@ -1,18 +1,19 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import IconWithFallback from '../../ui/icon-with-fallback';
 import Identicon from '../../ui/identicon';
 import {
-  Display,
-  FlexDirection,
   TextVariant,
   FontWeight,
-  AlignItems,
-  JustifyContent,
   TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { Text } from '../../component-library';
@@ -33,23 +34,20 @@ export default function NetworkAccountBalanceHeader({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
+      flexDirection={BoxFlexDirection.Row}
       padding={4}
       className="network-account-balance-header"
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
+      alignItems={BoxAlignItems.center}
+      justifyContent={BoxJustifyContent.spaceBetween}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         gap={2}
       >
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
         >
           <Identicon address={accountAddress} diameter={32} />
           <IconWithFallback
@@ -60,9 +58,8 @@ export default function NetworkAccountBalanceHeader({
           />
         </Box>
         <Box
-          display={Display.Flex}
-          alignItems={AlignItems.flexStart}
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.FlexStart}
         >
           <Text
             variant={TextVariant.bodySm}
@@ -84,9 +81,8 @@ export default function NetworkAccountBalanceHeader({
         </Box>
       </Box>
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.flexEnd}
-        flexDirection={FlexDirection.Column}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.FlexEnd}
       >
         <Text
           variant={TextVariant.bodySm}

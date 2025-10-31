@@ -2,13 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import {
-  Display,
-  FlexDirection,
-  Size,
-} from '../../../../helpers/constants/design-system';
-
-import Box from '../../../ui/box/box';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { Size } from '../../../../helpers/constants/design-system';
 
 import { TextField } from '../../text-field';
 import { HelpText, HelpTextSeverity } from '../../help-text';
@@ -56,8 +51,7 @@ export const FormTextField = ({
       { 'mm-form-text-field--disabled': disabled },
       className,
     )}
-    display={Display.Flex}
-    flexDirection={FlexDirection.Column}
+    flexDirection={BoxFlexDirection.column}
     {...props}
   >
     {label && (

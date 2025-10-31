@@ -23,7 +23,7 @@ import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
 import { AvatarAccount } from '@metamask/design-system-react';
 import { AvatarToken } from '../avatar-token';
 
-import Box from '../../ui/box/box';
+import { Box } from '../box';
 import { Icon, IconName, IconSize } from '../icon';
 import { Tag } from '../tag';
 

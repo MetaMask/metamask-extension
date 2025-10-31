@@ -3,6 +3,11 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { isEqual } from 'lodash';
+import {
+  Box,
+  BoxJustifyContent,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getFetchParams,
@@ -29,15 +34,11 @@ import {
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { Text } from '../../../components/component-library';
-import Box from '../../../components/ui/box';
 import UrlIcon from '../../../components/ui/url-icon';
 import {
   BLOCK_SIZES,
   TextVariant,
-  JustifyContent,
-  DISPLAY,
   FontWeight,
-  AlignItems,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
@@ -297,16 +298,14 @@ export default function SmartTransactionStatusPage() {
         paddingLeft={8}
         paddingRight={8}
         height={BLOCK_SIZES.FULL}
-        justifyContent={JustifyContent.flexStart}
-        display={DISPLAY.FLEX}
+        justifyContent={BoxJustifyContent.FlexStart}
         className="smart-transaction-status__content"
       >
         <Box
           marginTop={10}
           marginBottom={0}
-          display={DISPLAY.FLEX}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
         >
           <Text
             color={TextColor.textAlternative}
@@ -336,7 +335,7 @@ export default function SmartTransactionStatusPage() {
               fallbackClassName="smart-transactions-status-summary__icon-fallback"
             />
           ) : null}
-          <Box display={DISPLAY.BLOCK} marginLeft={2} marginRight={2}>
+          <Box marginLeft={2} marginRight={2}>
             <ArrowIcon />
           </Box>
           {fetchParamsDestinationTokenInfo.iconUrl ? (
@@ -381,9 +380,8 @@ export default function SmartTransactionStatusPage() {
           <Box
             marginTop={7}
             marginBottom={1}
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Center}
           >
             <TimerIcon />
             <Text

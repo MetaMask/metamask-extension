@@ -1,16 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import Popover from '../../../../components/ui/popover';
-import Box from '../../../../components/ui/box';
 
-import {
-  DISPLAY,
-  FLEX_DIRECTION,
-  JustifyContent,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import {
@@ -34,9 +33,8 @@ const SetApproveForAllWarning = ({
 
   const footer = (
     <Box
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
-      justifyContent={JustifyContent.SPACE_BETWEEN}
+      flexDirection={BoxFlexDirection.column}
+      justifyContent={BoxJustifyContent.spaceBetween}
       className="set-approval-for-all-warning__footer"
       gap={4}
     >
@@ -61,8 +59,7 @@ const SetApproveForAllWarning = ({
   return (
     <Popover className="set-approval-for-all-warning__content" footer={footer}>
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        flexDirection={BoxFlexDirection.row}
         padding={4}
         className="set-approval-for-all-warning__content__header"
       >
@@ -75,12 +72,11 @@ const SetApproveForAllWarning = ({
         </Text>
       </Box>
       <Box
-        display={DISPLAY.FLEX}
         padding={4}
-        justifyContent={JustifyContent.spaceBetween}
+        justifyContent={BoxJustifyContent.spaceBetween}
         className="set-approval-for-all-warning__content__account"
       >
-        <Box display={DISPLAY.FLEX}>
+        <Box>
           <PreferredAvatar address={senderAddress} />
           <Text
             variant={TextVariant.bodyMd}

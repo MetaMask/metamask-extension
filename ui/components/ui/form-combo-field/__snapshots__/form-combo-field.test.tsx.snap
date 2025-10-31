@@ -11,7 +11,7 @@ exports[`FormComboField renders with no options 1`] = `
     >
       <div>
         <div
-          class="box mm-form-text-field form-combo-field__value form-combo-field__value-dropdown-visible box--display-flex box--flex-direction-column"
+          class="mm-form-text-field form-combo-field__value form-combo-field__value-dropdown-visible"
         >
           <div
             class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
@@ -67,7 +67,7 @@ exports[`FormComboField renders with options 1`] = `
     >
       <div>
         <div
-          class="box mm-form-text-field form-combo-field__value form-combo-field__value-dropdown-visible box--display-flex box--flex-direction-column"
+          class="mm-form-text-field form-combo-field__value form-combo-field__value-dropdown-visible"
         >
           <div
             class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
@@ -143,7 +143,7 @@ exports[`FormComboField should not render "no options" if hideDropdownIfNoOption
     >
       <div>
         <div
-          class="box mm-form-text-field form-combo-field__value form-combo-field__value-dropdown-visible box--display-flex box--flex-direction-column"
+          class="mm-form-text-field form-combo-field__value form-combo-field__value-dropdown-visible"
         >
           <div
             class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"

@@ -2,6 +2,7 @@ import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
+import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
@@ -17,7 +18,6 @@ import {
 } from '../../../../selectors';
 
 import Popover from '../../../ui/popover';
-import Box from '../../../ui/box';
 import { Button, ButtonVariant } from '../../../component-library';
 import DetectedTokenDetails from '../detected-token-details/detected-token-details';
 import { trace, endTrace, TraceName } from '../../../../../shared/lib/trace';
