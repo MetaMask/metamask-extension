@@ -1,10 +1,13 @@
 import React from 'react';
+import { Route } from 'react-router-dom';
 import { screen, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE } from '../../../helpers/constants/routes';
+import * as traceModule from '../../../../shared/lib/trace';
 import { MultichainAccountDetailsPage } from './multichain-account-details-page';
 
 const backButtonTestId = 'back-button';
@@ -15,6 +18,11 @@ const accountDetailsRowSmartAccountTestId = 'account-details-row-smart-account';
 const accountDetailsRowWalletTestId = 'account-details-row-wallet';
 const accountDetailsRowSecretRecoveryPhraseTestId = 'multichain-srp-backup';
 const accountNameInputDataTestId = 'account-name-input';
+
+jest.mock('../../../../shared/lib/trace', () => ({
+  ...jest.requireActual('../../../../shared/lib/trace'),
+  trace: jest.fn(),
+}));
 
 const mockHistoryPush = jest.fn();
 const mockHistoryGoBack = jest.fn();
@@ -217,6 +225,35 @@ describe('MultichainAccountDetailsPage', () => {
     expect(mockDispatch).toHaveBeenNthCalledWith(2, {
       type: 'SET_ACCOUNT_DETAILS_ADDRESS',
       payload: '',
+    });
+  });
+
+  describe('tracing', () => {
+    it('calls ShowAccountAddressList trace when clicking network addresses link', () => {
+      const store = configureStore(mockState);
+      const groupId = mockState.metamask.accountTree.selectedAccountGroup;
+      renderWithProvider(
+        <Route path="/test/:id">
+          <MultichainAccountDetailsPage />
+        </Route>,
+        store,
+        `/test/${encodeURIComponent(groupId)}`,
+      );
+
+      const addressesLink = document.querySelector(
+        '[data-testid="network-addresses-link"]',
+      );
+      expect(addressesLink).toBeInTheDocument();
+      if (addressesLink) {
+        (addressesLink as HTMLElement).click();
+      }
+
+      const { TraceName } = jest.requireActual('../../../../shared/lib/trace');
+      expect(traceModule.trace).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: TraceName.ShowAccountAddressList,
+        }),
+      );
     });
   });
 });
