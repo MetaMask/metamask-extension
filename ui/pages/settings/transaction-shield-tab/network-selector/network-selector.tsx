@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
+  AvatarNetwork,
+  AvatarNetworkSize,
   Box,
   BoxBorderColor,
   FontWeight,
@@ -12,6 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { CHAIN_IDS } from '@metamask/transaction-controller';
 import {
   Modal,
   ModalBody,
@@ -20,12 +23,10 @@ import {
   ModalHeader,
   ModalOverlay,
 } from '../../../../components/component-library';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import { NetworkListItem } from '../../../../components/multichain/network-list-item';
 import { getImageForChainId } from '../../../../selectors/multichain';
 import { TextVariant as DsTextVariant } from '../../../../helpers/constants/design-system';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 
 const SUPPORTED_CHAIN_IDS: `0x${string}`[] = [
   CHAIN_IDS.MAINNET,
@@ -50,7 +51,6 @@ const NetworkSelector = ({
   onNetworkSelect: (chainId: string) => void;
   selectedChainId: string;
 }) => {
-  const t = useI18nContext();
   const [showNetworkListMenu, setShowNetworkListMenu] = useState(false);
 
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
@@ -59,7 +59,7 @@ const NetworkSelector = ({
     () =>
       Object.values(allNetworks).filter((network) =>
         SUPPORTED_CHAIN_IDS.includes(network.chainId),
-      ) ?? [],
+      ),
     [allNetworks],
   );
 
@@ -81,14 +81,15 @@ const NetworkSelector = ({
         borderColor={BoxBorderColor.BorderDefault}
         className="w-full flex items-center gap-2 px-4 h-12 border rounded-lg"
         onClick={() => setShowNetworkListMenu(true)}
+        aria-label={modalTitle}
       >
         <button data-testid="network-selector-button">
           {selectedNetworkInfo ? (
             <>
-              <img
+              <AvatarNetwork
                 src={getImageForChainId(selectedNetworkInfo.chainId)}
                 alt={selectedNetworkInfo.name}
-                style={{ width: '24px', height: '24px', borderRadius: '50%' }}
+                size={AvatarNetworkSize.Sm}
               />
               <Text>{selectedNetworkInfo.name}</Text>
             </>

@@ -12,6 +12,8 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
+import classnames from 'classnames';
 import {
   Modal,
   ModalBody,
@@ -22,11 +24,8 @@ import {
 } from '../../../../components/component-library';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { AccountSelectorWallet } from '../types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useSelector } from 'react-redux';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 import { useAccountAddressSeedIconMap } from '../../../confirmations/hooks/send/useAccountAddressSeedIconMap';
-import classnames from 'classnames';
 
 const AccountSelector = ({
   label,
@@ -39,7 +38,6 @@ const AccountSelector = ({
   onAccountSelect: (address: string) => void;
   impactedWalletAddress: string;
 }) => {
-  const t = useI18nContext();
   const [showAccountListMenu, setShowAccountListMenu] = useState(false);
 
   // Account list
@@ -114,6 +112,7 @@ const AccountSelector = ({
         borderColor={BoxBorderColor.BorderDefault}
         className="w-full flex items-center gap-2 px-4 h-12 border rounded-lg"
         onClick={() => setShowAccountListMenu(true)}
+        aria-label={modalTitle}
       >
         <button>
           {selectedAccountInfo ? (
@@ -147,7 +146,9 @@ const AccountSelector = ({
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
-          <ModalHeader>{modalTitle}</ModalHeader>
+          <ModalHeader onClose={() => setShowAccountListMenu(false)}>
+            {modalTitle}
+          </ModalHeader>
           <ModalBody paddingRight={0} paddingLeft={0}>
             {Object.entries(accountsGroupedByWallet).map(
               ([walletName, wallet]) => (
