@@ -281,9 +281,9 @@ type StateHooks = {
   captureBackgroundError?: (msg?: string) => Promise<void>;
 
   /**
-   * This is set in `app-init.js`. It is handled in `background.js`.
+   * This is initialized by the service worker in MV3. It is handled in `background.js`.
    */
-  lazyListener?: ExtensionLazyListener<Browser>;
+  lazyListener?: ExtensionLazyListener<typeof globalThis.chrome>;
 };
 
 export declare global {

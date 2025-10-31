@@ -1,17 +1,27 @@
 // This file is used only for manifest version 3
 
 // We don't usually `import` files into `service-worker.ts` because we need to load
-// "chunks" via `importScripts`; but in this case `promise-with-resolvers` file
-// is so small we won't ever have a problem with these two files being "split".
-import { withResolvers } from '../shared/lib/promise-with-resolvers';
+// "chunks" via `importScripts`; but in this case `ExtensionLazyListener` is so
+// small we won't ever have a problem with these two files being "split".
+import { ExtensionLazyListener } from './scripts/lib/extension-lazy-listener/extension-lazy-listener';
 
 // We need to define 'window' in the global scope to use it in the service worker
 // @ts-expect-error - typescript doesn't know about this
 globalThis.window = globalThis;
 
+const { chrome } = globalThis;
+
+// this needs to be run early so we can begin listening to these browser events
+// as soon as possible
+const lazyListener = new ExtensionLazyListener(chrome, {
+  runtime: ['onInstalled', 'onConnect'],
+});
+
 globalThis.stateHooks = globalThis.stateHooks || {};
 
-const { chrome } = globalThis;
+// Set the lazy listener on globalThis.stateHooks so that other bundles can
+// access it.
+globalThis.stateHooks.lazyListener = lazyListener;
 
 let runImportScriptsInitiated = false;
 
@@ -69,22 +79,3 @@ chrome.runtime.onMessage.addListener(() => {
 if (self.serviceWorker.state === 'activated') {
   runImportScripts();
 }
-
-/**
- * A promise that resolves when the `onInstalled` event is fired.
- */
-const deferredOnInstalledListener =
-  withResolvers<chrome.runtime.InstalledDetails>();
-globalThis.stateHooks.onInstalledListener = deferredOnInstalledListener.promise;
-
-/**
- * `onInstalled` event handler.
- *
- * On MV3 builds we must listen for this event in `service-worker`, otherwise the listener is never called.
- * For MV2 builds, the listener is added in `background` instead.
- */
-chrome.runtime.onInstalled.addListener(function listener(details) {
-  chrome.runtime.onInstalled.removeListener(listener);
-  deferredOnInstalledListener.resolve(details);
-  delete globalThis.stateHooks.onInstalledListener;
-});
