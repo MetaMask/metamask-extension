@@ -190,6 +190,7 @@
     "conversionRates": "object",
     "historicalPrices": "object",
     "marketData": "object",
+    "supportedChainIds": "object",
     "multichainNetworkConfigurationsByChainId": "object",
     "selectedMultichainNetworkChainId": "string",
     "isEvmSelected": "boolean",
