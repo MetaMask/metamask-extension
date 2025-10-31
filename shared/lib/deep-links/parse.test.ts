@@ -70,7 +70,7 @@ describe('parse', () => {
       },
       signature: VALID,
     });
-    expect(mockHandler).toHaveBeenCalledWith(new URL(urlStr).searchParams);
+    expect(mockHandler).toHaveBeenCalledWith(new URLSearchParams());
   });
 
   it('returns a parsed deep link object with signature=invalid if signature is invalid', async () => {
