@@ -17,9 +17,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
@@ -45,9 +43,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
@@ -86,9 +82,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         );
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Ensure that wallet information is displayed
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
