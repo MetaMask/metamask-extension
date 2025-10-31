@@ -18,6 +18,11 @@ const ALLOWLISTED_URLS = [
   'https://metamask.github.io/vault-decryptor',
   'https://metamask.github.io/vault-decryptor/',
   'https://metamask.github.io/vault-decryptor/bundle.js',
+  // Trezor connect
+  'https://connect.trezor.io/9/popup.html',
+  'https://connect.trezor.io/9/popup.css',
+  'https://connect.trezor.io/9/fonts/fonts.css',
+  'https://connect.trezor.io/9/js/popup.d3cd1a7dcf5652a0404a.js',
 ];
 
 module.exports = { ALLOWLISTED_URLS };

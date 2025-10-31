@@ -10,7 +10,7 @@ import SelectHardwareWalletAccountPage from '../../../page-objects/pages/hardwar
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 describe('Trezor Hardware', function () {
-  it('derives the correct accounts and unlocks the first account', async function () {
+  it.only('derives the correct accounts and unlocks the first account', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -30,6 +30,8 @@ describe('Trezor Hardware', function () {
         const connectHardwareWalletPage = new ConnectHardwareWalletPage(driver);
         await connectHardwareWalletPage.checkPageIsLoaded();
         await connectHardwareWalletPage.openConnectTrezorPage();
+        // TODO: check trezor tab content
+        await driver.delay(100000);
 
         const selectTrezorAccountPage = new SelectHardwareWalletAccountPage(
           driver,
