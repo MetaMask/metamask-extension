@@ -561,9 +561,38 @@ export default function Routes() {
   }, [currentCurrency, dispatch]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-experimental)
-  // Navigate to confirmations when there are pending approvals (from any page)
+  // Navigate to confirmations when there are pending approvals (from non-home pages)
   useEffect(() => {
+    // Don't navigate if already on a confirmation-related route, snap flow, homepage, send, swaps, bridge, or account management flow
+    const isOnConfirmationRoute =
+      location.pathname === DEFAULT_ROUTE ||
+      location.pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
+      location.pathname.startsWith(CONNECT_ROUTE) ||
+      location.pathname.startsWith(PERMISSIONS) ||
+      location.pathname.startsWith(REVIEW_PERMISSIONS) ||
+      location.pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
+      location.pathname.startsWith(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE) ||
+      location.pathname.startsWith(CONFIRM_ADD_SUGGESTED_NFT_ROUTE) ||
+      location.pathname.startsWith(SNAPS_ROUTE) ||
+      location.pathname.startsWith(SEND_ROUTE) ||
+      location.pathname.startsWith(SWAPS_ROUTE) ||
+      location.pathname.startsWith(CROSS_CHAIN_SWAP_ROUTE) ||
+      location.pathname.startsWith(ACCOUNT_LIST_PAGE_ROUTE) ||
+      location.pathname.startsWith(WALLET_DETAILS_ROUTE) ||
+      location.pathname.startsWith(MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE) ||
+      location.pathname.startsWith(MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE);
+
+    // Network operations (addEthereumChain, switchEthereumChain) have their own UI
+    // and shouldn't trigger auto-navigation
+    const hasNonNavigableApprovals = pendingApprovals.some(
+      (approval) =>
+        approval.type === 'wallet_addEthereumChain' ||
+        approval.type === 'wallet_switchEthereumChain',
+    );
+
     if (
+      !isOnConfirmationRoute &&
+      !hasNonNavigableApprovals &&
       isUnlocked &&
       (pendingApprovals.length > 0 || approvalFlows?.length > 0)
     ) {
@@ -574,7 +603,7 @@ export default function Routes() {
         history,
       );
     }
-  }, [isUnlocked, pendingApprovals, approvalFlows, history]);
+  }, [isUnlocked, pendingApprovals, approvalFlows, history, location.pathname]);
   ///: END:ONLY_INCLUDE_IF
 
   const renderRoutes = useCallback(() => {
@@ -983,6 +1012,7 @@ export default function Routes() {
         {renderRoutes()}
       </Box>
       {isUnlocked ? <Alerts history={history} /> : null}
+      {/* @ts-expect-error - ToastMaster is JS and accepts location prop */}
       <ToastMaster location={location} />
     </div>
   );
