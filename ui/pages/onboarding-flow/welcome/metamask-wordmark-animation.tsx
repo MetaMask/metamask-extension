@@ -58,7 +58,12 @@ export default function MetamaskWordMarkAnimation({
     }
 
     fetch('./images/riv_animations/metamask_wordmark.riv')
-      .then((response) => response.arrayBuffer())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.arrayBuffer();
+      })
       .then((arrayBuffer) => setBuffer(arrayBuffer))
       .catch((error) => {
         console.error('[Rive] Failed to load .riv file:', error);
