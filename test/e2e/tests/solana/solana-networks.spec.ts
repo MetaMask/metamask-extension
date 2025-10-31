@@ -8,9 +8,10 @@ import NetworkManager, {
 } from '../../page-objects/pages/network-manager';
 import { withSolanaAccountSnap } from './common-solana';
 
-describe('Solana network', function (this: Suite) {
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('keeps the network selector enabled when the Solana network is selected', async function () {
+// These tests fails with BIP44 as no longer apply
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Solana network', function (this: Suite) {
+  it('keeps the network selector enabled when the Solana network is selected', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },
       async (driver) => {

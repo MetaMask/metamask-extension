@@ -20,7 +20,6 @@ const DEFAULT_LOCAL_NODE_USD_BALANCE = '24.998';
 
 describe('Bridge functionality', function (this: Suite) {
   it('should show that more funds are needed to execute the Bridge', async function () {
-
     await withFixtures(
       {
         forceBip44Version: false,
@@ -32,7 +31,10 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed(DEFAULT_LOCAL_NODE_USD_BALANCE, 'ETH');
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
         await homePage.startSwapFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
@@ -151,7 +153,10 @@ describe('Bridge functionality', function (this: Suite) {
         await unlockWallet(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed(DEFAULT_LOCAL_NODE_USD_BALANCE, 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'USD',
+        );
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -181,7 +186,10 @@ describe('Bridge functionality', function (this: Suite) {
         await unlockWallet(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed(DEFAULT_LOCAL_NODE_USD_BALANCE, 'ETH');
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -212,7 +220,10 @@ describe('Bridge functionality', function (this: Suite) {
         await unlockWallet(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed(DEFAULT_LOCAL_NODE_USD_BALANCE, 'ETH');
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          'ETH',
+        );
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);

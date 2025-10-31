@@ -351,7 +351,6 @@ class HomePage {
 
   async checkLocalNodeBalanceIsDisplayed(
     localNode?: Ganache | Anvil,
-    address = null,
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {

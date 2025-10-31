@@ -6,6 +6,8 @@ import { withSolanaAccountSnap } from '../solana/common-solana';
 import { mockSendRedesignFeatureFlag } from './common';
 
 describe('Send Solana', function () {
+  // This test fails with BIP44
+  // eslint-disable-next-line mocha/no-skipped-tests
   it.skip('it should be possible to send SOL', async function () {
     await withSolanaAccountSnap(
       {
