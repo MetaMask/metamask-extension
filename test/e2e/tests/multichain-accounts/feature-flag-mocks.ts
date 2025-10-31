@@ -10,7 +10,7 @@ export const BIP44_STAGE_TWO = {
     minimumVersion: '12.19.0',
   },
   sendRedesign: {
-    enabled: false,
+    enabled: true,
   },
 }
 
