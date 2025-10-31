@@ -36,6 +36,7 @@ import {
   Text,
 } from '../../component-library';
 
+import { getStatusKey } from '../../../helpers/utils/transactions.util';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -118,9 +119,11 @@ function TransactionListItemInner({
   };
 
   const {
-    initialTransaction: { id },
+    initialTransaction: { id, txParams },
     primaryTransaction: { error, status },
   } = transactionGroup;
+
+  const senderAddress = txParams?.from;
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -190,16 +193,12 @@ function TransactionListItemInner({
     primaryCurrency,
     recipientAddress,
     secondaryCurrency,
-    displayedStatusKey: displayedStatusKeyFromSrcTransaction,
     isPending,
-    senderAddress,
-    detailsTitle,
-    remoteSignerAddress,
   } = useTransactionDisplayData(transactionGroup);
   const displayedStatusKey =
     isBridgeTx && isBridgeFailed
       ? TransactionStatus.failed
-      : displayedStatusKeyFromSrcTransaction;
+      : getStatusKey(transactionGroup.primaryTransaction);
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
     'MMM d, y',
@@ -395,7 +394,7 @@ function TransactionListItemInner({
       </ActivityListItem>
       {showDetails && (
         <TransactionListItemDetails
-          title={detailsTitle}
+          title={title}
           onClose={toggleShowDetails}
           transactionGroup={transactionGroup}
           primaryCurrency={primaryCurrency}
@@ -417,7 +416,6 @@ function TransactionListItemInner({
             />
           )}
           chainId={chainId}
-          remoteSignerAddress={remoteSignerAddress}
         />
       )}
       {!supportsEIP1559 && showRetryEditGasPopover && (
