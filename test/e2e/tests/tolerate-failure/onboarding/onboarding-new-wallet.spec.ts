@@ -91,6 +91,8 @@ describe('MetaMask onboarding', function () {
         await homePage.checkPageIsLoaded();
         await homePage.checkTokenListIsDisplayed();
         await homePage.checkTokenListPricesAreDisplayed();
+        await homePage.checkAssetIsDisplayed("Ethereum");
+        await homePage.checkAssetIsDisplayed("Solana");
         await assetListPage.clickOnAsset("Ethereum");
         const timer7 = new TimerHelper("Time since the user clicks on the asset until the price chart is shown");
         timer7.start();

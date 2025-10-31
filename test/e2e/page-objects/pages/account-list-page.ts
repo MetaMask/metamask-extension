@@ -225,7 +225,7 @@ class AccountListPage {
     try {
       await this.driver.waitForSelector({
         css: 'p',
-        text: 'Create account',
+        text: 'Add account',
       }, { timeout: 30000});
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);

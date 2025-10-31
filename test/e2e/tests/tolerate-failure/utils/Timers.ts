@@ -44,8 +44,8 @@ class Timers {
 
   // Stop a timer
   stopTimer(id: string): void {
-    if (!this.timers.has(id)) {
-      throw new Error(`Timer with id "${id}" does not exist.`);
+    if (!this.timers.has(id) || this.timers.get(id)?.start === null) {
+      throw new Error(`Timer with id "${id}" does not exist or has not been started.`);
     }
     const timer = this.timers.get(id)!;
     timer.end = Date.now();

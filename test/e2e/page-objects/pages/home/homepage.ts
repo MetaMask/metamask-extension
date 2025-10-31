@@ -360,7 +360,6 @@ class HomePage {
       }
       attempts++;
     }
-    console.log('Este metodo ha pasado bien')
   }
 
 

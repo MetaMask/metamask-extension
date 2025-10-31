@@ -24,7 +24,7 @@ describe('Power user persona', function () {
         title: this.test?.fullTitle(),
         fixtures: (
           await generateWalletState(WITH_STATE_POWER_USER, true)
-        ).withEnabledNetworks(ALL_POPULAR_NETWORKS).build(),
+        ).build(),
         manifestFlags: {
           testing: {
             disableSync: true,
