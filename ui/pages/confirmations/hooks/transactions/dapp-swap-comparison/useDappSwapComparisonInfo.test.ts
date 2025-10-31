@@ -49,7 +49,7 @@ async function runHook() {
       metamask: {
         supportedChainIds: {
           timestamp: 0,
-          data: [],
+          data: ['0x2105'],
         },
       },
     }),
