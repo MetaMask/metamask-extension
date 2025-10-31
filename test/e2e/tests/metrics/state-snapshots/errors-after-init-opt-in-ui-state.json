@@ -146,6 +146,7 @@
     "isRampCardClosed": false,
     "isUpdateAvailable": false,
     "lastUpdatedAt": null,
+    "lastUpdatedFromVersion": null,
     "lastViewedUserSurvey": null,
     "newPrivacyPolicyToastClickedOrClosed": "boolean",
     "newPrivacyPolicyToastShownDate": "number",
