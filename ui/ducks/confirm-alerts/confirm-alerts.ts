@@ -69,6 +69,11 @@ export type Alert = {
   severity: AlertSeverity;
 
   /**
+   * Whether this alert should be excluded from navigation controls.
+   */
+  hideFromAlertNavigation?: boolean;
+
+  /**
    * Whether to show the arrow icon on the inline alert.
    */
   showArrow?: boolean;
