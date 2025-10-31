@@ -1,4 +1,9 @@
-import { ActionConstraint, Messenger } from '@metamask/base-controller';
+import {
+  ActionConstraint,
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import {
   NetworkControllerGetSelectedNetworkClientAction,
   NetworkControllerNetworkDidChangeEvent,
@@ -19,11 +24,12 @@ jest.mock('../controllers/account-tracker-controller');
 
 function getInitRequestMock(
   baseMessenger = new Messenger<
+    MockAnyNamespace,
     | NetworkControllerGetSelectedNetworkClientAction
     | RemoteFeatureFlagControllerGetStateAction
     | ActionConstraint,
     never
-  >(),
+  >({ namespace: MOCK_ANY_NAMESPACE }),
 ): jest.Mocked<
   ControllerInitRequest<
     AccountTrackerControllerMessenger,
@@ -96,11 +102,12 @@ describe('AccountTrackerControllerInit', () => {
 
   it('calls `updateAccounts` when `NetworkController:networkDidChange` is emitted', () => {
     const messenger = new Messenger<
+      MockAnyNamespace,
       | NetworkControllerGetSelectedNetworkClientAction
       | RemoteFeatureFlagControllerGetStateAction
       | ActionConstraint,
       NetworkControllerNetworkDidChangeEvent
-    >();
+    >({ namespace: MOCK_ANY_NAMESPACE });
 
     const request = getInitRequestMock(messenger);
     const { controller } = AccountTrackerControllerInit(request);

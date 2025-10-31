@@ -10,6 +10,11 @@ const store = configureStore({
   metamask: {
     ...mockState.metamask,
   },
+  activeTab: {
+    origin: 'https://metamask.github.io',
+    protocol: 'https:',
+    url: 'https://metamask.github.io/test-dapp/',
+  },
 });
 
 interface WrapperProps {

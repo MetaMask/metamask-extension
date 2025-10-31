@@ -31,6 +31,7 @@
     "activeQrCodeScanRequest": null,
     "appActiveTab": "object",
     "browserEnvironment": { "os": "string", "browser": "string" },
+    "canTrackWalletFundsObtained": false,
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "enableEnforcedSimulations": true,
@@ -163,7 +164,8 @@
   },
   "MultichainAssetsController": {
     "accountsAssets": "object",
-    "assetsMetadata": "object"
+    "assetsMetadata": "object",
+    "allIgnoredAssets": "object"
   },
   "MultichainAssetsRatesController": {
     "conversionRates": "object",
@@ -312,6 +314,15 @@
     },
     "cacheTimestamp": "number"
   },
+  "RewardsController": {
+    "rewardsAccounts": "object",
+    "rewardsActiveAccount": null,
+    "rewardsSeasonStatuses": "object",
+    "rewardsSeasons": "object",
+    "rewardsSubscriptionTokens": "object",
+    "rewardsSubscriptions": "object"
+  },
+  "RewardsDataService": "undefined",
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "ShieldController": "object",
