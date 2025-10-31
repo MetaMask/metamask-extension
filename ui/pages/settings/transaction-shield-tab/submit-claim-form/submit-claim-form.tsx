@@ -2,11 +2,17 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { isValidHexAddress } from '@metamask/controller-utils';
 import { isStrictHexString } from '@metamask/utils';
 import {
+  AvatarAccountSize,
   Box,
+  BoxBorderColor,
   Button,
   ButtonSize,
   ButtonVariant,
   FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextButton,
   TextButtonSize,
@@ -42,12 +48,15 @@ import { TRANSACTION_SHIELD_ROUTE } from '../../../../helpers/constants/routes';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import { isSafeChainId } from '../../../../../shared/modules/network.utils';
 import {
+  AccountSelectorAccount,
   SUBMIT_CLAIM_ERROR_CODES,
   SUBMIT_CLAIM_FIELDS,
   SubmitClaimErrorCode,
   SubmitClaimField,
 } from '../types';
 import { SubmitClaimError } from '../claim-error';
+import AccountSelectorModal from '../account-selector-modal';
+import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 
 const VALID_SUBMISSION_WINDOW_DAYS = 21;
 const MAX_FILE_SIZE_MB = 5;
@@ -113,6 +122,9 @@ const SubmitClaimForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [claimSubmitLoading, setClaimSubmitLoading] = useState(false);
+  const [showAccountListMenu, setShowAccountListMenu] = useState(false);
+  const [selectedAccount, setSelectedAccount] =
+    useState<AccountSelectorAccount | null>(null);
 
   const {
     chainId,
@@ -384,6 +396,14 @@ const SubmitClaimForm = () => {
     handleSubmitClaimError,
   ]);
 
+  const handleAccountSelect = useCallback(
+    (account: AccountSelectorAccount) => {
+      setSelectedAccount(account);
+      setShowAccountListMenu(false);
+    },
+    [setSelectedAccount],
+  );
+
   return (
     <Box
       className="submit-claim-page flex flex-col"
@@ -399,25 +419,24 @@ const SubmitClaimForm = () => {
           </TextButton>,
         ])}
       </Text>
-      <FormTextField
-        label={`${t('shieldClaimChainId')}*`}
-        placeholder="e.g. 1"
-        type={TextFieldType.Number}
-        inputProps={{ 'data-testid': 'shield-claim-chain-id-input' }}
-        helpText={errors.chainId ? errors.chainId.msg : undefined}
-        helpTextProps={{
-          'data-testid': 'shield-claim-chain-id-help-text',
-        }}
-        id="chain-id"
-        name="chain-id"
-        size={FormTextFieldSize.Lg}
-        onChange={(e) => setChainId(e.target.value.trim())}
-        onBlur={() => validateChainId()}
-        value={chainId}
-        error={Boolean(errors.chainId)}
-        required
-        width={BlockSize.Full}
-      />
+
+      {/* Personal details */}
+      <Box>
+        <Text variant={TextVariant.HeadingSm}>Personal details</Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="mb-2"
+        >
+          We'll use this to communicate with you when investigating and
+          resolving.
+        </Text>
+        <Box
+          borderColor={BoxBorderColor.BorderMuted}
+          className="w-full h-[1px] border border-b-0"
+        ></Box>
+      </Box>
+
       <FormTextField
         label={`${t('shieldClaimEmail')}*`}
         placeholder="johncarpenter@sample.com"
@@ -436,6 +455,99 @@ const SubmitClaimForm = () => {
         onBlur={() => validateEmail()}
         value={email}
         error={Boolean(errors.email)}
+        required
+        width={BlockSize.Full}
+      />
+
+      <FormTextField
+        label={`${t('shieldClaimReimbursementWalletAddress')}*`}
+        placeholder={'e.g. 0x71C...B5f6d'}
+        inputProps={{
+          'data-testid': 'shield-claim-reimbursement-wallet-address-input',
+        }}
+        helpTextProps={{
+          'data-testid': 'shield-claim-reimbursement-wallet-address-help-text',
+          color: DsTextColor.textAlternative,
+        }}
+        helpText={
+          errors.reimbursementWalletAddress
+            ? errors.reimbursementWalletAddress.msg
+            : t('shieldClaimReimbursementWalletAddressHelpText')
+        }
+        id="reimbursement-wallet-address"
+        name="reimbursement-wallet-address"
+        size={FormTextFieldSize.Lg}
+        onChange={(e) => setReimbursementWalletAddress(e.target.value)}
+        onBlur={() => validateReimbursementWalletAddress()}
+        value={reimbursementWalletAddress}
+        error={Boolean(errors.reimbursementWalletAddress)}
+        required
+        width={BlockSize.Full}
+      />
+
+      {/* Incident details */}
+      <Box className="mt-4">
+        <Text variant={TextVariant.HeadingSm}>Incident details</Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={TextColor.TextAlternative}
+          className="mb-2"
+        >
+          Help us understand more about what happened.
+        </Text>
+
+        <Box
+          borderColor={BoxBorderColor.BorderMuted}
+          className="w-full h-[1px] border border-b-0"
+        ></Box>
+      </Box>
+
+      <Box>
+        <Box
+          asChild
+          borderColor={BoxBorderColor.BorderDefault}
+          className="w-full flex items-center gap-2 px-4 h-12 border rounded-lg"
+          onClick={() => setShowAccountListMenu(true)}
+        >
+          <button>
+            {selectedAccount ? (
+              <>
+                <PreferredAvatar
+                  address={selectedAccount?.seedIcon ?? ''}
+                  size={AvatarAccountSize.Sm}
+                />
+                <Text>{selectedAccount?.name}</Text>
+              </>
+            ) : (
+              <Text>Select an account</Text>
+            )}
+
+            <Icon
+              className="ml-auto"
+              size={IconSize.Sm}
+              color={IconColor.IconDefault}
+              name={IconName.ArrowDown}
+            />
+          </button>
+        </Box>
+      </Box>
+
+      <FormTextField
+        label={`${t('shieldClaimChainId')}*`}
+        placeholder="e.g. 1"
+        type={TextFieldType.Number}
+        inputProps={{ 'data-testid': 'shield-claim-chain-id-input' }}
+        helpText={errors.chainId ? errors.chainId.msg : undefined}
+        helpTextProps={{
+          'data-testid': 'shield-claim-chain-id-help-text',
+        }}
+        id="chain-id"
+        name="chain-id"
+        size={FormTextFieldSize.Lg}
+        onChange={(e) => setChainId(e.target.value.trim())}
+        onBlur={() => validateChainId()}
+        value={chainId}
+        error={Boolean(errors.chainId)}
         required
         width={BlockSize.Full}
       />
@@ -508,31 +620,7 @@ const SubmitClaimForm = () => {
         required
         width={BlockSize.Full}
       />
-      <FormTextField
-        label={`${t('shieldClaimReimbursementWalletAddress')}*`}
-        placeholder={'e.g. 0x71C...B5f6d'}
-        inputProps={{
-          'data-testid': 'shield-claim-reimbursement-wallet-address-input',
-        }}
-        helpTextProps={{
-          'data-testid': 'shield-claim-reimbursement-wallet-address-help-text',
-          color: DsTextColor.textAlternative,
-        }}
-        helpText={
-          errors.reimbursementWalletAddress
-            ? errors.reimbursementWalletAddress.msg
-            : t('shieldClaimReimbursementWalletAddressHelpText')
-        }
-        id="reimbursement-wallet-address"
-        name="reimbursement-wallet-address"
-        size={FormTextFieldSize.Lg}
-        onChange={(e) => setReimbursementWalletAddress(e.target.value)}
-        onBlur={() => validateReimbursementWalletAddress()}
-        value={reimbursementWalletAddress}
-        error={Boolean(errors.reimbursementWalletAddress)}
-        required
-        width={BlockSize.Full}
-      />
+
       <Box gap={2}>
         <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
           {`${t('shieldClaimDescription')}*`}
@@ -587,6 +675,13 @@ const SubmitClaimForm = () => {
         </Button>
       </Box>
       {claimSubmitLoading && <LoadingScreen />}
+
+      {showAccountListMenu && (
+        <AccountSelectorModal
+          onClose={() => setShowAccountListMenu(false)}
+          onAccountSelect={handleAccountSelect}
+        />
+      )}
     </Box>
   );
 };

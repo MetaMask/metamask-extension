@@ -1,3 +1,4 @@
+import { AccountWalletId } from '@metamask/account-api';
 import {
   PAYMENT_TYPES,
   SubscriptionCardPaymentMethod,
@@ -82,4 +83,23 @@ export type SubmitClaimErrorResponse = {
     error: string;
     errorCode: SubmitClaimErrorCode;
   }[];
+};
+
+export type AccountSelectorChainAccount = {
+  id: string;
+  address: string;
+  type: string;
+};
+
+export type AccountSelectorAccount = {
+  id: string;
+  name: string;
+  seedIcon?: string;
+  chainAccounts: AccountSelectorChainAccount[];
+};
+
+export type AccountSelectorWallet = {
+  id: AccountWalletId;
+  name: string;
+  accounts: AccountSelectorAccount[];
 };
