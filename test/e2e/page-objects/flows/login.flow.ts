@@ -45,7 +45,8 @@ export const loginWithBalanceValidation = async (
   // Verify the expected balance on the homepage
   if (localNode) {
     await homePage.checkLocalNodeBalanceIsDisplayed(localNode);
-  } else {
-    await homePage.checkExpectedBalanceIsDisplayed(value);
+  } else if (value) {
+    await homePage.checkExpectedTokenBalanceIsDisplayed(value, 'ETH');
   }
+  await driver.delay(2000);
 };

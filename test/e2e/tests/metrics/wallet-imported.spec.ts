@@ -8,6 +8,8 @@ import {
 } from '../../helpers';
 import FixtureBuilder from '../../fixture-builder';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
 import { mockSegment } from './mocks/segment';
 
 describe('Wallet Created Events - Imported Account', function () {
@@ -55,6 +57,15 @@ describe('Wallet Created Events - Imported Account', function () {
           driver,
           participateInMetaMetrics: true,
         });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('0');
+
+        await driver.delay(1000)
+        const header = new HeaderNavbar(driver);
+        await header.checkPageIsLoaded();
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 
