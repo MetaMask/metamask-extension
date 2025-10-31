@@ -1,4 +1,4 @@
-import { AllProperties, maskObject } from './object.utils';
+import { AllProperties, maskObject } from './mask-object';
 
 describe('maskObject', () => {
   describe('when the object is one-dimensional', () => {
