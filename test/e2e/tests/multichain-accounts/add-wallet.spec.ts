@@ -34,7 +34,6 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        forceBip44Version: 2,
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         testSpecificMock: (server: Mockttp) => {
           userStorageMockttpController.setupPath(
@@ -104,7 +103,6 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        forceBip44Version: 2,
         fixtures: new FixtureBuilder()
           .withAccountsControllerImportedAccount()
           .withKeyringControllerImportedAccountVault()
@@ -163,7 +161,6 @@ describe('Add wallet', function () {
       await arrange();
     await withFixtures(
       {
-        forceBip44Version: 2,
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .build(),

@@ -174,7 +174,7 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
-    forceBip44Version = 0,
+    forceBip44Version = true,
   } = options;
 
   // Normalize localNodeOptions
@@ -334,11 +334,7 @@ async function withFixtures(options, testSuite) {
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
 
-    if (forceBip44Version === 1) {
-      console.log('Applying multichain accounts stage 1');
-      await mockMultichainAccountsFeatureFlagStateOne(mockServer);
-    } else {
-      // This sets BIP44 stage 2 by default
+    if (forceBip44Version) {
       console.log('BIP-44 stage 2 enabled');
       await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
     }
