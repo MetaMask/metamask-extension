@@ -1,6 +1,12 @@
 import { hasProperty, isPlainObject, type Json } from '@metamask/utils';
 
 /**
+ * Used in a mask to specify that all properties should be masked in the same
+ * way.
+ */
+export const AllProperties = Symbol('*');
+
+/**
  * A JSON-serializable primitive value.
  */
 type JsonPrimitive = string | number | boolean | null;
@@ -74,7 +80,7 @@ type MaskedPrimitive = JsonPrimitive;
 /**
  * The result of masking a JSON-serializable array.
  */
-type MaskedArray = Array<MaskedValue> | 'array';
+type MaskedArray = MaskedValue[] | 'array';
 
 /**
  * The result of masking a JSON-serializable plain object.
@@ -87,21 +93,14 @@ type MaskedPlainObject = { [prop: string]: MaskedValue } | 'object';
 type MaskedValue = MaskedPrimitive | MaskedArray | MaskedPlainObject;
 
 /**
- * Used in a mask to specify that all properties should be masked in the same
- * way.
- */
-export const AllProperties = Symbol('*');
-
-/**
  * Determines if the given mask contains the special "AllProperties" key.
- * @param mask The mask to check.
+ *
+ * @param mask - The mask to check.
  * @returns True if the mask contains the special "AllProperties" key, false
  * otherwise.
  */
 function isMaskWithAllProperties(mask: Mask): mask is MaskWithAllProperties {
-  return (
-    typeof mask === 'object' && hasProperty(mask, AllProperties)
-  );
+  return typeof mask === 'object' && hasProperty(mask, AllProperties);
 }
 
 /**
@@ -145,7 +144,8 @@ function maskPrimitive(
 
 /**
  * Ensures that a mask for an array is valid.
- * @param mask The mask to validate.
+ *
+ * @param mask - The mask to validate.
  * @throws If the mask is not valid.
  */
 function validateArrayMask(mask: Mask): asserts mask is ArrayMask {
@@ -192,7 +192,8 @@ function maskArray(array: MaskableArray, mask: ArrayMask): MaskedArray {
 
 /**
  * Ensures that a mask for a plain object is valid.
- * @param mask The mask to validate.
+ *
+ * @param mask - The mask to validate.
  * @param useStrictMaskValidation - If true, only allow mask to be a plain
  * object. If false, allow it to be a plain object but also boolean or
  * undefined.
@@ -250,10 +251,9 @@ function maskPlainObject(
     if (maskForKey === true) {
       // Don't mask the value
       return { ...obj, [key]: value };
-    } else {
-      // Mask the value
-      return { ...obj, [key]: maskValue(value, maskForKey) };
     }
+    // Mask the value
+    return { ...obj, [key]: maskValue(value, maskForKey) };
   }, {});
 }
 
@@ -296,6 +296,7 @@ function maskValue(value: MaskableValue, mask: Mask): MaskedValue {
   throw new Error('Cannot mask a non-JSON-serializable value');
 }
 
+/* eslint-disable jsdoc/check-indentation */
 /**
  * Return a "masked" copy of the given plain object (which must be
  * JSON-serializable).
@@ -313,6 +314,7 @@ function maskValue(value: MaskableValue, mask: Mask): MaskedValue {
  * @param mask - The mask to apply to the object.
  * @returns The object with properties masked according the rules given above.
  */
+/* eslint-enable jsdoc/check-indentation */
 export function maskObject(
   plainObject: MaskablePlainObject,
   mask: StrictPlainObjectMask,
