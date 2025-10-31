@@ -3,6 +3,17 @@ import { Mockttp } from 'mockttp';
 export const FEATURE_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags';
 
+export const BIP44_STAGE_TWO = {
+  enableMultichainAccountsState2: {
+    enabled: true,
+    featureVersion: '2',
+    minimumVersion: '12.19.0',
+  },
+  sendRedesign: {
+    enabled: false,
+  },
+}
+
 export const mockMultichainAccountsFeatureFlag = (mockServer: Mockttp) =>
   mockServer
     .forGet(FEATURE_FLAGS_URL)
@@ -74,18 +85,7 @@ export const mockMultichainAccountsFeatureFlagStateTwo = (
       return {
         ok: true,
         statusCode: 200,
-        json: [
-          {
-            enableMultichainAccountsState2: {
-              enabled: true,
-              featureVersion: '2',
-              minimumVersion: '12.19.0',
-            },
-            sendRedesign: {
-              enabled: false,
-            },
-          },
-        ],
+        json: [ BIP44_STAGE_TWO ],
       };
     });
 
