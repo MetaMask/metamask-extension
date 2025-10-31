@@ -40,13 +40,7 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
     ? enabledChainIds
     : chainIds;
 
-  const isMounted = useRef(false);
-  useEffect(() => {
-    isMounted.current = true;
-    return () => {
-      isMounted.current = false;
-    };
-  });
+  const isMounted = useRef(true);
 
   useEffect(() => {
     // Use validated currency tickers
@@ -76,6 +70,10 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
       }
     };
     fetchNativeCurrencies();
+
+    return () => {
+      isMounted.current = false;
+    };
   }, [
     chainIds,
     isPollingEnabled,
@@ -96,8 +94,6 @@ const useCurrencyRatePolling = () => {
   // usePolling is a custom hook that is invoked synchronously.
   usePolling({
     startPolling: currencyRateStartPolling,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
     input: nativeCurrencies,
     enabled,
