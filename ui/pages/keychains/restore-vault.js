@@ -9,9 +9,8 @@ import {
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import CreateNewVault from '../../components/app/create-new-vault';
-import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
-import { Text } from '../../components/component-library';
+import { Text, Button } from '../../components/component-library';
 import { TextVariant, TextColor } from '../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {

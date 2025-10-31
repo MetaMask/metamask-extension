@@ -1260,6 +1260,12 @@ export default class MetaMetricsController extends BaseController<
     return metaMetricsId;
   }
 
+  resetState(): void {
+    this.update((state) => {
+      Object.assign(state, getDefaultMetaMetricsControllerState());
+    });
+  }
+
   /** PRIVATE METHODS */
 
   /**

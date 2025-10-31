@@ -122,6 +122,11 @@ export type AppStateControllerState = {
   updateModalLastDismissedAt: number | null;
   hasShownMultichainAccountsIntroModal: boolean;
   showShieldEntryModalOnce: boolean | null;
+
+  /**
+   * Whether the wallet reset is in progress.
+   */
+  isWalletResetInProgress: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -268,6 +273,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   updateModalLastDismissedAt: null,
   hasShownMultichainAccountsIntroModal: false,
   showShieldEntryModalOnce: null,
+  isWalletResetInProgress: false,
+
   ...getInitialStateOverrides(),
 });
 
@@ -598,6 +605,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
+  },
+  isWalletResetInProgress: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
   },
 };
 
@@ -1501,5 +1514,15 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.canTrackWalletFundsObtained = enabled;
     });
+  }
+
+  setIsWalletResetInProgress(isResetting: boolean): void {
+    this.update((state) => {
+      state.isWalletResetInProgress = isResetting;
+    });
+  }
+
+  getIsWalletResetInProgress(): boolean {
+    return this.state.isWalletResetInProgress;
   }
 }

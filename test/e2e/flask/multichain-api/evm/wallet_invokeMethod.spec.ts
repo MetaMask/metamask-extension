@@ -205,7 +205,7 @@ describe('Multichain API', function () {
               await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
             } else {
               await confirmation.checkNetworkIsDisplayed('Localhost 7777');
-              await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+              await confirmation.clickFooterConfirmButton();
 
               // third confirmation page should display Account 2 as sender account
               await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

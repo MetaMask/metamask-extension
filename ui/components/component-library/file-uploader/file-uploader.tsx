@@ -109,10 +109,7 @@ export const FileUploader = ({
 
         if (validationError) {
           setError(validationError);
-          return; // Stop processing on first error
-        }
-
-        if (!existingFileNames.has(file.name)) {
+        } else if (!existingFileNames.has(file.name)) {
           validFiles.push(file);
         }
       }
@@ -272,18 +269,11 @@ export const FileUploader = ({
                   file.type?.includes('image') ? IconName.Image : IconName.File
                 }
                 size={IconSize.Md}
-                color={IconColor.IconAlternative}
               />
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {file.name}
-              </Text>
+              <Text variant={TextVariant.BodySm}>{file.name}</Text>
               <ButtonIcon
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}
-                color={IconColor.IconAlternative}
                 ariaLabel={t('delete')}
                 onClick={() => {
                   const remainingFiles = Array.from(files).filter(

@@ -740,7 +740,15 @@ export function tryUnlockMetamask(
 export function checkIsSeedlessPasswordOutdated(
   skipCache = true,
 ): ThunkAction<boolean | undefined, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
+    const isSocialLoginFlow = getIsSocialLoginFlow(getState());
+    if (!isSocialLoginFlow) {
+      return false;
+    }
+
     let isPasswordOutdated = false;
     try {
       isPasswordOutdated = await submitRequestToBackground<boolean>(
@@ -4430,6 +4438,8 @@ export function resetOnboarding(): ThunkAction<
       const isSocialLoginFlow = getIsSocialLoginFlow(getState());
       dispatch(resetOnboardingAction());
 
+      await submitRequestToBackground('resetOnboarding');
+
       if (isSocialLoginFlow) {
         await dispatch(resetOAuthLoginState());
       }
@@ -4445,6 +4455,33 @@ export function resetOnboarding(): ThunkAction<
 export function resetOnboardingAction() {
   return {
     type: actionConstants.RESET_ONBOARDING,
+  };
+}
+
+/**
+ * Reset the wallet
+ *
+ * @returns void
+ */
+export function resetWallet() {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      // reset onboarding
+      await dispatch(resetOnboarding());
+
+      await submitRequestToBackground('resetWallet');
+
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      log.error('resetWallet error', error);
+      throw error;
+    }
+  };
+}
+
+export function resetWalletAction() {
+  return {
+    type: actionConstants.RESET_WALLET,
   };
 }
 

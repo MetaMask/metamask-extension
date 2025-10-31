@@ -2,6 +2,8 @@ import log from 'loglevel';
 import { routes } from './routes';
 import type { Destination, Route } from './routes/route';
 import { verify, type SignatureStatus } from './verify';
+import { canonicalize } from './canonicalize';
+import { SIG_PARAMS_PARAM } from './constants';
 
 export type ParsedDeepLink = {
   destination: Destination;
@@ -18,7 +20,11 @@ export async function parse(url: URL): Promise<ParsedDeepLink | false> {
 
   let destination: Destination;
   try {
-    destination = route.handler(url.searchParams);
+    const canonicalUrl = new URL(canonicalize(url));
+    // canonicalize does not remove sig_params, as it is needed for verification
+    // but we do not want to pass it to the route handler, so we remove it
+    canonicalUrl.searchParams.delete(SIG_PARAMS_PARAM);
+    destination = route.handler(canonicalUrl.searchParams);
   } catch (error) {
     // tab may have closed in the meantime, the searchParams may have
     // been rejected by the handler, etc.

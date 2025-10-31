@@ -4,7 +4,6 @@ import { zeroAddress } from 'ethereumjs-util';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
@@ -14,6 +13,7 @@ import { toAssetId } from '../../../shared/lib/asset-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
+import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import bridgeReducer from './bridge';
 import {
   setFromToken,
@@ -141,7 +141,7 @@ describe('Ducks - Bridge', () => {
         toChainId: null,
         fromToken: null,
         toToken: null,
-        slippage: BRIDGE_DEFAULT_SLIPPAGE,
+        slippage: SlippageValue.BridgeDefault,
         fromTokenInputValue: null,
         sortOrder: 'cost_ascending',
         toTokenExchangeRate: null,
@@ -240,7 +240,7 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         fromTokenInputValue: null,
         selectedQuote: null,
-        slippage: BRIDGE_DEFAULT_SLIPPAGE,
+        slippage: SlippageValue.BridgeDefault,
         sortOrder: 'cost_ascending',
         toChainId: null,
         toToken: null,
