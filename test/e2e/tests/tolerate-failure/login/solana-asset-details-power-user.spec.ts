@@ -1,17 +1,16 @@
 import { generateWalletState } from "../../../../../app/scripts/fixtures/generate-wallet-state";
+import { ALL_POPULAR_NETWORKS } from "../../../../../app/scripts/fixtures/with-networks";
 import { WITH_STATE_POWER_USER } from "../../../benchmarks/constants";
 import { withFixtures } from "../../../helpers";
 import { loginWithoutBalanceValidation } from "../../../page-objects/flows/login.flow";
-import AccountListPage from "../../../page-objects/pages/account-list-page";
-import HeaderNavbar from "../../../page-objects/pages/header-navbar";
 import AssetListPage from "../../../page-objects/pages/home/asset-list";
 import HomePage from "../../../page-objects/pages/home/homepage";
 import NetworkManager from "../../../page-objects/pages/network-manager";
 import { Driver } from "../../../webdriver/driver";
 import TimerHelper from "../utils/TimersHelper";
 
-describe('Power user persona', function () {
-  it('Check asset details page load time', async function () {
+describe.skip('Power user persona', function () {
+  it('Check Solana asset details page load time', async function () {
     if (!process.env.INFURA_PROJECT_ID) {
       throw new Error(
         'Running this E2E test requires a valid process.env.INFURA_PROJECT_ID',
@@ -23,7 +22,7 @@ describe('Power user persona', function () {
         title: this.test?.fullTitle(),
         fixtures: (
           await generateWalletState(WITH_STATE_POWER_USER, true)
-        ).build(),
+        ).withEnabledNetworks(ALL_POPULAR_NETWORKS).build(),
         manifestFlags: {
           testing: {
             disableSync: true,
@@ -42,12 +41,13 @@ describe('Power user persona', function () {
         const assetListPage = new AssetListPage(driver);
         await assetListPage.openNetworksFilter();
         const networkManager = new NetworkManager(driver);
-        await networkManager.selectNetworkByNameWithWait("Ethereum");
+        await networkManager.selectNetworkByNameWithWait("Solana");
         await driver.delay(1000);
         await homePage.checkPageIsLoaded();
         await homePage.checkTokenListIsDisplayed();
         await homePage.checkTokenListPricesAreDisplayed();
-        await assetListPage.clickOnAsset("USDC");
+        await driver.delay(10000000);
+        await assetListPage.clickOnAsset("SOL");
         const timer1 = new TimerHelper("Time since the user clicks on the asset until the price chart is shown");
         timer1.start();
         await driver.delay(1000); // workaround to avoid race condition

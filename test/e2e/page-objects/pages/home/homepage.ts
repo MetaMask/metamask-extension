@@ -307,6 +307,26 @@ class HomePage {
     }
   }
 
+  async checkAssetIsDisplayed(assetName: string): Promise<void> {
+    console.log(`Check if asset ${assetName} is displayed on homepage`);
+    await this.driver.waitUntil(
+      async () => {
+        const assetNameElement = await this.driver.findElements(`[data-testid="multichain-token-list-item-token-name"]`);
+        for (const element of assetNameElement) {
+          console.log(`Asset name element: ${await element.getText()}`);
+          console.log(`Asset name: ${assetName}`);
+          console.log('Son iguales: ', (await element.getText()) === assetName);
+          if (await element.getText() === assetName) {
+            return true;
+          }
+        }
+        return false;
+      },
+      { timeout: 300000, interval: 100 },
+    );
+    console.log(`Asset ${assetName} is displayed on homepage`);
+  }
+
   async checkTokenListPricesAreDisplayed(): Promise<void> {
     let pricesDisplayed = false;
     let attempts = 0;
