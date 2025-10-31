@@ -1,4 +1,4 @@
-import { BtcScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { BaseController, StateMetadata } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import {
@@ -151,6 +151,7 @@ export class NetworkOrderController extends BaseController<
       const nonEvmChainIds: CaipChainId[] = [
         BtcScope.Mainnet,
         SolScope.Mainnet,
+        TrxScope.Mainnet,
       ];
 
       const newNetworks = chainIds
@@ -167,7 +168,7 @@ export class NetworkOrderController extends BaseController<
         .filter(
           ({ networkId }) =>
             chainIds.includes(networkId) ||
-            // Since Bitcoin and Solana are not part of the @metamask/network-controller, we have
+            // Since Bitcoin, Solana and Tron are not part of the @metamask/network-controller, we have
             // to add a second check to make sure it is not filtered out.
             // TODO: Update this logic to @metamask/multichain-network-controller once all networks are migrated.
             nonEvmChainIds.includes(networkId),
