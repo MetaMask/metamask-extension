@@ -25,7 +25,6 @@ import {
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { AccountSelectorWallet } from '../types';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
-import { useAccountAddressSeedIconMap } from '../../../confirmations/hooks/send/useAccountAddressSeedIconMap';
 
 const AccountSelector = ({
   label,
@@ -42,7 +41,6 @@ const AccountSelector = ({
 
   // Account list
   const wallets = useSelector(getWalletsWithAccounts);
-  const { accountAddressSeedIconMap } = useAccountAddressSeedIconMap();
 
   // Group recipients by wallet name
   const accountsGroupedByWallet: Record<string, AccountSelectorWallet> =
@@ -67,9 +65,6 @@ const AccountSelector = ({
                 id: group.id,
                 name: group.metadata.name,
                 address: evmAccount.address,
-                seedIcon: accountAddressSeedIconMap.get(
-                  evmAccount.address.toLowerCase(),
-                ),
                 type: evmAccount.type,
               });
             }
@@ -78,7 +73,7 @@ const AccountSelector = ({
         },
         {} as Record<string, AccountSelectorWallet>,
       );
-    }, [wallets, accountAddressSeedIconMap]);
+    }, [wallets]);
 
   const selectedAccountInfo = useMemo(() => {
     const selectedWallet = Object.values(accountsGroupedByWallet).find(
@@ -180,7 +175,7 @@ const AccountSelector = ({
                     >
                       <button>
                         <PreferredAvatar
-                          address={account.seedIcon ?? ''}
+                          address={account.address ?? ''}
                           size={AvatarAccountSize.Lg}
                         />
                         <Text
