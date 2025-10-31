@@ -7,6 +7,7 @@ import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 import {
+  completeImportSRPOnboardingFlow,
   importWalletWithSocialLoginOnboardingFlow,
   onboardingMetricsFlow,
 } from '../../page-objects/flows/onboarding.flow';
@@ -150,6 +151,58 @@ describe('Reset Wallet - ', function () {
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
         await onboardingCompletePage.completeOnboarding();
+
+        await homePage.headerNavbar.checkPageIsLoaded();
+      },
+    );
+  });
+
+  it('imports an SRP and completes the onboarding process after resetting the wallet', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        // to avoid a race condition where some authentication requests are triggered once the wallet is locked
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
+        testSpecificMock: (server: Mockttp) => {
+          // using this to mock the OAuth Service (Web Authentication flow + Auth server)
+          const oAuthMockttpService = new OAuthMockttpService();
+          return oAuthMockttpService.setup(server, {
+            userEmail: MOCK_GOOGLE_ACCOUNT,
+            throwAuthenticationErrorAtUnlock: true, // <=== This is intentional error to test the reset wallet flow
+            passwordOutdated: true,
+          });
+        },
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await importWalletWithSocialLoginOnboardingFlow({
+          driver,
+        });
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        const headerNavbar = new HeaderNavbar(driver);
+
+        await headerNavbar.lockMetaMask();
+
+        const loginPage = new LoginPage(driver);
+
+        // login should fail due to Authentication Error
+        await loginPage.loginToHomepage(WALLET_PASSWORD);
+
+        // reset the wallet
+        await loginPage.resetWallet();
+
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          // In Firefox, we need to go to the metametrics page first
+          await onboardingMetricsFlow(driver, {
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: true,
+          });
+        }
+
+        await completeImportSRPOnboardingFlow({ driver });
 
         await homePage.headerNavbar.checkPageIsLoaded();
       },
