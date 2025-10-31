@@ -120,6 +120,7 @@ describe('Vault Corruption', function () {
    * @param driver - The WebDriver instance.
    */
   async function waitForVaultRestorePage(driver: Driver) {
+    await driver.delay(10000);
     await driver.waitUntil(
       async () => {
         await driver.navigate(PAGES.HOME, { waitForControllers: false });
@@ -168,7 +169,6 @@ describe('Vault Corruption', function () {
 
     // use the home page to destroy the vault
     await driver.executeAsyncScript(script);
-    await driver.delay(2000);
 
     // the previous tab we were using is now closed, so we need to tell Selenium
     // to switch back to the other page (required for Chrome)
@@ -177,12 +177,8 @@ describe('Vault Corruption', function () {
     // get a new tab ready to use (required for Firefox)
     await driver.openNewPage('about:blank');
 
-    await driver.delay(2000);
-
     // wait for the background page to reload
     await waitForVaultRestorePage(driver);
-
-    await driver.delay(2000);
 
     return firstAddress;
   }
@@ -202,24 +198,18 @@ describe('Vault Corruption', function () {
     confirm: boolean;
   }) {
     // click the Recovery/Reset button
-    await driver.delay(2000);
-
     await driver.clickElement('#critical-error-button');
 
     // Confirm we want to recover/reset.
     const prompt = await driver.driver.switchTo().alert();
     if (confirm) {
-      await driver.delay(2000);
-
       await prompt.accept();
     } else {
-      await driver.delay(2000);
       await prompt.dismiss();
     }
 
     if (confirm) {
       // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing to window to become stale
-      await driver.delay(3000);
       try {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
