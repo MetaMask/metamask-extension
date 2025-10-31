@@ -14,7 +14,6 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.HardwareWallet,
-        state: 2,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
@@ -42,7 +41,6 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         testSpecificMock: async (mockServer) => {
           return mockSnapSimpleKeyringAndSite(mockServer);
         },
-        state: 2,
       },
       async (driver: Driver) => {
         await installSnapSimpleKeyring(driver);

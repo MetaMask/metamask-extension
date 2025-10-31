@@ -5,7 +5,9 @@ import { ACCOUNT_TYPE } from '../../constants';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { withSolanaAccountSnap } from './common-solana';
 
-describe('Switching between account from different networks', function (this: Suite) {
+// These tests fails with BIP44 as no longer apply
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Switching between account from different networks', function (this: Suite) {
   it('Switch from Solana account to another Network account', async function () {
     await withSolanaAccountSnap(
       { title: this.test?.fullTitle() },

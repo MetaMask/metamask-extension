@@ -24,7 +24,7 @@ describe('Privacy Mode', function () {
         await homePage.checkExpectedBalanceIsDisplayed('••••••', '••••••');
 
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.openAccountsPage();
+        await headerNavbar.openAccountMenu();
 
         const accountList = new AccountListPage(driver);
         await accountList.checkPageIsLoaded();

@@ -13,7 +13,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
     await withMultichainAccountsDesignEnabled(
       {
         title: this.test?.fullTitle(),
-        state: 2,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
@@ -39,7 +38,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         accountType: AccountType.HardwareWallet,
-        state: 2,
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
@@ -71,7 +69,6 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         testSpecificMock: async (mockServer) => {
           return mockSnapSimpleKeyringAndSite(mockServer);
         },
-        state: 2,
       },
       async (driver: Driver) => {
         await installSnapSimpleKeyring(driver);

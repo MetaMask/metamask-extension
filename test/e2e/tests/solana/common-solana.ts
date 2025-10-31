@@ -4,8 +4,12 @@ import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 
 const SOLANA_URL_REGEX_MAINNET =
   /^https:\/\/solana-(mainnet|devnet)\.infura\.io\/v3*/u;
@@ -1660,6 +1664,7 @@ export async function withSolanaAccountSnap(
           bridgeConfig: showSnapConfirmation
             ? featureFlagsWithSnapConfirmation
             : featureFlags,
+          ...BIP44_STAGE_TWO,
         },
       },
       testSpecificMock: async (mockServer: Mockttp) => {
@@ -1782,7 +1787,11 @@ export async function withSolanaAccountSnap(
       mockServer: Mockttp;
       extensionId: string;
     }) => {
-      await loginWithBalanceValidation(driver);
+      if (showNativeTokenAsMainBalance) {
+        await loginWithBalanceValidation(driver);
+      } else {
+        await loginWithoutBalanceValidation(driver);
+      }
 
       // Change to Solana
       await driver.clickElement('[data-testid="sort-by-networks"]');

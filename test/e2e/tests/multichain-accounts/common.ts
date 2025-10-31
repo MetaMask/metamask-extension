@@ -28,7 +28,6 @@ export async function withMultichainAccountsDesignEnabled(
     title,
     testSpecificMock,
     accountType = AccountType.MultiSRP,
-    state = 2,
     dappOptions,
   }: {
     title?: string;
@@ -36,7 +35,6 @@ export async function withMultichainAccountsDesignEnabled(
       mockServer: Mockttp,
     ) => Promise<MockedEndpoint | MockedEndpoint[]>;
     accountType?: AccountType;
-    state?: number;
     dappOptions?: { numberOfTestDapps?: number; customDappPaths?: string[] };
   },
   test: (driver: Driver) => Promise<void>,
@@ -62,12 +60,10 @@ export async function withMultichainAccountsDesignEnabled(
       fixtures: fixture,
       testSpecificMock,
       title,
-      forceBip44Version: state === 2 ? 2 : 0,
       dappOptions,
     },
     async ({ driver }: { driver: Driver; mockServer: Mockttp }) => {
-      // State 2 uses unified account group balance (fiat) and may not equal '25 ETH'.
-      // Skip strict balance validation for hardware wallets and state 2 flows.
+      // Skip strict balance validation for hardware wallets
       if (accountType === AccountType.HardwareWallet) {
         await loginWithoutBalanceValidation(driver);
       } else {
@@ -77,17 +73,8 @@ export async function withMultichainAccountsDesignEnabled(
       await homePage.checkPageIsLoaded();
       const headerNavbar = new HeaderNavbar(driver);
 
-      if (state === 1) {
-        await headerNavbar.openAccountMenu();
-      } else {
-        await headerNavbar.openAccountsPage();
-      }
+      await headerNavbar.openAccountMenu();
 
-      const accountListPage = new AccountListPage(driver);
-
-      if (state === 1) {
-        await accountListPage.checkPageIsLoaded();
-      }
       await test(driver);
     },
   );

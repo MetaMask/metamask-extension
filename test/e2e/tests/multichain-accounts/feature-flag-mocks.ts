@@ -12,7 +12,7 @@ export const BIP44_STAGE_TWO = {
   sendRedesign: {
     enabled: false,
   },
-}
+};
 
 export const mockMultichainAccountsFeatureFlag = (mockServer: Mockttp) =>
   mockServer
@@ -85,7 +85,7 @@ export const mockMultichainAccountsFeatureFlagStateTwo = (
       return {
         ok: true,
         statusCode: 200,
-        json: [ BIP44_STAGE_TWO ],
+        json: [BIP44_STAGE_TWO],
       };
     });
 
