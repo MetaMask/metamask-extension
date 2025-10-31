@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import React, { Component } from 'react';
+import React, { Component, lazy, Suspense } from 'react';
 import PropTypes from 'prop-types';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import log from 'loglevel';
@@ -42,9 +42,15 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
+import { ThemeType } from '../../../shared/constants/preferences';
+import { getThemeFromRawTheme } from '../routes/utils';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
+
+const FoxAppearAnimation = lazy(
+  () => import('../onboarding-flow/welcome/fox-appear-animation'),
+);
 
 class UnlockPage extends Component {
   static contextTypes = {
@@ -104,6 +110,10 @@ class UnlockPage extends Component {
      * Indicates the type of first time flow
      */
     firstTimeFlowType: PropTypes.string,
+    /**
+     * The theme of the app
+     */
+    theme: PropTypes.string,
   };
 
   state = {
@@ -423,10 +433,14 @@ class UnlockPage extends Component {
 
   render() {
     const { password, error, isLocked, showResetPasswordModal } = this.state;
-    const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
+    const { isOnboardingCompleted, isSocialLoginFlow, theme } = this.props;
     const { t } = this.context;
 
     const needHelpText = t('needHelpLinkText');
+    const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
+    const isTestEnvironment = Boolean(process.env.IN_TEST);
+    const themeType = getThemeFromRawTheme(theme);
+    const isDarkTheme = themeType === ThemeType.dark;
 
     return (
       <Box
@@ -434,9 +448,12 @@ class UnlockPage extends Component {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        backgroundColor={BackgroundColor.backgroundDefault}
+        backgroundColor={
+          isRehydrationFlow ? BackgroundColor.backgroundDefault : ''
+        }
         width={BlockSize.Full}
         paddingBottom={12} // offset header to center content
+        className={isRehydrationFlow ? '' : 'unlock-page__container'}
       >
         {showResetPasswordModal && (
           <ResetPasswordModal
@@ -466,7 +483,21 @@ class UnlockPage extends Component {
               className="unlock-page__mascot-container"
               marginBottom={isBeta() || isFlask() ? 6 : 0}
             >
-              {this.renderMascot()}
+              {isRehydrationFlow ? (
+                this.renderMascot()
+              ) : (
+                <Box className="unlock-page__mascot-container__logo">
+                  <img
+                    src={
+                      isDarkTheme
+                        ? './images/logo/dark-logo.png'
+                        : './images/logo/light-logo.png'
+                    }
+                    width="180"
+                    height="180"
+                  />
+                </Box>
+              )}
               {isBeta() ? (
                 <Text
                   className="unlock-page__mascot-container__beta"
@@ -481,17 +512,19 @@ class UnlockPage extends Component {
                 </Text>
               ) : null}
             </Box>
-            <Text
-              data-testid="unlock-page-title"
-              as="h1"
-              variant={TextVariant.displayMd}
-              marginBottom={12}
-              fontWeight={FontWeight.Medium}
-              color={TextColor.textDefault}
-              textAlign={TextAlign.Center}
-            >
-              {t('welcomeBack')}
-            </Text>
+            {isRehydrationFlow && (
+              <Text
+                data-testid="unlock-page-title"
+                as="h1"
+                variant={TextVariant.displayMd}
+                marginBottom={12}
+                fontWeight={FontWeight.Medium}
+                color={TextColor.textDefault}
+                textAlign={TextAlign.Center}
+              >
+                {t('welcomeBack')}
+              </Text>
+            )}
             <FormTextField
               id="password"
               placeholder={
@@ -499,13 +532,16 @@ class UnlockPage extends Component {
                   ? t('enterYourPasswordSocialLoginFlow')
                   : t('enterYourPassword')
               }
+              className="unlock-page__password-input-container"
               size={FormTextFieldSize.Lg}
+              placeholderColor={TextColor.textDefault}
               inputProps={{
                 'data-testid': 'unlock-password',
                 'aria-label': t('password'),
               }}
               textFieldProps={{
                 disabled: isLocked,
+                className: 'unlock-page__password-input',
               }}
               onChange={(event) => this.handleInputChange(event)}
               type={TextFieldType.Password}
@@ -536,8 +572,9 @@ class UnlockPage extends Component {
               type="button"
               onClick={this.onForgotPasswordOrLoginWithDiffMethods}
               marginBottom={6}
+              color={TextColor.textDefault}
             >
-              {isSocialLoginFlow && !isOnboardingCompleted
+              {isRehydrationFlow
                 ? t('useDifferentLoginMethod')
                 : t('forgotPassword')}
             </Button>
@@ -574,6 +611,11 @@ class UnlockPage extends Component {
             </Text>
           </Box>
         </Box>
+        {!isTestEnvironment && !isRehydrationFlow && (
+          <Suspense fallback={<Box />}>
+            <FoxAppearAnimation />
+          </Suspense>
+        )}
       </Box>
     );
   }
