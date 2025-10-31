@@ -333,7 +333,7 @@ export function useDappSwapComparisonInfo() {
       .minus(totalAmountInConfirmation)
       .toNumber();
 
-    const gasDiff = totalGasInQuote.minus(totalGasInConfirmation).toNumber();
+    const gasDiff = totalGasInConfirmation.minus(totalGasInQuote).toNumber();
 
     const tokenAmountDiff = destinationTokenAmountInQuote
       .minus(destinationTokenAmountInConfirmation)

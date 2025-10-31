@@ -317,7 +317,7 @@ describe('useDappSwapComparisonInfo', () => {
       destinationTokenSymbol,
     } = await runHook();
     expect(selectedQuoteValueDifference).toBe(0.012494042894187605);
-    expect(gasDifference).toBe(0);
+    expect(gasDifference).toBe(0.005686377458187605);
     expect(tokenAmountDifference).toBe(0.006807665436);
     expect(destinationTokenSymbol).toBe('USDC');
   });
