@@ -95,3 +95,9 @@ html-report-multichain/
 
 # UI Integration tests
 test/integration/config/assets
+
+# Claude AI development files
+CLAUDE.md
+/CLAUDE.md
+temp/
+/temp/
