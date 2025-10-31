@@ -125,7 +125,7 @@ export class CriticalStartupErrorHandler {
         hasBackup: boolean;
         currentLocale?: string;
       };
-      displayStateCorruptionError(
+      await displayStateCorruptionError(
         this.#container,
         this.#port,
         error,
