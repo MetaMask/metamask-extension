@@ -186,7 +186,7 @@ export function lookupDomainName(domainName) {
     await dispatch(lookupStart(trimmedDomainName));
     state = getState();
     log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
-    let error;
+
     const chainId = getCurrentChainId(state);
     const chainIdInt = parseInt(chainId, 16);
     const resolutions = await fetchResolutions({
@@ -205,7 +205,6 @@ export function lookupDomainName(domainName) {
     await dispatch(
       lookupEnd({
         resolutions,
-        error,
         chainId,
         network: chainIdInt,
         domainName: trimmedDomainName,
