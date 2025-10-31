@@ -335,6 +335,10 @@ const PrepareBridgePage = ({
   // Scroll to bottom of the page when banners are shown
   const alertBannersRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    // If quotes are still loading, don't scroll to the warning area
+    if (isLoading) {
+      return;
+    }
     if (
       isEstimatedReturnLow ||
       isInsufficientGasForQuote ||
@@ -355,6 +359,7 @@ const PrepareBridgePage = ({
     tokenAlert,
     txAlert,
     isUsingHardwareWallet,
+    isLoading,
   ]);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);

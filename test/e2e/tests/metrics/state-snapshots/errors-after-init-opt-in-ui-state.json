@@ -184,6 +184,7 @@
     "currentMigrationVersion": "number",
     "accountsAssets": "object",
     "assetsMetadata": "object",
+    "allIgnoredAssets": "object",
     "balances": "object",
     "nonEvmTransactions": "object",
     "conversionRates": "object",
