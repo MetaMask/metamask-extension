@@ -42,6 +42,7 @@ import { AccountGroupBalanceChange } from '../assets/account-group-balance-chang
 import {
   getMultichainIsEvm,
   getMultichainShouldShowFiat,
+  getMultichainIsTestnet,
 } from '../../../selectors/multichain';
 import { setPrivacyMode } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -52,6 +53,11 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { AggregatedBalance } from '../../ui/aggregated-balance/aggregated-balance';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
+import { BalanceEmptyState } from '../balance-empty-state';
+import {
+  selectBalanceBySelectedAccountGroup,
+  selectTotalBalanceAcrossAllNetworks,
+} from '../../../selectors/assets';
 import WalletOverview from './wallet-overview';
 import CoinButtons from './coin-buttons';
 import {
@@ -221,6 +227,29 @@ export const CoinOverview = ({
     selectAnyEnabledNetworksAreAvailable,
   );
 
+  // Check for balance empty state conditions
+  const selectedGroupBalance = useSelector(selectBalanceBySelectedAccountGroup); // For display
+  const trueAggregatedBalance = useSelector(
+    selectTotalBalanceAcrossAllNetworks,
+  ); // For empty state logic
+  const isTestnet = useSelector(getMultichainIsTestnet);
+
+  const shouldShowBalanceEmptyState =
+    isMultichainAccountsState2Enabled &&
+    !isTestnet &&
+    trueAggregatedBalance === 0; // Use true aggregated balance instead of filtered balance
+
+  // 🔍 DEBUG LOGS - Compare filtered vs unfiltered balance
+  console.log('🔍 CoinOverview - Balance Comparison:', {
+    chainId,
+    isMultichainAccountsState2Enabled,
+    isTestnet,
+    filteredBalance: selectedGroupBalance?.totalBalanceInUserCurrency || 0,
+    trueAggregatedBalance,
+    shouldShowBalanceEmptyState,
+    timestamp: Date.now(),
+  });
+
   const handleSensitiveToggle = () => {
     dispatch(setPrivacyMode(!privacyMode));
   };
@@ -354,25 +383,30 @@ export const CoinOverview = ({
   return (
     <WalletOverview
       balance={
-        <Tooltip
-          position="top"
-          title={t('balanceOutdated')}
-          disabled={!balanceIsCached}
-        >
-          <div
-            className={`${classPrefix}-overview__balance [.wallet-overview-fullscreen_&]:items-center`}
+        shouldShowBalanceEmptyState ? (
+          <BalanceEmptyState className="w-full max-w-[420px]" />
+        ) : (
+          <Tooltip
+            position="top"
+            title={t('balanceOutdated')}
+            disabled={!balanceIsCached}
           >
-            <div className={`${classPrefix}-overview__primary-container`}>
-              {balanceSection}
-              {balanceIsCached && (
-                <span className={`${classPrefix}-overview__cached-star`}>
-                  *
-                </span>
-              )}
+            <div
+              className={`${classPrefix}-overview__balance [.wallet-overview-fullscreen_&]:items-center`}
+            >
+              <div className={`${classPrefix}-overview__primary-container`}>
+                {balanceSection}
+                {balanceIsCached && !shouldShowBalanceEmptyState && (
+                  <span className={`${classPrefix}-overview__cached-star`}>
+                    *
+                  </span>
+                )}
+              </div>
+              {!shouldShowBalanceEmptyState &&
+                renderPercentageAndAmountChange()}
             </div>
-            {renderPercentageAndAmountChange()}
-          </div>
-        </Tooltip>
+          </Tooltip>
+        )
       }
       buttons={
         <CoinButtons
