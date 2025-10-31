@@ -30609,23 +30609,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lavamoat-core@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "lavamoat-core@npm:17.0.0"
-  dependencies:
-    "@babel/types": "npm:7.27.3"
-    "@lavamoat/types": "npm:^0.1.0"
-    json-stable-stringify: "npm:1.3.0"
-    lavamoat-tofu: "npm:^8.0.11"
-    merge-deep: "npm:3.0.3"
-    ses: "npm:1.14.0"
-  bin:
-    lavamoat-sort-policy: src/policy-sort-cli.js
-  checksum: 10/6442eb31ed938e1c25805266f447755359e051716b70a62d46d44f1d3036ebc2ed54f62b0eece1ca2f02d4117ed88b5e60ca100905be2d134cef1bcfee015076
-  languageName: node
-  linkType: hard
-
-"lavamoat-core@npm:^17.0.1":
+"lavamoat-core@npm:^17.0.0, lavamoat-core@npm:^17.0.1":
   version: 17.0.1
   resolution: "lavamoat-core@npm:17.0.1"
   dependencies:
