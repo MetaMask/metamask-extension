@@ -55,7 +55,7 @@ describe('<DappSwapComparisonBanner />', () => {
     expect(getByText('Current')).toBeInTheDocument();
     expect(getByText('Save + Earn')).toBeInTheDocument();
     expect(getByText('Save + Earn using MetaMask Swap:')).toBeInTheDocument();
-    expect(getByText('Save about $0.10')).toBeInTheDocument();
+    expect(getByText('Save about $0.02')).toBeInTheDocument();
     expect(
       getByText(
         'No additional cost • Priority support • Network fees refunded on failed swaps',
