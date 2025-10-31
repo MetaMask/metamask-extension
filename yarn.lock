@@ -5692,16 +5692,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:1.3.0"
-  checksum: 10/467927955ece8cf0d1b033c12e714eaa897d97b50c261f4e64ab0d37ba886c251964e6d67001afc6d39c3aca74b5b4acd948f861a7d01e28349f1dd1acedb825
+"@metamask/bitcoin-wallet-snap@npm:^1.4.3":
+  version: 1.4.3
+  resolution: "@metamask/bitcoin-wallet-snap@npm:1.4.3"
+  checksum: 10/e630233c48424b655eee2295178115b118108b6b47c0ede0e6e73d63fcbd793135f2e9cc682f07b05b3254f129a02b9570f204e7baed58a0fa1daad75c61a8d6
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^56.0.0":
-  version: 56.0.0
-  resolution: "@metamask/bridge-controller@npm:56.0.0"
+"@metamask/bridge-controller@npm:^56.0.3":
+  version: 56.0.3
+  resolution: "@metamask/bridge-controller@npm:56.0.3"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -5727,7 +5727,7 @@ __metadata:
     "@metamask/remote-feature-flag-controller": ^2.0.0
     "@metamask/snaps-controllers": ^14.0.0
     "@metamask/transaction-controller": ^61.0.0
-  checksum: 10/d63591ddb50565c969447050a5c8f7f12fade69fb30e884e87c24c2d86803074d7a337df42c4f9feaf91d01241baaba7da0b23101a993547af8331085c8df1a5
+  checksum: 10/399a53ec01e18a9b9add4242b12c42ace472372fc04ed6e21d6e65f277ecc4aa220456933547d8d838e8834927602e7b1c149a8264de8742367d051801573bbd
   languageName: node
   linkType: hard
 
@@ -31856,8 +31856,8 @@ __metadata:
     "@metamask/assets-controllers": "npm:^85.0.0"
     "@metamask/auto-changelog": "npm:^5.1.0"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^1.3.0"
-    "@metamask/bridge-controller": "npm:^56.0.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^1.4.3"
+    "@metamask/bridge-controller": "npm:^56.0.3"
     "@metamask/bridge-status-controller": "npm:^56.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^3.0.0"
