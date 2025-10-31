@@ -10,6 +10,7 @@ const RIVE_WASM_URL = './images/riv_animations/rive.wasm';
 
 // Track WASM initialization state globally
 let wasmInitializationPromise: Promise<void> | null = null;
+const isTestEnvironment = Boolean(process.env.IN_TEST);
 
 /**
  * Initialize Rive WASM once using the bundled WASM file
@@ -18,6 +19,11 @@ let wasmInitializationPromise: Promise<void> | null = null;
  * @returns Promise that resolves when WASM is ready, rejects on error
  */
 export function initializeRiveWASM(): Promise<void> {
+  // Skip initialization in test environments
+  if (isTestEnvironment) {
+    return Promise.resolve();
+  }
+
   if (wasmInitializationPromise) {
     return wasmInitializationPromise;
   }
@@ -74,6 +80,11 @@ export function initializeRiveWASM(): Promise<void> {
  * This allows components to await WASM readiness without polling
  */
 export function waitForWasmReady(): Promise<void> {
+  // Skip in test environments
+  if (isTestEnvironment) {
+    return Promise.resolve();
+  }
+
   // If already initialized, return that promise
   if (wasmInitializationPromise) {
     return wasmInitializationPromise;
