@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   getChainIdsToPoll,
@@ -40,6 +40,8 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
     ? enabledChainIds
     : chainIds;
 
+  const isMounted = useRef(true);
+
   useEffect(() => {
     // Use validated currency tickers
     const fetchNativeCurrencies = async () => {
@@ -57,16 +59,21 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
           return originalToken ?? n.nativeCurrency;
         }),
       );
-
-      // Use a type predicate to filter out null values.
-      const filteredCurrencies = nativeCurrenciesArray.filter(
-        (currency): currency is NonNullable<typeof currency> =>
-          currency !== null,
-      );
-      const uniqueCurrencies = [...new Set(filteredCurrencies)];
-      setNativeCurrencies(uniqueCurrencies);
+      if (isMounted.current) {
+        // Use a type predicate to filter out null values.
+        const filteredCurrencies = nativeCurrenciesArray.filter(
+          (currency): currency is NonNullable<typeof currency> =>
+            currency !== null,
+        );
+        const uniqueCurrencies = [...new Set(filteredCurrencies)];
+        setNativeCurrencies(uniqueCurrencies);
+      }
     };
     fetchNativeCurrencies();
+
+    return () => {
+      isMounted.current = false;
+    };
   }, [
     chainIds,
     isPollingEnabled,
@@ -87,8 +94,6 @@ const useCurrencyRatePolling = () => {
   // usePolling is a custom hook that is invoked synchronously.
   usePolling({
     startPolling: currencyRateStartPolling,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: currencyRateStopPollingByPollingToken,
     input: nativeCurrencies,
     enabled,
