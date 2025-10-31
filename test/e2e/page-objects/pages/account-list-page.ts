@@ -226,7 +226,7 @@ class AccountListPage {
       await this.driver.waitForMultipleSelectors([
         {
           css: this.createMultichainAccountButton,
-          text: 'Create account',
+          text: 'Add account',
         },
         this.multichainAccountOptionsMenuButton,
       ]);
@@ -374,7 +374,7 @@ class AccountListPage {
   async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
     console.log(`Adding new multichain account`);
     const createMultichainAccountButtons = await this.driver.findElements(
-      this.createMultichainAccountButton,
+      this.addMultichainWalletButton,
     );
     await createMultichainAccountButtons[options?.srpIndex ?? 0].click();
   }
