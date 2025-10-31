@@ -27,6 +27,7 @@ describe('Reset Wallet - ', function () {
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',
+          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
         ],
         testSpecificMock: (server: Mockttp) => {
@@ -89,6 +90,7 @@ describe('Reset Wallet - ', function () {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',
+          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
         ],
         testSpecificMock: (server: Mockttp) => {
@@ -168,6 +170,7 @@ describe('Reset Wallet - ', function () {
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: [
           'unable to proceed, wallet is locked',
+          'npm:@metamask/message-signing-snap was stopped and the request was cancelled. This is likely because the Snap crashed.',
           'The snap "npm:@metamask/message-signing-snap" has been terminated during execution', // issue #37342
         ],
         testSpecificMock: (server: Mockttp) => {
