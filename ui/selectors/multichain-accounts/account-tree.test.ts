@@ -740,6 +740,15 @@ describe('Multichain Accounts Selectors', () => {
 
       expect(result).toBeUndefined();
     });
+
+    it('returns undefined when accountId is an empty string', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        '' as unknown as AccountGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
   });
 
   describe('getAllAccountGroups', () => {
