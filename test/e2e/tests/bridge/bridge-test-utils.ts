@@ -38,6 +38,7 @@ import {
   SSE_RESPONSE_HEADER,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
+import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 
 export class BridgePage {
   driver: Driver;
@@ -375,7 +376,9 @@ async function mockFeatureFlags(
       return {
         ok: true,
         statusCode: 200,
-        json: [{ bridgeConfig: featureFlags }],
+        json: [
+          { bridgeConfig: featureFlags, ...BIP44_STAGE_TWO },
+        ],
       };
     });
 }
@@ -935,8 +938,6 @@ export const getQuoteNegativeCasesFixtures = (
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
-        '0xe708': true,
-        '0xa4b1': true,
       },
     });
 
@@ -951,6 +952,7 @@ export const getQuoteNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        ...BIP44_STAGE_TWO,
       },
       testing: { disableSmartTransactionsOverride: true },
     },
@@ -960,7 +962,7 @@ export const getQuoteNegativeCasesFixtures = (
         type: 'anvil',
         options: {
           chainId: 1,
-          hardfork: 'muirGlacier',
+          hardfork: 'london',
         },
       },
     ],
@@ -1016,7 +1018,7 @@ export const getBridgeNegativeCasesFixtures = (
   };
 };
 
-export const getInsufficientFundsFixtures = (
+export const  getInsufficientFundsFixtures = (
   featureFlags: Partial<FeatureFlagResponse> = {},
   title?: string,
 ) => {
@@ -1029,7 +1031,6 @@ export const getInsufficientFundsFixtures = (
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
-        '0xe708': true,
       },
     });
 
@@ -1044,6 +1045,7 @@ export const getInsufficientFundsFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        ...BIP44_STAGE_TWO
       },
     },
     smartContract: SMART_CONTRACTS.HST,
