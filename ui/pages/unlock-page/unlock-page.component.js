@@ -391,6 +391,15 @@ class UnlockPage extends Component {
     // in `onboarding_unlock` route, if the user is on a social login flow and onboarding is not completed,
     // we can redirect to `onboarding_welcome` route to select a different login method
     if (!isOnboardingCompleted && isSocialLoginFlow) {
+      // Track when user clicks "Use a different login method" during rehydration
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.UseDifferentLoginMethodClicked,
+        properties: {
+          account_type: 'social',
+        },
+      });
+
       await this.props.loginWithDifferentMethod();
       await this.props.forceUpdateMetamaskState();
       history.replace(ONBOARDING_WELCOME_ROUTE);
