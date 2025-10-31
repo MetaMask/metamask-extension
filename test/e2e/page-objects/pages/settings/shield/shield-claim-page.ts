@@ -4,14 +4,17 @@ import { Driver } from '../../../../webdriver/driver';
 export default class ShieldClaimPage {
   private readonly driver: Driver;
 
-  // Page identification
   private readonly pageContainer = '[data-testid="submit-claim-page"]';
 
-  // Locators (alphabetically ordered)
   private readonly claimSuccessToast = {
     text: 'Claim submitted successfully',
     tag: 'p',
   };
+
+  private readonly chainIdHelpText =
+    '[data-testid="shield-claim-chain-id-help-text"]';
+
+  private readonly chainIdInput = '[data-testid="shield-claim-chain-id-input"]';
 
   private readonly descriptionError =
     '[data-testid="shield-claim-description-error"]';
@@ -54,10 +57,21 @@ export default class ShieldClaimPage {
   async checkPageIsLoaded(): Promise<void> {
     await this.driver.waitForMultipleSelectors([
       this.pageContainer,
+      this.chainIdInput,
       this.emailInput,
       this.submitButton,
     ]);
     console.log('Shield Claim page is loaded');
+  }
+
+  /**
+   * Fill in the chain ID field
+   *
+   * @param chainId - The chain ID to fill
+   */
+  async fillChainId(chainId: string): Promise<void> {
+    console.log(`Filling chain ID: ${chainId}`);
+    await this.driver.fill(this.chainIdInput, chainId);
   }
 
   /**
@@ -111,6 +125,16 @@ export default class ShieldClaimPage {
   }
 
   /**
+   * Fill in the case description textarea and focus out to trigger validation
+   *
+   * @param description - The description text to fill
+   */
+  async fillDescriptionAndFocusOut(description: string): Promise<void> {
+    await this.fillDescription(description);
+    await this.driver.press(this.descriptionTextarea, 'Tab');
+  }
+
+  /**
    * Click the submit button
    */
   async clickSubmitButton(): Promise<void> {
@@ -137,6 +161,7 @@ export default class ShieldClaimPage {
    * Fill the entire form with provided data
    *
    * @param formData - The form data object containing all required fields
+   * @param formData.chainId - The chain ID
    * @param formData.email - The email address
    * @param formData.impactedWalletAddress - The impacted wallet address
    * @param formData.impactedTransactionHash - The impacted transaction hash
@@ -145,6 +170,7 @@ export default class ShieldClaimPage {
    * @param formData.files - Optional array of file paths to upload
    */
   async fillForm(formData: {
+    chainId: string;
     email: string;
     impactedWalletAddress: string;
     impactedTransactionHash: string;
@@ -154,6 +180,7 @@ export default class ShieldClaimPage {
   }): Promise<void> {
     console.log('Filling entire claim form');
 
+    await this.fillChainId(formData.chainId);
     await this.fillEmail(formData.email);
     await this.fillImpactedWalletAddress(formData.impactedWalletAddress);
     await this.fillImpactedTransactionHash(formData.impactedTransactionHash);
@@ -169,6 +196,7 @@ export default class ShieldClaimPage {
    * Submit the form with provided data
    *
    * @param formData - The form data object containing all required fields
+   * @param formData.chainId - The chain ID
    * @param formData.email - The email address
    * @param formData.impactedWalletAddress - The impacted wallet address
    * @param formData.impactedTransactionHash - The impacted transaction hash
@@ -177,6 +205,7 @@ export default class ShieldClaimPage {
    * @param formData.files - Optional array of file paths to upload
    */
   async submitForm(formData: {
+    chainId: string;
     email: string;
     impactedWalletAddress: string;
     impactedTransactionHash: string;

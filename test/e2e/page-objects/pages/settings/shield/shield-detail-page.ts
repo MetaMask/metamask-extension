@@ -10,10 +10,8 @@ export default class ShieldDetailPage {
     tag: 'h4',
   };
 
-  // Main page container
   private readonly pageContainer = '[data-testid="transaction-shield-page"]';
 
-  // Locators (alphabetically ordered)
   private readonly addFundsModal = '[data-testid="add-funds-modal"]';
 
   private readonly billingAccount =

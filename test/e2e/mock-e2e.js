@@ -181,9 +181,6 @@ async function setupMocking(
     numNetworkReqs = 0;
   }
 
-  const mockedEndpoint = await testSpecificMock(server);
-  // Mocks below this line can be overridden by test-specific mocks
-
   // Subscriptions Polling Get Subscriptions
   await server
     .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
@@ -207,6 +204,9 @@ async function setupMocking(
         json: [],
       };
     });
+
+  const mockedEndpoint = await testSpecificMock(server);
+  // Mocks below this line can be overridden by test-specific mocks
 
   // User Profile Lineage
   await server
