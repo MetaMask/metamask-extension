@@ -1,5 +1,3 @@
-import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
-import { Hex, assert } from '@metamask/utils';
 import { Duration } from 'luxon';
 import { PriceApiTimePeriod } from './types/PriceApiTimePeriod';
 
@@ -42,8 +40,8 @@ export const getPricePrecision = (price: number) => {
  *
  * @param chainId - The hexadecimal chain id.
  */
-export const chainSupportsPricing = (chainId: Hex) =>
-  (SUPPORTED_CHAIN_IDS as readonly string[]).includes(chainId);
+/* export const chainSupportsPricing = (chainId: Hex) =>
+  (SUPPORTED_CHAIN_IDS as readonly string[]).includes(chainId); */
 
 /** The opacity components should set during transition */
 export const loadingOpacity = 0.2;

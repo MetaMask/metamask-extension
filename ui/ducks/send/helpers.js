@@ -22,6 +22,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getConfirmationExchangeRates,
   getGasPriceInHexWei,
+  getSupportedChainIds,
   getTokenExchangeRates,
 } from '../../selectors';
 import { estimateGas } from '../../store/actions';
@@ -211,6 +212,7 @@ export const addAdjustedReturnToQuotes = async (
 
     // get exchange rates from state
     const contractExchangeRates = getTokenExchangeRates(state);
+    const supportedChainIds = getSupportedChainIds(state);
     const confirmationExchangeRates = getConfirmationExchangeRates(state);
     const mergedRates = {
       ...contractExchangeRates,
@@ -234,6 +236,7 @@ export const addAdjustedReturnToQuotes = async (
           nativeCurrency,
           [destinationAddress],
           chainId,
+          supportedChainIds,
         )
       )[destinationAddress];
     }
