@@ -191,13 +191,39 @@ const SubmitClaimForm = () => {
           ? undefined
           : t('shieldClaimInvalidWalletAddress'),
       );
+
+      // validate reimbursement wallet address is different from impacted wallet address
+      if (
+        reimbursementWalletAddress &&
+        reimbursementWalletAddress?.toLowerCase() ===
+          impactedWalletAddress?.toLowerCase()
+      ) {
+        setErrorMessage(
+          SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+          t('shieldClaimSameWalletAddressesError'),
+        );
+      } else if (
+        errors.reimbursementWalletAddress?.msg ===
+        t('shieldClaimSameWalletAddressesError')
+      ) {
+        setErrorMessage(
+          SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+          undefined,
+        );
+      }
     } else {
       setErrorMessage(
         SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS,
         t('shieldClaimInvalidRequired'),
       );
     }
-  }, [impactedWalletAddress, setErrorMessage, t]);
+  }, [
+    errors.reimbursementWalletAddress,
+    impactedWalletAddress,
+    reimbursementWalletAddress,
+    setErrorMessage,
+    t,
+  ]);
 
   const validateReimbursementWalletAddress = useCallback(() => {
     if (reimbursementWalletAddress) {

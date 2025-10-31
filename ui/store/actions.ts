@@ -7631,22 +7631,27 @@ export async function submitShieldClaim(params: {
 
   const accessToken = await submitRequestToBackground<string>('getBearerToken');
 
-  // we do the request here instead of background controllers because files are not serializable
-  const response = await fetch(claimsUrl, {
-    method: 'POST',
-    body: formData,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  try {
+    // we do the request here instead of background controllers because files are not serializable
+    const response = await fetch(claimsUrl, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-  if (!response.ok) {
-    const error = (await response.json()) as SubmitClaimErrorResponse;
-    if (error?.errorCode) {
-      throw new SubmitClaimError(error.message, error);
+    if (!response.ok) {
+      const error = (await response.json()) as SubmitClaimErrorResponse;
+      if (error?.errorCode) {
+        throw new SubmitClaimError(error.message, error);
+      }
+      throw new SubmitClaimError(ClaimSubmitToastType.Errored);
     }
+
+    return ClaimSubmitToastType.Success;
+  } catch (error) {
+    console.error(error);
     throw new SubmitClaimError(ClaimSubmitToastType.Errored);
   }
-
-  return ClaimSubmitToastType.Success;
 }
