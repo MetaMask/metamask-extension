@@ -174,6 +174,8 @@ import {
   ClaimSubmitToastType,
   type NetworkConnectionBanner,
 } from '../../shared/constants/app-state';
+import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
+import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -7629,22 +7631,27 @@ export async function submitShieldClaim(params: {
 
   const accessToken = await submitRequestToBackground<string>('getBearerToken');
 
-  // we do the request here instead of background controllers because files are not serializable
-  const response = await fetch(claimsUrl, {
-    method: 'POST',
-    body: formData,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  try {
+    // we do the request here instead of background controllers because files are not serializable
+    const response = await fetch(claimsUrl, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-  if (!response.ok) {
-    const errorMessage = await response.json();
-    if (errorMessage.message) {
-      throw new Error(errorMessage.message);
+    if (!response.ok) {
+      const error = (await response.json()) as SubmitClaimErrorResponse;
+      if (error?.errorCode) {
+        throw new SubmitClaimError(error.message, error);
+      }
+      throw new SubmitClaimError(ClaimSubmitToastType.Errored);
     }
-    throw new Error(ClaimSubmitToastType.Errored);
-  }
 
-  return ClaimSubmitToastType.Success;
+    return ClaimSubmitToastType.Success;
+  } catch (error) {
+    console.error(error);
+    throw new SubmitClaimError(ClaimSubmitToastType.Errored);
+  }
 }
