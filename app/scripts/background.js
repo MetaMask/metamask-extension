@@ -339,11 +339,12 @@ function maybeDetectPhishing(theController) {
       }
 
       const { hostname, href, searchParams } = new URL(details.url);
-      if (inTest) {
-        if (searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')) {
-          // this is a test page that needs to bypass early phishing detection
-          return {};
-        }
+      if (
+        inTest &&
+        searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')
+      ) {
+        // this is a test page that needs to bypass early phishing detection
+        return {};
       }
 
       theController.phishingController.maybeUpdateState();
