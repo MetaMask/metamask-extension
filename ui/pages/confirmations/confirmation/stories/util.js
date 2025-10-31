@@ -11,6 +11,11 @@ import {
 
 const STORE_MOCK = {
   ...testData,
+  activeTab: {
+    origin: 'https://metamask.github.io',
+    protocol: 'https:',
+    url: 'https://metamask.github.io/test-dapp/',
+  },
   metamask: {
     approvalFlows: [],
     currentCurrency: 'USD',
@@ -61,6 +66,7 @@ const STORE_MOCK = {
     accounts: testData.metamask.accounts,
     internalAccounts: testData.metamask.internalAccounts,
     accountsByChainId: testData.metamask.accountsByChainId,
+    accountTree: testData.metamask.accountTree,
     snaps: {
       'npm:@test/test-snap': {
         id: 'npm:@test/test-snap',
