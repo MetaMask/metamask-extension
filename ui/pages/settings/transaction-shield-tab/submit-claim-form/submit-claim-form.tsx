@@ -390,14 +390,15 @@ const SubmitClaimForm = () => {
 
       {/* Personal details */}
       <Box>
-        <Text variant={TextVariant.HeadingSm}>Personal details</Text>
+        <Text variant={TextVariant.HeadingSm}>
+          {t('shieldClaimPersonalDetails')}
+        </Text>
         <Text
           variant={TextVariant.BodySm}
           color={TextColor.TextAlternative}
           className="mb-2"
         >
-          We'll use this to communicate with you when investigating and
-          resolving.
+          {t('shieldClaimPersonalDetailsDescription')}
         </Text>
         <Box
           borderColor={BoxBorderColor.BorderMuted}
@@ -455,13 +456,15 @@ const SubmitClaimForm = () => {
 
       {/* Incident details */}
       <Box className="mt-4">
-        <Text variant={TextVariant.HeadingSm}>Incident details</Text>
+        <Text variant={TextVariant.HeadingSm}>
+          {t('shieldClaimIncidentDetails')}
+        </Text>
         <Text
           variant={TextVariant.BodySm}
           color={TextColor.TextAlternative}
           className="mb-2"
         >
-          Help us understand more about what happened.
+          {t('shieldClaimIncidentDetailsDescription')}
         </Text>
 
         <Box
@@ -471,6 +474,8 @@ const SubmitClaimForm = () => {
       </Box>
 
       <AccountSelector
+        label={`${t('shieldClaimImpactedWalletAddress')}*`}
+        modalTitle={t('shieldClaimSelectAccount')}
         impactedWalletAddress={impactedWalletAddress}
         onAccountSelect={(address) => {
           setImpactedWalletAddress(address);
@@ -487,6 +492,8 @@ const SubmitClaimForm = () => {
       />
 
       <NetworkSelector
+        label={`${t('shieldClaimNetwork')}*`}
+        modalTitle={t('shieldClaimSelectNetwork')}
         selectedChainId={chainId}
         onNetworkSelect={(selectedChainId) => {
           setChainId(selectedChainId);

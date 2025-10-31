@@ -26,11 +26,16 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSelector } from 'react-redux';
 import { getWalletsWithAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 import { useAccountAddressSeedIconMap } from '../../../confirmations/hooks/send/useAccountAddressSeedIconMap';
+import classnames from 'classnames';
 
 const AccountSelector = ({
+  label,
+  modalTitle,
   onAccountSelect,
   impactedWalletAddress,
 }: {
+  label: string;
+  modalTitle: string;
   onAccountSelect: (address: string) => void;
   impactedWalletAddress: string;
 }) => {
@@ -102,7 +107,7 @@ const AccountSelector = ({
         fontWeight={FontWeight.Medium}
         className="mb-2"
       >
-        {t('shieldClaimImpactedWalletAddress')}*
+        {label}
       </Text>
       <Box
         asChild
@@ -120,7 +125,7 @@ const AccountSelector = ({
               <Text>{selectedAccountInfo?.name}</Text>
             </>
           ) : (
-            <Text color={TextColor.TextAlternative}>Select an account</Text>
+            <Text color={TextColor.TextAlternative}>{modalTitle}</Text>
           )}
 
           <Icon
@@ -142,7 +147,7 @@ const AccountSelector = ({
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
-          <ModalHeader>Select an account</ModalHeader>
+          <ModalHeader>{modalTitle}</ModalHeader>
           <ModalBody paddingRight={0} paddingLeft={0}>
             {Object.entries(accountsGroupedByWallet).map(
               ([walletName, wallet]) => (
@@ -160,7 +165,13 @@ const AccountSelector = ({
                     <Box
                       asChild
                       key={account.id}
-                      className="account-selector-modal__account w-full flex items-center gap-4 px-4 py-3"
+                      className={classnames(
+                        'account-selector-modal__account w-full flex items-center gap-4 px-4 py-3',
+                        {
+                          'account-selector-modal__account--selected':
+                            account.address === selectedAccountInfo?.address,
+                        },
+                      )}
                       onClick={() => {
                         onAccountSelect(account.address);
                         setShowAccountListMenu(false);

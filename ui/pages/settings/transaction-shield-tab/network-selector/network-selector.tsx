@@ -40,9 +40,13 @@ const SUPPORTED_CHAIN_IDS: `0x${string}`[] = [
 ];
 
 const NetworkSelector = ({
+  label,
+  modalTitle,
   onNetworkSelect,
   selectedChainId,
 }: {
+  label: string;
+  modalTitle: string;
   onNetworkSelect: (chainId: string) => void;
   selectedChainId: string;
 }) => {
@@ -70,7 +74,7 @@ const NetworkSelector = ({
         fontWeight={FontWeight.Medium}
         className="mb-2"
       >
-        {t('shieldClaimNetwork')}*
+        {label}
       </Text>
       <Box
         asChild
@@ -89,7 +93,7 @@ const NetworkSelector = ({
               <Text>{selectedNetworkInfo.name}</Text>
             </>
           ) : (
-            <Text color={TextColor.TextAlternative}>Select a network</Text>
+            <Text color={TextColor.TextAlternative}>{modalTitle}</Text>
           )}
 
           <Icon
@@ -112,7 +116,7 @@ const NetworkSelector = ({
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
           <ModalHeader onClose={() => setShowNetworkListMenu(false)}>
-            Select a network
+            {modalTitle}
           </ModalHeader>
           <ModalBody paddingRight={0} paddingLeft={0}>
             <Box className="flex flex-col w-full">
