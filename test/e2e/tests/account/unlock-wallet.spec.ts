@@ -38,6 +38,8 @@ describe('Unlock wallet - ', function () {
         await loginPage.checkIncorrectPasswordMessageIsDisplayed();
         await loginPage.loginToHomepage();
         await homePage.checkPageIsLoaded();
+        // Wait for balance as the test can still fail if the process is terminated too early
+        await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
       },
     );
   });
