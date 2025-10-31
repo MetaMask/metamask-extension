@@ -1113,6 +1113,10 @@ export const getMarketData = (state) => {
   return state.metamask.marketData;
 };
 
+export const getSupportedChainIds = (state) => {
+  return state.metamask.supportedChainIds.data;
+};
+
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);
   if (!state.metamask.addressBook[chainId]) {

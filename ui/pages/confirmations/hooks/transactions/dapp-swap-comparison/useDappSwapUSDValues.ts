@@ -8,12 +8,14 @@ import {
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useCallback } from 'react';
 
+import { useSelector } from 'react-redux';
 import { TokenStandAndDetails } from '../../../../../store/actions';
 import { fetchTokenExchangeRates } from '../../../../../helpers/utils/util';
 import { useAsyncResult } from '../../../../../hooks/useAsync';
 import { fetchAllTokenDetails } from '../../../utils/token';
 import { getTokenValueFromRecord } from '../../../utils/dapp-swap-comparison-utils';
 import { useConfirmContext } from '../../../context/confirm';
+import { getSupportedChainIds } from '../../../../../selectors';
 
 export function useDappSwapUSDValues({
   tokenAddresses = [],
@@ -23,6 +25,7 @@ export function useDappSwapUSDValues({
   destTokenAddress?: Hex;
 }) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const supportedChainIds = useSelector(getSupportedChainIds);
   const { chainId, txParams } = currentConfirmation ?? {
     txParams: {},
   };
@@ -31,7 +34,13 @@ export function useDappSwapUSDValues({
   const { value: fiatRates, pending: fiatRatesPending } = useAsyncResult<
     Record<Hex, number | undefined>
   >(
-    () => fetchTokenExchangeRates('usd', tokenAddresses as Hex[], chainId),
+    () =>
+      fetchTokenExchangeRates(
+        'usd',
+        tokenAddresses as Hex[],
+        chainId,
+        supportedChainIds,
+      ),
     [chainId, tokenAddresses?.length],
   );
 

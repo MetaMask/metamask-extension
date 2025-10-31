@@ -2,7 +2,10 @@ import { useMemo, useState } from 'react';
 import { toChecksumAddress } from 'ethereumjs-util';
 import { shallowEqual, useSelector } from 'react-redux';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
-import { getTokenExchangeRates } from '../../../../selectors';
+import {
+  getSupportedChainIds,
+  getTokenExchangeRates,
+} from '../../../../selectors';
 import { Numeric } from '../../../../../shared/modules/Numeric';
 import {
   getConversionRate,
@@ -29,6 +32,7 @@ export default function useTokenExchangeRate(
     : undefined;
   const nativeCurrency = useSelector(getNativeCurrency);
   const chainId = useSelector(getCurrentChainId);
+  const supportedChainIds = useSelector(getSupportedChainIds);
 
   const selectedNativeConversionRate = useSelector(getConversionRate);
 
@@ -70,7 +74,12 @@ export default function useTokenExchangeRate(
         ...prev,
         [tokenAddress]: LOADING,
       }));
-      fetchTokenExchangeRates(nativeCurrency, [tokenAddress], chainId)
+      fetchTokenExchangeRates(
+        nativeCurrency,
+        [tokenAddress],
+        chainId,
+        supportedChainIds,
+      )
         .then((addressToExchangeRate) => {
           setExchangeRates((prev) => ({
             ...prev,

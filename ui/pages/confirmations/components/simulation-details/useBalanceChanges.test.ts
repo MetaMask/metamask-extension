@@ -24,6 +24,7 @@ jest.mock('../../../../ducks/metamask/metamask', () => ({
 jest.mock('../../../../selectors', () => ({
   selectConversionRateByChainId: jest.fn(),
   getUSDConversionRateByChainId: jest.fn(() => () => 4),
+  getSupportedChainIds: jest.fn(),
 }));
 
 jest.mock('../../../../helpers/utils/util', () => ({

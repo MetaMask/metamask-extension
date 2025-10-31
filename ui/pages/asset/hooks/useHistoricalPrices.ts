@@ -12,12 +12,9 @@ import { Point } from 'chart.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { MINUTE } from '../../../../shared/constants/time';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import { getShouldShowFiat } from '../../../selectors';
+import { getShouldShowFiat, getSupportedChainIds } from '../../../selectors';
 import { getHistoricalPrices } from '../../../selectors/assets';
-import {
-  chainSupportsPricing,
-  fromIso8601DurationToPriceApiTimePeriod,
-} from '../util';
+import { fromIso8601DurationToPriceApiTimePeriod } from '../util';
 import { fetchHistoricalPricesForAsset } from '../../../store/actions';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
@@ -100,6 +97,8 @@ const useHistoricalPricesEvm = ({
 }: UseHistoricalPricesParams) => {
   const isEvm = isEvmChainId(chainId);
   const showFiat: boolean = useSelector(getShouldShowFiat);
+  const supportedChainIds = useSelector(getSupportedChainIds);
+  const isChainSupportsPricing = supportedChainIds.includes(chainId as Hex);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [prices, setPrices] = useState<Point[]>([]);
@@ -113,7 +112,7 @@ const useHistoricalPricesEvm = ({
       return;
     }
 
-    const chainSupported = showFiat && chainSupportsPricing(chainId as Hex);
+    const chainSupported = showFiat && isChainSupportsPricing;
     if (!chainSupported) {
       return;
     }

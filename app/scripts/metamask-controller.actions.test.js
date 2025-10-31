@@ -125,6 +125,24 @@ describe('MetaMaskController', function () {
           { url: '127.0.0.1', targetList: 'blocklist', timestamp: 0 },
         ]),
       );
+
+    nock('https://price.api.cx.metamask.io')
+      .get('/v1/supportedNetworks')
+      .reply(
+        200,
+        JSON.stringify({
+          fullSupport: [
+            1, 10, 56, 100, 137, 250, 324, 8453, 42161, 43114, 59144,
+          ],
+          partialSupport: {
+            spotPricesV2: [
+              25, 57, 66, 70, 82, 88, 106, 122, 128, 143, 146, 288, 321, 336,
+              361, 1088, 1101, 1284, 1285, 1329, 5000, 10000, 42220, 42262,
+              81457, 97741, 167000, 333999, 534352, 1313161554, 1666600000,
+            ],
+          },
+        }),
+      );
     metamaskController = new MetaMaskController({
       showUserConfirmation: noop,
       encryptor: mockEncryptor,

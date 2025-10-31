@@ -96,6 +96,10 @@ export const getMockTypedSignConfirmStateForRequest = (
     unapprovedTypedMessages: {
       [signature.id]: signature,
     },
+    supportedChainIds: {
+      timestamp: 0,
+      data: [],
+    },
   },
 });
 

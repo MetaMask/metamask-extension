@@ -112,6 +112,10 @@ describe('AssetPage', () => {
         },
       },
       marketData: {},
+      supportedChainIds: {
+        timestamp: 0,
+        data: ['0x1'],
+      },
       allTokens: {},
       accountsByChainId: {
         '0x1': {
