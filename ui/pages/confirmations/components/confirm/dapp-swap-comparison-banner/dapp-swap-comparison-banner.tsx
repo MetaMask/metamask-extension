@@ -23,7 +23,7 @@ import { useConfirmContext } from '../../../context/confirm';
 import { useDappSwapComparisonInfo } from '../../../hooks/transactions/dapp-swap-comparison/useDappSwapComparisonInfo';
 
 const DAPP_SWAP_COMPARISON_ORIGIN = 'https://app.uniswap.org';
-const DAPP_SWAP_THRESHOLD = -10;
+const DAPP_SWAP_THRESHOLD = 0.01;
 
 const enum SwapType {
   Current = 'current',
@@ -148,7 +148,7 @@ const DappSwapComparisonInner = () => {
                 variant={TextVariant.BodySm}
               >
                 {t('dappSwapQuoteDifference', [
-                  selectedQuoteValueDifference.toFixed(2),
+                  `$${(gasDifference + tokenAmountDifference).toFixed(2)}`,
                 ])}
               </Text>
             </>
@@ -156,8 +156,8 @@ const DappSwapComparisonInner = () => {
           {!dappTypeSelected && (
             <Text className="dapp-swap_text-save" variant={TextVariant.BodySm}>
               {t('dappSwapQuoteDetails', [
-                gasDifference.toFixed(2),
-                tokenAmountDifference.toFixed(2),
+                `$${gasDifference.toFixed(2)}`,
+                `$${tokenAmountDifference.toFixed(2)}`,
                 destinationTokenSymbol?.toUpperCase(),
               ])}
             </Text>
