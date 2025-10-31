@@ -34,8 +34,6 @@ export class CriticalStartupErrorHandler {
 
   #onLivenessCheckCompleted?: () => void;
 
-  #errorDisplayed = false;
-
   /**
    * Creates an instance of CriticalStartupErrorHandler.
    * This class listens for critical startup errors from the background script
@@ -68,17 +66,13 @@ export class CriticalStartupErrorHandler {
     try {
       await Promise.race([livenessCheck, timeoutPromise]);
     } catch (error) {
-      // Only display error if we haven't already displayed one
-      if (!this.#errorDisplayed) {
-        this.#errorDisplayed = true;
-        await displayCriticalError(
-          this.#container,
-          CriticalErrorTranslationKey.TroubleStarting,
-          // This cast is safe because `livenessCheck` can't throw, and `timeoutPromise` only throws an
-          // error.
-          error as ErrorLike,
-        );
-      }
+      await displayCriticalError(
+        this.#container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        // This cast is safe because `livenessCheck` can't throw, and `timeoutPromise` only throws an
+        // error.
+        error as ErrorLike,
+      );
     } finally {
       clearTimeout(this.#livenessCheckTimeoutId);
     }
@@ -107,9 +101,7 @@ export class CriticalStartupErrorHandler {
     if (method === BACKGROUND_LIVENESS_METHOD) {
       if (this.#onLivenessCheckCompleted) {
         this.#onLivenessCheckCompleted();
-      } else if (!this.#errorDisplayed) {
-        // Only display error if we haven't already displayed one and liveness check wasn't initialized
-        this.#errorDisplayed = true;
+      } else {
         await displayCriticalError(
           this.#container,
           CriticalErrorTranslationKey.TroubleStarting,
@@ -133,22 +125,13 @@ export class CriticalStartupErrorHandler {
         hasBackup: boolean;
         currentLocale?: string;
       };
-      // Only display error if we haven't already displayed one
-      if (!this.#errorDisplayed) {
-        this.#errorDisplayed = true;
-        // Cancel the liveness check since we're displaying a corruption error
-        clearTimeout(this.#livenessCheckTimeoutId);
-        if (this.#onLivenessCheckCompleted) {
-          this.#onLivenessCheckCompleted();
-        }
-        await displayStateCorruptionError(
-          this.#container,
-          this.#port,
-          error,
-          hasBackup,
-          currentLocale,
-        );
-      }
+      await displayStateCorruptionError(
+        this.#container,
+        this.#port,
+        error,
+        hasBackup,
+        currentLocale,
+      );
     } else if (method === DISPLAY_GENERAL_STARTUP_ERROR) {
       if (!hasProperty(data, 'params') || !isObject(data.params)) {
         log.error(
@@ -162,21 +145,12 @@ export class CriticalStartupErrorHandler {
         error: ErrorLike;
         currentLocale?: string;
       };
-      // Only display error if we haven't already displayed one
-      if (!this.#errorDisplayed) {
-        this.#errorDisplayed = true;
-        // Cancel the liveness check since we're displaying a general error
-        clearTimeout(this.#livenessCheckTimeoutId);
-        if (this.#onLivenessCheckCompleted) {
-          this.#onLivenessCheckCompleted();
-        }
-        await displayCriticalError(
-          this.#container,
-          CriticalErrorTranslationKey.TroubleStarting,
-          error as ErrorLike,
-          currentLocale,
-        );
-      }
+      await displayCriticalError(
+        this.#container,
+        CriticalErrorTranslationKey.TroubleStarting,
+        error as ErrorLike,
+        currentLocale,
+      );
     }
   };
 
