@@ -412,7 +412,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
   lastUpdatedFromVersion: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   lastViewedUserSurvey: {
