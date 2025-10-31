@@ -9,7 +9,6 @@ import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
-  NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
@@ -22,7 +21,6 @@ type AllowedActions =
   | MultichainAssetsRatesControllerGetStateAction
   | HandleSnapRequest
   | NetworkControllerFindNetworkClientIdByChainIdAction
-  | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
   | RemoteFeatureFlagControllerGetStateAction;
 
@@ -55,7 +53,6 @@ export function getBridgeControllerMessenger(
     actions: [
       'AccountsController:getAccountByAddress',
       'SnapController:handleRequest',
-      'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
       'TokenRatesController:getState',
