@@ -89,7 +89,8 @@
         "fetch": false,
         "XMLHttpRequest": false,
         "document": false,
-        "document.createElement": true
+        "document.createElement": true,
+        "navigator": true
       }
     },
     "@rive-app/react-canvas": {
