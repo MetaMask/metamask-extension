@@ -32,7 +32,12 @@ export function initializeRiveWASM(): Promise<void> {
 
       // Fetch the WASM binary and convert to base64 data URI
       fetch(RIVE_WASM_URL)
-        .then((response) => response.arrayBuffer())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.arrayBuffer();
+        })
         .then((arrayBuffer) => {
           (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
             arrayBuffer;
