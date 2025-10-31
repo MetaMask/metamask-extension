@@ -166,7 +166,6 @@ describe('Vault Corruption', function () {
 
     // use the home page to destroy the vault
     await driver.executeAsyncScript(script);
-    await driver.delay(5000);
 
     // the previous tab we were using is now closed, so we need to tell Selenium
     // to switch back to the other page (required for Chrome)
