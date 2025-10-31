@@ -134,32 +134,51 @@ export function useShieldCoverageAlert(): Alert[] {
   const { currentConfirmation } = useConfirmContext<
     TransactionMeta | SignatureRequest
   >();
+
   const { reasonCode, status } = useSelector((state) =>
     getCoverageStatus(state as ShieldState, currentConfirmation?.id),
   );
-  const modalBodyStr = getModalBodyStr(reasonCode);
+  const isCovered = status === 'covered';
+  const modalBodyStr = isCovered
+    ? 'shieldCoverageAlertCovered'
+    : getModalBodyStr(reasonCode);
 
   const isEnableShieldCoverageChecks = useEnableShieldCoverageChecks();
-  const showAlert = isEnableShieldCoverageChecks;
+  const showAlert = isEnableShieldCoverageChecks && Boolean(status);
 
   return useMemo<Alert[]>((): Alert[] => {
     if (!showAlert) {
       return [];
     }
 
+    let severity = Severity.Info;
+    let inlineAlertText = t('shieldNotCovered');
+    let modalTitle = t('shieldCoverageAlertMessageTitle');
+    switch (status) {
+      case 'covered':
+        severity = Severity.Success;
+        inlineAlertText = t('shieldCovered');
+        modalTitle = t('shieldCoverageAlertMessageTitleCovered');
+        break;
+      case 'malicious':
+        severity = Severity.Danger;
+        break;
+      default:
+    }
+
     return [
       {
         key: 'shieldCoverageAlert',
-        reason: t('shieldCoverageAlertMessageTitle'),
+        reason: modalTitle,
         field: RowAlertKey.ShieldFooterCoverageIndicator,
-        severity: status === 'covered' ? Severity.Success : Severity.Info,
-        content: ShieldCoverageAlertMessage(modalBodyStr),
+        severity,
+        content: ShieldCoverageAlertMessage({
+          modalBodyStr,
+        }),
         isBlocking: false,
-        inlineAlertText: t(
-          status === 'covered' ? 'shieldCovered' : 'shieldNotCovered',
-        ),
+        inlineAlertText,
         showArrow: false,
-        isOpenModalOnClick: status !== 'covered',
+        isOpenModalOnClick: true,
       },
     ];
   }, [status, modalBodyStr, showAlert, t]);

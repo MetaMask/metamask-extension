@@ -6,7 +6,12 @@ export const ActiveSubscriptionStatuses: string[] = [
   SUBSCRIPTION_STATUSES.provisional,
 ];
 
-/**
- * The minimum fiat (USD) balance threshold for the shield entry modal to be shown
- */
-export const SHIELD_MIN_FIAT_BALANCE_THRESHOLD = 1000;
+export const PausedSubscriptionStatuses: string[] = [
+  SUBSCRIPTION_STATUSES.paused,
+  SUBSCRIPTION_STATUSES.pastDue,
+  SUBSCRIPTION_STATUSES.unpaid,
+];
+
+export const SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS = 14;
+
+export const SUBSCRIPTION_DEFAULT_PAYMENT_TOKEN = 'mUSD';

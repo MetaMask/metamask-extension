@@ -1,7 +1,9 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom-v5-compat';
+import { SubscriptionUserEvent } from '@metamask/subscription-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { TRANSACTION_SHIELD_LINK } from '../../../helpers/constants/common';
 import {
   AlignItems,
   Display,
@@ -27,8 +29,12 @@ import {
   ButtonLinkSize,
 } from '../../component-library';
 import { ThemeType } from '../../../../shared/constants/preferences';
-import { setShowShieldEntryModalOnce } from '../../../store/actions';
+import {
+  setShowShieldEntryModalOnce,
+  submitSubscriptionUserEvents,
+} from '../../../store/actions';
 import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
+import { getShouldSubmitEventsForShieldEntryModal } from '../../../selectors';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -36,13 +42,23 @@ export default function ShieldEntryModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const shouldSubmitEvent = useSelector(
+    getShouldSubmitEventsForShieldEntryModal,
+  );
 
   const handleOnClose = () => {
+    if (shouldSubmitEvent) {
+      dispatch(
+        submitSubscriptionUserEvents({
+          event: SubscriptionUserEvent.ShieldEntryModalViewed,
+        }),
+      );
+    }
     dispatch(setShowShieldEntryModalOnce(false));
   };
 
   const handleOnGetStarted = () => {
-    dispatch(setShowShieldEntryModalOnce(false));
+    handleOnClose();
     navigate(SHIELD_PLAN_ROUTE);
   };
 
@@ -80,7 +96,7 @@ export default function ShieldEntryModal() {
                 size={ButtonLinkSize.Inherit}
                 target="_blank"
                 rel="noopener noreferrer"
-                href="#"
+                href={TRANSACTION_SHIELD_LINK}
               >
                 {t('learnMoreUpperCase')}
               </ButtonLink>,

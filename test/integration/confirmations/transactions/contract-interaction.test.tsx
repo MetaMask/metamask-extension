@@ -23,7 +23,7 @@ import {
   getUnapprovedContractInteractionTransaction,
 } from './transactionDataHelpers';
 
-jest.setTimeout(20_000);
+jest.setTimeout(30_000);
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -129,7 +129,7 @@ const setupSubmitRequestToBackgroundMocks = (
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
       ...advancedDetailsMockedRequests,
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -515,19 +515,21 @@ describe('Contract Interaction Confirmation', () => {
 
     fireEvent.click(await screen.findByTestId('confirm-footer-cancel-button'));
 
-    expect(
-      mockedBackgroundConnection.submitRequestToBackground,
-    ).toHaveBeenCalledWith(
-      'updateEventFragment',
-      expect.arrayContaining([
-        expect.objectContaining({
-          properties: expect.objectContaining({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            external_link_clicked: 'security_alert_support_link',
+    await waitFor(() => {
+      expect(
+        mockedBackgroundConnection.submitRequestToBackground,
+      ).toHaveBeenCalledWith(
+        'updateEventFragment',
+        expect.arrayContaining([
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              external_link_clicked: 'security_alert_support_link',
+            }),
           }),
-        }),
-      ]),
-    );
+        ]),
+      );
+    });
   });
 });

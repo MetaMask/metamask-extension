@@ -46,7 +46,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
   it.skip('should show banner alert after switchinig to another supported network', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()

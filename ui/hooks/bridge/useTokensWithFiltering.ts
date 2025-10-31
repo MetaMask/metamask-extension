@@ -183,6 +183,7 @@ export const useTokensWithFiltering = (
           });
         },
         BRIDGE_API_BASE_URL,
+        process.env.METAMASK_VERSION,
       );
     }, [chainId, isTokenListCached]);
 
@@ -257,13 +258,7 @@ export const useTokensWithFiltering = (
 
         // Yield multichain tokens with balances and are not blocked
         for (const token of multichainTokensWithBalance) {
-          if (
-            shouldAddToken(
-              token.symbol,
-              token.address ?? undefined,
-              token.chainId,
-            )
-          ) {
+          if (shouldAddToken(token.symbol, token.address, token.chainId)) {
             if (isNativeAddress(token.address) || token.isNative) {
               yield {
                 symbol: token.symbol,
@@ -291,6 +286,7 @@ export const useTokensWithFiltering = (
                       token.address,
                       formatChainIdToCaip(token.chainId),
                     )),
+                accountType: token.accountType,
               };
             } else {
               yield {

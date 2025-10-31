@@ -335,6 +335,10 @@ const PrepareBridgePage = ({
   // Scroll to bottom of the page when banners are shown
   const alertBannersRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    // If quotes are still loading, don't scroll to the warning area
+    if (isLoading) {
+      return;
+    }
     if (
       isEstimatedReturnLow ||
       isInsufficientGasForQuote ||
@@ -355,6 +359,7 @@ const PrepareBridgePage = ({
     tokenAlert,
     txAlert,
     isUsingHardwareWallet,
+    isLoading,
   ]);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
@@ -661,7 +666,9 @@ const PrepareBridgePage = ({
 
                 setRotateSwitchTokens(!rotateSwitchTokens);
 
-                if (!isSwap) {
+                if (isSwap) {
+                  dispatch(setFromToken(toToken));
+                } else {
                   // Handle account switching for Solana
                   dispatch(
                     setFromChain({
@@ -704,14 +711,11 @@ const PrepareBridgePage = ({
                 dispatch(setToChainId(networkConfig.chainId));
               },
               header: t('yourNetworks'),
+              shouldDisableNetwork: ({ chainId }) =>
+                isBitcoinChainId(chainId) &&
+                !isCrossChain(chainId, fromChain?.chainId),
             }}
-            customTokenListGenerator={
-              toChain &&
-              fromChain &&
-              isCrossChain(fromChain.chainId, toChain.chainId)
-                ? toTokenListGenerator
-                : undefined
-            }
+            customTokenListGenerator={toTokenListGenerator}
             amountInFiat={
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
               // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

@@ -4,7 +4,11 @@ import {
   NetworkController,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { BlockExplorerUrl, ChainId } from '@metamask/controller-utils';
+import {
+  DEFAULT_MAX_RETRIES,
+  BlockExplorerUrl,
+  ChainId,
+} from '@metamask/controller-utils';
 import { hasProperty } from '@metamask/utils';
 import { SECOND } from '../../../shared/constants/time';
 import { getIsQuicknodeEndpointUrl } from '../../../shared/lib/network-utils';
@@ -59,6 +63,22 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
       getFailoverUrlsForInfuraNetwork('linea-mainnet');
     networks[CHAIN_IDS.BASE].rpcEndpoints[0].failoverUrls =
       getFailoverUrlsForInfuraNetwork('base-mainnet');
+    if (networks[CHAIN_IDS.ARBITRUM]?.rpcEndpoints?.[0]) {
+      networks[CHAIN_IDS.ARBITRUM].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('arbitrum-mainnet');
+    }
+    if (networks[CHAIN_IDS.BSC]?.rpcEndpoints?.[0]) {
+      networks[CHAIN_IDS.BSC].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('bsc-mainnet');
+    }
+    if (networks[CHAIN_IDS.OPTIMISM]?.rpcEndpoints?.[0]) {
+      networks[CHAIN_IDS.OPTIMISM].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('optimism-mainnet');
+    }
+    if (networks[CHAIN_IDS.POLYGON]?.rpcEndpoints?.[0]) {
+      networks[CHAIN_IDS.POLYGON].rpcEndpoints[0].failoverUrls =
+        getFailoverUrlsForInfuraNetwork('polygon-mainnet');
+    }
 
     // Update default popular network names.
     networks[CHAIN_IDS.MAINNET].name = 'Ethereum';
@@ -157,23 +177,31 @@ export const NetworkControllerInit: ControllerInitFunction<
   };
 
   const getRpcServiceOptions = (rpcEndpointUrl: string) => {
-    const maxRetries = 4;
+    // Note that the total number of attempts is 1 more than this
+    // (which is why we add 1 below).
+    const maxRetries = DEFAULT_MAX_RETRIES;
     const commonOptions = {
       fetch: globalThis.fetch.bind(globalThis),
       btoa: globalThis.btoa.bind(globalThis),
+    };
+    const commonPolicyOptions = {
+      // Ensure that the "cooldown" period after breaking the circuit is short.
+      circuitBreakDuration: 30 * SECOND,
+      maxRetries,
     };
 
     if (getIsQuicknodeEndpointUrl(rpcEndpointUrl)) {
       return {
         ...commonOptions,
         policyOptions: {
-          maxRetries,
-          // When we fail over to Quicknode, we expect it to be down at
-          // first while it is being automatically activated. If an endpoint
-          // is down, the failover logic enters a "cooldown period" of 30
-          // minutes. We'd really rather not enter that for Quicknode, so
-          // keep retrying longer.
-          maxConsecutiveFailures: (maxRetries + 1) * 14,
+          ...commonPolicyOptions,
+          // The number of rounds of retries that will break the circuit,
+          // triggering a "cooldown".
+          //
+          // When we fail over to QuickNode, we expect it to be down at first
+          // while it is being automatically activated, and we don't want to
+          // activate the "cooldown" accidentally.
+          maxConsecutiveFailures: (maxRetries + 1) * 10,
         },
       };
     }
@@ -181,9 +209,14 @@ export const NetworkControllerInit: ControllerInitFunction<
     return {
       ...commonOptions,
       policyOptions: {
-        maxRetries,
-        // Ensure that the circuit does not break too quickly.
-        maxConsecutiveFailures: (maxRetries + 1) * 7,
+        ...commonPolicyOptions,
+        // Ensure that if the endpoint continually responds with errors, we
+        // break the circuit relatively fast (but not prematurely).
+        //
+        // Note that the circuit will break much faster if the errors are
+        // retriable (e.g. 503) than if not (e.g. 500), so we attempt to strike
+        // a balance here.
+        maxConsecutiveFailures: (maxRetries + 1) * 3,
       },
     };
   };
@@ -249,7 +282,9 @@ export const NetworkControllerInit: ControllerInitFunction<
     (state) => state.remoteFeatureFlags.walletFrameworkRpcFailoverEnabled,
   );
 
-  controller.initializeProvider();
+  // Delay lookupNetwork until after onboarding to prevent network requests before the user can
+  // update their RPC endpoints.
+  controller.initializeProvider({ lookupNetwork: false });
 
   return {
     controller,

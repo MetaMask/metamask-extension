@@ -2463,10 +2463,6 @@
   "from": {
     "message": "Mula kay/sa"
   },
-  "fromAddress": {
-    "message": "Mula kay/sa: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "fromTokenLists": {
     "message": "Mula sa mga listahan ng token: $1"
   },
@@ -2757,32 +2753,11 @@
   "importNFTTokenIdToolTip": {
     "message": "Ang ID ng NFT ay isang natatanging pagkakakilanlan dahil walang dalawang NFT ang magkatulad. Muli, sa OpenSea ang numerong ito ay nasa ilalim ng 'Mga Detalye'. Itala ito, o kopyahin ito sa iyong clipboard."
   },
-  "importNWordSRP": {
-    "message": "Mayroon akong $1 (na) word recovery phrase",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Pribadong Key"
   },
-  "importSRPDescription": {
-    "message": "Mag-import ng dati nang wallet gamit ang iyong 12 o 24 word secret recovery phrase."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Naglalaman ang Secret Recovery Phrase ng 12 o 24 na salita"
-  },
-  "importSRPWordError": {
-    "message": "Mali ang salitang $1 o mali ang baybay nito.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Mali ang salitang $1 at $2 o mali ang baybay ng mga ito.",
-    "description": "$1 and $2 are multiple words that are mispelled."
-  },
   "importSecretRecoveryPhrase": {
     "message": "Mag-import ng Secret Recovery Phrase"
-  },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Nagkaroon ng hindi matukoy na error."
   },
   "importSelectedTokens": {
     "message": "I-import ang mga napiling token?"
@@ -2801,9 +2776,6 @@
   },
   "importTokensError": {
     "message": "Hindi namin ma-import ang mga token. Pakisubukan ulit mamaya."
-  },
-  "importWallet": {
-    "message": "Mag-import ng wallet"
   },
   "importWalletOrAccountHeader": {
     "message": "Mag-import ng wallet o account"
@@ -6598,10 +6570,6 @@
   },
   "to": {
     "message": "Para kay/sa"
-  },
-  "toAddress": {
-    "message": "Para kay/sa: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "toggleDecodeDescription": {
     "message": "Ginagamit namin ang mga serbisyo ng 4byte.directory at Sourcify para i-decode at ipakita ang mas nababasang data ng transaksyon. Tinutulungan ka nito na maunawaan ang kinalabasan ng mga nakabinbin at nakalipas na transaksyon, ngunit maaaring humantong sa pagbabahagi ng iyong IP address."

@@ -20,6 +20,7 @@ buildTypes:
       - keyring-snaps
       - multi-srp
       - multichain
+      - bitcoin
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -31,6 +32,7 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      - IS_SIDEPANEL: false
       # for seedless onboarding (social login)
       - GOOGLE_PROD_CLIENT_ID
       - APPLE_PROD_CLIENT_ID
@@ -63,6 +65,7 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      - IS_SIDEPANEL: false
       # for seedless onboarding (social login)
       - GOOGLE_BETA_CLIENT_ID
       - APPLE_BETA_CLIENT_ID
@@ -77,7 +80,33 @@ buildTypes:
 
   experimental:
     id: 12
-    extends: main
+    features:
+      - build-experimental
+      - build-main
+      - keyring-snaps
+      - multi-srp
+      - multichain
+      - bitcoin
+      - bitcoin-swaps
+    env:
+      - INFURA_EXPERIMENTAL_PROJECT_ID
+      - SEGMENT_EXPERIMENTAL_WRITE_KEY
+      - INFURA_ENV_KEY_REF: INFURA_EXPERIMENTAL_PROJECT_ID
+      - SEGMENT_WRITE_KEY_REF: SEGMENT_EXPERIMENTAL_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - IS_SIDEPANEL: true
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/10.2.2/index.html
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      # for seedless onboarding (social login)
+      - GOOGLE_EXPERIMENTAL_CLIENT_ID
+      - APPLE_EXPERIMENTAL_CLIENT_ID
+      - GOOGLE_CLIENT_ID_REF: GOOGLE_EXPERIMENTAL_CLIENT_ID
+      - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
+    isPrerelease: true
+    manifestOverrides: app/build-types/experimental/manifest
+    buildNameOverride: MetaMask Experimental
 
   flask:
     id: 15
@@ -103,6 +132,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
+      - IS_SIDEPANEL: false
       # for seedless onboarding (social login)
       - GOOGLE_FLASK_CLIENT_ID
       - APPLE_FLASK_CLIENT_ID
@@ -170,6 +200,10 @@ features:
         dest: snaps/permissions-kernel-snap.json
       - src: ./node_modules/@metamask/gator-permissions-snap/dist/preinstalled-snap.json
         dest: snaps/gator-permissions-snap.json
+  build-experimental:
+    assets:
+      - src: ./node_modules/@metamask/account-watcher/dist/preinstalled-snap.json
+        dest: snaps/account-watcher.json
 
 # Env variables that are required for all types of builds
 #
@@ -217,6 +251,11 @@ env:
   ###
   - STORYBOOK: false
   - INFURA_STORYBOOK_PROJECT_ID
+
+  ###
+  # Core Backend Services
+  ###
+  - MM_BACKEND_WEBSOCKET_URL: wss://gateway.api.cx.metamask.io/v1
 
   ###
   # Notifications Feature
@@ -409,11 +448,13 @@ env:
   - SHIELD_GATEWAY_URL: 'https://shield-gateway.dev-api.cx.metamask.io'
   # URL of Shield rule engine
   - SHIELD_RULE_ENGINE_URL: 'https://ruleset-engine.dev-api.cx.metamask.io'
+  # URL of Shield claims API
+  - SHIELD_CLAIMS_API_URL: 'https://claims.dev-api.cx.metamask.io'
 
   # Snaps
   # This should only be used for local testing, and should not be enabled in any
   # production builds (including beta and Flask).
   - FORCE_PREINSTALLED_SNAPS: 'false'
 
-  # Enable new send implementation
-  - SEND_REDESIGN_ENABLED: false
+  # Enable dapp swap shield implementation
+  - DAPP_SWAP_SHIELD_ENABLED: false

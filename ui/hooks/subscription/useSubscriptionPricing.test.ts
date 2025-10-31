@@ -117,8 +117,9 @@ describe('useSubscriptionPricing', () => {
 
       // Initially should be loading
       expect(result.current.loading).toBe(true);
-      expect(result.current.error).toBeNull();
+      expect(result.current.error).toBeUndefined();
       expect(result.current.subscriptionPricing).toBeDefined();
+      expect(result.current.selectedTokenPrice).toBeUndefined();
     });
   });
 
@@ -220,6 +221,11 @@ describe('useSubscriptionPricing', () => {
         trialPeriodDays: 7,
         minBillingCycles: 1,
       });
+      expect(result.current.selectedTokenPrice).toEqual(
+        mockSubscriptionPricing?.paymentMethods?.find(
+          (paymentMethod) => paymentMethod.type === PAYMENT_TYPES.byCrypto,
+        )?.chains?.[0]?.tokens?.[0],
+      );
     });
 
     it('should return yearly plan when approval amount matches yearly', async () => {

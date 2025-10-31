@@ -121,9 +121,12 @@ export type ControllerStatePropertiesEnumerated = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
+  canTrackWalletFundsObtained: AppStateControllerState['canTrackWalletFundsObtained'];
   activeQrCodeScanRequest: AppStateControllerState['activeQrCodeScanRequest'];
   nftsDropdownState: AppStateControllerState['nftsDropdownState'];
   surveyLinkLastClickedOrClosed: AppStateControllerState['surveyLinkLastClickedOrClosed'];
+  shieldEndingToastLastClickedOrClosed: AppStateControllerState['shieldEndingToastLastClickedOrClosed'];
+  shieldPausedToastLastClickedOrClosed: AppStateControllerState['shieldPausedToastLastClickedOrClosed'];
   signatureSecurityAlertResponses: AppStateControllerState['signatureSecurityAlertResponses'];
   addressSecurityAlertResponses: AppStateControllerState['addressSecurityAlertResponses'];
   currentExtensionPopupId: AppStateControllerState['currentExtensionPopupId'];
@@ -193,6 +196,7 @@ export type ControllerStatePropertiesEnumerated = {
   historicalPrices: MultichainAssetsRatesControllerState['historicalPrices'];
   assetsMetadata: MultichainAssetsControllerState['assetsMetadata'];
   accountsAssets: MultichainAssetsControllerState['accountsAssets'];
+  allIgnoredAssets: MultichainAssetsControllerState['allIgnoredAssets'];
   multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
   selectedMultichainNetworkChainId: MultichainNetworkControllerState['selectedMultichainNetworkChainId'];
   isEvmSelected: MultichainNetworkControllerState['isEvmSelected'];
@@ -249,7 +253,7 @@ export type ControllerStatePropertiesEnumerated = {
   useMultiAccountBalanceChecker: PreferencesControllerState['useMultiAccountBalanceChecker'];
   use4ByteResolution: PreferencesControllerState['use4ByteResolution'];
   useCurrencyRateCheck: PreferencesControllerState['useCurrencyRateCheck'];
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   watchEthereumAccountEnabled: PreferencesControllerState['watchEthereumAccountEnabled'];
   ///: END:ONLY_INCLUDE_IF
   addSnapAccountEnabled?: PreferencesControllerState['addSnapAccountEnabled'];

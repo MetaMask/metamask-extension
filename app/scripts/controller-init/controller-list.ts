@@ -9,7 +9,7 @@ import {
   SubjectMetadataController,
 } from '@metamask/permission-controller';
 import { PPOMController } from '@metamask/ppom-validator';
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import { SmartTransactionsController } from '@metamask/smart-transactions-controller';
 import { TransactionController } from '@metamask/transaction-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
@@ -76,6 +76,10 @@ import {
 } from '@metamask/message-manager';
 import { SignatureController } from '@metamask/signature-controller';
 import { UserOperationController } from '@metamask/user-operation-controller';
+import {
+  AccountActivityService,
+  BackendWebSocketService,
+} from '@metamask/core-backend';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -94,6 +98,8 @@ import { MetaMetricsDataDeletionController } from '../controllers/metametrics-da
 import AppMetadataController from '../controllers/app-metadata';
 import DecryptMessageController from '../controllers/decrypt-message';
 import EncryptionPublicKeyController from '../controllers/encryption-public-key';
+import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
+import { RewardsController } from '../controllers/rewards/rewards-controller';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
@@ -153,6 +159,8 @@ export type Controller =
   | RateLimitController<RateLimitedApiMap>
   | RatesController
   | RemoteFeatureFlagController
+  | RewardsController
+  | RewardsDataService
   | SeedlessOnboardingController<EncryptionKey>
   | SelectedNetworkController
   | ShieldController
@@ -181,6 +189,8 @@ export type Controller =
   | AssetsContractController
   | AccountTreeController
   | WebSocketService
+  | BackendWebSocketService
+  | AccountActivityService
   | MultichainAccountService
   | NetworkEnablementController;
 
@@ -231,6 +241,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   PreferencesController['state'] &
   RatesController['state'] &
   RemoteFeatureFlagController['state'] &
+  RewardsController['state'] &
   SeedlessOnboardingController<EncryptionKey>['state'] &
   SelectedNetworkController['state'] &
   ShieldController['state'] &

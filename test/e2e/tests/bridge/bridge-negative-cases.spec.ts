@@ -16,6 +16,8 @@ import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from './constants';
 
+const DEFAULT_LOCAL_NODE_USD_BALANCE = '127,500.00';
+
 describe('Bridge functionality', function (this: Suite) {
   it('should show that more funds are needed to execute the Bridge', async function () {
     await withFixtures(
@@ -56,7 +58,10 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('$85,000.00', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          '$',
+        );
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -78,7 +83,10 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('$85,000.00', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          '$',
+        );
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -100,7 +108,10 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('$85,000.00', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_USD_BALANCE,
+          '$',
+        );
 
         await homePage.startSwapFlow();
 
