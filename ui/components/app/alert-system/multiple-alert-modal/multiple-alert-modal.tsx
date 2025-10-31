@@ -165,19 +165,40 @@ export function MultipleAlertModal({
   showCloseIcon = true,
   skipAlertNavigation = false,
 }: MultipleAlertModalProps) {
-  const { isAlertConfirmed, fieldAlerts, alerts } = useAlerts(ownerId);
+  const {
+    alerts: alertsFromHook,
+    fieldAlerts: fieldAlertsFromHook,
+    isAlertConfirmed,
+    navigableAlerts: navigableAlertsFromHook,
+    navigableFieldAlerts: navigableFieldAlertsFromHook,
+  } = useAlerts(ownerId);
+
+  const alerts = alertsFromHook ?? [];
+  const fieldAlerts = fieldAlertsFromHook ?? [];
+  const navigableAlerts = navigableAlertsFromHook ?? alerts;
+  const navigableFieldAlerts = navigableFieldAlertsFromHook ?? fieldAlerts;
+
   const alertsToDisplay = displayAllAlerts ? alerts : fieldAlerts;
+  const navigableAlertsToDisplay = displayAllAlerts
+    ? navigableAlerts
+    : navigableFieldAlerts;
 
-  const initialAlertIndex = alertsToDisplay.findIndex(
-    (alert: Alert) => alert.key === alertKey,
+  const initialAlertKey =
+    alertsToDisplay.find((alert) => alert.key === alertKey)?.key ??
+    navigableAlertsToDisplay[0]?.key ??
+    alertsToDisplay[0]?.key;
+
+  const [currentAlertKey, setCurrentAlertKey] = useState<string | undefined>(
+    initialAlertKey,
   );
 
-  const [selectedIndex, setSelectedIndex] = useState(
-    initialAlertIndex === -1 ? 0 : initialAlertIndex,
-  );
+  const selectedAlert =
+    alertsToDisplay.find((alert) => alert.key === currentAlertKey) ??
+    alertsToDisplay[0];
 
-  // If the selected alert is not found, default to the first alert
-  const selectedAlert = alertsToDisplay[selectedIndex] ?? alertsToDisplay[0];
+  const currentNavigableIndex = navigableAlertsToDisplay.findIndex(
+    (alert) => alert.key === (selectedAlert?.key ?? currentAlertKey),
+  );
 
   const hasUnconfirmedAlerts = alerts.some(
     (alert: Alert) =>
@@ -185,39 +206,90 @@ export function MultipleAlertModal({
   );
 
   const handleBackButtonClick = useCallback(() => {
-    setSelectedIndex((prevIndex: number) =>
-      prevIndex > 0 ? prevIndex - 1 : prevIndex,
+    const activeAlertKey = selectedAlert?.key ?? currentAlertKey;
+    const newIndex = navigableAlertsToDisplay.findIndex(
+      (alert) => alert.key === activeAlertKey,
     );
-  }, []);
+
+    if (newIndex > 0) {
+      setCurrentAlertKey(navigableAlertsToDisplay[newIndex - 1]?.key);
+    }
+  }, [currentAlertKey, navigableAlertsToDisplay, selectedAlert]);
 
   const handleNextButtonClick = useCallback(() => {
-    setSelectedIndex((prevIndex: number) => prevIndex + 1);
-  }, []);
+    const activeAlertKey = selectedAlert?.key ?? currentAlertKey;
+    const newIndex = navigableAlertsToDisplay.findIndex(
+      (alert) => alert.key === activeAlertKey,
+    );
+
+    if (
+      newIndex !== -1 &&
+      newIndex + 1 < navigableAlertsToDisplay.length &&
+      navigableAlertsToDisplay[newIndex + 1]?.key
+    ) {
+      setCurrentAlertKey(navigableAlertsToDisplay[newIndex + 1]?.key);
+    }
+  }, [currentAlertKey, navigableAlertsToDisplay, selectedAlert]);
 
   const handleAcknowledgeClick = useCallback(() => {
-    if (skipAlertNavigation) {
+    const activeAlertKey = selectedAlert?.key ?? currentAlertKey;
+    const activeAlertHidesNavigation =
+      selectedAlert?.hideFromAlertNavigation === true;
+
+    if (skipAlertNavigation || !activeAlertKey) {
       onFinalAcknowledgeClick();
       return;
     }
 
-    if (selectedIndex + 1 === alertsToDisplay.length) {
+    if (activeAlertHidesNavigation) {
+      onFinalAcknowledgeClick();
+      return;
+    }
+
+    const navigableIndex = navigableAlertsToDisplay.findIndex(
+      (alert) => alert.key === activeAlertKey,
+    );
+
+    if (navigableIndex === -1) {
+      onFinalAcknowledgeClick();
+      return;
+    }
+
+    const isLastNavigableAlert =
+      navigableIndex === navigableAlertsToDisplay.length - 1;
+
+    if (isLastNavigableAlert) {
       if (!hasUnconfirmedAlerts) {
         onFinalAcknowledgeClick();
         return;
       }
 
-      setSelectedIndex(0);
+      const firstNavigableKey = navigableAlertsToDisplay[0]?.key;
+      if (firstNavigableKey) {
+        setCurrentAlertKey(firstNavigableKey);
+      }
+      onFinalAcknowledgeClick();
       return;
     }
-    handleNextButtonClick();
+
+    const nextAlertKey = navigableAlertsToDisplay[navigableIndex + 1]?.key;
+    if (nextAlertKey) {
+      setCurrentAlertKey(nextAlertKey);
+    }
   }, [
+    currentAlertKey,
     onFinalAcknowledgeClick,
-    handleNextButtonClick,
-    selectedIndex,
-    alertsToDisplay.length,
     hasUnconfirmedAlerts,
+    navigableAlertsToDisplay,
+    selectedAlert,
     skipAlertNavigation,
   ]);
+
+  const showNavigationButtons =
+    !skipAlertNavigation &&
+    selectedAlert?.hideFromAlertNavigation !== true &&
+    currentNavigableIndex !== -1 &&
+    navigableAlertsToDisplay.length > 1;
 
   return (
     <AlertModal
@@ -226,12 +298,14 @@ export function MultipleAlertModal({
       alertKey={selectedAlert?.key}
       onClose={onClose}
       headerStartAccessory={
-        <PageNavigation
-          alerts={alertsToDisplay}
-          onBackButtonClick={handleBackButtonClick}
-          onNextButtonClick={handleNextButtonClick}
-          selectedIndex={selectedIndex}
-        />
+        showNavigationButtons ? (
+          <PageNavigation
+            alerts={navigableAlertsToDisplay}
+            onBackButtonClick={handleBackButtonClick}
+            onNextButtonClick={handleNextButtonClick}
+            selectedIndex={currentNavigableIndex}
+          />
+        ) : null
       }
       showCloseIcon={showCloseIcon}
     />
