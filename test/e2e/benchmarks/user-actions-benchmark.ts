@@ -48,12 +48,12 @@ async function loadNewAccount(): Promise<number> {
       await unlockWallet(driver);
 
       const headerNavbar = new HeaderNavbar(driver);
-      await headerNavbar.openAccountsPage();
+      await headerNavbar.openAccountMenu();
       const accountListPage = new AccountListPage(driver);
       await accountListPage.checkPageIsLoaded();
 
       const timestampBeforeAction = new Date();
-      await accountListPage.addMultichainAccount()
+      await accountListPage.addMultichainAccount();
       const timestampAfterAction = new Date();
       loadingTimes =
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
@@ -96,7 +96,7 @@ async function confirmTx(): Promise<number> {
       );
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(
-          '[data-testid="activity-list-item-action"]'
+          '[data-testid="activity-list-item-action"]',
         );
         return confirmedTxes.length === 1;
       }, 10000);

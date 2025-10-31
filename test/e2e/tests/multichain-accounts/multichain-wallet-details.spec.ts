@@ -10,7 +10,6 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        state: 2,
         numberOfAccounts: 1,
         withFixtureBuilder: (builder) =>
           builder.withKeyringControllerMultiSRP().withPreferencesController({
