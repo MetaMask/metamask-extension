@@ -985,7 +985,6 @@ export const getBridgeNegativeCasesFixtures = (
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
-        '0xe708': true,
       },
     });
 
@@ -1001,6 +1000,7 @@ export const getBridgeNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
+        ...BIP44_STAGE_TWO,
       },
       testing: { disableSmartTransactionsOverride: true },
     },

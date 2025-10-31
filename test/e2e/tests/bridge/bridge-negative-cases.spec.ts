@@ -16,7 +16,7 @@ import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from './constants';
 
-const DEFAULT_LOCAL_NODE_USD_BALANCE = '25';
+const DEFAULT_LOCAL_NODE_USD_BALANCE = '24.998';
 
 describe('Bridge functionality', function (this: Suite) {
   it('should show that more funds are needed to execute the Bridge', async function () {
@@ -32,7 +32,7 @@ describe('Bridge functionality', function (this: Suite) {
       async ({ driver }) => {
         await unlockWallet(driver);
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('24.998', 'ETH');
+        await homePage.checkExpectedBalanceIsDisplayed(DEFAULT_LOCAL_NODE_USD_BALANCE, 'ETH');
         await homePage.startSwapFlow();
 
         const bridgePage = new BridgeQuotePage(driver);
@@ -134,11 +134,11 @@ describe('Bridge functionality', function (this: Suite) {
     );
   });
 
-  it.skip('should show that bridge transaction is pending if getTxStatus returns error 500', async function () {
+  it('should show that bridge transaction is pending if getTxStatus returns error 500', async function () {
     await withFixtures(
       {
-        forceBip44Version: true,
-        ...getQuoteNegativeCasesFixtures(
+        forceBip44Version: false,
+        ...getBridgeNegativeCasesFixtures(
           {
             statusCode: 500,
             json: 'Internal server error',
@@ -151,7 +151,7 @@ describe('Bridge functionality', function (this: Suite) {
         await unlockWallet(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('25', 'USD');
+        await homePage.checkExpectedBalanceIsDisplayed(DEFAULT_LOCAL_NODE_USD_BALANCE, 'USD');
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -164,11 +164,11 @@ describe('Bridge functionality', function (this: Suite) {
     );
   });
 
-  it.skip('should show failed bridge activity if getTxStatus returns failed source transaction', async function () {
+  it('should show failed bridge activity if getTxStatus returns failed source transaction', async function () {
     await withFixtures(
       {
         forceBip44Version: false,
-        ...getQuoteNegativeCasesFixtures(
+        ...getBridgeNegativeCasesFixtures(
           {
             statusCode: 200,
             json: FAILED_SOURCE_TRANSACTION,
@@ -181,7 +181,7 @@ describe('Bridge functionality', function (this: Suite) {
         await unlockWallet(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
+        await homePage.checkExpectedBalanceIsDisplayed(DEFAULT_LOCAL_NODE_USD_BALANCE, 'ETH');
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);
@@ -195,11 +195,11 @@ describe('Bridge functionality', function (this: Suite) {
     );
   });
 
-  it.skip('should show failed bridge activity if getTxStatus returns failed destination transaction', async function () {
+  it('should show failed bridge activity if getTxStatus returns failed destination transaction', async function () {
     await withFixtures(
       {
         forceBip44Version: false,
-        ...getQuoteNegativeCasesFixtures(
+        ...getBridgeNegativeCasesFixtures(
           {
             statusCode: 200,
             json: FAILED_DEST_TRANSACTION,
@@ -212,7 +212,7 @@ describe('Bridge functionality', function (this: Suite) {
         await unlockWallet(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.checkExpectedBalanceIsDisplayed('25', 'ETH');
+        await homePage.checkExpectedBalanceIsDisplayed(DEFAULT_LOCAL_NODE_USD_BALANCE, 'ETH');
         await homePage.startSwapFlow();
 
         const bridgePage = await enterBridgeQuote(driver);

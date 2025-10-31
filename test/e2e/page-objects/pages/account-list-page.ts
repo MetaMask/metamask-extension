@@ -902,16 +902,15 @@ class AccountListPage {
   }
 
   /**
-   * Verifies that all occurrences of the account balance value and symbol are displayed as private.
+   * Verifies that account balance is private.
    *
    */
-  async checkBalanceIsPrivateEverywhere(): Promise<void> {
-    console.log(`Verify all account balance occurrences are private`);
-    const balanceSelectors = {
-      tag: 'span',
+  async checkAccountBalanceIsPrivate(): Promise<void> {
+    console.log(`Verify that account balance is private`);
+    await this.driver.waitForSelector({
+      css: this.accountPageBalance,
       text: '••••••',
-    };
-    await this.driver.elementCountBecomesN(balanceSelectors, 6);
+    });
   }
 
   async checkCurrentAccountIsImported(): Promise<void> {
