@@ -3,8 +3,8 @@ import type {
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
 } from '@metamask/json-rpc-engine';
-import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import { SnapId } from '@metamask/snaps-sdk';
+import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 
 export type ExtendedJsonRpcRequest = JsonRpcRequest & { origin: string };
 

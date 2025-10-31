@@ -6772,8 +6772,12 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IF(gator-permissions)
+
     // Block requests while a wallet_requestExecutionPermissions request is in process.
     engine.push(this.eip7715BlockingMiddleware);
+
+    ///: END:ONLY_INCLUDE_IF
 
     engine.push(
       createPPOMMiddleware(
