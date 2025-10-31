@@ -180,35 +180,35 @@ const SubmitClaimForm = () => {
     }
   }, [email, setErrorMessage, t]);
 
+  const validateReimbursementEqualsImpactedWalletAddress = useCallback(() => {
+    if (!reimbursementWalletAddress || !impactedWalletAddress) {
+      return;
+    }
+
+    const isReimbursementEqualsImpactedWalletAddress =
+      reimbursementWalletAddress.toLowerCase() ===
+      impactedWalletAddress.toLowerCase();
+
+    setErrorMessage(
+      SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
+      isReimbursementEqualsImpactedWalletAddress
+        ? t('shieldClaimSameWalletAddressesError')
+        : undefined,
+    );
+  }, [reimbursementWalletAddress, impactedWalletAddress, setErrorMessage, t]);
+
   const validateImpactedWalletAddress = useCallback(() => {
     if (impactedWalletAddress) {
       const isImpactedWalletAddressValid = isValidHexAddress(
         impactedWalletAddress,
       );
-      setErrorMessage(
-        SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS,
-        isImpactedWalletAddressValid
-          ? undefined
-          : t('shieldClaimInvalidWalletAddress'),
-      );
-
-      // validate reimbursement wallet address is different from impacted wallet address
-      if (
-        reimbursementWalletAddress &&
-        reimbursementWalletAddress?.toLowerCase() ===
-          impactedWalletAddress?.toLowerCase()
-      ) {
+      if (isImpactedWalletAddressValid) {
+        validateReimbursementEqualsImpactedWalletAddress();
+        setErrorMessage(SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS, undefined);
+      } else {
         setErrorMessage(
-          SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-          t('shieldClaimSameWalletAddressesError'),
-        );
-      } else if (
-        errors.reimbursementWalletAddress?.msg ===
-        t('shieldClaimSameWalletAddressesError')
-      ) {
-        setErrorMessage(
-          SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-          undefined,
+          SUBMIT_CLAIM_FIELDS.IMPACTED_WALLET_ADDRESS,
+          t('shieldClaimInvalidWalletAddress'),
         );
       }
     } else {
@@ -218,11 +218,10 @@ const SubmitClaimForm = () => {
       );
     }
   }, [
-    errors.reimbursementWalletAddress,
     impactedWalletAddress,
-    reimbursementWalletAddress,
     setErrorMessage,
     t,
+    validateReimbursementEqualsImpactedWalletAddress,
   ]);
 
   const validateReimbursementWalletAddress = useCallback(() => {
@@ -231,23 +230,12 @@ const SubmitClaimForm = () => {
         reimbursementWalletAddress,
       );
 
-      if (!isReimbursementWalletAddressValid) {
-        setErrorMessage(
-          SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-          t('shieldClaimInvalidWalletAddress'),
-        );
-      } else if (
-        reimbursementWalletAddress?.toLowerCase() ===
-        impactedWalletAddress?.toLowerCase()
-      ) {
-        setErrorMessage(
-          SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-          t('shieldClaimSameWalletAddressesError'),
-        );
+      if (isReimbursementWalletAddressValid) {
+        validateReimbursementEqualsImpactedWalletAddress();
       } else {
         setErrorMessage(
           SUBMIT_CLAIM_FIELDS.REIMBURSEMENT_WALLET_ADDRESS,
-          undefined,
+          t('shieldClaimInvalidWalletAddress'),
         );
       }
     } else {
@@ -256,7 +244,12 @@ const SubmitClaimForm = () => {
         t('shieldClaimInvalidRequired'),
       );
     }
-  }, [impactedWalletAddress, reimbursementWalletAddress, setErrorMessage, t]);
+  }, [
+    reimbursementWalletAddress,
+    setErrorMessage,
+    t,
+    validateReimbursementEqualsImpactedWalletAddress,
+  ]);
 
   const validateImpactedTxHash = useCallback(() => {
     if (impactedTransactionHash) {
