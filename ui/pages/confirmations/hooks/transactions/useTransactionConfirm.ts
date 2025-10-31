@@ -9,11 +9,8 @@ import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
-import {
-  getIsSmartTransaction,
-  type SmartTransactionsState,
-} from '../../../../../shared/modules/selectors';
 import { useIsGaslessSupported } from '../gas/useIsGaslessSupported';
+import { useGaslessSupportedSmartTransactions } from '../gas/useGaslessSupportedSmartTransactions';
 import { useShieldConfirm } from './useShieldConfirm';
 
 export function useTransactionConfirm() {
@@ -22,9 +19,9 @@ export function useTransactionConfirm() {
   const selectedGasFeeToken = useSelectedGasFeeToken();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-  const isSmartTransaction = useSelector((state: SmartTransactionsState) =>
-    getIsSmartTransaction(state, transactionMeta?.chainId),
-  );
+
+  const { isSupported: isGaslessSupportedSTX } =
+    useGaslessSupportedSmartTransactions();
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
 
   const newTransactionMeta = useMemo(
@@ -85,7 +82,7 @@ export function useTransactionConfirm() {
   const onTransactionConfirm = useCallback(async () => {
     newTransactionMeta.customNonceValue = customNonceValue;
 
-    if (isSmartTransaction) {
+    if (isGaslessSupportedSTX) {
       handleSmartTransaction();
     } else if (selectedGasFeeToken) {
       handleGasless7702();
@@ -103,12 +100,12 @@ export function useTransactionConfirm() {
       throw error;
     }
   }, [
-    customNonceValue,
-    dispatch,
-    handleGasless7702,
-    handleSmartTransaction,
-    isSmartTransaction,
     newTransactionMeta,
+    customNonceValue,
+    isGaslessSupportedSTX,
+    dispatch,
+    handleSmartTransaction,
+    handleGasless7702,
     selectedGasFeeToken,
     handleShieldSubscriptionApprovalTransactionAfterConfirm,
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
