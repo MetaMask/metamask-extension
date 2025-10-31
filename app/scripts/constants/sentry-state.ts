@@ -1,4 +1,4 @@
-import { AllProperties } from '../../../shared/modules/object.utils';
+import { AllProperties } from '../../../shared/modules/mask-object';
 
 // This describes the subset of background controller state attached to errors
 // sent to Sentry These properties have some potential to be useful for
