@@ -1,11 +1,8 @@
-import { merge } from 'lodash';
 import { maskObject } from '../../../shared/modules/mask-object';
-import onboardingFixture from '../../../test/e2e/fixtures/onboarding-fixture.json';
+import sentryStateTestFixture from './sentry-state-test-fixture.json';
 import { SENTRY_BACKGROUND_STATE, SENTRY_UI_STATE } from './sentry-state';
 
-const mockAppState = merge(onboardingFixture.data, {
-  // ... okay
-});
+const mockAppState = sentryStateTestFixture;
 
 describe('SENTRY_BACKGROUND_STATE', () => {
   it('masks private data in background state', () => {
