@@ -122,7 +122,6 @@ describe('Vault Corruption', function () {
   async function waitForVaultRestorePage(driver: Driver) {
     await driver.waitUntil(
       async () => {
-        await driver.openNewPage('about:blank');
         await driver.navigate(PAGES.HOME, { waitForControllers: false });
         const title = await driver.driver.getTitle();
         // the browser will return an error message for our UI's HOME page until
@@ -170,6 +169,9 @@ describe('Vault Corruption', function () {
     // the previous tab we were using is now closed, so we need to tell Selenium
     // to switch back to the other page (required for Chrome)
     await driver.switchToWindow(initialWindow);
+
+    // get a new tab ready to use (required for Firefox)
+    await driver.openNewPage('about:blank');
 
     // wait for the background page to reload
     await waitForVaultRestorePage(driver);

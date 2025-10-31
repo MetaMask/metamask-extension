@@ -125,7 +125,12 @@ export class CriticalStartupErrorHandler {
         hasBackup: boolean;
         currentLocale?: string;
       };
-      displayStateCorruptionError(
+      // Cancel the liveness check since we're displaying a corruption error
+      clearTimeout(this.#livenessCheckTimeoutId);
+      if (this.#onLivenessCheckCompleted) {
+        this.#onLivenessCheckCompleted();
+      }
+      await displayStateCorruptionError(
         this.#container,
         this.#port,
         error,
@@ -145,6 +150,11 @@ export class CriticalStartupErrorHandler {
         error: ErrorLike;
         currentLocale?: string;
       };
+      // Cancel the liveness check since we're displaying a general error
+      clearTimeout(this.#livenessCheckTimeoutId);
+      if (this.#onLivenessCheckCompleted) {
+        this.#onLivenessCheckCompleted();
+      }
       await displayCriticalError(
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
