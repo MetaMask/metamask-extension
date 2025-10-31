@@ -40,7 +40,11 @@ import { useBridgeExchangeRates } from '../../hooks/bridge/useBridgeExchangeRate
 import { useQuoteFetchEvents } from '../../hooks/bridge/useQuoteFetchEvents';
 import { TextVariant } from '../../helpers/constants/design-system';
 import { useTxAlerts } from '../../hooks/bridge/useTxAlerts';
-import { getFromChain, getBridgeQuotes } from '../../ducks/bridge/selectors';
+import {
+  getFromChain,
+  getBridgeQuotes,
+  getLockdown,
+} from '../../ducks/bridge/selectors';
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures/awaiting-signatures';
@@ -125,6 +129,8 @@ const CrossChainSwap = () => {
 
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
+  const lockdown = useSelector(getLockdown);
+
   return (
     <Page className="bridge__container">
       <Header
@@ -150,7 +156,7 @@ const CrossChainSwap = () => {
           />
         }
       >
-        {t('swap')}
+        {lockdown ? t('receiveMusd') : t('swap')}
       </Header>
       <Content padding={0}>
         <Switch>

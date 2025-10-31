@@ -372,34 +372,33 @@ const CoinButtons = ({
       width={BlockSize.Full}
       gap={3}
     >
-      {
-        <IconButton
-          className={`${classPrefix}-overview__button`}
-          Icon={
-            displayNewIconButtons ? (
-              <Icon
-                name={IconName.Dollar}
-                color={IconColor.iconAlternative}
-                size={IconSize.Md}
-              />
-            ) : (
-              <Icon
-                name={IconName.PlusAndMinus}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            )
-          }
-          disabled={!isBuyableChain}
-          data-testid={`${classPrefix}-overview-buy`}
-          label={t('buy')}
-          onClick={handleBuyAndSellOnClick}
-          width={BlockSize.Full}
-          tooltipRender={(contents: React.ReactElement) =>
-            generateTooltip('buyButton', contents)
-          }
-        />
-      }
+      <IconButton
+        className={`${classPrefix}-overview__button`}
+        Icon={
+          displayNewIconButtons ? (
+            <Icon
+              name={IconName.Gift}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          ) : (
+            <Icon
+              name={IconName.Gift}
+              color={IconColor.iconDefault}
+              size={IconSize.Sm}
+            />
+          )
+        }
+        data-testid={`${classPrefix}-overview-buy`}
+        label="mUSD time"
+        onClick={() => {
+          history.push(
+            '/cross-chain/swaps/prepare-swap-page?from=eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48&to=eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da&lockdown=true',
+          );
+        }}
+        width={BlockSize.Full}
+      />
+
       <IconButton
         className={`${classPrefix}-overview__button`}
         disabled={!isSigningEnabled || !isExternalServicesEnabled}

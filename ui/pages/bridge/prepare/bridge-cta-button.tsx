@@ -15,6 +15,7 @@ import {
   getWasTxDeclined,
   getIsQuoteExpired,
   BridgeAppState,
+  getLockdown,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -43,6 +44,8 @@ export const BridgeCTAButton = ({
   const fromAmount = useSelector(getFromAmount);
 
   const { isLoading, activeQuote } = useSelector(getBridgeQuotes);
+
+  const lockdown = useSelector(getLockdown);
 
   const isQuoteExpired = useSelector((state) =>
     getIsQuoteExpired(state as BridgeAppState, Date.now()),
@@ -81,6 +84,10 @@ export const BridgeCTAButton = ({
 
     if (isInsufficientBalance || isInsufficientGasForQuote) {
       return 'alertReasonInsufficientBalance';
+    }
+
+    if (lockdown) {
+      return 'receiveMusd';
     }
 
     if (!fromAmount) {

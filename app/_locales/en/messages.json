@@ -5132,6 +5132,9 @@
   "received": {
     "message": "Received"
   },
+  "receiveMusd": {
+    "message": "Receive mUSD"
+  },
   "receivingAddress": {
     "message": "Receiving address",
     "description": "Page title when viewing addresses for receiving funds"

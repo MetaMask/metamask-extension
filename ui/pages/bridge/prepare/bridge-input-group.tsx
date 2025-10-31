@@ -172,7 +172,11 @@ export const BridgeInputGroup = ({
   };
 
   return (
-    <Column gap={1} {...containerProps}>
+    <Column
+      gap={1}
+      {...containerProps}
+      style={lockdown ? { display: 'none' } : undefined}
+    >
       <Row gap={4}>
         <TextField
           inputProps={{

@@ -422,7 +422,9 @@ const PrepareBridgePage = ({
             destWalletAddress: selectedDestinationAccount?.address,
             gasIncluded: gasIncluded || gasIncluded7702,
             gasIncluded7702,
+            ...(lockdown ? { aggIds: ['relay'] } : undefined),
           }
+
         : undefined,
     [
       fromToken?.address,
@@ -437,6 +439,7 @@ const PrepareBridgePage = ({
       providerConfig?.rpcUrl,
       gasIncluded,
       gasIncluded7702,
+      lockdown,
     ],
   );
 
@@ -518,8 +521,6 @@ const PrepareBridgePage = ({
   const getToInputHeader = () => {
     return t('swapSelectToken');
   };
-
-  console.log('lockdown', lockdown);
 
   return (
     <>
@@ -612,108 +613,109 @@ const PrepareBridgePage = ({
             position: 'relative',
           }}
         >
-          <Box
-            className="prepare-bridge-page__switch-tokens"
-            display={Display.Flex}
-            backgroundColor={BackgroundColor.backgroundSection}
-            style={{
-              position: 'absolute',
-              top: '-20px',
-              right: 'calc(50% - 20px)',
-              border: '2px solid var(--color-background-default)',
-              borderRadius: '100%',
-              opacity: 1,
-              width: 40,
-              height: 40,
-              justifyContent: JustifyContent.center,
-            }}
-          >
-            <ButtonIcon
-              iconProps={{
-                className: classnames({
-                  rotate: rotateSwitchTokens,
-                }),
-              }}
+          {!lockdown && (
+            <Box
+              className="prepare-bridge-page__switch-tokens"
+              display={Display.Flex}
+              backgroundColor={BackgroundColor.backgroundSection}
               style={{
-                alignSelf: 'center',
+                position: 'absolute',
+                top: '-20px',
+                right: 'calc(50% - 20px)',
+                border: '2px solid var(--color-background-default)',
                 borderRadius: '100%',
-                width: '100%',
-                height: '100%',
+                opacity: 1,
+                width: 40,
+                height: 40,
+                justifyContent: JustifyContent.center,
               }}
-              data-testid="switch-tokens"
-              ariaLabel="switch-tokens"
-              iconName={IconName.SwapVertical}
-              color={IconColor.iconAlternative}
-              disabled={
-                isSwitchingTemporarilyDisabled ||
-                !isValidQuoteRequest(quoteRequest, false) ||
-                (toChain && !isNetworkAdded(toChain))
-              }
-              onClick={() => {
-                dispatch(setSelectedQuote(null));
-                // Track the flip event
-                toChain?.chainId &&
-                  fromToken &&
-                  toToken &&
-                  dispatch(
-                    trackUnifiedSwapBridgeEvent(
-                      UnifiedSwapBridgeEventName.InputSourceDestinationSwitched,
-                      {
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_symbol_source: toToken?.symbol ?? null,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_symbol_destination: fromToken?.symbol ?? null,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_address_source:
-                          toAssetId(
-                            toToken.address ?? '',
-                            formatChainIdToCaip(toToken.chainId ?? ''),
-                          ) ??
-                          getNativeAssetForChainId(toChain.chainId)?.assetId,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        token_address_destination:
-                          toAssetId(
-                            fromToken.address ?? '',
-                            formatChainIdToCaip(fromToken.chainId ?? ''),
-                          ) ?? null,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        chain_id_source: formatChainIdToCaip(toChain.chainId),
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        chain_id_destination: fromChain?.chainId
-                          ? formatChainIdToCaip(fromChain?.chainId)
-                          : null,
-                        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                        // eslint-disable-next-line @typescript-eslint/naming-convention
-                        security_warnings: [],
-                      },
-                    ),
-                  );
-
-                setRotateSwitchTokens(!rotateSwitchTokens);
-
-                if (isSwap) {
-                  dispatch(setFromToken(toToken));
-                } else {
-                  // Handle account switching for Solana
-                  dispatch(
-                    setFromChain({
-                      networkConfig: toChain,
-                      token: toToken,
-                      selectedAccount,
-                    }),
-                  );
+            >
+              <ButtonIcon
+                iconProps={{
+                  className: classnames({
+                    rotate: rotateSwitchTokens,
+                  }),
+                }}
+                style={{
+                  alignSelf: 'center',
+                  borderRadius: '100%',
+                  width: '100%',
+                  height: '100%',
+                }}
+                data-testid="switch-tokens"
+                ariaLabel="switch-tokens"
+                iconName={IconName.SwapVertical}
+                color={IconColor.iconAlternative}
+                disabled={
+                  isSwitchingTemporarilyDisabled ||
+                  !isValidQuoteRequest(quoteRequest, false) ||
+                  (toChain && !isNetworkAdded(toChain))
                 }
-                dispatch(setToToken(fromToken));
-              }}
-            />
-          </Box>
+                onClick={() => {
+                  dispatch(setSelectedQuote(null));
+                  // Track the flip event
+                  toChain?.chainId &&
+                    fromToken &&
+                    toToken &&
+                    dispatch(
+                      trackUnifiedSwapBridgeEvent(
+                        UnifiedSwapBridgeEventName.InputSourceDestinationSwitched,
+                        {
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          token_symbol_source: toToken?.symbol ?? null,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          token_symbol_destination: fromToken?.symbol ?? null,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          token_address_source:
+                            toAssetId(
+                              toToken.address ?? '',
+                              formatChainIdToCaip(toToken.chainId ?? ''),
+                            ) ??
+                            getNativeAssetForChainId(toChain.chainId)?.assetId,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          token_address_destination:
+                            toAssetId(
+                              fromToken.address ?? '',
+                              formatChainIdToCaip(fromToken.chainId ?? ''),
+                            ) ?? null,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          chain_id_source: formatChainIdToCaip(toChain.chainId),
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          chain_id_destination: fromChain?.chainId
+                            ? formatChainIdToCaip(fromChain?.chainId)
+                            : null,
+                          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                          // eslint-disable-next-line @typescript-eslint/naming-convention
+                          security_warnings: [],
+                        },
+                      ),
+                    );
 
+                  setRotateSwitchTokens(!rotateSwitchTokens);
+
+                  if (isSwap) {
+                    dispatch(setFromToken(toToken));
+                  } else {
+                    // Handle account switching for Solana
+                    dispatch(
+                      setFromChain({
+                        networkConfig: toChain,
+                        token: toToken,
+                        selectedAccount,
+                      }),
+                    );
+                  }
+                  dispatch(setToToken(fromToken));
+                }}
+              />
+            </Box>
+          )}
           <Box
             paddingInline={4}
             style={{
